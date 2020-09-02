@@ -132,6 +132,9 @@ class SideBar extends Component {
                             }} />
 
                             {/* Quan ly nhan su */}
+
+                            <Item item={{ name: 'menu.leave_application', icon: 'fa fa-envelope', path: '/hr-manage-leave-application' }} />
+
                             <GroupItem groupItem={{
                                 name: 'menu.manage_employee',
                                 icon: 'fa fa-address-book',

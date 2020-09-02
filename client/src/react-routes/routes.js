@@ -43,6 +43,7 @@ import EmployeeCreate from '../modules/human-resource/profile/employee-create/co
 import SalaryManager from '../modules/human-resource/salary/components';
 import TimesheetsManager from '../modules/human-resource/timesheets/components';
 import { WorkPlan } from '../modules/human-resource/holiday/components/combinedContent';
+import { ManageLeaveApplication } from '../modules/human-resource/annual-leave/components/combinedContent';
 
 import { ListEducation } from '../modules/training/education-program/components/educationProgramList';
 import { TrainingPlan } from '../modules/training/course/components/course';
@@ -300,6 +301,21 @@ class Routes extends Component {
                         component={Document}
                     />
                     {/* Quan ly nhan su */}
+                    <PrivateRoute
+                        isLoading={this.props.annualLeave.isLoading}
+                        key={'leave_application'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/hr-manage-leave-application', name: 'leave_application', icon: 'fa fa-envelope' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/hr-manage-leave-application'}
+                        path={'/hr-manage-leave-application'}
+                        pageName={'leave_application'}
+                        layout={Layout}
+                        component={ManageLeaveApplication}
+                    />
                     <PrivateRoute
                         isLoading={this.props.employeesManager.isLoading}
                         key={'add_employee'}

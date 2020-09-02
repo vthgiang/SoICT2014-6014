@@ -631,6 +631,7 @@ export default {
             manageDocument: 'Manage Document',
             manageDocumentType: 'Manage Document Type',
 
+            leave_application: 'Manage leave application',
             manage_employee: 'Manage Staffs',
             manage_training: 'Manage Training',
             account: 'Account',
@@ -1428,7 +1429,7 @@ export default {
                 receiver: 'Receiver',
 
                 // Nhóm action
-                create_annual_leave: 'Application annual leave',
+                create_annual_leave: 'Apply leave',
             }
         },
 

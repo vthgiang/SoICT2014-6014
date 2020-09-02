@@ -58,7 +58,6 @@ function createMaintainanceForIncident(id, data) {
 }
 
 function updateIncident(id, data,managedBy ='') {
-    console.log("\n\n\n\n\n\n\n1111111",managedBy)
     return dispatch => {
         dispatch({
             type: IncidentConstants.UPDATE_INCIDENT_REQUEST
