@@ -619,7 +619,7 @@ export default {
             crm: 'CRM',
             crm_list: {
                 customer: 'Customers',
-                leads: 'Leads',
+                lead: 'Leads',
                 care: 'Cares',
                 group: 'Groups',
                 statistic: 'Statistics',

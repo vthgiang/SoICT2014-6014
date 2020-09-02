@@ -2,32 +2,15 @@ import React, { Component } from 'react';
 import Item from './item';
 import GroupItem from './groupItem';
 import { connect } from 'react-redux';
-import Role from  '../../header/components/roles';
 import { withTranslate } from 'react-redux-multilingual';
 
 class SideBar extends Component {
-
     constructor(props) {
         super(props);
         this.state = {}
     }
 
-    checkURL = (urlName, linkArr) => {
-        var result = false;
-        if (linkArr !== undefined) {
-            linkArr.forEach(link => {
-                if (link.url === urlName) {
-                    result = true;
-                }
-            });
-        }
-
-        return result;
-    }
-
     render() {
-        const { translate, auth } = this.props;
-        const { user, links } = this.props.auth;
 
         return (
             <React.Fragment>
@@ -40,7 +23,7 @@ class SideBar extends Component {
                         <Item item={{ name: 'menu.manage_company', icon: 'fa fa-building', path: '/system/companies-management' }}/>
                         {/* Quản trị của system admin */}
                         <GroupItem groupItem={{
-                            name: 'menu.system',
+                            name: 'menu.system_administration',
                             icon: 'fa fa-gears',
                             list: [
                                 { name: 'menu.manage_system', icon: 'fa fa-gear', path: '/system/settings' },
@@ -50,7 +33,6 @@ class SideBar extends Component {
                             ]
                         }}/>
                     </ul>
-                    <Role/>
                 </div>
             </React.Fragment>
         );
@@ -59,8 +41,4 @@ class SideBar extends Component {
 
 const mapStates = state => state;
 
-const dispatchStateToProps = {
-
-}
-
-export default connect(mapStates, dispatchStateToProps)(withTranslate(SideBar));
+export default connect(mapStates, null)(withTranslate(SideBar));

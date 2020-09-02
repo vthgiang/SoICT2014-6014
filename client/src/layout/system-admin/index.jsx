@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Header from './header/components/header';
-import Sidebar from './sidebar/components/sidebar';
 import Footer from './footer/components/footer';
 import Content from './content/components/content';
 import { connect } from 'react-redux';
@@ -14,6 +13,8 @@ class SystemAdminLayout extends Component {
 
     componentDidMount(){
         document.body.classList.add('layout-top-nav');
+        document.body.classList.remove('skin-purple');
+        document.body.classList.add('skin-blue');
     }
 
     render() { 
@@ -26,7 +27,6 @@ class SystemAdminLayout extends Component {
                     userName={auth.user.name}
                     userEmail={auth.user.email}
                 />
-                {/* <Sidebar /> */}
                 <Content arrPage={this.props.arrPage} isLoading={this.props.isLoading} pageName={ translate(`menu.${this.props.pageName}`) }>{ this.props.children }</Content>
                 <Footer />
             </React.Fragment>

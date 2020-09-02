@@ -10,25 +10,9 @@ class Layout extends Component {
         this.state = { }
     }
 
-    // static getDerivedStateFromProps(nextProps, prevState) {
-    //     if (!nextProps.auth.user.company && prevState.type === 'super-admin') {
-    //         document.body.classList.add('layout-top-nav');
-    //         return {
-    //             ...prevState,
-    //             type: 'system-admin',
-    //         }
-    //     } else if(nextProps.auth.user.company !== undefined && prevState.type === 'system-admin'){
-    //         document.body.classList.remove('layout-top-nav');
-    //         return {
-    //             ...prevState,
-    //             type: 'super-admin',
-    //         }
-    //     } else return null;
-    // }
-
     render() { 
         const {auth} = this.props;
-        // console.log("render layout type: ", this.state.type)
+
         if(auth.user.company === undefined)
             return (
                 <SystemAdminLayout

@@ -14,6 +14,8 @@ class SuperAdminLayout extends Component {
 
     componentDidMount(){
         document.body.classList.remove('layout-top-nav');
+        document.body.classList.remove('skin-blue');
+        document.body.classList.add('skin-purple');
     }
 
     render() { 
