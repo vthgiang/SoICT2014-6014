@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-class CrmCustomer extends Component {
+class CrmGroup extends Component {
     constructor(props) {
         super(props);
         this.state = { 
@@ -33,4 +33,4 @@ function mapState(state) {
 const getState = {
 }
 
-export default connect(mapState, getState)(withTranslate(CrmCustomer));
+export default connect(mapState, getState)(withTranslate(CrmGroup));

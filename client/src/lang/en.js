@@ -616,8 +616,14 @@ export default {
 
             manage_document: 'Manage Documents',
             documents: 'Documents',
-
-            customer: 'Customer',
+            crm: 'CRM',
+            crm_list: {
+                customer: 'Customers',
+                leads: 'Leads',
+                care: 'Cares',
+                group: 'Groups',
+                statistic: 'Statistics',
+            },
 
             task_template: 'Task Template',
             cocautochuc: 'Organizational Structure',
