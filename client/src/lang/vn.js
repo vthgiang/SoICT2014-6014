@@ -2171,7 +2171,20 @@ export default {
 
                 // confirm task
                 confirm_task_success: "Xác nhận tham gia công việc thành công",
-                confirm_task_failure: "Xác nhận tham gia công việc thất bại"
+                confirm_task_failure: "Xác nhận tham gia công việc thất bại",
+
+                // warning
+                warning: 'Cảnh báo',
+                not_have_evaluation: 'Chưa có ai đánh giá công việc tháng này',
+                you_need: 'Bạn cần',
+                confirm_task: 'xác nhận tham gia công việc này',
+                not_confirm: 'Chưa xác nhận công việc',
+
+                left_task_expired: 'còn lại là công việc bị hết hạn',
+                left_can_edit_task: 'còn lại để chỉnh sửa đánh giá công việc tháng trước',
+                action_not_rating: 'hoạt động chưa được đánh giá tháng này',
+
+                have: 'Còn',
             },
             task_perform: {
 
@@ -2212,6 +2225,12 @@ export default {
                 stop_timer: "Dừng bấm giờ",
                 edit: "Chỉnh sửa",
                 delete: "Xóa",
+
+                notice_end_task: 'Bạn có chắc chắn muốn kết thúc công việc này',
+                notice_change_status_task: 'Bạn có chắc chắn muốn đổi trạng thái của công việc này',
+                choose_following_task: 'Chọn công việc thực hiện tiếp theo',
+                task_link_of_process: 'Đường liên kết',
+                not_have_following: 'Không có công việc kế tiếp',
 
 
                 // TODO: code_mesage_task_perform
@@ -2438,7 +2457,8 @@ export default {
                         // Nhóm dành cho các handle
                         handle_edit_kpi: {
                             approving: 'KPI đang được phê duyệt, bạn không thể chỉnh sửa. Nếu muốn sửa đổi hãy liên hệ với quản lý của bạn!',
-                            activated: 'KPI đã được kích hoạt, bạn không thể chỉnh sửa. Nếu muốn sửa đổi hãy liên hệ với quản lý của bạn!'
+                            activated: 'KPI đã được kích hoạt, bạn không thể chỉnh sửa. Nếu muốn sửa đổi hãy liên hệ với quản lý của bạn!',
+                            finished: 'KPI đã kết thúc, bạn không thể chỉnh sửa!'
                         },
                         request_approval_kpi: {
                             approve: 'Bạn chắc chắn muốn quản lý phê quyệt KPI này?',
@@ -2480,14 +2500,6 @@ export default {
                         weight: 'Trọng số',
 
                         // Nhóm dành cho validate
-                        validate_name: {
-                            empty: 'Tên mục tiêu không được bỏ trống',
-                            less_than_4: 'Tên mục tiêu không được ít hơn 4 ký tự',
-                            more_than_50: 'Tên mục tiêu không được nhiều hơn 50 ký tự',
-                            special_character: 'Tên mục tiêu không được chưa ký tự đặc biệt'
-
-                        },
-                        validate_criteria: 'Tiêu chí không được để trống',
                         validate_weight: {
                             empty: 'Trọng số không được để trống',
                             less_than_0: 'Trọng số không được nhỏ hơn 0',
