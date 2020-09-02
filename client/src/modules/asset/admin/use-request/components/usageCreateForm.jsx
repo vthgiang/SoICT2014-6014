@@ -19,6 +19,7 @@ class UsageCreateForm extends Component {
             startDate: this.formatDate(Date.now()),
             endDate: this.formatDate(Date.now()),
             description: "",
+            managedBy : this.props.employeeId?this.props.employeeId:''
         };
     }
 
@@ -130,6 +131,7 @@ class UsageCreateForm extends Component {
 
     // Bắt sự kiện submit form
     save = () => {
+        let {managedBy} =this.state
         var partStart = this.state.startDate.split('-');
         var startDate = [partStart[2], partStart[1], partStart[0]].join('-');
         var partEnd = this.state.endDate.split('-');
@@ -159,7 +161,7 @@ class UsageCreateForm extends Component {
                 approver: assetUseRequest.approver, // Người phê duyệt
                 note: assetUseRequest.note,
                 status: "Đã chấp nhận",
-            })
+            },managedBy)
             return this.props.createUsage(assetId, dataToSubit);
         }
     }

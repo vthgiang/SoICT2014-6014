@@ -23,6 +23,7 @@ class AssetManagement extends Component {
             canRegisterForUse: "",
             page: 0,
             limit: 5,
+            managedBy: this.props.managedBy?this.props.managedBy:''
         }
     }
 
@@ -294,8 +295,8 @@ class AssetManagement extends Component {
     }
 
     render() {
-        var { assetsManager, assetType, translate, user } = this.props;
-        var { page, limit, currentRowView, currentRow, purchaseDate } = this.state;
+        var { assetsManager, assetType, translate, user, isActive } = this.props;
+        var { page, limit, currentRowView, currentRow, purchaseDate,managedBy } = this.state;
 
         var lists = "", exportData;
         var userlist = user.list;
@@ -315,7 +316,8 @@ class AssetManagement extends Component {
         }
 
         return (
-            <div className="box">
+            <div  className ={isActive?isActive:"box"}>
+
                 <div className="box-body qlcv">
                     {/* Form thêm tài sản mới */}
                     <AssetCreateForm />
@@ -505,6 +507,7 @@ class AssetManagement extends Component {
                     currentRow &&
                     <AssetEditForm
                         _id={currentRow._id}
+                        employeeId ={managedBy}
                         avatar={currentRow.avatar}
                         code={currentRow.code}
                         assetName={currentRow.assetName}
