@@ -217,6 +217,21 @@ exports.getEmployeeInforById = async (id) => {
 }
 
 /**
+ * Lấy thông tin nhân viên theo email công ty
+ * @param {*} emailInCompany : Email công ty
+ * @param {*} company : Id công ty
+ */
+exports.getEmployeeInforByEmailInCompany = async (emailInCompany, company) => {
+    return await Employee.findOne({
+        company: company,
+        emailInCompany: emailInCompany
+    }, {
+        fullName: 1,
+        employeeNumber: 1
+    });
+}
+
+/**
  * Lấy tất cả danh sách nhân viên đang làm việc của công ty theo đơn vị và phòng ban
  * @company : Id công ty
  * @organizationalUnits : Array id đơn vị
@@ -970,7 +985,6 @@ exports.updateEmployeeInformation = async (id, data, fileInfor, company) => {
     oldEmployee.temporaryResidenceDistrict = employee.temporaryResidenceDistrict;
     oldEmployee.temporaryResidenceWard = employee.temporaryResidenceWard;
 
-    console.log(oldEmployee.contracts);
     // Edit  thông tin nhân viên
     oldEmployee.save();
 

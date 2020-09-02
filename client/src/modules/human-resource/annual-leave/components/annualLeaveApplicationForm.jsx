@@ -2,22 +2,26 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ButtonModal, ErrorLabel, DatePicker } from '../../../../common-components';
+import { DialogModal, ButtonModal, ErrorLabel, DatePicker, SelectBox } from '../../../../common-components';
 
 import { AnnualLeaveFormValidator } from './annualLeaveFormValidator';
 
 import { AnnualLeaveActions } from '../redux/actions';
+import { EmployeeManagerActions } from '../../profile/employee-management/redux/actions';
 
-class AnnualLeaveCreateForm extends Component {
+class AnnualLeaveApplicationForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            employeeNumber: "",
+            receiver: "",
             startDate: this.formatDate(Date.now()),
             endDate: this.formatDate(Date.now()),
-            status: "pass",
             reason: "",
         };
+    }
+
+    componentDidMount() {
+        this.props.getAllEmployee();
     }
 
     /**
@@ -42,21 +46,23 @@ class AnnualLeaveCreateForm extends Component {
 
     }
 
-    /** Bắt sự kiện thay đổi mã nhân viên */
-    handleMSNVChange = (e) => {
-        let { value } = e.target;
-        this.validateEmployeeNumber(value, true);
+    /**
+     * Bắt sự kiện thay đổi người nhận
+     * @param {*} value : Giá trị người nhận
+     */
+    handleReceiverChange = (value) => {
+        this.validateReceiver(value[0], true);
     }
-    validateEmployeeNumber = (value, willUpdateState = true) => {
+    validateReceiver = (value, willUpdateState = true) => {
         const { translate } = this.props;
 
-        let msg = AnnualLeaveFormValidator.validateEmployeeNumber(value, translate);
+        let msg = AnnualLeaveFormValidator.validateReason(value, translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnEmployeeNumber: msg,
-                    employeeNumber: value,
+                    errorOnReceiver: msg,
+                    receiver: value,
                 }
             });
         }
@@ -140,20 +146,11 @@ class AnnualLeaveCreateForm extends Component {
         return msg === undefined;
     }
 
-    /** Bắt sự kiện thay đổi trạng thái đơn xin nghỉ phép */
-    handleStatusChange = (e) => {
-        let { value } = e.target;
-        this.setState({
-            ...this.state,
-            status: value
-        })
-    }
-
     /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
     isFormValidated = () => {
-        const { employeeNumber, reason, startDate, endDate } = this.state;
+        const { receiver, reason, startDate, endDate } = this.state;
 
-        let result = this.validateEmployeeNumber(employeeNumber, false) && this.validateReason(reason, false);
+        let result = this.validateReceiver(receiver, false) && this.validateReason(reason, false);
 
         let partStart = startDate.split('-');
         let startDateNew = [partStart[2], partStart[1], partStart[0]].join('-');
@@ -167,7 +164,8 @@ class AnnualLeaveCreateForm extends Component {
 
     /** Bắt sự kiện submit form */
     save = () => {
-        const { startDate, endDate } = this.state;
+        const { employeesManager } = this.props;
+        const { receiver, startDate, endDate } = this.state;
 
         let partStart = startDate.split('-');
         let startDateNew = [partStart[2], partStart[1], partStart[0]].join('-');
@@ -180,34 +178,43 @@ class AnnualLeaveCreateForm extends Component {
     }
 
     render() {
-        const { translate, annualLeave } = this.props;
+        const { translate, employeesManager } = this.props;
 
-        const { employeeNumber, startDate, endDate, reason, status,
-            errorOnEmployeeNumber, errorOnReason, errorOnStartDate, errorOnEndDate } = this.state;
+        const { startDate, endDate, reason, receiver,
+            errorOnReceiver, errorOnReason, errorOnStartDate, errorOnEndDate } = this.state;
+
+        let listAllEmployees = employeesManager.listAllEmployees;
 
         return (
             <React.Fragment>
-                <ButtonModal modalID="modal-create-annual-leave" button_name={translate('human_resource.annual_leave.add_annual_leave')} title={translate('human_resource.annual_leave.add_annual_leave_title')} />
+                <ButtonModal modalID="modal-aplication-annual-leave" button_name={translate('human_resource.work_plan.create_annual_leave')} />
                 <DialogModal
-                    size='50' modalID="modal-create-annual-leave" isLoading={annualLeave.isLoading}
-                    formID="form-create-annual-leave"
-                    title={translate('human_resource.annual_leave.add_annual_leave_title')}
+                    size='50' modalID="modal-aplication-annual-leave" isLoading={employeesManager.isLoading}
+                    formID="form-aplication-annual-leave"
+                    title={translate('human_resource.work_plan.create_annual_leave')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
-                    <form className="form-group" id="form-create-annual-leave">
-                        {/* Mã số nhân viên */}
-                        <div className={`form-group ${errorOnEmployeeNumber && "has-error"}`}>
-                            <label>{translate('human_resource.staff_number')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="employeeNumber" value={employeeNumber} onChange={this.handleMSNVChange} placeholder={translate('human_resource.staff_number')} />
-                            <ErrorLabel content={errorOnEmployeeNumber} />
+                    <form className="form-group" id="form-aplication-annual-leave">
+                        {/* Người nhận */}
+                        <div className={`form-group ${errorOnReceiver && "has-error"}`}>
+                            <label>{translate('human_resource.work_plan.receiver')}<span className="text-red">*</span></label>
+                            <SelectBox
+                                id={`application-receiver`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                value={receiver}
+                                items={listAllEmployees.map(y => { return { value: y.emailInCompany, text: `${y.fullName} (${y.emailInCompany})` } }).concat([{ value: "", text: `Chọn người nhận` }])}
+                                onChange={this.handleReceiverChange}
+                            />
+                            <ErrorLabel content={errorOnReceiver} />
                         </div>
                         <div className="row">
                             {/* Ngày bắt đầu */}
                             <div className={`form-group col-sm-6 col-xs-12 ${errorOnStartDate && "has-error"}`}>
                                 <label>{translate('human_resource.annual_leave.table.start_date')}<span className="text-red">*</span></label>
                                 <DatePicker
-                                    id="create_start_date"
+                                    id="application_start_date"
                                     deleteValue={false}
                                     value={startDate}
                                     onChange={this.handleStartDateChange}
@@ -218,7 +225,7 @@ class AnnualLeaveCreateForm extends Component {
                             <div className={`form-group col-sm-6 col-xs-12 ${errorOnEndDate && "has-error"}`}>
                                 <label>{translate('human_resource.annual_leave.table.end_date')}<span className="text-red">*</span></label>
                                 <DatePicker
-                                    id="create_end_date"
+                                    id="application_end_date"
                                     deleteValue={false}
                                     value={endDate}
                                     onChange={this.handleEndDateChange}
@@ -232,30 +239,22 @@ class AnnualLeaveCreateForm extends Component {
                             <textarea className="form-control" rows="3" style={{ height: 72 }} name="reason" value={reason} onChange={this.handleReasonChange} placeholder="Enter ..." autoComplete="off"></textarea>
                             <ErrorLabel content={errorOnReason} />
                         </div>
-                        {/* Trạng thái */}
-                        <div className="form-group">
-                            <label>{translate('human_resource.status')}<span className="text-red">*</span></label>
-                            <select className="form-control" value={status} name="status" onChange={this.handleStatusChange}>
-                                <option value="pass">{translate('human_resource.annual_leave.status.pass')}</option>
-                                <option value="process">{translate('human_resource.annual_leave.status.process')}</option>
-                                <option value="faile">{translate('human_resource.annual_leave.status.faile')}</option>
-                            </select>
-                        </div>
                     </form>
                 </DialogModal>
-            </React.Fragment>
+            </React.Fragment >
         );
     }
 };
 
 function mapState(state) {
-    const { annualLeave } = state;
-    return { annualLeave };
+    const { annualLeave, employeesManager } = state;
+    return { annualLeave, employeesManager };
 };
 
 const actionCreators = {
     createAnnualLeave: AnnualLeaveActions.createAnnualLeave,
+    getAllEmployee: EmployeeManagerActions.getAllEmployee,
 };
 
-const createForm = connect(mapState, actionCreators)(withTranslate(AnnualLeaveCreateForm));
-export { createForm as AnnualLeaveCreateForm };
+const applicationForm = connect(mapState, actionCreators)(withTranslate(AnnualLeaveApplicationForm));
+export { applicationForm as AnnualLeaveApplicationForm };

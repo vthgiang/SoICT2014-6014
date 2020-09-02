@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
+import { CategoryImportForm } from './categoryImportForm';
 
 class CreateForm extends Component {
     constructor(props) {
@@ -88,7 +89,14 @@ class CreateForm extends Component {
 
         return cons;
     }
-
+    handleAddCategory = (event) => {
+        event.preventDefault();
+        window.$('#"form-create-document-type"').modal('show');
+    }
+    handImportFile = (event) => {
+        event.preventDefault();
+        window.$('#modal_import_file').modal('show');
+    }
     save = () => {
         const { documentTypeName, documentTypeDescription } = this.state;
         this.props.createDocumentCategory({
@@ -102,8 +110,18 @@ class CreateForm extends Component {
         const { errorName, errorDescription } = this.state;
         return (
             <React.Fragment>
-
-                <ButtonModal modalID="modal-create-document-type" button_name={translate('general.add')} title={translate('manage_user.add_title')} />
+                <CategoryImportForm />
+                <div className="form-inline">
+                    <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
+                        <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('manage_user.add_title')}
+                        >{translate('general.add')}</button>
+                        <ul className="dropdown-menu pull-right">
+                            <li><a href="#modal-add-task-template" title="ImportForm" onClick={(event) => { this.handleAddCategory(event) }}>{translate('task_template.add')}</a></li>
+                            <li><a href="#modal_import_file" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>ImportFile</a></li>
+                        </ul>
+                    </div>
+                </div>
+                {/* <ButtonModal modalID="modal-create-document-type" button_name={translate('general.add')} title={translate('manage_user.add_title')} /> */}
                 <DialogModal
                     modalID="modal-create-document-type"
                     formID="form-create-document-type"

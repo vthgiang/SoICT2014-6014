@@ -605,17 +605,19 @@ export default {
 
         menu: {
             home: 'Trang chủ',
-            system: 'Hệ thống',
-            iam_rbac: 'IAM-RBAC',
-            manage_system: 'Quản lý hệ thống',
+            system_administration: 'Quản trị hệ thống',
+            manage_system: 'Sao lưu phục hồi',
             manage_company: 'Quản lý doanh nghiệp/công ty',
-            manage_department: 'Quản lý cơ cấu tổ chức',
-            manage_user: 'Quản lý người dùng',
             manage_role: 'Quản lý phân quyền',
             manage_link: 'Quản lý trang',
-            manage_component: 'Quản lý các componentUI',
+            manage_component: 'Quản lý UI-Component',
+
+            manage_department: 'Quản lý cơ cấu tổ chức',
+            manage_user: 'Quản lý người dùng',
+
             manage_document: 'Quản lý tài liệu',
             documents: 'Tài liệu văn bản',
+
             crm: 'CRM',
             customer: 'Khách hàng',
             customer_group: 'Nhóm khách hàng',
@@ -960,6 +962,7 @@ export default {
                 delete_annual_leave_faile: 'Xoá đơn xin nghỉ phép thất bại',
                 edit_annual_leave_success: 'Chỉnh sửa đơn xin nghỉ phép thành công',
                 edit_annual_leave_faile: 'Chỉnh sửa đơn xin nghỉ phép thất bại',
+                aplication_annual_leave_success: 'Thêm đơn xin nghỉ thành công',
             },
 
             // Quản lý khen thưởng kỷ luật
@@ -1417,6 +1420,7 @@ export default {
                 total_number_leave_of_year: 'Tổng số ngày nghỉ phép cả năm',
                 leaved: 'Bạn đã nghỉ',
                 view_detail: 'Chi tiết xem ở trang',
+                receiver: 'Người nhận',
 
                 // Nhóm action
                 create_annual_leave: 'Xin nghỉ phép',

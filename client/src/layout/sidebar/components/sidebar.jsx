@@ -56,7 +56,7 @@ class SideBar extends Component {
 
                             {/* Quản trị của system admin */}
                             <GroupItem groupItem={{
-                                name: 'menu.system',
+                                name: 'menu.system_administration',
                                 icon: 'fa fa-gears',
                                 list: [
                                     { name: 'menu.manage_system', icon: 'fa fa-gear', path: '/system/settings' },
@@ -71,7 +71,7 @@ class SideBar extends Component {
 
                             {/* Phân quyền IAM-RBAC */}
                             <GroupItem groupItem={{
-                                name: 'menu.iam_rbac',
+                                name: 'menu.system_administration',
                                 icon: 'fa fa-key',
                                 list: [
                                     { name: 'menu.manage_department', icon: 'fa fa-sitemap', path: '/departments-management' },
@@ -122,7 +122,7 @@ class SideBar extends Component {
                                     { name: 'menu.manage_type_asset', icon: 'fa fa-dashboard', path: '/manage-type-asset' },
                                     { name: 'menu.view_building_list', icon: 'fa fa-building', path: '/view-building-list' },
                                     { name: 'menu.manage_assigned_asset', icon: 'fa fa-calendar', path: '/manage-assigned-asset' },
-                                    { name: 'menu.employee_manage_asset_info', icon: 'fa fa-sitemap', path: '/employee-manage-asset-info' },
+                                    { name: 'menu.employee_manage_asset_info', icon: 'fa fa-sitemap', path: '/employee-manage-info-asset' },
                                     { name: 'menu.recommend_distribute_asset', icon: 'fa fa-calendar', path: '/recommend-distribute-asset' },
                                     { name: 'menu.recommend_equipment_procurement', icon: 'fa fa-calendar', path: '/recommend-equipment-procurement' },
                                 ]

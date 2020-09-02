@@ -182,7 +182,7 @@ const LINKS = [
 
     {
         url: '/hr-manage-holiday',
-        description: 'Kế hoạch làm việc',
+        description: 'Quản lý kế hoạch làm việc',
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
         roles: [
             ROOT_ROLES.ADMIN.name,
@@ -233,6 +233,18 @@ const LINKS = [
             ROOT_ROLES.ADMIN.name,
         ],
         components: getComponentsInLink('/hr-detail-employee')
+    },
+    {
+        url: '/hr-work-plan',
+        description: 'Kế hoạch làm việc',
+        category: LINK_CATEGORY.HUMAN_RESOURCE.name,
+        roles: [
+            ROOT_ROLES.ADMIN.name,
+            ROOT_ROLES.DEAN.name,
+            ROOT_ROLES.VICE_DEAN.name,
+            ROOT_ROLES.EMPLOYEE.name,
+        ],
+        components: getComponentsInLink('/hr-work-plan')
     },
     {
         url: '/hr-salary-employee',

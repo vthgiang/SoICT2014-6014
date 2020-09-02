@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { configArchive, exportArchive } from './fileConfigImportDocumentArchive'
+import { configCategory } from './fileConfigDocumentCategory'
 import { DialogModal, ImportFileExcel, ShowImportData, ConFigImportFile, ExportExcel } from '../../../../../common-components';
 //import { taskTemplateActions } from '../redux/actions';
 import { connect } from 'react-redux';
@@ -7,11 +7,11 @@ import { withTranslate } from 'react-redux-multilingual';
 import { AuthActions } from '../../../../auth/redux/actions';
 import { DocumentActions } from '../../../redux/actions'
 
-class ArchiveImportForm extends Component {
-    constructor(props) {
+class CategoryImportForm extends Component{
+    constructor(props){
         super(props);
         this.state = {
-            configData: configArchive,
+            configData: configCategory,
             checkFileImport: true,
             rowError: [],
             importData: [],
@@ -21,13 +21,13 @@ class ArchiveImportForm extends Component {
         }
     }
 
-    // Function thay đổi cấu hình file import
     handleChangeConfig = (value) => {
         this.setState({
             configData: value,
             importData: [],
         })
     }
+
     handleImportExcel = (value, checkFileImport) => {
         console.log('vlueee', value, checkFileImport)
         let values = [];
@@ -40,14 +40,12 @@ class ArchiveImportForm extends Component {
                     "STT": k + 1,
                     "name": x.name,
                     "description": x.description,
-                    "pathParent": x.pathParent,
 
                 }];
                 showValues = [...showValues, {
                     "STT": k + 1,
                     "name": x.name,
                     "description": x.description,
-                    "pathParent": x.pathParent,
 
                 }]
             }
@@ -85,7 +83,7 @@ class ArchiveImportForm extends Component {
     save = () => {
         let { importShowData } = this.state;
         console.log(importShowData);
-        this.props.importArchive(importShowData);
+        this.props.importCategory(importShowData);
     }
 
     render() {
@@ -142,16 +140,15 @@ class ArchiveImportForm extends Component {
         )
     }
 
-
 }
 
 function mapState(state) {
-    const { importArchive } = state;
-    return { importArchive };
+    const { importCategory } = state;
+    return { importCategory };
 };
 const actionCreators = {
-    importArchive: DocumentActions.importDocumentArchive,
+    importCategory: DocumentActions.importDocumentCategory,
     downloadFile: AuthActions.downloadFile,
 };
-const importFileExcel = connect(mapState, actionCreators)(withTranslate(ArchiveImportForm));
-export { importFileExcel as ArchiveImportForm };
+const importFileExcel = connect(mapState, actionCreators)(withTranslate(CategoryImportForm));
+export { importFileExcel as CategoryImportForm };

@@ -94,7 +94,7 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
         const { createEmployeeKpiSet, translate } = this.props;
         const { userName } = this.state;
 
-        let listEmployeeKpiSet, listOrganizationalUnit, listEmployeeKpiSetSameOrganizationalUnit = [], dataChart;
+        let listEmployeeKpiSet, listOrganizationalUnit, listEmployeeKpiSetSameOrganizationalUnit = [], dataChart,exportData;
         
         if (createEmployeeKpiSet) {
             listEmployeeKpiSet = createEmployeeKpiSet.employeeKpiSetByMonth
@@ -115,6 +115,10 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
 
             })
         }
+        if (listEmployeeKpiSetSameOrganizationalUnit && userName ) {
+            exportData=this.convertDataToExportData(listEmployeeKpiSetSameOrganizationalUnit,userName)
+            this.handleExportData(exportData);
+        }
 
         if (listEmployeeKpiSetSameOrganizationalUnit.length !== 0) {
             dataChart = listEmployeeKpiSetSameOrganizationalUnit.map(kpi => {
@@ -129,7 +133,7 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
         const { userName } = this.state;
 
         let employeeName, title;
-        let dataMultiLineChart, automaticPoint, employeePoint, approvedPoint, date, exportData;
+        let dataMultiLineChart, automaticPoint, employeePoint, approvedPoint, date;
 
         if (userName) {
             employeeName = userName.split('(');
@@ -137,11 +141,6 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
         }
         if (listEmployeeKpiSet[0] && listEmployeeKpiSet[0].organizationalUnit) {
             title = employeeName + ' - ' + listEmployeeKpiSet[0].organizationalUnit.name;
-        }
-
-        if (listEmployeeKpiSet && userName ) {
-            exportData=this.convertDataToExportData(listEmployeeKpiSet,userName)
-            this.handleExportData(exportData);
         }
 
         if (listEmployeeKpiSet) {
@@ -250,17 +249,41 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
     
     /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
     convertDataToExportData = (data,name) => {
-        let fileName = "Biểu đồ theo dõi kết quả KPI nhân viên "+ (name?name:"") +" theo từng tháng ";
-        if (data) {                
-            if (data) {           
-                for(let i=0; i< data.length;i++){
-                    let d =new Date(data[i].date);
-                    data[i]["time"]=d;
-                    data[i]["STT"]=i+1;
+        let convertedData=[],names = name.split("("),temp;
+        let fileName = "Kết quả KPI "+ (names?names[0]:"") +" theo từng tháng ";               
+        if (data) {      
+            for(let i=0; i< data.length;i++){
+                for(let j=0; j< data[i].length;j++)
+                {
+                   convertedData.push(data[i][j])
+                }    
+            }
+            let d1, d2;
+            //Sap xep tap kpi theo thu tu thoi gian
+            for(let i=0; i< convertedData.length-1;i++)
+            {
+                for(let j=i+1;j<convertedData.length;j++)
+                {
+                    d1= new Date(convertedData[i].date);
+                    d2= new Date(convertedData[j].date)
+                    if(d1>d2)
+                    {
+                        temp=convertedData[i];
+                        convertedData[i]=convertedData[j];
+                        convertedData[j]=temp;
+                    }
                 }
-             }     
+            }
+                         
+
+            for(let i=0; i< convertedData.length;i++){
+                let d =new Date(convertedData[i].date);
+                convertedData[i]["time"]=d;
+                convertedData[i]["STT"]=i+1;
+                convertedData[i]["unit"] =convertedData[i].organizationalUnit.name
+            }
+        }     
             
-        }
 
         let exportData = {
             fileName: fileName,
@@ -272,12 +295,13 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
                         {
                             columns: [
                                 { key: "STT", value: "STT" },
-                                { key: "time", value: "Thời gian" },    
+                                { key: "time", value: "Thời gian" },  
+                                { key: "unit", value: "Đơn vị " },  
                                 { key: "automaticPoint", value: "Điểm KPI tự động" },
                                 { key: "employeePoint", value: "Điểm KPI tự đánh giá" },
                                 { key: "approvedPoint", value: "Điểm KPI được phê duyệt" }
                             ],
-                            data: data
+                            data: convertedData
                         }
                     ]
                 },

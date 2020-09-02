@@ -603,16 +603,17 @@ export default {
         },
 
         menu: {
-            home: 'Home page',
-            system: 'System',
-            iam_rbac: 'IAM-RBAC',
-            manage_system: 'Manage System',
+            home: 'Home Page',
+            system_administration: 'System Administration',
+            manage_system: 'Backup and Restore',
             manage_company: 'Manage Company',
-            manage_department: 'Manage Departments',
-            manage_user: 'Manage Users',
             manage_role: 'Manage Roles',
             manage_link: 'Manage Pages',
-            manage_component: 'Manage ComponentUI',
+            manage_component: 'Manage UI-Component',
+
+            manage_department: 'Manage Departments',
+            manage_user: 'Manage Users',
+
             manage_document: 'Manage Documents',
             documents: 'Documents',
 
@@ -959,6 +960,7 @@ export default {
                 delete_annual_leave_faile: 'Delete annual leave faile',
                 edit_annual_leave_success: 'Edit annual leave success',
                 edit_annual_leave_faile: 'Edit annual leave faile',
+                aplication_annual_leave_success: 'Send application annual leave success',
 
             },
 
@@ -1417,10 +1419,10 @@ export default {
                 total_number_leave_of_year: 'Total number of days off',
                 leaved: 'You have rested',
                 view_detail: 'Details see page',
+                receiver: 'Receiver',
 
                 // Nhóm action
-                create_annual_leave: 'Ask leave',
-
+                create_annual_leave: 'Application annual leave',
             }
         },
 

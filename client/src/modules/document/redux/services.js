@@ -13,6 +13,7 @@ export const DocumentServices = {
     createDocumentCategory,
     editDocumentCategory,
     deleteDocumentCategory,
+    importDocumentCategory,
 
     getDocumentDomains,
     createDocumentDomain,
@@ -136,6 +137,13 @@ function getDocumentDomains() {
 function createDocumentDomain(data) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/documents/document-domains`,
+        method: 'POST',
+        data,
+    }, true, true, 'document');
+}
+function importDocumentCategory(data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/documents/document-categories/import-file`,
         method: 'POST',
         data,
     }, true, true, 'document');

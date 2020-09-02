@@ -288,6 +288,27 @@ exports.deleteDocumentCategory = async (req, res) => {
     }
 };
 
+exports.importDocumentCategory = async (req, res) => {
+    try {
+        const type = await DocumentServices.importDocumentCategory(req.user.company._id, req.body);
+
+        await LogInfo(req.user.email, 'IMPORT_DOCUMENT_TYPE', req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['import_document_type_success'],
+            content: type
+        });
+    } catch (error) {
+
+        await LogError(req.user.email, 'IMPORT_DOCUMENT_TYPE', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['import_document_type_faile'],
+            content: error
+        });
+    }
+};
+
 /**
  * Các controller cho phần quản lý danh mục tài liệu văn bản
  */
