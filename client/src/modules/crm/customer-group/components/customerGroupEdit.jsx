@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, SelectBox, ErrorLabel } from '../../../../common-components';
 
-class CustomerEdit extends Component {
+class CustomerGroupEdit extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -15,13 +15,13 @@ class CustomerEdit extends Component {
 
     render() {
         const { translate } = this.props;
-        const {customers} = this.props.customer;
+        const {customer} = this.props;
         const {nameError} = this.state;
 
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID="modal-edit-customer" isLoading={customers.isLoading}
+                    modalID="modal-edit-customer" isLoading={customer.isLoading}
                     formID="form-edit-customer"
                     title="Chỉnh sửa thông tin khách hàng"
                     func={this.save} size="100"
@@ -169,6 +169,7 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
+
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CustomerEdit));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CustomerGroupEdit));

@@ -15,7 +15,7 @@ import ResetPassword from '../modules/auth/components/resetPassword';
 import ManageDocument from '../modules/document/components/administration';
 import Document from '../modules/document/components/user';
 
-import { Home } from '../modules/home/components/home';
+import { Home } from '../modules/home/components';
 
 import { Notifications } from "../modules/combine-modules";
 
@@ -42,6 +42,7 @@ import EmpoyeeManager from '../modules/human-resource/profile/employee-managemen
 import EmployeeCreate from '../modules/human-resource/profile/employee-create/components';
 import SalaryManager from '../modules/human-resource/salary/components';
 import TimesheetsManager from '../modules/human-resource/timesheets/components';
+import { WorkPlan } from '../modules/human-resource/holiday/components/combinedContent';
 
 import { ListEducation } from '../modules/training/education-program/components/educationProgramList';
 import { TrainingPlan } from '../modules/training/course/components/course';
@@ -92,7 +93,8 @@ import TaskReportManager from '../modules/report/task-report/components/taskRepo
 //warehouse
 import MaterialManager from '../modules/warehouse-manager/material-manager/component';
 // Customer Management
-import Customer from '../modules/customer/components';
+import Customer from '../modules/crm/customer/components';
+import CustomerGroup from '../modules/crm/customer-group/components';
 
 //orders
 import OrderManagement from "../modules/order/components";
@@ -433,6 +435,21 @@ class Routes extends Component {
                         pageName={'manage_holiday'}
                         layout={Layout}
                         component={ManageHoliday}
+                    />
+                    <PrivateRoute
+                        isLoading={this.props.holiday.isLoading}
+                        key={'work_plan'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/hr-work-plan', name: 'work_plan', icon: 'fa fa-calendar' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/hr-work-plan'}
+                        path={'/hr-work-plan'}
+                        pageName={'work_plan'}
+                        layout={Layout}
+                        component={WorkPlan}
                     />
                     <PrivateRoute
                         isLoading={this.props.salary.isLoading}
@@ -1049,7 +1066,7 @@ class Routes extends Component {
                         isLoading={false}
                         key={'customer'}
                         arrPage={[
-                            { link: '/customer', name: 'customer', icon: 'fa fa-user' }
+                            { link: '/customer', name: 'customer', icon: 'fa fa-users' }
                         ]}
                         auth={auth}
                         exact={true}
@@ -1058,6 +1075,21 @@ class Routes extends Component {
                         pageName={'customer'}
                         layout={Layout}
                         component={Customer}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={'customer-group'}
+                        arrPage={[
+                            { link: '/customer-group', name: 'customer_group', icon: 'fa fa-group' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/customer-group'}
+                        path={'/customer-group'}
+                        pageName={'customer_group'}
+                        layout={Layout}
+                        component={CustomerGroup}
                     />
 
                     {/* Orders Management */}

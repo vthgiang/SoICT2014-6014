@@ -67,9 +67,25 @@ class ModalShowAutoPointInfo extends Component {
         let averageActionRating = !a ? 10 : reduceAction / a; // a = 0 thì avg mặc định là 10
         let avgActionNote = !a && translate('task.task_management.explain_avg_rating');
 
-        let formula = task.taskTemplate && task.taskTemplate.formula;
-        if (task.taskTemplate) {
+        let formula = task.taskTemplate && task.taskTemplate.formula, checkFormulaHasAvgRating = false;
 
+        if (!task.taskTemplate && !task.process) { // Công việc không theo mẫu
+            // automaticPoint = a ? autoHasActionInfo : autoDependOnDay;
+            formula = task.formula;
+
+            if(formula.includes("averageActionRating")) checkFormulaHasAvgRating = true;
+
+            formula = formula.replace(/overdueDate/g, `(${overdueDate})`);
+            formula = formula.replace(/totalDay/g, `(${totalDay})`);
+            formula = formula.replace(/dayUsed/g, `(${dayUsed})`);
+            formula = formula.replace(/averageActionRating/g, `(${averageActionRating})`);
+            formula = formula.replace(/progress/g, `(${progressTask})`);
+            
+
+            // automaticPoint = eval(formula);
+        }
+        else{
+            formula = task.formula;
             let taskInformations = info;
 
             // thay các biến bằng giá trị
@@ -148,21 +164,23 @@ class ModalShowAutoPointInfo extends Component {
                             <p><strong>{translate('task.task_management.calc_new_formula')}: </strong>{formula} = {result}</p>
                         </div>
                     }
-                    {((task.taskTemplate === null || task.taskTemplate === undefined) && a === 0) &&
+                    {/* {((task.taskTemplate === null || task.taskTemplate === undefined) && a === 0) && */}
+                    {((task.taskTemplate === null || task.taskTemplate === undefined) && checkFormulaHasAvgRating === false) &&
                         <div>
-                            <p><strong>{translate('task.task_management.calc_formula')}: </strong> progressTask/(dayUsed/totalDay)</p>
+                            <p><strong>{translate('task.task_management.calc_formula')}: </strong> {task.formula} </p>
                             <p>{translate('task.task_management.calc_where')}: </p>
                             <ul>
                                 <li>progress - {translate('task.task_management.calc_progress')}: {progressTask === undefined ? translate('task.task_management.calc_no_value') : `${progress}(%)`}</li>
                                 <li>dayUsed - {translate('task.task_management.calc_day_used')}: {dayUsed} ({translate('task.task_management.calc_days')})</li>
                                 <li>totalDay - {translate('task.task_management.calc_total_day')}: {totalDay} ({translate('task.task_management.calc_days')})</li>
                             </ul>
-                            <p><strong>{translate('task.task_management.calc_new_formula')}: </strong>{progressTask}/({dayUsed}/{totalDay}) = {result}</p>
+                            <p><strong>{translate('task.task_management.calc_new_formula')}: </strong>{formula} = {result}</p>
                         </div>
                     }
                     {((task.taskTemplate === null || task.taskTemplate === undefined) && a !== 0) &&
                         <div>
-                            <p><strong>{translate('task.task_management.calc_formula')}: </strong> progressTask/(dayUsed/totalDay) - 0.5*(10-averageActionRating)*10</p>
+                            <p><strong>{translate('task.task_management.calc_formula')}: </strong> {task.formula} </p>
+                            {/* progressTask/(dayUsed/totalDay) - 0.5*(10-averageActionRating)*10 */}
                             <p>{translate('task.task_management.calc_where')}: </p>
                             <ul>
                                 <li>progress - {translate('task.task_management.calc_progress')}: {progressTask === undefined ? translate('task.task_management.calc_no_value') : `${progress}(%)`}</li>
@@ -170,8 +188,8 @@ class ModalShowAutoPointInfo extends Component {
                                 <li>dayUsed - {translate('task.task_management.calc_day_used')}: {dayUsed} ({translate('task.task_management.calc_days')})</li>
                                 <li>totalDay - {translate('task.task_management.calc_total_day')}: {totalDay} ({translate('task.task_management.calc_days')})</li>
                             </ul>
-                            <p><strong>{translate('task.task_management.calc_new_formula')}: </strong>{progressTask}/({dayUsed}/{totalDay}) - {0.5}*({10}-{averageActionRating})*{10} = {result}</p>
-                            {/* {autoPoint? autoPoint: translate('task.task_management.calc_nan')} */}
+                            <p><strong>{translate('task.task_management.calc_new_formula')}: </strong> {formula} = {result}</p>
+                            {/* {progressTask}/({dayUsed}/{totalDay}) - {0.5}*({10}-{averageActionRating})*{10} */}
                         </div>
                     }
 

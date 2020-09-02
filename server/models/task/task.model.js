@@ -194,6 +194,11 @@ const TaskSchema = new Schema({
             }
         }]
     }],
+    formula: {
+        type: String,
+        //require: true,
+        default: "progress / (dayUsed / totalDay)",
+    },
     progress: { // % Hoàn thành thành công việc
         type: Number,
         default: 0,

@@ -12,9 +12,7 @@ import { DatePicker } from '../../../common-components';
 import Swal from 'sweetalert2';
 
 
-class Home extends Component {
-
-
+class SuperHome extends Component {
     constructor(props) {
         super(props);
 
@@ -406,5 +404,5 @@ const actionCreators = {
     getTaskByUser: taskManagementActions.getTasksByUser,
 
 };
-const connectedHome = connect(mapState, actionCreators)(withTranslate(Home));
-export { connectedHome as Home };
+const connectedHome = connect(mapState, actionCreators)(withTranslate(SuperHome));
+export { connectedHome as SuperHome };

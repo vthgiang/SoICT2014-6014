@@ -27,7 +27,7 @@ class ManageDocument extends Component {
                     <li className="active"><a href="#administration-document-list-data" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{translate('document.data')}</a></li>
                     <li><a href="#administration-document-categories" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{translate('document.category')}</a></li>
                     <li><a href="#administration-document-domains" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{translate('document.domain')}</a></li>
-                    <li><a href="#administration-document-archives" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Lưu trữ</a></li>
+                    <li><a href="#administration-document-archives" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{translate('document.archive')}</a></li>
                     <li><a href="#administration-statistics-report" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{translate('document.statistics_report')}</a></li>
                 </ul>
                 <div className="tab-content">

@@ -15,7 +15,9 @@ import { UsageActions } from '../../usage/redux/actions';
 class AssetEditForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            employeeId: this.props.employeeId?this.props.employeeId:''
+        };
     }
 
     // Function upload avatar
@@ -78,21 +80,27 @@ class AssetEditForm extends Component {
     }
 
     // Function thêm thông tin cấp phát, điều chuyển, thu hồi
-    handleCreateUsageLogs = (data, addData) => {
-        this.setState({
-            usageLogs: data
+    handleCreateUsageLogs = async (data, addData) => {
+        await this.setState({
+            ...this.state,
+            usageLogs: data.usageLogs,
+            assignedToUser: data.assignedToUser,
+            assignedToOrganizationalUnit: data.assignedToOrganizationalUnit
         })
+
     }
 
     // Function chỉnh sửa thông tin cấp phát, điều chuyển, thu hồi
     handleEditUsageLogs = (data, editData) => {
-        if (editData._id) {
+        if (editData && editData._id) {
             this.setState({
                 editUsageLogs: [...this.state.editUsageLogs, editData]
             })
         } else {
             this.setState({
-                usageLogs: data
+                usageLogs: data.usageLogs,
+                assignedToUser: data.assignedToUser,
+                assignedToOrganizationalUnit: data.assignedToOrganizationalUnit,
             })
         }
     }
@@ -109,6 +117,14 @@ class AssetEditForm extends Component {
                 usageLogs: data
             })
         }
+    }
+
+    // Function thu hồi quyền sử dụng
+    hanhdleRecallAsset = async (data) => {
+        await this.setState({
+            assignedToUser: data.assignedToUser,
+            assignedToOrganizationalUnit: data.assignedToOrganizationalUnit,
+        })
     }
 
     // Function thêm thông tin sự cố tài sản
@@ -224,7 +240,7 @@ class AssetEditForm extends Component {
     }
 
     save = async () => {
-        let { maintainanceLogs, usageLogs, incidentLogs, files, assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate } = this.state;
+        let { maintainanceLogs, usageLogs, incidentLogs, files, assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate,employeeId } = this.state;
 
         await this.setState({
             img: "",
@@ -242,7 +258,7 @@ class AssetEditForm extends Component {
         })
         formData.append("fileAvatar", this.state.avatar);
 
-        this.props.updateInformationAsset(this.state._id, formData);
+        this.props.updateInformationAsset(this.state._id, formData,employeeId);
 
         // Thêm vào thông tin sử dụng
         if (assignedToUser !== this.props.assignedToUser|| assignedToOrganizationalUnit !== this.props.assignedToOrganizationalUnit || handoverFromDate !== this.props.handoverFromDate || handoverToDate !== this.props.handoverToDate) {
@@ -290,7 +306,7 @@ class AssetEditForm extends Component {
     };
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps._id !== prevState._id || nextProps.usageLogs !== prevState.usageLogs) {
+        if (nextProps._id !== prevState._id) {
             return {
                 ...prevState,
                 _id: nextProps._id,
@@ -430,9 +446,11 @@ class AssetEditForm extends Component {
                                 assignedToUser={assignedToUser}
                                 assignedToOrganizationalUnit={assignedToOrganizationalUnit}
                                 usageLogs={usageLogs}
+
                                 handleAddUsage={this.handleCreateUsageLogs}
                                 handleEditUsage={this.handleEditUsageLogs}
                                 handleDeleteUsage={this.handleDeleteUsageLogs}
+                                hanhdleRecallAsset = {this.hanhdleRecallAsset}
                             />
 
                             {/* Thông tin bảo trì */}

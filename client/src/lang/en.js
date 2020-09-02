@@ -1,32 +1,6 @@
 export default {
     locale: 'en',
     messages: {
-        error: {
-            /** 
-             * Start 
-             * Chức năng quản lý nhân sự
-             */
-            employee_number_required: 'Staff code required',
-            staff_code_not_special: 'Staff code does not contain special characters',
-            staff_code_not_find: 'Staff code does not exist',
-            number_decisions_required: 'Decis number required',
-            number_decisions_have_exist: 'Decis number have exist',
-            unit_decisions_required: 'Decis unit required',
-            // Quản lý thông tin cá nhân
-            // TODO: Xoá sau
-            get_infor_personal_success: 'Get information personal success',
-            get_infor_personal_false: 'Get information personal false',
-            edit_infor_personal_success: 'Update information personal success',
-            edit_infor_personal_false: 'Update infor personal false',
-            guaranteed_infor_to_update: 'You have not guaranteed information to update',
-            no_change_data: 'No information changed'
-
-            /** 
-             * End
-             * Chức năng quản lý nhân sự
-             */
-        },
-
         /*******************************************************
          * CHUẨN HÓA FILE NGÔN NGỮ PHÂN CHIA THEO TỪNG MODULE
          * @general những phần ngôn ngữ dùng chung cho mọi module
@@ -71,15 +45,14 @@ export default {
                 ],
             },
             validate: {
-                value: 'Value ',
-                invalid_character_error: 'invalid character error',
-                length_error: 'should have length between {min} to {max}',
-                minimum_length_error: 'should have minimum length of {min}',
-                maximum_length_error: 'should have maximum length of {max}',
-                invalid_error: 'invalid',
-                empty_error: 'cannot be empty',
-                not_existing_error: 'not existing',
-                existing_error: 'existing',
+                invalid_character_error: 'Value invalid character error',
+                length_error: 'Value should have length between {min} to {max}',
+                minimum_length_error: 'Value should have minimum length of {min}',
+                maximum_length_error: 'Value should have maximum length of {max}',
+                invalid_error: 'Value invalid',
+                empty_error: 'Value cannot be empty',
+                not_existing_error: 'Value not existing',
+                existing_error: 'Value existing',
             }
         },
 
@@ -192,9 +165,17 @@ export default {
                 backup: {
                     config: 'Backup data configuration',
                     backup_button: 'Backup data',
-                    automatic: 'Automactic', on: 'Backup on', off: "Backup off",
+                    automatic: 'Automactic',
+                    on: 'Backup on',
+                    off: "Backup off",
                     week_day: {
-                        mon: 'Monday', tue: 'Tuesday', wed: 'Wednesday', thur: 'Thurday', fri: 'Friday', sat: 'Saturday', sun: 'Sunday',
+                        mon: 'Monday',
+                        tue: 'Tuesday',
+                        wed: 'Wednesday',
+                        thur: 'Thurday',
+                        fri: 'Friday',
+                        sat: 'Saturday',
+                        sun: 'Sunday',
                     },
                     month_list: {
                         jan: 'January',
@@ -211,10 +192,18 @@ export default {
                         dec: 'December'
                     },
                     limit: 'Limit',
-                    period: 'Period', weekly: 'Weekly', monthly: 'Monthly', yearly: 'Yearly',
-                    date: 'Date', hour: 'Hour', minute: 'Minute', second: 'Second', day: 'Day', month: 'Month',
+                    period: 'Period',
+                    weekly: 'Weekly',
+                    monthly: 'Monthly',
+                    yearly: 'Yearly',
+                    date: 'Date',
+                    hour: 'Hour',
+                    minute: 'Minute',
+                    second: 'Second',
+                    day: 'Day',
+                    month: 'Month',
                     save: 'Save configuration',
-                    
+
                     version: 'Version',
                     description: 'Backup description',
                     backup_time: 'Backup time',
@@ -417,6 +406,8 @@ export default {
             relationship_role_store: "Relationship, role and store",
             statistical_document: "Statistical type of document",
             statistical_view_down: "Statistical of view and download type of document",
+            statistical_document_by_domain: "Statistical of document by domain",
+            statistical_document_by_archive: "Statistical of document by archive",
             doc_version: {
                 title: 'Version',
                 name: 'Version name',
@@ -487,6 +478,19 @@ export default {
                     select_parent: 'Select domain parent',
                     select: 'Select domain',
                     not_select: 'Not select domain',
+                },
+                archives: {
+                    add: 'Add document archive',
+                    edit: 'Edit document archive',
+                    delete: 'Delete document archive',
+                    name: 'Archive name',
+                    description: 'Archive description',
+                    parent: 'Archive parent',
+                    select_parent: 'Select archive parent',
+                    select: 'Select archive',
+                    not_select: 'Not select archive',
+                    path: 'Path',
+                    path_detail: "Detail path",
                 }
             },
             user: {
@@ -599,14 +603,17 @@ export default {
         },
 
         menu: {
-            home: 'Home page',
-            manage_system: 'Manage System',
+            home: 'Home Page',
+            system_administration: 'System Administration',
+            manage_system: 'Backup and Restore',
             manage_company: 'Manage Company',
-            manage_department: 'Manage Departments',
-            manage_user: 'Manage Users',
             manage_role: 'Manage Roles',
             manage_link: 'Manage Pages',
-            manage_component: 'Manage ComponentUI',
+            manage_component: 'Manage UI-Component',
+
+            manage_department: 'Manage Departments',
+            manage_user: 'Manage Users',
+
             manage_document: 'Manage Documents',
             documents: 'Documents',
 
@@ -621,8 +628,9 @@ export default {
             manage_employee: 'Manage Staffs',
             manage_training: 'Manage Training',
             account: 'Account',
+            work_plan: 'Work plan',
             manage_unit: 'Manage units',
-            manage_holiday: 'Work plan',
+            manage_holiday: 'Manage work plan',
             add_employee: 'Add New Staffs',
             list_employee: 'Manage Staffs Information',
             detail_employee: 'Personal Information',
@@ -824,178 +832,6 @@ export default {
             edit_faile: 'Edit failed!',
         },
 
-        // Quản lý thông tin nhân viên
-        manage_employee: {
-            note_page_personal: 'I hereby certify that all of the above statements are true and I am responsible for them.',
-            contact_other: '(Other information please contact the relevant parties to be processed)',
-            update_infor_personal: 'Update staff information',
-            no_data_personal: 'No personal information yet',
-
-            menu_basic_infor: 'Basic information',
-            menu_general_infor: 'General information',
-            menu_contact_infor: 'Contact information',
-            menu_education_experience: 'Education - Experience',
-            menu_diploma_certificate: 'Diploma - Certificate',
-            menu_account_tax: 'Account - Tax',
-            menu_insurrance_infor: 'Insurrance information',
-            menu_contract_training: 'Contract - Training',
-            menu_reward_discipline: 'Reward - Discipline',
-            menu_salary_sabbatical: 'Salary - Sabbatical',
-            menu_attachments: 'Attachments',
-
-            menu_general_infor_title: 'General information',
-            menu_contact_infor_title: 'Contact information',
-            menu_education_experience_title: 'Education - Experience',
-            menu_diploma_certificate_title: 'Diploma - Certificate',
-            menu_account_tax_title: 'Account - Tax',
-            menu_insurrance_infor_title: 'Insurrance information',
-            menu_contract_training_title: 'Contract - Training',
-            menu_reward_discipline_title: 'Reward - Discipline',
-            menu_salary_sabbatical_title: 'Salary - Sabbatical',
-            menu_attachments_title: 'Attachments',
-
-            add_staff: 'Add new staffs',
-            staff_number: 'Staff code',
-            full_name: 'Full name',
-            attendance_code: 'Attendance code',
-            gender: 'Gender',
-            male: 'Male',
-            female: 'Female',
-            date_birth: 'Date of birth',
-            place_birth: 'Place of birth',
-            email: 'Email',
-            email_company: 'Email company',
-            relationship: 'Relationship',
-            single: 'Single',
-            married: 'Married',
-            upload: 'Upload',
-            id_card: 'ID card/Passport',
-            date_issued: 'Date issued',
-            issued_by: 'Issued by',
-            ethnic: 'Ethnic group',
-            nationality: 'Nationality',
-            religion: 'Religion',
-            mobile_phone: 'Mobile phone',
-            mobile_phone_1: 'Mobile phone 1',
-            mobile_phone_2: 'Mobile phone 2',
-            personal_email_1: 'Personal email 1',
-            personal_email_2: 'Personal email 2',
-            home_phone: 'Home phone',
-            emergency_contact: 'Emergency contact',
-            nexus: 'Nexus',
-            address: 'Address',
-            permanent_address: 'Permanent address',
-            current_residence: 'Current residence',
-            wards: 'Wards/Commune',
-            district: 'County/District',
-            province: 'Province/City',
-            nation: 'Nation',
-
-            academic_level: 'Academic level',
-            educational_level: 'Educational level',
-            language_level: 'Language level',
-            qualification: 'Qualification',
-            intermediate_degree: 'Intermediate degree',
-            colleges: 'Colleges',
-            university: 'University',
-            master_degree: "Maste degree",
-            phd: 'Ph.D',
-            unavailable: 'Unavailable',
-            work_experience: 'Work experience',
-            unit: 'Unit',
-            from_month_year: 'From month/year',
-            to_month_year: 'To month/year',
-            edit_experience: 'Edit work experience',
-            add_experience: 'Add work experience',
-
-            diploma: 'Diploma',
-            certificate: 'Certificate',
-            name_diploma: 'Name of diploma',
-            name_certificate: 'Name of certificate',
-            diploma_issued_by: 'Issued_by',
-            graduation_year: 'Graduation year',
-            ranking_learning: 'Ranking of learning',
-            attached_files: 'Attached files',
-            end_date_certificate: 'Expiration date',
-            edit_certificate: 'Edit certificate',
-            edit_diploma: 'Edit diploma',
-            add_certificate: 'Add certificate',
-            add_diploma: 'Add diploma',
-            excellent: 'Excellent',
-            very_good: 'Very good',
-            good: 'Good',
-            average_good: 'Average good',
-            ordinary: 'Ordinary',
-
-            bank_account: 'Bank account',
-            personal_income_tax: 'Personal income tax',
-            account_number: 'Account number',
-            bank_name: 'Bank name',
-            bank_branch: 'Bank branch',
-            tax_number: 'Tax number',
-            representative: 'Representative',
-            day_active: 'Day active',
-            managed_by: 'Managed by',
-
-            bhyt: 'Health Insurance',
-            number_BHYT: 'Health insurance code',
-            bhxh: 'Social insurance',
-            number_BHXH: 'Social insurance code',
-            bhxh_process: 'Process of social insurance payment',
-            edit_bhxh: 'Edit social insurance',
-            add_bhxh: 'Add social insurance',
-
-            labor_contract: 'Labor contract',
-            training_process: 'Training process',
-            name_contract: 'Contract name',
-            type_contract: 'Type of contract',
-            start_date: 'Effective date',
-            course_name: 'Course name',
-            start_day: 'Start day',
-            end_date: 'End day',
-            type_education: 'Type of education',
-            cost: 'Cost',
-            edit_contract: 'Edit labor contract',
-            add_contract: 'Add labor contract',
-
-            list_attachments: 'List of attached documents',
-            attachments_code: 'Attachments code',
-            file_name: 'File name',
-            number: 'Number',
-            add_default: 'Add default',
-            add_default_title: 'Add the default document',
-            edit_file: 'Edit attached documents',
-            add_file: 'Add attached documents',
-            no_submitted: 'Not submitted',
-            submitted: 'Submitted',
-            returned: 'Returned',
-            no_files: 'No files yet',
-            disc_diploma: 'Highest degree diploma',
-            curriculum_vitae: 'Curriculum vitae',
-            disc_curriculum_vitae: 'Notarized resume',
-            img: 'Image',
-            disc_img: 'Image 4x6 ',
-            copy_id_card: 'Copy of ID card / Passport',
-            disc_copy_id_card: 'Certified copy of identity card or passport',
-            health_certificate: 'Health certificate',
-            disc_health_certificate: 'Notarized health certificate',
-            birth_certificate: 'Birth certificate',
-            disc_birth_certificate: 'Notarized birth certificate',
-            job_application: 'Job application',
-            disc_job_application: 'Handwritten application letter',
-            commitment: 'Commitment',
-            disc_commitment: 'Commitment to work',
-            temporary_residence_card: 'Temporary residence card',
-            disc_temporary_residence_card: 'Certificate of temporary absence',
-
-
-
-            Reward: 'Reward',
-            discipline: 'Discipline',
-            historySalary: 'History of salary',
-            sabbatical: 'Sabbatical information'
-        },
-
         // Module Quản lý nhân sự
         human_resource: {
             // Nhóm dùng chung cho module quản lý nhân sự
@@ -1124,6 +960,7 @@ export default {
                 delete_annual_leave_faile: 'Delete annual leave faile',
                 edit_annual_leave_success: 'Edit annual leave success',
                 edit_annual_leave_faile: 'Edit annual leave faile',
+                aplication_annual_leave_success: 'Send application annual leave success',
 
             },
 
@@ -1228,7 +1065,7 @@ export default {
                     menu_insurrance_infor: 'Insurrance information',
                     menu_contract_training: 'Contract - Training',
                     menu_reward_discipline: 'Reward - Discipline',
-                    menu_salary_sabbatical: 'Salary - Sabbatical',
+                    menu_salary_sabbatical: 'Salary - Annual leave',
                     menu_attachments: 'Attachments',
 
                     menu_general_infor_title: 'General information',
@@ -1239,7 +1076,7 @@ export default {
                     menu_insurrance_infor_title: 'Insurrance information',
                     menu_contract_training_title: 'Contract - Training',
                     menu_reward_discipline_title: 'Reward - Discipline',
-                    menu_salary_sabbatical_title: 'Salary - Sabbatical',
+                    menu_salary_sabbatical_title: 'Salary - Annual leave',
                     menu_attachments_title: 'Attachments',
                 },
 
@@ -1387,7 +1224,7 @@ export default {
                 reward: 'Reward',
                 discipline: 'Discipline',
                 historySalary: 'History of salary',
-                sabbatical: 'Sabbatical information',
+                sabbatical: 'Annual leave information',
 
                 // Validator dữ liệu nhập bên client
                 start_date_before_end_date: 'The issue date must be before the expiration date',
@@ -1422,6 +1259,23 @@ export default {
                 },
 
                 employee_management: {
+                    file_name_export: 'Thông tin nhân viên',
+                    no_gender: 'Select gender',
+                    all_gender: 'Select all gender',
+                    brithday_lable: 'Month of Birth',
+                    brithday_lable_title: 'Month of Birth',
+                    contract_lable: 'Contract expiration',
+                    contract_lable_title: 'Contract expiration',
+                    contract_type_title: 'Type of contract',
+
+                    // Nhóm dành cho action
+                    view_employee: 'View employee',
+                    edit_employee: 'Edit employee',
+                    delete_employee: 'Delete staff',
+                    add_employee: 'Add staff',
+                    add_employee_title: 'Add new staff',
+                    add_by_hand: 'Add a s',
+                    add_import: 'Import file excel',
                     // Thông điệp trả về từ server
                     get_list_employee_success: 'Get list employee success',
                     get_list_employee_false: 'Get list employee false',
@@ -1455,13 +1309,27 @@ export default {
             // Quản lý kế hoạch làm việc (lịch nghỉ lễ tết)
             holiday: {
                 file_name_export: 'Work plan',
+                number_date_leave_of_year: 'Number of days off',
+                date_year: 'date/year',
+                year: 'year',
+                number_date: 'Number date',
+                list_holiday: 'Holiday plans, Tet holidays',
+                list_no_leave: 'No leave is allowed',
+                list_auto_leave: 'Leave is allowed',
+
                 // Nhóm dành cho table
                 table: {
+                    type: 'Type',
                     timeline: 'Timelines',
                     start_date: 'Start date',
                     end_date: 'End date',
                     describe_timeline: 'Description',
                 },
+
+                // Nhóm thể loại kế hoạch làm Việc
+                holiday: 'Holiday',
+                auto_leave: 'Auto leave',
+                no_leave: 'No leave',
 
                 // Nhóm dành cho action
                 edit_holiday: 'Edit work schedule',
@@ -1472,10 +1340,12 @@ export default {
                 add_import: 'Import file excel',
 
                 // Thông điệp trả về từ server
+                type_required: 'Type required',
                 start_date_required: 'Start date required',
                 end_date_required: 'End date required',
                 reason_required: 'Description required',
                 holiday_duplicate_required: 'Time is overlapping',
+                edit_number_date_leave_of_year_success: 'Change the number of days off in the year success',
 
                 get_holiday_success: 'Get work schedule success',
                 get_holiday_faile: 'Get work schedule faile',
@@ -1539,6 +1409,21 @@ export default {
                 email_employee: 'Email',
                 add_employee_unit: 'Add staff',
             },
+
+            // Kế hoạch làm việc
+            work_plan: {
+                list_work_plane: 'Work schedule list',
+                inform_annual_leave: 'Information on personal leave',
+                note: 'Note',
+                day: 'days',
+                total_number_leave_of_year: 'Total number of days off',
+                leaved: 'You have rested',
+                view_detail: 'Details see page',
+                receiver: 'Receiver',
+
+                // Nhóm action
+                create_annual_leave: 'Application annual leave',
+            }
         },
 
         // Modules quản lý đào tạo
@@ -1690,6 +1575,7 @@ export default {
                 bar_chart: 'Bar chart',
                 tree: 'Tree',
                 amount: 'Amount',
+                value: 'Value',
                 lost_value: 'Lost value (Million)',
                 sum_value: 'Total value (Million)',
                 building: 'Building',
@@ -1698,6 +1584,9 @@ export default {
                 orther: 'Other',
                 asset_by_group: ' Asset by group',
                 asset_by_type: ' Asset by type',
+                asset_purchase_and_dispose: ' Purchase and dispose',
+                purchase_asset: 'Statistics purchase asset chart',
+                disposal_asset: 'Statistics disposal asset chart',
             },
 
             //  Quản lý loại tài sản
@@ -2008,6 +1897,7 @@ export default {
                 consulted: 'Consulted',
                 creator: 'Creator',
                 informed: 'Informed',
+                all_role: 'All of roles',
 
                 responsible_role: 'Responsible',
                 accountable_role: 'Acountable',
@@ -2113,6 +2003,8 @@ export default {
                 detail_hide_info: 'Hide information',
                 detail_show_info: 'Show information',
                 detail_choose_role: 'Change role',
+                detail_route: 'Navigate',
+                detail_route_task: 'Navigate tasks',
 
                 detail_link: 'Task link',
                 detail_priority: 'Priority',
@@ -2261,7 +2153,11 @@ export default {
                 unit_evaluate: "Unit receiving work evaluation results",
                 unit_manage_task: "Unit managing task",
                 delete_eval: "Delete evaluation",
-                delete_eval_title: 'Are you sure to delete this evaluation?'
+                delete_eval_title: 'Are you sure to delete this evaluation?',
+
+                // confirm task
+                confirm_task_success: "Confirm task successfully",
+                confirm_task_failure: "Confirm task unsuccessfully"
 
             },
             task_perform: {
@@ -2272,6 +2168,8 @@ export default {
                 subtasks: "Subtasks",
                 change_history: "Change logs",
                 change_process: "Process",
+                change_incoming: "Incoming data",
+                change_outgoing: "Outgoing data",
                 edit_action: "Edit action",
                 delete_action: "Delete action",
                 mandatory_action: "Mandatory action",
@@ -2414,6 +2312,33 @@ export default {
                     err_contribute: 'Sum of contribution should be 100',
                     err_empty: "Value must be required"
                 }
+            },
+            task_process: {
+                process_name: 'Process name',
+                process_description: 'Process description',
+                manager: 'Manager',
+                viewer: 'Viewer',
+                time_of_process: 'Time of process',
+                start_date: 'Start date',
+                end_date: 'End date',
+
+                inprocess: 'Iprocess',
+                wait_for_approval: 'Wait for approval',
+                finished: 'Finished',
+                delayed: 'Delayed',
+                canceled: 'Canceled',
+
+                notice: 'Notice',
+                information: 'Information',
+                document: 'Document',
+
+                list_of_data_and_info: 'List of data and informations',
+                not_have_doc: 'Not have documents',
+                not_have_info: 'Not have information',
+                not_export_info: 'Not export information',
+
+                save: 'Save',
+
             },
             task_template: {
                 create_task_template_success: 'Create task template success !',
@@ -3063,6 +2988,14 @@ export default {
             copyright: 'Copyright ',
             vnist: 'Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam',
             version: 'Version '
+        },
+
+        manage_asset: {
+            add_default: 'Add default',
+            add_default_title: 'Add the default document',
+            edit_file: 'Edit attached documents',
+            add_file: 'Add attached documents',
+            upload: 'Upload',
         }
     }
 }

@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
-const { Task, TaskProcess, TaskTemplate, TaskAction, TaskTemplateInformation, Role, OrganizationalUnit, User, UserRole } = require('../../../models/index').schema;
+const { Task, TaskProcess, TaskTemplate, TaskAction, TaskTemplateInformation, Role, OrganizationalUnit, User, UserRole, Company } = require('../../../models/index').schema;
 
 const moment = require("moment");
 const nodemailer = require("nodemailer");
-
+const { sendEmail } = require('../../../helpers/emailHelper');
 const OrganizationalUnitService = require('../../super-admin/organizational-unit/organizationalUnit.service');
 const overviewService = require('../../kpi/employee/management/management.service');
 
@@ -196,168 +196,6 @@ exports.getTaskEvaluations = async (data) => {
     return newResult;
 }
 
-/**
- * Lấy mẫu công việc theo Id
- */
-exports.getTaskById = async (id, userId) => {
-    //req.params.id
-    var superTask = await Task.findById(id)
-        .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator parent" })
-        .populate("evaluations.results.employee")
-        .populate("evaluations.results.organizationalUnit")
-        .populate("evaluations.results.kpis.kpis")
-    
-    var task = await Task.findById(id).populate([
-        { path: "parent", select: "name" },
-        { path: "taskTemplate", select: "formula" },
-        { path: "organizationalUnit", model: OrganizationalUnit },
-        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
-        { path: "evaluations.results.employee", select: "name email _id" },
-        { path: "evaluations.results.organizationalUnit", select: "name _id" },
-        { path: "evaluations.results.kpis" },
-        { path: "taskActions.creator", model: User, select: 'name email avatar' },
-        { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
-        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
-        { path: "taskComments.creator", model: User, select: 'name email avatar' },
-        { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
-        { path: "documents.creator", model: User, select: 'name email avatar' },
-        { path: "followingTasks.task", model: Task, select: 'name' },
-        { path: "preceedingTasks.task", model: Task, select: 'name' },
-        {
-            path: "process", model: TaskProcess, populate: {
-                path: "tasks", model: Task, populate: [
-                    { path: "parent", select: "name" },
-                    { path: "taskTemplate", select: "formula" },
-                    { path: "organizationalUnit", model: OrganizationalUnit },
-                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
-                    { path: "evaluations.results.employee", select: "name email _id" },
-                    { path: "evaluations.results.organizationalUnit", select: "name _id" },
-                    { path: "evaluations.results.kpis" },
-                    { path: "taskActions.creator", model: User, select: 'name email avatar' },
-                    { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
-                    { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
-                    { path: "taskComments.creator", model: User, select: 'name email avatar' },
-                    { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
-                    { path: "documents.creator", model: User, select: 'name email avatar' },
-                    { path: "process", model: TaskProcess },
-                ]
-            }
-        },
-    ])
-    if (!task) {
-        return {
-            "info": true
-        }
-    }
-    var responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees;
-    responsibleEmployees = task.responsibleEmployees;
-    accountableEmployees = task.accountableEmployees;
-    consultedEmployees = task.consultedEmployees;
-    informedEmployees = task.informedEmployees;
-    let flag = 0;
-    for (let n in responsibleEmployees) {
-        if (responsibleEmployees[n]._id.equals(userId)) {
-            flag = 1;
-            break;
-        }
-    }
-    if (!flag) {
-        for (let n in accountableEmployees) {
-            if (accountableEmployees[n]._id.equals(userId)) {
-                flag = 1;
-                break;
-            }
-        }
-    }
-    if (!flag) {
-        for (let n in consultedEmployees) {
-            if (consultedEmployees[n]._id.equals(userId)) {
-                flag = 1;
-                break;
-            }
-        }
-    }
-    if (!flag) {
-        for (let n in informedEmployees) {
-            if (informedEmployees[n]._id.equals(userId)) {
-                flag = 1;
-                break;
-            }
-        }
-    }
-    if (task.creator._id.equals(userId)) {
-        flag = 1;
-    }
-
-    if (!flag) {// Trưởng đơn vị được phép xem thông tin công việc
-
-        // Tìm danh sách các role mà user kế thừa phân quyền
-        let role = await UserRole.find({ userId: userId });
-        let listRole = role.map(item => item.roleId);
-
-        let company = [];
-
-        // Tìm ra các đơn vị có role là dean
-        for (let i in listRole) {
-            let roles = await Role.findById(listRole[i]);
-            company[i] = roles.company;
-        }
-
-        // Tìm cây đơn vị mà đơn vị gốc có userId có role deans
-        let tree = [];
-        let k = 0;
-        for (let i = 0; i < listRole.length; i++) {
-            let com = company[i];
-            let r = listRole[i];
-            let tr = await OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree(com, r);
-            if (tr) {
-                tree[k] = tr;
-                k++;
-            }
-        }
-
-        // Duyệt cây đơn vị, kiểm tra xem mỗi đơn vị có id trùng với id của phòng ban công việc
-        for (let i = 0; i < listRole.length; i++) {
-            let rol = listRole[i];
-            if (!flag) {
-                for (let j = 0; j < tree.length; j++) {
-                    if (tree[j].deans.indexOf(rol) !== -1) {
-                        let v = tree[j];
-                        let f = await _checkDeans(v, task.organizationalUnit._id);
-                        if (f === 1) {
-                            flag = 1;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    if (flag === 0) {
-        return {
-            "info": true
-        }
-    }
-    task.evaluations.reverse();
-    return task;
-
-}
-
-/**
- * Hàm duyệt cây đơn vị - kiểm tra trong cây có đơn vị của công việc được lấy ra hay không (đệ quy)
- */
-_checkDeans = async (v, id) => {
-    if (v) {
-        if (JSON.stringify(v.id) === JSON.stringify(id)) {
-            return 1;
-        }
-        if (v.children) {
-            for (let k = 0; k < v.children.length; k++) {
-                return _checkDeans(v.children[k], id);
-            }
-        }
-    }
-}
 
 /**
  * Lấy mẫu công việc theo chức danh và người dùng
@@ -1098,6 +936,161 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (task) => {
 }
 
 /**
+ * Lấy công việc quan sát theo id người dùng
+ */
+exports.getPaginatedTasksByUser = async (task) => {
+    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime } = task;
+
+    var tasks;
+    var perPage = Number(perPage);
+    var page = Number(number);
+
+    var keySearch = {
+        $or: [
+           { informedEmployees: { $in: [user] } },
+           { creator: { $in: [user] } },
+           { responsibleEmployees: { $in: [user] } },
+           { consultedEmployees: { $in: [user] } },
+           { accountableEmployees: { $in: [user] } },
+        ],
+        isArchived: false
+    };
+
+    if (organizationalUnit !== '[]') {
+        keySearch = {
+            ...keySearch,
+            organizationalUnit: {
+                $in: organizationalUnit,
+            }
+        };
+    }
+
+    if (status !== '[]') {
+        keySearch = {
+            ...keySearch,
+            status: {
+                $in: status,
+            }
+        };
+    }
+
+    if (priority !== '[]') {
+        keySearch = {
+            ...keySearch,
+            priority: {
+                $in: priority,
+            }
+        };
+    }
+
+    if (special !== '[]') {
+        for (var i = 0; i < special.length; i++) {
+            if (special[i] === "Lưu trong kho") {
+                keySearch = {
+                    ...keySearch,
+                    isArchived: true
+                };
+            }
+            else {
+                keySearch = {
+                    ...keySearch,
+                    endDate: { $gte: new Date() }
+                };
+            }
+        }
+    }
+
+    if (name) {
+        keySearch = {
+            ...keySearch,
+            name: {
+                $regex: name,
+                $options: "i"
+            }
+        }
+    };
+
+    if (JSON.parse(aPeriodOfTime)) {
+
+        keySearch = {
+            ...keySearch,
+            $or: [
+                { 'endDate': { $lte: new Date(endDate), $gt: new Date(startDate) } },
+                { 'startDate': { $lte: new Date(endDate), $gt: new Date(startDate) } },
+                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lte: new Date(startDate) } }] }
+            ]
+        }
+    } else {
+        if (startDate) {
+            let startTime = startDate.split("-");
+            let start = new Date(startTime[1], startTime[0] - 1, 1);
+            let end = new Date(startTime[1], startTime[0], 1);
+
+            keySearch = {
+                ...keySearch,
+                startDate: {
+                    $gt: start,
+                    $lte: end
+                }
+            }
+        }
+
+        if (endDate) {
+            let endTime = endDate.split("-");
+            let start = new Date(endTime[1], endTime[0] - 1, 1);
+            let end = new Date(endTime[1], endTime[0], 1);
+
+            keySearch = {
+                ...keySearch,
+                endDate: {
+                    $gt: start,
+                    $lte: end
+                }
+            }
+        }
+    }
+    if (startDateAfter) {
+        let startTimeAfter = startDateAfter.split("-");
+        let start;
+
+
+        if (startTimeAfter[0] > 12) start = new Date(startTimeAfter[0], startTimeAfter[1] - 1, 1);
+        else start = new Date(startTimeAfter[1], startTimeAfter[0] - 1, 1);
+
+        keySearch = {
+            ...keySearch,
+            endDate: {
+                $gte: start
+            }
+        }
+    }
+
+    if (endDateBefore) {
+        let endTimeBefore = endDateBefore.split("-");
+        let end;
+        if (endTimeBefore[0] > 12) end = new Date(endTimeBefore[0], endTimeBefore[1], 1);
+        else end = new Date(endTimeBefore[1], endTimeBefore[0], 1);
+
+        keySearch = {
+            ...keySearch,
+            startDate: {
+                $lt: end
+            }
+        }
+    }
+    tasks = await Task.find(keySearch).sort({ 'createdAt': 'asc' })
+        .skip(perPage * (page - 1)).limit(perPage)
+        .populate({ path: "organizationalUnit creator parent" });
+
+    var totalCount = await Task.countDocuments(keySearch);
+    var totalPages = Math.ceil(totalCount / perPage);
+    return {
+        "tasks": tasks,
+        "totalPage": totalPages
+    };
+}
+
+/**
  * Lấy công việc theo id đơn vị
  * @task dữ liệu từ params
  */
@@ -1182,6 +1175,17 @@ exports.createTask = async (task) => {
         }
     }
 
+    let formula;
+    if( taskTemplate ) {
+        formula = taskTemplate.formula;
+    } else if( task.formula ){
+        formula = "progress / (dayUsed / totalDay)"; // default
+        // "progress / (dayUsed / totalDay) - 0.5 * (10 - (averageActionRating)) * 10"
+    } 
+    // else {
+    //     formula = task.formula;
+    // }
+
     var task = await Task.create({ //Tạo dữ liệu mẫu công việc
         organizationalUnit: task.organizationalUnit,
         creator: task.creator, //id của người tạo
@@ -1190,6 +1194,7 @@ exports.createTask = async (task) => {
         startDate: startDate,
         endDate: endDate,
         priority: task.priority,
+        formula: formula,
         taskTemplate: taskTemplate ? taskTemplate : null,
         taskInformations: taskTemplate ? taskTemplate.taskInformations : [],
         taskActions: taskTemplate ? cloneActions : [],
@@ -1514,4 +1519,236 @@ exports.getAllTaskOfChildrenOrganizationalUnit = async (companyId, roleId, month
         tasksOfChildrenOrganizationalUnit[i].unshift({ 'name': childrenOrganizationalUnits[i].name, 'deg': childrenOrganizationalUnits[i].deg })
     }
     return tasksOfChildrenOrganizationalUnit;
+}
+
+exports.sendEmailCheckTaskLastMonth = async () => {  
+    let today = new Date();
+    let day = today.getDate();
+    let month = today.getMonth();
+    let daySend = 30;
+    switch (month) {
+        case 1:
+        case 3:
+        case 5:
+        case 7:
+        case 8:
+        case 10:
+        case 12:
+            daySend = 31;
+            break;
+        case 2:
+            daySend = 28;
+            break;
+    }
+    if (1) {
+        // xu ly gui email
+        console.log("Đến ngày gửi email");
+        let company = await Company.find({});
+        company = company.map(x => x._id);
+        let consultedTasks = [], informedTasks = [], responsibleTasks = [], accountedTasks = [];
+        let taskExpire = [], taskDeadlinecoming = [];
+        let currentMonth = new Date().getMonth() + 1;
+        let currentYear = new Date().getFullYear();
+        for (let i in company) {
+            let flag = false;
+            let user = await User.find({ company: company[i] });  // lay ra tat ca nguoi dung trong tung cong ty
+            let userId = user.map(x => x._id);
+            let email = user.map(x => x.email);
+
+            // for (let j in userId) {
+                let j = 5;
+                let tasks = { "data": "user", "userId": userId[j] };
+                let tasksByUser = await this.getTasksByUser(tasks); // laay ra tat ca cong viec cua nguoi dung
+                tasks = { "organizationalUnit": "[]", "number": 1, "perPage": 1000, "status": "[]", "priority": "[]", "special": "[]", "name": null, "startDate": null, "endDate": null, "startDateAfter": null, "endDateBefore": null, "aPeriodOfTime": false, "user": userId[j] }
+
+                informedTasks = await this.getPaginatedTasksThatUserHasInformedRole(tasks);
+                // informedTasks = await Task.find({informedEmployees: userId[j] , isArchived: false}).populate({ path: "organizationalUnit creator parent" });
+                consultedTasks = await this.getPaginatedTasksThatUserHasConsultedRole(tasks);
+                responsibleTasks = await this.getPaginatedTasksThatUserHasResponsibleRole(tasks);
+                accountedTasks = await this.getPaginatedTasksThatUserHasAccountableRole(tasks);
+
+                // xu ly voi moi nguoi dung
+                let infTasks = informedTasks && informedTasks.tasks;
+                let accTasks = accountedTasks && accountedTasks.tasks;
+                let resTasks = responsibleTasks && responsibleTasks.tasks;
+                let conTasks = consultedTasks && consultedTasks.tasks;
+                let allTasks = [], notLinkedTasks = [], taskList;
+
+                // xu ly task not link
+                if (accTasks && resTasks && infTasks && conTasks) {
+                    taskList = allTasks.concat(accTasks, resTasks, conTasks, infTasks);
+                }
+                if (taskList) {
+                    let inprocessTask = taskList.filter(task => task.status === "Inprocess");
+                    let distinctTasks = [];
+                    for (let i in inprocessTask) {
+                        let check = false;
+                        for (let j in distinctTasks) {
+
+                            if (inprocessTask[i]._id === distinctTasks[j]._id) {
+                                check = true
+                                break;
+                            }
+                        }
+                        if (!check) distinctTasks.push(inprocessTask[i])
+                    }
+                    distinctTasks.length && distinctTasks.map(x => {
+                        let evaluations;
+                        let currentEvaluate = [];
+
+                        evaluations = x.evaluations.length && x.evaluations;
+                        if (evaluations) {
+                            for (let i in evaluations) {
+                                let month = evaluations[i].date.slice(5, 7);
+                                let year = evaluations[i].date.slice(0, 4);
+
+                                if (month == currentMonth && year == currentYear) {
+                                    currentEvaluate.push(evaluations[i]);
+                                }
+                            }
+                        }
+
+                        if (currentEvaluate.length === 0) {
+                            notLinkedTasks.push(x);
+                            flag = true;
+                        } else {
+                            let break1 = false;
+                            let add = true;
+                            if (currentEvaluate.length !== 0) {
+                                for (let i in currentEvaluate) {
+                                    if (currentEvaluate[i].results.length !== 0) {
+                                        for (let j in currentEvaluate[i].results) {
+                                            let res = currentEvaluate[i].results[j];
+                                            console.log(typeof res.employee);
+                                            if (res.employee === userId[j]) {
+                                                add = false;
+                                                if (res.kpis.length === 0) {
+                                                    notLinkedTasks.push(x);
+                                                    break1 = true
+                                                }
+                                            };
+                                            if (break1) break;
+                                        }
+                                        if (break1) break;
+                                        if (add) {
+                                            notLinkedTasks.push(x);
+                                            flag = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    })
+
+                }
+                console.log(notLinkedTasks.map(x => x.name));
+
+
+                // xu ly Action not evaluated
+                var TaskHasActionsAccountable = [];
+                var TaskHasActionsResponsible = [];
+                
+                if (accTasks) {
+                    let inprocessAccountableTask = accTasks.filter(task => task.status === "Inprocess")
+
+                    inprocessAccountableTask.length && inprocessAccountableTask.map(x => {
+                        let taskActions;
+
+                        taskActions = x.taskActions.length && x.taskActions;
+                        if (taskActions.length !== 0) {
+                            for (let i in taskActions) {
+                                let month = taskActions[i].createdAt;
+                                let year = taskActions[i].createdAt;
+                                month = JSON.stringify(month);
+                                year = JSON.stringify(year);
+                                month = month.slice(5, 7);
+                                year = year.slice(0, 4);
+                                currentMonth = JSON.stringify(currentMonth);
+                                currentYear = JSON.stringify(currentYear);
+                                if (month == currentMonth && year == currentYear) {
+                                    if (taskActions[i].rating == -1) {
+                                        TaskHasActionsAccountable.push(x);
+                                        flag = true;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                    })
+                }
+                if (resTasks) {
+                    let inprocessResponsibleTasks = resTasks.filter(task => task.status === "Inprocess")
+                    inprocessResponsibleTasks.length && inprocessResponsibleTasks.map(x => {
+                        let taskActions;
+
+                        taskActions = x.taskActions.length && x.taskActions;
+                        if (taskActions.length !== 0) {
+                            for (let i in taskActions) {
+                                let month = taskActions[i].createdAt;
+                                let year = taskActions[i].createdAt;
+                                month = JSON.stringify(month);
+                                year = JSON.stringify(year);
+                                month = month.slice(5, 7);
+                                year = year.slice(0, 4);
+                                currentMonth = JSON.stringify(currentMonth);
+                                currentYear = JSON.stringify(currentYear);
+                                if (month == currentMonth && year == currentYear) {
+                                    if (taskActions[i].rating == -1) {
+                                        TaskHasActionsResponsible.push(x);
+                                        flag = true;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                    })
+                }
+                console.log(TaskHasActionsAccountable.map(x => x.name));
+                console.log(TaskHasActionsResponsible.map(x => x.name));
+                let taskHasActions = [];
+                taskHasActions = taskHasActions.concat(TaskHasActionsAccountable, TaskHasActionsResponsible);
+                console.log("tassssssss", tasksByUser);
+                if (tasksByUser.expire.length !== 0) {
+                    console.log(tasksByUser.expire.map(x => x.task.name));
+                    flag = true;
+                }
+                if (tasksByUser.deadlineincoming.length !== 0) {
+                    console.log(tasksByUser.deadlineincoming.map(x => x.task.name));
+                    flag = true;
+                }
+                if (flag) {  // gui email
+                    let userEmail = [email[j]];
+                    userEmail.push("trinhhong102@gmail.com");
+                    let html = `<h1>Thông báo danh sách công việc tháng ${currentMonth - 1} </h1> ` +
+                    `<h3>Thông tin công việc</h3>` +
+                    `${tasksByUser.expire.length > 0 ? `<p>Công việc quá hạn</p> ` +
+                    `<ul>${tasksByUser.expire.map((item) => {
+                        return `<li>${item.task.name}</li>`
+                    })}
+                                </ul>` : '' }` +
+                    `${tasksByUser.deadlineincoming.length > 0 ? `<p>Công việc sắp hết hạn</p> ` +
+                    `<ul>${tasksByUser.deadlineincoming.map((item) => {
+                        return `<li>${item.task.name}</li>`
+                    })}
+                                </ul>` : "" }` +
+                    `${notLinkedTasks.length > 0 ? `<p>Công việc chưa được liên kết KPI tháng</p> ` +
+                    `<ul>${notLinkedTasks.map((item) => {
+                        return `<li>${item.name}</li>`
+                    })}
+                                </ul>` : "" }` +
+                    `${taskHasActions.length > 0 ? `<p>Công việc có hoạt động chưa đánh giá</p> ` +
+                    `<ul>${taskHasActions.map((item) => {
+                        return `<li>${item.name}</li>`
+                    })}
+                                </ul>` : "" }`
+                    ;
+                    sendEmail("vnist.qlcv@gmail.com", userEmail, "Thông báo danh sách công việc", '', html);
+               }
+            // }
+        }
+    }
+    console.log(today.getDate());
+    console.log(daySend);
 }

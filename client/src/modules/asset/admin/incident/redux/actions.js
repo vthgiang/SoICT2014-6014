@@ -57,7 +57,8 @@ function createMaintainanceForIncident(id, data) {
     };
 }
 
-function updateIncident(id, data) {
+function updateIncident(id, data,managedBy ='') {
+    console.log("\n\n\n\n\n\n\n1111111",managedBy)
     return dispatch => {
         dispatch({
             type: IncidentConstants.UPDATE_INCIDENT_REQUEST
@@ -69,15 +70,31 @@ function updateIncident(id, data) {
                     type: IncidentConstants.UPDATE_INCIDENT_SUCCESS,
                     payload: res.data.content
                 })
-                dispatch(AssetManagerActions.getAllAsset({
-                    code: "",
-                    assetName: "",
-                    assetType: null,
-                    month: null,
-                    status: "",
-                    page: 0,
-                    limit: 5,
-                }))
+                if(managedBy='')
+                {
+                    dispatch(AssetManagerActions.getAllAsset({
+                        code: "",
+                        assetName: "",
+                        assetType: null,
+                        month: null,
+                        status: "",
+                        page: 0,
+                        limit: 5,
+                    }))
+                }
+                else {
+                    dispatch(AssetManagerActions.getAllAsset({
+                        code: "",
+                        assetName: "",
+                        assetType: null,
+                        month: null,
+                        status: "",
+                        page: 0,
+                        limit: 5,
+                        managedBy:managedBy
+                    }))
+                }
+                
             })
             .catch(err => {
                 dispatch({

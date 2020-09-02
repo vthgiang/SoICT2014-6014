@@ -48,7 +48,8 @@ class DetailTaskTab extends Component {
             dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
 
             currentMonth: currentYear + '-' + (currentMonth + 1),
-            nextMonth: (currentMonth > 10) ? ((currentYear + 1) + '-' + (currentMonth - 10)) : (currentYear + '-' + (currentMonth + 2))
+            nextMonth: (currentMonth > 10) ? ((currentYear + 1) + '-' + (currentMonth - 10)) : (currentYear + '-' + (currentMonth + 2)),
+            dueForEvaluationOfTask: currentYear + '-' + currentMonth + '-' + 7
         }
 
     }
@@ -173,14 +174,19 @@ class DetailTaskTab extends Component {
         return [day, month, year].join('-');
     }
 
-    handleShowEdit = async (id, role) => {
+    handleShowEdit = async (id, role, checkHasAccountable) => {
         await this.setState(state => {
             return {
                 ...state,
                 showEdit: id
             }
         });
-        window.$(`#modal-edit-task-by-${role}-${id}`).modal('show');
+
+        let modalId = `#modal-edit-task-by-${role}-${id}`;
+        if (checkHasAccountable === false && role === "responsible") {
+            modalId = `#modal-edit-task-by-${role}-${id}-has-not-accountable`
+        }
+        window.$(modalId).modal('show');
 
     }
 
@@ -265,10 +271,16 @@ class DetailTaskTab extends Component {
         this.props.onChangeTaskRole(role);
     }
 
+    confirmTask = (task) => {
+        if (task) {
+            this.props.confirmTask(task._id);
+        }
+    }
+
     checkConfirmTask = (task) => {
         const { currentUser } = this.state;
 
-        let checkConfirmByRole = false, checkConfirmCurrentUser = false, listEmployee, responsibleEmployeesNotConfirm = [], accountableEmployeesNotConfirm = [], consultedEmployeesNotConfirm = [];
+        let checkConfirmOtherUser = false, checkConfirmCurrentUser = false, listEmployee, listEmployeeNotConfirm = [];
         let confirmedByEmployeesId, listEmployeeId;
 
         if (task && task.responsibleEmployees && task.accountableEmployees && task.consultedEmployees && task.confirmedByEmployees) {
@@ -276,22 +288,24 @@ class DetailTaskTab extends Component {
             confirmedByEmployeesId = task.confirmedByEmployees.map(item => item._id);
             listEmployeeId = listEmployee.map(item => item._id);
 
-            task.responsibleEmployees.map(item => {
+            listEmployeeNotConfirm = listEmployee.filter(item => {
                 if (!confirmedByEmployeesId.includes(item._id)) {
-                    responsibleEmployeesNotConfirm.push(item);
+                    return true;
                 }
             })
 
-            task.accountableEmployees.map(item => {
-                if (!confirmedByEmployeesId.includes(item._id)) {
-                    accountableEmployeesNotConfirm.push(item);
+            // Lọc các phần tử trùng lặp
+            let idArray = listEmployeeNotConfirm.map(item => item._id);
+            idArray = idArray.map((item, index, array) => {
+                if (array.indexOf(item) === index) {
+                    return index;
+                } else {
+                    return false
                 }
             })
-
-            task.consultedEmployees.map(item => {
-                if (!confirmedByEmployeesId.includes(item._id)) {
-                    consultedEmployeesNotConfirm.push(item);
-                }
+            idArray = idArray.filter(item => listEmployeeNotConfirm[item]);
+            listEmployeeNotConfirm = idArray.map(item => {
+                return listEmployeeNotConfirm[item]
             })
 
             if (listEmployeeId.includes(currentUser) && !confirmedByEmployeesId.includes(currentUser)) {
@@ -299,19 +313,15 @@ class DetailTaskTab extends Component {
             };
         }
 
-        if (responsibleEmployeesNotConfirm.length !== 0
-            || accountableEmployeesNotConfirm.length !== 0
-            || consultedEmployeesNotConfirm !== 0) {
-            checkConfirmByRole = true;
+        if (listEmployeeNotConfirm.length !== 0) {
+            checkConfirmOtherUser = true;
         }
 
         return {
-            responsibleEmployeesNotConfirm: responsibleEmployeesNotConfirm,
-            accountableEmployeesNotConfirm: accountableEmployeesNotConfirm,
-            consultedEmployeesNotConfirm: consultedEmployeesNotConfirm,
+            listEmployeeNotConfirm: listEmployeeNotConfirm,
             checkConfirmCurrentUser: checkConfirmCurrentUser,
-            checkConfirmByRole: checkConfirmByRole,
-            checkConfirm: checkConfirmByRole || checkConfirmCurrentUser
+            checkConfirmOtherUser: checkConfirmOtherUser,
+            checkConfirm: checkConfirmOtherUser || checkConfirmCurrentUser
         }
     }
 
@@ -322,28 +332,27 @@ class DetailTaskTab extends Component {
 
         if (task) {
             if (task.taskActions && task.taskActions.length !== 0) {
-                task.taskActions.map(action => {
-                    if (action.evaluations) {
-                        let evaluations = action.evaluations.filter(item => new Date(item.updatedAt) >= new Date(currentMonth) && new Date(item.updatedAt) < new Date(nextMonth));
-                        if (evaluations && evaluations.length === 0) {
-                            taskActionNotEvaluate.push(action);
+                taskActionNotEvaluate = task.taskActions
+                    .filter(item => new Date(item.updatedAt) >= new Date(currentMonth) && new Date(item.updatedAt) < new Date(nextMonth))
+                    .map(item => {
+                        if (item.rating === -1) {
+                            return item;
                         }
-                    }
-                })
+                    })
             }
         }
 
         return {
             checkEvaluationTaskAction: taskActionNotEvaluate.length !== 0,
-            taskActionNotEvaluate: taskActionNotEvaluate
+            numberOfTaskActionNotEvaluate: taskActionNotEvaluate.length
         }
     }
 
-    checkEvaluationTaskAndKpiLinkAndDeadlineForEvaluation = (task) => {
-        const { currentMonth, nextMonth } = this.state;
+    checkEvaluationTaskAndKpiLink = (task) => {
+        const { dueForEvaluationOfTask, currentMonth, nextMonth } = this.state;
 
-        let evaluations = [], checkEvaluationTask = false, checkDeadlineForEvaluation = false;
-        let responsibleEmployeesNotKpiLink = [], accountableEmployeesNotKpiLink = [], consultedEmployeesNotKpiLink = [], deadlineForEvaluation;
+        let evaluations = [], checkEvaluationTask = false;
+        let listEmployeeNotKpiLink = [], responsibleEmployeesNotKpiLink = [], accountableEmployeesNotKpiLink = [], consultedEmployeesNotKpiLink = [];
 
         if (task && task.evaluations) {
             evaluations = task.evaluations.filter(item => new Date(item.date) >= new Date(currentMonth) && new Date(item.date) < new Date(nextMonth));
@@ -353,27 +362,8 @@ class DetailTaskTab extends Component {
                 checkEvaluationTask = true;
 
                 // Nhân viên chưa liên kết KPI
-                responsibleEmployeesNotKpiLink = task.responsibleEmployees;
-                accountableEmployeesNotKpiLink = task.accountableEmployees;
-                consultedEmployeesNotKpiLink = task.consultedEmployees;
+                listEmployeeNotKpiLink = task.responsibleEmployees.concat(task.accountableEmployees).concat(task.consultedEmployees);
             } else {
-                let currentDate = new Date();
-                let evaluationDate = new Date(evaluations[0].date);
-
-                // Check số ngày đến hạn đánh giá
-                deadlineForEvaluation = (evaluationDate.getTime() - currentDate.getTime()) / (3600 * 24 * 1000);
-                if (deadlineForEvaluation <= 7) {
-                    checkDeadlineForEvaluation = true;
-
-                    if (deadlineForEvaluation <= 0) {
-                        deadlineForEvaluation = -1;
-                    } else if (deadlineForEvaluation < 1) {
-                        deadlineForEvaluation = Math.floor(deadlineForEvaluation * 24) + ' giờ';
-                    } else {
-                        deadlineForEvaluation = Math.floor(deadlineForEvaluation) + ' ngày';
-                    }
-                }
-
                 // Nhân viên chưa liên kết KPI
                 if (evaluations[0].results && evaluations[0].results.length !== 0) {
                     if (task.responsibleEmployees) {
@@ -412,23 +402,61 @@ class DetailTaskTab extends Component {
                             return true;
                         })
                     }
+
+                    listEmployeeNotKpiLink = responsibleEmployeesNotKpiLink.concat(accountableEmployeesNotKpiLink).concat(consultedEmployeesNotKpiLink);
                 } else {
                     // Nhân viên chưa liên kết KPI
-                    responsibleEmployeesNotKpiLink = task.responsibleEmployees;
-                    accountableEmployeesNotKpiLink = task.accountableEmployees;
-                    consultedEmployeesNotKpiLink = task.consultedEmployees;
+                    listEmployeeNotKpiLink = task.responsibleEmployees.concat(task.accountableEmployees).concat(task.consultedEmployees);
                 }
             }
         }
 
+        // Loc phần tử lặp
+        let idArray = listEmployeeNotKpiLink.map(item => item._id);
+        idArray = idArray.map((item, index, array) => {
+            if (array.indexOf(item) === index) {
+                return index;
+            } else {
+                return false
+            }
+        })
+        idArray = idArray.filter(item => listEmployeeNotKpiLink[item]);
+        listEmployeeNotKpiLink = idArray.map(item => {
+            return listEmployeeNotKpiLink[item]
+        })
+
         return {
             checkEvaluationTask: checkEvaluationTask,
+            checkKpiLink: listEmployeeNotKpiLink.length !== 0,
+            listEmployeeNotKpiLink: listEmployeeNotKpiLink
+        }
+    }
+
+    checkDeadlineForEvaluation = () => {
+        const { dueForEvaluationOfTask } = this.state;
+
+        let checkDeadlineForEvaluation = false, deadlineForEvaluation;
+        let currentDate = new Date();
+
+        // Check số ngày đến hạn đánh giá
+        deadlineForEvaluation = ((new Date(dueForEvaluationOfTask)).getTime() - currentDate.getTime()) / (3600 * 24 * 1000);
+        if (deadlineForEvaluation > 0) {
+            checkDeadlineForEvaluation = true;
+
+            if (deadlineForEvaluation < 1) {
+                if (deadlineForEvaluation * 24 < 1) {
+                    deadlineForEvaluation = Math.floor(deadlineForEvaluation * 24 * 60) + ' phút';
+                } else {
+                    deadlineForEvaluation = Math.floor(deadlineForEvaluation * 24) + ' giờ';
+                }
+            } else {
+                deadlineForEvaluation = Math.floor(deadlineForEvaluation) + ' ngày';
+            }
+        }
+
+        return {
             checkDeadlineForEvaluation: checkDeadlineForEvaluation,
-            deadlineForEvaluation: deadlineForEvaluation,
-            checkKpiLink: (responsibleEmployeesNotKpiLink.length !== 0) || (accountableEmployeesNotKpiLink.length !== 0) || (consultedEmployeesNotKpiLink.length !== 0),
-            responsibleEmployeesNotKpiLink: responsibleEmployeesNotKpiLink,
-            accountableEmployeesNotKpiLink: accountableEmployeesNotKpiLink,
-            consultedEmployeesNotKpiLink: consultedEmployeesNotKpiLink
+            deadlineForEvaluation: deadlineForEvaluation
         }
     }
 
@@ -487,7 +515,7 @@ class DetailTaskTab extends Component {
         let codeInProcess, typeOfTask, statusTask, checkInactive = true, evaluations, evalList = [];
 
         // Các biến dùng trong phần Nhắc Nhở
-        let warning = false, checkConfirmTask, checkEvaluationTaskAction, checkEvaluationTaskAndKpiLinkAndDeadlineForEvaluation;
+        let warning = false, checkConfirmTask, checkEvaluationTaskAction, checkEvaluationTaskAndKpiLink, checkDeadlineForEvaluation;
 
         if (isProcess) {
             task = this.props.task
@@ -503,6 +531,13 @@ class DetailTaskTab extends Component {
                 typeOfTask = splitter[0];
             }
         }
+
+        // kiểm tra công việc chỉ có người thực hiện
+        let checkHasAccountable = true;
+        if (task && task.accountableEmployees.length === 0) {
+            checkHasAccountable = false;
+        }
+
         if (task) {
             statusTask = task.status;
         }
@@ -544,13 +579,14 @@ class DetailTaskTab extends Component {
         // Xử lý dữ liệu phần Nhắc nhở
         checkConfirmTask = this.checkConfirmTask(task);
         checkEvaluationTaskAction = this.checkEvaluationTaskAction(task);
-        checkEvaluationTaskAndKpiLinkAndDeadlineForEvaluation = this.checkEvaluationTaskAndKpiLinkAndDeadlineForEvaluation(task);
-
+        checkEvaluationTaskAndKpiLink = this.checkEvaluationTaskAndKpiLink(task);
+        checkDeadlineForEvaluation = this.checkDeadlineForEvaluation()
         warning = (checkConfirmTask && checkConfirmTask.checkConfirm)
             || (checkEvaluationTaskAction && checkEvaluationTaskAction.checkEvaluationTaskAction)
-            || (checkEvaluationTaskAndKpiLinkAndDeadlineForEvaluation && checkEvaluationTaskAndKpiLinkAndDeadlineForEvaluation.checkEvaluationTask)
-            || (checkEvaluationTaskAndKpiLinkAndDeadlineForEvaluation && checkEvaluationTaskAndKpiLinkAndDeadlineForEvaluation.checkKpiLink)
-            || (checkEvaluationTaskAndKpiLinkAndDeadlineForEvaluation && checkEvaluationTaskAndKpiLinkAndDeadlineForEvaluation.checkDeadlineForEvaluation);
+            || (checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkEvaluationTask)
+            || (checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkKpiLink)
+            || (checkDeadlineForEvaluation && checkDeadlineForEvaluation.checkDeadlineForEvaluation);
+
 
         return (
             <React.Fragment>
@@ -561,7 +597,7 @@ class DetailTaskTab extends Component {
                         </a>
 
                         {((currentRole === "responsible" || currentRole === "accountable") && checkInactive) &&
-                            <a className="btn btn-app" onClick={() => this.handleShowEdit(id, currentRole)} title="Chỉnh sửa thông tin chung">
+                            <a className="btn btn-app" onClick={() => this.handleShowEdit(id, currentRole, checkHasAccountable)} title="Chỉnh sửa thông tin chung">
                                 <i className="fa fa-edit" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_edit')}
                             </a>
                         }
@@ -576,15 +612,16 @@ class DetailTaskTab extends Component {
                             </React.Fragment>
                         }
 
-
-                        {currentRole === "accountable" && checkInactive && codeInProcess &&
+                        {checkInactive && codeInProcess && (currentRole === "accountable" || (currentRole === "responsible" && checkHasAccountable === false)) &&
                             (statusTask !== "Finished" &&
-                                // <a className="btn btn-app" onClick={() => this.handleEndTask(id, "Inprocess", codeInProcess, typeOfTask)} title="Công việc đã kết thúc">
-                                //     <i className="fa fa-times" style={{ fontSize: "16px" }}></i>{"Hủy kết thúc"}
-                                // </a> :
-                                <a className="btn btn-app" onClick={() => this.handleEndTask(id, "Finished", codeInProcess, typeOfTask)} title="Kết thúc công việc">
-                                    <i className="fa fa-power-off" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_end')}
-                                </a>
+                                (typeOfTask === "Gateway" ?
+                                    <a className="btn btn-app" onClick={() => this.handleEndTask(id, "Inprocess", codeInProcess, typeOfTask)} title={translate('task.task_management.detail_route_task')}>
+                                        <i className="fa fa-location-arrow" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_route')}
+                                    </a> :
+                                    <a className="btn btn-app" onClick={() => this.handleEndTask(id, "Finished", codeInProcess, typeOfTask)} title={translate('task.task_management.detail_end')}>
+                                        <i className="fa fa-power-off" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_end')}
+                                    </a>
+                                )
                             )
                         }
 
@@ -594,7 +631,7 @@ class DetailTaskTab extends Component {
                                     <i className="fa fa-power-off" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_end')}
                                 </a> */}
 
-                                <a className="btn btn-app" onClick={() => this.handleShowEvaluate(id, currentRole)} title="Đánh giá công việc">
+                                <a className="btn btn-app" onClick={() => this.handleShowEvaluate(id, currentRole)} title={translate('task.task_management.detail_evaluate')}>
                                     <i className="fa fa-calendar-check-o" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_evaluate')}
                                 </a>
                             </React.Fragment>
@@ -629,62 +666,32 @@ class DetailTaskTab extends Component {
                         {/* Thông tin chung */}
                         {/** Nhắc nhở */}
                         {
-                            warning
-                            && <div className="description-box">
-                                <h4 style={{ color: "red" }}>Nhắc nhở</h4>
+                            task && warning
+                            && <div className="description-box" style={{ border: "3px double #f38961" }}>
+                                <h4>Cảnh báo</h4>
                                 {/** Xác nhận công việc */}
                                 {
                                     checkConfirmTask && checkConfirmTask.checkConfirmCurrentUser
-                                    && <div><strong>Bạn chưa xác nhận công việc này</strong></div>
+                                    && <div><strong>Bạn cần <a style={{ cursor: "pointer" }} onClick={() => this.confirmTask(task)}>xác nhận tham gia công việc này</a></strong></div>
                                 }
                                 {
-                                    checkConfirmTask && checkConfirmTask.checkConfirmByRole
+                                    checkConfirmTask && checkConfirmTask.checkConfirmOtherUser
                                     && <div>
-                                        <strong>Chưa xác nhận công việc</strong>
-                                        <ul>
-                                            {
-                                                checkConfirmTask.responsibleEmployeesNotConfirm.length !== 0
-                                                && <li><strong>Người thực hiện: </strong>
-                                                    &nbsp;&nbsp;
-                                                    {
-                                                        checkConfirmTask.responsibleEmployeesNotConfirm.map((item, index) => {
-                                                            let seperator = index !== 0 ? ", " : "";
-                                                            return <span key={index}>{seperator}{item.name}</span>
-                                                        })
-                                                    }
-                                                </li>
-                                            }
-                                            {
-                                                checkConfirmTask.accountableEmployeesNotConfirm.length !== 0
-                                                && <li><strong>Người phê duyệt: </strong>
-                                                    &nbsp;&nbsp;
-                                                    {
-                                                        checkConfirmTask.accountableEmployeesNotConfirm.map((item, index) => {
-                                                            let seperator = index !== 0 ? ", " : "";
-                                                            return <span key={index}>{seperator}{item.name}</span>
-                                                        })
-                                                    }
-                                                </li>
-                                            }
-                                            {
-                                                checkConfirmTask.consultedEmployeesNotConfirm.length !== 0
-                                                && <li><strong>Người hỗ trợ: </strong>
-                                                    &nbsp;&nbsp;
-                                                    {
-                                                        checkConfirmTask.consultedEmployeesNotConfirm.map((item, index) => {
-                                                            let seperator = index !== 0 ? ", " : "";
-                                                            return <span key={index}>{seperator}{item.name}</span>
-                                                        })
-                                                    }
-                                                </li>
-                                            }
-                                        </ul>
+                                        <strong>Chưa xác nhận công việc: </strong>
+                                        &nbsp;&nbsp;
+                                        {
+                                            checkConfirmTask.listEmployeeNotConfirm.length !== 0
+                                            && checkConfirmTask.listEmployeeNotConfirm.map((item, index) => {
+                                                let seperator = index !== 0 ? ", " : "";
+                                                return <span key={index}>{seperator}{item.name}</span>
+                                            })
+                                        }
                                     </div>
                                 }
 
                                 {/** Chưa có đánh giá */}
                                 {
-                                    checkEvaluationTaskAndKpiLinkAndDeadlineForEvaluation && checkEvaluationTaskAndKpiLinkAndDeadlineForEvaluation.checkEvaluationTask
+                                    checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkEvaluationTask
                                     && <div><strong>Công việc chưa có đánh giá cho tháng này</strong></div>
                                 }
 
@@ -692,71 +699,32 @@ class DetailTaskTab extends Component {
                                 {
                                     checkEvaluationTaskAction && checkEvaluationTaskAction.checkEvaluationTaskAction
                                     && <div>
-                                        <strong>Hoạt động chưa được đánh giá tháng này</strong>
-                                        <ul>
-                                            {
-                                                checkEvaluationTaskAction.taskActionNotEvaluate.length !== 0
-                                                && checkEvaluationTaskAction.taskActionNotEvaluate.map(item => {
-                                                    return <li>{item.name}</li>
-                                                })
-                                            }
-                                        </ul>
+                                        <strong>Còn <span style={{ color: "red" }}>{checkEvaluationTaskAction.numberOfTaskActionNotEvaluate}</span> hoạt động chưa được đánh giá tháng này</strong>
                                     </div>
                                 }
 
                                 {/** Chưa liên kết KPI */}
                                 {
-                                    checkEvaluationTaskAndKpiLinkAndDeadlineForEvaluation && checkEvaluationTaskAndKpiLinkAndDeadlineForEvaluation.checkKpiLink
+                                    checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkKpiLink
                                     && <div>
                                         <strong>Chưa liên kết KPI tháng này</strong>
-                                        <ul>
-                                            {
-                                                checkEvaluationTaskAndKpiLinkAndDeadlineForEvaluation.responsibleEmployeesNotKpiLink.length !== 0
-                                                && <li><strong>Người thực hiện: </strong>
-                                                    &nbsp;&nbsp;
-                                                    {
-                                                        checkEvaluationTaskAndKpiLinkAndDeadlineForEvaluation.responsibleEmployeesNotKpiLink.map((item, index) => {
-                                                            let seperator = index !== 0 ? ", " : "";
-                                                            return <span key={index}>{seperator}{item.name}</span>
-                                                        })
-                                                    }
-                                                </li>
-                                            }
-                                            {
-                                                checkEvaluationTaskAndKpiLinkAndDeadlineForEvaluation.accountableEmployeesNotKpiLink.length !== 0
-                                                && <li><strong>Người phê duyệt: </strong>
-                                                    &nbsp;&nbsp;
-                                                    {
-                                                        checkEvaluationTaskAndKpiLinkAndDeadlineForEvaluation.accountableEmployeesNotKpiLink.map((item, index) => {
-                                                            let seperator = index !== 0 ? ", " : "";
-                                                            return <span key={index}>{seperator}{item.name}</span>
-                                                        })
-                                                    }
-                                                </li>
-                                            }
-                                            {
-                                                checkEvaluationTaskAndKpiLinkAndDeadlineForEvaluation.consultedEmployeesNotKpiLink.length !== 0
-                                                && <li><strong>Người hỗ trợ: </strong>
-                                                    &nbsp;&nbsp;
-                                                    {
-                                                        checkEvaluationTaskAndKpiLinkAndDeadlineForEvaluation.consultedEmployeesNotKpiLink.map((item, index) => {
-                                                            let seperator = index !== 0 ? ", " : "";
-                                                            return <span key={index}>{seperator}{item.name}</span>
-                                                        })
-                                                    }
-                                                </li>
-                                            }
-                                        </ul>
+                                        &nbsp;&nbsp;
+                                        {
+                                            checkEvaluationTaskAndKpiLink.listEmployeeNotKpiLink.length !== 0
+                                            && checkEvaluationTaskAndKpiLink.listEmployeeNotKpiLink.map((item, index) => {
+                                                let seperator = index !== 0 ? ", " : "";
+                                                return <span key={index}>{seperator}{item.name}</span>
+                                            })
+                                        }
                                     </div>
                                 }
 
                                 {/** Thời hạn chỉnh sửa thông tin */}
                                 {
-                                    checkEvaluationTaskAndKpiLinkAndDeadlineForEvaluation && checkEvaluationTaskAndKpiLinkAndDeadlineForEvaluation.checkDeadlineForEvaluation
-                                        && checkEvaluationTaskAndKpiLinkAndDeadlineForEvaluation.deadlineForEvaluation !== -1
-                                        ? <div><strong> Còn <span style={{ color: "red" }}>{checkEvaluationTaskAndKpiLinkAndDeadlineForEvaluation.deadlineForEvaluation}</span> là đến hạn chỉnh sửa đánh giá công việc tháng này</strong></div>
-                                        : checkEvaluationTaskAndKpiLinkAndDeadlineForEvaluation.deadlineForEvaluation === -1 && <strong>Đã quá hạn chỉnh sửa đánh giá công việc tháng này</strong>
-
+                                    checkDeadlineForEvaluation && checkDeadlineForEvaluation.checkDeadlineForEvaluation
+                                    && <div>
+                                        <strong> Còn <span style={{ color: "red" }}>{checkDeadlineForEvaluation.deadlineForEvaluation}</span> là hết hạn chỉnh sửa đánh giá công việc tháng trước</strong>
+                                    </div>
                                 }
                             </div>
                         }
@@ -962,7 +930,7 @@ class DetailTaskTab extends Component {
                     </div>
                 </div>
                 {
-                    (id && showEdit === id) && currentRole === "responsible" &&
+                    (id && showEdit === id) && currentRole === "responsible" && checkHasAccountable === true &&
                     <ModalEditTaskByResponsibleEmployee
                         id={id}
                         task={task && task}
@@ -973,10 +941,23 @@ class DetailTaskTab extends Component {
                 }
 
                 {
+                    (id && showEdit === id) && currentRole === "responsible" && checkHasAccountable === false &&
+                    <ModalEditTaskByAccountableEmployee
+                        id={id}
+                        task={task && task}
+                        role={currentRole}
+                        hasAccountable={false}
+                        title={translate('task.task_management.detail_resp_edit')}
+                        perform={`edit-${currentRole}-hasnot-accountable`}
+                    />
+                }
+
+                {
                     (id && showEdit === id) && currentRole === "accountable" &&
                     <ModalEditTaskByAccountableEmployee
                         id={id}
                         task={task && task}
+                        hasAccountable={true}
                         role={currentRole}
                         title={translate('task.task_management.detail_acc_edit')}
                         perform={`edit-${currentRole}`}
@@ -988,6 +969,7 @@ class DetailTaskTab extends Component {
                     <EvaluationModal
                         id={id}
                         task={task && task}
+                        hasAccountable={checkHasAccountable}
                         role={currentRole}
                         title={translate('task.task_management.detail_cons_eval')}
                         perform='evaluate'
@@ -1020,7 +1002,7 @@ function mapStateToProps(state) {
 }
 
 const actionGetState = { //dispatchActionToProps
-    getTaskById: taskManagementActions.getTaskById,
+    getTaskById: performTaskAction.getTaskById,
     getSubTask: taskManagementActions.getSubTask,
     startTimer: performTaskAction.startTimerTask,
     stopTimer: performTaskAction.stopTimerTask,
@@ -1029,6 +1011,7 @@ const actionGetState = { //dispatchActionToProps
     getTaskLog: performTaskAction.getTaskLog,
     editStatusTask: performTaskAction.editStatusOfTask,
     editHoursSpentInEvaluate: performTaskAction.editHoursSpentInEvaluate,
+    confirmTask: performTaskAction.confirmTask
 }
 
 const detailTask = connect(mapStateToProps, actionGetState)(withTranslate(DetailTaskTab));

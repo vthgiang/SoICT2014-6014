@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DatePicker, ErrorLabel, SelectBox } from '../../../../../common-components';
+import { DatePicker, ErrorLabel, SelectBox, ImgShow } from '../../../../../common-components';
 
 import { EmployeeCreateValidator } from './employeeCreateValidator';
 
-import { AuthActions } from '../../../../auth/redux/actions';
+// import { AuthActions } from '../../../../auth/redux/actions';
 
 import "./addEmployee.css";
 
@@ -14,12 +14,7 @@ class GeneralTab extends Component {
 
     constructor(props) {
         super(props);
-
-        this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
-
-        this.state = {
-            dataStatus: this.DATA_STATUS.NOT_AVAILABLE
-        };
+        this.state = {};
     }
 
     /**
@@ -397,30 +392,6 @@ class GeneralTab extends Component {
         }
     }
 
-    shouldComponentUpdate = async (nextProps, nextState) => {
-        if (nextProps.id !== this.state.id || (nextProps.img && !nextProps.auth.isLoading && this.state.dataStatus === this.DATA_STATUS.NOT_AVAILABLE)) {
-            await this.props.downloadFile(nextProps.img, `avatar${nextProps.id}`, 'show');
-            this.setState({
-                dataStatus: this.DATA_STATUS.QUERYING
-            });
-        };
-        if (this.state.dataStatus === this.DATA_STATUS.QUERYING && !nextProps.auth.isLoading) {
-            this.setState({
-                dataStatus: this.DATA_STATUS.AVAILABLE
-            });
-            return false;
-        }
-        if (this.state.dataStatus === this.DATA_STATUS.AVAILABLE && !nextProps.auth.isLoading && nextProps.auth.show_files.length !== 0) {
-            let img = nextProps.auth.show_files.find(x => x.fileName === `avatar${nextProps.id}`);
-            this.setState({
-                dataStatus: this.DATA_STATUS.FINISHED,
-                img: img ? img.file : '',
-            });
-            return true;
-        };
-        return false;
-    }
-
     render() {
         const { translate } = this.props;
 
@@ -436,7 +407,7 @@ class GeneralTab extends Component {
                     <div className="col-lg-4 col-md-4 col-ms-12 col-xs-12" style={{ textAlign: 'center' }}>
                         <div>
                             <a href={img} target="_blank">
-                                <img className="attachment-img avarta" src={img} alt="Attachment" />
+                                <ImgShow id={`avater-edit-create-${id}`} src={img} />
                             </a>
                         </div>
                         <div className="upload btn btn-default ">
@@ -616,14 +587,5 @@ class GeneralTab extends Component {
     }
 };
 
-function mapState(state) {
-    const { auth } = state;
-    return { auth };
-};
-
-const actionCreators = {
-    downloadFile: AuthActions.downloadFile,
-};
-
-const generalTab = connect(mapState, actionCreators)(withTranslate(GeneralTab));
+const generalTab = connect(null, null)(withTranslate(GeneralTab));
 export { generalTab as GeneralTab };

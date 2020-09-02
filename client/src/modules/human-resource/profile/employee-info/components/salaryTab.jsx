@@ -49,16 +49,16 @@ class SalaryTab extends Component {
     render() {
         const { translate } = this.props;
 
-        const { id } = this.props;
-
-        const { annualLeaves, salaries } = this.state;
+        const { id, annualLeaves, salaries } = this.state;
 
         let formater = new Intl.NumberFormat();
+
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
+                    {/* Lịch sử lương */}
                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border"><h4 className="box-title">{translate('manage_employee.historySalary')}</h4></legend>
+                        <legend className="scheduler-border"><h4 className="box-title">{translate('human_resource.profile.historySalary')}</h4></legend>
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
                             <thead>
                                 <tr>
@@ -97,8 +97,10 @@ class SalaryTab extends Component {
                             (!salaries || salaries.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </fieldset>
+
+                    {/* Thông tin nghỉ phép */}
                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">{translate('manage_employee.sabbatical')}</h4></legend>
+                        <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">{translate('human_resource.profile.sabbatical')}</h4></legend>
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
                             <thead>
                                 <tr>
