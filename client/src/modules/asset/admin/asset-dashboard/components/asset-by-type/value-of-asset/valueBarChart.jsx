@@ -20,7 +20,7 @@ class ValueBarChart extends Component {
 
     // Thiết lập dữ liệu biểu đồ
     setDataBarChart = () => {
-        const { listAssets, assetType } = this.props;
+        const { listAssets, assetType, setValueOfAsset } = this.props;
 
         let typeName = [], shortName = [], countAssetValue = [], idAssetType = [];
         for (let i in assetType) {
@@ -49,6 +49,10 @@ class ValueBarChart extends Component {
             shortName: shortName
         }
 
+        if (listAssets && assetType && setValueOfAsset) {
+            setValueOfAsset(data);
+        }
+        
         return data;
     }
 

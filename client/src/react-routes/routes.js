@@ -42,6 +42,7 @@ import EmpoyeeManager from '../modules/human-resource/profile/employee-managemen
 import EmployeeCreate from '../modules/human-resource/profile/employee-create/components';
 import SalaryManager from '../modules/human-resource/salary/components';
 import TimesheetsManager from '../modules/human-resource/timesheets/components';
+import { WorkPlan } from '../modules/human-resource/holiday/components/combinedContent';
 
 import { ListEducation } from '../modules/training/education-program/components/educationProgramList';
 import { TrainingPlan } from '../modules/training/course/components/course';
@@ -434,6 +435,21 @@ class Routes extends Component {
                         pageName={'manage_holiday'}
                         layout={Layout}
                         component={ManageHoliday}
+                    />
+                    <PrivateRoute
+                        isLoading={this.props.holiday.isLoading}
+                        key={'work_plan'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/hr-work-plan', name: 'work_plan', icon: 'fa fa-calendar' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/hr-work-plan'}
+                        path={'/hr-work-plan'}
+                        pageName={'work_plan'}
+                        layout={Layout}
+                        component={WorkPlan}
                     />
                     <PrivateRoute
                         isLoading={this.props.salary.isLoading}

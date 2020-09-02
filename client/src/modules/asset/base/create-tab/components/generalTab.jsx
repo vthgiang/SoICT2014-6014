@@ -457,7 +457,7 @@ class GeneralTab extends Component {
     };
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id) {
+        if (nextProps.id !== prevState.id || nextProps.assignedToUser !== prevState.assignedToUser) {
             return {
                 ...prevState,
                 id: nextProps.id,
@@ -513,8 +513,6 @@ class GeneralTab extends Component {
         } = this.state;
 
         var userlist = user.list;
-        console.log("==Dòng 520==", readByRoles)
-        console.log("Dòng 521", role.list)
         var assettypelist = assetType.listAssetTypes;
         let dataList = assettypelist.map(node => {
             return {
@@ -547,7 +545,7 @@ class GeneralTab extends Component {
                             </a>
                         </div>
                         <div className="upload btn btn-default ">
-                            {translate('human_resource.profile.upload')}
+                            {translate('manage_asset.upload')}
                             <input className="upload" type="file" name="file" onChange={this.handleUpload} />
                         </div>
                     </div>
@@ -668,11 +666,11 @@ class GeneralTab extends Component {
                                     <label>{translate('asset.general_information.user')}&emsp; </label>
                                     <div id="assignedToUserBox">
                                         <SelectBox
-                                            id={`assignedToUserBox${id}`}
+                                            id={`assignedToUserBox${assignedToUser}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            items={[{ value: 'null', text: 'Chưa có người được giao sử dụng' }, ...userlist.map(x => { return { value: x.id, text: x.name + " - " + x.email } })]}
                                             value={assignedToUser}
+                                            items={[{ value: 'null', text: 'Chưa có người được giao sử dụng' }, ...userlist.map(x => { return { value: x.id, text: x.name + " - " + x.email} })]}
                                             multiple={false}
                                             disabled
                                         />
@@ -698,11 +696,10 @@ class GeneralTab extends Component {
                                 {/* Thời gian bắt đầu sử dụng */}
                                 <div className="form-group">
                                     <label>{translate('asset.general_information.handover_from_date')}&emsp; </label>
-                                    < DatePicker
-                                        id={`start-date${id}`}
-                                        value={status == "Đang sử dụng" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1].startDate) : ''}
-                                        onChange={this.handleEndDateChange}
-                                        disabled
+                                   < DatePicker
+                                    id={`start-date${assignedToUser}`}
+                                    value={status == "Đang sử dụng" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1].startDate) : ''}
+                                    disabled
                                     />
                                 </div>
 
@@ -710,10 +707,9 @@ class GeneralTab extends Component {
                                 <div className="form-group">
                                     <label>{translate('asset.general_information.handover_to_date')}&emsp; </label>
                                     < DatePicker
-                                        id={`end-date${id}`}
-                                        value={status == "Đang sử dụng" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1].endDate) : ''}
-                                        onChange={this.handleEndDateChange}
-                                        disabled
+                                    id={`end-date${assignedToUser}`}
+                                    value={status == "Đang sử dụng" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1].endDate) : ''}
+                                    disabled
                                     />
                                 </div>
 

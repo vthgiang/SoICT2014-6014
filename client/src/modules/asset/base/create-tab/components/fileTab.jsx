@@ -143,7 +143,7 @@ class FileTab extends Component {
                         {/* Form thêm tài liệu đính kèm */}
                         <FileAddModal handleChange={this.handleAddFile} id={`addFile${id}`} />
                         {/* Button mặc định */}
-                        <button style={{ marginTop: 2, marginBottom: 10, marginRight: 15 }} type="submit" className="btn btn-primary pull-right" onClick={this.defaulteClick} title={translate('human_resource.profile.add_default_title')}>{translate('human_resource.profile.add_default')}</button>
+                        <button style={{ marginTop: 2, marginBottom: 10, marginRight: 15 }} type="submit" className="btn btn-primary pull-right" onClick={this.defaulteClick} title={translate('manage_asset.add_default_title')}>{translate('manage_asset.add_default')}</button>
 
                         {/* Bảng tài liệu đính kèm */}
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >

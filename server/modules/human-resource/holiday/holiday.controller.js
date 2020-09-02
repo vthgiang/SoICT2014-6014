@@ -29,7 +29,12 @@ exports.checkForFuplicate = (data, array) => {
 /** Lấy danh sách lịch làm việc */
 exports.getAllHolidays = async (req, res) => {
     try {
-        let data = await HolidayService.getAllHolidays(req.user.company._id);
+        let data;
+        if (req.query.year) {
+            data = await HolidayService.getHolidaysOfYear(req.user.company._id, req.query.year);
+        } else {
+            data = await HolidayService.getAllHolidays(req.user.company._id);
+        }
         await LogInfo(req.user.email, 'GET_HOLIDAY', req.user.company);
         res.status(200).json({
             success: true,
@@ -51,6 +56,10 @@ exports.getAllHolidays = async (req, res) => {
 /** Tạo mới thông tin lịch làm việc */
 exports.createHoliday = async (req, res) => {
     try {
+        let numberDateLeaveOfYear = false;
+        if (req.body.numberDateLeaveOfYear) {
+            numberDateLeaveOfYear = true
+        };
         // Kiểm tra dữ liệu đầu vào
         if (req.body.startDate.trim() === "") {
             await LogError(req.user.email, 'CREATE_HOLIDAY', req.user.company);
@@ -81,8 +90,8 @@ exports.createHoliday = async (req, res) => {
             });
         } else {
             // Tạo mới thông tin lịch làm việc
-            let holidays = await HolidayService.getAllHolidays(req.user.company._id);
-            let checkData = this.checkForFuplicate(req.body, holidays);
+            let result = await HolidayService.getAllHolidays(req.user.company._id);
+            let checkData = this.checkForFuplicate(req.body, result.holidays);
             if (checkData) {
                 let data = await HolidayService.createHoliday(req.body, req.user.company._id);
                 await LogInfo(req.user.email, 'CREATE_HOLIDAY', req.user.company);
@@ -117,7 +126,7 @@ exports.createHoliday = async (req, res) => {
 /** Xoá thông tin lịch làm việc */
 exports.deleteHoliday = async (req, res) => {
     try {
-        let data = await HolidayService.deleteHoliday(req.params.id);
+        let data = await HolidayService.deleteHoliday(req.params.id, req.user.company._id);
         await LogInfo(req.user.email, 'DELETE_HOLIDAY', req.user.company);
         res.status(200).json({
             success: true,
@@ -139,58 +148,69 @@ exports.deleteHoliday = async (req, res) => {
 /** Chỉnh sửa thông tin lịch làm việc */
 exports.updateHoliday = async (req, res) => {
     try {
-        // Kiểm tra thông tin truyền vào
-        if (req.body.startDate.trim() === "") {
-            await LogError(req.user.email, 'CREATE_HOLIDAY', req.user.company);
-            res.status(400).json({
-                success: false,
-                messages: ["start_date_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else if (req.body.endDate.trim() === "") {
-            await LogError(req.user.email, 'CREATE_HOLIDAY', req.user.company);
-            res.status(400).json({
-                success: false,
-                messages: ["end_date_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else if (req.body.description.trim() === "") {
-            await LogError(req.user.email, 'CREATE_HOLIDAY', req.user.company);
-            res.status(400).json({
-                success: false,
-                messages: ["reason_required"],
-                content: {
-                    inputData: req.body
-                }
+        if (req.body.numberDateLeaveOfYear) {
+            let data = await HolidayService.updateNumberDateLeaveOfYear(req.body.numberDateLeaveOfYear, req.user.company._id);
+            await LogInfo(req.user.email, 'EDIT_HOLIDAY', req.user.company);
+            res.status(200).json({
+                success: true,
+                messages: ["edit_number_date_leave_of_year_success"],
+                content: data
             });
         } else {
-            // Chỉnh sửa thông tin lịch làm việc
-            let holidays = await HolidayService.getAllHolidays(req.user.company._id);
-            holidays = holidays.filter(x => x._id.toString() !== req.params.id);
-            let checkData = this.checkForFuplicate(req.body, holidays);
-            if (checkData) {
-                let data = await HolidayService.updateHoliday(req.params.id, req.body);
-                await LogInfo(req.user.email, 'EDIT_HOLIDAY', req.user.company);
-                res.status(200).json({
-                    success: true,
-                    messages: ["edit_holiday_success"],
-                    content: data
-                });
-            } else {
-                await LogError(req.user.email, 'EDIT_HOLIDAY', req.user.company);
+            // Kiểm tra thông tin truyền vào
+            if (req.body.startDate.trim() === "") {
+                await LogError(req.user.email, 'CREATE_HOLIDAY', req.user.company);
                 res.status(400).json({
                     success: false,
-                    messages: ["holiday_duplicate_required"],
+                    messages: ["start_date_required"],
                     content: {
                         inputData: req.body
                     }
                 });
+            } else if (req.body.endDate.trim() === "") {
+                await LogError(req.user.email, 'CREATE_HOLIDAY', req.user.company);
+                res.status(400).json({
+                    success: false,
+                    messages: ["end_date_required"],
+                    content: {
+                        inputData: req.body
+                    }
+                });
+            } else if (req.body.description.trim() === "") {
+                await LogError(req.user.email, 'CREATE_HOLIDAY', req.user.company);
+                res.status(400).json({
+                    success: false,
+                    messages: ["reason_required"],
+                    content: {
+                        inputData: req.body
+                    }
+                });
+            } else {
+                // Chỉnh sửa thông tin lịch làm việc
+                let result = await HolidayService.getAllHolidays(req.user.company._id);
+                result.holidays = result.holidays.filter(x => x._id.toString() !== req.params.id);
+                let checkData = this.checkForFuplicate(req.body, result.holidays);
+                if (checkData) {
+                    let data = await HolidayService.updateHoliday(req.params.id, req.body, req.user.company._id);
+                    await LogInfo(req.user.email, 'EDIT_HOLIDAY', req.user.company);
+                    res.status(200).json({
+                        success: true,
+                        messages: ["edit_holiday_success"],
+                        content: data
+                    });
+                } else {
+                    await LogError(req.user.email, 'EDIT_HOLIDAY', req.user.company);
+                    res.status(400).json({
+                        success: false,
+                        messages: ["holiday_duplicate_required"],
+                        content: {
+                            inputData: req.body
+                        }
+                    });
+                }
             }
         }
+
     } catch (error) {
         await LogError(req.user.email, 'EDIT_HOLIDAY', req.user.company);
         res.status(400).json({

@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
-const { Task, TaskProcess, TaskTemplate, TaskAction, TaskTemplateInformation, Role, OrganizationalUnit, User, UserRole } = require('../../../models/index').schema;
+const { Task, TaskProcess, TaskTemplate, TaskAction, TaskTemplateInformation, Role, OrganizationalUnit, User, UserRole, Company } = require('../../../models/index').schema;
 
 const moment = require("moment");
 const nodemailer = require("nodemailer");
-
+const { sendEmail } = require('../../../helpers/emailHelper');
 const OrganizationalUnitService = require('../../super-admin/organizational-unit/organizationalUnit.service');
 const overviewService = require('../../kpi/employee/management/management.service');
 
@@ -1519,4 +1519,236 @@ exports.getAllTaskOfChildrenOrganizationalUnit = async (companyId, roleId, month
         tasksOfChildrenOrganizationalUnit[i].unshift({ 'name': childrenOrganizationalUnits[i].name, 'deg': childrenOrganizationalUnits[i].deg })
     }
     return tasksOfChildrenOrganizationalUnit;
+}
+
+exports.sendEmailCheckTaskLastMonth = async () => {  
+    let today = new Date();
+    let day = today.getDate();
+    let month = today.getMonth();
+    let daySend = 30;
+    switch (month) {
+        case 1:
+        case 3:
+        case 5:
+        case 7:
+        case 8:
+        case 10:
+        case 12:
+            daySend = 31;
+            break;
+        case 2:
+            daySend = 28;
+            break;
+    }
+    if (1) {
+        // xu ly gui email
+        console.log("Đến ngày gửi email");
+        let company = await Company.find({});
+        company = company.map(x => x._id);
+        let consultedTasks = [], informedTasks = [], responsibleTasks = [], accountedTasks = [];
+        let taskExpire = [], taskDeadlinecoming = [];
+        let currentMonth = new Date().getMonth() + 1;
+        let currentYear = new Date().getFullYear();
+        for (let i in company) {
+            let flag = false;
+            let user = await User.find({ company: company[i] });  // lay ra tat ca nguoi dung trong tung cong ty
+            let userId = user.map(x => x._id);
+            let email = user.map(x => x.email);
+
+            // for (let j in userId) {
+                let j = 5;
+                let tasks = { "data": "user", "userId": userId[j] };
+                let tasksByUser = await this.getTasksByUser(tasks); // laay ra tat ca cong viec cua nguoi dung
+                tasks = { "organizationalUnit": "[]", "number": 1, "perPage": 1000, "status": "[]", "priority": "[]", "special": "[]", "name": null, "startDate": null, "endDate": null, "startDateAfter": null, "endDateBefore": null, "aPeriodOfTime": false, "user": userId[j] }
+
+                informedTasks = await this.getPaginatedTasksThatUserHasInformedRole(tasks);
+                // informedTasks = await Task.find({informedEmployees: userId[j] , isArchived: false}).populate({ path: "organizationalUnit creator parent" });
+                consultedTasks = await this.getPaginatedTasksThatUserHasConsultedRole(tasks);
+                responsibleTasks = await this.getPaginatedTasksThatUserHasResponsibleRole(tasks);
+                accountedTasks = await this.getPaginatedTasksThatUserHasAccountableRole(tasks);
+
+                // xu ly voi moi nguoi dung
+                let infTasks = informedTasks && informedTasks.tasks;
+                let accTasks = accountedTasks && accountedTasks.tasks;
+                let resTasks = responsibleTasks && responsibleTasks.tasks;
+                let conTasks = consultedTasks && consultedTasks.tasks;
+                let allTasks = [], notLinkedTasks = [], taskList;
+
+                // xu ly task not link
+                if (accTasks && resTasks && infTasks && conTasks) {
+                    taskList = allTasks.concat(accTasks, resTasks, conTasks, infTasks);
+                }
+                if (taskList) {
+                    let inprocessTask = taskList.filter(task => task.status === "Inprocess");
+                    let distinctTasks = [];
+                    for (let i in inprocessTask) {
+                        let check = false;
+                        for (let j in distinctTasks) {
+
+                            if (inprocessTask[i]._id === distinctTasks[j]._id) {
+                                check = true
+                                break;
+                            }
+                        }
+                        if (!check) distinctTasks.push(inprocessTask[i])
+                    }
+                    distinctTasks.length && distinctTasks.map(x => {
+                        let evaluations;
+                        let currentEvaluate = [];
+
+                        evaluations = x.evaluations.length && x.evaluations;
+                        if (evaluations) {
+                            for (let i in evaluations) {
+                                let month = evaluations[i].date.slice(5, 7);
+                                let year = evaluations[i].date.slice(0, 4);
+
+                                if (month == currentMonth && year == currentYear) {
+                                    currentEvaluate.push(evaluations[i]);
+                                }
+                            }
+                        }
+
+                        if (currentEvaluate.length === 0) {
+                            notLinkedTasks.push(x);
+                            flag = true;
+                        } else {
+                            let break1 = false;
+                            let add = true;
+                            if (currentEvaluate.length !== 0) {
+                                for (let i in currentEvaluate) {
+                                    if (currentEvaluate[i].results.length !== 0) {
+                                        for (let j in currentEvaluate[i].results) {
+                                            let res = currentEvaluate[i].results[j];
+                                            console.log(typeof res.employee);
+                                            if (res.employee === userId[j]) {
+                                                add = false;
+                                                if (res.kpis.length === 0) {
+                                                    notLinkedTasks.push(x);
+                                                    break1 = true
+                                                }
+                                            };
+                                            if (break1) break;
+                                        }
+                                        if (break1) break;
+                                        if (add) {
+                                            notLinkedTasks.push(x);
+                                            flag = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    })
+
+                }
+                console.log(notLinkedTasks.map(x => x.name));
+
+
+                // xu ly Action not evaluated
+                var TaskHasActionsAccountable = [];
+                var TaskHasActionsResponsible = [];
+                
+                if (accTasks) {
+                    let inprocessAccountableTask = accTasks.filter(task => task.status === "Inprocess")
+
+                    inprocessAccountableTask.length && inprocessAccountableTask.map(x => {
+                        let taskActions;
+
+                        taskActions = x.taskActions.length && x.taskActions;
+                        if (taskActions.length !== 0) {
+                            for (let i in taskActions) {
+                                let month = taskActions[i].createdAt;
+                                let year = taskActions[i].createdAt;
+                                month = JSON.stringify(month);
+                                year = JSON.stringify(year);
+                                month = month.slice(5, 7);
+                                year = year.slice(0, 4);
+                                currentMonth = JSON.stringify(currentMonth);
+                                currentYear = JSON.stringify(currentYear);
+                                if (month == currentMonth && year == currentYear) {
+                                    if (taskActions[i].rating == -1) {
+                                        TaskHasActionsAccountable.push(x);
+                                        flag = true;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                    })
+                }
+                if (resTasks) {
+                    let inprocessResponsibleTasks = resTasks.filter(task => task.status === "Inprocess")
+                    inprocessResponsibleTasks.length && inprocessResponsibleTasks.map(x => {
+                        let taskActions;
+
+                        taskActions = x.taskActions.length && x.taskActions;
+                        if (taskActions.length !== 0) {
+                            for (let i in taskActions) {
+                                let month = taskActions[i].createdAt;
+                                let year = taskActions[i].createdAt;
+                                month = JSON.stringify(month);
+                                year = JSON.stringify(year);
+                                month = month.slice(5, 7);
+                                year = year.slice(0, 4);
+                                currentMonth = JSON.stringify(currentMonth);
+                                currentYear = JSON.stringify(currentYear);
+                                if (month == currentMonth && year == currentYear) {
+                                    if (taskActions[i].rating == -1) {
+                                        TaskHasActionsResponsible.push(x);
+                                        flag = true;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                    })
+                }
+                console.log(TaskHasActionsAccountable.map(x => x.name));
+                console.log(TaskHasActionsResponsible.map(x => x.name));
+                let taskHasActions = [];
+                taskHasActions = taskHasActions.concat(TaskHasActionsAccountable, TaskHasActionsResponsible);
+                console.log("tassssssss", tasksByUser);
+                if (tasksByUser.expire.length !== 0) {
+                    console.log(tasksByUser.expire.map(x => x.task.name));
+                    flag = true;
+                }
+                if (tasksByUser.deadlineincoming.length !== 0) {
+                    console.log(tasksByUser.deadlineincoming.map(x => x.task.name));
+                    flag = true;
+                }
+                if (flag) {  // gui email
+                    let userEmail = [email[j]];
+                    userEmail.push("trinhhong102@gmail.com");
+                    let html = `<h1>Thông báo danh sách công việc tháng ${currentMonth - 1} </h1> ` +
+                    `<h3>Thông tin công việc</h3>` +
+                    `${tasksByUser.expire.length > 0 ? `<p>Công việc quá hạn</p> ` +
+                    `<ul>${tasksByUser.expire.map((item) => {
+                        return `<li>${item.task.name}</li>`
+                    })}
+                                </ul>` : '' }` +
+                    `${tasksByUser.deadlineincoming.length > 0 ? `<p>Công việc sắp hết hạn</p> ` +
+                    `<ul>${tasksByUser.deadlineincoming.map((item) => {
+                        return `<li>${item.task.name}</li>`
+                    })}
+                                </ul>` : "" }` +
+                    `${notLinkedTasks.length > 0 ? `<p>Công việc chưa được liên kết KPI tháng</p> ` +
+                    `<ul>${notLinkedTasks.map((item) => {
+                        return `<li>${item.name}</li>`
+                    })}
+                                </ul>` : "" }` +
+                    `${taskHasActions.length > 0 ? `<p>Công việc có hoạt động chưa đánh giá</p> ` +
+                    `<ul>${taskHasActions.map((item) => {
+                        return `<li>${item.name}</li>`
+                    })}
+                                </ul>` : "" }`
+                    ;
+                    sendEmail("vnist.qlcv@gmail.com", userEmail, "Thông báo danh sách công việc", '', html);
+               }
+            // }
+        }
+    }
+    console.log(today.getDate());
+    console.log(daySend);
 }

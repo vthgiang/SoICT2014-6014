@@ -16,11 +16,13 @@ export const DocumentActions = {
     createDocumentCategory,
     editDocumentCategory,
     deleteDocumentCategory,
+    importDocumentCategory,
 
     getDocumentDomains,
     createDocumentDomain,
     editDocumentDomain,
     deleteDocumentDomain,
+    importDocumentDomain,
 
     getDocumentsUserCanView,
     getUserDocumentStatistics,
@@ -29,6 +31,8 @@ export const DocumentActions = {
     createDocumentArchive,
     editDocumentArchive,
     deleteDocumentArchive,
+    importDocumentArchive,
+    
 };
 
 function getDocuments(data = undefined) {
@@ -249,6 +253,21 @@ function deleteDocumentCategory(id) {
             })
     }
 }
+function importDocumentCategory(data) {
+    return dispatch => {
+        dispatch({ type: DocumentConstants.IMPORT_DOCUMENT_CATEGORY_REQUEST });
+        DocumentServices.importDocumentCategory(data)
+            .then(res => {
+                dispatch({
+                    type: DocumentConstants.IMPORT_DOCUMENT_CATEGORY_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({ type: DocumentConstants.IMPORT_DOCUMENT_CATEGORY_FAILE });
+            })
+    }
+}
 
 function getDocumentDomains() {
     return dispatch => {
@@ -331,6 +350,22 @@ function deleteDocumentDomain(data, type = "single") {
                     dispatch({ type: DocumentConstants.DELETE_DOCUMENT_DOMAIN_FAILE });
                 })
         }
+    }
+}
+
+function importDocumentDomain(data) {
+    return dispatch => {
+        dispatch({ type: DocumentConstants.IMPORT_DOCUMENT_DOMAIN_REQUEST });
+        DocumentServices.importDocumentDomain(data)
+            .then(res => {
+                dispatch({
+                    type: DocumentConstants.IMPORT_DOCUMENT_DOMAIN_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({ type: DocumentConstants.IMPORT_DOCUMENT_DOMAIN_FAILE });
+            })
     }
 }
 
@@ -503,3 +538,20 @@ function deleteDocumentArchive(data, type = "single") {
         }
     }
 }
+
+function importDocumentArchive(data) {
+    return dispatch => {
+        dispatch({ type: DocumentConstants.IMPORT_DOCUMENT_DOMAIN_REQUEST });
+        DocumentServices.importDocumentArchive(data)
+            .then(res => {
+                dispatch({
+                    type: DocumentConstants.IMPORT_DOCUMENT_DOMAIN_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({ type: DocumentConstants.IMPORT_DOCUMENT_DOMAIN_FAILE });
+            })
+    }
+}
+

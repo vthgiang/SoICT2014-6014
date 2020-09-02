@@ -9,18 +9,30 @@ const HolidaySchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: Company
     },
-    startDate: {
-        type: Date,
-        required: true
+    numberDateLeaveOfYear: {
+        type: Number,
+        default: 0,
+        required: true,
     },
-    endDate: {
-        type: Date,
-        required: true
-    },
-    description: {
-        type: String,
-        required: true
-    },
+    holidays: [{
+        type: {
+            type: String,
+            required: true,
+            enum: ['holiday', 'auto_leave', 'no_leave'],
+        },
+        startDate: {
+            type: Date,
+            required: true
+        },
+        endDate: {
+            type: Date,
+            required: true
+        },
+        description: {
+            type: String,
+            required: true
+        },
+    }],
 }, {
     timestamps: true,
 });

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, DatePicker, ErrorLabel } from '../../../../common-components';
+import { DialogModal, DatePicker, ErrorLabel, SelectBox } from '../../../../common-components';
 
 import { HolidayFormValidator } from './combinedContent';
 
@@ -12,6 +12,7 @@ class HolidayCreateForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            type: 'holiday',
             startDate: this.formatDate(Date.now()),
             endDate: this.formatDate(Date.now()),
             description: ""
@@ -57,6 +58,16 @@ class HolidayCreateForm extends Component {
             });
         }
         return msg === undefined;
+    }
+
+    /**
+     * Bắt sự kiện thay đổi thể loại kế hoạch làm việc
+     * @param {*} value : Thể loại kế hoạch làm việc
+     */
+    handleTypetChange = (value) => {
+        this.setState({
+            type: value[0],
+        })
     }
 
     /**
@@ -143,7 +154,7 @@ class HolidayCreateForm extends Component {
     render() {
         const { translate, holiday } = this.props;
 
-        const { startDate, endDate, description, errorOnStartDate, errorOnEndDate, errorOnDescription } = this.state;
+        const { type, startDate, endDate, description, errorOnStartDate, errorOnEndDate, errorOnDescription } = this.state;
 
         return (
             <React.Fragment>
@@ -157,6 +168,20 @@ class HolidayCreateForm extends Component {
                     disableSubmit={!this.isFormValidated()}
                 >
                     <form className="form-group" id="form-create-holiday" >
+                        {/* Thể loại kế hoạch làm việc */}
+                        <div className="form-group">
+                            <label>{translate('human_resource.holiday.table.type')}<span className="text-red">*</span></label>
+                            <SelectBox
+                                id={`create_type_holiday`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                value={type}
+                                items={[{ value: "holiday", text: translate('human_resource.holiday.holiday') },
+                                { value: 'auto_leave', text: translate('human_resource.holiday.auto_leave') },
+                                { value: 'no_leave', text: translate('human_resource.holiday.no_leave') }]}
+                                onChange={this.handleTypetChange}
+                            />
+                        </div>
                         <div className="row">
                             {/* Ngày bắt đầu */}
                             <div className={`form-group col-sm-6 col-xs-12 ${errorOnStartDate && "has-error"}`}>
