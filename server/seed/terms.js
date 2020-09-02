@@ -247,6 +247,17 @@ const LINKS = [
         components: getComponentsInLink('/hr-work-plan')
     },
     {
+        url: '/hr-manage-leave-application',
+        description: 'Quản lý đơn xin nghỉ phép',
+        category: LINK_CATEGORY.HUMAN_RESOURCE.name,
+        roles: [
+            ROOT_ROLES.ADMIN.name,
+            ROOT_ROLES.DEAN.name,
+            ROOT_ROLES.VICE_DEAN.name,
+        ],
+        components: getComponentsInLink('/hr-manage-leave-application')
+    },
+    {
         url: '/hr-salary-employee',
         description: 'Quản lý lương nhân viên',
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
