@@ -47,6 +47,7 @@ export const performTaskService = {
     evaluateTaskByAccountableEmployees,
     evaluateTaskByConsultedEmployees,
     evaluateTaskByResponsibleEmployees,
+    editHoursSpentInEvaluate,
 
     deleteEvaluation,
 
@@ -500,6 +501,22 @@ function evaluateTaskByAccountableEmployees(data, taskId) {
         data: {
             data: data,
             role: 'accountable',
+        }
+    }, true, true, 'task.task_management');
+}
+
+/**
+ * evaluate Task By Accountable Employees
+ * @param {*} data du lieu cap nhat
+ * @param {*} taskId id cua task muon cap nhat
+ */
+function editHoursSpentInEvaluate(data, taskId) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/evaluate`,
+        method: 'POST',
+        data: {
+            data: data,
+            type: 'hoursSpent',
         }
     }, true, true, 'task.task_management');
 }

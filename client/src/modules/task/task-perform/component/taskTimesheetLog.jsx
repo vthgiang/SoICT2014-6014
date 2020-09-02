@@ -101,6 +101,7 @@ class TaskTimesheetLog extends Component {
         }
         console.log(this.state.timeStop)
         const timer = {
+            employee: getStorage("userId"),
             startedAt: performtasks.currentTimer.timesheetLogs[0].startedAt,
             description: this.state.description,
             timesheetLog: performtasks.currentTimer.timesheetLogs[0]._id,

@@ -53,6 +53,7 @@ exports.startTimesheetLog = async (params, body) => {
     timer.timesheetLogs = timer.timesheetLogs.find(element => !(element.stoppedAt));
     return timer;
 }
+
 /**
  * Dừng bấm giờ: Lưu thời gian kết thúc và số giờ chạy (endTime và time)
  */
@@ -80,23 +81,38 @@ exports.stopTimesheetLog = async (params, body) => {
         { new: true }
     ).populate({ path: "timesheetLogs.creator", select: "name" });
 
+    
+    timer.hoursSpentOnTask.totalHoursSpent += duration;
 
-
-    let time = 0;
-    timer.timesheetLogs.length > 0 && timer.timesheetLogs.forEach(x => {
-        time += x.duration;
-    })
-    await Task.findOneAndUpdate(
-        { "_id": params.taskId},
-        {
-            $set:
-            {
-                totalLoggedTime: time
+    let contributions = timer.hoursSpentOnTask.contributions;
+    let check = true;
+    let newContributions = contributions.map(item => {
+        if (item.employee.toString() === body.employee) {
+            check = false;
+            return {
+                employee: body.employee,
+                hoursSpent: item.hoursSpent + duration,
             }
+        } else {
+            return item;
         }
-    )
+    })
+    if (check) {
+        let contributionEmployee = {
+            employee: body.employee,
+            hoursSpent: duration,
+        }
+        newContributions.push(contributionEmployee)
+    }
+
+    timer.hoursSpentOnTask.contributions = newContributions;
+    
+    // Lưu lại thông tin đâ chỉnh sửa
+    timer.save();
+    
     return timer.timesheetLogs;
 }
+
 /**
  * Thêm bình luận của hoạt động
  */
@@ -2094,6 +2110,48 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
     newTask.evaluations.reverse();
 
     return newTask;
+}
+
+exports.editHoursSpentInEvaluate = async (data, taskId) => {
+    let { evaluateId, timesheetLogs } = data;
+
+    let task = await Task.findById(taskId);
+ 
+    let evaluation = task.evaluations.filter(item => item._id.toString() === evaluateId)[0];
+
+    let results = evaluation.results;
+
+    for (let i in timesheetLogs) {
+        let log = timesheetLogs[i];
+        let { employee, hoursSpent } = log;
+        let check = true;
+
+        let newResults = results.map(item => {
+            if(results.employee.toString === employee){
+                check = false;
+                return {
+                    ...item,
+                    hoursSpent: hoursSpent,
+                }
+            }
+            else{
+                return item;
+            }
+        })
+
+        if (check) {
+            let employeeHoursSpent = {
+                employee: employee,
+                hoursSpent: hoursSpent,
+            };
+
+            newResults.push(employeeHoursSpent);
+        }
+
+        results = [...newResults]
+    }
+
+    console.log(result);
 }
 
 /**

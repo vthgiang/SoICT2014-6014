@@ -518,7 +518,7 @@ class TaskManagement extends Component {
                     endDate: this.formatDate(dataTemp[n].endDate),
                     status: this.formatStatus(dataTemp[n].status),
                     progress: dataTemp[n].progress + "%",
-                    totalLoggedTime: this.convertTime(dataTemp[n].totalLoggedTime),
+                    totalLoggedTime: this.convertTime(dataTemp[n].hoursSpentOnTask.totalHoursSpent),
                     parent: dataTemp[n].parent ? dataTemp[n].parent._id : null
                 }
             }

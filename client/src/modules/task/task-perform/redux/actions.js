@@ -49,6 +49,7 @@ export const performTaskAction = {
     evaluateTaskByAccountableEmployees,
     evaluateTaskByConsultedEmployees,
     evaluateTaskByResponsibleEmployees,
+    editHoursSpentInEvaluate,
 
     deleteEvaluation,
 
@@ -493,6 +494,28 @@ function evaluateTaskByResponsibleEmployees(data, taskId) {
     return dispatch => {
         dispatch({ type: performTaskConstants.EVALUATE_TASK_BY_RESPONSIBLE_REQUEST, taskId });
         performTaskService.evaluateTaskByResponsibleEmployees(data, taskId)
+            .then(res => {
+                dispatch({
+                    type: performTaskConstants.EVALUATE_TASK_BY_RESPONSIBLE_SUCCESS,
+                    // payload: res.data.content.task
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({ type: performTaskConstants.EVALUATE_TASK_BY_RESPONSIBLE_FAILURE, error });
+            });
+    };
+}
+
+/**
+ * evaluate Task By Responsible Employees
+ * @param {*} data du lieu gui di
+ * @param {*} taskId id task
+ */
+function editHoursSpentInEvaluate(data, taskId) {
+    return dispatch => {
+        dispatch({ type: performTaskConstants.EVALUATE_TASK_BY_RESPONSIBLE_REQUEST, taskId });
+        performTaskService.editHoursSpentInEvaluate(data, taskId)
             .then(res => {
                 dispatch({
                     type: performTaskConstants.EVALUATE_TASK_BY_RESPONSIBLE_SUCCESS,

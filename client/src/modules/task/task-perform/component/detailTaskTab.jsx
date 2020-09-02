@@ -270,7 +270,7 @@ class DetailTaskTab extends Component {
 
         let checkConfirmByRole = false, checkConfirmCurrentUser = false, listEmployee, responsibleEmployeesNotConfirm = [], accountableEmployeesNotConfirm = [], consultedEmployeesNotConfirm = [];
         let confirmedByEmployeesId, listEmployeeId;
-        
+
         if (task && task.responsibleEmployees && task.accountableEmployees && task.consultedEmployees && task.confirmedByEmployees) {
             listEmployee = task.responsibleEmployees.concat(task.accountableEmployees).concat(task.consultedEmployees);
             confirmedByEmployeesId = task.confirmedByEmployees.map(item => item._id);
@@ -301,8 +301,7 @@ class DetailTaskTab extends Component {
 
         if (responsibleEmployeesNotConfirm.length !== 0
             || accountableEmployeesNotConfirm.length !== 0
-            || consultedEmployeesNotConfirm !== 0)
-        {
+            || consultedEmployeesNotConfirm !== 0) {
             checkConfirmByRole = true;
         }
 
@@ -348,7 +347,7 @@ class DetailTaskTab extends Component {
 
         if (task && task.evaluations) {
             evaluations = task.evaluations.filter(item => new Date(item.date) >= new Date(currentMonth) && new Date(item.date) < new Date(nextMonth));
-            
+
             if (evaluations.length === 0) {
                 // Check đánh giá trong tháng
                 checkEvaluationTask = true;
@@ -404,7 +403,7 @@ class DetailTaskTab extends Component {
                     if (task.consultedEmployees) {
                         consultedEmployeesNotKpiLink = task.consultedEmployees.filter(item => {
                             for (let i = 0; i < evaluations[0].results.length; i++) {
-                                if (evaluations[0].results[i].employee && item._id === evaluations[0].results[i].employee._id  && evaluations[0].results[i].role === 'Consulted') {
+                                if (evaluations[0].results[i].employee && item._id === evaluations[0].results[i].employee._id && evaluations[0].results[i].role === 'Consulted') {
                                     if (evaluations[0].results[i].kpis && evaluations[0].results[i].kpis.length !== 0) {
                                         return false;
                                     }
@@ -431,6 +430,52 @@ class DetailTaskTab extends Component {
             accountableEmployeesNotKpiLink: accountableEmployeesNotKpiLink,
             consultedEmployeesNotKpiLink: consultedEmployeesNotKpiLink
         }
+    }
+
+    calculateHoursSpentOnTask = async (taskId, timesheetLogs, evaluateId, startDate, endDate) => {
+        let results = [];
+
+        for (let i in timesheetLogs) {
+            let log = timesheetLogs[i];
+
+            let startedAt = new Date(log.startedAt);
+            let stoppedAt = new Date(log.stoppedAt);
+
+            if (startedAt.getTime() >= new Date(startDate).getTime() && stoppedAt.getTime() <= new Date(endDate).getTime()) {
+                let { creator, duration } = log;
+                let check = true;
+
+                let newResults = results.map(item => {
+                    if (creator === item.employee) {
+                        check = false;
+                        return {
+                            employee: creator,
+                            hoursSpent: item.hoursSpent + duration,
+                        }
+                    } else {
+                        return item;
+                    }
+                })
+
+                if (check) {
+                    let employeeHoursSpent = {
+                        employee: creator,
+                        hoursSpent: duration,
+                    };
+
+                    newResults.push(employeeHoursSpent);
+                }
+
+                results = [...newResults];
+            }
+        }
+
+        let data = {
+            evaluateId: evaluateId,
+            timesheetLogs: results,
+        }
+
+        // this.props.editHoursSpentInEvaluate(data, taskId);
     }
 
     render() {
@@ -581,7 +626,7 @@ class DetailTaskTab extends Component {
 
                 <div>
                     <div id="info" className="collapse in">
-                    {/* Thông tin chung */}
+                        {/* Thông tin chung */}
                         {/** Nhắc nhở */}
                         {
                             warning
@@ -642,7 +687,7 @@ class DetailTaskTab extends Component {
                                     checkEvaluationTaskAndKpiLinkAndDeadlineForEvaluation && checkEvaluationTaskAndKpiLinkAndDeadlineForEvaluation.checkEvaluationTask
                                     && <div><strong>Công việc chưa có đánh giá cho tháng này</strong></div>
                                 }
-                                
+
                                 {/** Chưa đánh giá hoạt động */}
                                 {
                                     checkEvaluationTaskAction && checkEvaluationTaskAction.checkEvaluationTaskAction
@@ -708,14 +753,14 @@ class DetailTaskTab extends Component {
                                 {/** Thời hạn chỉnh sửa thông tin */}
                                 {
                                     checkEvaluationTaskAndKpiLinkAndDeadlineForEvaluation && checkEvaluationTaskAndKpiLinkAndDeadlineForEvaluation.checkDeadlineForEvaluation
-                                    && checkEvaluationTaskAndKpiLinkAndDeadlineForEvaluation.deadlineForEvaluation !== -1
+                                        && checkEvaluationTaskAndKpiLinkAndDeadlineForEvaluation.deadlineForEvaluation !== -1
                                         ? <div><strong> Còn <span style={{ color: "red" }}>{checkEvaluationTaskAndKpiLinkAndDeadlineForEvaluation.deadlineForEvaluation}</span> là đến hạn chỉnh sửa đánh giá công việc tháng này</strong></div>
                                         : checkEvaluationTaskAndKpiLinkAndDeadlineForEvaluation.deadlineForEvaluation === -1 && <strong>Đã quá hạn chỉnh sửa đánh giá công việc tháng này</strong>
-                                        
+
                                 }
                             </div>
                         }
-                        
+
                         {/* Các trường thông tin cơ bản */}
                         {task &&
                             <div className="description-box">
@@ -736,7 +781,7 @@ class DetailTaskTab extends Component {
                                         return <div key={key}><strong>{info.name}: &nbsp;&nbsp;</strong> {info.value ? info.value : translate('task.task_management.detail_not_hasinfo')}</div>
                                     })
                                 }
-                                
+
                                 {/* Mô tả công việc */}
                                 <div>
                                     <strong>{translate('task.task_management.detail_description')}:</strong>
@@ -846,7 +891,9 @@ class DetailTaskTab extends Component {
                                         evalList.map((eva, keyEva) => {
                                             return (
                                                 <div key={keyEva} className="description-box">
+                                                    <button className="btn btn-success pull-right" onClick={() => this.calculateHoursSpentOnTask(task._id, task.timesheetLogs, eva._id, eva.prevDate, eva.date)}>Tính thời gian</button>
                                                     <h4>{translate('task.task_management.detail_eval')}&nbsp;{this.formatDate(eva.prevDate)} <i className="fa fa-fw fa-caret-right"></i> {this.formatDate(eva.date)}</h4>
+
                                                     {
                                                         eva.results.length !== 0 &&
                                                         <div>
@@ -981,6 +1028,7 @@ const actionGetState = { //dispatchActionToProps
     getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
     getTaskLog: performTaskAction.getTaskLog,
     editStatusTask: performTaskAction.editStatusOfTask,
+    editHoursSpentInEvaluate: performTaskAction.editHoursSpentInEvaluate,
 }
 
 const detailTask = connect(mapStateToProps, actionGetState)(withTranslate(DetailTaskTab));
