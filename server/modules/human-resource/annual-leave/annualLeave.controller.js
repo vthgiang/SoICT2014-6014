@@ -1,4 +1,6 @@
 const AnnualLeaveService = require('./annualLeave.service');
+const UserService = require('../../super-admin/user/user.service');
+const NotificationServices = require('../../notification/notification.service');
 const EmployeeService = require('../profile/profile.service');
 const {
     sendEmail
@@ -59,8 +61,36 @@ exports.createAnnualLeave = async (req, res) => {
                 <p>Nhân viên ${employee.fullName} - ${employee.employeeNumber} xin nghỉ phép từ ngày ${req.body.startDate} đến ngày ${req.body.endDate}.<p>
                 <p>Lý do: ${req.body.reason}<p>
                 <p>Để phê duyệt đơn xin nghỉ. Hãy click vào đây <a href="http://${process.env.WEBSITE}/hr-work-plan">Phê duyệt</a><p>
+                <br/>
+                <br/>
+                <h3><strong>Notification from system VNIST-Việc.</strong></h3>
+                <p>Staff ${employee.fullName} - ${employee.employeeNumber} apply for leave from ${req.body.startDate} to ${req.body.endDate}.<p>
+                <p>Reason: ${req.body.reason}<p>
+                <p>To approve leave application. Please click here <a href="http://${process.env.WEBSITE}/hr-work-plan">Approved</a><p>
             `
             sendEmail(req.body.receiver, 'Đơn xin nghỉ phép', "", html);
+
+            let user = await UserService.getUserInformByEmail(req.body.receiver, req.user.company._id);
+            let content = `
+                <p>Nhân viên ${employee.fullName} - ${employee.employeeNumber} xin nghỉ phép từ ngày ${req.body.startDate} đến ngày ${req.body.endDate}.<p>
+                <p>Lý do: ${req.body.reason}<p>
+                <p>Để phê duyệt đơn xin nghỉ. Hãy click vào đây <a href="http://${process.env.WEBSITE}/hr-work-plan">Phê duyệt</a><p>
+                <br/>
+                <br/>
+                <p>Staff ${employee.fullName} - ${employee.employeeNumber} apply for leave from ${req.body.startDate} to ${req.body.endDate}.<p>
+                <p>Reason: ${req.body.reason}<p>
+                <p>To approve leave application. Please click here <a href="http://${process.env.WEBSITE}/hr-work-plan">Approved</a><p>
+            `
+            let notification = {
+                users: [user.id],
+                organizationalUnits: [],
+                title: 'Xin nghỉ phép',
+                level: "error",
+                content: content,
+                sender: "VNIST-Việc",
+            }
+            await NotificationServices.createNotification(req.user.company._id, notification, undefined)
+
             let data = {
                 employeeNumber: employee.employeeNumber,
                 startDate: req.body.startDate,
@@ -69,6 +99,7 @@ exports.createAnnualLeave = async (req, res) => {
                 status: 'process',
             }
             let annualLeave = await AnnualLeaveService.createAnnualLeave(data, req.user.company._id);
+
             await LogInfo(req.user.email, 'CREATE_ANNUALLEAVE', req.user.company);
             res.status(200).json({
                 success: true,
