@@ -104,6 +104,7 @@ exports.stopTimesheetLog = async (req, res) => {
             content: timer
         })
     } catch (error) {
+        console.log(error);
         await LogError(req.user.email, ` stop timer `, req.user.company)
         res.status(400).json({
             success: false,
@@ -704,6 +705,9 @@ exports.evaluateTask = async (req, res) => {
     else if (req.body.role === 'accountable') {
         evaluateTaskByAccountableEmployees(req, res);
     }
+    else if (req.body.type === 'hoursSpent') {
+        editHoursSpentInEvaluate(req, res);
+    }
 }
 /**
  * edit task by responsible employee
@@ -843,6 +847,30 @@ evaluateTaskByAccountableEmployees = async (req, res) => {
         });
     }
 }
+
+/**
+ * evaluate task by accountable employee
+ */
+editHoursSpentInEvaluate = async (req, res) => {
+    try {
+        let task = await PerformTaskService.editHoursSpentInEvaluate(req.body.data, req.params.taskId);
+        await LogInfo(req.user.email, ` edit task  `, req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['evaluate_task_success'],
+            content: task
+        })
+    } catch (error) {
+        console.log(error);
+        await LogError(req.user.email, ` edit task `, req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['evaluate_task_fail'],
+            content: error
+        });
+    }
+}
+
 
 /**
  * delete evaluation by id

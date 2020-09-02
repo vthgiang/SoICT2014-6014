@@ -6,13 +6,14 @@ import 'c3/c3.css';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 
 class CostChart extends Component {
+
     constructor(props) {
         super(props);
     }
 
     // Thiết lập dữ liệu biểu đồ
     setDataPieChart = () => {
-        const { listAssets } = this.props;
+        const { listAssets, getAssetCostData } = this.props;
 
         const { translate } = this.props;
         let dataPieChart, lessThanOneHundred = 0, oneHundred = 0, twoHundred = 0, fiveHundred = 0, oneBillion = 0, twoBillion = 0, fiveBillion = 0, tenBillion = 0;
@@ -51,6 +52,10 @@ class CostChart extends Component {
             ["5B - 10B", fiveBillion],
             ["> 10B", tenBillion],
         ];
+
+        if (getAssetCostData && listAssets) {
+            getAssetCostData(dataPieChart);
+        }
 
         return dataPieChart;
     }
@@ -105,6 +110,7 @@ class CostChart extends Component {
             }
         });
     }
+
     render() {
         const { translate } = this.props;
         const { listAssets } = this.props;
