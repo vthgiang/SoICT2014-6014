@@ -22,6 +22,7 @@ class MaintainanceCreateForm extends Component {
             endDate: this.formatDate(Date.now()),
             expense: "",
             status: "Đang thực hiện",
+            managedBy: this.props.managedBy?this.props.managedBy:''
         };
     }
 
@@ -188,6 +189,7 @@ class MaintainanceCreateForm extends Component {
 
     // Bắt sự kiện submit form
     save = () => {
+        let {managedBy}=this.state;
         var partCreate = this.state.createDate.split('-');
         var createDate = [partCreate[2], partCreate[1], partCreate[0]].join('-');
         var partStart = this.state.startDate.split('-');
@@ -219,6 +221,7 @@ class MaintainanceCreateForm extends Component {
                             month: null,
                             status: "",
                             page: 0,
+                            managedBy:managedBy
                         });
                     }
                 });

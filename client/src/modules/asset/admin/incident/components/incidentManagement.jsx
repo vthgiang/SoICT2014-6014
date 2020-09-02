@@ -20,11 +20,13 @@ class IncidentManagement extends Component {
             assetName: "",
             month: "",
             page: 0,
-            limit: 100,
+            limit: 5,
+            managedBy : this.props.managedBy?this.props.managedBy:''
         }
     }
 
     componentDidMount() {
+        let { managedBy } =this.state;
         this.props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
         this.props.getUser();
         this.props.getAllAsset({
@@ -34,7 +36,8 @@ class IncidentManagement extends Component {
             month: null,
             status: "",
             page: 0,
-            limit: 100,
+            limit: 5,
+            managedBy:managedBy
         });
     }
 
@@ -157,6 +160,7 @@ class IncidentManagement extends Component {
     }
 
     deleteIncident = (assetId, incidentId) => {
+        let {managedBy}=this.state
         this.props.deleteIncident(assetId, incidentId).then(({ response }) => {
             if (response.data.success) {
                 this.props.getAllAsset({
@@ -166,6 +170,7 @@ class IncidentManagement extends Component {
                     status: "",
                     page: 0,
                     limit: 5,
+                    managedBy:managedBy
                 });
             }
         });
@@ -241,8 +246,8 @@ class IncidentManagement extends Component {
     }
 
     render() {
-        const { translate, assetsManager, assetType, user, auth } = this.props;
-        const { page, limit, currentRow, currentRowAdd } = this.state;
+        const { translate, assetsManager, assetType, user, isActive } = this.props;
+        const { page, limit, currentRow, currentRowAdd, managedBy } = this.state;
 
         var lists = "",exportData;
         var userlist = user.list;
@@ -262,7 +267,7 @@ class IncidentManagement extends Component {
         }
 
         return (
-            <div className="box">
+            <div className={isActive?isActive:"box"}>
                 <div className="box-body qlcv">
                     {/* <UsageCreateForm/> */}
                    
@@ -375,6 +380,7 @@ class IncidentManagement extends Component {
                     currentRow &&
                     <IncidentEditForm
                         _id={currentRow._id}
+                        managedBy={managedBy}
                         asset={currentRow.asset}
                         incidentCode={currentRow.incidentCode}
                         type={currentRow.type}
@@ -389,6 +395,7 @@ class IncidentManagement extends Component {
                     currentRowAdd &&
                     <MaintainanceCreateForm
                         _id={currentRowAdd._id}
+                        managedBy={managedBy}
                         asset={currentRowAdd.asset}
                         statusIncident={currentRowAdd.statusIncident}
                     />

@@ -547,7 +547,7 @@ class GeneralTab extends Component {
                             </a>
                         </div>
                         <div className="upload btn btn-default ">
-                            {translate('manage_employee.upload')}
+                            {translate('human_resource.profile.upload')}
                             <input className="upload" type="file" name="file" onChange={this.handleUpload} />
                         </div>
                     </div>

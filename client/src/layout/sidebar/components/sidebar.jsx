@@ -122,7 +122,7 @@ class SideBar extends Component {
                                     { name: 'menu.manage_type_asset', icon: 'fa fa-dashboard', path: '/manage-type-asset' },
                                     { name: 'menu.view_building_list', icon: 'fa fa-building', path: '/view-building-list' },
                                     { name: 'menu.manage_assigned_asset', icon: 'fa fa-calendar', path: '/manage-assigned-asset' },
-                                    { name: 'menu.employee_manage_asset_info', icon: 'fa fa-sitemap', path: '/employee-manage-asset-info' },
+                                    { name: 'menu.employee_manage_asset_info', icon: 'fa fa-sitemap', path: '/employee-manage-info-asset' },
                                     { name: 'menu.recommend_distribute_asset', icon: 'fa fa-calendar', path: '/recommend-distribute-asset' },
                                     { name: 'menu.recommend_equipment_procurement', icon: 'fa fa-calendar', path: '/recommend-equipment-procurement' },
                                 ]

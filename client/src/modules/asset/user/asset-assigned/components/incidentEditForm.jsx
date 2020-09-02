@@ -11,7 +11,9 @@ import { IncidentActions } from '../../../admin/incident/redux/actions';
 class IncidentEditForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            managedBy : this.props.managedBy?this.props.managedBy:''
+        };
     }
 
     // Bắt sự kiện thay đổi mã sự cố
@@ -108,6 +110,7 @@ class IncidentEditForm extends Component {
     }
 
     save = () => {
+        let { managedBy } =this.state;
         var partIncident = this.state.dateOfIncident.split('-');
         var dateOfIncident = [partIncident[2], partIncident[1], partIncident[0]].join('-');
         let assetId = !this.state.asset ? this.props.assetsManager.listAssets[0]._id : this.state.asset._id;
@@ -121,7 +124,7 @@ class IncidentEditForm extends Component {
                 status: this.state.type,
                 assetId
             }
-            return this.props.updateIncident(this.props._id, dataToSubmit);
+            return this.props.updateIncident(this.props._id, dataToSubmit,managedBy);
         }
     };
 
