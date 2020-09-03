@@ -7,50 +7,45 @@ class CrmCustomerInformation extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            roleName: '',
-            roleParents: [],
-            roleUsers: []
+            customer: {}
         }
     }
 
     render() {
-        const { translate } = this.props;
-        const {customer} = this.props;
-        const {id, name, liabilities} = this.state;
+        const { translate, crm } = this.props;
+        const { customer } = this.state;
 
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID="modal-customer-information" isLoading={customer.isLoading}
-                    formID="form-customer-information"
+                    modalID="modal-crm-customer-info" isLoading={crm.customer.isLoading}
+                    formID="form-crm-customer-info"
                     title="Thông tin chi tiết khách hàng"
-                    func={this.save} size="100"
+                    func={this.save} size={75}
                 >
                     {/* Form thêm khách hàng mới */}
-                    <form id="form-customer-information">
-                        <fieldset className="field-box-info">
-                            <legend className="legend-box-info">Thông tin cá nhân</legend>
-                            
+                    <form id="form-crm-customer-info">
+                        <div style={{ 
+                            padding: '20px', 
+                            border: '1px solid #D2D6DE',
+                            backgroundColor: '#F1F1F1',
+                            marginBottom: '20px',
+                            borderRadius: '5px'
+                        }}>
                             <div className="row">
                                 <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                    <b>Khách hàng: </b> {name}<br/>
-                                    <b>Nhóm: </b> VIP<br/>
-                                    <b>SĐT: </b> 0396629955<br/>
-                                    <b>Email: </b> tmhanh@gmail.com<br/>
+                                    <img src="" style={{width: '100%'}}/>
                                 </div>
                                 <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                    <b>Giới tính: </b> Nữ<br/>
-                                    <b>Ngày sinh: </b> 13/05/1997<br/>
-                                    <b>Mô tả: </b> <br/>
-                                </div>
-                                <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                    <b>Người phụ trách: </b> Nguyễn Văn Danh<br/>
-                                    <b>Chiết khấu: </b> 5%<br/>
-                                    <b>Hình thức thanh toánh: </b> Thẻ<br/>
+                                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                        
+                                    </div>
+                                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    
+                                    </div>
                                 </div>
                             </div>
-                            
-                        </fieldset>
+                        </div>
                         <div className="nav-tabs-custom">
                             <ul className="nav nav-tabs">
                                 <li className="active"><a href="#customer-info-history" data-toggle="tab">Lịch sử mua hàng</a></li>
@@ -64,7 +59,7 @@ class CrmCustomerInformation extends Component {
                                 </div>
                                 <div className="tab-pane" id="sale">
                                     Công nợ
-                                    <table className="table table-hover table-striped table-bordered" id={`table-customer-liabilities-${id}`}>
+                                    <table className="table table-hover table-striped table-bordered" id={`table-customer-liabilities-${customer._id}`}>
                                         <thead>
                                             <tr>
                                                 <th>Mã phiếu</th>
@@ -74,7 +69,7 @@ class CrmCustomerInformation extends Component {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {
+                                            {/* {
                                                 liabilities.map(lia=>
                                                 <tr>
                                                     <td>{lia.code}</td>
@@ -82,7 +77,7 @@ class CrmCustomerInformation extends Component {
                                                     <td>abc</td>
                                                     <td>{lia.total}</td>
                                                 </tr> )
-                                            }
+                                            } */}
                                         </tbody>
                                     </table>
                                 </div>
@@ -157,12 +152,10 @@ class CrmCustomerInformation extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id) {
+        if (nextProps.customer._id !== prevState.customer._id) {
             return {
                 ...prevState,
-                id: nextProps.id,
-                name: nextProps.name,
-                liabilities: nextProps.liabilities,
+                customer: nextProps.customer
             }
         } else {
             return null;
@@ -171,8 +164,8 @@ class CrmCustomerInformation extends Component {
 }
 
 function mapStateToProps(state) {
-    const { customer } = state;
-    return { customer };
+    const { crm } = state;
+    return { crm };
 }
 
 const mapDispatchToProps = {

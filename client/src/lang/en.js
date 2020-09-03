@@ -498,6 +498,33 @@ export default {
             },
         },
 
+        crm: {
+            customer: {
+                name: 'Customer',
+                code: 'Code',
+                phone: 'Phone number',
+                address: 'Address',
+                email: 'Email',
+                location: 'Location',
+                birth: 'Birth',
+                gender: 'Gender',
+                liability: 'Liability',
+                document: 'Document',
+            },
+            group: {
+
+            },
+            lead: {
+
+            },
+            care: {
+
+            },
+            statistic: {
+
+            },
+        },
+
         not_found: {
             title: 'Not found this page',
             content: 'System cannot search this page for you',

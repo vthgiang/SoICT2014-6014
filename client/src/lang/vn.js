@@ -499,6 +499,48 @@ export default {
             },
         },
 
+        crm: {
+            customer: {
+                name: 'Tên khách hàng',
+                code: 'Mã khách hàng',
+                phone: 'Số điện thoại',
+                group: 'Nhóm khách hàng',
+                address: 'Địa chỉ',
+                email: 'Email',
+                location: 'Khu vực',
+                birth: 'Ngày sinh',
+                gender: 'Giới tính',
+                liability: 'Công nợ',
+                tax: 'Mã số thuế',
+                document: 'Giấy tờ',
+                description: 'Mô tả',
+                carier: 'Nhân viên chăm sóc phụ trách',
+                discount: 'Chiết khấu áp dụng', by_group: 'Theo nhóm khách hàng', by_customer: 'Theo khách hàng',
+                payment: 'Hình thức thanh toán',
+
+                info: 'Thông tin chung',
+                contact: 'Thông tin liên hệ',
+                advance: 'Thông tin khác',
+
+                add: 'Thêm mới khách hàng',
+                see: 'Xem thông tin khách hàng',
+                edit: 'Chỉnh sửa thông tin khách hàng',
+                delete: 'Xóa thông tin khách hàng',
+            },
+            group: {
+
+            },
+            lead: {
+
+            },
+            care: {
+
+            },
+            statistic: {
+
+            },
+        },
+
         not_found: {
             title: 'Không tìm thấy địa chỉ này!',
             content: 'Chúng tôi không thể tìm thấy địa chỉ mà bạn đang tìm kiếm',
