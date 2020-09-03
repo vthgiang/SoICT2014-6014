@@ -16,7 +16,7 @@ class CrmGroup extends Component {
     render() { 
 
         return ( 
-            <div class="box">
+            <div className="box">
                 <div className="box-body">
                 </div>
             </div>

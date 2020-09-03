@@ -45,7 +45,7 @@ class CrmCustomerEdit extends Component {
                                     </div>
                                     <div className="form-group">
                                         <label>Nhóm khách hàng</label>
-                                        <SelectBox
+                                        {/* <SelectBox
                                             id={`select-customer-group-${id}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
@@ -55,7 +55,7 @@ class CrmCustomerEdit extends Component {
                                             value={[group]}
                                             onChange={this.handleParents}
                                             multiple={false}
-                                        />
+                                        /> */}
                                     </div>
                                 </div>
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">

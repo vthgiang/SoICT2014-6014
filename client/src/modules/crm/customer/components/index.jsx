@@ -25,7 +25,7 @@ class CrmCustomer extends Component {
         const { option, value, customer } = this.state;
 
         return ( 
-            <div class="box">
+            <div className="box">
                 <div className="box-body">
                     <CreateForm/>
                     { customer !== undefined && <InfoForm customer={customer} /> }
