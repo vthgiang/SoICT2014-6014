@@ -322,6 +322,8 @@ button:focus {
 
 /* CSS cho input checkbox và radio */
 @supports (-webkit-appearance: none) or (-moz-appearance: none) {
+    .jstree-anchor.jstree-checked > .jstree-icon.jstree-checkbox,
+    .jstree-default .jstree-icon.jstree-checkbox,
     input[type='checkbox'],
     input[type='radio'] {
         --active: #3c8dbc;
@@ -346,6 +348,7 @@ button:focus {
         -webkit-transition: background .3s, border-color .3s, box-shadow .2s;
         transition: background .3s, border-color .3s, box-shadow .2s;
     }
+    .jstree-anchor.jstree-checked > .jstree-icon.jstree-checkbox ::after,
     input[type='checkbox']:after,
     input[type='radio']:after {
         content: '';
@@ -358,6 +361,7 @@ button:focus {
         transition: transform var(--d-t, 0.3s) var(--d-t-e, ease), opacity var(--d-o, 0.2s);
         transition: transform var(--d-t, 0.3s) var(--d-t-e, ease), opacity var(--d-o, 0.2s), -webkit-transform var(--d-t, 0.3s) var(--d-t-e, ease);
     }
+    .jstree-anchor.jstree-checked > .jstree-icon.jstree-checkbox,
     input[type='checkbox']:checked,
     input[type='radio']:checked {
         --b: var(--active);

@@ -1609,6 +1609,7 @@ const sampleCompanyData = async () => {
         canRegisterForUse: true,
         description: "Laptop Sony Vaio",
         detailInfo: [],
+        readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
 
         usageLogs: [],
         // bảo trì thiết bị
@@ -1653,7 +1654,7 @@ const sampleCompanyData = async () => {
         canRegisterForUse: true,
         description: "Điều hòa Panasonic 9.000BTU",
         detailInfo: [],
-
+        readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id],
         usageLogs: [],
         // bảo trì thiết bị
         maintainanceLogs: [],
@@ -1697,7 +1698,7 @@ const sampleCompanyData = async () => {
         canRegisterForUse: true,
         description: "Máy tính cây",
         detailInfo: [],
-
+        readByRoles: [roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, truongPhongHC._id, phoPhongHC._id],
         usageLogs: [],
         // bảo trì thiết bị
         maintainanceLogs: [],
@@ -1742,7 +1743,7 @@ const sampleCompanyData = async () => {
         canRegisterForUse: true,
         description: "Máy tính cây",
         detailInfo: [],
-
+        readByRoles: [ roleAdmin._id, roleSuperAdmin._id, roleDean._id,  nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
         usageLogs: [],
         // bảo trì thiết bị
         maintainanceLogs: [],
@@ -1787,7 +1788,7 @@ const sampleCompanyData = async () => {
         canRegisterForUse: true,
         description: "Máy tính cây",
         detailInfo: [],
-
+        readByRoles: [ roleAdmin._id, roleDean._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
         usageLogs: [],
         // bảo trì thiết bị
         maintainanceLogs: [],
@@ -1832,7 +1833,7 @@ const sampleCompanyData = async () => {
         canRegisterForUse: true,
         description: "Máy tính cây",
         detailInfo: [],
-
+        readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id],
         usageLogs: [],
         // bảo trì thiết bị
         maintainanceLogs: [],
@@ -1892,7 +1893,7 @@ const sampleCompanyData = async () => {
         canRegisterForUse: true,
         description: "BK",
         detailInfo: [],
-
+        readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, truongPhongHC._id, phoPhongHC._id],
         usageLogs: [],
         // bảo trì thiết bị
         maintainanceLogs: [],
@@ -1939,7 +1940,7 @@ const sampleCompanyData = async () => {
         canRegisterForUse: true,
         description: "Phòng họp",
         detailInfo: [],
-
+        readByRoles: [giamDoc._id, roleAdmin._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
         usageLogs: [],
         // bảo trì thiết bị
         maintainanceLogs: [],
@@ -1996,7 +1997,7 @@ const sampleCompanyData = async () => {
         canRegisterForUse: true,
         description: "Phòng họp",
         detailInfo: [],
-
+        readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
         usageLogs: [],
         // bảo trì thiết bị
         maintainanceLogs: [],
@@ -2049,13 +2050,13 @@ const sampleCompanyData = async () => {
             managedBy: users[1]._id,
             assignedToUser: null,
             assignedToOrganizaitonalUnit: null,
-
+            
             location: asset._id,
             status: "Sẵn sàng sử dụng",
             canRegisterForUse: true,
             description: "B1",
             detailInfo: [],
-
+            readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
             usageLogs: [],
             // bảo trì thiết bị
             maintainanceLogs: [],
@@ -2102,7 +2103,7 @@ const sampleCompanyData = async () => {
             canRegisterForUse: true,
             description: "TV",
             detailInfo: [],
-
+            readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
             usageLogs: [],
             // bảo trì thiết bị
             maintainanceLogs: [],
@@ -2145,7 +2146,7 @@ const sampleCompanyData = async () => {
             managedBy: users[1]._id,
             assignedToUser: null,
             assignedToOrganizaitonalUnit: null,
-
+            readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
             location: listAsset1[0]._id,
             status: "Thanh lý",
             canRegisterForUse: true,
@@ -2192,7 +2193,7 @@ const sampleCompanyData = async () => {
             managedBy: users[1]._id,
             assignedToUser: null,
             assignedToOrganizaitonalUnit: null,
-
+            readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
             location: listAsset1[0]._id,
             status: "Thanh lý",
             canRegisterForUse: true,
@@ -2245,7 +2246,7 @@ const sampleCompanyData = async () => {
             canRegisterForUse: true,
             description: "d3-101",
             detailInfo: [],
-
+            readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
             usageLogs: [],
             // bảo trì thiết bị
             maintainanceLogs: [],
@@ -2292,7 +2293,7 @@ const sampleCompanyData = async () => {
             canRegisterForUse: true,
             description: "d3-102",
             detailInfo: [],
-
+            readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
             usageLogs: [],
             // bảo trì thiết bị
             maintainanceLogs: [],
@@ -2358,7 +2359,7 @@ const sampleCompanyData = async () => {
             canRegisterForUse: true,
             description: "d3-103",
             detailInfo: [],
-
+            readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
             usageLogs: [],
             // bảo trì thiết bị
             maintainanceLogs: [],
