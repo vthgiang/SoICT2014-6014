@@ -49,7 +49,7 @@ class DetailTaskTab extends Component {
 
             currentMonth: currentYear + '-' + (currentMonth + 1),
             nextMonth: (currentMonth > 10) ? ((currentYear + 1) + '-' + (currentMonth - 10)) : (currentYear + '-' + (currentMonth + 2)),
-            dueForEvaluationOfTask: currentYear + '-' + currentMonth + '-' + 7
+            dueForEvaluationOfTask: currentYear + '-' + (currentMonth + 1) + '-' + 7
         }
 
     }
@@ -437,7 +437,7 @@ class DetailTaskTab extends Component {
 
         let checkDeadlineForEvaluation = false, deadlineForEvaluation;
         let currentDate = new Date();
-
+        
         // Check số ngày đến hạn đánh giá
         deadlineForEvaluation = ((new Date(dueForEvaluationOfTask)).getTime() - currentDate.getTime()) / (3600 * 24 * 1000);
         if (deadlineForEvaluation > 0) {
