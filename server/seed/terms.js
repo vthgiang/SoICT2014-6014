@@ -182,7 +182,7 @@ const LINKS = [
 
     {
         url: '/hr-manage-holiday',
-        description: 'Kế hoạch làm việc',
+        description: 'Quản lý kế hoạch làm việc',
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
         roles: [
             ROOT_ROLES.ADMIN.name,
@@ -233,6 +233,29 @@ const LINKS = [
             ROOT_ROLES.ADMIN.name,
         ],
         components: getComponentsInLink('/hr-detail-employee')
+    },
+    {
+        url: '/hr-work-plan',
+        description: 'Kế hoạch làm việc',
+        category: LINK_CATEGORY.HUMAN_RESOURCE.name,
+        roles: [
+            ROOT_ROLES.ADMIN.name,
+            ROOT_ROLES.DEAN.name,
+            ROOT_ROLES.VICE_DEAN.name,
+            ROOT_ROLES.EMPLOYEE.name,
+        ],
+        components: getComponentsInLink('/hr-work-plan')
+    },
+    {
+        url: '/hr-manage-leave-application',
+        description: 'Quản lý đơn xin nghỉ phép',
+        category: LINK_CATEGORY.HUMAN_RESOURCE.name,
+        roles: [
+            ROOT_ROLES.ADMIN.name,
+            ROOT_ROLES.DEAN.name,
+            ROOT_ROLES.VICE_DEAN.name,
+        ],
+        components: getComponentsInLink('/hr-manage-leave-application')
     },
     {
         url: '/hr-salary-employee',
@@ -695,24 +718,53 @@ const LINKS = [
         components: getComponentsInLink('/manage-orders'),
     },
     {
-        url: '/customer',
+        url: '/crm/customer',
         description: `Quản lý khách hàng`,
         category: LINK_CATEGORY.CRM.name,
         roles: [
             ROOT_ROLES.SUPER_ADMIN.name,
             ROOT_ROLES.ADMIN.name
         ],
-        components: getComponentsInLink('/customer')
+        components: getComponentsInLink('/crm/customer')
+    },{
+        url: '/crm/lead',
+        description: `Khách hàng thân thiết`,
+        category: LINK_CATEGORY.CRM.name,
+        roles: [
+            ROOT_ROLES.SUPER_ADMIN.name,
+            ROOT_ROLES.ADMIN.name
+        ],
+        components: getComponentsInLink('/crm/lead')
     },
     {
-        url: '/customer-group',
+        url: '/crm/group',
         description: `Quản lý nhóm khách hàng`,
         category: LINK_CATEGORY.CRM.name,
         roles: [
             ROOT_ROLES.SUPER_ADMIN.name,
             ROOT_ROLES.ADMIN.name
         ],
-        components: getComponentsInLink('/customer-group')
+        components: getComponentsInLink('/crm/group')
+    },
+    {
+        url: '/crm/statistic',
+        description: `Thống kê`,
+        category: LINK_CATEGORY.CRM.name,
+        roles: [
+            ROOT_ROLES.SUPER_ADMIN.name,
+            ROOT_ROLES.ADMIN.name
+        ],
+        components: getComponentsInLink('/crm/statistic')
+    },
+    {
+        url: '/crm/care',
+        description: `Chăm sóc khách hàng`,
+        category: LINK_CATEGORY.CRM.name,
+        roles: [    
+            ROOT_ROLES.SUPER_ADMIN.name,
+            ROOT_ROLES.ADMIN.name
+        ],
+        components: getComponentsInLink('/crm/care')
     }
 ];
 

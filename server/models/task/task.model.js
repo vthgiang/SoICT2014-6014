@@ -266,11 +266,7 @@ const TaskSchema = new Schema({
             type: Number
         }
     }],
-    totalLoggedTime: { // Tổng thời gian timesheetLog. Cập nhật mỗi khi người dùng lưu lại thời gian bấm giờ (khi họ nhấn nút stop)
-        type: Number,
-        default: 0,
-        required: true
-    },
+
     taskInformations: [{ // Khi tạo công việc theo mẫu, các giá trị này sẽ được copy từ mẫu công việc sang
         code: { // Mã thuộc tính công việc dùng trong công thức
             type: String,

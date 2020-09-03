@@ -15,20 +15,29 @@ class DatePicker extends Component {
         const { id, dateFormat, onChange, deleteValue = true } = this.props;
         let zIndex = 1050;
 
-        dateFormat !== "month-year" ?
-            window.$("#" + id).datepicker({
-                autoclose: true,
-                format: "dd-mm-yyyy",
-                todayHighlight: true,
-                zIndexOffset: this.zIndex,
-            }) :
+        dateFormat === "month-year" ?
             window.$("#" + id).datepicker({
                 autoclose: true,
                 format: "mm-yyyy",
                 startView: 1,
                 minViewMode: "months",
                 zIndexOffset: this.zIndex,
-            });
+            }) : (
+                dateFormat === "year" ?
+                    window.$("#" + id).datepicker({
+                        autoclose: true,
+                        format: "yyyy",
+                        viewMode: "years",
+                        minViewMode: "years",
+                        zIndexOffset: this.zIndex,
+                    }) :
+                    window.$("#" + id).datepicker({
+                        autoclose: true,
+                        format: "dd-mm-yyyy",
+                        todayHighlight: true,
+                        zIndexOffset: this.zIndex,
+                    })
+            )
         if (deleteValue) {
             window.$("#" + id).keyup(function (e) {
                 if (e.keyCode == 8 || e.keyCode == 46) {
@@ -47,20 +56,30 @@ class DatePicker extends Component {
 
     componentDidUpdate = () => {
         const { id, dateFormat } = this.props;
-        dateFormat !== "month-year" ?
-            window.$("#" + id).datepicker({
-                autoclose: true,
-                format: "dd-mm-yyyy",
-                todayHighlight: true,
-                zIndexOffset: this.zIndex,
-            }) :
+        dateFormat === "month-year" ?
             window.$("#" + id).datepicker({
                 autoclose: true,
                 format: "mm-yyyy",
                 startView: 1,
                 minViewMode: "months",
                 zIndexOffset: this.zIndex,
-            })
+            }) : (
+                dateFormat === "year" ?
+                    window.$("#" + id).datepicker({
+                        autoclose: true,
+                        format: "yyyy",
+                        viewMode: "years",
+                        minViewMode: "years",
+                        zIndexOffset: this.zIndex,
+                    }) :
+                    window.$("#" + id).datepicker({
+                        autoclose: true,
+                        format: "dd-mm-yyyy",
+                        todayHighlight: true,
+                        zIndexOffset: this.zIndex,
+                    })
+            )
+
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {

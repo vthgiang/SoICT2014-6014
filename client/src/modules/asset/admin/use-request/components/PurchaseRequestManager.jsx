@@ -20,10 +20,12 @@ class PurchaseRequestManager extends Component {
             status: null,
             page: 0,
             limit: 5,
+            managedBy : this.props.managedBy?this.props.managedBy:''
         }
     }
 
     componentDidMount() {
+        let { managedBy } =this.state;
         this.props.searchRecommendDistributes(this.state);
         this.props.getUser();
         this.props.getAllAsset({
@@ -32,7 +34,8 @@ class PurchaseRequestManager extends Component {
             assetType: null,
             status: null,
             page: 0,
-            limit: 100,
+            limit: 5,
+            managedBy:managedBy
         });
     }
 
@@ -220,8 +223,8 @@ class PurchaseRequestManager extends Component {
     }
 
     render() {
-        const { translate, recommendDistribute, assetsManager, assetType, user, auth } = this.props;
-        const { page, limit, currentRow, currentRowAdd } = this.state;
+        const { translate, recommendDistribute, isActive} = this.props;
+        const { page, limit, currentRow, currentRowAdd, managedBy } = this.state;
 
         var listRecommendDistributes = "", exportData;
         if (recommendDistribute.isLoading === false) {
@@ -235,7 +238,8 @@ class PurchaseRequestManager extends Component {
         var currentPage = parseInt((page / limit) + 1);
 
         return (
-            <div className="box" >
+            //Khi id !== undefined thi component nay duoc goi tu module user
+            <div className={isActive?isActive:"box"} >
                 <div className="box-body qlcv">
                     {/* Thanh tìm kiếm */}
                     <div className="form-inline">
@@ -359,6 +363,7 @@ class PurchaseRequestManager extends Component {
                     currentRow &&
                     <PurchaseRequestEditForm
                         _id={currentRow._id}
+                        employeeId = {managedBy}
                         recommendNumber={currentRow.recommendNumber}
                         dateCreate={currentRow.dateCreate}
                         proponent={currentRow.proponent}
@@ -377,6 +382,7 @@ class PurchaseRequestManager extends Component {
                     currentRowAdd &&
                     <UsageCreateForm
                         _id={currentRowAdd._id}
+                        employeeId ={managedBy}
                         assetUseRequest = {currentRowAdd}
                         asset={currentRowAdd.asset}
                         startDate={currentRowAdd.dateStartUse}

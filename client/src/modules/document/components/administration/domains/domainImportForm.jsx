@@ -8,7 +8,7 @@ import { AuthActions } from '../../../../auth/redux/actions';
 import { DocumentActions } from '../../../redux/actions'
 
 class DomainImportForm extends Component {
-    constructor(props) {
+    constructor(props) { 
         super(props);
         this.state = {
             configData: configDomain,
@@ -30,7 +30,6 @@ class DomainImportForm extends Component {
     }
 
     handleImportExcel = (value, checkFileImport) => {
-        console.log('vlueee', value, checkFileImport)
         let values = [];
         let showValues = [];
         let k = -1;

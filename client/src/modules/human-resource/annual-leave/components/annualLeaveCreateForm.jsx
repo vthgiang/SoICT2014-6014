@@ -49,6 +49,7 @@ class AnnualLeaveCreateForm extends Component {
     }
     validateEmployeeNumber = (value, willUpdateState = true) => {
         const { translate } = this.props;
+
         let msg = AnnualLeaveFormValidator.validateEmployeeNumber(value, translate);
         if (willUpdateState) {
             this.setState(state => {
@@ -69,6 +70,7 @@ class AnnualLeaveCreateForm extends Component {
     handleStartDateChange = (value) => {
         const { translate } = this.props;
         let { errorOnEndDate, endDate } = this.state;
+
         let errorOnStartDate;
         let partValue = value.split('-');
         let date = new Date([partValue[2], partValue[1], partValue[0]].join('-'));
@@ -96,12 +98,14 @@ class AnnualLeaveCreateForm extends Component {
     handleEndDateChange = (value) => {
         const { translate } = this.props;
         let { startDate, errorOnStartDate } = this.state;
+
+        let errorOnEndDate;
         let partValue = value.split('-');
         let date = new Date([partValue[2], partValue[1], partValue[0]].join('-'));
 
         let partStartDate = startDate.split('-');
         let d = new Date([partStartDate[2], partStartDate[1], partStartDate[0]].join('-'));
-        let errorOnEndDate;
+
         if (d.getTime() > date.getTime()) {
             errorOnEndDate = translate('human_resource.start_date_before_end_date');
         } else {
@@ -122,6 +126,7 @@ class AnnualLeaveCreateForm extends Component {
     }
     validateReason = (value, willUpdateState = true) => {
         const { translate } = this.props;
+
         let msg = AnnualLeaveFormValidator.validateReason(value, translate)
         if (willUpdateState) {
             this.setState(state => {
@@ -147,11 +152,14 @@ class AnnualLeaveCreateForm extends Component {
     /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
     isFormValidated = () => {
         const { employeeNumber, reason, startDate, endDate } = this.state;
+
         let result = this.validateEmployeeNumber(employeeNumber, false) && this.validateReason(reason, false);
+
         let partStart = startDate.split('-');
         let startDateNew = [partStart[2], partStart[1], partStart[0]].join('-');
         let partEnd = endDate.split('-');
         let endDateNew = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+
         if (new Date(startDateNew).getTime() <= new Date(endDateNew).getTime()) {
             return result;
         } else return false;
@@ -160,10 +168,12 @@ class AnnualLeaveCreateForm extends Component {
     /** Bắt sự kiện submit form */
     save = () => {
         const { startDate, endDate } = this.state;
+
         let partStart = startDate.split('-');
         let startDateNew = [partStart[2], partStart[1], partStart[0]].join('-');
         let partEnd = endDate.split('-');
         let endDateNew = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+
         if (this.isFormValidated()) {
             return this.props.createAnnualLeave({ ...this.state, startDate: startDateNew, endDate: endDateNew });
         }
@@ -177,15 +187,15 @@ class AnnualLeaveCreateForm extends Component {
 
         return (
             <React.Fragment>
-                <ButtonModal modalID="modal-create-sabbtical" button_name={translate('human_resource.annual_leave.add_annual_leave')} title={translate('human_resource.annual_leave.add_annual_leave_title')} />
+                <ButtonModal modalID="modal-create-annual-leave" button_name={translate('human_resource.annual_leave.add_annual_leave')} title={translate('human_resource.annual_leave.add_annual_leave_title')} />
                 <DialogModal
-                    size='50' modalID="modal-create-sabbtical" isLoading={annualLeave.isLoading}
-                    formID="form-create-sabbtical"
+                    size='50' modalID="modal-create-annual-leave" isLoading={annualLeave.isLoading}
+                    formID="form-create-annual-leave"
                     title={translate('human_resource.annual_leave.add_annual_leave_title')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
-                    <form className="form-group" id="form-create-sabbtical">
+                    <form className="form-group" id="form-create-annual-leave">
                         {/* Mã số nhân viên */}
                         <div className={`form-group ${errorOnEmployeeNumber && "has-error"}`}>
                             <label>{translate('human_resource.staff_number')}<span className="text-red">*</span></label>

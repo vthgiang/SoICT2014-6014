@@ -65,8 +65,6 @@ const taskReport = require("./modules/report/task-report/taskReport.route");
 //material
 const material = require("./modules/warehouse/material/material.router");
 
-const customer = require("./modules/customer/customer.route");
-
 //order
 const order = require("./modules/order/order.route");
 
@@ -76,9 +74,9 @@ const app = express();
 // Bodyparser middleware
 app.use(cors());
 app.use(
-  bodyParser.urlencoded({
-    extended: false,
-  })
+bodyParser.urlencoded({
+	extended: false,
+})
 );
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -150,7 +148,13 @@ app.use("/materials", material);
 app.use("/orders", order);
 
 // Customer Management
-app.use("/customer", customer);
+const crm = express.Router();
+crm.use(require("./modules/crm/customer/customer.route"));
+crm.use(require("./modules/crm/lead/lead.route"));
+crm.use(require("./modules/crm/care/care.route"));
+crm.use(require("./modules/crm/group/group.route"));
+crm.use(require("./modules/crm/statistic/statistic.route"));
+app.use("/crm", crm);
 
 // Start server
 const port = process.env.PORT || 8000;

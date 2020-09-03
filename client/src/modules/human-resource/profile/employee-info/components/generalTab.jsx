@@ -2,15 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { AuthActions } from '../../../../auth/redux/actions';
+import { ImgShow } from '../../../../../common-components';
 
 class GeneralTab extends Component {
     constructor(props) {
         super(props);
-        this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
-        this.state = {
-            dataStatus: this.DATA_STATUS.NOT_AVAILABLE
-        };
+        this.state = {};
     }
 
     /**
@@ -68,33 +65,6 @@ class GeneralTab extends Component {
         }
     }
 
-    shouldComponentUpdate = async (nextProps, nextState) => {
-        if (nextProps.id !== this.state.id || (nextProps.employee.avatar && !nextProps.auth.isLoading &&
-            this.state.dataStatus === this.DATA_STATUS.NOT_AVAILABLE)) {
-            this.props.downloadFile(`.${nextProps.employee.avatar}`, `avatarInfor${nextProps.id}`, 'show');
-            this.setState({
-                dataStatus: this.DATA_STATUS.QUERYING
-            });
-            return false;
-        };
-        if (this.state.dataStatus === this.DATA_STATUS.QUERYING && !nextProps.auth.isLoading) {
-            this.setState({
-                dataStatus: this.DATA_STATUS.AVAILABLE
-            });
-            return false;
-        };
-        if (this.state.dataStatus === this.DATA_STATUS.AVAILABLE && nextProps.auth.show_files.length !== 0) {
-            let avatar = nextProps.auth.show_files.find(x => x.fileName === `avatarInfor${nextProps.id}`);
-            this.setState({
-                dataStatus: this.DATA_STATUS.FINISHED,
-                avatar: avatar ? avatar.file : ''
-            });
-            return true;
-        }
-        return false;
-    }
-
-
     render() {
         const { translate } = this.props;
 
@@ -108,7 +78,7 @@ class GeneralTab extends Component {
                     <div className="col-lg-4 col-md-4 col-ms-12 col-xs-12" style={{ textAlign: 'center' }}>
                         <div>
                             <a href={avatar} target="_blank">
-                                <img className="attachment-img avarta" src={avatar} alt="Attachment" />
+                                <ImgShow id={`avater-imform-${id}`} src={`.${avatar}`} />
                             </a>
                         </div>
                     </div>
@@ -231,14 +201,5 @@ class GeneralTab extends Component {
     }
 };
 
-function mapState(state) {
-    const { auth } = state;
-    return { auth };
-};
-
-const actionCreators = {
-    downloadFile: AuthActions.downloadFile,
-};
-
-const tabGeneral = connect(mapState, actionCreators)(withTranslate(GeneralTab));
+const tabGeneral = connect(null, null)(withTranslate(GeneralTab));
 export { tabGeneral as GeneralTab };

@@ -55,7 +55,7 @@ div.qlcv > .form-inline > div.react-dropdown-tree-select, div.qlcv > .form-inlin
 
 /* Ghi đè CSS AdminLTE */
 .treeview-menu > li > a {
-    padding: 5px 5px 5px 25px;
+    padding: 10px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

@@ -49,7 +49,7 @@ class DetailTaskTab extends Component {
 
             currentMonth: currentYear + '-' + (currentMonth + 1),
             nextMonth: (currentMonth > 10) ? ((currentYear + 1) + '-' + (currentMonth - 10)) : (currentYear + '-' + (currentMonth + 2)),
-            dueForEvaluationOfTask: currentYear + '-' + currentMonth + '-' + 7
+            dueForEvaluationOfTask: currentYear + '-' + (currentMonth + 1) + '-' + 7
         }
 
     }
@@ -437,7 +437,7 @@ class DetailTaskTab extends Component {
 
         let checkDeadlineForEvaluation = false, deadlineForEvaluation;
         let currentDate = new Date();
-
+        
         // Check số ngày đến hạn đánh giá
         deadlineForEvaluation = ((new Date(dueForEvaluationOfTask)).getTime() - currentDate.getTime()) / (3600 * 24 * 1000);
         if (deadlineForEvaluation > 0) {
@@ -458,6 +458,52 @@ class DetailTaskTab extends Component {
             checkDeadlineForEvaluation: checkDeadlineForEvaluation,
             deadlineForEvaluation: deadlineForEvaluation
         }
+    }
+
+    calculateHoursSpentOnTask = async (taskId, timesheetLogs, evaluateId, startDate, endDate) => {
+        let results = [];
+
+        for (let i in timesheetLogs) {
+            let log = timesheetLogs[i];
+
+            let startedAt = new Date(log.startedAt);
+            let stoppedAt = new Date(log.stoppedAt);
+
+            if (startedAt.getTime() >= new Date(startDate).getTime() && stoppedAt.getTime() <= new Date(endDate).getTime()) {
+                let { creator, duration } = log;
+                let check = true;
+
+                let newResults = results.map(item => {
+                    if (creator === item.employee) {
+                        check = false;
+                        return {
+                            employee: creator,
+                            hoursSpent: item.hoursSpent + duration,
+                        }
+                    } else {
+                        return item;
+                    }
+                })
+
+                if (check) {
+                    let employeeHoursSpent = {
+                        employee: creator,
+                        hoursSpent: duration,
+                    };
+
+                    newResults.push(employeeHoursSpent);
+                }
+
+                results = [...newResults];
+            }
+        }
+
+        let data = {
+            evaluateId: evaluateId,
+            timesheetLogs: results,
+        }
+
+        // this.props.editHoursSpentInEvaluate(data, taskId);
     }
 
     render() {
@@ -813,7 +859,9 @@ class DetailTaskTab extends Component {
                                         evalList.map((eva, keyEva) => {
                                             return (
                                                 <div key={keyEva} className="description-box">
+                                                    <button className="btn btn-success pull-right" onClick={() => this.calculateHoursSpentOnTask(task._id, task.timesheetLogs, eva._id, eva.prevDate, eva.date)}>Tính thời gian</button>
                                                     <h4>{translate('task.task_management.detail_eval')}&nbsp;{this.formatDate(eva.prevDate)} <i className="fa fa-fw fa-caret-right"></i> {this.formatDate(eva.date)}</h4>
+
                                                     {
                                                         eva.results.length !== 0 &&
                                                         <div>
@@ -962,6 +1010,7 @@ const actionGetState = { //dispatchActionToProps
     getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
     getTaskLog: performTaskAction.getTaskLog,
     editStatusTask: performTaskAction.editStatusOfTask,
+    editHoursSpentInEvaluate: performTaskAction.editHoursSpentInEvaluate,
     confirmTask: performTaskAction.confirmTask
 }
 

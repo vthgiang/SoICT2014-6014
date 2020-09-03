@@ -36,7 +36,7 @@ class DisposalColumnChart extends Component {
     }
 
     setDataColumnChart = () => {
-        const { listAssets, translate } = this.props;
+        const { getDisposalData, listAssets, translate } = this.props;
         let { disposalDateAfter, disposalDateBefore } = this.state;
 
         let startDate = new Date(disposalDateAfter);
@@ -87,8 +87,8 @@ class DisposalColumnChart extends Component {
 
         category.pop();
         category.unshift('x');
-        countAsset.unshift('count');
-        value.unshift('value');
+        countAsset.unshift(translate('asset.dashboard.amount'));
+        value.unshift(translate('asset.dashboard.value'));
 
         let dataColumnChart = {
             category: category,
@@ -96,67 +96,129 @@ class DisposalColumnChart extends Component {
             value: value,
             yValues: arr
         };
-
+        
+        if (getDisposalData && listAssets) {
+            getDisposalData(dataColumnChart);
+        }
+        
         return dataColumnChart;
     }
 
     columnChart = () => {
         let { translate } = this.props;
         let dataColumnChart = this.setDataColumnChart();
-        let chart = c3.generate({
-            bindto: this.refs.DisposalColumnChart,
 
-            data: {
-                x: 'x',
-                columns: [
-                    dataColumnChart.category,
-                    dataColumnChart.count,
-                    dataColumnChart.value
-                ],
-                type: 'bar',
-                axes: {
-                    value: 'y2',
-                    count: 'y'
-                }
-            },
-            axis: {
-                x: {
-                    type: 'category'
+        if (translate('asset.dashboard.amount') === "Số lượng") {
+            let chart = c3.generate({
+                bindto: this.refs.DisposalColumnChart,
+
+                data: {
+                    x: 'x',
+                    columns: [
+                        dataColumnChart.category,
+                        dataColumnChart.count,
+                        dataColumnChart.value
+                    ],
+                    type: 'bar',
+                    axes: {
+                        'Giá trị': 'y2',
+                        'Số lượng': 'y'
+                    }
                 },
-                y: {
-                    tick: {
-                        values: dataColumnChart.yValues
+                axis: {
+                    x: {
+                        type: 'category'
                     },
-                    label: {
-                        text: translate('asset.dashboard.amount'),
-                        position: 'outer-top'
+                    y: {
+                        tick: {
+                            values: dataColumnChart.yValues
+                        },
+                        label: {
+                            text: translate('asset.dashboard.amount'),
+                            position: 'outer-top'
+                        }
+                    },
+                    y2: {
+                        show: true,
+                        label: {
+                            text: translate('asset.dashboard.sum_value'),
+                            position: 'outer-top'
+                        }
                     }
                 },
-                y2: {
-                    show: true,
-                    label: {
-                        text: translate('asset.dashboard.sum_value'),
-                        position: 'outer-top'
-                    }
-                }
-            },
-            padding: {
-                top: 20,
-                bottom: 20
-            },
-            // tooltip: {
-            //     format: {
-            //         title: function (d) { return d; },
-            //         value: function (value) {
-            //             return value;
-            //         }
-            //     }
-            // },
+                padding: {
+                    top: 20,
+                    bottom: 20
+                },
+                // tooltip: {
+                //     format: {
+                //         title: function (d) { return d; },
+                //         value: function (value) {
+                //             return value;
+                //         }
+                //     }
+                // },
 
-            legend: {
-                show: true
-            }
-        });
+                legend: {
+                    show: true
+                }
+            })
+        } else {
+            let chart = c3.generate({
+                bindto: this.refs.DisposalColumnChart,
+
+                data: {
+                    x: 'x',
+                    columns: [
+                        dataColumnChart.category,
+                        dataColumnChart.count,
+                        dataColumnChart.value
+                    ],
+                    type: 'bar',
+                    axes: {
+                        'Value': 'y2',
+                        'Amount': 'y'
+                    }
+                },
+                axis: {
+                    x: {
+                        type: 'category'
+                    },
+                    y: {
+                        tick: {
+                            values: dataColumnChart.yValues
+                        },
+                        label: {
+                            text: translate('asset.dashboard.amount'),
+                            position: 'outer-top'
+                        }
+                    },
+                    y2: {
+                        show: true,
+                        label: {
+                            text: translate('asset.dashboard.sum_value'),
+                            position: 'outer-top'
+                        }
+                    }
+                },
+                padding: {
+                    top: 20,
+                    bottom: 20
+                },
+                // tooltip: {
+                //     format: {
+                //         title: function (d) { return d; },
+                //         value: function (value) {
+                //             return value;
+                //         }
+                //     }
+                // },
+
+                legend: {
+                    show: true
+                }
+            });
+        }
     }
 
     handleChangeDateAfter = async (value) => {
