@@ -9,8 +9,6 @@ const User = require('../../../models/auth/user.model');
 const fs = require('fs');
 const moment = require("moment");
 
-const TaskManagementService = require('../task-management/task.service');
-
 /**
  * Lấy mẫu công việc theo Id
  */
@@ -2642,8 +2640,8 @@ exports.confirmTask = async (taskId, userId) => {
     let confirmedByEmployee = await Task.findByIdAndUpdate(taskId,
         { $push: { confirmedByEmployees: userId } }
     )
-
-    let task = await TaskManagementService.getTaskById(taskId, userId);
+    
+    let task = await this.getTaskById(taskId, userId);
     return task;
 }
 
@@ -2668,7 +2666,7 @@ exports.editTaskInformation = async (taskId, userId, taskInformations) => {
         }
     }
 
-    let task = await TaskManagementService.getTaskById(taskId, userId);
+    let task = await this.getTaskById(taskId, userId);
     return task;
 }
 

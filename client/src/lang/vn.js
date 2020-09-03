@@ -2195,6 +2195,8 @@ export default {
                 subtasks: "Công việc con",
                 change_history: "Lịch sử thay đổi",
                 change_process: "Quy trình",
+                change_incoming: "Dữ liệu vào",
+                change_outgoing: "Dữ liệu ra",
                 edit_action: "Sửa hành động",
                 delete_action: "Xóa hành động",
                 mandatory_action: "Hành động bắt buộc",
@@ -2269,6 +2271,8 @@ export default {
                 delete_file_task_comment_success: "Xóa file của bình luận thành công",
                 create_task_log_success: " Tạo task log thành công",
                 get_task_log_success: "Lấy lịch sử chỉnh sửa thành công",
+                edit_task_information_success: "Chỉnh sửa thông tin thành công",
+                edit_document_task_comment_success: "Chỉnh sửa tài liệu thành công",
 
                 create_result_task_fail: 'Không đánh giá được kết quả thực hiện công việc',
                 edit_redult_task_fail: 'Chỉnh sửa thất bại kết quả đánh giá',
@@ -2305,6 +2309,8 @@ export default {
                 delete_file_task_comment_fail: "Xóa file của bình luận thất bại",
                 create_task_log_fail: "Tạo lịch sử chỉnh sử cộng việc thất bại",
                 get_task_log_fail: "Lấy tất cả lịch sử chỉnh sửa công việc thất bại",
+                edit_task_information_failure: "Chỉnh sửa thông tin thất bại",
+                edit_document_task_comment_failure: "Chỉnh sửa tài liệu thất bại",
 
                 // error label
                 err_require: 'Trường này phải có giá trị',
