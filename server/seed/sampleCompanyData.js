@@ -27,16 +27,15 @@ const {
     DocumentCategory,
     Material,
 
-    Customer,
-    CustomerLocation,
-    CustomerGroup,
-    CustomerCare
+    CrmCustomer,
+    CrmLocation,
+    CrmGroup,
+    CrmCare
 } = require('../models').schema;
 
 const Terms = require('./terms');
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
-const customerLiabilityModel = require('../models/customer/customerLiability.model');
 
 
 require('dotenv').config({
@@ -2486,7 +2485,7 @@ const sampleCompanyData = async () => {
             company: vnist._id
         }
     ];
-    const customerGroup = await CustomerGroup.insertMany(customerGroupData);
+    const customerGroup = await CrmGroup.insertMany(customerGroupData);
 
     const customerData = [
         {
@@ -2575,9 +2574,9 @@ const sampleCompanyData = async () => {
             company: vnist._id
         }
     ];
-    const customers = await Customer.insertMany(customerData);
+    const customers = await CrmCustomer.insertMany(customerData);
 
-    const customerLiabilities = await customerLiabilityModel.insertMany([
+    const customerLiabilities = await CrmLiability.insertMany([
         {
             code: 'PT0001',
             customer: customers[0]._id,
@@ -2608,7 +2607,7 @@ const sampleCompanyData = async () => {
             company: vnist._id
         },
     ])
-    const ltphuong = await Customer.findById(customers[0]._id);
+    const ltphuong = await CrmCustomer.findById(customers[0]._id);
     ltphuong.liabilities = customerLiabilities.map(lia => lia._id);
     console.log("Xong! Đã tạo mẫu dữ liệu khách hàng")
 }

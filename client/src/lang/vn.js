@@ -605,30 +605,39 @@ export default {
 
         menu: {
             home: 'Trang chủ',
-            system: 'Hệ thống',
-            iam_rbac:'IAM-RBAC',
-            manage_system: 'Quản lý hệ thống',
-            manage_company: 'Quản lý doanh nghiệp/công ty',
-            manage_department: 'Quản lý cơ cấu tổ chức',
-            manage_user: 'Quản lý người dùng',
+            system_administration: 'Quản trị hệ thống',
+            manage_system: 'Sao lưu phục hồi',
+            manage_company: 'Doanh nghiệp',
             manage_role: 'Quản lý phân quyền',
             manage_link: 'Quản lý trang',
-            manage_component: 'Quản lý các componentUI',
+            manage_component: 'Quản lý UI-Component',
+            
+            manage_department: 'Quản lý cơ cấu tổ chức',
+            manage_user: 'Quản lý người dùng',
+
             manage_document: 'Quản lý tài liệu',
             documents: 'Tài liệu văn bản',
+
             crm: 'CRM',
-            customer: 'Khách hàng',
-            customer_group: 'Nhóm khách hàng',
+            crm_list: {
+                customer: 'Khách hàng',
+                lead: 'Khách hàng thân thiết',
+                care: 'Chăm sóc khách hàng',
+                group: 'Nhóm khách hàng',
+                statistic: 'Thống kê',
+            },
 
             task_template: 'Mẫu Công Việc',
             taskmanagement: 'Quản Lý Công Việc',
             manageDocument: 'Quản lý văn bản',
             manageDocumentType: 'Quản lý loại văn bản',
 
+            leave_application: 'Quản lý đơn xin nghỉ',
             manage_employee: 'Quản lý nhân sự',
-            manage_holiday: 'Kế hoạch làm việc',
+            manage_holiday: 'Quản lý kế hoạch làm việc',
             manage_training: 'Quản lý đào tạo',
             account: 'Tài khoản',
+            annual_leave_personal: 'Nghỉ phép',
             manage_unit: 'Quản lý nhân sự các đơn vị',
             add_employee: 'Thêm nhân viên',
             list_employee: 'Quản lý thông tin nhân viên',
@@ -959,6 +968,7 @@ export default {
                 delete_annual_leave_faile: 'Xoá đơn xin nghỉ phép thất bại',
                 edit_annual_leave_success: 'Chỉnh sửa đơn xin nghỉ phép thành công',
                 edit_annual_leave_faile: 'Chỉnh sửa đơn xin nghỉ phép thất bại',
+                aplication_annual_leave_success: 'Thêm đơn xin nghỉ thành công',
             },
 
             // Quản lý khen thưởng kỷ luật
@@ -1306,39 +1316,54 @@ export default {
             // Quản lý kế hoạch làm việc (lịch nghỉ lễ tết)
             holiday: {
                 file_name_export: 'Kế hoạch làm việc',
+                number_date_leave_of_year: 'Số ngày nghỉ phép',
+                date_year: 'ngày/năm',
+                year: 'Năm',
+                number_date: 'Số ngày',
+                list_holiday: 'Kế hoạch nghỉ lễ, nghỉ tết',
+                list_no_leave: 'Thời gian không được nghỉ',
+                list_auto_leave: 'Thời gian được nghỉ phép',
 
                 // Nhóm dành cho table
                 table: {
+                    type: 'Thể loại',
                     timeline: 'Các mốc thời gian',
                     start_date: 'Ngày bắt đầu',
                     end_date: 'Ngày kết thúc',
                     describe_timeline: 'Mô tả',
                 },
 
+                // Nhóm thể loại kế hoạch làm Việc
+                holiday: 'Nghỉ lễ',
+                auto_leave: 'Được nghỉ',
+                no_leave: 'Không được phép nghỉ',
+
                 // Nhóm dành cho action
-                edit_holiday: 'Chỉnh sửa lịch làm việc',
-                delete_holiday: 'Xoá lịch làm việc',
+                edit_holiday: 'Chỉnh sửa kế hoạch làm việc',
+                delete_holiday: 'Xoá kế hoạch làm việc',
                 add_holiday: 'Thêm mới',
-                add_holiday_title: 'Thêm mới lịch làm việc',
-                add_by_hand: 'Thêm một lịch làm việc',
+                add_holiday_title: 'Thêm mới kế hoạch làm việc',
+                add_by_hand: 'Thêm một kế hoạch làm việc',
                 add_import: 'Import file excel',
 
                 // Thông điệp trả về từ server
+                type_required: 'Thể loại không được để trống',
                 start_date_required: 'Thời gian bắt đầu không được để trống',
                 end_date_required: 'Thời gian kết thúc không được để trống',
-                reason_required: 'Mô tả lịch nghỉ không được để trống',
+                reason_required: 'Mô tả kế hoạch làm việc không được để trống',
                 holiday_duplicate_required: 'Thời gian bị trùng lặp',
+                edit_number_date_leave_of_year_success: 'Thay đổi số ngày nghỉ trong một năm thành công',
 
-                get_holiday_success: 'Lấy danh sách lịch làm việc thành công',
-                get_holiday_faile: 'Lấy danh sách lịch làm việc thất bại',
-                create_holiday_success: 'Thêm mới lịch làm việc thành công',
-                create_holiday_faile: 'Thêm mới lịch làm việc thất bại',
-                delete_holiday_success: 'Xoá lịch làm việc thành công',
-                delete_holiday_faile: 'Xoá lịch làm việc thất bại',
-                edit_holiday_success: 'Chỉnh sửa lịch làm việc thành công',
-                edit_holiday_faile: 'Chỉnh sửa lịch làm việc thất bại',
+                get_holiday_success: 'Lấy danh sách kế hoạch làm việc thành công',
+                get_holiday_faile: 'Lấy danh sách kế hoạch làm việc thất bại',
+                create_holiday_success: 'Thêm mới kế hoạch làm việc thành công',
+                create_holiday_faile: 'Thêm mới kế hoạch làm việc thất bại',
+                delete_holiday_success: 'Xoá kế hoạch làm việc thành công',
+                delete_holiday_faile: 'Xoá kế hoạch làm việc thất bại',
+                edit_holiday_success: 'Chỉnh sửa kế hoạch làm việc thành công',
+                edit_holiday_faile: 'Chỉnh sửa kế hoạch làm việc thất bại',
                 import_holiday_success: 'Import thông tin nghỉ lễ tết thành công',
-                import_holiday_faile: 'IMport thông tin nghỉ lễ tết thất bại',
+                import_holiday_faile: 'Import thông tin nghỉ lễ tết thất bại',
             },
 
             // Quản lý chấm công nhân viên
@@ -1391,6 +1416,22 @@ export default {
                 email_employee: 'Email nhân viên',
                 add_employee_unit: 'Thêm nhân viên',
             },
+
+            // Nghỉ phép
+            annual_leave_personal: {
+                list_annual_leave: 'Quy định về nghỉ phép của công ty',
+                inform_annual_leave: 'Thông tin nghỉ phép cá nhân',
+                note: 'Chú thích',
+                day: 'ngày',
+                total_number_leave_of_year: 'Tổng số ngày nghỉ phép cả năm',
+                leaved: 'Bạn đã nghỉ',
+                view_detail: 'Chi tiết xem ở trang',
+                receiver: 'Người nhận',
+
+                // Nhóm action
+                create_annual_leave: 'Xin nghỉ phép',
+
+            }
 
         },
 
@@ -1542,18 +1583,20 @@ export default {
                 cost_chart: 'Biểu đồ thống kê tài sản theo giá trị',
                 amount_of_asset: 'Thống kê số lượng tài sản',
                 value_of_asset: 'Thống kê giá trị tài sản',
-                depreciation_of_asset: 'Thống kê giá trị khấu hao',
+                depreciation_of_asset: 'Thống kê hao mòn tài sản',
                 bar_chart: 'Biểu đồ cột',
                 tree: 'Cây',
                 amount: 'Số lượng',
-                lost_value: 'Giá trị mất (Triệu)',
+                value: 'Giá trị',
+                lost_value: 'Giá trị hao mòn (Triệu)',
                 sum_value: 'Tổng giá trị (Triệu)',
                 building: 'Mặt bằng',
                 vehicle: 'Phương tiện',
                 machine: 'Máy móc',
                 orther: 'Khác',
-                asset_by_group: 'Tài sản theo nhóm',
-                asset_by_type: 'Tài sản theo loại',
+                asset_by_group: 'Thống kê theo nhóm',
+                asset_by_type: 'Thống kê theo loại',
+                asset_purchase_and_dispose: 'Mua - bán tài sản',
                 purchase_asset: 'Thống kê mua sắm tài sản',
                 disposal_asset: 'Thống kê thanh lý tài sản',
             },
@@ -1971,6 +2014,8 @@ export default {
                 detail_hide_info: 'Ẩn thông tin',
                 detail_show_info: 'Hiện thông tin',
                 detail_choose_role: 'Chọn vai trò',
+                detail_route: 'Điều hướng',
+                detail_route_task: 'Điều hướng công việc',
 
                 detail_link: 'Link công việc',
                 detail_priority: 'Độ ưu tiên công việc',
@@ -1995,7 +2040,7 @@ export default {
                 detail_not_eval_on_month: 'Chưa đánh giá tháng này',
                 detail_not_eval: 'Chưa ai đánh giá công việc tháng này',
                 detail_kpi: 'Liên kết KPI',
-                detail_not_kpi: 'Chưa liên kết công việc với KPI',
+                detail_not_kpi: 'Chưa liên kết công việc với KPI tháng này',
                 detail_all_not_kpi: 'Chưa ai liên kết công việc với KPI',
                 detailt_none_eval: 'Chưa được đánh giá lần nào',
 
@@ -2063,7 +2108,7 @@ export default {
                 btn_save_eval: 'Lưu đánh giá',
                 btn_get_info: 'Lấy thông tin',
                 note_not_eval: 'Đã quá 7 ngày sau ngày đánh giá. Bạn không thể chỉnh sửa thêm!',
-                note_eval: 'Số ngày còn lại để chỉnh sửa đánh giá: ',
+                note_eval: 'Số ngày còn lại để chỉnh sửa đánh giá',
 
                 add_eval_of_this_month: 'Thêm đánh giá tháng này',
                 eval_of: 'Đánh giá tháng',
@@ -2126,7 +2171,19 @@ export default {
 
                 // confirm task
                 confirm_task_success: "Xác nhận tham gia công việc thành công",
-                confirm_task_failure: "Xác nhận tham gia công việc thất bại"
+                confirm_task_failure: "Xác nhận tham gia công việc thất bại",
+
+                // warning
+                warning: 'Cảnh báo',
+                not_have_evaluation: 'Chưa có đánh giá công việc tháng này',
+                you_need: 'Bạn cần',
+                confirm_task: 'xác nhận tham gia công việc này',
+                not_confirm: 'Chưa xác nhận công việc',
+
+                left_task_expired: 'còn lại là công việc bị hết hạn',
+                action_not_rating: 'Số hoạt động chưa được đánh giá tháng này',
+
+                left_can_edit_task: 'Thời gian còn lại để chỉnh sửa đánh giá công việc tháng trước',
             },
             task_perform: {
 
@@ -2167,6 +2224,12 @@ export default {
                 stop_timer: "Dừng bấm giờ",
                 edit: "Chỉnh sửa",
                 delete: "Xóa",
+
+                notice_end_task: 'Bạn có chắc chắn muốn kết thúc công việc này',
+                notice_change_status_task: 'Bạn có chắc chắn muốn đổi trạng thái của công việc này',
+                choose_following_task: 'Chọn công việc thực hiện tiếp theo',
+                task_link_of_process: 'Đường liên kết',
+                not_have_following: 'Không có công việc kế tiếp',
 
 
                 // TODO: code_mesage_task_perform
@@ -2285,6 +2348,33 @@ export default {
                 }
 
             },
+            task_process: {
+                process_name: 'Tên quy trình',
+                process_description: 'Mô tả quy trình',
+                manager: 'Người quản lý',
+                viewer: 'Người được xem',
+                time_of_process: 'Thời gian thực hiện quy trình',
+                start_date: 'Ngày bắt đầu',
+                end_date: 'Ngày kết thúc',
+
+                inprocess: 'Đang thực hiện',
+                wait_for_approval: 'Chờ phê duyệt',
+                finished: 'Đã kết thúc',
+                delayed: 'Tạm hoãn',
+                canceled: 'Bị hủy',
+
+                notice: 'Chú thích',
+                information: 'Thông tin',
+                document: 'Tài liệu',
+
+                list_of_data_and_info: 'Danh sách thông tin và tài liệu',
+                not_have_doc: 'Không có tài liệu',
+                not_have_info: 'Không có thông tin',
+                not_export_info: 'Không xuất thông tin',
+
+                save: 'Lưu',
+
+            },
             task_template: {
 
                 create_task_template_success: 'Tạo mẫu công việc thành công !',
@@ -2366,7 +2456,8 @@ export default {
                         // Nhóm dành cho các handle
                         handle_edit_kpi: {
                             approving: 'KPI đang được phê duyệt, bạn không thể chỉnh sửa. Nếu muốn sửa đổi hãy liên hệ với quản lý của bạn!',
-                            activated: 'KPI đã được kích hoạt, bạn không thể chỉnh sửa. Nếu muốn sửa đổi hãy liên hệ với quản lý của bạn!'
+                            activated: 'KPI đã được kích hoạt, bạn không thể chỉnh sửa. Nếu muốn sửa đổi hãy liên hệ với quản lý của bạn!',
+                            finished: 'KPI đã kết thúc, bạn không thể chỉnh sửa!'
                         },
                         request_approval_kpi: {
                             approve: 'Bạn chắc chắn muốn quản lý phê quyệt KPI này?',
@@ -2408,14 +2499,6 @@ export default {
                         weight: 'Trọng số',
 
                         // Nhóm dành cho validate
-                        validate_name: {
-                            empty: 'Tên mục tiêu không được bỏ trống',
-                            less_than_4: 'Tên mục tiêu không được ít hơn 4 ký tự',
-                            more_than_50: 'Tên mục tiêu không được nhiều hơn 50 ký tự',
-                            special_character: 'Tên mục tiêu không được chưa ký tự đặc biệt'
-
-                        },
-                        validate_criteria: 'Tiêu chí không được để trống',
                         validate_weight: {
                             empty: 'Trọng số không được để trống',
                             less_than_0: 'Trọng số không được nhỏ hơn 0',

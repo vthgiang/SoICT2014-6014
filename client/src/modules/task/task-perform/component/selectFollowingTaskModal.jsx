@@ -57,8 +57,9 @@ class SelectFollowingTaskModal extends Component {
                 listFollowing.push(selectedFollowing[i].value);
             }
         }
+
         Swal.fire({
-            title: "Bạn có chắc chắn muốn kết thúc công việc",
+            title: this.props.translate('task.task_perform.notice_change_status_task'),
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -114,7 +115,7 @@ class SelectFollowingTaskModal extends Component {
                     </div>
 
                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border">Chọn công việc thực hiện tiếp theo</legend>
+                        <legend className="scheduler-border">{translate('task.task_perform.choose_following_task')}</legend>
 
                         {task.followingTasks.length !== 0 ?
                             (task.followingTasks.map((x, key) => {
@@ -126,12 +127,12 @@ class SelectFollowingTaskModal extends Component {
                                             checked={this.state.selectedFollowing[x.task._id] && this.state.selectedFollowing[x.task._id].checked === true}
                                             value={x.task._id}
                                             name="following" onChange={(e) => this.changeSelectedFollowingTask(e, x.task._id)}
-                                        />&nbsp;&nbsp;&nbsp;{x.task.name} {x.link ? `- Đường liên kết: ${x.link}` : ''}
+                                        />&nbsp;&nbsp;&nbsp;{x.task.name} {x.link ? `- ${translate('task.task_perform.task_link_of_process')}: ${x.link}` : ''}
                                     </label>
                                     <br />
                                 </div>
                             }))
-                            : <div>Không có công việc phía sau</div>
+                            : <div>{translate('task.task_perform.not_have_following')}</div>
                         }
                     </fieldset>
                 </DialogModal>

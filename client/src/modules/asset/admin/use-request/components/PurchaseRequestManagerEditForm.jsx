@@ -14,7 +14,8 @@ class PurchaseRequestManagerEditForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            status: "Chờ phê duyệt"
+            status: "Chờ phê duyệt",
+            managedBy : this.props.employeeId?this.props.employeeId:''
         };
     }
 
@@ -176,9 +177,10 @@ class PurchaseRequestManagerEditForm extends Component {
     }
 
     save = () => {
+        let {managedBy} =this.state
         let dataToSubmit = { ...this.state, approver: this.props.auth.user._id };
         if (this.isFormValidated()) {
-            return this.props.updateRecommendDistribute(this.state._id, dataToSubmit);
+            return this.props.updateRecommendDistribute(this.state._id, dataToSubmit,managedBy);
         }
     }
 

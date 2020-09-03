@@ -95,8 +95,8 @@ class DepreciationTree extends Component {
     }
 
     render() {
-        let { assetType, listAssets, translate } = this.props;
-        let { tree } = this.state;
+        const { assetType, listAssets, translate, setDepreciationOfAsset } = this.props;
+        const { tree } = this.state;
         let typeName = [], countAssetDepreciation = [], idAssetType = [];
 
         for (let i in assetType) {
@@ -157,6 +157,7 @@ class DepreciationTree extends Component {
                         <DepreciationBarChart
                             listAssets={listAssets}
                             assetType={assetType}
+                            setDepreciationOfAsset={setDepreciationOfAsset}
                         />
                 }
             </div>

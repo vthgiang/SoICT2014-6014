@@ -67,16 +67,34 @@ class HolidayImportForm extends Component {
         value = value.map(x => {
             let startDate = typeof x.startDate === 'string' ? x.startDate : this.convertExcelDateToJSDate(x.startDate);
             let endDate = typeof x.endDate === 'string' ? x.endDate : this.convertExcelDateToJSDate(x.endDate);
-            return { startDate: startDate, endDate: endDate, description: x.description };
+            let type = x.type;
+            switch (type) {
+                case translate('human_resource.holiday.holiday'):
+                    type = 'holiday';
+                    break;
+                case translate('human_resource.holiday.auto_leave'):
+                    type = 'auto_leave';
+                    break;
+                case translate('human_resource.holiday.no_leave'):
+                    type = 'no_leave';
+                    break;
+                default:
+                    type = null;
+                    break;
+            };
+            return { type: type, startDate: startDate, endDate: endDate, description: x.description };
         })
 
         if (checkFileImport) {
             let rowError = [];
             value = value.map((x, index) => {
                 let errorAlert = [];
-                if (x.startDate === null || x.endDate === null || x.reason === null) {
+                if (x.startDate === null || x.endDate === null || x.reason === null, x.type === null) {
                     rowError = [...rowError, index + 1]
                     x = { ...x, error: true }
+                };
+                if (x.type === null) {
+                    errorAlert = [...errorAlert, translate('human_resource.holiday.type_required')];
                 };
                 if (x.startDate === null) {
                     errorAlert = [...errorAlert, translate('human_resource.holiday.start_date_required')];

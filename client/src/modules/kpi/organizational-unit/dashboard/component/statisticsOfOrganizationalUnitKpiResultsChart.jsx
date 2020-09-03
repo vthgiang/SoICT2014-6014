@@ -265,7 +265,13 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
                         left: 10
                     },
                     tick: {
-                        // format: d3.format("d")
+                        format: function(d) {
+                            if (d - parseInt(d) === 0) {
+                                return d;
+                            } else {
+                                return "";
+                            }
+                        }
                     }
                 }
             },

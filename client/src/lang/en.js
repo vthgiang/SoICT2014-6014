@@ -603,20 +603,27 @@ export default {
         },
 
         menu: {
-            home: 'Home page',
-            system: 'System',
-            iam_rbac:'IAM-RBAC',
-            manage_system: 'Manage System',
+            home: 'Home Page',
+            system_administration: 'System Administration',
+            manage_system: 'Backup and Restore',
             manage_company: 'Manage Company',
-            manage_department: 'Manage Departments',
-            manage_user: 'Manage Users',
             manage_role: 'Manage Roles',
             manage_link: 'Manage Pages',
-            manage_component: 'Manage ComponentUI',
+            manage_component: 'Manage UI-Component',
+
+            manage_department: 'Manage Departments',
+            manage_user: 'Manage Users',
+
             manage_document: 'Manage Documents',
             documents: 'Documents',
-
-            customer: 'Customer',
+            crm: 'CRM',
+            crm_list: {
+                customer: 'Customers',
+                lead: 'Leads',
+                care: 'Cares',
+                group: 'Groups',
+                statistic: 'Statistics',
+            },
 
             task_template: 'Task Template',
             cocautochuc: 'Organizational Structure',
@@ -624,11 +631,13 @@ export default {
             manageDocument: 'Manage Document',
             manageDocumentType: 'Manage Document Type',
 
+            leave_application: 'Manage leave application',
             manage_employee: 'Manage Staffs',
             manage_training: 'Manage Training',
             account: 'Account',
-            manage_unit: 'Manage units',
-            manage_holiday: 'Work plan',
+            annual_leave_personal: 'Annual Leave',
+            manage_unit: 'Manage Units',
+            manage_holiday: 'Manage Work Plan',
             add_employee: 'Add New Staffs',
             list_employee: 'Manage Staffs Information',
             detail_employee: 'Personal Information',
@@ -958,6 +967,7 @@ export default {
                 delete_annual_leave_faile: 'Delete annual leave faile',
                 edit_annual_leave_success: 'Edit annual leave success',
                 edit_annual_leave_faile: 'Edit annual leave faile',
+                aplication_annual_leave_success: 'Send application annual leave success',
 
             },
 
@@ -1306,13 +1316,27 @@ export default {
             // Quản lý kế hoạch làm việc (lịch nghỉ lễ tết)
             holiday: {
                 file_name_export: 'Work plan',
+                number_date_leave_of_year: 'Number of days off',
+                date_year: 'date/year',
+                year: 'year',
+                number_date: 'Number date',
+                list_holiday: 'Holiday plans, Tet holidays',
+                list_no_leave: 'No leave is allowed',
+                list_auto_leave: 'Leave is allowed',
+
                 // Nhóm dành cho table
                 table: {
+                    type: 'Type',
                     timeline: 'Timelines',
                     start_date: 'Start date',
                     end_date: 'End date',
                     describe_timeline: 'Description',
                 },
+
+                // Nhóm thể loại kế hoạch làm Việc
+                holiday: 'Holiday',
+                auto_leave: 'Auto leave',
+                no_leave: 'No leave',
 
                 // Nhóm dành cho action
                 edit_holiday: 'Edit work schedule',
@@ -1323,10 +1347,12 @@ export default {
                 add_import: 'Import file excel',
 
                 // Thông điệp trả về từ server
+                type_required: 'Type required',
                 start_date_required: 'Start date required',
                 end_date_required: 'End date required',
                 reason_required: 'Description required',
                 holiday_duplicate_required: 'Time is overlapping',
+                edit_number_date_leave_of_year_success: 'Change the number of days off in the year success',
 
                 get_holiday_success: 'Get work schedule success',
                 get_holiday_faile: 'Get work schedule faile',
@@ -1390,6 +1416,21 @@ export default {
                 email_employee: 'Email',
                 add_employee_unit: 'Add staff',
             },
+
+            // Nghỉ phép
+            annual_leave_personal: {
+                list_annual_leave: 'Regulations on corporate leave',
+                inform_annual_leave: 'Information on personal leave',
+                note: 'Note',
+                day: 'days',
+                total_number_leave_of_year: 'Total number of days off',
+                leaved: 'You have rested',
+                view_detail: 'Details see page',
+                receiver: 'Receiver',
+
+                // Nhóm action
+                create_annual_leave: 'Apply leave',
+            }
         },
 
         // Modules quản lý đào tạo
@@ -1541,6 +1582,7 @@ export default {
                 bar_chart: 'Bar chart',
                 tree: 'Tree',
                 amount: 'Amount',
+                value: 'Value',
                 lost_value: 'Lost value (Million)',
                 sum_value: 'Total value (Million)',
                 building: 'Building',
@@ -1549,6 +1591,7 @@ export default {
                 orther: 'Other',
                 asset_by_group: ' Asset by group',
                 asset_by_type: ' Asset by type',
+                asset_purchase_and_dispose: ' Purchase and dispose',
                 purchase_asset: 'Statistics purchase asset chart',
                 disposal_asset: 'Statistics disposal asset chart',
             },
@@ -1967,6 +2010,8 @@ export default {
                 detail_hide_info: 'Hide information',
                 detail_show_info: 'Show information',
                 detail_choose_role: 'Change role',
+                detail_route: 'Navigate',
+                detail_route_task: 'Navigate tasks',
 
                 detail_link: 'Task link',
                 detail_priority: 'Priority',
@@ -2059,7 +2104,7 @@ export default {
                 btn_save_eval: 'Save evaluation',
                 btn_get_info: 'Get infomation task',
                 note_not_eval: 'You can no longer edit reviews because it is more than 7 days after the last review.',
-                note_eval: 'Number of days left to edit review: ',
+                note_eval: 'Number of days left to edit review',
 
                 add_eval_of_this_month: 'Add evaluation of this month',
                 eval_of: 'Evaluation of',
@@ -2119,8 +2164,19 @@ export default {
 
                 // confirm task
                 confirm_task_success: "Confirm task successfully",
-                confirm_task_failure: "Confirm task unsuccessfully"
+                confirm_task_failure: "Confirm task unsuccessfully",
 
+                // warning
+                warning: 'Warning',
+                not_have_evaluation: 'No one evaluate task this month',
+                you_need: 'You need',
+                confirm_task: 'confirm take part in this task',
+                not_confirm: 'Not confirm this task',
+
+                left_task_expired: 'left is task expired',
+                action_not_rating: 'actions not rating this month',
+
+                left_can_edit_task: 'Remaining time to edit task evaluation of previous month',
             },
             task_perform: {
                 actions: "Actions",
@@ -2130,6 +2186,8 @@ export default {
                 subtasks: "Subtasks",
                 change_history: "Change logs",
                 change_process: "Process",
+                change_incoming: "Incoming data",
+                change_outgoing: "Outgoing data",
                 edit_action: "Edit action",
                 delete_action: "Delete action",
                 mandatory_action: "Mandatory action",
@@ -2161,11 +2219,11 @@ export default {
                 edit: "Edit",
                 delete: "Delete",
 
-
-
-
-
-
+                notice_end_task: 'Are you sure to finish this task',
+                notice_change_status_task: 'Are you sure to change status of this task',
+                choose_following_task: 'Choose the next task to be executed',
+                task_link_of_process: 'Link',
+                not_have_following: 'Not have following task',
 
                 // TODO: code_mesage_task_perform
                 create_result_task_success: 'Evaluate task successfully',
@@ -2273,6 +2331,33 @@ export default {
                     err_empty: "Value must be required"
                 }
             },
+            task_process: {
+                process_name: 'Process name',
+                process_description: 'Process description',
+                manager: 'Manager',
+                viewer: 'Viewer',
+                time_of_process: 'Time of process',
+                start_date: 'Start date',
+                end_date: 'End date',
+
+                inprocess: 'Iprocess',
+                wait_for_approval: 'Wait for approval',
+                finished: 'Finished',
+                delayed: 'Delayed',
+                canceled: 'Canceled',
+
+                notice: 'Notice',
+                information: 'Information',
+                document: 'Document',
+
+                list_of_data_and_info: 'List of data and informations',
+                not_have_doc: 'Not have documents',
+                not_have_info: 'Not have information',
+                not_export_info: 'Not export information',
+
+                save: 'Save',
+
+            },
             task_template: {
                 create_task_template_success: 'Create task template success !',
                 create_task_template_fail: 'Create task template fail !',
@@ -2357,7 +2442,8 @@ export default {
                         // Nhóm dành cho các handle
                         handle_edit_kpi: {
                             approving: 'KPI is being approved, you can not edit it. If you want to modify, please contact your manager!',
-                            activated: 'KPI has been activated, you can not edit. If you want to modify, please contact your manager!'
+                            activated: 'KPI has been activated, you can not edit. If you want to modify, please contact your manager!',
+                            finished: 'KPI has been finished, you can not edit!'
                         },
                         delete_kpi: {
                             kpi: 'Are you sure you want to delete this KPI?',
@@ -2399,13 +2485,6 @@ export default {
                         weight: 'Weight',
 
                         // Nhóm dành cho validate
-                        validate_name: {
-                            empty: 'Target name cannot be empty',
-                            less_than_4: 'Target name cannot be less than 4 characters',
-                            more_than_50: 'Target name cannot be more than 50 characters',
-                            special_character: 'Target name cannot contain special characters'
-                        },
-                        validate_criteria: 'Criteria cannot be empty',
                         validate_weight: {
                             empty: 'Weight cannot be empty',
                             less_than_0: 'Weight cannot be less than 0',

@@ -4,6 +4,7 @@ import {
 
 const initState = {
     listHoliday: [],
+    numberDateLeaveOfYear: 0,
     isLoading: false,
     importHoliday: [],
     importStatus: false,
@@ -24,7 +25,8 @@ export function holiday(state = initState, action) {
         case HolidayConstants.GET_HOLIDAY_SUCCESS:
             return {
                 ...state,
-                listHoliday: action.payload,
+                listHoliday: action.payload.holidays,
+                    numberDateLeaveOfYear: action.payload.numberDateLeaveOfYear,
                     isLoading: false,
             };
         case HolidayConstants.CREATE_HOLIDAY_SUCCESS:
@@ -43,13 +45,21 @@ export function holiday(state = initState, action) {
                     isLoading: false,
             };
         case HolidayConstants.UPDATE_HOLIDAY_SUCCESS:
-            return {
-                ...state,
-                listHoliday: state.listHoliday.map(holiday =>
-                        (holiday._id === action.payload._id) ?
-                        action.payload : holiday
+            if (action.payload.holiday) {
+                return {
+                    ...state,
+                    listHoliday: state.listHoliday.map(holiday =>
+                        (holiday._id === action.payload.holiday._id) ?
+                        action.payload.holiday : holiday
                     ),
                     isLoading: false,
+                };
+            } else {
+                return {
+                    ...state,
+                    numberDateLeaveOfYear: action.payload.numberDateLeaveOfYear,
+                    isLoading: false,
+                };
             };
         case HolidayConstants.IMPORT_HOLIDAY_SUCCESS:
             return {

@@ -16,6 +16,7 @@ export const DocumentActions = {
     createDocumentCategory,
     editDocumentCategory,
     deleteDocumentCategory,
+    importDocumentCategory,
 
     getDocumentDomains,
     createDocumentDomain,
@@ -30,6 +31,7 @@ export const DocumentActions = {
     createDocumentArchive,
     editDocumentArchive,
     deleteDocumentArchive,
+    importDocumentArchive,
     
 };
 
@@ -248,6 +250,21 @@ function deleteDocumentCategory(id) {
             })
             .catch(err => {
                 dispatch({ type: DocumentConstants.DELETE_DOCUMENT_CATEGORY_FAILE });
+            })
+    }
+}
+function importDocumentCategory(data) {
+    return dispatch => {
+        dispatch({ type: DocumentConstants.IMPORT_DOCUMENT_CATEGORY_REQUEST });
+        DocumentServices.importDocumentCategory(data)
+            .then(res => {
+                dispatch({
+                    type: DocumentConstants.IMPORT_DOCUMENT_CATEGORY_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({ type: DocumentConstants.IMPORT_DOCUMENT_CATEGORY_FAILE });
             })
     }
 }
@@ -519,6 +536,22 @@ function deleteDocumentArchive(data, type = "single") {
                     })
                 })
         }
+    }
+}
+
+function importDocumentArchive(data) {
+    return dispatch => {
+        dispatch({ type: DocumentConstants.IMPORT_DOCUMENT_DOMAIN_REQUEST });
+        DocumentServices.importDocumentArchive(data)
+            .then(res => {
+                dispatch({
+                    type: DocumentConstants.IMPORT_DOCUMENT_DOMAIN_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({ type: DocumentConstants.IMPORT_DOCUMENT_DOMAIN_FAILE });
+            })
     }
 }
 
