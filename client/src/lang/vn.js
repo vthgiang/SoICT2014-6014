@@ -611,7 +611,7 @@ export default {
             manage_role: 'Quản lý phân quyền',
             manage_link: 'Quản lý trang',
             manage_component: 'Quản lý UI-Component',
-            
+
             manage_department: 'Quản lý cơ cấu tổ chức',
             manage_user: 'Quản lý người dùng',
 
@@ -854,6 +854,7 @@ export default {
             staff_name: 'Họ và tên',
             all_unit: 'Chọn tất cả các đơn vị',
             non_unit: 'Chọn đơn vị',
+            non_staff: 'Chọn nhân viên',
             all_position: 'Chọn tất cả các chức vụ',
             non_position: 'Chọn chức vụ',
             all_status: 'Chọn tất cả các trạng thái',
