@@ -2128,7 +2128,20 @@ export default {
 
                 // confirm task
                 confirm_task_success: "Xác nhận tham gia công việc thành công",
-                confirm_task_failure: "Xác nhận tham gia công việc thất bại"
+                confirm_task_failure: "Xác nhận tham gia công việc thất bại",
+
+                // warning
+                warning: 'Cảnh báo',
+                not_have_evaluation: 'Chưa có ai đánh giá công việc tháng này',
+                you_need: 'Bạn cần',
+                confirm_task: 'xác nhận tham gia công việc này',
+                not_confirm: 'Chưa xác nhận công việc',
+
+                left_task_expired: 'còn lại là công việc bị hết hạn',
+                left_can_edit_task: 'còn lại để chỉnh sửa đánh giá công việc tháng trước',
+                action_not_rating: 'hoạt động chưa được đánh giá tháng này',
+
+                have: 'Còn',
             },
             task_perform: {
 
@@ -2169,6 +2182,12 @@ export default {
                 stop_timer: "Dừng bấm giờ",
                 edit: "Chỉnh sửa",
                 delete: "Xóa",
+
+                notice_end_task: 'Bạn có chắc chắn muốn kết thúc công việc này',
+                notice_change_status_task: 'Bạn có chắc chắn muốn đổi trạng thái của công việc này',
+                choose_following_task: 'Chọn công việc thực hiện tiếp theo',
+                task_link_of_process: 'Đường liên kết',
+                not_have_following: 'Không có công việc kế tiếp',
 
 
                 // TODO: code_mesage_task_perform

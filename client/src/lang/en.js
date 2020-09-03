@@ -2121,8 +2121,20 @@ export default {
 
                 // confirm task
                 confirm_task_success: "Confirm task successfully",
-                confirm_task_failure: "Confirm task unsuccessfully"
+                confirm_task_failure: "Confirm task unsuccessfully",
 
+                // warning
+                warning: 'Warning',
+                not_have_evaluation: 'No one evaluate task this month',
+                you_need: 'You need',
+                confirm_task: 'confirm take part in this task',
+                not_confirm: 'Not confirm this task',
+
+                left_task_expired: 'left is task expired',
+                left_can_edit_task: 'remaining is task evaluation editing expiration',
+                action_not_rating: 'actions not rating this month',
+
+                have: 'have',
             },
             task_perform: {
                 actions: "Actions",
@@ -2165,11 +2177,11 @@ export default {
                 edit: "Edit",
                 delete: "Delete",
 
-
-
-
-
-
+                notice_end_task: 'Are you sure to finish this task',
+                notice_change_status_task: 'Are you sure to change status of this task',
+                choose_following_task: 'Choose the next task to be executed',
+                task_link_of_process: 'Link',
+                not_have_following: 'Not have following task',
 
                 // TODO: code_mesage_task_perform
                 create_result_task_success: 'Evaluate task successfully',

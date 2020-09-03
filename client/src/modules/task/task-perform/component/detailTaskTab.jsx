@@ -203,7 +203,7 @@ class DetailTaskTab extends Component {
             }
             else {
                 Swal.fire({
-                    title: "Bạn có chắc chắn muốn kết thúc công việc",
+                    title: this.props.translate('task.task_perform.notice_end_task'),
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
@@ -219,7 +219,7 @@ class DetailTaskTab extends Component {
         }
         else {
             Swal.fire({
-                title: "Bạn có chắc chắn muốn kết thúc công việc",
+                title: this.props.translate('task.task_perform.notice_end_task'),
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -622,16 +622,16 @@ class DetailTaskTab extends Component {
                         {
                             task && warning
                             && <div className="description-box" style={{ border: "3px double #f38961" }}>
-                                <h4>Cảnh báo</h4>
+                                <h4>{translate('task.task_management.warning')}</h4>
                                 {/** Xác nhận công việc */}
                                 {
                                     checkConfirmTask && checkConfirmTask.checkConfirmCurrentUser
-                                    && <div><strong>Bạn cần <a style={{ cursor: "pointer" }} onClick={() => this.confirmTask(task)}>xác nhận tham gia công việc này</a></strong></div>
+                                    && <div><strong>{translate('task.task_management.you_need')} <a style={{ cursor: "pointer" }} onClick={() => this.confirmTask(task)}>{translate('task.task_management.confirm_task')}</a></strong></div>
                                 }
                                 {
                                     checkConfirmTask && checkConfirmTask.checkConfirmOtherUser
                                     && <div>
-                                        <strong>Chưa xác nhận công việc: </strong>
+                                        <strong>{translate('task.task_management.not_confirm')}</strong>
                                         &nbsp;&nbsp;
                                         {
                                             checkConfirmTask.listEmployeeNotConfirm.length !== 0
@@ -646,7 +646,7 @@ class DetailTaskTab extends Component {
                                 {/** Chưa có đánh giá */}
                                 {
                                     checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkEvaluationTask
-                                    && <div><strong>Công việc chưa có đánh giá cho tháng này</strong></div>
+                                    && <div><strong>{translate('task.task_management.not_have_evaluation')}</strong></div>
                                 }
 
                                 {/** Chưa đánh giá hoạt động */}
@@ -661,7 +661,7 @@ class DetailTaskTab extends Component {
                                 {
                                     checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkKpiLink
                                     && <div>
-                                        <strong>Chưa liên kết KPI tháng này</strong>
+                                        <strong>{translate('task.task_management.detail_not_kpi')}</strong>
                                         &nbsp;&nbsp;
                                         {
                                             checkEvaluationTaskAndKpiLink.listEmployeeNotKpiLink.length !== 0
@@ -677,7 +677,7 @@ class DetailTaskTab extends Component {
                                 {
                                     checkDeadlineForEvaluation && checkDeadlineForEvaluation.checkDeadlineForEvaluation
                                     && <div>
-                                        <strong> Còn <span style={{ color: "red" }}>{checkDeadlineForEvaluation.deadlineForEvaluation}</span> là hết hạn chỉnh sửa đánh giá công việc tháng trước</strong>
+                                        <strong>{translate('task.task_management.have')}<span style={{ color: "red" }}>{checkDeadlineForEvaluation.deadlineForEvaluation}</span> {translate('task.task_management.left_can_edit_task')}</strong>
                                     </div>
                                 }
                             </div>
