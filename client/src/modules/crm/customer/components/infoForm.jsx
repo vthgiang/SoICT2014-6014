@@ -26,22 +26,38 @@ class CrmCustomerInformation extends Component {
                     {/* Form thêm khách hàng mới */}
                     <form id="form-crm-customer-info">
                         <div style={{ 
-                            padding: '20px', 
+                            padding: '10px', 
                             border: '1px solid #D2D6DE',
                             backgroundColor: '#F1F1F1',
                             marginBottom: '20px',
                             borderRadius: '5px'
                         }}>
                             <div className="row">
-                                <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                    <img src="" style={{width: '100%'}}/>
+                                <div className="col-xs-12 col-sm-3 col-md-3 col-lg-3 text-center">
+                                    <img className="img-circle" src="/image/crm-customer.png" style={{width: '80%'}}/>
                                 </div>
-                                <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                        
+                                <div className="col-xs-12 col-sm-9 col-md-9 col-lg-9">
+                                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <h3><b>{customer.name}</b></h3>
                                     </div>
-                                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                    
+                                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                        <strong><i className="fa fa-barcode margin-r-5" /> {translate('crm.customer.code')}</strong>
+                                        <p className="text-muted">{customer.code}</p>
+                                        <strong><i className="fa fa-group margin-r-5" /> {translate('crm.customer.group')}</strong>
+                                        <p className="text-muted">{customer.group.name}</p>
+                                        <strong><i className="fa fa-book margin-r-5" /> {translate('crm.customer.tax')}</strong>
+                                        <p className="text-muted">{customer.tax}</p>
+                                    </div>
+                                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                        <strong><i className="fa fa-envelope margin-r-5" /> {translate('crm.customer.email')}</strong>
+                                        <p className="text-muted">{customer.email}</p>
+                                        <strong><i className="fa fa-phone margin-r-5" /> {translate('crm.customer.phone')}</strong>
+                                        <p className="text-muted">{customer.phone}</p>
+                                        <strong><i className="fa fa-map-marker margin-r-5" /> {translate('crm.customer.address')}</strong>
+                                        <p className="text-muted">{customer.address}</p>
+                                    </div><div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                        <strong><i className="fa fa-birthday-cake margin-r-5" /> {translate('crm.customer.birth')}</strong>
+                                        <p className="text-muted">{customer.birth}</p>
                                     </div>
                                 </div>
                             </div>
