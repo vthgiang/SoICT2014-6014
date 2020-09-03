@@ -42,7 +42,7 @@ import EmpoyeeManager from '../modules/human-resource/profile/employee-managemen
 import EmployeeCreate from '../modules/human-resource/profile/employee-create/components';
 import SalaryManager from '../modules/human-resource/salary/components';
 import TimesheetsManager from '../modules/human-resource/timesheets/components';
-import { WorkPlan } from '../modules/human-resource/holiday/components/combinedContent';
+import { AnnualLeave } from '../modules/human-resource/annual-leave/components/combinedContent';
 import { ManageLeaveApplication } from '../modules/human-resource/annual-leave/components/combinedContent';
 
 import { ListEducation } from '../modules/training/education-program/components/educationProgramList';
@@ -454,18 +454,18 @@ class Routes extends Component {
                     />
                     <PrivateRoute
                         isLoading={this.props.holiday.isLoading}
-                        key={'work_plan'}
+                        key={'annual_leave_personal'}
                         arrPage={[
                             { link: '/', name: 'home', icon: 'fa fa-home' },
-                            { link: '/hr-work-plan', name: 'work_plan', icon: 'fa fa-calendar' }
+                            { link: '/hr-annual-leave-personal', name: 'annual_leave_personal', icon: 'fa fa-calendar' }
                         ]}
                         auth={auth}
                         exact={true}
-                        link={'/hr-work-plan'}
-                        path={'/hr-work-plan'}
-                        pageName={'work_plan'}
+                        link={'/hr-annual-leave-personal'}
+                        path={'/hr-annual-leave-personal'}
+                        pageName={'annual_leave_personal'}
                         layout={Layout}
-                        component={WorkPlan}
+                        component={AnnualLeave}
                     />
                     <PrivateRoute
                         isLoading={this.props.salary.isLoading}

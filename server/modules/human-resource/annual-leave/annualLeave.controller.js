@@ -86,7 +86,7 @@ exports.createAnnualLeave = async (req, res) => {
                 title: 'Xin nghỉ phép',
                 level: "important",
                 content: content,
-                sender: "VNIST-Việc",
+                sender: employee.fullName,
             }
             await NotificationServices.createNotification(req.user.company._id, notification, undefined)
 

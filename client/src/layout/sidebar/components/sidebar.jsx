@@ -153,7 +153,7 @@ class SideBar extends Component {
                                 icon: 'fa fa-user-circle',
                                 list: [
                                     { name: 'menu.detail_employee', icon: 'fa fa-user-o', path: '/hr-detail-employee' },
-                                    { name: 'menu.work_plan', icon: 'fa fa-calendar', path: '/hr-work-plan' },
+                                    { name: 'menu.annual_leave_personal', icon: 'fa fa-calendar', path: '/hr-annual-leave-personal' },
                                     { name: 'menu.update_employee', icon: 'fa fa-pencil-square-o', path: '/hr-update-employee' },
 
                                 ]

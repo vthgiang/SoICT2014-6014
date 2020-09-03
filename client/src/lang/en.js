@@ -629,9 +629,9 @@ export default {
             manage_employee: 'Manage Staffs',
             manage_training: 'Manage Training',
             account: 'Account',
-            work_plan: 'Work plan',
-            manage_unit: 'Manage units',
-            manage_holiday: 'Manage work plan',
+            annual_leave_personal: 'Annual Leave',
+            manage_unit: 'Manage Units',
+            manage_holiday: 'Manage Work Plan',
             add_employee: 'Add New Staffs',
             list_employee: 'Manage Staffs Information',
             detail_employee: 'Personal Information',
@@ -1411,9 +1411,9 @@ export default {
                 add_employee_unit: 'Add staff',
             },
 
-            // Kế hoạch làm việc
-            work_plan: {
-                list_work_plane: 'Work schedule list',
+            // Nghỉ phép
+            annual_leave_personal: {
+                list_annual_leave: 'Regulations on corporate leave',
                 inform_annual_leave: 'Information on personal leave',
                 note: 'Note',
                 day: 'days',
