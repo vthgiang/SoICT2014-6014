@@ -2443,7 +2443,8 @@ export default {
                         // Nhóm dành cho các handle
                         handle_edit_kpi: {
                             approving: 'KPI is being approved, you can not edit it. If you want to modify, please contact your manager!',
-                            activated: 'KPI has been activated, you can not edit. If you want to modify, please contact your manager!'
+                            activated: 'KPI has been activated, you can not edit. If you want to modify, please contact your manager!',
+                            finished: 'KPI has been finished, you can not edit!'
                         },
                         delete_kpi: {
                             kpi: 'Are you sure you want to delete this KPI?',
@@ -2485,13 +2486,6 @@ export default {
                         weight: 'Weight',
 
                         // Nhóm dành cho validate
-                        validate_name: {
-                            empty: 'Target name cannot be empty',
-                            less_than_4: 'Target name cannot be less than 4 characters',
-                            more_than_50: 'Target name cannot be more than 50 characters',
-                            special_character: 'Target name cannot contain special characters'
-                        },
-                        validate_criteria: 'Criteria cannot be empty',
                         validate_weight: {
                             empty: 'Weight cannot be empty',
                             less_than_0: 'Weight cannot be less than 0',

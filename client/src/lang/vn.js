@@ -2457,7 +2457,8 @@ export default {
                         // Nhóm dành cho các handle
                         handle_edit_kpi: {
                             approving: 'KPI đang được phê duyệt, bạn không thể chỉnh sửa. Nếu muốn sửa đổi hãy liên hệ với quản lý của bạn!',
-                            activated: 'KPI đã được kích hoạt, bạn không thể chỉnh sửa. Nếu muốn sửa đổi hãy liên hệ với quản lý của bạn!'
+                            activated: 'KPI đã được kích hoạt, bạn không thể chỉnh sửa. Nếu muốn sửa đổi hãy liên hệ với quản lý của bạn!',
+                            finished: 'KPI đã kết thúc, bạn không thể chỉnh sửa!'
                         },
                         request_approval_kpi: {
                             approve: 'Bạn chắc chắn muốn quản lý phê quyệt KPI này?',
@@ -2499,14 +2500,6 @@ export default {
                         weight: 'Trọng số',
 
                         // Nhóm dành cho validate
-                        validate_name: {
-                            empty: 'Tên mục tiêu không được bỏ trống',
-                            less_than_4: 'Tên mục tiêu không được ít hơn 4 ký tự',
-                            more_than_50: 'Tên mục tiêu không được nhiều hơn 50 ký tự',
-                            special_character: 'Tên mục tiêu không được chưa ký tự đặc biệt'
-
-                        },
-                        validate_criteria: 'Tiêu chí không được để trống',
                         validate_weight: {
                             empty: 'Trọng số không được để trống',
                             less_than_0: 'Trọng số không được nhỏ hơn 0',
