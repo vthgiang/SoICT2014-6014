@@ -20,7 +20,6 @@ function searchSalary(data) {
         method: 'GET',
         params: {
             organizationalUnit: data.organizationalUnit,
-            position: data.position,
             employeeNumber: data.employeeNumber,
             month: data.month,
             page: data.page,

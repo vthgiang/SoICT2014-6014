@@ -879,6 +879,7 @@ export default {
             add_success: 'Add new success',
             all_unit: 'Select all unit',
             non_unit: 'Select unit',
+            non_staff: 'Select staff',
             all_position: 'Select all position',
             non_position: 'Select position',
             all_status: 'Select all status',
@@ -2131,7 +2132,7 @@ export default {
                 btn_save_eval: 'Save evaluation',
                 btn_get_info: 'Get infomation task',
                 note_not_eval: 'You can no longer edit reviews because it is more than 7 days after the last review.',
-                note_eval: 'Number of days left to edit review: ',
+                note_eval: 'Number of days left to edit review',
 
                 add_eval_of_this_month: 'Add evaluation of this month',
                 eval_of: 'Evaluation of',
@@ -2201,10 +2202,9 @@ export default {
                 not_confirm: 'Not confirm this task',
 
                 left_task_expired: 'left is task expired',
-                left_can_edit_task: 'remaining is task evaluation editing expiration',
                 action_not_rating: 'actions not rating this month',
 
-                have: 'have',
+                left_can_edit_task: 'Remaining time to edit task evaluation of previous month',
             },
             task_perform: {
                 actions: "Actions",
@@ -2289,6 +2289,8 @@ export default {
                 delete_file_task_comment_success: "Delete file of task comment",
                 create_task_log_success: " Create task log success",
                 get_task_log_success: "get_task_log_success",
+                edit_task_information_success: "Edit information successfully",
+                edit_document_task_comment_success: "Edit document successfully",
 
                 create_result_task_fail: "Can't evaluate task",
                 edit_result_task_fail: "Can't edit result task",
@@ -2325,6 +2327,8 @@ export default {
                 delete_file_task_comment_fail: "Delete file of task comment fail",
                 create_task_log_fail: "Create task log fail",
                 get_task_log_fail: "get_task_log_fail",
+                edit_task_information_failure: "Edit information unsuccessfully",
+                edit_document_task_comment_failure: "Edit document unsuccessfully",
 
                 // error label
                 err_require: 'Field is required',

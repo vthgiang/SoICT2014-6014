@@ -3,19 +3,15 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal, ErrorLabel, SelectBox } from '../../../../../common-components';
+import ValidationHelper from '../../../../../helpers/validationHelper';
 
 import { createUnitKpiActions } from '../redux/actions';
 
-import { UserFormValidator} from '../../../../super-admin/user/components/userFormValidator';
-
-
 class OrganizationalUnitKpiEditTargetModal extends Component {
-    componentDidMount() {
-        this.props.getParentTarget(localStorage.getItem("currentRole"));
-    }
-
+   
     constructor(props) {
         super(props);
+
         this.state = {
             _id: null,
             name: "",
@@ -27,6 +23,33 @@ class OrganizationalUnitKpiEditTargetModal extends Component {
             errorOnCriteria: undefined,
             errorOnWeight: undefined,
         };
+    }
+
+    static getDerivedStateFromProps(nextProps, prevState){
+        if (nextProps.id !== prevState._id && nextProps.organizationalUnitKpi) {
+            return {
+                ...prevState,
+                _id: nextProps.id,
+                name: nextProps.organizationalUnitKpi.name,
+                parent: nextProps.organizationalUnitKpi.parent ? nextProps.organizationalUnitKpi.parent._id : null,
+                weight: nextProps.organizationalUnitKpi.weight,
+                criteria: nextProps.organizationalUnitKpi.criteria,
+
+                errorOnName: undefined, 
+                errorOnCriteria: undefined,
+                errorOnWeight: undefined,
+            } 
+        } else {
+            return null;
+        }
+    }
+
+    shouldComponentUpdate = (nextProps, nextState) => {
+        if (nextState._id !== this.state._id) {
+            this.props.getParentTarget(localStorage.getItem("currentRole"));
+            return false;
+        }
+        return true;
     }
 
     handleEditTarget = async () => { 
@@ -43,43 +66,17 @@ class OrganizationalUnitKpiEditTargetModal extends Component {
         }
     }
 
-
-    static getDerivedStateFromProps(nextProps, prevState){
-        if (nextProps.target._id !== prevState._id) {
-            return {
-                ...prevState,
-                _id: nextProps.target._id,
-                name: nextProps.target.name,
-                parent: nextProps.target.parent ? nextProps.target.parent._id : null,
-                weight: nextProps.target.weight,
-                criteria: nextProps.target.criteria,
-
-                errorOnName: undefined, 
-                errorOnCriteria: undefined,
-                errorOnWeight: undefined,
-            } 
-        } else {
-            return null;
-        }
-    }
-
-
     handleNameChange = (e) => {
         let value = e.target.value;
-        this.validateName(value, true);
-    }
-    validateName = (value, willUpdateState=true) => {
-        let msg = UserFormValidator.validateName(value);
-        if (willUpdateState){
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnName: msg,
-                    name: value,
-                }
-            });
-        }
-        return msg === undefined;
+        let validation = ValidationHelper.validateName(this.props.translate, value);
+        
+        this.setState(state => {
+            return {
+                ...state,
+                errorOnName: validation.message,
+                name: value,
+            }
+        });
     }
 
     handleParentChange = (value) => {
@@ -93,64 +90,72 @@ class OrganizationalUnitKpiEditTargetModal extends Component {
 
     handleCriteriaChange = (e) => {
         let value = e.target.value;
-        this.validateCriteria(value, true);
-    }
-    validateCriteria = (value, willUpdateState=true) => {
-        let msg = undefined;
-        if (value.trim() === "") {
-            msg = "Tiêu chí không được để trống";
-        }
+        let validation = ValidationHelper.validateDescription(this.props.translate, value);
 
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnCriteria: msg,
-                    criteria: value,
-                }
-            });
-        }
-        return msg === undefined;
+        this.setState(state => {
+            return {
+                ...state,
+                errorOnCriteria: validation.message,
+                criteria: value,
+            }
+        });
     }
 
     handleWeightChange = (e) => {
         let value = e.target.value;
-        this.validateWeight(value, true);
-    }
-    validateWeight = (value, willUpdateState=true) => {
-        let msg = undefined;
-        
-        if (value < 0) {
-            msg = "Trọng số không được nhỏ hơn 0";
-        } else if (value > 100) {
-            msg = "Trọng số không được lớn hơn 100";
-        } 
-        
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnWeight: msg,
-                    weight: value,
-                }
-            });
-        }
-        return msg === undefined;
+        let validation = this.validateWeight(this.props.translate, value);
+
+        this.setState(state => {
+            return {
+                ...state,
+                errorOnWeight: validation.message,
+                weight: value,
+            }
+        });
     }
 
+    validateWeight = (translate, value) => {
+        let validation = ValidationHelper.validateEmpty(translate, value);
+
+        if (!validation.status) {
+            return validation;
+        }
+        
+        if (value < 0) {
+            return {
+                status: false,
+                message: this.props.translate('kpi.employee.employee_kpi_set.create_employee_kpi_modal.validate_weight.less_than_0')
+            };
+        } else if(value > 100){
+            return {
+                status: false,
+                message: this.props.translate('kpi.employee.employee_kpi_set.create_employee_kpi_modal.validate_weight.greater_than_100')
+            };
+        } else {
+            return {
+                status: true
+            };
+        }
+    }
+
+    
     isFormValidated = () => {
-        let result = 
-            this.validateName(this.state.name, false) &&
-            this.validateCriteria(this.state.criteria, false) &&
-            this.validateWeight(this.state.weight, false);
+        const { name, criteria, weight } = this.state;
+        
+        let validatateName, validateCriteria, validateWeight, result;
+        
+        validatateName = ValidationHelper.validateName(this.props.translate, name);
+        validateCriteria = ValidationHelper.validateDescription(this.props.translate, criteria);
+        validateWeight = this.validateWeight(this.props.translate, weight)
+        
+        result = validatateName.status && validateCriteria.status && validateWeight.status;
         return result;
     }
 
 
     render() {
-        const { createKpiUnit } = this.props; 
-        const { target, organizationalUnit } = this.props;
-        const { translate } = this.props; 
+        const { createKpiUnit, translate } = this.props; 
+        const { organizationalUnit } = this.props;
         const { editing, newTarget, _id, name, parent, weight, criteria, errorOnName, errorOnCriteria, errorOnWeight } = this.state;
         
         let parentKPI;
@@ -169,7 +174,7 @@ class OrganizationalUnitKpiEditTargetModal extends Component {
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID={`editTargetKPIUnit${this.props.target._id}`} isLoading={editing}
+                    modalID={`editTargetKPIUnit${_id}`} isLoading={editing}
                     formID="form-edit-target"
                     title={translate('kpi.organizational_unit.edit_target_kpi_modal.edit_organizational_unit_kpi')}
                     msg_success={translate('kpi.organizational_unit.edit_target_kpi_modal.success')}

@@ -9,7 +9,7 @@ const { LogInfo, LogError } = require('../../../logs');
 exports.getOrganizationalUnits = async (req, res) => {
     if (req.query.deanOfOrganizationalUnit){
         getOrganizationalUnitsThatUserIsDean(req, res);
-    } else if(req.query.userId){
+    } else if(req.query.userId || req.query.email){
         getOrganizationalUnitsOfUser(req, res);
     } else if (req.query.getAsTree && roleId) {
         getChildrenOfOrganizationalUnitsAsTree(req, res);
@@ -38,7 +38,12 @@ exports.getOrganizationalUnits = async (req, res) => {
 
 getOrganizationalUnitsOfUser = async (req, res) =>{
     try {
-        const department = await OrganizationalUnitService.getOrganizationalUnitsOfUser(req.query.userId);
+        let department=[];
+        if (req.query.email) {
+            department = await OrganizationalUnitService.getOrganizationalUnitsOfUserByEmail(req.query.email);
+        } else {
+            department = await OrganizationalUnitService.getOrganizationalUnitsOfUser(req.query.userId);
+        }
         
         await LogInfo(req.user.email, 'GET_DEPARTMENT_THAT_USER_IS_DEAN', req.user.company);
         res.status(200).json({

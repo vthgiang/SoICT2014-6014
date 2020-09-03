@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ErrorLabel, DatePicker } from '../../../../common-components';
+import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../common-components';
 
 import { SalaryFormValidator } from './salaryFormValidator';
 
@@ -168,6 +168,7 @@ class SalaryEditForm extends Component {
                 ...prevState,
                 _id: nextProps._id,
                 unit: nextProps.unit,
+                organizationalUnit: nextProps.organizationalUnit,
                 employeeNumber: nextProps.employeeNumber,
                 month: nextProps.month,
                 mainSalary: nextProps.mainSalary,
@@ -182,9 +183,9 @@ class SalaryEditForm extends Component {
     }
 
     render() {
-        const { translate, salary } = this.props;
+        const { translate, salary, department } = this.props;
 
-        const { employeeNumber, unit, mainSalary, bonus, month, _id,
+        const { employeeNumber, organizationalUnit, unit, mainSalary, bonus, month, _id,
             errorOnMainSalary, errorOnNameSalary, errorOnMoreMoneySalary } = this.state;
 
         return (
@@ -200,7 +201,20 @@ class SalaryEditForm extends Component {
                         {/* Mã số nhân viên */}
                         <div className="form-group">
                             <label>{translate('human_resource.staff_number')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="employeeNumber" value={employeeNumber} onChange={this.handleMSNVChange} disabled />
+                            <input type="text" className="form-control" name="employeeNumber" value={employeeNumber} disabled />
+                        </div>
+                        {/* Đơn vị */}
+                        <div className="form-group">
+                            <label>{translate('human_resource.unit')}<span className="text-red">*</span></label>
+                            <SelectBox
+                                id={`edit-salary-unit`}
+                                className="form-control select2"
+                                disabled={true}
+                                style={{ width: "100%" }}
+                                value={organizationalUnit}
+                                items={department.list.map(y => { return { value: y._id, text: y.name } })}
+                                onChange={this.handleOrganizationalUnitChange}
+                            />
                         </div>
                         {/* Tháng lương */}
                         <div className="form-group">
@@ -262,8 +276,8 @@ class SalaryEditForm extends Component {
     }
 };
 function mapState(state) {
-    const { salary } = state;
-    return { salary };
+    const { salary, department } = state;
+    return { salary, department };
 };
 
 const actionCreators = {

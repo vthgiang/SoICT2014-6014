@@ -314,8 +314,6 @@ class CreateEmployeeKpiSet extends Component {
 
     /**thay đổi thời gian của tậpKPI này */
     handleEditEmployeeKpi = async (employeeKpiSetStatus, id, employeeKpi) => {
-        console.log("status", employeeKpi.status)
-
         await this.setState(state => {
             return {
                 ...state,

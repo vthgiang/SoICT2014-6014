@@ -653,7 +653,7 @@ export default {
             manage_role: 'Quản lý phân quyền',
             manage_link: 'Quản lý trang',
             manage_component: 'Quản lý UI-Component',
-            
+
             manage_department: 'Quản lý cơ cấu tổ chức',
             manage_user: 'Quản lý người dùng',
 
@@ -896,6 +896,7 @@ export default {
             staff_name: 'Họ và tên',
             all_unit: 'Chọn tất cả các đơn vị',
             non_unit: 'Chọn đơn vị',
+            non_staff: 'Chọn nhân viên',
             all_position: 'Chọn tất cả các chức vụ',
             non_position: 'Chọn chức vụ',
             all_status: 'Chọn tất cả các trạng thái',
@@ -2082,7 +2083,7 @@ export default {
                 detail_not_eval_on_month: 'Chưa đánh giá tháng này',
                 detail_not_eval: 'Chưa ai đánh giá công việc tháng này',
                 detail_kpi: 'Liên kết KPI',
-                detail_not_kpi: 'Chưa liên kết công việc với KPI',
+                detail_not_kpi: 'Chưa liên kết công việc với KPI tháng này',
                 detail_all_not_kpi: 'Chưa ai liên kết công việc với KPI',
                 detailt_none_eval: 'Chưa được đánh giá lần nào',
 
@@ -2150,7 +2151,7 @@ export default {
                 btn_save_eval: 'Lưu đánh giá',
                 btn_get_info: 'Lấy thông tin',
                 note_not_eval: 'Đã quá 7 ngày sau ngày đánh giá. Bạn không thể chỉnh sửa thêm!',
-                note_eval: 'Số ngày còn lại để chỉnh sửa đánh giá: ',
+                note_eval: 'Số ngày còn lại để chỉnh sửa đánh giá',
 
                 add_eval_of_this_month: 'Thêm đánh giá tháng này',
                 eval_of: 'Đánh giá tháng',
@@ -2217,16 +2218,15 @@ export default {
 
                 // warning
                 warning: 'Cảnh báo',
-                not_have_evaluation: 'Chưa có ai đánh giá công việc tháng này',
+                not_have_evaluation: 'Chưa có đánh giá công việc tháng này',
                 you_need: 'Bạn cần',
                 confirm_task: 'xác nhận tham gia công việc này',
                 not_confirm: 'Chưa xác nhận công việc',
 
                 left_task_expired: 'còn lại là công việc bị hết hạn',
-                left_can_edit_task: 'còn lại để chỉnh sửa đánh giá công việc tháng trước',
-                action_not_rating: 'hoạt động chưa được đánh giá tháng này',
+                action_not_rating: 'Số hoạt động chưa được đánh giá tháng này',
 
-                have: 'Còn',
+                left_can_edit_task: 'Thời gian còn lại để chỉnh sửa đánh giá công việc tháng trước',
             },
             task_perform: {
 
@@ -2237,6 +2237,8 @@ export default {
                 subtasks: "Công việc con",
                 change_history: "Lịch sử thay đổi",
                 change_process: "Quy trình",
+                change_incoming: "Dữ liệu vào",
+                change_outgoing: "Dữ liệu ra",
                 edit_action: "Sửa hành động",
                 delete_action: "Xóa hành động",
                 mandatory_action: "Hành động bắt buộc",
@@ -2311,6 +2313,8 @@ export default {
                 delete_file_task_comment_success: "Xóa file của bình luận thành công",
                 create_task_log_success: " Tạo task log thành công",
                 get_task_log_success: "Lấy lịch sử chỉnh sửa thành công",
+                edit_task_information_success: "Chỉnh sửa thông tin thành công",
+                edit_document_task_comment_success: "Chỉnh sửa tài liệu thành công",
 
                 create_result_task_fail: 'Không đánh giá được kết quả thực hiện công việc',
                 edit_redult_task_fail: 'Chỉnh sửa thất bại kết quả đánh giá',
@@ -2347,6 +2351,8 @@ export default {
                 delete_file_task_comment_fail: "Xóa file của bình luận thất bại",
                 create_task_log_fail: "Tạo lịch sử chỉnh sử cộng việc thất bại",
                 get_task_log_fail: "Lấy tất cả lịch sử chỉnh sửa công việc thất bại",
+                edit_task_information_failure: "Chỉnh sửa thông tin thất bại",
+                edit_document_task_comment_failure: "Chỉnh sửa tài liệu thất bại",
 
                 // error label
                 err_require: 'Trường này phải có giá trị',

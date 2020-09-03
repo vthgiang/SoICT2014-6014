@@ -44,20 +44,19 @@ require('dotenv').config({
 
 // DB CONFIG
 const db = process.env.DATABASE || `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/${process.env.DB_NAME}`;
-const optionDatabase = process.env.DB_AUTHENTICATION === 'true' ?
-    {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useCreateIndex: true,
-        useFindAndModify: false,
-        user: process.env.DB_USERNAME,
-        pass: process.env.DB_PASSWORD
-    } : {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useCreateIndex: true,
-        useFindAndModify: false,
-    }
+const optionDatabase = process.env.DB_AUTHENTICATION === 'true' ? {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
+    user: process.env.DB_USERNAME,
+    pass: process.env.DB_PASSWORD
+} : {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
+}
 
 // KẾT NỐI TỚI CSDL MONGODB
 mongoose.connect(db, optionDatabase).then(() => {
@@ -92,95 +91,95 @@ const sampleCompanyData = async () => {
     const hash = await bcrypt.hashSync('123456', salt);
 
     const users = await User.insertMany([{
-        name: 'Super Admin VNIST',
-        email: 'super.admin.vnist@gmail.com',
-        password: hash,
-        company: vnist._id
-    },
-    {
-        name: 'Admin VNIST',
-        email: 'admin.vnist@gmail.com',
-        password: hash,
-        company: vnist._id
-    },
-    {
-        name: 'Nguyễn Văn An',
-        email: 'nva.vnist@gmail.com',
-        password: hash,
-        company: vnist._id
-    },
-    {
-        name: 'Trần Văn Bình',
-        email: 'tvb.vnist@gmail.com',
-        password: hash,
-        company: vnist._id
-    },
-    {
-        name: 'Vũ Thị Cúc',
-        email: 'vtc.vnist@gmail.com',
-        password: hash,
-        company: vnist._id
-    },
-    {
-        name: 'Nguyễn Văn Danh',
-        email: 'nvd.vnist@gmail.com',
-        password: hash,
-        company: vnist._id
-    },
-    {
-        name: 'Trần Thị Én',
-        email: 'tte.vnist@gmail.com',
-        password: hash,
-        company: vnist._id
-    },
-    {
-        name: 'Phạm Đình Phúc',
-        email: 'pdp.vnist@gmail.com',
-        password: hash,
-        company: vnist._id
-    },
-    {
-        name: 'Trần Minh Đức',
-        email: 'tmd.vnist@gmail.com',
-        password: hash,
-        company: vnist._id
-    },
-    {
-        name: 'Nguyễn Việt Anh',
-        email: 'nguyenvietanh.vnist@gmail.com',
-        password: hash,
-        company: vnist._id
-    },
-    {
-        name: 'Nguyễn Viết Thái',
-        email: 'nguyenvietthai.vnist@gmail.com',
-        password: hash,
-        company: vnist._id
-    },
-    {
-        name: 'Trần Mỹ Hạnh',
-        email: 'tranmyhanh.vnist@gmail.com',
-        password: hash,
-        company: vnist._id
-    },
-    {
-        name: 'Nguyễn Minh Thành',
-        email: 'nguyenminhthanh.vnist@gmail.com',
-        password: hash,
-        company: vnist._id
-    },
-    {
-        name: 'Nguyễn Gia Huy',
-        email: 'nguyengiahuy.vnist@gmail.com',
-        password: hash,
-        company: vnist._id
-    },
-    {
-        name: 'Trần Minh Anh',
-        email: 'tranminhanh.vnist@gmail.com',
-        password: hash,
-        company: vnist._id
-    }
+            name: 'Super Admin VNIST',
+            email: 'super.admin.vnist@gmail.com',
+            password: hash,
+            company: vnist._id
+        },
+        {
+            name: 'Admin VNIST',
+            email: 'admin.vnist@gmail.com',
+            password: hash,
+            company: vnist._id
+        },
+        {
+            name: 'Nguyễn Văn An',
+            email: 'nva.vnist@gmail.com',
+            password: hash,
+            company: vnist._id
+        },
+        {
+            name: 'Trần Văn Bình',
+            email: 'tvb.vnist@gmail.com',
+            password: hash,
+            company: vnist._id
+        },
+        {
+            name: 'Vũ Thị Cúc',
+            email: 'vtc.vnist@gmail.com',
+            password: hash,
+            company: vnist._id
+        },
+        {
+            name: 'Nguyễn Văn Danh',
+            email: 'nvd.vnist@gmail.com',
+            password: hash,
+            company: vnist._id
+        },
+        {
+            name: 'Trần Thị Én',
+            email: 'tte.vnist@gmail.com',
+            password: hash,
+            company: vnist._id
+        },
+        {
+            name: 'Phạm Đình Phúc',
+            email: 'pdp.vnist@gmail.com',
+            password: hash,
+            company: vnist._id
+        },
+        {
+            name: 'Trần Minh Đức',
+            email: 'tmd.vnist@gmail.com',
+            password: hash,
+            company: vnist._id
+        },
+        {
+            name: 'Nguyễn Việt Anh',
+            email: 'nguyenvietanh.vnist@gmail.com',
+            password: hash,
+            company: vnist._id
+        },
+        {
+            name: 'Nguyễn Viết Thái',
+            email: 'nguyenvietthai.vnist@gmail.com',
+            password: hash,
+            company: vnist._id
+        },
+        {
+            name: 'Trần Mỹ Hạnh',
+            email: 'tranmyhanh.vnist@gmail.com',
+            password: hash,
+            company: vnist._id
+        },
+        {
+            name: 'Nguyễn Minh Thành',
+            email: 'nguyenminhthanh.vnist@gmail.com',
+            password: hash,
+            company: vnist._id
+        },
+        {
+            name: 'Nguyễn Gia Huy',
+            email: 'nguyengiahuy.vnist@gmail.com',
+            password: hash,
+            company: vnist._id
+        },
+        {
+            name: 'Trần Minh Anh',
+            email: 'tranminhanh.vnist@gmail.com',
+            password: hash,
+            company: vnist._id
+        }
     ]);
     console.log("Xong! Đã thêm tài khoản:", users);
 
@@ -274,45 +273,45 @@ const sampleCompanyData = async () => {
     // Step 4: GÁN QUYỀN CHO NHÂN VIÊN CỦA CỦA CÔNG TY
     console.log('Gán quyền cho nhân viên trong công ty ...');
     await UserRole.insertMany([{ // Gán tài khoản super.admin.vnist có role là Super Admin của công ty VNIST
-        userId: users[0]._id,
-        roleId: roleSuperAdmin._id
-    }, {
-        userId: users[1]._id, // Gán tài khoản admin.vnist có role là admin
-        roleId: roleAdmin._id
-    },
-    // Tiếp tục gán chức danh vai trò của phòng ban cho nhân viên:
-    { // Giám đốc Nguyễn Văn An
-        userId: users[2]._id,
-        roleId: giamDoc._id
-    },
-    { // Phó giám đốc Trần Văn Bình
-        userId: users[3]._id,
-        roleId: phoGiamDoc._id
-    },
-    { // Thành viên ban giám đốc Vũ Thị Cúc
-        userId: users[4]._id,
-        roleId: thanhVienBGĐ._id
-    },
-    { // Trưởng phòng kinh doanh Nguyễn Văn Danh
-        userId: users[5]._id,
-        roleId: truongPhongHC._id
-    },
-    { // Nguyễn Văn Danh cũng là thành viên ban giám đốc
-        userId: users[5]._id,
-        roleId: thanhVienBGĐ._id
-    },
-    { // Phó phòng kinh doanh Trần Thị Én
-        userId: users[6]._id,
-        roleId: phoPhongHC._id
-    },
-    { // Nhân viên phòng kinh doanh Phạm Đình Phúc
-        userId: users[7]._id,
-        roleId: nvPhongHC._id
-    },
-    { // Thành viên ban giám đốc Phạm Đình Phúc
-        userId: users[7]._id,
-        roleId: thanhVienBGĐ._id
-    }
+            userId: users[0]._id,
+            roleId: roleSuperAdmin._id
+        }, {
+            userId: users[1]._id, // Gán tài khoản admin.vnist có role là admin
+            roleId: roleAdmin._id
+        },
+        // Tiếp tục gán chức danh vai trò của phòng ban cho nhân viên:
+        { // Giám đốc Nguyễn Văn An
+            userId: users[2]._id,
+            roleId: giamDoc._id
+        },
+        { // Phó giám đốc Trần Văn Bình
+            userId: users[3]._id,
+            roleId: phoGiamDoc._id
+        },
+        { // Thành viên ban giám đốc Vũ Thị Cúc
+            userId: users[4]._id,
+            roleId: thanhVienBGĐ._id
+        },
+        { // Trưởng phòng kinh doanh Nguyễn Văn Danh
+            userId: users[5]._id,
+            roleId: truongPhongHC._id
+        },
+        { // Nguyễn Văn Danh cũng là thành viên ban giám đốc
+            userId: users[5]._id,
+            roleId: thanhVienBGĐ._id
+        },
+        { // Phó phòng kinh doanh Trần Thị Én
+            userId: users[6]._id,
+            roleId: phoPhongHC._id
+        },
+        { // Nhân viên phòng kinh doanh Phạm Đình Phúc
+            userId: users[7]._id,
+            roleId: nvPhongHC._id
+        },
+        { // Thành viên ban giám đốc Phạm Đình Phúc
+            userId: users[7]._id,
+            roleId: thanhVienBGĐ._id
+        }
     ]);
 
 
@@ -340,7 +339,7 @@ const sampleCompanyData = async () => {
         viceDeans: [phoPhongHC._id],
         employees: [nvPhongHC._id],
         parent: Directorate._id
-    },]);
+    }, ]);
     console.log('Xong! Đã tạo các phòng ban cho công ty', Directorate, departments);
 
 
@@ -367,9 +366,19 @@ const sampleCompanyData = async () => {
         }
 
         let allLinks = await SystemLink.find()
-            .populate({ path: 'roles', model: RootRole });;
-        let activeLinks = await SystemLink.find({ _id: { $in: linkArr } })
-            .populate({ path: 'roles', model: RootRole });
+            .populate({
+                path: 'roles',
+                model: RootRole
+            });;
+        let activeLinks = await SystemLink.find({
+                _id: {
+                    $in: linkArr
+                }
+            })
+            .populate({
+                path: 'roles',
+                model: RootRole
+            });
 
         let dataLinks = allLinks.map(link => {
             if (checkIndex(link, activeLinks) === -1)
@@ -419,24 +428,51 @@ const sampleCompanyData = async () => {
         }
         await Privilege.insertMany(dataPrivilege);
 
-        return await Link.find({ company: companyId })
-            .populate({ path: 'roles', model: Privilege, populate: { path: 'roleId', model: Role } });
+        return await Link.find({
+                company: companyId
+            })
+            .populate({
+                path: 'roles',
+                model: Privilege,
+                populate: {
+                    path: 'roleId',
+                    model: Role
+                }
+            });
     }
 
     const createCompanyComponents = async (companyId, linkArr) => {
 
-        let systemLinks = await SystemLink.find({ _id: { $in: linkArr } });
+        let systemLinks = await SystemLink.find({
+            _id: {
+                $in: linkArr
+            }
+        });
 
         let dataSystemComponents = systemLinks.map(link => link.components);
         dataSystemComponents = dataSystemComponents.reduce((arr1, arr2) => [...arr1, ...arr2]);
         dataSystemComponents.filter((component, index) => dataSystemComponents.indexOf(component) === index);
         const systemComponents = await SystemComponent
-            .find({ _id: { $in: dataSystemComponents } })
-            .populate({ path: 'roles', model: RootRole });
+            .find({
+                _id: {
+                    $in: dataSystemComponents
+                }
+            })
+            .populate({
+                path: 'roles',
+                model: RootRole
+            });
 
         for (let i = 0; i < systemComponents.length; i++) {
-            let sysLinks = await SystemLink.find({ _id: { $in: systemComponents[i].links } });
-            let links = await Link.find({ company: companyId, url: sysLinks.map(link => link.url) });
+            let sysLinks = await SystemLink.find({
+                _id: {
+                    $in: systemComponents[i].links
+                }
+            });
+            let links = await Link.find({
+                company: companyId,
+                url: sysLinks.map(link => link.url)
+            });
             // Tạo component
             let component = await Component.create({
                 name: systemComponents[i].name,
@@ -454,7 +490,9 @@ const sampleCompanyData = async () => {
             for (let k = 0; k < systemComponents.length; k++) {
                 let roles = await Role.find({
                     company: companyId,
-                    name: { $in: systemComponents[i].roles.map(role => role.name) }
+                    name: {
+                        $in: systemComponents[i].roles.map(role => role.name)
+                    }
                 });
                 let dataPrivileges = roles.map(role => {
                     return {
@@ -467,7 +505,9 @@ const sampleCompanyData = async () => {
             }
         }
 
-        return await Component.find({ company: companyId });
+        return await Component.find({
+            company: companyId
+        });
     }
     let linkArrData = await SystemLink.find();
     let linkArr = linkArrData.map(link => link._id);
@@ -878,6 +918,7 @@ const sampleCompanyData = async () => {
         employee: employee._id,
         company: vnist._id,
         month: "2020-02",
+        organizationalUnit: Directorate._id,
         mainSalary: "10000000",
         unit: 'VND',
         bonus: [{
@@ -887,6 +928,7 @@ const sampleCompanyData = async () => {
     }, {
         employee: employee._id,
         company: vnist._id,
+        organizationalUnit: Directorate._id,
         month: "2020-01",
         mainSalary: "10000000",
         unit: 'VND',
@@ -904,23 +946,23 @@ const sampleCompanyData = async () => {
     ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu khen thưởng!");
     await Commendation.insertMany([{
-        employee: employee._id,
-        company: vnist._id,
-        decisionNumber: "123",
-        organizationalUnit: departments[0]._id,
-        startDate: "2020-02-02",
-        type: "Thưởng tiền",
-        reason: "Vượt doanh số",
-    },
-    {
-        employee: employee._id,
-        company: vnist._id,
-        decisionNumber: "1234",
-        organizationalUnit: departments[0]._id,
-        startDate: "2020-02-02",
-        type: "Thưởng tiền",
-        reason: "Vượt doanh số 500 triệu",
-    }
+            employee: employee._id,
+            company: vnist._id,
+            decisionNumber: "123",
+            organizationalUnit: departments[0]._id,
+            startDate: "2020-02-02",
+            type: "Thưởng tiền",
+            reason: "Vượt doanh số",
+        },
+        {
+            employee: employee._id,
+            company: vnist._id,
+            decisionNumber: "1234",
+            organizationalUnit: departments[0]._id,
+            startDate: "2020-02-02",
+            type: "Thưởng tiền",
+            reason: "Vượt doanh số 500 triệu",
+        }
     ])
     console.log(`Xong! Thông tin khen thưởng đã được tạo`);
 
@@ -1032,7 +1074,7 @@ const sampleCompanyData = async () => {
         name: "Hồ sơ lữu trữ bắt buộc",
         company: vnist,
         description: 'Hồ sơ lữu trữ bắt buộc'
-    },]);
+    }, ]);
 
     const domanins2 = await DocumentDomain.insertMany([
         //tài liệu bắt buộc
@@ -1160,92 +1202,91 @@ const sampleCompanyData = async () => {
         company: vnist,
         description: "Văn phòng B3",
         path: "Văn phòng B3",
-    },
-    ]);
+    }, ]);
     const archives2 = await DocumentArchive.insertMany([{
-        name: "Phòng 201",
-        company: vnist,
-        description: "Phòng  lưu trữ tầng 2",
-        path: "Văn phòng B1 - Phòng 201",
-        parent: archives[0],
-    }, {
-        name: "Phòng 202",
-        company: vnist,
-        description: "Phòng giám đốc",
-        path: "Văn phòng B1 - Phòng 202",
-        parent: archives[0],
-    }, {
-        name: "Phòng 301",
-        company: vnist,
-        path: "Văn phòng B2 - Phòng 301",
-        parent: archives[1],
-    }, {
-        name: "Phòng 302",
-        company: vnist,
-        path: "Văn phòng B2 - Phòng 302",
-        parent: archives[1],
-    }, {
-        name: "Phòng 403",
-        company: vnist,
-        path: "Văn phòng B3 - Phòng 403",
-        parent: archives[2],
-    }, {
-        name: "Phòng 404",
-        company: vnist,
-        path: "Văn phòng B3 - Phòng 404",
-        parent: archives[2],
-    },
+            name: "Phòng 201",
+            company: vnist,
+            description: "Phòng  lưu trữ tầng 2",
+            path: "Văn phòng B1 - Phòng 201",
+            parent: archives[0],
+        }, {
+            name: "Phòng 202",
+            company: vnist,
+            description: "Phòng giám đốc",
+            path: "Văn phòng B1 - Phòng 202",
+            parent: archives[0],
+        }, {
+            name: "Phòng 301",
+            company: vnist,
+            path: "Văn phòng B2 - Phòng 301",
+            parent: archives[1],
+        }, {
+            name: "Phòng 302",
+            company: vnist,
+            path: "Văn phòng B2 - Phòng 302",
+            parent: archives[1],
+        }, {
+            name: "Phòng 403",
+            company: vnist,
+            path: "Văn phòng B3 - Phòng 403",
+            parent: archives[2],
+        }, {
+            name: "Phòng 404",
+            company: vnist,
+            path: "Văn phòng B3 - Phòng 404",
+            parent: archives[2],
+        },
 
     ]);
     const archives3 = await DocumentArchive.insertMany([{
-        name: "Tủ 1",
-        company: vnist,
-        path: "Văn phòng B1 - Phòng 201 - Tủ 1",
-        parent: archives2[0],
-    }, {
-        name: "Tủ 2",
-        company: vnist,
-        path: "Văn phòng B1 - Phòng 201 - Tủ 2",
-        parent: archives2[0],
-    }, {
-        name: "Tủ 1",
-        company: vnist,
-        path: "Văn phòng B1 - Phòng 202 - Tủ 1",
-        parent: archives2[1],
-    }, {
-        name: "Tủ A",
-        company: vnist,
-        path: "Văn phòng B2 - Phòng 301 - Tủ A",
-        parent: archives2[2],
-    }, {
-        name: "Tủ B",
-        company: vnist,
-        path: "Văn phòng B2 - Phòng 301 - Tủ B",
-        parent: archives2[2],
-    }, {
-        name: "Tủ to",
-        company: vnist,
-        path: "Văn phòng B3 - Phòng 403 - Tủ to",
-        parent: archives2[4],
-    }, {
-        name: "Tủ nhỏ",
-        company: vnist,
-        path: "Văn phòng B3 - Phòng 403 - Tủ nhỏ",
-        parent: archives2[4],
-    }, {
-        name: "Tủ trung bình",
-        company: vnist,
-        path: "Văn phòng B3 - Phòng 403 - Tủ trung bình",
-        parent: archives2[4],
-    },
+            name: "Tủ 1",
+            company: vnist,
+            path: "Văn phòng B1 - Phòng 201 - Tủ 1",
+            parent: archives2[0],
+        }, {
+            name: "Tủ 2",
+            company: vnist,
+            path: "Văn phòng B1 - Phòng 201 - Tủ 2",
+            parent: archives2[0],
+        }, {
+            name: "Tủ 1",
+            company: vnist,
+            path: "Văn phòng B1 - Phòng 202 - Tủ 1",
+            parent: archives2[1],
+        }, {
+            name: "Tủ A",
+            company: vnist,
+            path: "Văn phòng B2 - Phòng 301 - Tủ A",
+            parent: archives2[2],
+        }, {
+            name: "Tủ B",
+            company: vnist,
+            path: "Văn phòng B2 - Phòng 301 - Tủ B",
+            parent: archives2[2],
+        }, {
+            name: "Tủ to",
+            company: vnist,
+            path: "Văn phòng B3 - Phòng 403 - Tủ to",
+            parent: archives2[4],
+        }, {
+            name: "Tủ nhỏ",
+            company: vnist,
+            path: "Văn phòng B3 - Phòng 403 - Tủ nhỏ",
+            parent: archives2[4],
+        }, {
+            name: "Tủ trung bình",
+            company: vnist,
+            path: "Văn phòng B3 - Phòng 403 - Tủ trung bình",
+            parent: archives2[4],
+        },
 
     ]);
     const archives4 = await DocumentArchive.insertMany([{
-        name: "Ngăn đầu",
-        company: vnist,
-        path: "Văn phòng B1 - Phòng 201 - Tủ 1 - Ngăn đầu",
-        parent: archives3[0],
-    },
+            name: "Ngăn đầu",
+            company: vnist,
+            path: "Văn phòng B1 - Phòng 201 - Tủ 1 - Ngăn đầu",
+            parent: archives3[0],
+        },
 
     ])
     const categories = await DocumentCategory.insertMany([{
@@ -1272,7 +1313,7 @@ const sampleCompanyData = async () => {
         company: vnist._id,
         name: "Tài liệu khác",
         description: 'Tài liệu khác'
-    },]);
+    }, ]);
 
     const documents = await Document.insertMany([{
         name: 'Đi chơi',
@@ -1346,8 +1387,7 @@ const sampleCompanyData = async () => {
             effectiveDate: "2020-08-16",
             expiredDate: "2020-08-16",
         }]
-    },
-    ])
+    }, ])
 
     /*---------------------------------------------------------------------------------------------
     -----------------------------------------------------------------------------------------------
@@ -1355,165 +1395,163 @@ const sampleCompanyData = async () => {
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu loại tài sản");
-    var listAssetType = await AssetType.insertMany([
-        { //0
-            company: vnist._id,
-            typeNumber: "BA",
-            typeName: "Bàn",
-            parent: null,
-            description: "Các loại bàn"
-        }, { //1
-            company: vnist._id,
-            typeNumber: "BC",
-            typeName: "Băng chuyền",
-            parent: null,
-            description: "Các loại băng chuyền"
-        }, { //2
-            company: vnist._id,
-            typeNumber: "BG",
-            typeName: "Bảng",
-            parent: null,
-            description: "Các loại bảng, viết, bảng từ, bảng chỉ dẫn"
-        }, { //3
-            company: vnist._id,
-            typeNumber: "BI",
-            typeName: "Bình",
-            parent: null,
-            description: "Các loại bình chứa: bình nước,..."
-        }, { //4
-            company: vnist._id,
-            typeNumber: "BN",
-            typeName: "Bồn",
-            parent: null,
-            description: "Các loại bồn rửa tay, bồn đựng nước"
-        }, { //5
-            company: vnist._id,
-            typeNumber: "BU",
-            typeName: "Bục",
-            parent: null,
-            description: "Các loại bục để giày dép, để chân, để tượng"
-        }, { //6
-            company: vnist._id,
-            typeNumber: "CA",
-            typeName: "Cân",
-            parent: null,
-            description: "Các loại cân"
-        }, { //7
-            company: vnist._id,
-            typeNumber: "Đèn",
-            typeName: "DE",
-            parent: null,
-            description: "Đèn các loại"
-        }, { //8
-            company: vnist._id,
-            typeNumber: "DH",
-            typeName: "Điều hòa",
-            parent: null,
-            description: "Điều hòa các loại"
-        }, { //9
-            company: vnist._id,
-            typeNumber: "DO",
-            typeName: "Đồng hồ",
-            parent: null,
-            description: "Các loại đồng hồ"
-        }, { //10
-            company: vnist._id,
-            typeNumber: "GH",
-            typeName: "Ghế",
-            parent: null,
-            description: "Ghế các loại"
-        }, { //11
-            company: vnist._id,
-            typeNumber: "GI",
-            typeName: "Giá",
-            parent: null,
-            description: "Giá các chất liệu để tài liệu, trei, vật dụng nhỏ"
-        }, { //12
-            company: vnist._id,
-            typeNumber: "HT",
-            typeName: "Hệ thống",
-            parent: null,
-            description: "Các thiết bị hệ thống"
-        }, { //13
-            company: vnist._id,
-            typeNumber: "KE",
-            typeName: "Kệ hòm",
-            parent: null,
-            description: "Hòm, Kệ các chất liệu để tài liệu, có thể di động, có mặt phẳng"
-        }, { //14
-            company: vnist._id,
-            typeNumber: "QU",
-            typeName: "Quạt",
-            parent: null,
-            description: "Quạt các loại"
-        }, { //15
-            company: vnist._id,
-            typeNumber: "TU",
-            typeName: "Tủ đựng tài liệu và chứa các vật phẩm, TB",
-            parent: null,
-            description: ""
-        }, { //16
-            company: vnist._id,
-            typeNumber: "MV",
-            typeName: "Thiết bị máy văn phòng",
-            parent: null,
-            description: "Tất cả các máy liên quan tới làm việc tại VP, Máy hút bụi, máy giặt, máy hút mùi"
-        }, { //17
-            company: vnist._id,
-            typeNumber: "DX",
-            typeName: "Dụng cụ SX",
-            parent: null,
-            description: "Các vật dụng như thùng các chất liệu để đựng, chứa, pha chế, chia liều cột"
-        }, { //18
-            company: vnist._id,
-            typeNumber: "MK",
-            typeName: "Máy cơ khí",
-            parent: null,
-            description: "Các máy liên quan tới hỗ trọ SX trực tiếp, sửa chữa, xây dựng"
-        }, { //19
-            company: vnist._id,
-            typeNumber: "TM",
-            typeName: "Máy vi tính và thiết bị mạng",
-            parent: null,
-            description: "Máy vi tính các loại + phụ kiện + các thiết bị mạng"
-        }, { //20
-            company: vnist._id,
-            typeNumber: "AA",
-            typeName: "Thiết bị âm thanh, hình ảnh",
-            parent: null,
-            description: "Các thiết bị điện tử riêng biệt liên quan tới âm thanh, hình ảnh"
-        }, { //21
-            company: vnist._id,
-            typeNumber: "NB",
-            typeName: "Các vật dụng liên quan tới nhà bếp",
-            parent: null,
-            description: "Bếp, bình ga, nồi, chảo..."
-        }, { //22
-            company: vnist._id,
-            typeNumber: "PC",
-            typeName: "Các thiết bị PCCC",
-            parent: null,
-            description: ""
-        }, { //23
-            company: vnist._id,
-            typeNumber: "XE",
-            typeName: "Xe các loại",
-            parent: null,
-            description: ""
-        }, { //24
-            company: vnist._id,
-            typeNumber: "KH",
-            typeName: "Khác",
-            parent: null,
-            description: ""
-        }, { //25
-            company: vnist._id,
-            typeNumber: "MB",
-            typeName: "Mặt bằng",
-            parent: null,
-            description: ""
-        }
-    ])
+    var listAssetType = await AssetType.insertMany([{ //0
+        company: vnist._id,
+        typeNumber: "BA",
+        typeName: "Bàn",
+        parent: null,
+        description: "Các loại bàn"
+    }, { //1
+        company: vnist._id,
+        typeNumber: "BC",
+        typeName: "Băng chuyền",
+        parent: null,
+        description: "Các loại băng chuyền"
+    }, { //2
+        company: vnist._id,
+        typeNumber: "BG",
+        typeName: "Bảng",
+        parent: null,
+        description: "Các loại bảng, viết, bảng từ, bảng chỉ dẫn"
+    }, { //3
+        company: vnist._id,
+        typeNumber: "BI",
+        typeName: "Bình",
+        parent: null,
+        description: "Các loại bình chứa: bình nước,..."
+    }, { //4
+        company: vnist._id,
+        typeNumber: "BN",
+        typeName: "Bồn",
+        parent: null,
+        description: "Các loại bồn rửa tay, bồn đựng nước"
+    }, { //5
+        company: vnist._id,
+        typeNumber: "BU",
+        typeName: "Bục",
+        parent: null,
+        description: "Các loại bục để giày dép, để chân, để tượng"
+    }, { //6
+        company: vnist._id,
+        typeNumber: "CA",
+        typeName: "Cân",
+        parent: null,
+        description: "Các loại cân"
+    }, { //7
+        company: vnist._id,
+        typeNumber: "Đèn",
+        typeName: "DE",
+        parent: null,
+        description: "Đèn các loại"
+    }, { //8
+        company: vnist._id,
+        typeNumber: "DH",
+        typeName: "Điều hòa",
+        parent: null,
+        description: "Điều hòa các loại"
+    }, { //9
+        company: vnist._id,
+        typeNumber: "DO",
+        typeName: "Đồng hồ",
+        parent: null,
+        description: "Các loại đồng hồ"
+    }, { //10
+        company: vnist._id,
+        typeNumber: "GH",
+        typeName: "Ghế",
+        parent: null,
+        description: "Ghế các loại"
+    }, { //11
+        company: vnist._id,
+        typeNumber: "GI",
+        typeName: "Giá",
+        parent: null,
+        description: "Giá các chất liệu để tài liệu, trei, vật dụng nhỏ"
+    }, { //12
+        company: vnist._id,
+        typeNumber: "HT",
+        typeName: "Hệ thống",
+        parent: null,
+        description: "Các thiết bị hệ thống"
+    }, { //13
+        company: vnist._id,
+        typeNumber: "KE",
+        typeName: "Kệ hòm",
+        parent: null,
+        description: "Hòm, Kệ các chất liệu để tài liệu, có thể di động, có mặt phẳng"
+    }, { //14
+        company: vnist._id,
+        typeNumber: "QU",
+        typeName: "Quạt",
+        parent: null,
+        description: "Quạt các loại"
+    }, { //15
+        company: vnist._id,
+        typeNumber: "TU",
+        typeName: "Tủ đựng tài liệu và chứa các vật phẩm, TB",
+        parent: null,
+        description: ""
+    }, { //16
+        company: vnist._id,
+        typeNumber: "MV",
+        typeName: "Thiết bị máy văn phòng",
+        parent: null,
+        description: "Tất cả các máy liên quan tới làm việc tại VP, Máy hút bụi, máy giặt, máy hút mùi"
+    }, { //17
+        company: vnist._id,
+        typeNumber: "DX",
+        typeName: "Dụng cụ SX",
+        parent: null,
+        description: "Các vật dụng như thùng các chất liệu để đựng, chứa, pha chế, chia liều cột"
+    }, { //18
+        company: vnist._id,
+        typeNumber: "MK",
+        typeName: "Máy cơ khí",
+        parent: null,
+        description: "Các máy liên quan tới hỗ trọ SX trực tiếp, sửa chữa, xây dựng"
+    }, { //19
+        company: vnist._id,
+        typeNumber: "TM",
+        typeName: "Máy vi tính và thiết bị mạng",
+        parent: null,
+        description: "Máy vi tính các loại + phụ kiện + các thiết bị mạng"
+    }, { //20
+        company: vnist._id,
+        typeNumber: "AA",
+        typeName: "Thiết bị âm thanh, hình ảnh",
+        parent: null,
+        description: "Các thiết bị điện tử riêng biệt liên quan tới âm thanh, hình ảnh"
+    }, { //21
+        company: vnist._id,
+        typeNumber: "NB",
+        typeName: "Các vật dụng liên quan tới nhà bếp",
+        parent: null,
+        description: "Bếp, bình ga, nồi, chảo..."
+    }, { //22
+        company: vnist._id,
+        typeNumber: "PC",
+        typeName: "Các thiết bị PCCC",
+        parent: null,
+        description: ""
+    }, { //23
+        company: vnist._id,
+        typeNumber: "XE",
+        typeName: "Xe các loại",
+        parent: null,
+        description: ""
+    }, { //24
+        company: vnist._id,
+        typeNumber: "KH",
+        typeName: "Khác",
+        parent: null,
+        description: ""
+    }, { //25
+        company: vnist._id,
+        typeNumber: "MB",
+        typeName: "Mặt bằng",
+        parent: null,
+        description: ""
+    }])
     console.log(`Xong! Thông tin loại tài sản đã được tạo`);
 
 
@@ -1585,259 +1623,253 @@ const sampleCompanyData = async () => {
     ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu tài sản");
     var listAsset = await Asset.insertMany([{
-        avatar: "/upload/asset/pictures/picture5.png",
-        assetName: "Laptop Sony Vaio",
-        group: "Machine",
-        usefulLife: "12",
-        unitsProducedDuringTheYears: [{
-            month: new Date("2020-06-20"),
-            unitsProducedDuringTheYear: 10
-        }
-        ],
-        estimatedTotalProduction: 1000,
-        code: "VVTM02.001",
-        company: vnist._id,
-        serial: "00001",
-        assetType: listAssetType[19]._id,
-        purchaseDate: new Date("2020-06-20"),
-        warrantyExpirationDate: new Date("2022-06-20"),
-        managedBy: users[1]._id,
-        assignedToUser: null,
-        assignedToOrganizaitonalUnit: null,
-        status: "Thanh lý",
-        canRegisterForUse: true,
-        description: "Laptop Sony Vaio",
-        detailInfo: [],
+            avatar: "/upload/asset/pictures/picture5.png",
+            assetName: "Laptop Sony Vaio",
+            group: "Machine",
+            usefulLife: "12",
+            unitsProducedDuringTheYears: [{
+                month: new Date("2020-06-20"),
+                unitsProducedDuringTheYear: 10
+            }],
+            estimatedTotalProduction: 1000,
+            code: "VVTM02.001",
+            company: vnist._id,
+            serial: "00001",
+            assetType: listAssetType[19]._id,
+            purchaseDate: new Date("2020-06-20"),
+            warrantyExpirationDate: new Date("2022-06-20"),
+            managedBy: users[1]._id,
+            assignedToUser: null,
+            assignedToOrganizaitonalUnit: null,
+            status: "Thanh lý",
+            canRegisterForUse: true,
+            description: "Laptop Sony Vaio",
+            detailInfo: [],
+            readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
 
-        usageLogs: [],
-        // bảo trì thiết bị
-        maintainanceLogs: [],
-        //sự cố
-        incidentLogs: [],
-        //khấu hao
-        cost: 50000000,
-        residualValue: 10000000,
-        startDepreciation: new Date("2020-06-20"), // thời gian bắt đầu trích khấu hao
-        usefulLife: 20, // thời gian trích khấu hao
-        depreciationType: "Đường thẳng", // thời gian trích khấu hao
-        //thanh lý
-        disposalDate: new Date("2020-06-20"),
-        disposalType: '',
-        disposalCost: 20000000,
-        disposalDesc: '',
-        //tài liệu đính kèm
-        archivedRecordNumber: "PKD001",
-        files: [],
-    }, {
-        avatar: "/upload/asset/pictures/picture5.png",
-        assetName: "Điều hòa Panasonic 9.000BTU",
-        code: "VVDH01.017",
-        company: vnist._id,
-        group: "Machine",
-        usefulLife: "15",
-        unitsProducedDuringTheYears: [{
-            month: new Date("2015-06-20"),
-            unitsProducedDuringTheYear: 4
-        }
-        ],
-        estimatedTotalProduction: 50,
-        serial: "00002",
-        assetType: listAssetType[8]._id,
-        purchaseDate: new Date("2020-05-20"),
-        warrantyExpirationDate: new Date("2022-05-20"),
-        managedBy: users[1]._id,
-        assignedToUser: null,
-        assignedToOrganizaitonalUnit: null,
-        status: "Thanh lý",
-        canRegisterForUse: true,
-        description: "Điều hòa Panasonic 9.000BTU",
-        detailInfo: [],
-
-        usageLogs: [],
-        // bảo trì thiết bị
-        maintainanceLogs: [],
-        //sự cố
-        incidentLogs: [],
-        //khấu hao
-        cost: 40000000,
-        residualValue: 5000000,
-        startDepreciation: new Date("2020-05-20"), // thời gian bắt đầu trích khấu hao
-        usefulLife: 18, // thời gian trích khấu hao
-        depreciationType: "Đường thẳng", // thời gian trích khấu hao
-        //thanh lý
-        disposalDate: new Date("2020-05-20"),
-        disposalType: "2",
-        disposalCost: 10000000,
-        disposalDesc: "",
-        //tài liệu đính kèm
-        archivedRecordNumber: "PKD002",
-        files: [],
-    }, {
-        avatar: "/upload/asset/pictures/picture5.png",
-        assetName: "Máy tính cây",
-        code: "VVMV18.001",
-        company: vnist._id,
-        group: "Other",
-        usefulLife: "20",
-        unitsProducedDuringTheYears: [{
-            month: new Date("2017-06-20"),
-            unitsProducedDuringTheYear: 20
-        }
-        ],
-        estimatedTotalProduction: 500,
-        serial: "00003",
-        assetType: listAssetType[16]._id,
-        purchaseDate: new Date("2020-05-25"),
-        warrantyExpirationDate: new Date("2022-05-25"),
-        managedBy: users[5]._id,
-        assignedToUser: null,
-        assignedToOrganizaitonalUnit: null,
-        status: "Sẵn sàng sử dụng",
-        canRegisterForUse: true,
-        description: "Máy tính cây",
-        detailInfo: [],
-
-        usageLogs: [],
-        // bảo trì thiết bị
-        maintainanceLogs: [],
-        //sự cố
-        incidentLogs: [],
-        //khấu hao
-        cost: 30000000,
-        residualValue: 5000000,
-        startDepreciation: new Date("2020-05-25"), // thời gian bắt đầu trích khấu hao
-        usefulLife: 16, // thời gian trích khấu hao
-        depreciationType: "Đường thẳng", // thời gian trích khấu hao
-        //thanh lý
-        disposalDate: null,
-        disposalType: "",
-        disposalCost: null,
-        disposalDesc: "",
-        //tài liệu đính kèm
-        archivedRecordNumber: "PCN003",
-        files: [],
-    },
-    {
-        avatar: "/upload/asset/pictures/picture5.png",
-        assetName: "Máy tính cây",
-        code: "VVMV18.028",
-        company: vnist._id,
-        group: "Other",
-        usefulLife: "20",
-        unitsProducedDuringTheYears: [{
-            month: new Date("2017-06-20"),
-            unitsProducedDuringTheYear: 20
-        }
-        ],
-        estimatedTotalProduction: 500,
-        serial: "00003",
-        assetType: listAssetType[16]._id,
-        purchaseDate: new Date("2020-05-25"),
-        warrantyExpirationDate: new Date("2022-05-25"),
-        managedBy: users[5]._id,
-        assignedToUser: null,
-        assignedToOrganizaitonalUnit: null,
-        status: "Sẵn sàng sử dụng",
-        canRegisterForUse: true,
-        description: "Máy tính cây",
-        detailInfo: [],
-
-        usageLogs: [],
-        // bảo trì thiết bị
-        maintainanceLogs: [],
-        //sự cố
-        incidentLogs: [],
-        //khấu hao
-        cost: 30000000,
-        residualValue: 5000000,
-        startDepreciation: new Date("2020-05-25"), // thời gian bắt đầu trích khấu hao
-        usefulLife: 16, // thời gian trích khấu hao
-        depreciationType: "Đường thẳng", // thời gian trích khấu hao
-        //thanh lý
-        disposalDate: null,
-        disposalType: "",
-        disposalCost: null,
-        disposalDesc: "",
-        //tài liệu đính kèm
-        archivedRecordNumber: "PCN003",
-        files: [],
-    },
-    {
-        avatar: "/upload/asset/pictures/picture5.png",
-        assetName: "Iphone XS Max",
-        code: "VVMV18.027",
-        company: vnist._id,
-        group: "Other",
-        usefulLife: "20",
-        unitsProducedDuringTheYears: [{
-            month: new Date("2017-06-20"),
-            unitsProducedDuringTheYear: 20
-        }
-        ],
-        estimatedTotalProduction: 500,
-        serial: "00003",
-        assetType: listAssetType[16]._id,
-        purchaseDate: new Date("2020-05-25"),
-        warrantyExpirationDate: new Date("2022-05-25"),
-        managedBy: users[1]._id,
-        assignedToUser: null,
-        assignedToOrganizaitonalUnit: null,
-        status: "Sẵn sàng sử dụng",
-        canRegisterForUse: true,
-        description: "Máy tính cây",
-        detailInfo: [],
-
-        usageLogs: [],
-        // bảo trì thiết bị
-        maintainanceLogs: [],
-        //sự cố
-        incidentLogs: [],
-        //khấu hao
-        cost: 50000000,
-        residualValue: 5000000,
-        startDepreciation: new Date("2020-05-25"), // thời gian bắt đầu trích khấu hao
-        usefulLife: 16, // thời gian trích khấu hao
-        depreciationType: "Đường thẳng", // thời gian trích khấu hao
-        //thanh lý
-        disposalDate: null,
-        disposalType: "",
-        disposalCost: null,
-        disposalDesc: "",
-        //tài liệu đính kèm
-        archivedRecordNumber: "PCN003",
-        files: [],
-    },
-    {
-        avatar: "/upload/asset/pictures/picture5.png",
-        assetName: "Card GTX 2050Ti",
-        code: "VVMV18.0026",
-        company: vnist._id,
-        group: "Other",
-        usefulLife: "20",
-        unitsProducedDuringTheYears: [{
-            month: new Date("2017-06-20"),
-            unitsProducedDuringTheYear: 20
-        }
-        ],
-        estimatedTotalProduction: 500,
-        serial: "00003",
-        assetType: listAssetType[16]._id,
-        purchaseDate: new Date("2020-05-25"),
-        warrantyExpirationDate: new Date("2022-05-25"),
-        managedBy: users[4]._id,
-        assignedToUser: null,
-        assignedToOrganizaitonalUnit: null,
-        status: "Sẵn sàng sử dụng",
-        canRegisterForUse: true,
-        description: "Máy tính cây",
-        detailInfo: [],
-
-        usageLogs: [],
-        // bảo trì thiết bị
-        maintainanceLogs: [],
-        //sự cố
-        incidentLogs: [
-            {
+            usageLogs: [],
+            // bảo trì thiết bị
+            maintainanceLogs: [],
+            //sự cố
+            incidentLogs: [],
+            //khấu hao
+            cost: 50000000,
+            residualValue: 10000000,
+            startDepreciation: new Date("2020-06-20"), // thời gian bắt đầu trích khấu hao
+            usefulLife: 20, // thời gian trích khấu hao
+            depreciationType: "Đường thẳng", // thời gian trích khấu hao
+            //thanh lý
+            disposalDate: new Date("2020-06-20"),
+            disposalType: '',
+            disposalCost: 20000000,
+            disposalDesc: '',
+            //tài liệu đính kèm
+            archivedRecordNumber: "PKD001",
+            files: [],
+        }, {
+            avatar: "/upload/asset/pictures/picture5.png",
+            assetName: "Điều hòa Panasonic 9.000BTU",
+            code: "VVDH01.017",
+            company: vnist._id,
+            group: "Machine",
+            usefulLife: "15",
+            unitsProducedDuringTheYears: [{
+                month: new Date("2015-06-20"),
+                unitsProducedDuringTheYear: 4
+            }],
+            estimatedTotalProduction: 50,
+            serial: "00002",
+            assetType: listAssetType[8]._id,
+            purchaseDate: new Date("2020-05-20"),
+            warrantyExpirationDate: new Date("2022-05-20"),
+            managedBy: users[1]._id,
+            assignedToUser: null,
+            assignedToOrganizaitonalUnit: null,
+            status: "Thanh lý",
+            canRegisterForUse: true,
+            description: "Điều hòa Panasonic 9.000BTU",
+            detailInfo: [],
+            readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id],
+            usageLogs: [],
+            // bảo trì thiết bị
+            maintainanceLogs: [],
+            //sự cố
+            incidentLogs: [],
+            //khấu hao
+            cost: 40000000,
+            residualValue: 5000000,
+            startDepreciation: new Date("2020-05-20"), // thời gian bắt đầu trích khấu hao
+            usefulLife: 18, // thời gian trích khấu hao
+            depreciationType: "Đường thẳng", // thời gian trích khấu hao
+            //thanh lý
+            disposalDate: new Date("2020-05-20"),
+            disposalType: "2",
+            disposalCost: 10000000,
+            disposalDesc: "",
+            //tài liệu đính kèm
+            archivedRecordNumber: "PKD002",
+            files: [],
+        }, {
+            avatar: "/upload/asset/pictures/picture5.png",
+            assetName: "Máy tính cây",
+            code: "VVMV18.001",
+            company: vnist._id,
+            group: "Other",
+            usefulLife: "20",
+            unitsProducedDuringTheYears: [{
+                month: new Date("2017-06-20"),
+                unitsProducedDuringTheYear: 20
+            }],
+            estimatedTotalProduction: 500,
+            serial: "00003",
+            assetType: listAssetType[16]._id,
+            purchaseDate: new Date("2020-05-25"),
+            warrantyExpirationDate: new Date("2022-05-25"),
+            managedBy: users[5]._id,
+            assignedToUser: null,
+            assignedToOrganizaitonalUnit: null,
+            status: "Sẵn sàng sử dụng",
+            canRegisterForUse: true,
+            description: "Máy tính cây",
+            detailInfo: [],
+            readByRoles: [roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, truongPhongHC._id, phoPhongHC._id],
+            usageLogs: [],
+            // bảo trì thiết bị
+            maintainanceLogs: [],
+            //sự cố
+            incidentLogs: [],
+            //khấu hao
+            cost: 30000000,
+            residualValue: 5000000,
+            startDepreciation: new Date("2020-05-25"), // thời gian bắt đầu trích khấu hao
+            usefulLife: 16, // thời gian trích khấu hao
+            depreciationType: "Đường thẳng", // thời gian trích khấu hao
+            //thanh lý
+            disposalDate: null,
+            disposalType: "",
+            disposalCost: null,
+            disposalDesc: "",
+            //tài liệu đính kèm
+            archivedRecordNumber: "PCN003",
+            files: [],
+        },
+        {
+            avatar: "/upload/asset/pictures/picture5.png",
+            assetName: "Máy tính cây",
+            code: "VVMV18.028",
+            company: vnist._id,
+            group: "Other",
+            usefulLife: "20",
+            unitsProducedDuringTheYears: [{
+                month: new Date("2017-06-20"),
+                unitsProducedDuringTheYear: 20
+            }],
+            estimatedTotalProduction: 500,
+            serial: "00003",
+            assetType: listAssetType[16]._id,
+            purchaseDate: new Date("2020-05-25"),
+            warrantyExpirationDate: new Date("2022-05-25"),
+            managedBy: users[5]._id,
+            assignedToUser: null,
+            assignedToOrganizaitonalUnit: null,
+            status: "Sẵn sàng sử dụng",
+            canRegisterForUse: true,
+            description: "Máy tính cây",
+            detailInfo: [],
+            readByRoles: [roleAdmin._id, roleSuperAdmin._id, roleDean._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
+            usageLogs: [],
+            // bảo trì thiết bị
+            maintainanceLogs: [],
+            //sự cố
+            incidentLogs: [],
+            //khấu hao
+            cost: 30000000,
+            residualValue: 5000000,
+            startDepreciation: new Date("2020-05-25"), // thời gian bắt đầu trích khấu hao
+            usefulLife: 16, // thời gian trích khấu hao
+            depreciationType: "Đường thẳng", // thời gian trích khấu hao
+            //thanh lý
+            disposalDate: null,
+            disposalType: "",
+            disposalCost: null,
+            disposalDesc: "",
+            //tài liệu đính kèm
+            archivedRecordNumber: "PCN003",
+            files: [],
+        },
+        {
+            avatar: "/upload/asset/pictures/picture5.png",
+            assetName: "Iphone XS Max",
+            code: "VVMV18.027",
+            company: vnist._id,
+            group: "Other",
+            usefulLife: "20",
+            unitsProducedDuringTheYears: [{
+                month: new Date("2017-06-20"),
+                unitsProducedDuringTheYear: 20
+            }],
+            estimatedTotalProduction: 500,
+            serial: "00003",
+            assetType: listAssetType[16]._id,
+            purchaseDate: new Date("2020-05-25"),
+            warrantyExpirationDate: new Date("2022-05-25"),
+            managedBy: users[1]._id,
+            assignedToUser: null,
+            assignedToOrganizaitonalUnit: null,
+            status: "Sẵn sàng sử dụng",
+            canRegisterForUse: true,
+            description: "Máy tính cây",
+            detailInfo: [],
+            readByRoles: [roleAdmin._id, roleDean._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
+            usageLogs: [],
+            // bảo trì thiết bị
+            maintainanceLogs: [],
+            //sự cố
+            incidentLogs: [],
+            //khấu hao
+            cost: 50000000,
+            residualValue: 5000000,
+            startDepreciation: new Date("2020-05-25"), // thời gian bắt đầu trích khấu hao
+            usefulLife: 16, // thời gian trích khấu hao
+            depreciationType: "Đường thẳng", // thời gian trích khấu hao
+            //thanh lý
+            disposalDate: null,
+            disposalType: "",
+            disposalCost: null,
+            disposalDesc: "",
+            //tài liệu đính kèm
+            archivedRecordNumber: "PCN003",
+            files: [],
+        },
+        {
+            avatar: "/upload/asset/pictures/picture5.png",
+            assetName: "Card GTX 2050Ti",
+            code: "VVMV18.0026",
+            company: vnist._id,
+            group: "Other",
+            usefulLife: "20",
+            unitsProducedDuringTheYears: [{
+                month: new Date("2017-06-20"),
+                unitsProducedDuringTheYear: 20
+            }],
+            estimatedTotalProduction: 500,
+            serial: "00003",
+            assetType: listAssetType[16]._id,
+            purchaseDate: new Date("2020-05-25"),
+            warrantyExpirationDate: new Date("2022-05-25"),
+            managedBy: users[4]._id,
+            assignedToUser: null,
+            assignedToOrganizaitonalUnit: null,
+            status: "Sẵn sàng sử dụng",
+            canRegisterForUse: true,
+            description: "Máy tính cây",
+            detailInfo: [],
+            readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id],
+            usageLogs: [],
+            // bảo trì thiết bị
+            maintainanceLogs: [],
+            //sự cố
+            incidentLogs: [{
                 createdAt: new Date("2000-05-20"),
                 dateOfIncident: new Date("2000-05-20"),
                 description: "aaaaaa",
@@ -1845,23 +1877,22 @@ const sampleCompanyData = async () => {
                 statusIncident: "Chờ xử lý",
                 type: "Hỏng hóc",
                 updatedAt: new Date("2000-05-20"),
-            }
-        ],
-        //khấu hao
-        cost: 30000000,
-        residualValue: 5000000,
-        startDepreciation: new Date("2020-05-25"), // thời gian bắt đầu trích khấu hao
-        usefulLife: 16, // thời gian trích khấu hao
-        depreciationType: "Đường thẳng", // thời gian trích khấu hao
-        //thanh lý
-        disposalDate: null,
-        disposalType: "",
-        disposalCost: null,
-        disposalDesc: "",
-        //tài liệu đính kèm
-        archivedRecordNumber: "PCN003",
-        files: [],
-    }
+            }],
+            //khấu hao
+            cost: 30000000,
+            residualValue: 5000000,
+            startDepreciation: new Date("2020-05-25"), // thời gian bắt đầu trích khấu hao
+            usefulLife: 16, // thời gian trích khấu hao
+            depreciationType: "Đường thẳng", // thời gian trích khấu hao
+            //thanh lý
+            disposalDate: null,
+            disposalType: "",
+            disposalCost: null,
+            disposalDesc: "",
+            //tài liệu đính kèm
+            archivedRecordNumber: "PCN003",
+            files: [],
+        }
 
     ])
 
@@ -1873,8 +1904,7 @@ const sampleCompanyData = async () => {
         unitsProducedDuringTheYears: [{
             month: new Date("2020-05-20"),
             unitsProducedDuringTheYear: 40
-        }
-        ],
+        }],
         estimatedTotalProduction: 500,
         code: "VVTM02.000",
         company: vnist._id,
@@ -1891,7 +1921,7 @@ const sampleCompanyData = async () => {
         canRegisterForUse: true,
         description: "BK",
         detailInfo: [],
-
+        readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, truongPhongHC._id, phoPhongHC._id],
         usageLogs: [],
         // bảo trì thiết bị
         maintainanceLogs: [],
@@ -1920,8 +1950,7 @@ const sampleCompanyData = async () => {
         unitsProducedDuringTheYears: [{
             month: new Date("2020-05-20"),
             unitsProducedDuringTheYear: 40
-        }
-        ],
+        }],
         estimatedTotalProduction: 500,
         code: "PH02.000",
         company: vnist._id,
@@ -1938,22 +1967,20 @@ const sampleCompanyData = async () => {
         canRegisterForUse: true,
         description: "Phòng họp",
         detailInfo: [],
-
+        readByRoles: [giamDoc._id, roleAdmin._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
         usageLogs: [],
         // bảo trì thiết bị
         maintainanceLogs: [],
         //sự cố
-        incidentLogs: [
-            {
-                createdAt: new Date("2000-05-20"),
-                dateOfIncident: new Date("2000-05-20"),
-                description: "aaaaaa",
-                incidentCode: "icd04",
-                statusIncident: "Chờ xử lý",
-                type: "Hỏng quạt",
-                updatedAt: new Date("2000-05-20"),
-            }
-        ],
+        incidentLogs: [{
+            createdAt: new Date("2000-05-20"),
+            dateOfIncident: new Date("2000-05-20"),
+            description: "aaaaaa",
+            incidentCode: "icd04",
+            statusIncident: "Chờ xử lý",
+            type: "Hỏng quạt",
+            updatedAt: new Date("2000-05-20"),
+        }],
         //khấu hao
         cost: 50000000,
         residualValue: 10000000,
@@ -1977,8 +2004,7 @@ const sampleCompanyData = async () => {
         unitsProducedDuringTheYears: [{
             month: new Date("2020-05-20"),
             unitsProducedDuringTheYear: 40
-        }
-        ],
+        }],
         estimatedTotalProduction: 500,
         code: "PH02.000",
         company: vnist._id,
@@ -1995,22 +2021,20 @@ const sampleCompanyData = async () => {
         canRegisterForUse: true,
         description: "Phòng họp",
         detailInfo: [],
-
+        readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
         usageLogs: [],
         // bảo trì thiết bị
         maintainanceLogs: [],
         //sự cố
-        incidentLogs: [
-            {
-                createdAt: new Date("2000-05-20"),
-                dateOfIncident: new Date("2000-05-20"),
-                description: "aaaaaa",
-                incidentCode: "icd04",
-                statusIncident: "Chờ xử lý",
-                type: "Hỏng quạt",
-                updatedAt: new Date("2000-05-20"),
-            }
-        ],
+        incidentLogs: [{
+            createdAt: new Date("2000-05-20"),
+            dateOfIncident: new Date("2000-05-20"),
+            description: "aaaaaa",
+            incidentCode: "icd04",
+            statusIncident: "Chờ xử lý",
+            type: "Hỏng quạt",
+            updatedAt: new Date("2000-05-20"),
+        }],
         //khấu hao
         cost: 50000000,
         residualValue: 10000000,
@@ -2028,7 +2052,7 @@ const sampleCompanyData = async () => {
     })
     var listAsset1 = await Asset.insertMany([
 
-        {//1 B1
+        { //1 B1
             avatar: "/upload/asset/pictures/picture5.png",
             assetName: "B1",
             group: "Building",
@@ -2036,8 +2060,7 @@ const sampleCompanyData = async () => {
             unitsProducedDuringTheYears: [{
                 month: new Date("2020-05-20"),
                 unitsProducedDuringTheYear: 10
-            }
-            ],
+            }],
             estimatedTotalProduction: 500,
             code: "VVTM02.001",
             company: vnist._id,
@@ -2054,7 +2077,7 @@ const sampleCompanyData = async () => {
             canRegisterForUse: true,
             description: "B1",
             detailInfo: [],
-
+            readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
             usageLogs: [],
             // bảo trì thiết bị
             maintainanceLogs: [],
@@ -2083,8 +2106,7 @@ const sampleCompanyData = async () => {
             unitsProducedDuringTheYears: [{
                 month: new Date("2020-05-20"),
                 unitsProducedDuringTheYear: 50
-            }
-            ],
+            }],
             estimatedTotalProduction: 1000,
             code: "VVTM02.002",
             company: vnist._id,
@@ -2101,7 +2123,7 @@ const sampleCompanyData = async () => {
             canRegisterForUse: true,
             description: "TV",
             detailInfo: [],
-
+            readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
             usageLogs: [],
             // bảo trì thiết bị
             maintainanceLogs: [],
@@ -2121,10 +2143,10 @@ const sampleCompanyData = async () => {
             //tài liệu đính kèm
             archivedRecordNumber: "PKD002",
             documents: [],
-        }]);
+        }
+    ]);
 
-    var listAsset2 = await Asset.insertMany([
-        {//3 B1 101
+    var listAsset2 = await Asset.insertMany([{ //3 B1 101
             avatar: "/upload/asset/pictures/picture5.png",
             assetName: "B1-101",
             group: "Building",
@@ -2133,8 +2155,7 @@ const sampleCompanyData = async () => {
             unitsProducedDuringTheYears: [{
                 month: new Date("2020-06-20"),
                 unitsProducedDuringTheYear: 10
-            }
-            ],
+            }],
             estimatedTotalProduction: 1000,
             company: vnist._id,
             serial: "00003",
@@ -2144,7 +2165,7 @@ const sampleCompanyData = async () => {
             managedBy: users[1]._id,
             assignedToUser: null,
             assignedToOrganizaitonalUnit: null,
-
+            readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
             location: listAsset1[0]._id,
             status: "Thanh lý",
             canRegisterForUse: true,
@@ -2171,7 +2192,7 @@ const sampleCompanyData = async () => {
             archivedRecordNumber: "PKD003",
             documents: [],
         },
-        {//04
+        { //04
             avatar: "/upload/asset/pictures/picture5.png",
             assetName: "B1-202",
             group: "Building",
@@ -2179,8 +2200,7 @@ const sampleCompanyData = async () => {
             unitsProducedDuringTheYears: [{
                 month: new Date("2020-05-20"),
                 unitsProducedDuringTheYear: 3
-            }
-            ],
+            }],
             estimatedTotalProduction: 100,
             code: "VVTM02.004",
             company: vnist._id,
@@ -2191,7 +2211,7 @@ const sampleCompanyData = async () => {
             managedBy: users[1]._id,
             assignedToUser: null,
             assignedToOrganizaitonalUnit: null,
-
+            readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
             location: listAsset1[0]._id,
             status: "Thanh lý",
             canRegisterForUse: true,
@@ -2218,7 +2238,7 @@ const sampleCompanyData = async () => {
             archivedRecordNumber: "PKD004",
             documents: [],
         },
-        {// 05
+        { // 05
             avatar: "/upload/asset/pictures/picture5.png",
             assetName: "D3-101",
             group: "Building",
@@ -2226,8 +2246,7 @@ const sampleCompanyData = async () => {
             unitsProducedDuringTheYears: [{
                 month: new Date("2020-05-20"),
                 unitsProducedDuringTheYear: 5
-            }
-            ],
+            }],
             estimatedTotalProduction: 112,
             code: "VVTM02.005",
             company: vnist._id,
@@ -2244,7 +2263,7 @@ const sampleCompanyData = async () => {
             canRegisterForUse: true,
             description: "d3-101",
             detailInfo: [],
-
+            readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
             usageLogs: [],
             // bảo trì thiết bị
             maintainanceLogs: [],
@@ -2265,7 +2284,7 @@ const sampleCompanyData = async () => {
             archivedRecordNumber: "PKD005",
             documents: [],
         },
-        {// 06
+        { // 06
             avatar: "/upload/asset/pictures/picture5.png",
             assetName: "D3-102",
             group: "Building",
@@ -2273,8 +2292,7 @@ const sampleCompanyData = async () => {
             unitsProducedDuringTheYears: [{
                 month: new Date("2020-05-20"),
                 unitsProducedDuringTheYear: 10
-            }
-            ],
+            }],
             estimatedTotalProduction: 300,
             code: "VVTM02.006",
             company: vnist._id,
@@ -2291,13 +2309,12 @@ const sampleCompanyData = async () => {
             canRegisterForUse: true,
             description: "d3-102",
             detailInfo: [],
-
+            readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
             usageLogs: [],
             // bảo trì thiết bị
             maintainanceLogs: [],
             //sự cố
-            incidentLogs: [
-                {
+            incidentLogs: [{
                     createdAt: new Date("2000-05-20"),
                     dateOfIncident: new Date("2000-05-20"),
                     description: "hỏng hóc",
@@ -2331,7 +2348,7 @@ const sampleCompanyData = async () => {
             archivedRecordNumber: "PKD006",
             documents: [],
         },
-        {// 07
+        { // 07
             avatar: "/upload/asset/pictures/picture5.png",
             assetName: "D3-103",
             group: "Building",
@@ -2339,8 +2356,7 @@ const sampleCompanyData = async () => {
             unitsProducedDuringTheYears: [{
                 month: new Date("2020-05-20"),
                 unitsProducedDuringTheYear: 80
-            }
-            ],
+            }],
             estimatedTotalProduction: 1000,
             code: "VVTM02.007",
             company: vnist._id,
@@ -2357,7 +2373,7 @@ const sampleCompanyData = async () => {
             canRegisterForUse: true,
             description: "d3-103",
             detailInfo: [],
-
+            readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
             usageLogs: [],
             // bảo trì thiết bị
             maintainanceLogs: [],
@@ -2390,8 +2406,7 @@ const sampleCompanyData = async () => {
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu đăng ký sử dụng tài sản!");
-    var recommmenddistribute = await RecommendDistribute.insertMany([
-        {
+    var recommmenddistribute = await RecommendDistribute.insertMany([{
             asset: asset._id,
             company: vnist._id,
             recommendNumber: "CP0001",
@@ -2441,171 +2456,165 @@ const sampleCompanyData = async () => {
     ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu vật tư");
     var listMaterial = await Material.insertMany([{
-        materialName: "Laptop Sony Vaio",
-        code: "VVTM02.001",
-        serial: "00001",
-        materialType: "Máy tính",
-        purchaseDate: new Date("2020-06-20"),
-        location: "PKD",
-        description: "Laptop Sony Vaio",
-        cost: 50000000,
-    },
-    {
-        materialName: "Bàn học",
-        code: "VVTM02.002",
-        serial: "00002",
-        materialType: "Bàn",
-        purchaseDate: new Date("2020-06-21"),
-        location: "PKD",
-        description: "Bàn học",
-        cost: 10000000,
-    }
+            materialName: "Laptop Sony Vaio",
+            code: "VVTM02.001",
+            serial: "00001",
+            materialType: "Máy tính",
+            purchaseDate: new Date("2020-06-20"),
+            location: "PKD",
+            description: "Laptop Sony Vaio",
+            cost: 50000000,
+        },
+        {
+            materialName: "Bàn học",
+            code: "VVTM02.002",
+            serial: "00002",
+            materialType: "Bàn",
+            purchaseDate: new Date("2020-06-21"),
+            location: "PKD",
+            description: "Bàn học",
+            cost: 10000000,
+        }
     ]);
     console.log("Khởi tạo xong danh sách vật tư");
 
     console.log("Tạo mẫu dữ liệu khách hàng");
 
-    const customerGroupData = [
-        {
-            name: "Khách bán buôn",
-            code: 'KBB',
-            company: vnist._id
-        }, {
-            name: "Sỉ lẻ",
-            code: "SL",
-            company: vnist._id
-        }, {
-            name: "Nhà cung cấp Anh Đức",
-            code: "CCAD",
-            company: vnist._id
-        }, {
-            name: "Đại lý Việt Anh",
-            code: "ĐLVA",
-            company: vnist._id
-        }
-    ];
+    const customerGroupData = [{
+        name: "Khách bán buôn",
+        code: 'KBB',
+        company: vnist._id
+    }, {
+        name: "Sỉ lẻ",
+        code: "SL",
+        company: vnist._id
+    }, {
+        name: "Nhà cung cấp Anh Đức",
+        code: "CCAD",
+        company: vnist._id
+    }, {
+        name: "Đại lý Việt Anh",
+        code: "ĐLVA",
+        company: vnist._id
+    }];
     const customerGroup = await CrmGroup.insertMany(customerGroupData);
 
-    const customerData = [
-        {
-            name: 'Nguyễn Thị Phương',
-            code: 'HN1101',
-            phone: '0396629958',
-            address: '123 xã Đàn, Phương Liên, Đống Đa',
-            location: "Hà Nội",
-            email: 'ntphuong@gmail.com',
-            group: customerGroup[0]._id,
-            birth: '2/10/1995',
-            gender: 'Nữ',
-            loyal: true,
-            company: vnist._id
-        }, {
-            name: 'Trần Mỹ Hạnh',
-            code: 'HN2497',
-            phone: '0396629919',
-            address: '223 Đê La Thành',
-            location: "Hà Nội",
-            email: 'ntphuong@gmail.com',
-            group: customerGroup[2]._id,
-            birth: '2/10/1995',
-            gender: 'Nữ',
-            loyal: true,
-            company: vnist._id
-        }, {
-            name: 'Nguyễn Văn Thành',
-            code: 'HN1111',
-            phone: '0396627758',
-            address: '123 Cầu Giấy',
-            location: "Hà Nội",
-            email: 'nvthanh@gmail.com',
-            group: customerGroup[0]._id,
-            birth: '03/10/1991',
-            gender: 'Nam',
-            loyal: true,
-            company: vnist._id
-        }, {
-            name: 'Lê Công Vinh',
-            code: 'HN1169',
-            phone: '0395223919',
-            address: '12 Phạm Ngọc Thạch',
-            location: "Hà Nội",
-            email: 'lcvinh@gmail.com',
-            group: customerGroup[1]._id,
-            birth: '11/11/1985',
-            gender: 'Nam',
-            loyal: true,
-            company: vnist._id
-        }, {
-            name: 'Nguyễn Thị Lê',
-            code: 'HN1256',
-            phone: '03977733214',
-            address: '11 phố Huế',
-            location: "Hà Nội",
-            email: 'ntle@gmail.com',
-            group: customerGroup[0]._id,
-            birth: '7/9/1993',
-            gender: 'Nam',
-            loyal: true,
-            company: vnist._id
-        }, {
-            name: 'Nguyễn Việt Anh',
-            code: 'HN1995',
-            phone: '0396113259',
-            address: '110 Lê Đại Hành',
-            location: "Hà Nội",
-            email: 'nvanh@gmail.com',
-            group: customerGroup[2]._id,
-            birth: '2/10/1992',
-            gender: 'Nam',
-            loyal: true,
-            company: vnist._id
-        }, {
-            name: 'Nguyễn Thị Hà',
-            code: 'HN1998',
-            phone: '0396112548',
-            address: '123 Khâm Thiên, Đống Đa',
-            location: "Hà Nội",
-            email: 'ntha@gmail.com',
-            group: customerGroup[0]._id,
-            birth: '2/7/2000',
-            gender: 'Nữ',
-            loyal: true,
-            company: vnist._id
-        }
-    ];
+    const customerData = [{
+        name: 'Nguyễn Thị Phương',
+        code: 'HN1101',
+        phone: '0396629958',
+        address: '123 xã Đàn, Phương Liên, Đống Đa',
+        location: "Hà Nội",
+        email: 'ntphuong@gmail.com',
+        group: customerGroup[0]._id,
+        birth: '2/10/1995',
+        gender: 'Nữ',
+        loyal: true,
+        company: vnist._id
+    }, {
+        name: 'Trần Mỹ Hạnh',
+        code: 'HN2497',
+        phone: '0396629919',
+        address: '223 Đê La Thành',
+        location: "Hà Nội",
+        email: 'ntphuong@gmail.com',
+        group: customerGroup[2]._id,
+        birth: '2/10/1995',
+        gender: 'Nữ',
+        loyal: true,
+        company: vnist._id
+    }, {
+        name: 'Nguyễn Văn Thành',
+        code: 'HN1111',
+        phone: '0396627758',
+        address: '123 Cầu Giấy',
+        location: "Hà Nội",
+        email: 'nvthanh@gmail.com',
+        group: customerGroup[0]._id,
+        birth: '03/10/1991',
+        gender: 'Nam',
+        loyal: true,
+        company: vnist._id
+    }, {
+        name: 'Lê Công Vinh',
+        code: 'HN1169',
+        phone: '0395223919',
+        address: '12 Phạm Ngọc Thạch',
+        location: "Hà Nội",
+        email: 'lcvinh@gmail.com',
+        group: customerGroup[1]._id,
+        birth: '11/11/1985',
+        gender: 'Nam',
+        loyal: true,
+        company: vnist._id
+    }, {
+        name: 'Nguyễn Thị Lê',
+        code: 'HN1256',
+        phone: '03977733214',
+        address: '11 phố Huế',
+        location: "Hà Nội",
+        email: 'ntle@gmail.com',
+        group: customerGroup[0]._id,
+        birth: '7/9/1993',
+        gender: 'Nam',
+        loyal: true,
+        company: vnist._id
+    }, {
+        name: 'Nguyễn Việt Anh',
+        code: 'HN1995',
+        phone: '0396113259',
+        address: '110 Lê Đại Hành',
+        location: "Hà Nội",
+        email: 'nvanh@gmail.com',
+        group: customerGroup[2]._id,
+        birth: '2/10/1992',
+        gender: 'Nam',
+        loyal: true,
+        company: vnist._id
+    }, {
+        name: 'Nguyễn Thị Hà',
+        code: 'HN1998',
+        phone: '0396112548',
+        address: '123 Khâm Thiên, Đống Đa',
+        location: "Hà Nội",
+        email: 'ntha@gmail.com',
+        group: customerGroup[0]._id,
+        birth: '2/7/2000',
+        gender: 'Nữ',
+        loyal: true,
+        company: vnist._id
+    }];
     const customers = await CrmCustomer.insertMany(customerData);
 
-    const customerLiabilities = await CrmLiability.insertMany([
-        {
-            code: 'PT0001',
-            customer: customers[0]._id,
-            creator: users[2]._id,
-            description: 'Công nợ khách hàng 6/2020',
-            total: 1200000,
-            company: vnist._id
-        }, {
-            code: 'PT0002',
-            customer: customers[0]._id,
-            creator: users[2]._id,
-            description: 'Công nợ khách hàng 7/2020',
-            total: 530000,
-            company: vnist._id
-        }, {
-            code: 'PT0003',
-            customer: customers[0]._id,
-            creator: users[2]._id,
-            description: 'Công nợ khách hàng 8/2020',
-            total: 210000,
-            company: vnist._id
-        }, {
-            code: 'PT0004',
-            customer: customers[0]._id,
-            creator: users[4]._id,
-            description: 'Công nợ khách hàng 9/2020',
-            total: 880000,
-            company: vnist._id
-        },
-    ])
+    const customerLiabilities = await CrmLiability.insertMany([{
+        code: 'PT0001',
+        customer: customers[0]._id,
+        creator: users[2]._id,
+        description: 'Công nợ khách hàng 6/2020',
+        total: 1200000,
+        company: vnist._id
+    }, {
+        code: 'PT0002',
+        customer: customers[0]._id,
+        creator: users[2]._id,
+        description: 'Công nợ khách hàng 7/2020',
+        total: 530000,
+        company: vnist._id
+    }, {
+        code: 'PT0003',
+        customer: customers[0]._id,
+        creator: users[2]._id,
+        description: 'Công nợ khách hàng 8/2020',
+        total: 210000,
+        company: vnist._id
+    }, {
+        code: 'PT0004',
+        customer: customers[0]._id,
+        creator: users[4]._id,
+        description: 'Công nợ khách hàng 9/2020',
+        total: 880000,
+        company: vnist._id
+    }, ])
     const ltphuong = await CrmCustomer.findById(customers[0]._id);
     ltphuong.liabilities = customerLiabilities.map(lia => lia._id);
     console.log("Xong! Đã tạo mẫu dữ liệu khách hàng")
