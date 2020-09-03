@@ -255,6 +255,7 @@ class IncidentManagement extends Component {
         var formater = new Intl.NumberFormat();
         if (assetsManager.isLoading === false) {
             lists = assetsManager.listAssets;
+            console.log("\n\n\n\n\n\n\n\n",lists)
         }
 
         var pageTotal = ((assetsManager.totalList % limit) === 0) ?
@@ -265,7 +266,7 @@ class IncidentManagement extends Component {
         if(lists&&userlist){
             exportData =this.convertDataToExportData(lists,userlist);
         }
-
+        
         return (
             <div className={isActive?isActive:"box"}>
                 <div className="box-body qlcv">
@@ -333,7 +334,7 @@ class IncidentManagement extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(lists && lists.length) &&
+                            {(lists && (lists.length)!==0) &&
                                 lists.map(asset => {
                                     return asset.incidentLogs.map((x, index) => (
                                         <tr key={index}>

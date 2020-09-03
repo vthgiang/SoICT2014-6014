@@ -123,7 +123,7 @@ function getAllUserSameDepartment(id) {
     }, false, true, 'super_admin.user');
 }
 
-function getDepartmentOfUser() {
+function getDepartmentOfUser(data) {
     const id = getStorage("userId");
 
     return sendRequest({
@@ -131,6 +131,7 @@ function getDepartmentOfUser() {
         method: 'GET',
         params: {
             userId: id,
+            email: data ? data.email : data,
         }
     }, false, true, 'super_admin.organization_unit');
 }

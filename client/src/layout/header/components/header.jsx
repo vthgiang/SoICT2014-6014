@@ -5,7 +5,6 @@ import { withTranslate } from 'react-redux-multilingual';
 import { AuthActions } from '../../../modules/auth/redux/actions';
 import { DialogModal, ErrorLabel } from '../../../common-components';
 import { Link } from 'react-router-dom';
-import { Validator } from './validator';
 import './header.css';
 import { getStorage } from '../../../config';
 import ModalChangeUserInformation from './modalChangeUserInformation';

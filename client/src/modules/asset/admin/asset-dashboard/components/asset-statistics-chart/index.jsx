@@ -60,8 +60,8 @@ class AssetStatistics extends Component {
                     <div className="row">
                         {/* Biểu thống kê tài sản theo trạng thái */}
                         <div className="col-6 col-xs-6">
-                            <div className="box box-primary">
-                                <div className="box-header with-border">
+                            <div className="box box-solid">
+                                <div className="box-header">
                                     <div className="box-title">{translate('asset.dashboard.status_chart')}</div>
                                 </div>
                                 <div className="box-body qlcv">
@@ -75,8 +75,8 @@ class AssetStatistics extends Component {
 
                         {/* Biểu thống kê tài sản theo giá trị */}
                         <div className="col-6 col-xs-6">
-                            <div className="box box-primary">
-                                <div className="box-header with-border">
+                            <div className="box box-solid">
+                                <div className="box-header">
                                     <div className="box-title">{translate('asset.dashboard.cost_chart')}</div>
                                 </div>
                                 <div className="box-body qlcv">

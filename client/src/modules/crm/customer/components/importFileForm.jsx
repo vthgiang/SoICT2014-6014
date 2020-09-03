@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, SelectBox, ErrorLabel } from '../../../../common-components';
 
-class CustomerImportFile extends Component {
+class CrmCustomerImportFile extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -114,4 +114,4 @@ function mapStateToProps(state) {
 const mapDispatchToProps = {
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CustomerImportFile));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CrmCustomerImportFile));

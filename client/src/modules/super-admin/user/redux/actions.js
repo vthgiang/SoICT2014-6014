@@ -255,12 +255,12 @@ function getAllUserSameDepartment(currentRole) {
 /**
  * Lấy tất cả các đơn vị tổ chức một user thuộc về
  */
-function getDepartmentOfUser() {
+function getDepartmentOfUser(data = undefined) {
     return dispatch => {
         dispatch({
             type: UserConstants.GETDEPARTMENT_OFUSER_REQUEST
         });
-        UserServices.getDepartmentOfUser()
+        UserServices.getDepartmentOfUser(data)
             .then(res => {
                 dispatch({
                     type: UserConstants.GETDEPARTMENT_OFUSER_SUCCESS,

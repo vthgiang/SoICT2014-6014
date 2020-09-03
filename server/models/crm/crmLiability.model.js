@@ -2,14 +2,14 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
-const CustomerLiabilitySchema = new Schema({
+const CrmLiabilitySchema = new Schema({
     code: { // Mã phiếu
         type: String,
         required: true
     },
     customer: { // Khách hàng
         type: Schema.Types.ObjectId,
-        ref: 'customers'
+        ref: 'crm_customers'
     },
     creator: { // Người tạo
         type: Schema.Types.ObjectId,
@@ -30,6 +30,6 @@ const CustomerLiabilitySchema = new Schema({
     toJSON: { virtuals: true }
 });
 
-CustomerLiabilitySchema.plugin(mongoosePaginate);
+CrmLiabilitySchema.plugin(mongoosePaginate);
 
-module.exports = CustomerGroup = mongoose.model("customer_liabilities", CustomerLiabilitySchema);
+module.exports = CrmLiability = mongoose.model("crm_liabilities", CrmLiabilitySchema);

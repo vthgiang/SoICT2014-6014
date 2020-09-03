@@ -3,17 +3,23 @@ const Schema = mongoose.Schema;
 
 const Company = require('../system-admin/company.model');
 const Employee = require('./employee.model');
+const OrganizationalUnit = require('../super-admin/organizationalUnit.model')
 
 // Tạo bảng datatbale lương nhân viên
 const SalarySchema = new Schema({
+    company: {
+        type: Schema.Types.ObjectId,
+        ref: Company
+    },
     employee: {
         type: Schema.Types.ObjectId,
         ref: Employee,
         required: true,
     },
-    company: {
+    organizationalUnit: {
         type: Schema.Types.ObjectId,
-        ref: Company
+        ref: OrganizationalUnit,
+        required: true,
     },
     month: {
         type: Date,
@@ -26,8 +32,8 @@ const SalarySchema = new Schema({
     unit: { // Đơn vị tiền lương(VND hoặc USD)
         type: String,
         required: true,
-        enum:['VND', 'USD'],
-        default:'VND',
+        enum: ['VND', 'USD'],
+        default: 'VND',
     },
     bonus: [{ // Tiền lương thưởng khác
         nameBonus: String,

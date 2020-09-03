@@ -3,54 +3,65 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, SelectBox, ErrorLabel } from '../../../../common-components';
 
-class CustomerInformation extends Component {
+class CrmCustomerInformation extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            roleName: '',
-            roleParents: [],
-            roleUsers: []
+            customer: {}
         }
     }
 
     render() {
-        const { translate } = this.props;
-        const {customer} = this.props;
-        const {id, name, liabilities} = this.state;
+        const { translate, crm } = this.props;
+        const { customer } = this.state;
 
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID="modal-customer-information" isLoading={customer.isLoading}
-                    formID="form-customer-information"
+                    modalID="modal-crm-customer-info" isLoading={crm.customer.isLoading}
+                    formID="form-crm-customer-info"
                     title="Thông tin chi tiết khách hàng"
-                    func={this.save} size="100"
+                    func={this.save} size={75}
                 >
                     {/* Form thêm khách hàng mới */}
-                    <form id="form-customer-information">
-                        <fieldset className="field-box-info">
-                            <legend className="legend-box-info">Thông tin cá nhân</legend>
-                            
+                    <form id="form-crm-customer-info">
+                        <div style={{ 
+                            padding: '10px', 
+                            border: '1px solid #D2D6DE',
+                            backgroundColor: '#F1F1F1',
+                            marginBottom: '20px',
+                            borderRadius: '5px'
+                        }}>
                             <div className="row">
-                                <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                    <b>Khách hàng: </b> {name}<br/>
-                                    <b>Nhóm: </b> VIP<br/>
-                                    <b>SĐT: </b> 0396629955<br/>
-                                    <b>Email: </b> tmhanh@gmail.com<br/>
+                                <div className="col-xs-12 col-sm-3 col-md-3 col-lg-3 text-center">
+                                    <img className="img-circle" src="/image/crm-customer.png" style={{width: '80%'}}/>
                                 </div>
-                                <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                    <b>Giới tính: </b> Nữ<br/>
-                                    <b>Ngày sinh: </b> 13/05/1997<br/>
-                                    <b>Mô tả: </b> <br/>
-                                </div>
-                                <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                    <b>Người phụ trách: </b> Nguyễn Văn Danh<br/>
-                                    <b>Chiết khấu: </b> 5%<br/>
-                                    <b>Hình thức thanh toánh: </b> Thẻ<br/>
+                                <div className="col-xs-12 col-sm-9 col-md-9 col-lg-9">
+                                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <h3><b>{customer.name}</b></h3>
+                                    </div>
+                                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                        <strong><i className="fa fa-barcode margin-r-5" /> {translate('crm.customer.code')}</strong>
+                                        <p className="text-muted">{customer.code}</p>
+                                        <strong><i className="fa fa-group margin-r-5" /> {translate('crm.customer.group')}</strong>
+                                        <p className="text-muted">{customer.group.name}</p>
+                                        <strong><i className="fa fa-book margin-r-5" /> {translate('crm.customer.tax')}</strong>
+                                        <p className="text-muted">{customer.tax}</p>
+                                    </div>
+                                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                        <strong><i className="fa fa-envelope margin-r-5" /> {translate('crm.customer.email')}</strong>
+                                        <p className="text-muted">{customer.email}</p>
+                                        <strong><i className="fa fa-phone margin-r-5" /> {translate('crm.customer.phone')}</strong>
+                                        <p className="text-muted">{customer.phone}</p>
+                                        <strong><i className="fa fa-map-marker margin-r-5" /> {translate('crm.customer.address')}</strong>
+                                        <p className="text-muted">{customer.address}</p>
+                                    </div><div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                        <strong><i className="fa fa-birthday-cake margin-r-5" /> {translate('crm.customer.birth')}</strong>
+                                        <p className="text-muted">{customer.birth}</p>
+                                    </div>
                                 </div>
                             </div>
-                            
-                        </fieldset>
+                        </div>
                         <div className="nav-tabs-custom">
                             <ul className="nav nav-tabs">
                                 <li className="active"><a href="#customer-info-history" data-toggle="tab">Lịch sử mua hàng</a></li>
@@ -64,7 +75,7 @@ class CustomerInformation extends Component {
                                 </div>
                                 <div className="tab-pane" id="sale">
                                     Công nợ
-                                    <table className="table table-hover table-striped table-bordered" id={`table-customer-liabilities-${id}`}>
+                                    <table className="table table-hover table-striped table-bordered" id={`table-customer-liabilities-${customer._id}`}>
                                         <thead>
                                             <tr>
                                                 <th>Mã phiếu</th>
@@ -74,7 +85,7 @@ class CustomerInformation extends Component {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {
+                                            {/* {
                                                 liabilities.map(lia=>
                                                 <tr>
                                                     <td>{lia.code}</td>
@@ -82,7 +93,7 @@ class CustomerInformation extends Component {
                                                     <td>abc</td>
                                                     <td>{lia.total}</td>
                                                 </tr> )
-                                            }
+                                            } */}
                                         </tbody>
                                     </table>
                                 </div>
@@ -157,12 +168,10 @@ class CustomerInformation extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id) {
+        if (nextProps.customer._id !== prevState.customer._id) {
             return {
                 ...prevState,
-                id: nextProps.id,
-                name: nextProps.name,
-                liabilities: nextProps.liabilities,
+                customer: nextProps.customer
             }
         } else {
             return null;
@@ -171,11 +180,11 @@ class CustomerInformation extends Component {
 }
 
 function mapStateToProps(state) {
-    const { customer } = state;
-    return { customer };
+    const { crm } = state;
+    return { crm };
 }
 
 const mapDispatchToProps = {
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CustomerInformation));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CrmCustomerInformation));

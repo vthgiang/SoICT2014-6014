@@ -306,7 +306,7 @@ class KPIPersonalManager extends Component {
                     </div>
                     
                     {/**Table chứa danh sách các tập KPI */}
-                    <DataTableSetting class="pull-right" tableId="kpiEmployeeManagement" tableContainerId="tree-table-container" tableWidth="1300px"
+                    <DataTableSetting className="pull-right" tableId="kpiEmployeeManagement" tableContainerId="tree-table-container" tableWidth="1300px"
                     columnArr={[ 
                         translate('kpi.evaluation.employee_evaluation.index'),
                         translate('kpi.evaluation.employee_evaluation.time') , 

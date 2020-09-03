@@ -201,7 +201,7 @@ function editInformationTask(taskId, taskInformations) {
         url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-informations`,
         method: 'PATCH',
         data: taskInformations
-    }, false, true, 'task.task_perform');
+    }, true, true, 'task.task_perform');
 }
 
 /** Xác nhận công việc */

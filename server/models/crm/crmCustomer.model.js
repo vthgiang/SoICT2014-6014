@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
-const CustomerSchema = new Schema({
+const CrmCustomerSchema = new Schema({
     name: { // tên khách hàng
         type: String,
         required: true
@@ -26,7 +26,7 @@ const CustomerSchema = new Schema({
     },
     group: { // nhóm khách hàng
         type: Schema.Types.ObjectId,
-        ref: 'customer_groups'
+        ref: 'crm_groups'
     },
     birth: { // ngày sinh
         type: Date
@@ -43,7 +43,7 @@ const CustomerSchema = new Schema({
     }],
     liabilities: [{ // công nợ khách hàng
         type: Schema.Types.ObjectId,
-        ref: 'customer_liabilities'
+        ref: 'crm_liabilities'
     }],
     loyal: { // khách hàng thân thiết
         type: Boolean,
@@ -58,6 +58,6 @@ const CustomerSchema = new Schema({
     toJSON: { virtuals: true }
 });
 
-CustomerSchema.plugin(mongoosePaginate);
+CrmCustomerSchema.plugin(mongoosePaginate);
 
-module.exports = Customer = mongoose.model("customers", CustomerSchema);
+module.exports = CrmCustomer = mongoose.model("crm_customers", CrmCustomerSchema);

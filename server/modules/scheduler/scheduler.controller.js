@@ -40,5 +40,5 @@ exports.chedulesCallApi = () => {
     setTimeCallApi(false, false, 23*60*60*1000, EmployeeService.createNotificationEndOfContract);
 
     // Function gửi email nhắc nhở công việc
-    // setTimeCallApi(false, false, 30*1000, TaskManagementService.sendEmailCheckTaskLastMonth);
+    setTimeCallApi(false, 8, 23*60*60*1000, TaskManagementService.sendEmailCheckTaskLastMonth);
 }

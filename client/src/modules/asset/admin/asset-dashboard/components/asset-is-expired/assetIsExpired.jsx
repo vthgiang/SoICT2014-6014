@@ -113,59 +113,57 @@ class AssetIsExpired extends Component {
 
         return (
             <React.Fragment>
-                <div className="box">
-                    <div className="box-body qlcv">
-                        {/* Biểu thống kê tài sản theo trạng thái */}
-                        {/* Bảng các tài sản */}
-                        {(ExpiryDateAssets && ExpiryDateAssets.length !== 0) || (willExpiryDateAssets && willExpiryDateAssets.length !== 0) ?
-                            <table id="asset-table" className="table table-striped table-bordered table-hover">
-                                <thead>
-                                    <tr>
-                                        <th style={{ width: "8%" }}>{translate('asset.general_information.asset_code')}</th>
-                                        <th style={{ width: "10%" }}>{translate('asset.general_information.asset_name')}</th>
-                                        <th style={{ width: "10%" }}>{translate('asset.general_information.asset_type')}</th>
-                                        <th style={{ width: "10%" }}>{translate('asset.general_information.purchase_date')}</th>
-                                        <th style={{ width: "10%" }}>{translate('asset.general_information.manager')}</th>
-                                        <th style={{ width: "10%" }}>{translate('asset.general_information.user')}</th>
-                                        <th style={{ width: "10%" }}>{translate('asset.general_information.organization_unit')}</th>
-                                        <th style={{ width: "10%" }}>{translate('asset.general_information.status')}</th>
-                                        <th style={{ width: '120px', textAlign: 'center' }}>Thời gian còn lại</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {(willExpiryDateAssets && willExpiryDateAssets.length !== 0) &&
-                                        willExpiryDateAssets.map((x, index) => (
-                                            <tr key={index}>
-                                                <td>{x.asset.code}</td>
-                                                <td>{x.asset.assetName}</td>
-                                                <td>{x.asset.assetType && assettypelist.length && assettypelist.find(item => item._id === x.asset.assetType) ? assettypelist.find(item => item._id === x.asset.assetType).typeName : 'Asset is deleted'}</td>
-                                                <td>{this.formatDate(x.asset.purchaseDate)}</td>
-                                                <td>{x.asset.managedBy && userlist.length && userlist.find(item => item._id === x.asset.managedBy) ? userlist.find(item => item._id === x.asset.managedBy).name : 'User is deleted'}</td>
-                                                <td>{x.asset.assignedToUser ? (userlist.length && userlist.find(item => item._id === x.asset.assignedToUser) ? userlist.find(item => item._id === x.asset.assignedToUser).name : 'User is deleted') : ''}</td>
-                                                <td>{x.asset.assignedToOrganizationalUnit ? x.asset.assignedToOrganizationalUnit : ''}</td>
-                                                <td>{x.asset.status}</td>
-                                                <td>{x.day} ngày</td>
-                                            </tr>))
-                                    }
-                                    {(ExpiryDateAssets && ExpiryDateAssets.length !== 0) &&
-                                        ExpiryDateAssets.map((x, index) => (
-                                            <tr key={index}>
-                                                <td>{x.asset.code}</td>
-                                                <td>{x.asset.assetName}</td>
-                                                <td>{x.asset.assetType && assettypelist.length && assettypelist.find(item => item._id === x.asset.assetType) ? assettypelist.find(item => item._id === x.asset.assetType).typeName : 'Asset is deleted'}</td>
-                                                <td>{this.formatDate(x.asset.purchaseDate)}</td>
-                                                <td>{x.asset.managedBy && userlist.length && userlist.find(item => item._id === x.asset.managedBy) ? userlist.find(item => item._id === x.asset.managedBy).name : 'User is deleted'}</td>
-                                                <td>{x.asset.assignedToUser ? (userlist.length && userlist.find(item => item._id === x.asset.assignedToUser) ? userlist.find(item => item._id === x.asset.assignedToUser).name : 'User is deleted') : ''}</td>
-                                                <td>{x.asset.assignedToOrganizationalUnit ? x.asset.assignedToOrganizationalUnit : ''}</td>
-                                                <td>{x.asset.status}</td>
-                                                <td>{x.day}</td>
-                                            </tr>))
-                                    }
-                                </tbody>
-                            </table> : "Không có tài sản nào sắp hết hạn"
-                        }
+                <div className="qlcv">
+                    {/* Biểu thống kê tài sản theo trạng thái */}
+                    {/* Bảng các tài sản */}
+                    {(ExpiryDateAssets && ExpiryDateAssets.length !== 0) || (willExpiryDateAssets && willExpiryDateAssets.length !== 0) ?
+                        <table id="asset-table" className="table table-striped table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th style={{ width: "8%" }}>{translate('asset.general_information.asset_code')}</th>
+                                    <th style={{ width: "10%" }}>{translate('asset.general_information.asset_name')}</th>
+                                    <th style={{ width: "10%" }}>{translate('asset.general_information.asset_type')}</th>
+                                    <th style={{ width: "10%" }}>{translate('asset.general_information.purchase_date')}</th>
+                                    <th style={{ width: "10%" }}>{translate('asset.general_information.manager')}</th>
+                                    <th style={{ width: "10%" }}>{translate('asset.general_information.user')}</th>
+                                    <th style={{ width: "10%" }}>{translate('asset.general_information.organization_unit')}</th>
+                                    <th style={{ width: "10%" }}>{translate('asset.general_information.status')}</th>
+                                    <th style={{ width: '120px', textAlign: 'center' }}>Thời gian còn lại</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {(willExpiryDateAssets && willExpiryDateAssets.length !== 0) &&
+                                    willExpiryDateAssets.map((x, index) => (
+                                        <tr key={index}>
+                                            <td>{x.asset.code}</td>
+                                            <td>{x.asset.assetName}</td>
+                                            <td>{x.asset.assetType && assettypelist.length && assettypelist.find(item => item._id === x.asset.assetType) ? assettypelist.find(item => item._id === x.asset.assetType).typeName : 'Asset is deleted'}</td>
+                                            <td>{this.formatDate(x.asset.purchaseDate)}</td>
+                                            <td>{x.asset.managedBy && userlist.length && userlist.find(item => item._id === x.asset.managedBy) ? userlist.find(item => item._id === x.asset.managedBy).name : 'User is deleted'}</td>
+                                            <td>{x.asset.assignedToUser ? (userlist.length && userlist.find(item => item._id === x.asset.assignedToUser) ? userlist.find(item => item._id === x.asset.assignedToUser).name : 'User is deleted') : ''}</td>
+                                            <td>{x.asset.assignedToOrganizationalUnit ? x.asset.assignedToOrganizationalUnit : ''}</td>
+                                            <td>{x.asset.status}</td>
+                                            <td>{x.day} ngày</td>
+                                        </tr>))
+                                }
+                                {(ExpiryDateAssets && ExpiryDateAssets.length !== 0) &&
+                                    ExpiryDateAssets.map((x, index) => (
+                                        <tr key={index}>
+                                            <td>{x.asset.code}</td>
+                                            <td>{x.asset.assetName}</td>
+                                            <td>{x.asset.assetType && assettypelist.length && assettypelist.find(item => item._id === x.asset.assetType) ? assettypelist.find(item => item._id === x.asset.assetType).typeName : 'Asset is deleted'}</td>
+                                            <td>{this.formatDate(x.asset.purchaseDate)}</td>
+                                            <td>{x.asset.managedBy && userlist.length && userlist.find(item => item._id === x.asset.managedBy) ? userlist.find(item => item._id === x.asset.managedBy).name : 'User is deleted'}</td>
+                                            <td>{x.asset.assignedToUser ? (userlist.length && userlist.find(item => item._id === x.asset.assignedToUser) ? userlist.find(item => item._id === x.asset.assignedToUser).name : 'User is deleted') : ''}</td>
+                                            <td>{x.asset.assignedToOrganizationalUnit ? x.asset.assignedToOrganizationalUnit : ''}</td>
+                                            <td>{x.asset.status}</td>
+                                            <td>{x.day}</td>
+                                        </tr>))
+                                }
+                            </tbody>
+                        </table> : "Không có tài sản nào sắp hết hạn"
+                    }
 
-                    </div>
                 </div>
             </React.Fragment >
         );

@@ -42,7 +42,8 @@ import EmpoyeeManager from '../modules/human-resource/profile/employee-managemen
 import EmployeeCreate from '../modules/human-resource/profile/employee-create/components';
 import SalaryManager from '../modules/human-resource/salary/components';
 import TimesheetsManager from '../modules/human-resource/timesheets/components';
-import { WorkPlan } from '../modules/human-resource/holiday/components/combinedContent';
+import { AnnualLeave } from '../modules/human-resource/annual-leave/components/combinedContent';
+import { ManageLeaveApplication } from '../modules/human-resource/annual-leave/components/combinedContent';
 
 import { ListEducation } from '../modules/training/education-program/components/educationProgramList';
 import { TrainingPlan } from '../modules/training/course/components/course';
@@ -93,8 +94,8 @@ import TaskReportManager from '../modules/report/task-report/components/taskRepo
 //warehouse
 import MaterialManager from '../modules/warehouse-manager/material-manager/component';
 // Customer Management
-import Customer from '../modules/crm/customer/components';
-import CustomerGroup from '../modules/crm/customer-group/components';
+import CrmCustomer from '../modules/crm/customer/components';
+import CrmGroup from '../modules/crm/group/components';
 
 //orders
 import OrderManagement from "../modules/order/components";
@@ -114,6 +115,7 @@ class Routes extends Component {
                         arrPage={[
                             { link: '/system/settings', name: 'manage_system', icon: 'fa fa-gears' }
                         ]}
+                        // type='system-admin'
                         auth={auth}
                         exact={true}
                         link={'/system/settings'}
@@ -300,6 +302,21 @@ class Routes extends Component {
                     />
                     {/* Quan ly nhan su */}
                     <PrivateRoute
+                        isLoading={this.props.annualLeave.isLoading}
+                        key={'leave_application'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/hr-manage-leave-application', name: 'leave_application', icon: 'fa fa-envelope' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/hr-manage-leave-application'}
+                        path={'/hr-manage-leave-application'}
+                        pageName={'leave_application'}
+                        layout={Layout}
+                        component={ManageLeaveApplication}
+                    />
+                    <PrivateRoute
                         isLoading={this.props.employeesManager.isLoading}
                         key={'add_employee'}
                         arrPage={[
@@ -438,18 +455,18 @@ class Routes extends Component {
                     />
                     <PrivateRoute
                         isLoading={this.props.holiday.isLoading}
-                        key={'work_plan'}
+                        key={'annual_leave_personal'}
                         arrPage={[
                             { link: '/', name: 'home', icon: 'fa fa-home' },
-                            { link: '/hr-work-plan', name: 'work_plan', icon: 'fa fa-calendar' }
+                            { link: '/hr-annual-leave-personal', name: 'annual_leave_personal', icon: 'fa fa-calendar' }
                         ]}
                         auth={auth}
                         exact={true}
-                        link={'/hr-work-plan'}
-                        path={'/hr-work-plan'}
-                        pageName={'work_plan'}
+                        link={'/hr-annual-leave-personal'}
+                        path={'/hr-annual-leave-personal'}
+                        pageName={'annual_leave_personal'}
                         layout={Layout}
-                        component={WorkPlan}
+                        component={AnnualLeave}
                     />
                     <PrivateRoute
                         isLoading={this.props.salary.isLoading}
@@ -1064,32 +1081,32 @@ class Routes extends Component {
                     {/* Customer Management */}
                     <PrivateRoute
                         isLoading={false}
-                        key={'customer'}
+                        key={'crm_customer'}
                         arrPage={[
-                            { link: '/customer', name: 'customer', icon: 'fa fa-users' }
+                            { link: '/crm/customer', name: 'crm_list.customer', icon: 'fa fa-users' }
                         ]}
                         auth={auth}
                         exact={true}
-                        link={'/customer'}
-                        path={'/customer'}
-                        pageName={'customer'}
+                        link={'/crm/customer'}
+                        path={'/crm/customer'}
+                        pageName={'crm_list.customer'}
                         layout={Layout}
-                        component={Customer}
+                        component={CrmCustomer}
                     />
 
                     <PrivateRoute
                         isLoading={false}
                         key={'customer-group'}
                         arrPage={[
-                            { link: '/customer-group', name: 'customer_group', icon: 'fa fa-group' }
+                            { link: '/crm/group', name: 'crm_list.group', icon: 'fa fa-group' }
                         ]}
                         auth={auth}
                         exact={true}
-                        link={'/customer-group'}
-                        path={'/customer-group'}
-                        pageName={'customer_group'}
+                        link={'/crm/group'}
+                        path={'/crm/group'}
+                        pageName={'crm_list.group'}
                         layout={Layout}
-                        component={CustomerGroup}
+                        component={CrmGroup}
                     />
 
                     {/* Orders Management */}
