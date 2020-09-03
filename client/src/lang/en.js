@@ -616,8 +616,14 @@ export default {
 
             manage_document: 'Manage Documents',
             documents: 'Documents',
-
-            customer: 'Customer',
+            crm: 'CRM',
+            crm_list: {
+                customer: 'Customers',
+                lead: 'Leads',
+                care: 'Cares',
+                group: 'Groups',
+                statistic: 'Statistics',
+            },
 
             task_template: 'Task Template',
             cocautochuc: 'Organizational Structure',
@@ -2158,8 +2164,20 @@ export default {
 
                 // confirm task
                 confirm_task_success: "Confirm task successfully",
-                confirm_task_failure: "Confirm task unsuccessfully"
+                confirm_task_failure: "Confirm task unsuccessfully",
 
+                // warning
+                warning: 'Warning',
+                not_have_evaluation: 'No one evaluate task this month',
+                you_need: 'You need',
+                confirm_task: 'confirm take part in this task',
+                not_confirm: 'Not confirm this task',
+
+                left_task_expired: 'left is task expired',
+                left_can_edit_task: 'remaining is task evaluation editing expiration',
+                action_not_rating: 'actions not rating this month',
+
+                have: 'have',
             },
             task_perform: {
                 actions: "Actions",
@@ -2202,11 +2220,11 @@ export default {
                 edit: "Edit",
                 delete: "Delete",
 
-
-
-
-
-
+                notice_end_task: 'Are you sure to finish this task',
+                notice_change_status_task: 'Are you sure to change status of this task',
+                choose_following_task: 'Choose the next task to be executed',
+                task_link_of_process: 'Link',
+                not_have_following: 'Not have following task',
 
                 // TODO: code_mesage_task_perform
                 create_result_task_success: 'Evaluate task successfully',
@@ -2425,7 +2443,8 @@ export default {
                         // Nhóm dành cho các handle
                         handle_edit_kpi: {
                             approving: 'KPI is being approved, you can not edit it. If you want to modify, please contact your manager!',
-                            activated: 'KPI has been activated, you can not edit. If you want to modify, please contact your manager!'
+                            activated: 'KPI has been activated, you can not edit. If you want to modify, please contact your manager!',
+                            finished: 'KPI has been finished, you can not edit!'
                         },
                         delete_kpi: {
                             kpi: 'Are you sure you want to delete this KPI?',
@@ -2467,13 +2486,6 @@ export default {
                         weight: 'Weight',
 
                         // Nhóm dành cho validate
-                        validate_name: {
-                            empty: 'Target name cannot be empty',
-                            less_than_4: 'Target name cannot be less than 4 characters',
-                            more_than_50: 'Target name cannot be more than 50 characters',
-                            special_character: 'Target name cannot contain special characters'
-                        },
-                        validate_criteria: 'Criteria cannot be empty',
                         validate_weight: {
                             empty: 'Weight cannot be empty',
                             less_than_0: 'Weight cannot be less than 0',

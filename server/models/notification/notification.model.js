@@ -8,7 +8,7 @@ const NotificationSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'companies'
     },
-    level: { //gồm 4 loại: info, normal, warning, error
+    level: { //gồm 4 loại: info, general, important, emergency
         type: String
     },
     title: {
