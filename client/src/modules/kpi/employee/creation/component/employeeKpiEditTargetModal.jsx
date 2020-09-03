@@ -10,13 +10,10 @@ import { DialogModal, ErrorLabel, SelectBox } from '../../../../../common-compon
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
 
-var translate='';
 class ModalEditEmployeeKpi extends Component {
 
     constructor(props) {
         super(props);
-
-        translate = this.props.translate;
 
         this.state = {
             _id: null,
@@ -34,10 +31,6 @@ class ModalEditEmployeeKpi extends Component {
             submitted: false
         };
     }
-
-    // componentDidMount() {
-    //     this.props.getCurrentKPIUnit(localStorage.getItem("currentRole"));
-    // }
     
     static getDerivedStateFromProps(nextProps, prevState){
         
@@ -93,7 +86,7 @@ class ModalEditEmployeeKpi extends Component {
 
     handleNameChange = (e) => {
         let value = e.target.value;
-        let validation = ValidationHelper.validateName(translate, value);
+        let validation = ValidationHelper.validateName(this.props.translate, value);
         
         this.setState(state => {
             return {
@@ -115,7 +108,7 @@ class ModalEditEmployeeKpi extends Component {
 
     handleCriteriaChange = (e) => {
         let value = e.target.value;
-        let validation = ValidationHelper.validateDescription(translate, value);
+        let validation = ValidationHelper.validateDescription(this.props.translate, value);
 
         this.setState(state => {
             return {
@@ -128,7 +121,7 @@ class ModalEditEmployeeKpi extends Component {
 
     handleWeightChange = (e) => {
         let value = e.target.value;
-        let validation = this.validateWeight(translate, value);
+        let validation = this.validateWeight(this.props.translate, value);
 
         this.setState(state => {
             return {
@@ -149,12 +142,12 @@ class ModalEditEmployeeKpi extends Component {
         if (value < 0) {
             return {
                 status: false,
-                message: translate('kpi.employee.employee_kpi_set.create_employee_kpi_modal.validate_weight.less_than_0')
+                message: this.props.translate('kpi.employee.employee_kpi_set.create_employee_kpi_modal.validate_weight.less_than_0')
             };
         } else if(value > 100){
             return {
                 status: false,
-                message: translate('kpi.employee.employee_kpi_set.create_employee_kpi_modal.validate_weight.greater_than_100')
+                message: this.props.translate('kpi.employee.employee_kpi_set.create_employee_kpi_modal.validate_weight.greater_than_100')
             };
         } else {
             return {
@@ -164,6 +157,7 @@ class ModalEditEmployeeKpi extends Component {
     }
 
     isFormValidated = () => {
+        const { translate } = this.props;
         const { name, criteria, weight } = this.state;
         
         let validatateName, validateCriteria, validateWeight, result;
@@ -171,7 +165,7 @@ class ModalEditEmployeeKpi extends Component {
         validatateName = ValidationHelper.validateName(translate, name);
         validateCriteria = ValidationHelper.validateDescription(translate, criteria);
         validateWeight = this.validateWeight(translate, weight)
-console.log("data", validatateName, validateCriteria, validateWeight)
+        
         result = validatateName.status && validateCriteria.status && validateWeight.status;
         return result;
     }

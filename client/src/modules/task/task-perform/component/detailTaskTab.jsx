@@ -667,7 +667,7 @@ class DetailTaskTab extends Component {
                         {/** Nhắc nhở */}
                         {
                             task && warning
-                            && <div className="description-box" style={{ border: "3px double #f38961" }}>
+                            && <div className="description-box" style={{ border: "3px double #e8cbcb" }}>
                                 <h4>{translate('task.task_management.warning')}</h4>
                                 {/** Xác nhận công việc */}
                                 {
@@ -677,7 +677,7 @@ class DetailTaskTab extends Component {
                                 {
                                     checkConfirmTask && checkConfirmTask.checkConfirmOtherUser
                                     && <div>
-                                        <strong>{translate('task.task_management.not_confirm')}</strong>
+                                        <strong>{translate('task.task_management.not_confirm')}: </strong>
                                         &nbsp;&nbsp;
                                         {
                                             checkConfirmTask.listEmployeeNotConfirm.length !== 0
@@ -695,19 +695,11 @@ class DetailTaskTab extends Component {
                                     && <div><strong>{translate('task.task_management.not_have_evaluation')}</strong></div>
                                 }
 
-                                {/** Chưa đánh giá hoạt động */}
-                                {
-                                    checkEvaluationTaskAction && checkEvaluationTaskAction.checkEvaluationTaskAction
-                                    && <div>
-                                        <strong>Còn <span style={{ color: "red" }}>{checkEvaluationTaskAction.numberOfTaskActionNotEvaluate}</span> hoạt động chưa được đánh giá tháng này</strong>
-                                    </div>
-                                }
-
                                 {/** Chưa liên kết KPI */}
                                 {
-                                    checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkKpiLink
+                                    checkEvaluationTaskAndKpiLink && !checkEvaluationTaskAndKpiLink.checkEvaluationTask && checkEvaluationTaskAndKpiLink.checkKpiLink
                                     && <div>
-                                        <strong>{translate('task.task_management.detail_not_kpi')}</strong>
+                                        <strong>{translate('task.task_management.detail_not_kpi')}: </strong>
                                         &nbsp;&nbsp;
                                         {
                                             checkEvaluationTaskAndKpiLink.listEmployeeNotKpiLink.length !== 0
@@ -719,11 +711,19 @@ class DetailTaskTab extends Component {
                                     </div>
                                 }
 
+                                {/** Chưa đánh giá hoạt động */}
+                                {
+                                    checkEvaluationTaskAction && checkEvaluationTaskAction.checkEvaluationTaskAction
+                                    && <div>
+                                        <strong>{translate('task.task_management.action_not_rating')}:&nbsp;&nbsp; <span style={{ color: "red" }}>{checkEvaluationTaskAction.numberOfTaskActionNotEvaluate}</span></strong>
+                                    </div>
+                                }
+
                                 {/** Thời hạn chỉnh sửa thông tin */}
                                 {
                                     checkDeadlineForEvaluation && checkDeadlineForEvaluation.checkDeadlineForEvaluation
                                     && <div>
-                                        <strong>{translate('task.task_management.have')}<span style={{ color: "red" }}>{checkDeadlineForEvaluation.deadlineForEvaluation}</span> {translate('task.task_management.left_can_edit_task')}</strong>
+                                        <strong>{translate('task.task_management.left_can_edit_task')}:&nbsp;&nbsp; <span style={{ color: "red" }}>{checkDeadlineForEvaluation.deadlineForEvaluation}</span></strong>
                                     </div>
                                 }
                             </div>

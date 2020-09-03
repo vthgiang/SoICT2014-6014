@@ -2041,7 +2041,7 @@ export default {
                 detail_not_eval_on_month: 'Chưa đánh giá tháng này',
                 detail_not_eval: 'Chưa ai đánh giá công việc tháng này',
                 detail_kpi: 'Liên kết KPI',
-                detail_not_kpi: 'Chưa liên kết công việc với KPI',
+                detail_not_kpi: 'Chưa liên kết công việc với KPI tháng này',
                 detail_all_not_kpi: 'Chưa ai liên kết công việc với KPI',
                 detailt_none_eval: 'Chưa được đánh giá lần nào',
 
@@ -2109,7 +2109,7 @@ export default {
                 btn_save_eval: 'Lưu đánh giá',
                 btn_get_info: 'Lấy thông tin',
                 note_not_eval: 'Đã quá 7 ngày sau ngày đánh giá. Bạn không thể chỉnh sửa thêm!',
-                note_eval: 'Số ngày còn lại để chỉnh sửa đánh giá: ',
+                note_eval: 'Số ngày còn lại để chỉnh sửa đánh giá',
 
                 add_eval_of_this_month: 'Thêm đánh giá tháng này',
                 eval_of: 'Đánh giá tháng',
@@ -2176,16 +2176,15 @@ export default {
 
                 // warning
                 warning: 'Cảnh báo',
-                not_have_evaluation: 'Chưa có ai đánh giá công việc tháng này',
+                not_have_evaluation: 'Chưa có đánh giá công việc tháng này',
                 you_need: 'Bạn cần',
                 confirm_task: 'xác nhận tham gia công việc này',
                 not_confirm: 'Chưa xác nhận công việc',
 
                 left_task_expired: 'còn lại là công việc bị hết hạn',
-                left_can_edit_task: 'còn lại để chỉnh sửa đánh giá công việc tháng trước',
-                action_not_rating: 'hoạt động chưa được đánh giá tháng này',
+                action_not_rating: 'Số hoạt động chưa được đánh giá tháng này',
 
-                have: 'Còn',
+                left_can_edit_task: 'Thời gian còn lại để chỉnh sửa đánh giá công việc tháng trước',
             },
             task_perform: {
 

@@ -2,15 +2,14 @@ import React, { Component } from 'react';
 import MainHeaderMenu from './mainHeaderMenu';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { AuthActions } from '../../../../modules/auth/redux/actions';
-import { DialogModal, ErrorLabel } from '../../../../common-components';
+import { AuthActions } from '../../../modules/auth/redux/actions';
+import { DialogModal, ErrorLabel } from '../../../common-components';
 import { Link } from 'react-router-dom';
 import './header.css';
-import { getStorage } from '../../../../config';
+import { getStorage } from '../../../config';
 import ModalChangeUserInformation from './modalChangeUserInformation';
 import { toast } from 'react-toastify';
-import ValidationHelper from '../../../../helpers/validationHelper';
-import Sidebar from '../../sidebar/components/sidebar';
+import ValidationHelper from '../../../helpers/validationHelper';
 
 class Header extends Component {
     constructor(props) {
@@ -25,60 +24,57 @@ class Header extends Component {
         } = this.state;
 
         return ( 
-			<React.Fragment>	
-				<header className="main-header">
-					<nav className="navbar navbar-static-top">
-					<div className="container">
-						<div className="navbar-header">
-						<Link to='/' className="navbar-brand">
-							<span><b>VNIST-QLDN</b></span>
-						</Link>
-						<button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
-							<i className="fa fa-bars" />
-						</button>
-						</div>
-						<Sidebar/>
-						<MainHeaderMenu/>
-					</div>
-					{/* /.container-fluid */}
-					</nav>
-				</header>
-				{/* Modal profile */}
-				{
-					auth.user.name !== undefined &&
-					<ModalChangeUserInformation
-						userId={auth.user._id}
-						userName={auth.user.name}
-						userEmail={auth.user.email}
-					/>
-				}
+            <React.Fragment>
+                <header className="main-header">
+                    <Link to='/' className="logo">
+                        <span className="logo-mini"><img src="/logo.png" alt="Logo" style={{width: "40px", marginTop: "-5px", marginLeft: "-15px"}}></img></span>
+                        <span className="logo-lg"><img src="/logo.png" alt="Logo" style={{width: "40px", marginTop: "-5px", marginLeft: "-15px"}}></img>VNIST-Việc</span>
+                    </Link>
+                    <nav className="navbar navbar-static-top">
+                        <a className="sidebar-toggle" data-toggle="push-menu" data-expand-on-hover={true} role="button">
+                            <span className="sr-only">Toggle navigation</span>
+                        </a>
+                        <MainHeaderMenu/>
+                    </nav>
+                </header>
 
-				{/* Modal Security */}
-				<DialogModal
-					modalID="modal-security"
-					formID="form-security" size="30"
-					title={translate('auth.security.title')}
-					func={this.saveNewPassword} disableSubmit={!this.isFormValidated()}
-				>
-					<form id="form-security" style={{padding: '10px 20px 10px 20px'}}>
-						<div className={`form-group ${!oldPasswordError ? "" : "has-error"}`}>
-							<label>{ translate('auth.security.old_password') }<span className="text-red">*</span></label>
-							<input className="form-control" type="password" onChange={this.handleOldPassword} />
-							<ErrorLabel content={oldPasswordError} />
-						</div>
-						<div className={`form-group ${!newPasswordError ? "" : "has-error"}`}>
-							<label>{ translate('auth.security.new_password') }<span className="text-red">*</span></label>
-							<input className="form-control" type="password" onChange={this.handleNewPassword} />
-							<ErrorLabel content={newPasswordError} />
-						</div>
-						<div className={`form-group ${!confirmPasswordError ? "" : "has-error"}`}>
-							<label>{ translate('auth.security.confirm_password') }<span className="text-red">*</span></label>
-							<input className="form-control" type="password" onChange={this.handleConfirmPassword} />
-							<ErrorLabel content={confirmPasswordError} />
-						</div>
-					</form>
-				</DialogModal>
-			</React.Fragment>
+                {/* Modal profile */}
+                {
+                    auth.user.name !== undefined &&
+                    <ModalChangeUserInformation
+                        userId={auth.user._id}
+                        userName={auth.user.name}
+                        userEmail={auth.user.email}
+                    />
+                }
+
+                {/* Modal Security */}
+                <DialogModal
+                    modalID="modal-security"
+                    formID="form-security" size="30"
+                    title={translate('auth.security.title')}
+                    func={this.saveNewPassword} disableSubmit={!this.isFormValidated()}
+                >
+                    <form id="form-security" style={{padding: '10px 20px 10px 20px'}}>
+                        <div className={`form-group ${!oldPasswordError ? "" : "has-error"}`}>
+                            <label>{ translate('auth.security.old_password') }<span className="text-red">*</span></label>
+                            <input className="form-control" type="password" onChange={this.handleOldPassword} />
+                            <ErrorLabel content={oldPasswordError} />
+                        </div>
+                        <div className={`form-group ${!newPasswordError ? "" : "has-error"}`}>
+                            <label>{ translate('auth.security.new_password') }<span className="text-red">*</span></label>
+                            <input className="form-control" type="password" onChange={this.handleNewPassword} />
+                            <ErrorLabel content={newPasswordError} />
+                        </div>
+                        <div className={`form-group ${!confirmPasswordError ? "" : "has-error"}`}>
+                            <label>{ translate('auth.security.confirm_password') }<span className="text-red">*</span></label>
+                            <input className="form-control" type="password" onChange={this.handleConfirmPassword} />
+                            <ErrorLabel content={confirmPasswordError} />
+                        </div>
+                    </form>
+                </DialogModal>
+                
+            </React.Fragment>
          );
     }
 

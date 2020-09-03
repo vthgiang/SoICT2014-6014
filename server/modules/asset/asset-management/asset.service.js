@@ -51,6 +51,9 @@ exports.searchAssetProfiles = async (params, company) => {
         keySearch = {...keySearch, managedBy: {$in: params.managedBy}};
     }
 
+    if (params.currentRole) {
+        keySearch = {...keySearch, readByRoles: {$in: params.currentRole}};
+    }
     // Thêm key tìm kiếm tài sản theo ngày nhập tài sản
     if (params.purchaseDate) {
         let date = params.purchaseDate.split("-");
@@ -418,7 +421,7 @@ exports.createUsage = async (id, data) => {
         $addToSet: {usageLogs: data.usageLogs},
         assignedToUser: assignedToUser,
         assignedToOrganizationalUnit: assignedToOrganizationalUnit,
-        status: data.status
+        status: data.status,
     });
 
     let asset = await Asset.findById(id);

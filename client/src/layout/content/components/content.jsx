@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { Loading } from '../../../../common-components';
+import { Loading } from '../../../common-components';
 
 class Content extends Component {
     constructor(props) {

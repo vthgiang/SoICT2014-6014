@@ -138,7 +138,7 @@ exports.editSystemComponent = async (systemComponentId, name, description, links
 
         for (let j = 0; j < oldCompanyLinks.length; j++) {
             let updateCompanyLink = await Link.findById(oldCompanyLinks[i]);
-            let index = updateCompanyLink.components.indexOf(componnet._id);
+            let index = updateCompanyLink.components.indexOf(component._id);
             if(index !== -1) updateCompanyLink.components.splice(index, 1);
             await updateCompanyLink.save();
         }

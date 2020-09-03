@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
-import SuperAdminLayout from './super-admin';
-import SystemAdminLayout from './system-admin';
+import Header from './header/components/header';
+import SideBar from './sidebar/components/sidebar';
+import Content from './content/components/content';
+import Footer from './footer/components/footer';
 class Layout extends Component {
     constructor(props) {
         super(props);
@@ -11,28 +12,20 @@ class Layout extends Component {
     }
 
     render() { 
-        const {auth} = this.props;
+        const {auth, translate} = this.props;
 
-        if(auth.user.company === undefined)
-            return (
-                <SystemAdminLayout
-                    arrPage={this.props.arrPage}
-                    isLoading={this.props.isLoading}
-                    pageName={this.props.pageName}
-                >
-                    {this.props.children}
-                </SystemAdminLayout>
-            );
-        else  
-            return (
-                <SuperAdminLayout
-                    arrPage={this.props.arrPage}
-                    isLoading={this.props.isLoading}
-                    pageName={this.props.pageName}
-                >
-                    {this.props.children}
-                </SuperAdminLayout>
-            );
+        return (
+            <React.Fragment>
+                <Header
+                    userId={auth.user._id}
+                    userName={auth.user.name}
+                    userEmail={auth.user.email}
+                />
+                <SideBar />
+                <Content arrPage={this.props.arrPage} isLoading={this.props.isLoading} pageName={ translate(`menu.${this.props.pageName}`) }>{ this.props.children }</Content>
+                <Footer />
+            </React.Fragment>
+        );
     }
 }
  
