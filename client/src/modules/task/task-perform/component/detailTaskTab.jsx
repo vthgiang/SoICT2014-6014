@@ -316,7 +316,8 @@ class DetailTaskTab extends Component {
         if (listEmployeeNotConfirm.length !== 0) {
             checkConfirmOtherUser = true;
         }
-
+        listEmployeeNotConfirm = listEmployeeNotConfirm.filter(item => item.active);
+        
         return {
             listEmployeeNotConfirm: listEmployeeNotConfirm,
             checkConfirmCurrentUser: checkConfirmCurrentUser,
@@ -424,6 +425,7 @@ class DetailTaskTab extends Component {
         listEmployeeNotKpiLink = idArray.map(item => {
             return listEmployeeNotKpiLink[item]
         })
+        listEmployeeNotKpiLink = listEmployeeNotKpiLink.filter(item => item.active);
 
         return {
             checkEvaluationTask: checkEvaluationTask,
@@ -691,13 +693,13 @@ class DetailTaskTab extends Component {
 
                                 {/** Chưa có đánh giá */}
                                 {
-                                    checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkEvaluationTask
+                                    task.status === "Inprocess" && checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkEvaluationTask
                                     && <div><strong>{translate('task.task_management.not_have_evaluation')}</strong></div>
                                 }
 
                                 {/** Chưa liên kết KPI */}
                                 {
-                                    checkEvaluationTaskAndKpiLink && !checkEvaluationTaskAndKpiLink.checkEvaluationTask && checkEvaluationTaskAndKpiLink.checkKpiLink
+                                    task.status === "Inprocess" && checkEvaluationTaskAndKpiLink && !checkEvaluationTaskAndKpiLink.checkEvaluationTask && checkEvaluationTaskAndKpiLink.checkKpiLink
                                     && <div>
                                         <strong>{translate('task.task_management.detail_not_kpi')}: </strong>
                                         &nbsp;&nbsp;
