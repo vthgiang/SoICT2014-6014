@@ -194,7 +194,7 @@ class TaskOrganizationUnitDashboard extends Component {
         if (day.length < 2)
             day = '0' + day;
         let defaultEndMonth = [month, year].join('-');
-        let defaultStartMonth = [month - 3, year].join('-');
+        let defaultStartMonth = '0' + (month - 3) + '-' + year;
 
         if (this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
             let currentOrganizationalUnit = this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
@@ -277,7 +277,7 @@ class TaskOrganizationUnitDashboard extends Component {
                     <div className="col-xs-12">
                         <div className="box box-primary">
                             <div className="box-header with-border">
-                                <div className="box-title">{translate('task.task_management.distribution_Of_Employee')}</div>
+                                <div className="box-title">{translate('task.task_management.distribution_Of_Employee')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
                             </div>
                             <div className="box-body qlcv">
                                 {this.state.callAction && tasks && tasks.organizationUnitTasks &&
@@ -295,7 +295,7 @@ class TaskOrganizationUnitDashboard extends Component {
                     <div className="col-xs-6">
                         <div className="box box-primary">
                             <div className="box-header with-border">
-                                <div className="box-title">{translate('task.task_management.dashboard_area_result')}</div>
+                                <div className="box-title">{translate('task.task_management.dashboard_area_result')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
                             </div>
                             <div className="box-body qlcv">
                                 {this.state.callAction &&
@@ -313,7 +313,7 @@ class TaskOrganizationUnitDashboard extends Component {
                     <div className="col-xs-6">
                         <div className="box box-primary">
                             <div className="box-header with-border">
-                                <div className="box-title">{translate('task.task_management.detail_status')}</div>
+                                <div className="box-title">{translate('task.task_management.detail_status')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
                             </div>
                             <div className="box-body qlcv">
                                 {this.state.callAction &&

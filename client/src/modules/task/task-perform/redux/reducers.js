@@ -529,6 +529,25 @@ export function performtasks(state = {}, action) {
                 isLoading: false,
                 error: action.error
             };
+
+        case performTaskConstants.EDIT_HOURS_SPENT_IN_EVALUATION_REQUEST:
+            return {
+                ...state,
+                isLoading: true
+            };
+        case performTaskConstants.EDIT_HOURS_SPENT_IN_EVALUATION_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                task: action.payload,
+            };
+        case performTaskConstants.EDIT_HOURS_SPENT_IN_EVALUATION_FAILURE:
+            return {
+                isLoading: false,
+                error: action.error
+            };
+
+
         case performTaskConstants.DELETE_EVALUATION_REQUEST:
             return {
                 ...state,

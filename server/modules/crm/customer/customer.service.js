@@ -1,7 +1,7 @@
 const { CrmCustomer, CrmGroup } = require(SERVER_MODELS_DIR).schema;
 
-exports.getCustomers = async (query) => {
-    var { company, page, limit } = query;
+exports.getCustomers = async (company, query) => {
+    var { page, limit } = query;
     if(!company) throw['company_invalid'];
     if (!page && !limit) {
 
@@ -30,17 +30,7 @@ exports.createCustomer = async (data) => {
     const company = await Company.findById(data.company);
     if(company === null) throw ['company_not_found'];
 
-    return await CrmCustomer.create({
-        company: data.company,
-        name: data.name,
-        code: data.code,
-        phone: data.phone,
-        address: data.address,
-        location: data.location,
-        email: data.email,
-        group: data.group,
-        birth: data.birth
-    });
+    return await CrmCustomer.create(data);
 }
 
 exports.getCustomer = async (id) => {
