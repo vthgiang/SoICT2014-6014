@@ -398,6 +398,7 @@ export default {
             add_version: 'Add document version',
             upload_file: 'Upload file',
             upload_file_scan: 'Upload file scan',
+            choose_file: 'Choose file',
             download: 'Download',
             no_version: 'Not have different version',
             no_blank_description: "Description should'n empty",
@@ -2172,6 +2173,8 @@ export default {
                 evaluate_task_success: 'Evaluate task success',
                 edit_task_fail: 'Edit task fail',
                 evaluate_task_fail: 'Evaluate task fail',
+                edit_hours_spent_in_evaluate_success: 'Calculate hours spent on task success',
+                edit_hours_spent_in_evaluate_fail: 'Calculate hours spent on task fail',
 
                 add_new_task: 'Add new task',
                 // add_err: 

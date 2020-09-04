@@ -223,18 +223,22 @@ exports.editRole = async(id, data={}) => {
  * @roleId id role
  * @userArr mảng id các user
  */
-exports.editRelationshipUserRole = async( roleId, userArr ) => {
+exports.editRelationshipUserRole = async( roleId, userArr=[] ) => {
+    const check = await Role.findById(roleId);
+    if(!check) throw ['role_not_found'];
+
     await UserRole.deleteMany({
         roleId: roleId
     });
-    const ur1 = await UserRole.find();
-    const user_role = userArr.map( user => {
-        return {
-            roleId: roleId,
-            userId: user
-        };
-    })
-    return await UserRole.insertMany(user_role);
+    if(userArr.length > 0){
+        const user_role = userArr.map( user => {
+            return {
+                roleId: roleId,
+                userId: user
+            };
+        })
+        return await UserRole.insertMany(user_role);
+    }
 }
 
 

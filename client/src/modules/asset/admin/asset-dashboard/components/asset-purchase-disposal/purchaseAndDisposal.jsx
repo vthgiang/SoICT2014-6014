@@ -40,13 +40,6 @@ class PurchaseAndDisposal extends Component {
             console.log(err);
         });
 
-        // AssetTypeService.getAssetTypes().then(res => {
-        //     if (res.data.success) {
-        //         this.setState({ assetType: res.data.content.tree })
-        //     }
-        // }).catch(err => {
-        //     console.log(err);
-        // });
     }
 
     getPurchaseData = (purchaseData) => {

@@ -350,7 +350,7 @@ class DetailTaskTab extends Component {
     }
 
     checkEvaluationTaskAndKpiLink = (task) => {
-        const { dueForEvaluationOfTask, currentMonth, nextMonth } = this.state;
+        const { currentMonth, nextMonth } = this.state;
 
         let evaluations = [], checkEvaluationTask = false;
         let listEmployeeNotKpiLink = [], responsibleEmployeesNotKpiLink = [], accountableEmployeesNotKpiLink = [], consultedEmployeesNotKpiLink = [];
@@ -361,9 +361,6 @@ class DetailTaskTab extends Component {
             if (evaluations.length === 0) {
                 // Check đánh giá trong tháng
                 checkEvaluationTask = true;
-
-                // Nhân viên chưa liên kết KPI
-                listEmployeeNotKpiLink = task.responsibleEmployees.concat(task.accountableEmployees).concat(task.consultedEmployees);
             } else {
                 // Nhân viên chưa liên kết KPI
                 if (evaluations[0].results && evaluations[0].results.length !== 0) {
@@ -405,10 +402,7 @@ class DetailTaskTab extends Component {
                     }
 
                     listEmployeeNotKpiLink = responsibleEmployeesNotKpiLink.concat(accountableEmployeesNotKpiLink).concat(consultedEmployeesNotKpiLink);
-                } else {
-                    // Nhân viên chưa liên kết KPI
-                    listEmployeeNotKpiLink = task.responsibleEmployees.concat(task.accountableEmployees).concat(task.consultedEmployees);
-                }
+                } 
             }
         }
 
@@ -434,25 +428,33 @@ class DetailTaskTab extends Component {
         }
     }
 
-    checkDeadlineForEvaluation = () => {
-        const { dueForEvaluationOfTask } = this.state;
+    checkDeadlineForEvaluation = (task) => {
+        const { dueForEvaluationOfTask, currentMonth } = this.state;
 
-        let checkDeadlineForEvaluation = false, deadlineForEvaluation;
+        let checkDeadlineForEvaluation = false, deadlineForEvaluation, evaluations;
         let currentDate = new Date();
-        
-        // Check số ngày đến hạn đánh giá
-        deadlineForEvaluation = ((new Date(dueForEvaluationOfTask)).getTime() - currentDate.getTime()) / (3600 * 24 * 1000);
-        if (deadlineForEvaluation > 0) {
-            checkDeadlineForEvaluation = true;
+        let lastMonth = currentDate.getFullYear() + '-' + currentDate.getMonth();
 
-            if (deadlineForEvaluation < 1) {
-                if (deadlineForEvaluation * 24 < 1) {
-                    deadlineForEvaluation = Math.floor(deadlineForEvaluation * 24 * 60) + ' phút';
-                } else {
-                    deadlineForEvaluation = Math.floor(deadlineForEvaluation * 24) + ' giờ';
+        if (task && task.evaluations) {
+            // Check evaluations tháng trước
+            evaluations = task.evaluations.filter(item => new Date(item.date) >= new Date(lastMonth) && new Date(item.date) < new Date(currentMonth));
+
+            if (evaluations.length !== 0) {
+                // Check số ngày đến hạn đánh giá
+                deadlineForEvaluation = ((new Date(dueForEvaluationOfTask)).getTime() - currentDate.getTime()) / (3600 * 24 * 1000);
+                if (deadlineForEvaluation > 0) {
+                    checkDeadlineForEvaluation = true;
+
+                    if (deadlineForEvaluation < 1) {
+                        if (deadlineForEvaluation * 24 < 1) {
+                            deadlineForEvaluation = Math.floor(deadlineForEvaluation * 24 * 60) + ' phút';
+                        } else {
+                            deadlineForEvaluation = Math.floor(deadlineForEvaluation * 24) + ' giờ';
+                        }
+                    } else {
+                        deadlineForEvaluation = Math.floor(deadlineForEvaluation) + ' ngày';
+                    }
                 }
-            } else {
-                deadlineForEvaluation = Math.floor(deadlineForEvaluation) + ' ngày';
             }
         }
 
@@ -505,7 +507,19 @@ class DetailTaskTab extends Component {
             timesheetLogs: results,
         }
 
-        // this.props.editHoursSpentInEvaluate(data, taskId);
+        await this.props.editHoursSpentInEvaluate(data, taskId);
+    }
+
+    convertTime = (duration) => {
+        let seconds = Math.floor((duration / 1000) % 60),
+            minutes = Math.floor((duration / (1000 * 60)) % 60),
+            hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+
+        hours = (hours < 10) ? "0" + hours : hours;
+        minutes = (minutes < 10) ? "0" + minutes : minutes;
+        seconds = (seconds < 10) ? "0" + seconds : seconds;
+
+        return hours + ":" + minutes + ":" + seconds;
     }
 
     render() {
@@ -699,7 +713,7 @@ class DetailTaskTab extends Component {
 
                                 {/** Chưa liên kết KPI */}
                                 {
-                                    task.status === "Inprocess" && checkEvaluationTaskAndKpiLink && !checkEvaluationTaskAndKpiLink.checkEvaluationTask && checkEvaluationTaskAndKpiLink.checkKpiLink
+                                    task.status === "Inprocess" && checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkKpiLink
                                     && <div>
                                         <strong>{translate('task.task_management.detail_not_kpi')}: </strong>
                                         &nbsp;&nbsp;
@@ -918,6 +932,22 @@ class DetailTaskTab extends Component {
                                                             })
                                                         ) : <div><strong>{translate('task.task_management.detail_all_not_kpi')}</strong></div>
                                                     }
+
+                                                    {/* Thời gian bấm giờ */}
+                                                    {
+                                                        eva.results.length !== 0 &&
+                                                        <div>
+                                                            <div><strong>Thời gian bấm giờ</strong> (Giờ)</div>
+                                                            <ul>
+                                                                {(eva.results.length !== 0) ?
+                                                                    eva.results.map((res, index) => {
+                                                                        return <li key={index}>{res.employee.name}: &nbsp;&nbsp; {res.hoursSpent ? this.convertTime(res.hoursSpent) : 0}</li>
+                                                                    }) : <li>{translate('task.task_management.detail_not_eval')}</li>
+                                                                }
+                                                            </ul>
+                                                        </div>
+                                                    }
+
                                                 </div>
                                             );
                                         })

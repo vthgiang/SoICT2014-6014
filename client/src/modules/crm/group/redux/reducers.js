@@ -1,4 +1,4 @@
-import { CustomerConstants } from "./constants";
+import { CrmGroupConstants } from "./constants";
 
 var findIndex = (array, id) => {
     var result = -1;
@@ -25,58 +25,82 @@ const initState = {
     isLoading: true,
 }
 
-export function customerGroup(state = initState, action) {
+export function group(state = initState, action) {
     var index = -1;
     var indexPaginate = -1;
+
     switch (action.type) {
-        case CustomerConstants.GET_CUSTOMER_GROUPS_REQUEST:
-        case CustomerConstants.PAGINATE_CUSTOMER_GROUPS_REQUEST:
+        case CrmGroupConstants.GET_CRM_GROUPS_REQUEST:
+        case CrmGroupConstants.PAGINATE_CRM_GROUPS_REQUEST:
+        case CrmGroupConstants.CREATE_CRM_GROUP_REQUEST:
+        case CrmGroupConstants.GET_CRM_GROUP_REQUEST:
+        case CrmGroupConstants.EDIT_CRM_GROUP_REQUEST:
+        case CrmGroupConstants.DELETE_CRM_GROUP_REQUEST:
+
             return {
                 ...state,
                 isLoading: true
             }
 
-        case CustomerConstants.GET_CUSTOMER_GROUPS_FAILE:
-        case CustomerConstants.PAGINATE_CUSTOMER_GROUPS_FAILE:
+        case CrmGroupConstants.GET_CRM_GROUPS_FAILE:
+        case CrmGroupConstants.PAGINATE_CRM_GROUPS_FAILE:
+        case CrmGroupConstants.CREATE_CRM_GROUP_FAILE:
+        case CrmGroupConstants.GET_CRM_GROUP_FAILE:
+        case CrmGroupConstants.EDIT_CRM_GROUP_FAILE:
+        case CrmGroupConstants.DELETE_CRM_GROUP_FAILE:
+            
             return {
                 ...state,
                 isLoading: false
             }
 
-        case CustomerConstants.GET_CUSTOMER_GROUPS_SUCCESS:
+        case CrmGroupConstants.GET_CRM_GROUPS_SUCCESS:
+
             return {
                 ...state,
                 list: action.payload,
                 isLoading: false
             };
 
-        case CustomerConstants.GET_LOCATIONS_REQUEST:
-            return {
-                ...state,
-                location: {
-                    ...state.location,
-                    isLoading: true
-                }
-            }
+        case CrmGroupConstants.CREATE_CRM_GROUP_SUCCESS:
 
-        case CustomerConstants.GET_LOCATIONS_FAILE:
             return {
                 ...state,
-                location: {
-                    ...state.location,
-                    isLoading: false
-                }
-            }
+                list: [action.payload, ...state.list],
+                listPaginate: [action.payload, ...state.listPaginate],
+                isLoading: false
+            };
+        
+        case CrmGroupConstants.PAGINATE_CRM_GROUPS_SUCCESS:
 
-        case CustomerConstants.GET_LOCATIONS_SUCCESS:
             return {
                 ...state,
-                location: {
-                    ...state.location,
-                    list: action.payload,
-                    isLoading: false
-                }
-            }
+                listPaginate: action.payload.docs,
+                ...action.payload,
+                isLoading: false
+            };
+
+        case CrmGroupConstants.EDIT_CRM_GROUP_SUCCESS:
+            index = findIndex(state.list, action.payload._id);
+            if(index !== -1) state.list[index] = action.payload;
+            indexPaginate = findIndex(state.listPaginate, action.payload._id);
+            if(indexPaginate !== -1) state.listPaginate[index] = action.payload;
+
+            return {
+                ...state,
+                isLoading: false
+            };
+
+        case CrmGroupConstants.DELETE_CRM_GROUP_SUCCESS:
+            index = findIndex(state.list, action.payload);
+            if(index !== -1) state.list.splice(index, 1);
+            indexPaginate = findIndex(state.listPaginate, action.payload);
+            if(indexPaginate !== -1) state.listPaginate.splice(indexPaginate, 1);
+
+            return {
+                ...state,
+                isLoading: false
+            };
 
         default:
             return state;
