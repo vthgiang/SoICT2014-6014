@@ -118,7 +118,22 @@ class UsageLogAddModal extends Component {
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let result = this.validateDescription(this.state.description, false)
+        let checkUsed ;
+        let checkUsedByUser = true, checkUsedByOrganizationalUnit = true;
+        if(this.state.usedByUser == "" || !this.state.usedByUser){
+            checkUsedByUser = false
+        }
+        if(this.state.usedByOrganizationalUnit == "" || !this.state.usedByOrganizationalUnit){
+            checkUsedByOrganizationalUnit = false
+        }
+        
+        if(!checkUsedByUser && !checkUsedByOrganizationalUnit){
+            checkUsed = false;
+        } else {
+            checkUsed = true;
+        }
+
+        let result = this.validateDescription(this.state.description, false) && checkUsed;
 
         return result;
     }
@@ -146,7 +161,7 @@ class UsageLogAddModal extends Component {
                 usedByOrganizationalUnit: null,
             });
         }
-        console.log("======", this.state);
+
         if (this.isFormValidated()) {
             return this.props.handleChange({ ...this.state, startDate: startDate, endDate: endDate });
         }

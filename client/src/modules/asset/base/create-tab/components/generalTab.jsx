@@ -698,7 +698,7 @@ class GeneralTab extends Component {
                                 <div className="form-group">
                                     <label>{translate('asset.general_information.handover_from_date')}&emsp; </label>
                                    < DatePicker
-                                    id={`start-date${assignedToUser}`}
+                                    id={`start-date${assignedToUser}-${assignedToOrganizationalUnit}`}
                                     value={status == "Đang sử dụng" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1].startDate) : ''}
                                     disabled
                                     />
@@ -708,7 +708,7 @@ class GeneralTab extends Component {
                                 <div className="form-group">
                                     <label>{translate('asset.general_information.handover_to_date')}&emsp; </label>
                                     < DatePicker
-                                    id={`end-date${assignedToUser}`}
+                                    id={`end-date${assignedToUser}-${assignedToOrganizationalUnit}`}
                                     value={status == "Đang sử dụng" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1].endDate) : ''}
                                     disabled
                                     />

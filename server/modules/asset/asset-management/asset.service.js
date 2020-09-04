@@ -443,6 +443,7 @@ exports.updateUsage = async (assetId, data) => {
     return await Asset.update({ _id: assetId, "usageLogs._id": data._id }, {
         $set: {
             "usageLogs.$.usedByUser": data.usedByUser,
+            "usageLogs.$.usedByOrganizationalUnit": data.usedByOrganizationalUnit,
             "usageLogs.$.description": data.description,
             "usageLogs.$.endDate": data.endDate,
             "usageLogs.$.startDate": data.startDate, 

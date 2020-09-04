@@ -139,6 +139,7 @@ class UsageLogTab extends Component {
         updateUsage = {
             _id: data._id,
             usedByUser: data.usedByUser,
+            usedByOrganizationalUnit: data.usedByOrganizationalUnit,
             description: data.description,
             endDate: data.endDate,
             startDate: data.startDate,
@@ -193,8 +194,8 @@ class UsageLogTab extends Component {
                 ...prevState,
                 id: nextProps.id,
                 usageLogs: nextProps.usageLogs,
-                // assignedToUser: nextProps.assignedToUser,
-                // assignedToOrganizationalUnit: nextProps.assignedToOrganizationalUnit,
+                assignedToUser: nextProps.assignedToUser,
+                assignedToOrganizationalUnit: nextProps.assignedToOrganizationalUnit,
             }
         } else {
             return null;
@@ -222,7 +223,14 @@ class UsageLogTab extends Component {
                         <div className="form-inline">
                             <div className="form-group">
                                 <label style={{ width: "auto" }} className="form-control-static"> Đối tượng đang sử dụng:</label>
-                                <div style={{ width: "auto" }} className="form-control-static">{ assignedToUser? userlist.filter(item => item._id === assignedToUser).pop() ? userlist.filter(item => item._id === assignedToUser).pop().name:"Chưa có đối tượng sử dụng": ''}</div>
+                                <div style={{ width: "auto" }} className="form-control-static">
+                                    { assignedToUser? 
+                                        userlist.filter(item => item._id === assignedToUser).pop() ? userlist.filter(item => item._id === assignedToUser).pop().name:"Chưa có đối tượng sử dụng": ''}
+                                    { assignedToUser && assignedToOrganizationalUnit && ' , ' }
+                                    { assignedToOrganizationalUnit ?
+                                        departmentlist.filter(item => item._id === assignedToOrganizationalUnit).pop() ? departmentlist.filter(item => item._id === assignedToOrganizationalUnit).pop().name:"Chưa có đối tượng sử dụng": ''}
+                                    { !assignedToUser && !assignedToOrganizationalUnit && 'Chưa có' }
+                                </div>
                             </div>
                             
                             { (assignedToUser || assignedToOrganizationalUnit) &&
@@ -278,6 +286,7 @@ class UsageLogTab extends Component {
                         _id={currentRow._id}
                         index={currentRow.index}
                         usedByUser={currentRow.usedByUser}
+                        usedByOrganizationalUnit={currentRow.usedByOrganizationalUnit}
                         startDate={currentRow.startDate}
                         endDate={currentRow.endDate}
                         description={currentRow.description}
