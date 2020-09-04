@@ -596,7 +596,7 @@ class DetailTaskTab extends Component {
         checkConfirmTask = this.checkConfirmTask(task);
         checkEvaluationTaskAction = this.checkEvaluationTaskAction(task);
         checkEvaluationTaskAndKpiLink = this.checkEvaluationTaskAndKpiLink(task);
-        checkDeadlineForEvaluation = this.checkDeadlineForEvaluation()
+        checkDeadlineForEvaluation = this.checkDeadlineForEvaluation(task)
         warning = (checkConfirmTask && checkConfirmTask.checkConfirm)
             || (checkEvaluationTaskAction && checkEvaluationTaskAction.checkEvaluationTaskAction)
             || (checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkEvaluationTask)
