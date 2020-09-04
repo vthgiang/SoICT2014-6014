@@ -503,7 +503,19 @@ class DetailTaskTab extends Component {
             timesheetLogs: results,
         }
 
-        // this.props.editHoursSpentInEvaluate(data, taskId);
+        await this.props.editHoursSpentInEvaluate(data, taskId);
+    }
+
+    convertTime = (duration) => {
+        let seconds = Math.floor((duration / 1000) % 60),
+            minutes = Math.floor((duration / (1000 * 60)) % 60),
+            hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+
+        hours = (hours < 10) ? "0" + hours : hours;
+        minutes = (minutes < 10) ? "0" + minutes : minutes;
+        seconds = (seconds < 10) ? "0" + seconds : seconds;
+
+        return hours + ":" + minutes + ":" + seconds;
     }
 
     render() {
@@ -916,6 +928,22 @@ class DetailTaskTab extends Component {
                                                             })
                                                         ) : <div><strong>{translate('task.task_management.detail_all_not_kpi')}</strong></div>
                                                     }
+
+                                                    {/* Thời gian bấm giờ */}
+                                                    {
+                                                        eva.results.length !== 0 &&
+                                                        <div>
+                                                            <div><strong>Thời gian bấm giờ</strong> (Giờ)</div>
+                                                            <ul>
+                                                                {(eva.results.length !== 0) ?
+                                                                    eva.results.map((res, index) => {
+                                                                        return <li key={index}>{res.employee.name}: &nbsp;&nbsp; {res.hoursSpent ? this.convertTime(res.hoursSpent) : 0}</li>
+                                                                    }) : <li>{translate('task.task_management.detail_not_eval')}</li>
+                                                                }
+                                                            </ul>
+                                                        </div>
+                                                    }
+
                                                 </div>
                                             );
                                         })

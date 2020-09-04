@@ -2137,6 +2137,8 @@ export default {
                 evaluate_task_success: 'Evaluate task success',
                 edit_task_fail: 'Edit task fail',
                 evaluate_task_fail: 'Evaluate task fail',
+                edit_hours_spent_in_evaluate_success: 'Calculate hours spent on task success',
+                edit_hours_spent_in_evaluate_fail: 'Calculate hours spent on task fail',
 
                 add_new_task: 'Add new task',
                 // add_err: 

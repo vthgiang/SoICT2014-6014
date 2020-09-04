@@ -546,17 +546,17 @@ function evaluateTaskByResponsibleEmployees(data, taskId) {
  */
 function editHoursSpentInEvaluate(data, taskId) {
     return dispatch => {
-        dispatch({ type: performTaskConstants.EVALUATE_TASK_BY_RESPONSIBLE_REQUEST, taskId });
+        dispatch({ type: performTaskConstants.EDIT_HOURS_SPENT_IN_EVALUATION_REQUEST, taskId });
         performTaskService.editHoursSpentInEvaluate(data, taskId)
             .then(res => {
                 dispatch({
-                    type: performTaskConstants.EVALUATE_TASK_BY_RESPONSIBLE_SUCCESS,
+                    type: performTaskConstants.EDIT_HOURS_SPENT_IN_EVALUATION_SUCCESS,
                     // payload: res.data.content.task
                     payload: res.data.content
                 });
             })
             .catch(error => {
-                dispatch({ type: performTaskConstants.EVALUATE_TASK_BY_RESPONSIBLE_FAILURE, error });
+                dispatch({ type: performTaskConstants.EDIT_HOURS_SPENT_IN_EVALUATION_FAILURE, error });
             });
     };
 }
