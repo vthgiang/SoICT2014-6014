@@ -3,8 +3,13 @@ import { withTranslate } from "react-redux-multilingual";
 import { connect } from 'react-redux';
 import { getStorage } from '../../../../config';
 import { DialogModal, SelectBox, ErrorLabel } from "../../../../common-components";
+
 import { UserActions } from "../../../super-admin/user/redux/actions";
 import { TaskProcessActions } from "../redux/actions";
+import { EditTaskTemplate } from "../../task-template/component/editTaskTemplate";
+import { TaskProcessValidator } from './taskProcessValidator';
+
+import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil'
 import customModule from './custom'
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
@@ -12,9 +17,6 @@ import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import './processDiagram.css'
 
-import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil'
-import { EditTaskTemplate } from "../../task-template/component/editTaskTemplate";
-import { TaskProcessValidator } from './taskProcessValidator';
 
 //Xóa element khỏi pallette theo data-action
 var _getPaletteEntries = PaletteProvider.prototype.getPaletteEntries;
@@ -28,6 +30,7 @@ PaletteProvider.prototype.getPaletteEntries = function (element) {
     return entries;
 }
 
+// zoom level mặc định dùng cho zoomin zoomout
 var zlevel = 1;
 class ModalEditTaskProcess extends Component {
 
@@ -38,7 +41,7 @@ class ModalEditTaskProcess extends Component {
             userId: getStorage("userId"),
             currentRole: getStorage('currentRole'),
             showInfo: false,
-            info: data.tasks, // TODO: đổi tên -> taskList
+            info: data.tasks,
             xmlDiagram: data.xmlDiagram,
             selectedEdit: 'info',
             zlevel: 1,
@@ -150,7 +153,8 @@ class ModalEditTaskProcess extends Component {
         return true;
     }
 
-    // hàm thay đổi thông tin của quy trình
+    // Các hàm thay đổi thông tin của quy trình
+    // Cập nhật tên quy trình
     handleChangeBpmnName = async (e) => {
         let { value } = e.target;
         await this.setState(state => {
@@ -162,6 +166,7 @@ class ModalEditTaskProcess extends Component {
         });
     }
 
+    // cập nhật mô tả quy trình
     handleChangeBpmnDescription = async (e) => {
         let { value } = e.target;
         await this.setState(state => {
@@ -173,6 +178,7 @@ class ModalEditTaskProcess extends Component {
         });
     }
 
+    // Cập nhật người được xem
     handleChangeViewer = async (value) => {
         await this.setState(state => {
 
@@ -185,6 +191,7 @@ class ModalEditTaskProcess extends Component {
 
     }
 
+    // Cập nhật người quản lý
     handleChangeManager = async (value) => {
         await this.setState(state => {
 
@@ -196,7 +203,6 @@ class ModalEditTaskProcess extends Component {
         })
     }
 
-
     // cập nhật thông tin của task element
     handleUpdateElement = (abc) => {
         const modeling = this.modeler.get('modeling');
@@ -205,6 +211,7 @@ class ModalEditTaskProcess extends Component {
             info: this.state.info,
         });
     }
+
     // Các hàm xử lý sự kiện của form 
     handleChangeContent = async (content) => {
         await this.setState(state => {
@@ -215,6 +222,7 @@ class ModalEditTaskProcess extends Component {
         })
     }
 
+    // cập nhật tên công việc trong quy trình
     handleChangeName = async (value) => {
         const modeling = this.modeler.get('modeling');
         let element1 = this.modeler.get('elementRegistry').get(this.state.id);
@@ -223,20 +231,7 @@ class ModalEditTaskProcess extends Component {
         });
     }
 
-    handleChangeDescription = async (value) => {
-        await this.setState(state => {
-            state.info[`${state.id}`] = {
-                ...state.info[`${state.id}`],
-                code: state.id,
-                description: value,
-            }
-            return {
-                ...state,
-            }
-        })
-        this.handleUpdateElement();
-    }
-
+    // Cập nhật người thực hiện công việc trong quy trình
     handleChangeResponsible = async (value) => {
         const modeling = this.modeler.get('modeling');
         let element1 = this.modeler.get('elementRegistry').get(this.state.id);
@@ -264,6 +259,7 @@ class ModalEditTaskProcess extends Component {
         }
     }
 
+    // Cập nhật người phê duyệt công việc trong quy trình
     handleChangeAccountable = async (value) => {
         const modeling = this.modeler.get('modeling');
         let element1 = this.modeler.get('elementRegistry').get(this.state.id);
@@ -288,34 +284,6 @@ class ModalEditTaskProcess extends Component {
                 accountableName: accountable
             });
         }
-    }
-
-    handleChangeOrganizationalUnit = async (value) => {
-        await this.setState(state => {
-            state.info[`${state.id}`] = {
-                ...state.info[`${state.id}`],
-                code: state.id,
-                organizationalUnit: value,
-            }
-            return {
-                ...state,
-            }
-        })
-        this.handleUpdateElement();
-    }
-
-    handleChangeTemplate = async (value) => {
-        await this.setState(state => {
-            state.info[`${state.id}`] = {
-                ...state.info[`${state.id}`],
-                code: state.id,
-                taskTemplate: value,
-            }
-            return {
-                ...state,
-            }
-        })
-        this.handleUpdateElement();
     }
 
     // Các hàm  xử lý sự kiện của bpmn
@@ -370,104 +338,7 @@ class ModalEditTaskProcess extends Component {
         var element = event.element;
     }
 
-    isFormValidate = () => {
-        let elementList = this.modeler.get('elementRegistry')._elements;
-        let check = true; // valid
-        let hasStart = false, hasEnd = false;
-        for (let i in elementList) {
-            let e = elementList[i].element;
-            if (e.type === "bpmn:StartEvent") {
-                hasStart = true;
-            }
-            else if (e.type === "bpmn:EndEvent") {
-                hasEnd = true;
-            }
-            else if (e.type === "bpmn:Task" || e.type === "bpmn:ExclusiveGateway") {
-                if (!e.businessObject.incoming) {
-                    check = false;
-                }
-                else if (e.businessObject.incoming.length === 0) {
-                    check = false;
-                }
-
-                if (!e.businessObject.outgoing) {
-                    check = false;
-                }
-                else if (e.businessObject.outgoing.length === 0) {
-                    check = false;
-                }
-            }
-        }
-        if (!hasStart || !hasEnd) {
-            check = false;
-        }
-        return check
-            && this.state.errorOnManager === undefined && this.state.errorOnProcessDescription === undefined
-            && this.state.errorOnProcessName === undefined && this.state.errorOnViewer === undefined;
-    }
-
-    save = async () => {
-        let elementList = this.modeler.get('elementRegistry')._elements;
-        let { info } = this.state;
-        let xmlStr;
-        this.modeler.saveXML({ format: true }, function (err, xml) {
-            xmlStr = xml;
-        });
-        await this.setState(state => {
-            for (let j in info) {
-                if (Object.keys(info[j]).length !== 0) {
-                    info[j].followingTasks = [];
-                    info[j].preceedingTasks = [];
-
-                    for (let i in elementList) {
-                        let elem = elementList[i].element;
-                        if (info[j].code === elem.id) {
-                            if (elem.businessObject.incoming) {
-                                let incoming = elem.businessObject.incoming;
-                                for (let x in incoming) {
-                                    info[j].preceedingTasks.push({ // các công việc trc công việc hiện tại
-                                        task: incoming[x].sourceRef.id,
-                                        link: incoming[x].name,
-                                    })
-                                }
-                            }
-                            if (elem.businessObject.outgoing) {
-                                let outgoing = elem.businessObject.outgoing;
-                                for (let y in outgoing) {
-                                    info[j].followingTasks.push({ // các công việc sau công việc hiện tại
-                                        task: outgoing[y].targetRef.id,
-                                        link: outgoing[y].name,
-                                    })
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            return {
-                ...state,
-                xmlDiagram: xmlStr,
-            }
-        })
-
-        console.log('info-edit', info);
-        let data = {
-            info: this.state.info,
-            xmlDiagram: this.state.xmlDiagram,
-            processName: this.state.processName,
-            processDescription: this.state.processDescription,
-            manager: this.state.manager,
-            viewer: this.state.viewer,
-            creator: getStorage("userId"),
-
-            userId: getStorage("userId"),
-            pageNumber: this.props.pageNumber,
-            noResultsPerPage: this.props.noResultsPerPage,
-            name: this.props.name,
-        }
-        this.props.editXmlDiagram(this.state.idProcess, data)
-    }
-
+    // hàm cập nhật màu sắc
     done = (e) => {
         e.preventDefault()
         let element1 = this.modeler.get('elementRegistry').get(this.state.id);
@@ -505,6 +376,8 @@ class ModalEditTaskProcess extends Component {
             })
         })
     }
+
+    // Các hàm cho nút export, import, download BPMN
     downloadAsSVG = () => {
         this.modeler.saveSVG({ format: true }, function (error, svg) {
             if (error) {
@@ -582,7 +455,26 @@ class ModalEditTaskProcess extends Component {
         });
     }
 
+    exportDiagram = () => {
+        let xmlStr;
+        this.modeler.saveXML({ format: true }, function (err, xml) {
+            if (err) {
+                console.log(err);
+            }
+            else {
+                console.log(xml);
+                xmlStr = xml;
+            }
+        });
+        this.setState(state => {
+            return {
+                ...state,
+                xmlDiagram: xmlStr,
+            }
+        })
+    }
 
+    // Hàm xử lý sự kiện zoomin, zoomout, zoomfit 
     handleZoomOut = async () => {
         let zstep = 0.2;
         let canvas = this.modeler.get('canvas');
@@ -624,25 +516,7 @@ class ModalEditTaskProcess extends Component {
         canvas.zoom(zlevel, 'auto');
     }
 
-    exportDiagram = () => {
-        let xmlStr;
-        this.modeler.saveXML({ format: true }, function (err, xml) {
-            if (err) {
-                console.log(err);
-            }
-            else {
-                console.log(xml);
-                xmlStr = xml;
-            }
-        });
-        this.setState(state => {
-            return {
-                ...state,
-                xmlDiagram: xmlStr,
-            }
-        })
-    }
-
+    // hàm cập nhật thông tin task trong quy trình
     handleChangeInfo = (value) => {
         let info = {
             ...value,
@@ -653,6 +527,106 @@ class ModalEditTaskProcess extends Component {
             state => {
                 state.info[`${state.id}`] = info
             })
+    }
+
+    // validate quy trình
+    isFormValidate = () => {
+        let elementList = this.modeler.get('elementRegistry')._elements;
+        let check = true; // valid
+        let hasStart = false, hasEnd = false;
+        for (let i in elementList) {
+            let e = elementList[i].element;
+            if (e.type === "bpmn:StartEvent") {
+                hasStart = true;
+            }
+            else if (e.type === "bpmn:EndEvent") {
+                hasEnd = true;
+            }
+            else if (e.type === "bpmn:Task" || e.type === "bpmn:ExclusiveGateway") {
+                if (!e.businessObject.incoming) {
+                    check = false;
+                }
+                else if (e.businessObject.incoming.length === 0) {
+                    check = false;
+                }
+
+                if (!e.businessObject.outgoing) {
+                    check = false;
+                }
+                else if (e.businessObject.outgoing.length === 0) {
+                    check = false;
+                }
+            }
+        }
+        if (!hasStart || !hasEnd) {
+            check = false;
+        }
+        return check
+            && this.state.errorOnManager === undefined && this.state.errorOnProcessDescription === undefined
+            && this.state.errorOnProcessName === undefined && this.state.errorOnViewer === undefined;
+    }
+
+    // hàm lưu
+    save = async () => {
+        let elementList = this.modeler.get('elementRegistry')._elements;
+        let { info } = this.state;
+        let xmlStr;
+        this.modeler.saveXML({ format: true }, function (err, xml) {
+            xmlStr = xml;
+        });
+        await this.setState(state => {
+            for (let j in info) {
+                if (Object.keys(info[j]).length !== 0) {
+                    info[j].followingTasks = [];
+                    info[j].preceedingTasks = [];
+
+                    for (let i in elementList) {
+                        let elem = elementList[i].element;
+                        if (info[j].code === elem.id) {
+                            if (elem.businessObject.incoming) {
+                                let incoming = elem.businessObject.incoming;
+                                for (let x in incoming) {
+                                    info[j].preceedingTasks.push({ // các công việc trc công việc hiện tại
+                                        task: incoming[x].sourceRef.id,
+                                        link: incoming[x].name,
+                                    })
+                                }
+                            }
+                            if (elem.businessObject.outgoing) {
+                                let outgoing = elem.businessObject.outgoing;
+                                for (let y in outgoing) {
+                                    info[j].followingTasks.push({ // các công việc sau công việc hiện tại
+                                        task: outgoing[y].targetRef.id,
+                                        link: outgoing[y].name,
+                                    })
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return {
+                ...state,
+                xmlDiagram: xmlStr,
+            }
+        })
+
+        console.log('info-edit', info);
+        let data = {
+            info: this.state.info,
+            xmlDiagram: this.state.xmlDiagram,
+            processName: this.state.processName,
+            processDescription: this.state.processDescription,
+            manager: this.state.manager,
+            viewer: this.state.viewer,
+            creator: getStorage("userId"),
+
+            userId: getStorage("userId"),
+            pageNumber: this.props.pageNumber,
+            noResultsPerPage: this.props.noResultsPerPage,
+            name: this.props.name,
+        }
+        this.props.editXmlDiagram(this.state.idProcess, data)
     }
 
     render() {
@@ -679,13 +653,17 @@ class ModalEditTaskProcess extends Component {
 
                         <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none", marginBottom: 0 }}>
                             <ul className="nav nav-tabs">
+                                {/* Nút tab Thông tin quy trình */}
                                 <li className="active"><a href="#info-edit" onClick={() => this.handleChangeContent("info")} data-toggle="tab">Thông tin quy trình</a></li>
+                                {/* Nút tab quy trình - công việc */}
                                 <li><a href="#process-edit" onClick={() => this.handleChangeContent("process")} data-toggle="tab">Quy trình công việc</a></li>
                             </ul>
                             <div className="tab-content">
+                                {/* Tab thôn tin quy trình */}
                                 <div className={selectedEdit === "info" ? "active tab-pane" : "tab-pane"} id="info-edit">
                                     <div className='row'>
                                         <div className='col-md-6'>
+                                            {/* Tên quy trình */}
                                             <div className={`form-group ${this.state.errorOnProcessName === undefined ? "" : "has-error"}`}>
                                                 <label className={`control-label`}>Tên quy trình</label>
                                                 <input type="text"
@@ -695,6 +673,8 @@ class ModalEditTaskProcess extends Component {
                                                 />
                                                 <ErrorLabel content={this.state.errorOnProcessName} />
                                             </div>
+
+                                            {/* Người xem quy trình */}
                                             <div className={`form-group ${this.state.errorOnViewer === undefined ? "" : "has-error"}`}>
                                                 <label className="control-label">Người được phép xem</label>
                                                 {
@@ -710,6 +690,8 @@ class ModalEditTaskProcess extends Component {
                                                 }
                                                 <ErrorLabel content={this.state.errorOnViewer} />
                                             </div>
+
+                                            {/* Người quản lý quy trình */}
                                             <div className={`form-group ${this.state.errorOnManager === undefined ? "" : "has-error"}`}>
                                                 <label className="control-label" >Người quản lý quy trình</label>
                                                 {
@@ -726,7 +708,9 @@ class ModalEditTaskProcess extends Component {
                                                 <ErrorLabel content={this.state.errorOnManager} />
                                             </div>
                                         </div>
+
                                         <div className='col-md-6'>
+                                            {/* Mô tả quy trình */}
                                             <div className={`form-group ${this.state.errorOnProcessDescription === undefined ? "" : "has-error"}`}>
                                                 <label className="control-label">Mô tả quy trình</label>
                                                 <textarea type="text" rows={8}
@@ -740,18 +724,25 @@ class ModalEditTaskProcess extends Component {
                                     </div>
                                 </div>
                             </div>
+
+                            {/* Tab quy trình - công việc */}
                             <div className="tab-content" style={{ padding: 0, marginTop: -15 }}>
                                 <div className={selectedEdit === "process" ? "active tab-pane" : "tab-pane"} id="process-edit">
                                     <div className="row">
                                         {/* Quy trình công việc */}
                                         <div className={`contain-border ${showInfo ? 'col-md-8' : 'col-md-12'}`}>
+                                            {/* nút export, import, download diagram,... */}
                                             <div className="tool-bar-xml" style={{ /*position: "absolute", right: 5, top: 5*/ }}>
                                                 <button onClick={this.exportDiagram}>Export XML</button>
                                                 <button onClick={this.downloadAsSVG}>Save SVG</button>
                                                 <button onClick={this.downloadAsImage}>Save Image</button>
                                                 <button onClick={this.downloadAsBpmn}>Download BPMN</button>
                                             </div>
+
+                                            {/* vẽ Diagram */}
                                             <div id={this.generateId}></div>
+
+                                            {/* nút Zoom in zoom out */}
                                             <div className="row">
                                                 <div className="io-zoom-controls">
                                                     <ul className="io-zoom-reset io-control io-control-list">
@@ -774,13 +765,15 @@ class ModalEditTaskProcess extends Component {
                                                 </div>
                                             </div>
                                         </div>
+
+                                        {/* Thông tin công việc trong quy trình */}
                                         <div className={`right-content ${showInfo ? 'col-md-4' : undefined}`}>
                                             {
                                                 (showInfo) &&
                                                 <div>
-                                                    <div>
+                                                    {/* <div>
                                                         <h2>Option {name}</h2>
-                                                    </div>
+                                                    </div> */}
 
                                                     <EditTaskTemplate
                                                         isProcess={true}

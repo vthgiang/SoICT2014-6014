@@ -25,7 +25,7 @@ const initState = {
     isLoading: true,
 }
 
-export function crmCustomer(state = initState, action) {
+export function customer(state = initState, action) {
     var index = -1;
     var indexPaginate = -1;
 

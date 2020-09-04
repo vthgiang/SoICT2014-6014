@@ -311,7 +311,7 @@ class ModalDetailKPIPersonal extends Component {
 
 
                                     <h4>{translate('kpi.evaluation.employee_evaluation.task_list')}</h4>
-                                    <DataTableSetting class="pull-right" tableId="employeeKpiEvaluate" tableContainerId="tree-table-container" tableWidth="1300px"
+                                    <DataTableSetting className="pull-right" tableId="employeeKpiEvaluate" tableContainerId="tree-table-container" tableWidth="1300px"
                                         columnArr={[
                                             translate('kpi.evaluation.employee_evaluation.index'),
                                             translate('task.task_management.name'),

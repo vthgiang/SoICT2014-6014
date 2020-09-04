@@ -287,7 +287,7 @@ class EmployeeKpiApproveModal extends Component {
                                     <th>{translate('kpi.evaluation.employee_evaluation.result')}</th>
                                     <th className="col-fixed" style={{ width: 130 }}>
                                         {translate('kpi.evaluation.employee_evaluation.action')}
-                                        <DataTableSetting class="pull-right" tableId="kpi-approve-table"
+                                        <DataTableSetting className="pull-right" tableId="kpi-approve-table"
                                             columnArr={[
                                                 'STT',
                                                 'Tên mục tiêu'

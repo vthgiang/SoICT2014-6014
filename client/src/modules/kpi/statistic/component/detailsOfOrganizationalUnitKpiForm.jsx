@@ -35,8 +35,8 @@ class DetailsOfOrganizationalUnitKpiForm extends Component {
         return (
             <div id="details-of-organizational-unit-kpi-form">
                 <fieldset className="scheduler-border qlcv">
-                    <legend class="scheduler-border">
-                        <h4 class="box-title">Thông tin chi tiết</h4>
+                    <legend className="scheduler-border">
+                        <h4 className="box-title">Thông tin chi tiết</h4>
                     </legend>
 
                     <div className="row">

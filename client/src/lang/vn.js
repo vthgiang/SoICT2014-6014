@@ -399,6 +399,7 @@ export default {
             add_version: 'Thêm phiên bản mới',
             upload_file: 'File tài liệu',
             upload_file_scan: 'File scan tài liệu',
+            choose_file: 'Chọn file',
             download: 'Tải xuống',
             no_version: 'Không có phiên bản nào khác',
             no_blank_description: 'Mô tả không được để trống',
@@ -495,6 +496,54 @@ export default {
                 }
             },
             user: {
+
+            },
+        },
+
+        crm: {
+            customer: {
+                name: 'Tên khách hàng',
+                code: 'Mã khách hàng',
+                phone: 'Số điện thoại',
+                group: 'Nhóm khách hàng',
+                address: 'Địa chỉ',
+                email: 'Email',
+                location: 'Khu vực',
+                birth: 'Ngày sinh',
+                gender: 'Giới tính',
+                liability: 'Công nợ',
+                tax: 'Mã số thuế',
+                document: 'Giấy tờ',
+                description: 'Mô tả',
+                carier: 'Nhân viên chăm sóc phụ trách',
+                discount: 'Chiết khấu áp dụng', by_group: 'Theo nhóm khách hàng', by_customer: 'Theo khách hàng',
+                payment: 'Hình thức thanh toán',
+
+                info: 'Thông tin chung',
+                contact: 'Thông tin liên hệ',
+                advance: 'Thông tin khác',
+
+                add: 'Thêm mới khách hàng',
+                see: 'Xem thông tin khách hàng',
+                edit: 'Chỉnh sửa thông tin khách hàng',
+                delete: 'Xóa thông tin khách hàng',
+            },
+            group: {
+                name: 'Tên nhóm khách hàng',
+                code: 'Mã nhóm khách hàng',
+                description: 'Mô tả nhóm khách hàng',
+
+                add: 'Thêm mới nhóm khách hàng',
+                edit: 'Chỉnh sửa thông tin nhóm khách hàng',
+                delete: 'Xóa thông tin nhóm khách hàng',
+            },
+            lead: {
+
+            },
+            care: {
+
+            },
+            statistic: {
 
             },
         },
@@ -2149,6 +2198,8 @@ export default {
                 evaluate_task_success: 'Đánh giá công việc thành công',
                 edit_task_fail: 'Chỉnh sửa công việc thất bại',
                 evaluate_task_fail: 'Đánh giá công việc thất bại',
+                edit_hours_spent_in_evaluate_success: 'Tính thời gian trong lần đánh giá thành công',
+                edit_hours_spent_in_evaluate_fail: 'Tính thời gian trong lần đánh giá thất bại',
 
                 add_new_task: 'Thêm công việc mới',
                 // add_err: 
@@ -2229,10 +2280,16 @@ export default {
                 delete: "Xóa",
 
                 notice_end_task: 'Bạn có chắc chắn muốn kết thúc công việc này',
-                notice_change_status_task: 'Bạn có chắc chắn muốn đổi trạng thái của công việc này',
+                notice_change_activate_task: 'Bạn có chắc chắn muốn kích hoạt công việc này',
+                activated_task_list: 'Các công việc đã kích hoạt',
+                activated_all: 'Đã kích hoạt hết các công việc phía sau',
                 choose_following_task: 'Chọn công việc thực hiện tiếp theo',
                 task_link_of_process: 'Đường liên kết',
                 not_have_following: 'Không có công việc kế tiếp',
+
+                is_task_process: 'Đây là công việc theo quy trình',
+                activated_task: "Kích hoạt",
+                following_task: "các công việc phía sau",
 
 
                 // TODO: code_mesage_task_perform

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import { SelectBox } from '../../index';
 
 class SearchBar extends Component {
     constructor(props) {
@@ -21,12 +22,11 @@ class SearchBar extends Component {
         }
     }
 
-    handleChangeOption = async (e) => {
-        const {value} = e.target;
+    handleChangeOption = async (value) => {
         await this.setState(state => {
             return {
                 ...state,
-                option: value
+                option: value[0]
             }
         })
         await this.props.setOption("option", this.state.option);
@@ -48,7 +48,7 @@ class SearchBar extends Component {
     } 
 
     render() { 
-        const { columns, translate, option } = this.props;
+        const { columns, translate, option, id='search-bar' } = this.props;
         
         return ( 
             <React.Fragment>
@@ -56,15 +56,16 @@ class SearchBar extends Component {
                     <div className="form-inline">
                         <div className="form-group">
                             <label>{translate('form.property')}</label>
-                            <select
-                                className="form-control"
-                                value={ option } 
+                            <SelectBox
+                                id={id}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={
+                                    columns !== undefined ? columns.map( column => { return { value: column.value, text: column.title} }) : []
+                                }
                                 onChange={this.handleChangeOption}
-                            >
-                            {
-                                columns !== undefined && columns.map( column => <option key={column.value} value={column.value}>{column.title}</option>)
-                            }
-                            </select>
+                                multiple={false}
+                            />
                         </div>
                     </div>
                     <div className="form-inline">

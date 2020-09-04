@@ -398,6 +398,7 @@ export default {
             add_version: 'Add document version',
             upload_file: 'Upload file',
             upload_file_scan: 'Upload file scan',
+            choose_file: 'Choose file',
             download: 'Download',
             no_version: 'Not have different version',
             no_blank_description: "Description should'n empty",
@@ -494,6 +495,33 @@ export default {
                 }
             },
             user: {
+
+            },
+        },
+
+        crm: {
+            customer: {
+                name: 'Customer',
+                code: 'Code',
+                phone: 'Phone number',
+                address: 'Address',
+                email: 'Email',
+                location: 'Location',
+                birth: 'Birth',
+                gender: 'Gender',
+                liability: 'Liability',
+                document: 'Document',
+            },
+            group: {
+
+            },
+            lead: {
+
+            },
+            care: {
+
+            },
+            statistic: {
 
             },
         },
@@ -2145,6 +2173,8 @@ export default {
                 evaluate_task_success: 'Evaluate task success',
                 edit_task_fail: 'Edit task fail',
                 evaluate_task_fail: 'Evaluate task fail',
+                edit_hours_spent_in_evaluate_success: 'Calculate hours spent on task success',
+                edit_hours_spent_in_evaluate_fail: 'Calculate hours spent on task fail',
 
                 add_new_task: 'Add new task',
                 // add_err: 
@@ -2221,10 +2251,16 @@ export default {
                 delete: "Delete",
 
                 notice_end_task: 'Are you sure to finish this task',
-                notice_change_status_task: 'Are you sure to change status of this task',
+                notice_change_activate_task: 'Are you sure to change activated of this task',
+                activated_task_list: 'Activated tasks',
+                activated_all: 'Activated all following tasks',
                 choose_following_task: 'Choose the next task to be executed',
                 task_link_of_process: 'Link',
                 not_have_following: 'Not have following task',
+
+                is_task_process: 'This is a task of process',
+                activated_task: "Activate",
+                following_task: "the following tasks",
 
                 // TODO: code_mesage_task_perform
                 create_result_task_success: 'Evaluate task successfully',
