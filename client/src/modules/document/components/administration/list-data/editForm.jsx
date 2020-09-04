@@ -569,9 +569,6 @@ class EditForm extends Component {
         }
     }
 
-
-
-
     addNewVersion = id => {
         const {
             documentVersionName,
@@ -785,12 +782,22 @@ class EditForm extends Component {
                                                     </div>
                                                     <div className="form-group">
                                                         <label>{translate('document.upload_file')}</label>
-                                                        <input type="file" onChange={this.handleUploadFile} />
+                                                        <br />
+                                                        <div className="upload btn btn-primary">
+                                                            <i className="fa fa-folder"></i>
+                                                            {" " + translate('document.choose_file')}
+                                                            <input className="upload" type="file" name="file" onChange={this.handleUploadFile} />
+                                                        </div>
                                                         <ErrorLabel content={errorDocumentFile} />
                                                     </div>
                                                     <div className="form-group">
                                                         <label>{translate('document.upload_file_scan')}</label>
-                                                        <input type="file" onChange={this.handleUploadFileScan} />
+                                                        <br />
+                                                        <div className="upload btn btn-primary">
+                                                            <i className="fa fa-folder"></i>
+                                                            {" " + translate('document.choose_file')}
+                                                            <input className="upload" type="file" name="file" onChange={this.handleUploadFileScan} />
+                                                        </div>
                                                         <ErrorLabel content={errorDocumentFileScan} />
                                                     </div>
                                                     <div className="form-group">
