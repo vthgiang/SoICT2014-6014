@@ -36,7 +36,7 @@ class PurchaseColumnChart extends Component {
     }
 
     setDataColumnChart = () => {
-        const { listAssets, translate } = this.props;
+        const { listAssets, translate, getPurchaseData } = this.props;
         let { purchaseDateAfter, purchaseDateBefore } = this.state;
 
         let startDate = new Date(purchaseDateAfter);
@@ -94,6 +94,10 @@ class PurchaseColumnChart extends Component {
             yValues: arr
         };
 
+        if (getPurchaseData && listAssets) {
+            getPurchaseData(dataColumnChart);
+        }
+        
         return dataColumnChart;
     }
 

@@ -8,8 +8,14 @@ import { StautsChart } from './stautsChart';
 import { CostChart } from './costChart';
 
 class AssetStatistics extends Component {
+
     constructor(props) {
         super(props);
+
+        this.EXPORT_DATA = {
+            assetStatusData: null,
+            assetCostData: null
+        }
         this.state = {
             listAssets: null,
         }
@@ -32,6 +38,17 @@ class AssetStatistics extends Component {
         });
     }
 
+    getAssetStatusData = (assetStatusData) => {
+        this.EXPORT_DATA.assetStatusData = assetStatusData;
+
+        this.props.setAssetStatisticsExportData(this.EXPORT_DATA.assetStatusData, this.EXPORT_DATA.assetCostData)
+    }
+
+    getAssetCostData = (assetCostData) => {
+        this.EXPORT_DATA.assetCostData = assetCostData;
+
+        this.props.setAssetStatisticsExportData(this.EXPORT_DATA.assetStatusData, this.EXPORT_DATA.assetCostData)
+    }
 
     render() {
         const { translate } = this.props;
@@ -43,13 +60,14 @@ class AssetStatistics extends Component {
                     <div className="row">
                         {/* Biểu thống kê tài sản theo trạng thái */}
                         <div className="col-6 col-xs-6">
-                            <div className="box box-primary">
-                                <div className="box-header with-border">
+                            <div className="box box-solid">
+                                <div className="box-header">
                                     <div className="box-title">{translate('asset.dashboard.status_chart')}</div>
                                 </div>
                                 <div className="box-body qlcv">
                                     <StautsChart
                                         listAssets={listAssets}
+                                        getAssetStatusData={this.getAssetStatusData}
                                     />
                                 </div>
                             </div>
@@ -57,13 +75,14 @@ class AssetStatistics extends Component {
 
                         {/* Biểu thống kê tài sản theo giá trị */}
                         <div className="col-6 col-xs-6">
-                            <div className="box box-primary">
-                                <div className="box-header with-border">
+                            <div className="box box-solid">
+                                <div className="box-header">
                                     <div className="box-title">{translate('asset.dashboard.cost_chart')}</div>
                                 </div>
                                 <div className="box-body qlcv">
                                     <CostChart
                                         listAssets={listAssets}
+                                        getAssetCostData={this.getAssetCostData}
                                     />
                                 </div>
                             </div>

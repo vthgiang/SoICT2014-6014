@@ -1006,7 +1006,7 @@ exports.editDocument = async (req, res) => {
         await LogError(req.user.email, `delete document of task  `, req.user.company);
         res.status(400).json({
             success: false,
-            messages: ['edit_document_task_comment_fail'],
+            messages: ['edit_document_task_comment_failure'],
             content: error
         })
     }

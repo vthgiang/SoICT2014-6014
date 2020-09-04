@@ -272,6 +272,13 @@ export function user(state = initState, action) {
             };
 
         case UserConstants.GETDEPARTMENT_OFUSER_SUCCESS:
+            if(action.payload.departmentsByEmail){
+                return {
+                    ...state,
+                    organizationalUnitsOfUserByEmail: action.payload.departmentsByEmail,
+                    isLoading: false
+                };
+            };
             return {
                 ...state,
                 organizationalUnitsOfUser: action.payload,

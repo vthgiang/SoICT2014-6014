@@ -85,7 +85,8 @@ class AssetEditForm extends Component {
             ...this.state,
             usageLogs: data.usageLogs,
             assignedToUser: data.assignedToUser,
-            assignedToOrganizationalUnit: data.assignedToOrganizationalUnit
+            assignedToOrganizationalUnit: data.assignedToOrganizationalUnit,
+            status: "Đang sử dụng"
         })
 
     }
@@ -124,6 +125,7 @@ class AssetEditForm extends Component {
         await this.setState({
             assignedToUser: data.assignedToUser,
             assignedToOrganizationalUnit: data.assignedToOrganizationalUnit,
+            status: "Sẵn sàng sử dụng",
         })
     }
 

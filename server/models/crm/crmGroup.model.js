@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
-const CustomerGroupSchema = new Schema({
+const CrmGroupSchema = new Schema({
     name: {
         type: String,
         required: true
@@ -30,6 +30,6 @@ const CustomerGroupSchema = new Schema({
     toJSON: { virtuals: true }
 });
 
-CustomerGroupSchema.plugin(mongoosePaginate);
+CrmGroupSchema.plugin(mongoosePaginate);
 
-module.exports = CustomerGroup = mongoose.model("customer_groups", CustomerGroupSchema);
+module.exports = CrmGroup = mongoose.model("crm_groups", CrmGroupSchema);

@@ -9,8 +9,6 @@ const User = require('../../../models/auth/user.model');
 const fs = require('fs');
 const moment = require("moment");
 
-const TaskManagementService = require('../task-management/task.service');
-
 /**
  * Lấy mẫu công việc theo Id
  */
@@ -26,7 +24,7 @@ exports.getTaskById = async (id, userId) => {
         { path: "parent", select: "name" },
         { path: "taskTemplate", select: "formula" },
         { path: "organizationalUnit", model: OrganizationalUnit },
-        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
+        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id active" },
         { path: "evaluations.results.employee", select: "name email _id" },
         { path: "evaluations.results.organizationalUnit", select: "name _id" },
         { path: "evaluations.results.kpis" },
@@ -2703,8 +2701,8 @@ exports.confirmTask = async (taskId, userId) => {
     let confirmedByEmployee = await Task.findByIdAndUpdate(taskId,
         { $push: { confirmedByEmployees: userId } }
     )
-
-    let task = await TaskManagementService.getTaskById(taskId, userId);
+    
+    let task = await this.getTaskById(taskId, userId);
     return task;
 }
 
@@ -2729,7 +2727,7 @@ exports.editTaskInformation = async (taskId, userId, taskInformations) => {
         }
     }
 
-    let task = await TaskManagementService.getTaskById(taskId, userId);
+    let task = await this.getTaskById(taskId, userId);
     return task;
 }
 

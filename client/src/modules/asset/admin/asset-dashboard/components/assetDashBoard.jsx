@@ -25,7 +25,15 @@ class DashBoardAssets extends Component {
             recommendProcure: [],
             recommendDistribute: [],
 
-            currentTab: "assetByGroup"
+            currentTab: "assetByGroup",
+
+            exportData: {
+                assetByGroup: null,
+                assetByType: null,
+                assetStatistics: null,
+                purchaseDisposal: null,
+                assetIsExpired: null
+            }
         }
     }
 
@@ -107,6 +115,28 @@ class DashBoardAssets extends Component {
         })
 
         forceCheckOrVisible(true, false);
+    }
+
+     // Function format dữ liệu Date thành string
+     formatDate(date, monthYear = false) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2) {
+            month = '0' + month;
+        }
+
+        if (day.length < 2) {
+            day = '0' + day;
+        }
+
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else {
+            return [day, month, year].join('-');
+        }
     }
 
     setAssetByGroupExportData = (amountOfAsset, depreciationOfAsset, valueOfAsset) => {
@@ -210,11 +240,226 @@ class DashBoardAssets extends Component {
         })
     }
 
+    setAssetIsExpiredExportData = (data, assetTypeList, userList, dayAvailable) => {
+        let exportData, assetIsExpired;
+
+        if (data && data.length !== 0 && assetTypeList && userList) {
+            exportData = data.map((item, index) => {
+                let asset = item.asset;
+                if (asset) {
+                    return {
+                        STT: index + 1,
+                        code: asset.code,
+                        name: asset.assetName,
+                        type: assetTypeList.find(item => item._id === asset.assetType) ? assetTypeList.find(item => item._id === asset.assetType).typeName : 'Asset is deleted',
+                        purchaseDate: this.formatDate(asset.purchaseDate),
+                        manager: userList.find(item => item._id === asset.managedBy) ? userList.find(item => item._id === asset.managedBy).name : 'User is deleted',
+                        user: asset.assignedToUser ? (userList.length !== 0 && userList.find(item => item._id === asset.assignedToUser) ? userList.find(item => item._id === asset.assignedToUser).name : 'User is deleted') : '',
+                        organizaitonalUnit: asset.assignedToOrganizationalUnit ? asset.assignedToOrganizationalUnit : '',
+                        status: asset.status,
+                        dayAvailable: item.day + (dayAvailable ? " ngày" : "")
+                    }
+                }
+               
+            })
+        }
+        
+        assetIsExpired = {
+            fileName: "Thống kê hạn sử dụng tài sản",
+            dataSheets: [
+                {
+                    sheetName: "Sheet1",
+                    tables: [
+                        {
+                            tableName: "Thống kê hạn sử dụng tài sản",
+                            rowHeader: 1,
+                            columns: [
+                                { key: "STT", value: "STT" },
+                                { key: "code", value: "Mã tài sản" },
+                                { key: "name", value: "Tên tài sản" },
+                                { key: "type", value: "Loại tài sản" },
+                                { key: "purchaseDate", value: "Ngày nhập" },
+                                { key: "manager", value: "Người quản lý" },
+                                { key: "user", value: "Người sử dụng" },
+                                { key: "organizaitonalUnit", value: "Đơn vị sử dụng" },
+                                { key: "status", value: "Trạng thái" },
+                                { key: "dayAvailable", value: "Thời gian còn lại"}
+                            ],
+                            data: exportData
+                        },
+                    ]
+                },
+            ]
+        }
+
+        this.setState(state => {
+            return {
+                ...state,
+                exportData: {
+                    ...state.exportData,
+                    assetIsExpired: assetIsExpired
+                }
+            }
+        })
+    }
+
+    setPurchaseAndDisposalExportData = (purchaseData, disposalData) => {
+        let purchaseExportData, disposalExportData, purchaseDisposal;
+
+        if (purchaseData && purchaseData.category && purchaseData.category.length !== 0
+            && purchaseData.count && purchaseData.count.length !== 0
+            && purchaseData.value && purchaseData.value.length !== 0
+        ) {
+            purchaseExportData = purchaseData.category.map((purchase, index) => {
+                if (index !== 0) {
+                    return {
+                        month: purchase,
+                        value: purchaseData.value[index],
+                        amount: purchaseData.count[index]
+                    }
+                } else {
+                    return purchase;
+                }
+            })
+        }
+        
+        
+        if (disposalData && disposalData.category && disposalData.category.length !== 0
+            && disposalData.count && disposalData.count.length !== 0
+            && disposalData.value && disposalData.value.length !== 0
+        ) {
+            disposalExportData = disposalData.category.map((disposal, index) => {
+                if (index !== 0) {
+                    return {
+                        month: disposal,
+                        value: disposalData.value[index],
+                        amount: disposalData.count[index]
+                    }
+                } else {
+                    return disposal;
+                }
+            })
+        }
+
+        if (purchaseExportData) {
+            purchaseExportData.shift();
+        }
+        if (disposalExportData) {
+            disposalExportData.shift();
+        }
+
+        purchaseDisposal = {
+            fileName: "Thống kê mua-bán tài sản",
+            dataSheets: [
+                {
+                    sheetName: "Sheet1",
+                    tables: [
+                        {
+                            tableName: "Thống kê mua sắm tài sản",
+                            rowHeader: 1,
+                            columns: [
+                                { key: "month", value: "Tháng" },
+                                { key: "value", value: "Giá trị" },
+                                { key: "amount", value: "Số lượng" }
+                            ],
+                            data: purchaseExportData
+                        },
+                        {
+                            tableName: "Thống kê thanh lý tài sản",
+                            rowHeader: 1,
+                            columns: [
+                                { key: "month", value: "Tháng" },
+                                { key: "value", value: "Giá trị" },
+                                { key: "amount", value: "Số lượng" }
+                            ],
+                            data: disposalExportData
+                        },
+                    ]
+                },
+            ]
+        }
+
+        this.setState(state => {
+            return {
+                ...state,
+                exportData: {
+                    ...state.exportData,
+                    purchaseDisposal: purchaseDisposal
+                }
+            }
+        })
+    }
+
+    setAssetStatisticsExportData = (assetStatusData, assetCostData) => {
+        let assetStatusExportData, assetCostExportData, assetStatistics;
+
+        if (assetStatusData && assetStatusData.length !== 0) {
+            assetStatusExportData = assetStatusData.map((status, index) => {
+                return {
+                    STT: index + 1,
+                    status: status[0],
+                    amount: status[1]
+                }
+            })
+        }
+        
+        
+        if (assetCostData && assetCostData.length !== 0) {
+            assetCostExportData = assetCostData.map((cost, index) => {
+                return {
+                    STT: index + 1,
+                    cost: cost[0],
+                    amount: cost[1]
+                }
+            })
+        }
+
+        assetStatistics = {
+            fileName: "Thống kê tài sản",
+            dataSheets: [
+                {
+                    sheetName: "Sheet1",
+                    tables: [
+                        {
+                            tableName: "Thống kê tài sản theo trạng thái",
+                            rowHeader: 1,
+                            columns: [
+                                { key: "STT", value: "STT" },
+                                { key: "status", value: "Trạng thái" },
+                                { key: "amount", value: "Số lượng" }
+                            ],
+                            data: assetStatusExportData
+                        },
+                        {
+                            tableName: "Thống kê tài sản theo giá trị",
+                            rowHeader: 1,
+                            columns: [
+                                { key: "STT", value: "STT" },
+                                { key: "cost", value: "Giá trị" },
+                                { key: "amount", value: "Số lượng" }
+                            ],
+                            data: assetCostExportData
+                        },
+                    ]
+                },
+            ]
+        }
+
+        this.setState(state => {
+            return {
+                ...state,
+                exportData: {
+                    ...state.exportData,
+                    assetStatistics: assetStatistics
+                }
+            }
+        })
+    }
+
     render() {
         const { translate } = this.props;
         const { listAssets, recommendProcure, recommendDistribute, exportData, currentTab } = this.state;
        
-        console.log("6666", exportData)
         return (
             <div className="qlcv">
                 <div className="row" style={{ marginTop: 10 }}>
@@ -284,7 +529,7 @@ class DashBoardAssets extends Component {
                     <ul className="nav nav-tabs">
                         <li className="active"><a href="#administration-asset-by-group" data-toggle="tab" onClick={() => this.handleNavTabs("assetByGroup")}>{translate('asset.dashboard.asset_by_group')}</a></li>
                         <li><a href="#administration-asset-by-type" data-toggle="tab" onClick={() => this.handleNavTabs("assetByType")}>{translate('asset.dashboard.asset_by_type')}</a></li>
-                        <li><a href="#administration-asset-statistics" data-toggle="tab" onClick={() => this.handleNavTabs("assetStatistics")}>Thống kê tài sản</a></li>
+                        <li><a href="#administration-asset-statistics" data-toggle="tab" onClick={() => this.handleNavTabs("assetStatistics")}>Thống kê theo trạng thái và giá trị</a></li>
                         <li><a href="#administration-purchase-disposal" data-toggle="tab" onClick={() => this.handleNavTabs("purchaseDisposal")}>{translate('asset.dashboard.asset_purchase_and_dispose')}</a></li>
                         <li><a href="#administration-asset-is-expired" data-toggle="tab" onClick={() => this.handleNavTabs("assetIsExpired")}>Hạn sử dụng tài sản</a> </li>
                         {exportData && currentTab && exportData[currentTab] && <ExportExcel type="link" style={{ padding: "15px" }} id="export-asset-dashboard" exportData={exportData[currentTab]} />}
@@ -318,7 +563,9 @@ class DashBoardAssets extends Component {
                             <LazyLoadComponent
                                 key="AdministrationPurchaseAndDisposal"
                             >
-                                < PurchaseAndDisposal />
+                                <PurchaseAndDisposal
+                                    setPurchaseAndDisposalExportData={this.setPurchaseAndDisposalExportData}
+                                />
                             </LazyLoadComponent>
                         </div>
 
@@ -327,7 +574,9 @@ class DashBoardAssets extends Component {
                             <LazyLoadComponent
                                 key="AdministrationAssetStatistics"
                             >
-                                <AssetStatistics />
+                                <AssetStatistics
+                                    setAssetStatisticsExportData={this.setAssetStatisticsExportData}
+                                />
                             </LazyLoadComponent>
                         </div>
 
@@ -336,12 +585,11 @@ class DashBoardAssets extends Component {
                             <LazyLoadComponent
                                 key="AdministrationAssetExpired"
                             >
-                                <AssetIsExpired />
+                                <AssetIsExpired 
+                                    setAssetIsExpiredExportData={this.setAssetIsExpiredExportData}
+                                />
                             </LazyLoadComponent>
                         </div>
-
-
-
                     </div>
                 </div>
             </div>

@@ -165,6 +165,27 @@ exports.getOrganizationalUnitsOfUser = async (userId) => {
 }
 
 /**
+ * Lấy thông tin đơn vị của user theo email
+ * @email email của user
+ */
+exports.getOrganizationalUnitsOfUserByEmail = async (email) => {
+    let userId = await User.findOne({ email: email }, { _id: 1 });
+    if(userId){
+        const roles = await UserRole.find({ userId: userId._id });
+        const newRoles = roles.map(role => role.roleId.toString());
+        const departments = await OrganizationalUnit.find({
+            $or: [
+                { 'deans': { $in: newRoles } },
+                { 'viceDeans': { $in: newRoles } },
+                { 'employees': { $in: newRoles } }
+            ]
+        });
+        return { departmentsByEmail: departments };
+    }
+    return { departmentsByEmail: [] };
+}
+
+/**
  * Lấy thông tin đơn vị mà user làm trưởng
  * @userId id của user
  */

@@ -49,7 +49,7 @@ class DetailTaskTab extends Component {
 
             currentMonth: currentYear + '-' + (currentMonth + 1),
             nextMonth: (currentMonth > 10) ? ((currentYear + 1) + '-' + (currentMonth - 10)) : (currentYear + '-' + (currentMonth + 2)),
-            dueForEvaluationOfTask: currentYear + '-' + currentMonth + '-' + 7
+            dueForEvaluationOfTask: currentYear + '-' + (currentMonth + 1) + '-' + 7
         }
 
     }
@@ -203,7 +203,7 @@ class DetailTaskTab extends Component {
             }
             else {
                 Swal.fire({
-                    title: "Bạn có chắc chắn muốn kết thúc công việc",
+                    title: this.props.translate('task.task_perform.notice_end_task'),
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
@@ -219,7 +219,7 @@ class DetailTaskTab extends Component {
         }
         else {
             Swal.fire({
-                title: "Bạn có chắc chắn muốn kết thúc công việc",
+                title: this.props.translate('task.task_perform.notice_end_task'),
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -316,7 +316,8 @@ class DetailTaskTab extends Component {
         if (listEmployeeNotConfirm.length !== 0) {
             checkConfirmOtherUser = true;
         }
-
+        listEmployeeNotConfirm = listEmployeeNotConfirm.filter(item => item.active);
+        
         return {
             listEmployeeNotConfirm: listEmployeeNotConfirm,
             checkConfirmCurrentUser: checkConfirmCurrentUser,
@@ -424,6 +425,7 @@ class DetailTaskTab extends Component {
         listEmployeeNotKpiLink = idArray.map(item => {
             return listEmployeeNotKpiLink[item]
         })
+        listEmployeeNotKpiLink = listEmployeeNotKpiLink.filter(item => item.active);
 
         return {
             checkEvaluationTask: checkEvaluationTask,
@@ -437,7 +439,7 @@ class DetailTaskTab extends Component {
 
         let checkDeadlineForEvaluation = false, deadlineForEvaluation;
         let currentDate = new Date();
-
+        
         // Check số ngày đến hạn đánh giá
         deadlineForEvaluation = ((new Date(dueForEvaluationOfTask)).getTime() - currentDate.getTime()) / (3600 * 24 * 1000);
         if (deadlineForEvaluation > 0) {
@@ -679,17 +681,17 @@ class DetailTaskTab extends Component {
                         {/** Nhắc nhở */}
                         {
                             task && warning
-                            && <div className="description-box" style={{ border: "3px double #f38961" }}>
-                                <h4>Cảnh báo</h4>
+                            && <div className="description-box" style={{ border: "3px double #e8cbcb" }}>
+                                <h4>{translate('task.task_management.warning')}</h4>
                                 {/** Xác nhận công việc */}
                                 {
                                     checkConfirmTask && checkConfirmTask.checkConfirmCurrentUser
-                                    && <div><strong>Bạn cần <a style={{ cursor: "pointer" }} onClick={() => this.confirmTask(task)}>xác nhận tham gia công việc này</a></strong></div>
+                                    && <div><strong>{translate('task.task_management.you_need')} <a style={{ cursor: "pointer" }} onClick={() => this.confirmTask(task)}>{translate('task.task_management.confirm_task')}</a></strong></div>
                                 }
                                 {
                                     checkConfirmTask && checkConfirmTask.checkConfirmOtherUser
                                     && <div>
-                                        <strong>Chưa xác nhận công việc: </strong>
+                                        <strong>{translate('task.task_management.not_confirm')}: </strong>
                                         &nbsp;&nbsp;
                                         {
                                             checkConfirmTask.listEmployeeNotConfirm.length !== 0
@@ -703,23 +705,15 @@ class DetailTaskTab extends Component {
 
                                 {/** Chưa có đánh giá */}
                                 {
-                                    checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkEvaluationTask
-                                    && <div><strong>Công việc chưa có đánh giá cho tháng này</strong></div>
-                                }
-
-                                {/** Chưa đánh giá hoạt động */}
-                                {
-                                    checkEvaluationTaskAction && checkEvaluationTaskAction.checkEvaluationTaskAction
-                                    && <div>
-                                        <strong>Còn <span style={{ color: "red" }}>{checkEvaluationTaskAction.numberOfTaskActionNotEvaluate}</span> hoạt động chưa được đánh giá tháng này</strong>
-                                    </div>
+                                    task.status === "Inprocess" && checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkEvaluationTask
+                                    && <div><strong>{translate('task.task_management.not_have_evaluation')}</strong></div>
                                 }
 
                                 {/** Chưa liên kết KPI */}
                                 {
-                                    checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkKpiLink
+                                    task.status === "Inprocess" && checkEvaluationTaskAndKpiLink && !checkEvaluationTaskAndKpiLink.checkEvaluationTask && checkEvaluationTaskAndKpiLink.checkKpiLink
                                     && <div>
-                                        <strong>Chưa liên kết KPI tháng này</strong>
+                                        <strong>{translate('task.task_management.detail_not_kpi')}: </strong>
                                         &nbsp;&nbsp;
                                         {
                                             checkEvaluationTaskAndKpiLink.listEmployeeNotKpiLink.length !== 0
@@ -731,11 +725,19 @@ class DetailTaskTab extends Component {
                                     </div>
                                 }
 
+                                {/** Chưa đánh giá hoạt động */}
+                                {
+                                    checkEvaluationTaskAction && checkEvaluationTaskAction.checkEvaluationTaskAction
+                                    && <div>
+                                        <strong>{translate('task.task_management.action_not_rating')}:&nbsp;&nbsp; <span style={{ color: "red" }}>{checkEvaluationTaskAction.numberOfTaskActionNotEvaluate}</span></strong>
+                                    </div>
+                                }
+
                                 {/** Thời hạn chỉnh sửa thông tin */}
                                 {
                                     checkDeadlineForEvaluation && checkDeadlineForEvaluation.checkDeadlineForEvaluation
                                     && <div>
-                                        <strong> Còn <span style={{ color: "red" }}>{checkDeadlineForEvaluation.deadlineForEvaluation}</span> là hết hạn chỉnh sửa đánh giá công việc tháng trước</strong>
+                                        <strong>{translate('task.task_management.left_can_edit_task')}:&nbsp;&nbsp; <span style={{ color: "red" }}>{checkDeadlineForEvaluation.deadlineForEvaluation}</span></strong>
                                     </div>
                                 }
                             </div>

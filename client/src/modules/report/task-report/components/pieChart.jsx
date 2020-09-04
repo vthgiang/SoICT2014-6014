@@ -74,7 +74,7 @@ class PieChart extends Component {
                 {
                     <div className="box box-primary">
                         <div className="box-header with-border">
-                            <h3 className="box-title">{namePieChart}</h3>
+                            <h4 className="box-title">{namePieChart}</h4>
                         </div>
                         <div className="box-body dashboard_box_body">
                             <div ref="pieChart"></div>
