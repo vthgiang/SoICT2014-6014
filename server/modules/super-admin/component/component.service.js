@@ -63,7 +63,7 @@ exports.getComponent = async (id) => {
         .findById(id)
         .populate([
             { path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role } },
-            { path: 'link', model: Link },
+            { path: 'links', model: Link },
         ]);
 }
 
@@ -94,7 +94,10 @@ exports.createComponent = async(data) => {
 exports.editComponent = async(id, data) => {
     let component = await Component
         .findById(id)
-        .populate({ path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role } });
+        .populate([
+            { path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role } },
+            { path: 'links', model: Link },
+        ]);
 
     component.name = data.name;
     component.link = data.link;

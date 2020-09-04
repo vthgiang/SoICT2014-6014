@@ -98,8 +98,8 @@ class IncomingDataTab extends Component {
                                                         document.files
                                                         && document.files.length !== 0
                                                         && document.files.map(file =>
-                                                            <li style={{ listStyle: "none" }}>
-                                                                <strong>{file.name}</strong><span> - <a>{file.url}</a></span>
+                                                            <li style={{ listStyle: "none", wordWrap: "break-word" }}>
+                                                                <strong>{file.name} </strong><span><a>{file.url}</a></span>
                                                             </li>
                                                         )
                                                     }

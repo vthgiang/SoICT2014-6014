@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { setStorage, getStorage } from '../../../../config';
-import { AuthActions } from '../../../../modules/auth/redux/actions';
+import { setStorage, getStorage } from '../../../config';
+import { AuthActions } from '../../../modules/auth/redux/actions';
 
 class Roles extends Component {
     constructor(props) {
@@ -35,13 +35,12 @@ class Roles extends Component {
         const { auth } = this.props;
         const { currentRole } = this.state;
         return (
-            <form className="navbar-form navbar-left" role="search">
-                <div className="form-group">
+            <li>
                 {
                     auth.user.roles && auth.user.roles.length > 0 &&
                     <select
                         className="form-control"
-                        // style={{ marginTop: '9px' }}
+                        style={{ marginTop: '9px' }}
                         onChange={this.selectRole}
                         name="currentRole"
                         defaultValue={currentRole}>
@@ -56,8 +55,7 @@ class Roles extends Component {
                         }
                     </select>
                 }
-                </div>
-            </form>
+            </li>
         );
     }
 }

@@ -1,11 +1,11 @@
 const CustomerService = require('./customer.service');
 const { LogInfo, LogError } = require(SERVER_LOGS_DIR);
 
-exports.getCustomers = async(req, res, next) => {
+exports.getCustomers = async(req, res) => {
     try {
         const customers = await CustomerService.getCustomers(req.query);
 
-        LogInfo(req.user.email, 'GET_CUSTOMERS', req.user.company);
+        // LogInfo(req.user.email, 'GET_CUSTOMERS', req.user.company);
         res.status(200).json({
             success: true,
             messages: ['get_customers_success'],
@@ -13,7 +13,7 @@ exports.getCustomers = async(req, res, next) => {
         });
     } catch (error) {
 
-        LogError(req.user.email, 'GET_CUSTOMERS', req.user.company);
+        // LogError(req.user.email, 'GET_CUSTOMERS', req.user.company);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['get_customers_faile'],

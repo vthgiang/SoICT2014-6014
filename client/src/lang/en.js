@@ -498,6 +498,33 @@ export default {
             },
         },
 
+        crm: {
+            customer: {
+                name: 'Customer',
+                code: 'Code',
+                phone: 'Phone number',
+                address: 'Address',
+                email: 'Email',
+                location: 'Location',
+                birth: 'Birth',
+                gender: 'Gender',
+                liability: 'Liability',
+                document: 'Document',
+            },
+            group: {
+
+            },
+            lead: {
+
+            },
+            care: {
+
+            },
+            statistic: {
+
+            },
+        },
+
         not_found: {
             title: 'Not found this page',
             content: 'System cannot search this page for you',
@@ -635,9 +662,9 @@ export default {
             manage_employee: 'Manage Staffs',
             manage_training: 'Manage Training',
             account: 'Account',
-            work_plan: 'Work plan',
-            manage_unit: 'Manage units',
-            manage_holiday: 'Manage work plan',
+            annual_leave_personal: 'Annual Leave',
+            manage_unit: 'Manage Units',
+            manage_holiday: 'Manage Work Plan',
             add_employee: 'Add New Staffs',
             list_employee: 'Manage Staffs Information',
             detail_employee: 'Personal Information',
@@ -852,6 +879,7 @@ export default {
             add_success: 'Add new success',
             all_unit: 'Select all unit',
             non_unit: 'Select unit',
+            non_staff: 'Select staff',
             all_position: 'Select all position',
             non_position: 'Select position',
             all_status: 'Select all status',
@@ -1417,9 +1445,9 @@ export default {
                 add_employee_unit: 'Add staff',
             },
 
-            // Kế hoạch làm việc
-            work_plan: {
-                list_work_plane: 'Work schedule list',
+            // Nghỉ phép
+            annual_leave_personal: {
+                list_annual_leave: 'Regulations on corporate leave',
                 inform_annual_leave: 'Information on personal leave',
                 note: 'Note',
                 day: 'days',
@@ -2104,7 +2132,7 @@ export default {
                 btn_save_eval: 'Save evaluation',
                 btn_get_info: 'Get infomation task',
                 note_not_eval: 'You can no longer edit reviews because it is more than 7 days after the last review.',
-                note_eval: 'Number of days left to edit review: ',
+                note_eval: 'Number of days left to edit review',
 
                 add_eval_of_this_month: 'Add evaluation of this month',
                 eval_of: 'Evaluation of',
@@ -2174,10 +2202,9 @@ export default {
                 not_confirm: 'Not confirm this task',
 
                 left_task_expired: 'left is task expired',
-                left_can_edit_task: 'remaining is task evaluation editing expiration',
                 action_not_rating: 'actions not rating this month',
 
-                have: 'have',
+                left_can_edit_task: 'Remaining time to edit task evaluation of previous month',
             },
             task_perform: {
                 actions: "Actions",
@@ -2262,6 +2289,8 @@ export default {
                 delete_file_task_comment_success: "Delete file of task comment",
                 create_task_log_success: " Create task log success",
                 get_task_log_success: "get_task_log_success",
+                edit_task_information_success: "Edit information successfully",
+                edit_document_task_comment_success: "Edit document successfully",
 
                 create_result_task_fail: "Can't evaluate task",
                 edit_result_task_fail: "Can't edit result task",
@@ -2298,6 +2327,8 @@ export default {
                 delete_file_task_comment_fail: "Delete file of task comment fail",
                 create_task_log_fail: "Create task log fail",
                 get_task_log_fail: "get_task_log_fail",
+                edit_task_information_failure: "Edit information unsuccessfully",
+                edit_document_task_comment_failure: "Edit document unsuccessfully",
 
                 // error label
                 err_require: 'Field is required',
@@ -2443,7 +2474,8 @@ export default {
                         // Nhóm dành cho các handle
                         handle_edit_kpi: {
                             approving: 'KPI is being approved, you can not edit it. If you want to modify, please contact your manager!',
-                            activated: 'KPI has been activated, you can not edit. If you want to modify, please contact your manager!'
+                            activated: 'KPI has been activated, you can not edit. If you want to modify, please contact your manager!',
+                            finished: 'KPI has been finished, you can not edit!'
                         },
                         delete_kpi: {
                             kpi: 'Are you sure you want to delete this KPI?',
@@ -2485,13 +2517,6 @@ export default {
                         weight: 'Weight',
 
                         // Nhóm dành cho validate
-                        validate_name: {
-                            empty: 'Target name cannot be empty',
-                            less_than_4: 'Target name cannot be less than 4 characters',
-                            more_than_50: 'Target name cannot be more than 50 characters',
-                            special_character: 'Target name cannot contain special characters'
-                        },
-                        validate_criteria: 'Criteria cannot be empty',
                         validate_weight: {
                             empty: 'Weight cannot be empty',
                             less_than_0: 'Weight cannot be less than 0',

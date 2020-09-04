@@ -504,8 +504,8 @@ exports.getAllUsersWithRole = async () => {
 
 /**
  * Lấy thông tin user theo email
- * @param {*} email 
- * @param {*} company 
+ * @param {*} email : email user
+ * @param {*} company : Id công ty
  */
 exports.getUserInformByEmail = async (email,company)=>{
     let user = await User.findOne({

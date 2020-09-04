@@ -187,18 +187,18 @@ class AnnualLeaveApplicationForm extends Component {
 
         return (
             <React.Fragment>
-                <ButtonModal modalID="modal-aplication-annual-leave" button_name={translate('human_resource.work_plan.create_annual_leave')} />
+                <ButtonModal modalID="modal-aplication-annual-leave" button_name={translate('human_resource.annual_leave_personal.create_annual_leave')} />
                 <DialogModal
                     size='50' modalID="modal-aplication-annual-leave" isLoading={employeesManager.isLoading}
                     formID="form-aplication-annual-leave"
-                    title={translate('human_resource.work_plan.create_annual_leave')}
+                    title={translate('human_resource.annual_leave_personal.create_annual_leave')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
                     <form className="form-group" id="form-aplication-annual-leave">
                         {/* Người nhận */}
                         <div className={`form-group ${errorOnReceiver && "has-error"}`}>
-                            <label>{translate('human_resource.work_plan.receiver')}<span className="text-red">*</span></label>
+                            <label>{translate('human_resource.annual_leave_personal.receiver')}<span className="text-red">*</span></label>
                             <SelectBox
                                 id={`application-receiver`}
                                 className="form-control select2"

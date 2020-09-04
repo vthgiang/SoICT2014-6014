@@ -14,20 +14,19 @@ class CrmCustomerEdit extends Component {
     }
 
     render() {
-        const { translate } = this.props;
-        const { customer, customerGroup } = this.props;
+        const { translate, crm } = this.props;
         const { id, name, code, phone, email, group, sale} = this.state;
 
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID="modal-edit-customer" isLoading={customer.isLoading}
-                    formID="form-edit-customer"
+                    modalID="modal-crm-customer-edit" isLoading={crm.customer.isLoading}
+                    formID="form-crm-customer-edit"
                     title="Chỉnh sửa thông tin khách hàng"
                     func={this.save}
                 >
                     {/* Form thêm khách hàng mới */}
-                    <form id="form-edit-customer">
+                    <form id="form-crm-customer-edit">
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">Thông tin chung</legend>
                             <div className="row">
@@ -46,17 +45,17 @@ class CrmCustomerEdit extends Component {
                                     </div>
                                     <div className="form-group">
                                         <label>Nhóm khách hàng</label>
-                                        <SelectBox
+                                        {/* <SelectBox
                                             id={`select-customer-group-${id}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={
-                                                customerGroup.list.map(g => { return { value: g._id, text: g.name} })
+                                                []
                                             }
                                             value={[group]}
                                             onChange={this.handleParents}
                                             multiple={false}
-                                        />
+                                        /> */}
                                     </div>
                                 </div>
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
@@ -243,8 +242,8 @@ class CrmCustomerEdit extends Component {
 }
 
 function mapStateToProps(state) {
-    const { customer, customerGroup } = state;
-    return { customer, customerGroup };
+    const { crm } = state;
+    return { crm };
 }
 
 const mapDispatchToProps = {

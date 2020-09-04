@@ -271,20 +271,29 @@ class CreateEmployeeKpiSet extends Component {
     }
 
     /**Xóa tập KPI cá nhân này */
-    handleDeleteEmployeeKpi = (employeeKpiSetStatus, id, employeeKpiSet) => {
+    handleDeleteEmployeeKpi = (employeeKpiSetId, employeeKpiSetStatus, employeeKpiId, employeeKpiStatus) => {
         if (employeeKpiSetStatus === 0) {
-            Swal.fire({
-                title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.delete_kpi.kpi_target'),
-                type: 'success',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
-            }).then((res) => {
-                if (res.value) {
-                    this.props.deleteEmployeeKpi(id, employeeKpiSet);
-                }
-            });
+            if (employeeKpiStatus === 1) {
+                Swal.fire({
+                    title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.delete_kpi.activated'),
+                    type: 'warning',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
+                })
+            } else {
+                Swal.fire({
+                    title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.delete_kpi.kpi_target'),
+                    type: 'success',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
+                }).then((res) => {
+                    if (res.value) {
+                        this.props.deleteEmployeeKpi(employeeKpiId, employeeKpiSetId);
+                    }
+                });
+            }
         } else if (employeeKpiSetStatus === 1) {
             Swal.fire({
                 title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.delete_kpi.approving'),
@@ -303,11 +312,35 @@ class CreateEmployeeKpiSet extends Component {
 
     }
 
-/**thay đổi thời gian của tậpKPI này */
-    handleEditEmployeeKpi = async (employeeKpiStatus, target) => {
-        if (employeeKpiStatus === 0) {
-            window.$(`#editEmployeeKpi${target._id}`).modal("show");
-        } else if (employeeKpiStatus === 1) {
+    /**thay đổi thời gian của tậpKPI này */
+    handleEditEmployeeKpi = async (employeeKpiSetStatus, id, employeeKpi) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                id: id,
+                employeeKpi: employeeKpi
+            }
+        })
+
+        if (employeeKpiSetStatus === 0) {
+            if (employeeKpi.status === 1) {
+                Swal.fire({
+                    title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.edit_target.activated'),
+                    type: 'warning',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
+                })
+            } else if (employeeKpi.status === 2) {
+                Swal.fire({
+                    title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.edit_target.finished'),
+                    type: 'warning',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
+                })
+            } else {
+                window.$(`#editEmployeeKpi${id}`).modal("show");
+            }
+        } else if (employeeKpiSetStatus === 1) {
             Swal.fire({
                 title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.edit_target.approving'),
                 type: 'warning',
@@ -399,8 +432,8 @@ class CreateEmployeeKpiSet extends Component {
 
 
     render() {
-        let unitList, currentUnit, currentKPI, currentKPIUnit, userdepartments, items;
-        const { editing, editingTarget } = this.state;
+        let unitList, currentUnit, currentKPI, currentKPIUnit, userdepartments;
+        const { editing, id, employeeKpi } = this.state;
         const { createEmployeeKpiSet, user, translate, createKpiUnit } = this.props;
 
         if (user.organizationalUnitsOfUser) {
@@ -440,7 +473,11 @@ class CreateEmployeeKpiSet extends Component {
             <div className="box">
                 <div className="box-body">
                     <div className="row">
-
+                        <ModalEditEmployeeKpi
+                            id={id}
+                            employeeKpi={employeeKpi}
+                        />
+                    
                         {/**Khi đã khởi tạo tập KPI */}
                         {currentKPI ?
                             <div className="col-xs-12 col-sm-12">
@@ -581,20 +618,20 @@ class CreateEmployeeKpiSet extends Component {
                                                                     <a
                                                                         style={{ color: "#FFC107", fontSize: "16px" }}
                                                                         title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.action_title.edit')}
+                                                                        data-target={`editEmployeeKpi${item._id}`}
                                                                         data-toggle="modal"
                                                                         data-backdrop="static"
                                                                         data-keyboard="false"
-                                                                        onClick={this.checkOrganizationalUnitKpi(currentKPIUnit) ? () => this.handleEditEmployeeKpi(currentKPI.status, item) : () => this.handleStartOrganizationalUnitKpi(currentKPIUnit)}>
+                                                                        onClick={this.checkOrganizationalUnitKpi(currentKPIUnit) ? () => this.handleEditEmployeeKpi(currentKPI.status, item._id, item) : () => this.handleStartOrganizationalUnitKpi(currentKPIUnit)}>
                                                                         <i className="fa fa-edit"></i>
                                                                     </a>
-                                                                    <ModalEditEmployeeKpi target={item}/>
                                                                     
                                                                     {item.type !== 0 ?
                                                                         <a className="copy" title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.action_title.content')}><i className="material-icons">notification_important</i></a>
                                                                         : <a
                                                                             style={{ color: "#E34724", fontSize: "16px" }}
                                                                             title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.action_title.delete')}
-                                                                            onClick={this.checkOrganizationalUnitKpi(currentKPIUnit) ? () => this.handleDeleteEmployeeKpi(currentKPI.status, item._id, currentKPI._id) : () => this.handleStartOrganizationalUnitKpi(currentKPIUnit)}>
+                                                                            onClick={this.checkOrganizationalUnitKpi(currentKPIUnit) ? () => this.handleDeleteEmployeeKpi(currentKPI._id, currentKPI.status, item._id, item.status) : () => this.handleStartOrganizationalUnitKpi(currentKPIUnit)}>
                                                                             <i className="fa fa-trash"></i>
                                                                         </a>
                                                                     }

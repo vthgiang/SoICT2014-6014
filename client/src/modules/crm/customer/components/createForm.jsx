@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, SelectBox, DatePicker } from '../../../../common-components';
-import { CustomerActions } from '../redux/actions';
+import { CrmCustomerActions } from '../redux/actions';
 import moment from 'moment';
 
 class CrmCustomerCreate extends Component {
@@ -15,44 +15,44 @@ class CrmCustomerCreate extends Component {
     }
 
     render() {
-        const { translate } = this.props;
-        const {customer, customerGroup} = this.props;
+        const { translate, crm } = this.props;
         const {sale} = this.state;
 
         return (
             <React.Fragment>
+                <ButtonModal button_name={translate('general.add')} modalID={"modal-crm-customer-create"} title={translate('crm.customer.add')}/>
                 <DialogModal
-                    modalID="modal-create-customer" isLoading={customer.isLoading}
-                    formID="form-create-customer"
-                    title="Thêm mới khách hàng"
+                    modalID="modal-crm-customer-create" isLoading={crm.customer.isLoading}
+                    formID="form-crm-customer-create"
+                    title={translate("crm.customer.add")}
                     func={this.save}
                 >
                     {/* Form thêm khách hàng mới */}
-                    <form id="form-create-role">
+                    <form id="form-crm-customer-create">
                         <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">Thông tin chung</legend>
+                            <legend className="scheduler-border">{translate('crm.customer.info')}</legend>
                             <div className="row">
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <div className="form-group">
-                                        <label>Tên khách hàng<span className="attention"> * </span></label>
+                                        <label>{translate('crm.customer.name')}<span className="attention"> * </span></label>
                                         <input type="text" className="form-control" onChange={this.handleName} />
                                     </div>
                                     <div className="form-group">
-                                        <label>Mã khách hàng<span className="attention"> * </span></label>
+                                        <label>{translate('crm.customer.code')}<span className="attention"> * </span></label>
                                         <input type="text" className="form-control" onChange={this.handleCode} />
                                     </div>
                                     <div className="form-group">
-                                        <label>Số điện thoại<span className="attention"> * </span></label>
+                                        <label>{translate('crm.customer.phone')}<span className="attention"> * </span></label>
                                         <input type="text" className="form-control" onChange={this.handlePhone} />
                                     </div>
                                     <div className="form-group">
-                                        <label>Nhóm khách hàng</label>
+                                        <label>{translate('crm.customer.group')}</label>
                                         <SelectBox
                                             id="select-customer-group"
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={
-                                                customerGroup.list.map(g => { return { value: g._id, text: g.name} })
+                                                [].map(g => { return { value: g._id, text: g.name} })
                                             }
                                             onChange={this.handleGroup}
                                             multiple={false}
@@ -61,11 +61,11 @@ class CrmCustomerCreate extends Component {
                                 </div>
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <div className="form-group">
-                                        <label>Email</label>
+                                        <label>{translate('crm.customer.email')}</label>
                                         <input type="text" className="form-control" onChange={this.handleEmail} />
                                     </div>
                                     <div className="form-group">
-                                        <label>Ngày sinh</label>
+                                        <label>{translate('crm.customer.birth')}</label>
                                         <DatePicker
                                             id="create-customer-birth"
                                             value={this.state.customerBirth}
@@ -73,7 +73,7 @@ class CrmCustomerCreate extends Component {
                                         />
                                     </div>
                                     <div className="form-group">
-                                        <label>Giới tính</label>
+                                        <label>{translate('crm.customer.gender')}</label>
                                         <SelectBox
                                             id="select-customer-gender"
                                             className="form-control select2"
@@ -88,24 +88,24 @@ class CrmCustomerCreate extends Component {
                                         />
                                     </div>
                                     <div className="form-group">
-                                        <label>Mã số thuế</label>
+                                        <label>{translate('crm.customer.tax')}</label>
                                         <input type="text" className="form-control" onChange={this.handleTax} />
                                     </div>
                                 </div>
                             </div>
                         </fieldset>
                         <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">Thông tin liên hệ</legend>
+                            <legend className="scheduler-border">{translate('crm.customer.contact')}</legend>
                             <div className="row">
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <div className="form-group">
-                                        <label>Địa chỉ</label>
+                                        <label>{translate('crm.customer.address')}</label>
                                         <input type="text" className="form-control" onChange={this.handleAddress} />
                                     </div>
                                 </div>
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <div className="form-group">
-                                        <label>Khu vực</label>
+                                        <label>{translate('crm.customer.location')}</label>
                                         <SelectBox
                                             id="select-customer-location"
                                             className="form-control select2"
@@ -125,36 +125,36 @@ class CrmCustomerCreate extends Component {
                             </div>
                         </fieldset>
                         <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">Thông tin khác</legend>
+                            <legend className="scheduler-border">{translate('crm.customer.advance')}</legend>
                             <div className="form-group">
-                                <label>Nhân viên chăm sóc</label>
+                                <label>{translate('crm.customer.carier')}</label>
                                 <input type="text" className="form-control" onChange={this.handleCaregiver} />
                             </div>
                             <div className="form-group">
-                                <label>Mô tả</label>
+                                <label>{translate('crm.customer.description')}</label>
                                 <input type="text" className="form-control" onChange={this.hanldeDescription} />
                             </div>
                             <div className="form-group">
-                                <label>Ưu đãi áp dụng</label><br/>
+                                <label>{translate('crm.customer.discount')}</label><br/>
                                 <div style={{padding: '10px', backgroundColor: '#F1F1F1', marginBottom: '5px'}}>
                                     <div className="radio-inline">
                                         <span>
                                             <input type="radio" name={`sale-group`} value="group" onChange={this.hanldeSaleGroup}
-                                                checked={sale === "group" ? true : false} />Theo nhóm khách hàng</span>
+                                                checked={sale === "group" ? true : false} />{translate('crm.customer.by_group')}</span>
                                     </div>
                                     <div className="radio-inline">
                                         <span>
                                             <input type="radio" name={`sale-customer`} value="customer" onChange={this.hanldeSaleCustomer}
-                                                checked={sale !== "group" ? true : false} />Theo khách hàng</span>
+                                                checked={sale !== "group" ? true : false} />{translate('crm.customer.by_customer')}</span>
                                     </div>
                                 </div>
                                 <div id="create-sale-customer-option" style={{display: 'none'}}>
                                     <div className="form-group">
-                                        <label>Chiết khấu (%)</label>
+                                        <label>(%)</label>
                                         <input type="number" className="form-control" onChange={this.handleDiscount} />
                                     </div>
                                     <div className="form-group">
-                                        <label>Hình thức thanh toán</label>
+                                        <label>{translate('crm.customer.payment')}</label>
                                         <SelectBox
                                             id={`select-customer-sale-create`}
                                             className="form-control select2"
@@ -270,12 +270,12 @@ class CrmCustomerCreate extends Component {
 }
 
 function mapStateToProps(state) {
-    const { customer, customerGroup } = state;
-    return { customer, customerGroup };
+    const { crm } = state;
+    return { crm };
 }
 
 const mapDispatchToProps = {
-    create: CustomerActions.createCustomer
+    createCustomer: CrmCustomerActions.createCustomer
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CrmCustomerCreate));

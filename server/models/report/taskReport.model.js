@@ -83,7 +83,7 @@ const TaskReportSchema = new Schema({
             type: Number
         }
     }],
-    dataForAxisXInChart: [{
+    dataForAxisXInChart: [{// Chiều dữ liệu đưa vào biểu đồ
         id: {
             type: Number
         },

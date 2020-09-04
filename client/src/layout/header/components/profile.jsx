@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { AuthActions } from '../../../../modules/auth/redux/actions';
+import { AuthActions } from '../../../modules/auth/redux/actions';
 
 class Profile extends Component {
     constructor(props) {

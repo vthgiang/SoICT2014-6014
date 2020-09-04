@@ -65,7 +65,6 @@ class SuperHome extends Component {
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
-        console.log('should home', nextState, nextProps);
         if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
             if (!nextProps.tasks.responsibleTasks || !nextProps.tasks.accountableTasks || !nextProps.tasks.consultedTasks || !nextProps.tasks.informedTasks || !nextProps.tasks.creatorTasks || !nextProps.tasks.tasksbyuser) {
                 return false;
@@ -153,7 +152,6 @@ class SuperHome extends Component {
     }
 
     render() {
-        console.log('render home');
         const { tasks, translate } = this.props;
         const { startMonth, endMonth, willUpdate, callAction } = this.state;
 
