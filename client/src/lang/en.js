@@ -398,6 +398,7 @@ export default {
             add_version: 'Add document version',
             upload_file: 'Upload file',
             upload_file_scan: 'Upload file scan',
+            choose_file: 'Choose file',
             download: 'Download',
             no_version: 'Not have different version',
             no_blank_description: "Description should'n empty",

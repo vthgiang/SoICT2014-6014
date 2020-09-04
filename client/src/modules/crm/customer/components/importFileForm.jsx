@@ -15,8 +15,8 @@ class CrmCustomerImportFile extends Component {
 
     render() {
         const { translate } = this.props;
-        const {customer} = this.props;
-        const {nameError} = this.state;
+        const { customer } = this.props;
+        const { nameError } = this.state;
 
         return (
             <React.Fragment>
@@ -41,7 +41,7 @@ class CrmCustomerImportFile extends Component {
                             </ul>
                         </div>
                         <div className="form-group">
-                            <input type="file" className="form-control"/><br />
+                            <input type="file" className="form-control" /><br />
                         </div>
                     </form>
                 </DialogModal>
@@ -51,7 +51,7 @@ class CrmCustomerImportFile extends Component {
     }
 
     componentDidMount() {
-   
+
     }
 
     // Xy ly va validate role name
