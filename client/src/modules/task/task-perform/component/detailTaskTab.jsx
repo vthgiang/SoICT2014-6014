@@ -197,41 +197,8 @@ class DetailTaskTab extends Component {
                 showEndTask: id,
             }
         });
-        if (codeInProcess) {
-            if (typeOfTask === "Gateway") {
-                window.$(`#modal-select-following-task`).modal('show');
-            }
-            else {
-                Swal.fire({
-                    title: this.props.translate('task.task_perform.notice_end_task'),
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    cancelButtonText: this.props.translate('general.no'),
-                    confirmButtonText: this.props.translate('general.yes'),
-                }).then((result) => {
-                    if (result.value) {
-                        this.props.editStatusTask(id, status, typeOfTask)
-                    }
-                })
-            }
-        }
-        else {
-            Swal.fire({
-                title: this.props.translate('task.task_perform.notice_end_task'),
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                cancelButtonText: this.props.translate('general.no'),
-                confirmButtonText: this.props.translate('general.yes'),
-            }).then((result) => {
-                if (result.value) {
-                    this.props.editStatusTask(id, status, false)
-                }
-            })
-        }
+
+        window.$(`#modal-select-following-task`).modal('show');
     }
 
     handleShowEvaluate = async (id, role) => {
@@ -317,7 +284,7 @@ class DetailTaskTab extends Component {
             checkConfirmOtherUser = true;
         }
         listEmployeeNotConfirm = listEmployeeNotConfirm.filter(item => item.active);
-        
+
         return {
             listEmployeeNotConfirm: listEmployeeNotConfirm,
             checkConfirmCurrentUser: checkConfirmCurrentUser,
@@ -439,7 +406,7 @@ class DetailTaskTab extends Component {
 
         let checkDeadlineForEvaluation = false, deadlineForEvaluation;
         let currentDate = new Date();
-        
+
         // Check số ngày đến hạn đánh giá
         deadlineForEvaluation = ((new Date(dueForEvaluationOfTask)).getTime() - currentDate.getTime()) / (3600 * 24 * 1000);
         if (deadlineForEvaluation > 0) {
@@ -614,7 +581,7 @@ class DetailTaskTab extends Component {
                             </React.Fragment>
                         }
 
-                        {checkInactive && codeInProcess && (currentRole === "accountable" || (currentRole === "responsible" && checkHasAccountable === false)) &&
+                        {/* {checkInactive && codeInProcess && (currentRole === "accountable" || (currentRole === "responsible" && checkHasAccountable === false)) &&
                             (statusTask !== "Finished" &&
                                 (typeOfTask === "Gateway" ?
                                     <a className="btn btn-app" onClick={() => this.handleEndTask(id, "Inprocess", codeInProcess, typeOfTask)} title={translate('task.task_management.detail_route_task')}>
@@ -625,7 +592,7 @@ class DetailTaskTab extends Component {
                                     </a>
                                 )
                             )
-                        }
+                        } */}
 
                         {((currentRole === "consulted" || currentRole === "responsible" || currentRole === "accountable") && checkInactive) &&
                             <React.Fragment>
@@ -671,6 +638,14 @@ class DetailTaskTab extends Component {
                             task && warning
                             && <div className="description-box" style={{ border: "3px double #e8cbcb" }}>
                                 <h4>{translate('task.task_management.warning')}</h4>
+                                {/* Kích hoạt công việc phía sau trong quy trình */}
+                                {checkInactive && codeInProcess && (currentRole === "accountable" || (currentRole === "responsible" && checkHasAccountable === false)) &&
+                                    <div>
+                                        <strong>{translate('task.task_perform.is_task_process')}.
+                                            <a style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => this.handleEndTask(id, "Inprocess", codeInProcess, typeOfTask)}> {translate('task.task_perform.activated_task')}</a> {translate('task.task_perform.following_task')}
+                                        </strong>
+                                    </div>
+                                }
                                 {/** Xác nhận công việc */}
                                 {
                                     checkConfirmTask && checkConfirmTask.checkConfirmCurrentUser
@@ -985,7 +960,7 @@ class DetailTaskTab extends Component {
                         role={currentRole}
                         typeOfTask={typeOfTask}
                         codeInProcess={codeInProcess}
-                        title={"Chọn công việc thực hiện tiếp theo"}
+                        title={translate('task.task_perform.choose_following_task')}
                         perform='selectFollowingTask'
                     />
                 }

@@ -147,7 +147,7 @@ class ModalCreateTaskProcess extends Component {
 
 		this.modeler.on('commandStack.shape.delete.revert', (e) => this.handleUndoDeleteElement(e));
 
-		this.modeler.on('shape.changed', 1, (e) => this.changeNameElement(e));
+		// this.modeler.on('shape.changed', 1, (e) => this.changeNameElement(e));
 	}
 
 	// Hàm đổi tên Quy trình
@@ -278,24 +278,14 @@ class ModalCreateTaskProcess extends Component {
 	}
 
 	// Các hàm sự kiện của BPMN element
-	interactPopup = (event) => {
+	interactPopup = async (event) => {
 		let element = event.element;
-		console.log(element)
-		let { department } = this.props
-		let source = [];
-		let destination = []
-		element.incoming.forEach(x => {
-			source.push(x.source.businessObject.name)
-		})
-
-		element.outgoing.forEach(x => {
-			destination.push(x.target.businessObject.name)
-		})
+		console.log(element);
 		let nameStr = element.type.split(':');
-		this.setState(state => {
+
+		await this.setState(state => {
 			if (element.type === "bpmn:Task" || element.type === "bpmn:ExclusiveGateway") {
-				if (!state.info[`${element.businessObject.id}`] ||
-					(state.info[`${element.businessObject.id}`] && !state.info[`${element.businessObject.id}`].organizationalUnit)) {
+				if (!state.info[`${element.businessObject.id}`] || (state.info[`${element.businessObject.id}`] && !state.info[`${element.businessObject.id}`].organizationalUnit)) {
 					state.info[`${element.businessObject.id}`] = {
 						...state.info[`${element.businessObject.id}`],
 						organizationalUnit: this.props.listOrganizationalUnit[0]?._id,
@@ -334,37 +324,29 @@ class ModalCreateTaskProcess extends Component {
 	}
 
 	changeNameElement = (event) => {
-		this.setState(state => {
-			state.info[`${state.id}`] = {
-				...state.info[`${state.id}`],
-				nameTask: event.element.businessObject.name,
-			}
-			return {
-				...state,
-			}
-		})
+		var name = event.element.businessObject.name;
 	}
 
 	// các hàm dành cho export, import, download diagram...
 	exportDiagram = () => {
-        let xmlStr;
-        this.modeler.saveXML({ format: true }, function (err, xml) {
-            if (err) {
-                console.log(err);
-            }
-            else {
-                console.log(xml);
-                xmlStr = xml;
-            }
-        });
-        this.setState(state => {
-            return {
-                ...state,
-                xmlDiagram: xmlStr,
-            }
-        })
+		let xmlStr;
+		this.modeler.saveXML({ format: true }, function (err, xml) {
+			if (err) {
+				console.log(err);
+			}
+			else {
+				console.log(xml);
+				xmlStr = xml;
+			}
+		});
+		this.setState(state => {
+			return {
+				...state,
+				xmlDiagram: xmlStr,
+			}
+		})
 	}
-	
+
 	downloadAsSVG = () => {
 		this.modeler.saveSVG({ format: true }, function (error, svg) {
 			if (error) {
