@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { AssetManagerActions } from '../../asset-information/redux/actions';
-import { AssetTypeActions } from '../../asset-type/redux/actions';
 
 import { Tree } from '../../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
@@ -19,7 +18,6 @@ class BuildingAsset extends Component {
 
     componentDidMount() {
         this.props.getListBuildingAsTree();
-        // this.props.getAssetTypes();
     }
 
     onChanged = async (e, data) => {
@@ -35,14 +33,11 @@ class BuildingAsset extends Component {
         if (this.state.currentRowView) {
             window.$('#form-view-building').slideDown();
         }
-
     }
-
 
     render() {
         const { translate, assetsManager } = this.props;
         const { currentRowView } = this.state;
-        // console.log('current row view', this.props);
         let { buildingAssets } = assetsManager
         let list = buildingAssets && buildingAssets.list;
         const dataTree = list && list.map(node => {
@@ -50,7 +45,11 @@ class BuildingAsset extends Component {
                 ...node,
                 id: node._id,
                 text: node.assetName,
-                parent: node.location ? node.location.toString() : "#"
+                parent: node.location ? node.location.toString() : "#",
+                state: {
+                    opened: true
+                },
+                icon: "image/office_building.png"
             }
         })
         return (

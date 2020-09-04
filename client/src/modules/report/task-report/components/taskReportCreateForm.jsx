@@ -977,8 +977,8 @@ class TaskReportCreateForm extends Component {
                                         <div className="box-display" >
                                             <div className="col-md-5 ">
                                                 <div className="border">
-                                                    <div className="">
-                                                        <span><b className="box-title">Chọn chiều dữ liệu trong biểu đồ</b></span>
+                                                    <div className="box-title">
+                                                        <span><b>Chọn chiều dữ liệu trong biểu đồ</b></span>
                                                     </div>
                                                     <div className="box-body box-size">
                                                         <div className="listItem-left">
@@ -1041,8 +1041,8 @@ class TaskReportCreateForm extends Component {
                                             </div>
                                             <div className="col-md-5 ">
                                                 <div className="border">
-                                                    <div className="">
-                                                        <span><b className="box-title">Dữ liệu được đưa vào biểu đồ</b></span>
+                                                    <div className="box-title">
+                                                        <span><b>Dữ liệu được đưa vào biểu đồ</b></span>
                                                     </div>
                                                     <div className="box-body box-size">
                                                         <div className="listItem-left">

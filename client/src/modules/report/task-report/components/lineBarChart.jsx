@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import c3 from 'c3';
 import 'c3/c3.css';
+import * as d3 from "d3";
 
 class LineBarChart extends Component {
     constructor(props) {
@@ -15,6 +16,7 @@ class LineBarChart extends Component {
 
 
     setDataMultiChart = (data) => {
+        console.log('data', data)
         let dataConvert = [], dateConvert = [], valueConvert = [], chartType = [], axisXType, showInReport;
         if (data) {
             data.forEach(x => {
@@ -43,7 +45,6 @@ class LineBarChart extends Component {
             return arr;
         }, {}));
 
-
         // gom nhom dang bieu do để
         chartType = allTasks.reduce((obj, item) => {
             return {
@@ -53,6 +54,7 @@ class LineBarChart extends Component {
         }, {});
 
         dataConvert = [...[dateConvert], ...valueConvert];
+        console.log('dataConvert', dataConvert)
         return { dataConvert, chartType, axisXType };
     }
 
@@ -130,7 +132,7 @@ class LineBarChart extends Component {
             data: {
                 x: 'x',
                 columns: newData,
-                type: 'bar',
+                // type: 'bar',
                 types: barLinechartType,
             },
             bar: {
@@ -142,10 +144,7 @@ class LineBarChart extends Component {
                     tick: {
                         format: '%m - %Y',
                         outer: false,
-                        // culling: false,
-                        // format: function (d) {
-                        //     console.log('d', d)
-                        // }
+
                     },
                 },
                 y: {
@@ -153,22 +152,21 @@ class LineBarChart extends Component {
                 }
             },
         });
+
     }
 
 
     render() {
         return (
-            <React.Fragment>
-                <div className="box box-primary">
-                    <div className="box-header with-border">
-                        <h3 className="box-title">Báo cáo công việc</h3>
-                    </div>
-                    <div className="box-body dashboard_box_body">
-                        <p className="pull-left" style={{ marginBottom: 0 }}><b>Thành tiền: Vnđ</b></p>
-                        <div ref="barChart"></div>
-                    </div>
+            <div className="box box-primary">
+                <div className="box-header with-border">
+                    <h4 className="box-title">Báo cáo công việc</h4>
                 </div>
-            </React.Fragment>
+                <div className="box-body dashboard_box_body">
+                    <p className="pull-left" style={{ marginBottom: 0 }}><b>Thành tiền: Vnđ</b></p>
+                    <div ref="barChart"></div>
+                </div>
+            </div>
         )
     }
 }

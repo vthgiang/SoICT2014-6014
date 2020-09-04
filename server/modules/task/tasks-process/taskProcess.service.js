@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 
 /**
  * Lấy tất cả xml diagram
+ * @param {Object} query tham số query gửi đến
  */
 exports.getAllXmlDiagram = async (query) => {
     let userId = query.userId;
@@ -267,13 +268,11 @@ isStartTask = (task) => {
 
 /**
  * tạo công việc theo quy trình
+ * @param {String} processId Id của quy trình
+ * @param {Object} body dữ liệu từ body
  */
 exports.createTaskByProcess = async (processId, body) => {
-    console.log('----', body);
-
     let data = body.taskList;
-    // let startDate = body.startDate;
-    // let endDate = body.endDate;
     let level;
 
     let splitter = body.startDate.split("-");
@@ -289,10 +288,6 @@ exports.createTaskByProcess = async (processId, body) => {
         startDate: startDateProcess,
         endDate: endDateProcess,
         creator: body.creator,
-        // tasks: [{
-        //     type: Schema.Types.ObjectId,
-        //     ref: Task,
-        // }],
     })
 
     let listTask = [];
@@ -398,7 +393,10 @@ exports.createTaskByProcess = async (processId, body) => {
     return await ProcessTemplate.find().populate({ path: 'creator', model: User, select: 'name' });;
 }
 
-
+/**
+ * lấy tất cả các quy trình công việc được tạo
+ * @param {Object} query Dữ liệu query
+ */
 exports.getAllTaskProcess = async (query) => {
     // let { name, noResultsPerPage, pageNumber } = query;
     let name = query.name;
@@ -441,7 +439,11 @@ exports.getAllTaskProcess = async (query) => {
 }
 
 
-
+/**
+ * Cập nhật diagram
+ * @param {String} params tham số 
+ * @param {Object} body dữ liệu body
+ */
 exports.updateDiagram = async (params, body) => {
     let diagram = await TaskProcess.findByIdAndUpdate(params.processId,
         { $set: { xmlDiagram: body.diagram } },

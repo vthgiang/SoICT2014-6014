@@ -155,73 +155,6 @@ class SuperHome extends Component {
         const { tasks, translate } = this.props;
         const { startMonth, endMonth, willUpdate, callAction } = this.state;
 
-        let amountResponsibleTask = 0, amountTaskCreated = 0, amountAccountableTasks = 0, amountConsultedTasks = 0;
-        let numTask = [];
-        let totalTasks = 0;
-
-        // Tinh so luong tat ca cac task 
-        if (tasks && tasks.responsibleTasks) {
-            let task = tasks.responsibleTasks;
-            let i;
-            for (i in task) {
-                if (task[i].status === "Inprocess")
-                    amountResponsibleTask++;
-
-            }
-        }
-
-        // tính số lượng task mà người này là creator
-        if (tasks && tasks.creatorTasks) {
-            let task = tasks.creatorTasks;
-            let i;
-            for (i in task) {
-                if (task[i].status === "Inprocess")
-                    amountTaskCreated++;
-
-            }
-        }
-
-        // tính số lượng task mà người này cần phê duyệt
-        if (tasks && tasks.accountableTasks) {
-            let task = tasks.accountableTasks;
-            let i;
-            for (i in task) {
-                if (task[i].status === "Inprocess")
-                    amountAccountableTasks++;
-            }
-        }
-
-        // tính số lượng task mà người này là người hỗ trợ
-        if (tasks && tasks.consultedTasks) {
-            let task = tasks.consultedTasks;
-            let i;
-            for (i in task) {
-                if (task[i].status === "Inprocess")
-                    amountConsultedTasks++;
-            }
-        }
-
-        // Tinh tong so luong cong viec co trang thai Inprogess
-        if (tasks) {
-            let tempObj = {};
-            if (tasks.responsibleTasks)
-                numTask = numTask.concat(tasks.responsibleTasks);
-            if (tasks.creatorTasks)
-                numTask = numTask.concat(tasks.creatorTasks);
-            if (tasks.accountableTasks)
-                numTask = numTask.concat(tasks.accountableTasks);
-            if (tasks.consultedTasks)
-                numTask = numTask.concat(tasks.consultedTasks);
-            let i;
-            for (i in numTask) {
-                if (numTask[i].status === "Inprocess")
-                    tempObj[numTask[i]._id] = numTask[i].name;
-            }
-
-            totalTasks = Object.keys(tempObj).length;
-
-        }
-
         let d = new Date(),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -231,9 +164,11 @@ class SuperHome extends Component {
             month = '0' + month;
         if (day.length < 2)
             day = '0' + day;
+
         let defaultEndMonth = [month, year].join('-');
         let defaultStartMonth = ['01', year].join('-');
         let { startMonthTitle, endMonthTitle } = this.INFO_SEARCH;
+
         return (
             <React.Fragment>
                 <div className="qlcv" style={{ textAlign: "right", marginBottom: 15 }}>
@@ -243,10 +178,10 @@ class SuperHome extends Component {
                             <label style={{ width: "auto" }}>{translate('task.task_management.from')}</label>
                             <DatePicker
                                 id="monthStartInHome"
-                                dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                                value={defaultStartMonth}                 // giá trị mặc định cho datePicker    
+                                dateFormat="month-year"
+                                value={defaultStartMonth}
                                 onChange={this.handleSelectMonthStart}
-                                disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
+                                disabled={false}
                             />
                         </div>
 
@@ -255,10 +190,10 @@ class SuperHome extends Component {
                             <label style={{ width: "auto" }}>{translate('task.task_management.to')}</label>
                             <DatePicker
                                 id="monthEndInHome"
-                                dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                                value={defaultEndMonth}                 // giá trị mặc định cho datePicker    
+                                dateFormat="month-year"
+                                value={defaultEndMonth}
                                 onChange={this.handleSelectMonthEnd}
-                                disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
+                                disabled={false}
                             />
                         </div>
 
@@ -269,45 +204,6 @@ class SuperHome extends Component {
                     </div>
                 </div>
 
-                <div className="row">
-                    <div className="col-md-3 col-sm-6 col-xs-12">
-                        <div className="info-box">
-                            <span className="info-box-icon bg-aqua"><i className="fa fa-plus" /></span>
-                            <div className="info-box-content">
-                                <span className="info-box-text">{translate('task.task_management.dashboard_created')}</span>
-                                <span className="info-box-number">{amountTaskCreated}/{totalTasks}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-md-3 col-sm-6 col-xs-12">
-                        <div className="info-box">
-                            <span className="info-box-icon bg-green"><i className="fa fa-spinner" /></span>
-                            <div className="info-box-content">
-                                <span className="info-box-text">{translate('task.task_management.dashboard_need_perform')}</span>
-                                <span className="info-box-number">{amountResponsibleTask}/{totalTasks}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-md-3 col-sm-6 col-xs-12">
-                        <div className="info-box">
-                            <span className="info-box-icon bg-red"><i className="fa fa-check-square-o" /></span>
-                            <div className="info-box-content">
-                                <span className="info-box-text">{translate('task.task_management.dashboard_need_approve')}</span>
-                                <span className="info-box-number">{amountAccountableTasks}/{totalTasks}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="clearfix visible-sm-block" />
-                    <div className="col-md-3 col-sm-6 col-xs-12">
-                        <div className="info-box">
-                            <span className="info-box-icon bg-yellow"><i className="fa fa-comments-o" /></span>
-                            <div className="info-box-content">
-                                <span className="info-box-text">{translate('task.task_management.dashboard_need_consult')}</span>
-                                <span className="info-box-number">{amountConsultedTasks}/{totalTasks}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 {/* Lịch công việc chi tiết */}
                 <div className="row">
                     <div className="col-xs-12">
@@ -375,14 +271,15 @@ class SuperHome extends Component {
                                         </ul> : "Đang tải dữ liệu"
                                 }
                             </div>
-
                         </div>
                     </div>
-                    <TasksIsNotLinked />
-                    <TaskHasActionNotEvaluated />
-
                 </div>
 
+                <div className="row">
+                    <TasksIsNotLinked />
+
+                    <TaskHasActionNotEvaluated />
+                </div>
             </React.Fragment>
         );
     }
