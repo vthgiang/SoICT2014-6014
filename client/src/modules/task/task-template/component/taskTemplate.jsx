@@ -374,10 +374,12 @@ class TaskTemplate extends Component {
         }
         if (user.organizationalUnitsOfUser) {
             units = user.organizationalUnitsOfUser;
+            console.log("unit",units);
             currentUnit = units.filter(item =>
                 item.deans.includes(localStorage.getItem("currentRole"))
                 || item.viceDeans.includes(localStorage.getItem("currentRole"))
                 || item.employees.includes(localStorage.getItem("currentRole")));
+            console.log("currunits", currentUnit);
         }
 
         if (tasktemplates.items) {
@@ -406,7 +408,7 @@ class TaskTemplate extends Component {
                                     <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title='Thêm'>{translate('task_template.add')}</button>
                                     <ul className="dropdown-menu pull-right">
                                         <li><a href="#modal-add-task-template" title="ImportForm" onClick={(event) => { this.handleAddTaskTemplate(event) }}>{translate('task_template.add')}</a></li>
-                                        <li><a href="#modal_import_file" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>ImportFile</a></li>
+                                        <li><a href="#modal_import_file" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>Thêm file</a></li>
                                     </ul>
                                 </div>
                             </div>
