@@ -101,8 +101,11 @@ class SideBar extends Component {
                                 name: 'menu.crm',
                                 icon: 'fa fa-users',
                                 list: [
-                                    { name: 'menu.customer', icon: 'fa fa-circle-o', path: '/customer' },
-                                    { name: 'menu.customer_group', icon: 'fa fa-circle-o', path: '/customer-group' },
+                                    { name: 'menu.crm_list.customer', icon: 'fa fa-circle-o', path: '/crm/customer' },
+                                    { name: 'menu.crm_list.lead', icon: 'fa fa-circle-o', path: '/crm/lead' },
+                                    { name: 'menu.crm_list.care', icon: 'fa fa-circle-o', path: '/crm/care' },
+                                    { name: 'menu.crm_list.group', icon: 'fa fa-circle-o', path: '/crm/group' },
+                                    { name: 'menu.crm_list.statistic', icon: 'fa fa-circle-o', path: '/crm/statistic' },
                                 ]
                             }} />
 
@@ -129,6 +132,9 @@ class SideBar extends Component {
                             }} />
 
                             {/* Quan ly nhan su */}
+
+                            <Item item={{ name: 'menu.leave_application', icon: 'fa fa-envelope', path: '/hr-manage-leave-application' }} />
+
                             <GroupItem groupItem={{
                                 name: 'menu.manage_employee',
                                 icon: 'fa fa-address-book',
@@ -150,7 +156,7 @@ class SideBar extends Component {
                                 icon: 'fa fa-user-circle',
                                 list: [
                                     { name: 'menu.detail_employee', icon: 'fa fa-user-o', path: '/hr-detail-employee' },
-                                    { name: 'menu.work_plan', icon: 'fa fa-calendar', path: '/hr-work-plan' },
+                                    { name: 'menu.annual_leave_personal', icon: 'fa fa-calendar', path: '/hr-annual-leave-personal' },
                                     { name: 'menu.update_employee', icon: 'fa fa-pencil-square-o', path: '/hr-update-employee' },
 
                                 ]

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ImportFileExcel, ConFigImportFile, ShowImportData, DatePicker, ExportExcel } from '../../../../common-components';
+import { DialogModal, ImportFileExcel, ConFigImportFile, SelectBox, ShowImportData, DatePicker, ExportExcel } from '../../../../common-components';
 
 import { configurationSalary, templateImportSalary } from './fileConfigurationImportSalary';
 
@@ -12,7 +12,9 @@ import { AuthActions } from '../../../auth/redux/actions';
 class SalaryImportForm extends Component {
     constructor(props) {
         super(props);
+        let organizationalUnit = this.props.department.list[0];
         this.state = {
+            organizationalUnit: organizationalUnit._id,
             configData: configurationSalary,
             checkFileImport: true,
             rowError: [],
@@ -50,6 +52,22 @@ class SalaryImportForm extends Component {
             } else return [day, month, year].join('-');
         }
         return date;
+    }
+
+    /**
+     * Bắt sự kiện thay đổi giá trị đơn vị
+     * @param {*} value : Giá trị đơn vị
+     */
+    handleOrganizationalUnitChange = (value) => {
+        const { salary } = this.props;
+        salary.error["rowError"] = [];
+        salary.error["data"] = [];
+        this.setState({
+            organizationalUnit: value[0],
+            importData: [],
+            changeMonth: true,
+        });
+        window.$('#file-import-salary').val('');
     }
 
     /**
@@ -115,7 +133,7 @@ class SalaryImportForm extends Component {
 
     /** Function import dữ liệu */
     save = () => {
-        let { importData, month, configData } = this.state;
+        let { importData, month, configData, organizationalUnit } = this.state;
 
         let bonusName = configData.bonus.value;
         importData = importData.map(x => {
@@ -125,7 +143,7 @@ class SalaryImportForm extends Component {
                     bonus = [...bonus, { nameBonus: bonusName[index], number: y }]
                 }
             })
-            return { ...x, month: month, bonus: bonus }
+            return { ...x, month: month, organizationalUnit: organizationalUnit, bonus: bonus }
         });
         this.props.importSalary(importData);
         this.setState({
@@ -138,7 +156,6 @@ class SalaryImportForm extends Component {
      * @param {*} value : Dữ liệu cấu hình file import
      */
     handleChangeConfig = async (value) => {
-        console.log(value);
         await this.setState({
             configData: value,
             importData: [],
@@ -200,10 +217,9 @@ class SalaryImportForm extends Component {
 
     render() {
 
-        const { translate, salary } = this.props;
+        const { translate, salary, department } = this.props;
 
-        let { limit, page, importData, rowError, configData, changeMonth, month, checkFileImport } = this.state;
-        console.log(configData);
+        let { limit, page, importData, rowError, configData, changeMonth, month, checkFileImport, organizationalUnit } = this.state;
         if (salary.error.rowError && changeMonth === false) {
             rowError = salary.error.rowError;
             importData = salary.error.data
@@ -242,32 +258,46 @@ class SalaryImportForm extends Component {
                             scrollTable={false}
                             handleChangeConfig={this.handleChangeConfig}
                         />
-                        <div className="row">
-                            {/* Tháng */}
-                            <div className="form-group col-md-4 col-xs-12">
-                                <label>{translate('human_resource.month')}</label>
-                                <DatePicker
-                                    id="import-salary-month"
-                                    dateFormat="month-year"
-                                    deleteValue={false}
-                                    value=""
-                                    onChange={this.handleMonthChange}
-                                />
-                            </div>
-                            {/* File import */}
-                            <div className="form-group col-md-4 col-xs-12">
-                                <ImportFileExcel
-                                    configData={configData}
-                                    handleImportExcel={this.handleImportExcel}
-                                    disabled={!month ? true : false}
-                                />
+                        <div className="qlcv">
+                            <div className="form-inline">
+                                {/* Đơn vị */}
+                                <div className="form-group">
+                                    <label>{translate('human_resource.unit')}<span className="text-red">*</span></label>
+                                    <SelectBox
+                                        id={`import-salary-unit`}
+                                        className="form-control select2"
+                                        style={{ width: 250 }}
+                                        value={organizationalUnit}
+                                        items={department.list.map(y => { return { value: y._id, text: y.name } })}
+                                        onChange={this.handleOrganizationalUnitChange}
+                                    />
+                                </div>
+                                {/* Tháng */}
+                                <div className="form-group">
+                                    <label>{translate('human_resource.month')}</label>
+                                    <DatePicker
+                                        style={{ width: 210 }}
+                                        id="import-salary-month"
+                                        dateFormat="month-year"
+                                        deleteValue={false}
+                                        value=""
+                                        onChange={this.handleMonthChange}
+                                    />
+                                </div>
+                                {/* File import */}
+                                <div className="form-group">
+                                    <ImportFileExcel
+                                        id={'file-import-salary'}
+                                        style={{ width: 250 }}
+                                        configData={configData}
+                                        handleImportExcel={this.handleImportExcel}
+                                        disabled={!month ? true : false}
+                                    />
+                                </div>
                             </div>
                             {/* Dowload file import mẫu */}
-                            <div className="form-group col-md-4 col-xs-12">
-                                <label></label>
-                                <ExportExcel id="download_template_salary" type='link' exportData={templateImportSalary}
-                                    buttonName={` ${translate('human_resource.download_file')}`} />
-                            </div>
+                            <ExportExcel id="download_template_salary" type='link' exportData={templateImportSalary}
+                                buttonName={` ${translate('human_resource.download_file')}`} />
                             <div className="form-group col-md-12 col-xs-12">
                                 {/* Form hiện thì dữ liệu sẽ import */}
                                 <ShowImportData
@@ -290,8 +320,8 @@ class SalaryImportForm extends Component {
 };
 
 function mapState(state) {
-    const { salary } = state;
-    return { salary };
+    const { salary, department } = state;
+    return { salary, department };
 };
 
 const actionCreators = {

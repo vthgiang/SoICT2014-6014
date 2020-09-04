@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { AnnualLeaveApplicationForm } from '../../annual-leave/components/combinedContent';
+import { AnnualLeaveApplicationForm } from './combinedContent';
 
-import { HolidayActions } from '../redux/actions';
-import { AnnualLeaveActions } from '../../annual-leave/redux/actions';
+import { HolidayActions } from '../../holiday/redux/actions';
+import { AnnualLeaveActions } from '../redux/actions';
 
-class WorkPlan extends Component {
+class AnnualLeave extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -76,7 +76,7 @@ class WorkPlan extends Component {
                     <div className='col-lg-8 col-md-7 col-sm-12 col-xs-12'>
                         <div className="box box-primary">
                             <div className="box-header with-border">
-                                <h3 className="box-title">{translate('human_resource.work_plan.list_work_plane')}</h3>
+                                <h3 className="box-title">{translate('human_resource.annual_leave_personal.list_annual_leave')}</h3>
                             </div>
                             <div className="box-body">
                                 <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
@@ -85,7 +85,7 @@ class WorkPlan extends Component {
                                             <th style={{ width: 40 }}>{translate('human_resource.stt')}</th>
                                             <th>{translate('human_resource.holiday.table.timeline')}</th>
                                             <th>{translate('human_resource.holiday.table.describe_timeline')}</th>
-                                            <th>{translate('human_resource.work_plan.note')}</th>
+                                            <th>{translate('human_resource.annual_leave_personal.note')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -111,12 +111,12 @@ class WorkPlan extends Component {
                     <div className='col-lg-4 col-md-5 col-sm-12 col-xs-12'>
                         <div className="box box-success">
                             <div className="box-header with-border">
-                                <h3 className="box-title">{translate('human_resource.work_plan.inform_annual_leave')}</h3>
+                                <h3 className="box-title">{translate('human_resource.annual_leave_personal.inform_annual_leave')}</h3>
                             </div>
                             <div className="box-body">
-                                <p><span>{`${translate('human_resource.work_plan.total_number_leave_of_year')}: ${numberDateLeaveOfYear} ngày`}</span></p>
-                                <p><span>{`${translate('human_resource.work_plan.leaved')}: ${annualLeave.numberAnnulLeave} ngày`}</span></p>
-                                <p><span className="text-danger">{`( ${translate('human_resource.work_plan.view_detail')} "${translate('menu.detail_employee')}")`}</span></p>
+                                <p><span>{`${translate('human_resource.annual_leave_personal.total_number_leave_of_year')}: ${numberDateLeaveOfYear} ngày`}</span></p>
+                                <p><span>{`${translate('human_resource.annual_leave_personal.leaved')}: ${annualLeave.numberAnnulLeave} ngày`}</span></p>
+                                <p><span className="text-danger">{`( ${translate('human_resource.annual_leave_personal.view_detail')} "${translate('menu.detail_employee')}")`}</span></p>
                                 <AnnualLeaveApplicationForm />
                             </div>
                         </div>
@@ -138,5 +138,5 @@ const actionCreators = {
     getNumberAnnaulLeave: AnnualLeaveActions.searchAnnualLeaves,
 };
 
-const workPlan = connect(mapState, actionCreators)(withTranslate(WorkPlan));
-export { workPlan as WorkPlan };
+const annualLeave = connect(mapState, actionCreators)(withTranslate(AnnualLeave));
+export { annualLeave as AnnualLeave };

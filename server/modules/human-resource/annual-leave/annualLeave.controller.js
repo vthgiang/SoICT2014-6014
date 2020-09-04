@@ -60,13 +60,13 @@ exports.createAnnualLeave = async (req, res) => {
                 <h3><strong>Thông báo từ hệ thống VNIST-Việc.</strong></h3>
                 <p>Nhân viên ${employee.fullName} - ${employee.employeeNumber} xin nghỉ phép từ ngày ${req.body.startDate} đến ngày ${req.body.endDate}.<p>
                 <p>Lý do: ${req.body.reason}<p>
-                <p>Để phê duyệt đơn xin nghỉ. Hãy click vào đây <a href="http://${process.env.WEBSITE}/hr-work-plan">Phê duyệt</a><p>
+                <p>Để phê duyệt đơn xin nghỉ. Hãy click vào đây <a target="_blank" href="http://${process.env.WEBSITE}/hr-manage-leave-application">Phê duyệt</a><p>
                 <br/>
                 <br/>
                 <h3><strong>Notification from system VNIST-Việc.</strong></h3>
                 <p>Staff ${employee.fullName} - ${employee.employeeNumber} apply for leave from ${req.body.startDate} to ${req.body.endDate}.<p>
                 <p>Reason: ${req.body.reason}<p>
-                <p>To approve leave application. Please click here <a href="http://${process.env.WEBSITE}/hr-work-plan">Approved</a><p>
+                <p>To approve leave application. Please click here <a target="_blank" href="http://${process.env.WEBSITE}/hr-manage-leave-application">Approved</a><p>
             `
             sendEmail(req.body.receiver, 'Đơn xin nghỉ phép', "", html);
 
@@ -74,20 +74,19 @@ exports.createAnnualLeave = async (req, res) => {
             let content = `
                 <p>Nhân viên ${employee.fullName} - ${employee.employeeNumber} xin nghỉ phép từ ngày ${req.body.startDate} đến ngày ${req.body.endDate}.<p>
                 <p>Lý do: ${req.body.reason}<p>
-                <p>Để phê duyệt đơn xin nghỉ. Hãy click vào đây <a href="http://${process.env.WEBSITE}/hr-work-plan">Phê duyệt</a><p>
-                <br/>
+                <p>Để phê duyệt đơn xin nghỉ. Hãy click vào đây <a target="_blank" href="http://${process.env.WEBSITE}/hr-manage-leave-application">Phê duyệt</a><p>
                 <br/>
                 <p>Staff ${employee.fullName} - ${employee.employeeNumber} apply for leave from ${req.body.startDate} to ${req.body.endDate}.<p>
                 <p>Reason: ${req.body.reason}<p>
-                <p>To approve leave application. Please click here <a href="http://${process.env.WEBSITE}/hr-work-plan">Approved</a><p>
+                <p>To approve leave application. Please click here <a target="_blank" href="http://${process.env.WEBSITE}/hr-manage-leave-application">Approved</a><p>
             `
             let notification = {
                 users: [user.id],
                 organizationalUnits: [],
                 title: 'Xin nghỉ phép',
-                level: "error",
+                level: "important",
                 content: content,
-                sender: "VNIST-Việc",
+                sender: employee.fullName,
             }
             await NotificationServices.createNotification(req.user.company._id, notification, undefined)
 

@@ -9,8 +9,6 @@ const User = require('../../../models/auth/user.model');
 const fs = require('fs');
 const moment = require("moment");
 
-const TaskManagementService = require('../task-management/task.service');
-
 /**
  * Lấy mẫu công việc theo Id
  */
@@ -26,7 +24,7 @@ exports.getTaskById = async (id, userId) => {
         { path: "parent", select: "name" },
         { path: "taskTemplate", select: "formula" },
         { path: "organizationalUnit", model: OrganizationalUnit },
-        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
+        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id active" },
         { path: "evaluations.results.employee", select: "name email _id" },
         { path: "evaluations.results.organizationalUnit", select: "name _id" },
         { path: "evaluations.results.kpis" },
@@ -2292,41 +2290,102 @@ exports.editHoursSpentInEvaluate = async (data, taskId) => {
 
     let task = await Task.findById(taskId);
  
-    let evaluation = task.evaluations.filter(item => item._id.toString() === evaluateId)[0];
+    let evaluations = task.evaluations;
+    let pos = 0;
+    for (let index = 0; index < evaluations.length; index++) {
+        if (evaluations[index]._id.toString() === evaluateId) {
+            pos = index;
+            break;
+        }
+    }
 
-    let results = evaluation.results;
+    let results = evaluations[pos].results;
 
     for (let i in timesheetLogs) {
         let log = timesheetLogs[i];
         let { employee, hoursSpent } = log;
+
         let check = true;
 
-        let newResults = results.map(item => {
-            if(results.employee.toString === employee){
+        let newResults = [];
+        for (let j = 0; j < results.length; j++) {
+            if(results[j].employee.toString() === employee){
                 check = false;
-                return {
-                    ...item,
+                let item = results[j];
+                newResults.push({
+                    employee: item.employee,
+                    organizationalUnit: item.organizationalUnit,
+                    role: item.role,
+                    kpis: item.kpis,
+                    automaticPoint: item.automaticPoint,
+                    employeePoint: item.employeePoint,
+                    approvedPoint: item.approvedPoint,
+                    contribution: item.contribution,
+                    taskImportanceLevel: item.taskImportanceLevel,
                     hoursSpent: hoursSpent,
-                }
+                })
             }
             else{
-                return item;
+                newResults.push(results[j]);
             }
-        })
-
+        } 
+        
         if (check) {
             let employeeHoursSpent = {
                 employee: employee,
                 hoursSpent: hoursSpent,
             };
-
             newResults.push(employeeHoursSpent);
         }
-
+       
         results = [...newResults]
     }
+    console.log(results);
+    evaluations[pos].results = results;
+    task.evaluations = evaluations;
+    task.save();
 
-    console.log(result);
+    let newTask =  await Task.findById(taskId).populate([
+        { path: "parent", select: "name" },
+        { path: "taskTemplate", select: "formula" },
+        { path: "organizationalUnit", model: OrganizationalUnit },
+        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
+        { path: "evaluations.results.employee", select: "name email _id" },
+        { path: "evaluations.results.organizationalUnit", select: "name _id" },
+        { path: "evaluations.results.kpis" },
+        { path: "taskActions.creator", model: User, select: 'name email avatar' },
+        { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
+        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
+        { path: "taskComments.creator", model: User, select: 'name email avatar' },
+        { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
+        { path: "documents.creator", model: User, select: 'name email avatar' },
+        { path: "followingTasks.task", model: Task, select: 'name' },
+        { path: "preceedingTasks.task", model: Task, select: 'name' },
+        {
+            path: "process", model: TaskProcess, populate: {
+                path: "tasks", model: Task, populate: [
+                    { path: "parent", select: "name" },
+                    { path: "taskTemplate", select: "formula" },
+                    { path: "organizationalUnit", model: OrganizationalUnit },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
+                    { path: "evaluations.results.employee", select: "name email _id" },
+                    { path: "evaluations.results.organizationalUnit", select: "name _id" },
+                    { path: "evaluations.results.kpis" },
+                    { path: "taskActions.creator", model: User, select: 'name email avatar' },
+                    { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
+                    { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
+                    { path: "taskComments.creator", model: User, select: 'name email avatar' },
+                    { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
+                    { path: "documents.creator", model: User, select: 'name email avatar' },
+                    { path: "process", model: TaskProcess },
+                ]
+            }
+        },
+    ]);
+    newTask.evaluations.reverse();
+
+    console.log(newTask.evaluations[0].results);
+    return newTask;
 }
 
 /**
@@ -2642,8 +2701,8 @@ exports.confirmTask = async (taskId, userId) => {
     let confirmedByEmployee = await Task.findByIdAndUpdate(taskId,
         { $push: { confirmedByEmployees: userId } }
     )
-
-    let task = await TaskManagementService.getTaskById(taskId, userId);
+    
+    let task = await this.getTaskById(taskId, userId);
     return task;
 }
 
@@ -2668,7 +2727,7 @@ exports.editTaskInformation = async (taskId, userId, taskInformations) => {
         }
     }
 
-    let task = await TaskManagementService.getTaskById(taskId, userId);
+    let task = await this.getTaskById(taskId, userId);
     return task;
 }
 

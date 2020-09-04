@@ -15,7 +15,7 @@ class ManageLinkSystem extends Component {
         super(props);
 
         this.state = { 
-            limit: 5,
+            limit: 10,
             page: 1,
             option: 'url', //mặc định tìm kiếm theo tên
             value: ''

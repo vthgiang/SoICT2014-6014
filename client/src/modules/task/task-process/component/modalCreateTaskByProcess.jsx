@@ -16,9 +16,6 @@ import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import './processDiagram.css'
-//bpmn-nyan
-// import nyanDrawModule from 'bpmn-js-nyan/lib/nyan/draw';
-// import nyanPaletteModule from 'bpmn-js-nyan/lib/nyan/palette';
 
 //Xóa element khỏi pallette theo data-action
 var _getPaletteEntries = PaletteProvider.prototype.getPaletteEntries;
@@ -145,6 +142,7 @@ class ModalCreateTaskByProcess extends Component {
         })
     }
 
+    // hàm cập nhật Tên Quy trình
     handleChangeBpmnName = async (e) => {
         let { value } = e.target;
         await this.setState(state => {
@@ -155,6 +153,7 @@ class ModalCreateTaskByProcess extends Component {
         });
     }
 
+    // hàm cập nhật mô tả quy trình
     handleChangeBpmnDescription = async (e) => {
         let { value } = e.target;
         await this.setState(state => {
@@ -165,6 +164,7 @@ class ModalCreateTaskByProcess extends Component {
         });
     }
 
+    // hàm cập nhật tên Công việc trong quy trình
     handleChangeName = async (value) => {
         const modeling = this.modeler.get('modeling');
         let element1 = this.modeler.get('elementRegistry').get(this.state.id);
@@ -172,19 +172,8 @@ class ModalCreateTaskByProcess extends Component {
             name: value,
         });
     }
-    // handleChangeName = async (value) => {
-    //     await this.setState(state => {
-    //         state.info[`${state.id}`] = {
-    //             ...state.info[`${state.id}`],
-    //             code: state.id,
-    //             nameTask: value,
-    //         }
-    //         return {
-    //             ...state,
-    //         }
-    //     })
-    // }
 
+    // hàm cập nhật mô tả công việc trong quy trình
     handleChangeDescription = async (value) => {
         await this.setState(state => {
             state.info[`${state.id}`] = {
@@ -198,58 +187,7 @@ class ModalCreateTaskByProcess extends Component {
         })
     }
 
-    // handleChangeResponsible = async (value) => {
-    //     let { user } = this.props
-    //     let responsible = []
-    //     user.usersWithRole.forEach(x => {
-    //         if (value.some(y => y === x.userId._id)) {
-    //             responsible.push(x.userId.name)
-    //         }
-    //     })
-    //     await this.setState(state => {
-    //         state.info[`${state.id}`] = {
-    //             ...state.info[`${state.id}`],
-    //             code: state.id,
-    //             responsibleName: value
-    //         }
-    //         return {
-    //             ...state,
-    //         }
-    //     })
-    //     console.log('-----vào');
-    //     const modeling = this.modeler.get('modeling');
-    //     let element1 = this.modeler.get('elementRegistry').get(this.state.id);
-    //     modeling.updateProperties(element1, {
-    //         responsibleName: responsible
-    //     });
-
-    // }
-
-    // handleChangeAccountable = async (value) => {
-    //     let { user } = this.props
-    //     let accountable = []
-    //     user.usersWithRole.forEach(x => {
-    //         if (value.some(y => y === x.userId._id)) {
-    //             accountable.push(x.userId.name)
-    //         }
-    //     })
-    //     await this.setState(state => {
-    //         state.info[`${state.id}`] = {
-    //             ...state.info[`${state.id}`],
-    //             code: state.id,
-    //             accountableName: value
-    //         }
-    //         return {
-    //             ...state,
-    //         }
-    //     })
-    //     const modeling = this.modeler.get('modeling');
-    //     let element1 = this.modeler.get('elementRegistry').get(this.state.id);
-    //     modeling.updateProperties(element1, {
-    //         accountableName: accountable
-    //     });
-    // }
-
+    // hàm cập nhật thông tin người thực hiện
     handleChangeResponsible = async (value) => {
         let { user } = this.props
         let responsible = []
@@ -265,6 +203,7 @@ class ModalCreateTaskByProcess extends Component {
         });
     }
 
+    // cập nhật thông tin người phê duyệt
     handleChangeAccountable = async (value) => {
         let { user } = this.props
         let accountable = []
@@ -280,6 +219,7 @@ class ModalCreateTaskByProcess extends Component {
         });
     }
 
+    // hàm cập nhật thông tin đơn vị công việc
     handleChangeOrganizationalUnit = async (value) => {
         await this.setState(state => {
             state.info[`${state.id}`] = {
@@ -293,19 +233,7 @@ class ModalCreateTaskByProcess extends Component {
         })
     }
 
-    handleChangeTemplate = async (value) => {
-        await this.setState(state => {
-            state.info[`${state.id}`] = {
-                ...state.info[`${state.id}`],
-                code: state.id,
-                taskTemplate: value,
-            }
-            return {
-                ...state,
-            }
-        })
-    }
-
+    // hàm cập nhật thông tin người xem
     handleChangeViewer = async (value) => {
         await this.setState(state => {
 
@@ -316,6 +244,7 @@ class ModalCreateTaskByProcess extends Component {
         })
     }
 
+    // cập nhật thông tin người quản lý
     handleChangeManager = async (value) => {
         await this.setState(state => {
 
@@ -326,7 +255,7 @@ class ModalCreateTaskByProcess extends Component {
         })
     }
 
-
+    // hàm cập nhật ngày bắt đầu công việc
     handleChangeTaskStartDate = (value) => {
         this.validateTaskStartDate(value, true);
     }
@@ -346,6 +275,7 @@ class ModalCreateTaskByProcess extends Component {
         return msg === undefined;
     }
 
+    // hàm cập nhật ngày kết thúc công việc
     handleChangeTaskEndDate = (value) => {
         this.validateTaskEndDate(value, true);
     }
@@ -362,10 +292,10 @@ class ModalCreateTaskByProcess extends Component {
                 };
             });
         }
-        console.log('state.info', this.state);
         return msg === undefined;
     }
 
+    // hàm cập nhật độ ưu tiên
     handleChangeTaskPriority = (value) => {
         this.state.info[`${this.state.id}`].priority = value;
         this.setState(state => {
@@ -376,7 +306,6 @@ class ModalCreateTaskByProcess extends Component {
     }
 
     // Các hàm  xử lý sự kiện của bpmn
-
     interactPopup = (event) => {
         var element = event.element;
         console.log(element, this.state)
@@ -421,44 +350,6 @@ class ModalCreateTaskByProcess extends Component {
 
     handleUndoDeleteElement = (event) => {
         var element = event.context.shape;
-    }
-
-    changeNameElement = (event) => {
-        var element = event.element;
-    }
-
-    save = async () => {
-        let { info, startDate, endDate, userId, processName, processDescription, xmlDiagram } = this.state;
-
-        let xmlStr;
-        this.modeler.saveXML({ format: true }, function (err, xml) {
-            xmlStr = xml;
-        });
-
-        await this.setState(state => {
-            return {
-                ...state,
-                xmlDiagram: xmlStr,
-            }
-        });
-
-        for (let i in info) {
-            info[i].startDate = info[i].startDate ? info[i].startDate : startDate;
-            info[i].endDate = info[i].endDate ? info[i].endDate : endDate;
-        }
-
-        let data = {
-            processName: processName,
-            processDescription: processDescription,
-            xmlDiagram: this.state.xmlDiagram,
-            creator: userId,
-            taskList: info,
-            startDate: startDate,
-            endDate: endDate,
-
-        }
-        console.log('000', data);
-        this.props.createTaskByProcess(data, this.state.idProcess);
     }
 
     downloadAsSVG = () => {
@@ -538,7 +429,24 @@ class ModalCreateTaskByProcess extends Component {
         });
     }
 
+    exportDiagram = () => {
+        let xmlStr;
+        this.modeler.saveXML({ format: true }, function (err, xml) {
+            if (err) {
+            }
+            else {
+                xmlStr = xml;
+            }
+        });
+        this.setState(state => {
+            return {
+                ...state,
+                xmlDiagram: xmlStr,
+            }
+        })
+    }
 
+    // xử lý zoomin zoomout
     handleZoomOut = async () => {
         let zstep = 0.2;
         let canvas = this.modeler.get('canvas');
@@ -576,23 +484,8 @@ class ModalCreateTaskByProcess extends Component {
         canvas.zoom(zlevel, 'auto');
     }
 
-    exportDiagram = () => {
-        let xmlStr;
-        this.modeler.saveXML({ format: true }, function (err, xml) {
-            if (err) {
-            }
-            else {
-                xmlStr = xml;
-            }
-        });
-        this.setState(state => {
-            return {
-                ...state,
-                xmlDiagram: xmlStr,
-            }
-        })
-    }
 
+    // cập nhật thông tin công viêc mỗi lần thay đổi thông tin
     handleChangeInfo = (value) => {
         let info = {
             ...value,
@@ -603,6 +496,41 @@ class ModalCreateTaskByProcess extends Component {
             state => {
                 state.info[`${state.id}`] = info
             })
+    }
+
+    // Hàm lưu thông tin 
+    save = async () => {
+        let { info, startDate, endDate, userId, processName, processDescription, xmlDiagram } = this.state;
+
+        let xmlStr;
+        this.modeler.saveXML({ format: true }, function (err, xml) {
+            xmlStr = xml;
+        });
+
+        await this.setState(state => {
+            return {
+                ...state,
+                xmlDiagram: xmlStr,
+            }
+        });
+
+        for (let i in info) {
+            info[i].startDate = info[i].startDate ? info[i].startDate : startDate;
+            info[i].endDate = info[i].endDate ? info[i].endDate : endDate;
+        }
+
+        let data = {
+            processName: processName,
+            processDescription: processDescription,
+            xmlDiagram: this.state.xmlDiagram,
+            creator: userId,
+            taskList: info,
+            startDate: startDate,
+            endDate: endDate,
+
+        }
+        console.log('000', data);
+        this.props.createTaskByProcess(data, this.state.idProcess);
     }
 
     render() {
@@ -630,13 +558,18 @@ class ModalCreateTaskByProcess extends Component {
 
                         <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none", marginBottom: 0 }}>
                             <ul className="nav nav-tabs">
+                                {/* Nút tab thông tin quy trình */}
                                 <li className="active"><a href="#info-create-task" onClick={() => this.handleChangeContent("info")} data-toggle="tab">Thông tin quy trình</a></li>
+                                {/* Nút tab quy trình - công việc */}
                                 <li><a href="#process-create-task" onClick={() => this.handleChangeContent("process")} data-toggle="tab">Tạo công việc trong quy trình</a></li>
                             </ul>
+
+                            {/* Tab Thông tin quy trình */}
                             <div className="tab-content">
                                 <div className={selected === "info" ? "active tab-pane" : "tab-pane"} id="info-create-task">
                                     <div className='row'>
                                         <div className='col-md-6'>
+                                            {/* Tên quy trình */}
                                             <div className="form-group">
                                                 <label>Tên quy trình</label>
                                                 <input type="text"
@@ -645,6 +578,8 @@ class ModalCreateTaskByProcess extends Component {
                                                     onChange={this.handleChangeBpmnName}
                                                 />
                                             </div>
+
+                                            {/* Ngày bắt đầu - kết thúc quy trình */}
                                             <div className="row">
                                                 <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnStartDate === undefined ? "" : "has-error"}`}>
                                                     <label className="control-label">{translate('task.task_management.start_date')}*</label>
@@ -665,6 +600,8 @@ class ModalCreateTaskByProcess extends Component {
                                                 </div>
                                             </div>
                                         </div>
+
+                                        {/* Mô tả quy trình */}
                                         <div className='col-md-6'>
                                             <div className="form-group">
                                                 <label>Mô tả quy trình</label>
@@ -678,18 +615,25 @@ class ModalCreateTaskByProcess extends Component {
                                     </div>
                                 </div>
                             </div>
+
+                            {/* Tab quy trình - công việc */}
                             <div className="tab-content" style={{ padding: 0, marginTop: -15 }}>
                                 <div className={selected === "process" ? "active tab-pane" : "tab-pane"} id="process-create-task">
                                     <div className="row">
                                         {/* Quy trình công việc */}
                                         <div className={`contain-border ${showInfo ? 'col-md-8' : 'col-md-12'}`}>
+                                            {/* Nút tùy chọn export, import diagram,... */}
                                             <div className="tool-bar-xml" style={{ /*position: "absolute", right: 5, top: 5*/ }}>
                                                 <button onClick={this.exportDiagram}>Export XML</button>
                                                 <button onClick={this.downloadAsSVG}>Save SVG</button>
                                                 <button onClick={this.downloadAsImage}>Save Image</button>
                                                 <button onClick={this.downloadAsBpmn}>Download BPMN</button>
                                             </div>
+
+                                            {/* biểu đồ */}
                                             <div id={this.generateId}></div>
+
+                                            {/* Nút zoomin, zoomout */}
                                             <div className="row">
                                                 <div className="io-zoom-controls">
                                                     <ul className="io-zoom-reset io-control io-control-list">
@@ -713,6 +657,7 @@ class ModalCreateTaskByProcess extends Component {
                                             </div>
                                         </div>
 
+                                        {/* form thông tin công việc */}
                                         <div className={`right-content ${showInfo ? 'col-md-4' : undefined}`}>
                                             {/* style={{ display: "flex", flexDirection: "column" }} */}
                                             {

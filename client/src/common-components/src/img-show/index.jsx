@@ -25,7 +25,6 @@ class ImgShow extends Component {
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
-        console.log(nextProps.src.search(';base64,'));
         if (nextProps.src && nextProps.src.search(';base64,') < 0 && !nextProps.auth.isLoading && this.state.dataStatus === this.DATA_STATUS.NOT_AVAILABLE) {
             await this.props.downloadFile(nextProps.src, `avatar${nextProps.id}`, 'show');
             this.setState({

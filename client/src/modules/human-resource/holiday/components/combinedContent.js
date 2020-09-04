@@ -4,4 +4,3 @@ export * from './holidayManagement';
 export * from './holidayImportForm';
 export * from './holidayFormValidator';
 export * from './fileConfigurationImportHoliday';
-export * from './workPlan';
