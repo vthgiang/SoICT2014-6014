@@ -137,12 +137,15 @@ class TaskTemplate extends Component {
         }
     }
 
-    checkPermisson = (deanCurrentUnit) => {
-        var currentRole = localStorage.getItem("currentRole");
+    checkPermisson = (deanCurrentUnit, creatorId) => {
+        let currentRole = localStorage.getItem("currentRole");
         for (let i in deanCurrentUnit) {
             if (currentRole === deanCurrentUnit[i]) {
                 return true;
             }
+        }
+        if (creatorId == localStorage.getItem("userId")) {
+            return true;
         }
         return false;
     }
@@ -475,11 +478,11 @@ class TaskTemplate extends Component {
                                             <td title={item.organizationalUnit && item.organizationalUnit.name}>{item.organizationalUnit ? item.organizationalUnit.name : translate('task_template.error_task_template_organizational_unit_null')}</td>
                                             <td>
                                                 <a href="#abc" onClick={() => this.handleView(item._id)} title={translate('task.task_template.view_detail_of_this_task_template')}>
-                                                    <i className="material-icons" style={!this.checkPermisson(currentUnit && currentUnit[0].deans) ? { paddingLeft: "35px" } : { paddingLeft: "0px" }}>view_list</i>
+                                                    <i className="material-icons" style={!this.checkPermisson(currentUnit && currentUnit[0].deans, "") ? { paddingLeft: "35px" } : { paddingLeft: "0px" }}>view_list</i>
                                                 </a>
 
                                                 {/**Check quyền xem có được xóa hay sửa mẫu công việc không */}
-                                                {this.checkPermisson(item.organizationalUnit.deans) &&
+                                                {this.checkPermisson(item.organizationalUnit.deans, item.creator._id) &&
                                                     <React.Fragment>
                                                         <a href="cursor:{'pointer'}" onClick={() => this.handleEdit(item)} className="edit" title={translate('task_template.edit_this_task_template')}>
                                                             <i className="material-icons">edit</i>
