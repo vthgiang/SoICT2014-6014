@@ -63,17 +63,17 @@ class IncomingDataTab extends Component {
             <React.Fragment>
                 {
                     listTask.length !== 0
-                    && listTask.map(task =>
-                        <div className="description-box">
+                    && listTask.map((task, key) =>
+                        <div key={key} className="description-box">
                             <h4>{task.name}</h4>
 
                             {/** Danh sách thông tin */}
-                    <div><strong>{translate('task.task_process.information')}</strong></div>
+                            <div><strong>{translate('task.task_process.information')}</strong></div>
                             {
                                 task.informations.length !== 0
-                                    ? task.informations.map(info =>
+                                    ? task.informations.map((info, key) =>
                                         info.isOutput &&
-                                        <div>
+                                        <div key={key}>
                                             <ul>
                                                 <strong>{info.name}</strong>
                                                 <span> - {info.description}</span>
@@ -88,9 +88,9 @@ class IncomingDataTab extends Component {
                             <div><strong>{translate('task.task_process.document')}</strong></div>
                             {
                                 task.documents.length !== 0
-                                    ? task.documents.map(document =>
+                                    ? task.documents.map((document, key) =>
                                         document.isOutput &&
-                                        <div>
+                                        <div key={key}>
                                             <ul>
                                                 <li style={{ listStyle: "none" }}><strong>{document.description}</strong></li>
                                                 <ul>

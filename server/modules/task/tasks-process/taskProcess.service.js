@@ -95,27 +95,27 @@ exports.getXmlDiagramById = (params) => {
 exports.createXmlDiagram = async (body) => {
     let info = [];
     for (const x in body.info) {
-        if (Object.keys(body.info[x]).length > 4) {
-            body.info[x].taskActions = (body.info[x].taskActions) ? body.info[x].taskActions.map(item => {
-                return {
-                    name: item.name,
-                    description: item.description,
-                    mandatory: item.mandatory,
-                }
-            }) : [];
-            body.info[x].taskInformations = (body.info[x].taskInformations) ? body.info[x].taskInformations.map((item, key) => {
-                return {
-                    code: "p" + parseInt(key + 1),
-                    name: item.name,
-                    description: item.description,
-                    filledByAccountableEmployeesOnly: item.filledByAccountableEmployeesOnly,
-                    type: item.type,
-                    extra: item.extra,
-                }
-            }) : [];
+        // if (Object.keys(body.info[x]).length > 4) {
+        body.info[x].taskActions = (body.info[x].taskActions) ? body.info[x].taskActions.map(item => {
+            return {
+                name: item.name,
+                description: item.description,
+                mandatory: item.mandatory,
+            }
+        }) : [];
+        body.info[x].taskInformations = (body.info[x].taskInformations) ? body.info[x].taskInformations.map((item, key) => {
+            return {
+                code: "p" + parseInt(key + 1),
+                name: item.name,
+                description: item.description,
+                filledByAccountableEmployeesOnly: item.filledByAccountableEmployeesOnly,
+                type: item.type,
+                extra: item.extra,
+            }
+        }) : [];
 
-            info.push(body.info[x])
-        }
+        info.push(body.info[x])
+        // }
     }
     console.log(info)
     let data = await ProcessTemplate.create({
