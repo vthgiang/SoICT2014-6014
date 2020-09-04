@@ -4,6 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { RoleActions } from '../redux/actions';
 import { DialogModal, SelectBox, ErrorLabel } from '../../../../common-components';
 import ValidationHelper from '../../../../helpers/validationHelper';
+import { ROLE_TYPE, ROOT_ROLE } from '../../../../helpers/constants';
 
 class RoleInfoForm extends Component {
     constructor(props) {
@@ -31,7 +32,7 @@ class RoleInfoForm extends Component {
                         <div className={`form-group ${!roleNameError ? "" : "has-error"}`}>
                             <label>{translate('manage_role.name')}<span className="text-red">*</span></label>
                             {
-                                roleType === 'Abstract' ?
+                                roleType === ROLE_TYPE.ROOT ?
                                     <input className="form-control" value={roleName} disabled={true} /> :
                                     <input className="form-control" value={roleName} onChange={this.handleRoleName} />
                             }
@@ -46,7 +47,7 @@ class RoleInfoForm extends Component {
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={
-                                    role.list.filter(role => (role && role.name !== 'Super Admin' && role.name !== roleName))
+                                    role.list.filter(role => (role && role.name !== ROOT_ROLE.SUPER_ADMIN && role.name !== roleName))
                                         .map(role => { return { value: role ? role._id : null, text: role ? role.name : "Role is deleted" } })
                                 }
                                 onChange={this.handleParents}
@@ -67,7 +68,7 @@ class RoleInfoForm extends Component {
                                 }
                                 onChange={this.handleUsers}
                                 value={roleUsers}
-                                multiple={roleName !== 'Super Admin' ? true : false}
+                                multiple={roleName !== ROOT_ROLE.SUPER_ADMIN ? true : false}
                             />
                         </div>
                     </form>
