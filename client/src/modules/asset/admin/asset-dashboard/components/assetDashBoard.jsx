@@ -255,7 +255,7 @@ class DashBoardAssets extends Component {
                         purchaseDate: this.formatDate(asset.purchaseDate),
                         manager: userList.find(item => item._id === asset.managedBy) ? userList.find(item => item._id === asset.managedBy).name : 'User is deleted',
                         user: asset.assignedToUser ? (userList.length !== 0 && userList.find(item => item._id === asset.assignedToUser) ? userList.find(item => item._id === asset.assignedToUser).name : 'User is deleted') : '',
-                        organizaitonalUnit: asset.assignedToOrganizationalUnit ? asset.assignedToOrganizationalUnit : '',
+                        organizationalUnit: asset.assignedToOrganizationalUnit ? asset.assignedToOrganizationalUnit : '',
                         status: asset.status,
                         dayAvailable: item.day + (dayAvailable ? " ngày" : "")
                     }

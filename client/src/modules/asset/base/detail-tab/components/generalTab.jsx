@@ -79,8 +79,8 @@ class GeneralTab extends Component {
     }
 
     render() {
-        const { id, translate, user, assetType, assetsManager } = this.props;
-        var userlist = user.list;
+        const { id, translate, user, assetType, assetsManager, department} = this.props;
+        var userlist = user.list, departmentlist = department.list ;
         var assettype = assetType && assetType.administration;
         let assettypelist = assettype && assettype.types.list;
         let assetbuilding = assetsManager && assetsManager.buildingAssets;
@@ -172,7 +172,7 @@ class GeneralTab extends Component {
                                     {/* Đơn vị sử dụng */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.organization_unit')}&emsp; </strong>
-                                        {assignedToOrganizationalUnit ? assignedToOrganizationalUnit : ''}
+                                        {assignedToOrganizationalUnit ? (departmentlist.length && departmentlist.filter(item => item._id === assignedToOrganizationalUnit).pop() ? departmentlist.filter(item => item._id === assignedToOrganizationalUnit).pop().name : 'User is deleted') : ''}
                                     </div>
                                     {/* Thời gian bắt đầu sử dụng */}
                                     <div className="form-group">
@@ -248,8 +248,8 @@ class GeneralTab extends Component {
 };
 
 function mapState(state) {
-    const { user, assetType, assetsManager } = state;
-    return { user, assetType, assetsManager };
+    const { user, assetType, assetsManager, department } = state;
+    return { user, assetType, assetsManager, department };
 };
 const actions = {
     getAssetTypes: AssetTypeActions.getAssetTypes,

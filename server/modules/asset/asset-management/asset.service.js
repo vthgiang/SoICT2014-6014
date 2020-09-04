@@ -415,8 +415,8 @@ exports.searchUsages = async (id, data, company) => {
  * Thêm mới thông tin sử dụng
  */
 exports.createUsage = async (id, data) => {
-    let assignedToUser = data.assignedToUser ? data.assignedToUser : null;
-    let assignedToOrganizationalUnit = data.assignedToOrganizationalUnit? data.assignedToOrganizationalUnit: null
+    let assignedToUser = (data.assignedToUser && data.assignedToUser !== 'null') ? data.assignedToUser : null;
+    let assignedToOrganizationalUnit = (data.assignedToOrganizationalUnit && data.assignedToOrganizationalUnit !== 'null') ? data.assignedToOrganizationalUnit: null
     await Asset.update({_id: id}, {
         $addToSet: {usageLogs: data.usageLogs},
         assignedToUser: assignedToUser,
