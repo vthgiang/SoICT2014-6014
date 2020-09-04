@@ -528,7 +528,13 @@ export default {
                 delete: 'Xóa thông tin khách hàng',
             },
             group: {
+                name: 'Tên nhóm khách hàng',
+                code: 'Mã nhóm khách hàng',
+                description: 'Mô tả nhóm khách hàng',
 
+                add: 'Thêm mới nhóm khách hàng',
+                edit: 'Chỉnh sửa thông tin nhóm khách hàng',
+                delete: 'Xóa thông tin nhóm khách hàng',
             },
             lead: {
 
