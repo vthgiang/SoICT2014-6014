@@ -27,6 +27,7 @@ export default {
             yes: 'Yes',
             no: 'No',
             month: 'Month',
+            year: 'Year',
             loading: 'Loading',
             no_data: 'No data',
             success: 'Successfully',

@@ -25,6 +25,7 @@ export default {
             cancel: 'Hủy',
             status: 'Trạng thái',
             month: 'Tháng',
+            year: 'Năm',
             yes: 'Có',
             no: 'Không',
             loading: 'Đang tải dữ liệu',
