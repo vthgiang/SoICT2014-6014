@@ -8,7 +8,7 @@ const ObjectId = require('mongoose').Types.ObjectId;
  * @company id của công ty
  */
 exports.getDocuments = async (company, query) => {
-    // console.log('ttt', query);
+    console.log('ttt', query);
     let page = query.page;
     let limit = query.limit;
 
@@ -120,6 +120,7 @@ exports.increaseNumberView = async (id, viewer) => {
  * Tạo một tài liệu văn bản mới
  */
 exports.createDocument = async (company, data) => {
+    console.log('create', data)
     const newDoc = {
         company,
         name: data.name,
@@ -130,7 +131,7 @@ exports.createDocument = async (company, data) => {
         issuingBody: data.issuingBody,
         signer: data.signer,
         officialNumber: data.officialNumber,
-
+        relationshipDocuments: data.relationshipDocuments,
         versions: [{
             versionName: data.versionName,
             issuingDate: (data.issuingDate === 'Invalid date') ? "" : data.issuingDate,
@@ -325,6 +326,107 @@ async function downloadFile(doc, downloaderId) {
     doc.downloads.push({ downloader: downloaderId });
     await doc.save();
 }
+
+exports.importDocument = async (company, data) => {
+    console.log('uuuu', data)
+
+    for (let i in data) {
+        let document = {
+            name: data[i].name,
+            description: data[i].description,
+            issuingBody: data[i].issuingBody,
+            signer: data[i].signer,
+            officialNumber: data[i].officialNumber,
+            versionName: data[i].versionName,
+            issuingDate: data[i].issuingDate,
+            effectiveDate: data[i].effectiveDate,
+            expiredDate: data[i].expiredDate,
+            relationshipDescription: data[i].relationshipDescription,
+        }
+
+        // find category
+        if (data[i].category) {
+            const category = await DocumentCategory.findOne({ name: data[i].category });
+            if (category) {
+                document.category = category.id;
+            }
+        }
+
+        // find archivedRecordPlaceOrganizationalUnit
+        if (data[i].organizationUnitManager) {
+            const unit = await OrganizationalUnit.findOne({
+                $and: [
+                    { company: company },
+                    { name: data[i].organizationUnitManager },
+                ]
+            })
+            if (unit) {
+                document.archivedRecordPlaceOrganizationalUnit = unit.id;
+            }
+        }
+
+        // find domain
+        if (data[i].domains && data[i].domains.length) {
+            let domains = [];
+            for (let j in data[i].domains) {
+                const domain = await DocumentDomain.findOne({ name: data[i].domains[j] });
+                if (domain) {
+                    domains.push(domain.id);
+                }
+            }
+            document.domains = domains;
+        }
+
+        // find archive
+
+        if (data[i].archives && data[i].archives.length) {
+            let archives = [];
+            for (let j in data[i].archives) {
+                let path = data[i].archives[j].split('-').map(x => { return x.trim() }).join(" - ");
+                console.log('pathhh', path);
+                const Archive = await DocumentArchive.findOne({ path: path });
+                if (Archive) {
+                    archives.push(Archive.id);
+                }
+            }
+            document.archives = archives;
+        }
+
+        // file role
+
+        if (data[i].roles && data[i].roles.length) {
+            let roles = [];
+            for (let j in data[i].roles) {
+                const role = await Role.findOne({
+                    $and: [
+                        { company: company },
+                        { name: data[i].roles[j] }
+                    ]
+                });
+                roles.push(role.id);
+            }
+            document.roles = roles;
+        }
+
+        // find document relation ship
+        if (data[i].relationshipDocuments && data[i].relationshipDescription.length) {
+            let relationshipDocuments = [];
+            for (let j in relationshipDocuments) {
+                let document = await Document.findOne({ name: data[i].relationshipDocuments[j] });
+                relationshipDocuments.push(document.id);
+            }
+            document.relationshipDocuments = relationshipDocuments;
+        }
+
+        let res = await this.createDocument(company, document);
+
+
+    }
+    let query = { page: '1', limit: '5' }
+    return await this.getDocuments(company, query);
+}
+
+
 /**
  * Lấy tất cả các loại văn bản
  */

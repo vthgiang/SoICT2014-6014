@@ -138,7 +138,7 @@ class AdministrationDocumentArchives extends Component {
                         <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('document.administration.domains.add')}
                             disabled={archiveParent.length > 1 ? true : false}>{translate('general.add')}</button>
                         <ul className="dropdown-menu pull-right">
-                            <li><a href="#modal-add-task-template" title="ImportForm" onClick={(event) => { this.handleAddArchive(event) }}>{translate('task_template.add')}</a></li>
+                            <li><a href="#modal-create-document-archive" title="ImportForm" onClick={(event) => { this.handleAddArchive(event) }}>{translate('task_template.add')}</a></li>
                             <li><a href="#modal_import_file" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>ImportFile</a></li>
                         </ul>
                     </div>
