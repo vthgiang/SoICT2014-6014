@@ -37,10 +37,10 @@ const AssetSchema = new Schema({
         type: String,
     },
 
-    assetType: { //5.loại tài sản
+    assetType: [{ //5.loại tài sản
         type: Schema.Types.ObjectId,
         ref: AssetType,
-    },
+    }],
 
     purchaseDate: { //6.ngày nhập, ngày mua
         type: Date,
@@ -66,7 +66,7 @@ const AssetSchema = new Schema({
 
     assignedToOrganizationalUnit: { //13.Đơn vị đang được giao sử dụng
         type: Schema.Types.ObjectId,
-        ref: OrganizationalUnit, 
+        ref: OrganizationalUnit,
     },
 
     location: { // 16.vị trí tài sản
@@ -96,7 +96,7 @@ const AssetSchema = new Schema({
         nameField: String, // tên trường dữ liệu
         value: String, //giá trị
     }],
-    
+
     readByRoles: [{ // quyền xem theo Role
         type: Schema.Types.ObjectId,
         ref: 'root_roles'
@@ -135,14 +135,14 @@ const AssetSchema = new Schema({
     },
 
     unitsProducedDuringTheYears: [{ // Dùng trong UnitsOfProduction
-        month: { 
+        month: {
             type: Date
         },
         unitsProducedDuringTheYear: {
             type: Number
         },
     }],
-    
+
     estimatedTotalProduction: { // Dùng trong UnitsOfProduction
         type: Number
     },
@@ -157,7 +157,7 @@ const AssetSchema = new Schema({
         },
         usedByOrganizationalUnit: {
             type: Schema.Types.ObjectId,
-            ref: OrganizationalUnit, 
+            ref: OrganizationalUnit,
         },
         startDate: { // ngày bắt đầu sử dụng
             type: Date
