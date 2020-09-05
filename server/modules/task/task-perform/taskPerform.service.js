@@ -9,8 +9,6 @@ const User = require('../../../models/auth/user.model');
 const fs = require('fs');
 const moment = require("moment");
 
-const TaskManagementService = require('../task-management/task.service');
-
 /**
  * Lấy mẫu công việc theo Id
  */
@@ -26,7 +24,7 @@ exports.getTaskById = async (id, userId) => {
         { path: "parent", select: "name" },
         { path: "taskTemplate", select: "formula" },
         { path: "organizationalUnit", model: OrganizationalUnit },
-        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
+        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id active" },
         { path: "evaluations.results.employee", select: "name email _id" },
         { path: "evaluations.results.organizationalUnit", select: "name _id" },
         { path: "evaluations.results.kpis" },
@@ -217,6 +215,7 @@ exports.startTimesheetLog = async (params, body) => {
     timer.timesheetLogs = timer.timesheetLogs.find(element => !(element.stoppedAt));
     return timer;
 }
+
 /**
  * Dừng bấm giờ: Lưu thời gian kết thúc và số giờ chạy (endTime và time)
  */
@@ -245,22 +244,37 @@ exports.stopTimesheetLog = async (params, body) => {
     ).populate({ path: "timesheetLogs.creator", select: "name" });
 
 
+    timer.hoursSpentOnTask.totalHoursSpent += duration;
 
-    let time = 0;
-    timer.timesheetLogs.length > 0 && timer.timesheetLogs.forEach(x => {
-        time += x.duration;
-    })
-    await Task.findOneAndUpdate(
-        { "_id": params.taskId },
-        {
-            $set:
-            {
-                totalLoggedTime: time
+    let contributions = timer.hoursSpentOnTask.contributions;
+    let check = true;
+    let newContributions = contributions.map(item => {
+        if (item.employee.toString() === body.employee) {
+            check = false;
+            return {
+                employee: body.employee,
+                hoursSpent: item.hoursSpent + duration,
             }
+        } else {
+            return item;
         }
-    )
+    })
+    if (check) {
+        let contributionEmployee = {
+            employee: body.employee,
+            hoursSpent: duration,
+        }
+        newContributions.push(contributionEmployee)
+    }
+
+    timer.hoursSpentOnTask.contributions = newContributions;
+
+    // Lưu lại thông tin đâ chỉnh sửa
+    timer.save();
+
     return timer.timesheetLogs;
 }
+
 /**
  * Thêm bình luận của hoạt động
  */
@@ -843,10 +857,10 @@ exports.evaluationAction = async (params, body) => {
 
 
         //tính điểm trung bình
-        if(rating.length > 0) {
+        if (rating.length > 0) {
             let accountableRating = rating.reduce((accumulator, currentValue) => { return accumulator + currentValue }, 0) / rating.length
         }
-       
+
 
 
         //check xem th đấnh giá có là người phê duyệt không
@@ -865,7 +879,7 @@ exports.evaluationAction = async (params, body) => {
         }
 
 
-    // đánh giá lại
+        // đánh giá lại
     } else if (body.firstTime === 0) {
         let taskAction = await Task.update(
             { $and: [{ "_id": params.taskId, "taskActions._id": params.actionId }, { "taskActions.evaluations.creator": body.creator }] },
@@ -1093,66 +1107,15 @@ async function checkEvaluations(date, taskId, storeDate) {
 }
 
 /**
- * edit task by responsible employee---PATCH
+ * edit task by responsible employee
  */
 exports.editTaskByResponsibleEmployees = async (data, taskId) => {
-    let description = data.description;
-    let name = data.name;
-    let kpi = data.kpi;
-    let user = data.user;
-    let progress = data.progress;
-    let info = data.info;
-    // let kpisItem = {
-    //     employee: user,
-    //     kpis: kpi
-    // };
-    let date = data.date;
+    let { name, description, kpi, user, progress, info, date } = data;
     let evaluateId;
 
     const endOfMonth = moment().endOf("month").format('DD-MM-YYYY')
 
-
-    // evaluateId = await checkEvaluations(date, taskId, endOfMonth);
     let task = await Task.findById(taskId);
-
-    // cập nhật thông tin kpi
-
-    // let listKpi = task.evaluations.find(e => String(e._id) === String(evaluateId)).kpis
-    // let check_kpi = listKpi.find(kpi => String(kpi.employee) === user);
-    // if (check_kpi === undefined) {
-    //     await Task.updateOne(
-    //         {
-    //             _id: taskId,
-    //             "evaluations._id": evaluateId
-    //         },
-    //         {
-    //             $push: {
-    //                 "evaluations.$.kpis": kpisItem
-    //             }
-    //         },
-    //         { $new: true }
-    //     );
-    // } else {
-    //     await Task.updateOne(
-    //         {
-    //             _id: taskId,
-    //             "evaluations._id": evaluateId,
-
-    //         },
-    //         {
-    //             $set: {
-    //                 "evaluations.$.kpis.$[elem].kpis": kpi
-    //             }
-    //         },
-    //         {
-    //             arrayFilters: [
-    //                 {
-    //                     "elem.employee": user
-    //                 }
-    //             ]
-    //         }
-    //     );
-    // }
 
     // chuẩn hóa dữ liệu info
     for (let i in info) {
@@ -1263,30 +1226,13 @@ exports.editTaskByResponsibleEmployees = async (data, taskId) => {
 }
 
 /**
- * edit task by responsible employee---PATCH
+ * edit task by responsible employee
+ * @param {Object} data dữ liệu cần chỉnh sửa
+ * @param {String} taskID id của công việc cần edit
  */
 exports.editTaskByAccountableEmployees = async (data, taskId) => {
-    let description = data.description;
-    let name = data.name;
-    let priority = data.priority;
-    let status = data.status;
-    let formula = data.formula;
-
-    let startDate = data.startDate;
-    let endDate = data.endDate;
-
-    // let user = data.user;
-    let progress = data.progress;
-    let info = data.info;
-    // let evaluateId = data.evaluateId;
-    let accountableEmployees = data.accountableEmployees;
-    let consultedEmployees = data.consultedEmployees;
-    let responsibleEmployees = data.responsibleEmployees;
-    let informedEmployees = data.informedEmployees;
-    let inactiveEmployees = data.inactiveEmployees;
-
-    // let date = Date.now();
-    let date = data.date;
+    let { description, name, priority, status, formula, startDate, endDate, progress, info, date,
+        accountableEmployees, consultedEmployees, responsibleEmployees, informedEmployees, inactiveEmployees } = data;
 
     // Chuẩn hóa ngày bắt đầu và ngày kết thúc
     let splitStartDate = startDate.split("-");
@@ -1335,57 +1281,6 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
         { $new: true }
     );
     let task = await Task.findById(taskId);
-
-    if (status[0] === 'Finished') {
-        if (task.process) {
-            let followingTasks = task.followingTasks;
-            console.log('following', followingTasks);
-            for (let i in followingTasks) {
-                let startDate = endOfTask;
-                let followItem = await Task.findById(followingTasks[i].task);
-                let numberOfDaysTaken = followItem.numberOfDaysTaken ? followItem.numberOfDaysTaken : 0;
-                let timer = startDate.getTime() + numberOfDaysTaken * 24 * 60 * 60 * 1000;
-
-                let endDate = new Date(timer).toISOString();
-
-                console.log('endDate===startDate', endDate, startDate);
-                await Task.findByIdAndUpdate(followingTasks[i].task,
-                    {
-                        $set: {
-                            status: "Inprocess",
-                            startDate: startDate,
-                            endDate: endDate,
-                        }
-                    },
-                    { new: true }
-                )
-            }
-        }
-    }
-    if (status[0] !== 'Finished') {
-        if (task.process) {
-            let followingTasks = task.followingTasks;
-            for (let i in followingTasks) {
-                // let startDate = endOfTask;
-                // let followItem = await Task.findById(followingTasks[i].task);
-                // let numberOfDaysTaken = followItem.numberOfDaysTaken ? followItem.numberOfDaysTaken : 0;
-                // let timer = startDate.getTime() + numberOfDaysTaken * 24 * 60 * 60 * 1000;
-
-                // let endDate = new Date(timer).toISOString();
-
-                await Task.findByIdAndUpdate(followingTasks[i].task,
-                    {
-                        $set: {
-                            status: "WaitForApproval",
-                            // startDate: startDate,
-                            // endDate: endDate,
-                        }
-                    },
-                    { new: true }
-                )
-            }
-        }
-    }
 
     for (let item in info) {
         for (let i in task.taskInformations) {
@@ -1476,7 +1371,6 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
  */
 exports.evaluateTaskByConsultedEmployees = async (data, taskId) => {
     let user = data.user;
-    // let evaluateId = data.evaluateId;
     let { automaticPoint, employeePoint, kpi, unit, role, date } = data;
     let evaluateId = await checkEvaluations(date, taskId, date);
 
@@ -1493,7 +1387,6 @@ exports.evaluateTaskByConsultedEmployees = async (data, taskId) => {
     // cập nhật thông tin result
 
     let listResult = task.evaluations.find(e => String(e._id) === String(evaluateId)).results
-
 
     let check_results = listResult.find(r => (String(r.employee) === user && String(r.role) === "Consulted"));
     if (check_results === undefined) {
@@ -1581,27 +1474,11 @@ exports.evaluateTaskByConsultedEmployees = async (data, taskId) => {
  * evaluate task by Responsible
  */
 exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
-    let user = data.user;
-    let unit = data.unit;
-    let checkSave = data.checkSave;
-    let progress = data.progress;
-    let automaticPoint = data.automaticPoint;
-    let employeePoint = data.employeePoint;
-
-    let role = data.role;
-
-    let date = data.date;
-    let kpi = data.kpi;
-    let info = data.info;
+    let { user, unit, checkSave, progress, automaticPoint, employeePoint, role, date, kpi, info } = data
 
     let splitter = date.split("-");
     let evaluateDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
     let dateFormat = evaluateDate;
-
-    // let kpisItem = {
-    //     employee: user,
-    //     kpis: kpi
-    // }
 
     let resultItem = {
         employee: user,
@@ -1646,47 +1523,6 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
 
     let task = await Task.findById(taskId);
 
-    // let listKpi = task.evaluations.find(e => String(e._id) === String(evaluateId)).kpis
-
-    // let check_kpi = listKpi.find(kpi => String(kpi.employee) === user);
-    // if (check_kpi === undefined) {
-    //     await Task.updateOne(
-    //         {
-    //             _id: taskId,
-    //             "evaluations._id": evaluateId
-    //         },
-    //         {
-    //             $push: {
-    //                 "evaluations.$.kpis": kpisItem
-    //             }
-    //         },
-    //         { $new: true }
-    //     );
-    // } else {
-    //     await Task.updateOne(
-    //         {
-    //             _id: taskId,
-    //             "evaluations._id": evaluateId,
-
-    //         },
-    //         {
-    //             $set: {
-    //                 "evaluations.$.kpis.$[elem].kpis": kpi
-    //             }
-    //         },
-    //         {
-    //             arrayFilters: [
-    //                 {
-    //                     "elem.employee": user
-    //                 }
-    //             ]
-    //         }
-    //     );
-    // }
-
-    // cập nhật thông tin result
-
-    // let listResult = task.evaluations[task.evaluations.length-1].results;
     let listResult = task.evaluations.find(e => String(e._id) === String(evaluateId)).results;
 
     let check_results = listResult.find(r => (String(r.employee) === user && String(r.role) === "Responsible"));
@@ -1766,7 +1602,6 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
                 }
                 // quangdz
                 if (yearOfParams > now.getFullYear() || (yearOfParams <= now.getFullYear() && monthOfParams >= now.getMonth())) {
-                    // console.log('quang vào update');
                     checkSave && await Task.updateOne(
                         {
                             _id: taskId,
@@ -1869,21 +1704,9 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
  * evaluate task by Accountable
  */
 exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
-    let user = data.user;
-    let hasAccountable = data.hasAccountable;
-    let checkSave = data.checkSave;
-    let progress = data.progress;
+    let { unit, user, hasAccountable, checkSave, progress, role, date, status, info, results, kpi } = data;
 
     let automaticPoint = data.automaticPoint === undefined ? 0 : data.automaticPoint;
-    let role = data.role;
-
-    let date = data.date;
-    let status = data.status; // neu ket thuc thi moi thay doi, con neu la danh gia thi k doi
-    let info = data.info;
-    let results = data.results;
-
-    let unit = data.unit;
-    let kpi = data.kpi;
 
     let splitter = date.split("-");
     let evaluateDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
@@ -1949,31 +1772,7 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
     checkSave && await Task.updateOne({ _id: taskId }, { $set: { progress: progress } });
     task = await Task.findById(taskId);
 
-    // if (status[0] === 'Finished') {
-    //     if (task.process) {
-    //         let followingTasks = task.followingTasks;
-    //         for (let i in followingTasks) {
-    //             let startDate = endOfTask;
-    //             let numberOfDaysTaken = followingTasks.numberOfDaysTaken ? followingTasks.numberOfDaysTaken : 0;
-    //             let timer = startDate.getTime() + numberOfDaysTaken * 24 * 60 * 60 * 1000;
-
-    //             let endDate = new Date(timer).toISOString();
-
-    //             await Task.findByIdAndUpdate(followingTasks[i],
-    //                 {
-    //                     $set: {
-    //                         status: "Inprocess",
-    //                         startDate: startDate,
-    //                         endDate: endDate,
-    //                     }
-    //                 },
-    //                 { new: true}
-    //             )
-    //         }
-    //     }
-    // }
-
-    // cập nhật thông tin result================================================================BEGIN=====================================================
+    // cập nhật thông tin result (==============BEGIN============)
 
     let listResult = task.evaluations.find(e => String(e._id) === String(evaluateId)).results;
 
@@ -2035,7 +1834,7 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
 
     let task2 = await Task.findById(taskId);
 
-    // cập nhật thông tin result====================================BEGIN=====================================================
+    // cập nhật thông tin result cho cá nhân người phê duyệt
 
     let listResult2 = task2.evaluations.find(e => String(e._id) === String(evaluateId)).results;
 
@@ -2192,7 +1991,7 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
         }
     }
 
-    // cập nhật thông tin result======================================END================================================
+    // cập nhật thông tin result (================END==================)
 
 
     // update date of evaluation
@@ -2268,6 +2067,109 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
     ]);
     newTask.evaluations.reverse();
 
+    return newTask;
+}
+
+exports.editHoursSpentInEvaluate = async (data, taskId) => {
+    let { evaluateId, timesheetLogs } = data;
+
+    let task = await Task.findById(taskId);
+ 
+    let evaluations = task.evaluations;
+    let pos = 0;
+    for (let index = 0; index < evaluations.length; index++) {
+        if (evaluations[index]._id.toString() === evaluateId) {
+            pos = index;
+            break;
+        }
+    }
+
+    let results = evaluations[pos].results;
+
+    for (let i in timesheetLogs) {
+        let log = timesheetLogs[i];
+        let { employee, hoursSpent } = log;
+
+        let check = true;
+
+        let newResults = [];
+        for (let j = 0; j < results.length; j++) {
+            if(results[j].employee.toString() === employee){
+                check = false;
+                let item = results[j];
+                newResults.push({
+                    employee: item.employee,
+                    organizationalUnit: item.organizationalUnit,
+                    role: item.role,
+                    kpis: item.kpis,
+                    automaticPoint: item.automaticPoint,
+                    employeePoint: item.employeePoint,
+                    approvedPoint: item.approvedPoint,
+                    contribution: item.contribution,
+                    taskImportanceLevel: item.taskImportanceLevel,
+                    hoursSpent: hoursSpent,
+                })
+            }
+            else{
+                newResults.push(results[j]);
+            }
+        } 
+        
+        if (check) {
+            let employeeHoursSpent = {
+                employee: employee,
+                hoursSpent: hoursSpent,
+            };
+            newResults.push(employeeHoursSpent);
+        }
+       
+        results = [...newResults]
+    }
+    console.log(results);
+    evaluations[pos].results = results;
+    task.evaluations = evaluations;
+    task.save();
+
+    let newTask =  await Task.findById(taskId).populate([
+        { path: "parent", select: "name" },
+        { path: "taskTemplate", select: "formula" },
+        { path: "organizationalUnit", model: OrganizationalUnit },
+        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
+        { path: "evaluations.results.employee", select: "name email _id" },
+        { path: "evaluations.results.organizationalUnit", select: "name _id" },
+        { path: "evaluations.results.kpis" },
+        { path: "taskActions.creator", model: User, select: 'name email avatar' },
+        { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
+        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
+        { path: "taskComments.creator", model: User, select: 'name email avatar' },
+        { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
+        { path: "documents.creator", model: User, select: 'name email avatar' },
+        { path: "followingTasks.task", model: Task, select: 'name' },
+        { path: "preceedingTasks.task", model: Task, select: 'name' },
+        {
+            path: "process", model: TaskProcess, populate: {
+                path: "tasks", model: Task, populate: [
+                    { path: "parent", select: "name" },
+                    { path: "taskTemplate", select: "formula" },
+                    { path: "organizationalUnit", model: OrganizationalUnit },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
+                    { path: "evaluations.results.employee", select: "name email _id" },
+                    { path: "evaluations.results.organizationalUnit", select: "name _id" },
+                    { path: "evaluations.results.kpis" },
+                    { path: "taskActions.creator", model: User, select: 'name email avatar' },
+                    { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
+                    { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
+                    { path: "taskComments.creator", model: User, select: 'name email avatar' },
+                    { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
+                    { path: "documents.creator", model: User, select: 'name email avatar' },
+                    { path: "process", model: TaskProcess },
+                ]
+            }
+        },
+    ]);
+    newTask.evaluations.reverse();
+
+    console.log(newTask.evaluations[0].results);
     return newTask;
 }
 
@@ -2449,92 +2351,59 @@ exports.deleteFileChildTaskComment = async (params) => {
 /**
  * edit status of task 
  * @param taskID id công việc
- * @param status trang thai công việc
+ * @param body trang thai công việc
  */
-exports.editTaskStatus = async (taskID, body) => {
+exports.editActivateOfTask = async (taskID, body) => {
     let today = new Date();
-    let task1 = await Task.findByIdAndUpdate(taskID,
-        { // khi thực hiện công việc quay vòng trong TH nếu là gateway thì trạng thái của gateway sẽ đc cập nhật thành -> DELAYED -> để tránh bị cạp nhật ngày tháng sai khi task trc nó kết thúc lần 2,...
-            $set: {
-                status: body.status,
-                // endDate: today,
-            }
-        }
-    )
+
+    let task1 = await Task.findById(taskID);
 
     let startDate = task1.startDate;
     let endDate = task1.endDate;
 
-    if (body.typeOfTask === "Gateway") {
-        for (let i = 0; i < body.listSelected.length; i++) {
-            let followStartDate = endDate;
+    // Cập nhật trạng thái hoạt động của các task sau
+    for (let i = 0; i < body.listSelected.length; i++) {
+        await Task.findOneAndUpdate(
+            {
+                _id: taskID,
+                "followingTasks.task": body.listSelected[i],
+            },
+            {
+                $set: {
+                    "followingTasks.$.activated": true,
+                }
+            },
+        )
 
-            let followItem = await Task.findById(body.listSelected[i]);
-            let numberOfDaysTaken = followItem.numberOfDaysTaken ? followItem.numberOfDaysTaken : 0;
-            let timer = followStartDate.getTime() + numberOfDaysTaken * 24 * 60 * 60 * 1000;
+        let followStartDate = endDate;
 
-            let followEndDate = new Date(timer).toISOString();
+        let followItem = await Task.findById(body.listSelected[i]);
+        let numberOfDaysTaken = followItem.numberOfDaysTaken ? followItem.numberOfDaysTaken : 0;
+        let timer = followStartDate.getTime() + numberOfDaysTaken * 24 * 60 * 60 * 1000;
 
-            if (body.status === "Finished") {
-                await Task.findByIdAndUpdate(body.listSelected[i],
-                    {
-                        $set: {
-                            status: "Inprocess",
-                            startDate: followStartDate,
-                            endDate: followEndDate,
-                        }
-                    }
-                )
-            }
-            else {
-                await Task.findByIdAndUpdate(body.listSelected[i],
-                    {
-                        $set: {
-                            status: "Inprocess",
-                            endDate: followEndDate,
-                        }
-                    }
-                )
-            }
+        let followEndDate = new Date(timer).toISOString();
 
-        }
-    } else {
-        if (!body.listSelected.length) {
-
-            if (task1.followingTasks) {
-                for (let i = 0; i < task1.followingTasks.length; i++) {
-                    let followStartDate = endDate;
-
-                    let followItem = await Task.findById(task1.followingTasks[i].task);
-                    let numberOfDaysTaken = followItem.numberOfDaysTaken ? followItem.numberOfDaysTaken : 0;
-                    let timer = followStartDate.getTime() + numberOfDaysTaken * 24 * 60 * 60 * 1000;
-
-                    let followEndDate = new Date(timer).toISOString();
-
-                    if (followItem.status === "WaitForApproval") {
-                        await Task.findByIdAndUpdate(task1.followingTasks[i].task,
-                            {
-                                $set: {
-                                    status: "Inprocess",
-                                    startDate: followStartDate,
-                                    endDate: followEndDate,
-                                }
-                            }
-                        )
-                    } else {
-                        await Task.findByIdAndUpdate(task1.followingTasks[i].task,
-                            {
-                                $set: {
-                                    status: "Inprocess",
-                                    endDate: followEndDate,
-                                }
-                            }
-                        )
-                    }
-
+        // if (body.status === "Finished") {
+        await Task.findByIdAndUpdate(body.listSelected[i],
+            {
+                $set: {
+                    status: "Inprocess",
+                    startDate: followStartDate,
+                    endDate: followEndDate,
                 }
             }
-        }
+        )
+        // }
+        // else {
+        //     await Task.findByIdAndUpdate(body.listSelected[i],
+        //         {
+        //             $set: {
+        //                 status: "Inprocess",
+        //                 endDate: followEndDate,
+        //             }
+        //         }
+        //     )
+        // }
     }
 
     let task = await Task.findById(taskID).populate([
@@ -2585,7 +2454,7 @@ exports.confirmTask = async (taskId, userId) => {
         { $push: { confirmedByEmployees: userId } }
     )
 
-    let task = await TaskManagementService.getTaskById(taskId, userId);
+    let task = await this.getTaskById(taskId, userId);
     return task;
 }
 
@@ -2610,7 +2479,7 @@ exports.editTaskInformation = async (taskId, userId, taskInformations) => {
         }
     }
 
-    let task = await TaskManagementService.getTaskById(taskId, userId);
+    let task = await this.getTaskById(taskId, userId);
     return task;
 }
 
@@ -2735,3 +2604,21 @@ exports.editDocument = async (taskId, documentId, body, files) => {
 
     return task.documents
 }
+
+// exports.activateFollowingTask = async (taskId, activateTasks) => {
+//     for(let i in activateTasks) {
+//         await Task.findOneAndUpdate(
+//             {
+//                 _id: taskId,
+//                 "followingTasks.task": activateTasks[i],
+//             },
+//             {
+//                 $set: {
+//                     "followingTasks.$.activated": true,
+//                 }
+//             },
+//         )
+//     }
+
+
+// }

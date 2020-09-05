@@ -51,6 +51,9 @@ exports.searchAssetProfiles = async (params, company) => {
         keySearch = {...keySearch, managedBy: {$in: params.managedBy}};
     }
 
+    if (params.currentRole) {
+        keySearch = {...keySearch, readByRoles: {$in: params.currentRole}};
+    }
     // Thêm key tìm kiếm tài sản theo ngày nhập tài sản
     if (params.purchaseDate) {
         let date = params.purchaseDate.split("-");
@@ -412,13 +415,13 @@ exports.searchUsages = async (id, data, company) => {
  * Thêm mới thông tin sử dụng
  */
 exports.createUsage = async (id, data) => {
-    let assignedToUser = data.assignedToUser ? data.assignedToUser : null;
-    let assignedToOrganizationalUnit = data.assignedToOrganizationalUnit? data.assignedToOrganizationalUnit: null
+    let assignedToUser = (data.assignedToUser && data.assignedToUser !== 'null') ? data.assignedToUser : null;
+    let assignedToOrganizationalUnit = (data.assignedToOrganizationalUnit && data.assignedToOrganizationalUnit !== 'null') ? data.assignedToOrganizationalUnit: null
     await Asset.update({_id: id}, {
         $addToSet: {usageLogs: data.usageLogs},
         assignedToUser: assignedToUser,
         assignedToOrganizationalUnit: assignedToOrganizationalUnit,
-        status: data.status
+        status: data.status,
     });
 
     let asset = await Asset.findById(id);
@@ -440,6 +443,7 @@ exports.updateUsage = async (assetId, data) => {
     return await Asset.update({ _id: assetId, "usageLogs._id": data._id }, {
         $set: {
             "usageLogs.$.usedByUser": data.usedByUser,
+            "usageLogs.$.usedByOrganizationalUnit": data.usedByOrganizationalUnit,
             "usageLogs.$.description": data.description,
             "usageLogs.$.endDate": data.endDate,
             "usageLogs.$.startDate": data.startDate, 

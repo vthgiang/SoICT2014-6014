@@ -40,7 +40,7 @@ export const performTaskAction = {
     deleteFileTask,
     editTaskByAccountableEmployees,
     editTaskByResponsibleEmployees,
-    editStatusOfTask,
+    editActivateOfTask,
     editArchivedOfTask,
     editDocument,
     deleteDocument,
@@ -49,6 +49,7 @@ export const performTaskAction = {
     evaluateTaskByAccountableEmployees,
     evaluateTaskByConsultedEmployees,
     evaluateTaskByResponsibleEmployees,
+    editHoursSpentInEvaluate,
 
     deleteEvaluation,
 
@@ -539,6 +540,28 @@ function evaluateTaskByResponsibleEmployees(data, taskId) {
 }
 
 /**
+ * evaluate Task By Responsible Employees
+ * @param {*} data du lieu gui di
+ * @param {*} taskId id task
+ */
+function editHoursSpentInEvaluate(data, taskId) {
+    return dispatch => {
+        dispatch({ type: performTaskConstants.EDIT_HOURS_SPENT_IN_EVALUATION_REQUEST, taskId });
+        performTaskService.editHoursSpentInEvaluate(data, taskId)
+            .then(res => {
+                dispatch({
+                    type: performTaskConstants.EDIT_HOURS_SPENT_IN_EVALUATION_SUCCESS,
+                    // payload: res.data.content.task
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({ type: performTaskConstants.EDIT_HOURS_SPENT_IN_EVALUATION_FAILURE, error });
+            });
+    };
+}
+
+/**
  * Delete document of task
  * @param {*} taskId task id
  * @param {*} evaluateId evaluate id
@@ -564,19 +587,19 @@ function deleteEvaluation(taskId, evaluateId) {
  * @param {*} id id task
  * @param {*} status trang thai muon cap nhat
  */
-function editStatusOfTask(id, status, typeOfTask, listSelected = []) {
+function editActivateOfTask(id, typeOfTask, listSelected = []) {
     return dispatch => {
-        dispatch({ type: taskManagementConstants.EDIT_STATUS_OF_TASK_REQUEST, id });
-        performTaskService.editStatusOfTask(id, status, typeOfTask, listSelected) //(taskid, { status: "dang thuc hien" })
+        dispatch({ type: performTaskConstants.EDIT_ACTIVATE_OF_TASK_REQUEST, id });
+        performTaskService.editActivateOfTask(id, typeOfTask, listSelected)
             .then(res => {
                 dispatch({
-                    type: taskManagementConstants.EDIT_STATUS_OF_TASK_SUCCESS,
+                    type: performTaskConstants.EDIT_ACTIVATE_OF_TASK_SUCCESS,
                     // payload: res.data.content.task
                     payload: res.data.content
                 });
             })
             .catch(error => {
-                dispatch({ type: taskManagementConstants.EDIT_STATUS_OF_TASK_FAILURE, error });
+                dispatch({ type: performTaskConstants.EDIT_ACTIVATE_OF_TASK_FAILURE, error });
             });
     };
 }

@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
-import { CustomerActions } from '../redux/actions';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import {SearchBar, PaginateBar, DataTableSetting, ButtonModal} from '../../../../common-components';
-import CustomerCreate from './customerCreate';
-import CustomerEdit from './customerEdit';
-import CustomerInformation from './customerInformation';
-import CustomerImportFile from './customerImportFile';
+import { CrmCustomerActions } from '../redux/actions';
+import { getStorage } from '../../../../config';
+import { DataTableSetting, PaginateBar, ConfirmNotification, SearchBar } from '../../../../common-components';
+import CreateForm from './createForm';
+import InfoForm from './infoForm';
+import EditForm from './editForm';
 
-class CustomerManagement extends Component {
+class CrmCustomer extends Component {
     constructor(props) {
         super(props);
         this.state = { 
@@ -19,120 +19,110 @@ class CustomerManagement extends Component {
          }
     }
 
-    componentDidMount(){
-        this.props.getCustomers();
-        this.props.getCustomers({
-            limit: this.state.limit,
-            page: this.state.page
-        });
-    }
-
     render() { 
-        const {customer} = this.props;
-        const {translate} = this.props;
-        const {option, currentRow} = this.state
+        const { translate, crm } = this.props;
+        const { list, listPaginate } = crm.customer;
+        const { option, value, customer } = this.state;
 
         return ( 
-            <div class="box">
+            <div className="box">
                 <div className="box-body">
-                    <CustomerCreate/>
-                    <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
-                        <button type="button" className="btn btn-success pull-right dropdown-toggle" data-toggle="dropdown" aria-expanded="true" title="Thêm mới kế hoạch làm việc" >Thêm mới</button>
-                        <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }} >
-                            <li><a title={'Thêm mới khách hàng từ file excel'} onClick={this.handleImport}>Import file Excel</a></li>
-                            <li><a title={'Thêm mới khách hàng'} onClick={this.handleCreate}>Thêm bằng tay</a></li>
-                        </ul>
-                    </div>
-                    <a type="button" className="btn btn-primary pull-right" style={{marginRight: '2px'}}>Xuất file</a>
-                    {
-                        currentRow !== undefined &&
-                        <CustomerEdit
-                            id={currentRow._id}
-                            name={currentRow.name}
-                            code={currentRow.code}
-                            phone={currentRow.phone}
-                            email={currentRow.email}
-                            group={currentRow.group._id}
-                        />
-                    }
-                    {
-                        currentRow !== undefined &&
-                        <CustomerInformation
-                            id={currentRow._id}
-                            name={currentRow.name}
-                            liabilities={currentRow.liabilities}
-                        />
-                    }
-                    {
-                        <CustomerImportFile/>
-                    }
+                    <CreateForm/>
+                    { customer !== undefined && <InfoForm customer={customer} /> }
+                    { customer !== undefined && <EditForm customer={customer} /> }
+
                     <SearchBar
                         columns={[
-                            { title: 'Tên khách hàng', value: 'name' },
-                            { title: 'Khu vực', value: 'location' }
+                            { title: translate('crm.customer.name'), value: 'name' },
+                            { title: translate('crm.customer.code'), value: 'code' },
+                            { title: translate('crm.customer.phone'), value: 'phone' },
+                            { title: translate('crm.customer.email'), value: 'email' },
+                            { title: translate('crm.customer.address'), value: 'address' },
                         ]}
                         option={option}
                         setOption={this.setOption}
                         search={this.searchWithOption}
                     />
-
-                    {/* Bảng dữ liệu phân quyền */}
-                    <table className="table table-hover table-striped table-bordered" id="table-manage-role">
+                    <table className="table table-hover table-striped table-bordered" id="table-manage-crm-customer">
                         <thead>
                             <tr>
-                                <th>Tên khách hàng</th>
-                                <th>Mã khách hàng</th>
-                                <th>Số điện thoại</th>
-                                <th>Khu vực</th>
-                                <th>Email</th>
-                                <th>Nhóm khách hàng</th>
-                                <th style={{ width: '120px', textAlign: 'center' }}>
+                                <th>{translate('crm.customer.name')}</th>
+                                <th>{translate('crm.customer.code')}</th>
+                                <th>{translate('crm.customer.phone')}</th>
+                                <th>{translate('crm.customer.email')}</th>
+                                <th>{translate('crm.customer.address')}</th>
+                                <th style={{ width: "120px" }}>
                                     {translate('table.action')}
                                     <DataTableSetting
-                                        columnName={translate('table.action')}
                                         columnArr={[
-                                            "Tên khách hàng",
-                                            "Mã khách hàng",
-                                            "Số điện thoại",
-                                            "Địa chỉ",
-                                            "Khu vực"
+                                            translate('crm.customer.name'),
+                                            translate('crm.customer.code'),
+                                            translate('crm.customer.phone'),
+                                            translate('crm.customer.email'),
+                                            translate('crm.customer.address')
                                         ]}
                                         limit={this.state.limit}
                                         setLimit={this.setLimit}
-                                        tableId="table-manage-customer"
+                                        tableId="table-manage-crm-customer"
                                     />
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
                             {
-                                customer.list.length > 0 ?
-                                customer.list.map(customer =>
-                                        <tr key={`customer-${customer._id}`}>
-                                            <td> {customer.name} </td>
-                                            <td> {customer.code} </td>
-                                            <td> {customer.phone} </td>
-                                            <td> {customer.location} </td>
-                                            <td> {customer.email} </td>
-                                            <td> {customer.group ? customer.group.name : null} </td>
+                                listPaginate.length > 0 ?
+                                    listPaginate.map(cus =>
+                                        <tr key={cus._id}>
+                                            <td>{cus.name}</td>
+                                            <td>{cus.code}</td>
+                                            <td>{cus.phone}</td>
+                                            <td>{cus.email}</td>
+                                            <td>{cus.address}</td>
                                             <td style={{ textAlign: 'center' }}>
-                                                <a className="text-green" onClick={() => this.handleInformation(customer)}><i className="material-icons">visibility</i></a>
-                                                <a className="edit" onClick={()=>this.handleEdit(customer)}><i className="material-icons">edit</i></a>
-                                                <a className="text-red"><i className="material-icons">delete</i></a>
+                                                <a className="text-green" onClick={() => this.handleInfo(cus)}><i className="material-icons">visibility</i></a>
+                                                <a className="text-yellow" onClick={() => this.handleEdit(cus)}><i className="material-icons">edit</i></a>
+                                                <ConfirmNotification
+                                                    icon="question"
+                                                    title="Xóa thông tin về khách hàng"
+                                                    content="<h3>Xóa thông tin khách hàng</h3>"
+                                                    name="delete"
+                                                    className="text-red"
+                                                    func={()=>this.props.deleteCustomer(cus._id)}
+                                                />
                                             </td>
                                         </tr>
-                                    ) : customer.isLoading ?
-                                        <tr><td colSpan={'8'}>{translate('confirm.loading')}</td></tr> :
-                                        <tr><td colSpan={'8'}>{translate('confirm.no_data')}</td></tr>
+                                    ) : crm.customer.isLoading ?
+                                        <tr><td colSpan={6}>{translate('general.loading')}</td></tr> :
+                                        <tr><td colSpan={6}>{translate('general.no_data')}</td></tr>
                             }
                         </tbody>
                     </table>
 
                     {/* PaginateBar */}
-                    <PaginateBar pageTotal={customer.totalPages} currentPage={customer.page} func={this.setPage} />
+                    <PaginateBar pageTotal={crm.customer.totalPages} currentPage={crm.customer.page} func={this.setPage} />
                 </div>
             </div>
          );
+    }
+
+    componentDidMount(){
+        let company = getStorage('companyId');
+        let { limit, page } = this.state;
+        this.props.getCustomers({company});
+        this.props.getCustomers({company, limit, page});
+    }
+
+    handleInfo = async (customer) => {
+        console.log("FJLSKDJFLKSDF", customer)
+        await this.setState({ customer });
+
+        window.$('#modal-crm-customer-info').modal('show');
+    }
+
+    handleEdit = async (customer) => {
+        await this.setState({ customer });
+
+        window.$('#modal-crm-customer-edit').modal('show');
     }
 
     // Cac ham thiet lap va tim kiem gia tri
@@ -143,7 +133,9 @@ class CustomerManagement extends Component {
     }
 
     searchWithOption = async () => {
+        const company = getStorage('companyId');
         const data = {
+            company,
             limit: this.state.limit,
             page: 1,
             key: this.state.option,
@@ -153,8 +145,10 @@ class CustomerManagement extends Component {
     }
 
     setPage = (page) => {
+        const company = getStorage('companyId');
         this.setState({ page });
         const data = {
+            company,
             limit: this.state.limit,
             page: page,
             key: this.state.option,
@@ -164,8 +158,10 @@ class CustomerManagement extends Component {
     }
 
     setLimit = (number) => {
+        const company = getStorage('companyId');
         this.setState({ limit: number });
         const data = {
+            company,
             limit: number,
             page: this.state.page,
             key: this.state.option,
@@ -173,38 +169,17 @@ class CustomerManagement extends Component {
         };
         this.props.getCustomers(data);
     }
-
-    handleCreate = () => {
-        window.$("#modal-create-customer").modal('show');
-    }
-
-    handleImport = () => {
-        window.$("#modal-customer-import").modal('show');
-    }
-
-    handleEdit = async (customer) => {
-        await this.setState({
-            currentRow: customer
-        })
-        window.$("#modal-edit-customer").modal('show');
-    }
-
-    handleInformation = async (customer) => {
-        await this.setState({
-            currentRow: customer
-        })
-        window.$("#modal-customer-information").modal('show');
-    }
 }
  
 
-function mapState(state) {
-    const { customer, customerGroup } = state;
-    return { customer, customerGroup };
+function mapStateToProps(state) {
+    const { crm } = state;
+    return { crm };
 }
 
-const getState = {
-    getCustomers: CustomerActions.getCustomers
+const mapDispatchToProps = {
+    getCustomers: CrmCustomerActions.getCustomers,
+    deleteCustomer: CrmCustomerActions.deleteCustomer,
 }
 
-export default connect(mapState, getState)(withTranslate(CustomerManagement));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CrmCustomer));

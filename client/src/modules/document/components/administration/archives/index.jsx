@@ -147,7 +147,7 @@ class AdministrationDocumentArchives extends Component {
                     window.$('#modal-create-document-archive').modal('show');
                 }} title={`Thêm`} disable={archiveParent.length > 1 ? true : false}>{translate('general.add')}</button> */}
                 {
-                    archiveParent.length > 0 && <button class="btn btn-danger" style={{ marginLeft: '5px' }} onClick={this.deleteArchive}>{translate('general.delete')}</button>
+                    archiveParent.length > 0 && <button className="btn btn-danger" style={{ marginLeft: '5px' }} onClick={this.deleteArchive}>{translate('general.delete')}</button>
                 }
                 {<ExportExcel id="export-document-archive" exportData={exportData} style={{ marginRight: 5, marginTop: 2 }} />}
                 <CreateForm domainParent={this.state.archiveParent[0]} />

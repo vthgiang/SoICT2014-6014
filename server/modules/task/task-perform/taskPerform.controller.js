@@ -104,6 +104,7 @@ exports.stopTimesheetLog = async (req, res) => {
             content: timer
         })
     } catch (error) {
+        console.log(error);
         await LogError(req.user.email, ` stop timer `, req.user.company)
         res.status(400).json({
             success: false,
@@ -132,7 +133,7 @@ exports.createTaskAction = async (req, res) => {
         var user = task.user;
         var data = { "organizationalUnits": tasks.organizationalUnit, "title": "Phê duyệt hoạt động", "level": "general", "content": `<p><strong>${user.name}</strong> đã thêm mới hoạt động cho công việc <strong>${tasks.name}</strong>, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`, "sender": user.name, "users": [tasks.accountableEmployees] };
         NotificationServices.createNotification(tasks.organizationalUnit, data,);
-        sendEmail("vnist.qlcv@gmail.com", task.email, "Phê duyệt hoạt động", '', `<p><strong>${user.name}</strong> đã thêm mới hoạt động, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`);
+        sendEmail(task.email, "Phê duyệt hoạt động", '', `<p><strong>${user.name}</strong> đã thêm mới hoạt động, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`);
         await LogInfo(req.user.email, ` create task action  `, req.user.company)
         res.status(200).json({
             success: true,
@@ -681,8 +682,8 @@ exports.editTask = async (req, res) => {
     else if (req.body.type === 'edit_archived') {
         editArchivedOfTask(req, res);
     }
-    else if (req.body.type === 'edit_status') {
-        editTaskStatus(req, res);
+    else if (req.body.type === 'edit_activate') {
+        editActivateOfTask(req, res);
     } 
     else if (req.query.type === 'confirm_task') {
         confirmTask(req, res);
@@ -704,6 +705,9 @@ exports.evaluateTask = async (req, res) => {
     else if (req.body.role === 'accountable') {
         evaluateTaskByAccountableEmployees(req, res);
     }
+    else if (req.body.type === 'hoursSpent') {
+        editHoursSpentInEvaluate(req, res);
+    }
 }
 /**
  * edit task by responsible employee
@@ -715,7 +719,7 @@ editTaskByResponsibleEmployees = async (req, res) => {
         var tasks = task.tasks;
         var data = { "organizationalUnits": tasks.organizationalUnit, "title": "Cập nhật thông tin công việc", "level": "general", "content": `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc <strong>${tasks.name}</strong> với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}" target="_blank">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`, "sender": user.name, "users": tasks.accountableEmployees };
         NotificationServices.createNotification(tasks.organizationalUnit, data,);
-        sendEmail("vnist.qlcv@gmail.com", task.email, "Cập nhật thông tin công việc", '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}" target="_blank">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`);
+        sendEmail(task.email, "Cập nhật thông tin công việc", '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}" target="_blank">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`);
         await LogInfo(req.user.email, ` edit task  `, req.user.company);
         res.status(200).json({
             success: true,
@@ -741,7 +745,7 @@ editTaskByAccountableEmployees = async (req, res) => {
         var tasks = task.tasks;
         var data = { "organizationalUnits": tasks.organizationalUnit, "title": "Cập nhật thông tin công việc", "level": "general", "content": `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc <strong>${tasks.name}</strong> với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`, "sender": user.name, "users": tasks.responsibleEmployees };
         NotificationServices.createNotification(tasks.organizationalUnit, data,);
-        sendEmail("vnist.qlcv@gmail.com", task.email, "Cập nhật thông tin công việc", '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`);
+        sendEmail(task.email, "Cập nhật thông tin công việc", '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`);
         await LogInfo(req.user.email, ` edit task  `, req.user.company);
         res.status(200).json({
             success: true,
@@ -845,6 +849,30 @@ evaluateTaskByAccountableEmployees = async (req, res) => {
 }
 
 /**
+ * evaluate task by accountable employee
+ */
+editHoursSpentInEvaluate = async (req, res) => {
+    try {
+        let task = await PerformTaskService.editHoursSpentInEvaluate(req.body.data, req.params.taskId);
+        await LogInfo(req.user.email, ` edit task  `, req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['edit_hours_spent_in_evaluate_success'],
+            content: task
+        })
+    } catch (error) {
+        console.log(error);
+        await LogError(req.user.email, ` edit task `, req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['edit_hours_spent_in_evaluate_fail'],
+            content: error
+        });
+    }
+}
+
+
+/**
  * delete evaluation by id
  */
 exports.deleteEvaluation = async (req, res) => {
@@ -892,9 +920,9 @@ editArchivedOfTask = async (req, res) => {
 /**
  * Chinh sua trang thai cua cong viec
  */
-editTaskStatus = async (req, res) => {
+editActivateOfTask = async (req, res) => {
     // try {
-        let task = await PerformTaskService.editTaskStatus(req.params.taskId, req.body);
+        let task = await PerformTaskService.editActivateOfTask(req.params.taskId, req.body);
         await LogInfo(req.user.email, ` edit status of task  `, req.user.company);
         res.status(200).json({
             success: true,
@@ -978,7 +1006,7 @@ exports.editDocument = async (req, res) => {
         await LogError(req.user.email, `delete document of task  `, req.user.company);
         res.status(400).json({
             success: false,
-            messages: ['edit_document_task_comment_fail'],
+            messages: ['edit_document_task_comment_failure'],
             content: error
         })
     }

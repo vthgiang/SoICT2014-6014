@@ -23,6 +23,7 @@ exports.getNumberAnnaulLeave = async (email, company) => {
         let annulLeaves = await AnnualLeave.find({
             company: company,
             employee: employee._id,
+            status: 'pass',
             startDate: {
                 "$gt": firstDay,
                 "$lte": lastDay
@@ -30,7 +31,7 @@ exports.getNumberAnnaulLeave = async (email, company) => {
         });
         let total = 0;
         annulLeaves.forEach(x => {
-            total = total + (new Date(x.endDate).getTime() - new Date(x.startDate).getTime()) / (21 * 60 * 60 * 1000) + 1;
+            total = total + Math.round((new Date(x.endDate).getTime() - new Date(x.startDate).getTime()) / (21 * 60 * 60 * 1000)) + 1;
         })
         return {
             numberAnnulLeave: total

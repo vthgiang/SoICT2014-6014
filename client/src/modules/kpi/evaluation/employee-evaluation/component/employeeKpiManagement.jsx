@@ -311,7 +311,7 @@ class EmployeeKpiManagement extends Component {
                         
                         </div>
 
-                        <DataTableSetting class="pull-right" tableId="kpiManagement" tableContainerId="tree-table-container" tableWidth="1300px"
+                        <DataTableSetting className="pull-right" tableId="kpiManagement" tableContainerId="tree-table-container" tableWidth="1300px"
                             columnArr={[
                                 'STT',
                                 'Thời gian',

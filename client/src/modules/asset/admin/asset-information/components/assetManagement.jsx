@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar, SelectMulti, ExportExcel } from '../../../../../common-components';
-
+import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import { AssetManagerActions } from '../redux/actions';
 import { AssetTypeActions } from "../../asset-type/redux/actions";
 import { UserActions } from '../../../../super-admin/user/redux/actions';
@@ -23,6 +23,7 @@ class AssetManagement extends Component {
             canRegisterForUse: "",
             page: 0,
             limit: 5,
+            managedBy: this.props.managedBy?this.props.managedBy:''
         }
     }
 
@@ -32,6 +33,7 @@ class AssetManagement extends Component {
         this.props.getAllAsset(this.state);
         this.props.getUser();
         this.props.getAllRoles();
+        this.props.getAllDepartments();
     }
 
     // Function format ngày hiện tại thành dạnh mm-yyyy
@@ -294,11 +296,11 @@ class AssetManagement extends Component {
     }
 
     render() {
-        var { assetsManager, assetType, translate, user } = this.props;
-        var { page, limit, currentRowView, currentRow, purchaseDate } = this.state;
+        var { assetsManager, assetType, translate, user, isActive, department } = this.props;
+        var { page, limit, currentRowView, currentRow, purchaseDate,managedBy } = this.state;
 
         var lists = "", exportData;
-        var userlist = user.list;
+        var userlist = user.list, departmentlist = department.list;
         var assettypelist = assetType.listAssetTypes;
         if (assetsManager.isLoading === false) {
             lists = assetsManager.listAssets;
@@ -315,7 +317,8 @@ class AssetManagement extends Component {
         }
 
         return (
-            <div className="box">
+            <div  className ={isActive?isActive:"box"}>
+
                 <div className="box-body qlcv">
                     {/* Form thêm tài sản mới */}
                     <AssetCreateForm />
@@ -427,7 +430,7 @@ class AssetManagement extends Component {
                                         <td>{this.formatDate(x.purchaseDate)}</td>
                                         <td>{x.managedBy && userlist.length && userlist.find(item => item._id === x.managedBy) ? userlist.find(item => item._id === x.managedBy).name : 'User is deleted'}</td>
                                         <td>{x.assignedToUser ? (userlist.length && userlist.find(item => item._id === x.assignedToUser) ? userlist.find(item => item._id === x.assignedToUser).name : 'User is deleted') : ''}</td>
-                                        <td>{x.assignedToOrganizationalUnit ? x.assignedToOrganizationalUnit : '' }</td>
+                                        <td>{x.assignedToOrganizationalUnit ? (departmentlist.length && departmentlist.find(item => item._id === x.assignedToOrganizationalUnit) ? departmentlist.find(item => item._id === x.assignedToOrganizationalUnit).name : 'Organizational Unit is deleted') : ''}</td>
                                         <td>{x.status}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title={translate('asset.general_information.view')}><i className="material-icons">view_list</i></a>
@@ -478,7 +481,7 @@ class AssetManagement extends Component {
                         canRegisterForUse={currentRowView.canRegisterForUse}
                         detailInfo={currentRowView.detailInfo}
                         cost={currentRowView.cost}
-                        readByRoles={currentRow.readByRoles}
+                        readByRoles={currentRowView.readByRoles}
                         residualValue={currentRowView.residualValue}
                         startDepreciation={currentRowView.startDepreciation}
                         usefulLife={currentRowView.usefulLife}
@@ -505,6 +508,7 @@ class AssetManagement extends Component {
                     currentRow &&
                     <AssetEditForm
                         _id={currentRow._id}
+                        employeeId ={managedBy}
                         avatar={currentRow.avatar}
                         code={currentRow.code}
                         assetName={currentRow.assetName}
@@ -554,8 +558,8 @@ class AssetManagement extends Component {
 };
 
 function mapState(state) {
-    const { assetsManager, assetType, user, role } = state;
-    return { assetsManager, assetType, user, role };
+    const { assetsManager, assetType, user, role, department } = state;
+    return { assetsManager, assetType, user, role, department };
 };
 
 const actionCreators = {
@@ -564,7 +568,7 @@ const actionCreators = {
     getListBuildingAsTree: AssetManagerActions.getListBuildingAsTree,
     deleteAsset: AssetManagerActions.deleteAsset,
     getUser: UserActions.get,
-    getDepartment: UserActions.getDepartmentOfUser,
+    getAllDepartments: DepartmentActions.get,
     getAllRoles:  RoleActions.get,
 };
 

@@ -30,7 +30,7 @@ function updateIncident(assetId, data) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/asset/assets/${assetId}/incident-logs`,
         method: 'PATCH',
-        data
+        data:data
     }, true, true, 'asset.incident');
 }
 

@@ -49,7 +49,7 @@ class DetailTaskTab extends Component {
 
             currentMonth: currentYear + '-' + (currentMonth + 1),
             nextMonth: (currentMonth > 10) ? ((currentYear + 1) + '-' + (currentMonth - 10)) : (currentYear + '-' + (currentMonth + 2)),
-            dueForEvaluationOfTask: currentYear + '-' + currentMonth + '-' + 7
+            dueForEvaluationOfTask: currentYear + '-' + (currentMonth + 1) + '-' + 7
         }
 
     }
@@ -197,41 +197,8 @@ class DetailTaskTab extends Component {
                 showEndTask: id,
             }
         });
-        if (codeInProcess) {
-            if (typeOfTask === "Gateway") {
-                window.$(`#modal-select-following-task`).modal('show');
-            }
-            else {
-                Swal.fire({
-                    title: "Bạn có chắc chắn muốn kết thúc công việc",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    cancelButtonText: this.props.translate('general.no'),
-                    confirmButtonText: this.props.translate('general.yes'),
-                }).then((result) => {
-                    if (result.value) {
-                        this.props.editStatusTask(id, status, typeOfTask)
-                    }
-                })
-            }
-        }
-        else {
-            Swal.fire({
-                title: "Bạn có chắc chắn muốn kết thúc công việc",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                cancelButtonText: this.props.translate('general.no'),
-                confirmButtonText: this.props.translate('general.yes'),
-            }).then((result) => {
-                if (result.value) {
-                    this.props.editStatusTask(id, status, false)
-                }
-            })
-        }
+
+        window.$(`#modal-select-following-task`).modal('show');
     }
 
     handleShowEvaluate = async (id, role) => {
@@ -316,6 +283,7 @@ class DetailTaskTab extends Component {
         if (listEmployeeNotConfirm.length !== 0) {
             checkConfirmOtherUser = true;
         }
+        listEmployeeNotConfirm = listEmployeeNotConfirm.filter(item => item.active);
 
         return {
             listEmployeeNotConfirm: listEmployeeNotConfirm,
@@ -349,7 +317,7 @@ class DetailTaskTab extends Component {
     }
 
     checkEvaluationTaskAndKpiLink = (task) => {
-        const { dueForEvaluationOfTask, currentMonth, nextMonth } = this.state;
+        const { currentMonth, nextMonth } = this.state;
 
         let evaluations = [], checkEvaluationTask = false;
         let listEmployeeNotKpiLink = [], responsibleEmployeesNotKpiLink = [], accountableEmployeesNotKpiLink = [], consultedEmployeesNotKpiLink = [];
@@ -360,9 +328,6 @@ class DetailTaskTab extends Component {
             if (evaluations.length === 0) {
                 // Check đánh giá trong tháng
                 checkEvaluationTask = true;
-
-                // Nhân viên chưa liên kết KPI
-                listEmployeeNotKpiLink = task.responsibleEmployees.concat(task.accountableEmployees).concat(task.consultedEmployees);
             } else {
                 // Nhân viên chưa liên kết KPI
                 if (evaluations[0].results && evaluations[0].results.length !== 0) {
@@ -404,10 +369,7 @@ class DetailTaskTab extends Component {
                     }
 
                     listEmployeeNotKpiLink = responsibleEmployeesNotKpiLink.concat(accountableEmployeesNotKpiLink).concat(consultedEmployeesNotKpiLink);
-                } else {
-                    // Nhân viên chưa liên kết KPI
-                    listEmployeeNotKpiLink = task.responsibleEmployees.concat(task.accountableEmployees).concat(task.consultedEmployees);
-                }
+                } 
             }
         }
 
@@ -424,6 +386,7 @@ class DetailTaskTab extends Component {
         listEmployeeNotKpiLink = idArray.map(item => {
             return listEmployeeNotKpiLink[item]
         })
+        listEmployeeNotKpiLink = listEmployeeNotKpiLink.filter(item => item.active);
 
         return {
             checkEvaluationTask: checkEvaluationTask,
@@ -432,25 +395,33 @@ class DetailTaskTab extends Component {
         }
     }
 
-    checkDeadlineForEvaluation = () => {
-        const { dueForEvaluationOfTask } = this.state;
+    checkDeadlineForEvaluation = (task) => {
+        const { dueForEvaluationOfTask, currentMonth } = this.state;
 
-        let checkDeadlineForEvaluation = false, deadlineForEvaluation;
+        let checkDeadlineForEvaluation = false, deadlineForEvaluation, evaluations;
         let currentDate = new Date();
+        let lastMonth = currentDate.getFullYear() + '-' + currentDate.getMonth();
 
-        // Check số ngày đến hạn đánh giá
-        deadlineForEvaluation = ((new Date(dueForEvaluationOfTask)).getTime() - currentDate.getTime()) / (3600 * 24 * 1000);
-        if (deadlineForEvaluation > 0) {
-            checkDeadlineForEvaluation = true;
+        if (task && task.evaluations) {
+            // Check evaluations tháng trước
+            evaluations = task.evaluations.filter(item => new Date(item.date) >= new Date(lastMonth) && new Date(item.date) < new Date(currentMonth));
 
-            if (deadlineForEvaluation < 1) {
-                if (deadlineForEvaluation * 24 < 1) {
-                    deadlineForEvaluation = Math.floor(deadlineForEvaluation * 24 * 60) + ' phút';
-                } else {
-                    deadlineForEvaluation = Math.floor(deadlineForEvaluation * 24) + ' giờ';
+            if (evaluations.length !== 0) {
+                // Check số ngày đến hạn đánh giá
+                deadlineForEvaluation = ((new Date(dueForEvaluationOfTask)).getTime() - currentDate.getTime()) / (3600 * 24 * 1000);
+                if (deadlineForEvaluation > 0) {
+                    checkDeadlineForEvaluation = true;
+
+                    if (deadlineForEvaluation < 1) {
+                        if (deadlineForEvaluation * 24 < 1) {
+                            deadlineForEvaluation = Math.floor(deadlineForEvaluation * 24 * 60) + ' phút';
+                        } else {
+                            deadlineForEvaluation = Math.floor(deadlineForEvaluation * 24) + ' giờ';
+                        }
+                    } else {
+                        deadlineForEvaluation = Math.floor(deadlineForEvaluation) + ' ngày';
+                    }
                 }
-            } else {
-                deadlineForEvaluation = Math.floor(deadlineForEvaluation) + ' ngày';
             }
         }
 
@@ -458,6 +429,64 @@ class DetailTaskTab extends Component {
             checkDeadlineForEvaluation: checkDeadlineForEvaluation,
             deadlineForEvaluation: deadlineForEvaluation
         }
+    }
+
+    calculateHoursSpentOnTask = async (taskId, timesheetLogs, evaluateId, startDate, endDate) => {
+        let results = [];
+
+        for (let i in timesheetLogs) {
+            let log = timesheetLogs[i];
+
+            let startedAt = new Date(log.startedAt);
+            let stoppedAt = new Date(log.stoppedAt);
+
+            if (startedAt.getTime() >= new Date(startDate).getTime() && stoppedAt.getTime() <= new Date(endDate).getTime()) {
+                let { creator, duration } = log;
+                let check = true;
+
+                let newResults = results.map(item => {
+                    if (creator === item.employee) {
+                        check = false;
+                        return {
+                            employee: creator,
+                            hoursSpent: item.hoursSpent + duration,
+                        }
+                    } else {
+                        return item;
+                    }
+                })
+
+                if (check) {
+                    let employeeHoursSpent = {
+                        employee: creator,
+                        hoursSpent: duration,
+                    };
+
+                    newResults.push(employeeHoursSpent);
+                }
+
+                results = [...newResults];
+            }
+        }
+
+        let data = {
+            evaluateId: evaluateId,
+            timesheetLogs: results,
+        }
+
+        await this.props.editHoursSpentInEvaluate(data, taskId);
+    }
+
+    convertTime = (duration) => {
+        let seconds = Math.floor((duration / 1000) % 60),
+            minutes = Math.floor((duration / (1000 * 60)) % 60),
+            hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+
+        hours = (hours < 10) ? "0" + hours : hours;
+        minutes = (minutes < 10) ? "0" + minutes : minutes;
+        seconds = (seconds < 10) ? "0" + seconds : seconds;
+
+        return hours + ":" + minutes + ":" + seconds;
     }
 
     render() {
@@ -534,7 +563,7 @@ class DetailTaskTab extends Component {
         checkConfirmTask = this.checkConfirmTask(task);
         checkEvaluationTaskAction = this.checkEvaluationTaskAction(task);
         checkEvaluationTaskAndKpiLink = this.checkEvaluationTaskAndKpiLink(task);
-        checkDeadlineForEvaluation = this.checkDeadlineForEvaluation()
+        checkDeadlineForEvaluation = this.checkDeadlineForEvaluation(task)
         warning = (checkConfirmTask && checkConfirmTask.checkConfirm)
             || (checkEvaluationTaskAction && checkEvaluationTaskAction.checkEvaluationTaskAction)
             || (checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkEvaluationTask)
@@ -566,7 +595,7 @@ class DetailTaskTab extends Component {
                             </React.Fragment>
                         }
 
-                        {checkInactive && codeInProcess && (currentRole === "accountable" || (currentRole === "responsible" && checkHasAccountable === false)) &&
+                        {/* {checkInactive && codeInProcess && (currentRole === "accountable" || (currentRole === "responsible" && checkHasAccountable === false)) &&
                             (statusTask !== "Finished" &&
                                 (typeOfTask === "Gateway" ?
                                     <a className="btn btn-app" onClick={() => this.handleEndTask(id, "Inprocess", codeInProcess, typeOfTask)} title={translate('task.task_management.detail_route_task')}>
@@ -577,7 +606,7 @@ class DetailTaskTab extends Component {
                                     </a>
                                 )
                             )
-                        }
+                        } */}
 
                         {((currentRole === "consulted" || currentRole === "responsible" || currentRole === "accountable") && checkInactive) &&
                             <React.Fragment>
@@ -621,17 +650,25 @@ class DetailTaskTab extends Component {
                         {/** Nhắc nhở */}
                         {
                             task && warning
-                            && <div className="description-box" style={{ border: "3px double #f38961" }}>
-                                <h4>Cảnh báo</h4>
+                            && <div className="description-box" style={{ border: "3px double #e8cbcb" }}>
+                                <h4>{translate('task.task_management.warning')}</h4>
+                                {/* Kích hoạt công việc phía sau trong quy trình */}
+                                {checkInactive && codeInProcess && (currentRole === "accountable" || (currentRole === "responsible" && checkHasAccountable === false)) &&
+                                    <div>
+                                        <strong>{translate('task.task_perform.is_task_process')}.
+                                            <a style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => this.handleEndTask(id, "Inprocess", codeInProcess, typeOfTask)}> {translate('task.task_perform.activated_task')}</a> {translate('task.task_perform.following_task')}
+                                        </strong>
+                                    </div>
+                                }
                                 {/** Xác nhận công việc */}
                                 {
                                     checkConfirmTask && checkConfirmTask.checkConfirmCurrentUser
-                                    && <div><strong>Bạn cần <a style={{ cursor: "pointer" }} onClick={() => this.confirmTask(task)}>xác nhận tham gia công việc này</a></strong></div>
+                                    && <div><strong>{translate('task.task_management.you_need')} <a style={{ cursor: "pointer" }} onClick={() => this.confirmTask(task)}>{translate('task.task_management.confirm_task')}</a></strong></div>
                                 }
                                 {
                                     checkConfirmTask && checkConfirmTask.checkConfirmOtherUser
                                     && <div>
-                                        <strong>Chưa xác nhận công việc: </strong>
+                                        <strong>{translate('task.task_management.not_confirm')}: </strong>
                                         &nbsp;&nbsp;
                                         {
                                             checkConfirmTask.listEmployeeNotConfirm.length !== 0
@@ -645,23 +682,15 @@ class DetailTaskTab extends Component {
 
                                 {/** Chưa có đánh giá */}
                                 {
-                                    checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkEvaluationTask
-                                    && <div><strong>Công việc chưa có đánh giá cho tháng này</strong></div>
-                                }
-
-                                {/** Chưa đánh giá hoạt động */}
-                                {
-                                    checkEvaluationTaskAction && checkEvaluationTaskAction.checkEvaluationTaskAction
-                                    && <div>
-                                        <strong>Còn <span style={{ color: "red" }}>{checkEvaluationTaskAction.numberOfTaskActionNotEvaluate}</span> hoạt động chưa được đánh giá tháng này</strong>
-                                    </div>
+                                    task.status === "Inprocess" && checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkEvaluationTask
+                                    && <div><strong>{translate('task.task_management.not_have_evaluation')}</strong></div>
                                 }
 
                                 {/** Chưa liên kết KPI */}
                                 {
-                                    checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkKpiLink
+                                    task.status === "Inprocess" && checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkKpiLink
                                     && <div>
-                                        <strong>Chưa liên kết KPI tháng này</strong>
+                                        <strong>{translate('task.task_management.detail_not_kpi')}: </strong>
                                         &nbsp;&nbsp;
                                         {
                                             checkEvaluationTaskAndKpiLink.listEmployeeNotKpiLink.length !== 0
@@ -673,11 +702,19 @@ class DetailTaskTab extends Component {
                                     </div>
                                 }
 
+                                {/** Chưa đánh giá hoạt động */}
+                                {
+                                    checkEvaluationTaskAction && checkEvaluationTaskAction.checkEvaluationTaskAction
+                                    && <div>
+                                        <strong>{translate('task.task_management.action_not_rating')}:&nbsp;&nbsp; <span style={{ color: "red" }}>{checkEvaluationTaskAction.numberOfTaskActionNotEvaluate}</span></strong>
+                                    </div>
+                                }
+
                                 {/** Thời hạn chỉnh sửa thông tin */}
                                 {
                                     checkDeadlineForEvaluation && checkDeadlineForEvaluation.checkDeadlineForEvaluation
                                     && <div>
-                                        <strong> Còn <span style={{ color: "red" }}>{checkDeadlineForEvaluation.deadlineForEvaluation}</span> là hết hạn chỉnh sửa đánh giá công việc tháng trước</strong>
+                                        <strong>{translate('task.task_management.left_can_edit_task')}:&nbsp;&nbsp; <span style={{ color: "red" }}>{checkDeadlineForEvaluation.deadlineForEvaluation}</span></strong>
                                     </div>
                                 }
                             </div>
@@ -813,7 +850,9 @@ class DetailTaskTab extends Component {
                                         evalList.map((eva, keyEva) => {
                                             return (
                                                 <div key={keyEva} className="description-box">
+                                                    <button className="btn btn-success pull-right" onClick={() => this.calculateHoursSpentOnTask(task._id, task.timesheetLogs, eva._id, eva.prevDate, eva.date)}>Tính thời gian</button>
                                                     <h4>{translate('task.task_management.detail_eval')}&nbsp;{this.formatDate(eva.prevDate)} <i className="fa fa-fw fa-caret-right"></i> {this.formatDate(eva.date)}</h4>
+
                                                     {
                                                         eva.results.length !== 0 &&
                                                         <div>
@@ -868,6 +907,22 @@ class DetailTaskTab extends Component {
                                                             })
                                                         ) : <div><strong>{translate('task.task_management.detail_all_not_kpi')}</strong></div>
                                                     }
+
+                                                    {/* Thời gian bấm giờ */}
+                                                    {
+                                                        eva.results.length !== 0 &&
+                                                        <div>
+                                                            <div><strong>Thời gian bấm giờ</strong> (Giờ)</div>
+                                                            <ul>
+                                                                {(eva.results.length !== 0) ?
+                                                                    eva.results.map((res, index) => {
+                                                                        return <li key={index}>{res.employee.name}: &nbsp;&nbsp; {res.hoursSpent ? this.convertTime(res.hoursSpent) : 0}</li>
+                                                                    }) : <li>{translate('task.task_management.detail_not_eval')}</li>
+                                                                }
+                                                            </ul>
+                                                        </div>
+                                                    }
+
                                                 </div>
                                             );
                                         })
@@ -935,7 +990,7 @@ class DetailTaskTab extends Component {
                         role={currentRole}
                         typeOfTask={typeOfTask}
                         codeInProcess={codeInProcess}
-                        title={"Chọn công việc thực hiện tiếp theo"}
+                        title={translate('task.task_perform.choose_following_task')}
                         perform='selectFollowingTask'
                     />
                 }
@@ -962,6 +1017,7 @@ const actionGetState = { //dispatchActionToProps
     getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
     getTaskLog: performTaskAction.getTaskLog,
     editStatusTask: performTaskAction.editStatusOfTask,
+    editHoursSpentInEvaluate: performTaskAction.editHoursSpentInEvaluate,
     confirmTask: performTaskAction.confirmTask
 }
 

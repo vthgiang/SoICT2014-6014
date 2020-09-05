@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { withTranslate } from "react-redux-multilingual";
 
 import { performTaskAction } from '../redux/actions';
-import { taskManagementActions } from '../../task-management/redux/actions';
 
 class OutgoingDataTab extends Component {
 
@@ -199,7 +198,7 @@ class OutgoingDataTab extends Component {
                                 : <div>{ translate('task.task_process.not_have_doc') }</div>
                         }
 
-                        <button type="button" className="btn btn-success pull-right" style={{ margin: "2em 2em" }} onClick={() => this.handleSaveEdit()} disabled={this.DOCUMENT.length === 0 && this.INFORMATION.length === 0}>Lưu</button>
+                        <button type="button" className="btn btn-success pull-right" style={{ margin: "2em 2em" }} onClick={() => this.handleSaveEdit()} disabled={this.DOCUMENT.length === 0 && this.INFORMATION.length === 0}>{ translate('task.task_process.save') }</button>
                     </div>
                 }
             </React.Fragment>

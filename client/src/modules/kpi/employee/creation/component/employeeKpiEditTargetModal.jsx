@@ -10,13 +10,10 @@ import { DialogModal, ErrorLabel, SelectBox } from '../../../../../common-compon
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
 
-var translate='';
 class ModalEditEmployeeKpi extends Component {
 
     constructor(props) {
         super(props);
-
-        translate = this.props.translate;
 
         this.state = {
             _id: null,
@@ -34,21 +31,17 @@ class ModalEditEmployeeKpi extends Component {
             submitted: false
         };
     }
-
-    componentDidMount() {
-        this.props.getCurrentKPIUnit(localStorage.getItem("currentRole"));
-    }
     
     static getDerivedStateFromProps(nextProps, prevState){
         
-        if (nextProps.target._id !== prevState._id) {
+        if (nextProps.id !== prevState._id && nextProps.employeeKpi) {
             return {
                 ...prevState,
-                _id: nextProps.target._id,
-                name: nextProps.target.name,
-                parent: nextProps.target.parent ? nextProps.target.parent._id : null,
-                weight: nextProps.target.weight,
-                criteria: nextProps.target.criteria,
+                _id: nextProps.id,
+                name: nextProps.employeeKpi.name,
+                parent: nextProps.employeeKpi.parent ? nextProps.employeeKpi.parent._id : null,
+                weight: nextProps.employeeKpi.weight,
+                criteria: nextProps.employeeKpi.criteria,
 
                 errorOnName: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
                 errorOnCriteria: undefined,
@@ -58,22 +51,31 @@ class ModalEditEmployeeKpi extends Component {
             return null;
         }
     }
+
+    shouldComponentUpdate = (nextProps, nextState) => {
+        if (nextState._id !== this.state._id) {
+            this.props.getCurrentKPIUnit(localStorage.getItem("currentRole"));
+
+            return false;
+        }
+        return true;
+    }
     
     /**Gửi request chỉnh sửa mục tiêu này */
     handleEditTargetEmployeeKpi = async () => {
-        let id = this.state._id;
+        const { _id, name, parent, weight, criteria } = this.state;
 
         let newTarget = {
-            name: this.state.name,
-            parent: this.state.parent,
-            weight: this.state.weight,
-            criteria: this.state.criteria,
+            name: name,
+            parent: parent,
+            weight: weight,
+            criteria: criteria,
         } 
         
         if (this.isFormValidated()) {
-            let res = await this.props.editEmployeeKpi(id, newTarget);
+            let res = await this.props.editEmployeeKpi(_id, newTarget);
 
-            window.$(`#editEmployeeKpi${this.props.target._id}`).modal("hide");
+            window.$(`#editEmployeeKpi${_id}`).modal("hide");
             window.$(".modal-backdrop").remove();
             window.$('body').removeClass('modal-open');
             window.$('body').css('padding-right',"0px");
@@ -84,7 +86,7 @@ class ModalEditEmployeeKpi extends Component {
 
     handleNameChange = (e) => {
         let value = e.target.value;
-        let validation = ValidationHelper.validateName(translate, value);
+        let validation = ValidationHelper.validateName(this.props.translate, value);
         
         this.setState(state => {
             return {
@@ -106,7 +108,7 @@ class ModalEditEmployeeKpi extends Component {
 
     handleCriteriaChange = (e) => {
         let value = e.target.value;
-        let validation = ValidationHelper.validateDescription(translate, value);
+        let validation = ValidationHelper.validateDescription(this.props.translate, value);
 
         this.setState(state => {
             return {
@@ -119,7 +121,7 @@ class ModalEditEmployeeKpi extends Component {
 
     handleWeightChange = (e) => {
         let value = e.target.value;
-        let validation = this.validateWeight(translate, value);
+        let validation = this.validateWeight(this.props.translate, value);
 
         this.setState(state => {
             return {
@@ -140,12 +142,12 @@ class ModalEditEmployeeKpi extends Component {
         if (value < 0) {
             return {
                 status: false,
-                message: translate('kpi.employee.employee_kpi_set.create_employee_kpi_modal.validate_weight.less_than_0')
+                message: this.props.translate('kpi.employee.employee_kpi_set.create_employee_kpi_modal.validate_weight.less_than_0')
             };
         } else if(value > 100){
             return {
                 status: false,
-                message: translate('kpi.employee.employee_kpi_set.create_employee_kpi_modal.validate_weight.greater_than_100')
+                message: this.props.translate('kpi.employee.employee_kpi_set.create_employee_kpi_modal.validate_weight.greater_than_100')
             };
         } else {
             return {
@@ -155,21 +157,22 @@ class ModalEditEmployeeKpi extends Component {
     }
 
     isFormValidated = () => {
+        const { translate } = this.props;
         const { name, criteria, weight } = this.state;
         
         let validatateName, validateCriteria, validateWeight, result;
-
+        
         validatateName = ValidationHelper.validateName(translate, name);
         validateCriteria = ValidationHelper.validateDescription(translate, criteria);
         validateWeight = this.validateWeight(translate, weight)
-
+        
         result = validatateName.status && validateCriteria.status && validateWeight.status;
         return result;
     }
 
     render() {
         var currentOrganizationalUnitKPI, items;
-        const { target, createKpiUnit, translate } = this.props;
+        const { createKpiUnit, translate } = this.props;
         const { _id, name, weight, criteria, errorOnName, errorOnCriteria, errorOnWeight, editing } = this.state;
 
         if (createKpiUnit.currentKPI) currentOrganizationalUnitKPI = createKpiUnit.currentKPI;
@@ -185,7 +188,7 @@ class ModalEditEmployeeKpi extends Component {
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID={`editEmployeeKpi${target._id}`} isLoading={editing}
+                    modalID={`editEmployeeKpi${_id}`} isLoading={editing}
                     formID="formeditEmployeeKpi"
                     title={translate('kpi.employee.employee_kpi_set.edit_employee_kpi_modal.edit_employee_kpi')}
                     msg_success={translate('kpi.employee.employee_kpi_set.edit_employee_kpi_modal.success')}

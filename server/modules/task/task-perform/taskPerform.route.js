@@ -55,7 +55,6 @@ router.patch('/tasks/:taskId/task-comments/:commentId/comments/files/:fileId', a
 // Task Information
 router.patch('/tasks/:taskId/task-informations', auth, PerformTaskController.editTaskInformation);
 
-
 router.post('/tasks/:taskId', auth, PerformTaskController.editTask);
 router.post('/tasks/:taskId/evaluate', auth, PerformTaskController.evaluateTask);
 router.delete('/tasks/:taskId/evaluations/:evaluationId', auth, PerformTaskController.deleteEvaluation);

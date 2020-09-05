@@ -285,7 +285,7 @@ class ResultsOfAllEmployeeKpiSetChart extends Component {
 
     /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
     convertDataToExportData = (data) => {
-        let fileName = "Biểu đồ theo dõi kết quả KPI nhân viên toàn đơn vị theo từng tháng";
+        let fileName = "Kết quả KPI nhân viên toàn đơn vị theo từng tháng";
         let convertToObjectData={}, finalData=[],employeeKpiArray=[];
         if (data) {    
             

@@ -1,30 +1,26 @@
 import React, { Component } from "react";
-import { withTranslate } from "react-redux-multilingual";
 import { connect } from 'react-redux';
-import { FormInfoProcess } from "./formInfoProcess";
-import { DialogModal, SelectBox, ErrorLabel } from "../../../../common-components";
-import { UserActions } from "../../../super-admin/user/redux/actions";
 import { getStorage } from '../../../../config';
-import BpmnModeler from 'bpmn-js/lib/Modeler';
-// import Modeling from 'bpmn-js/lib/features/Modeling'
-// import elementRegistry from ''
-import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
-import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
-import 'bpmn-js/dist/assets/diagram-js.css';
-import './processDiagram.css'
+import { withTranslate } from "react-redux-multilingual";
+import { DialogModal, SelectBox, ErrorLabel } from "../../../../common-components";
 import { TaskProcessActions } from "../redux/actions";
 import { DepartmentActions } from "../../../super-admin/organizational-unit/redux/actions";
-import customModule from './custom'
+import { UserActions } from "../../../super-admin/user/redux/actions";
+import { AddTaskTemplate } from "../../task-template/component/addTaskTemplate";
+import { TaskProcessValidator } from './taskProcessValidator';
 
 import { is } from 'bpmn-js/lib/util/ModelUtil';
 import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil'
-import { isExpanded } from 'bpmn-js/lib/util/DiUtil';
+
 import ElementFactory from 'bpmn-js/lib/features/modeling/ElementFactory';
-import LabelEditingProvider from 'bpmn-js/lib/features/label-editing/LabelEditingProvider'
-import { AddTaskTemplate } from "../../task-template/component/addTaskTemplate";
+import BpmnModeler from 'bpmn-js/lib/Modeler';
+import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
+import customModule from './custom'
+import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
+import 'bpmn-js/dist/assets/diagram-js.css';
+import './processDiagram.css'
 
-import { TaskProcessValidator } from './taskProcessValidator';
-
+// custom element
 ElementFactory.prototype._getDefaultSize = function (semantic) {
 
 	if (is(semantic, 'bpmn:Task')) {
@@ -46,8 +42,6 @@ ElementFactory.prototype._getDefaultSize = function (semantic) {
 
 };
 
-
-
 //Xóa element khỏi palette 
 var _getPaletteEntries = PaletteProvider.prototype.getPaletteEntries;
 PaletteProvider.prototype.getPaletteEntries = function (element) {
@@ -61,6 +55,8 @@ PaletteProvider.prototype.getPaletteEntries = function (element) {
 	delete entries['create.task'];
 	return entries;
 }
+
+// diagram khởi tạo
 const initialDiagram =
 	'<?xml version="1.0" encoding="UTF-8"?>' +
 	'<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
@@ -81,7 +77,7 @@ const initialDiagram =
 	'</bpmndi:BPMNDiagram>' +
 	'</bpmn:definitions>';
 
-
+// zoom level mặc định, dùng cho zoomin zoomout
 var zlevel = 1;
 
 class ModalCreateTaskProcess extends Component {
@@ -108,149 +104,6 @@ class ModalCreateTaskProcess extends Component {
 		this.generateId = "createprocess"
 	}
 
-	handleChangeBpmnName = async (e) => {
-		let { value } = e.target;
-		let msg = TaskProcessValidator.validateProcessName(value);
-		await this.setState(state => {
-			return {
-				...state,
-				processName: value,
-				errorOnProcessName: msg,
-			}
-		});
-	}
-
-	handleChangeBpmnDescription = async (e) => {
-		let { value } = e.target;
-		await this.setState(state => {
-			return {
-				...state,
-				processDescription: value,
-				errorOnProcessDescription: TaskProcessValidator.validateProcessDescription(value),
-			}
-		});
-	}
-
-	handleChangeViewer = async (value) => {
-		await this.setState(state => {
-
-			return {
-				...state,
-				viewer: value,
-				errorOnViewer: TaskProcessValidator.validateViewer(value),
-			}
-		})
-	}
-
-	handleChangeManager = async (value) => {
-		await this.setState(state => {
-
-			return {
-				...state,
-				manager: value,
-				errorOnManager: TaskProcessValidator.validateManager(value),
-			}
-		})
-	}
-
-
-	// Các hàm cập nhật thông tin task
-
-	handleUpdateElement = (abc) => {
-		const modeling = this.modeler.get('modeling');
-		let element1 = this.modeler.get('elementRegistry').get(this.state.id);
-		modeling.updateProperties(element1, {
-			info: this.state.info,
-		});
-	}
-
-	handleChangeName = async (value) => {
-		let stringName = value
-		const modeling = this.modeler.get('modeling');
-		let element1 = this.modeler.get('elementRegistry').get(this.state.id);
-		modeling.updateProperties(element1, {
-			name: stringName,
-		});
-		window.$(`.task-process-gate-way-title`).css("background-color", "white")
-	}
-
-	handleChangeDescription = async (value) => {
-		let { listOrganizationalUnit } = this.props
-		await this.setState(state => {
-			state.info[`${state.id}`] = {
-				...state.info[`${state.id}`],
-				code: state.id,
-				description: value,
-			}
-			return {
-				...state,
-			}
-		})
-		this.handleUpdateElement();
-	}
-	handleChangeOrganizationalUnit = async (value) => {
-		await this.setState(state => {
-			state.info[`${state.id}`] = {
-				...state.info[`${state.id}`],
-				code: state.id,
-				organizationalUnit: value,
-			}
-			return {
-				...state,
-			}
-		})
-		this.handleUpdateElement();
-	}
-
-	handleChangeTemplate = async (value) => {
-		await this.setState(state => {
-			state.info[`${state.id}`] = {
-				...state.info[`${state.id}`],
-				code: state.id,
-				taskTemplate: value,
-			}
-			return {
-				...state,
-			}
-		})
-		this.handleUpdateElement();
-	}
-
-	handleChangeResponsible = async (value) => {
-		const modeling = this.modeler.get('modeling');
-		let element1 = this.modeler.get('elementRegistry').get(this.state.id);
-		let { user } = this.props
-		let responsibleName
-		let responsible = []
-		user.usercompanys.forEach(x => {
-			if (value.some(y => y === x._id)) {
-				responsible.push(x.name)
-			}
-		})
-		modeling.updateProperties(element1, {
-			responsibleName: responsible
-		});
-
-	}
-
-	handleChangeAccountable = async (value) => {
-		const modeling = this.modeler.get('modeling');
-		let element1 = this.modeler.get('elementRegistry').get(this.state.id);
-		let { user } = this.props
-		let accountableName
-		let accountable = []
-
-		user.usercompanys.forEach(x => {
-			if (value.some(y => y === x._id)) {
-				accountable.push(x.name)
-			}
-		})
-		modeling.updateProperties(element1, {
-			accountableName: accountable
-		});
-
-
-	}
 	shouldComponentUpdate(nextProps, nextState) {
 		if (nextState.save === true) {
 			this.props.getAllDepartments()
@@ -262,6 +115,7 @@ class ModalCreateTaskProcess extends Component {
 		}
 		return true
 	}
+
 	componentDidMount() {
 
 		this.props.getAllDepartments();
@@ -276,7 +130,6 @@ class ModalCreateTaskProcess extends Component {
 				return false; // will cancel event
 			}
 		});
-
 
 		//Vo hieu hoa edit label khi tao shape
 		eventBus.on([
@@ -294,10 +147,117 @@ class ModalCreateTaskProcess extends Component {
 
 		this.modeler.on('commandStack.shape.delete.revert', (e) => this.handleUndoDeleteElement(e));
 
-		this.modeler.on('shape.changed', 1, (e) => this.changeNameElement(e));
-		console.log('event', eventBus);
+		// this.modeler.on('shape.changed', 1, (e) => this.changeNameElement(e));
 	}
 
+	// Hàm đổi tên Quy trình
+	handleChangeBpmnName = async (e) => {
+		let { value } = e.target;
+		let msg = TaskProcessValidator.validateProcessName(value);
+		await this.setState(state => {
+			return {
+				...state,
+				processName: value,
+				errorOnProcessName: msg,
+			}
+		});
+	}
+
+	// Hàm cập nhật mô tả quy trình
+	handleChangeBpmnDescription = async (e) => {
+		let { value } = e.target;
+		await this.setState(state => {
+			return {
+				...state,
+				processDescription: value,
+				errorOnProcessDescription: TaskProcessValidator.validateProcessDescription(value),
+			}
+		});
+	}
+
+	// Hàm cập nhật người được xem quy trình
+	handleChangeViewer = async (value) => {
+		await this.setState(state => {
+
+			return {
+				...state,
+				viewer: value,
+				errorOnViewer: TaskProcessValidator.validateViewer(value),
+			}
+		})
+	}
+
+	// Hàm cập nhật người quản lý quy trình
+	handleChangeManager = async (value) => {
+		await this.setState(state => {
+
+			return {
+				...state,
+				manager: value,
+				errorOnManager: TaskProcessValidator.validateManager(value),
+			}
+		})
+	}
+
+	// Các hàm cập nhật thông tin task
+
+	// hàm up date thông tin task vào diagram xml
+	handleUpdateElement = (abc) => {
+		const modeling = this.modeler.get('modeling');
+		let element1 = this.modeler.get('elementRegistry').get(this.state.id);
+		modeling.updateProperties(element1, {
+			info: this.state.info,
+		});
+	}
+
+	// hàm cập nhật tên công việc trong quy trình
+	handleChangeName = async (value) => {
+		let stringName = value
+		const modeling = this.modeler.get('modeling');
+		let element1 = this.modeler.get('elementRegistry').get(this.state.id);
+		modeling.updateProperties(element1, {
+			name: stringName,
+		});
+		window.$(`.task-process-gate-way-title`).css("background-color", "white")
+	}
+
+	// hàm cập nhật người thực hiện công việc
+	handleChangeResponsible = async (value) => {
+		const modeling = this.modeler.get('modeling');
+		let element1 = this.modeler.get('elementRegistry').get(this.state.id);
+		let { user } = this.props
+		let responsibleName
+		let responsible = []
+		user.usercompanys.forEach(x => {
+			if (value.some(y => y === x._id)) {
+				responsible.push(x.name)
+			}
+		})
+		modeling.updateProperties(element1, {
+			responsibleName: responsible
+		});
+
+	}
+
+	// hàm cập nhật người phê duyệt công việc
+	handleChangeAccountable = async (value) => {
+		const modeling = this.modeler.get('modeling');
+		let element1 = this.modeler.get('elementRegistry').get(this.state.id);
+		let { user } = this.props
+		let accountableName
+		let accountable = []
+
+		user.usercompanys.forEach(x => {
+			if (value.some(y => y === x._id)) {
+				accountable.push(x.name)
+			}
+		})
+		modeling.updateProperties(element1, {
+			accountableName: accountable
+		});
+	}
+
+	// hàm cập nhật màu sắc trong diagram
 	done = (e) => {
 		e.preventDefault()
 		let element1 = this.modeler.get('elementRegistry').get(this.state.id);
@@ -317,24 +277,15 @@ class ModalCreateTaskProcess extends Component {
 		})
 	}
 
-	interactPopup = (event) => {
+	// Các hàm sự kiện của BPMN element
+	interactPopup = async (event) => {
 		let element = event.element;
-		console.log(element)
-		let { department } = this.props
-		let source = [];
-		let destination = []
-		element.incoming.forEach(x => {
-			source.push(x.source.businessObject.name)
-		})
-
-		element.outgoing.forEach(x => {
-			destination.push(x.target.businessObject.name)
-		})
+		console.log(element);
 		let nameStr = element.type.split(':');
-		this.setState(state => {
+
+		await this.setState(state => {
 			if (element.type === "bpmn:Task" || element.type === "bpmn:ExclusiveGateway") {
-				if (!state.info[`${element.businessObject.id}`] ||
-					(state.info[`${element.businessObject.id}`] && !state.info[`${element.businessObject.id}`].organizationalUnit)) {
+				if (!state.info[`${element.businessObject.id}`] || (state.info[`${element.businessObject.id}`] && !state.info[`${element.businessObject.id}`].organizationalUnit)) {
 					state.info[`${element.businessObject.id}`] = {
 						...state.info[`${element.businessObject.id}`],
 						organizationalUnit: this.props.listOrganizationalUnit[0]?._id,
@@ -373,137 +324,27 @@ class ModalCreateTaskProcess extends Component {
 	}
 
 	changeNameElement = (event) => {
-		this.setState(state => {
-			state.info[`${state.id}`] = {
-				...state.info[`${state.id}`],
-				nameTask: event.element.businessObject.name,
-			}
-			return {
-				...state,
-			}
-		})
+		var name = event.element.businessObject.name;
 	}
 
-	isFormValidate = () => {
-		// let elementList = await this.modeler.get('elementRegistry')._elements;
-		let elementList = this.modeler.get('elementRegistry')._elements;
-		let check = true; // valid
-		let hasStart = false, hasEnd = false
-
-		for (let i in elementList) {
-
-			let e = elementList[i].element;
-			if (e.type === "bpmn:StartEvent") {
-				hasStart = true;
-			}
-			else if (e.type === "bpmn:EndEvent") {
-				hasEnd = true;
-			}
-			else if (e.type === "bpmn:Task" || e.type === "bpmn:ExclusiveGateway") {
-				if (!e.businessObject.incoming) {
-					check = false;
-				}
-				else if (e.businessObject.incoming.length === 0) {
-					check = false;
-				}
-
-				if (!e.businessObject.outgoing) {
-					check = false;
-				}
-				else if (e.businessObject.outgoing.length === 0) {
-					check = false;
-				}
-			}
-		}
-		if (!hasStart || !hasEnd) {
-			check = false;
-		}
-		return check
-			&& this.state.errorOnManager === undefined && this.state.errorOnProcessDescription === undefined
-			&& this.state.errorOnProcessName === undefined && this.state.errorOnViewer === undefined;
-	}
-
-	save = async () => {
-		let elementList = this.modeler.get('elementRegistry')._elements
-		let { info } = this.state;
-		let { department } = this.props;
+	// các hàm dành cho export, import, download diagram...
+	exportDiagram = () => {
 		let xmlStr;
 		this.modeler.saveXML({ format: true }, function (err, xml) {
-			xmlStr = xml;
-		});
-
-		await this.setState(state => {
-			for (let j in info) {
-				if (Object.keys(info[j]).length !== 0) {
-					info[j].followingTasks = [];
-					info[j].preceedingTasks = [];
-
-					for (let i in elementList) {
-						let elem = elementList[i].element;
-						if (info[j].code === elem.id) {
-							if (elem.businessObject.incoming) {
-								let incoming = elem.businessObject.incoming;
-								for (let x in incoming) {
-									info[j].preceedingTasks.push({ // các công việc trc công việc hiện tại
-										// task: {
-										//    code: incoming[x].sourceRef.id,
-										//    name: incoming[x].sourceRef.name,
-										// },
-										task: incoming[x].sourceRef.id,
-										link: incoming[x].name,
-									})
-								}
-							}
-							if (elem.businessObject.outgoing) {
-								let outgoing = elem.businessObject.outgoing;
-								for (let y in outgoing) {
-									info[j].followingTasks.push({ // các công việc sau công việc hiện tại
-										task: outgoing[y].targetRef.id,
-										// name: outgoing[y].targetRef.name,
-										link: outgoing[y].name,
-									})
-								}
-							}
-						}
-					}
-				}
+			if (err) {
+				console.log(err);
 			}
+			else {
+				console.log(xml);
+				xmlStr = xml;
+			}
+		});
+		this.setState(state => {
 			return {
 				...state,
 				xmlDiagram: xmlStr,
 			}
 		})
-
-		console.log('infooo', info);
-
-		let data = {
-			info: this.state.info,
-			xmlDiagram: this.state.xmlDiagram,
-			processName: this.state.processName,
-			processDescription: this.state.processDescription,
-			manager: this.state.manager,
-			viewer: this.state.viewer,
-			creator: getStorage("userId")
-		}
-		console.log(data)
-		await this.props.createXmlDiagram(data)
-		this.setState(state => {
-			return {
-				...state,
-				indexRenderer: state.indexRenderer + 1,
-				processName: null,
-				processDescription: '',
-				viewer: undefined,
-				manager: undefined,
-				save: true,
-				showInfo: false,
-				errorOnProcessName: undefined,
-				errorOnProcessDescription: undefined,
-				errorOnViewer: undefined,
-				errorOnManager: undefined,
-			}
-		});
-		this.modeler.importXML(this.initialDiagram);
 	}
 
 	downloadAsSVG = () => {
@@ -621,7 +462,7 @@ class ModalCreateTaskProcess extends Component {
 		canvas.zoom(zlevel, 'auto');
 	}
 
-	// Các hàm xử lý sự kiện của form 
+	// Các hàm xử lý tabbedPane
 	handleChangeContent = async (content) => {
 		await this.setState(state => {
 			return {
@@ -631,6 +472,7 @@ class ModalCreateTaskProcess extends Component {
 		})
 	}
 
+	// hàm cập nhật các thông tin của task trong quy trình
 	handleChangeInfo = (value) => {
 		let info = {
 			...value,
@@ -644,12 +486,135 @@ class ModalCreateTaskProcess extends Component {
 
 	}
 
+	// validate quy trình
+	isFormValidate = () => {
+		// let elementList = await this.modeler.get('elementRegistry')._elements;
+		let elementList = this.modeler.get('elementRegistry')._elements;
+		let check = true; // valid
+		let hasStart = false, hasEnd = false
+
+		for (let i in elementList) {
+
+			let e = elementList[i].element;
+			if (e.type === "bpmn:StartEvent") {
+				hasStart = true;
+			}
+			else if (e.type === "bpmn:EndEvent") {
+				hasEnd = true;
+			}
+			else if (e.type === "bpmn:Task" || e.type === "bpmn:ExclusiveGateway") {
+				if (!e.businessObject.incoming) {
+					check = false;
+				}
+				else if (e.businessObject.incoming.length === 0) {
+					check = false;
+				}
+
+				if (!e.businessObject.outgoing) {
+					check = false;
+				}
+				else if (e.businessObject.outgoing.length === 0) {
+					check = false;
+				}
+			}
+		}
+		if (!hasStart || !hasEnd) {
+			check = false;
+		}
+		return check
+			&& this.state.errorOnManager === undefined && this.state.errorOnProcessDescription === undefined
+			&& this.state.errorOnProcessName === undefined && this.state.errorOnViewer === undefined;
+	}
+
+	// hàm lưu
+	save = async () => {
+		let elementList = this.modeler.get('elementRegistry')._elements
+		let { info } = this.state;
+		let { department } = this.props;
+		let xmlStr;
+		this.modeler.saveXML({ format: true }, function (err, xml) {
+			xmlStr = xml;
+		});
+
+		await this.setState(state => {
+			for (let j in info) {
+				if (Object.keys(info[j]).length !== 0) {
+					info[j].followingTasks = [];
+					info[j].preceedingTasks = [];
+
+					for (let i in elementList) {
+						let elem = elementList[i].element;
+						if (info[j].code === elem.id) {
+							if (elem.businessObject.incoming) {
+								let incoming = elem.businessObject.incoming;
+								for (let x in incoming) {
+									info[j].preceedingTasks.push({ // các công việc trc công việc hiện tại
+										task: incoming[x].sourceRef.id,
+										link: incoming[x].name,
+										// TODO: activated: false
+									})
+								}
+							}
+							if (elem.businessObject.outgoing) {
+								let outgoing = elem.businessObject.outgoing;
+								for (let y in outgoing) {
+									info[j].followingTasks.push({ // các công việc sau công việc hiện tại
+										task: outgoing[y].targetRef.id,
+										link: outgoing[y].name,
+									})
+								}
+							}
+						}
+					}
+				}
+			}
+			return {
+				...state,
+				xmlDiagram: xmlStr,
+			}
+		})
+
+		console.log('infooo', info);
+
+		let data = {
+			info: this.state.info,
+			xmlDiagram: this.state.xmlDiagram,
+			processName: this.state.processName,
+			processDescription: this.state.processDescription,
+			manager: this.state.manager,
+			viewer: this.state.viewer,
+			creator: getStorage("userId")
+		}
+		console.log(data)
+		await this.props.createXmlDiagram(data)
+
+		// RESET FORM CREATE
+
+		// this.setState(state => {
+		// 	return {
+		// 		...state,
+		// 		indexRenderer: state.indexRenderer + 1,
+		// 		processName: null,
+		// 		processDescription: '',
+		// 		viewer: undefined,
+		// 		manager: undefined,
+		// 		save: true,
+		// 		showInfo: false,
+		// 		errorOnProcessName: undefined,
+		// 		errorOnProcessDescription: undefined,
+		// 		errorOnViewer: undefined,
+		// 		errorOnManager: undefined,
+		// 	}
+		// });
+		// this.modeler.importXML(this.initialDiagram);
+	}
+
 	render() {
 
 		const { translate, department, role } = this.props;
 		const { id, name, info, showInfo, processDescription, processName, viewer, manager, selectedCreate, indexRenderer, type } = this.state;
 		const { listOrganizationalUnit } = this.props;
-		if (type === "bpmn:ExclusiveGateway"  && info && id && info[id].name) {
+		if (type === "bpmn:ExclusiveGateway" && info && id && info[id].name) {
 			window.$(`.task-process-gate-way-title`).css("background-color", "white")
 		}
 		let listRole = [];
@@ -674,14 +639,20 @@ class ModalCreateTaskProcess extends Component {
 					<form id="form-create-process-task">
 						<div>
 							<div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none", marginBottom: 0 }}>
+								{/* Tabbed pane */}
 								<ul className="nav nav-tabs">
+									{/* Nút tab thông tin cơ bản quy trình */}
 									<li className="active"><a href="#info-create" onClick={() => this.handleChangeContent("info")} data-toggle="tab">Thông tin quy trình</a></li>
+									{/* Nút tab quy trình - công việc */}
 									<li><a href="#process-create" onClick={() => this.handleChangeContent("process")} data-toggle="tab">Quy trình công việc</a></li>
 								</ul>
+
+								{/* tab thông tin quy trình */}
 								<div className="tab-content">
 									<div className={selectedCreate === "info" ? "active tab-pane" : "tab-pane"} id="info-create">
 										<div className='row'>
 											<div className='col-md-6'>
+												{/* tên quy trình */}
 												<div className={`form-group ${this.state.errorOnProcessName === undefined ? "" : "has-error"}`}>
 													<label className={`control-label`}>Tên quy trình</label>
 													<input type="text"
@@ -692,6 +663,7 @@ class ModalCreateTaskProcess extends Component {
 													<ErrorLabel content={this.state.errorOnProcessName} />
 												</div>
 												<div className={`form-group ${this.state.errorOnViewer === undefined ? "" : "has-error"}`}>
+													{/* Người được phép xem quy trình */}
 													<label className="control-label">Người được phép xem</label>
 													{
 														<SelectBox
@@ -707,6 +679,7 @@ class ModalCreateTaskProcess extends Component {
 													<ErrorLabel content={this.state.errorOnViewer} />
 												</div>
 												<div className={`form-group ${this.state.errorOnManager === undefined ? "" : "has-error"}`}>
+													{/* Người quản lý quy trình */}
 													<label className="control-label" >Người quản lý quy trình</label>
 													{
 														<SelectBox
@@ -722,6 +695,8 @@ class ModalCreateTaskProcess extends Component {
 													<ErrorLabel content={this.state.errorOnManager} />
 												</div>
 											</div>
+
+											{/* Mô tả quy trình */}
 											<div className='col-md-6'>
 												<div className={`form-group ${this.state.errorOnProcessDescription === undefined ? "" : "has-error"}`}>
 													<label className="control-label">Mô tả quy trình</label>
@@ -736,19 +711,27 @@ class ModalCreateTaskProcess extends Component {
 										</div>
 									</div>
 								</div>
+
+
+								{/* Tab quy trình - công việc */}
 								<div className="tab-content" style={{ padding: 0, marginTop: -15 }}>
 									<div className={selectedCreate === "process" ? "active tab-pane" : "tab-pane"} id="process-create">
 
 										<div className="">
 											{/* Quy trình công việc */}
 											<div className={`contain-border ${showInfo ? 'col-md-8' : 'col-md-12'}`}>
+												{/* nút export, import diagram,... */}
 												<div className="tool-bar-xml" style={{ /*position: "absolute", right: 5, top: 5*/ }}>
 													<button onClick={this.exportDiagram}>Export XML</button>
 													<button onClick={this.downloadAsSVG}>Save SVG</button>
 													<button onClick={this.downloadAsImage}>Save Image</button>
 													<button onClick={this.downloadAsBpmn}>Download BPMN</button>
 												</div>
+
+												{/* phần vẽ biểu đồ */}
 												<div id={this.generateId}></div>
+
+												{/* Nút zoom in, zoom out */}
 												<div className="row">
 													<div className="io-zoom-controls">
 														<ul className="io-zoom-reset io-control io-control-list">
@@ -771,13 +754,15 @@ class ModalCreateTaskProcess extends Component {
 													</div>
 												</div>
 											</div>
+
+											{/* form thông tin công việc */}
 											<div className={`right-content ${showInfo ? 'col-md-4' : undefined}`}>
 												{
 													(showInfo) &&
 													<div>
-														<div>
+														{/* <div>
 															<h1>Option {name}</h1>
-														</div>
+														</div> */}
 
 														<AddTaskTemplate
 															isProcess={true}

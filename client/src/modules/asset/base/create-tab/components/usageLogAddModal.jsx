@@ -13,6 +13,7 @@ class UsageLogAddModal extends Component {
         super(props);
         this.state = {
             usedByUser: "",
+            usedByOrganizationalUnit: "",
             startDate: this.formatDate(Date.now()),
             endDate: this.formatDate(Date.now()),
             description: "",
@@ -41,9 +42,21 @@ class UsageLogAddModal extends Component {
      * Bắt sự kiện thay đổi người sử dụng
      */
     handleUsedByUserChange = (value) => {
+        let usedByUser = value[0] !== 'null' ? value[0] : null;
         this.setState({
             ...this.state,
-            usedByUser: value[0]
+            usedByUser: usedByUser
+        });
+    }
+
+    /**
+     * Bắt sự kiện thay đổi đơn vị sử dụng
+     */
+    handleUsedByOrganizationalUnitChange = (value) => {
+        let usedByOrganizationalUnit = value[0] !== 'null' ? value[0] : null;
+        this.setState({
+            ...this.state,
+            usedByOrganizationalUnit: usedByOrganizationalUnit
         });
     }
 
@@ -105,7 +118,22 @@ class UsageLogAddModal extends Component {
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let result = this.validateDescription(this.state.description, false)
+        let checkUsed ;
+        let checkUsedByUser = true, checkUsedByOrganizationalUnit = true;
+        if(this.state.usedByUser == "" || !this.state.usedByUser){
+            checkUsedByUser = false
+        }
+        if(this.state.usedByOrganizationalUnit == "" || !this.state.usedByOrganizationalUnit){
+            checkUsedByOrganizationalUnit = false
+        }
+        
+        if(!checkUsedByUser && !checkUsedByOrganizationalUnit){
+            checkUsed = false;
+        } else {
+            checkUsed = true;
+        }
+
+        let result = this.validateDescription(this.state.description, false) && checkUsed;
 
         return result;
     }
@@ -123,7 +151,14 @@ class UsageLogAddModal extends Component {
         if (this.state.usedByUser === '') {
             await this.setState({
                 ...this.state,
-                usedByUser: userlist[0]._id,
+                usedByUser: null,
+            });
+        }
+
+        if (this.state.usedByOrganizationalUnit === ''){
+            await this.setState({
+                ...this.state,
+                usedByOrganizationalUnit: null,
             });
         }
 
@@ -134,11 +169,10 @@ class UsageLogAddModal extends Component {
 
     render() {
         const { id } = this.props;
-        const { translate, user } = this.props;
-        const { usedByUser, startDate, endDate, description, errorOnDescription } = this.state;
+        const { translate, user, department } = this.props;
+        const { usedByUser, usedByOrganizationalUnit, startDate, endDate, description, errorOnDescription } = this.state;
 
-        var userlist = user.list;
-        // console.log('Dòng 141', id);
+        var userlist = user.list, departmentlist= department.list;
 
         return (
             <React.Fragment>
@@ -163,9 +197,26 @@ class UsageLogAddModal extends Component {
                                             id={`usedByUser${id}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            items={userlist.map(x => { return { value: x._id, text: x.name + " - " + x.email } })}
+                                            items={[{value: 'null', text: 'Chọn người sử dụng'}, ...userlist.map(x => { return { value: x._id, text: x.name + " - " + x.email } })]}
                                             onChange={this.handleUsedByUserChange}
                                             value={usedByUser}
+                                            multiple={false}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className={`form-group`}>
+                                <label>{translate('asset.general_information.organization_unit')}</label>
+                                <div>
+                                    <div id="usedByUserBox">
+                                        <SelectBox
+                                            id={`usedByOrganizationalUnit${id}`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            items={[{value: 'null', text: 'Chọn đơn vị sử dụng'}, ...departmentlist.map(x => { return { value: x._id, text: x.name} })]}
+                                            onChange={this.handleUsedByOrganizationalUnitChange}
+                                            value={usedByOrganizationalUnit}
                                             multiple={false}
                                         />
                                     </div>
@@ -208,8 +259,8 @@ class UsageLogAddModal extends Component {
 };
 
 function mapState(state) {
-    var { user } = state;
-    return { user };
+    var { user, department } = state;
+    return { user, department };
 };
 
 const actionCreators = {

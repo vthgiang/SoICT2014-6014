@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 
 /**
  * Lấy tất cả xml diagram
+ * @param {Object} query tham số query gửi đến
  */
 exports.getAllXmlDiagram = async (query) => {
     let userId = query.userId;
@@ -94,27 +95,27 @@ exports.getXmlDiagramById = (params) => {
 exports.createXmlDiagram = async (body) => {
     let info = [];
     for (const x in body.info) {
-        if (Object.keys(body.info[x]).length > 4) {
-            body.info[x].taskActions = (body.info[x].taskActions) ? body.info[x].taskActions.map(item => {
-                return {
-                    name: item.name,
-                    description: item.description,
-                    mandatory: item.mandatory,
-                }
-            }) : [];
-            body.info[x].taskInformations = (body.info[x].taskInformations) ? body.info[x].taskInformations.map((item, key) => {
-                return {
-                    code: "p" + parseInt(key + 1),
-                    name: item.name,
-                    description: item.description,
-                    filledByAccountableEmployeesOnly: item.filledByAccountableEmployeesOnly,
-                    type: item.type,
-                    extra: item.extra,
-                }
-            }) : [];
+        // if (Object.keys(body.info[x]).length > 4) {
+        body.info[x].taskActions = (body.info[x].taskActions) ? body.info[x].taskActions.map(item => {
+            return {
+                name: item.name,
+                description: item.description,
+                mandatory: item.mandatory,
+            }
+        }) : [];
+        body.info[x].taskInformations = (body.info[x].taskInformations) ? body.info[x].taskInformations.map((item, key) => {
+            return {
+                code: "p" + parseInt(key + 1),
+                name: item.name,
+                description: item.description,
+                filledByAccountableEmployeesOnly: item.filledByAccountableEmployeesOnly,
+                type: item.type,
+                extra: item.extra,
+            }
+        }) : [];
 
-            info.push(body.info[x])
-        }
+        info.push(body.info[x])
+        // }
     }
     console.log(info)
     let data = await ProcessTemplate.create({
@@ -267,13 +268,11 @@ isStartTask = (task) => {
 
 /**
  * tạo công việc theo quy trình
+ * @param {String} processId Id của quy trình
+ * @param {Object} body dữ liệu từ body
  */
 exports.createTaskByProcess = async (processId, body) => {
-    console.log('----', body);
-
     let data = body.taskList;
-    // let startDate = body.startDate;
-    // let endDate = body.endDate;
     let level;
 
     let splitter = body.startDate.split("-");
@@ -289,10 +288,6 @@ exports.createTaskByProcess = async (processId, body) => {
         startDate: startDateProcess,
         endDate: endDateProcess,
         creator: body.creator,
-        // tasks: [{
-        //     type: Schema.Types.ObjectId,
-        //     ref: Task,
-        // }],
     })
 
     let listTask = [];
@@ -398,7 +393,10 @@ exports.createTaskByProcess = async (processId, body) => {
     return await ProcessTemplate.find().populate({ path: 'creator', model: User, select: 'name' });;
 }
 
-
+/**
+ * lấy tất cả các quy trình công việc được tạo
+ * @param {Object} query Dữ liệu query
+ */
 exports.getAllTaskProcess = async (query) => {
     // let { name, noResultsPerPage, pageNumber } = query;
     let name = query.name;
@@ -441,7 +439,11 @@ exports.getAllTaskProcess = async (query) => {
 }
 
 
-
+/**
+ * Cập nhật diagram
+ * @param {String} params tham số 
+ * @param {Object} body dữ liệu body
+ */
 exports.updateDiagram = async (params, body) => {
     let diagram = await TaskProcess.findByIdAndUpdate(params.processId,
         { $set: { xmlDiagram: body.diagram } },

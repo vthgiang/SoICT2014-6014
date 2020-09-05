@@ -107,7 +107,7 @@ class FileAddModal extends Component {
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let result = this.validateNameFile(this.state.name, false) && this.validateDiscFile(this.state.description, false) ;
+        let result = this.validateNameFile(this.state.name, false) && this.validateDiscFile(this.state.description, false);
 
         return result;
     }
@@ -127,7 +127,7 @@ class FileAddModal extends Component {
         return (
             <React.Fragment>
                 {/* Button thêm tài liệu đính kèm */}
-                <ButtonModal modalID={`modal-create-file-${id}`} button_name={translate('manage_asset.add_file')} title={translate('manage_asset.add_file')}   />
+                <ButtonModal modalID={`modal-create-file-${id}`} button_name={translate('manage_asset.add_file')} title={translate('manage_asset.add_file')} />
                 <DialogModal
                     size='50' modalID={`modal-create-file-${id}`} isLoading={false}
                     formID={`form-create-file-${id}`}
@@ -154,7 +154,13 @@ class FileAddModal extends Component {
                         {/* File đính kèm */}
                         <div className="form-group">
                             <label htmlFor="file">{translate('asset.general_information.attached_file')}</label>
-                            <input type="file" style={{ height: 34, paddingTop: 2 }} className="form-control" name="file" onChange={this.handleChangeFile} />
+                            {/* <input type="file" style={{ height: 34, paddingTop: 2 }} className="form-control" name="file" onChange={this.handleChangeFile} /> */}
+                            <br />
+                            <div className="upload btn btn-primary">
+                                <i className="fa fa-folder"></i>
+                                {" " + translate('document.choose_file')}
+                                <input className="upload" type="file" name="file" onChange={this.handleChangeFile} />
+                            </div>
                         </div>
                         <ul style={{ listStyle: 'none' }}>
                             {files.map((child, index) => {
