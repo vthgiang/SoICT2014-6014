@@ -1538,6 +1538,7 @@ export default {
                 add: 'Thêm',
                 basic_information: 'Thông tin cơ bản',
                 detail_information: 'Thông tin chi tiết',
+                asset_properties: 'Các thuộc tính của tài sản',
                 view: 'Xem thông tin tài sản',
                 edit_info: 'Chỉnh sửa thông tin tài sản',
                 delete_info: 'Xóa thông tin tài sản',
@@ -1581,7 +1582,7 @@ export default {
                 depreciation_information: 'Thông tin khấu hao',
                 incident_information: 'Thông tin sự cố',
                 disposal_information: 'Thông tin thanh lý',
-                attach_infomation: 'Thông tin đính kèm',
+                attach_infomation: 'Tài liệu đính kèm',
 
                 serial_number: 'Số serial',
                 warranty_expiration_date: 'Ngày hết hạn bảo hành',
@@ -1664,7 +1665,7 @@ export default {
             // Quản lý thông tin tài sản
             asset_info: {
                 asset_info: 'Thông tin tài sản',
-                field_name: 'Tên trường dữ liệu',
+                field_name: 'Tên thuộc tính',
                 value: 'Giá trị',
 
                 usage_logs: 'Lịch sử cấp phát - điều chuyển - thu hồi',

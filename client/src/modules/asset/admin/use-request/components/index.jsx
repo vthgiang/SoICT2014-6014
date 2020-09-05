@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { PurchaseRequestManager } from './PurchaseRequestManager';
+import { UseRequestManager } from './UseRequestManager';
 
 class ManagerRecommendDistribute extends Component {
     constructor(props) {
@@ -12,7 +12,7 @@ class ManagerRecommendDistribute extends Component {
     render() {
         return (
             <React.Fragment>
-                <PurchaseRequestManager />
+                <UseRequestManager />
             </React.Fragment>
         );
     }

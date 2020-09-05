@@ -1518,6 +1518,7 @@ export default {
                 add: 'Add',
                 basic_information: 'Basic infomation',
                 detail_information: 'Detail information',
+                asset_properties: 'Properties of asset',
                 view: 'View asset information',
                 edit_info: 'Edit asset information',
                 delete_info: 'Delete asset information',
@@ -1561,7 +1562,7 @@ export default {
                 depreciation_information: 'Depreciation information',
                 incident_information: 'Incident information',
                 disposal_information: 'Disposal information',
-                attach_infomation: 'Attached information',
+                attach_infomation: 'Attached files',
 
                 serial_number: 'Serial number',
                 warranty_expiration_date: 'Warranty expiration date',
@@ -1644,7 +1645,7 @@ export default {
             // Quản lý thông tin tài sản
             asset_info: {
                 asset_info: 'Asset infomation',
-                field_name: 'Name of data field',
+                field_name: 'Name of properties',
                 value: 'Value',
 
                 usage_logs: 'Allocation history - transfer - withdrawal',

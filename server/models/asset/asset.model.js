@@ -308,10 +308,6 @@ const AssetSchema = new Schema({
     /***************************************************************************************************
      * tab Tài liệu đính kèm
      */
-    archivedRecordNumber: { // 18.mã hồ sơ lưu trữ
-        type: String
-    },
-
     documents: [{ // Các tài liệu đính kèm với tài sản
         name: {
             type: String,

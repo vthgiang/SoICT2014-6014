@@ -32,7 +32,6 @@ const AssetTypeSchema = new Schema({
 
     defaultInformation: [{ // Thông tin mặc định khi chọn loại tài sản 
         nameField: String, // Tên trường dữ liệu
-        value: String, // Giá trị
     }],
 
     createdAt: {

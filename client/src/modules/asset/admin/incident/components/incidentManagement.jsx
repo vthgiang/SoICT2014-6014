@@ -4,7 +4,6 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar,ExportExcel } from '../../../../../common-components';
 
-import { MaintainanceCreateForm } from './maintainanceCreateForm';
 import { IncidentEditForm } from '../../../user/asset-assigned/components/incidentEditForm';
 
 import { IncidentActions } from '../../../user/asset-assigned/redux/actions';
@@ -18,7 +17,10 @@ class IncidentManagement extends Component {
         this.state = {
             code: "",
             assetName: "",
-            month: "",
+            assetType: null,
+            purchaseDate: null,
+            status: "",
+            canRegisterForUse: "",
             page: 0,
             limit: 5,
             managedBy : this.props.managedBy?this.props.managedBy:''
@@ -29,16 +31,7 @@ class IncidentManagement extends Component {
         let { managedBy } =this.state;
         this.props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
         this.props.getUser();
-        this.props.getAllAsset({
-            code: "",
-            assetName: "",
-            assetType: null,
-            month: null,
-            status: "",
-            page: 0,
-            limit: 5,
-            managedBy:managedBy
-        });
+        this.props.getAllAsset(this.state);
     }
 
 
@@ -52,18 +45,6 @@ class IncidentManagement extends Component {
             }
         });
         window.$('#modal-edit-incident').modal('show');
-    }
-
-    // Bắt sự kiện click thêm mới thông tin phiếu bảo trì
-    handleAddMaintaince = async (value, asset) => {
-        value.asset = asset;
-        await this.setState(state => {
-            return {
-                ...state,
-                currentRowAdd: value
-            }
-        });
-        window.$('#modal-create-maintainance').modal('show');
     }
 
     // Function format dữ liệu Date thành string
@@ -146,6 +127,7 @@ class IncidentManagement extends Component {
         await this.setState({
             limit: parseInt(number),
         });
+
         this.props.getAllAsset(this.state);
     }
 
@@ -245,17 +227,29 @@ class IncidentManagement extends Component {
        
     }
 
+    // Bắt sự kiện click chỉnh sửa thông tin tài sản
+    handleEdit = async () => {
+        // console.log(value);
+        // await this.setState(state => {
+        //     return {
+        //         ...state,
+        //         currentRow: value
+        //     }
+        // });
+        window.$('#modal-edit-asset').modal('show');
+    }
+
     render() {
         const { translate, assetsManager, assetType, user, isActive } = this.props;
         const { page, limit, currentRow, currentRowAdd, managedBy } = this.state;
 
-        var lists = "",exportData;
+        var lists = "", exportData;
         var userlist = user.list;
         var assettypelist = assetType.listAssetTypes;
         var formater = new Intl.NumberFormat();
         if (assetsManager.isLoading === false) {
             lists = assetsManager.listAssets;
-            console.log("\n\n\n\n\n\n\n\n",lists)
+            console.log("\n\n\n\n\n\n\n\n", limit)
         }
 
         var pageTotal = ((assetsManager.totalList % limit) === 0) ?
@@ -263,8 +257,8 @@ class IncidentManagement extends Component {
             parseInt((assetsManager.totalList / limit) + 1);
         var currentPage = parseInt((page / limit) + 1);
         
-        if(lists&&userlist){
-            exportData =this.convertDataToExportData(lists,userlist);
+        if(lists && userlist){
+            exportData = this.convertDataToExportData(lists, userlist);
         }
         
         return (
@@ -338,7 +332,7 @@ class IncidentManagement extends Component {
                                 lists.map(asset => {
                                     return asset.incidentLogs.map((x, index) => (
                                         <tr key={index}>
-                                            <td>{asset.code}</td>
+                                            <td>{ <a onClick={this.handleEdit}>{asset.code}</a>}</td>
                                             <td>{asset.assetName}</td>
                                             <td>{x.incidentCode}</td>
                                             <td>{x.type}</td>
@@ -347,8 +341,6 @@ class IncidentManagement extends Component {
                                             <td>{x.description}</td>
                                             <td>{x.statusIncident}</td>
                                             <td style={{ textAlign: "center" }}>
-                                                <a onClick={() => this.handleAddMaintaince(x, asset)} className="settings text-green" style={{ width: '5px' }} title={translate('asset.asset_info.add_maintenance_card')}><i
-                                                    className="material-icons">settings</i></a>
                                                 <a onClick={() => this.handleEdit(x, asset)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.asset_info.edit_incident_info')}><i
                                                     className="material-icons">edit</i></a>
                                                 <DeleteNotification
@@ -363,10 +355,10 @@ class IncidentManagement extends Component {
                                         </tr>
                                     ))
                                 })
-
                             }
                         </tbody>
                     </table>
+                    
                     {assetsManager.isLoading ?
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
                         (!lists || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
@@ -391,16 +383,6 @@ class IncidentManagement extends Component {
                     />
                 }
 
-                {/* Form thêm thông tin bảo trì */}
-                {
-                    currentRowAdd &&
-                    <MaintainanceCreateForm
-                        _id={currentRowAdd._id}
-                        managedBy={managedBy}
-                        asset={currentRowAdd.asset}
-                        statusIncident={currentRowAdd.statusIncident}
-                    />
-                }
             </div>
         );
     }

@@ -36,18 +36,8 @@ class AttachmentTab extends Component {
         return (
             <div id={id} className="tab-pane">
                 <div className="row box-body">
-                    {/* Nơi lưu trữ bản cứng */}
-                    <div className="col-md-4">
-                        <div className="form-group">
-                            <strong>{translate('asset.general_information.store_location')}&emsp;</strong>
-                            {archivedRecordNumber}
-                        </div>
-                    </div>
-
                     {/* Danh sách tài liệu đính kèm */}
                     <div className="col-md-12">
-                        <h4 className="row col-md-6">{translate('asset.asset_info.file_list')}:</h4>
-
                         {/* Bảng tài liệu đính kèm */}
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
                             <thead>

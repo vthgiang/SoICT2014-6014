@@ -1018,7 +1018,7 @@ class Routes extends Component {
                         key={'manage-asset-use-request'}
                         arrPage={[
                             { link: '/', name: 'home', icon: 'fa fa-home' },
-                            { link: '/manage-asset-use-request', name: 'manage-recommend-distribute-asset', icon: '' }
+                            { link: '/manage-asset-use-request', name: 'manage_recommend_distribute_asset', icon: '' }
                         ]}
                         auth={auth}
                         exact={true}

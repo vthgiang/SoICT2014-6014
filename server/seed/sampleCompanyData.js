@@ -1664,7 +1664,6 @@ const sampleCompanyData = async () => {
             disposalCost: 20000000,
             disposalDesc: '',
             //tài liệu đính kèm
-            archivedRecordNumber: "PKD001",
             files: [],
         }, {
             avatar: "/upload/asset/pictures/picture5.png",
@@ -1707,7 +1706,6 @@ const sampleCompanyData = async () => {
             disposalCost: 10000000,
             disposalDesc: "",
             //tài liệu đính kèm
-            archivedRecordNumber: "PKD002",
             files: [],
         }, {
             avatar: "/upload/asset/pictures/picture5.png",
@@ -1750,7 +1748,6 @@ const sampleCompanyData = async () => {
             disposalCost: null,
             disposalDesc: "",
             //tài liệu đính kèm
-            archivedRecordNumber: "PCN003",
             files: [],
         },
         {
@@ -1794,7 +1791,6 @@ const sampleCompanyData = async () => {
             disposalCost: null,
             disposalDesc: "",
             //tài liệu đính kèm
-            archivedRecordNumber: "PCN003",
             files: [],
         },
         {
@@ -1838,7 +1834,6 @@ const sampleCompanyData = async () => {
             disposalCost: null,
             disposalDesc: "",
             //tài liệu đính kèm
-            archivedRecordNumber: "PCN003",
             files: [],
         },
         {
@@ -1890,7 +1885,6 @@ const sampleCompanyData = async () => {
             disposalCost: null,
             disposalDesc: "",
             //tài liệu đính kèm
-            archivedRecordNumber: "PCN003",
             files: [],
         }
 
@@ -1939,7 +1933,6 @@ const sampleCompanyData = async () => {
         disposalCost: null,
         disposalDesc: '',
         //tài liệu đính kèm
-        archivedRecordNumber: "PKD000",
         files: [],
     })
     var assetManagedByEmployee2 = await Asset.create({
@@ -1993,7 +1986,6 @@ const sampleCompanyData = async () => {
         disposalCost: null,
         disposalDesc: '',
         //tài liệu đính kèm
-        archivedRecordNumber: "PKD000",
         files: [],
     })
     var assetManagedByEmployee1 = await Asset.create({
@@ -2047,7 +2039,6 @@ const sampleCompanyData = async () => {
         disposalCost: null,
         disposalDesc: '',
         //tài liệu đính kèm
-        archivedRecordNumber: "PKD000",
         files: [],
     })
     var listAsset1 = await Asset.insertMany([
@@ -2095,7 +2086,6 @@ const sampleCompanyData = async () => {
             disposalCost: null,
             disposalDesc: '',
             //tài liệu đính kèm
-            archivedRecordNumber: "PKD001",
             documents: [],
         },
         { //2 TQB
@@ -2141,7 +2131,6 @@ const sampleCompanyData = async () => {
             disposalCost: null,
             disposalDesc: '',
             //tài liệu đính kèm
-            archivedRecordNumber: "PKD002",
             documents: [],
         }
     ]);
@@ -2189,7 +2178,6 @@ const sampleCompanyData = async () => {
             disposalCost: 12000000,
             disposalDesc: '',
             //tài liệu đính kèm
-            archivedRecordNumber: "PKD003",
             documents: [],
         },
         { //04
@@ -2235,7 +2223,6 @@ const sampleCompanyData = async () => {
             disposalCost: 35000000,
             disposalDesc: '',
             //tài liệu đính kèm
-            archivedRecordNumber: "PKD004",
             documents: [],
         },
         { // 05
@@ -2281,7 +2268,6 @@ const sampleCompanyData = async () => {
             disposalCost: null,
             disposalDesc: '',
             //tài liệu đính kèm
-            archivedRecordNumber: "PKD005",
             documents: [],
         },
         { // 06
@@ -2345,7 +2331,6 @@ const sampleCompanyData = async () => {
             disposalCost: null,
             disposalDesc: '',
             //tài liệu đính kèm
-            archivedRecordNumber: "PKD006",
             documents: [],
         },
         { // 07
@@ -2391,7 +2376,6 @@ const sampleCompanyData = async () => {
             disposalCost: null,
             disposalDesc: '',
             //tài liệu đính kèm
-            archivedRecordNumber: "PKD007",
             documents: [],
         }
     ])
