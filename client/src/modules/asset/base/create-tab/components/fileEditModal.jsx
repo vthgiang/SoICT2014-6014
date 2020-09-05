@@ -106,7 +106,7 @@ class FileEditModal extends Component {
 
         return result;
     }
-    
+
     // Bắt sự kiện submit form
     save = () => {
         if (this.isFormValidated()) {
@@ -167,7 +167,13 @@ class FileEditModal extends Component {
                         {/* File đính kèm */}
                         <div className="form-group">
                             <label htmlFor="file">{translate('asset.general_information.attached_file')}</label>
-                            <input type="file" style={{ height: 34, paddingTop: 2 }} className="form-control" name="file" onChange={this.handleChangeFile} />
+                            {/* <input type="file" style={{ height: 34, paddingTop: 2 }} className="form-control" name="file" onChange={this.handleChangeFile} /> */}
+                            <br />
+                            <div className="upload btn btn-primary">
+                                <i className="fa fa-folder"></i>
+                                {" " + translate('document.choose_file')}
+                                <input className="upload" type="file" name="file" onChange={this.handleChangeFile} />
+                            </div>
                         </div>
                         <ul style={{ listStyle: 'none' }}>
                             {files.map((child, index) => {

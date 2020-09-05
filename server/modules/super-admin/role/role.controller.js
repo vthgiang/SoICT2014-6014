@@ -56,7 +56,7 @@ exports.createRole = async (req, res) => {
             content: data
         });
     } catch (error) {
-        
+        console.log("error create role", error)
         LogError(req.user.email, 'CREATE_ROLE', req.user.company);
         res.status(400).json({
             success: false,

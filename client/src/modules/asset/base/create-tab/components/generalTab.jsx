@@ -253,7 +253,7 @@ class GeneralTab extends Component {
         this.setState({
             assignedToOrganizationalUnit: string2literal(value[0])
         });
-        this.props.handleChange("assignedToOrganiztionalUnit", string2literal(value[0]));
+        this.props.handleChange("assignedToOrganizationalUnit", string2literal(value[0]));
     }
 
     /**
@@ -459,7 +459,7 @@ class GeneralTab extends Component {
     };
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id || nextProps.assignedToUser !== prevState.assignedToUser) {
+        if (nextProps.id !== prevState.id || nextProps.assignedToUser !== prevState.assignedToUser || nextProps.assignedToOrganizationalUnit !== prevState.assignedToOrganizationalUnit) {
             return {
                 ...prevState,
                 id: nextProps.id,
@@ -505,7 +505,7 @@ class GeneralTab extends Component {
 
     render() {
         const { id } = this.props;
-        const { translate, user, assetType, assetsManager, role } = this.props;
+        const { translate, user, assetType, assetsManager, role, department } = this.props;
 
         const {
             img, code, assetName, assetTypes, group, serial, purchaseDate, warrantyExpirationDate, managedBy,
@@ -514,7 +514,8 @@ class GeneralTab extends Component {
             errorOnWarrantyExpirationDate, errorOnManagedBy, errorOnNameField, errorOnValue, usageLogs, readByRoles
         } = this.state;
 
-        var userlist = user.list;
+        var userlist = user.list, departmentlist = department.list;
+        console.log("==Dòng 516==", departmentlist, assignedToOrganizationalUnit);
         var assettypelist = assetType.listAssetTypes;
         let dataList = assettypelist.map(node => {
             return {
@@ -683,10 +684,10 @@ class GeneralTab extends Component {
                                     <label>{translate('asset.general_information.organization_unit')}&emsp; </label>
                                     <div id="assignedToOrganizationalUnitBox">
                                         <SelectBox
-                                            id={`assignedToOrganizationalUnitBox${id}`}
+                                            id={`assignedToOrganizationalUnitBox${assignedToOrganizationalUnit}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            items={[{ value: 'null', text: 'Chưa có đơn vị được giao sử dụng' },]}
+                                            items={[{ value: 'null', text: 'Chưa có đơn vị được giao sử dụng' }, ...departmentlist.map(x => { return { value: x._id, text: x.name }})]}
                                             value={assignedToOrganizationalUnit}
                                             multiple={false}
                                             disabled
@@ -697,10 +698,10 @@ class GeneralTab extends Component {
                                 {/* Thời gian bắt đầu sử dụng */}
                                 <div className="form-group">
                                     <label>{translate('asset.general_information.handover_from_date')}&emsp; </label>
-                                    < DatePicker
-                                        id={`start-date${assignedToUser}`}
-                                        value={status == "Đang sử dụng" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1].startDate) : ''}
-                                        disabled
+                                   < DatePicker
+                                    id={`start-date${assignedToUser}-${assignedToOrganizationalUnit}`}
+                                    value={status == "Đang sử dụng" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1].startDate) : ''}
+                                    disabled
                                     />
                                 </div>
 
@@ -708,9 +709,9 @@ class GeneralTab extends Component {
                                 <div className="form-group">
                                     <label>{translate('asset.general_information.handover_to_date')}&emsp; </label>
                                     < DatePicker
-                                        id={`end-date${assignedToUser}`}
-                                        value={status == "Đang sử dụng" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1].endDate) : ''}
-                                        disabled
+                                    id={`end-date${assignedToUser}-${assignedToOrganizationalUnit}`}
+                                    value={status == "Đang sử dụng" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1].endDate) : ''}
+                                    disabled
                                     />
                                 </div>
 
@@ -813,14 +814,13 @@ class GeneralTab extends Component {
 };
 
 function mapState(state) {
-    const { assetType, user, assetsManager, role } = state;
-    return { assetType, user, assetsManager, role };
+    const { assetType, user, assetsManager, role, department } = state;
+    return { assetType, user, assetsManager, role, department };
 };
 
 const actionCreators = {
     getUser: UserActions.get,
     getAssetType: AssetTypeActions.searchAssetTypes,
-    // getAllRoles:  RoleActions.get,
 };
 const generalTab = connect(mapState, actionCreators)(withTranslate(GeneralTab));
 export { generalTab as GeneralTab };

@@ -596,18 +596,18 @@ export function performtasks(state = {}, action) {
                 error: action.error,
                 isLoading: false,
             };
-        case performTaskConstants.EDIT_STATUS_OF_TASK_REQUEST:
+        case performTaskConstants.EDIT_ACTIVATE_OF_TASK_REQUEST:
             return {
                 ...state,
                 isLoading: true
             };
-        case performTaskConstants.EDIT_STATUS_OF_TASK_SUCCESS:
+        case performTaskConstants.EDIT_ACTIVATE_OF_TASK_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
                 task: action.payload
             };
-        case performTaskConstants.EDIT_STATUS_OF_TASK_FAILURE:
+        case performTaskConstants.EDIT_ACTIVATE_OF_TASK_FAILURE:
             return {
                 isLoading: false,
                 error: action.error

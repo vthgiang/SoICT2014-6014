@@ -412,8 +412,8 @@ exports.searchUsages = async (id, data, company) => {
  * Thêm mới thông tin sử dụng
  */
 exports.createUsage = async (id, data) => {
-    let assignedToUser = data.assignedToUser ? data.assignedToUser : null;
-    let assignedToOrganizationalUnit = data.assignedToOrganizationalUnit? data.assignedToOrganizationalUnit: null
+    let assignedToUser = (data.assignedToUser && data.assignedToUser !== 'null') ? data.assignedToUser : null;
+    let assignedToOrganizationalUnit = (data.assignedToOrganizationalUnit && data.assignedToOrganizationalUnit !== 'null') ? data.assignedToOrganizationalUnit: null
     await Asset.update({_id: id}, {
         $addToSet: {usageLogs: data.usageLogs},
         assignedToUser: assignedToUser,
@@ -440,6 +440,7 @@ exports.updateUsage = async (assetId, data) => {
     return await Asset.update({ _id: assetId, "usageLogs._id": data._id }, {
         $set: {
             "usageLogs.$.usedByUser": data.usedByUser,
+            "usageLogs.$.usedByOrganizationalUnit": data.usedByOrganizationalUnit,
             "usageLogs.$.description": data.description,
             "usageLogs.$.endDate": data.endDate,
             "usageLogs.$.startDate": data.startDate, 

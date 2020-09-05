@@ -197,41 +197,8 @@ class DetailTaskTab extends Component {
                 showEndTask: id,
             }
         });
-        if (codeInProcess) {
-            if (typeOfTask === "Gateway") {
-                window.$(`#modal-select-following-task`).modal('show');
-            }
-            else {
-                Swal.fire({
-                    title: this.props.translate('task.task_perform.notice_end_task'),
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    cancelButtonText: this.props.translate('general.no'),
-                    confirmButtonText: this.props.translate('general.yes'),
-                }).then((result) => {
-                    if (result.value) {
-                        this.props.editStatusTask(id, status, typeOfTask)
-                    }
-                })
-            }
-        }
-        else {
-            Swal.fire({
-                title: this.props.translate('task.task_perform.notice_end_task'),
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                cancelButtonText: this.props.translate('general.no'),
-                confirmButtonText: this.props.translate('general.yes'),
-            }).then((result) => {
-                if (result.value) {
-                    this.props.editStatusTask(id, status, false)
-                }
-            })
-        }
+
+        window.$(`#modal-select-following-task`).modal('show');
     }
 
     handleShowEvaluate = async (id, role) => {
@@ -317,7 +284,7 @@ class DetailTaskTab extends Component {
             checkConfirmOtherUser = true;
         }
         listEmployeeNotConfirm = listEmployeeNotConfirm.filter(item => item.active);
-        
+
         return {
             listEmployeeNotConfirm: listEmployeeNotConfirm,
             checkConfirmCurrentUser: checkConfirmCurrentUser,
@@ -350,7 +317,7 @@ class DetailTaskTab extends Component {
     }
 
     checkEvaluationTaskAndKpiLink = (task) => {
-        const { dueForEvaluationOfTask, currentMonth, nextMonth } = this.state;
+        const { currentMonth, nextMonth } = this.state;
 
         let evaluations = [], checkEvaluationTask = false;
         let listEmployeeNotKpiLink = [], responsibleEmployeesNotKpiLink = [], accountableEmployeesNotKpiLink = [], consultedEmployeesNotKpiLink = [];
@@ -361,9 +328,6 @@ class DetailTaskTab extends Component {
             if (evaluations.length === 0) {
                 // Check đánh giá trong tháng
                 checkEvaluationTask = true;
-
-                // Nhân viên chưa liên kết KPI
-                listEmployeeNotKpiLink = task.responsibleEmployees.concat(task.accountableEmployees).concat(task.consultedEmployees);
             } else {
                 // Nhân viên chưa liên kết KPI
                 if (evaluations[0].results && evaluations[0].results.length !== 0) {
@@ -405,10 +369,7 @@ class DetailTaskTab extends Component {
                     }
 
                     listEmployeeNotKpiLink = responsibleEmployeesNotKpiLink.concat(accountableEmployeesNotKpiLink).concat(consultedEmployeesNotKpiLink);
-                } else {
-                    // Nhân viên chưa liên kết KPI
-                    listEmployeeNotKpiLink = task.responsibleEmployees.concat(task.accountableEmployees).concat(task.consultedEmployees);
-                }
+                } 
             }
         }
 
@@ -434,25 +395,33 @@ class DetailTaskTab extends Component {
         }
     }
 
-    checkDeadlineForEvaluation = () => {
-        const { dueForEvaluationOfTask } = this.state;
+    checkDeadlineForEvaluation = (task) => {
+        const { dueForEvaluationOfTask, currentMonth } = this.state;
 
-        let checkDeadlineForEvaluation = false, deadlineForEvaluation;
+        let checkDeadlineForEvaluation = false, deadlineForEvaluation, evaluations;
         let currentDate = new Date();
-        
-        // Check số ngày đến hạn đánh giá
-        deadlineForEvaluation = ((new Date(dueForEvaluationOfTask)).getTime() - currentDate.getTime()) / (3600 * 24 * 1000);
-        if (deadlineForEvaluation > 0) {
-            checkDeadlineForEvaluation = true;
+        let lastMonth = currentDate.getFullYear() + '-' + currentDate.getMonth();
 
-            if (deadlineForEvaluation < 1) {
-                if (deadlineForEvaluation * 24 < 1) {
-                    deadlineForEvaluation = Math.floor(deadlineForEvaluation * 24 * 60) + ' phút';
-                } else {
-                    deadlineForEvaluation = Math.floor(deadlineForEvaluation * 24) + ' giờ';
+        if (task && task.evaluations) {
+            // Check evaluations tháng trước
+            evaluations = task.evaluations.filter(item => new Date(item.date) >= new Date(lastMonth) && new Date(item.date) < new Date(currentMonth));
+
+            if (evaluations.length !== 0) {
+                // Check số ngày đến hạn đánh giá
+                deadlineForEvaluation = ((new Date(dueForEvaluationOfTask)).getTime() - currentDate.getTime()) / (3600 * 24 * 1000);
+                if (deadlineForEvaluation > 0) {
+                    checkDeadlineForEvaluation = true;
+
+                    if (deadlineForEvaluation < 1) {
+                        if (deadlineForEvaluation * 24 < 1) {
+                            deadlineForEvaluation = Math.floor(deadlineForEvaluation * 24 * 60) + ' phút';
+                        } else {
+                            deadlineForEvaluation = Math.floor(deadlineForEvaluation * 24) + ' giờ';
+                        }
+                    } else {
+                        deadlineForEvaluation = Math.floor(deadlineForEvaluation) + ' ngày';
+                    }
                 }
-            } else {
-                deadlineForEvaluation = Math.floor(deadlineForEvaluation) + ' ngày';
             }
         }
 
@@ -594,7 +563,7 @@ class DetailTaskTab extends Component {
         checkConfirmTask = this.checkConfirmTask(task);
         checkEvaluationTaskAction = this.checkEvaluationTaskAction(task);
         checkEvaluationTaskAndKpiLink = this.checkEvaluationTaskAndKpiLink(task);
-        checkDeadlineForEvaluation = this.checkDeadlineForEvaluation()
+        checkDeadlineForEvaluation = this.checkDeadlineForEvaluation(task)
         warning = (checkConfirmTask && checkConfirmTask.checkConfirm)
             || (checkEvaluationTaskAction && checkEvaluationTaskAction.checkEvaluationTaskAction)
             || (checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkEvaluationTask)
@@ -626,7 +595,7 @@ class DetailTaskTab extends Component {
                             </React.Fragment>
                         }
 
-                        {checkInactive && codeInProcess && (currentRole === "accountable" || (currentRole === "responsible" && checkHasAccountable === false)) &&
+                        {/* {checkInactive && codeInProcess && (currentRole === "accountable" || (currentRole === "responsible" && checkHasAccountable === false)) &&
                             (statusTask !== "Finished" &&
                                 (typeOfTask === "Gateway" ?
                                     <a className="btn btn-app" onClick={() => this.handleEndTask(id, "Inprocess", codeInProcess, typeOfTask)} title={translate('task.task_management.detail_route_task')}>
@@ -637,7 +606,7 @@ class DetailTaskTab extends Component {
                                     </a>
                                 )
                             )
-                        }
+                        } */}
 
                         {((currentRole === "consulted" || currentRole === "responsible" || currentRole === "accountable") && checkInactive) &&
                             <React.Fragment>
@@ -683,6 +652,14 @@ class DetailTaskTab extends Component {
                             task && warning
                             && <div className="description-box" style={{ border: "3px double #e8cbcb" }}>
                                 <h4>{translate('task.task_management.warning')}</h4>
+                                {/* Kích hoạt công việc phía sau trong quy trình */}
+                                {checkInactive && codeInProcess && (currentRole === "accountable" || (currentRole === "responsible" && checkHasAccountable === false)) &&
+                                    <div>
+                                        <strong>{translate('task.task_perform.is_task_process')}.
+                                            <a style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => this.handleEndTask(id, "Inprocess", codeInProcess, typeOfTask)}> {translate('task.task_perform.activated_task')}</a> {translate('task.task_perform.following_task')}
+                                        </strong>
+                                    </div>
+                                }
                                 {/** Xác nhận công việc */}
                                 {
                                     checkConfirmTask && checkConfirmTask.checkConfirmCurrentUser
@@ -711,7 +688,7 @@ class DetailTaskTab extends Component {
 
                                 {/** Chưa liên kết KPI */}
                                 {
-                                    task.status === "Inprocess" && checkEvaluationTaskAndKpiLink && !checkEvaluationTaskAndKpiLink.checkEvaluationTask && checkEvaluationTaskAndKpiLink.checkKpiLink
+                                    task.status === "Inprocess" && checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkKpiLink
                                     && <div>
                                         <strong>{translate('task.task_management.detail_not_kpi')}: </strong>
                                         &nbsp;&nbsp;
@@ -1013,7 +990,7 @@ class DetailTaskTab extends Component {
                         role={currentRole}
                         typeOfTask={typeOfTask}
                         codeInProcess={codeInProcess}
-                        title={"Chọn công việc thực hiện tiếp theo"}
+                        title={translate('task.task_perform.choose_following_task')}
                         perform='selectFollowingTask'
                     />
                 }

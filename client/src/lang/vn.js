@@ -25,6 +25,7 @@ export default {
             cancel: 'Hủy',
             status: 'Trạng thái',
             month: 'Tháng',
+            year: 'Năm',
             yes: 'Có',
             no: 'Không',
             loading: 'Đang tải dữ liệu',
@@ -399,6 +400,7 @@ export default {
             add_version: 'Thêm phiên bản mới',
             upload_file: 'File tài liệu',
             upload_file_scan: 'File scan tài liệu',
+            choose_file: 'Chọn file',
             download: 'Tải xuống',
             no_version: 'Không có phiên bản nào khác',
             no_blank_description: 'Mô tả không được để trống',
@@ -528,7 +530,13 @@ export default {
                 delete: 'Xóa thông tin khách hàng',
             },
             group: {
+                name: 'Tên nhóm khách hàng',
+                code: 'Mã nhóm khách hàng',
+                description: 'Mô tả nhóm khách hàng',
 
+                add: 'Thêm mới nhóm khách hàng',
+                edit: 'Chỉnh sửa thông tin nhóm khách hàng',
+                delete: 'Xóa thông tin nhóm khách hàng',
             },
             lead: {
 
@@ -2274,10 +2282,16 @@ export default {
                 delete: "Xóa",
 
                 notice_end_task: 'Bạn có chắc chắn muốn kết thúc công việc này',
-                notice_change_status_task: 'Bạn có chắc chắn muốn đổi trạng thái của công việc này',
+                notice_change_activate_task: 'Bạn có chắc chắn muốn kích hoạt công việc này',
+                activated_task_list: 'Các công việc đã kích hoạt',
+                activated_all: 'Đã kích hoạt hết các công việc phía sau',
                 choose_following_task: 'Chọn công việc thực hiện tiếp theo',
                 task_link_of_process: 'Đường liên kết',
                 not_have_following: 'Không có công việc kế tiếp',
+
+                is_task_process: 'Đây là công việc theo quy trình',
+                activated_task: "Kích hoạt",
+                following_task: "các công việc phía sau",
 
 
                 // TODO: code_mesage_task_perform

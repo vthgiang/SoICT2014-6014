@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 const Company = require('../system-admin/company.model');
 const AssetType = require('./assetType.model');
 const User = require('../auth/user.model');
-const OrganizaitonalUnit = require('../super-admin/organizationalUnit.model')
+const OrganizationalUnit = require('../super-admin/organizationalUnit.model')
 // Create Schema
 const AssetSchema = new Schema({
     group: {
@@ -64,9 +64,9 @@ const AssetSchema = new Schema({
         // required: true
     },
 
-    assignedToOrganizaitonalUnit: { //13.Đơn vị đang được giao sử dụng
+    assignedToOrganizationalUnit: { //13.Đơn vị đang được giao sử dụng
         type: Schema.Types.ObjectId,
-        ref: OrganizaitonalUnit, 
+        ref: OrganizationalUnit, 
     },
 
     location: { // 16.vị trí tài sản
@@ -155,9 +155,9 @@ const AssetSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: User,
         },
-        usedByOrganizaitonalUnit: {
+        usedByOrganizationalUnit: {
             type: Schema.Types.ObjectId,
-            ref: OrganizaitonalUnit, 
+            ref: OrganizationalUnit, 
         },
         startDate: { // ngày bắt đầu sử dụng
             type: Date
