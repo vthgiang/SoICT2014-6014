@@ -185,7 +185,6 @@ exports.createAsset = async (data, company, fileInfo) => {
         disposalDesc: data.disposalDesc,
 
         // Tài liệu đính kèm
-        archivedRecordNumber: data.archivedRecordNumber,
         files: files,
     });
 
@@ -280,8 +279,6 @@ exports.updateAssetInformation = async (id, data, fileInfo, company) => {
     oldAsset.disposalType = data.disposalType;
     oldAsset.disposalCost = data.disposalCost;
     oldAsset.disposalDesc = data.disposalDesc;
-    // Tài liệu tham khảo
-    oldAsset.archivedRecordNumber = data.archivedRecordNumber;
 
     // Edit  thông tin tài sản
     oldAsset.save();

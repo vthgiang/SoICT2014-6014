@@ -4,14 +4,14 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti,ExportExcel } from '../../../../../common-components';
 
-import { PurchaseRequestEditForm } from './PurchaseRequestManagerEditForm';
+import { UseRequestEditForm } from './UseRequestManagerEditForm';
 import { UsageCreateForm } from './usageCreateForm';
 
 import { RecommendDistributeActions } from '../../../user/use-request/redux/actions';
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { AssetManagerActions } from "../../asset-information/redux/actions";
 
-class PurchaseRequestManager extends Component {
+class UseRequestManager extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -361,7 +361,7 @@ class PurchaseRequestManager extends Component {
                 {/* Form chỉnh sửa phiếu đăng ký sử dụng */}
                 {
                     currentRow &&
-                    <PurchaseRequestEditForm
+                    <UseRequestEditForm
                         _id={currentRow._id}
                         employeeId = {managedBy}
                         recommendNumber={currentRow.recommendNumber}
@@ -408,5 +408,5 @@ const actionCreators = {
 
 };
 
-const connectedListRecommendDistributeManager = connect(mapState, actionCreators)(withTranslate(PurchaseRequestManager));
-export { connectedListRecommendDistributeManager as PurchaseRequestManager };
+const connectedUseRequestManager = connect(mapState, actionCreators)(withTranslate(UseRequestManager));
+export { connectedUseRequestManager as UseRequestManager };

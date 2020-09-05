@@ -181,8 +181,8 @@ class AssetManagement extends Component {
         let page = (pageNumber - 1) * this.state.limit;
         await this.setState({
             page: parseInt(page),
-
         });
+        
         this.props.getAllAsset(this.state);
     }
 

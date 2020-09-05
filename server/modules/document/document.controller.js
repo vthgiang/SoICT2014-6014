@@ -7,7 +7,7 @@ const { LogInfo, LogError } = require('../../logs');
 exports.getDocuments = async (req, res) => {
     try {
         const documents = await DocumentServices.getDocuments(req.user.company._id, req.query);
-
+        console.log('gettt', documents)
         await LogInfo(req.user.email, 'GET_DOCUMENTS', req.user.company);
         res.status(200).json({
             success: true,
@@ -54,6 +54,27 @@ exports.createDocument = async (req, res) => {
     }
 };
 
+exports.importDocument = async (req, res) => {
+    // try {
+
+    const document = await DocumentServices.importDocument(req.user.company._id, req.body);
+    console.log('import', document);
+    await LogInfo(req.user.email, 'IMPORT_DOCUMENT', req.user.company);
+    res.status(200).json({
+        success: true,
+        messages: ['import_document_success'],
+        content: document
+    });
+    // } catch (error) {
+    //     console.log(error)
+    //     await LogError(req.user.email, 'IMPORT_DOCUMENT', req.user.company);
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: Array.isArray(error) ? error : ['import_document_faile'],
+    //         content: error
+    //     });
+    // }
+};
 exports.increaseNumberView = async (req, res) => {
     try {
         const doc = await DocumentServices.increaseNumberView(req.params.id, req.user._id);

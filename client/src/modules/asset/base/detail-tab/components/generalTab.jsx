@@ -96,7 +96,7 @@ class GeneralTab extends Component {
                 <div className="box-body">
                     <div className="col-md-12">
                         {/* Anh tài sản */}
-                        <div className="col-md-4" style={{ textAlign: 'center' }}>
+                        <div className="col-md-4" style={{ textAlign: 'center', paddingLeft: '0px' }}>
                             <div>
                                 <a href={process.env.REACT_APP_SERVER + avatar} target="_blank">
                                     <img className="attachment-img avarta" src={process.env.REACT_APP_SERVER + avatar} alt="Attachment" />
@@ -105,9 +105,8 @@ class GeneralTab extends Component {
                         </div>
 
                         {/* Thông tin cơ bản */}
-                        <label>{translate('asset.general_information.basic_information')}:</label>
                         <br />
-                        <div className="col-md-8">
+                        <div className="col-md-8" style={{ paddingLeft: '0px' }}>
                             <div>
                                 <div className="col-md-6">
 
@@ -213,7 +212,7 @@ class GeneralTab extends Component {
 
                             {/* Thông tin chi tiết */}
                             <div className="col-md-12">
-                                <label>{translate('asset.general_information.detail_information')}:<a title={translate('asset.general_information.detail_information')}></a></label>
+                                <label>{translate('asset.general_information.asset_properties')}:<a title={translate('asset.general_information.asset_properties')}></a></label>
                                 <div className="form-group">
                                     <table className="table">
                                         <thead>

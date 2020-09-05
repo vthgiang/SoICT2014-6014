@@ -149,29 +149,27 @@ class GeneralTab extends Component {
         let { assetType } = this.props;
         let { detailInfo } = this.state;
 
-        // let assetTypeList = assetType.listAssetTypes;
-        // let currentAssetType = assetTypeList.filter((element) => element._id === value[0])[0];
-        // let defaultInformation = currentAssetType.defaultInformation;
-
-        if (value.length === 0) {
-            value = null
-        }
+        let assetTypeList = assetType.listAssetTypes;
+        let currentAssetType = assetTypeList.filter((element) => element._id === value[0])[0];
+        let defaultInformation = currentAssetType ? currentAssetType.defaultInformation : [];
 
         // Thêm trường thông tin mặc định ở nhóm tài sản vào thông tin chi tiết
         let arr = [...detailInfo];
-        // for (let i in defaultInformation) {
-        //     let check = true;
-        //     for (let j in detailInfo) {
-        //         if (defaultInformation[i].nameField === detailInfo[j].nameField ||
-        //             defaultInformation[i].nameField === detailInfo[j].nameField) {
-        //             check = false;
-        //         }
-        //     }
+        for (let i in defaultInformation) {
+            let check = true;
+            for (let j in detailInfo) {
+                if (defaultInformation[i].nameField === detailInfo[j].nameField) {
+                    check = false;
+                }
+            }
 
-        //     if (check) {
-        //         arr.push(defaultInformation[i]);
-        //     }
-        // }
+            if (check) {
+                arr.push({
+                    ...defaultInformation[i],
+                    value: '',
+                });
+            }
+        }
 
         await this.setState(state => {
             return {
@@ -555,7 +553,7 @@ class GeneralTab extends Component {
             <div id={id} className="tab-pane active">
                 <div className="row">
                     {/* Ảnh tài sản */}
-                    <div className="col-md-4" style={{ textAlign: 'center' }}>
+                    <div className="col-md-4" style={{ textAlign: 'center', paddingLeft: '0px' }}>
                         <div>
                             <a href={img} target="_blank">
                                 <img className="attachment-img avarta" src={img} alt="Attachment" />
@@ -569,8 +567,7 @@ class GeneralTab extends Component {
 
                     <br />
                     {/* Thông tin cơ bản */}
-                    <div className="col-md-8">
-                        <label>{translate('asset.general_information.basic_information')}:</label>
+                    <div className="col-md-8" style={{ paddingLeft: '0px' }}>
                         <div>
                             <div id="form-create-asset-type" className="col-md-6">
                                 {/* Mã tài sản */}
@@ -794,7 +791,7 @@ class GeneralTab extends Component {
 
                         {/* Thông tin chi tiết */}
                         <div className="col-md-12">
-                            <label>{translate('asset.general_information.detail_information')}:<a style={{ cursor: "pointer" }} title={translate('asset.general_information.detail_information')}><i className="fa fa-plus-square" style={{ color: "#00a65a", marginLeft: 5 }}
+                            <label>{translate('asset.general_information.asset_properties')}:<a style={{ cursor: "pointer" }} title={translate('asset.general_information.asset_properties')}><i className="fa fa-plus-square" style={{ color: "#00a65a", marginLeft: 5 }}
                                 onClick={this.handleAddDetailInfo} /></a></label>
                             <div className={`form-group ${(!errorOnNameField && !errorOnValue) ? "" : "has-error"}`}>
 

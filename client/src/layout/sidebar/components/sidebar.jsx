@@ -119,15 +119,15 @@ class SideBar extends Component {
                                     { name: 'menu.manage_depreciation_asset', icon: 'fa fa-balance-scale', path: '/manage-depreciation-asset' },
                                     { name: 'menu.manage_maintainance_asset', icon: 'fa fa-sitemap', path: '/manage-maintainance-asset' },
                                     { name: 'menu.manage_incident_asset', icon: 'fa fa-calendar', path: '/manage-incident-asset' },
-                                    { name: 'menu.manage_recommend_distribute_asset', icon: 'fa fa-calendar', path: '/manage-recommend-distribute-asset' },
+                                    { name: 'menu.manage_recommend_distribute_asset', icon: 'fa fa-calendar', path: '/manage-asset-use-request' },
                                     { name: 'menu.manage_usage_asset', icon: 'fa fa-sitemap', path: '/manage-usage-asset' },
-                                    { name: 'menu.manage_recommend_procure', icon: 'fa fa-sitemap', path: '/manage-recommend-procure' },
+                                    { name: 'menu.manage_recommend_procure', icon: 'fa fa-sitemap', path: '/manage-asset-purchase-request' },
                                     { name: 'menu.manage_type_asset', icon: 'fa fa-dashboard', path: '/manage-type-asset' },
                                     { name: 'menu.view_building_list', icon: 'fa fa-building', path: '/view-building-list' },
                                     { name: 'menu.manage_assigned_asset', icon: 'fa fa-calendar', path: '/manage-assigned-asset' },
                                     { name: 'menu.employee_manage_asset_info', icon: 'fa fa-sitemap', path: '/employee-manage-info-asset' },
-                                    { name: 'menu.recommend_distribute_asset', icon: 'fa fa-calendar', path: '/recommend-distribute-asset' },
-                                    { name: 'menu.recommend_equipment_procurement', icon: 'fa fa-calendar', path: '/recommend-equipment-procurement' },
+                                    { name: 'menu.recommend_distribute_asset', icon: 'fa fa-calendar', path: '/asset-use-request' },
+                                    { name: 'menu.recommend_equipment_procurement', icon: 'fa fa-calendar', path: '/asset-purchase-request' },
                                 ]
                             }} />
 
