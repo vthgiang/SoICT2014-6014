@@ -4,9 +4,9 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../../common-components';
 import { RecommendDistributeActions } from '../../../user/use-request/redux/actions';
-import { UsageFormValidator } from '../../usage/components/usageFormValidator';
+import { UsageFormValidator } from './usageFormValidator';
 
-import { UsageActions } from '../../usage/redux/actions';
+import { UseRequestActions } from '../../use-request/redux/actions';
 import { AssetManagerActions } from '../../asset-information/redux/actions';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
 
@@ -280,7 +280,7 @@ function mapState(state) {
 const actionCreators = {
     getUser: UserActions.get,
     getAllAsset: AssetManagerActions.getAllAsset,
-    createUsage: UsageActions.createUsage,
+    createUsage: UseRequestActions.createUsage,
     updateRecommendDistribute: RecommendDistributeActions.updateRecommendDistribute,
 };
 

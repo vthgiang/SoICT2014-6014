@@ -10,6 +10,7 @@ import { IncidentActions } from '../../../user/asset-assigned/redux/actions';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { AssetManagerActions } from '../../asset-information/redux/actions';
 import { AssetTypeActions } from "../../asset-type/redux/actions";
+import { AssetEditForm } from '../../asset-information/components/assetEditForm';
 
 class IncidentManagement extends Component {
     constructor(props) {
@@ -228,20 +229,24 @@ class IncidentManagement extends Component {
     }
 
     // Bắt sự kiện click chỉnh sửa thông tin tài sản
-    handleEdit = async () => {
-        // console.log(value);
-        // await this.setState(state => {
-        //     return {
-        //         ...state,
-        //         currentRow: value
-        //     }
-        // });
+    handleEditAsset = async (value) => {
+        console.log(value);
+        await this.setState(state => {
+            return {
+                ...state,
+                currentRowEditAsset: value
+            }
+        });
         window.$('#modal-edit-asset').modal('show');
+
+        // Mở tab thứ 5
+        window.$('.nav-tabs li:eq(4) a').tab('show');
+
     }
 
     render() {
         const { translate, assetsManager, assetType, user, isActive } = this.props;
-        const { page, limit, currentRow, currentRowAdd, managedBy } = this.state;
+        const { page, limit, currentRow, currentRowEditAsset, managedBy } = this.state;
 
         var lists = "", exportData;
         var userlist = user.list;
@@ -331,7 +336,7 @@ class IncidentManagement extends Component {
                                 lists.map(asset => {
                                     return asset.incidentLogs.map((x, index) => (
                                         <tr key={index}>
-                                            <td>{ <a onClick={this.handleEdit}>{asset.code}</a>}</td>
+                                            <td><a onClick={() => this.handleEditAsset(asset)}>{asset.code}</a></td>
                                             <td>{asset.assetName}</td>
                                             <td>{x.incidentCode}</td>
                                             <td>{x.type}</td>
@@ -382,6 +387,55 @@ class IncidentManagement extends Component {
                     />
                 }
 
+                    {/* Form chỉnh sửa thông tin tài sản */}
+                {
+                    currentRowEditAsset &&
+                    <AssetEditForm
+                        _id={currentRowEditAsset._id}
+                        employeeId ={managedBy}
+                        avatar={currentRowEditAsset.avatar}
+                        code={currentRowEditAsset.code}
+                        assetName={currentRowEditAsset.assetName}
+                        serial={currentRowEditAsset.serial}
+                        assetType={currentRowEditAsset.assetType}
+                        group={currentRowEditAsset.group}
+                        purchaseDate={currentRowEditAsset.purchaseDate}
+                        warrantyExpirationDate={currentRowEditAsset.warrantyExpirationDate}
+                        managedBy={currentRowEditAsset.managedBy}
+                        assignedToUser={currentRowEditAsset.assignedToUser}
+                        assignedToOrganizationalUnit={currentRowEditAsset.assignedToOrganizationalUnit}
+                        handoverFromDate={currentRowEditAsset.handoverFromDate}
+                        handoverToDate={currentRowEditAsset.handoverToDate}
+                        location={currentRowEditAsset.location}
+                        description={currentRowEditAsset.description}
+                        status={currentRowEditAsset.status}
+                        canRegisterForUse={currentRowEditAsset.canRegisterForUse}
+                        detailInfo={currentRowEditAsset.detailInfo}
+                        readByRoles={currentRowEditAsset.readByRoles}
+                        cost={currentRowEditAsset.cost}
+                        residualValue={currentRowEditAsset.residualValue}
+                        startDepreciation={currentRowEditAsset.startDepreciation}
+                        usefulLife={currentRowEditAsset.usefulLife}
+                        depreciationType={currentRowEditAsset.depreciationType}
+                        estimatedTotalProduction={currentRowEditAsset.estimatedTotalProduction}
+                        unitsProducedDuringTheYears={currentRowEditAsset.unitsProducedDuringTheYears && currentRowEditAsset.unitsProducedDuringTheYears.map((x) => ({
+                            month: this.formatDate2(x.month),
+                            unitsProducedDuringTheYear: x.unitsProducedDuringTheYear
+                        })
+                        )}
+
+                        disposalDate={currentRowEditAsset.disposalDate}
+                        disposalType={currentRowEditAsset.disposalType}
+                        disposalCost={currentRowEditAsset.disposalCost}
+                        disposalDesc={currentRowEditAsset.disposalDesc}
+
+                        maintainanceLogs={currentRowEditAsset.maintainanceLogs}
+                        usageLogs={currentRowEditAsset.usageLogs}
+                        incidentLogs={currentRowEditAsset.incidentLogs}
+                        archivedRecordNumber={currentRowEditAsset.archivedRecordNumber}
+                        files={currentRowEditAsset.documents}
+                    />
+                }
             </div>
         );
     }
