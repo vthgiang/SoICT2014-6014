@@ -987,6 +987,7 @@ export default {
                         decision_unit: 'Decision unit',
                         reward_forms: 'Commendation forms',
                         reason_praise: 'Reason',
+                        reward_forms_short: 'Comm forms',
 
                     },
 
@@ -1030,6 +1031,7 @@ export default {
                         end_date: 'Expiration date',
                         discipline_forms: 'Discipline forms',
                         reason_discipline: 'Reason',
+                        discipline_forms_short: 'Discipline forms',
                     },
 
                     // Nhóm dành cho action

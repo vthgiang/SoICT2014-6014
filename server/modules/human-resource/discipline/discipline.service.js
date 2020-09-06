@@ -93,44 +93,48 @@ exports.getTotalDiscipline = async (company, organizationalUnits, month) => {
  * @company : Id công ty người tìm kiếm
  */
 exports.searchDisciplines = async (params, company) => {
-    let keySearchEmployee, keySearch = {
+    let keySearch = {
         company: company
     };
 
-    // Bắt sựu kiện đơn vị tìm kiếm khác undefined 
-    if (params.organizationalUnits !== undefined) {
-        let emailInCompany = await EmployeeService.getEmployeeEmailsByOrganizationalUnitsAndPositions(params.organizationalUnits, params.position);
-        keySearchEmployee = {
-            ...keySearchEmployee,
-            emailInCompany: {
-                $in: emailInCompany
-            }
-        }
-    }
-
-    // Bắt sựu kiện MSNV tìm kiếm khác "", undefined
-    if (params.employeeNumber !== undefined && params.employeeNumber.length !== 0) {
-        keySearchEmployee = {
-            ...keySearchEmployee,
+    // Bắt sựu kiện tìm kiếm them MSNV
+    if (params.employeeNumber) {
+        let employee = await Employee.find({
             employeeNumber: {
                 $regex: params.employeeNumber,
                 $options: "i"
             }
-        }
-    }
-    if (keySearchEmployee !== undefined) {
-        let employeeinfo = await Employee.find(keySearchEmployee);
-        let employee = employeeinfo.map(employeeinfo => employeeinfo._id);
-        keySearch = {
-            ...keySearch,
-            employee: {
-                $in: employee
+        }, {
+            _id: 1
+        });
+        if (employee.length !== 0) {
+            employee = employee.map(x => x._id);
+            keySearch = {
+                ...keySearch,
+                employee: {
+                    $in: employee
+                }
+            };
+        } else {
+            return {
+                totalList: 0,
+                listSalarys: [],
             }
         }
     }
 
-    // Bắt sựu kiện số quyết định tìm kiếm khác "", undefined
-    if (params.decisionNumber !== undefined && params.decisionNumber.length !== 0) {
+    // Bắt sựu kiện tìm kiếm theo cấp ra quyết định
+    if (params.organizationalUnits && params.organizationalUnits.length !== 0) {
+        keySearch = {
+            ...keySearch,
+            organizationalUnit: {
+                $in: params.organizationalUnits
+            }
+        };
+    }
+
+    // Bắt sựu kiện tìm kiếm theo số quyết định
+    if (params.decisionNumber) {
         keySearch = {
             ...keySearch,
             decisionNumber: {
@@ -140,84 +144,71 @@ exports.searchDisciplines = async (params, company) => {
         }
     };
 
+    // Bắt sựu kiện tìm kiếm theo hình thức khen thưởng
+    if (params.type) {
+        keySearch = {
+            ...keySearch,
+            type: {
+                $regex: params.type,
+                $options: "i"
+            }
+        }
+    };
+
     // Lấy danh sách kỷ luật
-    let totalList = await Discipline.count(keySearch);
     let listDisciplines = await Discipline.find(keySearch).populate({
             path: 'employee',
-            model: Employee
+            select: 'emailInCompany fullName employeeNumber'
         })
         .sort({
-            'createDate': 'desc'
+            'createAt': 'desc'
         }).skip(params.page).limit(params.limit);
-    for (let n in listDisciplines) {
-        let value = await EmployeeService.getAllPositionRolesAndOrganizationalUnitsOfUser(listDisciplines[n].employee.emailInCompany);
-        listDisciplines[n] = {
-            ...listDisciplines[n]._doc,
-            ...value
-        }
-    }
+    let totalList = listDisciplines.length;
 
     return {
         totalList,
         listDisciplines
     }
 }
+
+
 /**
  * Thêm mới kỷ luật
  * @data : Dữ liệu kỷ luật cần tạo
  * @company : Id công ty người tạo
  */
 exports.createDiscipline = async (data, company) => {
-    // Lấy thông tin nhân viên
-    let employeeInfo = await Employee.findOne({
-        employeeNumber: data.employeeNumber,
-        company: company
+    let isDiscipline = await Discipline.findOne({
+        employee: data.employee,
+        company: company,
+        decisionNumber: data.decisionNumber
     }, {
-        _id: 1,
-        emailInCompany: 1
+        field1: 1
     });
-    if (employeeInfo !== null) {
-        let isDiscipline = await Discipline.findOne({
-            employee: employeeInfo._id,
+
+    if (isDiscipline !== null) {
+        return "have_exist"
+    } else {
+        // Thêm kỷ luật vào database
+        let createDiscipline = await Discipline.create({
+            employee: data.employee,
             company: company,
-            decisionNumber: data.decisionNumber
-        }, {
-            field1: 1
+            decisionNumber: data.decisionNumber,
+            organizationalUnit: data.organizationalUnit,
+            startDate: data.startDate,
+            endDate: data.endDate ? data.endDate : null,
+            type: data.type,
+            reason: data.reason,
         });
-        if (isDiscipline !== null) {
-            return "have_exist"
-        } else {
-            console.log(data);
-            // Thêm kỷ luật vào database
-            let createDiscipline = await Discipline.create({
-                employee: employeeInfo._id,
-                company: company,
-                decisionNumber: data.decisionNumber,
-                organizationalUnit: data.organizationalUnit,
-                startDate: data.startDate,
-                endDate: data.endDate ? data.endDate : null,
-                type: data.type,
-                reason: data.reason,
-            });
-            console.log(createDiscipline);
 
-            // Lấy thông tin phòng ban, chức vụ của nhân viên
-            let value = await EmployeeService.getAllPositionRolesAndOrganizationalUnitsOfUser(employeeInfo.emailInCompany);
-
-            // Lấy thông tin kỷ luật vừa tạo
-            let newDiscipline = await Discipline.findOne({
-                _id: createDiscipline._id
-            }).populate([{
-                path: 'employee',
-                model: Employee
-            }]);
-
-            return {
-                ...newDiscipline._doc,
-                ...value
-            }
-        }
-    } else return null;
+        // Lấy thông tin kỷ luật vừa tạo
+        return await Discipline.findOne({
+            _id: createDiscipline._id
+        }).populate([{
+            path: 'employee',
+            select: 'emailInCompany fullName employeeNumber'
+        }]);
+    }
 }
 
 /**
@@ -236,45 +227,20 @@ exports.deleteDiscipline = async (id) => {
  * @data : Dữ liệu chỉnh sửa kỷ luật
  * @company : Id công ty người chỉnh sửa
  */
-exports.updateDiscipline = async (id, data, company) => {
-    // Lấy thông tin nhân viên
-    let employeeInfo = await Employee.findOne({
-        employeeNumber: data.employeeNumber,
-        company: company
-    }, {
-        _id: 1,
-        emailInCompany: 1
-    });
-    if (employeeInfo !== null) {
-        let DisciplineChange = {
-            organizationalUnit: data.organizationalUnit,
-            startDate: data.startDate,
-            endDate: data.endDate,
-            type: data.type,
-            reason: data.reason,
-        };
+exports.updateDiscipline = async (id, data) => {
+    let discipline = await Discipline.findById(id);
 
-        // Cập nhật thông tin kỷ luật vào database
-        await Discipline.findOneAndUpdate({
-            _id: id
-        }, {
-            $set: DisciplineChange
-        });
+    discipline.organizationalUnit = data.organizationalUnit;
+    discipline.startDate = data.startDate;
+    discipline.endDate = data.endDate ? data.endDate : null;
+    discipline.type = data.type;
+    discipline.reason = data.reason;
+    await discipline.save();
 
-        // Lấy thông tin phòng ban, chức vụ của nhân viên theo emailCompany
-        let value = await EmployeeService.getAllPositionRolesAndOrganizationalUnitsOfUser(employeeInfo.emailInCompany);
-
-        // Lấy thông tin kỷ luật vừa cập nhật
-        let updateDiscipline = await Discipline.findOne({
-            _id: id
-        }).populate([{
-            path: 'employee',
-            model: Employee
-        }]);
-
-        return {
-            ...updateDiscipline._doc,
-            ...value
-        }
-    } else return null
+    return await Discipline.findOne({
+        _id: id
+    }).populate([{
+        path: 'employee',
+        select: 'emailInCompany fullName employeeNumber'
+    }]);
 }

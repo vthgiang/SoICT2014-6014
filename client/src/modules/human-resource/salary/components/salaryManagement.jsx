@@ -17,7 +17,7 @@ class SalaryManagement extends Component {
         this.state = {
             month: month,
             employeeNumber: "",
-            organizationalUnit: null,
+            organizationalUnits: null,
             page: 0,
             limit: 5,
         }
@@ -95,7 +95,7 @@ class SalaryManagement extends Component {
         };
         this.setState({
             ...this.state,
-            organizationalUnit: value
+            organizationalUnits: value
         })
     }
 

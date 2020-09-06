@@ -987,6 +987,7 @@ export default {
                         decision_unit: 'Cấp ra quyết định',
                         reward_forms: 'Hình thức khen thưởng',
                         reason_praise: 'Thành tích (Lý do)',
+                        reward_forms_short: 'Hình thức',
 
                     },
 
@@ -1030,6 +1031,7 @@ export default {
                         end_date: 'Ngày hết hiệu lực',
                         discipline_forms: 'Hình thức kỷ luật',
                         reason_discipline: 'Lý do kỷ luật',
+                        discipline_forms_short: 'Hình thức',
                     },
 
                     // Nhóm dành cho action
