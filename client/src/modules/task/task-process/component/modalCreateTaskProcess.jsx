@@ -671,8 +671,8 @@ class ModalCreateTaskProcess extends Component {
 						<div>
 							<div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none", marginBottom: 0 }}>
 								<ul className="nav nav-tabs">
-									<li className="active"><a href="#info-create" onClick={() => this.handleChangeContent("info")} data-toggle="tab">Thông tin quy trình</a></li>
-									<li><a href="#process-create" onClick={() => this.handleChangeContent("process")} data-toggle="tab">Quy trình công việc</a></li>
+									<li className="active"><a href="#info-create" onClick={() => this.handleChangeContent("info")} data-toggle="tab">{translate("task.task_process.process_information")}</a></li>
+									<li><a href="#process-create" onClick={() => this.handleChangeContent("process")} data-toggle="tab">{translate("task.task_process.task_process")}</a></li>
 								</ul>
 								<div className="tab-content">
 									<div className={selectedCreate === "info" ? "active tab-pane" : "tab-pane"} id="info-create">
@@ -682,7 +682,7 @@ class ModalCreateTaskProcess extends Component {
 													<label className={`control-label`}>{translate("task.task_process.process_name")}</label>
 													<input type="text"
 														value={processName}
-														className="form-control" placeholder="Mô tả công việc"
+														className="form-control" placeholder={translate("task.task_process.process_name")}
 														onChange={this.handleChangeBpmnName}
 													/>
 													<ErrorLabel content={this.state.errorOnProcessName} />
