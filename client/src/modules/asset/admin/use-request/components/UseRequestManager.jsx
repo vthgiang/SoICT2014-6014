@@ -5,11 +5,11 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti,ExportExcel } from '../../../../../common-components';
 
 import { UseRequestEditForm } from './UseRequestManagerEditForm';
-import { UsageCreateForm } from './usageCreateForm';
 
 import { RecommendDistributeActions } from '../../../user/use-request/redux/actions';
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { AssetManagerActions } from "../../asset-information/redux/actions";
+import { AssetEditForm } from '../../asset-information/components/assetEditForm';
 
 class UseRequestManager extends Component {
     constructor(props) {
@@ -48,18 +48,6 @@ class UseRequestManager extends Component {
             }
         });
         window.$('#modal-edit-recommenddistributemanage').modal('show');
-    }
-
-    // Bắt sự kiện click thêm mới thông tin phiếu bảo trì
-    handleAddUsage = async (value, asset) => {
-        // value.asset = asset;
-        await this.setState(state => {
-            return {
-                ...state,
-                currentRowAdd: value
-            }
-        });
-        window.$('#modal-create-usage').modal('show');
     }
 
     // Function format dữ liệu Date thành string
@@ -222,9 +210,25 @@ class UseRequestManager extends Component {
        
     }
 
+    // Bắt sự kiện click chỉnh sửa thông tin tài sản
+    handleEditAsset = async (value) => {
+        console.log(value);
+        await this.setState(state => {
+            return {
+                ...state,
+                currentRowEditAsset: value
+            }
+        });
+        window.$('#modal-edit-asset').modal('show');
+
+        // Mở tab thứ 2
+        window.$('.nav-tabs li:eq(1) a').tab('show');
+
+    }
+
     render() {
         const { translate, recommendDistribute, isActive} = this.props;
-        const { page, limit, currentRow, currentRowAdd, managedBy } = this.state;
+        const { page, limit, currentRow, currentRowEditAsset, managedBy } = this.state;
 
         var listRecommendDistributes = "", exportData;
         if (recommendDistribute.isLoading === false) {
@@ -325,15 +329,13 @@ class UseRequestManager extends Component {
                                         <td>{x.recommendNumber}</td>
                                         <td>{x.dateCreate}</td>
                                         <td>{x.proponent ? x.proponent.name : 'User is deleted'}</td>
-                                        <td>{x.asset ? x.asset.code : 'Asset is deleted'}</td>
+                                        <td><a onClick={() => this.handleEditAsset(x.asset)}>{x.asset ? x.asset.code : 'Asset is deleted'}</a></td>
                                         <td>{x.asset ? x.asset.assetName : 'Asset is deleted'}</td>
                                         <td>{x.dateStartUse}</td>
                                         <td>{x.dateEndUse}</td>
                                         <td>{x.approver ? x.approver.name : 'User is deleted'}</td>
                                         <td>{x.status}</td>
                                         <td style={{ textAlign: "center" }}>
-                                            <a onClick={() => this.handleAddUsage(x, x.asset)} className="post_add text-green" style={{ width: '5px' }} title={translate('asset.asset_info.add_usage_info')}><i
-                                                className="material-icons">post_add</i></a>
                                             <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.asset_info.edit_usage_info')}><i className="material-icons">edit</i></a>
                                             <DeleteNotification
                                                 content={translate('asset.asset_info.delete_usage_info')}
@@ -377,19 +379,56 @@ class UseRequestManager extends Component {
                     />
                 }
 
-                {/* Form thêm phiếu đăng ký sử dụng */}
+                {/* Form chỉnh sửa thông tin tài sản */}
                 {
-                    currentRowAdd &&
-                    <UsageCreateForm
-                        _id={currentRowAdd._id}
+                    currentRowEditAsset &&
+                    <AssetEditForm
+                        _id={currentRowEditAsset._id}
                         employeeId ={managedBy}
-                        assetUseRequest = {currentRowAdd}
-                        asset={currentRowAdd.asset}
-                        startDate={currentRowAdd.dateStartUse}
-                        endDate={currentRowAdd.dateEndUse}
-                        usedByUser={currentRowAdd.proponent}
+                        avatar={currentRowEditAsset.avatar}
+                        code={currentRowEditAsset.code}
+                        assetName={currentRowEditAsset.assetName}
+                        serial={currentRowEditAsset.serial}
+                        assetType={currentRowEditAsset.assetType}
+                        group={currentRowEditAsset.group}
+                        purchaseDate={currentRowEditAsset.purchaseDate}
+                        warrantyExpirationDate={currentRowEditAsset.warrantyExpirationDate}
+                        managedBy={currentRowEditAsset.managedBy}
+                        assignedToUser={currentRowEditAsset.assignedToUser}
+                        assignedToOrganizationalUnit={currentRowEditAsset.assignedToOrganizationalUnit}
+                        handoverFromDate={currentRowEditAsset.handoverFromDate}
+                        handoverToDate={currentRowEditAsset.handoverToDate}
+                        location={currentRowEditAsset.location}
+                        description={currentRowEditAsset.description}
+                        status={currentRowEditAsset.status}
+                        canRegisterForUse={currentRowEditAsset.canRegisterForUse}
+                        detailInfo={currentRowEditAsset.detailInfo}
+                        readByRoles={currentRowEditAsset.readByRoles}
+                        cost={currentRowEditAsset.cost}
+                        residualValue={currentRowEditAsset.residualValue}
+                        startDepreciation={currentRowEditAsset.startDepreciation}
+                        usefulLife={currentRowEditAsset.usefulLife}
+                        depreciationType={currentRowEditAsset.depreciationType}
+                        estimatedTotalProduction={currentRowEditAsset.estimatedTotalProduction}
+                        unitsProducedDuringTheYears={currentRowEditAsset.unitsProducedDuringTheYears && currentRowEditAsset.unitsProducedDuringTheYears.map((x) => ({
+                            month: this.formatDate2(x.month),
+                            unitsProducedDuringTheYear: x.unitsProducedDuringTheYear
+                        })
+                        )}
+
+                        disposalDate={currentRowEditAsset.disposalDate}
+                        disposalType={currentRowEditAsset.disposalType}
+                        disposalCost={currentRowEditAsset.disposalCost}
+                        disposalDesc={currentRowEditAsset.disposalDesc}
+
+                        maintainanceLogs={currentRowEditAsset.maintainanceLogs}
+                        usageLogs={currentRowEditAsset.usageLogs}
+                        incidentLogs={currentRowEditAsset.incidentLogs}
+                        archivedRecordNumber={currentRowEditAsset.archivedRecordNumber}
+                        files={currentRowEditAsset.documents}
                     />
                 }
+                
             </div >
         );
     }

@@ -1655,7 +1655,7 @@ export default {
                 incident_list: 'Asset incident list',
                 file_list: 'List of documents attached',
                 add_usage_info: 'Add new asset usage infomation',
-                edit_usage_info: 'Edit asset usage infomation',
+                edit_usage_info: 'Edit asset use request form',
                 delete_usage_info: 'Delete asset usage infomation',
                 add_maintenance_card: 'Add new maintenance card',
                 edit_maintenance_card: 'Edit new maintenance card',
