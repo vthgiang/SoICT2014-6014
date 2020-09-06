@@ -9,7 +9,7 @@ const {
  * @param {*} email : email công ty nhân viên
  * @param {*} company : Id công ty
  */
-exports.getNumberAnnaulLeave = async (email, company) => {
+exports.getNumberAnnaulLeave = async (email, year, company) => {
     let employee = await Employee.findOne({
         company: company,
         emailInCompany: email
@@ -18,9 +18,9 @@ exports.getNumberAnnaulLeave = async (email, company) => {
     });
 
     if (employee) {
-        let year = new Date().getFullYear();
         let firstDay = new Date(year, 0, 1);
         let lastDay = new Date(Number(year) + 1, 0, 1);
+
         let annulLeaves = await AnnualLeave.find({
             company: company,
             employee: employee._id,
@@ -30,16 +30,45 @@ exports.getNumberAnnaulLeave = async (email, company) => {
                 "$lte": lastDay
             }
         });
-        let total = 0;
+
+        let listAnnualLeavesOfOneYear = await AnnualLeave.find({
+            company: company,
+            employee: employee._id,
+            startDate: {
+                "$gt": firstDay,
+                "$lte": lastDay
+            }
+        });
+
+        let total = 0,
+            data = [];
+
         annulLeaves.forEach(x => {
-            total = total + Math.round((new Date(x.endDate).getTime() - new Date(x.startDate).getTime()) / (21 * 60 * 60 * 1000)) + 1;
+            let check = false;
+            data.forEach(y => {
+                if (x.startDate === y.startDate && x.endDate === y.endDate) {
+                    check = true;
+                }
+            })
+            if (!check) {
+                data = [...data, x];
+            }
         })
+
+        data.forEach(x => {
+            total = total + Math.round((new Date(x.endDate).getTime() - new Date(x.startDate).getTime()) / (21 * 60 * 60 * 1000)) + 1;
+        });
+
         return {
-            numberAnnulLeave: total
+            numberAnnulLeave: total,
+            listAnnualLeavesOfOneYear: listAnnualLeavesOfOneYear
+
         }
     }
+
     return {
-        numberAnnulLeave: 0
+        numberAnnulLeave: 0,
+        listAnnualLeavesOfOneYear: []
     }
 }
 

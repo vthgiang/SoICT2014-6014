@@ -7,7 +7,6 @@ import { DeleteNotification, ExportExcel, DatePicker } from '../../../../common-
 import { HolidayEditForm, HolidayCreateForm, HolidayImportForm } from './combinedContent'
 
 import { HolidayActions } from '../redux/actions';
-import './holidayManagement.css';
 
 class ManageHoliday extends Component {
     constructor(props) {
@@ -248,9 +247,9 @@ class ManageHoliday extends Component {
                                                     <td>{(this.formatDate(x.startDate) === this.formatDate(x.endDate)) ? this.formatDate(x.startDate) : this.formatDate(x.startDate) + " - " + this.formatDate(x.endDate)}</td>
                                                     <td>{x.description}</td>
                                                     <td>
-                                                        <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa nghỉ phép"><i className="material-icons">edit</i></a>
+                                                        <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.holiday.edit_holiday')}><i className="material-icons">edit</i></a>
                                                         <DeleteNotification
-                                                            content="Xoá ngày nghỉ lễ (tết)"
+                                                            content={translate('human_resource.holiday.delete_holiday')}
                                                             data={{
                                                                 id: x._id,
                                                                 info: (this.formatDate(x.startDate) === this.formatDate(x.endDate)) ? this.formatDate(x.startDate) : this.formatDate(x.startDate) + " - " + this.formatDate(x.endDate)

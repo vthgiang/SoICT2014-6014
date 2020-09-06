@@ -517,7 +517,9 @@ export default {
                 document: 'Giấy tờ',
                 description: 'Mô tả',
                 carier: 'Nhân viên chăm sóc phụ trách',
-                discount: 'Chiết khấu áp dụng', by_group: 'Theo nhóm khách hàng', by_customer: 'Theo khách hàng',
+                discount: 'Chiết khấu áp dụng',
+                by_group: 'Theo nhóm khách hàng',
+                by_customer: 'Theo khách hàng',
                 payment: 'Hình thức thanh toán',
 
                 info: 'Thông tin chung',
@@ -1478,7 +1480,6 @@ export default {
                 day: 'ngày',
                 total_number_leave_of_year: 'Tổng số ngày nghỉ phép cả năm',
                 leaved: 'Bạn đã nghỉ',
-                view_detail: 'Chi tiết xem ở trang',
                 receiver: 'Người nhận',
 
                 // Nhóm action

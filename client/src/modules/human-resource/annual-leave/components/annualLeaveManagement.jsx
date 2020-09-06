@@ -85,8 +85,8 @@ class AnnualLeaveManagement extends Component {
                 return [month, year].join('-');
             } else return [day, month, year].join('-');
         }
-        return date;
 
+        return date;
     }
 
     /** Function lưu giá trị mã nhân viên vào state khi thay đổi */

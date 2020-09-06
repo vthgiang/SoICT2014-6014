@@ -1457,7 +1457,6 @@ export default {
                 day: 'days',
                 total_number_leave_of_year: 'Total number of days off',
                 leaved: 'You have rested',
-                view_detail: 'Details see page',
                 receiver: 'Receiver',
 
                 // Nhóm action

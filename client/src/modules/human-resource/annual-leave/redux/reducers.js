@@ -4,6 +4,7 @@ import {
 const initState = {
     isLoading: false,
     numberAnnulLeave: 0,
+    listAnnualLeavesOfOneYear: [],
 
     listAnnualLeaves: [],
     totalList: 0,
@@ -24,14 +25,17 @@ export function annualLeave(state = initState, action) {
                 isLoading: true,
             };
         case AnnualLeaveConstants.GET_ANNUAL_LEAVE_SUCCESS:
-            if (action.payload.numberAnnulLeave) {
+            if (action.payload.numberAnnulLeave !== undefined) {
                 return {
                     ...state,
-                    numberAnnulLeave: action.payload.numberAnnulLeave
+                    isLoading: false,
+                    numberAnnulLeave: action.payload.numberAnnulLeave,
+                    listAnnualLeavesOfOneYear: action.payload.listAnnualLeavesOfOneYear
                 }
             } else if (action.payload.arrMonth) {
                 return {
                     ...state,
+                    isLoading: false,
                     arrMonth: action.payload.arrMonth,
                     listAnnualLeaveOfNumberMonth: action.payload.listAnnualLeaveOfNumberMonth,
                 }
