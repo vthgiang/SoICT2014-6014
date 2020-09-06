@@ -88,16 +88,26 @@ class ArchiveImportForm extends Component {
         this.props.importArchive(importShowData);
     }
 
+    // convertDataExport = (dataExport)=>{
+    //     for(let i  = 0; i < dataExport.dataSheets.length; i++){
+    //         for(let j = 0; j < dataExport.dataSheets[j].table.length; j++){
+    //             let datas = [];
+    //             let data = dataExport.dataSheets[i].table[j].data;
+    //             if(Array.isArray(data[0].))
+    //         }
+    //     }
+    // }
+
     render() {
         const { translate } = this.props;
         console.log('state', this.state);
         let { limit, page, importData, rowError, configData, checkFileImport } = this.state;
-        console.log('config', configData)
+        //let templateImportArchive = this.convertDataExport(exportArchive);
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID={`modal_import_file`} isLoading={false}
-                    formID={`form_import_file`}
+                    modalID={`modal_import_file_archive`} isLoading={false}
+                    formID={`form_import_file_archive`}
                     title="Thêm danh mục bằng import file excel"
                     func={this.save}
                     disableSubmit={false}
@@ -118,11 +128,11 @@ class ArchiveImportForm extends Component {
                                     handleImportExcel={this.handleImportExcel}
                                 />
                             </div>
-                            {/* <div className="form-group col-md-4 col-xs-12">
+                            <div className="form-group col-md-4 col-xs-12">
                                 <label></label>
-                                <ExportExcel id="download_template_task_template" type='link' exportData={templateImportTaskTemplate2}
+                                <ExportExcel id="download_template_task_template" type='link' exportData={exportArchive}
                                     buttonName='Download file import mẫu' />
-                            </div> */}
+                            </div>
                             <div className="form-group col-md-12 col-xs-12">
                                 <ShowImportData
                                     id="import_taskTemplate_show_data"
