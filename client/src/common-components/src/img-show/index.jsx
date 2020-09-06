@@ -49,7 +49,7 @@ class ImgShow extends Component {
     }
 
     render() {
-        const { className = 'attachment-img avarta', src } = this.props;
+        const { className, style, src } = this.props;
 
         let { img } = this.state;
 
@@ -58,7 +58,7 @@ class ImgShow extends Component {
         }
 
         return (
-            <img className={className} src={img} alt="Attachment" />
+            <img className={className} style={style} src={img} alt="Attachment" />
         );
     }
 }
