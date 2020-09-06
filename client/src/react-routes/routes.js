@@ -100,6 +100,9 @@ import CrmGroup from '../modules/crm/group/components';
 //orders
 import OrderManagement from "../modules/order/components";
 
+// plans
+import PlanManagement from "../modules/plan/components";
+
 class Routes extends Component {
 
     render() {
@@ -1129,6 +1132,28 @@ class Routes extends Component {
                         pageName={"manage-orders"}
                         layout={Layout}
                         component={OrderManagement}
+                    />
+
+                     {/* Plans Management */}
+
+                     <PrivateRoute
+                        isLoading={this.props.plan.isLoading}
+                        key={"manage-plans"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-plans",
+                                name: "manage_plans",
+                                icon: "fa fa-calendar",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-plans"}
+                        path={"/manage-plans"}
+                        pageName={"manage_plans"}
+                        layout={Layout}
+                        component={PlanManagement}
                     />
 
                     {/* NOT FOUND */}
