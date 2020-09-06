@@ -17,13 +17,13 @@ class AssetManagement extends Component {
         this.state = {
             code: "",
             assetName: "",
-            assetType: null,
+            assetType: "",
             purchaseDate: null,
             status: "",
             canRegisterForUse: "",
             page: 0,
             limit: 5,
-            managedBy: this.props.managedBy?this.props.managedBy:''
+            managedBy: this.props.managedBy ? this.props.managedBy : ''
         }
     }
 
@@ -87,7 +87,6 @@ class AssetManagement extends Component {
 
     // Bắt sự kiện click chỉnh sửa thông tin tài sản
     handleEdit = async (value) => {
-        console.log(value);
         await this.setState(state => {
             return {
                 ...state,
@@ -132,7 +131,7 @@ class AssetManagement extends Component {
         if (value.length === 0) {
             value = null
         }
-        
+
         this.setState({
             ...this.state,
             assetType: value
@@ -144,7 +143,7 @@ class AssetManagement extends Component {
         if (value.length === 0) {
             value = null
         }
-        
+
         this.setState({
             ...this.state,
             status: value
@@ -156,7 +155,7 @@ class AssetManagement extends Component {
         if (value.length === 0) {
             value = null
         }
-        
+
         this.setState({
             ...this.state,
             canRegisterForUse: value
@@ -165,6 +164,7 @@ class AssetManagement extends Component {
 
     // Function bắt sự kiện tìm kiếm
     handleSubmitSearch = async () => {
+        console.log('this.state', this.state);
         this.props.getAllAsset(this.state);
     }
 
@@ -292,19 +292,32 @@ class AssetManagement extends Component {
             ]
         }
         return exportData;
+    }
 
+    getAssetTypes = () => {
+        let { assetType } = this.props;
+        let assetTypeName = assetType && assetType.listAssetTypes;
+        let typeArr = [];
+        assetTypeName.map(item => {
+            typeArr.push({
+                value: item._id,
+                text: item.typeName
+            })
+        })
+        return typeArr;
     }
 
     render() {
         var { assetsManager, assetType, translate, user, isActive, department } = this.props;
-        var { page, limit, currentRowView, currentRow, purchaseDate,managedBy } = this.state;
+        var { page, limit, currentRowView, currentRow, purchaseDate, managedBy } = this.state;
 
         var lists = "", exportData;
         var userlist = user.list, departmentlist = department.list;
         var assettypelist = assetType.listAssetTypes;
+        let typeArr = this.getAssetTypes();
+
         if (assetsManager.isLoading === false) {
             lists = assetsManager.listAssets;
-
         }
 
         var pageTotal = ((assetsManager.totalList % limit) === 0) ?
@@ -315,9 +328,9 @@ class AssetManagement extends Component {
         if (userlist && lists && assettypelist) {
             exportData = this.convertDataToExportData(lists, assettypelist, userlist);
         }
-
+        console.log('litttttttttttt', lists);
         return (
-            <div  className ={isActive?isActive:"box"}>
+            <div className={isActive ? isActive : "box"}>
 
                 <div className="box-body qlcv">
                     {/* Form thêm tài sản mới */}
@@ -335,12 +348,13 @@ class AssetManagement extends Component {
                         </div>
                     </div>
                     <div className="form-inline">
+                        {/* Chon loai tai san */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('asset.general_information.type')}</label>
-                            <SelectMulti id={`multiSelectType2`} multiple="multiple"
+                            <SelectMulti id={`multiSelectTypeInManagement`} multiple="multiple"
                                 options={{ nonSelectedText: translate('asset.general_information.select_asset_type'), allSelectedText: translate('asset.general_information.select_all_asset_type') }}
-                                onChange={this.handleTypeChange}
-                                items={[]}
+                                onChange={this.handleAssetTypeChange}
+                                items={typeArr}
                             >
                             </SelectMulti>
                         </div>
@@ -426,7 +440,7 @@ class AssetManagement extends Component {
                                     <tr key={index}>
                                         <td>{x.code}</td>
                                         <td>{x.assetName}</td>
-                                        <td>{x.assetType && assettypelist.length && assettypelist.find(item => item._id === x.assetType) ? assettypelist.find(item => item._id === x.assetType).typeName : 'Asset is deleted'}</td>
+                                        <td>{x.assetType && x.assetType.length ? x.assetType.map((item, index) => { let suffix = index < x.assetType.length - 1 ? ", " : ""; return item.typeName + suffix }) : 'Asset is deleted'}</td>
                                         <td>{this.formatDate(x.purchaseDate)}</td>
                                         <td>{x.managedBy && userlist.length && userlist.find(item => item._id === x.managedBy) ? userlist.find(item => item._id === x.managedBy).name : 'User is deleted'}</td>
                                         <td>{x.assignedToUser ? (userlist.length && userlist.find(item => item._id === x.assignedToUser) ? userlist.find(item => item._id === x.assignedToUser).name : 'User is deleted') : ''}</td>
@@ -488,7 +502,7 @@ class AssetManagement extends Component {
                         depreciationType={currentRowView.depreciationType}
                         estimatedTotalProduction={currentRowView.estimatedTotalProduction}
                         unitsProducedDuringTheYears={currentRowView.unitsProducedDuringTheYears}
-                        
+
                         maintainanceLogs={currentRowView.maintainanceLogs}
                         usageLogs={currentRowView.usageLogs}
                         incidentLogs={currentRowView.incidentLogs}
@@ -508,7 +522,7 @@ class AssetManagement extends Component {
                     currentRow &&
                     <AssetEditForm
                         _id={currentRow._id}
-                        employeeId ={managedBy}
+                        employeeId={managedBy}
                         avatar={currentRow.avatar}
                         code={currentRow.code}
                         assetName={currentRow.assetName}
@@ -569,7 +583,7 @@ const actionCreators = {
     deleteAsset: AssetManagerActions.deleteAsset,
     getUser: UserActions.get,
     getAllDepartments: DepartmentActions.get,
-    getAllRoles:  RoleActions.get,
+    getAllRoles: RoleActions.get,
 };
 
 const assetManagement = connect(mapState, actionCreators)(withTranslate(AssetManagement));

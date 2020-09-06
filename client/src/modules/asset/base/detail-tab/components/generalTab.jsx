@@ -79,19 +79,18 @@ class GeneralTab extends Component {
     }
 
     render() {
-        const { id, translate, user, assetType, assetsManager, department} = this.props;
-        var userlist = user.list, departmentlist = department.list ;
+        const { id, translate, user, assetType, assetsManager, department } = this.props;
+        var userlist = user.list, departmentlist = department.list;
         var assettype = assetType && assetType.administration;
         let assettypelist = assettype && assettype.types.list;
         let assetbuilding = assetsManager && assetsManager.buildingAssets;
         let assetbuildinglist = assetbuilding && assetbuilding.list;
-        
+
         const {
             img, avatar, code, assetName, serial, assetTypes, group, purchaseDate, warrantyExpirationDate,
-            managedBy, assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, location, 
+            managedBy, assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, location,
             description, status, canRegisterForUse, detailInfo, usageLogs
         } = this.state;
-
         return (
             <div id={id} className="tab-pane active">
                 <div className="box-body">
@@ -138,7 +137,7 @@ class GeneralTab extends Component {
                                     {/* Loại tài sản */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.asset_type')}&emsp; </strong>
-                                        {assetTypes && assettypelist.length && assettypelist.filter(item => item._id === assetTypes).pop() ? assettypelist.filter(item => item._id === assetTypes).pop().typeName : 'Asset type is deleted'}
+                                        {assetTypes && assetTypes.length ? assetTypes.map((item, index) => { let suffix = index < assetTypes.length - 1 ? ", " : ""; return item.typeName + suffix }) : 'Asset type is deleted'}
                                     </div>
 
                                     {/* Ngày nhập */}
@@ -167,7 +166,7 @@ class GeneralTab extends Component {
                                         <strong>{translate('asset.general_information.user')}&emsp; </strong>
                                         {assignedToUser ? (userlist.length && userlist.filter(item => item._id === assignedToUser).pop() ? userlist.filter(item => item._id === assignedToUser).pop().name : 'User is deleted') : ''}
                                     </div>
-                                    
+
                                     {/* Đơn vị sử dụng */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.organization_unit')}&emsp; </strong>
@@ -176,13 +175,13 @@ class GeneralTab extends Component {
                                     {/* Thời gian bắt đầu sử dụng */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.handover_from_date')}&emsp; </strong>
-                                        {status == "Đang sử dụng" && usageLogs ? this.formatDate(usageLogs[usageLogs.length-1].startDate) : ''}
+                                        {status == "Đang sử dụng" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1].startDate) : ''}
                                     </div>
 
                                     {/* Thời gian kết thúc sử dụng */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.handover_to_date')}&emsp; </strong>
-                                        {status == "Đang sử dụng" && usageLogs ? this.formatDate(usageLogs[usageLogs.length-1].endDate) : ''}
+                                        {status == "Đang sử dụng" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1].endDate) : ''}
                                     </div>
 
                                     {/* Vị trí */}

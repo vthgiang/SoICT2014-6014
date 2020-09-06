@@ -78,6 +78,7 @@ class BuildingAsset extends Component {
                                         assetName={currentRowView.assetName}
                                         serial={currentRowView.serial}
                                         assetType={currentRowView.assetType}
+                                        group={currentRowView.group}
                                         purchaseDate={currentRowView.purchaseDate}
                                         warrantyExpirationDate={currentRowView.warrantyExpirationDate}
                                         managedBy={currentRowView.managedBy}
