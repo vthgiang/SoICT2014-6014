@@ -488,7 +488,7 @@ class CreateForm extends Component {
         const { errorName, errorIssuingBody, errorOfficialNumber, errorSigner, errorVersionName,
             errorDocumentFile, errorDocumentFileScan, errorIssuingDate, errorEffectiveDate,
             errorExpiredDate, errorCategory, documentArchives } = this.state;
-        console.log('proppssss', documents.administration)
+        console.log('lít', list)
         const archives = documents.administration.archives.list;
         const categories = documents.administration.categories.list.map(category => { return { value: category._id, text: category.name } });
         // console.log('rrrrrr', archives);

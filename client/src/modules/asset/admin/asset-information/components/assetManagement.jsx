@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar, SelectMulti, ExportExcel } from '../../../../../common-components';
+import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar, SelectMulti, ExportExcel, TreeSelect } from '../../../../../common-components';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import { AssetManagerActions } from '../redux/actions';
 import { AssetTypeActions } from "../../asset-type/redux/actions";
@@ -131,7 +131,7 @@ class AssetManagement extends Component {
         if (value.length === 0) {
             value = null
         }
-
+        console.log('valueeeeeeeeee', value);
         this.setState({
             ...this.state,
             assetType: value
@@ -182,7 +182,7 @@ class AssetManagement extends Component {
         await this.setState({
             page: parseInt(page),
         });
-        
+
         this.props.getAllAsset(this.state);
     }
 
@@ -300,8 +300,10 @@ class AssetManagement extends Component {
         let typeArr = [];
         assetTypeName.map(item => {
             typeArr.push({
-                value: item._id,
-                text: item.typeName
+                _id: item._id,
+                id: item._id,
+                name: item.typeName,
+                parent: item.parent ? item.parent._id : null
             })
         })
         return typeArr;
@@ -315,6 +317,7 @@ class AssetManagement extends Component {
         var userlist = user.list, departmentlist = department.list;
         var assettypelist = assetType.listAssetTypes;
         let typeArr = this.getAssetTypes();
+        let assetTypeName = this.state.assetType ? this.state.assetType : [];
 
         if (assetsManager.isLoading === false) {
             lists = assetsManager.listAssets;
@@ -328,7 +331,6 @@ class AssetManagement extends Component {
         if (userlist && lists && assettypelist) {
             exportData = this.convertDataToExportData(lists, assettypelist, userlist);
         }
-        console.log('litttttttttttt', lists);
         return (
             <div className={isActive ? isActive : "box"}>
 
@@ -350,13 +352,13 @@ class AssetManagement extends Component {
                     <div className="form-inline">
                         {/* Chon loai tai san */}
                         <div className="form-group">
-                            <label className="form-control-static">{translate('asset.general_information.type')}</label>
-                            <SelectMulti id={`multiSelectTypeInManagement`} multiple="multiple"
-                                options={{ nonSelectedText: translate('asset.general_information.select_asset_type'), allSelectedText: translate('asset.general_information.select_all_asset_type') }}
-                                onChange={this.handleAssetTypeChange}
-                                items={typeArr}
-                            >
-                            </SelectMulti>
+                            <label>{translate('asset.general_information.type')}</label>
+                            <TreeSelect
+                                data={typeArr}
+                                value={assetTypeName}
+                                handleChange={this.handleAssetTypeChange}
+                                mode="hierarchical"
+                            />
                         </div>
                         <div className="form-group">
                             <label className="form-control-static">{translate('asset.general_information.purchase_date')}</label>
