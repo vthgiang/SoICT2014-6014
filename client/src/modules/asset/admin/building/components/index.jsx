@@ -48,8 +48,7 @@ class BuildingAsset extends Component {
                 parent: node.location ? node.location.toString() : "#",
                 state: {
                     opened: true
-                },
-                icon: "image/office_building.png"
+                }
             }
         })
         return (
