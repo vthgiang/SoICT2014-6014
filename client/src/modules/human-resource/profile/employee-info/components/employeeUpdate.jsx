@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { ImgShow } from '../../../../../common-components';
+import { ApiImage } from '../../../../../common-components';
 
 import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter';
 import { toast } from 'react-toastify';
@@ -126,7 +126,7 @@ class UpdateEmployee extends Component {
                                     {/* Ảnh đại diện */}
                                     <div className="col-lg-4 col-md-4 col-ms-12 col-xs-12" style={{ textAlign: 'center' }}>
                                         <div>
-                                            <ImgShow id={`avater-update`} src={avatar} />
+                                            <ApiImage className="attachment-img avarta" id={`avater-update`} src={avatar} />
                                             {/* <img className="attachment-img avarta" src={this.state.img} alt="Attachment" /> */}
                                         </div>
                                         <div className="upload btn btn-default ">
