@@ -19,7 +19,7 @@ class ListAsset extends Component {
             assetName: "",
             assetType: null,
             status: "",
-            canRegisterForUse: true,
+            typeRegisterForUse: [2, 3],
             page: 0,
             limit: 5,
             currentRole: localStorage.getItem('currentRole'),
@@ -35,7 +35,7 @@ class ListAsset extends Component {
             status: "",
             page: 0,
             limit: 5,
-            canRegisterForUse: true,
+            typeRegisterForUse: [2, 3],
             currentRole: localStorage.getItem('currentRole'),
         });
         this.props.getUser();
@@ -272,7 +272,7 @@ class ListAsset extends Component {
                         </thead>
                         <tbody>
                             {(lists && lists.length !== 0) &&
-                                lists.filter(item => item.canRegisterForUse === true).map((x, index) => (
+                                lists.filter(item => item.typeRegisterForUse !== 1).map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.code}</td>
                                         <td>{x.assetName}</td>
@@ -319,7 +319,7 @@ class ListAsset extends Component {
                         location={currentRowView.location}
                         description={currentRowView.description}
                         status={currentRowView.status}
-                        canRegisterForUse={currentRowView.canRegisterForUse}
+                        typeRegisterForUse={currentRowView.typeRegisterForUse}
                         detailInfo={currentRowView.detailInfo}
 
                         cost={currentRowView.cost}
@@ -348,6 +348,7 @@ class ListAsset extends Component {
                     <UseRequestCreateForm
                         _id={currentRow._id}
                         asset={currentRow._id}
+                        typeRegisterForUse = { currentRow.typeRegisterForUse}
                     />
                 }
             </div >

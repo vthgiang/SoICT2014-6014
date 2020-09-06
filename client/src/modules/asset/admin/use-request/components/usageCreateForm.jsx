@@ -174,7 +174,8 @@ class UsageCreateForm extends Component {
                 asset: nextProps.asset,
                 startDate: nextProps.startDate,
                 endDate: nextProps.endDate,
-                usedByUser: nextProps.usedByUser
+                usedByUser: nextProps.usedByUser,
+                typeRegisterForUse: nextProps.typeRegisterForUse,
             }
         } else {
             return null;
@@ -185,9 +186,8 @@ class UsageCreateForm extends Component {
     render() {
         const { _id, currentRowAdd } = this.props;
         const { translate, user, assetsManager } = this.props;
-        const {
-            asset, usedByUser, startDate, endDate, description, errorOnStartDate, errorOnDescription
-        } = this.state;
+        const { asset, usedByUser, startDate, endDate, description, 
+                errorOnStartDate, errorOnDescription, typeRegisterForUse } = this.state;
         console.log("Đang sửa trang này", currentRowAdd);
         var userlist = user.list;
         var assetlist = assetsManager.listAssets;

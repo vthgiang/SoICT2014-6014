@@ -28,7 +28,7 @@ class AssetCreateForm extends Component {
                 handoverFromDate: null,
                 handoverToDate: null,
                 status: "",
-                canRegisterForUse: "",
+                typeRegisterForUse: "",
                 description: "",
                 detailInfo: [],
                 residualValue: null,
@@ -160,7 +160,7 @@ class AssetCreateForm extends Component {
             // this.validatorInput(asset.assetType) &&
             // this.validatorInput(asset.managedBy) &&
             // this.validatorInput(asset.status) &&
-            // this.validatorInput(asset.canRegisterForUse) &&
+            // this.validatorInput(asset.typeRegisterForUse) &&
             // this.validatorInput(asset.cost) &&
             // this.validatorInput(asset.usefulLife) &&
             // this.validatorInput(asset.startDepreciation) &&

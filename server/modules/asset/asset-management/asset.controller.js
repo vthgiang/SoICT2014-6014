@@ -8,24 +8,23 @@ const {
 /**
  * Lấy danh sách tài sản
  */
-exports.searchAssetProfiles = async (req, res) => {
+exports.searchAssetProfiles = async(req, res) => {
     try {
         let data;
         if (req.query.type === "get-building-as-tree") {
             data = await AssetService.getListBuildingAsTree(req.user.company._id);
-        }
-        else if (!req.query.page && !req.query.limit) {
+        } else if (!req.query.page && !req.query.limit) {
             data = await AssetService.getAssets(req.user.company._id, false);
         } else {
             let params = {
                 code: req.query.code,
                 assetName: req.query.assetName,
                 status: req.query.status,
-                canRegisterForUse: req.query.canRegisterForUse,
+                typeRegisterForUse: req.query.typeRegisterForUse,
                 purchaseDate: req.query.purchaseDate,
                 page: Number(req.query.page),
                 limit: Number(req.query.limit),
-                managedBy : req.query.managedBy,
+                managedBy: req.query.managedBy,
                 currentRole: req.query.currentRole,
             }
             data = await AssetService.searchAssetProfiles(params, req.user.company._id);
@@ -33,7 +32,7 @@ exports.searchAssetProfiles = async (req, res) => {
         }
 
         // data = await AssetService.searchAssetProfiles(params, req.user.company._id);
-        
+
         await LogInfo(req.user.email, 'GET_ASSETS', req.user.company);
         res.status(200).json({
             success: true,
@@ -57,7 +56,7 @@ exports.searchAssetProfiles = async (req, res) => {
 /**
  * Thêm mới thông tin tài sản
  */
-exports.createAsset = async (req, res) => {
+exports.createAsset = async(req, res) => {
     try {
         let avatar = "";
         if (req.files.fileAvatar) {
@@ -87,7 +86,7 @@ exports.createAsset = async (req, res) => {
 /**
  * Cập nhật thông tin tài sản
  */
-exports.updateAssetInformation = async (req, res) => {
+exports.updateAssetInformation = async(req, res) => {
     try {
         let avatar = "";
         if (req.files.fileAvatar) {
@@ -119,7 +118,7 @@ exports.updateAssetInformation = async (req, res) => {
 /**
  * Xoá thông tin tài sản
  */
-exports.deleteAsset = async (req, res) => {
+exports.deleteAsset = async(req, res) => {
     try {
         let data = await AssetService.deleteAsset(req.params.id);
         res.status(200).json({
@@ -140,7 +139,7 @@ exports.deleteAsset = async (req, res) => {
 /**
  * Chỉnh sửa thông tin khấu hao tài sản
  */
-exports.updateDepreciation = async (req, res) => {
+exports.updateDepreciation = async(req, res) => {
     try {
         let data = await AssetService.updateDepreciation(req.params.id, req.body);
         res.status(200).json({
@@ -160,7 +159,7 @@ exports.updateDepreciation = async (req, res) => {
 /**
  * Thêm mới thông tin bảo trì cho sự cố
  */
-exports.createMaintainanceForIncident = async (req, res) => {
+exports.createMaintainanceForIncident = async(req, res) => {
     try {
         let data = await AssetService.createMaintainanceForIncident(req.params.id, req.body);
         res.status(200).json({
@@ -182,7 +181,7 @@ exports.createMaintainanceForIncident = async (req, res) => {
 /**
  * Thêm mới thông tin sử dụng tài sản
  */
-exports.createUsage = async (req, res) => {
+exports.createUsage = async(req, res) => {
     try {
         let data = await AssetService.createUsage(req.params.id, req.body);
         res.status(200).json({
@@ -203,8 +202,8 @@ exports.createUsage = async (req, res) => {
 /**
  * Chỉnh sửa thông tin sử dụng tài sản
  */
-exports.updateUsage = async (req, res) => {
-    if(req.query.recallAsset){
+exports.updateUsage = async(req, res) => {
+    if (req.query.recallAsset) {
         recallAsset(req, res)
     } else {
         try {
@@ -224,26 +223,26 @@ exports.updateUsage = async (req, res) => {
     }
 }
 
-recallAsset = async (req, res) => {
-    try {
-        let data = await AssetService.recallAsset(req.params.id, req.body);
-        res.status(200).json({
-            success: true,
-            messages: ["recall_asset_success"],
-            content: data
-        });
-    } catch (error) {
-        res.status(400).json({
-            success: false,
-            messages: ["recall_asset_false"],
-            content: { error: error }
-        });
+recallAsset = async(req, res) => {
+        try {
+            let data = await AssetService.recallAsset(req.params.id, req.body);
+            res.status(200).json({
+                success: true,
+                messages: ["recall_asset_success"],
+                content: data
+            });
+        } catch (error) {
+            res.status(400).json({
+                success: false,
+                messages: ["recall_asset_false"],
+                content: { error: error }
+            });
+        }
     }
-}
-/**
- * Xóa thông tin sử dụng tài sản
- */
-exports.deleteUsage = async (req, res) => {
+    /**
+     * Xóa thông tin sử dụng tài sản
+     */
+exports.deleteUsage = async(req, res) => {
     try {
         let data = await AssetService.deleteUsage(req.params.id, req.body.usageId);
         res.status(200).json({
@@ -266,7 +265,7 @@ exports.deleteUsage = async (req, res) => {
 /**
  * Thêm mới thông tin bảo trì tài sản
  */
-exports.createMaintainance = async (req, res) => {
+exports.createMaintainance = async(req, res) => {
     console.log(req.query.incident_id);
     try {
         let data = await AssetService.createMaintainance(req.params.id, req.body, req.query.incident_id);
@@ -287,7 +286,7 @@ exports.createMaintainance = async (req, res) => {
 /**
  * Chỉnh sửa thông tin bảo trì tài sản
  */
-exports.updateMaintainance = async (req, res) => {
+exports.updateMaintainance = async(req, res) => {
     try {
         let data = await AssetService.updateMaintainance(req.params.id, req.body);
         res.status(200).json({
@@ -307,7 +306,7 @@ exports.updateMaintainance = async (req, res) => {
 /**
  * Xóa thông tin bảo trì tài sản
  */
-exports.deleteMaintainance = async (req, res) => {
+exports.deleteMaintainance = async(req, res) => {
     try {
         let data = await AssetService.deleteMaintainance(req.params.id, req.body.maintainanceId);
         res.status(200).json({
@@ -329,7 +328,7 @@ exports.deleteMaintainance = async (req, res) => {
 /**
  * Thêm mới thông tin sự cố tài sản
  */
-exports.createIncident = async (req, res) => {
+exports.createIncident = async(req, res) => {
     try {
         let data = await AssetService.createIncident(req.params.id, req.body);
         res.status(200).json({
@@ -345,7 +344,7 @@ exports.createIncident = async (req, res) => {
 /**
  * Chỉnh sửa thông tin sự cố tài sản
  */
-exports.updateIncident = async (req, res) => {
+exports.updateIncident = async(req, res) => {
     try {
         let data = await AssetService.updateIncident(req.params.id, req.body);
         res.status(200).json({
@@ -365,7 +364,7 @@ exports.updateIncident = async (req, res) => {
 /**
  * Xóa thông tin sự cố tài sản
  */
-exports.deleteIncident = async (req, res) => {
+exports.deleteIncident = async(req, res) => {
     try {
         let data = await AssetService.deleteIncident(req.params.id, req.body.incidentId);
         res.status(200).json({

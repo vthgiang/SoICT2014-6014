@@ -20,7 +20,7 @@ class AssetManagement extends Component {
             assetType: null,
             purchaseDate: null,
             status: "",
-            canRegisterForUse: "",
+            typeRegisterForUse: "",
             page: 0,
             limit: 5,
             managedBy: this.props.managedBy?this.props.managedBy:''
@@ -152,14 +152,14 @@ class AssetManagement extends Component {
     }
 
     // Function lưu giá trị status vào state khi thay đổi
-    handleCanRegisterForUseChange = (value) => {
+    handleTypeRegisterForUseChange = (value) => {
         if (value.length === 0) {
             value = null
         }
         
         this.setState({
             ...this.state,
-            canRegisterForUse: value
+            typeRegisterForUse: value
         })
     }
 
@@ -374,7 +374,7 @@ class AssetManagement extends Component {
                             <label className="form-control-static">{translate('asset.general_information.can_register')}</label>
                             <SelectMulti id={`multiSelectStatus3`} multiple="multiple"
                                 options={{ nonSelectedText: translate('asset.general_information.select_register'), allSelectedText: translate('asset.general_information.select_all_register') }}
-                                onChange={this.handleCanRegisterForUseChange}
+                                onChange={this.handleTypeRegisterForUseChange}
                                 items={[
                                     { value: true, text: translate('asset.general_information.can_register') },
                                     { value: false, text: translate('asset.general_information.cant_register') },
@@ -478,7 +478,7 @@ class AssetManagement extends Component {
                         location={currentRowView.location}
                         description={currentRowView.description}
                         status={currentRowView.status}
-                        canRegisterForUse={currentRowView.canRegisterForUse}
+                        typeRegisterForUse={currentRowView.typeRegisterForUse}
                         detailInfo={currentRowView.detailInfo}
                         cost={currentRowView.cost}
                         readByRoles={currentRowView.readByRoles}
@@ -525,7 +525,7 @@ class AssetManagement extends Component {
                         location={currentRow.location}
                         description={currentRow.description}
                         status={currentRow.status}
-                        canRegisterForUse={currentRow.canRegisterForUse}
+                        typeRegisterForUse={currentRow.typeRegisterForUse}
                         detailInfo={currentRow.detailInfo}
                         readByRoles={currentRow.readByRoles}
                         cost={currentRow.cost}

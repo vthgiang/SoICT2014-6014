@@ -23,11 +23,11 @@ function getAll(data) {
             assetName: data !== undefined ? data.assetName : data,
             status: data !== undefined ? data.status : data,
             purchaseDate: data !== undefined ? data.purchaseDate : data,
-            canRegisterForUse: data !== undefined ? data.canRegisterForUse : data,
+            typeRegisterForUse: data !== undefined ? data.typeRegisterForUse : data,
             page: data !== undefined ? data.page : data,
             limit: data !== undefined ? data.limit : data,
-            managedBy: data!== undefined? data.managedBy: data,
-            currentRole: data !== undefined? data.currentRole: data,
+            managedBy: data !== undefined ? data.managedBy : data,
+            currentRole: data !== undefined ? data.currentRole : data,
         }
     }, false, true, 'asset.asset_info');
 }

@@ -4,7 +4,7 @@ const Company = require('../system-admin/company.model');
 const AssetType = require('./assetType.model');
 const User = require('../auth/user.model');
 const OrganizationalUnit = require('../super-admin/organizationalUnit.model')
-// Create Schema
+    // Create Schema
 const AssetSchema = new Schema({
     group: {
         type: String,
@@ -66,7 +66,7 @@ const AssetSchema = new Schema({
 
     assignedToOrganizationalUnit: { //13.Đơn vị đang được giao sử dụng
         type: Schema.Types.ObjectId,
-        ref: OrganizationalUnit, 
+        ref: OrganizationalUnit,
     },
 
     location: { // 16.vị trí tài sản
@@ -78,12 +78,12 @@ const AssetSchema = new Schema({
     status: { //17.tình trạng: sẵn sàng sử dụng || đang sử dụng || hỏng hóc || mất || Thanh lý
         type: String,
         enum: ["Sẵn sàng sử dụng", "Đang sử dụng", "Hỏng hóc", "Mất", "Thanh lý"]
-        // enum: ["InUse", "Unassigned", "InStorage", "Broken", "InRepair", "Disposed"]
-        // InUse, Active, InStorage, Broken, Lost, In Repair, Disposed, Transferred out, Inoperable
+            // enum: ["InUse", "Unassigned", "InStorage", "Broken", "InRepair", "Disposed"]
+            // InUse, Active, InStorage, Broken, Lost, In Repair, Disposed, Transferred out, Inoperable
     },
 
-    canRegisterForUse: {
-        type: Boolean,
+    typeRegisterForUse: { //Đăng ký sử dụng: 1.Không được đăng ký, 2.Đăng ký sử dụng theo giờ, 3.Đăng ký sử dụng lâu dài
+        type: Number,
         //     type: String,
         //    enum: ["Được phép đăng ký sử dụng", "Không được phép đăng ký sử dụng"]
     },
@@ -96,7 +96,7 @@ const AssetSchema = new Schema({
         nameField: String, // tên trường dữ liệu
         value: String, //giá trị
     }],
-    
+
     readByRoles: [{ // quyền xem theo Role
         type: Schema.Types.ObjectId,
         ref: 'root_roles'
@@ -135,14 +135,14 @@ const AssetSchema = new Schema({
     },
 
     unitsProducedDuringTheYears: [{ // Dùng trong UnitsOfProduction
-        month: { 
+        month: {
             type: Date
         },
         unitsProducedDuringTheYear: {
             type: Number
         },
     }],
-    
+
     estimatedTotalProduction: { // Dùng trong UnitsOfProduction
         type: Number
     },
@@ -157,7 +157,7 @@ const AssetSchema = new Schema({
         },
         usedByOrganizationalUnit: {
             type: Schema.Types.ObjectId,
-            ref: OrganizationalUnit, 
+            ref: OrganizationalUnit,
         },
         startDate: { // ngày bắt đầu sử dụng
             type: Date

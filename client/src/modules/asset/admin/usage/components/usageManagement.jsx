@@ -288,7 +288,7 @@ class UsageManagement extends Component {
                         location={currentRow.location}
                         description={currentRow.description}
                         status={currentRow.status}
-                        canRegisterForUse={currentRow.canRegisterForUse}
+                        typeRegisterForUse={currentRow.typeRegisterForUse}
                         detailInfo={currentRow.detailInfo}
 
                         cost={currentRow.cost}

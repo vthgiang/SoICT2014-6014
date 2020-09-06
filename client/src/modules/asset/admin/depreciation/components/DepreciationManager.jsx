@@ -485,7 +485,7 @@ class DepreciationManager extends Component {
                         location={currentRowView.location}
                         description={currentRowView.description}
                         status={currentRowView.status}
-                        canRegisterForUse={currentRowView.canRegisterForUse}
+                        typeRegisterForUse={currentRowView.typeRegisterForUse}
                         detailInfo={currentRowView.detailInfo}
 
                         cost={currentRowView.cost}
