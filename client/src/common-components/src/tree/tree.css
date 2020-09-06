@@ -41,13 +41,9 @@
 }
 .jstree-default i.jstree-icon.jstree-themeicon::before {
     font: normal normal normal 18px/1 "Material Icons";
-    color: #555;
-    white-space: pre;
+    color: #a93a3a;
     margin-right: 4px;
     display: inline-block;
-    height: 0px;
-    outline: none;
-    font-size: 18px;
     content: "view_agenda";
     vertical-align: top;
     padding-top: 5px;
