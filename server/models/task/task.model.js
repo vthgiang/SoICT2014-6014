@@ -26,6 +26,11 @@ const TaskSchema = new Schema({
         },
         link: {
             type: String
+        },
+        activated: {
+            type: Boolean,
+            default: false,
+            required: true,
         }
     }],
     preceedingTasks: [{
@@ -197,7 +202,7 @@ const TaskSchema = new Schema({
     formula: {
         type: String,
         //require: true,
-        default: "progress / (dayUsed / totalDay)",
+        default: "progress / (dayUsed / totalDay) - 0.5 * (10 - (averageActionRating)) * 10",
     },
     progress: { // % Hoàn thành thành công việc
         type: Number,

@@ -38,7 +38,7 @@ export const performTaskService = {
    
     editTaskByAccountableEmployees,
     editTaskByResponsibleEmployees,
-    editStatusOfTask,
+    editActivateOfTask,
     editArchivedOfTask,
     editDocument,
     deleteDocument,
@@ -201,7 +201,7 @@ function editInformationTask(taskId, taskInformations) {
         url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-informations`,
         method: 'PATCH',
         data: taskInformations
-    }, false, true, 'task.task_perform');
+    }, true, true, 'task.task_perform');
 }
 
 /** Xác nhận công việc */
@@ -431,17 +431,16 @@ function editArchivedOfTask(taskId) {
 * @param {*} taskId id cua task
 * @param {*} status trang thai muon cap nhat
 */
-function editStatusOfTask(taskId, status, typeOfTask, listSelected) {
+function editActivateOfTask(taskId, typeOfTask, listSelected) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}`,
         method: 'POST',
         data: {
-            status: status,
             typeOfTask: typeOfTask,
             listSelected: listSelected,
-            type: 'edit_status',
+            type: 'edit_activate',
         }
-    }, false, true, 'task.task_management');
+    }, true, true, 'task.task_management');
 }
 
 /**

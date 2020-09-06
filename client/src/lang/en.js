@@ -27,6 +27,7 @@ export default {
             yes: 'Yes',
             no: 'No',
             month: 'Month',
+            year: 'Year',
             loading: 'Loading',
             no_data: 'No data',
             success: 'Successfully',
@@ -398,6 +399,7 @@ export default {
             add_version: 'Add document version',
             upload_file: 'Upload file',
             upload_file_scan: 'Upload file scan',
+            choose_file: 'Choose file',
             download: 'Download',
             no_version: 'Not have different version',
             no_blank_description: "Description should'n empty",
@@ -494,6 +496,33 @@ export default {
                 }
             },
             user: {
+
+            },
+        },
+
+        crm: {
+            customer: {
+                name: 'Customer',
+                code: 'Code',
+                phone: 'Phone number',
+                address: 'Address',
+                email: 'Email',
+                location: 'Location',
+                birth: 'Birth',
+                gender: 'Gender',
+                liability: 'Liability',
+                document: 'Document',
+            },
+            group: {
+
+            },
+            lead: {
+
+            },
+            care: {
+
+            },
+            statistic: {
 
             },
         },
@@ -1493,6 +1522,7 @@ export default {
                 add: 'Add',
                 basic_information: 'Basic infomation',
                 detail_information: 'Detail information',
+                asset_properties: 'Properties of asset',
                 view: 'View asset information',
                 edit_info: 'Edit asset information',
                 delete_info: 'Delete asset information',
@@ -1536,7 +1566,7 @@ export default {
                 depreciation_information: 'Depreciation information',
                 incident_information: 'Incident information',
                 disposal_information: 'Disposal information',
-                attach_infomation: 'Attached information',
+                attach_infomation: 'Attached files',
 
                 serial_number: 'Serial number',
                 warranty_expiration_date: 'Warranty expiration date',
@@ -1619,7 +1649,7 @@ export default {
             // Quản lý thông tin tài sản
             asset_info: {
                 asset_info: 'Asset infomation',
-                field_name: 'Name of data field',
+                field_name: 'Name of properties',
                 value: 'Value',
 
                 usage_logs: 'Allocation history - transfer - withdrawal',
@@ -1627,7 +1657,7 @@ export default {
                 incident_list: 'Asset incident list',
                 file_list: 'List of documents attached',
                 add_usage_info: 'Add new asset usage infomation',
-                edit_usage_info: 'Edit asset usage infomation',
+                edit_usage_info: 'Edit asset use request form',
                 delete_usage_info: 'Delete asset usage infomation',
                 add_maintenance_card: 'Add new maintenance card',
                 edit_maintenance_card: 'Edit new maintenance card',
@@ -2147,6 +2177,8 @@ export default {
                 evaluate_task_success: 'Evaluate task success',
                 edit_task_fail: 'Edit task fail',
                 evaluate_task_fail: 'Evaluate task fail',
+                edit_hours_spent_in_evaluate_success: 'Calculate hours spent on task success',
+                edit_hours_spent_in_evaluate_fail: 'Calculate hours spent on task fail',
 
                 add_new_task: 'Add new task',
                 // add_err: 
@@ -2223,10 +2255,16 @@ export default {
                 delete: "Delete",
 
                 notice_end_task: 'Are you sure to finish this task',
-                notice_change_status_task: 'Are you sure to change status of this task',
+                notice_change_activate_task: 'Are you sure to change activated of this task',
+                activated_task_list: 'Activated tasks',
+                activated_all: 'Activated all following tasks',
                 choose_following_task: 'Choose the next task to be executed',
                 task_link_of_process: 'Link',
                 not_have_following: 'Not have following task',
+
+                is_task_process: 'This is a task of process',
+                activated_task: "Activate",
+                following_task: "the following tasks",
 
                 // TODO: code_mesage_task_perform
                 create_result_task_success: 'Evaluate task successfully',
@@ -2264,6 +2302,8 @@ export default {
                 delete_file_task_comment_success: "Delete file of task comment",
                 create_task_log_success: " Create task log success",
                 get_task_log_success: "get_task_log_success",
+                edit_task_information_success: "Edit information successfully",
+                edit_document_task_comment_success: "Edit document successfully",
 
                 create_result_task_fail: "Can't evaluate task",
                 edit_result_task_fail: "Can't edit result task",
@@ -2300,6 +2340,8 @@ export default {
                 delete_file_task_comment_fail: "Delete file of task comment fail",
                 create_task_log_fail: "Create task log fail",
                 get_task_log_fail: "get_task_log_fail",
+                edit_task_information_failure: "Edit information unsuccessfully",
+                edit_document_task_comment_failure: "Edit document unsuccessfully",
 
                 // error label
                 err_require: 'Field is required',

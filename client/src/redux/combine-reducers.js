@@ -58,15 +58,11 @@ import {reports} from "../modules/report/task-report/redux/reducers";
 import { materials } from "../modules/warehouse-manager/material-manager/redux/reducers";
 
 //crm
-import {crmCustomer} from "../modules/crm/customer/redux/reducers";
-// import {customerGroup} from "../modules/crm/customer-group/redux/reducers";
+import {customer} from "../modules/crm/customer/redux/reducers";
+import {group} from "../modules/crm/group/redux/reducers";
 
 //order
 import { order } from "../modules/order/redux/reducers";
-
-const crm = {
-    crmCustomer
-}
 
 const appReducer = combineReducers({
     //system
@@ -137,9 +133,9 @@ const appReducer = combineReducers({
     materials,
 
     // customer management
-    crm,
-    crmCustomer,
-    // customerGroup,
+    crm: combineReducers({
+        customer, group
+    }),
 
     //order
     order,

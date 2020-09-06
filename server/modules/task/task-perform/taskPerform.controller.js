@@ -682,8 +682,8 @@ exports.editTask = async (req, res) => {
     else if (req.body.type === 'edit_archived') {
         editArchivedOfTask(req, res);
     }
-    else if (req.body.type === 'edit_status') {
-        editTaskStatus(req, res);
+    else if (req.body.type === 'edit_activate') {
+        editActivateOfTask(req, res);
     } 
     else if (req.query.type === 'confirm_task') {
         confirmTask(req, res);
@@ -857,7 +857,7 @@ editHoursSpentInEvaluate = async (req, res) => {
         await LogInfo(req.user.email, ` edit task  `, req.user.company);
         res.status(200).json({
             success: true,
-            messages: ['evaluate_task_success'],
+            messages: ['edit_hours_spent_in_evaluate_success'],
             content: task
         })
     } catch (error) {
@@ -865,7 +865,7 @@ editHoursSpentInEvaluate = async (req, res) => {
         await LogError(req.user.email, ` edit task `, req.user.company);
         res.status(400).json({
             success: false,
-            messages: ['evaluate_task_fail'],
+            messages: ['edit_hours_spent_in_evaluate_fail'],
             content: error
         });
     }
@@ -920,9 +920,9 @@ editArchivedOfTask = async (req, res) => {
 /**
  * Chinh sua trang thai cua cong viec
  */
-editTaskStatus = async (req, res) => {
+editActivateOfTask = async (req, res) => {
     // try {
-        let task = await PerformTaskService.editTaskStatus(req.params.taskId, req.body);
+        let task = await PerformTaskService.editActivateOfTask(req.params.taskId, req.body);
         await LogInfo(req.user.email, ` edit status of task  `, req.user.company);
         res.status(200).json({
             success: true,
@@ -1006,7 +1006,7 @@ exports.editDocument = async (req, res) => {
         await LogError(req.user.email, `delete document of task  `, req.user.company);
         res.status(400).json({
             success: false,
-            messages: ['edit_document_task_comment_fail'],
+            messages: ['edit_document_task_comment_failure'],
             content: error
         })
     }

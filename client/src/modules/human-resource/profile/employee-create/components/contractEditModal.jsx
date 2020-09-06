@@ -247,7 +247,13 @@ class ContractEditModal extends Component {
                         {/* File đính kèm */}
                         <div className="form-group">
                             <label htmlFor="file">{translate('human_resource.profile.attached_files')}</label>
-                            <input type="file" style={{ height: 34, paddingTop: 2 }} className="form-control" name="file" onChange={this.handleChangeFile} />
+                            {/* <input type="file" style={{ height: 34, paddingTop: 2 }} className="form-control" name="file" onChange={this.handleChangeFile} /> */}
+                            <br />
+                            <div className="upload btn btn-primary">
+                                <i className="fa fa-folder"></i>
+                                {" " + translate('document.choose_file')}
+                                <input className="upload" type="file" name="file" onChange={this.handleChangeFile} />
+                            </div>
                         </div>
 
                     </form>

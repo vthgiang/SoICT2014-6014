@@ -25,6 +25,7 @@ export default {
             cancel: 'Hủy',
             status: 'Trạng thái',
             month: 'Tháng',
+            year: 'Năm',
             yes: 'Có',
             no: 'Không',
             loading: 'Đang tải dữ liệu',
@@ -399,6 +400,7 @@ export default {
             add_version: 'Thêm phiên bản mới',
             upload_file: 'File tài liệu',
             upload_file_scan: 'File scan tài liệu',
+            choose_file: 'Chọn file',
             download: 'Tải xuống',
             no_version: 'Không có phiên bản nào khác',
             no_blank_description: 'Mô tả không được để trống',
@@ -495,6 +497,54 @@ export default {
                 }
             },
             user: {
+
+            },
+        },
+
+        crm: {
+            customer: {
+                name: 'Tên khách hàng',
+                code: 'Mã khách hàng',
+                phone: 'Số điện thoại',
+                group: 'Nhóm khách hàng',
+                address: 'Địa chỉ',
+                email: 'Email',
+                location: 'Khu vực',
+                birth: 'Ngày sinh',
+                gender: 'Giới tính',
+                liability: 'Công nợ',
+                tax: 'Mã số thuế',
+                document: 'Giấy tờ',
+                description: 'Mô tả',
+                carier: 'Nhân viên chăm sóc phụ trách',
+                discount: 'Chiết khấu áp dụng', by_group: 'Theo nhóm khách hàng', by_customer: 'Theo khách hàng',
+                payment: 'Hình thức thanh toán',
+
+                info: 'Thông tin chung',
+                contact: 'Thông tin liên hệ',
+                advance: 'Thông tin khác',
+
+                add: 'Thêm mới khách hàng',
+                see: 'Xem thông tin khách hàng',
+                edit: 'Chỉnh sửa thông tin khách hàng',
+                delete: 'Xóa thông tin khách hàng',
+            },
+            group: {
+                name: 'Tên nhóm khách hàng',
+                code: 'Mã nhóm khách hàng',
+                description: 'Mô tả nhóm khách hàng',
+
+                add: 'Thêm mới nhóm khách hàng',
+                edit: 'Chỉnh sửa thông tin nhóm khách hàng',
+                delete: 'Xóa thông tin nhóm khách hàng',
+            },
+            lead: {
+
+            },
+            care: {
+
+            },
+            statistic: {
 
             },
         },
@@ -1498,6 +1548,7 @@ export default {
                 add: 'Thêm',
                 basic_information: 'Thông tin cơ bản',
                 detail_information: 'Thông tin chi tiết',
+                asset_properties: 'Các thuộc tính của tài sản',
                 view: 'Xem thông tin tài sản',
                 edit_info: 'Chỉnh sửa thông tin tài sản',
                 delete_info: 'Xóa thông tin tài sản',
@@ -1541,7 +1592,7 @@ export default {
                 depreciation_information: 'Thông tin khấu hao',
                 incident_information: 'Thông tin sự cố',
                 disposal_information: 'Thông tin thanh lý',
-                attach_infomation: 'Thông tin đính kèm',
+                attach_infomation: 'Tài liệu đính kèm',
 
                 serial_number: 'Số serial',
                 warranty_expiration_date: 'Ngày hết hạn bảo hành',
@@ -1624,7 +1675,7 @@ export default {
             // Quản lý thông tin tài sản
             asset_info: {
                 asset_info: 'Thông tin tài sản',
-                field_name: 'Tên trường dữ liệu',
+                field_name: 'Tên thuộc tính',
                 value: 'Giá trị',
 
                 usage_logs: 'Lịch sử cấp phát - điều chuyển - thu hồi',
@@ -1632,7 +1683,7 @@ export default {
                 incident_list: 'Danh sách sự cố tài sản',
                 file_list: 'Danh sách tài liệu đính kèm',
                 add_usage_info: 'Thêm mới thông tin cấp phát sử dụng',
-                edit_usage_info: 'Chỉnh sửa thông tin cấp phát sử dụng',
+                edit_usage_info: 'Chỉnh sửa phiếu đăng kí sử dụng',
                 delete_usage_info: 'Xóa thông tin cấp phát sử dụng',
                 add_maintenance_card: 'Thêm mới phiếu bảo trì',
                 edit_maintenance_card: 'Chỉnh sửa phiếu bảo trì',
@@ -2151,6 +2202,8 @@ export default {
                 evaluate_task_success: 'Đánh giá công việc thành công',
                 edit_task_fail: 'Chỉnh sửa công việc thất bại',
                 evaluate_task_fail: 'Đánh giá công việc thất bại',
+                edit_hours_spent_in_evaluate_success: 'Tính thời gian trong lần đánh giá thành công',
+                edit_hours_spent_in_evaluate_fail: 'Tính thời gian trong lần đánh giá thất bại',
 
                 add_new_task: 'Thêm công việc mới',
                 // add_err: 
@@ -2197,6 +2250,8 @@ export default {
                 subtasks: "Công việc con",
                 change_history: "Lịch sử thay đổi",
                 change_process: "Quy trình",
+                change_incoming: "Dữ liệu vào",
+                change_outgoing: "Dữ liệu ra",
                 edit_action: "Sửa hành động",
                 delete_action: "Xóa hành động",
                 mandatory_action: "Hành động bắt buộc",
@@ -2229,10 +2284,16 @@ export default {
                 delete: "Xóa",
 
                 notice_end_task: 'Bạn có chắc chắn muốn kết thúc công việc này',
-                notice_change_status_task: 'Bạn có chắc chắn muốn đổi trạng thái của công việc này',
+                notice_change_activate_task: 'Bạn có chắc chắn muốn kích hoạt công việc này',
+                activated_task_list: 'Các công việc đã kích hoạt',
+                activated_all: 'Đã kích hoạt hết các công việc phía sau',
                 choose_following_task: 'Chọn công việc thực hiện tiếp theo',
                 task_link_of_process: 'Đường liên kết',
                 not_have_following: 'Không có công việc kế tiếp',
+
+                is_task_process: 'Đây là công việc theo quy trình',
+                activated_task: "Kích hoạt",
+                following_task: "các công việc phía sau",
 
 
                 // TODO: code_mesage_task_perform
@@ -2271,6 +2332,8 @@ export default {
                 delete_file_task_comment_success: "Xóa file của bình luận thành công",
                 create_task_log_success: " Tạo task log thành công",
                 get_task_log_success: "Lấy lịch sử chỉnh sửa thành công",
+                edit_task_information_success: "Chỉnh sửa thông tin thành công",
+                edit_document_task_comment_success: "Chỉnh sửa tài liệu thành công",
 
                 create_result_task_fail: 'Không đánh giá được kết quả thực hiện công việc',
                 edit_redult_task_fail: 'Chỉnh sửa thất bại kết quả đánh giá',
@@ -2307,6 +2370,8 @@ export default {
                 delete_file_task_comment_fail: "Xóa file của bình luận thất bại",
                 create_task_log_fail: "Tạo lịch sử chỉnh sử cộng việc thất bại",
                 get_task_log_fail: "Lấy tất cả lịch sử chỉnh sửa công việc thất bại",
+                edit_task_information_failure: "Chỉnh sửa thông tin thất bại",
+                edit_document_task_comment_failure: "Chỉnh sửa tài liệu thất bại",
 
                 // error label
                 err_require: 'Trường này phải có giá trị',

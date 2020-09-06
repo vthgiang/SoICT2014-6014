@@ -4,13 +4,13 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar,ExportExcel } from '../../../../../common-components';
 
-import { MaintainanceCreateForm } from './maintainanceCreateForm';
 import { IncidentEditForm } from '../../../user/asset-assigned/components/incidentEditForm';
 
 import { IncidentActions } from '../../../user/asset-assigned/redux/actions';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { AssetManagerActions } from '../../asset-information/redux/actions';
 import { AssetTypeActions } from "../../asset-type/redux/actions";
+import { AssetEditForm } from '../../asset-information/components/assetEditForm';
 
 class IncidentManagement extends Component {
     constructor(props) {
@@ -18,7 +18,10 @@ class IncidentManagement extends Component {
         this.state = {
             code: "",
             assetName: "",
-            month: "",
+            assetType: null,
+            purchaseDate: null,
+            status: "",
+            canRegisterForUse: "",
             page: 0,
             limit: 5,
             managedBy : this.props.managedBy?this.props.managedBy:''
@@ -29,16 +32,7 @@ class IncidentManagement extends Component {
         let { managedBy } =this.state;
         this.props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
         this.props.getUser();
-        this.props.getAllAsset({
-            code: "",
-            assetName: "",
-            assetType: null,
-            month: null,
-            status: "",
-            page: 0,
-            limit: 5,
-            managedBy:managedBy
-        });
+        this.props.getAllAsset(this.state);
     }
 
 
@@ -52,18 +46,6 @@ class IncidentManagement extends Component {
             }
         });
         window.$('#modal-edit-incident').modal('show');
-    }
-
-    // Bắt sự kiện click thêm mới thông tin phiếu bảo trì
-    handleAddMaintaince = async (value, asset) => {
-        value.asset = asset;
-        await this.setState(state => {
-            return {
-                ...state,
-                currentRowAdd: value
-            }
-        });
-        window.$('#modal-create-maintainance').modal('show');
     }
 
     // Function format dữ liệu Date thành string
@@ -146,6 +128,7 @@ class IncidentManagement extends Component {
         await this.setState({
             limit: parseInt(number),
         });
+
         this.props.getAllAsset(this.state);
     }
 
@@ -245,11 +228,27 @@ class IncidentManagement extends Component {
        
     }
 
+    // Bắt sự kiện click chỉnh sửa thông tin tài sản
+    handleEditAsset = async (value) => {
+        console.log(value);
+        await this.setState(state => {
+            return {
+                ...state,
+                currentRowEditAsset: value
+            }
+        });
+        window.$('#modal-edit-asset').modal('show');
+
+        // Mở tab thứ 5
+        window.$('.nav-tabs li:eq(4) a').tab('show');
+
+    }
+
     render() {
         const { translate, assetsManager, assetType, user, isActive } = this.props;
-        const { page, limit, currentRow, currentRowAdd, managedBy } = this.state;
+        const { page, limit, currentRow, currentRowEditAsset, managedBy } = this.state;
 
-        var lists = "",exportData;
+        var lists = "", exportData;
         var userlist = user.list;
         var assettypelist = assetType.listAssetTypes;
         var formater = new Intl.NumberFormat();
@@ -262,10 +261,10 @@ class IncidentManagement extends Component {
             parseInt((assetsManager.totalList / limit) + 1);
         var currentPage = parseInt((page / limit) + 1);
         
-        if(lists&&userlist){
-            exportData =this.convertDataToExportData(lists,userlist);
+        if(lists && userlist){
+            exportData = this.convertDataToExportData(lists, userlist);
         }
-
+        
         return (
             <div className={isActive?isActive:"box"}>
                 <div className="box-body qlcv">
@@ -333,11 +332,11 @@ class IncidentManagement extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(lists && lists.length) &&
+                            {(lists && lists.length!==0) &&
                                 lists.map(asset => {
                                     return asset.incidentLogs.map((x, index) => (
                                         <tr key={index}>
-                                            <td>{asset.code}</td>
+                                            <td><a onClick={() => this.handleEditAsset(asset)}>{asset.code}</a></td>
                                             <td>{asset.assetName}</td>
                                             <td>{x.incidentCode}</td>
                                             <td>{x.type}</td>
@@ -346,8 +345,6 @@ class IncidentManagement extends Component {
                                             <td>{x.description}</td>
                                             <td>{x.statusIncident}</td>
                                             <td style={{ textAlign: "center" }}>
-                                                <a onClick={() => this.handleAddMaintaince(x, asset)} className="settings text-green" style={{ width: '5px' }} title={translate('asset.asset_info.add_maintenance_card')}><i
-                                                    className="material-icons">settings</i></a>
                                                 <a onClick={() => this.handleEdit(x, asset)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.asset_info.edit_incident_info')}><i
                                                     className="material-icons">edit</i></a>
                                                 <DeleteNotification
@@ -362,10 +359,10 @@ class IncidentManagement extends Component {
                                         </tr>
                                     ))
                                 })
-
                             }
                         </tbody>
                     </table>
+                    
                     {assetsManager.isLoading ?
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
                         (!lists || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
@@ -390,14 +387,53 @@ class IncidentManagement extends Component {
                     />
                 }
 
-                {/* Form thêm thông tin bảo trì */}
+                    {/* Form chỉnh sửa thông tin tài sản */}
                 {
-                    currentRowAdd &&
-                    <MaintainanceCreateForm
-                        _id={currentRowAdd._id}
-                        managedBy={managedBy}
-                        asset={currentRowAdd.asset}
-                        statusIncident={currentRowAdd.statusIncident}
+                    currentRowEditAsset &&
+                    <AssetEditForm
+                        _id={currentRowEditAsset._id}
+                        employeeId ={managedBy}
+                        avatar={currentRowEditAsset.avatar}
+                        code={currentRowEditAsset.code}
+                        assetName={currentRowEditAsset.assetName}
+                        serial={currentRowEditAsset.serial}
+                        assetType={currentRowEditAsset.assetType}
+                        group={currentRowEditAsset.group}
+                        purchaseDate={currentRowEditAsset.purchaseDate}
+                        warrantyExpirationDate={currentRowEditAsset.warrantyExpirationDate}
+                        managedBy={currentRowEditAsset.managedBy}
+                        assignedToUser={currentRowEditAsset.assignedToUser}
+                        assignedToOrganizationalUnit={currentRowEditAsset.assignedToOrganizationalUnit}
+                        handoverFromDate={currentRowEditAsset.handoverFromDate}
+                        handoverToDate={currentRowEditAsset.handoverToDate}
+                        location={currentRowEditAsset.location}
+                        description={currentRowEditAsset.description}
+                        status={currentRowEditAsset.status}
+                        canRegisterForUse={currentRowEditAsset.canRegisterForUse}
+                        detailInfo={currentRowEditAsset.detailInfo}
+                        readByRoles={currentRowEditAsset.readByRoles}
+                        cost={currentRowEditAsset.cost}
+                        residualValue={currentRowEditAsset.residualValue}
+                        startDepreciation={currentRowEditAsset.startDepreciation}
+                        usefulLife={currentRowEditAsset.usefulLife}
+                        depreciationType={currentRowEditAsset.depreciationType}
+                        estimatedTotalProduction={currentRowEditAsset.estimatedTotalProduction}
+                        unitsProducedDuringTheYears={currentRowEditAsset.unitsProducedDuringTheYears && currentRowEditAsset.unitsProducedDuringTheYears.map((x) => ({
+                            month: this.formatDate2(x.month),
+                            unitsProducedDuringTheYear: x.unitsProducedDuringTheYear
+                        })
+                        )}
+
+                        disposalDate={currentRowEditAsset.disposalDate}
+                        disposalType={currentRowEditAsset.disposalType}
+                        disposalCost={currentRowEditAsset.disposalCost}
+                        disposalDesc={currentRowEditAsset.disposalDesc}
+
+                        maintainanceLogs={currentRowEditAsset.maintainanceLogs}
+                        usageLogs={currentRowEditAsset.usageLogs}
+                        incidentLogs={currentRowEditAsset.incidentLogs}
+                        archivedRecordNumber={currentRowEditAsset.archivedRecordNumber}
+                        files={currentRowEditAsset.documents}
                     />
                 }
             </div>

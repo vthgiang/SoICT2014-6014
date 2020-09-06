@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 const Company = require('../system-admin/company.model');
 const AssetType = require('./assetType.model');
 const User = require('../auth/user.model');
-const OrganizaitonalUnit = require('../super-admin/organizationalUnit.model')
+const OrganizationalUnit = require('../super-admin/organizationalUnit.model')
 // Create Schema
 const AssetSchema = new Schema({
     group: {
@@ -37,10 +37,10 @@ const AssetSchema = new Schema({
         type: String,
     },
 
-    assetType: { //5.loại tài sản
+    assetType: [{ //5.loại tài sản
         type: Schema.Types.ObjectId,
         ref: AssetType,
-    },
+    }],
 
     purchaseDate: { //6.ngày nhập, ngày mua
         type: Date,
@@ -64,9 +64,9 @@ const AssetSchema = new Schema({
         // required: true
     },
 
-    assignedToOrganizaitonalUnit: { //13.Đơn vị đang được giao sử dụng
+    assignedToOrganizationalUnit: { //13.Đơn vị đang được giao sử dụng
         type: Schema.Types.ObjectId,
-        ref: OrganizaitonalUnit, 
+        ref: OrganizationalUnit,
     },
 
     location: { // 16.vị trí tài sản
@@ -96,7 +96,7 @@ const AssetSchema = new Schema({
         nameField: String, // tên trường dữ liệu
         value: String, //giá trị
     }],
-    
+
     readByRoles: [{ // quyền xem theo Role
         type: Schema.Types.ObjectId,
         ref: 'root_roles'
@@ -135,14 +135,14 @@ const AssetSchema = new Schema({
     },
 
     unitsProducedDuringTheYears: [{ // Dùng trong UnitsOfProduction
-        month: { 
+        month: {
             type: Date
         },
         unitsProducedDuringTheYear: {
             type: Number
         },
     }],
-    
+
     estimatedTotalProduction: { // Dùng trong UnitsOfProduction
         type: Number
     },
@@ -155,9 +155,9 @@ const AssetSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: User,
         },
-        usedByOrganizaitonalUnit: {
+        usedByOrganizationalUnit: {
             type: Schema.Types.ObjectId,
-            ref: OrganizaitonalUnit, 
+            ref: OrganizationalUnit,
         },
         startDate: { // ngày bắt đầu sử dụng
             type: Date
@@ -308,10 +308,6 @@ const AssetSchema = new Schema({
     /***************************************************************************************************
      * tab Tài liệu đính kèm
      */
-    archivedRecordNumber: { // 18.mã hồ sơ lưu trữ
-        type: String
-    },
-
     documents: [{ // Các tài liệu đính kèm với tài sản
         name: {
             type: String,

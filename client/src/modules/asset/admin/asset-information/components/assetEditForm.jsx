@@ -10,7 +10,7 @@ import {
 } from '../../../base/create-tab/components/combinedContent';
 
 import { AssetManagerActions } from '../redux/actions';
-import { UsageActions } from '../../usage/redux/actions';
+import { UseRequestActions } from '../../use-request/redux/actions';
 
 class AssetEditForm extends Component {
     constructor(props) {
@@ -522,7 +522,7 @@ function mapState(state) {
 
 const actionCreators = {
     updateInformationAsset: AssetManagerActions.updateInformationAsset,
-    createUsage: UsageActions.createUsage,
+    createUsage: UseRequestActions.createUsage,
 };
 const editForm = connect(mapState, actionCreators)(withTranslate(AssetEditForm));
 export { editForm as AssetEditForm };

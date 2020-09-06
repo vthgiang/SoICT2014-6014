@@ -78,7 +78,7 @@ import ManagerRecommendProcure from "../modules/asset/admin/purchase-request/com
 import ManagerRecommendDistribute from "../modules/asset/admin/use-request/components";
 import ManagerAssetType from "../modules/asset/admin/asset-type/components";
 import MaintainanceManager from "../modules/asset/admin/maintainance/components";
-import UsageManager from "../modules/asset/admin/usage/components";
+// import UsageManager from "../modules/asset/admin/usage/components";
 import IncidentManager from "../modules/asset/admin/incident/components";
 import ManagerDepreciation from "../modules/asset/admin/depreciation/components";
 import AssetManager from "../modules/asset/admin/asset-information/components";
@@ -949,7 +949,7 @@ class Routes extends Component {
                         component={MaintainanceManager}
                     />
 
-                    <PrivateRoute
+                    {/* <PrivateRoute
                         isLoading={false}
                         key={'manage-usage-asset'}
                         arrPage={[
@@ -963,7 +963,7 @@ class Routes extends Component {
                         pageName={'manage_usage_asset'}
                         layout={Layout}
                         component={UsageManager}
-                    />
+                    /> */}
 
                     <PrivateRoute
                         isLoading={false}
@@ -1018,7 +1018,7 @@ class Routes extends Component {
                         key={'manage-asset-use-request'}
                         arrPage={[
                             { link: '/', name: 'home', icon: 'fa fa-home' },
-                            { link: '/manage-asset-use-request', name: 'manage-recommend-distribute-asset', icon: '' }
+                            { link: '/manage-asset-use-request', name: 'manage_recommend_distribute_asset', icon: '' }
                         ]}
                         auth={auth}
                         exact={true}

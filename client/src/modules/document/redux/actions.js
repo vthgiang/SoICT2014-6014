@@ -11,6 +11,7 @@ export const DocumentActions = {
     downloadDocumentFileScan,
     increaseNumberView,
     deleteDocument,
+    importDocument,
 
     getDocumentCategories,
     createDocumentCategory,
@@ -148,6 +149,21 @@ function deleteDocument(id) {
     }
 }
 
+function importDocument(data) {
+    return dispatch => {
+        dispatch({ type: DocumentConstants.IMPORT_DOCUMENT_REQUEST });
+        DocumentServices.importDocument(data)
+            .then(res => {
+                dispatch({
+                    type: DocumentConstants.IMPORT_DOCUMENT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({ type: DocumentConstants.IMPORT_DOCUMENT_FAILE });
+            })
+    }
+}
 function downloadDocumentFile(id, fileName, numberVersion) {
     return dispatch => {
         dispatch({ type: DocumentConstants.DOWNLOAD_DOCUMENT_FILE_REQUEST });

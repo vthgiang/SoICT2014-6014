@@ -121,7 +121,7 @@ class TaskInformationForm extends Component {
                                     if (info.type === 'Boolean') {
                                         return <div key={index} className={`form-group ${value.errorInfo && value.errorInfo[info.code] === undefined ? "" : "has-error"}`}>
                                             <label style={{ marginRight: "30px" }}>{info.name}</label>
-                                            <label class="radio-inline">
+                                            <label className="radio-inline">
                                                 <input
                                                     type="radio"
                                                     name={info.code}
@@ -131,7 +131,7 @@ class TaskInformationForm extends Component {
                                                     disabled={disabled || (info.filledByAccountableEmployeesOnly && role !== "accountable")}
                                                 /> {translate('task.task_management.bool_yes')}
                                             </label>
-                                            <label class="radio-inline">
+                                            <label className="radio-inline">
                                                 <input
                                                     type="radio"
                                                     name={info.code}

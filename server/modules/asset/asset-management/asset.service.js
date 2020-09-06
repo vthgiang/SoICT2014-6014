@@ -21,7 +21,7 @@ exports.getAssetInforById = async (id) => {
  */
 exports.searchAssetProfiles = async (params, company) => {
     let keySearch = { company: company };
-
+    console.log(params)
     // Bắt sựu kiện MSTS tìm kiếm khác ""
     if (params.code) {
         keySearch = { ...keySearch, code: { $regex: params.code, $options: "i" } }
@@ -37,6 +37,11 @@ exports.searchAssetProfiles = async (params, company) => {
         keySearch = { ...keySearch, status: { $in: params.status } };
     }
 
+    // Thêm key tìm kiếm theo loại tài sản vào keySearch
+    if (params.assetType) {
+        keySearch = { ...keySearch, assetType: { $in: params.assetType } };
+    }
+
     // Thêm key tìm kiếm tài sản theo trạng thái hoạt động vào keySearch
     if (params.canRegisterForUse) {
         keySearch = { ...keySearch, canRegisterForUse: { $in: params.canRegisterForUse } };
@@ -44,15 +49,15 @@ exports.searchAssetProfiles = async (params, company) => {
 
     // Thêm key tìm kiếm tài sản theo nhóm tài sản
     if (params.group) {
-        keySearch = {...keySearch, group: {$in: params.group}};
+        keySearch = { ...keySearch, group: { $in: params.group } };
     }
     // Thêm key tìm kiếm tài sản theo id người quản lý
     if (params.managedBy) {
-        keySearch = {...keySearch, managedBy: {$in: params.managedBy}};
+        keySearch = { ...keySearch, managedBy: { $in: params.managedBy } };
     }
 
     if (params.currentRole) {
-        keySearch = {...keySearch, readByRoles: {$in: params.currentRole}};
+        keySearch = { ...keySearch, readByRoles: { $in: params.currentRole } };
     }
     // Thêm key tìm kiếm tài sản theo ngày nhập tài sản
     if (params.purchaseDate) {
@@ -71,9 +76,8 @@ exports.searchAssetProfiles = async (params, company) => {
 
     // Lấy danh sách tài sản
     let totalList = await Asset.count(keySearch);
-    let listAssets = await Asset.find(keySearch)
+    let listAssets = await Asset.find(keySearch).populate('assetType')
         .sort({ 'createdAt': 'desc' }).skip(params.page).limit(params.limit);
-
     return { data: listAssets, totalList }
 }
 
@@ -81,7 +85,7 @@ exports.searchAssetProfiles = async (params, company) => {
  * Danh sách mặt bằng dạng cây
  */
 exports.getListBuildingAsTree = async (company) => {
-    const list = await Asset.find({ company: company, group: "Building" });
+    const list = await Asset.find({ company: company, group: "Building" }).populate('assetType');
     const dataConverted = list.map(building => {
         return {
             id: building._id.toString(),
@@ -147,7 +151,7 @@ exports.createAsset = async (data, company, fileInfo) => {
         warrantyExpirationDate: data.warrantyExpirationDate,
         managedBy: data.managedBy,
         assignedToUser: data.assignedToUser ? data.assignedToUser : null,
-        assignedToOrganizationalUnit: data.assignedToOrganizationalUnit? data.assignedToOrganizationalUnit: null,
+        assignedToOrganizationalUnit: data.assignedToOrganizationalUnit ? data.assignedToOrganizationalUnit : null,
 
         location: data.location,
         status: data.status,
@@ -181,7 +185,6 @@ exports.createAsset = async (data, company, fileInfo) => {
         disposalDesc: data.disposalDesc,
 
         // Tài liệu đính kèm
-        archivedRecordNumber: data.archivedRecordNumber,
         files: files,
     });
 
@@ -276,8 +279,6 @@ exports.updateAssetInformation = async (id, data, fileInfo, company) => {
     oldAsset.disposalType = data.disposalType;
     oldAsset.disposalCost = data.disposalCost;
     oldAsset.disposalDesc = data.disposalDesc;
-    // Tài liệu tham khảo
-    oldAsset.archivedRecordNumber = data.archivedRecordNumber;
 
     // Edit  thông tin tài sản
     oldAsset.save();
@@ -329,7 +330,7 @@ exports.updateDepreciation = async (id, data) => {
         unitsProducedDuringTheYears: data.unitsProducedDuringTheYears && data.unitsProducedDuringTheYears.map((x) => {
             let time = x.month.split("-");
             let date = new Date(time[1], time[0], 0)
-                
+
             return ({
                 month: date,
                 unitsProducedDuringTheYear: x.unitsProducedDuringTheYear
@@ -415,10 +416,10 @@ exports.searchUsages = async (id, data, company) => {
  * Thêm mới thông tin sử dụng
  */
 exports.createUsage = async (id, data) => {
-    let assignedToUser = data.assignedToUser ? data.assignedToUser : null;
-    let assignedToOrganizationalUnit = data.assignedToOrganizationalUnit? data.assignedToOrganizationalUnit: null
-    await Asset.update({_id: id}, {
-        $addToSet: {usageLogs: data.usageLogs},
+    let assignedToUser = (data.assignedToUser && data.assignedToUser !== 'null') ? data.assignedToUser : null;
+    let assignedToOrganizationalUnit = (data.assignedToOrganizationalUnit && data.assignedToOrganizationalUnit !== 'null') ? data.assignedToOrganizationalUnit : null
+    await Asset.update({ _id: id }, {
+        $addToSet: { usageLogs: data.usageLogs },
         assignedToUser: assignedToUser,
         assignedToOrganizationalUnit: assignedToOrganizationalUnit,
         status: data.status,
@@ -433,8 +434,8 @@ exports.createUsage = async (id, data) => {
  * Chỉnh sửa thông tin sử dụng
  */
 exports.updateUsage = async (assetId, data) => {
-    let asset = await Asset.update({_id: assetId}, {
-        $set:{
+    let asset = await Asset.update({ _id: assetId }, {
+        $set: {
             assignedToUser: data.assignedToUser,
             assignedToOrganizationalUnit: data.assignedToOrganizationalUnit,
         }
@@ -443,9 +444,10 @@ exports.updateUsage = async (assetId, data) => {
     return await Asset.update({ _id: assetId, "usageLogs._id": data._id }, {
         $set: {
             "usageLogs.$.usedByUser": data.usedByUser,
+            "usageLogs.$.usedByOrganizationalUnit": data.usedByOrganizationalUnit,
             "usageLogs.$.description": data.description,
             "usageLogs.$.endDate": data.endDate,
-            "usageLogs.$.startDate": data.startDate, 
+            "usageLogs.$.startDate": data.startDate,
         }
     })
 }
@@ -453,16 +455,16 @@ exports.updateUsage = async (assetId, data) => {
 /** 
  * Thu hồi tài sản
  */
-exports.recallAsset = async ( assetId , data) => {
-    let nowDate= new Date();
+exports.recallAsset = async (assetId, data) => {
+    let nowDate = new Date();
     let asset = await Asset.findById(assetId);
     let usageLogs = asset.usageLogs[asset.usageLogs.length - 1];
-    let updateUsageLogs = await Asset.update({_id: assetId, "usageLogs.usedByUser": usageLogs._id}, {
+    let updateUsageLogs = await Asset.update({ _id: assetId, "usageLogs.usedByUser": usageLogs._id }, {
         $set: {
             "usageLogs.$.endDate": nowDate,
         }
     })
-    let updateAsset = await Asset.update({_id: assetId},{
+    let updateAsset = await Asset.update({ _id: assetId }, {
         $set: {
             assignedToUser: null,
             assignedToOrganizationalUnit: null,

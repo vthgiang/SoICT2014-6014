@@ -177,7 +177,7 @@ class ModalShowAutoPointInfo extends Component {
                             <p><strong>{translate('task.task_management.calc_new_formula')}: </strong>{formula} = {result}</p>
                         </div>
                     }
-                    {((task.taskTemplate === null || task.taskTemplate === undefined) && a !== 0) &&
+                    {((task.taskTemplate === null || task.taskTemplate === undefined) && checkFormulaHasAvgRating === true) &&
                         <div>
                             <p><strong>{translate('task.task_management.calc_formula')}: </strong> {task.formula} </p>
                             {/* progressTask/(dayUsed/totalDay) - 0.5*(10-averageActionRating)*10 */}

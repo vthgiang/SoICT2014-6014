@@ -31,6 +31,7 @@ router.get("/documents/:id", auth, DocumentController.showDocument);
 router.post("/documents", auth, uploadFile([{ name: 'file', path: '/files' }, { name: 'fileScan', path: '/files' }], 'fields'), DocumentController.createDocument);
 router.patch("/documents/:id", auth, uploadFile([{ name: 'file', path: '/files' }, { name: 'fileScan', path: '/files' }], 'fields'), DocumentController.editDocument);
 router.delete("/documents/:id", auth, DocumentController.deleteDocument);
+router.post("/documents/import-file", auth, DocumentController.importDocument);
 
 // Thư mục lưu trữ
 router.get('/document-archives', auth, DocumentController.getDocumnetArchive);

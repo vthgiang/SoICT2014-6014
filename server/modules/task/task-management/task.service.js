@@ -1179,8 +1179,8 @@ exports.createTask = async (task) => {
     if( taskTemplate ) {
         formula = taskTemplate.formula;
     } else if( task.formula ){
-        formula = "progress / (dayUsed / totalDay)"; // default
-        // "progress / (dayUsed / totalDay) - 0.5 * (10 - (averageActionRating)) * 10"
+        // formula = "progress / (dayUsed / totalDay)"; // default
+        formula = "progress / (dayUsed / totalDay) - 0.5 * (10 - (averageActionRating)) * 10"
     } 
     // else {
     //     formula = task.formula;
