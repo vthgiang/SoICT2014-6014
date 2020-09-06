@@ -297,7 +297,6 @@ const LINKS = [{
         description: 'Nghỉ phép',
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
         roles: [
-            ROOT_ROLES.ADMIN.name,
             ROOT_ROLES.DEAN.name,
             ROOT_ROLES.VICE_DEAN.name,
             ROOT_ROLES.EMPLOYEE.name,

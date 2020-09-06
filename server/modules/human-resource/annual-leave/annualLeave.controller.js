@@ -23,7 +23,6 @@ exports.searchAnnualLeaves = async (req, res) => {
         } else {
             let params = {
                 organizationalUnits: req.query.organizationalUnits,
-                position: req.query.position,
                 employeeNumber: req.query.employeeNumber,
                 month: req.query.month,
                 status: req.query.status,
@@ -106,17 +105,7 @@ exports.createAnnualLeave = async (req, res) => {
                 content: annualLeave
             });
         } else {
-            // Kiểm tra dữ liệu truyền vào
-            if (req.body.employeeNumber.trim() === "") {
-                await LogError(req.user.email, 'CREATE_ANNUALLEAVE', req.user.company);
-                res.status(400).json({
-                    success: false,
-                    messages: ["employee_number_required"],
-                    content: {
-                        inputData: req.body
-                    }
-                });
-            } else if (req.body.startDate.trim() === "") {
+            if (req.body.startDate.trim() === "") {
                 await LogError(req.user.email, 'CREATE_ANNUALLEAVE', req.user.company);
                 res.status(400).json({
                     success: false,
@@ -154,24 +143,12 @@ exports.createAnnualLeave = async (req, res) => {
                 });
             } else {
                 let newAnnualLeave = await AnnualLeaveService.createAnnualLeave(req.body, req.user.company._id);
-                // Kiểm tra sự tồn tại của mã nhân viên
-                if (newAnnualLeave === null) {
-                    await LogError(req.user.email, 'CREATE_ANNUALLEAVE', req.user.company);
-                    res.status(404).json({
-                        success: false,
-                        messages: ["staff_code_not_find"],
-                        content: {
-                            inputData: req.body
-                        }
-                    });
-                } else {
-                    await LogInfo(req.user.email, 'CREATE_ANNUALLEAVE', req.user.company);
-                    res.status(200).json({
-                        success: true,
-                        messages: ["create_annual_leave_success"],
-                        content: newAnnualLeave
-                    });
-                }
+                await LogInfo(req.user.email, 'CREATE_ANNUALLEAVE', req.user.company);
+                res.status(200).json({
+                    success: true,
+                    messages: ["create_annual_leave_success"],
+                    content: newAnnualLeave
+                });
             }
         }
     } catch (error) {
@@ -211,17 +188,7 @@ exports.deleteAnnualLeave = async (req, res) => {
 /** Cập nhật thông tin nghỉ phép */
 exports.updateAnnualLeave = async (req, res) => {
     try {
-        // Kiểm tra dữ liệu tryền vào
-        if (req.body.employeeNumber.trim() === "") {
-            await LogError(req.user.email, 'CREATE_ANNUALLEAVE', req.user.company);
-            res.status(400).json({
-                success: false,
-                messages: ["employee_number_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else if (req.body.startDate.trim() === "") {
+        if (req.body.startDate.trim() === "") {
             await LogError(req.user.email, 'EDIT_ANNUALLEAVE', req.user.company);
             res.status(400).json({
                 success: false,
@@ -259,24 +226,12 @@ exports.updateAnnualLeave = async (req, res) => {
             });
         } else {
             let annualleaveUpdate = await AnnualLeaveService.updateAnnualLeave(req.params.id, req.body);
-            // Kiểm tra sự tồn tại của mã nhân viên
-            if (annualleaveUpdate === null) {
-                await LogError(req.user.email, 'EDIT_ANNUALLEAVE', req.user.company);
-                res.status(404).json({
-                    success: false,
-                    messages: ["staff_code_not_find"],
-                    content: {
-                        inputData: req.body
-                    }
-                });
-            } else {
-                await LogInfo(req.user.email, 'EDIT_ANNUALLEAVE', req.user.company);
-                res.status(200).json({
-                    success: true,
-                    messages: ["edit_annual_leave_success"],
-                    content: annualleaveUpdate
-                });
-            }
+            await LogInfo(req.user.email, 'EDIT_ANNUALLEAVE', req.user.company);
+            res.status(200).json({
+                success: true,
+                messages: ["edit_annual_leave_success"],
+                content: annualleaveUpdate
+            });
         }
     } catch (error) {
         await LogError(req.user.email, 'EDIT_ANNUALLEAVE', req.user.company);

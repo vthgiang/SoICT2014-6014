@@ -228,43 +228,47 @@ exports.getAnnualLeaveOfNumberMonth = async (organizationalUnits, numberMonth, c
  * @company : Id công ty người dùng
  */
 exports.searchAnnualLeaves = async (params, company) => {
-    let keySearchEmployee, keySearch = {
+    let keySearch = {
         company: company
     };
 
-    // Bắt sựu kiện đơn vị tìm kiếm khác undefined 
-    if (params.organizationalUnits !== undefined) {
-        let emailInCompany = await EmployeeService.getEmployeeEmailsByOrganizationalUnitsAndPositions(params.organizationalUnits, params.position);
-        keySearchEmployee = {
-            ...keySearchEmployee,
-            emailInCompany: {
-                $in: emailInCompany
-            }
-        }
-    }
-
-    // Bắt sựu kiện MSNV tìm kiếm khác "", undefined
-    if (params.employeeNumber !== undefined && params.employeeNumber.length !== 0) {
-        keySearchEmployee = {
-            ...keySearchEmployee,
+    // Bắt sựu kiện tìm kiếm theo MSNV
+    if (params.employeeNumber) {
+        let employee = await Employee.find({
             employeeNumber: {
                 $regex: params.employeeNumber,
                 $options: "i"
             }
-        }
-    }
-    if (keySearchEmployee !== undefined) {
-        let employeeinfo = await Employee.find(keySearchEmployee);
-        let employee = employeeinfo.map(employeeinfo => employeeinfo._id);
-        keySearch = {
-            ...keySearch,
-            employee: {
-                $in: employee
+        }, {
+            _id: 1
+        });
+        if (employee.length !== 0) {
+            employee = employee.map(x => x._id);
+            keySearch = {
+                ...keySearch,
+                employee: {
+                    $in: employee
+                }
+            };
+        } else {
+            return {
+                totalList: 0,
+                listSalarys: [],
             }
         }
     }
 
-    // Bắt sựu kiện trạng thái tìm kiếm khác undefined
+    // Bắt sựu kiện tìm kiếm theo đơn vị
+    if (params.organizationalUnits) {
+        keySearch = {
+            ...keySearch,
+            organizationalUnit: {
+                $in: params.organizationalUnits
+            }
+        };
+    }
+
+    // Bắt sựu kiện tìm kiếm theo trạng thái
     if (params.status !== undefined) {
         keySearch = {
             ...keySearch,
@@ -274,7 +278,7 @@ exports.searchAnnualLeaves = async (params, company) => {
         }
     };
 
-    // Bắt sựu kiện tháng tìm kiếm khác "", undefined
+    // Bắt sựu kiện tìm kiếm theo tháng 
     if (params.month !== undefined && params.month.length !== 0) {
         let date = new Date(params.month);
         let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
@@ -294,21 +298,14 @@ exports.searchAnnualLeaves = async (params, company) => {
             }]
         }
     };
-    let totalList = await AnnualLeave.count(keySearch);
     let listAnnualLeaves = await AnnualLeave.find(keySearch).populate({
             path: 'employee',
-            model: Employee
+            select: 'emailInCompany fullName employeeNumber'
         })
         .sort({
             'createdAt': 'desc'
         }).skip(params.page).limit(params.limit);
-    for (let n in listAnnualLeaves) {
-        let value = await EmployeeService.getAllPositionRolesAndOrganizationalUnitsOfUser(listAnnualLeaves[n].employee.emailInCompany);
-        listAnnualLeaves[n] = {
-            ...listAnnualLeaves[n]._doc,
-            ...value
-        }
-    }
+    let totalList = listAnnualLeaves.length;
 
     return {
         totalList,
@@ -322,41 +319,23 @@ exports.searchAnnualLeaves = async (params, company) => {
  * @company : id công ty người tạo
  */
 exports.createAnnualLeave = async (data, company) => {
-    // Lấy thông tin nhân viên theo mã số nhân viên
-    let employeeInfo = await Employee.findOne({
-        employeeNumber: data.employeeNumber,
-        company: company
-    }, {
-        _id: 1,
-        emailInCompany: 1
+    // Tạo mới thông tin nghỉ phép vào database
+    let createAnnualLeave = await AnnualLeave.create({
+        employee: data.employee,
+        company: company,
+        organizationalUnit: data.organizationalUnit,
+        startDate: data.startDate,
+        endDate: data.endDate,
+        status: data.status,
+        reason: data.reason,
     });
-    if (employeeInfo !== null) {
-        // Tạo mới thông tin nghỉ phép vào database
-        let createAnnualLeave = await AnnualLeave.create({
-            employee: employeeInfo._id,
-            company: company,
-            startDate: data.startDate,
-            endDate: data.endDate,
-            status: data.status,
-            reason: data.reason,
-        });
 
-        // Lấy thông tin phòng ban, chức vụ của nhân viên theo emailCompany
-        let value = await EmployeeService.getAllPositionRolesAndOrganizationalUnitsOfUser(employeeInfo.emailInCompany);
-
-        // Lấy thông tin nghỉ phép vừa tạo 
-        let newAnnualLeave = await AnnualLeave.findOne({
-            _id: createAnnualLeave._id
-        }).populate([{
-            path: 'employee',
-            model: Employee
-        }])
-
-        return {
-            ...newAnnualLeave._doc,
-            ...value
-        }
-    } else return null;
+    return await AnnualLeave.findOne({
+        _id: createAnnualLeave._id
+    }).populate([{
+        path: 'employee',
+        select: 'emailInCompany fullName employeeNumber'
+    }])
 }
 
 /**
@@ -375,42 +354,18 @@ exports.deleteAnnualLeave = async (id) => {
  * @data : Dữ liệu thay đổi
  */
 exports.updateAnnualLeave = async (id, data) => {
-    // Lấy thông tin nhân viên theo mã số nhân viên
-    let employeeInfo = await Employee.findOne({
-        employeeNumber: data.employeeNumber
-    }, {
-        _id: 1,
-        emailInCompany: 1
-    });
-    if (employeeInfo !== null) {
-        let AnnualLeaveChange = {
-            startDate: data.startDate,
-            endDate: data.endDate,
-            status: data.status,
-            reason: data.reason,
-        };
+    let annualLeave = await AnnualLeave.findById(id);
 
-        // Cập nhật thông tin nghỉ phép vào database
-        await AnnualLeave.findOneAndUpdate({
-            _id: id
-        }, {
-            $set: AnnualLeaveChange
-        });
+    annualLeave.startDate = data.startDate;
+    annualLeave.status = data.status;
+    annualLeave.endDate = data.endDate;
+    annualLeave.reason = data.reason;
+    await annualLeave.save();
 
-        // Lấy thông tin phòng ban, chức vụ của nhân viên theo emailCompany
-        let value = await EmployeeService.getAllPositionRolesAndOrganizationalUnitsOfUser(employeeInfo.emailInCompany);
-
-        // Lấy thông tin nghỉ phép vừa cập nhật
-        let updateAnnualLeave = await AnnualLeave.findOne({
-            _id: id
-        }).populate([{
-            path: 'employee',
-            model: Employee
-        }])
-
-        return {
-            ...updateAnnualLeave._doc,
-            ...value
-        }
-    } else return null;
+    return await AnnualLeave.findOne({
+        _id: id
+    }).populate([{
+        path: 'employee',
+        select: 'emailInCompany fullName employeeNumber'
+    }]);
 }
