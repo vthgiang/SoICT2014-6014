@@ -571,8 +571,8 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
                         <div className="row">
                             <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                             <fieldset className="scheduler-border qlcv">
-                                <legend class="scheduler-border">
-                                    <h4 class="box-title">Cây KPI đơn vị</h4>
+                                <legend className="scheduler-border">
+                                    <h4 className="box-title">Cây KPI đơn vị</h4>
                                 </legend>
                                     <div className="details-tree" id="details-tree">
                                         <Tree 

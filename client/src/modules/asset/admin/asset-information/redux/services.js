@@ -15,7 +15,6 @@ export const AssetService = {
  * @param {*} data : dữ liệu key tìm kiếm
  */
 function getAll(data) {
-
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/asset/assets`,
         method: 'GET',
@@ -23,11 +22,13 @@ function getAll(data) {
             code: data !== undefined ? data.code : data,
             assetName: data !== undefined ? data.assetName : data,
             status: data !== undefined ? data.status : data,
+            assetType: data !== undefined ? data.assetType : data,
             purchaseDate: data !== undefined ? data.purchaseDate : data,
             canRegisterForUse: data !== undefined ? data.canRegisterForUse : data,
             page: data !== undefined ? data.page : data,
             limit: data !== undefined ? data.limit : data,
-            managedBy: data!== undefined? data.managedBy:data
+            managedBy: data !== undefined ? data.managedBy : data,
+            currentRole: data !== undefined ? data.currentRole : data,
         }
     }, false, true, 'asset.asset_info');
 }

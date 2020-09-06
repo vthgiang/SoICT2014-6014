@@ -6,6 +6,7 @@ import { DocumentActions } from '../../../redux/actions';
 import { Tree, SlimScroll, ExportExcel } from '../../../../../common-components';
 import CreateForm from './createForm';
 import EditForm from './editForm';
+import { ArchiveImportForm } from './archiveImportForm'
 import './archive.css';
 
 class AdministrationDocumentArchives extends Component {
@@ -42,7 +43,15 @@ class AdministrationDocumentArchives extends Component {
 
         })
     }
-
+    handleAddArchive = (event) => {
+        event.preventDefault();
+        window.$('#modal-create-document-archive').modal('show');
+    }
+    /**Mở modal import file excel */
+    handImportFile = (event) => {
+        event.preventDefault();
+        window.$('#modal_import_file').modal('show');
+    }
     deleteArchive = () => {
         const { translate } = this.props;
         const { deleteNode, archiveParent } = this.state;
@@ -124,14 +133,25 @@ class AdministrationDocumentArchives extends Component {
         })
         return (
             <React.Fragment>
-                <button className="btn btn-success" onClick={() => {
+                <div className="form-inline">
+                    <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
+                        <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('document.administration.domains.add')}
+                            disabled={archiveParent.length > 1 ? true : false}>{translate('general.add')}</button>
+                        <ul className="dropdown-menu pull-right">
+                            <li><a href="#modal-create-document-archive" title="ImportForm" onClick={(event) => { this.handleAddArchive(event) }}>{translate('task_template.add')}</a></li>
+                            <li><a href="#modal_import_file" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>ImportFile</a></li>
+                        </ul>
+                    </div>
+                </div>
+                {/* <button className="btn btn-success" onClick={() => {
                     window.$('#modal-create-document-archive').modal('show');
-                }} title={`Thêm`} disable={archiveParent.length > 1 ? true : false}>{translate('general.add')}</button>
+                }} title={`Thêm`} disable={archiveParent.length > 1 ? true : false}>{translate('general.add')}</button> */}
                 {
-                    archiveParent.length > 0 && <button class="btn btn-danger" style={{ marginLeft: '5px' }} onClick={this.deleteArchive}>{translate('general.delete')}</button>
+                    archiveParent.length > 0 && <button className="btn btn-danger" style={{ marginLeft: '5px' }} onClick={this.deleteArchive}>{translate('general.delete')}</button>
                 }
                 {<ExportExcel id="export-document-archive" exportData={exportData} style={{ marginRight: 5, marginTop: 2 }} />}
                 <CreateForm domainParent={this.state.archiveParent[0]} />
+                <ArchiveImportForm />
                 <div className="row">
                     <div className="col-xs-12 col-sm-12 col-md-7 col-lg-7">
                         <div className="archive-tree" id="archive-tree">

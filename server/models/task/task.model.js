@@ -26,6 +26,11 @@ const TaskSchema = new Schema({
         },
         link: {
             type: String
+        },
+        activated: {
+            type: Boolean,
+            default: false,
+            required: true,
         }
     }],
     preceedingTasks: [{
@@ -197,7 +202,7 @@ const TaskSchema = new Schema({
     formula: {
         type: String,
         //require: true,
-        default: "progress / (dayUsed / totalDay)",
+        default: "progress / (dayUsed / totalDay) - 0.5 * (10 - (averageActionRating)) * 10",
     },
     progress: { // % Hoàn thành thành công việc
         type: Number,
@@ -266,11 +271,7 @@ const TaskSchema = new Schema({
             type: Number
         }
     }],
-    totalLoggedTime: { // Tổng thời gian timesheetLog. Cập nhật mỗi khi người dùng lưu lại thời gian bấm giờ (khi họ nhấn nút stop)
-        type: Number,
-        default: 0,
-        required: true
-    },
+
     taskInformations: [{ // Khi tạo công việc theo mẫu, các giá trị này sẽ được copy từ mẫu công việc sang
         code: { // Mã thuộc tính công việc dùng trong công thức
             type: String,

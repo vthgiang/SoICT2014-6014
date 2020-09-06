@@ -14,7 +14,7 @@ class StautsChart extends Component {
     setDataPieChart = () => {
         const { listAssets } = this.props;
 
-        const { translate } = this.props;
+        const { translate, getAssetStatusData } = this.props;
         let dataPieChart, numberOfReadyToUse = 0, numberOfInUse = 0, numberOfBroken = 0, numberOfLost = 0, numberOfDisposed = 0;
 
         if (listAssets) {
@@ -47,6 +47,10 @@ class StautsChart extends Component {
             ["Thanh lý", numberOfDisposed],
         ];
 
+        if (getAssetStatusData && listAssets) {
+            getAssetStatusData(dataPieChart);
+        }
+        
         return dataPieChart;
     }
 

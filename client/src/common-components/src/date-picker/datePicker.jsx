@@ -15,20 +15,29 @@ class DatePicker extends Component {
         const { id, dateFormat, onChange, deleteValue = true } = this.props;
         let zIndex = 1050;
 
-        dateFormat !== "month-year" ?
-            window.$("#" + id).datepicker({
-                autoclose: true,
-                format: "dd-mm-yyyy",
-                todayHighlight: true,
-                zIndexOffset: this.zIndex,
-            }) :
+        dateFormat === "month-year" ?
             window.$("#" + id).datepicker({
                 autoclose: true,
                 format: "mm-yyyy",
                 startView: 1,
                 minViewMode: "months",
                 zIndexOffset: this.zIndex,
-            });
+            }) : (
+                dateFormat === "year" ?
+                    window.$("#" + id).datepicker({
+                        autoclose: true,
+                        format: "yyyy",
+                        viewMode: "years",
+                        minViewMode: "years",
+                        zIndexOffset: this.zIndex,
+                    }) :
+                    window.$("#" + id).datepicker({
+                        autoclose: true,
+                        format: "dd-mm-yyyy",
+                        todayHighlight: true,
+                        zIndexOffset: this.zIndex,
+                    })
+            )
         if (deleteValue) {
             window.$("#" + id).keyup(function (e) {
                 if (e.keyCode == 8 || e.keyCode == 46) {
@@ -47,20 +56,30 @@ class DatePicker extends Component {
 
     componentDidUpdate = () => {
         const { id, dateFormat } = this.props;
-        dateFormat !== "month-year" ?
-            window.$("#" + id).datepicker({
-                autoclose: true,
-                format: "dd-mm-yyyy",
-                todayHighlight: true,
-                zIndexOffset: this.zIndex,
-            }) :
+        dateFormat === "month-year" ?
             window.$("#" + id).datepicker({
                 autoclose: true,
                 format: "mm-yyyy",
                 startView: 1,
                 minViewMode: "months",
                 zIndexOffset: this.zIndex,
-            })
+            }) : (
+                dateFormat === "year" ?
+                    window.$("#" + id).datepicker({
+                        autoclose: true,
+                        format: "yyyy",
+                        viewMode: "years",
+                        minViewMode: "years",
+                        zIndexOffset: this.zIndex,
+                    }) :
+                    window.$("#" + id).datepicker({
+                        autoclose: true,
+                        format: "dd-mm-yyyy",
+                        todayHighlight: true,
+                        zIndexOffset: this.zIndex,
+                    })
+            )
+
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -87,14 +106,14 @@ class DatePicker extends Component {
     }
 
     render() {
-        const { id, dateFormat, disabled = false, defaultValue } = this.props;
+        const { id, dateFormat, disabled = false, defaultValue, style = {} } = this.props;
         return (
             <React.Fragment>
                 <div className={'input-group date has-feedback'} id={id}>
                     <div className="input-group-addon">
                         <i style={{ width: 16, height: 16 }} className="fa fa-calendar" />
                     </div>
-                    <input type="text" className="form-control" value={this.state.value ? this.state.value : defaultValue} ref="datePicker" onChange={() => { }} disabled={disabled} />
+                    <input type="text" style={style} className="form-control" value={this.state.value ? this.state.value : defaultValue} ref="datePicker" onChange={() => { }} disabled={disabled} />
                 </div>
             </React.Fragment>
         );

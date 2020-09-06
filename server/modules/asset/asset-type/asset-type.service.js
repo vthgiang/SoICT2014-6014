@@ -65,12 +65,12 @@ exports.editAssetType = async (id, data) => {
     const type = await AssetType.findById(id);
 
     type.typeNumber = data.typeNumber,
-        type.typeName = data.typeName,
-        type.description = data.description,
-        type.parent = ObjectId.isValid(data.parent) ? data.parent : undefined
+    type.typeName = data.typeName,
+    type.description = data.description,
+    type.parent = ObjectId.isValid(data.parent) ? data.parent : undefined
     type.defaultInformation = data.defaultInformation,
 
-        await type.save();
+    await type.save();
 
     return type;
 }

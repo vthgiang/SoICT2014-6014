@@ -21,18 +21,20 @@ exports.searchAssetProfiles = async (req, res) => {
                 code: req.query.code,
                 assetName: req.query.assetName,
                 status: req.query.status,
+                assetType: req.query.assetType,
                 canRegisterForUse: req.query.canRegisterForUse,
                 purchaseDate: req.query.purchaseDate,
                 page: Number(req.query.page),
                 limit: Number(req.query.limit),
-                managedBy : req.query.managedBy
+                managedBy: req.query.managedBy,
+                currentRole: req.query.currentRole,
             }
             data = await AssetService.searchAssetProfiles(params, req.user.company._id);
 
         }
 
         // data = await AssetService.searchAssetProfiles(params, req.user.company._id);
-        
+
         await LogInfo(req.user.email, 'GET_ASSETS', req.user.company);
         res.status(200).json({
             success: true,
@@ -203,7 +205,7 @@ exports.createUsage = async (req, res) => {
  * Chỉnh sửa thông tin sử dụng tài sản
  */
 exports.updateUsage = async (req, res) => {
-    if(req.query.recallAsset){
+    if (req.query.recallAsset) {
         recallAsset(req, res)
     } else {
         try {

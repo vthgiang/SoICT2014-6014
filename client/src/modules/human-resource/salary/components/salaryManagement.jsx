@@ -12,11 +12,12 @@ import { DepartmentActions } from '../../../super-admin/organizational-unit/redu
 class SalaryManagement extends Component {
     constructor(props) {
         super(props);
+        let partMonth = this.formatDate(Date.now(), true).split('-');
+        let month = [partMonth[1], partMonth[0]].join('-');
         this.state = {
-            position: null,
-            month: null,
+            month: month,
             employeeNumber: "",
-            organizationalUnit: null,
+            organizationalUnits: null,
             page: 0,
             limit: 5,
         }
@@ -94,21 +95,7 @@ class SalaryManagement extends Component {
         };
         this.setState({
             ...this.state,
-            organizationalUnit: value
-        })
-    }
-
-    /**
-     * Function lưu giá trị chức vụ vào state khi thay đổi
-     * @param {*} value : Array id phòng ban
-     */
-    handlePositionChange = (value) => {
-        if (value.length === 0) {
-            value = null
-        };
-        this.setState({
-            ...this.state,
-            position: value
+            organizationalUnits: value
         })
     }
 
@@ -129,20 +116,20 @@ class SalaryManagement extends Component {
 
     /** Function bắt sự kiện tìm kiếm */
     handleSunmitSearch = async () => {
-        const { month } = this.state;
-        if (month === null) {
-            let partMonth = this.formatDate(Date.now(), true).split('-');
-            let month = [partMonth[1], partMonth[0]].join('-');
-            await this.setState({
-                ...this.state,
-                month: month
-            })
-        } else if (month === "-") {
-            await this.setState({
-                ...this.state,
-                month: ""
-            })
-        }
+        // const { month } = this.state;
+        // if (month === null) {
+        //     let partMonth = this.formatDate(Date.now(), true).split('-');
+        //     let month = [partMonth[1], partMonth[0]].join('-');
+        //     await this.setState({
+        //         ...this.state,
+        //         month: month
+        //     })
+        // } else if (month === "-") {
+        //     await this.setState({
+        //         ...this.state,
+        //         month: ""
+        //     })
+        // }
         this.props.searchSalary(this.state);
     }
 
@@ -175,7 +162,7 @@ class SalaryManagement extends Component {
      * @param {*} data : dữ liệu bảng lương
      */
     convertDataToExportData = (data) => {
-        const { translate } = this.props;
+        const { translate, department } = this.props;
         let otherSalary = [];
         if (data) {
             data.forEach(x => {
@@ -189,8 +176,7 @@ class SalaryManagement extends Component {
             })
 
             data = data.map((x, index) => {
-                let organizationalUnits = x.organizationalUnits.map(y => y.name);
-                let position = x.roles.map(y => y.roleId.name);
+                let organizationalUnit = department.list.find(y => y._id === x.organizationalUnit);
                 let total = 0, bonus = {};
                 let d = new Date(x.month),
                     month = '' + (d.getMonth() + 1),
@@ -215,8 +201,7 @@ class SalaryManagement extends Component {
                     birthdate: new Date(x.employee.birthdate),
                     status: x.employee.status === 'active' ? "Đang làm việc" : "Đã nghỉ làm",
                     gender: x.employee.gender === 'male' ? "Nam" : "Nữ",
-                    organizationalUnits: organizationalUnits.join(', '),
-                    position: position.join(', '),
+                    organizationalUnit: organizationalUnit ? organizationalUnit.name : 'Deleted',
                     total: total + parseInt(x.mainSalary),
                     month: month,
                     year: year,
@@ -245,6 +230,7 @@ class SalaryManagement extends Component {
                     sheetTitle: translate('human_resource.salary.file_name_export'),
                     tables: [
                         {
+                            //note: "Chú ý: nội dung chú ý",
                             // tableName: "Bảng lương 1",
                             // merges: [{
                             //     key: "other",
@@ -270,8 +256,7 @@ class SalaryManagement extends Component {
                                 { key: "year", value: "Năm" },
                                 { key: "employeeNumber", value: "Mã số nhân viên" },
                                 { key: "fullName", value: "Họ và tên" },
-                                { key: "organizationalUnits", value: "Phòng ban" },
-                                { key: "position", value: "Chức vụ" },
+                                { key: "organizationalUnit", value: "Đơn vị" },
                                 { key: "gender", value: "Giới tính" },
                                 { key: "birthdate", value: "Ngày sinh" },
                                 { key: "status", value: "Tình trạng lao động" },
@@ -291,35 +276,22 @@ class SalaryManagement extends Component {
     render() {
         const { translate, salary, department } = this.props;
 
-        const { limit, page, organizationalUnit, importSalary, currentRow } = this.state;
+        const { limit, page, importSalary, currentRow } = this.state;
 
         let formater = new Intl.NumberFormat();
         let { list } = department;
-        let listSalarys = [], listPosition = [{ value: "", text: translate('human_resource.not_unit'), disabled: true }];
-
-        if (organizationalUnit !== null) {
-            listPosition = [];
-            organizationalUnit.forEach(u => {
-                list.forEach(x => {
-                    if (x._id === u) {
-                        let roleDeans = x.deans.map(y => { return { _id: y._id, name: y.name } });
-                        let roleViceDeans = x.viceDeans.map(y => { return { _id: y._id, name: y.name } });
-                        let roleEmployees = x.employees.map(y => { return { _id: y._id, name: y.name } });
-                        listPosition = listPosition.concat(roleDeans).concat(roleViceDeans).concat(roleEmployees);
-                    }
-                })
-            })
-        }
+        let listSalarys = [], exportData = [];
 
         if (salary.isLoading === false) {
             listSalarys = salary.listSalarys;
+            exportData = this.convertDataToExportData(listSalarys);
         }
-        let exportData = this.convertDataToExportData(listSalarys);
 
         let pageTotal = (salary.totalList % limit === 0) ?
             parseInt(salary.totalList / limit) :
             parseInt((salary.totalList / limit) + 1);
         let currentPage = parseInt((page / limit) + 1);
+
         return (
             <div className="box">
                 <div className="box-body qlcv">
@@ -346,21 +318,14 @@ class SalaryManagement extends Component {
                                 items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
                             </SelectMulti>
                         </div>
-                        {/* Chức vụ */}
-                        <div className="form-group">
-                            <label className="form-control-static">{translate('human_resource.position')}</label>
-                            <SelectMulti id={`multiSelectPosition`} multiple="multiple"
-                                options={{ nonSelectedText: translate('human_resource.non_position'), allSelectedText: translate('human_resource.all_position') }}
-                                items={organizationalUnit === null ? listPosition : listPosition.map((p, i) => { return { value: p._id, text: p.name } })} onChange={this.handlePositionChange}>
-                            </SelectMulti>
-                        </div>
-                    </div>
-                    <div className="form-inline" style={{ marginBottom: 10 }}>
+
                         {/* Mã số nhân viên */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('human_resource.staff_number')}</label>
                             <input type="text" className="form-control" name="employeeNumber" onChange={this.handleMSNVChange} placeholder={translate('human_resource.staff_number')} autoComplete="off" />
                         </div>
+                    </div>
+                    <div className="form-inline" style={{ marginBottom: 10 }}>
                         {/* Tháng */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('human_resource.month')}</label>
@@ -382,7 +347,6 @@ class SalaryManagement extends Component {
                                 <th>{translate('human_resource.month')}</th>
                                 <th>{translate('human_resource.salary.table.total_salary')}</th>
                                 <th>{translate('human_resource.unit')}</th>
-                                <th>{translate('human_resource.position')}</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>{translate('human_resource.salary.table.action')}
                                     <DataTableSetting
                                         tableId="salary-table"
@@ -392,7 +356,6 @@ class SalaryManagement extends Component {
                                             translate('human_resource.month'),
                                             translate('human_resource.salary.table.total_salary'),
                                             translate('human_resource.unit'),
-                                            translate('human_resource.position'),
                                         ]}
                                         limit={limit}
                                         setLimit={this.setLimit}
@@ -410,6 +373,7 @@ class SalaryManagement extends Component {
                                             total = total + parseInt(x.bonus[count].number)
                                         }
                                     }
+                                    let organizationalUnit = list.find(y => y._id === x.organizationalUnit);
                                     return (
                                         <tr key={index}>
                                             <td>{x.employee ? x.employee.employeeNumber : null}</td>
@@ -417,21 +381,12 @@ class SalaryManagement extends Component {
                                             <td>{this.formatDate(x.month, true)}</td>
                                             <td>
                                                 {
-                                                    (x.bonus || x.bonus.length === 0) ?
+                                                    (!x.bonus || x.bonus.length === 0) ?
                                                         formater.format(parseInt(x.mainSalary)) :
                                                         formater.format(total + parseInt(x.mainSalary))
                                                 } {x.unit}
                                             </td>
-                                            <td>{x.organizationalUnits.length !== 0 ? x.organizationalUnits.map(unit => (
-                                                <React.Fragment key={unit._id}>
-                                                    {unit.name}<br />
-                                                </React.Fragment>
-                                            )) : null}</td>
-                                            <td>{x.roles.length !== 0 ? x.roles.map(role => (
-                                                <React.Fragment key={role._id}>
-                                                    {role.roleId.name}<br />
-                                                </React.Fragment>
-                                            )) : null}</td>
+                                            <td>{organizationalUnit ? organizationalUnit.name : 'Deleted'}</td>
                                             <td style={{ textAlign: 'center' }}>
                                                 <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.salary.edit_salary')}><i className="material-icons">edit</i></a>
                                                 <DeleteNotification

@@ -11,7 +11,6 @@ import { NotificationValidator } from './notificationValidator';
 
 import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-// import Base64UploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/base64uploadadapter';
 
 class NotificationCreate extends Component {
     constructor(props) {

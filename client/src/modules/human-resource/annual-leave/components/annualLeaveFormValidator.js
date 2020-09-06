@@ -31,7 +31,8 @@ function validateEmployeeNumber(value, translate) {
 function validateReason(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
-        msg = translate('human_resource.annual_leave.reason_annual_leave_required');
+        // msg = translate('human_resource.annual_leave.reason_annual_leave_required');
+        msg = 'Giá trị không được để trống';
     }
     return msg;
 }

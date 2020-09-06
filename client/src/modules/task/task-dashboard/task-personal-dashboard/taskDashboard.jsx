@@ -27,7 +27,10 @@ class TaskDashboard extends Component {
 
         this.INFO_SEARCH = {
             startMonth: currentYear + '-' + 1,
-            endMonth: (currentMonth > 10) ? ((currentYear + 1) + '-' + (currentMonth - 10)) : (currentYear + '-' + (currentMonth + 2))
+            endMonth: (currentMonth > 10) ? ((currentYear + 1) + '-' + (currentMonth - 10)) : (currentYear + '-' + (currentMonth + 2)),
+
+            startMonthTitle: '1' + '-' + currentYear,
+            endMonthTitle: (currentMonth > 10) ? ((currentMonth - 10) + '-' + (currentYear + 1)) : ((currentMonth + 1) + '-' + currentYear),
         }
 
         this.state = {
@@ -38,13 +41,15 @@ class TaskDashboard extends Component {
             startMonth: this.INFO_SEARCH.startMonth,
             endMonth: this.INFO_SEARCH.endMonth,
 
+            startMonthTitle: this.INFO_SEARCH.startMonthTitle,
+            endMonthTitle: this.INFO_SEARCH.endMonthTitle,
+
             willUpdate: false,       // Khi true sẽ cập nhật dữ liệu vào props từ redux
             callAction: false
         };
     }
 
     componentDidMount = async () => {
-        console.log('did db');
         await this.props.getResponsibleTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null, false);
         await this.props.getAccountableTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null, false);
         await this.props.getConsultedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null, false);
@@ -66,7 +71,6 @@ class TaskDashboard extends Component {
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
-        console.log('should db');
         if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
             if (!nextProps.tasks.responsibleTasks || !nextProps.tasks.accountableTasks || !nextProps.tasks.consultedTasks || !nextProps.tasks.informedTasks || !nextProps.tasks.creatorTasks || !nextProps.tasks.tasksbyuser) {
                 return false;
@@ -122,6 +126,7 @@ class TaskDashboard extends Component {
             monthtitle = value.slice(0, 2) + '-' + value.slice(3, 7);
         } else {
             month = (new Number(value.slice(3, 7)) + 1) + '-' + '1';
+            monthtitle = '12' + '-' + (new Number(value.slice(3, 7)));
         }
 
         this.INFO_SEARCH.endMonth = month;
@@ -152,7 +157,6 @@ class TaskDashboard extends Component {
     }
 
     render() {
-        console.log('render db');
         const { tasks, translate } = this.props;
         const { startMonth, endMonth, willUpdate, callAction } = this.state;
 
@@ -325,7 +329,7 @@ class TaskDashboard extends Component {
                     <div className="col-xs-6">
                         <div className="box box-primary">
                             <div className="box-header with-border">
-                                <div className="box-title">{translate('task.task_management.dashboard_area_result')}</div>
+                                <div className="box-title">{translate('task.task_management.dashboard_area_result')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
                             </div>
                             <div className="box-body qlcv">
                                 {callAction &&
@@ -341,7 +345,7 @@ class TaskDashboard extends Component {
                     <div className="col-xs-6">
                         <div className="box box-primary">
                             <div className="box-header with-border">
-                                <div className="box-title">{translate('task.task_management.detail_status')}</div>
+                                <div className="box-title">{translate('task.task_management.detail_status')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
                             </div>
                             <div className="box-body qlcv">
                                 {callAction &&

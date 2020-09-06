@@ -10,12 +10,14 @@ import {
 } from '../../../base/create-tab/components/combinedContent';
 
 import { AssetManagerActions } from '../redux/actions';
-import { UsageActions } from '../../usage/redux/actions';
+import { UseRequestActions } from '../../use-request/redux/actions';
 
 class AssetEditForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            employeeId: this.props.employeeId?this.props.employeeId:''
+        };
     }
 
     // Function upload avatar
@@ -83,7 +85,8 @@ class AssetEditForm extends Component {
             ...this.state,
             usageLogs: data.usageLogs,
             assignedToUser: data.assignedToUser,
-            assignedToOrganizationalUnit: data.assignedToOrganizationalUnit
+            assignedToOrganizationalUnit: data.assignedToOrganizationalUnit,
+            status: "Đang sử dụng"
         })
 
     }
@@ -122,6 +125,7 @@ class AssetEditForm extends Component {
         await this.setState({
             assignedToUser: data.assignedToUser,
             assignedToOrganizationalUnit: data.assignedToOrganizationalUnit,
+            status: "Sẵn sàng sử dụng",
         })
     }
 
@@ -238,7 +242,7 @@ class AssetEditForm extends Component {
     }
 
     save = async () => {
-        let { maintainanceLogs, usageLogs, incidentLogs, files, assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate } = this.state;
+        let { maintainanceLogs, usageLogs, incidentLogs, files, assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate,employeeId } = this.state;
 
         await this.setState({
             img: "",
@@ -256,7 +260,7 @@ class AssetEditForm extends Component {
         })
         formData.append("fileAvatar", this.state.avatar);
 
-        this.props.updateInformationAsset(this.state._id, formData);
+        this.props.updateInformationAsset(this.state._id, formData,employeeId);
 
         // Thêm vào thông tin sử dụng
         if (assignedToUser !== this.props.assignedToUser|| assignedToOrganizationalUnit !== this.props.assignedToOrganizationalUnit || handoverFromDate !== this.props.handoverFromDate || handoverToDate !== this.props.handoverToDate) {
@@ -518,7 +522,7 @@ function mapState(state) {
 
 const actionCreators = {
     updateInformationAsset: AssetManagerActions.updateInformationAsset,
-    createUsage: UsageActions.createUsage,
+    createUsage: UseRequestActions.createUsage,
 };
 const editForm = connect(mapState, actionCreators)(withTranslate(AssetEditForm));
 export { editForm as AssetEditForm };

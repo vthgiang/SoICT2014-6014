@@ -100,6 +100,9 @@ export function documents(state = initState, action) {
         case DocumentConstants.GET_DOCUMENT_ARCHIVE_REQUEST:
         case DocumentConstants.CREATE_DOCUMENT_ARCHIVE_REQUEST:
         case DocumentConstants.IMPORT_DOCUMENT_DOMAIN_REQUEST:
+        case DocumentConstants.IMPORT_DOCUMENT_ARCHIVE_REQUEST:
+        case DocumentConstants.IMPORT_DOCUMENT_CATEGORY_REQUEST:
+        case DocumentConstants.IMPORT_DOCUMENT_REQUEST:
             return {
                 ...state,
                 isLoading: true,
@@ -130,6 +133,9 @@ export function documents(state = initState, action) {
         case DocumentConstants.GET_DOCUMENT_ARCHIVE_FAILE:
         case DocumentConstants.CREATE_DOCUMENT_ARCHIVE_FAILE:
         case DocumentConstants.IMPORT_DOCUMENT_DOMAIN_FAILE:
+        case DocumentConstants.IMPORT_DOCUMENT_ARCHIVE_FAILE:
+        case DocumentConstants.IMPORT_DOCUMENT_CATEGORY_FAILE:
+        case DocumentConstants.IMPORT_DOCUMENT_FAILE:
             return {
                 ...state,
                 isLoading: false,
@@ -172,6 +178,8 @@ export function documents(state = initState, action) {
             };
 
         case DocumentConstants.GET_DOCUMENTS_SUCCESS:
+        
+            console.log('reducerrr', action.payload)
             return {
                 ...state,
                 isLoading: false,
@@ -180,6 +188,19 @@ export function documents(state = initState, action) {
                     data: {
                         ...state.administration.data,
                         list: action.payload
+                    }
+                }
+            };
+        case DocumentConstants.IMPORT_DOCUMENT_SUCCESS:
+            console.log('reducerrr', action.payload)
+            return {
+                ...state,
+                isLoading: false,
+                administration: {
+                    ...state.administration,
+                    data: {
+                        ...state.administration.data,
+                        list: action.payload.docs
                     }
                 }
             };
@@ -266,6 +287,7 @@ export function documents(state = initState, action) {
 
         case DocumentConstants.CREATE_DOCUMENT_SUCCESS:
 
+
             return {
                 ...state,
                 isLoading: false,
@@ -320,6 +342,8 @@ export function documents(state = initState, action) {
             };
 
         case DocumentConstants.CREATE_DOCUMENT_CATEGORY_SUCCESS:
+        case DocumentConstants.IMPORT_DOCUMENT_CATEGORY_SUCCESS:
+
 
             return {
                 ...state,
@@ -379,6 +403,7 @@ export function documents(state = initState, action) {
         case DocumentConstants.GET_DOCUMENT_DOMAINS_SUCCESS:
         case DocumentConstants.CREATE_DOCUMENT_DOMAIN_SUCCESS:
         case DocumentConstants.IMPORT_DOCUMENT_DOMAIN_SUCCESS:
+        case DocumentConstants.IMPORT_DOCUMENT_ARCHIVE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,

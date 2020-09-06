@@ -5,7 +5,7 @@ import moment from 'moment';
 
 import { DialogModal, ButtonModal, SelectBox, DatePicker, TreeSelect, ErrorLabel } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
-
+import { DocumentImportForm } from './documentImportForm';
 
 class CreateForm extends Component {
     constructor(props) {
@@ -407,6 +407,7 @@ class CreateForm extends Component {
             documentArchivedRecordPlaceOrganizationalUnit,
             documentArchivedRecordPlaceManager,
         } = this.state;
+        console.log('dateeee', documentIssuingDate)
         const formData = new FormData();
         formData.append('name', documentName);
         formData.append('category', documentCategory);
@@ -471,6 +472,15 @@ class CreateForm extends Component {
         let archive = archives.filter(arch => arch._id === select);
         return archive[0] ? archive[0].path : "";
     }
+    handleAddDocument = (event) => {
+        event.preventDefault();
+        window.$('#modal-create-document').modal('show');
+    }
+    handImportFile = (event) => {
+        console.log('aaaaaaaaaaa');
+        event.preventDefault();
+        window.$('#modal_import_file').modal('show');
+    }
 
     render() {
         const { translate, role, documents, department } = this.props;
@@ -478,6 +488,7 @@ class CreateForm extends Component {
         const { errorName, errorIssuingBody, errorOfficialNumber, errorSigner, errorVersionName,
             errorDocumentFile, errorDocumentFileScan, errorIssuingDate, errorEffectiveDate,
             errorExpiredDate, errorCategory, documentArchives } = this.state;
+        console.log('proppssss', documents.administration)
         const archives = documents.administration.archives.list;
         const categories = documents.administration.categories.list.map(category => { return { value: category._id, text: category.name } });
         // console.log('rrrrrr', archives);
@@ -488,7 +499,18 @@ class CreateForm extends Component {
         let path = documentArchives ? this.findPath(archives, documentArchives[0]) : "";
         return (
             <React.Fragment>
-                <ButtonModal modalID="modal-create-document" button_name={translate('general.add')} title={translate('manage_user.add_title')} />
+                <DocumentImportForm />
+                <div className="form-inline">
+                    <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
+                        <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('manage_user.add_title')}
+                        >{translate('general.add')}</button>
+                        <ul className="dropdown-menu pull-right">
+                            <li><a href="#modal-create-document" title="ImportForm" onClick={(event) => { this.handleAddDocument(event) }}>{translate('task_template.add')}</a></li>
+                            <li><a href="#modal_import_file" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>ImportFile</a></li>
+                        </ul>
+                    </div>
+                </div>
+                {/* <ButtonModal modalID="modal-create-document" button_name={translate('general.add')} title={translate('manage_user.add_title')} /> */}
                 <DialogModal
                     modalID="modal-create-document"
                     formID="form-create-document"
@@ -496,6 +518,7 @@ class CreateForm extends Component {
                     func={this.save} size="100"
                     disableSubmit={!this.isValidateForm()}
                 >
+
                     <form id="form-create-document">
                         <div className="nav-tabs-custom">
                             <ul className="nav nav-tabs">
@@ -564,12 +587,22 @@ class CreateForm extends Component {
                                             </div>
                                             <div className={`form-group ${!errorDocumentFile ? "" : "has-error"}`}>
                                                 <label>{translate('document.upload_file')}</label>
-                                                <input type="file" onChange={this.handleUploadFile} />
+                                                <br />
+                                                <div className="upload btn btn-primary">
+                                                    <i className="fa fa-folder"></i>
+                                                    {" " + translate('document.choose_file')}
+                                                    <input className="upload" type="file" name="file" onChange={this.handleUploadFile} />
+                                                </div>
                                                 <ErrorLabel content={errorDocumentFile} />
                                             </div>
                                             <div className={`form-group ${!errorDocumentFileScan ? "" : "has-error"}`}>
                                                 <label>{translate('document.upload_file_scan')}</label>
-                                                <input type="file" onChange={this.handleUploadFileScan} />
+                                                <br />
+                                                <div className="upload btn btn-primary">
+                                                    <i className="fa fa-folder"></i>
+                                                    {" " + translate('document.choose_file')}
+                                                    <input className="upload" type="file" name="file" onChange={this.handleUploadFileScan} />
+                                                </div>
                                                 <ErrorLabel content={errorDocumentFileScan} />
                                             </div>
                                             <div className={`form-group ${!errorIssuingDate ? "" : "has-error"}`}>

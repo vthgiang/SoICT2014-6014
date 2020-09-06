@@ -1,11 +1,10 @@
 import React, { Component } from "react";
 import { withTranslate } from "react-redux-multilingual";
 import { connect } from 'react-redux';
-import { DialogModal, SelectBox, DatePicker } from "../../../../../common-components";
 import { getStorage } from '../../../../../config';
 import { ModalDetailTask } from "../../../task-dashboard/task-personal-dashboard/modalDetailTask";
-import { taskManagementActions } from "../../../task-management/redux/actions";
 import { UserActions } from "../../../../super-admin/user/redux/actions";
+import { performTaskAction } from "../../../task-perform/redux/actions";
 import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil'
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
@@ -13,7 +12,6 @@ import customModule from './../custom'
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import './../processDiagram.css'
-import { performTaskAction } from "../../../task-perform/redux/actions";
 
 //Xóa element khỏi pallette theo data-action
 var _getPaletteEntries = PaletteProvider.prototype.getPaletteEntries;
@@ -27,7 +25,9 @@ PaletteProvider.prototype.getPaletteEntries = function (element) {
     return entries;
 }
 
+// khởi tạo giá trị mặc định zoomIn zoomOut
 var zlevel = 1;
+
 class ViewProcess extends Component {
 
     constructor(props) {
@@ -81,9 +81,6 @@ class ViewProcess extends Component {
             let info = {};
             let infoTask = nextProps.data.tasks;
             for (let i in infoTask) {
-                // if (!infoTask[i].organizationalUnit) {
-                //     infoTask[i].organizationalUnit = nextProps.listOrganizationalUnit[0]?._id;
-                // }
                 info[`${infoTask[i].codeInProcess}`] = infoTask[i];
             }
             return {
@@ -101,12 +98,6 @@ class ViewProcess extends Component {
             return null;
         }
     }
-
-    // checkOutgoingTarget = (items) => {
-    //     for(let i in items) {
-
-    //     }
-    // }
 
     shouldComponentUpdate(nextProps, nextState) {
         if (nextProps.idProcess !== this.state.idProcess) {
@@ -133,7 +124,6 @@ class ViewProcess extends Component {
 
                 let infoTask = nextProps.data.tasks
                 let info = state.info;
-                // console.log("tasks",infoTask, state.info)
 
                 if (infoTask) {
                     for (let i in infoTask) {
@@ -144,16 +134,6 @@ class ViewProcess extends Component {
                                 fill: '#f9f9f9', // 9695AD
                                 stroke: '#c4c4c7'
                             });
-
-                            // element1.outgoing.forEach(x => {
-                            //     target.push(x.target.id)
-                            // })
-                            // target.forEach(x => {
-                            //     modeling.setColor(modeler.get('elementRegistry').get(x), {
-                            //         // fill: '#7236ff',
-                            //         stroke: '#1692E0'
-                            //     });
-                            // })
 
                             var outgoing = element1.outgoing;
                             outgoing.forEach(x => {
@@ -167,15 +147,6 @@ class ViewProcess extends Component {
                                     })
                                 }
                             })
-                            // var incoming = element1.incoming;
-                            // incoming.forEach(x => {
-                            //     var incomingEdge = modeler.get('elementRegistry').get(x.id);
-
-                            //     modeling.setColor(incomingEdge, {
-                            //         stroke: '#c4c4c7',
-                            //         width: '5px'
-                            //     })
-                            // })
                         }
 
                         if (infoTask[i].status === "Inprocess") {
@@ -187,26 +158,6 @@ class ViewProcess extends Component {
                                 width: '5px'
                             });
 
-                            // var incoming = element1.incoming;
-                            // incoming.forEach(x => {
-                            //     var incomingEdge = modeler.get('elementRegistry').get(x.id);
-
-                            //     modeling.setColor(incomingEdge, {
-                            //         stroke: '#14984c',
-                            //         width: '5px'
-                            //     })
-                            // })
-
-
-                            // var outgoing = element1.outgoing;
-                            // outgoing.forEach(x => {
-                            //     var outgoingEdge = modeler.get('elementRegistry').get(x.id);
-
-                            //     modeling.setColor(outgoingEdge, {
-                            //         stroke: '#14984c',
-                            //         width: '5px'
-                            //     })
-                            // })
                         }
 
                     }
@@ -251,7 +202,6 @@ class ViewProcess extends Component {
         })
         if (element.type === 'bpmn:Task' || element.type === 'bpmn:ExclusiveGateway') {
             console.log('0000', this.state.info[this.state.id]);
-            // this.props.getTaskById(this.state.info[this.state.id]._id);
             window.$(`#modal-detail-task`).modal("show");
         }
     }
@@ -411,15 +361,6 @@ class ViewProcess extends Component {
 
         return (
             <React.Fragment>
-                {/* <DialogModal
-                    size='100' modalID={`modal-view-process-task-list`} isLoading={false}
-                    formID="modal-view-process-task-list"
-                    // disableSubmit={!this.isTaskFormValidated()}
-                    title={this.props.title}
-                    func={this.save}
-                    hasSaveButton={false}
-                    bodyStyle={{ paddingTop: 0, paddingBottom: 0 }}
-                > */}
                 <div>
                     {id !== undefined &&
                         <ModalDetailTask task={(info && info[`${id}`]) && info[`${id}`]} isProcess={true} />
@@ -428,13 +369,9 @@ class ViewProcess extends Component {
                     <div className={`${isTabPane ? 'is-tabbed-pane' : 'row'}`}>
                         {/* Quy trình công việc */}
                         <div className={`contain-border ${isTabPane ? '' : 'col-md-8'}`}>
-                            {/* <div className="tool-bar-xml" }>
-                                    <button onClick={this.exportDiagram}>Export XML</button>
-                                    <button onClick={this.downloadAsSVG}>Save SVG</button>
-                                    <button onClick={this.downloadAsImage}>Save Image</button>
-                                    <button onClick={this.downloadAsBpmn}>Download BPMN</button>
-                                </div> */}
+                            {/* Diagram */}
                             <div id={this.generateId}></div>
+                            {/* Zoom button */}
                             <div className="row">
                                 <div className="io-zoom-controls">
                                     <ul className="io-zoom-reset io-control io-control-list">
@@ -496,9 +433,6 @@ class ViewProcess extends Component {
                         </div>
                     </div>
                 </div>
-
-
-                {/* </DialogModal> */}
             </React.Fragment>
         )
     }

@@ -8,6 +8,7 @@ import { DocumentActions } from '../../../redux/actions';
 
 import CreateForm from './createForm';
 import EditForm from './editForm';
+import {CategoryImportForm} from './categoryImportForm';
 
 class Table extends Component {
     constructor(props) {

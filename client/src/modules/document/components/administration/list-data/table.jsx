@@ -171,7 +171,7 @@ class Table extends Component {
         return array;
     }
     convertDataToExportData = (data) => {
-        console.log(data);
+        // console.log(data);
         let datas = [];
         for (let i = 0; i < data.length; i++) {
             if (data.versions && data.domains) {
@@ -284,7 +284,7 @@ class Table extends Component {
         const listDomain = domains.list
         const listCategory = this.convertData(categories.list)
         const listArchive = archives.list;
-        console.log('ttttttttttttt', currentRow);
+        console.log('ttttttttttttt', paginate);
         let list = [];
         if (isLoading === false) {
             list = docs.list;
@@ -445,6 +445,7 @@ class Table extends Component {
                         {
                             paginate.length > 0 ?
                                 paginate.map(doc =>
+
                                     <tr key={doc._id}>
                                         <td>{doc.name}</td>
                                         <td>{!doc.description ? doc.description : ""}</td>

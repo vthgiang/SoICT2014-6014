@@ -22,6 +22,7 @@ class ListAsset extends Component {
             canRegisterForUse: true,
             page: 0,
             limit: 5,
+            currentRole: localStorage.getItem('currentRole'),
         }
     }
 
@@ -34,7 +35,8 @@ class ListAsset extends Component {
             status: "",
             page: 0,
             limit: 5,
-            canRegisterForUse: true
+            canRegisterForUse: true,
+            currentRole: localStorage.getItem('currentRole'),
         });
         this.props.getUser();
     }

@@ -2,19 +2,18 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
+import { ImgShow } from '../../../../../common-components';
+
 import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter';
 import { toast } from 'react-toastify';
 
 import { EmployeeInfoActions } from '../redux/actions';
-import { AuthActions } from '../../../../auth/redux/actions';
 
 class UpdateEmployee extends Component {
     constructor(props) {
         super(props);
-        this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
 
         this.state = {
-            dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
             img: "",
             check: false,
             informationEmployee: null,
@@ -100,42 +99,18 @@ class UpdateEmployee extends Component {
         }
     }
 
-    shouldComponentUpdate = async (nextProps, nextState) => {
-        if (nextProps.employeesInfo.employees) {
-            let employee = nextProps.employeesInfo.employees[0];
-            if (employee && employee.avatar && !nextProps.auth.isLoading &&
-                this.state.dataStatus === this.DATA_STATUS.NOT_AVAILABLE) {
-                this.props.downloadFile(`.${employee.avatar}`, 'avatarEmployeeUpdate', 'show');
-                this.setState({
-                    dataStatus: this.DATA_STATUS.QUERYING
-                });
-                return false;
-            };
-        }
-
-        if (this.state.dataStatus === this.DATA_STATUS.QUERYING && !nextProps.auth.isLoading) {
-            this.setState({
-                dataStatus: this.DATA_STATUS.AVAILABLE
-            });
-            return false;
-        };
-        if (this.state.dataStatus === this.DATA_STATUS.AVAILABLE && nextProps.auth.show_files.length !== 0) {
-            let img = nextProps.auth.show_files.find(x => x.fileName === "avatarEmployeeUpdate");
-            this.setState({
-                dataStatus: this.DATA_STATUS.FINISHED,
-                img: img.file
-            });
-            return true;
-        }
-        return false;
-    }
-
     render() {
         const { employeesInfo, translate } = this.props;
 
-        let employees;
-        if (employeesInfo.employees !== "") employees = employeesInfo.employees;
+        const { img } = this.state;
 
+        let employees, avatar;
+        if (employeesInfo.employees !== "") {
+            employees = employeesInfo.employees;
+            employees.forEach(x => {
+                avatar = img ? img : `.${x.avatar}`;
+            });
+        }
         return (
             <React.Fragment>
                 {
@@ -151,7 +126,8 @@ class UpdateEmployee extends Component {
                                     {/* Ảnh đại diện */}
                                     <div className="col-lg-4 col-md-4 col-ms-12 col-xs-12" style={{ textAlign: 'center' }}>
                                         <div>
-                                            <img className="attachment-img avarta" src={this.state.img} alt="Attachment" />
+                                            <ImgShow id={`avater-update`} src={avatar} />
+                                            {/* <img className="attachment-img avarta" src={this.state.img} alt="Attachment" /> */}
                                         </div>
                                         <div className="upload btn btn-default ">
                                             {translate('human_resource.profile.upload')}
@@ -395,14 +371,13 @@ class UpdateEmployee extends Component {
 }
 
 function mapState(state) {
-    const { employeesInfo, auth } = state;
-    return { employeesInfo, auth };
+    const { employeesInfo } = state;
+    return { employeesInfo };
 };
 
 const actionCreator = {
     getEmployeeProfile: EmployeeInfoActions.getEmployeeProfile,
     updatePersonalInformation: EmployeeInfoActions.updatePersonalInformation,
-    downloadFile: AuthActions.downloadFile,
 };
 
 const updateEmployee = connect(mapState, actionCreator)(withTranslate(UpdateEmployee));

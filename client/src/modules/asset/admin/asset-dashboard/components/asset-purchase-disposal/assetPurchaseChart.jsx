@@ -32,11 +32,12 @@ class PurchaseColumnChart extends Component {
             purchaseDateBefore: this.INFO_SEARCH.purchaseDateBefore,
             defaultStartMonth: '0' + (month - 3) + '-' + year,
             defaultEndMonth: [month, year].join('-'),
+            year: false,
         }
     }
 
-    setDataColumnChart = () => {
-        const { listAssets, translate } = this.props;
+    setDataColumnChartForMonth = () => {
+        const { listAssets, translate, getPurchaseData } = this.props;
         let { purchaseDateAfter, purchaseDateBefore } = this.state;
 
         let startDate = new Date(purchaseDateAfter);
@@ -84,8 +85,8 @@ class PurchaseColumnChart extends Component {
 
         category.pop();
         category.unshift('x');
-        countAsset.unshift('count');
-        value.unshift('value');
+        countAsset.unshift(translate('asset.dashboard.amount'));
+        value.unshift(translate('asset.dashboard.value'));
 
         let dataColumnChart = {
             category: category,
@@ -94,67 +95,162 @@ class PurchaseColumnChart extends Component {
             yValues: arr
         };
 
+        if (getPurchaseData && listAssets) {
+            getPurchaseData(dataColumnChart);
+        }
+
+        return dataColumnChart;
+    }
+
+    setDataColumnChartForYear = () => {
+        const { listAssets, translate, getPurchaseData } = this.props;
+        let { purchaseDateAfter, purchaseDateBefore } = this.state;
+
+        let startDate = purchaseDateAfter.slice(0, 4);
+        let endDate = purchaseDateBefore.slice(0, 4);
+        let period = endDate - startDate + 1;
+        let value = [], countAsset = [], category = [], arr = [];
+
+        for (let i = 0; i < period; i++) {
+            category.push(parseInt(startDate) + i);
+        }
+        if (listAssets) {
+            for (let i = 0; i < category.length; i++) {
+                let cnt = 0, val = 0;
+                for (let j in listAssets) {
+                    let purchaseDate = new Date(listAssets[j].purchaseDate).getFullYear();
+
+                    if (purchaseDate == category[i]) {
+                        cnt++;
+                        val += listAssets[j].cost / 1000000;
+                    }
+                }
+                countAsset.push(cnt);
+                value.push(val);
+            }
+        }
+        let maxCnt = Math.max.apply(Math, countAsset);
+
+        for (let i = 0; i <= maxCnt; i++) {
+            arr.push(i)
+        }
+
+        category.unshift('x');
+        countAsset.unshift(translate('asset.dashboard.amount'));
+        value.unshift(translate('asset.dashboard.value'));
+
+        let dataColumnChart = {
+            category: category,
+            count: countAsset,
+            value: value,
+            yValues: arr
+        };
+
+        if (getPurchaseData && listAssets) {
+            getPurchaseData(dataColumnChart);
+        }
         return dataColumnChart;
     }
 
     columnChart = () => {
         let { translate } = this.props;
-        let dataColumnChart = this.setDataColumnChart();
-        let chart = c3.generate({
-            bindto: this.refs.PurchaseColumnChart,
+        let { year } = this.state;
+        let dataColumnChart = year ? this.setDataColumnChartForYear() : this.setDataColumnChartForMonth();
 
-            data: {
-                x: 'x',
-                columns: [
-                    dataColumnChart.category,
-                    dataColumnChart.count,
-                    dataColumnChart.value
-                ],
-                type: 'bar',
-                axes: {
-                    value: 'y2',
-                    count: 'y'
-                }
-            },
-            axis: {
-                x: {
-                    type: 'category'
+        if (translate('asset.dashboard.amount') === 'Số lượng') {
+            let chart = c3.generate({
+                bindto: this.refs.PurchaseColumnChart,
+
+                data: {
+                    x: 'x',
+                    columns: [
+                        dataColumnChart.category,
+                        dataColumnChart.count,
+                        dataColumnChart.value
+                    ],
+                    type: 'bar',
+                    axes: {
+                        'Giá trị': 'y2',
+                        'Số lượng': 'y'
+                    }
                 },
-                y: {
-                    tick: {
-                        values: dataColumnChart.yValues
+                axis: {
+                    x: {
+                        type: 'category'
                     },
-                    label: {
-                        text: translate('asset.dashboard.amount'),
-                        position: 'outer-top'
+                    y: {
+                        tick: {
+                            values: dataColumnChart.yValues
+                        },
+                        label: {
+                            text: translate('asset.dashboard.amount'),
+                            position: 'outer-top'
+                        }
+                    },
+                    y2: {
+                        show: true,
+                        label: {
+                            text: translate('asset.dashboard.sum_value'),
+                            position: 'outer-top'
+                        }
+                    }
+
+                },
+                padding: {
+                    top: 20,
+                    bottom: 20
+                },
+                legend: {
+                    show: true
+                }
+            })
+        } else {
+            let chart = c3.generate({
+                bindto: this.refs.PurchaseColumnChart,
+
+                data: {
+                    x: 'x',
+                    columns: [
+                        dataColumnChart.category,
+                        dataColumnChart.count,
+                        dataColumnChart.value
+                    ],
+                    type: 'bar',
+                    axes: {
+                        'Value': 'y2',
+                        'Amount': 'y'
                     }
                 },
-                y2: {
-                    show: true,
-                    label: {
-                        text: translate('asset.dashboard.sum_value'),
-                        position: 'outer-top'
+                axis: {
+                    x: {
+                        type: 'category'
+                    },
+                    y: {
+                        tick: {
+                            values: dataColumnChart.yValues
+                        },
+                        label: {
+                            text: translate('asset.dashboard.amount'),
+                            position: 'outer-top'
+                        }
+                    },
+                    y2: {
+                        show: true,
+                        label: {
+                            text: translate('asset.dashboard.sum_value'),
+                            position: 'outer-top'
+                        }
                     }
+
+                },
+                padding: {
+                    bottom: 20
+                },
+                legend: {
+                    show: true
                 }
-
-            },
-            padding: {
-                top: 20,
-                bottom: 20
-            },
-            // tooltip: {
-            //     format: {
-            //         title: function (d) { return d; },
-            //         value: function (value) {
-            //             return value;
-            //         }
-            //     }
-            // },
-
-            legend: {
-                show: true
-            }
-        });
+            })
+        }
     }
 
     handleChangeDateAfter = async (value) => {
@@ -191,9 +287,18 @@ class PurchaseColumnChart extends Component {
         }
     }
 
+    handleChangeViewChart = async (value) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                year: value
+            }
+        })
+    }
+
     render() {
         const { translate } = this.props;
-        let { defaultStartMonth, defaultEndMonth } = this.state;
+        let { defaultStartMonth, defaultEndMonth, year } = this.state;
         this.columnChart();
 
         return (
@@ -219,9 +324,21 @@ class PurchaseColumnChart extends Component {
                             disabled={false}
                         />
                     </div>
-                    <button className="btn btn-success" onClick={this.handleSearchData}>{translate('task.task_management.search')}</button>
+                    <div className="form-group">
+                        <button className="btn btn-success" onClick={this.handleSearchData}>{translate('task.task_management.search')}</button>
+                    </div>
                 </section>
-                <section ref="PurchaseColumnChart"></section>
+                <div>
+                    <br />
+                    <div className="box-tools" style={{ textAlign: "right", marginRight: "60px" }}>
+                        <div className="btn-group">
+                            <button type="button" className={`btn btn-xs ${year ? "active" : "btn-danger"}`} onClick={() => this.handleChangeViewChart(false)}>{translate('general.month')}</button>
+                            <button type="button" className={`btn btn-xs ${year ? "btn-danger" : "active"}`} onClick={() => this.handleChangeViewChart(true)}>{translate('general.year')}</button>
+                        </div>
+                    </div>
+                    <div ref="PurchaseColumnChart"></div>
+                </div>
+
             </React.Fragment>
         )
     }

@@ -32,11 +32,12 @@ class DisposalColumnChart extends Component {
             disposalDateBefore: this.INFO_SEARCH.disposalDateBefore,
             defaultStartMonth: '0' + (month - 3) + '-' + year,
             defaultEndMonth: [month, year].join('-'),
+            year: false,
         }
     }
 
-    setDataColumnChart = () => {
-        const { listAssets, translate } = this.props;
+    setDataColumnChartForMonth = () => {
+        const { getDisposalData, listAssets, translate } = this.props;
         let { disposalDateAfter, disposalDateBefore } = this.state;
 
         let startDate = new Date(disposalDateAfter);
@@ -87,8 +88,8 @@ class DisposalColumnChart extends Component {
 
         category.pop();
         category.unshift('x');
-        countAsset.unshift('count');
-        value.unshift('value');
+        countAsset.unshift(translate('asset.dashboard.amount'));
+        value.unshift(translate('asset.dashboard.value'));
 
         let dataColumnChart = {
             category: category,
@@ -97,66 +98,165 @@ class DisposalColumnChart extends Component {
             yValues: arr
         };
 
+        if (getDisposalData && listAssets) {
+            getDisposalData(dataColumnChart);
+        }
+
+        return dataColumnChart;
+    }
+
+    setDataColumnChartForYear = () => {
+        const { getDisposalData, listAssets, translate } = this.props;
+        let { disposalDateAfter, disposalDateBefore } = this.state;
+
+        let startDate = disposalDateAfter.slice(0, 4);
+        let endDate = disposalDateBefore.slice(0, 4);
+        let period = endDate - startDate + 1;
+        let value = [], countAsset = [], category = [], arr = [];
+
+        for (let i = 0; i < period; i++) {
+            category.push(parseInt(startDate) + i);
+        }
+
+        if (listAssets) {
+            for (let i = 0; i < category.length; i++) {
+                let cnt = 0, val = 0;
+                for (let j in listAssets) {
+                    if (listAssets[j].status === "Thanh lý") {
+                        let disposalDate = new Date(listAssets[j].disposalDate).getFullYear();
+                        if (disposalDate == category[i]) {
+                            cnt++;
+                            val += listAssets[j].disposalCost / 1000000;
+                        }
+                    }
+
+                }
+                countAsset.push(cnt);
+                value.push(val);
+            }
+        }
+        let maxCnt = Math.max.apply(Math, countAsset);
+
+        for (let i = 0; i <= maxCnt; i++) {
+            arr.push(i)
+        }
+
+        category.unshift('x');
+        countAsset.unshift(translate('asset.dashboard.amount'));
+        value.unshift(translate('asset.dashboard.value'));
+
+        let dataColumnChart = {
+            category: category,
+            count: countAsset,
+            value: value,
+            yValues: arr
+        };
+
+        if (getDisposalData && listAssets) {
+            getDisposalData(dataColumnChart);
+        }
+
         return dataColumnChart;
     }
 
     columnChart = () => {
         let { translate } = this.props;
-        let dataColumnChart = this.setDataColumnChart();
-        let chart = c3.generate({
-            bindto: this.refs.DisposalColumnChart,
+        let { year } = this.state;
+        let dataColumnChart = year ? this.setDataColumnChartForYear() : this.setDataColumnChartForMonth();
 
-            data: {
-                x: 'x',
-                columns: [
-                    dataColumnChart.category,
-                    dataColumnChart.count,
-                    dataColumnChart.value
-                ],
-                type: 'bar',
-                axes: {
-                    value: 'y2',
-                    count: 'y'
-                }
-            },
-            axis: {
-                x: {
-                    type: 'category'
+        if (translate('asset.dashboard.amount') === "Số lượng") {
+            let chart = c3.generate({
+                bindto: this.refs.DisposalColumnChart,
+
+                data: {
+                    x: 'x',
+                    columns: [
+                        dataColumnChart.category,
+                        dataColumnChart.count,
+                        dataColumnChart.value
+                    ],
+                    type: 'bar',
+                    axes: {
+                        'Giá trị': 'y2',
+                        'Số lượng': 'y'
+                    }
                 },
-                y: {
-                    tick: {
-                        values: dataColumnChart.yValues
+                axis: {
+                    x: {
+                        type: 'category'
                     },
-                    label: {
-                        text: translate('asset.dashboard.amount'),
-                        position: 'outer-top'
+                    y: {
+                        tick: {
+                            values: dataColumnChart.yValues
+                        },
+                        label: {
+                            text: translate('asset.dashboard.amount'),
+                            position: 'outer-top'
+                        }
+                    },
+                    y2: {
+                        show: true,
+                        label: {
+                            text: translate('asset.dashboard.sum_value'),
+                            position: 'outer-top'
+                        }
                     }
                 },
-                y2: {
-                    show: true,
-                    label: {
-                        text: translate('asset.dashboard.sum_value'),
-                        position: 'outer-top'
-                    }
+                padding: {
+                    top: 20,
+                    bottom: 20
+                },
+                legend: {
+                    show: true
                 }
-            },
-            padding: {
-                top: 20,
-                bottom: 20
-            },
-            // tooltip: {
-            //     format: {
-            //         title: function (d) { return d; },
-            //         value: function (value) {
-            //             return value;
-            //         }
-            //     }
-            // },
+            })
+        } else {
+            let chart = c3.generate({
+                bindto: this.refs.DisposalColumnChart,
 
-            legend: {
-                show: true
-            }
-        });
+                data: {
+                    x: 'x',
+                    columns: [
+                        dataColumnChart.category,
+                        dataColumnChart.count,
+                        dataColumnChart.value
+                    ],
+                    type: 'bar',
+                    axes: {
+                        'Value': 'y2',
+                        'Amount': 'y'
+                    }
+                },
+                axis: {
+                    x: {
+                        type: 'category'
+                    },
+                    y: {
+                        tick: {
+                            values: dataColumnChart.yValues
+                        },
+                        label: {
+                            text: translate('asset.dashboard.amount'),
+                            position: 'outer-top'
+                        }
+                    },
+                    y2: {
+                        show: true,
+                        label: {
+                            text: translate('asset.dashboard.sum_value'),
+                            position: 'outer-top'
+                        }
+                    }
+                },
+                padding: {
+                    bottom: 20
+                },
+
+                legend: {
+                    show: true
+                }
+            });
+        }
     }
 
     handleChangeDateAfter = async (value) => {
@@ -193,9 +293,18 @@ class DisposalColumnChart extends Component {
         }
     }
 
+    handleChangeViewChart = async (value) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                year: value
+            }
+        })
+    }
+
     render() {
         const { translate } = this.props;
-        let { defaultStartMonth, defaultEndMonth } = this.state;
+        let { defaultStartMonth, defaultEndMonth, year } = this.state;
         this.columnChart();
 
         return (
@@ -223,7 +332,16 @@ class DisposalColumnChart extends Component {
                     </div>
                     <button className="btn btn-success" onClick={this.handleSearchData}>{translate('task.task_management.search')}</button>
                 </section>
-                <section ref="DisposalColumnChart"></section>
+                <br />
+                <div>
+                    <div className="box-tools" style={{ textAlign: "right", marginRight: "60px" }}>
+                        <div className="btn-group">
+                            <button type="button" className={`btn btn-xs ${year ? "active" : "btn-danger"}`} onClick={() => this.handleChangeViewChart(false)}>{translate('general.month')}</button>
+                            <button type="button" className={`btn btn-xs ${year ? "btn-danger" : "active"}`} onClick={() => this.handleChangeViewChart(true)}>{translate('general.year')}</button>
+                        </div>
+                    </div>
+                    <div ref="DisposalColumnChart"></div>
+                </div>
             </React.Fragment>
         )
     }

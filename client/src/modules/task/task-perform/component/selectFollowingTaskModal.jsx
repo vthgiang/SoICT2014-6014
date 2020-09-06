@@ -10,19 +10,10 @@ class SelectFollowingTaskModal extends Component {
     constructor(props) {
         super(props);
         let { task } = props;
-        // let task = tasks && tasks.task;
         this.state = {
             selectedFollowing: {},
             statusOptions: task?.status,
         };
-    }
-
-    componentDidMount() {
-        // this.props.getDepartment();
-        // this.props.getAllUserOfCompany();
-        // this.props.getRoleSameDepartment(localStorage.getItem("currentRole"));
-        // this.props.getDepartmentsThatUserIsDean();
-        // this.props.getAllUserInAllUnitsOfCompany();
     }
 
     handleSelectedStatus = (value) => {
@@ -57,8 +48,9 @@ class SelectFollowingTaskModal extends Component {
                 listFollowing.push(selectedFollowing[i].value);
             }
         }
+
         Swal.fire({
-            title: "Bạn có chắc chắn muốn thay đổi trạng thái công việc này",
+            title: this.props.translate('task.task_perform.notice_change_activate_task'),
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -67,17 +59,33 @@ class SelectFollowingTaskModal extends Component {
             confirmButtonText: this.props.translate('general.yes'),
         }).then((result) => {
             if (result.value) {
-                this.props.editStatusTask(this.props.id, this.state.statusOptions, this.props.typeOfTask, listFollowing); // "Finished"
+                this.props.editActivateOfTask(this.props.id, this.props.typeOfTask, listFollowing);
             }
         })
-
-        // console.log('selected', selected);
     }
 
     render() {
         const { user, translate } = this.props;
         const { task } = this.props;
         const { statusOptions } = this.state;
+
+        let checkHasNonActivatedFollowTask = false;
+        if (task) {
+            for (let i in task.followingTasks) {
+                if (task.followingTasks[i].activated === false) {
+                    checkHasNonActivatedFollowTask = true;
+                }
+            }
+        }
+
+        let checkHasActivatedFollowTask = false;
+        if (task) {
+            for (let i in task.followingTasks) {
+                if (task.followingTasks[i].activated === true) {
+                    checkHasActivatedFollowTask = true;
+                }
+            }
+        }
 
         let statusArr = [
             { value: "Inprocess", text: translate('task.task_management.inprocess') },
@@ -98,7 +106,7 @@ class SelectFollowingTaskModal extends Component {
                     size={50}
                 >
 
-                    <div className="form-group">
+                    {/* <div className="form-group">
                         <label>{translate('task.task_management.detail_status')}</label>
                         {
                             <SelectBox
@@ -111,27 +119,45 @@ class SelectFollowingTaskModal extends Component {
                                 onChange={this.handleSelectedStatus}
                             />
                         }
-                    </div>
+                    </div> */}
+                    {checkHasActivatedFollowTask &&
+                    // {task.followingTasks.length !== 0 &&
+                        <fieldset className="scheduler-border">
+                            <legend className="scheduler-border">{translate('task.task_perform.activated_task_list')}</legend>
+                            {task.followingTasks.map((x, key) => {
+                                if (x.activated) {
+                                    return <ul key={key} style={{ paddingLeft: 20 }}>
+                                        <li>{x.task.name} {x.link ? `- ${translate('task.task_perform.task_link_of_process')}: ${x.link}` : ''}</li>
+                                        <br />
+                                    </ul>
+                                }
+                            })}
+                        </fieldset>
+                    }
 
                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border">Chọn công việc thực hiện tiếp theo</legend>
+                        <legend className="scheduler-border">{translate('task.task_perform.choose_following_task')}</legend>
 
                         {task.followingTasks.length !== 0 ?
-                            (task.followingTasks.map((x, key) => {
-                                return <div key={key} style={{ paddingLeft: 20 }}>
-                                    <label style={{ fontWeight: "normal", margin: "7px 0px" }}>
-                                        <input
-                                            type="checkbox"
-                                            // checked={this.state.listInactive[`${elem._id}`] && this.state.listInactive[`${elem._id}`].checked === true}
-                                            checked={this.state.selectedFollowing[x.task._id] && this.state.selectedFollowing[x.task._id].checked === true}
-                                            value={x.task._id}
-                                            name="following" onChange={(e) => this.changeSelectedFollowingTask(e, x.task._id)}
-                                        />&nbsp;&nbsp;&nbsp;{x.task.name} {x.link ? `- Đường liên kết: ${x.link}` : ''}
-                                    </label>
-                                    <br />
-                                </div>
-                            }))
-                            : <div>Không có công việc phía sau</div>
+                            (checkHasNonActivatedFollowTask ?
+                                (task.followingTasks.map((x, key) => {
+                                    if (x.activated === false) {
+                                        return <div key={key} style={{ paddingLeft: 20 }}>
+                                            <label style={{ fontWeight: "normal", margin: "7px 0px" }}>
+                                                <input
+                                                    type="checkbox"
+                                                    checked={this.state.selectedFollowing[x.task._id] && this.state.selectedFollowing[x.task._id].checked === true}
+                                                    value={x.task._id}
+                                                    name="following" onChange={(e) => this.changeSelectedFollowingTask(e, x.task._id)}
+                                                />&nbsp;&nbsp;&nbsp;{x.task.name} {x.link ? `- ${translate('task.task_perform.task_link_of_process')}: ${x.link}` : ''}
+                                            </label>
+                                            <br />
+                                        </div>
+                                    }
+
+                                })) : <div>{translate('task.task_perform.activated_all')}</div>
+                            )
+                            : <div>{translate('task.task_perform.not_have_following')}</div>
                         }
                     </fieldset>
                 </DialogModal>
@@ -146,7 +172,7 @@ function mapState(state) {
 }
 
 const actionCreators = {
-    editStatusTask: performTaskAction.editStatusOfTask,
+    editActivateOfTask: performTaskAction.editActivateOfTask,
 };
 const connectedSelectFollowingTaskModal = connect(mapState, actionCreators)(withTranslate(SelectFollowingTaskModal));
 export { connectedSelectFollowingTaskModal as SelectFollowingTaskModal };

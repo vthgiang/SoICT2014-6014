@@ -10,8 +10,7 @@ exports.searchSalaries = async (req, res) => {
         let data = {};
         if (req.query.page !== undefined && req.query.limit !== undefined) {
             let params = {
-                organizationalUnit: req.query.organizationalUnit,
-                position: req.query.position,
+                organizationalUnits: req.query.organizationalUnits,
                 employeeNumber: req.query.employeeNumber,
                 month: req.query.month,
                 page: Number(req.query.page),
@@ -41,16 +40,7 @@ exports.searchSalaries = async (req, res) => {
 exports.createSalary = async (req, res) => {
     try {
         // Kiểm tra thông tin dữ liệu truyền vào
-        if (req.body.employeeNumber.trim() === "") {
-            await LogError(req.user.email, 'CREATE_SARALY', req.user.company);
-            res.status(400).json({
-                success: false,
-                messages: ["employee_number_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else if (req.body.month.trim() === "") {
+        if (req.body.month.trim() === "") {
             await LogError(req.user.email, 'CREATE_SARALY', req.user.company);
             res.status(400).json({
                 success: false,
@@ -69,18 +59,8 @@ exports.createSalary = async (req, res) => {
                 }
             });
         } else {
-            let createSaraly = await SalaryService.createSalary(req.body, req.user.company._id);
-            // Kiểm tra sự tồn tại của mã nhân viên
-            if (createSaraly === null) {
-                await LogError(req.user.email, 'CREATE_SARALY', req.user.company);
-                res.status(404).json({
-                    success: false,
-                    messages: ["staff_code_not_find"],
-                    content: {
-                        inputData: req.body
-                    }
-                });
-            } else if (createSaraly === "have_exist") { // Kiểm tra trùng lặp
+            let createSalary = await SalaryService.createSalary(req.body, req.user.company._id);
+            if (createSalary === "have_exist") { // Kiểm tra trùng lặp
                 await LogError(req.user.email, 'CREATE_SARALY', req.user.company);
                 res.status(400).json({
                     success: false,
@@ -94,7 +74,7 @@ exports.createSalary = async (req, res) => {
                 res.status(200).json({
                     success: true,
                     messages: ["create_salary_success"],
-                    content: createSaraly
+                    content: createSalary
                 });
             }
         }
@@ -113,12 +93,12 @@ exports.createSalary = async (req, res) => {
 /** Xoá thông tin bảng lương */
 exports.deleteSalary = async (req, res) => {
     try {
-        let saralyDelete = await SalaryService.deleteSalary(req.params.id);
+        let salaryDelete = await SalaryService.deleteSalary(req.params.id);
         await LogInfo(req.user.email, 'DELETE_SARALY', req.user.company);
         res.status(200).json({
             success: true,
             messages: ["delete_salary_success"],
-            content: saralyDelete
+            content: salaryDelete
         });
     } catch (error) {
         await LogError(req.user.email, 'DELETE_SARALY', req.user.company);
@@ -135,26 +115,7 @@ exports.deleteSalary = async (req, res) => {
 /** Chỉnh sửa thông tin bảng lương */
 exports.updateSalary = async (req, res) => {
     try {
-        // Kiểm tra dữ liệu truyền vào
-        if (req.body.employeeNumber.trim() === "") {
-            await LogError(req.user.email, 'EDIT_SARALY', req.user.company);
-            res.status(400).json({
-                success: false,
-                messages: ["employee_number_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else if (req.body.month.trim() === "") {
-            await LogError(req.user.email, 'EDIT_SARALY', req.user.company);
-            res.status(400).json({
-                success: false,
-                messages: ["month_salary_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else if (req.body.mainSalary.trim() === "") {
+        if (req.body.mainSalary.trim() === "") {
             await LogError(req.user.email, 'EDIT_SARALY', req.user.company);
             res.status(400).json({
                 success: false,
@@ -164,25 +125,13 @@ exports.updateSalary = async (req, res) => {
                 }
             });
         } else {
-            let saralyUpdate = await SalaryService.updateSalary(req.params.id, req.body, req.user.company._id);
-            // Kiểm tra sự tồn tại của mã nhân viên
-            if (saralyUpdate === null) {
-                await LogError(req.user.email, 'EDIT_SARALY', req.user.company);
-                res.status(404).json({
-                    success: false,
-                    messages: ["staff_code_not_find"],
-                    content: {
-                        inputData: req.body
-                    }
-                });
-            } else {
-                await LogInfo(req.user.email, 'EDIT_SARALY', req.user.company);
-                res.status(200).json({
-                    success: true,
-                    messages: ["edit_salary_success"],
-                    content: saralyUpdate
-                });
-            }
+            let salaryUpdate = await SalaryService.updateSalary(req.params.id, req.body);
+            await LogInfo(req.user.email, 'EDIT_SARALY', req.user.company);
+            res.status(200).json({
+                success: true,
+                messages: ["edit_salary_success"],
+                content: salaryUpdate
+            });
         }
     } catch (error) {
         await LogError(req.user.email, 'EDIT_SARALY', req.user.company);

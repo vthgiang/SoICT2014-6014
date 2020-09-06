@@ -8,11 +8,13 @@ export const DocumentServices = {
     downloadDocumentFileScan,
     increaseNumberView,
     deleteDocument,
+    importDocument,
 
     getDocumentCategories,
     createDocumentCategory,
     editDocumentCategory,
     deleteDocumentCategory,
+    importDocumentCategory,
 
     getDocumentDomains,
     createDocumentDomain,
@@ -29,6 +31,8 @@ export const DocumentServices = {
     editDocumentArchives,
     deleteDocumentArchives,
     deleteManyDocumentArchives,
+    importDocumentArchive,
+
 };
 
 function getDocuments(params) {
@@ -79,6 +83,15 @@ function downloadDocumentFile(id, numberVersion) {
             numberVersion: numberVersion
         }
     }, false, true, 'document');
+}
+
+function importDocument(data) {
+    console.log('dataaa', data);
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/documents/documents/import-file`,
+        method: 'POST',
+        data,
+    }, true, true, 'document');
 }
 
 function downloadDocumentFileScan(id, numberVersion) {
@@ -134,6 +147,13 @@ function getDocumentDomains() {
 function createDocumentDomain(data) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/documents/document-domains`,
+        method: 'POST',
+        data,
+    }, true, true, 'document');
+}
+function importDocumentCategory(data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/documents/document-categories/import-file`,
         method: 'POST',
         data,
     }, true, true, 'document');
@@ -231,5 +251,13 @@ function deleteManyDocumentArchives(array) {
         url: `${process.env.REACT_APP_SERVER}/documents/document-archives/delete-many`,
         method: 'POST',
         data: { array }
+    }, true, true, 'document');
+}
+
+function importDocumentArchive(data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/documents/document-archives/import-file`,
+        method: 'POST',
+        data,
     }, true, true, 'document');
 }

@@ -29,21 +29,6 @@ class FileTab extends Component {
         this.props.handleChange(name, value);
     }
 
-    /**
-     * Bắt sự kiện thay đổi mã hồ sơ
-     * archivedRecordNumber
-     */
-    handleArchivedRecordNumberChange = (e) => {
-        let value = e.target.value;
-        this.setState(state => {
-            return {
-                ...state,
-                archivedRecordNumber: value
-            }
-        });
-        this.props.handleChange("archivedRecordNumber", value);
-    }
-
     // Function thêm tài liệu đính kèm mặc định
     defaulteClick = async (e) => {
         var { translate } = this.props;
@@ -128,18 +113,8 @@ class FileTab extends Component {
             <div id={id} className="tab-pane">
                 <div className=" row box-body">
 
-                    {/* Nơi lưu trữ bản cứng */}
-                    <div className="col-md-4">
-                        <div className="form-group">
-                            <label>{translate('asset.general_information.store_location')}</label>
-                            <input type="text" className="form-control" name="archivedRecordNumber" value={archivedRecordNumber} onChange={this.handleArchivedRecordNumberChange} placeholder={translate('asset.general_information.store_location')} autoComplete="off" />
-                        </div>
-                    </div>
-
                     {/* Danh sách tài liệu đính kèm */}
                     <div className="col-md-12">
-                        <h4 className="row col-md-6 col-xs-8">{translate('asset.asset_info.file_list')}:</h4>
-
                         {/* Form thêm tài liệu đính kèm */}
                         <FileAddModal handleChange={this.handleAddFile} id={`addFile${id}`} />
                         {/* Button mặc định */}

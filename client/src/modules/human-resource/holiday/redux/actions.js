@@ -17,12 +17,12 @@ export const HolidayActions = {
 /**
  * Lấy danh sách lịch làm việc
  */
-function getListHoliday() {
+function getListHoliday(data) {
     return dispatch => {
         dispatch({
             type: HolidayConstants.GET_HOLIDAY_REQUEST
         });
-        HolidayService.getListHoliday()
+        HolidayService.getListHoliday(data)
             .then(res => {
                 dispatch({
                     type: HolidayConstants.GET_HOLIDAY_SUCCESS,
