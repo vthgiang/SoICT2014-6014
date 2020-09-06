@@ -20,7 +20,7 @@ class MaintainanceManagement extends Component {
             type: null,
             status: null,
             page: 0,
-            limit: 100,
+            limit: 5,
             managedBy : this.props.managedBy?this.props.managedBy:''
         }
     }
@@ -33,7 +33,7 @@ class MaintainanceManagement extends Component {
             month: null,
             status: null,
             page: 0,
-            limit: 100,
+            limit: 5,
         });
     }
 
