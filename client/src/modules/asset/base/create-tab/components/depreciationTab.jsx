@@ -215,7 +215,7 @@ class DepreciationTab extends Component {
     handleAddUnitsProduced = () => {
         var unitsProducedDuringTheYears = this.state.unitsProducedDuringTheYears;
 
-        if (unitsProducedDuringTheYears.length !== 0) {
+        if (unitsProducedDuringTheYears && unitsProducedDuringTheYears.length !== 0) {
             let result;
 
             for (let n in unitsProducedDuringTheYears) {
@@ -234,7 +234,7 @@ class DepreciationTab extends Component {
             }
         } else {
             this.setState({
-                unitsProducedDuringTheYears: [...unitsProducedDuringTheYears, { month: "", unitsProducedDuringTheYear: "" }]
+                unitsProducedDuringTheYears: [{ month: "", unitsProducedDuringTheYear: "" }]
             })
         }
 
@@ -285,9 +285,9 @@ class DepreciationTab extends Component {
     /**
      * Bắt sự kiện chỉnh sửa giá trị trường giá trị sản lượng sản phẩm
      */
-    handleChangeValue = (e) => {
-        var { value, className } = e.target;
-        this.validateValue(value, className);
+    handleChangeValue = (e, index) => {
+        var { value } = e.target;
+        this.validateValue(value, index);
     }
     validateValue = (value, className, willUpdateState = true) => {
         let msg = AssetCreateValidator.validateUnitsProducedDuringTheYear(value, this.props.translate);
@@ -412,17 +412,19 @@ class DepreciationTab extends Component {
                         {/* Sản lượng sản phẩm trong các năm */}
                         {
                             depreciationType == 'Sản lượng' &&
-                            <div className="col-md-12">
-                                <label>{translate('asset.depreciation.months_production')}:<a title='Số lượng sản phẩm trong các năm'><i className="fa fa-plus" style={{ color: "#00a65a", marginLeft: 5 }}
-                                    onClick={this.handleAddUnitsProduced} /></a></label>
+                            <div className="col-md-12" style={{ paddingLeft: '0px' }}>
+                                <label>{translate('asset.depreciation.months_production')}:
+                                    <a style={{ cursor: "pointer" }} title={translate('asset.general_information.asset_properties')}><i className="fa fa-plus-square" style={{ color: "#00a65a", marginLeft: 5 }}
+                                    onClick={this.handleAddUnitsProduced} /></a>
+                                </label>
                                 <div className={`form-group ${(!errorOnMonth && !errorOnValue) ? "" : "has-error"}`}>
 
                                     {/* Bảng thông tin chi tiết */}
-                                    <table className="table table-bordered">
+                                    <table className="table">
                                         <thead>
                                             <tr>
-                                                <th>{translate('page.month')}</th>
-                                                <th>{translate('asset.depreciation.production')}</th>
+                                                <th style={{ paddingLeft: '0px' }}>{translate('page.month')}</th>
+                                                <th style={{ paddingLeft: '0px' }}>{translate('asset.depreciation.production')}</th>
                                                 <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
                                             </tr>
                                         </thead>
@@ -434,7 +436,7 @@ class DepreciationTab extends Component {
                                             </tr> :
                                                 unitsProducedDuringTheYears.map((x, index) => {
                                                     return <tr key={index}>
-                                                        <td>
+                                                        <td style={{ paddingLeft: '0px' }}>
                                                             <DatePicker
                                                                 id={index}
                                                                 dateFormat="month-year"
@@ -442,7 +444,7 @@ class DepreciationTab extends Component {
                                                                 onChange={(e) => this.handleMonthChange(e, index)}
                                                             />
                                                         </td>
-                                                        <td><input className={index} type="number" value={x.unitsProducedDuringTheYear} name="unitsProducedDuringTheYears" style={{ width: "100%" }} onChange={this.handleChangeValue} /></td>
+                                                        <td style={{ paddingLeft: '0px' }}><input className="form-control" type="number" value={x.unitsProducedDuringTheYear} name="unitsProducedDuringTheYears" style={{ width: "100%" }} onChange={(e) => this.handleChangeValue(e, index)} /></td>
                                                         <td style={{ textAlign: "center" }}>
                                                             <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete(index)}><i className="material-icons"></i></a>
                                                         </td>

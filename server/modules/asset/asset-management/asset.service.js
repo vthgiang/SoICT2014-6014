@@ -21,8 +21,8 @@ exports.getAssetInforById = async(id) => {
  */
 exports.searchAssetProfiles = async(params, company) => {
     let keySearch = { company: company };
-
-    // Bắt sựu kiện MSTS tìm kiếm khác ""
+    console.log(params)
+        // Bắt sựu kiện MSTS tìm kiếm khác ""
     if (params.code) {
         keySearch = {...keySearch, code: { $regex: params.code, $options: "i" } }
     }
@@ -35,6 +35,11 @@ exports.searchAssetProfiles = async(params, company) => {
     // Thêm key tìm kiếm tài sản theo trạng thái hoạt động vào keySearch
     if (params.status) {
         keySearch = {...keySearch, status: { $in: params.status } };
+    }
+
+    // Thêm key tìm kiếm theo loại tài sản vào keySearch
+    if (params.assetType) {
+        keySearch = {...keySearch, assetType: { $in: params.assetType } };
     }
 
     // Thêm key tìm kiếm tài sản theo trạng thái hoạt động vào keySearch
@@ -71,9 +76,8 @@ exports.searchAssetProfiles = async(params, company) => {
 
     // Lấy danh sách tài sản
     let totalList = await Asset.count(keySearch);
-    let listAssets = await Asset.find(keySearch)
+    let listAssets = await Asset.find(keySearch).populate('assetType')
         .sort({ 'createdAt': 'desc' }).skip(params.page).limit(params.limit);
-
     return { data: listAssets, totalList }
 }
 
@@ -81,7 +85,7 @@ exports.searchAssetProfiles = async(params, company) => {
  * Danh sách mặt bằng dạng cây
  */
 exports.getListBuildingAsTree = async(company) => {
-    const list = await Asset.find({ company: company, group: "Building" });
+    const list = await Asset.find({ company: company, group: "Building" }).populate('assetType');
     const dataConverted = list.map(building => {
         return {
             id: building._id.toString(),
@@ -181,7 +185,6 @@ exports.createAsset = async(data, company, fileInfo) => {
         disposalDesc: data.disposalDesc,
 
         // Tài liệu đính kèm
-        archivedRecordNumber: data.archivedRecordNumber,
         files: files,
     });
 
@@ -284,8 +287,6 @@ exports.updateAssetInformation = async(id, data, fileInfo, company) => {
     oldAsset.disposalType = data.disposalType;
     oldAsset.disposalCost = data.disposalCost;
     oldAsset.disposalDesc = data.disposalDesc;
-    // Tài liệu tham khảo
-    oldAsset.archivedRecordNumber = data.archivedRecordNumber;
 
     // Edit  thông tin tài sản
     oldAsset.save();

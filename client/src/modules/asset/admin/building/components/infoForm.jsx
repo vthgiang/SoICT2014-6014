@@ -25,6 +25,7 @@ class AssetInfoForm extends Component {
                 assetName: nextProps.assetName,
                 serial: nextProps.serial,
                 assetType: nextProps.assetType,
+                group: nextProps.group,
                 purchaseDate: nextProps.purchaseDate,
                 warrantyExpirationDate: nextProps.warrantyExpirationDate,
                 managedBy: nextProps.managedBy,
@@ -61,7 +62,7 @@ class AssetInfoForm extends Component {
             managedBy, assignedTo, handoverFromDate, handoverToDate, location, description, status, typeRegisterForUse,
             detailInfo, cost, residualValue, startDepreciation, usefulLife, depreciationType,
             maintainanceLogs, usageLogs, incidentLogs, disposalDate, disposalType, disposalCost,
-            disposalDesc, archivedRecordNumber, files
+            disposalDesc, archivedRecordNumber, files, group
         } = this.state;
 
         return (
@@ -94,6 +95,7 @@ class AssetInfoForm extends Component {
                                 assetName={assetName}
                                 serial={serial}
                                 assetTypes={assetType}
+                                group={group}
                                 purchaseDate={purchaseDate}
                                 warrantyExpirationDate={warrantyExpirationDate}
                                 managedBy={managedBy}

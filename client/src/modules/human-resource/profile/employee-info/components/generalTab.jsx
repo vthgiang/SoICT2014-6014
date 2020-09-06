@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { ImgShow } from '../../../../../common-components';
+import { ApiImage } from '../../../../../common-components';
 
 class GeneralTab extends Component {
     constructor(props) {
@@ -78,7 +78,7 @@ class GeneralTab extends Component {
                     <div className="col-lg-4 col-md-4 col-ms-12 col-xs-12" style={{ textAlign: 'center' }}>
                         <div>
                             <a href={avatar} target="_blank">
-                                <ImgShow id={`avater-imform-${id}`} src={`.${avatar}`} />
+                                <ApiImage className="attachment-img avarta" id={`avater-imform-${id}`} src={`.${avatar}`} />
                             </a>
                         </div>
                     </div>

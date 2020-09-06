@@ -894,6 +894,7 @@ const sampleCompanyData = async() => {
     await AnnualLeave.insertMany([{
         employee: employee._id,
         company: vnist._id,
+        organizationalUnit: Directorate._id,
         startDate: "2020-02-06",
         endDate: "2020-02-08",
         status: "pass",
@@ -901,6 +902,7 @@ const sampleCompanyData = async() => {
     }, {
         employee: employee._id,
         company: vnist._id,
+        organizationalUnit: Directorate._id,
         startDate: "2020-02-05",
         endDate: "2020-02-10",
         status: "process",
@@ -1635,7 +1637,7 @@ const sampleCompanyData = async() => {
             code: "VVTM02.001",
             company: vnist._id,
             serial: "00001",
-            assetType: listAssetType[19]._id,
+            assetType: [listAssetType[19]._id, listAssetType[16]._id],
             purchaseDate: new Date("2020-06-20"),
             warrantyExpirationDate: new Date("2022-06-20"),
             managedBy: users[1]._id,
@@ -1664,7 +1666,6 @@ const sampleCompanyData = async() => {
             disposalCost: 20000000,
             disposalDesc: '',
             //tài liệu đính kèm
-            archivedRecordNumber: "PKD001",
             files: [],
         }, {
             avatar: "/upload/asset/pictures/picture5.png",
@@ -1679,7 +1680,7 @@ const sampleCompanyData = async() => {
             }],
             estimatedTotalProduction: 50,
             serial: "00002",
-            assetType: listAssetType[8]._id,
+            assetType: [listAssetType[8]._id],
             purchaseDate: new Date("2020-05-20"),
             warrantyExpirationDate: new Date("2022-05-20"),
             managedBy: users[1]._id,
@@ -1707,7 +1708,6 @@ const sampleCompanyData = async() => {
             disposalCost: 10000000,
             disposalDesc: "",
             //tài liệu đính kèm
-            archivedRecordNumber: "PKD002",
             files: [],
         }, {
             avatar: "/upload/asset/pictures/picture5.png",
@@ -1722,7 +1722,7 @@ const sampleCompanyData = async() => {
             }],
             estimatedTotalProduction: 500,
             serial: "00003",
-            assetType: listAssetType[16]._id,
+            assetType: [listAssetType[16]._id],
             purchaseDate: new Date("2020-05-25"),
             warrantyExpirationDate: new Date("2022-05-25"),
             managedBy: users[5]._id,
@@ -1750,7 +1750,6 @@ const sampleCompanyData = async() => {
             disposalCost: null,
             disposalDesc: "",
             //tài liệu đính kèm
-            archivedRecordNumber: "PCN003",
             files: [],
         },
         {
@@ -1766,7 +1765,7 @@ const sampleCompanyData = async() => {
             }],
             estimatedTotalProduction: 500,
             serial: "00003",
-            assetType: listAssetType[16]._id,
+            assetType: [listAssetType[16]._id],
             purchaseDate: new Date("2020-05-25"),
             warrantyExpirationDate: new Date("2022-05-25"),
             managedBy: users[5]._id,
@@ -1794,7 +1793,6 @@ const sampleCompanyData = async() => {
             disposalCost: null,
             disposalDesc: "",
             //tài liệu đính kèm
-            archivedRecordNumber: "PCN003",
             files: [],
         },
         {
@@ -1810,7 +1808,7 @@ const sampleCompanyData = async() => {
             }],
             estimatedTotalProduction: 500,
             serial: "00003",
-            assetType: listAssetType[16]._id,
+            assetType: [listAssetType[16]._id],
             purchaseDate: new Date("2020-05-25"),
             warrantyExpirationDate: new Date("2022-05-25"),
             managedBy: users[1]._id,
@@ -1838,7 +1836,6 @@ const sampleCompanyData = async() => {
             disposalCost: null,
             disposalDesc: "",
             //tài liệu đính kèm
-            archivedRecordNumber: "PCN003",
             files: [],
         },
         {
@@ -1854,7 +1851,7 @@ const sampleCompanyData = async() => {
             }],
             estimatedTotalProduction: 500,
             serial: "00003",
-            assetType: listAssetType[16]._id,
+            assetType: [listAssetType[16]._id],
             purchaseDate: new Date("2020-05-25"),
             warrantyExpirationDate: new Date("2022-05-25"),
             managedBy: users[4]._id,
@@ -1890,7 +1887,6 @@ const sampleCompanyData = async() => {
             disposalCost: null,
             disposalDesc: "",
             //tài liệu đính kèm
-            archivedRecordNumber: "PCN003",
             files: [],
         }
 
@@ -1909,7 +1905,7 @@ const sampleCompanyData = async() => {
         code: "VVTM02.000",
         company: vnist._id,
         serial: "00000",
-        assetType: listAssetType[25]._id,
+        assetType: [listAssetType[25]._id],
         purchaseDate: new Date("1956-06-20"),
         warrantyExpirationDate: new Date("2099-06-20"),
         managedBy: users[1]._id,
@@ -1939,7 +1935,6 @@ const sampleCompanyData = async() => {
         disposalCost: null,
         disposalDesc: '',
         //tài liệu đính kèm
-        archivedRecordNumber: "PKD000",
         files: [],
     })
     var assetManagedByEmployee2 = await Asset.create({
@@ -1955,7 +1950,7 @@ const sampleCompanyData = async() => {
         code: "PH02.000",
         company: vnist._id,
         serial: "000002",
-        assetType: listAssetType[25]._id,
+        assetType: [listAssetType[25]._id],
         purchaseDate: new Date("1956-06-20"),
         warrantyExpirationDate: new Date("2099-06-20"),
         managedBy: users[5]._id,
@@ -1993,7 +1988,6 @@ const sampleCompanyData = async() => {
         disposalCost: null,
         disposalDesc: '',
         //tài liệu đính kèm
-        archivedRecordNumber: "PKD000",
         files: [],
     })
     var assetManagedByEmployee1 = await Asset.create({
@@ -2009,7 +2003,7 @@ const sampleCompanyData = async() => {
         code: "PH02.000",
         company: vnist._id,
         serial: "000002",
-        assetType: listAssetType[25]._id,
+        assetType: [listAssetType[25]._id],
         purchaseDate: new Date("1956-06-20"),
         warrantyExpirationDate: new Date("2099-06-20"),
         managedBy: users[5]._id,
@@ -2047,7 +2041,6 @@ const sampleCompanyData = async() => {
         disposalCost: null,
         disposalDesc: '',
         //tài liệu đính kèm
-        archivedRecordNumber: "PKD000",
         files: [],
     })
     var listAsset1 = await Asset.insertMany([
@@ -2065,7 +2058,7 @@ const sampleCompanyData = async() => {
             code: "VVTM02.001",
             company: vnist._id,
             serial: "00001",
-            assetType: listAssetType[25]._id,
+            assetType: [listAssetType[25]._id],
             purchaseDate: new Date("2000-05-20"),
             warrantyExpirationDate: new Date("2077-06-20"),
             managedBy: users[1]._id,
@@ -2095,7 +2088,6 @@ const sampleCompanyData = async() => {
             disposalCost: null,
             disposalDesc: '',
             //tài liệu đính kèm
-            archivedRecordNumber: "PKD001",
             documents: [],
         },
         { //2 TQB
@@ -2111,7 +2103,7 @@ const sampleCompanyData = async() => {
             code: "VVTM02.002",
             company: vnist._id,
             serial: "00002",
-            assetType: listAssetType[25]._id,
+            assetType: [listAssetType[25]._id],
             purchaseDate: new Date("2005-05-20"),
             warrantyExpirationDate: new Date("2077-06-20"),
             managedBy: users[1]._id,
@@ -2141,7 +2133,6 @@ const sampleCompanyData = async() => {
             disposalCost: null,
             disposalDesc: '',
             //tài liệu đính kèm
-            archivedRecordNumber: "PKD002",
             documents: [],
         }
     ]);
@@ -2159,7 +2150,7 @@ const sampleCompanyData = async() => {
             estimatedTotalProduction: 1000,
             company: vnist._id,
             serial: "00003",
-            assetType: listAssetType[25]._id,
+            assetType: [listAssetType[25]._id],
             purchaseDate: new Date("2000-05-20"),
             warrantyExpirationDate: new Date("2077-06-20"),
             managedBy: users[1]._id,
@@ -2189,7 +2180,6 @@ const sampleCompanyData = async() => {
             disposalCost: 12000000,
             disposalDesc: '',
             //tài liệu đính kèm
-            archivedRecordNumber: "PKD003",
             documents: [],
         },
         { //04
@@ -2205,7 +2195,7 @@ const sampleCompanyData = async() => {
             code: "VVTM02.004",
             company: vnist._id,
             serial: "00004",
-            assetType: listAssetType[25]._id,
+            assetType: [listAssetType[25]._id],
             purchaseDate: new Date("2000-05-20"),
             warrantyExpirationDate: new Date("2077-06-20"),
             managedBy: users[1]._id,
@@ -2235,7 +2225,6 @@ const sampleCompanyData = async() => {
             disposalCost: 35000000,
             disposalDesc: '',
             //tài liệu đính kèm
-            archivedRecordNumber: "PKD004",
             documents: [],
         },
         { // 05
@@ -2251,7 +2240,7 @@ const sampleCompanyData = async() => {
             code: "VVTM02.005",
             company: vnist._id,
             serial: "00005",
-            assetType: listAssetType[25]._id,
+            assetType: [listAssetType[25]._id],
             purchaseDate: new Date("2000-05-20"),
             warrantyExpirationDate: new Date("2077-06-20"),
             managedBy: users[1]._id,
@@ -2281,7 +2270,6 @@ const sampleCompanyData = async() => {
             disposalCost: null,
             disposalDesc: '',
             //tài liệu đính kèm
-            archivedRecordNumber: "PKD005",
             documents: [],
         },
         { // 06
@@ -2297,7 +2285,7 @@ const sampleCompanyData = async() => {
             code: "VVTM02.006",
             company: vnist._id,
             serial: "00006",
-            assetType: listAssetType[25]._id,
+            assetType: [listAssetType[25]._id],
             purchaseDate: new Date("2000-05-20"),
             warrantyExpirationDate: new Date("2077-06-20"),
             managedBy: users[5]._id,
@@ -2345,7 +2333,6 @@ const sampleCompanyData = async() => {
             disposalCost: null,
             disposalDesc: '',
             //tài liệu đính kèm
-            archivedRecordNumber: "PKD006",
             documents: [],
         },
         { // 07
@@ -2361,7 +2348,52 @@ const sampleCompanyData = async() => {
             code: "VVTM02.007",
             company: vnist._id,
             serial: "00007",
-            assetType: listAssetType[25]._id,
+            assetType: [listAssetType[25]._id],
+            purchaseDate: new Date("2000-05-20"),
+            warrantyExpirationDate: new Date("2077-06-20"),
+            managedBy: users[1]._id,
+            assignedToUser: null,
+            assignedToOrganizationalUnit: null,
+
+            location: listAsset1[1]._id,
+            status: "Sẵn sàng sử dụng",
+            canRegisterForUse: true,
+            description: "d3-103",
+            detailInfo: [],
+            readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
+            usageLogs: [],
+            // bảo trì thiết bị
+            maintainanceLogs: [],
+            //sự cố
+            incidentLogs: [],
+            //khấu hao
+            cost: 50000000,
+            residualValue: 10000000,
+            startDepreciation: new Date("2020-06-20"), // thời gian bắt đầu trích khấu hao
+            usefulLife: 20, // thời gian trích khấu hao
+            depreciationType: "Đường thẳng", // thời gian trích khấu hao
+            //thanh lý
+            disposalDate: null,
+            disposalType: '',
+            disposalCost: null,
+            disposalDesc: '',
+            //tài liệu đính kèm
+            documents: [],
+        },
+        { // 07
+            avatar: "/upload/asset/pictures/picture5.png",
+            assetName: "D3-103",
+            group: "Building",
+            usefulLife: "12",
+            unitsProducedDuringTheYears: [{
+                month: new Date("2020-05-20"),
+                unitsProducedDuringTheYear: 80
+            }],
+            estimatedTotalProduction: 1000,
+            code: "VVTM02.007",
+            company: vnist._id,
+            serial: "00007",
+            assetType: [listAssetType[25]._id],
             purchaseDate: new Date("2000-05-20"),
             warrantyExpirationDate: new Date("2077-06-20"),
             managedBy: users[1]._id,

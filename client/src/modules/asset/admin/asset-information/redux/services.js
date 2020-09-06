@@ -22,6 +22,7 @@ function getAll(data) {
             code: data !== undefined ? data.code : data,
             assetName: data !== undefined ? data.assetName : data,
             status: data !== undefined ? data.status : data,
+            assetType: data !== undefined ? data.assetType : data,
             purchaseDate: data !== undefined ? data.purchaseDate : data,
             typeRegisterForUse: data !== undefined ? data.typeRegisterForUse : data,
             page: data !== undefined ? data.page : data,

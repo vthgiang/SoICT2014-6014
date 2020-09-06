@@ -103,7 +103,7 @@ class AssetDetailForm extends Component {
                                     warrantyExpirationDate={warrantyExpirationDate}
                                     managedBy={managedBy}
                                     assignedToUser={assignedToUser}
-                                    assignedToOrganizationalUnit= {assignedToOrganizationalUnit}
+                                    assignedToOrganizationalUnit={assignedToOrganizationalUnit}
                                     handoverFromDate={handoverFromDate}
                                     handoverToDate={handoverToDate}
                                     location={location}

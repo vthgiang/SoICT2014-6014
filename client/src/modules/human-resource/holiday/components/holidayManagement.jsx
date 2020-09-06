@@ -7,7 +7,6 @@ import { DeleteNotification, ExportExcel, DatePicker } from '../../../../common-
 import { HolidayEditForm, HolidayCreateForm, HolidayImportForm } from './combinedContent'
 
 import { HolidayActions } from '../redux/actions';
-import './holidayManagement.css';
 
 class ManageHoliday extends Component {
     constructor(props) {
@@ -166,12 +165,7 @@ class ManageHoliday extends Component {
 
         let { year, importHoliday, createHoliday, currentRow, numberDateLeaveOfYear } = this.state;
 
-        let holidays = [], numberDateLeave = 0;
-        if (holiday.listHoliday && holiday.listHoliday.length !== 0) {
-            holidays = holiday.listHoliday;
-            numberDateLeave = holiday.numberDateLeaveOfYear;
-
-        };
+        let holidays = holiday.listHoliday, numberDateLeave = holiday.numberDateLeaveOfYear;
 
         if (numberDateLeaveOfYear !== undefined) {
             numberDateLeave = numberDateLeaveOfYear;
@@ -226,19 +220,6 @@ class ManageHoliday extends Component {
                         <label style={{ width: 'auto' }} >&ensp;{translate('human_resource.holiday.date_year')}&emsp;</label>
                         <button type="button" className="btn btn-primary pull-right" onClick={this.updateNumberDateOfYear}>Lưu lại</button>
                     </div>
-                    {/* </div> */}
-                    {/* <h4>{translate('human_resource.holiday.number_date_leave_of_year')}:{` ${holiday.listHoliday ? holiday.numberDateLeaveOfYear : 0} ${translate('human_resource.holiday.date_year')}`}
-                            <a data-toggle="collapse" href="#collapseNumberDateOfYear"><i className="fa fa-plus-square" style={{ color: "#008d4c", marginLeft: 5 }} /></a>
-                        </h4> */}
-                    {/* <div className="collapse setting-number-date-of-year" id="collapseNumberDateOfYear">
-                        <button type="button" className="btn-close" data-toggle="collapse" data-target={`#collapseNumberDateOfYear`} ><i className="fa fa-times"></i></button>
-                        <div className="form-group">
-                            <label>{translate('human_resource.holiday.number_date')}</label>
-                            <input className="form-control" value={numberDateLeave} onChange={this.handleNumberDateOfYearChange} type="Number" />
-                        </div>
-                        <button type="button" className="btn btn-primary pull-right" onClick={this.updateNumberDateOfYear}>{translate('table.update')}</button>
-                    </div> */}
-                    {/* </div> */}
                 </div>
 
                 <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12' style={{ padding: 0 }}>
@@ -266,9 +247,9 @@ class ManageHoliday extends Component {
                                                     <td>{(this.formatDate(x.startDate) === this.formatDate(x.endDate)) ? this.formatDate(x.startDate) : this.formatDate(x.startDate) + " - " + this.formatDate(x.endDate)}</td>
                                                     <td>{x.description}</td>
                                                     <td>
-                                                        <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa nghỉ phép"><i className="material-icons">edit</i></a>
+                                                        <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.holiday.edit_holiday')}><i className="material-icons">edit</i></a>
                                                         <DeleteNotification
-                                                            content="Xoá ngày nghỉ lễ (tết)"
+                                                            content={translate('human_resource.holiday.delete_holiday')}
                                                             data={{
                                                                 id: x._id,
                                                                 info: (this.formatDate(x.startDate) === this.formatDate(x.endDate)) ? this.formatDate(x.startDate) : this.formatDate(x.startDate) + " - " + this.formatDate(x.endDate)

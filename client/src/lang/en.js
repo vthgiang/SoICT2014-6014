@@ -1016,6 +1016,7 @@ export default {
                         decision_unit: 'Decision unit',
                         reward_forms: 'Commendation forms',
                         reason_praise: 'Reason',
+                        reward_forms_short: 'Comm forms',
 
                     },
 
@@ -1059,6 +1060,7 @@ export default {
                         end_date: 'Expiration date',
                         discipline_forms: 'Discipline forms',
                         reason_discipline: 'Reason',
+                        discipline_forms_short: 'Discipline forms',
                     },
 
                     // Nhóm dành cho action
@@ -1455,7 +1457,6 @@ export default {
                 day: 'days',
                 total_number_leave_of_year: 'Total number of days off',
                 leaved: 'You have rested',
-                view_detail: 'Details see page',
                 receiver: 'Receiver',
 
                 // Nhóm action
@@ -1520,6 +1521,7 @@ export default {
                 add: 'Add',
                 basic_information: 'Basic infomation',
                 detail_information: 'Detail information',
+                asset_properties: 'Properties of asset',
                 view: 'View asset information',
                 edit_info: 'Edit asset information',
                 delete_info: 'Delete asset information',
@@ -1563,7 +1565,7 @@ export default {
                 depreciation_information: 'Depreciation information',
                 incident_information: 'Incident information',
                 disposal_information: 'Disposal information',
-                attach_infomation: 'Attached information',
+                attach_infomation: 'Attached files',
 
                 serial_number: 'Serial number',
                 warranty_expiration_date: 'Warranty expiration date',
@@ -1646,7 +1648,7 @@ export default {
             // Quản lý thông tin tài sản
             asset_info: {
                 asset_info: 'Asset infomation',
-                field_name: 'Name of data field',
+                field_name: 'Name of properties',
                 value: 'Value',
 
                 usage_logs: 'Allocation history - transfer - withdrawal',
@@ -1654,7 +1656,7 @@ export default {
                 incident_list: 'Asset incident list',
                 file_list: 'List of documents attached',
                 add_usage_info: 'Add new asset usage infomation',
-                edit_usage_info: 'Edit asset usage infomation',
+                edit_usage_info: 'Edit asset use request form',
                 delete_usage_info: 'Delete asset usage infomation',
                 add_maintenance_card: 'Add new maintenance card',
                 edit_maintenance_card: 'Edit new maintenance card',

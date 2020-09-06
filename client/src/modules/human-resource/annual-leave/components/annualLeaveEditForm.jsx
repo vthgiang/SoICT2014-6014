@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ErrorLabel, DatePicker } from '../../../../common-components';
+import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../common-components';
 
 import { AnnualLeaveFormValidator } from './annualLeaveFormValidator';
 
@@ -128,6 +128,7 @@ class AnnualLeaveEditForm extends Component {
                 ...prevState,
                 _id: nextProps._id,
                 employeeNumber: nextProps.employeeNumber,
+                organizationalUnit: nextProps.organizationalUnit,
                 endDate: nextProps.endDate,
                 startDate: nextProps.startDate,
                 reason: nextProps.reason,
@@ -142,9 +143,9 @@ class AnnualLeaveEditForm extends Component {
     }
 
     render() {
-        const { translate, annualLeave } = this.props;
+        const { translate, annualLeave, department } = this.props;
 
-        const { _id, employeeNumber, startDate, endDate, reason, status,
+        const { _id, employeeNumber, organizationalUnit, startDate, endDate, reason, status,
             errorOnReason, errorOnStartDate, errorOnEndDate } = this.state;
 
         return (
@@ -161,6 +162,19 @@ class AnnualLeaveEditForm extends Component {
                         <div className="form-group">
                             <label>{translate('human_resource.staff_number')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" name="employeeNumber" value={employeeNumber} disabled />
+                        </div>
+                        {/* Đơn vị */}
+                        <div className="form-group">
+                            <label>{translate('human_resource.unit')}<span className="text-red">*</span></label>
+                            <SelectBox
+                                id={`edit-annaul-leave-unit`}
+                                className="form-control select2"
+                                disabled={true}
+                                style={{ width: "100%" }}
+                                value={organizationalUnit}
+                                items={department.list.map(y => { return { value: y._id, text: y.name } })}
+                                onChange={this.handleOrganizationalUnitChange}
+                            />
                         </div>
                         <div className="row">
                             {/* Ngày bắt đầu */}
@@ -209,8 +223,8 @@ class AnnualLeaveEditForm extends Component {
 };
 
 function mapState(state) {
-    const { annualLeave } = state;
-    return { annualLeave };
+    const { annualLeave, department } = state;
+    return { annualLeave, department };
 };
 
 const actionCreators = {

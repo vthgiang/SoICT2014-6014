@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { configDomain } from './fileConfigurationImportDomain.js'
+import { configDocument } from './fileConfigImportDocument.js'
 import { DialogModal, ImportFileExcel, ShowImportData, ConFigImportFile, ExportExcel } from '../../../../../common-components';
 //import { taskTemplateActions } from '../redux/actions';
 import { connect } from 'react-redux';
@@ -7,11 +7,11 @@ import { withTranslate } from 'react-redux-multilingual';
 import { AuthActions } from '../../../../auth/redux/actions';
 import { DocumentActions } from '../../../redux/actions'
 
-class DomainImportForm extends Component {
-    constructor(props) { 
+class DocumentImportForm extends Component {
+    constructor(props) {
         super(props);
         this.state = {
-            configData: configDomain,
+            configData: configDocument,
             checkFileImport: true,
             rowError: [],
             importData: [],
@@ -40,16 +40,79 @@ class DomainImportForm extends Component {
                     "STT": k + 1,
                     "name": x.name,
                     "description": x.description,
-                    "parent": x.parent,
-
+                    "archives": [x.archives],
+                    "domains": [x.domains],
+                    "issuingBody": x.issuingBody,
+                    "signer": x.signer,
+                    "officialNumber": x.officialNumber,
+                    "versionName": x.versionName,
+                    "issuingDate": x.issuingDate,
+                    "effectiveDate": x.effectiveDate,
+                    "expiredDate": x.effectiveDate,
+                    "category": x.category,
+                    "relationshipDescription": x.relationshipDescription,
+                    "documentRelationshipList": [x.documentRelationshipList],
+                    "role": [x.role],
+                    "organizationUnitManager": x.organizationUnitManager,
                 }];
                 showValues = [...showValues, {
-                    "STT": k + 1,
                     "name": x.name,
                     "description": x.description,
-                    "parent": x.parent,
-
+                    "archives": [x.archives],
+                    "domains": [x.domains],
+                    "issuingBody": x.issuingBody,
+                    "signer": x.signer,
+                    "officialNumber": x.officialNumber,
+                    "versionName": x.versionName,
+                    "issuingDate": x.issuingDate,
+                    "effectiveDate": x.effectiveDate,
+                    "expiredDate": x.effectiveDate,
+                    "category": x.category,
+                    "relationshipDescription": x.relationshipDescription,
+                    "documentRelationshipList": [x.documentRelationshipList],
+                    "role": [
+                        
+                    ],
+                    "organizationUnitManager": x.organizationUnitManager,
                 }]
+            } else {
+                if (k >= 0) {
+                    let out = {
+                        "STT": "",
+                        "name": "",
+                        "description": "",
+                        "archives": "",
+                        "domains": "",
+                        "issuingBody": "",
+                        "signer": "",
+                        "officialNumber": "",
+                        "versionName": "",
+                        "issuingDate": "",
+                        "effectiveDate": "",
+                        "expiredDate": "",
+                        "category": "",
+                        "relationshipDescription": "",
+                        "documentRelationshipList": "",
+                        "role": "",
+                        "organizationUnitManager": "",
+                    }
+                    if (x.domains) {
+                        showValues[k].domains = [...showValues[k].domains, x.domains];
+                        out.domains = [x.domains]
+                    }
+                    if (x.archives) {
+                        showValues[k].domains = [...showValues[k].archives, x.archives];
+                        out.archives = [x.archives];
+                    }
+                    if (x.roles) {
+                        showValues[k].domains = [...showValues[k].roles, x.roles];
+                        out.roles = [x.roles];
+                    }
+                    if (x.relationshipDocuments) {
+                        showValues[k].relationshipDocuments = [...showValues[k].relationshipDocuments, x.relationshipDocuments];
+                        out.relationshipDocuments = [x.relationshipDocuments];
+                    }
+                }
             }
         }
         value = values;
@@ -82,22 +145,23 @@ class DomainImportForm extends Component {
 
     }
 
+
     save = () => {
         let { importShowData } = this.state;
         console.log(importShowData);
-        this.props.importDomain(importShowData);
+        this.props.importDocument(importShowData);
     }
     render() {
         const { translate } = this.props;
-        console.log('state', this.state);
+        console.log('stateeeeeeee');
         let { limit, page, importData, rowError, configData, checkFileImport } = this.state;
 
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID={`modal_import_file-domain`} isLoading={false}
-                    formID={`form_import_file_domain`}
-                    title="Thêm danh mục bằng import file excel"
+                    modalID={`modal_import_file_document`} isLoading={false}
+                    formID={`form_import_file_document`}
+                    title="Thêm tài liệu bằng import file excel"
                     func={this.save}
                     disableSubmit={false}
                     size={75}
@@ -144,15 +208,15 @@ class DomainImportForm extends Component {
 }
 
 function mapState(state) {
-    const { importDomain } = state;
-    return { importDomain };
+    const { importDocument } = state;
+    return { importDocument };
 };
 const actionCreators = {
-    importDomain: DocumentActions.importDocumentDomain,
+    importDocument: DocumentActions.importDocument,
     downloadFile: AuthActions.downloadFile,
 };
-const importFileExcel = connect(mapState, actionCreators)(withTranslate(DomainImportForm));
-export { importFileExcel as DomainImportForm };
+const importFileExcel = connect(mapState, actionCreators)(withTranslate(DocumentImportForm));
+export { importFileExcel as DocumentImportForm };
 
 
 

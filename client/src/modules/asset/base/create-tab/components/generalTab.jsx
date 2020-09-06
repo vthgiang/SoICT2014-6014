@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DatePicker, ErrorLabel, SelectBox, TreeSelect } from '../../../../../common-components';
+import { DatePicker, ErrorLabel, SelectBox, TreeSelect, SelectMulti } from '../../../../../common-components';
 
 import "./addAsset.css";
 import { AssetCreateValidator } from './combinedContent';
@@ -151,33 +151,35 @@ class GeneralTab extends Component {
 
         let assetTypeList = assetType.listAssetTypes;
         let currentAssetType = assetTypeList.filter((element) => element._id === value[0])[0];
-        let defaultInformation = currentAssetType.defaultInformation;
+        let defaultInformation = currentAssetType ? currentAssetType.defaultInformation : [];
 
         // Thêm trường thông tin mặc định ở nhóm tài sản vào thông tin chi tiết
         let arr = [...detailInfo];
         for (let i in defaultInformation) {
             let check = true;
             for (let j in detailInfo) {
-                if (defaultInformation[i].nameField === detailInfo[j].nameField ||
-                    defaultInformation[i].nameField === detailInfo[j].nameField) {
+                if (defaultInformation[i].nameField === detailInfo[j].nameField) {
                     check = false;
                 }
             }
 
             if (check) {
-                arr.push(defaultInformation[i]);
+                arr.push({
+                    ...defaultInformation[i],
+                    value: '',
+                });
             }
         }
 
         await this.setState(state => {
             return {
                 ...state,
-                assetTypes: value[0],
+                assetTypes: value,
                 detailInfo: arr,
             }
         });
 
-        this.props.handleChange("assetType", value[0]);
+        this.props.handleChange("assetType", value);
         this.props.handleChange("detailInfo", arr);
     }
 
@@ -498,13 +500,25 @@ class GeneralTab extends Component {
         } else {
             return null;
         }
+    }
 
+    getAssetTypes = () => {
+        let { assetType } = this.props;
+        let assetTypeName = assetType && assetType.listAssetTypes;
+        let typeArr = [];
+
+        assetTypeName.map(item => {
+            typeArr.push({
+                value: item._id,
+                text: item.typeName
+            })
+        })
+        return typeArr;
     }
 
     render() {
         const { id } = this.props;
         const { translate, user, assetType, assetsManager, role, department } = this.props;
-
         const {
             img, code, assetName, assetTypes, group, serial, purchaseDate, warrantyExpirationDate, managedBy,
             assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, location, description, status, typeRegisterForUse, detailInfo,
@@ -515,7 +529,6 @@ class GeneralTab extends Component {
         var userlist = user.list, departmentlist = department.list;
         let startDate = status == "Đang sử dụng" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1].startDate) : '';
         let endDate = status == "Đang sử dụng" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1].endDate) : '';
-        console.log("startDate có thay đổi không", startDate, endDate)
         var assettypelist = assetType.listAssetTypes;
         let dataList = assettypelist.map(node => {
             return {
@@ -536,12 +549,13 @@ class GeneralTab extends Component {
                 parent: node.location,
             }
         })
+        let typeArr = this.getAssetTypes();
 
         return (
             <div id={id} className="tab-pane active">
                 <div className="row">
                     {/* Ảnh tài sản */}
-                    <div className="col-md-4" style={{ textAlign: 'center' }}>
+                    <div className="col-md-4" style={{ textAlign: 'center', paddingLeft: '0px' }}>
                         <div>
                             <a href={img} target="_blank">
                                 <img className="attachment-img avarta" src={img} alt="Attachment" />
@@ -555,8 +569,7 @@ class GeneralTab extends Component {
 
                     <br />
                     {/* Thông tin cơ bản */}
-                    <div className="col-md-8">
-                        <label>{translate('asset.general_information.basic_information')}:</label>
+                    <div className="col-md-8" style={{ paddingLeft: '0px' }}>
                         <div>
                             <div id="form-create-asset-type" className="col-md-6">
                                 {/* Mã tài sản */}
@@ -603,9 +616,16 @@ class GeneralTab extends Component {
                                 </div>
 
                                 {/* Loại tài sản */}
-                                <div className={`form-group${!errorOnAssetType ? "" : "has-error"}`}>
-                                    <label>{translate('asset.general_information.asset_type')}<span className="text-red">*</span></label>
-                                    <TreeSelect data={dataList} value={[assetTypes]} handleChange={this.handleAssetTypeChange} mode="radioSelect" />
+                                <div className={`form-group ${!errorOnAssetType ? "" : "has-error"}`}>
+                                    <label className="form-control-static">{translate('asset.general_information.asset_type')}<span className="text-red">*</span></label>
+                                    <SelectMulti
+                                        id={`multiSelectTypeInGenaral${id}`}
+                                        multiple="multiple"
+                                        options={{ nonSelectedText: translate('asset.general_information.select_asset_type'), allSelectedText: translate('asset.general_information.select_all_asset_type') }}
+                                        onChange={this.handleAssetTypeChange}
+                                        items={typeArr}
+                                    >
+                                    </SelectMulti>
                                 </div>
 
                                 {/* Ngày nhập */}
@@ -673,7 +693,7 @@ class GeneralTab extends Component {
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={assignedToUser}
-                                            items={[{ value: 'null', text: 'Chưa có người được giao sử dụng' }, ...userlist.map(x => { return { value: x.id, text: x.name + " - " + x.email} })]}
+                                            items={[{ value: 'null', text: 'Chưa có người được giao sử dụng' }, ...userlist.map(x => { return { value: x.id, text: x.name + " - " + x.email } })]}
                                             multiple={false}
                                             disabled
                                         />
@@ -688,7 +708,7 @@ class GeneralTab extends Component {
                                             id={`assignedToOrganizationalUnitBox${assignedToOrganizationalUnit}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            items={[{ value: 'null', text: 'Chưa có đơn vị được giao sử dụng' }, ...departmentlist.map(x => { return { value: x._id, text: x.name }})]}
+                                            items={[{ value: 'null', text: 'Chưa có đơn vị được giao sử dụng' }, ...departmentlist.map(x => { return { value: x._id, text: x.name } })]}
                                             value={assignedToOrganizationalUnit}
                                             multiple={false}
                                             disabled
@@ -774,7 +794,7 @@ class GeneralTab extends Component {
 
                         {/* Thông tin chi tiết */}
                         <div className="col-md-12">
-                            <label>{translate('asset.general_information.detail_information')}:<a style={{ cursor: "pointer" }} title={translate('asset.general_information.detail_information')}><i className="fa fa-plus-square" style={{ color: "#00a65a", marginLeft: 5 }}
+                            <label>{translate('asset.general_information.asset_properties')}:<a style={{ cursor: "pointer" }} title={translate('asset.general_information.asset_properties')}><i className="fa fa-plus-square" style={{ color: "#00a65a", marginLeft: 5 }}
                                 onClick={this.handleAddDetailInfo} /></a></label>
                             <div className={`form-group ${(!errorOnNameField && !errorOnValue) ? "" : "has-error"}`}>
 

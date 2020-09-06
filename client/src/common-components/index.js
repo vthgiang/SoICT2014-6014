@@ -25,4 +25,4 @@ export * from './src/confirm-notification';
 export * from './src/time-picker/timePicker'
 export * from './src/lazy-load/lazyLoadComponent';
 export * from './src/lazy-load/forceCheckOrVisible';
-export * from './src/img-show';
+export * from './src/api-image';

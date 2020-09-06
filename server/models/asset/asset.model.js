@@ -37,10 +37,10 @@ const AssetSchema = new Schema({
         type: String,
     },
 
-    assetType: { //5.loại tài sản
+    assetType: [{ //5.loại tài sản
         type: Schema.Types.ObjectId,
         ref: AssetType,
-    },
+    }],
 
     purchaseDate: { //6.ngày nhập, ngày mua
         type: Date,
@@ -308,10 +308,6 @@ const AssetSchema = new Schema({
     /***************************************************************************************************
      * tab Tài liệu đính kèm
      */
-    archivedRecordNumber: { // 18.mã hồ sơ lưu trữ
-        type: String
-    },
-
     documents: [{ // Các tài liệu đính kèm với tài sản
         name: {
             type: String,
