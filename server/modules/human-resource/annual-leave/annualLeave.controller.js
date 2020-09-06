@@ -15,7 +15,7 @@ exports.searchAnnualLeaves = async (req, res) => {
     try {
         let data = {};
         if (req.query.numberAnnulLeave) {
-            data = await AnnualLeaveService.getNumberAnnaulLeave(req.user.email, req.user.company._id);
+            data = await AnnualLeaveService.getNumberAnnaulLeave(req.user.email, req.query.year, req.user.company._id);
         } else if (req.query.numberMonth) {
             data = await AnnualLeaveService.getAnnualLeaveOfNumberMonth(req.query.organizationalUnits, req.query.numberMonth, req.user.company._id)
         } else if (req.query.page === undefined && req.query.limit === undefined) {
@@ -23,7 +23,6 @@ exports.searchAnnualLeaves = async (req, res) => {
         } else {
             let params = {
                 organizationalUnits: req.query.organizationalUnits,
-                position: req.query.position,
                 employeeNumber: req.query.employeeNumber,
                 month: req.query.month,
                 status: req.query.status,
@@ -54,8 +53,10 @@ exports.searchAnnualLeaves = async (req, res) => {
 /** Tạo mới thông tin nghỉ phép */
 exports.createAnnualLeave = async (req, res) => {
     try {
-        if (req.body.receiver) {
+        if (req.body.createApplication) {
+            let users = await UserService.getUserIsDeanOfOrganizationalUnit(req.body.organizationalUnit);
             let employee = await EmployeeService.getEmployeeInforByEmailInCompany(req.user.email, req.user.company._id);
+
             let html = `
                 <h3><strong>Thông báo từ hệ thống VNIST-Việc.</strong></h3>
                 <p>Nhân viên ${employee.fullName} - ${employee.employeeNumber} xin nghỉ phép từ ngày ${req.body.startDate} đến ngày ${req.body.endDate}.<p>
@@ -68,9 +69,10 @@ exports.createAnnualLeave = async (req, res) => {
                 <p>Reason: ${req.body.reason}<p>
                 <p>To approve leave application. Please click here <a target="_blank" href="http://${process.env.WEBSITE}/hr-manage-leave-application">Approved</a><p>
             `
-            sendEmail(req.body.receiver, 'Đơn xin nghỉ phép', "", html);
+            users.forEach(x => {
+                sendEmail(x.email, 'Đơn xin nghỉ phép', "", html);
+            })
 
-            let user = await UserService.getUserInformByEmail(req.body.receiver, req.user.company._id);
             let content = `
                 <p>Nhân viên ${employee.fullName} - ${employee.employeeNumber} xin nghỉ phép từ ngày ${req.body.startDate} đến ngày ${req.body.endDate}.<p>
                 <p>Lý do: ${req.body.reason}<p>
@@ -80,8 +82,10 @@ exports.createAnnualLeave = async (req, res) => {
                 <p>Reason: ${req.body.reason}<p>
                 <p>To approve leave application. Please click here <a target="_blank" href="http://${process.env.WEBSITE}/hr-manage-leave-application">Approved</a><p>
             `
+            users = users.map(x => x._id);
+            console.log()
             let notification = {
-                users: [user.id],
+                users: users,
                 organizationalUnits: [],
                 title: 'Xin nghỉ phép',
                 level: "important",
@@ -91,14 +95,15 @@ exports.createAnnualLeave = async (req, res) => {
             await NotificationServices.createNotification(req.user.company._id, notification, undefined)
 
             let data = {
-                employeeNumber: employee.employeeNumber,
+                employee: employee._id,
+                organizationalUnit: req.body.organizationalUnit,
                 startDate: req.body.startDate,
                 endDate: req.body.endDate,
                 reason: req.body.reason,
                 status: 'process',
             }
-            let annualLeave = await AnnualLeaveService.createAnnualLeave(data, req.user.company._id);
 
+            let annualLeave = await AnnualLeaveService.createAnnualLeave(data, req.user.company._id);
             await LogInfo(req.user.email, 'CREATE_ANNUALLEAVE', req.user.company);
             res.status(200).json({
                 success: true,
@@ -106,17 +111,7 @@ exports.createAnnualLeave = async (req, res) => {
                 content: annualLeave
             });
         } else {
-            // Kiểm tra dữ liệu truyền vào
-            if (req.body.employeeNumber.trim() === "") {
-                await LogError(req.user.email, 'CREATE_ANNUALLEAVE', req.user.company);
-                res.status(400).json({
-                    success: false,
-                    messages: ["employee_number_required"],
-                    content: {
-                        inputData: req.body
-                    }
-                });
-            } else if (req.body.startDate.trim() === "") {
+            if (req.body.startDate.trim() === "") {
                 await LogError(req.user.email, 'CREATE_ANNUALLEAVE', req.user.company);
                 res.status(400).json({
                     success: false,
@@ -154,24 +149,12 @@ exports.createAnnualLeave = async (req, res) => {
                 });
             } else {
                 let newAnnualLeave = await AnnualLeaveService.createAnnualLeave(req.body, req.user.company._id);
-                // Kiểm tra sự tồn tại của mã nhân viên
-                if (newAnnualLeave === null) {
-                    await LogError(req.user.email, 'CREATE_ANNUALLEAVE', req.user.company);
-                    res.status(404).json({
-                        success: false,
-                        messages: ["staff_code_not_find"],
-                        content: {
-                            inputData: req.body
-                        }
-                    });
-                } else {
-                    await LogInfo(req.user.email, 'CREATE_ANNUALLEAVE', req.user.company);
-                    res.status(200).json({
-                        success: true,
-                        messages: ["create_annual_leave_success"],
-                        content: newAnnualLeave
-                    });
-                }
+                await LogInfo(req.user.email, 'CREATE_ANNUALLEAVE', req.user.company);
+                res.status(200).json({
+                    success: true,
+                    messages: ["create_annual_leave_success"],
+                    content: newAnnualLeave
+                });
             }
         }
     } catch (error) {
@@ -211,17 +194,7 @@ exports.deleteAnnualLeave = async (req, res) => {
 /** Cập nhật thông tin nghỉ phép */
 exports.updateAnnualLeave = async (req, res) => {
     try {
-        // Kiểm tra dữ liệu tryền vào
-        if (req.body.employeeNumber.trim() === "") {
-            await LogError(req.user.email, 'CREATE_ANNUALLEAVE', req.user.company);
-            res.status(400).json({
-                success: false,
-                messages: ["employee_number_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else if (req.body.startDate.trim() === "") {
+        if (req.body.startDate.trim() === "") {
             await LogError(req.user.email, 'EDIT_ANNUALLEAVE', req.user.company);
             res.status(400).json({
                 success: false,
@@ -259,24 +232,12 @@ exports.updateAnnualLeave = async (req, res) => {
             });
         } else {
             let annualleaveUpdate = await AnnualLeaveService.updateAnnualLeave(req.params.id, req.body);
-            // Kiểm tra sự tồn tại của mã nhân viên
-            if (annualleaveUpdate === null) {
-                await LogError(req.user.email, 'EDIT_ANNUALLEAVE', req.user.company);
-                res.status(404).json({
-                    success: false,
-                    messages: ["staff_code_not_find"],
-                    content: {
-                        inputData: req.body
-                    }
-                });
-            } else {
-                await LogInfo(req.user.email, 'EDIT_ANNUALLEAVE', req.user.company);
-                res.status(200).json({
-                    success: true,
-                    messages: ["edit_annual_leave_success"],
-                    content: annualleaveUpdate
-                });
-            }
+            await LogInfo(req.user.email, 'EDIT_ANNUALLEAVE', req.user.company);
+            res.status(200).json({
+                success: true,
+                messages: ["edit_annual_leave_success"],
+                content: annualleaveUpdate
+            });
         }
     } catch (error) {
         await LogError(req.user.email, 'EDIT_ANNUALLEAVE', req.user.company);

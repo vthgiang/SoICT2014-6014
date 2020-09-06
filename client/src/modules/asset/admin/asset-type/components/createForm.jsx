@@ -65,22 +65,21 @@ class CreateForm extends Component {
             let result;
 
             for (let n in defaultInfo) {
-                result = this.validateNameField(defaultInfo[n].nameField, n) && this.validateValue(defaultInfo[n].value, n);
+                result = this.validateNameField(defaultInfo[n].nameField, n);
                 if (!result) {
                     this.validateNameField(defaultInfo[n].nameField, n);
-                    this.validateValue(defaultInfo[n].value, n)
                     break;
                 }
             }
 
             if (result) {
                 this.setState({
-                    defaultInfo: [...defaultInfo, { nameField: "", value: "" }]
+                    defaultInfo: [...defaultInfo, { nameField: "" }]
                 })
             }
         } else {
             this.setState({
-                defaultInfo: [...defaultInfo, { nameField: "", value: "" }]
+                defaultInfo: [...defaultInfo, { nameField: "" }]
             })
         }
 
@@ -110,30 +109,6 @@ class CreateForm extends Component {
     }
 
     /**
-     * Bắt sự kiện chỉnh sửa giá trị trường dữ liệu thông tin mặc định
-     */
-    handleChangeValue = (e, index) => {
-        var { value } = e.target;
-        this.validateValue(value, index);
-    }
-    validateValue = (value, className, willUpdateState = true) => {
-        // let msg = AssetCreateValidator.validateValue(value, this.props.translate);
-        let msg = undefined;
-        if (willUpdateState) {
-            var { defaultInfo } = this.state;
-            defaultInfo[className] = { ...defaultInfo[className], value: value }
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnValue: msg,
-                    defaultInfo: defaultInfo
-                }
-            });
-        }
-        return msg === undefined;
-    }
-
-    /**
      * Bắt sự kiện xóa thông tin mặc định
      */
     delete = (index) => {
@@ -145,7 +120,6 @@ class CreateForm extends Component {
         if (defaultInfo.length !== 0) {
             for (let n in defaultInfo) {
                 this.validateNameField(defaultInfo[n].nameField, n);
-                this.validateValue(defaultInfo[n].value, n)
             }
         } else {
             this.setState({
@@ -216,7 +190,7 @@ class CreateForm extends Component {
 
                         {/* Thông tin mặc định */}
                         <div className="form-group">
-                            <label>Thông tin mặc định:<a style={{ cursor: "pointer" }} title='Thêm thông tin mặc định'><i className="fa fa-plus-square" style={{ color: "#00a65a", marginLeft: 5 }}
+                            <label>Các thuộc tinh mặc định:<a style={{ cursor: "pointer" }} title='Thêm thuộc tinh mặc định'><i className="fa fa-plus-square" style={{ color: "#00a65a", marginLeft: 5 }}
                                 onClick={this.handleAddDefaultInfo} /></a></label>
                             <div className={`form-group ${(!errorOnNameField && !errorOnValue) ? "" : "has-error"}`}>
 
@@ -225,7 +199,6 @@ class CreateForm extends Component {
                                     <thead>
                                         <tr>
                                             <th style={{ paddingLeft: '0px' }}>{translate('asset.asset_info.field_name')}</th>
-                                            <th style={{ paddingLeft: '0px' }}>{translate('asset.asset_info.value')}</th>
                                             <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
                                         </tr>
                                     </thead>
@@ -239,9 +212,6 @@ class CreateForm extends Component {
                                                 return <tr key={index}>
                                                     {/* Tên trường dữ liệu */}
                                                     <td style={{ paddingLeft: '0px' }}><input className="form-control" type="text" value={x.nameField} name="nameField" style={{ width: "100%" }} onChange={ (e) => this.handleChangeNameField(e, index)} /></td>
-                                                    
-                                                    {/* Giá trị */}
-                                                    <td style={{ paddingLeft: '0px' }}><input className="form-control" type="text" value={x.value} name="value" style={{ width: "100%" }} onChange={(e) => this.handleChangeValue(e, index)} /></td>
                                                     
                                                     {/* Hành động */}
                                                     <td style={{ textAlign: "center" }}>

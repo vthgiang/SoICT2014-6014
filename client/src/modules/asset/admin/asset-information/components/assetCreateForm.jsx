@@ -28,6 +28,7 @@ class AssetCreateForm extends Component {
                 handoverFromDate: null,
                 handoverToDate: null,
                 status: "",
+                assetType: "",
                 canRegisterForUse: "",
                 description: "",
                 detailInfo: [],
@@ -155,17 +156,17 @@ class AssetCreateForm extends Component {
             this.validatorInput(asset.assetName) &&
             // this.validatorInput(asset.serial) &&
             this.validatorInput(asset.purchaseDate)
-            // && this.validatorInput(asset.warrantyExpirationDate) &&
-            // //this.validatorInput(asset.location) &&
-            // this.validatorInput(asset.assetType) &&
-            // this.validatorInput(asset.managedBy) &&
-            // this.validatorInput(asset.status) &&
-            // this.validatorInput(asset.canRegisterForUse) &&
-            // this.validatorInput(asset.cost) &&
-            // this.validatorInput(asset.usefulLife) &&
-            // this.validatorInput(asset.startDepreciation) &&
-            // this.validatorInput(asset.depreciationType);
-        
+        // && this.validatorInput(asset.warrantyExpirationDate) &&
+        // //this.validatorInput(asset.location) &&
+        // this.validatorInput(asset.assetType) &&
+        // this.validatorInput(asset.managedBy) &&
+        // this.validatorInput(asset.status) &&
+        // this.validatorInput(asset.canRegisterForUse) &&
+        // this.validatorInput(asset.cost) &&
+        // this.validatorInput(asset.usefulLife) &&
+        // this.validatorInput(asset.startDepreciation) &&
+        // this.validatorInput(asset.depreciationType);
+
         return result;
     }
 
@@ -195,7 +196,7 @@ class AssetCreateForm extends Component {
     render() {
         const { translate, assetsManager } = this.props;
         const { img, asset, maintainanceLogs, usageLogs, incidentLogs, files } = this.state;
-        console.log(this.state, 'this.state-create')
+        // console.log(this.state, 'this.state-create')
 
         return (
             <React.Fragment>
@@ -222,7 +223,7 @@ class AssetCreateForm extends Component {
                         <div className="tab-content">
                             {/* Thông tin chung */}
                             <GeneralTab
-                                id="general"
+                                id={`create_general`}
                                 img={img}
                                 handleChange={this.handleChange}
                                 handleUpload={this.handleUpload}

@@ -41,11 +41,11 @@ exports.searchSalaries = async (params, company) => {
     }
 
     // Bắt sựu kiện đơn vị tìm kiếm khác undefined 
-    if (params.organizationalUnit) {
+    if (params.organizationalUnits) {
         keySearch = {
             ...keySearch,
             organizationalUnit: {
-                $in: params.organizationalUnit
+                $in: params.organizationalUnits
             }
         };
     }
@@ -64,7 +64,7 @@ exports.searchSalaries = async (params, company) => {
             select: 'emailInCompany fullName employeeNumber birthdate gender status'
         })
         .sort({
-            'createDate': 'desc'
+            'createAt': 'desc'
         }).skip(params.page).limit(params.limit);
 
     let totalList = listSalarys.length;

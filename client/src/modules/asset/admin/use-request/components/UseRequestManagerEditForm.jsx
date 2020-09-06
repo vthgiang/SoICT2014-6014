@@ -10,7 +10,7 @@ import { RecommendDistributeActions } from '../../../user/use-request/redux/acti
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { AssetManagerActions } from '../../asset-information/redux/actions';
 
-class PurchaseRequestManagerEditForm extends Component {
+class UseRequestManagerEditForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -391,5 +391,5 @@ const actionCreators = {
 
 };
 
-const editRecommendDistributeManager = connect(mapState, actionCreators)(withTranslate(PurchaseRequestManagerEditForm));
-export { editRecommendDistributeManager as PurchaseRequestEditForm };
+const editUseRequestManager = connect(mapState, actionCreators)(withTranslate(UseRequestManagerEditForm));
+export { editUseRequestManager as UseRequestEditForm };

@@ -11,31 +11,20 @@ const {
  * @month : Tháng tìm kiếm
  */
 exports.getTotalCommendation = async (company, organizationalUnits, month) => {
-    let keySearchEmployee, keySearch = {
+    let keySearch = {
         company: company
     };
 
-    // Bắt sựu kiện đơn vị tìm kiếm khác undefined 
+    // Bắt sựu kiện tìm kiếm theo đơn vị 
     if (organizationalUnits !== undefined) {
-        let emailInCompany = await EmployeeService.getEmployeeEmailsByOrganizationalUnitsAndPositions(organizationalUnits, undefined);
-        keySearchEmployee = {
-            ...keySearchEmployee,
-            emailInCompany: {
-                $in: emailInCompany
-            }
-        }
-    }
-    if (keySearchEmployee !== undefined) {
-        let employeeinfo = await Employee.find(keySearchEmployee);
-        let employee = employeeinfo.map(employeeinfo => employeeinfo._id);
         keySearch = {
             ...keySearch,
-            employee: {
-                $in: employee
+            organizationalUnit: {
+                $in: organizationalUnits
             }
         }
     }
-   
+
     // Bắt sựu kiện tháng tìm kiếm khác "", undefined
     let totalListOfYear = 0;
     if (month !== undefined && month.length !== 0) {
@@ -91,44 +80,48 @@ exports.getTotalCommendation = async (company, organizationalUnits, month) => {
  * @company : Id công ty người tìm kiếm
  */
 exports.searchCommendations = async (params, company) => {
-    let keySearchEmployee, keySearch = {
+    let keySearch = {
         company: company
     };
 
-    // Bắt sựu kiện đơn vị tìm kiếm khác undefined 
-    if (params.organizationalUnits !== undefined) {
-        let emailInCompany = await EmployeeService.getEmployeeEmailsByOrganizationalUnitsAndPositions(params.organizationalUnits, params.position);
-        keySearchEmployee = {
-            ...keySearchEmployee,
-            emailInCompany: {
-                $in: emailInCompany
-            }
-        }
-    }
-
-    // Bắt sựu kiện MSNV tìm kiếm khác "", undefined
-    if (params.employeeNumber !== undefined && params.employeeNumber.length !== 0) {
-        keySearchEmployee = {
-            ...keySearchEmployee,
+    // Bắt sựu kiện tìm kiếm them MSNV
+    if (params.employeeNumber) {
+        let employee = await Employee.find({
             employeeNumber: {
                 $regex: params.employeeNumber,
                 $options: "i"
             }
-        }
-    }
-    if (keySearchEmployee !== undefined) {
-        let employeeinfo = await Employee.find(keySearchEmployee);
-        let employee = employeeinfo.map(employeeinfo => employeeinfo._id);
-        keySearch = {
-            ...keySearch,
-            employee: {
-                $in: employee
+        }, {
+            _id: 1
+        });
+        if (employee.length !== 0) {
+            employee = employee.map(x => x._id);
+            keySearch = {
+                ...keySearch,
+                employee: {
+                    $in: employee
+                }
+            };
+        } else {
+            return {
+                totalList: 0,
+                listSalarys: [],
             }
         }
     }
 
-    // Bắt sựu kiện số quyết định tìm kiếm khác "", undefined
-    if (params.decisionNumber !== undefined && params.decisionNumber !== 0) {
+    // Bắt sựu kiện tìm kiếm theo cấp ra quyết định
+    if (params.organizationalUnits && params.organizationalUnits.length !== 0) {
+        keySearch = {
+            ...keySearch,
+            organizationalUnit: {
+                $in: params.organizationalUnits
+            }
+        };
+    }
+
+    // Bắt sựu kiện tìm kiếm theo số quyết định
+    if (params.decisionNumber) {
         keySearch = {
             ...keySearch,
             decisionNumber: {
@@ -138,22 +131,26 @@ exports.searchCommendations = async (params, company) => {
         }
     };
 
+    // Bắt sựu kiện tìm kiếm theo hình thức khen thưởng
+    if (params.type) {
+        keySearch = {
+            ...keySearch,
+            type: {
+                $regex: params.type,
+                $options: "i"
+            }
+        }
+    };
+
     // Lấy danh sách khen thưởng
-    let totalList = await Commendation.count(keySearch);
     let listCommendations = await Commendation.find(keySearch).populate({
             path: 'employee',
-            model: Employee
+            select: 'emailInCompany fullName employeeNumber'
         })
         .sort({
-            'createDate': 'desc'
+            'createAt': 'desc'
         }).skip(params.page).limit(params.limit);
-    for (let n in listCommendations) {
-        let value = await EmployeeService.getAllPositionRolesAndOrganizationalUnitsOfUser(listCommendations[n].employee.emailInCompany);
-        listCommendations[n] = {
-            ...listCommendations[n]._doc,
-            ...value
-        }
-    }
+    let totalList = listCommendations.length;
 
     return {
         totalList,
@@ -167,56 +164,39 @@ exports.searchCommendations = async (params, company) => {
  * @company : Id công ty người thêm
  */
 exports.createCommendation = async (data, company) => {
+    console.log(data);
 
-    // Lấy thông tin nhân viên
-    let employeeInfo = await Employee.findOne({
-        employeeNumber: data.employeeNumber,
-        company: company
+
+    let isCommendation = await Commendation.findOne({
+        employee: data.employee,
+        company: company,
+        decisionNumber: data.decisionNumber
     }, {
-        _id: 1,
-        emailInCompany: 1
+        field1: 1
     });
-    if (employeeInfo !== null) {
-        let isCommendation = await Commendation.findOne({
-            employee: employeeInfo._id,
+
+    if (isCommendation !== null) {
+        return "have_exist"
+    } else {
+        // Thêm khen thưởng vào database
+        let createCommendation = await Commendation.create({
+            employee: data.employee,
             company: company,
-            decisionNumber: data.decisionNumber
-        }, {
-            field1: 1
+            decisionNumber: data.decisionNumber,
+            organizationalUnit: data.organizationalUnit,
+            startDate: data.startDate,
+            type: data.type,
+            reason: data.reason,
         });
-        if (isCommendation !== null) {
-            return "have_exist"
-        } else {
-            // Thêm khen thưởng vào database
-            let partStart = data.startDate.split('-');
-            let startDate = new Date(partStart[2], partStart[1] - 1, partStart[0]);
-            let createCommendation = await Commendation.create({
-                employee: employeeInfo._id,
-                company: company,
-                decisionNumber: data.decisionNumber,
-                organizationalUnit: data.organizationalUnit,
-                startDate: startDate,
-                type: data.type,
-                reason: data.reason,
-            });
 
-            // Lấy thông tin phòng ban, chức vụ của nhân viên
-            let value = await EmployeeService.getAllPositionRolesAndOrganizationalUnitsOfUser(employeeInfo.emailInCompany);
-
-            // Lấy thông tin khen thưởng vừa tạo
-            let newCommendation = await Commendation.findOne({
-                _id: createCommendation._id
-            }).populate([{
-                path: 'employee',
-                model: Employee
-            }])
-
-            return {
-                ...newCommendation._doc,
-                ...value
-            }
-        }
-    } else return null
+        // Lấy thông tin khen thưởng vừa tạo
+        return await Commendation.findOne({
+            _id: createCommendation._id
+        }).populate([{
+            path: 'employee',
+            select: 'emailInCompany fullName employeeNumber'
+        }])
+    }
 }
 
 /**
@@ -235,45 +215,19 @@ exports.deleteCommendation = async (id) => {
  * @data : Dữ liệu chỉnh sửa khen thưởng
  * @company : Id công ty người thực hiện thay đổi
  */
-exports.updateCommendation = async (id, data, company) => {
-    // Lấy thông tin nhân viên
-    let employeeInfo = await Employee.findOne({
-        employeeNumber: data.employeeNumber,
-        company: company
-    }, {
-        _id: 1,
-        emailInCompany: 1
-    });
-    if (employeeInfo !== null) {
-        let partStart = data.startDate.split('-');
-        let startDate = new Date(partStart[2], partStart[1] - 1, partStart[0]);
-        let commendationChange = {
-            organizationalUnit: data.organizationalUnit,
-            startDate: startDate,
-            type: data.type,
-            reason: data.reason,
-        };
+exports.updateCommendation = async (id, data) => {
+    let commendation = await Commendation.findById(id);
 
-        // Cập nhật thông tin khen thưởng vào database
-        await Commendation.findOneAndUpdate({
-            _id: id
-        }, {
-            $set: commendationChange
-        });
+    commendation.organizationalUnit = data.organizationalUnit;
+    commendation.startDate = data.startDate;
+    commendation.type = data.type;
+    commendation.reason = data.reason;
+    await commendation.save();
 
-        // Lấy thông tin phòng ban, chức vụ của nhân viên theo emailCompany
-        let value = await EmployeeService.getAllPositionRolesAndOrganizationalUnitsOfUser(employeeInfo.emailInCompany);
-
-        // Lấy thông tin khen thưởng vừa cập nhật
-        let updateCommendation = await Commendation.findOne({
-            _id: id
-        }).populate([{
-            path: 'employee',
-            model: Employee
-        }])
-        return {
-            ...updateCommendation._doc,
-            ...value
-        };
-    } else return null
+    return await Commendation.findOne({
+        _id: id
+    }).populate([{
+        path: 'employee',
+        select: 'emailInCompany fullName employeeNumber'
+    }]);
 }

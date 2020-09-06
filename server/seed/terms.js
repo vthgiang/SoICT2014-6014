@@ -275,7 +275,9 @@ const LINKS = [{
         description: 'Cập nhật thông tin cá nhân của nhân viên',
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
         roles: [
-            ROOT_ROLES.ADMIN.name,
+            ROOT_ROLES.DEAN.name,
+            ROOT_ROLES.VICE_DEAN.name,
+            ROOT_ROLES.EMPLOYEE.name,
         ],
         components: getComponentsInLink('/hr-update-employee')
     },
@@ -284,7 +286,9 @@ const LINKS = [{
         description: 'Thông tin cá nhân của nhân viên',
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
         roles: [
-            ROOT_ROLES.ADMIN.name,
+            ROOT_ROLES.DEAN.name,
+            ROOT_ROLES.VICE_DEAN.name,
+            ROOT_ROLES.EMPLOYEE.name,
         ],
         components: getComponentsInLink('/hr-detail-employee')
     },
@@ -293,7 +297,6 @@ const LINKS = [{
         description: 'Nghỉ phép',
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
         roles: [
-            ROOT_ROLES.ADMIN.name,
             ROOT_ROLES.DEAN.name,
             ROOT_ROLES.VICE_DEAN.name,
             ROOT_ROLES.EMPLOYEE.name,
@@ -780,7 +783,7 @@ const LINKS = [{
             ROOT_ROLES.ADMIN.name
         ],
         components: getComponentsInLink('/crm/customer')
-    },{
+    }, {
         url: '/crm/lead',
         description: `Khách hàng thân thiết`,
         category: LINK_CATEGORY.CRM.name,
@@ -814,7 +817,7 @@ const LINKS = [{
         url: '/crm/care',
         description: `Chăm sóc khách hàng`,
         category: LINK_CATEGORY.CRM.name,
-        roles: [    
+        roles: [
             ROOT_ROLES.SUPER_ADMIN.name,
             ROOT_ROLES.ADMIN.name
         ],

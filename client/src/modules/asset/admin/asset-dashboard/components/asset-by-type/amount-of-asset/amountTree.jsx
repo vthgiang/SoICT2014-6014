@@ -62,8 +62,7 @@ class AmountTree extends Component {
                 ...node,
                 id: node.id,
                 text: node.typeName,
-                parent: node.parentId ? node.parentId.toString() : "#",
-                icon: "./image/category.png"
+                parent: node.parentId ? node.parentId.toString() : "#"
             }
         })
 

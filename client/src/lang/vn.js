@@ -517,7 +517,9 @@ export default {
                 document: 'Giấy tờ',
                 description: 'Mô tả',
                 carier: 'Nhân viên chăm sóc phụ trách',
-                discount: 'Chiết khấu áp dụng', by_group: 'Theo nhóm khách hàng', by_customer: 'Theo khách hàng',
+                discount: 'Chiết khấu áp dụng',
+                by_group: 'Theo nhóm khách hàng',
+                by_customer: 'Theo khách hàng',
                 payment: 'Hình thức thanh toán',
 
                 info: 'Thông tin chung',
@@ -1037,6 +1039,7 @@ export default {
                         decision_unit: 'Cấp ra quyết định',
                         reward_forms: 'Hình thức khen thưởng',
                         reason_praise: 'Thành tích (Lý do)',
+                        reward_forms_short: 'Hình thức',
 
                     },
 
@@ -1080,6 +1083,7 @@ export default {
                         end_date: 'Ngày hết hiệu lực',
                         discipline_forms: 'Hình thức kỷ luật',
                         reason_discipline: 'Lý do kỷ luật',
+                        discipline_forms_short: 'Hình thức',
                     },
 
                     // Nhóm dành cho action
@@ -1476,7 +1480,6 @@ export default {
                 day: 'ngày',
                 total_number_leave_of_year: 'Tổng số ngày nghỉ phép cả năm',
                 leaved: 'Bạn đã nghỉ',
-                view_detail: 'Chi tiết xem ở trang',
                 receiver: 'Người nhận',
 
                 // Nhóm action
@@ -1546,6 +1549,7 @@ export default {
                 add: 'Thêm',
                 basic_information: 'Thông tin cơ bản',
                 detail_information: 'Thông tin chi tiết',
+                asset_properties: 'Các thuộc tính của tài sản',
                 view: 'Xem thông tin tài sản',
                 edit_info: 'Chỉnh sửa thông tin tài sản',
                 delete_info: 'Xóa thông tin tài sản',
@@ -1589,7 +1593,7 @@ export default {
                 depreciation_information: 'Thông tin khấu hao',
                 incident_information: 'Thông tin sự cố',
                 disposal_information: 'Thông tin thanh lý',
-                attach_infomation: 'Thông tin đính kèm',
+                attach_infomation: 'Tài liệu đính kèm',
 
                 serial_number: 'Số serial',
                 warranty_expiration_date: 'Ngày hết hạn bảo hành',
@@ -1672,7 +1676,7 @@ export default {
             // Quản lý thông tin tài sản
             asset_info: {
                 asset_info: 'Thông tin tài sản',
-                field_name: 'Tên trường dữ liệu',
+                field_name: 'Tên thuộc tính',
                 value: 'Giá trị',
 
                 usage_logs: 'Lịch sử cấp phát - điều chuyển - thu hồi',
@@ -1680,7 +1684,7 @@ export default {
                 incident_list: 'Danh sách sự cố tài sản',
                 file_list: 'Danh sách tài liệu đính kèm',
                 add_usage_info: 'Thêm mới thông tin cấp phát sử dụng',
-                edit_usage_info: 'Chỉnh sửa thông tin cấp phát sử dụng',
+                edit_usage_info: 'Chỉnh sửa phiếu đăng kí sử dụng',
                 delete_usage_info: 'Xóa thông tin cấp phát sử dụng',
                 add_maintenance_card: 'Thêm mới phiếu bảo trì',
                 edit_maintenance_card: 'Chỉnh sửa phiếu bảo trì',

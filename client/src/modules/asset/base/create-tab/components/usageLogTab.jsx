@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { UsageLogAddModal, UsageLogEditModal } from './combinedContent';
-import { UsageActions } from '../../../admin/usage/redux/actions'
+import { UseRequestActions } from '../../../admin/use-request/redux/actions'
 class UsageLogTab extends Component {
     constructor(props) {
         super(props);
@@ -304,10 +304,10 @@ function mapState(state) {
 };
 
 const actionCreators = {
-    recallAsset: UsageActions.recallAsset,
-    createUsage: UsageActions.createUsage,
-    deleteUsage: UsageActions.deleteUsage,
-    updateUsage: UsageActions.updateUsage,
+    recallAsset: UseRequestActions.recallAsset,
+    createUsage: UseRequestActions.createUsage,
+    deleteUsage: UseRequestActions.deleteUsage,
+    updateUsage: UseRequestActions.updateUsage,
 };
 
 const usageLogTab = connect(mapState, actionCreators)(withTranslate(UsageLogTab));
