@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DatePicker, ErrorLabel, SelectBox, ImgShow } from '../../../../../common-components';
+import { DatePicker, ErrorLabel, SelectBox, ApiImage } from '../../../../../common-components';
 
 import { EmployeeCreateValidator } from './employeeCreateValidator';
 
@@ -407,7 +407,7 @@ class GeneralTab extends Component {
                     <div className="col-lg-4 col-md-4 col-ms-12 col-xs-12" style={{ textAlign: 'center' }}>
                         <div>
                             <a href={img} target="_blank">
-                                <ImgShow id={`avater-edit-create-${id}`} className='attachment-img avarta' src={img} />
+                                <ApiImage id={`avater-edit-create-${id}`} className='attachment-img avarta' src={img} />
                             </a>
                         </div>
                         <div className="upload btn btn-default ">

@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { AuthActions } from '../../../modules/auth/redux/actions';
 
-class ImgShow extends Component {
+class ApiImage extends Component {
     constructor(props) {
         super(props);
         this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
@@ -72,5 +72,5 @@ const actionCreators = {
     downloadFile: AuthActions.downloadFile,
 };
 
-const imgShow = connect(mapState, actionCreators)(withTranslate(ImgShow));
-export { imgShow as ImgShow }
+const apiImage = connect(mapState, actionCreators)(withTranslate(ApiImage));
+export { apiImage as ApiImage }
