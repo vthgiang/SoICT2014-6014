@@ -1,3 +1,8 @@
+div.selectmulti {
+    width: 100%;
+}
+
+
 /* Ghi đè setting mặc định của thư viện */
 .multiselect-container li a label.checkbox input[type=checkbox],
 .multiselect-container li a label.radio input[type=radio] {
