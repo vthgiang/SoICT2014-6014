@@ -177,7 +177,15 @@ class AnnualLeaveCreateForm extends Component {
 
     /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
     isFormValidated = () => {
-        const { employee, organizationalUnit, reason, startDate, endDate } = this.state;
+        const { user } = this.props;
+        let { employee, organizationalUnit, reason, startDate, endDate } = this.state;
+
+        if (user.organizationalUnitsOfUserByEmail) {
+            if (!organizationalUnit) {
+                let department = user.organizationalUnitsOfUserByEmail[0];
+                organizationalUnit = department._id;
+            }
+        }
 
         let result = this.validateEmployeeNumber(employee, false) &&
             this.validateReason(reason, false) && this.validateOrganizationalUnit(organizationalUnit, false);
@@ -195,7 +203,7 @@ class AnnualLeaveCreateForm extends Component {
     /** Bắt sự kiện submit form */
     save = () => {
         const { user, employeesManager } = this.props;
-        const { organizationalUnit, startDate, endDate, employee } = this.state;
+        let { organizationalUnit, startDate, endDate, employee } = this.state;
         if (user.organizationalUnitsOfUserByEmail) {
             if (!organizationalUnit) {
                 let department = user.organizationalUnitsOfUserByEmail[0];
