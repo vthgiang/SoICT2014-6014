@@ -66,7 +66,7 @@ class AdministrationDocumentDomains extends Component {
     /**Mở modal import file excel */
     handImportFile = (event) => {
         event.preventDefault();
-        window.$('#modal_import_file').modal('show');
+        window.$('#modal_import_file-domain').modal('show');
     }
     handleAddDomain = (event) => {
         event.preventDefault();
@@ -131,7 +131,7 @@ class AdministrationDocumentDomains extends Component {
                             disabled={domainParent.length > 1 ? true : false}>{translate('general.add')}</button>
                         <ul className="dropdown-menu pull-right">
                             <li><a href="#form-create-document-domain" title="ImportForm" onClick={(event) => { this.handleAddDomain(event) }}>{translate('task_template.add')}</a></li>
-                            <li><a href="#modal_import_file" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>ImportFile</a></li>
+                            <li><a href="#modal_import_file-domain" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>ImportFile</a></li>
                         </ul>
                     </div>
                 </div>

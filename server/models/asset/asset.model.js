@@ -4,7 +4,7 @@ const Company = require('../system-admin/company.model');
 const AssetType = require('./assetType.model');
 const User = require('../auth/user.model');
 const OrganizationalUnit = require('../super-admin/organizationalUnit.model')
-// Create Schema
+    // Create Schema
 const AssetSchema = new Schema({
     group: {
         type: String,
@@ -78,12 +78,12 @@ const AssetSchema = new Schema({
     status: { //17.tình trạng: sẵn sàng sử dụng || đang sử dụng || hỏng hóc || mất || Thanh lý
         type: String,
         enum: ["Sẵn sàng sử dụng", "Đang sử dụng", "Hỏng hóc", "Mất", "Thanh lý"]
-        // enum: ["InUse", "Unassigned", "InStorage", "Broken", "InRepair", "Disposed"]
-        // InUse, Active, InStorage, Broken, Lost, In Repair, Disposed, Transferred out, Inoperable
+            // enum: ["InUse", "Unassigned", "InStorage", "Broken", "InRepair", "Disposed"]
+            // InUse, Active, InStorage, Broken, Lost, In Repair, Disposed, Transferred out, Inoperable
     },
 
-    canRegisterForUse: {
-        type: Boolean,
+    typeRegisterForUse: { //Đăng ký sử dụng: 1.Không được đăng ký, 2.Đăng ký sử dụng theo giờ, 3.Đăng ký sử dụng lâu dài
+        type: Number,
         //     type: String,
         //    enum: ["Được phép đăng ký sử dụng", "Không được phép đăng ký sử dụng"]
     },

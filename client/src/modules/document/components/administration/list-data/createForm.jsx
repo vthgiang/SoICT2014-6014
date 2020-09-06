@@ -477,9 +477,8 @@ class CreateForm extends Component {
         window.$('#modal-create-document').modal('show');
     }
     handImportFile = (event) => {
-        console.log('aaaaaaaaaaa');
         event.preventDefault();
-        window.$('#modal_import_file').modal('show');
+        window.$('#modal_import_file_document').modal('show');
     }
 
     render() {
@@ -488,29 +487,26 @@ class CreateForm extends Component {
         const { errorName, errorIssuingBody, errorOfficialNumber, errorSigner, errorVersionName,
             errorDocumentFile, errorDocumentFileScan, errorIssuingDate, errorEffectiveDate,
             errorExpiredDate, errorCategory, documentArchives } = this.state;
-        console.log('lít', list)
         const archives = documents.administration.archives.list;
         const categories = documents.administration.categories.list.map(category => { return { value: category._id, text: category.name } });
-        // console.log('rrrrrr', archives);
         const documentRoles = role.list.map(role => { return { value: role._id, text: role.name } });
         const relationshipDocs = documents.administration.data.list.map(doc => { return { value: doc._id, text: doc.name } });
-        // console.log('eeeeeeee', documentArchives)
-        // console.log('uuuuuuu', documentArchives ? this.findPath(archives, documentArchives[0]) : "");
         let path = documentArchives ? this.findPath(archives, documentArchives[0]) : "";
         return (
             <React.Fragment>
-                <DocumentImportForm />
+
                 <div className="form-inline">
                     <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
                         <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('manage_user.add_title')}
                         >{translate('general.add')}</button>
                         <ul className="dropdown-menu pull-right">
                             <li><a href="#modal-create-document" title="ImportForm" onClick={(event) => { this.handleAddDocument(event) }}>{translate('task_template.add')}</a></li>
-                            <li><a href="#modal_import_file" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>ImportFile</a></li>
+                            <li><a href="#modal_import_file_document" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>ImportFile</a></li>
                         </ul>
                     </div>
                 </div>
                 {/* <ButtonModal modalID="modal-create-document" button_name={translate('general.add')} title={translate('manage_user.add_title')} /> */}
+                <DocumentImportForm />
                 <DialogModal
                     modalID="modal-create-document"
                     formID="form-create-document"

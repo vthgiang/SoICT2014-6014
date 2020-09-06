@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../../common-components';
+import { DatePicker, TimePicker ,DialogModal, ErrorLabel, SelectBox } from '../../../../../common-components';
 
 import { UseRequestFromValidator } from './UseRequestFromValidator';
 
@@ -20,6 +20,8 @@ class UseRequestCreateForm extends Component {
             reqContent: "",
             dateStartUse: this.formatDate(Date.now()),
             dateEndUse: this.formatDate(Date.now()),
+            startTime : null,
+            stopTime: null,
             status: "Chờ phê duyệt",
             asset: "",
         };
@@ -140,10 +142,38 @@ class UseRequestCreateForm extends Component {
         return msg === undefined;
     }
 
+    handleStartTimeChange = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                startTime: value
+            }
+        });
+
+    }
+
+    handleStopTimeChange = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                stopTime: value
+            }
+        });
+
+    }
     // Bắt sự kiện thay đổi "Thời gian đăng ký sử dụng đến ngày"
     handleDateEndUseChange = (value) => {
         this.validateDateEndUse(value, true);
     }
+
+    getDefaultStartValue = (value) => {
+        this.setState({ startTime: value });
+    }
+
+    getDefaultEndValue = (value) => {
+        this.setState({ stopTime: value });
+    }
+
     validateDateEndUse = (value, willUpdateState = true) => {
         let msg = UseRequestFromValidator.validateDateEndUse(value, this.props.translate)
         if (willUpdateState) {
@@ -194,7 +224,7 @@ class UseRequestCreateForm extends Component {
         const { translate, recommendDistribute, assetsManager, user, auth } = this.props;
         const {
             recommendNumber, dateCreate, proponent, asset, reqContent, dateStartUse, dateEndUse, approver, positionApprover, status, note,
-            errorOnRecommendNumber, errorOnDateCreate, errorOnReqContent, errorOnDateStartUse, errorOnDateEndUse
+            errorOnRecommendNumber, errorOnDateCreate, errorOnReqContent, errorOnDateStartUse, errorOnDateEndUse, startTime, stopTime
         } = this.state;
 
         var assetlist = assetsManager.listAssets;
@@ -292,6 +322,14 @@ class UseRequestCreateForm extends Component {
                                         value={dateStartUse}
                                         onChange={this.handleDateStartUseChange}
                                     />
+                                    { this.props.typeRegisterForUse == 2 &&
+                                    <TimePicker
+                                        id={`time-picker-start`}
+                                        onChange={this.handleStartTimeChange}
+                                        value = {startTime}
+                                        // getDefaultValue = {this.getDefaultStartValue}
+                                        />
+                                    }
                                     <ErrorLabel content={errorOnDateStartUse} />
                                 </div>
 
@@ -303,8 +341,19 @@ class UseRequestCreateForm extends Component {
                                         value={dateEndUse}
                                         onChange={this.handleDateEndUseChange}
                                     />
+                                    { this.props.typeRegisterForUse == 2 &&
+                                        <TimePicker
+                                        id={`time-picker-end`}
+                                        onChange={this.handleStopTimeChange}
+                                        value = {stopTime}
+                                        // getDefaultValue = {this.getDefaultEndValue}
+                                        />
+                                    }
+                                    
                                     <ErrorLabel content={errorOnDateEndUse} />
                                 </div>
+
+
                             </div>
                         </div>
                     </form>

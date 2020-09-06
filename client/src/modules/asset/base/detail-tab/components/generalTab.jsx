@@ -69,7 +69,7 @@ class GeneralTab extends Component {
                 location: nextProps.location,
                 description: nextProps.description,
                 status: nextProps.status,
-                canRegisterForUse: nextProps.canRegisterForUse,
+                typeRegisterForUse: nextProps.typeRegisterForUse,
                 detailInfo: nextProps.detailInfo,
                 usageLogs: nextProps.usageLogs
             }
@@ -88,8 +88,8 @@ class GeneralTab extends Component {
 
         const {
             img, avatar, code, assetName, serial, assetTypes, group, purchaseDate, warrantyExpirationDate,
-            managedBy, assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, location,
-            description, status, canRegisterForUse, detailInfo, usageLogs
+            managedBy, assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, location, 
+            description, status, typeRegisterForUse, detailInfo, usageLogs
         } = this.state;
         return (
             <div id={id} className="tab-pane active">
@@ -205,7 +205,7 @@ class GeneralTab extends Component {
                                     {/* Quyền đăng ký sử dụng */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.can_register_for_use')}&emsp; </strong>
-                                        {canRegisterForUse}
+                                        {typeRegisterForUse == 1? 'Không được đăng ký sử dụng' : (typeRegisterForUse == 2 ? "Đăng ký sử dụng theo giờ" : "Đăng ký sử dụng lâu dài")}
                                     </div>
                                 </div>
                             </div>

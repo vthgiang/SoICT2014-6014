@@ -63,7 +63,7 @@ mongoose.connect(db, optionDatabase).then(() => {
     console.log("Kết nối thành công đến MongoDB!\n");
 }).catch(err => console.log("ERROR! :(\n", err));
 
-const sampleCompanyData = async () => {
+const sampleCompanyData = async() => {
     console.log("Bắt đầu tạo dữ liệu ...");
 
 
@@ -353,7 +353,7 @@ const sampleCompanyData = async () => {
     // Step 6: TẠO LINK CHO CÁC TRANG WEB CỦA CÔNG TY
     console.log("Tạo link cho các trang web của công ty...");
 
-    const createCompanyLinks = async (companyId, linkArr, roleArr) => {
+    const createCompanyLinks = async(companyId, linkArr, roleArr) => {
         let checkIndex = (link, arr) => {
             let resIndex = -1;
             arr.forEach((node, i) => {
@@ -441,7 +441,7 @@ const sampleCompanyData = async () => {
             });
     }
 
-    const createCompanyComponents = async (companyId, linkArr) => {
+    const createCompanyComponents = async(companyId, linkArr) => {
 
         let systemLinks = await SystemLink.find({
             _id: {
@@ -1644,7 +1644,7 @@ const sampleCompanyData = async () => {
             assignedToUser: null,
             assignedToOrganizationalUnit: null,
             status: "Thanh lý",
-            canRegisterForUse: true,
+            typeRegisterForUse: 1,
             description: "Laptop Sony Vaio",
             detailInfo: [],
             readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
@@ -1687,7 +1687,7 @@ const sampleCompanyData = async () => {
             assignedToUser: null,
             assignedToOrganizationalUnit: null,
             status: "Thanh lý",
-            canRegisterForUse: true,
+            typeRegisterForUse: 2,
             description: "Điều hòa Panasonic 9.000BTU",
             detailInfo: [],
             readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id],
@@ -1729,7 +1729,7 @@ const sampleCompanyData = async () => {
             assignedToUser: null,
             assignedToOrganizationalUnit: null,
             status: "Sẵn sàng sử dụng",
-            canRegisterForUse: true,
+            typeRegisterForUse: 2,
             description: "Máy tính cây",
             detailInfo: [],
             readByRoles: [roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, truongPhongHC._id, phoPhongHC._id],
@@ -1772,7 +1772,7 @@ const sampleCompanyData = async () => {
             assignedToUser: null,
             assignedToOrganizationalUnit: null,
             status: "Sẵn sàng sử dụng",
-            canRegisterForUse: true,
+            typeRegisterForUse: 2,
             description: "Máy tính cây",
             detailInfo: [],
             readByRoles: [roleAdmin._id, roleSuperAdmin._id, roleDean._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
@@ -1815,7 +1815,7 @@ const sampleCompanyData = async () => {
             assignedToUser: null,
             assignedToOrganizationalUnit: null,
             status: "Sẵn sàng sử dụng",
-            canRegisterForUse: true,
+            typeRegisterForUse: 2,
             description: "Máy tính cây",
             detailInfo: [],
             readByRoles: [roleAdmin._id, roleDean._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
@@ -1858,7 +1858,7 @@ const sampleCompanyData = async () => {
             assignedToUser: null,
             assignedToOrganizationalUnit: null,
             status: "Sẵn sàng sử dụng",
-            canRegisterForUse: true,
+            typeRegisterForUse: 3,
             description: "Máy tính cây",
             detailInfo: [],
             readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id],
@@ -1914,7 +1914,7 @@ const sampleCompanyData = async () => {
 
         location: null,
         status: "Sẵn sàng sử dụng",
-        canRegisterForUse: true,
+        typeRegisterForUse: 3,
         description: "BK",
         detailInfo: [],
         readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, truongPhongHC._id, phoPhongHC._id],
@@ -1959,7 +1959,7 @@ const sampleCompanyData = async () => {
 
         location: null,
         status: "Sẵn sàng sử dụng",
-        canRegisterForUse: true,
+        typeRegisterForUse: 3,
         description: "Phòng họp",
         detailInfo: [],
         readByRoles: [giamDoc._id, roleAdmin._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
@@ -2012,7 +2012,7 @@ const sampleCompanyData = async () => {
 
         location: null,
         status: "Sẵn sàng sử dụng",
-        canRegisterForUse: true,
+        typeRegisterForUse: 3,
         description: "Phòng họp",
         detailInfo: [],
         readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
@@ -2067,7 +2067,7 @@ const sampleCompanyData = async () => {
 
             location: asset._id,
             status: "Sẵn sàng sử dụng",
-            canRegisterForUse: true,
+            typeRegisterForUse: 3,
             description: "B1",
             detailInfo: [],
             readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
@@ -2112,7 +2112,7 @@ const sampleCompanyData = async () => {
 
             location: asset._id,
             status: "Sẵn sàng sử dụng",
-            canRegisterForUse: true,
+            typeRegisterForUse: 3,
             description: "TV",
             detailInfo: [],
             readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
@@ -2159,7 +2159,7 @@ const sampleCompanyData = async () => {
             readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
             location: listAsset1[0]._id,
             status: "Thanh lý",
-            canRegisterForUse: true,
+            typeRegisterForUse: 3,
             description: "B1-101",
             detailInfo: [],
 
@@ -2204,7 +2204,7 @@ const sampleCompanyData = async () => {
             readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
             location: listAsset1[0]._id,
             status: "Thanh lý",
-            canRegisterForUse: true,
+            typeRegisterForUse: 3,
             description: "B1-202",
             detailInfo: [],
 
@@ -2249,7 +2249,7 @@ const sampleCompanyData = async () => {
 
             location: listAsset1[1]._id,
             status: "Sẵn sàng sử dụng",
-            canRegisterForUse: true,
+            typeRegisterForUse: 3,
             description: "d3-101",
             detailInfo: [],
             readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
@@ -2294,7 +2294,7 @@ const sampleCompanyData = async () => {
 
             location: listAsset1[1]._id,
             status: "Sẵn sàng sử dụng",
-            canRegisterForUse: true,
+            typeRegisterForUse: 3,
             description: "d3-102",
             detailInfo: [],
             readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
@@ -2402,7 +2402,7 @@ const sampleCompanyData = async () => {
 
             location: listAsset1[1]._id,
             status: "Sẵn sàng sử dụng",
-            canRegisterForUse: true,
+            typeRegisterForUse: 3,
             description: "d3-103",
             detailInfo: [],
             readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
