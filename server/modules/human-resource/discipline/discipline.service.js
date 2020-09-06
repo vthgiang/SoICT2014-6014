@@ -12,30 +12,19 @@ const EmployeeService = require('../profile/profile.service');
  * @month : Tháng tìm kiếm
  */
 exports.getTotalDiscipline = async (company, organizationalUnits, month) => {
-    let keySearchEmployee, keySearch = {
+    let keySearch = {
         company: company
     };
 
-    // Bắt sựu kiện đơn vị tìm kiếm khác undefined 
+    // Bắt sựu kiện tìm kiếm theo đơn vị 
     if (organizationalUnits !== undefined) {
-        let emailInCompany = await EmployeeService.getEmployeeEmailsByOrganizationalUnitsAndPositions(organizationalUnits, undefined);
-        keySearchEmployee = {
-            ...keySearchEmployee,
-            emailInCompany: {
-                $in: emailInCompany
-            }
-        }
-    }
-    if (keySearchEmployee !== undefined) {
-        let employeeinfo = await Employee.find(keySearchEmployee);
-        let employee = employeeinfo.map(employeeinfo => employeeinfo._id);
         keySearch = {
             ...keySearch,
-            employee: {
-                $in: employee
+            organizationalUnit: {
+                $in: organizationalUnits
             }
         }
-    }
+    };
 
     // Bắt sựu kiện tháng tìm kiếm khác "", undefined
     let totalListOfYear = 0;

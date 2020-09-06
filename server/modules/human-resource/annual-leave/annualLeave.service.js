@@ -16,6 +16,7 @@ exports.getNumberAnnaulLeave = async (email, company) => {
     }, {
         _id: 1
     });
+
     if (employee) {
         let year = new Date().getFullYear();
         let firstDay = new Date(year, 0, 1);
@@ -49,27 +50,16 @@ exports.getNumberAnnaulLeave = async (email, company) => {
  * @month : Tháng tìm kiếm
  */
 exports.getTotalAnnualLeave = async (company, organizationalUnits, month) => {
-    let keySearchEmployee, keySearch = {
+    let keySearch = {
         company: company
     };
 
-    // Bắt sựu kiện đơn vị tìm kiếm khác undefined 
+    // Bắt sựu kiện tìm kiếm theo đơn vị 
     if (organizationalUnits !== undefined) {
-        let emailInCompany = await EmployeeService.getEmployeeEmailsByOrganizationalUnitsAndPositions(organizationalUnits, undefined);
-        keySearchEmployee = {
-            ...keySearchEmployee,
-            emailInCompany: {
-                $in: emailInCompany
-            }
-        }
-    }
-    if (keySearchEmployee !== undefined) {
-        let employeeinfo = await Employee.find(keySearchEmployee);
-        let employee = employeeinfo.map(employeeinfo => employeeinfo._id);
         keySearch = {
             ...keySearch,
-            employee: {
-                $in: employee
+            organizationalUnit: {
+                $in: organizationalUnits
             }
         }
     }
@@ -177,21 +167,11 @@ exports.getAnnualLeaveOfNumberMonth = async (organizationalUnits, numberMonth, c
     })
 
     if (organizationalUnits) {
-        let emailInCompany = await EmployeeService.getEmployeeEmailsByOrganizationalUnitsAndPositions(organizationalUnits, undefined);
-        let arrId = await Employee.find({
-            company: company,
-            emailInCompany: {
-                $in: emailInCompany
-            }
-        }, {
-            _id: 1
-        })
-        arrId = arrId.map(x => x._id);
         let listAnnualLeaveOfNumberMonth = await AnnualLeave.find({
             company: company,
             status: 'pass',
-            employee: {
-                $in: arrId
+            organizationalUnit: {
+                $in: organizationalUnits
             },
             "$or": querys
         }, {
