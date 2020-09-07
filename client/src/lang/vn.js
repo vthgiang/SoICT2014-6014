@@ -2243,6 +2243,11 @@ export default {
                 action_not_rating: 'Số hoạt động chưa được đánh giá tháng này',
 
                 left_can_edit_task: 'Thời gian còn lại để chỉnh sửa đánh giá công việc tháng trước',
+
+                // check deadline
+                warning_days: "ngày",
+                warning_hours: "giờ",
+                warning_minutes: "phút",
             },
             task_perform: {
 

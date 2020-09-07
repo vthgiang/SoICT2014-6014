@@ -2211,9 +2211,14 @@ export default {
                 not_confirm: 'Not confirm this task',
 
                 left_task_expired: 'left is task expired',
-                action_not_rating: 'actions not rating this month',
+                action_not_rating: 'Actions not rating this month',
 
                 left_can_edit_task: 'Remaining time to edit task evaluation of previous month',
+
+                // check deadline
+                warning_days: "days",
+                warning_hours: "hours",
+                warning_minutes: "minutes",
             },
             task_perform: {
                 actions: "Actions",

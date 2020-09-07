@@ -369,7 +369,7 @@ class DetailTaskTab extends Component {
                     }
 
                     listEmployeeNotKpiLink = responsibleEmployeesNotKpiLink.concat(accountableEmployeesNotKpiLink).concat(consultedEmployeesNotKpiLink);
-                } 
+                }
             }
         }
 
@@ -414,12 +414,12 @@ class DetailTaskTab extends Component {
 
                     if (deadlineForEvaluation < 1) {
                         if (deadlineForEvaluation * 24 < 1) {
-                            deadlineForEvaluation = Math.floor(deadlineForEvaluation * 24 * 60) + ' phút';
+                            deadlineForEvaluation = Math.floor(deadlineForEvaluation * 24 * 60) + ` ${this.props.translate('task.task_management.warning_minutes')}`;
                         } else {
-                            deadlineForEvaluation = Math.floor(deadlineForEvaluation * 24) + ' giờ';
+                            deadlineForEvaluation = Math.floor(deadlineForEvaluation * 24) + ` ${this.props.translate('task.task_management.warning_hours')}`;
                         }
                     } else {
-                        deadlineForEvaluation = Math.floor(deadlineForEvaluation) + ' ngày';
+                        deadlineForEvaluation = Math.floor(deadlineForEvaluation) + ` ${this.props.translate('task.task_management.warning_days')}`;
                     }
                 }
             }
@@ -610,10 +610,6 @@ class DetailTaskTab extends Component {
 
                         {((currentRole === "consulted" || currentRole === "responsible" || currentRole === "accountable") && checkInactive) &&
                             <React.Fragment>
-                                {/* <a className="btn btn-app" onClick={() => this.handleShowEndTask(id, currentRole)} title="Kết thúc công việc">
-                                    <i className="fa fa-power-off" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_end')}
-                                </a> */}
-
                                 <a className="btn btn-app" onClick={() => this.handleShowEvaluate(id, currentRole)} title={translate('task.task_management.detail_evaluate')}>
                                     <i className="fa fa-calendar-check-o" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_evaluate')}
                                 </a>
@@ -653,13 +649,14 @@ class DetailTaskTab extends Component {
                             && <div className="description-box" style={{ border: "3px double #e8cbcb" }}>
                                 <h4>{translate('task.task_management.warning')}</h4>
                                 {/* Kích hoạt công việc phía sau trong quy trình */}
-                                {checkInactive && codeInProcess && (currentRole === "accountable" || (currentRole === "responsible" && checkHasAccountable === false)) &&
+                                {statusTask === "Inprocess" && checkInactive && codeInProcess && (currentRole === "accountable" || (currentRole === "responsible" && checkHasAccountable === false)) &&
                                     <div>
                                         <strong>{translate('task.task_perform.is_task_process')}.
                                             <a style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => this.handleEndTask(id, "Inprocess", codeInProcess, typeOfTask)}> {translate('task.task_perform.activated_task')}</a> {translate('task.task_perform.following_task')}
                                         </strong>
                                     </div>
                                 }
+
                                 {/** Xác nhận công việc */}
                                 {
                                     checkConfirmTask && checkConfirmTask.checkConfirmCurrentUser
