@@ -120,11 +120,34 @@ class TaskReportViewForm extends Component {
      * 
      * Hàm gom nhóm các công việc theo người phê duyệt
      */
-    groupByAccountableEmployees = (tasks) => {
-        return tasks.reduce((groups, item) => {
-            groups[item.accountableEmployees.toString()] = [...groups[item.accountableEmployees.toString()] || [], item];
-            return groups;
-        }, {});
+    groupByAccountableEmployees = (tasks, dataAxisX) => {
+        if (dataAxisX && dataAxisX.indexOf(3) === 0) {
+            return tasks.reduce((groups, item) => {
+                groups[item.accountableEmployees.toString()] = [...groups[item.accountableEmployees.toString()] || [], item];
+                return groups;
+            }, {});
+        }
+        else if (dataAxisX && dataAxisX.indexOf(3) === 1) {
+            return Object.entries(tasks).map(([o, datapoints]) => {
+                return datapoints.reduce((groups, item) => {
+                    const getAcc = item.accountableEmployees.toString();
+                    groups[[o] + `|${getAcc}`] = [...groups[[o] + `|${getAcc}`] || [], item];
+                    return groups;
+                }, []);
+            })
+        }
+        else {
+            return tasks.map(o => {
+                return Object.entries(o).map(([obj, item]) => {
+                    return item.reduce((groups, item) => {
+                        const getAcc = item.accountableEmployees;
+                        groups[[obj] + `|${getAcc}`] = [...groups[[obj] + `|${getAcc}`] || [], item];
+                        return groups;
+                    }, [])
+
+                })
+            })
+        }
     }
 
 
@@ -209,6 +232,7 @@ class TaskReportViewForm extends Component {
                 results.push({
                     time: x.time,
                     task: x.task,
+                    accountableEmployees: x.accountableEmployees,
                     responsibleEmployees: y,
                 })
             })
@@ -234,6 +258,22 @@ class TaskReportViewForm extends Component {
             })
         });
         return results;
+    }
+
+    separateResponsibleEmployeesAndAccountableEmployees = (input) => {
+        let results = [];
+        input.forEach(x => {
+            x.responsibleEmployees.forEach(y => {
+                x.accountableEmployees.forEach(z => {
+                    results.push({
+                        time: x.time,
+                        task: x.task,
+                        responsibleEmployees: y,
+                        accountableEmployees: z,
+                    })
+                })
+            })
+        })
     }
 
     /**
@@ -325,18 +365,7 @@ class TaskReportViewForm extends Component {
 
                 // Tính tổng/Trung bình cộng, xử lý tên mới, và showInreport các trường thông tin theo tùy chọn của người dùng
                 output = this.dataAfterAggregate(groupDataByDate);
-
-                // tách data vẽ biểu đồ:  cột với đường ra riêng, tròn ra riêng
-                let separateDataChart = this.separateDataChart(output); // gọi hàm tách data
-                pieChartData = separateDataChart.pieChartData; // Dữ liệu vẽ biểu đồ tròn
-                barLineChartData = separateDataChart.barLineChartData; // Dữ liệu vẽ biểu đồ cột và đường
             }
-
-            // convert Data pieChart sang dạng C3js
-            if (pieChartData && pieChartData.length > 0) {
-                pieDataConvert = this.convertDataPieChartOneWay(pieChartData);
-            }
-
         }
 
         /**
@@ -346,12 +375,10 @@ class TaskReportViewForm extends Component {
 
         else if (dataForAxisXInChart.toString() === "2") {
             let groupDataByResponsibleEmployees;
-
             if (newlistTaskEvaluation) {
-                let results = [];
 
                 // Gọi hàm separateResponsibleEmployees tách người thực hiện
-                results = this.separateResponsibleEmployees(newlistTaskEvaluation);
+                let results = this.separateResponsibleEmployees(newlistTaskEvaluation);
 
                 // Gọi hàm groupByResponsibleEmployees nhóm công việc theo người thực hiện
                 groupDataByResponsibleEmployees = Object.entries(this.groupByResponsibleEmployees(results, dataForAxisXInChart)); // Dùng Object.entries convert thành mảng các phần tử có cặp key,value
@@ -359,17 +386,7 @@ class TaskReportViewForm extends Component {
                 // Tính tổng/Trung bình cộng, xử lý tên mới, và showInreport các trường thông tin theo tùy chọn của người dùng
                 output = this.dataAfterAggregate(groupDataByResponsibleEmployees);
 
-                // tách data vẽ biểu đồ cột+đường với tròn
-                let separateDataChart = this.separateDataChart(output);
-                pieChartData = separateDataChart.pieChartData;
-                barLineChartData = separateDataChart.barLineChartData;
             }
-
-            // convert Data pieChart sang dạng C3js
-            if (pieChartData && pieChartData.length > 0) {
-                pieDataConvert = this.convertDataPieChartOneWay(pieChartData);
-            }
-
         }
         /**
             * Convert data, gom nhóm theo người phê duyệt, tính trung bình cộng các trường thông tin.
@@ -379,26 +396,15 @@ class TaskReportViewForm extends Component {
 
             let groupDataByAccountableEmployees;
             if (newlistTaskEvaluation) {
-                let results = [];
 
                 // Gọi hàm separateAccountableEmployees tách người phê duyệt
-                results = this.separateAccountableEmployees(newlistTaskEvaluation);
+                let results = this.separateAccountableEmployees(newlistTaskEvaluation);
 
                 // Gọi hàm groupByAccountableEmployees nhóm công việc theo người phê duyệt
-                groupDataByAccountableEmployees = Object.entries(this.groupByAccountableEmployees(results));
+                groupDataByAccountableEmployees = Object.entries(this.groupByAccountableEmployees(results, dataForAxisXInChart));
 
                 // Tính tổng/Trung bình cộng, xử lý tên mới, và showInreport các trường thông tin theo tùy chọn của người dùng
                 output = this.dataAfterAggregate(groupDataByAccountableEmployees);
-
-                // tách data vẽ biểu đồ cột+đường với tròn
-                let separateDataChart = this.separateDataChart(output);
-                pieChartData = separateDataChart.pieChartData;
-                barLineChartData = separateDataChart.barLineChartData;
-            }
-
-            // convert Data pieChart theo dạng c3
-            if (pieChartData && pieChartData.length > 0) {
-                pieDataConvert = this.convertDataPieChartOneWay(pieChartData);
             }
         }
 
@@ -421,22 +427,8 @@ class TaskReportViewForm extends Component {
                 // Convert đầu ra các phân tử trong mảng cùng cấp và có cặp key, value
                 groupDataByResponsibleEmployees = groupDataByResponsibleEmployees.flatMap(x => Object.entries(x));
 
-                let output = [];
-
                 // Tính tổng/Trung bình cộng, xử lý tên mới, và showInreport các trường thông tin theo tùy chọn của người dùng
                 output = this.dataAfterAggregate(groupDataByResponsibleEmployees);
-
-                //tách data vẽ biểu đồ cột, đường với biểu dồ tròn
-                let separateDataChart = this.separateDataChart(output);
-                pieChartData = separateDataChart.pieChartData;
-                barLineChartData = separateDataChart.barLineChartData;
-
-
-                // Convert data sang dạng vẽ biểu đồ tròn của c3js
-                if (pieChartData && pieChartData.length > 0) {
-                    // convert Data pieChart
-                    pieDataConvert = this.convertDataPieChartOneWay(pieChartData);
-                }
 
             }
         }
@@ -461,20 +453,8 @@ class TaskReportViewForm extends Component {
                 // Convert đầu ra các phân tử trong mảng cùng cấp và có cặp key, value
                 groupDataByDate = groupDataByDate.flatMap(x => Object.entries(x));
 
-                let output = [];
                 // Tính tổng/Trung bình cộng, xử lý tên mới, và showInreport các trường thông tin theo tùy chọn của người dùng
                 output = this.dataAfterAggregate(groupDataByDate);
-
-                //tách data vẽ biểu đồ cột, đường với biểu dồ tròn
-                let separateDataChart = this.separateDataChart(output);
-                pieChartData = separateDataChart.pieChartData;
-                barLineChartData = separateDataChart.barLineChartData;
-
-                if (pieChartData && pieChartData.length > 0) {
-                    // convert Data pieChart c3js
-                    pieDataConvert = this.convertDataPieChartOneWay(pieChartData);
-                }
-
             }
         }
 
@@ -488,35 +468,18 @@ class TaskReportViewForm extends Component {
                 // Gọi hàm separateAccountableEmployees tách người phê duyệt
                 let results = this.separateAccountableEmployees(newlistTaskEvaluation);
 
-                // Gọi hàm groupByDate nhóm công việc theo người thực hiện
-                let groupDataByDate = this.groupByDate(results);
-
+                // Gọi hàm groupByDate nhóm công việc theo thời gian
+                let groupDataByDate = this.groupByDate(results, dataForAxisXInChart);
 
                 // Sau khi gom nhóm theo thời gian thì gom nhóm theo người phê duyệt
-                let groupDataByAccountableEmployees = Object.entries(groupDataByDate).map(([time, datapoints]) => {
-                    return datapoints.reduce((gr, item) => {
-                        let acc = item.accountableEmployees.toString();
-                        gr[[time] + ` ` + `(${acc})`] = [...gr[[time] + ` ` + `(${acc})`] || [], item];
-                        return gr;
-                    }, []);
-                });
+                let groupDataByAccountableEmployees = this.groupByAccountableEmployees(groupDataByDate, dataForAxisXInChart);
 
                 // Convert đầu ra các phân tử trong mảng cùng cấp và có cặp key, value
                 groupDataByAccountableEmployees = groupDataByAccountableEmployees.flatMap(x => Object.entries(x));
 
-                let output = [];
                 // Tính tổng/Trung bình cộng, xử lý tên mới, và showInreport các trường thông tin theo tùy chọn của người dùng
                 output = this.dataAfterAggregate(groupDataByAccountableEmployees);
 
-                //tách data vẽ biểu đồ cột, đường với biểu dồ tròn
-                let separateDataChart = this.separateDataChart(output);
-                pieChartData = separateDataChart.pieChartData;
-                barLineChartData = separateDataChart.barLineChartData;
-
-                if (pieChartData && pieChartData.length > 0) {
-                    // convert Data pieChart c3js
-                    pieDataConvert = this.convertDataPieChartOneWay(pieChartData);
-                }
             }
         }
 
@@ -531,36 +494,48 @@ class TaskReportViewForm extends Component {
                 let results = this.separateAccountableEmployees(newlistTaskEvaluation);
 
                 // Gọi hàm groupByAccountableEmployees nhóm công việc theo người phê duyệt
-                let groupDataByAccountableEmployees = this.groupByAccountableEmployees(results);
+                let groupDataByAccountableEmployees = this.groupByAccountableEmployees(results, dataForAxisXInChart);
 
                 // Sau khi gom nhóm theo người phê duyệt thì tiếp tục gom nhóm theo thời gian
-                let groupDataByDate = Object.entries(groupDataByAccountableEmployees).map(([time, datapoints]) => {
-                    return datapoints.reduce((gr, item) => {
-                        let res = item.time;
-                        gr[[time] + ` ` + `(${res})`] = [...gr[[time] + ` ` + `(${res})`] || [], item];
-                        return gr;
-                    }, []);
-                });
+                let groupDataByDate = this.groupByDate(groupDataByAccountableEmployees, dataForAxisXInChart)
 
                 // Convert đầu ra các phân tử trong mảng cùng cấp và có cặp key, value
                 groupDataByDate = groupDataByDate.flatMap(x => Object.entries(x));
 
-                let output = [];
                 // Tính tổng/Trung bình cộng, xử lý tên mới, và showInreport các trường thông tin theo tùy chọn của người dùng
                 output = this.dataAfterAggregate(groupDataByDate);
 
-                //tách data vẽ biểu đồ cột, đường với biểu dồ tròn
-                let separateDataChart = this.separateDataChart(output);
-                pieChartData = separateDataChart.pieChartData;
-                barLineChartData = separateDataChart.barLineChartData;
-
-                if (pieChartData && pieChartData.length > 0) {
-                    // convert Data pieChart dạng c3js
-                    pieDataConvert = this.convertDataPieChartOneWay(pieChartData);
-                }
             }
         }
 
+        else if (dataForAxisXInChart.indexOf(1) === 0 && dataForAxisXInChart.indexOf(2) === 1 && dataForAxisXInChart.indexOf(3) === 2) {
+            if (newlistTaskEvaluation) {
+                let results = this.separateResponsibleEmployeesAndAccountableEmployees(newlistTaskEvaluation);
+
+                let groupDataByDate = this.groupByDate(results, dataForAxisXInChart);
+
+                let groupDataByResponsibleEmployees = this.groupByResponsibleEmployees(groupDataByDate, dataForAxisXInChart);
+
+                let groupByAccountableEmployees = this.groupByAccountableEmployees(groupDataByResponsibleEmployees, dataForAxisXInChart);
+
+                groupByAccountableEmployees = groupByAccountableEmployees.flatMap(x => Object.entries(x));
+
+                output = this.dataAfterAggregate(groupByAccountableEmployees);
+
+            }
+        }
+
+        if (output) {
+            // tách data vẽ biểu đồ:  cột với đường ra riêng, tròn ra riêng
+            let separateDataChart = this.separateDataChart(output); // gọi hàm tách data
+            pieChartData = separateDataChart.pieChartData; // Dữ liệu vẽ biểu đồ tròn
+            barLineChartData = separateDataChart.barLineChartData; // Dữ liệu vẽ biểu đồ cột và đường
+
+            // convert Data pieChart sang dạng C3js
+            if (pieChartData && pieChartData.length > 0) {
+                pieDataConvert = this.convertDataPieChartOneWay(pieChartData);
+            }
+        }
 
 
         return (

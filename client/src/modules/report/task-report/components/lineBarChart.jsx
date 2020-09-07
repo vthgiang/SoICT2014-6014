@@ -134,7 +134,7 @@ class LineBarChart extends Component {
             <div className="row">
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <div className="lineBarChart">
-                        <section ref="barChart"></section>
+                        <div ref="barChart"></div>
                     </div>
                 </div>
             </div>
