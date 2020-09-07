@@ -93,10 +93,10 @@ class GeneralTab extends Component {
         } = this.state;
         return (
             <div id={id} className="tab-pane active">
-                <div className="box-body">
-                    <div className="col-md-12">
+                <div className="box-body" >
+                    <div className="row" style={{ paddingRight: '0px', paddingLeft: '0px' }}>
                         {/* Anh tài sản */}
-                        <div className="col-md-4" style={{ textAlign: 'center', paddingLeft: '0px' }}>
+                        <div className="col-xl-4 col-lg-5" style={{ textAlign: 'center', paddingLeft: '0px' }}>
                             <div>
                                 <a href={process.env.REACT_APP_SERVER + avatar} target="_blank">
                                     <img className="attachment-img avarta" src={process.env.REACT_APP_SERVER + avatar} alt="Attachment" />
@@ -106,7 +106,7 @@ class GeneralTab extends Component {
 
                         {/* Thông tin cơ bản */}
                         <br />
-                        <div className="col-md-8" style={{ paddingLeft: '0px' }}>
+                        <div className="col-xl-8 col-lg-7 " style={{ paddingRight: '0px', paddingLeft: '0px' }}>
                             <div>
                                 <div className="col-md-6">
 
