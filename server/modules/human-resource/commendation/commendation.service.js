@@ -150,7 +150,7 @@ exports.searchCommendations = async (params, company) => {
         .sort({
             'createAt': 'desc'
         }).skip(params.page).limit(params.limit);
-    let totalList = listCommendations.length;
+    let totalList = await Commendation.countDocuments(keySearch);
 
     return {
         totalList,

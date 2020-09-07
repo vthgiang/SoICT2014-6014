@@ -148,28 +148,30 @@ class GeneralTab extends Component {
     handleAssetTypeChange = async (value) => {
         let { assetType } = this.props;
         let { detailInfo } = this.state;
-
-        let assetTypeList = assetType.listAssetTypes;
-        let currentAssetType = assetTypeList.filter((element) => element._id === value[0])[0];
-        let defaultInformation = currentAssetType ? currentAssetType.defaultInformation : [];
+        if (value.length === 0) {
+            value = null;
+        }
+        // let assetTypeList = assetType.listAssetTypes;
+        // let currentAssetType = assetTypeList.filter((element) => element._id === value[0])[0];
+        // let defaultInformation = currentAssetType ? currentAssetType.defaultInformation : [];
 
         // Thêm trường thông tin mặc định ở nhóm tài sản vào thông tin chi tiết
         let arr = [...detailInfo];
-        for (let i in defaultInformation) {
-            let check = true;
-            for (let j in detailInfo) {
-                if (defaultInformation[i].nameField === detailInfo[j].nameField) {
-                    check = false;
-                }
-            }
+        // for (let i in defaultInformation) {
+        //     let check = true;
+        //     for (let j in detailInfo) {
+        //         if (defaultInformation[i].nameField === detailInfo[j].nameField) {
+        //             check = false;
+        //         }
+        //     }
 
-            if (check) {
-                arr.push({
-                    ...defaultInformation[i],
-                    value: '',
-                });
-            }
-        }
+        //     if (check) {
+        //         arr.push({
+        //             ...defaultInformation[i],
+        //             value: '',
+        //         });
+        //     }
+        // }
 
         await this.setState(state => {
             return {
@@ -506,11 +508,12 @@ class GeneralTab extends Component {
         let { assetType } = this.props;
         let assetTypeName = assetType && assetType.listAssetTypes;
         let typeArr = [];
-
         assetTypeName.map(item => {
             typeArr.push({
-                value: item._id,
-                text: item.typeName
+                _id: item._id,
+                id: item._id,
+                name: item.typeName,
+                parent: item.parent ? item.parent._id : null
             })
         })
         return typeArr;
@@ -617,15 +620,13 @@ class GeneralTab extends Component {
 
                                 {/* Loại tài sản */}
                                 <div className={`form-group ${!errorOnAssetType ? "" : "has-error"}`}>
-                                    <label className="form-control-static">{translate('asset.general_information.asset_type')}<span className="text-red">*</span></label>
-                                    <SelectMulti
-                                        id={`multiSelectTypeInGenaral${id}`}
-                                        multiple="multiple"
-                                        options={{ nonSelectedText: translate('asset.general_information.select_asset_type'), allSelectedText: translate('asset.general_information.select_all_asset_type') }}
-                                        onChange={this.handleAssetTypeChange}
-                                        items={typeArr}
-                                    >
-                                    </SelectMulti>
+                                    <label>{translate('asset.general_information.asset_type')}<span className="text-red">*</span></label>
+                                    <TreeSelect
+                                        data={typeArr}
+                                        value={assetTypes ? assetTypes : []}
+                                        handleChange={this.handleAssetTypeChange}
+                                        mode="hierarchical"
+                                    />
                                 </div>
 
                                 {/* Ngày nhập */}

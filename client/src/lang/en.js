@@ -743,6 +743,9 @@ export default {
             //QUẢN LÝ ĐƠN HÀNG
             manage_orders: "Manage Orders",
             manage_list_orders: "Manage List Orders",
+
+            //QUẢN LÝ KẾ HOẠCH SẢN XUẤT
+            manage_plans: "Manage Plans"
         },
 
         manage_system: {
@@ -2208,9 +2211,14 @@ export default {
                 not_confirm: 'Not confirm this task',
 
                 left_task_expired: 'left is task expired',
-                action_not_rating: 'actions not rating this month',
+                action_not_rating: 'Actions not rating this month',
 
                 left_can_edit_task: 'Remaining time to edit task evaluation of previous month',
+
+                // check deadline
+                warning_days: "days",
+                warning_hours: "hours",
+                warning_minutes: "minutes",
             },
             task_perform: {
                 actions: "Actions",
@@ -2381,24 +2389,25 @@ export default {
                 manager: 'Manager',
                 viewer: 'Viewer',
                 time_of_process: 'Time of process',
+                process_information: "Process Information",
                 start_date: 'Start date',
                 end_date: 'End date',
-
-                inprocess: 'Iprocess',
+                create: 'Create',
+                inprocess: 'Iprocess',  
                 wait_for_approval: 'Wait for approval',
                 finished: 'Finished',
                 delayed: 'Delayed',
                 canceled: 'Canceled',
-
+                general_infomation: "General Infomation",
                 notice: 'Notice',
                 information: 'Information',
                 document: 'Document',
-
+                roles: 'Roles',
                 list_of_data_and_info: 'List of data and informations',
                 not_have_doc: 'Not have documents',
                 not_have_info: 'Not have information',
                 not_export_info: 'Not export information',
-
+                task_process: 'Task process',
                 save: 'Save',
 
             },
@@ -2410,7 +2419,7 @@ export default {
                 delete_task_template_success: 'Delete task template success !',
                 delete_task_template_fail: 'Delete task template fail !',
                 error_task_template_creator_null: 'Creator of this task template does not exist or has deleted',
-
+                view_task_process_template: 'View task process template'
             }
         },
 
@@ -3038,6 +3047,29 @@ export default {
             edit_report_manager_faile: 'Edit report fail !',
             delete_report_manager_success: 'Delete report success !',
             delete_report_manager_faile: 'Delete report fail !',
+        },
+
+        // manage_plan
+        manage_plan: {
+        code: "Plan Code",
+        planName: "Plan Name",
+        search: "Search",
+        add_plan: "Add Plan",
+        index: "Index",
+        description: "Description",
+        edit: "Edit this plan",
+        delete: "Delete this plan",
+        delete_success: "Delete plan successfully!",
+        delete_fail: "Delete plan fail!",
+        add: "Add plan",
+        add_title: "Add a new plan",
+        add_success: "Add plan successfully!",
+        add_fail: "Add plan fail!",
+        plan_description: "Plan Description",
+        edit_title: "Update a plan",
+        edit_plan_success: "Update plan successfully!",
+        edit_plan_fail: "Update plan fail!",
+        detail_info_plan: "Detail infomation of plan"
         },
 
         footer: {

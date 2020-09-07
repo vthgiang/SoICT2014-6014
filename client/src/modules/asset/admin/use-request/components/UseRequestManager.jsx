@@ -292,10 +292,10 @@ class UseRequestManager extends Component {
                     <table id="recommenddistributemanager-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
+                                <th style={{ width: "17%" }}>{translate('asset.general_information.asset_code')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.form_code')}</th>
                                 <th style={{ width: "15%" }}>{translate('asset.general_information.create_date')}</th>
                                 <th style={{ width: "15%" }}>{translate('asset.usage.proponent')}</th>
-                                <th style={{ width: "17%" }}>{translate('asset.general_information.asset_code')}</th>
                                 <th style={{ width: "15%" }}>{translate('asset.general_information.asset_name')}</th>
                                 <th style={{ width: "17%" }}>{translate('asset.general_information.handover_from_date')}</th>
                                 <th style={{ width: "17%" }}>{translate('asset.general_information.handover_to_date')}</th>
@@ -305,10 +305,10 @@ class UseRequestManager extends Component {
                                     <DataTableSetting
                                         tableId="recommenddistributemanager-table"
                                         columnArr={[
+                                            translate('asset.general_information.asset_code'),
                                             translate('asset.general_information.form_code'),
                                             translate('asset.general_information.create_date'),
                                             translate('asset.usage.proponent'),
-                                            translate('asset.general_information.asset_code'),
                                             translate('asset.general_information.asset_name'),
                                             translate('asset.general_information.handover_from_date'),
                                             translate('asset.general_information.handover_to_date'),
@@ -326,10 +326,10 @@ class UseRequestManager extends Component {
                             {(listRecommendDistributes && listRecommendDistributes.length !== 0) &&
                                 listRecommendDistributes.map((x, index) => {
                                     return (<tr key={index}>
+                                        <td><a onClick={() => this.handleEditAsset(x.asset)}>{x.asset ? x.asset.code : 'Asset is deleted'}</a></td>
                                         <td>{x.recommendNumber}</td>
                                         <td>{x.dateCreate}</td>
                                         <td>{x.proponent ? x.proponent.name : 'User is deleted'}</td>
-                                        <td><a onClick={() => this.handleEditAsset(x.asset)}>{x.asset ? x.asset.code : 'Asset is deleted'}</a></td>
                                         <td>{x.asset ? x.asset.assetName : 'Asset is deleted'}</td>
                                         <td>{x.dateStartUse}</td>
                                         <td>{x.dateEndUse}</td>

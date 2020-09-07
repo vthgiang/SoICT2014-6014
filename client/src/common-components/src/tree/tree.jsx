@@ -75,10 +75,11 @@ class Tree extends Component {
     }
 
     render() {
+        const { className, style } = this.props;
         const { id, data } = this.state;
 
         return <React.Fragment>
-            {id !== undefined ? <div id={`${id}`}/> : null}
+            {id !== undefined ? <div id={`${id}`} className={className} style={style}/> : null}
         </React.Fragment>;
     }
 }

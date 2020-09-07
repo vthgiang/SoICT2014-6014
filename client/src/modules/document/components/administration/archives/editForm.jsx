@@ -65,37 +65,37 @@ class EditForm extends Component {
         return null;
     }
     // tìm các node con cháu
-    addNode = (node, array) => {
-
-        if (node && node.children) {
-            for (let i = 0; i < node.children.length; i++) {
-                array.push(node.children[i].id);
-                this.addNode(node.children[i], array);
-            }
+    addNode = (list, node) => {
+        let array = [];
+        let queue_children = [node];
+        while (queue_children.length > 0) {
+            let tmp = queue_children.shift();
+            array = [...array, tmp._id];
+            let children = list.filter(child => child.parent === tmp._id);
+            queue_children = queue_children.concat(children);
         }
+        return array
     }
     save = () => {
         const { translate, documents } = this.props;
         const { archiveId, archiveName, archiveDescription, archiveParent } = this.state;
-        const { tree } = documents.administration.archives;
+        const { tree, list } = documents.administration.archives;
 
         let node = "";
         // find node
-        for (let i = 0; i < tree.length; i++) {
-            node = this.findNode(tree[i], archiveId);
-            if (node !== "") break;
-        }
+        node = list.filter(archive => archive._id === archiveId)[0]
+        //  node = nodes[0];
         // find node child 
-        let childrenNode = [];
-        if (node && node.children) {
-            this.addNode(node, childrenNode);
+        let array = [];
+        if (node) {
+            array = this.addNode(list, node);
         }
 
         this.props.editDocumentArchive(archiveId, {
             name: archiveName,
             description: archiveDescription,
             parent: archiveParent,
-            array: childrenNode,
+            array: array,
         });
         //this.props.getDocumentArchives();
     }

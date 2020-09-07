@@ -152,7 +152,7 @@ exports.searchDisciplines = async (params, company) => {
         .sort({
             'createAt': 'desc'
         }).skip(params.page).limit(params.limit);
-    let totalList = listDisciplines.length;
+    let totalList = await Discipline.countDocuments(keySearch);
 
     return {
         totalList,
