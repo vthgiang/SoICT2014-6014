@@ -140,12 +140,17 @@ class ManageLeaveApplication extends Component {
         this.props.searchAnnualLeaves(this.state);
     };
 
+    /**
+     * Bắt sự kiện chấp nhận đơn xin nghỉ phép
+     * @param {*} value : Đơn xin nghỉ phép
+     */
     handleAcceptApplication = (value) => {
+        const { translate } = this.props;
         let startDateNew = this.formatDate2(value.startDate);
         let endDateNew = this.formatDate2(value.endDate);
 
         Swal.fire({
-            html: `<h4 style="color: red"><div>${'Chấp nhận đơn xin nghỉ'}</div> <div>"${this.formatDate(value.startDate)} - ${this.formatDate(value.endDate)}" ?</div></h4>`,
+            html: `<h4 style="color: red"><div>${translate('human_resource.holiday.accept_application')}</div> <div>"${this.formatDate(value.startDate)} - ${this.formatDate(value.endDate)}" ?</div></h4>`,
             icon: 'success',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -159,12 +164,17 @@ class ManageLeaveApplication extends Component {
         })
     };
 
+    /**
+     * Bắt sự kiện từ chối đơn xin nghỉ phép
+     * @param {*} value : Đơn xin nghỉ
+     */
     handleRefuseApplication = (value) => {
+        const { translate } = this.props;
         let startDateNew = this.formatDate2(value.startDate);
         let endDateNew = this.formatDate2(value.endDate);
 
         Swal.fire({
-            html: `<h4 style="color: red"><div>${'Từ chối đơn xin nghỉ'}</div> <div>"${this.formatDate(value.startDate)} - ${this.formatDate(value.endDate)}" ?</div></h4>`,
+            html: `<h4 style="color: red"><div>${translate('human_resource.holiday.refuse_application')}</div> <div>"${this.formatDate(value.startDate)} - ${this.formatDate(value.endDate)}" ?</div></h4>`,
             icon: 'error',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -264,9 +274,9 @@ class ManageLeaveApplication extends Component {
                                         <td>{translate(`human_resource.annual_leave.status.${x.status}`)}</td>
                                         <td style={{ textAlign: "center" }}>
                                             {(x.status === 'process' || x.status === "faile") &&
-                                                <a onClick={() => this.handleAcceptApplication(x)} className="add_circle" style={{ width: '5px' }} title={"Chấp nhận đơn xin nghỉ"}><i className="material-icons">check</i></a>}
+                                                <a onClick={() => this.handleAcceptApplication(x)} className="add_circle" style={{ width: '5px' }} title={translate('human_resource.holiday.accept_application')}><i className="material-icons">check</i></a>}
                                             {(x.status === 'process' || x.status === "pass") &&
-                                                <a onClick={() => this.handleRefuseApplication(x)} className="delete" style={{ width: '5px' }} title={"Từ chối đơn xin nghỉ"}><i className="material-icons">clear</i></a>}
+                                                <a onClick={() => this.handleRefuseApplication(x)} className="delete" style={{ width: '5px' }} title={translate('human_resource.holiday.refuse_application')}><i className="material-icons">clear</i></a>}
                                         </td>
                                     </tr>))
                             }

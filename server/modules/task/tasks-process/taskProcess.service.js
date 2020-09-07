@@ -113,7 +113,9 @@ exports.createXmlDiagram = async (body) => {
                 extra: item.extra,
             }
         }) : [];
-
+        if(body.info[x].formula === '') {
+            body.info[x].formula = "progress / (dayUsed / totalDay) - 0.5 * (10 - (averageActionRating)) * 10"
+        }
         info.push(body.info[x])
         // }
     }
@@ -319,6 +321,11 @@ exports.createTaskByProcess = async (processId, body) => {
             status = "Inprocess";
         }
 
+        let formula = data[i].formula;
+        if(data[i].formula === ''){
+            formula = "progress / (dayUsed / totalDay) - 0.5 * (10 - (averageActionRating)) * 10";
+        }
+
         let process = taskProcessId;
 
         let newTaskItem = await Task.create({
@@ -332,7 +339,7 @@ exports.createTaskByProcess = async (processId, body) => {
             description: data[i].description,
             startDate: startDate,
             endDate: endDate,
-            formula: data[i].formula,
+            formula: formula,
             priority: data[i].priority,
             taskTemplate: null,
             taskInformations: taskInformations,
