@@ -19,6 +19,7 @@ import { SubTaskTab } from './subTaskTab';
 import { ViewProcess } from '../../task-process/component/task-process-management/viewProcess';
 import { IncomingDataTab } from './incomingDataTab';
 import { OutgoingDataTab } from './outgoingDataTab';
+import { CommentInProcess } from '../../task-process/component/commentInProcess';
 
 class ActionTab extends Component {
     constructor(props) {
@@ -1190,7 +1191,7 @@ class ActionTab extends Component {
                             {typeof taskComments !== 'undefined' && taskComments.length !== 0 ?
                                 taskComments.map((item, key) => {
                                     return (
-                                        <div className="clearfix" key={key}>
+                                        <div  key={key}>
                                             <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + item.creator?.avatar)} alt="User Image" />
 
                                             {editTaskComment !== item._id && // Khi đang edit thì ẩn đi
@@ -1602,12 +1603,16 @@ class ActionTab extends Component {
                         <div className={selected === "incoming-data" ? "active tab-pane" : "tab-pane"} id="incoming-data">
                             {
                                 (task && task.process) &&
-                                <IncomingDataTab
-                                    isIncomingData={task && task.preceedingTasks && task.preceedingTasks.length !== 0}
-                                    taskId={task._id}
-                                    task={task}
-                                    infoTaskProcess={task.process.tasks}
-                                />
+                                <React.Fragment>
+                                    <IncomingDataTab
+                                        isIncomingData={task && task.preceedingTasks && task.preceedingTasks.length !== 0}
+                                        taskId={task._id}
+                                        task={task}
+                                        infoTaskProcess={task.process.tasks}
+                                    />
+                                    
+                                </React.Fragment>
+
                             }
                         </div>
 

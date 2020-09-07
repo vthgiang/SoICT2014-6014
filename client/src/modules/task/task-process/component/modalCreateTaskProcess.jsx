@@ -216,7 +216,7 @@ class ModalCreateTaskProcess extends Component {
 		const modeling = this.modeler.get('modeling');
 		let element1 = this.modeler.get('elementRegistry').get(this.state.id);
 		modeling.updateProperties(element1, {
-			name: stringName,
+			shapeName: stringName,
 		});
 	}
 
@@ -613,12 +613,9 @@ class ModalCreateTaskProcess extends Component {
 		const { translate, department, role } = this.props;
 		const { id, name, info, showInfo, processDescription, processName, viewer, manager, selectedCreate, indexRenderer, type } = this.state;
 		const { listOrganizationalUnit } = this.props;
-<<<<<<< HEAD
-=======
 		if (type === "bpmn:ExclusiveGateway" && info && id && info[id].name) {
 			window.$(`.task-process-gate-way-title`).css("background-color", "white")
 		}
->>>>>>> adc1936815713a55bccc95d32b2eec5cb7e9df84
 		let listRole = [];
 		if (role && role.list.length !== 0) listRole = role.list;
 		let listItem = listRole.filter(e => ['Admin', 'Super Admin', 'Dean', 'Vice Dean', 'Employee'].indexOf(e.name) === -1)
@@ -643,15 +640,10 @@ class ModalCreateTaskProcess extends Component {
 							<div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none", marginBottom: 0 }}>
 								{/* Tabbed pane */}
 								<ul className="nav nav-tabs">
-<<<<<<< HEAD
-									<li className="active"><a href="#info-create" onClick={() => this.handleChangeContent("info")} data-toggle="tab">{translate("task.task_process.process_information")}</a></li>
-									<li><a href="#process-create" onClick={() => this.handleChangeContent("process")} data-toggle="tab">{translate("task.task_process.task_process")}</a></li>
-=======
 									{/* Nút tab thông tin cơ bản quy trình */}
-									<li className="active"><a href="#info-create" onClick={() => this.handleChangeContent("info")} data-toggle="tab">Thông tin quy trình</a></li>
+									<li className="active"><a href="#info-create" onClick={() => this.handleChangeContent("info")} data-toggle="tab">{translate("task.task_process.process_information")}</a></li>
 									{/* Nút tab quy trình - công việc */}
-									<li><a href="#process-create" onClick={() => this.handleChangeContent("process")} data-toggle="tab">Quy trình công việc</a></li>
->>>>>>> adc1936815713a55bccc95d32b2eec5cb7e9df84
+									<li><a href="#process-create" onClick={() => this.handleChangeContent("process")} data-toggle="tab">{translate("task.task_process.task_process")}</a></li>
 								</ul>
 
 								{/* tab thông tin quy trình */}

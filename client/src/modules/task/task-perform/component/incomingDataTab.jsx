@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from "react-redux-multilingual";
-
+import { CommentInProcess } from './commentInProcess';
 class IncomingDataTab extends Component {
 
     constructor(props) {
@@ -64,52 +64,58 @@ class IncomingDataTab extends Component {
                 {
                     listTask.length !== 0
                     && listTask.map((task, key) =>
-                        <div key={key} className="description-box">
-                            <h4>{task.name}</h4>
+                        <React.Fragment>
+                            <div key={key} className="description-box">
+                                <h4>{task.name}</h4>
 
-                            {/** Danh sách thông tin */}
-                            <div><strong>{translate('task.task_process.information')}</strong></div>
-                            {
-                                task.informations.length !== 0
-                                    ? task.informations.map((info, key) =>
-                                        info.isOutput &&
-                                        <div key={key}>
-                                            <ul>
-                                                <strong>{info.name}</strong>
-                                                <span> - {info.description}</span>
-                                                <span> - {info.type}</span>
-                                            </ul>
-                                        </div>
-                                    )
-                                    : <div>{task.name} {translate('task.task_process.not_export_info')}</div>
-                            }
-
-                            {/** Danh sách tài liệu */}
-                            <div><strong>{translate('task.task_process.document')}</strong></div>
-                            {
-                                task.documents.length !== 0
-                                    ? task.documents.map((document, key) =>
-                                        document.isOutput &&
-                                        <div key={key}>
-                                            <ul>
-                                                <li style={{ listStyle: "none" }}><strong>{document.description}</strong></li>
+                                {/** Danh sách thông tin */}
+                                <div><strong>{translate('task.task_process.information')}</strong></div>
+                                {
+                                    task.informations.length !== 0
+                                        ? task.informations.map((info, key) =>
+                                            info.isOutput &&
+                                            <div key={key}>
                                                 <ul>
-                                                    {
-                                                        document.files
-                                                        && document.files.length !== 0
-                                                        && document.files.map(file =>
-                                                            <li style={{ listStyle: "none", wordWrap: "break-word" }}>
-                                                                <strong>{file.name} </strong><span><a>{file.url}</a></span>
-                                                            </li>
-                                                        )
-                                                    }
+                                                    <strong>{info.name}</strong>
+                                                    <span> - {info.description}</span>
+                                                    <span> - {info.type}</span>
                                                 </ul>
-                                            </ul>
-                                        </div>
-                                    )
-                                    : <div>{task.name} {translate('task.task_process.not_have_doc')}</div>
-                            }
-                        </div>
+                                            </div>
+                                        )
+                                        : <div>{task.name} {translate('task.task_process.not_export_info')}</div>
+                                }
+
+                                {/** Danh sách tài liệu */}
+                                <div><strong>{translate('task.task_process.document')}</strong></div>
+                                {
+                                    task.documents.length !== 0
+                                        ? task.documents.map((document, key) =>
+                                            document.isOutput &&
+                                            <div key={key}>
+                                                <ul>
+                                                    <li style={{ listStyle: "none" }}><strong>{document.description}</strong></li>
+                                                    <ul>
+                                                        {
+                                                            document.files
+                                                            && document.files.length !== 0
+                                                            && document.files.map(file =>
+                                                                <li style={{ listStyle: "none", wordWrap: "break-word" }}>
+                                                                    <strong>{file.name} </strong><span><a>{file.url}</a></span>
+                                                                </li>
+                                                            )
+                                                        }
+                                                    </ul>
+                                                </ul>
+                                            </div>
+                                        )
+                                        : <div>{task.name} {translate('task.task_process.not_have_doc')}</div>
+                                }
+                            </div>
+                            <CommentInProcess
+                                task={task}
+                                inputAvatarCssClass="user-img-incoming-level1"
+                            />
+                        </React.Fragment>
                     )
                 }
             </React.Fragment>
