@@ -1402,6 +1402,8 @@ export default {
                 add_holiday_title: 'Thêm mới kế hoạch làm việc',
                 add_by_hand: 'Thêm một kế hoạch làm việc',
                 add_import: 'Import file excel',
+                accept_application: 'Chấp nhận đơn xin nghỉ',
+                refuse_application: 'Từ chối đơn xin nghỉ',
 
                 // Thông điệp trả về từ server
                 type_required: 'Thể loại không được để trống',
@@ -1478,7 +1480,6 @@ export default {
             annual_leave_personal: {
                 list_annual_leave: 'Quy định về nghỉ phép của công ty',
                 inform_annual_leave: 'Thông tin nghỉ phép cá nhân',
-                note: 'Chú thích',
                 day: 'ngày',
                 total_number_leave_of_year: 'Tổng số ngày nghỉ phép cả năm',
                 leaved: 'Bạn đã nghỉ',
@@ -2433,7 +2434,7 @@ export default {
                 process_information: 'Thông tin quy trình',
                 start_date: 'Ngày bắt đầu',
                 end_date: 'Ngày kết thúc',
-                create : 'Thêm mới',
+                create: 'Thêm mới',
                 inprocess: 'Đang thực hiện',
                 wait_for_approval: 'Chờ phê duyệt',
                 finished: 'Đã kết thúc',

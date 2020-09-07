@@ -1380,6 +1380,8 @@ export default {
                 add_holiday_title: 'Add new work schedule',
                 add_by_hand: 'Add one work schedule',
                 add_import: 'Import file excel',
+                accept_application: 'Accept leave application',
+                refuse_application: 'Refuse leave application',
 
                 // Thông điệp trả về từ server
                 type_required: 'Type required',
@@ -1456,7 +1458,6 @@ export default {
             annual_leave_personal: {
                 list_annual_leave: 'Regulations on corporate leave',
                 inform_annual_leave: 'Information on personal leave',
-                note: 'Note',
                 day: 'days',
                 total_number_leave_of_year: 'Total number of days off',
                 leaved: 'You have rested',
@@ -2393,7 +2394,7 @@ export default {
                 start_date: 'Start date',
                 end_date: 'End date',
                 create: 'Create',
-                inprocess: 'Iprocess',  
+                inprocess: 'Iprocess',
                 wait_for_approval: 'Wait for approval',
                 finished: 'Finished',
                 delayed: 'Delayed',
@@ -3051,25 +3052,25 @@ export default {
 
         // manage_plan
         manage_plan: {
-        code: "Plan Code",
-        planName: "Plan Name",
-        search: "Search",
-        add_plan: "Add Plan",
-        index: "Index",
-        description: "Description",
-        edit: "Edit this plan",
-        delete: "Delete this plan",
-        delete_success: "Delete plan successfully!",
-        delete_fail: "Delete plan fail!",
-        add: "Add plan",
-        add_title: "Add a new plan",
-        add_success: "Add plan successfully!",
-        add_fail: "Add plan fail!",
-        plan_description: "Plan Description",
-        edit_title: "Update a plan",
-        edit_plan_success: "Update plan successfully!",
-        edit_plan_fail: "Update plan fail!",
-        detail_info_plan: "Detail infomation of plan"
+            code: "Plan Code",
+            planName: "Plan Name",
+            search: "Search",
+            add_plan: "Add Plan",
+            index: "Index",
+            description: "Description",
+            edit: "Edit this plan",
+            delete: "Delete this plan",
+            delete_success: "Delete plan successfully!",
+            delete_fail: "Delete plan fail!",
+            add: "Add plan",
+            add_title: "Add a new plan",
+            add_success: "Add plan successfully!",
+            add_fail: "Add plan fail!",
+            plan_description: "Plan Description",
+            edit_title: "Update a plan",
+            edit_plan_success: "Update plan successfully!",
+            edit_plan_fail: "Update plan fail!",
+            detail_info_plan: "Detail infomation of plan"
         },
 
         footer: {

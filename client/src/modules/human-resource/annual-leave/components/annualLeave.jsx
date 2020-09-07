@@ -177,7 +177,7 @@ class AnnualLeave extends Component {
                                         <th style={{ width: 40 }}>{translate('human_resource.stt')}</th>
                                         <th>{translate('human_resource.holiday.table.timeline')}</th>
                                         <th>{translate('human_resource.holiday.table.describe_timeline')}</th>
-                                        <th>{translate('human_resource.annual_leave_personal.note')}</th>
+                                        <th>{translate('human_resource.holiday.table.type')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
