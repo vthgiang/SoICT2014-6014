@@ -363,10 +363,10 @@ class MaintainanceManagement extends Component {
                     <table id="maintainance-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
+                                <th style={{ width: "8%" }}>{translate('asset.general_information.asset_code')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.form_code')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.create_date')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.type')}</th>
-                                <th style={{ width: "8%" }}>{translate('asset.general_information.asset_code')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.asset_name')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.content')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.start_date')}</th>
@@ -377,10 +377,10 @@ class MaintainanceManagement extends Component {
                                 <DataTableSetting
                                         tableId="maintainance-table"
                                         columnArr={[
+                                            translate('asset.general_information.asset_code'),
                                             translate('asset.general_information.form_code'),
                                             translate('asset.general_information.create_date'),
                                             translate('asset.general_information.type'),
-                                            translate('asset.general_information.asset_code'),
                                             translate('asset.general_information.asset_name'),
                                             translate('asset.general_information.content'),
                                             translate('asset.general_information.start_date'),
@@ -400,10 +400,10 @@ class MaintainanceManagement extends Component {
                                 lists.map(asset => {
                                     return asset.maintainanceLogs.map((x, index) => (
                                         <tr key={index}>
+                                            <td><a onClick={() => this.handleEditAsset(asset)}>{asset.code}</a></td>
                                             <td>{x.maintainanceCode}</td>
                                             <td>{x.createDate ? this.formatDate2(x.createDate) : ''}</td>
                                             <td>{x.type}</td>
-                                            <td><a onClick={() => this.handleEditAsset(asset)}>{asset.code}</a></td>
                                             <td>{asset.assetName}</td>
                                             <td>{x.description}</td>
                                             <td>{x.startDate ? this.formatDate2(x.startDate) : ''}</td>

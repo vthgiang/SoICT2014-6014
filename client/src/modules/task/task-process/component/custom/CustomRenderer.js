@@ -51,7 +51,7 @@ export default class CustomRenderer extends BaseRenderer {
             element.height = 130;
             element.width = 160;
             // let a = element.businessObject.name.split("")
-            let b = element.businessObject.name
+            let b = element.businessObject.$attrs.shapeName
             const line = drawLine(parentNode, 0, 50, 160, 50, 'black');
 
             let foreignObject = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
@@ -122,12 +122,12 @@ export default class CustomRenderer extends BaseRenderer {
 
         if (element.type == 'bpmn:ExclusiveGateway') {
             // let a = element.businessObject.name.split("")
-            let b = element.businessObject.name
+            let b = element.businessObject.$attrs.shapeName
 
             //Vẽ tên của công việc lên shape
             let foreignObject = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
             foreignObject.setAttribute('x', -50);
-            foreignObject.setAttribute('y', -40);
+            foreignObject.setAttribute('y', -45);
             foreignObject.setAttribute('height', 35);
             foreignObject.setAttribute('width', 150);
             let div = document.createElement('div');

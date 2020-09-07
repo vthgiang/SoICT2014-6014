@@ -769,6 +769,8 @@ export default {
             //QUẢN LÝ ĐƠN HÀNG
             manage_orders: "Quản lý đơn hàng",
             manage_list_orders: "Danh sách đơn hàng",
+            // Quản lý kế hoạch sản xuất
+            manage_plans: "Quản lý kế hoạch sản xuất"
         },
 
         manage_system: {
@@ -2241,6 +2243,11 @@ export default {
                 action_not_rating: 'Số hoạt động chưa được đánh giá tháng này',
 
                 left_can_edit_task: 'Thời gian còn lại để chỉnh sửa đánh giá công việc tháng trước',
+
+                // check deadline
+                warning_days: "ngày",
+                warning_hours: "giờ",
+                warning_minutes: "phút",
             },
             task_perform: {
 
@@ -2423,24 +2430,25 @@ export default {
                 manager: 'Người quản lý',
                 viewer: 'Người được xem',
                 time_of_process: 'Thời gian thực hiện quy trình',
+                process_information: 'Thông tin quy trình',
                 start_date: 'Ngày bắt đầu',
                 end_date: 'Ngày kết thúc',
-
+                create : 'Thêm mới',
                 inprocess: 'Đang thực hiện',
                 wait_for_approval: 'Chờ phê duyệt',
                 finished: 'Đã kết thúc',
                 delayed: 'Tạm hoãn',
                 canceled: 'Bị hủy',
-
+                general_infomation: "Thông tin chung",
                 notice: 'Chú thích',
                 information: 'Thông tin',
                 document: 'Tài liệu',
-
+                roles: 'Các vai trò',
                 list_of_data_and_info: 'Danh sách thông tin và tài liệu',
                 not_have_doc: 'Không có tài liệu',
                 not_have_info: 'Không có thông tin',
                 not_export_info: 'Không xuất thông tin',
-
+                task_process: 'Quy trình công việc',
                 save: 'Lưu',
 
             },
@@ -2453,8 +2461,8 @@ export default {
                 delete_task_template_success: 'Xóa mẫu công việc thành công !',
                 delete_task_template_fail: 'Xóa mẫu công việc thất bại !',
                 error_task_template_creator_null: 'Nguời tạo mẫu công việc này không tồn tại hoặc đã bị xóa !',
-                error_task_template_organizational_unit: 'Phòng ban của mẫu công việc này không tồn tại hoặc đã bị xóa !'
-
+                error_task_template_organizational_unit: 'Phòng ban của mẫu công việc này không tồn tại hoặc đã bị xóa !',
+                view_task_process_template: 'Xem mẫu quy trình công việc',
             }
         },
 
@@ -3084,6 +3092,30 @@ export default {
             edit_report_manager_fail: 'Sửa mẫu báo cáo thất bại !',
             delete_report_manager_success: 'Xóa mẫu báo cáo thành công !',
             delete_report_manager_fail: 'Xóa mẫu báo cáo thất bại !',
+        },
+
+        // manage_plan
+
+        manage_plan: {
+            code: "Mã kế hoạch",
+            planName: "Tên kế hoạch",
+            search: "Tìm kiếm",
+            add_plan: "Thêm mới",
+            index: "STT",
+            description: "Mô tả",
+            edit: "Chỉnh sửa thông tin kế hoạch",
+            delete: "Xóa kế hoạch",
+            delete_success: "Xóa kế hoạch thành công!",
+            delete_fail: "Xóa kế hoạch thất bại!",
+            add: "Thêm kế hoạch",
+            add_title: "Thêm mới kế hoạch",
+            add_success: "Thêm kế hoạch thành công!",
+            add_fail: "Thêm kế hoạch thất bại!",
+            plan_description: "Mô tả kế hoạch",
+            edit_title: "Sửa một kế hoạch",
+            edit_plan_success: "Cập nhật kế hoạch thành công!",
+            edit_plan_fail: "Cập nhật kế hoạch thất bại!",
+            detail_info_plan: "Thông tin chi tiết kế hoạch"
         },
 
         footer: {

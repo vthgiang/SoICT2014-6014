@@ -35,7 +35,7 @@ class AssetInfoForm extends Component {
                 location: nextProps.location,
                 description: nextProps.description,
                 status: nextProps.status,
-                canRegisterForUse: nextProps.canRegisterForUse,
+                typeRegisterForUse: nextProps.typeRegisterForUse,
                 detailInfo: nextProps.detailInfo,
                 cost: nextProps.cost,
                 residualValue: nextProps.residualValue,
@@ -58,13 +58,13 @@ class AssetInfoForm extends Component {
     }
     render() {
         const { translate, assetsManager } = this.props;
-        const { _id, avatar, code, assetName, serial, assetType, group, purchaseDate, warrantyExpirationDate,
-            managedBy, assignedTo, handoverFromDate, handoverToDate, location, description, status, canRegisterForUse,
+        const { _id, avatar, code, assetName, serial, assetType, purchaseDate, warrantyExpirationDate,
+            managedBy, assignedTo, handoverFromDate, handoverToDate, location, description, status, typeRegisterForUse,
             detailInfo, cost, residualValue, startDepreciation, usefulLife, depreciationType,
             maintainanceLogs, usageLogs, incidentLogs, disposalDate, disposalType, disposalCost,
-            disposalDesc, archivedRecordNumber, files
+            disposalDesc, archivedRecordNumber, files, group
         } = this.state;
-        console.log('grrrrrrrrrrrrrrr', group);
+
         return (
             <React.Fragment>
                 {/* <DialogModal
@@ -105,7 +105,7 @@ class AssetInfoForm extends Component {
                                 location={location}
                                 description={description}
                                 status={status}
-                                canRegisterForUse={canRegisterForUse}
+                                typeRegisterForUse={typeRegisterForUse}
                                 detailInfo={detailInfo}
                             />
 

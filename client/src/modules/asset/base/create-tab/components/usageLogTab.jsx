@@ -167,7 +167,7 @@ class UsageLogTab extends Component {
         await this.props.deleteUsage(this.props.assetId, data._id)
     }
 
-    hanhdleRecallAsset = async () => {
+    handleRecallAsset = async () => {
         let assetId = this.props.assetId;
         let assignedToUser = this.props.assignedToUser;
 
@@ -175,16 +175,17 @@ class UsageLogTab extends Component {
             ...this.state,
             assignedToUser: null,
             assignedToOrganizationalUnit: null,
-            status: "Đang sử dụng",
+            status: "Sẵn sàng sử dụng",
         })
         let data =  {
             usageId: assignedToUser,
         }
 
         await this.props.recallAsset(assetId, data); 
-        await this.props.hanhdleRecallAsset({
+        await this.props.handleRecallAsset({
             assignedToUser: null,
             assignedToOrganizationalUnit: null,
+            status: "Sẵn sàng sử dụng",
         })       
     }
 
@@ -235,7 +236,7 @@ class UsageLogTab extends Component {
                             
                             { (assignedToUser || assignedToOrganizationalUnit) &&
                                 <div className="form-group" style={{marginLeft: "20px"}}>
-                                    <button type="button" className="btn btn-success" onClick={this.hanhdleRecallAsset} >Thu hồi</button>
+                                    <button type="button" className="btn btn-success" onClick={this.handleRecallAsset} >Thu hồi</button>
                                 </div>
                             }
                         </div>

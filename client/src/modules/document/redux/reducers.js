@@ -178,8 +178,6 @@ export function documents(state = initState, action) {
             };
 
         case DocumentConstants.GET_DOCUMENTS_SUCCESS:
-        
-            console.log('reducerrr', action.payload)
             return {
                 ...state,
                 isLoading: false,
@@ -192,7 +190,6 @@ export function documents(state = initState, action) {
                 }
             };
         case DocumentConstants.IMPORT_DOCUMENT_SUCCESS:
-            console.log('reducerrr', action.payload)
             return {
                 ...state,
                 isLoading: false,
@@ -414,6 +411,7 @@ export function documents(state = initState, action) {
             };
         case DocumentConstants.GET_DOCUMENT_ARCHIVE_SUCCESS:
         case DocumentConstants.CREATE_DOCUMENT_ARCHIVE_SUCCESS:
+        case DocumentConstants.EDIT_DOCUMENT_ARCHIVE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
@@ -422,15 +420,16 @@ export function documents(state = initState, action) {
                     archives: action.payload
                 }
             };
-        case DocumentConstants.EDIT_DOCUMENT_ARCHIVE_SUCCESS:
-            index = findIndex(state.administration.archives.list, action.payload._id);
-            if (index !== -1) state.administration.archives.list[index] = action.payload;
-            indexPaginate = findIndex(state.administration.archives.paginate, action.payload._id);
-            if (indexPaginate !== -1) state.administration.archives.paginate[indexPaginate] = action.payload;
-            return {
-                ...state,
-                isLoading: false
-            };
+
+
+        // index = findIndex(state.administration.archives.list, action.payload._id);
+        // if (index !== -1) state.administration.archives.list[index] = action.payload;
+        // indexPaginate = findIndex(state.administration.archives.paginate, action.payload._id);
+        // if (indexPaginate !== -1) state.administration.archives.paginate[indexPaginate] = action.payload;
+        // return {
+        //     ...state,
+        //     isLoading: false
+        // };
         case DocumentConstants.DELETE_DOCUMENT_ARCHIVE_SUCCESS:
             return {
                 ...state,
