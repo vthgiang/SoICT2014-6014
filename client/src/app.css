@@ -53,17 +53,14 @@ div.qlcv > .form-inline > div.react-dropdown-tree-select, div.qlcv > .form-inlin
 
 
 
-/* Ghi đè CSS AdminLTE */
-.treeview-menu > li > a {
-    padding: 5px 5px 5px 25px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+/* Ghi đè CSS menu AdminLTE */
+.sidebar-menu > li >a { /* Menu cấp 1 */
+    white-space: pre-line;
+    padding-right: 30px;
 }
-.sidebar-menu > li >a {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+.treeview-menu > li > a { /* Menu cấp 2 */
+    white-space: pre-line;
+    padding: 5px 5px 5px 25px;
 }
 
 

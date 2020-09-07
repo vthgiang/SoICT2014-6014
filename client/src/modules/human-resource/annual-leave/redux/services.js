@@ -20,7 +20,7 @@ function searchAnnualLeaves(data) {
             numberAnnulLeave: data.numberAnnulLeave,
             numberMonth: data.numberMonth,
             organizationalUnits: data.organizationalUnits,
-            position: data.position,
+            year: data.year,
             employeeNumber: data.employeeNumber,
             month: data.month,
             page: data.page,

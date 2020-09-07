@@ -62,7 +62,6 @@ class DisciplineCreateForm extends Component {
                     ...state,
                     errorOnEmployee: msg,
                     employee: value,
-                    organizationalUnit: "",
                 }
             });
 

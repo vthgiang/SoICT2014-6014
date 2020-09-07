@@ -4,6 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import c3 from 'c3';
 import 'c3/c3.css';
 import * as d3 from "d3";
+import './transferList.css';
 
 class LineBarChart extends Component {
     constructor(props) {
@@ -16,25 +17,12 @@ class LineBarChart extends Component {
 
 
     setDataMultiChart = (data) => {
-        let dataConvert = [['x']], dateConvert, typeChart = {}, axisXType;
+        let dataConvert = [['x']], typeChart = {};
         let indices = { time: 0 }; // chỉ số time = 0 ứng với mảng x trong dataConvert 
         if (data) {
+
             data.forEach(x => {
-                let date = new Date(x.time);
-                let getYear = date.getFullYear();
-                let getMonth = date.getMonth() + 1;
-                let newDate = `${getYear}-${getMonth}-1`;
-
-                //Check date không phải định dạng datetime thì cho axisXType = category
-                if (isNaN(date)) {
-                    axisXType = 'category';
-                    dateConvert = x.time;
-                } else {
-                    axisXType = 'timeseries';
-                    dateConvert = newDate;
-                }
-
-                dataConvert[indices.time].push(dateConvert);
+                dataConvert[indices.time].push(x.time);
                 x.tasks.forEach(({ code, value, chartType }) => {
                     if (!(code in indices))
                         indices[code] = dataConvert.push([code]) - 1;
@@ -45,7 +33,7 @@ class LineBarChart extends Component {
             })
         }
 
-        return { dataConvert, typeChart, axisXType };
+        return { dataConvert, typeChart };
     }
 
 
@@ -100,11 +88,9 @@ class LineBarChart extends Component {
     renderBarAndLineChart = (data) => {
         this.removePreviousBarChart();
         data = this.setDataMultiChart(data);
-        console.log("dataConvert", data)
+
         let newData = data.dataConvert;
         let typeChart = data.typeChart;
-
-        let type = data.axisXType;
 
         this.chart = c3.generate({
             bindto: this.refs.barChart,
@@ -125,11 +111,10 @@ class LineBarChart extends Component {
                 }
             },
             axis: {
+                rotated: true,
                 x: {
-                    type: type,
+                    type: 'category',
                     tick: {
-                        format: '%m - %Y',
-                        outer: false,
                         multiline: true
                     },
                 },
@@ -138,7 +123,6 @@ class LineBarChart extends Component {
                         text: 'Thành tiền',
                         position: 'outer-middle'
                     },
-                    tick: { outer: false },
                 }
             },
         });
@@ -147,12 +131,9 @@ class LineBarChart extends Component {
 
     render() {
         return (
-            <div className="box box-primary">
-                <div className="box-header">
-                    <h4 className="box-title">Báo cáo công việc</h4>
-                </div>
-                <div className="box-body qlcv">
-                    <div className="taskReport-barchart">
+            <div className="row">
+                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <div className="lineBarChart">
                         <section ref="barChart"></section>
                     </div>
                 </div>

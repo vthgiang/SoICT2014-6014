@@ -86,6 +86,10 @@ const LINK_CATEGORY = {
     CRM: {
         name: 'crm',
         description: 'CRM'
+    },
+    PLAN : {
+        name: "plans-management",
+        description : "Quản lý kế hoạch sản xuất"
     }
 };
 exports.LINK_CATEGORY = LINK_CATEGORY;
@@ -297,7 +301,6 @@ const LINKS = [{
         description: 'Nghỉ phép',
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
         roles: [
-            ROOT_ROLES.ADMIN.name,
             ROOT_ROLES.DEAN.name,
             ROOT_ROLES.VICE_DEAN.name,
             ROOT_ROLES.EMPLOYEE.name,
@@ -823,7 +826,20 @@ const LINKS = [{
             ROOT_ROLES.ADMIN.name
         ],
         components: getComponentsInLink('/crm/care')
-    }
+    },
+    {
+        url: "/manage-plans",
+        description: "Quản lý đơn hàng",
+        category: LINK_CATEGORY.PLAN.name,
+        roles: [
+            ROOT_ROLES.SUPER_ADMIN.name,
+            ROOT_ROLES.ADMIN.name,
+            ROOT_ROLES.DEAN.name,
+            ROOT_ROLES.VICE_DEAN.name,
+            ROOT_ROLES.EMPLOYEE.name,
+        ],
+        components: getComponentsInLink('/manage-plans'),
+    },
 ];
 
 exports.LINKS = LINKS;

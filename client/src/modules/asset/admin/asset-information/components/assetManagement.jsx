@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar, SelectMulti, ExportExcel } from '../../../../../common-components';
+import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar, SelectMulti, ExportExcel, TreeSelect } from '../../../../../common-components';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import { AssetManagerActions } from '../redux/actions';
 import { AssetTypeActions } from "../../asset-type/redux/actions";
@@ -20,7 +20,7 @@ class AssetManagement extends Component {
             assetType: "",
             purchaseDate: null,
             status: "",
-            canRegisterForUse: "",
+            typeRegisterForUse: "",
             page: 0,
             limit: 5,
             managedBy: this.props.managedBy ? this.props.managedBy : ''
@@ -131,7 +131,7 @@ class AssetManagement extends Component {
         if (value.length === 0) {
             value = null
         }
-
+        console.log('valueeeeeeeeee', value);
         this.setState({
             ...this.state,
             assetType: value
@@ -151,14 +151,14 @@ class AssetManagement extends Component {
     }
 
     // Function lưu giá trị status vào state khi thay đổi
-    handleCanRegisterForUseChange = (value) => {
+    handleTypeRegisterForUseChange = (value) => {
         if (value.length === 0) {
             value = null
         }
 
         this.setState({
             ...this.state,
-            canRegisterForUse: value
+            typeRegisterForUse: value
         })
     }
 
@@ -182,7 +182,7 @@ class AssetManagement extends Component {
         await this.setState({
             page: parseInt(page),
         });
-        
+
         this.props.getAllAsset(this.state);
     }
 
@@ -300,8 +300,10 @@ class AssetManagement extends Component {
         let typeArr = [];
         assetTypeName.map(item => {
             typeArr.push({
-                value: item._id,
-                text: item.typeName
+                _id: item._id,
+                id: item._id,
+                name: item.typeName,
+                parent: item.parent ? item.parent._id : null
             })
         })
         return typeArr;
@@ -315,6 +317,7 @@ class AssetManagement extends Component {
         var userlist = user.list, departmentlist = department.list;
         var assettypelist = assetType.listAssetTypes;
         let typeArr = this.getAssetTypes();
+        let assetTypeName = this.state.assetType ? this.state.assetType : [];
 
         if (assetsManager.isLoading === false) {
             lists = assetsManager.listAssets;
@@ -328,7 +331,6 @@ class AssetManagement extends Component {
         if (userlist && lists && assettypelist) {
             exportData = this.convertDataToExportData(lists, assettypelist, userlist);
         }
-        console.log('litttttttttttt', lists);
         return (
             <div className={isActive ? isActive : "box"}>
 
@@ -350,13 +352,13 @@ class AssetManagement extends Component {
                     <div className="form-inline">
                         {/* Chon loai tai san */}
                         <div className="form-group">
-                            <label className="form-control-static">{translate('asset.general_information.type')}</label>
-                            <SelectMulti id={`multiSelectTypeInManagement`} multiple="multiple"
-                                options={{ nonSelectedText: translate('asset.general_information.select_asset_type'), allSelectedText: translate('asset.general_information.select_all_asset_type') }}
-                                onChange={this.handleAssetTypeChange}
-                                items={typeArr}
-                            >
-                            </SelectMulti>
+                            <label>{translate('asset.general_information.type')}</label>
+                            <TreeSelect
+                                data={typeArr}
+                                value={assetTypeName}
+                                handleChange={this.handleAssetTypeChange}
+                                mode="hierarchical"
+                            />
                         </div>
                         <div className="form-group">
                             <label className="form-control-static">{translate('asset.general_information.purchase_date')}</label>
@@ -388,7 +390,7 @@ class AssetManagement extends Component {
                             <label className="form-control-static">{translate('asset.general_information.can_register')}</label>
                             <SelectMulti id={`multiSelectStatus3`} multiple="multiple"
                                 options={{ nonSelectedText: translate('asset.general_information.select_register'), allSelectedText: translate('asset.general_information.select_all_register') }}
-                                onChange={this.handleCanRegisterForUseChange}
+                                onChange={this.handleTypeRegisterForUseChange}
                                 items={[
                                     { value: true, text: translate('asset.general_information.can_register') },
                                     { value: false, text: translate('asset.general_information.cant_register') },
@@ -492,7 +494,7 @@ class AssetManagement extends Component {
                         location={currentRowView.location}
                         description={currentRowView.description}
                         status={currentRowView.status}
-                        canRegisterForUse={currentRowView.canRegisterForUse}
+                        typeRegisterForUse={currentRowView.typeRegisterForUse}
                         detailInfo={currentRowView.detailInfo}
                         cost={currentRowView.cost}
                         readByRoles={currentRowView.readByRoles}
@@ -539,7 +541,7 @@ class AssetManagement extends Component {
                         location={currentRow.location}
                         description={currentRow.description}
                         status={currentRow.status}
-                        canRegisterForUse={currentRow.canRegisterForUse}
+                        typeRegisterForUse={currentRow.typeRegisterForUse}
                         detailInfo={currentRow.detailInfo}
                         readByRoles={currentRow.readByRoles}
                         cost={currentRow.cost}

@@ -116,20 +116,6 @@ class SalaryManagement extends Component {
 
     /** Function bắt sự kiện tìm kiếm */
     handleSunmitSearch = async () => {
-        // const { month } = this.state;
-        // if (month === null) {
-        //     let partMonth = this.formatDate(Date.now(), true).split('-');
-        //     let month = [partMonth[1], partMonth[0]].join('-');
-        //     await this.setState({
-        //         ...this.state,
-        //         month: month
-        //     })
-        // } else if (month === "-") {
-        //     await this.setState({
-        //         ...this.state,
-        //         month: ""
-        //     })
-        // }
         this.props.searchSalary(this.state);
     }
 

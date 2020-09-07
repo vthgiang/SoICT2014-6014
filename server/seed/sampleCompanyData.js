@@ -894,6 +894,7 @@ const sampleCompanyData = async () => {
     await AnnualLeave.insertMany([{
         employee: employee._id,
         company: vnist._id,
+        organizationalUnit: Directorate._id,
         startDate: "2020-02-06",
         endDate: "2020-02-08",
         status: "pass",
@@ -901,6 +902,7 @@ const sampleCompanyData = async () => {
     }, {
         employee: employee._id,
         company: vnist._id,
+        organizationalUnit: Directorate._id,
         startDate: "2020-02-05",
         endDate: "2020-02-10",
         status: "process",
@@ -1326,7 +1328,11 @@ const sampleCompanyData = async () => {
             issuingDate: "2020-08-16",
             effectiveDate: "2020-08-16",
             expiredDate: "2020-08-16",
-        }]
+        }],
+        roles: [
+            roleAdmin._id,
+            roleDean._id,
+        ],
     }, {
         name: 'Điều lệ công ty',
         category: categories[2],
@@ -1338,7 +1344,11 @@ const sampleCompanyData = async () => {
             issuingDate: "2020-08-16",
             effectiveDate: "2020-08-16",
             expiredDate: "2020-08-16",
-        }]
+        }],
+        roles: [
+            roleAdmin._id,
+            roleDean._id,
+        ]
     }, {
         name: 'Giấy chứng nhận đăng ký chất lượng sản phẩm',
         category: categories[3],
@@ -1350,7 +1360,11 @@ const sampleCompanyData = async () => {
             issuingDate: "2020-08-16",
             effectiveDate: "2020-08-16",
             expiredDate: "2020-08-16",
-        }]
+        }],
+        roles: [
+            roleAdmin._id,
+            roleDean._id,
+        ]
     }, {
         name: 'Giấy chứng nhận đăng ký chất lượng hàng nhập',
         category: categories[4],
@@ -1642,7 +1656,7 @@ const sampleCompanyData = async () => {
         assignedToUser: null,
         assignedToOrganizationalUnit: null,
         status: "Thanh lý",
-        canRegisterForUse: true,
+        typeRegisterForUse: 1,
         description: "Laptop Sony Vaio",
         detailInfo: [],
         readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
@@ -1685,7 +1699,7 @@ const sampleCompanyData = async () => {
         assignedToUser: null,
         assignedToOrganizationalUnit: null,
         status: "Thanh lý",
-        canRegisterForUse: true,
+        typeRegisterForUse: 2,
         description: "Điều hòa Panasonic 9.000BTU",
         detailInfo: [],
         readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id],
@@ -1727,7 +1741,7 @@ const sampleCompanyData = async () => {
         assignedToUser: null,
         assignedToOrganizationalUnit: null,
         status: "Sẵn sàng sử dụng",
-        canRegisterForUse: true,
+        typeRegisterForUse: 2,
         description: "Máy tính cây",
         detailInfo: [],
         readByRoles: [roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, truongPhongHC._id, phoPhongHC._id],
@@ -1770,7 +1784,7 @@ const sampleCompanyData = async () => {
         assignedToUser: null,
         assignedToOrganizationalUnit: null,
         status: "Sẵn sàng sử dụng",
-        canRegisterForUse: true,
+        typeRegisterForUse: 2,
         description: "Máy tính cây",
         detailInfo: [],
         readByRoles: [roleAdmin._id, roleSuperAdmin._id, roleDean._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
@@ -1813,7 +1827,7 @@ const sampleCompanyData = async () => {
         assignedToUser: null,
         assignedToOrganizationalUnit: null,
         status: "Sẵn sàng sử dụng",
-        canRegisterForUse: true,
+        typeRegisterForUse: 2,
         description: "Máy tính cây",
         detailInfo: [],
         readByRoles: [roleAdmin._id, roleDean._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
@@ -1856,7 +1870,7 @@ const sampleCompanyData = async () => {
         assignedToUser: null,
         assignedToOrganizationalUnit: null,
         status: "Sẵn sàng sử dụng",
-        canRegisterForUse: true,
+        typeRegisterForUse: 3,
         description: "Máy tính cây",
         detailInfo: [],
         readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id],
@@ -1912,7 +1926,7 @@ const sampleCompanyData = async () => {
 
         location: null,
         status: "Sẵn sàng sử dụng",
-        canRegisterForUse: true,
+        typeRegisterForUse: 3,
         description: "BK",
         detailInfo: [],
         readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, truongPhongHC._id, phoPhongHC._id],
@@ -1957,7 +1971,7 @@ const sampleCompanyData = async () => {
 
         location: null,
         status: "Sẵn sàng sử dụng",
-        canRegisterForUse: true,
+        typeRegisterForUse: 3,
         description: "Phòng họp",
         detailInfo: [],
         readByRoles: [giamDoc._id, roleAdmin._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
@@ -2010,7 +2024,7 @@ const sampleCompanyData = async () => {
 
         location: null,
         status: "Sẵn sàng sử dụng",
-        canRegisterForUse: true,
+        typeRegisterForUse: 3,
         description: "Phòng họp",
         detailInfo: [],
         readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
@@ -2065,7 +2079,7 @@ const sampleCompanyData = async () => {
 
             location: asset._id,
             status: "Sẵn sàng sử dụng",
-            canRegisterForUse: true,
+            typeRegisterForUse: 3,
             description: "B1",
             detailInfo: [],
             readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
@@ -2110,7 +2124,7 @@ const sampleCompanyData = async () => {
 
             location: asset._id,
             status: "Sẵn sàng sử dụng",
-            canRegisterForUse: true,
+            typeRegisterForUse: 3,
             description: "TV",
             detailInfo: [],
             readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
@@ -2157,8 +2171,53 @@ const sampleCompanyData = async () => {
         readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
         location: listAsset1[0]._id,
         status: "Thanh lý",
-        canRegisterForUse: true,
+        typeRegisterForUse: 3,
         description: "B1-101",
+        detailInfo: [],
+
+        usageLogs: [],
+        // bảo trì thiết bị
+        maintainanceLogs: [],
+        //sự cố
+        incidentLogs: [],
+        //khấu hao
+        cost: 50000000,
+        residualValue: 10000000,
+        startDepreciation: new Date("2020-06-20"), // thời gian bắt đầu trích khấu hao
+        usefulLife: 20, // thời gian trích khấu hao
+        depreciationType: "Đường thẳng", // thời gian trích khấu hao
+        //thanh lý
+        disposalDate: new Date("2020-07-20"),
+        disposalType: '',
+        disposalCost: 12000000,
+        disposalDesc: '',
+        //tài liệu đính kèm
+        documents: [],
+    },
+    { //04
+        avatar: "/upload/asset/pictures/picture5.png",
+        assetName: "B1-202",
+        group: "Building",
+        usefulLife: "22",
+        unitsProducedDuringTheYears: [{
+            month: new Date("2020-05-20"),
+            unitsProducedDuringTheYear: 3
+        }],
+        estimatedTotalProduction: 100,
+        code: "VVTM02.004",
+        company: vnist._id,
+        serial: "00004",
+        assetType: [listAssetType[25]._id],
+        purchaseDate: new Date("2000-05-20"),
+        warrantyExpirationDate: new Date("2077-06-20"),
+        managedBy: users[1]._id,
+        assignedToUser: null,
+        assignedToOrganizationalUnit: null,
+        readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
+        location: listAsset1[0]._id,
+        status: "Thanh lý",
+        typeRegisterForUse: 3,
+        description: "B1-202",
         detailInfo: [],
 
         usageLogs: [],
@@ -2206,48 +2265,9 @@ const sampleCompanyData = async () => {
         description: "B1-202",
         detailInfo: [],
 
-        usageLogs: [],
-        // bảo trì thiết bị
-        maintainanceLogs: [],
-        //sự cố
-        incidentLogs: [],
-        //khấu hao
-        cost: 50000000,
-        residualValue: 10000000,
-        startDepreciation: new Date("2020-06-20"), // thời gian bắt đầu trích khấu hao
-        usefulLife: 20, // thời gian trích khấu hao
-        depreciationType: "Đường thẳng", // thời gian trích khấu hao
-        //thanh lý
-        disposalDate: new Date("2020-07-20"),
-        disposalType: '',
-        disposalCost: 35000000,
-        disposalDesc: '',
-        //tài liệu đính kèm
-        documents: [],
-    },
-    { // 05
-        avatar: "/upload/asset/pictures/picture5.png",
-        assetName: "D3-101",
-        group: "Building",
-        usefulLife: "18",
-        unitsProducedDuringTheYears: [{
-            month: new Date("2020-05-20"),
-            unitsProducedDuringTheYear: 5
-        }],
-        estimatedTotalProduction: 112,
-        code: "VVTM02.005",
-        company: vnist._id,
-        serial: "00005",
-        assetType: [listAssetType[25]._id],
-        purchaseDate: new Date("2000-05-20"),
-        warrantyExpirationDate: new Date("2077-06-20"),
-        managedBy: users[1]._id,
-        assignedToUser: null,
-        assignedToOrganizationalUnit: null,
-
         location: listAsset1[1]._id,
         status: "Sẵn sàng sử dụng",
-        canRegisterForUse: true,
+        typeRegisterForUse: 3,
         description: "d3-101",
         detailInfo: [],
         readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
@@ -2292,7 +2312,7 @@ const sampleCompanyData = async () => {
 
         location: listAsset1[1]._id,
         status: "Sẵn sàng sử dụng",
-        canRegisterForUse: true,
+        typeRegisterForUse: 3,
         description: "d3-102",
         detailInfo: [],
         readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
@@ -2317,6 +2337,106 @@ const sampleCompanyData = async () => {
             statusIncident: "Chờ xử lý",
             type: "Hỏng hóc",
             updatedAt: new Date("2000-08-20"),
+        }
+        ],
+        //khấu hao
+        cost: 50000000,
+        residualValue: 10000000,
+        startDepreciation: new Date("2020-06-20"), // thời gian bắt đầu trích khấu hao
+        usefulLife: 20, // thời gian trích khấu hao
+        depreciationType: "Đường thẳng", // thời gian trích khấu hao
+        //thanh lý
+        disposalDate: null,
+        disposalType: '',
+        disposalCost: null,
+        disposalDesc: '',
+        //tài liệu đính kèm
+        documents: [],
+    },
+    { // 07
+        avatar: "/upload/asset/pictures/picture5.png",
+        assetName: "D3-103",
+        group: "Building",
+        usefulLife: "12",
+        unitsProducedDuringTheYears: [{
+            month: new Date("2020-05-20"),
+            unitsProducedDuringTheYear: 80
+        }],
+        estimatedTotalProduction: 1000,
+        code: "VVTM02.007",
+        company: vnist._id,
+        serial: "00007",
+        assetType: [listAssetType[25]._id],
+        purchaseDate: new Date("2000-05-20"),
+        warrantyExpirationDate: new Date("2077-06-20"),
+        managedBy: users[1]._id,
+        assignedToUser: null,
+        assignedToOrganizationalUnit: null,
+
+        location: listAsset1[1]._id,
+        status: "Sẵn sàng sử dụng",
+        canRegisterForUse: true,
+        description: "d3-102",
+        detailInfo: [],
+        readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
+        usageLogs: [],
+        // bảo trì thiết bị
+        maintainanceLogs: [],
+        //sự cố
+        incidentLogs: [{
+            createdAt: new Date("2000-05-20"),
+            dateOfIncident: new Date("2000-05-20"),
+            description: "hỏng hóc",
+            incidentCode: "icd01",
+            statusIncident: "Chờ xử lý",
+            type: "Hỏng hóc",
+            updatedAt: new Date("2000-05-20"),
+        },
+        { // 07
+            avatar: "/upload/asset/pictures/picture5.png",
+            assetName: "D3-103",
+            group: "Building",
+            usefulLife: "12",
+            unitsProducedDuringTheYears: [{
+                month: new Date("2020-05-20"),
+                unitsProducedDuringTheYear: 80
+            }],
+            estimatedTotalProduction: 1000,
+            code: "VVTM02.007",
+            company: vnist._id,
+            serial: "00007",
+            assetType: [listAssetType[25]._id],
+            purchaseDate: new Date("2000-05-20"),
+            warrantyExpirationDate: new Date("2077-06-20"),
+            managedBy: users[1]._id,
+            assignedToUser: null,
+            assignedToOrganizationalUnit: null,
+
+            location: listAsset1[1]._id,
+            status: "Sẵn sàng sử dụng",
+            typeRegisterForUse: 3,
+            description: "d3-103",
+            detailInfo: [],
+            readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
+            usageLogs: [],
+            // bảo trì thiết bị
+            maintainanceLogs: [],
+            //sự cố
+            incidentLogs: [],
+            //khấu hao
+            cost: 50000000,
+            residualValue: 10000000,
+            startDepreciation: new Date("2020-06-20"), // thời gian bắt đầu trích khấu hao
+            usefulLife: 20, // thời gian trích khấu hao
+            depreciationType: "Đường thẳng", // thời gian trích khấu hao
+            //thanh lý
+            disposalDate: null,
+            disposalType: '',
+            disposalCost: null,
+            disposalDesc: '',
+            //tài liệu đính kèm
+            archivedRecordNumber: "PKD007",
+            documents: [],
         }
         ],
         //khấu hao

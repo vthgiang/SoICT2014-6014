@@ -850,7 +850,7 @@ class DetailTaskTab extends Component {
                                         evalList.map((eva, keyEva) => {
                                             return (
                                                 <div key={keyEva} className="description-box">
-                                                    <button className="btn btn-success pull-right" onClick={() => this.calculateHoursSpentOnTask(task._id, task.timesheetLogs, eva._id, eva.prevDate, eva.date)}>Tính thời gian</button>
+                                                    <h4 style={{ cursor: "pointer" }} className="pull-right" onClick={() => this.calculateHoursSpentOnTask(task._id, task.timesheetLogs, eva._id, eva.prevDate, eva.date)} title="Cập nhật thời gian bấm giờ"><i class="fa fa-fw fa-clock-o">&nbsp;&nbsp;</i></h4>
                                                     <h4>{translate('task.task_management.detail_eval')}&nbsp;{this.formatDate(eva.prevDate)} <i className="fa fa-fw fa-caret-right"></i> {this.formatDate(eva.date)}</h4>
 
                                                     {

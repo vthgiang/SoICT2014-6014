@@ -106,6 +106,15 @@ class AssetEditForm extends Component {
         }
     }
 
+    handleRecallAsset = async (data) => {
+        await this.setState({
+            ...this.state,
+            assignedToUser: data.assignedToUser,
+            assignedToOrganizationalUnit: data.assignedToOrganizationalUnit,
+            status: data.status
+        })
+    }
+
     // Function xoá thông tin cấp phát, điều chuyển, thu hồi
     handleDeleteUsageLogs = (data, deleteData) => {
         if (deleteData._id) {
@@ -118,15 +127,6 @@ class AssetEditForm extends Component {
                 usageLogs: data
             })
         }
-    }
-
-    // Function thu hồi quyền sử dụng
-    hanhdleRecallAsset = async (data) => {
-        await this.setState({
-            assignedToUser: data.assignedToUser,
-            assignedToOrganizationalUnit: data.assignedToOrganizationalUnit,
-            status: "Sẵn sàng sử dụng",
-        })
     }
 
     // Function thêm thông tin sự cố tài sản
@@ -218,7 +218,7 @@ class AssetEditForm extends Component {
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
         let { code, assetName, serial, assetType, managedBy, purchaseDate, warrantyExpirationDate, location, status,
-            canRegisterForUse, cost, usefulLife, startDepreciation, depreciationType, unitsProducedDuringTheYears, estimatedTotalProduction } = this.state;
+            typeRegisterForUse, cost, usefulLife, startDepreciation, depreciationType, unitsProducedDuringTheYears, estimatedTotalProduction } = this.state;
         
         if (this.state !== {}) {
             let unitProductionValidate = true;
@@ -230,7 +230,7 @@ class AssetEditForm extends Component {
                 this.validatorInput(serial) && this.validatorInput(assetType) &&
                 this.validatorInput(managedBy) && this.validatorInput(purchaseDate) &&
                 this.validatorInput(warrantyExpirationDate) && //this.validatorInput(location) &&
-                this.validatorInput(status) && this.validatorInput(canRegisterForUse) &&
+                this.validatorInput(status) && this.validatorInput(typeRegisterForUse) &&
                 this.validatorInput(cost) && this.validatorInput(usefulLife) &&
                 this.validatorInput(startDepreciation) && this.validatorInput(depreciationType)
                 && unitProductionValidate;
@@ -330,7 +330,7 @@ class AssetEditForm extends Component {
                 location: nextProps.location,
                 description: nextProps.description,
                 status: nextProps.status,
-                canRegisterForUse: nextProps.canRegisterForUse,
+                typeRegisterForUse: nextProps.typeRegisterForUse,
                 detailInfo: nextProps.detailInfo,
                 readByRoles: nextProps.readByRoles,
                 // Khấu hao
@@ -386,10 +386,10 @@ class AssetEditForm extends Component {
     render() {
         const { translate, assetsManager } = this.props;
         const { _id, img, avatar, code, assetName, serial, assetType, group, purchaseDate, warrantyExpirationDate, managedBy, assignedToUser, assignedToOrganizationalUnit, handoverFromDate,
-            handoverToDate, location, description, status, canRegisterForUse, detailInfo, usageLogs, maintainanceLogs, cost, residualValue, startDepreciation,
+            handoverToDate, location, description, status, typeRegisterForUse, detailInfo, usageLogs, maintainanceLogs, cost, residualValue, startDepreciation,
             usefulLife, depreciationType, incidentLogs, disposalDate, disposalType, unitsProducedDuringTheYears, disposalCost, disposalDesc, archivedRecordNumber,
             files, estimatedTotalProduction, readByRoles } = this.state;
-
+        console.log("Dòng 401", assignedToUser, assignedToOrganizationalUnit, status)
 
         return (
             <React.Fragment>
@@ -435,7 +435,7 @@ class AssetEditForm extends Component {
                                 location={location}
                                 description={description}
                                 status={status}
-                                canRegisterForUse={canRegisterForUse}
+                                typeRegisterForUse={typeRegisterForUse}
                                 detailInfo={detailInfo}
                                 usageLogs={usageLogs}
                                 readByRoles={readByRoles}
@@ -452,7 +452,7 @@ class AssetEditForm extends Component {
                                 handleAddUsage={this.handleCreateUsageLogs}
                                 handleEditUsage={this.handleEditUsageLogs}
                                 handleDeleteUsage={this.handleDeleteUsageLogs}
-                                hanhdleRecallAsset = {this.hanhdleRecallAsset}
+                                handleRecallAsset = {this.handleRecallAsset}
                             />
 
                             {/* Thông tin bảo trì */}

@@ -61,7 +61,6 @@ class PraiseCreateForm extends Component {
                     ...state,
                     errorOnEmployee: msg,
                     employee: value,
-                    organizationalUnit: "",
                 }
             });
 

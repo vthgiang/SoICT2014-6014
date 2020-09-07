@@ -2,22 +2,28 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ButtonModal, ErrorLabel, DatePicker } from '../../../../common-components';
+import { DialogModal, ButtonModal, ErrorLabel, DatePicker, SelectBox } from '../../../../common-components';
 
 import { AnnualLeaveFormValidator } from './annualLeaveFormValidator';
 
 import { AnnualLeaveActions } from '../redux/actions';
+import { UserActions } from '../../../super-admin/user/redux/actions';
+import { EmployeeManagerActions } from '../../profile/employee-management/redux/actions';
 
 class AnnualLeaveCreateForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            employeeNumber: "",
+            employee: "",
             startDate: this.formatDate(Date.now()),
             endDate: this.formatDate(Date.now()),
             status: "pass",
             reason: "",
         };
+    }
+
+    componentDidMount() {
+        this.props.getAllEmployee();
     }
 
     /**
@@ -42,21 +48,41 @@ class AnnualLeaveCreateForm extends Component {
 
     }
 
-    /** Bắt sự kiện thay đổi mã nhân viên */
-    handleMSNVChange = (e) => {
-        let { value } = e.target;
-        this.validateEmployeeNumber(value, true);
+    /** Function bắt sự kiện thay đổi mã nhân viên */
+    handleMSNVChange = async (value) => {
+        await this.props.getDepartmentOfUser({ email: value[0] });
+        this.validateEmployeeNumber(value[0], true);
     }
     validateEmployeeNumber = (value, willUpdateState = true) => {
-        const { translate } = this.props;
-
+        let { translate } = this.props;
         let msg = AnnualLeaveFormValidator.validateEmployeeNumber(value, translate);
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnEmployeeNumber: msg,
-                    employeeNumber: value,
+                    errorOnEmployee: msg,
+                    employee: value,
+                    organizationalUnit: "",
+                }
+            });
+
+        }
+        return msg === undefined;
+    }
+
+    /** Function bắt sự kiện thay đổi đơn vị */
+    handleOrganizationalUnitChange = (value) => {
+        this.validateOrganizationalUnit(value[0], true);
+    }
+    validateOrganizationalUnit = (value, willUpdateState = true) => {
+        let { translate } = this.props;
+        let msg = AnnualLeaveFormValidator.validateEmployeeNumber(value, translate);
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnOrganizationalUnit: msg,
+                    organizationalUnit: value,
                 }
             });
         }
@@ -151,9 +177,18 @@ class AnnualLeaveCreateForm extends Component {
 
     /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
     isFormValidated = () => {
-        const { employeeNumber, reason, startDate, endDate } = this.state;
+        const { user } = this.props;
+        let { employee, organizationalUnit, reason, startDate, endDate } = this.state;
 
-        let result = this.validateEmployeeNumber(employeeNumber, false) && this.validateReason(reason, false);
+        if (user.organizationalUnitsOfUserByEmail) {
+            if (!organizationalUnit) {
+                let department = user.organizationalUnitsOfUserByEmail[0];
+                organizationalUnit = department._id;
+            }
+        }
+
+        let result = this.validateEmployeeNumber(employee, false) &&
+            this.validateReason(reason, false) && this.validateOrganizationalUnit(organizationalUnit, false);
 
         let partStart = startDate.split('-');
         let startDateNew = [partStart[2], partStart[1], partStart[0]].join('-');
@@ -167,7 +202,16 @@ class AnnualLeaveCreateForm extends Component {
 
     /** Bắt sự kiện submit form */
     save = () => {
-        const { startDate, endDate } = this.state;
+        const { user, employeesManager } = this.props;
+        let { organizationalUnit, startDate, endDate, employee } = this.state;
+        if (user.organizationalUnitsOfUserByEmail) {
+            if (!organizationalUnit) {
+                let department = user.organizationalUnitsOfUserByEmail[0];
+                organizationalUnit = department._id;
+            }
+        }
+        let employeeID = employeesManager.listAllEmployees.find(x => x.emailInCompany === employee);
+        employeeID = employeeID._id;
 
         let partStart = startDate.split('-');
         let startDateNew = [partStart[2], partStart[1], partStart[0]].join('-');
@@ -175,15 +219,25 @@ class AnnualLeaveCreateForm extends Component {
         let endDateNew = [partEnd[2], partEnd[1], partEnd[0]].join('-');
 
         if (this.isFormValidated()) {
-            return this.props.createAnnualLeave({ ...this.state, startDate: startDateNew, endDate: endDateNew });
+            return this.props.createAnnualLeave({ ...this.state, startDate: startDateNew, endDate: endDateNew, employee: employeeID, organizationalUnit: organizationalUnit, });
         }
     }
 
     render() {
-        const { translate, annualLeave } = this.props;
+        const { translate, annualLeave, user, employeesManager } = this.props;
 
-        const { employeeNumber, startDate, endDate, reason, status,
-            errorOnEmployeeNumber, errorOnReason, errorOnStartDate, errorOnEndDate } = this.state;
+        let { employee, organizationalUnit, startDate, endDate, reason, status, errorOnOrganizationalUnit,
+            errorOnEmployee, errorOnReason, errorOnStartDate, errorOnEndDate } = this.state;
+
+        let listAllEmployees = employeesManager.listAllEmployees;
+        let listDepartments = [{ _id: "", name: translate('human_resource.non_unit') }];
+        if (user.organizationalUnitsOfUserByEmail) {
+            listDepartments = user.organizationalUnitsOfUserByEmail;
+            if (!organizationalUnit) {
+                let department = user.organizationalUnitsOfUserByEmail[0];
+                organizationalUnit = department._id;
+            }
+        }
 
         return (
             <React.Fragment>
@@ -197,10 +251,31 @@ class AnnualLeaveCreateForm extends Component {
                 >
                     <form className="form-group" id="form-create-annual-leave">
                         {/* Mã số nhân viên */}
-                        <div className={`form-group ${errorOnEmployeeNumber && "has-error"}`}>
+                        <div className={`form-group ${errorOnEmployee && "has-error"}`}>
                             <label>{translate('human_resource.staff_number')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="employeeNumber" value={employeeNumber} onChange={this.handleMSNVChange} placeholder={translate('human_resource.staff_number')} />
-                            <ErrorLabel content={errorOnEmployeeNumber} />
+                            <SelectBox
+                                id={`create-annual-leave-employee`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                value={employee}
+                                items={listAllEmployees.map(y => { return { value: y.emailInCompany, text: `${y.employeeNumber} - ${y.fullName}` } }).concat([{ value: "", text: translate('human_resource.non_staff') }])}
+                                onChange={this.handleMSNVChange}
+                            />
+                            <ErrorLabel content={errorOnEmployee} />
+                        </div>
+                        {/* Đơn vị */}
+                        <div className={`form-group ${errorOnOrganizationalUnit && "has-error"}`}>
+                            <label>{translate('human_resource.unit')}<span className="text-red">*</span></label>
+                            <SelectBox
+                                id={`create-annual-leave-unit`}
+                                className="form-control select2"
+                                disabled={listDepartments.length > 1 ? false : true}
+                                style={{ width: "100%" }}
+                                value={organizationalUnit}
+                                items={listDepartments.map(y => { return { value: y._id, text: y.name } })}
+                                onChange={this.handleOrganizationalUnitChange}
+                            />
+                            <ErrorLabel content={errorOnOrganizationalUnit} />
                         </div>
                         <div className="row">
                             {/* Ngày bắt đầu */}
@@ -249,12 +324,14 @@ class AnnualLeaveCreateForm extends Component {
 };
 
 function mapState(state) {
-    const { annualLeave } = state;
-    return { annualLeave };
+    const { annualLeave, employeesManager, user } = state;
+    return { annualLeave, employeesManager, user };
 };
 
 const actionCreators = {
     createAnnualLeave: AnnualLeaveActions.createAnnualLeave,
+    getAllEmployee: EmployeeManagerActions.getAllEmployee,
+    getDepartmentOfUser: UserActions.getDepartmentOfUser,
 };
 
 const createForm = connect(mapState, actionCreators)(withTranslate(AnnualLeaveCreateForm));

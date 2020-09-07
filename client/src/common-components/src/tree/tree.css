@@ -1,4 +1,4 @@
-/* Higlight node được chọn */
+/* Highlight node được chọn */
 .jstree-default .jstree-clicked {
     background: #beebff;
 }
@@ -11,7 +11,8 @@
 .jstree-default .jstree-closed>.jstree-ocl {
     background-image: none;
 }
-.jstree-default>.jstree-no-dots .jstree-open:not(.jstree-leaf)>.jstree-ocl::before {
+.jstree-default>.jstree-no-dots .jstree-open:not(.jstree-leaf)>.jstree-ocl::before,
+.jstree-default>.jstree-no-dots .jstree-closed:not(.jstree-leaf)>.jstree-ocl::before {
     font: normal normal normal 18px/1 "Material Icons";
     color: #555;
     margin-right: -6px;
@@ -21,13 +22,7 @@
     padding-top: 5px;
 }
 .jstree-default>.jstree-no-dots .jstree-closed:not(.jstree-leaf)>.jstree-ocl::before {
-    font: normal normal normal 18px/1 "Material Icons";
-    color: #555;
-    margin-right: -6px;
-    display: inline-block;
     content: "\E5CF";
-    vertical-align: top;
-    padding-top: 5px;
 }
 
 
