@@ -5,6 +5,7 @@ export function createKpiUnit (state = {}, action){
         case createUnitKpiConstants.GETCURRENT_KPIUNIT_REQUEST:
           return {
             ...state,
+            organizationalUnitKpiLoading: false,
             loading: true,
             isLoading: true,
             currentKPI: null
@@ -12,12 +13,14 @@ export function createKpiUnit (state = {}, action){
         case createUnitKpiConstants.GETCURRENT_KPIUNIT_SUCCESS:
           return {
             ...state,
+            organizationalUnitKpiLoading: true,
             loading: false,
             currentKPI: action.payload,
             isLoading: false
           };
         case createUnitKpiConstants.GETCURRENT_KPIUNIT_FAILURE:
           return {
+            organizationUnitKpiLoading: true,
             error: action.payload,
             isLoading: false
           };
