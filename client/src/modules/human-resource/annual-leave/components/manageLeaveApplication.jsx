@@ -198,7 +198,7 @@ class ManageLeaveApplication extends Component {
                     <div className="form-inline" style={{ marginBottom: 10 }}>
                         {/* Tháng */}
                         <div className="form-group">
-                            <label className="form-control-static">{translate('human_resource.month')}</label>
+                            <label style={{ width: 'auto' }}>{translate('human_resource.month')}</label>
                             <DatePicker
                                 id="month"
                                 dateFormat="month-year"
@@ -208,7 +208,7 @@ class ManageLeaveApplication extends Component {
                         </div>
                         {/* Trạng thái */}
                         <div className="form-group">
-                            <label className="form-control-static">{translate('human_resource.status')}</label>
+                            <label style={{ width: 'auto' }}>{translate('human_resource.status')}</label>
                             <SelectMulti id={`multiSelectStatus`} multiple="multiple"
                                 options={{ nonSelectedText: translate('human_resource.non_status'), allSelectedText: translate('human_resource.all_status') }}
                                 onChange={this.handleStatusChange}
