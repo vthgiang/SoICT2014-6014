@@ -95,7 +95,7 @@ class CreateForm extends Component {
     }
     handImportFile = (event) => {
         event.preventDefault();
-        window.$('#modal_import_file').modal('show');
+        window.$('#modal_import_file_category').modal('show');
     }
     save = () => {
         const { documentTypeName, documentTypeDescription } = this.state;
@@ -117,7 +117,7 @@ class CreateForm extends Component {
                         >{translate('general.add')}</button>
                         <ul className="dropdown-menu pull-right">
                             <li><a href="#modal-create-document-type" title="ImportForm" onClick={(event) => { this.handleAddCategory(event) }}>{translate('task_template.add')}</a></li>
-                            <li><a href="#modal_import_file" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>ImportFile</a></li>
+                            <li><a href="#modal_import_file_category" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>ImportFile</a></li>
                         </ul>
                     </div>
                 </div>

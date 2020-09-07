@@ -11,7 +11,7 @@ class ManageLeaveApplication extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            status: 'process',
+            status: '',
             page: 0,
             limit: 10000000000
         }

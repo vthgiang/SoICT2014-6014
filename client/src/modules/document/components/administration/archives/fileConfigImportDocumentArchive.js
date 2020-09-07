@@ -30,13 +30,13 @@ export const exportArchive = {
         sheetName: "Sheet1",
         sheetTitle: "Danh sách vị trí lưu trữ",
         table: [{
-            rowHeader: 2,
+            rowHeader: 1,
             columns: [
-                { key:"name", value:"Tên vị trí lưu trữ" },
-                { key:"description", value: "Mô tả vị trí lưu trữ" },
-                { key:"pathParent", value: "Đường dẫn vị trí lưu trữ cha"},
+                { key: "name", value: "Tên vị trí lưu trữ" },
+                { key: "description", value: "Mô tả vị trí lưu trữ" },
+                { key: "pathParent", value: "Đường dẫn vị trí lưu trữ cha" },
             ],
-            data:[
+            data: [
                 {
                     name: "B4",
                     description: "B4",
@@ -47,12 +47,12 @@ export const exportArchive = {
                 },
                 {
                     name: "Ngăn 1",
-                    "pathParent": "B4 - Phòng 201",
+                    pathParent: "B4 - Phòng 201",
                 },
             ]
         }]
 
-    }] 
+    }]
 }
 
 

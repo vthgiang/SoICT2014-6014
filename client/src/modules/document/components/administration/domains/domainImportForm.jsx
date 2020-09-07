@@ -95,8 +95,8 @@ class DomainImportForm extends Component {
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID={`modal_import_file`} isLoading={false}
-                    formID={`form_import_file`}
+                    modalID={`modal_import_file-domain`} isLoading={false}
+                    formID={`form_import_file_domain`}
                     title="Thêm danh mục bằng import file excel"
                     func={this.save}
                     disableSubmit={false}

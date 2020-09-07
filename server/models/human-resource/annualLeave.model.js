@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 const Company = require('../system-admin/company.model');
 const Employee = require('./employee.model');
+const OrganizationalUnit = require('../super-admin/organizationalUnit.model');
 
 // Tạo bảng datatable nghỉ phép
 const AnnualLeaveSchema = new Schema({
@@ -14,6 +15,10 @@ const AnnualLeaveSchema = new Schema({
     company: {
         type: Schema.Types.ObjectId,
         ref: Company,
+    },
+    organizationalUnit: {
+        type: Schema.Types.ObjectId,
+        ref: OrganizationalUnit,
     },
     startDate: {
         type: Date,
@@ -30,7 +35,7 @@ const AnnualLeaveSchema = new Schema({
     status: {
         type: String,
         required: true,
-        enum:['pass', 'process', 'faile'],  // pass-đã chấp nhận, process-chờ phê duyệt, faile-Không cấp nhận  , 
+        enum: ['pass', 'process', 'faile'], // pass-đã chấp nhận, process-chờ phê duyệt, faile-Không cấp nhận  , 
     }
 }, {
     timestamps: true,

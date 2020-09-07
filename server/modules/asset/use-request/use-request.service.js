@@ -4,33 +4,32 @@ const { Asset, UserRole } = require('../../../models').schema;
 /**
  * Lấy danh sách phiếu đề nghị cấp thiết bị
  */
-exports.searchRecommendDistributes = async (query, company) => {
-    const { recommendNumber, month, status, page, limit,managedBy } = query;
-    var keySearch = { company: company};
+exports.searchRecommendDistributes = async(query, company) => {
+    const { recommendNumber, month, status, page, limit, managedBy } = query;
+    var keySearch = { company: company };
 
     // Bắt sựu kiện mã phiếu tìm kiếm khác ""
     if (recommendNumber) {
-        keySearch = { ...keySearch, recommendNumber: { $regex: recommendNumber, $options: "i" } }
+        keySearch = {...keySearch, recommendNumber: { $regex: recommendNumber, $options: "i" } }
     }
 
     //Bắt sựu kiện tháng tìm kiếm khác ""
     if (month) {
-        keySearch = { ...keySearch, dateCreate: { $regex: month, $options: "i" } }
+        keySearch = {...keySearch, dateCreate: { $regex: month, $options: "i" } }
     }
 
     // Thêm key tìm kiếm phiếu theo trạng thái vào keySearch
     if (status) {
-        keySearch = { ...keySearch, status: { $in: status } };
+        keySearch = {...keySearch, status: { $in: status } };
     };
 
     var totalList = await RecommendDistribute.count(keySearch);
-    var listRecommendDistributes = await RecommendDistribute.find(keySearch).populate('asset proponent approver').sort({'createdAt': 'desc'}).skip(page ? parseInt(page) : 0).limit(limit ? parseInt(limit) : 0);
-    
+    var listRecommendDistributes = await RecommendDistribute.find(keySearch).populate('asset proponent approver').sort({ 'createdAt': 'desc' }).skip(page ? parseInt(page) : 0).limit(limit ? parseInt(limit) : 0);
 
-    if(managedBy!=="" && managedBy!==undefined)
-    {
-        let tempListRecommendDistributes = listRecommendDistributes.filter(item=>item.asset.managedBy.toString()===managedBy);
-        listRecommendDistributes=tempListRecommendDistributes;
+
+    if (managedBy !== "" && managedBy !== undefined) {
+        let tempListRecommendDistributes = listRecommendDistributes.filter(item => item.asset.managedBy.toString() === managedBy);
+        listRecommendDistributes = tempListRecommendDistributes;
     }
 
     return { totalList, listRecommendDistributes };
@@ -41,8 +40,21 @@ exports.searchRecommendDistributes = async (query, company) => {
  * @data: dữ liệu phiếu đề nghị cap phat thiết bị
  * @company: id công ty người tạo
  */
-exports.createRecommendDistribute = async (data, company) => {
+exports.createRecommendDistribute = async(data, company) => {
     console.log(data);
+
+    let dateStartUse, dateEndUse;
+    if (data.startTime) {
+        dateStartUse = data.startTime + ' ' + data.dateStartUse;
+    } else {
+        dateStartUse = data.dateStartUse;
+    }
+    if (data.stopTime) {
+        dateEndUse = data.stopTime + ' ' + data.dateEndUse;
+    } else {
+        dateEndUse = data.dateEndUse;
+    }
+
     var createRecommendDistribute = await RecommendDistribute.create({
         company: company,
         recommendNumber: data.recommendNumber,
@@ -50,8 +62,8 @@ exports.createRecommendDistribute = async (data, company) => {
         proponent: data.proponent, // Người đề nghị
         reqContent: data.reqContent,
         asset: data.asset,
-        dateStartUse: data.dateStartUse,
-        dateEndUse: data.dateEndUse,
+        dateStartUse: dateStartUse,
+        dateEndUse: dateEndUse,
         approver: data.approver, // Người phê duyệt
         note: data.note,
         status: data.status,
@@ -63,7 +75,7 @@ exports.createRecommendDistribute = async (data, company) => {
  * Xoá thông tin phiếu đề nghị cap phat thiết bị
  * @id: id phiếu đề nghị cap phat thiết bị muốn xoá
  */
-exports.deleteRecommendDistribute = async (id) => {
+exports.deleteRecommendDistribute = async(id) => {
     return await RecommendDistribute.findOneAndDelete({
         _id: id
     });
@@ -73,7 +85,7 @@ exports.deleteRecommendDistribute = async (id) => {
  * Update thông tin phiếu đề nghị cap phat thiết bị
  * @id: id phiếu đề nghị cap phat thiết bị muốn update
  */
-exports.updateRecommendDistribute = async (id, data) => {
+exports.updateRecommendDistribute = async(id, data) => {
     var recommendDistributeChange = {
         recommendNumber: data.recommendNumber,
         dateCreate: data.dateCreate,
@@ -97,4 +109,3 @@ exports.updateRecommendDistribute = async (id, data) => {
         _id: id
     })
 }
-

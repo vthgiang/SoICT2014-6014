@@ -517,7 +517,9 @@ export default {
                 document: 'Giấy tờ',
                 description: 'Mô tả',
                 carier: 'Nhân viên chăm sóc phụ trách',
-                discount: 'Chiết khấu áp dụng', by_group: 'Theo nhóm khách hàng', by_customer: 'Theo khách hàng',
+                discount: 'Chiết khấu áp dụng',
+                by_group: 'Theo nhóm khách hàng',
+                by_customer: 'Theo khách hàng',
                 payment: 'Hình thức thanh toán',
 
                 info: 'Thông tin chung',
@@ -767,6 +769,8 @@ export default {
             //QUẢN LÝ ĐƠN HÀNG
             manage_orders: "Quản lý đơn hàng",
             manage_list_orders: "Danh sách đơn hàng",
+            // Quản lý kế hoạch sản xuất
+            manage_plans: "Quản lý kế hoạch sản xuất"
         },
 
         manage_system: {
@@ -1037,6 +1041,7 @@ export default {
                         decision_unit: 'Cấp ra quyết định',
                         reward_forms: 'Hình thức khen thưởng',
                         reason_praise: 'Thành tích (Lý do)',
+                        reward_forms_short: 'Hình thức',
 
                     },
 
@@ -1080,6 +1085,7 @@ export default {
                         end_date: 'Ngày hết hiệu lực',
                         discipline_forms: 'Hình thức kỷ luật',
                         reason_discipline: 'Lý do kỷ luật',
+                        discipline_forms_short: 'Hình thức',
                     },
 
                     // Nhóm dành cho action
@@ -1476,7 +1482,6 @@ export default {
                 day: 'ngày',
                 total_number_leave_of_year: 'Tổng số ngày nghỉ phép cả năm',
                 leaved: 'Bạn đã nghỉ',
-                view_detail: 'Chi tiết xem ở trang',
                 receiver: 'Người nhận',
 
                 // Nhóm action
@@ -3081,6 +3086,30 @@ export default {
             edit_report_manager_fail: 'Sửa mẫu báo cáo thất bại !',
             delete_report_manager_success: 'Xóa mẫu báo cáo thành công !',
             delete_report_manager_fail: 'Xóa mẫu báo cáo thất bại !',
+        },
+
+        // manage_plan
+
+        manage_plan: {
+            code: "Mã kế hoạch",
+            planName: "Tên kế hoạch",
+            search: "Tìm kiếm",
+            add_plan: "Thêm mới",
+            index: "STT",
+            description: "Mô tả",
+            edit: "Chỉnh sửa thông tin kế hoạch",
+            delete: "Xóa kế hoạch",
+            delete_success: "Xóa kế hoạch thành công!",
+            delete_fail: "Xóa kế hoạch thất bại!",
+            add: "Thêm kế hoạch",
+            add_title: "Thêm mới kế hoạch",
+            add_success: "Thêm kế hoạch thành công!",
+            add_fail: "Thêm kế hoạch thất bại!",
+            plan_description: "Mô tả kế hoạch",
+            edit_title: "Sửa một kế hoạch",
+            edit_plan_success: "Cập nhật kế hoạch thành công!",
+            edit_plan_fail: "Cập nhật kế hoạch thất bại!",
+            detail_info_plan: "Thông tin chi tiết kế hoạch"
         },
 
         footer: {

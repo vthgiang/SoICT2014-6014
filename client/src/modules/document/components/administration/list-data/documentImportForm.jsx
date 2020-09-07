@@ -159,8 +159,8 @@ class DocumentImportForm extends Component {
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID={`modal_import_file`} isLoading={false}
-                    formID={`form_import_file`}
+                    modalID={`modal_import_file_document`} isLoading={false}
+                    formID={`form_import_file_document`}
                     title="Thêm tài liệu bằng import file excel"
                     func={this.save}
                     disableSubmit={false}

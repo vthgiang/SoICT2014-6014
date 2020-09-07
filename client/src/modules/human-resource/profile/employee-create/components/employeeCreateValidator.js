@@ -44,9 +44,9 @@ export const EmployeeCreateValidator = {
 function validateEmployeeNumber(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
-        msg = translate('error.employee_number_required');
+        msg = translate('Mã số nhân viên không được để trống');
     } else if (!VALIDATOR.isValidEmployeeNumber(value)) {
-        msg = translate('error.staff_code_not_special');
+        msg = translate('Mã số nhân vên không được chứa ký tự đặc biệt');
     }
     return msg;
 }

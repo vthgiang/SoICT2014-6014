@@ -48,8 +48,7 @@ class BuildingAsset extends Component {
                 parent: node.location ? node.location.toString() : "#",
                 state: {
                     opened: true
-                },
-                icon: "image/office_building.png"
+                }
             }
         })
         return (
@@ -88,7 +87,7 @@ class BuildingAsset extends Component {
                                         location={currentRowView.location}
                                         description={currentRowView.description}
                                         status={currentRowView.status}
-                                        canRegisterForUse={currentRowView.canRegisterForUse}
+                                        typeRegisterForUse={currentRowView.typeRegisterForUse}
                                         detailInfo={currentRowView.detailInfo}
                                         cost={currentRowView.cost}
 
