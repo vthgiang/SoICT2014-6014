@@ -153,7 +153,7 @@ class ModalCreateTaskProcess extends Component {
 	// Hàm đổi tên Quy trình
 	handleChangeBpmnName = async (e) => {
 		let { value } = e.target;
-		let msg = TaskProcessValidator.validateProcessName(value);
+		let msg = TaskProcessValidator.validateProcessName(value, this.props.translate);
 		await this.setState(state => {
 			return {
 				...state,
@@ -170,7 +170,7 @@ class ModalCreateTaskProcess extends Component {
 			return {
 				...state,
 				processDescription: value,
-				errorOnProcessDescription: TaskProcessValidator.validateProcessDescription(value),
+				errorOnProcessDescription: TaskProcessValidator.validateProcessDescription(value, this.props.translate),
 			}
 		});
 	}
@@ -182,7 +182,7 @@ class ModalCreateTaskProcess extends Component {
 			return {
 				...state,
 				viewer: value,
-				errorOnViewer: TaskProcessValidator.validateViewer(value),
+				errorOnViewer: TaskProcessValidator.validateViewer(value, this.props.translate),
 			}
 		})
 	}
@@ -194,7 +194,7 @@ class ModalCreateTaskProcess extends Component {
 			return {
 				...state,
 				manager: value,
-				errorOnManager: TaskProcessValidator.validateManager(value),
+				errorOnManager: TaskProcessValidator.validateManager(value, this.props.translate),
 			}
 		})
 	}

@@ -621,7 +621,8 @@ _getAllUsersInOrganizationalUnits = async (data) => {
             deans: {},
             viceDeans: {},
             employees: {},
-            department: department.name
+            department: department.name,
+            id: department.id,
         };
         tmp.forEach(item => {
             let obj = {};

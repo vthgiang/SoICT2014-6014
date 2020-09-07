@@ -1182,10 +1182,6 @@ exports.createTask = async (task) => {
         // formula = "progress / (dayUsed / totalDay)"; // default
         formula = "progress / (dayUsed / totalDay) - 0.5 * (10 - (averageActionRating)) * 10"
     } 
-    // else {
-    //     formula = task.formula;
-    // }
-
     var task = await Task.create({ //Tạo dữ liệu mẫu công việc
         organizationalUnit: task.organizationalUnit,
         creator: task.creator, //id của người tạo
