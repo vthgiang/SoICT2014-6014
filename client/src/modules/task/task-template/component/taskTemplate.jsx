@@ -144,7 +144,7 @@ class TaskTemplate extends Component {
                 return true;
             }
         }
-        if (creatorId == localStorage.getItem("userId")) {
+        if (creatorId === localStorage.getItem("userId")) {
             return true;
         }
         return false;

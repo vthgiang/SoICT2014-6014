@@ -464,7 +464,7 @@ _getAllUsersInOrganizationalUnits = async (data) => {
             .populate({ path: 'userId', select: 'name' })
 
         var tmp = await Role.find({ _id: { $in: [...department.deans, ...department.viceDeans, ...department.employees] } }, { name: 1 });
-        var users = { deans: {}, viceDeans: {}, employees: {}, department: department.name };
+        var users = { deans: {}, viceDeans: {}, employees: {}, department: department.name, id: department.id };
         tmp.forEach(item => {
             let obj = {};
             obj._id = item.id;
