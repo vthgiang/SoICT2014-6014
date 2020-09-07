@@ -2211,9 +2211,14 @@ export default {
                 not_confirm: 'Not confirm this task',
 
                 left_task_expired: 'left is task expired',
-                action_not_rating: 'actions not rating this month',
+                action_not_rating: 'Actions not rating this month',
 
                 left_can_edit_task: 'Remaining time to edit task evaluation of previous month',
+
+                // check deadline
+                warning_days: "days",
+                warning_hours: "hours",
+                warning_minutes: "minutes",
             },
             task_perform: {
                 actions: "Actions",
@@ -2384,24 +2389,25 @@ export default {
                 manager: 'Manager',
                 viewer: 'Viewer',
                 time_of_process: 'Time of process',
+                process_information: "Process Information",
                 start_date: 'Start date',
                 end_date: 'End date',
-
-                inprocess: 'Iprocess',
+                create: 'Create',
+                inprocess: 'Iprocess',  
                 wait_for_approval: 'Wait for approval',
                 finished: 'Finished',
                 delayed: 'Delayed',
                 canceled: 'Canceled',
-
+                general_infomation: "General Infomation",
                 notice: 'Notice',
                 information: 'Information',
                 document: 'Document',
-
+                roles: 'Roles',
                 list_of_data_and_info: 'List of data and informations',
                 not_have_doc: 'Not have documents',
                 not_have_info: 'Not have information',
                 not_export_info: 'Not export information',
-
+                task_process: 'Task process',
                 save: 'Save',
 
             },
@@ -2413,7 +2419,7 @@ export default {
                 delete_task_template_success: 'Delete task template success !',
                 delete_task_template_fail: 'Delete task template fail !',
                 error_task_template_creator_null: 'Creator of this task template does not exist or has deleted',
-
+                view_task_process_template: 'View task process template'
             }
         },
 
