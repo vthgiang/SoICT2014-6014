@@ -2386,14 +2386,16 @@ export default {
             task_process: {
                 process_name: 'Process name',
                 process_description: 'Process description',
+                creator: 'Creator',
                 manager: 'Manager',
                 viewer: 'Viewer',
+                no_data: 'Not have data',
                 time_of_process: 'Time of process',
                 process_information: "Process Information",
                 start_date: 'Start date',
                 end_date: 'End date',
                 create: 'Create',
-                inprocess: 'Iprocess',  
+                inprocess: 'Inprocess',
                 wait_for_approval: 'Wait for approval',
                 finished: 'Finished',
                 delayed: 'Delayed',
@@ -2408,7 +2410,48 @@ export default {
                 not_have_info: 'Not have information',
                 not_export_info: 'Not export information',
                 task_process: 'Task process',
+
+
+                export_doc: "Export document",
+                export_info: 'Export information',
+
+                create_task_with_template: 'Create task with template',
+
+                add_modal: 'Create new process template',
+                view_process_template_modal: 'View process template',
+                view_task_process_modal: 'View task process',
+                edit_modal: 'Edit process template',
+                add_task_process_modal: 'Create tasks by process',
+
                 save: 'Save',
+
+                // message from server
+                get_all_success: 'Get all process template successfully',
+                get_all_err: 'Get all process template fail',
+                get_by_id_success: 'Get process template by id successfully',
+                get_by_id_err: 'Get process template by id fail',
+                create_success: 'Create process template successfully',
+                create_error: 'Create process template fail',
+                edit_success: 'Edit process template successfully',
+                edit_fail: 'Edit process template fail',
+                delete_success: 'Delete process template successfully',
+                delete_fail: 'Delete process template fail',
+                create_task_by_process_success: 'Create tasks by process successfully',
+                create_task_by_process_fail: 'Create tasks by process fail',
+                get_all_task_process_success: 'Get all task process successfully',
+                get_all_task_process_fail: 'Get all task process fail',
+                update_task_process_success: 'Update task process successfully',
+                update_task_process_fail: 'Update task process fail',
+
+                error: {
+                    empty_name: "Process name should not be empty",
+                    special_character: "Process name should not be has special character",
+
+                    empty_description: "Process description should not be empty",
+
+                    empty_viewer: "It is necessary to indicate the viewer",
+                    empty_manager: "It is necessary to indicate the manager",
+                }
 
             },
             task_template: {
@@ -3051,25 +3094,25 @@ export default {
 
         // manage_plan
         manage_plan: {
-        code: "Plan Code",
-        planName: "Plan Name",
-        search: "Search",
-        add_plan: "Add Plan",
-        index: "Index",
-        description: "Description",
-        edit: "Edit this plan",
-        delete: "Delete this plan",
-        delete_success: "Delete plan successfully!",
-        delete_fail: "Delete plan fail!",
-        add: "Add plan",
-        add_title: "Add a new plan",
-        add_success: "Add plan successfully!",
-        add_fail: "Add plan fail!",
-        plan_description: "Plan Description",
-        edit_title: "Update a plan",
-        edit_plan_success: "Update plan successfully!",
-        edit_plan_fail: "Update plan fail!",
-        detail_info_plan: "Detail infomation of plan"
+            code: "Plan Code",
+            planName: "Plan Name",
+            search: "Search",
+            add_plan: "Add Plan",
+            index: "Index",
+            description: "Description",
+            edit: "Edit this plan",
+            delete: "Delete this plan",
+            delete_success: "Delete plan successfully!",
+            delete_fail: "Delete plan fail!",
+            add: "Add plan",
+            add_title: "Add a new plan",
+            add_success: "Add plan successfully!",
+            add_fail: "Add plan fail!",
+            plan_description: "Plan Description",
+            edit_title: "Update a plan",
+            edit_plan_success: "Update plan successfully!",
+            edit_plan_fail: "Update plan fail!",
+            detail_info_plan: "Detail infomation of plan"
         },
 
         footer: {

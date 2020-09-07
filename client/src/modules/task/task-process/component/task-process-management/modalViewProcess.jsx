@@ -1,10 +1,9 @@
 import React, { Component } from "react";
 import { withTranslate } from "react-redux-multilingual";
 import { connect } from 'react-redux';
-import { DialogModal, SelectBox, DatePicker } from "../../../../../common-components";
+import { DialogModal } from "../../../../../common-components";
 import { ViewProcess } from "./viewProcess";
 import { UserActions } from "../../../../super-admin/user/redux/actions";
-import { taskManagementActions } from "../../../task-management/redux/actions";
 import { performTaskAction } from "../../../task-perform/redux/actions";
 
 class ModalViewProcess extends Component {

@@ -150,7 +150,7 @@ class OutgoingDataTab extends Component {
                                         <div>
                                             <input
                                                 type="checkbox"
-                                                title="Xuất thông tin"
+                                                title={translate('task.task_process.export_info')}
                                                 style={{ margin: "0.5em 0.5em", padding: "0.6em" }}
                                                 name={info.description}
                                                 onClick={() => this.handleCheckBoxOutputInformation(info)}
@@ -173,7 +173,7 @@ class OutgoingDataTab extends Component {
                                             <div>
                                                 <input
                                                     type="checkbox"
-                                                    title="Xuất tài liệu"
+                                                    title={translate('task.task_process.export_doc')}
                                                     style={{ margin: "0.5em 0.5em", padding: "0.6em" }}
                                                     name={document.description}
                                                     onClick={() => this.handleCheckBoxOutputDocument(document)}
