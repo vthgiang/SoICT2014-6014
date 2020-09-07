@@ -28,8 +28,8 @@ class AssetCreateForm extends Component {
                 handoverFromDate: null,
                 handoverToDate: null,
                 status: "",
+                typeRegisterForUse: "",
                 assetType: "",
-                canRegisterForUse: "",
                 description: "",
                 detailInfo: [],
                 residualValue: null,
@@ -156,17 +156,17 @@ class AssetCreateForm extends Component {
             this.validatorInput(asset.assetName) &&
             // this.validatorInput(asset.serial) &&
             this.validatorInput(asset.purchaseDate)
-        // && this.validatorInput(asset.warrantyExpirationDate) &&
-        // //this.validatorInput(asset.location) &&
-        // this.validatorInput(asset.assetType) &&
-        // this.validatorInput(asset.managedBy) &&
-        // this.validatorInput(asset.status) &&
-        // this.validatorInput(asset.canRegisterForUse) &&
-        // this.validatorInput(asset.cost) &&
-        // this.validatorInput(asset.usefulLife) &&
-        // this.validatorInput(asset.startDepreciation) &&
-        // this.validatorInput(asset.depreciationType);
-
+            // && this.validatorInput(asset.warrantyExpirationDate) &&
+            // //this.validatorInput(asset.location) &&
+            // this.validatorInput(asset.assetType) &&
+            // this.validatorInput(asset.managedBy) &&
+            // this.validatorInput(asset.status) &&
+            // this.validatorInput(asset.typeRegisterForUse) &&
+            // this.validatorInput(asset.cost) &&
+            // this.validatorInput(asset.usefulLife) &&
+            // this.validatorInput(asset.startDepreciation) &&
+            // this.validatorInput(asset.depreciationType);
+        
         return result;
     }
 

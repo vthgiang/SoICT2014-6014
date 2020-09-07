@@ -769,6 +769,8 @@ export default {
             //QUẢN LÝ ĐƠN HÀNG
             manage_orders: "Quản lý đơn hàng",
             manage_list_orders: "Danh sách đơn hàng",
+            // Quản lý kế hoạch sản xuất
+            manage_plans: "Quản lý kế hoạch sản xuất"
         },
 
         manage_system: {
@@ -3084,6 +3086,30 @@ export default {
             edit_report_manager_fail: 'Sửa mẫu báo cáo thất bại !',
             delete_report_manager_success: 'Xóa mẫu báo cáo thành công !',
             delete_report_manager_fail: 'Xóa mẫu báo cáo thất bại !',
+        },
+
+        // manage_plan
+
+        manage_plan: {
+            code: "Mã kế hoạch",
+            planName: "Tên kế hoạch",
+            search: "Tìm kiếm",
+            add_plan: "Thêm mới",
+            index: "STT",
+            description: "Mô tả",
+            edit: "Chỉnh sửa thông tin kế hoạch",
+            delete: "Xóa kế hoạch",
+            delete_success: "Xóa kế hoạch thành công!",
+            delete_fail: "Xóa kế hoạch thất bại!",
+            add: "Thêm kế hoạch",
+            add_title: "Thêm mới kế hoạch",
+            add_success: "Thêm kế hoạch thành công!",
+            add_fail: "Thêm kế hoạch thất bại!",
+            plan_description: "Mô tả kế hoạch",
+            edit_title: "Sửa một kế hoạch",
+            edit_plan_success: "Cập nhật kế hoạch thành công!",
+            edit_plan_fail: "Cập nhật kế hoạch thất bại!",
+            detail_info_plan: "Thông tin chi tiết kế hoạch"
         },
 
         footer: {

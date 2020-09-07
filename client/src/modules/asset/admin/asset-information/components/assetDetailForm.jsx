@@ -36,7 +36,7 @@ class AssetDetailForm extends Component {
                 location: nextProps.location,
                 description: nextProps.description,
                 status: nextProps.status,
-                canRegisterForUse: nextProps.canRegisterForUse,
+                typeRegisterForUse: nextProps.typeRegisterForUse,
                 detailInfo: nextProps.detailInfo,
                 cost: nextProps.cost,
                 residualValue: nextProps.residualValue,
@@ -61,13 +61,13 @@ class AssetDetailForm extends Component {
     }
     render() {
         const { translate, assetsManager } = this.props;
-        const { _id, avatar, code, assetName, serial, assetType, group, purchaseDate, warrantyExpirationDate,
-            managedBy, assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, location, description, status, canRegisterForUse,
-            detailInfo, cost, residualValue, startDepreciation, usefulLife, depreciationType, estimatedTotalProduction,
-            unitsProducedDuringTheYears, maintainanceLogs, usageLogs, incidentLogs, disposalDate, disposalType, disposalCost,
-            disposalDesc, archivedRecordNumber, files
-        } = this.state;
-        console.log('âssssss', assetType);
+        const { _id, avatar, code, assetName, serial, assetType, group, purchaseDate, warrantyExpirationDate, 
+                managedBy, assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, location, description, status, typeRegisterForUse,
+                detailInfo, cost, residualValue, startDepreciation, usefulLife, depreciationType, estimatedTotalProduction, 
+                unitsProducedDuringTheYears, maintainanceLogs, usageLogs, incidentLogs, disposalDate, disposalType, disposalCost, 
+                disposalDesc, archivedRecordNumber, files 
+            } = this.state;
+
         return (
             <React.Fragment>
                 <DialogModal
@@ -109,7 +109,7 @@ class AssetDetailForm extends Component {
                                     location={location}
                                     description={description}
                                     status={status}
-                                    canRegisterForUse={canRegisterForUse}
+                                    typeRegisterForUse={typeRegisterForUse}
                                     detailInfo={detailInfo}
                                     usageLogs={usageLogs}
                                 />
