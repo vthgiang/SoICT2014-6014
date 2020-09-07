@@ -2,23 +2,28 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ErrorLabel, DatePicker, SlimScroll } from '../../../../common-components';
+import { DialogModal, ErrorLabel, DatePicker, SlimScroll, SelectBox } from '../../../../common-components';
 
 import { TimesheetsFormValidator } from './combinedContent';
 
 import { TimesheetsActions } from '../redux/actions';
+import { EmployeeManagerActions } from '../../profile/employee-management/redux/actions';
 
 class TimesheetsCreateForm extends Component {
     constructor(props) {
         super(props);
         let allDayOfMonth = this.getAllDayOfMonth(this.formatDate(Date.now(), true));
         this.state = {
-            employeeNumber: "",
+            employee: "",
             month: this.formatDate(Date.now(), true),
             workSession1: allDayOfMonth.map(x => false),
             workSession2: allDayOfMonth.map(x => false),
             allDayOfMonth: allDayOfMonth,
         };
+    }
+
+    componentDidMount() {
+        this.props.getAllEmployee();
     }
 
     /**
@@ -64,21 +69,21 @@ class TimesheetsCreateForm extends Component {
     }
 
     /** Function bắt sự kiện thay đổi mã nhân viên */
-    handleMSNVChange = (e) => {
-        let { value } = e.target;
-        this.validateEmployeeNumber(value, true);
+    handleMSNVChange = async (value) => {
+        this.validateEmployeeNumber(value[0], true);
     }
     validateEmployeeNumber = (value, willUpdateState = true) => {
-        const { translate } = this.props;
+        let { translate } = this.props;
         let msg = TimesheetsFormValidator.validateEmployeeNumber(value, translate);
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnEmployeeNumber: msg,
-                    employeeNumber: value,
+                    errorOnEmployee: msg,
+                    employee: value,
                 }
             });
+
         }
         return msg === undefined;
     }
@@ -135,15 +140,15 @@ class TimesheetsCreateForm extends Component {
 
     /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form  */
     isFormValidated = () => {
-        const { month, employeeNumber } = this.state;
-        let result = this.validateMonth(month, false) && this.validateEmployeeNumber(employeeNumber, false);
+        const { month, employee } = this.state;
+        let result = this.validateMonth(month, false) && this.validateEmployeeNumber(employee, false);
         return result;
     }
 
     /** Function bắt sự kiện lưu bảng chấm công */
     save = () => {
-        const { month } = this.state;
-        let partMonth = this.state.month.split('-');
+        let { month } = this.state;
+        let partMonth = month.split('-');
         let monthNew = [partMonth[1], partMonth[0]].join('-');
         if (this.isFormValidated()) {
             this.props.createTimesheets({ ...this.state, month: monthNew });
@@ -151,10 +156,11 @@ class TimesheetsCreateForm extends Component {
     }
 
     render() {
-        const { timesheets, translate } = this.props;
+        const { timesheets, translate, employeesManager } = this.props;
 
-        const { errorOnEmployeeNumber, errorOnMonthSalary, month, employeeNumber, allDayOfMonth, workSession1, workSession2 } = this.state;
+        const { errorOnEmployee, errorOnMonthSalary, month, employee, allDayOfMonth, workSession1, workSession2 } = this.state;
 
+        let listAllEmployees = employeesManager.listAllEmployees;
         return (
             <React.Fragment>
                 <DialogModal
@@ -167,12 +173,18 @@ class TimesheetsCreateForm extends Component {
                     disableSubmit={!this.isFormValidated()}
                 >
                     <form className="form-group" id="form-create-timesheets">
-                        {/* Mã số nhân viên*/}
-                        <div className={`form-group ${errorOnEmployeeNumber && "has-error"}`}>
+                        {/* Mã số nhân viên */}
+                        <div className={`form-group ${errorOnEmployee && "has-error"}`}>
                             <label>{translate('human_resource.staff_number')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="employeeNumber" value={employeeNumber} onChange={this.handleMSNVChange}
-                                autoComplete="off" placeholder={translate('human_resource.staff_number')} />
-                            <ErrorLabel content={errorOnEmployeeNumber} />
+                            <SelectBox
+                                id={`create-timesheets-employee`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                value={employee}
+                                items={listAllEmployees.map(y => { return { value: y._id, text: `${y.employeeNumber} - ${y.fullName}` } }).concat([{ value: "", text: translate('human_resource.non_staff') }])}
+                                onChange={this.handleMSNVChange}
+                            />
+                            <ErrorLabel content={errorOnEmployee} />
                         </div>
                         {/* Tháng */}
                         <div className={`form-group ${errorOnMonthSalary && "has-error"}`}>
@@ -233,12 +245,13 @@ class TimesheetsCreateForm extends Component {
 }
 
 function mapState(state) {
-    const { timesheets } = state;
-    return { timesheets };
+    const { timesheets, employeesManager } = state;
+    return { timesheets, employeesManager };
 };
 
 const actionCreators = {
     createTimesheets: TimesheetsActions.createTimesheets,
+    getAllEmployee: EmployeeManagerActions.getAllEmployee,
 };
 
 const createForm = connect(mapState, actionCreators)(withTranslate(TimesheetsCreateForm));
