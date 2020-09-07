@@ -4,6 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import c3 from 'c3';
 import 'c3/c3.css';
 import * as d3 from "d3";
+import './transferList.css';
 
 class LineBarChart extends Component {
     constructor(props) {
@@ -16,46 +17,23 @@ class LineBarChart extends Component {
 
 
     setDataMultiChart = (data) => {
-        console.log('data', data)
-        let dataConvert = [], dateConvert = [], valueConvert = [], chartType = [], axisXType, showInReport;
+        let dataConvert = [['x']], typeChart = {};
+        let indices = { time: 0 }; // chỉ số time = 0 ứng với mảng x trong dataConvert 
         if (data) {
+
             data.forEach(x => {
-                let date = new Date(x.time);
-                //Check date là quý-năm thì cho axisXType = category
-                if (isNaN(date)) {
-                    axisXType = 'category';
-                    return dateConvert = [...dateConvert, x.time.toString()];
-                } else {
-                    axisXType = 'timeseries';
-                    let getYear = date.getFullYear();
-                    let getMonth = date.getMonth() + 1;
-                    let newDate = `${getYear}-${getMonth}-1`;
-                    return dateConvert = [...dateConvert, newDate];
-                }
+                dataConvert[indices.time].push(x.time);
+                x.tasks.forEach(({ code, value, chartType }) => {
+                    if (!(code in indices))
+                        indices[code] = dataConvert.push([code]) - 1;
+                    dataConvert[indices[code]].push(value);
+
+                    typeChart = { ...typeChart, [code]: chartType }; // lấy dạng biểu dồ cho từng trường thông tin để vẽ biểu đồ tương ứng( bar, line)
+                })
             })
         }
-        dateConvert.unshift("x");
 
-
-        let allTasks = data.flatMap(x => x.tasks);
-        // gom nhom giá trị các trường thông tin
-        valueConvert = Object.values(allTasks.reduce((arr, item) => {
-            arr[item.code] = arr[item.code] || [item.code];
-            arr[item.code].push(item.value);
-            return arr;
-        }, {}));
-
-        // gom nhom dang bieu do để
-        chartType = allTasks.reduce((obj, item) => {
-            return {
-                ...obj,
-                [item.code]: item.chartType
-            }
-        }, {});
-
-        dataConvert = [...[dateConvert], ...valueConvert];
-        console.log('dataConvert', dataConvert)
-        return { dataConvert, chartType, axisXType };
+        return { dataConvert, typeChart };
     }
 
 
@@ -112,59 +90,52 @@ class LineBarChart extends Component {
         data = this.setDataMultiChart(data);
 
         let newData = data.dataConvert;
-        let chartType = data.chartType;
-        let barLinechartType = {};
-        let pieChartType = {};
-        let type = data.axisXType;
-
-        // xóa chartType = pie (biểu đồ tròn), định dạng loại biểu đồ tương ứng có data khi kết hợp cột với đường
-        for (let i in chartType) {
-            if (chartType[i] !== "pie") {
-                barLinechartType[i] = chartType[i];
-            } else {
-                pieChartType[i] = chartType[i];
-            }
-        }
-
+        let typeChart = data.typeChart;
 
         this.chart = c3.generate({
             bindto: this.refs.barChart,
+            padding: {
+                top: 20,
+                bottom: 20,
+                right: 20
+            },
             data: {
                 x: 'x',
                 columns: newData,
-                // type: 'bar',
-                types: barLinechartType,
+                type: 'bar',
+                types: typeChart,
             },
             bar: {
-                width: { ratio: 0.3 }
+                width: {
+                    ratio: 0.4
+                }
             },
             axis: {
+                rotated: true,
                 x: {
-                    type: type,
+                    type: 'category',
                     tick: {
-                        format: '%m - %Y',
-                        outer: false,
-
+                        multiline: true
                     },
                 },
                 y: {
-                    tick: { outer: false },
+                    label: {
+                        text: 'Thành tiền',
+                        position: 'outer-middle'
+                    },
                 }
             },
         });
-
     }
 
 
     render() {
         return (
-            <div className="box box-primary">
-                <div className="box-header with-border">
-                    <h4 className="box-title">Báo cáo công việc</h4>
-                </div>
-                <div className="box-body dashboard_box_body">
-                    <p className="pull-left" style={{ marginBottom: 0 }}><b>Thành tiền: Vnđ</b></p>
-                    <div ref="barChart"></div>
+            <div className="row">
+                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <div className="lineBarChart">
+                        <section ref="barChart"></section>
+                    </div>
                 </div>
             </div>
         )

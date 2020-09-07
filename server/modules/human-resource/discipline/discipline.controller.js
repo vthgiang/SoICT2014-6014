@@ -13,7 +13,7 @@ exports.searchDisciplines = async (req, res) => {
         } else {
             let params = {
                 organizationalUnits: req.query.organizationalUnits,
-                position: req.query.position,
+                type: req.query.type,
                 employeeNumber: req.query.employeeNumber,
                 decisionNumber: req.query.decisionNumber,
                 page: Number(req.query.page),
@@ -44,16 +44,7 @@ exports.searchDisciplines = async (req, res) => {
 exports.createDiscipline = async (req, res) => {
     try {
         // Kiểm tra dữ liệu truyền vào
-        if (req.body.employeeNumber.trim() === "") {
-            await LogError(req.user.email, 'CREATE_DISCIPLINE', req.user.company);
-            res.status(400).json({
-                success: false,
-                messages: ["employee_number_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else if (req.body.decisionNumber.trim() === "") {
+        if (req.body.decisionNumber.trim() === "") {
             await LogError(req.user.email, 'CREATE_DISCIPLINE', req.user.company);
             res.status(400).json({
                 success: false,
@@ -100,17 +91,7 @@ exports.createDiscipline = async (req, res) => {
             });
         } else {
             let createDiscipline = await DisciplineService.createDiscipline(req.body, req.user.company._id, req.user.company._id);
-            // Kiểm tra sự tồn tại của mã nhân viên
-            if (createDiscipline === null) {
-                await LogError(req.user.email, 'CREATE_DISCIPLINE', req.user.company);
-                res.status(404).json({
-                    success: false,
-                    messages: ["staff_code_not_find"],
-                    content: {
-                        inputData: req.body
-                    }
-                });
-            } else if (createDiscipline === "have_exist") { // Kiểm tra trùng lặp
+            if (createDiscipline === "have_exist") { // Kiểm tra trùng lặp
                 await LogError(req.user.email, 'CREATE_DISCIPLINE', req.user.company);
                 res.status(400).json({
                     success: false,
@@ -166,25 +147,7 @@ exports.deleteDiscipline = async (req, res) => {
 exports.updateDiscipline = async (req, res) => {
     try {
         // Kiểm tra dữ liệu truyền vào
-        if (req.body.employeeNumber.trim() === "") {
-            await LogError(req.user.email, 'EDIT_DISCIPLINE', req.user.company);
-            res.status(400).json({
-                success: false,
-                messages: ["employee_number_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else if (req.body.decisionNumber.trim() === "") {
-            await LogError(req.user.email, 'EDIT_DISCIPLINE', req.user.company);
-            res.status(400).json({
-                success: false,
-                messages: ["number_decisions_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else if (req.body.organizationalUnit.trim() === "") {
+        if (req.body.organizationalUnit.trim() === "") {
             await LogError(req.user.email, 'EDIT_DISCIPLINE', req.user.company);
             res.status(400).json({
                 success: false,
@@ -221,25 +184,13 @@ exports.updateDiscipline = async (req, res) => {
                 }
             });
         } else {
-            let disciplineUpdate = await DisciplineService.updateDiscipline(req.params.id, req.body, req.user.company._id);
-            // Kiểm tra sự tồn tại của mã nhân viên
-            if (disciplineUpdate === null) {
-                await LogError(req.user.email, 'EDIT_DISCIPLINE', req.user.company);
-                res.status(404).json({
-                    success: false,
-                    messages: ["staff_code_not_find"],
-                    content: {
-                        inputData: req.body
-                    }
-                });
-            } else {
-                await LogInfo(req.user.email, 'EDIT_DISCIPLINE', req.user.company);
-                res.status(200).json({
-                    success: true,
-                    messages: ["edit_discipline_success"],
-                    content: disciplineUpdate
-                });
-            }
+            let disciplineUpdate = await DisciplineService.updateDiscipline(req.params.id, req.body);
+            await LogInfo(req.user.email, 'EDIT_DISCIPLINE', req.user.company);
+            res.status(200).json({
+                success: true,
+                messages: ["edit_discipline_success"],
+                content: disciplineUpdate
+            });
         }
     } catch (error) {
         await LogError(req.user.email, 'EDIT_DISCIPLINE', req.user.company);

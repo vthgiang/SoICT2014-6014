@@ -109,6 +109,14 @@ class IncidentEditForm extends Component {
         return result;
     }
 
+    handleStatusIncidentChange = (e) => {
+        let { value } = e.target;
+        this.setState({
+            ...this.state,
+            statusIncident: value
+        })
+    }
+
     save = () => {
         let { managedBy } =this.state;
         var partIncident = this.state.dateOfIncident.split('-');
@@ -121,6 +129,7 @@ class IncidentEditForm extends Component {
                 reportedBy: !this.state.reportedBy ? this.props.user.list[0].id : this.state.reportedBy,
                 dateOfIncident: dateOfIncident,
                 description: this.state.description,
+                statusIncident: this.state.statusIncident,
                 status: this.state.type,
                 assetId
             }
@@ -139,6 +148,7 @@ class IncidentEditForm extends Component {
                 reportedBy: nextProps.reportedBy,
                 dateOfIncident: nextProps.dateOfIncident,
                 description: nextProps.description,
+                statusIncident: nextProps.statusIncident,
                 errorOnIncidentCode: undefined,
                 errorOnDateOfIncident: undefined,
                 errorOnDescription: undefined,
@@ -154,12 +164,12 @@ class IncidentEditForm extends Component {
         const { _id } = this.props;
         const { translate, assetsManager, user, auth } = this.props;
         const {
-            incidentCode, type, asset, reportedBy, dateOfIncident, description, errorOnIncidentCode, errorOnDateOfIncident, errorOnDescription
+            incidentCode, type, asset, reportedBy, dateOfIncident, description, errorOnIncidentCode, errorOnDateOfIncident, errorOnDescription, statusIncident
         } = this.state;
 
         var userlist = user.list;
         var assetlist = assetsManager.listAssets;
-
+        console.log("Đang test")
         return (
             <React.Fragment>
                 <DialogModal
@@ -189,7 +199,7 @@ class IncidentEditForm extends Component {
                                 </select>
                             </div>
 
-                            {/* Tài sản */}
+                            {/* Tài ff sản */}
                             <div className={`form-group`}>
                                 <label>{translate('asset.general_information.asset')}</label>
                                 <div>
@@ -244,6 +254,15 @@ class IncidentEditForm extends Component {
                                 <textarea className="form-control" rows="3" style={{ height: 34 }} name="description" value={description} onChange={this.handleDescriptionChange} autoComplete="off"
                                     placeholder={translate('asset.general_information.content')}></textarea>
                                 <ErrorLabel content={errorOnDescription} />
+                            </div>
+                            
+                            {/* Trạng thái */}
+                            <div className="form-group">
+                                <label>{translate('asset.general_information.status')}</label>
+                                <select className="form-control" value={statusIncident} name="type" onChange={this.handleStatusIncidentChange}>
+                                    <option value="Chờ xử lý">{translate('asset.general_information.waiting')}</option>
+                                    <option value="Đã xử lý">{translate('asset.general_information.processed')}</option>
+                                </select>
                             </div>
                         </div>
                     </form>

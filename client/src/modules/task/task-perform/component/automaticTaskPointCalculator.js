@@ -47,7 +47,8 @@ function calcAutoPoint(data) {
     let actionRating = actions.map(action => action.rating);
 
     // Tổng số hoạt động
-    let a = actionRating.length;
+    let a = 0;
+    a = actionRating.length;
 
     // Tổng số điểm của các hoạt động
     let reduceAction = actionRating.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
@@ -104,14 +105,9 @@ function calcAutoPoint(data) {
             formula = formula.replace(/averageActionRating/g, `(${averageActionRating})`);
             formula = formula.replace(/progress/g, `(${progressTask})`);
         }
-        else { // Công việc theo mẫu
-            // if (task.process) {
-                formula = task.formula
-            // }
-            // else { // không cần dùng vì có thêm trường formula trong model task
-            //     formula = task.taskTemplate.formula;
-            // }
-
+        else {
+            formula = task.formula
+            
             let taskInformations = info;
 
             // thay các biến bằng giá trị

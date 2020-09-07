@@ -13,7 +13,7 @@ exports.searchCommendations = async (req, res) => {
         } else {
             let params = {
                 organizationalUnits: req.query.organizationalUnits,
-                position: req.query.position,
+                type: req.query.type,
                 employeeNumber: req.query.employeeNumber,
                 decisionNumber: req.query.decisionNumber,
                 page: Number(req.query.page),
@@ -43,16 +43,7 @@ exports.searchCommendations = async (req, res) => {
 exports.createCommendation = async (req, res) => {
     try {
         // Kiểm tra dữ liệu truyền vào
-        if (req.body.employeeNumber.trim() === "") {
-            await LogError(req.user.email, 'CREATE_COMMENDATIONS', req.user.company);
-            res.status(400).json({
-                success: false,
-                messages: ["employee_number_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else if (req.body.decisionNumber.trim() === "") {
+        if (req.body.decisionNumber.trim() === "") {
             await LogError(req.user.email, 'CREATE_COMMENDATIONS', req.user.company);
             res.status(400).json({
                 success: false,
@@ -99,18 +90,8 @@ exports.createCommendation = async (req, res) => {
             });
         } else {
             let createCommendation = await CommendationService.createCommendation(req.body, req.user.company._id);
-            // Kiểm tra sự tồn tại của mã số nhân viên
-            if (createCommendation === null) {
-                await LogError(req.user.email, 'CREATE_COMMENDATIONS', req.user.company);
-                res.status(404).json({
-                    success: false,
-                    messages: ["staff_code_not_find"],
-                    content: {
-                        inputData: req.body
-                    }
-                });
             // Kiểm tra trùng lặp
-            } else if (createCommendation === "have_exist") {
+            if (createCommendation === "have_exist") {
                 await LogError(req.user.email, 'CREATE_COMMENDATIONS', req.user.company);
                 res.status(400).json({
                     success: false,
@@ -164,25 +145,7 @@ exports.deleteCommendation = async (req, res) => {
 exports.updateCommendation = async (req, res) => {
     try {
         // Kiểm tra dữ liệu truyền vào
-        if (req.body.employeeNumber.trim() === "") {
-            await LogError(req.user.email, 'EDIT_COMMENDATIONS', req.user.company);
-            res.status(400).json({
-                success: false,
-                messages: ["employee_number_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else if (req.body.decisionNumber.trim() === "") {
-            await LogError(req.user.email, 'EDIT_COMMENDATIONS', req.user.company);
-            res.status(400).json({
-                success: false,
-                messages: ["number_decisions_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else if (req.body.organizationalUnit.trim() === "") {
+        if (req.body.organizationalUnit.trim() === "") {
             await LogError(req.user.email, 'EDIT_COMMENDATIONS', req.user.company);
             res.status(400).json({
                 success: false,
@@ -218,26 +181,14 @@ exports.updateCommendation = async (req, res) => {
                     inputData: req.body
                 }
             });
-        } else { 
-            let commendationUpdate = await CommendationService.updateCommendation(req.params.id, req.body, req.user.company._id);
-            // Kiểm tra sự tồn tại của mã nhân viên
-            if (commendationUpdate === null) {
-                await LogError(req.user.email, 'EDIT_COMMENDATIONS', req.user.company);
-                res.status(404).json({
-                    success: false,
-                    messages: ["staff_code_not_find"],
-                    content: {
-                        inputData: req.body
-                    }
-                });
-            } else {
-                await LogInfo(req.user.email, 'EDIT_COMMENDATIONS', req.user.company);
-                res.status(200).json({
-                    success: true,
-                    messages: ["edit_commendations_success"],
-                    content: commendationUpdate
-                });
-            }
+        } else {
+            let commendationUpdate = await CommendationService.updateCommendation(req.params.id, req.body);
+            await LogInfo(req.user.email, 'EDIT_COMMENDATIONS', req.user.company);
+            res.status(200).json({
+                success: true,
+                messages: ["edit_commendations_success"],
+                content: commendationUpdate
+            });
         }
     } catch (error) {
         await LogError(req.user.email, 'EDIT_COMMENDATIONS', req.user.company);

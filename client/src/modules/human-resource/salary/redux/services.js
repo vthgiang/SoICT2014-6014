@@ -19,7 +19,7 @@ function searchSalary(data) {
         url: `${ process.env.REACT_APP_SERVER }/salary/salaries`,
         method: 'GET',
         params: {
-            organizationalUnit: data.organizationalUnit,
+            organizationalUnits: data.organizationalUnits,
             employeeNumber: data.employeeNumber,
             month: data.month,
             page: data.page,

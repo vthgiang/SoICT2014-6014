@@ -3,7 +3,7 @@ const { LogInfo, LogError } = require(SERVER_LOGS_DIR);
 
 exports.getCustomers = async(req, res) => {
     try {
-        const customers = await CustomerService.getCustomers(req.query);
+        const customers = await CustomerService.getCustomers(req.user.company._id, req.query);
 
         // LogInfo(req.user.email, 'GET_CUSTOMERS', req.user.company);
         res.status(200).json({

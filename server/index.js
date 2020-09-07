@@ -67,6 +67,9 @@ const material = require("./modules/warehouse/material/material.router");
 
 //order
 const order = require("./modules/order/order.route");
+// plan
+
+const plan = require("./modules/plan/plan.route");
 
 // APP
 const app = express();
@@ -146,6 +149,9 @@ app.use("/materials", material);
 
 //order
 app.use("/orders", order);
+
+// Plan
+app.use("/plans", plan);
 
 // Customer Management
 const crm = express.Router();

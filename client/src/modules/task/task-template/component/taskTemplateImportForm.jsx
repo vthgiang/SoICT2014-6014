@@ -20,7 +20,7 @@ class TaskTemplateImportForm extends Component {
             page: 0
         };
     }
-    
+
     // Function thay đổi cấu hình file import
     handleChangeConfig = (value) => {
         this.setState({
@@ -33,13 +33,13 @@ class TaskTemplateImportForm extends Component {
         let values = [];
         let valueShow = [];
         let k = -1;
-        for ( let i = 0; i < value.length; i++){
+        for (let i = 0; i < value.length; i++) {
             let x = value[i];
             if (x.name) {
                 k = k + 1;
                 values = [...values, {
-                    "STT": k+1,
-                    "name": x.name, 
+                    "STT": k + 1,
+                    "name": x.name,
                     "description": x.description,
                     "organizationalUnit": x.organizationalUnit,
                     "readByEmployees": x.readByEmployees,
@@ -50,10 +50,10 @@ class TaskTemplateImportForm extends Component {
                     "informedEmployees": x.informedEmployees,
                     "formula": x.formula,
                     "taskActions": [x.taskActions],
-                    "taskInformations": [x.taskInformations], 
+                    "taskInformations": [x.taskInformations],
                 }];
                 valueShow = [...valueShow, {
-                    "name": x.name, 
+                    "name": x.name,
                     "description": x.description,
                     "organizationalUnit": x.organizationalUnit,
                     "readByEmployees": [x.readByEmployees],
@@ -70,7 +70,7 @@ class TaskTemplateImportForm extends Component {
                 if (k >= 0) {
                     let out = {
                         "STT": "",
-                        "name": "", 
+                        "name": "",
                         "description": "",
                         "organizationalUnit": "",
                         "readByEmployees": "",
@@ -81,13 +81,13 @@ class TaskTemplateImportForm extends Component {
                         "informedEmployees": "",
                         "formula": "",
                         "taskActions": "",
-                        "taskInformations": "", 
+                        "taskInformations": "",
                     }
-                    
+
                     if (x.taskActions) {
                         valueShow[k].taskActions = [...valueShow[k].taskActions, x.taskActions];
                         out.taskActions = [x.taskActions];
-                    } 
+                    }
                     if (x.taskInformations) {
                         valueShow[k].taskInformations = [...valueShow[k].taskInformations, x.taskInformations];
                         out.taskInformations = [x.taskInformations];
@@ -118,7 +118,7 @@ class TaskTemplateImportForm extends Component {
         }
 
         for (let i = 0; i < values.length; i++) {
-            let taskActions = [[],[],[]], taskInformations = [[],[],[],[]];
+            let taskActions = [[], [], []], taskInformations = [[], [], [], []];
             for (let j = 0; j < values[i].taskActions.length; j++) {
                 let k = values[i].taskActions[j][0];
                 taskActions[0] = [...taskActions[0], k];
@@ -142,15 +142,15 @@ class TaskTemplateImportForm extends Component {
             values[i].taskInformations = taskInformations;
         }
         value = values;
-        
+
         if (checkFileImport) {
             let rowError = [];
-            for ( let i = 0; i < value.length; i++){
+            for (let i = 0; i < value.length; i++) {
                 let x = value[i];
                 let errorAlert = [];
-                if (x.name === null || x.description === null || x.organizationalUnit === null || x.readByEmployees === null || x.formula === null){
-                    rowError = [...rowError, i+1];
-                    x = { ...x, error: true};
+                if (x.name === null || x.description === null || x.organizationalUnit === null || x.readByEmployees === null || x.formula === null) {
+                    rowError = [...rowError, i + 1];
+                    x = { ...x, error: true };
                 }
                 if (x.name === null) {
                     errorAlert = [...errorAlert, 'Tên mẫu công việc không được để trống'];
@@ -197,7 +197,7 @@ class TaskTemplateImportForm extends Component {
     }
 
     convertDataExport = (dataExport) => {
-        for (let va = 0; va < dataExport.dataSheets.length; va++ ) {
+        for (let va = 0; va < dataExport.dataSheets.length; va++) {
             for (let val = 0; val < dataExport.dataSheets[va].tables.length; val++) {
                 let datas = [];
                 let data = dataExport.dataSheets[va].tables[val].data;
@@ -205,10 +205,10 @@ class TaskTemplateImportForm extends Component {
                     for (let k = 0; k < data.length; k++) {
                         let x = data[k];
                         let length = 0;
-                        let actionName = [], actionDescription = [], mandatory = [] ;
-                        
-                        if (x.taskActions && x.taskActions.length > 0 ) {
-                            if (x.taskActions.length > length){
+                        let actionName = [], actionDescription = [], mandatory = [];
+
+                        if (x.taskActions && x.taskActions.length > 0) {
+                            if (x.taskActions.length > length) {
                                 length = x.taskActions.length;
                             }
                             for (let i = 0; i < x.taskActions.length; i++) {
@@ -226,7 +226,7 @@ class TaskTemplateImportForm extends Component {
                             if (x.taskInformations.length > length) {
                                 length = x.taskInformations.length;
                             }
-                            for (let i = 0; i < x.taskInformations.length; i++){
+                            for (let i = 0; i < x.taskInformations.length; i++) {
                                 infomationName[i] = x.taskInformations[i].name;
                                 infomationDescription[i] = x.taskInformations[i].description;
                                 type[i] = x.taskInformations[i].type;
@@ -254,7 +254,7 @@ class TaskTemplateImportForm extends Component {
                             readByEmployees = [x.readByEmployees];
                             console.log(readByEmployees);
                         }
-                        if ( Array.isArray(x.responsibleEmployees)) {
+                        if (Array.isArray(x.responsibleEmployees)) {
                             responsibleEmployees = x.responsibleEmployees.join(', ');
                         } else {
                             responsibleEmployees = x.responsibleEmployees;
@@ -274,7 +274,8 @@ class TaskTemplateImportForm extends Component {
                         } else {
                             informedEmployees = x.informedEmployees;
                         }
-                        let out = { STT: k + 1,
+                        let out = {
+                            STT: k + 1,
                             name: x.name,
                             description: x.description,
                             numberOfUse: numberOfUse,
@@ -292,12 +293,13 @@ class TaskTemplateImportForm extends Component {
                             infomationName: infomationName[0],
                             infomationDescription: infomationDescription[0],
                             type: type[0],
-                            filledByAccountableEmployeesOnly: filledByAccountableEmployeesOnly[0] }
+                            filledByAccountableEmployeesOnly: filledByAccountableEmployeesOnly[0]
+                        }
                         datas = [...datas, out];
                         console.log(out);
                         if (length > 1) {
                             console.log(11111111111111111111111);
-                            for ( let i = 1; i < length; i++){
+                            for (let i = 1; i < length; i++) {
                                 out = {
                                     STT: "",
                                     name: "",
@@ -328,16 +330,16 @@ class TaskTemplateImportForm extends Component {
                 }
             }
         }
-    return dataExport;
+        return dataExport;
     }
     render() {
         const { translate } = this.props;
         let { limit, page, importData, rowError, configData, checkFileImport } = this.state;
         let templateImportTaskTemplate2 = this.convertDataExport(templateImportTaskTemplate);
-        console.log(templateImportTaskTemplate2);
+        console.log('-----------------', templateImportTaskTemplate2, templateImportTaskTemplate);
         return (
             <React.Fragment>
-                <DialogModal 
+                <DialogModal
                     modalID={`modal_import_file`} isLoading={false}
                     formID={`form_import_file`}
                     title="Thêm mẫu công việc bằng import file excel"

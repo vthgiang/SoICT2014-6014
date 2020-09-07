@@ -27,7 +27,6 @@ class DisciplineManager extends Component {
         }
 
         this.state = {
-            position: null,
             decisionNumber: "",
             employeeNumber: "",
             organizationalUnits: organizationalUnits,
@@ -92,20 +91,6 @@ class DisciplineManager extends Component {
         })
     }
 
-    /**
-     * Function lưu giá trị chức vụ vào state khi thay đổi
-     * @param {*} value : Array id chức vụ
-     */
-    handlePositionChange = (value) => {
-        if (value.length === 0) {
-            value = null
-        };
-        this.setState({
-            ...this.state,
-            position: value
-        })
-    }
-
     /** Function bắt sự kiện thay đổi mã nhân viên và số quyết định */
     handleChange = (e) => {
         const { name, value } = e.target;
@@ -151,15 +136,11 @@ class DisciplineManager extends Component {
         const { department, translate } = this.props;
         if (data) {
             data = data.map((x, index) => {
-                let organizationalUnits = x.organizationalUnits.map(y => y.name);
-                let position = x.roles.map(y => y.roleId.name);
                 let decisionUnit = department.list.find(y => y._id === x.organizationalUnit);
                 return {
                     STT: index + 1,
                     employeeNumber: x.employee ? x.employee.employeeNumber : null,
                     fullName: x.employee ? x.employee.fullName : null,
-                    organizationalUnits: organizationalUnits.join(', '),
-                    position: position.join(', '),
                     decisionNumber: x.decisionNumber,
                     decisionUnit: decisionUnit ? decisionUnit.name : "",
                     startDate: new Date(x.startDate),
@@ -180,8 +161,6 @@ class DisciplineManager extends Component {
                                 { key: "STT", value: translate('human_resource.stt') },
                                 { key: "employeeNumber", value: translate('human_resource.staff_number') },
                                 { key: "fullName", value: translate('human_resource.staff_name') },
-                                { key: "organizationalUnits", value: translate('human_resource.unit') },
-                                { key: "position", value: translate('human_resource.position') },
                                 { key: "decisionNumber", value: translate('human_resource.commendation_discipline.commendation.table.decision_number') },
                                 { key: "decisionUnit", value: translate('human_resource.commendation_discipline.commendation.table.decision_unit') },
                                 { key: "startDate", value: translate('human_resource.commendation_discipline.discipline.table.start_date') },
@@ -203,29 +182,15 @@ class DisciplineManager extends Component {
 
         const { pageActive } = this.props;
 
-        const { limit, page, organizationalUnits, currentRow } = this.state;
+        const { limit, page, currentRow } = this.state;
 
         let { list } = department;
 
-        let listDisciplines = [], listPosition = [{ value: "", text: translate('human_resource.not_unit'), disabled: true }];
-        if (organizationalUnits !== null) {
-            listPosition = [];
-            organizationalUnits.forEach(u => {
-                list.forEach(x => {
-                    if (x._id === u) {
-                        let roleDeans = x.deans.map(y => { return { _id: y._id, name: y.name } });
-                        let roleViceDeans = x.viceDeans.map(y => { return { _id: y._id, name: y.name } });
-                        let roleEmployees = x.employees.map(y => { return { _id: y._id, name: y.name } });
-                        listPosition = listPosition.concat(roleDeans).concat(roleViceDeans).concat(roleEmployees);
-                    }
-                })
-            })
-        }
-
+        let listDisciplines = [], exportData = [];
         if (discipline.isLoading === false) {
             listDisciplines = discipline.listDisciplines;
+            exportData = this.convertDataToExportData(listDisciplines);
         }
-        let exportData = this.convertDataToExportData(listDisciplines);
 
         let pageTotal = (discipline.totalListDiscipline % limit === 0) ?
             parseInt(discipline.totalListDiscipline / limit) :
@@ -238,47 +203,48 @@ class DisciplineManager extends Component {
                     {/* Form thêm kỷ luật */}
                     <DisciplineCreateForm />
                     <ExportExcel id="export-discipline" buttonName={translate('human_resource.name_button_export')} exportData={exportData} style={{ marginRight: 15, marginTop: 2 }} />
+
                     <div className="form-inline">
-                        {/* Đơn vị */}
+                        {/* Cấp ra quyết định */}
                         <div className="form-group">
-                            <label className="form-control-static">{translate('human_resource.unit')}</label>
+                            <label className="form-control-static">{translate('human_resource.commendation_discipline.commendation.table.decision_unit')}</label>
                             <SelectMulti id={`multiSelectUnitDiscipline`} multiple="multiple"
                                 options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
                                 items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
                             </SelectMulti>
                         </div>
-                        {/* Chức vụ */}
-                        <div className="form-group">
-                            <label className="form-control-static">{translate('human_resource.position')}</label>
-                            <SelectMulti id={`multiSelectPositionDiscipline`} multiple="multiple"
-                                options={{ nonSelectedText: translate('page.non_position'), allSelectedText: translate('page.all_position') }}
-                                items={organizationalUnits === null ? listPosition : listPosition.map((p, i) => { return { value: p._id, text: p.name } })} onChange={this.handlePositionChange}>
-                            </SelectMulti>
-                        </div>
-                    </div>
-                    <div className="form-inline" style={{ marginBottom: 10 }}>
-                        {/* Mã nhân viên */}
+                        {/* Mã nhân viên*/}
                         <div className="form-group">
                             <label className="form-control-static">{translate('human_resource.staff_number')}</label>
                             <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} placeholder={translate('page.staff_number')} autoComplete="off" />
                         </div>
-                        {/* Số quyết định*/}
+                    </div>
+
+                    <div className="form-inline" style={{ marginBottom: 10 }}>
+                        {/* Số quyết định */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('human_resource.commendation_discipline.commendation.table.decision_number')}</label>
                             <input type="text" className="form-control" name="decisionNumber" onChange={this.handleChange} placeholder={translate('human_resource.commendation_discipline.commendation.table.decision_number')} autoComplete="off" />
+
+                        </div>
+                        {/* Hình thức kỷ luật*/}
+                        <div className="form-group">
+                            <label className="form-control-static">{translate('human_resource.commendation_discipline.discipline.table.discipline_forms_short')}</label>
+                            <input type="text" className="form-control" name="type" onChange={this.handleChange} placeholder={translate('human_resource.commendation_discipline.discipline.table.discipline_forms_short')} autoComplete="off" />
                             <button type="button" className="btn btn-success" onClick={this.handleSubmitSearch} title={translate('page.add_search')} >{translate('page.add_search')}</button>
                         </div>
                     </div>
+
                     <table id="discipline-table" className="table table-striped table-bordered table-hover" >
                         <thead>
                             <tr>
-                                <th >{translate('human_resource.staff_number')}</th>
+                                <th>{translate('human_resource.staff_number')}</th>
                                 <th>{translate('table.employee_name')}</th>
-                                <th >{translate('human_resource.commendation_discipline.discipline.table.start_date')}</th>
-                                <th >{translate('human_resource.commendation_discipline.discipline.table.end_date')}</th>
+                                <th>{translate('human_resource.commendation_discipline.discipline.table.start_date')}</th>
+                                <th>{translate('human_resource.commendation_discipline.discipline.table.end_date')}</th>
                                 <th>{translate('human_resource.commendation_discipline.commendation.table.decision_number')}</th>
-                                <th>{translate('human_resource.unit')}</th>
-                                <th >{translate('human_resource.position')}</th>
+                                <th>{translate('human_resource.commendation_discipline.commendation.table.decision_unit')}</th>
+                                <th>{translate('human_resource.commendation_discipline.discipline.table.discipline_forms')}</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}
                                     <DataTableSetting
                                         tableId="discipline-table"
@@ -288,8 +254,8 @@ class DisciplineManager extends Component {
                                             translate('human_resource.commendation_discipline.discipline.table.start_date'),
                                             translate('human_resource.commendation_discipline.discipline.table.end_date'),
                                             translate('human_resource.commendation_discipline.commendation.table.decision_number'),
-                                            translate('human_resource.unit'),
-                                            translate('human_resource.position')
+                                            translate('human_resource.commendation_discipline.commendation.table.decision_unit'),
+                                            translate('human_resource.commendation_discipline.discipline.table.discipline_forms')
                                         ]}
                                         limit={this.state.limit}
                                         setLimit={this.setLimit}
@@ -300,36 +266,31 @@ class DisciplineManager extends Component {
                         </thead>
                         <tbody>
                             {listDisciplines && listDisciplines.length !== 0 &&
-                                listDisciplines.map((x, index) => (
-                                    <tr key={index}>
-                                        <td>{x.employee ? x.employee.employeeNumber : null}</td>
-                                        <td>{x.employee ? x.employee.fullName : null}</td>
-                                        <td>{this.formatDate(x.startDate)}</td>
-                                        <td>{this.formatDate(x.endDate)}</td>
-                                        <td>{x.decisionNumber}</td>
-                                        <td>{x.organizationalUnits && x.organizationalUnits.length !== 0 ? x.organizationalUnits.map(unit => (
-                                            <React.Fragment key={unit._id}>
-                                                {unit.name}<br />
-                                            </React.Fragment>
-                                        )) : null}</td>
-                                        <td>{x.roles && x.roles.length !== 0 ? x.roles.map(role => (
-                                            <React.Fragment key={role._id}>
-                                                {role.roleId.name}<br />
-                                            </React.Fragment>
-                                        )) : null}</td>
-                                        <td style={{ textAlign: 'center' }}>
-                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.commendation_discipline.discipline.edit_discipline')}><i className="material-icons">edit</i></a>
-                                            <DeleteNotification
-                                                content={translate('human_resource.commendation_discipline.discipline.delete_discipline')}
-                                                data={{
-                                                    id: x._id,
-                                                    info: x.employee.employeeNumber + " - " + translate('page.number_decisions') + ": " + x.decisionNumber
-                                                }}
-                                                func={this.props.deleteDiscipline}
-                                            />
-                                        </td>
-                                    </tr>
-                                ))
+                                listDisciplines.map((x, index) => {
+                                    let decisionUnit = department.list.find(y => y._id === x.organizationalUnit);
+                                    return (
+                                        <tr key={index}>
+                                            <td>{x.employee ? x.employee.employeeNumber : "Deleted"}</td>
+                                            <td>{x.employee ? x.employee.fullName : "Deleted"}</td>
+                                            <td>{this.formatDate(x.startDate)}</td>
+                                            <td>{this.formatDate(x.endDate)}</td>
+                                            <td>{x.decisionNumber}</td>
+                                            <td>{decisionUnit ? decisionUnit.name : 'Deleted'}</td>
+                                            <td>{x.type}</td>
+                                            <td style={{ textAlign: 'center' }}>
+                                                <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.commendation_discipline.discipline.edit_discipline')}><i className="material-icons">edit</i></a>
+                                                <DeleteNotification
+                                                    content={translate('human_resource.commendation_discipline.discipline.delete_discipline')}
+                                                    data={{
+                                                        id: x._id,
+                                                        info: x.employee.employeeNumber + " - " + translate('page.number_decisions') + ": " + x.decisionNumber
+                                                    }}
+                                                    func={this.props.deleteDiscipline}
+                                                />
+                                            </td>
+                                        </tr>
+                                    )
+                                })
                             }
                         </tbody>
                     </table>
@@ -342,7 +303,7 @@ class DisciplineManager extends Component {
                         currentRow !== undefined &&
                         <DisciplineEditForm
                             _id={currentRow._id}
-                            employeeNumber={currentRow.employee ? currentRow.employee.employeeNumber : null}
+                            employeeNumber={currentRow.employee ? `${currentRow.employee.employeeNumber} - ${currentRow.employee.fullName}` : null}
                             decisionNumber={currentRow.decisionNumber}
                             organizationalUnit={currentRow.organizationalUnit}
                             startDate={this.formatDate(currentRow.startDate)}

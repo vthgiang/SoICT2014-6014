@@ -147,7 +147,7 @@ class ModalCreateTaskProcess extends Component {
 
 		this.modeler.on('commandStack.shape.delete.revert', (e) => this.handleUndoDeleteElement(e));
 
-		this.modeler.on('shape.changed', 1, (e) => this.changeNameElement(e));
+		// this.modeler.on('shape.changed', 1, (e) => this.changeNameElement(e));
 	}
 
 	// Hàm đổi tên Quy trình
@@ -216,9 +216,8 @@ class ModalCreateTaskProcess extends Component {
 		const modeling = this.modeler.get('modeling');
 		let element1 = this.modeler.get('elementRegistry').get(this.state.id);
 		modeling.updateProperties(element1, {
-			name: stringName,
+			shapeName: stringName,
 		});
-		window.$(`.task-process-gate-way-title`).css("background-color", "white")
 	}
 
 	// hàm cập nhật người thực hiện công việc
@@ -278,24 +277,14 @@ class ModalCreateTaskProcess extends Component {
 	}
 
 	// Các hàm sự kiện của BPMN element
-	interactPopup = (event) => {
+	interactPopup = async (event) => {
 		let element = event.element;
-		console.log(element)
-		let { department } = this.props
-		let source = [];
-		let destination = []
-		element.incoming.forEach(x => {
-			source.push(x.source.businessObject.name)
-		})
-
-		element.outgoing.forEach(x => {
-			destination.push(x.target.businessObject.name)
-		})
+		console.log(element);
 		let nameStr = element.type.split(':');
-		this.setState(state => {
+
+		await this.setState(state => {
 			if (element.type === "bpmn:Task" || element.type === "bpmn:ExclusiveGateway") {
-				if (!state.info[`${element.businessObject.id}`] ||
-					(state.info[`${element.businessObject.id}`] && !state.info[`${element.businessObject.id}`].organizationalUnit)) {
+				if (!state.info[`${element.businessObject.id}`] || (state.info[`${element.businessObject.id}`] && !state.info[`${element.businessObject.id}`].organizationalUnit)) {
 					state.info[`${element.businessObject.id}`] = {
 						...state.info[`${element.businessObject.id}`],
 						organizationalUnit: this.props.listOrganizationalUnit[0]?._id,
@@ -334,37 +323,29 @@ class ModalCreateTaskProcess extends Component {
 	}
 
 	changeNameElement = (event) => {
-		this.setState(state => {
-			state.info[`${state.id}`] = {
-				...state.info[`${state.id}`],
-				nameTask: event.element.businessObject.name,
-			}
-			return {
-				...state,
-			}
-		})
+		var name = event.element.businessObject.name;
 	}
 
 	// các hàm dành cho export, import, download diagram...
 	exportDiagram = () => {
-        let xmlStr;
-        this.modeler.saveXML({ format: true }, function (err, xml) {
-            if (err) {
-                console.log(err);
-            }
-            else {
-                console.log(xml);
-                xmlStr = xml;
-            }
-        });
-        this.setState(state => {
-            return {
-                ...state,
-                xmlDiagram: xmlStr,
-            }
-        })
+		let xmlStr;
+		this.modeler.saveXML({ format: true }, function (err, xml) {
+			if (err) {
+				console.log(err);
+			}
+			else {
+				console.log(xml);
+				xmlStr = xml;
+			}
+		});
+		this.setState(state => {
+			return {
+				...state,
+				xmlDiagram: xmlStr,
+			}
+		})
 	}
-	
+
 	downloadAsSVG = () => {
 		this.modeler.saveSVG({ format: true }, function (error, svg) {
 			if (error) {
@@ -660,9 +641,9 @@ class ModalCreateTaskProcess extends Component {
 								{/* Tabbed pane */}
 								<ul className="nav nav-tabs">
 									{/* Nút tab thông tin cơ bản quy trình */}
-									<li className="active"><a href="#info-create" onClick={() => this.handleChangeContent("info")} data-toggle="tab">Thông tin quy trình</a></li>
+									<li className="active"><a href="#info-create" onClick={() => this.handleChangeContent("info")} data-toggle="tab">{translate("task.task_process.process_information")}</a></li>
 									{/* Nút tab quy trình - công việc */}
-									<li><a href="#process-create" onClick={() => this.handleChangeContent("process")} data-toggle="tab">Quy trình công việc</a></li>
+									<li><a href="#process-create" onClick={() => this.handleChangeContent("process")} data-toggle="tab">{translate("task.task_process.task_process")}</a></li>
 								</ul>
 
 								{/* tab thông tin quy trình */}
@@ -672,17 +653,16 @@ class ModalCreateTaskProcess extends Component {
 											<div className='col-md-6'>
 												{/* tên quy trình */}
 												<div className={`form-group ${this.state.errorOnProcessName === undefined ? "" : "has-error"}`}>
-													<label className={`control-label`}>Tên quy trình</label>
+													<label className={`control-label`}>{translate("task.task_process.process_name")}</label>
 													<input type="text"
 														value={processName}
-														className="form-control" placeholder="Mô tả công việc"
+														className="form-control" placeholder={translate("task.task_process.process_name")}
 														onChange={this.handleChangeBpmnName}
 													/>
 													<ErrorLabel content={this.state.errorOnProcessName} />
 												</div>
 												<div className={`form-group ${this.state.errorOnViewer === undefined ? "" : "has-error"}`}>
-													{/* Người được phép xem quy trình */}
-													<label className="control-label">Người được phép xem</label>
+													<label className="control-label">{translate("task.task_process.viewer")}</label>
 													{
 														<SelectBox
 															id={`select-viewer-employee-create-${indexRenderer}`}
@@ -697,8 +677,7 @@ class ModalCreateTaskProcess extends Component {
 													<ErrorLabel content={this.state.errorOnViewer} />
 												</div>
 												<div className={`form-group ${this.state.errorOnManager === undefined ? "" : "has-error"}`}>
-													{/* Người quản lý quy trình */}
-													<label className="control-label" >Người quản lý quy trình</label>
+													<label className="control-label" >{translate("task.task_process.manager")}</label>
 													{
 														<SelectBox
 															id={`select-manager-employee-create-${indexRenderer}`}
@@ -717,10 +696,10 @@ class ModalCreateTaskProcess extends Component {
 											{/* Mô tả quy trình */}
 											<div className='col-md-6'>
 												<div className={`form-group ${this.state.errorOnProcessDescription === undefined ? "" : "has-error"}`}>
-													<label className="control-label">Mô tả quy trình</label>
+													<label className="control-label">{translate("task.task_process.process_description")}</label>
 													<textarea type="text" rows={8}
 														value={processDescription}
-														className="form-control" placeholder="Mô tả công việc"
+														className="form-control" placeholder={translate("task.task_process.process_description")}
 														onChange={this.handleChangeBpmnDescription}
 													/>
 													<ErrorLabel content={this.state.errorOnProcessDescription} />

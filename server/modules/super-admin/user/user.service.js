@@ -1,4 +1,9 @@
-const { OrganizationalUnit, User, UserRole, Role } = require('../../../models').schema;
+const {
+    OrganizationalUnit,
+    User,
+    UserRole,
+    Role
+} = require('../../../models').schema;
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const generator = require("generate-password");
@@ -17,56 +22,104 @@ exports.getUsers = async (company, query) => {
     var departmentIds = query.departmentIds;
     var unitId = query.unitId;
 
-    var keySearch = { company: company };
+    var keySearch = {
+        company: company
+    };
 
     if (!page && !limit && !userRole && !departmentIds && !unitId) {
         if (name) {
-            keySearch = { ...keySearch, name: { $regex: name, $options: "i" } };
+            keySearch = {
+                ...keySearch,
+                name: {
+                    $regex: name,
+                    $options: "i"
+                }
+            };
 
             let searchUses = await User.find(keySearch)
                 .select('-password -status -deleteSoft -tokens')
-                .populate([
-                    { path: 'roles', model: UserRole, populate: { path: 'roleId' } },
-                    { path: 'company' }
+                .populate([{
+                        path: 'roles',
+                        model: UserRole,
+                        populate: {
+                            path: 'roleId'
+                        }
+                    },
+                    {
+                        path: 'company'
+                    }
                 ]);
 
-            return { searchUses }
+            return {
+                searchUses
+            }
         } else {
-            return await User.find({ company })
+            return await User.find({
+                    company
+                })
                 .select('-password -status -deleteSoft -tokens')
-                .populate([
-                    { path: 'roles', model: UserRole, populate: { path: 'roleId' } },
-                    { path: 'company' }
+                .populate([{
+                        path: 'roles',
+                        model: UserRole,
+                        populate: {
+                            path: 'roleId'
+                        }
+                    },
+                    {
+                        path: 'company'
+                    }
                 ]);
         }
     } else if (page && limit && !userRole && !departmentIds && !unitId) {
-        const option = (query.key && query.value)
-            ? Object.assign({ company }, { [`${query.key}`]: new RegExp(query.value, "i") })
-            : { company };
+        const option = (query.key && query.value) ?
+            Object.assign({
+                company
+            }, {
+                [`${query.key}`]: new RegExp(query.value, "i")
+            }) :
+            {
+                company
+            };
         console.log("option: ", option);
         return await User.paginate(option, {
             page,
             limit,
             select: '-tokens -status -password -deleteSoft',
-            populate: [
-                { path: 'roles', model: UserRole, populate: { path: 'roleId' } },
-                { path: 'company' }
+            populate: [{
+                    path: 'roles',
+                    model: UserRole,
+                    populate: {
+                        path: 'roleId'
+                    }
+                },
+                {
+                    path: 'company'
+                }
             ]
         });
     } else if (!page && !limit && (userRole || departmentIds) && !unitId) {
         if (userRole) {
             let department = await OrganizationalUnit.findOne({
-                $or: [
-                    { 'deans': userRole },
-                    { 'viceDeans': userRole },
-                    { 'employees': userRole }
+                $or: [{
+                        'deans': userRole
+                    },
+                    {
+                        'viceDeans': userRole
+                    },
+                    {
+                        'employees': userRole
+                    }
                 ]
             });
 
             return _getAllUsersInOrganizationalUnit(department);
 
         } else {
-            let departments = await OrganizationalUnit.find({ _id: { $in: departmentIds } });
+            let departments = await OrganizationalUnit.find({
+                _id: {
+                    $in: departmentIds
+                }
+            });
 
             let users = await _getAllUsersInOrganizationalUnits(departments);
 
@@ -79,13 +132,28 @@ exports.getUsers = async (company, query) => {
 
 exports.getAllEmployeeOfUnitByRole = async (role) => {
     let organizationalUnit = await OrganizationalUnit.findOne({
-        $or: [
-            { 'deans': { $in: role } },
-            { 'viceDeans': { $in: role } },
-            { 'employees': { $in: role } }
+        $or: [{
+                'deans': {
+                    $in: role
+                }
+            },
+            {
+                'viceDeans': {
+                    $in: role
+                }
+            },
+            {
+                'employees': {
+                    $in: role
+                }
+            }
         ]
     });
-    let employees = await UserRole.find({ roleId: { $in: organizationalUnit.employees } }).populate('userId roleId');
+    let employees = await UserRole.find({
+        roleId: {
+            $in: organizationalUnit.employees
+        }
+    }).populate('userId roleId');
     return employees;
 }
 
@@ -98,7 +166,11 @@ exports.getAllEmployeeOfUnitByIds = async (id) => {
     for (let i = 0; i < id.length; i++) {
         let organizationalUnit = await OrganizationalUnit.findById(id[i]);
         let allRoles = [...organizationalUnit.employees, ...organizationalUnit.deans, ...organizationalUnit.viceDeans];
-        let employees = await UserRole.find({ roleId: { $in: allRoles } }).populate('userId roleId');
+        let employees = await UserRole.find({
+            roleId: {
+                $in: allRoles
+            }
+        }).populate('userId roleId');
 
         for (let j in employees) {
 
@@ -159,7 +231,9 @@ getAllUserInUnitAndItsSubUnits = async (id, unitId) => {
 
     } else { //Lấy tất nhan vien trong moi đơn vị trong công ty
 
-        const allUnits = await OrganizationalUnit.find({ company: id });
+        const allUnits = await OrganizationalUnit.find({
+            company: id
+        });
         const newData = allUnits.map(department => {
             return {
                 id: department._id.toString(),
@@ -185,9 +259,16 @@ exports.getUser = async (id) => {
     var user = await User
         .findById(id)
         .select('-password -status -deleteSoft -tokens')
-        .populate([
-            { path: 'roles', model: UserRole, populate: { path: 'roleId' } },
-            { path: 'company' }
+        .populate([{
+                path: 'roles',
+                model: UserRole,
+                populate: {
+                    path: 'roleId'
+                }
+            },
+            {
+                path: 'company'
+            }
         ]);
 
     if (!user) {
@@ -202,13 +283,26 @@ exports.getUser = async (id) => {
  * @userId id của user
  */
 exports.getOrganizationalUnitsOfUser = async (userId) => {
-    const roles = await UserRole.find({ userId });
+    const roles = await UserRole.find({
+        userId
+    });
     const newRoles = roles.map(role => role.roleId.toString());
     const departments = await OrganizationalUnit.find({
-        $or: [
-            { 'deans': { $in: newRoles } },
-            { 'viceDeans': { $in: newRoles } },
-            { 'employees': { $in: newRoles } }
+        $or: [{
+                'deans': {
+                    $in: newRoles
+                }
+            },
+            {
+                'viceDeans': {
+                    $in: newRoles
+                }
+            },
+            {
+                'employees': {
+                    $in: newRoles
+                }
+            }
         ]
     });
 
@@ -222,10 +316,15 @@ exports.getOrganizationalUnitsOfUser = async (userId) => {
  */
 exports.createUser = async (data, company) => {
     var salt = bcrypt.genSaltSync(10);
-    var password = generator.generate({ length: 10, numbers: true });
+    var password = generator.generate({
+        length: 10,
+        numbers: true
+    });
     var hash = bcrypt.hashSync(password, salt);
 
-    var checkUser = await User.findOne({ email: data.email });
+    var checkUser = await User.findOne({
+        email: data.email
+    });
 
     if (checkUser) {
         throw ['email_exist'];
@@ -251,7 +350,10 @@ exports.createUser = async (data, company) => {
 exports.sendMailAboutCreatedAccount = async (email, password) => {
     var transporter = nodemailer.createTransport({
         service: 'Gmail',
-        auth: { user: 'vnist.qlcv@gmail.com', pass: 'qlcv123@' }
+        auth: {
+            user: 'vnist.qlcv@gmail.com',
+            pass: 'qlcv123@'
+        }
     });
 
     var mainOptions = {
@@ -259,8 +361,7 @@ exports.sendMailAboutCreatedAccount = async (email, password) => {
         to: email,
         subject: 'Xác thực tạo tài khoản trên hệ thống quản lý công việc',
         text: 'Yêu cầu xác thực tài khoản đã đăng kí trên hệ thống với email là : ' + email,
-        html:
-            '<p>Tài khoản dùng để đăng nhập của bạn là : </p' +
+        html: '<p>Tài khoản dùng để đăng nhập của bạn là : </p' +
             '<ul>' +
             '<li>Tài khoản :' + email + '</li>' +
             '<li>Mật khẩu :' + password + '</li>' +
@@ -285,7 +386,10 @@ exports.sendMailAboutCreatedAccount = async (email, password) => {
 exports.sendMailAboutChangeEmailOfUserAccount = async (oldEmail, newEmail) => {
     var transporter = nodemailer.createTransport({
         service: 'Gmail',
-        auth: { user: 'vnist.qlcv@gmail.com', pass: 'qlcv123@' }
+        auth: {
+            user: 'vnist.qlcv@gmail.com',
+            pass: 'qlcv123@'
+        }
     });
 
     var mainOptions = {
@@ -293,8 +397,7 @@ exports.sendMailAboutChangeEmailOfUserAccount = async (oldEmail, newEmail) => {
         to: newEmail,
         subject: 'Xác thực thay đổi email',
         text: `Chuyển đổi email từ [${oldEmail}] => [${newEmail}] `,
-        html:
-            '<p>Tài khoản dùng để đăng nhập của bạn là : </p>' +
+        html: '<p>Tài khoản dùng để đăng nhập của bạn là : </p>' +
             '<ul>' +
             '<li>Email cũ :' + oldEmail + '</li>' +
             '<li>Email mới :' + newEmail + '</li>' +
@@ -314,7 +417,11 @@ exports.sendMailAboutChangeEmailOfUserAccount = async (oldEmail, newEmail) => {
  * @email : email người dung
  */
 exports.checkUserExited = async (email) => {
-    var user = await User.findOne({ email: email }, { field1: 1 });
+    var user = await User.findOne({
+        email: email
+    }, {
+        field1: 1
+    });
     var checkUser = false;
     if (user) {
         checkUser = true
@@ -331,9 +438,16 @@ exports.editUser = async (id, data) => {
     var user = await User
         .findById(id)
         .select('-password -status -deleteSoft')
-        .populate([
-            { path: 'roles', model: UserRole, populate: { path: 'roleId' } },
-            { path: 'company' }
+        .populate([{
+                path: 'roles',
+                model: UserRole,
+                populate: {
+                    path: 'roleId'
+                }
+            },
+            {
+                path: 'company'
+            }
         ]);
 
     if (!user) {
@@ -341,7 +455,9 @@ exports.editUser = async (id, data) => {
     };
 
     if (user.email !== data.email) {
-        const checkEmail = await User.findOne({ email: data.email });
+        const checkEmail = await User.findOne({
+            email: data.email
+        });
         if (checkEmail !== null) throw ['email_exist'];
         await this.sendMailAboutChangeEmailOfUserAccount(user.email, data.email);
     }
@@ -373,7 +489,9 @@ exports.editUser = async (id, data) => {
  * @roleIdArr mảng id các role
  */
 exports.editRolesForUser = async (userId, roleIdArr) => {
-    await UserRole.deleteMany({ userId });
+    await UserRole.deleteMany({
+        userId
+    });
     var data = await roleIdArr.map(roleId => {
         return {
             userId,
@@ -390,8 +508,12 @@ exports.editRolesForUser = async (userId, roleIdArr) => {
  * @id id tài khoản người dùng
  */
 exports.deleteUser = async (id) => {
-    var deleteUser = await User.deleteOne({ _id: id });
-    await UserRole.deleteOne({ userId: id });
+    var deleteUser = await User.deleteOne({
+        _id: id
+    });
+    await UserRole.deleteOne({
+        userId: id
+    });
 
     return deleteUser;
 }
@@ -418,11 +540,29 @@ exports.addRolesForUser = async (userId, roleIdArr) => {
  */
 _getAllUsersInOrganizationalUnit = async (department) => {
     var userRoles = await UserRole
-        .find({ roleId: { $in: [...department.deans, ...department.viceDeans, ...department.employees] } })
-        .populate({ path: 'userId', select: 'name' })
+        .find({
+            roleId: {
+                $in: [...department.deans, ...department.viceDeans, ...department.employees]
+            }
+        })
+        .populate({
+            path: 'userId',
+            select: 'name'
+        })
 
-    var tmp = await Role.find({ _id: { $in: [...department.deans, ...department.viceDeans, ...department.employees] } }, { name: 1 });
-    var users = { deans: {}, viceDeans: {}, employees: {}, department: department.name };
+    var tmp = await Role.find({
+        _id: {
+            $in: [...department.deans, ...department.viceDeans, ...department.employees]
+        }
+    }, {
+        name: 1
+    });
+    var users = {
+        deans: {},
+        viceDeans: {},
+        employees: {},
+        department: department.name
+    };
     tmp.forEach(item => {
         let obj = {};
         obj._id = item.id;
@@ -460,11 +600,30 @@ _getAllUsersInOrganizationalUnits = async (data) => {
     for (let i = 0; i < data.length; i++) {
         var department = data[i];
         var userRoles = await UserRole
-            .find({ roleId: { $in: [...department.deans, ...department.viceDeans, ...department.employees] } })
-            .populate({ path: 'userId', select: 'name' })
+            .find({
+                roleId: {
+                    $in: [...department.deans, ...department.viceDeans, ...department.employees]
+                }
+            })
+            .populate({
+                path: 'userId',
+                select: 'name'
+            })
 
-        var tmp = await Role.find({ _id: { $in: [...department.deans, ...department.viceDeans, ...department.employees] } }, { name: 1 });
-        var users = { deans: {}, viceDeans: {}, employees: {}, department: department.name, id: department.id };
+        var tmp = await Role.find({
+            _id: {
+                $in: [...department.deans, ...department.viceDeans, ...department.employees]
+            }
+        }, {
+            name: 1
+        });
+        var users = {
+            deans: {},
+            viceDeans: {},
+            employees: {},
+            department: department.name,
+            id: department.id,
+        };
         tmp.forEach(item => {
             let obj = {};
             obj._id = item.id;
@@ -497,7 +656,11 @@ _getAllUsersInOrganizationalUnits = async (data) => {
 
 exports.getAllUsersWithRole = async () => {
     let users = await UserRole.find({})
-        .populate({ path: "userId", model: User, select: 'name email avatar' })
+        .populate({
+            path: "userId",
+            model: User,
+            select: 'name email avatar'
+        })
 
     return users
 }
@@ -507,13 +670,33 @@ exports.getAllUsersWithRole = async () => {
  * @param {*} email : email user
  * @param {*} company : Id công ty
  */
-exports.getUserInformByEmail = async (email,company)=>{
+exports.getUserInformByEmail = async (email, company) => {
     let user = await User.findOne({
-        company:company,
+        company: company,
         email: email,
-    },{
-        email:1,
-        _id:1
+    }, {
+        email: 1,
+        _id: 1
     });
     return user
+}
+
+/**
+ * Lấy danh sách người dùng là trưởng phòng của đơn vị theo id đơn vị
+ * @id : Id đơn vị
+ */
+exports.getUserIsDeanOfOrganizationalUnit = async (id) => {
+    let organizationalUnit = await OrganizationalUnit.findById(id);
+    let deans = organizationalUnit.deans;
+    let userIsDean = await UserRole.find({
+        roleId: {
+            $in: deans
+        }
+    })
+    .populate({
+        path: 'userId',
+        select: 'email _id'
+    });
+    userIsDean  = userIsDean.map(x=>x.userId);
+    return userIsDean;
 }

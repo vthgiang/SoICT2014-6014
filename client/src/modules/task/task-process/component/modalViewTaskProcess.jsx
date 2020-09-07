@@ -169,8 +169,8 @@ class ModalViewTaskProcess extends Component {
                     <div>
                         <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none", marginBottom: 0 }}>
                             <ul className="nav nav-tabs">
-                                <li className="active"><a href="#info-view" onClick={() => this.handleChangeContent("info")} data-toggle="tab">Thông tin quy trình</a></li>
-                                <li><a href="#process-view" onClick={() => this.handleChangeContent("process")} data-toggle="tab">Quy trình công việc</a></li>
+        <li className="active"><a href="#info-view" onClick={() => this.handleChangeContent("info")} data-toggle="tab">{translate("task.task_process.process_information")}</a></li>
+                                <li><a href="#process-view" onClick={() => this.handleChangeContent("process")} data-toggle="tab">{translate("task.task_process.task_process")}</a></li>
                             </ul>
                             <div className="tab-content">
                                 <div className={selectedView === "info" ? "active tab-pane" : "tab-pane"} id="info-view">
@@ -179,13 +179,13 @@ class ModalViewTaskProcess extends Component {
                                         <div className="col-md-6">
                                             <div className="box">
                                                 <div className="box-header with-border">
-                                                    Thông tin chung
+                                                    {translate("task.task_process.general_infomation")}
                                                 </div>
                                                 <div className="box-body">
-                                                    <dt>Tên quy trình</dt>
+                                                    <dt>{translate("task.task_process.process_name")}</dt>
                                                     <dd>{processName}</dd>
 
-                                                    <dt>Mô tả quy trình</dt>
+                                                    <dt>{translate("task.task_process.process_description")}</dt>
                                                     <dd>{processDescription}</dd>
                                                 </div>
                                             </div>
@@ -194,10 +194,10 @@ class ModalViewTaskProcess extends Component {
                                         <div className="col-md-6">
                                             <div className="box">
                                                 <div className="box-header with-border">
-                                                    Các vai trò
+                                                {translate("task.task_process.roles")}
                                                 </div>
                                                 <div className="box-body">
-                                                    <dt>Người được phép xem</dt>
+                                                    <dt>{translate("task.task_process.viewer")}</dt>
                                                     <dd>
                                                         <ul>
                                                             {
@@ -208,7 +208,7 @@ class ModalViewTaskProcess extends Component {
                                                         </ul>
                                                     </dd>
 
-                                                    <dt>Người quản lý quy trình</dt>
+                                                    <dt>{translate("task.task_process.manager")}</dt>
                                                     <dd>
                                                         <ul>
                                                             {

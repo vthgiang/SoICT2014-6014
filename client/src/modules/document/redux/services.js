@@ -8,6 +8,7 @@ export const DocumentServices = {
     downloadDocumentFileScan,
     increaseNumberView,
     deleteDocument,
+    importDocument,
 
     getDocumentCategories,
     createDocumentCategory,
@@ -82,6 +83,15 @@ function downloadDocumentFile(id, numberVersion) {
             numberVersion: numberVersion
         }
     }, false, true, 'document');
+}
+
+function importDocument(data) {
+    console.log('dataaa', data);
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/documents/documents/import-file`,
+        method: 'POST',
+        data,
+    }, true, true, 'document');
 }
 
 function downloadDocumentFileScan(id, numberVersion) {

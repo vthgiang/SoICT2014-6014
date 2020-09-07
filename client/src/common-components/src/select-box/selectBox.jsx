@@ -7,49 +7,21 @@ class SelectBox extends Component {
         this.state = {}
     }
 
-    setOptionsSelect2 = (id, changeSearch, searchItems, multiple = false) => {
-        function delay(callback, ms) {
-            var timer = 0;
-            return function () {
-                var context = this, args = arguments;
-                clearTimeout(timer);
-                timer = setTimeout(function () {
-                    callback.apply(context, args);
-                }, ms || 0);
-            };
-        }
-        return {
-            ajax: {
-                data: function (params) {
-                    if (params.term !== undefined && params.term !== "") {
-                        let inputSearch;
-                        if (multiple === true) {
-                            let parentSelect = window.$("#" + id).parent();
-                            inputSearch = parentSelect.find('input.select2-search__field');
-                        } else {
-                            let children = window.$(".select2-dropdown--below");
-                            inputSearch = children.find('input.select2-search__field');
-                        }
-                        inputSearch.keyup(delay(function (e) {
-                            if (this.value === params.term)
-                                changeSearch(this.value);
-                        }, 500));
-                    }
-                },
-                processResults: function (data) {
-                    return {
-                        results: searchItems.map(x => { return { id: x.value, text: x.text } })
-                    };
-                },
-            }
-        }
+    delay = (callback, ms) => {
+        var timer = 0;
+        return function () {
+            var context = this, args = arguments;
+            clearTimeout(timer);
+            timer = setTimeout(function () {
+                callback.apply(context, args);
+            }, ms || 0);
+        };
     }
 
-    componentDidMount() {
-        let { id, onChange, options = { minimumResultsForSearch: 15 }, changeSearch, searchItems, multiple } = this.props;
-        if (changeSearch !== undefined && changeSearch !== false) {
-            options = this.setOptionsSelect2(id, changeSearch, searchItems, multiple)
-        }
+
+    
+    componentDidMount = () => {
+        const { id, onChange, options = { minimumResultsForSearch: 1 }, multiple, onSearch } = this.props;
         window.$("#" + id).select2(options);
 
         window.$("#" + id).on("change", () => {
@@ -64,17 +36,45 @@ class SelectBox extends Component {
                 onChange(value); // Thông báo lại cho parent component về giá trị mới (để parent component lưu vào state của nó)
             }
         });
-    }
-    componentDidUpdate() {
-        let { id, options = {}, changeSearch, multiple, textSearch } = this.props;
-        if (changeSearch === undefined || changeSearch === false) {
-            window.$("#" + id).select2(options);
+
+
+        // Xử lý sự kiện gõ phím trên input search trong selectBox
+        let inputSearch;
+        if (multiple === true) {
+            inputSearch = window.$("#" + id).parent().find('input.select2-search__field');
+
+            inputSearch.bind("keypress", this.delay((e) => {
+                console.log(inputSearch.val());
+                if (onSearch) {
+                    onSearch(inputSearch.val());
+                }
+            }, 500));
+        } else {
+            window.$("#" + id).on('select2:open', (e) => {
+                let inputSearch = window.$(".select2-search.select2-search--dropdown").find('input.select2-search__field');
+                inputSearch.bind("keypress", this.delay((e) => {
+                    console.log(inputSearch.val());
+                    if (onSearch) {
+                        onSearch(inputSearch.val());
+                    }
+                }, 500));
+            });
+            window.$("#" + id).on('select2:closing', (e) => {
+                let inputSearch = window.$(".select2-search.select2-search--dropdown").find('input.select2-search__field');
+                inputSearch.unbind("keypress");
+            });
         }
     }
+
 
     getValue = () => { // Nếu không dùng onChange, có thể gọi phương thức này qua đối tượng ref để lấy các giá trị đã chọn
         let value = [].filter.call(this.refs.select.options, o => o.selected).map(o => o.value);
         return value;
+    }
+
+    componentDidUpdate() {
+        const { id, options = {} } = this.props;
+        window.$("#" + id).select2(options);
     }
 
     static isEqual = (items1, items2) => {
@@ -95,13 +95,11 @@ class SelectBox extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id || !SelectBox.isEqual(nextProps.items, prevState.items) ||
-            nextProps.disabled !== prevState.disabled || !SelectBox.isEqual(nextProps.searchItems, prevState.searchItems)) {
+        if (nextProps.id !== prevState.id || !SelectBox.isEqual(nextProps.items, prevState.items) || nextProps.disabled !== prevState.disabled) {
             return {
                 value: nextProps.value, // Lưu value ban đầu vào state
                 id: nextProps.id,
                 items: nextProps.items,
-                searchItems: nextProps.searchItems !== undefined ? nextProps.searchItems : [],
                 disabled: nextProps.disabled !== undefined ? nextProps.disabled : false
             }
         } else {
@@ -111,37 +109,13 @@ class SelectBox extends Component {
 
     shouldComponentUpdate(nextProps, nextState) {
         // Chỉ render lại khi id thay đổi, hoặc khi tập items thay đổi, hoặc disabled thay đổi
-        if (nextProps.id !== this.state.id || !SelectBox.isEqual(nextProps.items, this.state.items) ||
-            (nextProps.disabled !== undefined ? nextProps.disabled : false) !== this.state.disabled ||
-            !SelectBox.isEqual(nextProps.searchItems !== undefined ? nextProps.searchItems : [], this.state.searchItems)) {
-
-            if (nextProps.searchItems !== undefined && !SelectBox.isEqual(nextProps.searchItems !== undefined ? nextProps.searchItems : [], this.state.searchItems)) {
-                let { id, changeSearch, searchItems, multiple } = nextProps;
-                if (changeSearch !== undefined && changeSearch !== false) {
-                    let options = this.setOptionsSelect2(id, changeSearch, searchItems, multiple)
-                    window.$("#" + nextProps.id).select2('open');
-                    window.$("#" + id).select2(options);
-                    window.$("#" + nextProps.id).select2('open');
-                }
-                let inputSearch;
-                if (multiple === true) {
-                    let parentSelect = window.$("#" + id).parent();
-                    let children = parentSelect.children(1);
-                    inputSearch = children.find('input.select2-search__field')
-                    console.log(inputSearch.val());
-                } else {
-                    let children = window.$(".select2-dropdown--below");
-                    inputSearch = children.find('input.select2-search__field');
-                }
-                inputSearch.val(nextProps.textSearch);
-            }
+        if (nextProps.id !== this.state.id || !SelectBox.isEqual(nextProps.items, this.state.items) || (nextProps.disabled !== undefined ? nextProps.disabled : false) !== this.state.disabled)
             return true;
-        }
         return false;
     }
 
     render() {
-        const { id, items = [], className, style, multiple = false, options = {}, disabled = false } = this.props;
+        const { id, items, className, style, multiple = false, options = {}, disabled = false } = this.props;
         return (
             <React.Fragment>
                 <div className="select2">
