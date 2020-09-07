@@ -69,7 +69,7 @@ class GeneralTab extends Component {
                 location: nextProps.location,
                 description: nextProps.description,
                 status: nextProps.status,
-                canRegisterForUse: nextProps.canRegisterForUse,
+                typeRegisterForUse: nextProps.typeRegisterForUse,
                 detailInfo: nextProps.detailInfo,
                 usageLogs: nextProps.usageLogs
             }
@@ -88,15 +88,15 @@ class GeneralTab extends Component {
 
         const {
             img, avatar, code, assetName, serial, assetTypes, group, purchaseDate, warrantyExpirationDate,
-            managedBy, assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, location,
-            description, status, canRegisterForUse, detailInfo, usageLogs
+            managedBy, assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, location, 
+            description, status, typeRegisterForUse, detailInfo, usageLogs
         } = this.state;
         return (
             <div id={id} className="tab-pane active">
-                <div className="box-body">
-                    <div className="col-md-12">
+                <div className="box-body" >
+                    <div className="row" style={{ paddingRight: '0px', paddingLeft: '0px' }}>
                         {/* Anh tài sản */}
-                        <div className="col-md-4" style={{ textAlign: 'center', paddingLeft: '0px' }}>
+                        <div className="col-xl-4 col-lg-5" style={{ textAlign: 'center', paddingLeft: '0px' }}>
                             <div>
                                 <a href={process.env.REACT_APP_SERVER + avatar} target="_blank">
                                     <img className="attachment-img avarta" src={process.env.REACT_APP_SERVER + avatar} alt="Attachment" />
@@ -106,7 +106,7 @@ class GeneralTab extends Component {
 
                         {/* Thông tin cơ bản */}
                         <br />
-                        <div className="col-md-8" style={{ paddingLeft: '0px' }}>
+                        <div className="col-xl-8 col-lg-7 " style={{ paddingRight: '0px', paddingLeft: '0px' }}>
                             <div>
                                 <div className="col-md-6">
 
@@ -205,7 +205,7 @@ class GeneralTab extends Component {
                                     {/* Quyền đăng ký sử dụng */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.can_register_for_use')}&emsp; </strong>
-                                        {canRegisterForUse}
+                                        {typeRegisterForUse == 1? 'Không được đăng ký sử dụng' : (typeRegisterForUse == 2 ? "Đăng ký sử dụng theo giờ" : "Đăng ký sử dụng lâu dài")}
                                     </div>
                                 </div>
                             </div>

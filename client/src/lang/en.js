@@ -743,6 +743,9 @@ export default {
             //QUẢN LÝ ĐƠN HÀNG
             manage_orders: "Manage Orders",
             manage_list_orders: "Manage List Orders",
+
+            //QUẢN LÝ KẾ HOẠCH SẢN XUẤT
+            manage_plans: "Manage Plans"
         },
 
         manage_system: {
@@ -3038,6 +3041,29 @@ export default {
             edit_report_manager_faile: 'Edit report fail !',
             delete_report_manager_success: 'Delete report success !',
             delete_report_manager_faile: 'Delete report fail !',
+        },
+
+        // manage_plan
+        manage_plan: {
+        code: "Plan Code",
+        planName: "Plan Name",
+        search: "Search",
+        add_plan: "Add Plan",
+        index: "Index",
+        description: "Description",
+        edit: "Edit this plan",
+        delete: "Delete this plan",
+        delete_success: "Delete plan successfully!",
+        delete_fail: "Delete plan fail!",
+        add: "Add plan",
+        add_title: "Add a new plan",
+        add_success: "Add plan successfully!",
+        add_fail: "Add plan fail!",
+        plan_description: "Plan Description",
+        edit_title: "Update a plan",
+        edit_plan_success: "Update plan successfully!",
+        edit_plan_fail: "Update plan fail!",
+        detail_info_plan: "Detail infomation of plan"
         },
 
         footer: {

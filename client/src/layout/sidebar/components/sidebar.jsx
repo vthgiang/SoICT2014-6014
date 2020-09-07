@@ -224,6 +224,10 @@ class SideBar extends Component {
                                     { name: 'menu.task_report', icon: 'fa fa-circle-o', path: '/task-report' },
                                 ]
                             }} />
+
+
+                            {/* Quản lý kế hoạch sản xuất */}
+                            <Item item={{ name: 'menu.manage_plans', icon: 'fa fa-calendar', path: '/manage-plans' }} />
                         </ul>
                     </section>
                 </aside>
