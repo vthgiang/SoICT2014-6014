@@ -3,20 +3,20 @@ import { connect } from 'react-redux';
 
 import { AssetService } from '../../../asset-information/redux/services';
 
-import AssetPurchaseChart from './assetPurchaseChart';
-import AssetDisposalChart from './assetDisposalChart';
+import AssetIncidentChart from './assetIncidentChart';
+import AssetMaintenanceChart from './assetMaintenanceChart';
 
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 
-class PurchaseAndDisposal extends Component {
+class IncidentAndMaintenance extends Component {
 
     constructor(props) {
         super(props);
 
-        this.EXPORT_DATA = {
-            purchaseData: null,
-            disposalData: null
-        }
+        // this.EXPORT_DATA = {
+        //     purchaseData: null,
+        //     disposalData: null
+        // }
 
         this.state = {
             listAssets: [],
@@ -41,17 +41,17 @@ class PurchaseAndDisposal extends Component {
 
     }
 
-    getPurchaseData = (purchaseData) => {
-        this.EXPORT_DATA.purchaseData = purchaseData;
+    // getPurchaseData = (purchaseData) => {
+    //     this.EXPORT_DATA.purchaseData = purchaseData;
 
-        this.props.setPurchaseAndDisposalExportData(this.EXPORT_DATA.purchaseData, this.EXPORT_DATA.disposalData)
-    }
+    //     this.props.setPurchaseAndDisposalExportData(this.EXPORT_DATA.purchaseData, this.EXPORT_DATA.disposalData)
+    // }
 
-    getDisposalData = (disposalData) => {
-        this.EXPORT_DATA.disposalData = disposalData;
+    // getDisposalData = (disposalData) => {
+    //     this.EXPORT_DATA.disposalData = disposalData;
 
-        this.props.setPurchaseAndDisposalExportData(this.EXPORT_DATA.purchaseData, this.EXPORT_DATA.disposalData)
-    }
+    //     this.props.setPurchaseAndDisposalExportData(this.EXPORT_DATA.purchaseData, this.EXPORT_DATA.disposalData)
+    // }
 
     render() {
         const { translate } = this.props;
@@ -62,16 +62,16 @@ class PurchaseAndDisposal extends Component {
                 <div className="qlcv">
                     <div className="row">
 
-                        {/* Biểu đồ nhập tài sản */}
+                        {/* Biểu đồ sự cố */}
                         <div className="col-xs-12">
                             <div className="box box-solid">
                                 <div className="box-header">
-                                    <div className="box-title">{translate('asset.dashboard.purchase_asset')}</div>
+                                    <div className="box-title">{translate('asset.dashboard.incident_asset')}</div>
                                 </div>
                                 <div className="box-body qlcv">
-                                    < AssetPurchaseChart
+                                    < AssetIncidentChart
                                         listAssets={listAssets}
-                                        getPurchaseData={this.getPurchaseData}
+                                    // getPurchaseData={this.getPurchaseData}
                                     />
                                 </div>
                             </div>
@@ -81,12 +81,12 @@ class PurchaseAndDisposal extends Component {
                         <div className="col-xs-12">
                             <div className="box box-solid">
                                 <div className="box-header">
-                                    <div className="box-title">{translate('asset.dashboard.disposal_asset')}</div>
+                                    <div className="box-title">{translate('asset.dashboard.maintenance_asset')}</div>
                                 </div>
                                 <div className="box-body qlcv">
-                                    <AssetDisposalChart
+                                    <AssetMaintenanceChart
                                         listAssets={listAssets}
-                                        getDisposalData={this.getDisposalData}
+                                    // getDisposalData={this.getDisposalData}
                                     />
                                 </div>
                             </div>
@@ -104,5 +104,5 @@ function mapState(state) {
     return { listAssets, assetType };
 }
 
-const PurchaseAndDisposalConnect = connect(mapState)(withTranslate(PurchaseAndDisposal));
-export { PurchaseAndDisposalConnect as PurchaseAndDisposal };
+const IncidentAndMaintenanceConnect = connect(mapState)(withTranslate(IncidentAndMaintenance));
+export { IncidentAndMaintenanceConnect as IncidentAndMaintenance };

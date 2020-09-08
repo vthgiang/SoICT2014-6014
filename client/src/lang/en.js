@@ -1614,6 +1614,7 @@ export default {
                 bar_chart: 'Bar chart',
                 tree: 'Tree',
                 amount: 'Amount',
+                time: 'Times',
                 value: 'Value',
                 lost_value: 'Lost value (Million)',
                 sum_value: 'Total value (Million)',
@@ -1626,6 +1627,9 @@ export default {
                 asset_purchase_and_dispose: ' Purchase and dispose',
                 purchase_asset: 'Statistics purchase asset chart',
                 disposal_asset: 'Statistics disposal asset chart',
+                asset_incident_and_maintenance: 'Incident and maintenance',
+                incident_asset: 'Statistics incident asset chart',
+                maintenance_asset: 'Statistics maintenance asset chart',
             },
 
             //  Quản lý loại tài sản

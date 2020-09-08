@@ -1642,6 +1642,7 @@ export default {
                 bar_chart: 'Biểu đồ cột',
                 tree: 'Cây',
                 amount: 'Số lượng',
+                time: 'Số lần',
                 value: 'Giá trị',
                 lost_value: 'Giá trị hao mòn (Triệu)',
                 sum_value: 'Tổng giá trị (Triệu)',
@@ -1654,6 +1655,9 @@ export default {
                 asset_purchase_and_dispose: 'Mua - bán tài sản',
                 purchase_asset: 'Thống kê mua sắm tài sản',
                 disposal_asset: 'Thống kê thanh lý tài sản',
+                asset_incident_and_maintenance: 'Sự cố - bảo trì',
+                incident_asset: 'Thống kê sự cố tài sản',
+                maintenance_asset: 'Thống kê bảo trì tài sản',
             },
 
             //  Quản lý loại tài sản
