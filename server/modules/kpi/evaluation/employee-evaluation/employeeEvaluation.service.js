@@ -11,6 +11,7 @@ const mongoose = require("mongoose");
  */
 
 exports.getEmployeeKPISets = async (data) => {
+    
     let department = await OrganizationalUnit.findOne({
         $or: [
             { 'deans': data.roleId },
@@ -18,7 +19,8 @@ exports.getEmployeeKPISets = async (data) => {
             { 'employees': data.roleId }
         ]
     });
-
+    
+    let keySearch;
     let employeeKpiSets;
     let startDate;
     let endDate;
@@ -37,11 +39,14 @@ exports.getEmployeeKPISets = async (data) => {
     }
     if (data.status) status = parseInt(data.status);
 
-    let keySearch = {
-        organizationalUnit: {
-            $in: department._id
+    if (department) {
+        keySearch = {
+            organizationalUnit: {
+                $in: department._id
+            }
         }
     }
+    
     if (user[0] != '0') {
         keySearch = {
             ...keySearch,

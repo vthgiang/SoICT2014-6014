@@ -136,7 +136,7 @@ class FileTab extends Component {
                                         return <tr key={index}>
                                             <td>{x.name}</td>
                                             <td>{x.description}</td>
-                                            <td>{!(x.files && x.files.length) ? translate('manage_employee.no_files') :
+                                            <td>{!(x.files && x.files.length) ? translate('confirm.no_data') :
                                                 <ul style={{ listStyle: 'none' }}>
                                                     {x.files.map((child, index) => {
                                                         return (
@@ -148,15 +148,9 @@ class FileTab extends Component {
                                                         )
                                                     })}
                                                 </ul>
-
-                                                // <a className='intable' target={x._id === undefined ? '_self' : '_blank'}
-                                                //     href={(x._id === undefined) ? x.urlFile : `${process.env.REACT_APP_SERVER + x.urlFile}`}
-                                                //     download={x.name}>
-                                                //     <i className="fa fa-download"> &nbsp;Download!</i>
-                                                // </a>
                                             }</td>
                                             <td >
-                                                <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_employee.edit_file')}><i className="material-icons">edit</i></a>
+                                                <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.general_information.edit_document')}><i className="material-icons">edit</i></a>
                                                 <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteFile(index)}><i className="material-icons"></i></a>
                                             </td>
                                         </tr>

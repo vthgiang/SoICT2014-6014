@@ -33,7 +33,7 @@ class ViewProcess extends Component {
     constructor(props) {
         super(props);
         let { data } = this.props;
-        console.log('dtaa', data);
+
         this.state = {
             userId: getStorage("userId"),
             currentRole: getStorage('currentRole'),
@@ -51,8 +51,8 @@ class ViewProcess extends Component {
                 { zoomScroll: ['value', ''] }
             ],
         });
-        this.generateId = 'viewtaskprocestab';
-        this.modeling = this.modeler.get("modeling")
+        this.generateId = 'viewtaskprocesstab';
+        this.modeling = this.modeler.get("modeling");
         this.initialDiagram = data.xmlDiagram;
     }
 
@@ -70,10 +70,9 @@ class ViewProcess extends Component {
             }
         });
 
+        eventBus.on('shape.move.start', 100000, () => { return false });
 
         this.modeler.on('element.click', 1000, (e) => this.interactPopup(e));
-
-
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
