@@ -13,6 +13,8 @@ export const TaskProcessService = {
     getAllTaskProcess,
     updateDiagram,
 
+    editProcessInfo,
+
     createComment,
     editComment,
     deleteComment,
@@ -27,7 +29,7 @@ export const TaskProcessService = {
 /**
  * Lấy tất cả xml diagram
  */
-function getAllXmlDiagram( pageNumber, noResultsPerPage, name ) {
+function getAllXmlDiagram(pageNumber, noResultsPerPage, name) {
     let userId = getStorage("userId");
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/process`,
@@ -45,7 +47,7 @@ function getAllXmlDiagram( pageNumber, noResultsPerPage, name ) {
 /**
  * Lấy tất cả task-process
  */
-function getAllTaskProcess( pageNumber, noResultsPerPage, name ) {
+function getAllTaskProcess(pageNumber, noResultsPerPage, name) {
     let userId = getStorage("userId");
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/process`,
@@ -127,9 +129,9 @@ function createTaskByProcess(data, processId) {
 }
 
 /**
- * Tạo công việc theo quy trình
- * @param {String} processId dữ liệu gửi lên body 
- * @param {String} diagram id của process
+ * Chỉnh sửa diagram cho quy trình
+ * @param {String} processId id của process
+ * @param {String} diagram dữ liệu gửi lên body 
  */
 function updateDiagram(processId, diagram) {
     return sendRequest({
@@ -139,6 +141,18 @@ function updateDiagram(processId, diagram) {
     }, true, true, 'task.task_process');
 }
 
+/**
+ * Tạo công việc theo quy trình
+ * @param {String} processId id của process 
+ * @param {Object} data dữ liệu cần chỉnh sửa
+ */
+function editProcessInfo(processId, data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/process/processes/${processId}`,
+        method: 'PATCH',
+        data: data,
+    }, true, true, 'task.task_process');
+}
 
 /**
  * Tạo comment cho kpi set
@@ -203,7 +217,7 @@ function deleteChildComment(taskId, commentId, childCommentId) {
 /**
  * Delete file of comment
  */
-function deleteFileComment(fileId,commentId, taskId) {
+function deleteFileComment(fileId, commentId, taskId) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/process/tasks/${taskId}}/comments/${commentId}/files/${fileId}`,
         method: 'DELETE',

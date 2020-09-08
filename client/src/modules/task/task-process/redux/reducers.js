@@ -138,6 +138,21 @@ export function taskProcess(state = {}, action) {
                 error: action.error,
                 isLoading: false
             };
+        case TaskProcessConstants.EDIT_PROCESS_INFO_REQUEST:
+            return {
+                ...state,
+                isLoading: true
+            };
+        case TaskProcessConstants.EDIT_PROCESS_INFO_SUCCESS:
+            return {
+                ...state,
+                listTaskProcess: state.listTaskProcess.map(elem => elem._id === action.processId ? action.payload.content : elem),
+            };
+        case TaskProcessConstants.EDIT_PROCESS_INFO_FAIL:
+            return {
+                error: action.error,
+                isLoading: false
+            };
         case TaskProcessConstants.CREATE_COMMENT_REQUEST:
             return {
                 ...state,

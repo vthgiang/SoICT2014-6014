@@ -10,6 +10,8 @@ export const TaskProcessActions = {
   getAllTaskProcess,
   updateDiagram,
 
+  editProcessInfo,
+
   createComment,
   editComment,
   deleteComment,
@@ -20,7 +22,12 @@ export const TaskProcessActions = {
   deleteFileChildComment,
 };
 
-
+/**
+ * lấy tất cả các mẫu quy trình
+ * @param {*} pageNumber trang hiện tại
+ * @param {*} noResultsPerPage số dòng trên trang
+ * @param {*} name tên mẫu quy trình cần tìm kiếm
+ */
 function getAllXmlDiagram(pageNumber, noResultsPerPage, name = '') {
   return dispatch => {
     dispatch({ type: TaskProcessConstants.GET_ALL_XML_DIAGRAM_REQUEST });
@@ -32,6 +39,12 @@ function getAllXmlDiagram(pageNumber, noResultsPerPage, name = '') {
   };
 }
 
+/**
+ * lấy tất cả các quy trình công việc
+ * @param {*} pageNumber trang hiện tại
+ * @param {*} noResultsPerPage số bản ghi trả về
+ * @param {*} name tên quy trình công việc cần tìm kiếm
+ */
 function getAllTaskProcess(pageNumber, noResultsPerPage, name = '') {
   return dispatch => {
     dispatch({ type: TaskProcessConstants.GET_ALL_TASK_PROCESS_REQUEST });
@@ -43,7 +56,10 @@ function getAllTaskProcess(pageNumber, noResultsPerPage, name = '') {
   };
 }
 
-
+/**
+ * Lấy mẫu quy trình theo id
+ * @param {*} diagramId id mẫu quy trình
+ */
 function getXmlDiagramById(diagramId) {
   return dispatch => {
     dispatch({ type: TaskProcessConstants.GET_XML_DIAGRAM_BY_ID_REQUEST });
@@ -55,7 +71,10 @@ function getXmlDiagramById(diagramId) {
   };
 }
 
-
+/**
+ * tạo mẫu quy trình mới
+ * @param {*} data dữ liệu quy trình
+ */
 function createXmlDiagram(data) {
   return dispatch => {
     dispatch({ type: TaskProcessConstants.CREATE_XML_DIAGRAM_REQUEST });
@@ -67,6 +86,11 @@ function createXmlDiagram(data) {
   };
 }
 
+/**
+ * Chỉnh sửa mẫu quy trình
+ * @param {*} diagramId id mẫu quy trình
+ * @param {*} data dữ liệu cần chỉnh sửa
+ */
 function editXmlDiagram(diagramId, data) {
   return dispatch => {
     dispatch({ type: TaskProcessConstants.EDIT_XML_DIAGRAM_REQUEST });
@@ -78,6 +102,13 @@ function editXmlDiagram(diagramId, data) {
   };
 }
 
+/**
+ * xóa mẫu quy trình
+ * @param {*} diagramId id của mẫu quy trình 
+ * @param {*} pageNumber trang hiện tại
+ * @param {*} noResultsPerPage số dòng trên trang
+ * @param {*} name tên tìm kiếm
+ */
 function deleteXmlDiagram(diagramId, pageNumber, noResultsPerPage, name = "") {
   return dispatch => {
     dispatch({ type: TaskProcessConstants.DELETE_XML_DIAGRAM_REQUEST });
@@ -89,6 +120,11 @@ function deleteXmlDiagram(diagramId, pageNumber, noResultsPerPage, name = "") {
   };
 }
 
+/**
+ * Tạo chuỗi công việc theo quy trình
+ * @param {*} data dữ liệu để tạo mới
+ * @param {*} diagramId id của quy trình
+ */
 function createTaskByProcess(data, diagramId) {
   return dispatch => {
     dispatch({ type: TaskProcessConstants.CREATE_TASK_BY_PROCESS_REQUEST });
@@ -99,12 +135,34 @@ function createTaskByProcess(data, diagramId) {
       );
   };
 }
+
+/**
+ * Update diagram cho quy trình
+ * @param {String} processId id của process
+ * @param {String} diagram dữ liệu cần sửa
+ */
 function updateDiagram(processId, diagram) {
   return dispatch => {
     dispatch({ type: TaskProcessConstants.UPDATE_DIAGRAM_REQUEST });
     TaskProcessService.updateDiagram(processId, diagram)
       .then(
         res => dispatch({ type: TaskProcessConstants.UPDATE_DIAGRAM_SUCCESS, payload: res.data }),
+        error => dispatch({ type: TaskProcessConstants.UPDATE_DIAGRAM_FAIL })
+      );
+  };
+}
+
+/**
+ * Chỉnh sửa thông tin chung của quy trình
+ * @param {*} processId id của quy trình
+ * @param {*} data dữ liệu cần chỉnh sửa
+ */
+function editProcessInfo(processId, data) {
+  return dispatch => {
+    dispatch({ type: TaskProcessConstants.EDIT_PROCESS_INFO_REQUEST });
+    TaskProcessService.editProcessInfo(processId, data)
+      .then(
+        res => dispatch({ type: TaskProcessConstants.EDIT_PROCESS_INFO_SUCCESS, payload: res.data, processId: processId }),
         error => dispatch({ type: TaskProcessConstants.UPDATE_DIAGRAM_FAIL })
       );
   };

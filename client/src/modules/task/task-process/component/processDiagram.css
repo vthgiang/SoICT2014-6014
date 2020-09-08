@@ -10,7 +10,7 @@
     text-align: center;
 }
 
-#viewprocess > div > a, #editprocess > div > a, #createprocess > div > a, #createtaskbyprocess > div > a, #viewtaskprocesstab > div > a {
+#viewprocess > div > a, #editprocess > div > a, #createprocess > div > a, #createtaskbyprocess > div > a, #viewtaskprocesstab > div > a, #edittaskprocess > div > a {
     visibility: hidden;
 }
 
@@ -85,10 +85,13 @@
     display: none;
 }
 #viewtaskprocesstab > div > div > div.djs-palette.two-column.open > div.djs-palette-entries, #viewtaskprocesstab > div > div > div.djs-palette.two-column.open,
+#edittaskprocess > div > div > div.djs-palette.two-column.open > div.djs-palette-entries, #edittaskprocess > div > div > div.djs-palette.two-column.open,
 #viewprocess > div > div > div.djs-palette.two-column.open > div.djs-palette-entries, #viewprocess > div > div > div.djs-palette.two-column.open {
     display: none;
 }
-#viewtaskprocesstab > div > div > div.djs-overlay-container > div > div > div, #viewprocess > div > div > div.djs-overlay-container > div > div > div {
+#viewtaskprocesstab > div > div > div.djs-overlay-container > div > div > div, 
+#viewprocess > div > div > div.djs-overlay-container > div > div > div,
+#edittaskprocess > div > div > div.djs-overlay-container > div > div > div {
     display: none;
 }
 
@@ -97,9 +100,13 @@
     overflow: scroll !important;
     background-color: white !important;
 } */
-#createprocess svg, #editprocess svg, #viewprocess svg, #createtaskbyprocess svg, #viewtaskprocesstab svg{
+#createprocess svg, #editprocess svg, #viewprocess svg, #createtaskbyprocess svg {
     /* border: 1px solid black; */
     height: calc(100vh - 300px);
+}
+#viewtaskprocesstab svg, #edittaskprocess svg {
+    /* border: 1px solid black; */
+    height: calc(100vh - 200px);
 }
 .right-content {
     overflow: auto;
@@ -123,7 +130,8 @@
 #viewprocess > div > div > svg > g > g > g > g > g > text:nth-child(2) {
     display: none;
 }
-#viewtaskprocesstab > div > div > svg > g > g.layer-base > g > g > g > text:nth-child(2) {
+#viewtaskprocesstab > div > div > svg > g > g.layer-base > g > g > g > text:nth-child(2),
+#edittaskprocess > div > div > svg > g > g.layer-base > g > g > g > text:nth-child(2) {
     display: none;
 }
 
@@ -132,7 +140,7 @@
     flex-direction: column-reverse;
 }
 
-.is-tabbed-pane #viewtaskprocesstab svg{
+.is-tabbed-pane #viewtaskprocesstab svg {
     /* border: 1px solid black; */
     height: calc(100vh - 500px);
 }

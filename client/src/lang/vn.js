@@ -2433,6 +2433,7 @@ export default {
             task_process: {
                 process_name: 'Tên quy trình',
                 process_description: 'Mô tả quy trình',
+                process_status: 'Trạng thái quy trình',
                 creator: 'Người tạo quy trình',
                 manager: 'Người quản lý',
                 viewer: 'Người được xem',
@@ -2487,7 +2488,9 @@ export default {
                 get_all_task_process_success: 'Lấy danh sach quy trình công việc thành công',
                 get_all_task_process_fail: 'Lấy danh sach quy trình công việc thất bại',
                 update_task_process_success: 'Cập nhật quy trình công việc thành công',
-                update_task_process_fail: 'Cập nhật quy trình công việc thành công',
+                update_task_process_fail: 'Cập nhật quy trình công việc thất bại',
+                edit_info_process_success: 'Chỉnh sửa thông tin quy trình công việc thành công',
+                edit_info_process_fail: 'Chỉnh sửa thông tin quy trình công việc thất bại',
 
                 error: {
                     empty_name: "Tên quy trình không được bỏ trống",
