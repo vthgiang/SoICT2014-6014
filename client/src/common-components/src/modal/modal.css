@@ -64,6 +64,9 @@
 .modal {
     background: rgba(0, 0, 0, 0.8);
 }
+.modal.fade .modal.fade { /* Fix bug modal cao hơn bị che khuất khi nằm trong trong modal ngắn hơn */
+    height: calc(100vh - 5px);
+}
 .modal-content {
     height: auto;
     min-height: 100%;

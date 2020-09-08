@@ -92,75 +92,79 @@ app.use("/upload/asset/pictures", express.static("upload/asset/pictures"));
 // Function gọi Api vào thời gian xác định
 schedulerController.chedulesCallApi();
 
-app.use("/auth", auth);
+if(process.env.MULTI_TENANT === 'true'){
+	// api multi-tenant
+}else{
+	app.use("/auth", auth);
 
-app.use("/documents", documents);
+	app.use("/documents", documents);
 
-app.use("/annualLeave", annualLeave);
-app.use("/commendation", commendation);
-app.use("/discipline", discipline);
-app.use("/holiday", holiday);
-app.use("/employees", profile);
-app.use("/salary", salary);
-app.use("/timesheet", timesheet);
+	app.use("/annualLeave", annualLeave);
+	app.use("/commendation", commendation);
+	app.use("/discipline", discipline);
+	app.use("/holiday", holiday);
+	app.use("/employees", profile);
+	app.use("/salary", salary);
+	app.use("/timesheet", timesheet);
 
-app.use("/kpi/employee/creation", employeeKpiCreation);
-app.use("/kpi/employee/dashboard", employeeKpiDashboard);
-app.use("/kpi/employee/management", employeeKpiManagement);
-app.use("/kpi/evaluation/dashboard", employeeKpiEvaluationDashboard);
-app.use("/kpi/evaluation/employee-evaluation", employeeKpiEvaluation);
-app.use("/kpi/organizational-unit/creation", organizationalUnitKpiCreation);
-app.use("/kpi/organizational-unit/dashboard", organizationalUnitKpiDashboard);
-app.use("/kpi/organizational-unit/management", organizationalUnitKpiManagement);
+	app.use("/kpi/employee/creation", employeeKpiCreation);
+	app.use("/kpi/employee/dashboard", employeeKpiDashboard);
+	app.use("/kpi/employee/management", employeeKpiManagement);
+	app.use("/kpi/evaluation/dashboard", employeeKpiEvaluationDashboard);
+	app.use("/kpi/evaluation/employee-evaluation", employeeKpiEvaluation);
+	app.use("/kpi/organizational-unit/creation", organizationalUnitKpiCreation);
+	app.use("/kpi/organizational-unit/dashboard", organizationalUnitKpiDashboard);
+	app.use("/kpi/organizational-unit/management", organizationalUnitKpiManagement);
 
-app.use("/notifications", notifications);
+	app.use("/notifications", notifications);
 
-app.use("/component", component);
-app.use("/link", link);
-app.use("/organizational-units", organizationalUnit);
-app.use("/privilege", privilege);
-app.use("/role", role);
-app.use("/user", user);
+	app.use("/component", component);
+	app.use("/link", link);
+	app.use("/organizational-units", organizationalUnit);
+	app.use("/privilege", privilege);
+	app.use("/role", role);
+	app.use("/user", user);
 
-app.use("/system-admin/company", company);
-app.use("/system-admin/system-component", systemComponent);
-app.use("/system-admin/system-link", systemLink);
-app.use("/system-admin/root-role", rootRole);
-app.use("/system-admin/system-setting", systemSetting);
+	app.use("/system-admin/company", company);
+	app.use("/system-admin/system-component", systemComponent);
+	app.use("/system-admin/system-link", systemLink);
+	app.use("/system-admin/root-role", rootRole);
+	app.use("/system-admin/system-setting", systemSetting);
 
-app.use("/task", taskManagement);
-app.use("/performtask", taskPerform);
-app.use("/task/task-templates", tasktemplate);
-app.use("/process", processes);
-app.use("/educationPrograms", educationPrograms);
-app.use("/courses", courses);
+	app.use("/task", taskManagement);
+	app.use("/performtask", taskPerform);
+	app.use("/task/task-templates", tasktemplate);
+	app.use("/process", processes);
+	app.use("/educationPrograms", educationPrograms);
+	app.use("/courses", courses);
 
-//asset
-app.use("/assettype", assetType);
-app.use("/asset", asset);
-app.use("/purchase-request", recommendProcure);
-app.use("/use-request", recommendDistribute);
+	//asset
+	app.use("/assettype", assetType);
+	app.use("/asset", asset);
+	app.use("/purchase-request", recommendProcure);
+	app.use("/use-request", recommendDistribute);
 
-// Task report
-app.use("/taskreports", taskReport);
+	// Task report
+	app.use("/taskreports", taskReport);
 
-// material
-app.use("/materials", material);
+	// material
+	app.use("/materials", material);
 
-//order
-app.use("/orders", order);
+	//order
+	app.use("/orders", order);
 
-// Plan
-app.use("/plans", plan);
+	// Plan
+	app.use("/plans", plan);
 
-// Customer Management
-const crm = express.Router();
-crm.use(require("./modules/crm/customer/customer.route"));
-crm.use(require("./modules/crm/lead/lead.route"));
-crm.use(require("./modules/crm/care/care.route"));
-crm.use(require("./modules/crm/group/group.route"));
-crm.use(require("./modules/crm/statistic/statistic.route"));
-app.use("/crm", crm);
+	// Customer Management
+	const crm = express.Router();
+	crm.use(require("./modules/crm/customer/customer.route"));
+	crm.use(require("./modules/crm/lead/lead.route"));
+	crm.use(require("./modules/crm/care/care.route"));
+	crm.use(require("./modules/crm/group/group.route"));
+	crm.use(require("./modules/crm/statistic/statistic.route"));
+	app.use("/crm", crm);
+}
 
 // Start server
 const port = process.env.PORT || 8000;

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import c3 from 'c3';
 import 'c3/c3.css';
+import './transferList.css';
 
 class PieChart extends Component {
     constructor(props) {
@@ -54,16 +55,18 @@ class PieChart extends Component {
         this.chart = c3.generate({
             bindto: this.refs.pieChart,
             // Căn lề biểu đồ
-            padding: {
-                top: 20,
-                bottom: 20,
-                right: 20,
-                left: 20
-            },
 
+            size: {
+                height: 350,
+                width: 480,
+            },
             data: {
                 columns: data,
                 type: 'pie',
+            },
+            legend: {
+                position: 'bottom',
+                show: (data.length > 6) ? false : true
             }
         })
     }
@@ -71,17 +74,14 @@ class PieChart extends Component {
         const { data, namePieChart } = this.state;
         return (
             <React.Fragment>
-                {
-                    <div className="box box-primary">
-                        <div className="box-header with-border">
-                            <h4 className="box-title">{namePieChart}</h4>
-                        </div>
-                        <div className="box-body dashboard_box_body">
-                            <div ref="pieChart"></div>
-                        </div>
+                <div className="box box-primary" >
+                    <div className="box-header with-border">
+                        <h4 className="box-title">{namePieChart}</h4>
                     </div>
-                }
-
+                    <div className="box-body report-box">
+                        <div ref="pieChart"></div>
+                    </div>
+                </div >
             </React.Fragment>
         );
     }

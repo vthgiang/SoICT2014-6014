@@ -164,12 +164,19 @@ exports.searchTaskTemplates = async (id, pageNumber, noResultsPerPage, organizat
  * @body dữ liệu tạo mới mẫu công việc
  */
 exports.createTaskTemplate = async (body) => {
-    var tasktemplate = await TaskTemplate.create({ //Tạo dữ liệu mẫu công việc       
+    // thêm quyền xem mẫu công việc cho trưởng đơn vị của công việc
+    let units = await OrganizationalUnit.findById(body.organizationalUnit);
+    let roleDeans = units.deans;
+    let readByEmployee = [];
+    readByEmployee = readByEmployee.concat(roleDeans, body.readByEmployees);
+
+    //Tạo dữ liệu mẫu công việc
+    var tasktemplate = await TaskTemplate.create({        
         organizationalUnit: body.organizationalUnit,
         name: body.name,
         creator: body.creator, //id của người tạo
         priority: '1',
-        readByEmployees: body.readByEmployees, //role của người có quyền xem
+        readByEmployees: readByEmployee, //role của người có quyền xem
         responsibleEmployees: body.responsibleEmployees,
         accountableEmployees: body.accountableEmployees,
         consultedEmployees: body.consultedEmployees,
@@ -199,7 +206,7 @@ exports.createTaskTemplate = async (body) => {
     // TODO: Xử lý quyển với action
 
     // xu ly quyen nguoi xem
-    var read = body.readByEmployees;
+    var read = readByEmployee;
     var roleId = [];
     var role, roleParent;
     role = await Role.find({ _id: { $in: read } });
@@ -235,7 +242,7 @@ exports.createTaskTemplate = async (body) => {
             roleId: roleId[i], //id của người cấp quyền xem
             resourceId: tasktemplate._id,
             resourceType: "TaskTemplate",
-            action: body.readByEmployees //quyền READ
+            action: readByEmployee //quyền READ
         });
     }
     tasktemplate = await tasktemplate.populate("organizationalUnit creator").execPopulate();
