@@ -46,18 +46,30 @@ exports.getAssetTypes = async (query, company) => {
 }
 
 exports.createAssetTypes = async (company, data) => {
-    let query = {
-        company,
-        typeNumber: data.typeNumber,
-        typeName: data.typeName,
-        description: data.description,
-        defaultInformation: data.defaultInformation,
-    }
-    if (data.parent.length) {
-        query.parent = data.parent
-    }
-    await AssetType.create(query);
 
+    let dataArray;
+    if (!Array.isArray(data)) {
+        dataArray = [data]
+    } else {
+        dataArray = data;
+    }
+    console.log("55", dataArray)
+    for (let i = 0; i < dataArray.length; i++) {
+        let query = {
+            company,
+            typeNumber: dataArray[i].typeNumber,
+            typeName: dataArray[i].typeName,
+            description: dataArray[i].description,
+            defaultInformation: dataArray[i].defaultInformation,
+        }
+
+        if (dataArray[i].parent && dataArray[i].parent.length) {
+            query.parent = dataArray[i].parent
+        }
+        console.log(query)
+        await AssetType.create(query);
+    }
+    
     return await this.getAssetTypes({}, company);
 }
 
