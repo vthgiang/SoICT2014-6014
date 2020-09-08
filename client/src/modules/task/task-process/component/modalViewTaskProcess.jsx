@@ -1,14 +1,17 @@
 import React, { Component } from "react";
-import BpmnViewer from 'bpmn-js';
 import { connect } from 'react-redux';
-import { DialogModal, SelectBox } from "../../../../common-components";
-import { FormInfoTask } from "./formInfoTask";
 import { getStorage } from '../../../../config';
+import { withTranslate } from "react-redux-multilingual";
+
+import { DialogModal, SelectBox } from "../../../../common-components";
 import { UserActions } from "../../../super-admin/user/redux/actions";
 import { TaskProcessActions } from "../redux/actions";
-import { withTranslate } from "react-redux-multilingual";
 import { ViewTaskTemplate } from "../../task-template/component/viewTaskTemplate";
-import customModule from './read-only'
+
+import BpmnViewer from 'bpmn-js';
+import BpmnModeler from 'bpmn-js/lib/Modeler';
+// import customModule from './read-only';
+import customModule from './custom';
 
 var zlevel = 1;
 class ModalViewTaskProcess extends Component {
@@ -21,16 +24,18 @@ class ModalViewTaskProcess extends Component {
             currentRole: getStorage('currentRole'),
             showInfo: false,
             selectedView: 'info',
-            info: data.tasks, // TODO đổi thành taskList
+            info: data.tasks,
             xmlDiagram: data.xmlDiagram,
         }
-        this.viewer = new BpmnViewer({
+        this.modeler = new BpmnModeler({
             additionalModules: [
-                customModule
+                customModule,
+                // { moveCanvas: ['value', null] }, // chặn chức năng kéo thả khung vẽ
+                { zoomScroll: ['value', ''] }, // chặn chức năng lăn chuột, zoom on mouse wheel
             ]
         });
         this.generateId = 'viewprocess';
-        this.viewer.importXML(this.props.xmlDiagram)
+        this.modeler.importXML(this.props.xmlDiagram)
     }
 
     interactPopup = async (event) => {
@@ -67,15 +72,19 @@ class ModalViewTaskProcess extends Component {
     }
     shouldComponentUpdate(nextProps, nextState) {
         if (nextProps?.idProcess !== this.state.idProcess) {
-            this.viewer.importXML(nextProps.data.xmlDiagram);
+            this.modeler.importXML(nextProps.data.xmlDiagram);
             return true;
         }
         return true;
     }
     componentDidMount() {
         this.props.getAllUsers();
-        this.viewer.attachTo('#' + this.generateId);
-        this.viewer.on('element.click', 1000, (e) => this.interactPopup(e));
+        this.modeler.attachTo('#' + this.generateId);
+
+        let eventBus = this.modeler.get('eventBus')
+
+        eventBus.on('shape.move.start', 100000, () => { return false });
+        this.modeler.on('element.click', 1000, (e) => this.interactPopup(e));
     }
 
     interactPopup = (event) => {
@@ -105,8 +114,8 @@ class ModalViewTaskProcess extends Component {
 
     handleZoomOut = async () => {
         let zstep = 0.2;
-        let canvas = this.viewer.get('canvas');
-        let eventBus = this.viewer.get('eventBus');
+        let canvas = this.modeler.get('canvas');
+        let eventBus = this.modeler.get('eventBus');
 
         // set initial zoom level
         canvas.zoom(zlevel, 'auto');
@@ -120,14 +129,14 @@ class ModalViewTaskProcess extends Component {
     }
 
     handleZoomReset = () => {
-        let canvas = this.viewer.get('canvas');
+        let canvas = this.modeler.get('canvas');
         canvas.zoom('fit-viewport');
     }
 
     handleZoomIn = async () => {
         let zstep = 0.2;
-        let canvas = this.viewer.get('canvas');
-        let eventBus = this.viewer.get('eventBus');
+        let canvas = this.modeler.get('canvas');
+        let eventBus = this.modeler.get('eventBus');
 
         // set initial zoom level
         canvas.zoom(zlevel, 'auto');
@@ -143,19 +152,24 @@ class ModalViewTaskProcess extends Component {
         const { translate, role, user } = this.props;
         const { listOrganizationalUnit } = this.props
         const { name, id, idProcess, info, showInfo, processDescription, processName, viewer, manager, selectedView } = this.state;
+
         let listRole = [];
         let listUser = user.list
         if (role && role.list.length !== 0) listRole = role.list;
+
         let listItem = listRole.filter(e => ['Admin', 'Super Admin', 'Dean', 'Vice Dean', 'Employee'].indexOf(e.name) === -1)
             .map(item => { return { text: item.name, value: item._id } });
+
         let listViewer = [];
         if (viewer) {
             listViewer = listItem.filter(e => viewer.indexOf(e.value) !== -1)
         }
+
         let listManager = [];
         if (manager) {
             listManager = listItem.filter(e => manager.indexOf(e.value) !== -1)
         }
+
         return (
             <React.Fragment>
                 <DialogModal
@@ -169,8 +183,8 @@ class ModalViewTaskProcess extends Component {
                     <div>
                         <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none", marginBottom: 0 }}>
                             <ul className="nav nav-tabs">
-                                <li className="active"><a href="#info-view" onClick={() => this.handleChangeContent("info")} data-toggle="tab">Thông tin quy trình</a></li>
-                                <li><a href="#process-view" onClick={() => this.handleChangeContent("process")} data-toggle="tab">Quy trình công việc</a></li>
+                                <li className="active"><a href="#info-view" onClick={() => this.handleChangeContent("info")} data-toggle="tab">{translate("task.task_process.process_information")}</a></li>
+                                <li><a href="#process-view" onClick={() => this.handleChangeContent("process")} data-toggle="tab">{translate("task.task_process.task_process")}</a></li>
                             </ul>
                             <div className="tab-content">
                                 <div className={selectedView === "info" ? "active tab-pane" : "tab-pane"} id="info-view">
@@ -179,13 +193,13 @@ class ModalViewTaskProcess extends Component {
                                         <div className="col-md-6">
                                             <div className="box">
                                                 <div className="box-header with-border">
-                                                    Thông tin chung
+                                                    {translate("task.task_process.general_infomation")}
                                                 </div>
                                                 <div className="box-body">
-                                                    <dt>Tên quy trình</dt>
+                                                    <dt>{translate("task.task_process.process_name")}</dt>
                                                     <dd>{processName}</dd>
 
-                                                    <dt>Mô tả quy trình</dt>
+                                                    <dt>{translate("task.task_process.process_description")}</dt>
                                                     <dd>{processDescription}</dd>
                                                 </div>
                                             </div>
@@ -194,10 +208,10 @@ class ModalViewTaskProcess extends Component {
                                         <div className="col-md-6">
                                             <div className="box">
                                                 <div className="box-header with-border">
-                                                    Các vai trò
+                                                    {translate("task.task_process.roles")}
                                                 </div>
                                                 <div className="box-body">
-                                                    <dt>Người được phép xem</dt>
+                                                    <dt>{translate("task.task_process.viewer")}</dt>
                                                     <dd>
                                                         <ul>
                                                             {
@@ -208,7 +222,7 @@ class ModalViewTaskProcess extends Component {
                                                         </ul>
                                                     </dd>
 
-                                                    <dt>Người quản lý quy trình</dt>
+                                                    <dt>{translate("task.task_process.manager")}</dt>
                                                     <dd>
                                                         <ul>
                                                             {
@@ -266,16 +280,14 @@ class ModalViewTaskProcess extends Component {
                                             {
                                                 (showInfo) &&
                                                 <div>
-                                                    <div>
+                                                    {/* <div>
                                                         <h1>Option {name}</h1>
-                                                    </div>
+                                                    </div> */}
                                                     <ViewTaskTemplate
                                                         isProcess={true}
                                                         taskTemplate={info?.[`${id}`]}
                                                         listUser={listUser}
-                                                    >
-
-                                                    </ViewTaskTemplate>
+                                                    />
                                                 </div>
                                             }
                                         </div>

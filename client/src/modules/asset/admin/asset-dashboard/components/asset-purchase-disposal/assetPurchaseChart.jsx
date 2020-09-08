@@ -7,7 +7,7 @@ import Swal from 'sweetalert2';
 import c3 from 'c3';
 import 'c3/c3.css';
 
-class PurchaseColumnChart extends Component {
+class AssetPurchaseChart extends Component {
     constructor(props) {
         super(props);
 
@@ -344,4 +344,4 @@ class PurchaseColumnChart extends Component {
     }
 }
 
-export default withTranslate(PurchaseColumnChart);
+export default withTranslate(AssetPurchaseChart);

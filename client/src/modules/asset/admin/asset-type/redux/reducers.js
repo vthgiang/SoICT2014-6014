@@ -45,10 +45,9 @@ export function assetType(state = initState, action) {
     var indexPaginate = -1;
     switch (action.type) {
         case AssetTypeConstants.GET_ASSET_TYPE_REQUEST:
+        case AssetTypeConstants.GET_ALL_ASSET_TYPE_REQUEST:
         case AssetTypeConstants.CREATE_ASSET_TYPE_REQUEST:
-        case AssetTypeConstants.GET_DOCUMENT_DOMAINS_REQUEST:
-        case AssetTypeConstants.CREATE_DOCUMENT_DOMAIN_REQUEST:
-        case AssetTypeConstants.DELETE_DOCUMENT_DOMAIN_REQUEST:
+        case AssetTypeConstants.DELETE_ASSET_TYPE_REQUEST:
             return {
                 ...state,
                 isLoading: true,
@@ -62,16 +61,9 @@ export function assetType(state = initState, action) {
                 listAssetTypes: action.payload.listAssetTypes,
                 totalList: action.payload.totalList,
             };
-        
+            
+        case AssetTypeConstants.GET_ALL_ASSET_TYPE_SUCCESS:
         case AssetTypeConstants.CREATE_ASSET_TYPE_SUCCESS:
-            return {
-                ...state,
-                isLoading: false,
-                listAssetTypes: [...state.listAssetTypes, action.payload],
-            };
-        
-        case AssetTypeConstants.GET_DOCUMENT_DOMAINS_SUCCESS:
-        case AssetTypeConstants.CREATE_DOCUMENT_DOMAIN_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
@@ -81,7 +73,7 @@ export function assetType(state = initState, action) {
                 }
             };
         
-        case AssetTypeConstants.EDIT_DOCUMENT_DOMAIN_SUCCESS:
+        case AssetTypeConstants.EDIT_ASSET_TYPE_SUCCESS:
             index = findIndex(state.administration.types.list, action.payload._id);
             if (index !== -1) state.administration.types.list[index] = action.payload;
             indexPaginate = findIndex(state.administration.types.paginate, action.payload._id);
@@ -91,7 +83,7 @@ export function assetType(state = initState, action) {
                 isLoading: false
             };
         
-        case AssetTypeConstants.DELETE_DOCUMENT_DOMAIN_SUCCESS:
+        case AssetTypeConstants.DELETE_ASSET_TYPE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
@@ -102,16 +94,15 @@ export function assetType(state = initState, action) {
             };
         
         case AssetTypeConstants.GET_ASSET_TYPE_FAILURE:
-            case AssetTypeConstants.CREATE_ASSET_TYPE_FAILURE:
+        case AssetTypeConstants.CREATE_ASSET_TYPE_FAILURE:
             return {
                 ...state,
                 isLoading: false,
                 error: action.error.message
             };
 
-        case AssetTypeConstants.GET_DOCUMENT_DOMAINS_FAILE:
-            case AssetTypeConstants.CREATE_DOCUMENT_DOMAIN_FAILE:
-            case AssetTypeConstants.DELETE_DOCUMENT_DOMAIN_FAILE:
+        case AssetTypeConstants.GET_ALL_ASSET_TYPE_FAILE:
+        case AssetTypeConstants.DELETE_ASSET_TYPE_FAILE:
             return {
                 ...state,
                 isLoading: false,

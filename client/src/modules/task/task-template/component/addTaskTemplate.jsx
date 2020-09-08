@@ -412,14 +412,23 @@ class AddTaskTemplate extends Component {
         if (department.departmentsThatUserIsDean) {
             departmentsThatUserIsDean = department.departmentsThatUserIsDean;
         }
-        if (user.roledepartments) {
-            listRole = user.roledepartments;
-            for (let x in listRole.deans)
-                listRoles[x] = listRole.deans[x];
-            for (let x in listRole.viceDeans)
-                listRoles.push(listRole.viceDeans[x]);
-            for (let x in listRole.employees)
-                listRoles.push(listRole.employees[x]);
+        if (user.usersInUnitsOfCompany) {
+            listRole = user.usersInUnitsOfCompany;
+            for (let x in listRole) {
+                if (listRole[x].id === newTemplate.organizationalUnit) {
+                    listRoles.push(Object.values(listRole[x].deans));
+                    listRoles.push(Object.values(listRole[x].viceDeans));
+                    listRoles.push(Object.values(listRole[x].employees));
+                }
+                
+            }
+            listRole = [];
+            for (let x in listRoles) {
+                for (let i in listRoles[x]) {
+                    listRole = listRole.concat(listRoles[x]);
+                }
+            }
+            listRoles = listRole;
         }
         if (user.usercompanys) usercompanys = user.usercompanys;
         if (user.userdepartments) userdepartments = user.userdepartments;
@@ -446,14 +455,14 @@ class AddTaskTemplate extends Component {
                         {/**Đơn vị(phòng ban) của Task template*/}
                         <div className={`form-group ${this.state.newTemplate.errorOnUnit === undefined ? "" : "has-error"}`} style={{ marginLeft: 0, marginRight: 0 }}>
                             <label className="control-label">{translate('task_template.unit')}*:</label>
-                            {units !== undefined && newTemplate.organizationalUnit !== "" &&
+                            {usersInUnitsOfCompany !== undefined && newTemplate.organizationalUnit !== "" &&
                                 <SelectBox
                                     id={`unit-select-box`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={
-                                        units.map(x => {
-                                            return { value: x._id, text: x.name };
+                                        usersInUnitsOfCompany.map(x => {
+                                            return { value: x.id, text: x.department };
                                         })
                                     }
                                     value={newTemplate.organizationalUnit}

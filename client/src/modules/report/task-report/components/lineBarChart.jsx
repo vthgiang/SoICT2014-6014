@@ -17,11 +17,9 @@ class LineBarChart extends Component {
 
 
     setDataMultiChart = (data) => {
-        let dataConvert = [['x']], typeChart = {}, rotated;
+        let dataConvert = [['x']], typeChart = {};
         let indices = { time: 0 }; // chỉ số time = 0 ứng với mảng x trong dataConvert 
         if (data) {
-            // Nếu dữ liệu nhiều thì xoay trục biểu đồ
-            (data.length > 6) ? (rotated = true) : (rotated = false);
 
             data.forEach(x => {
                 dataConvert[indices.time].push(x.time);
@@ -35,7 +33,7 @@ class LineBarChart extends Component {
             })
         }
 
-        return { dataConvert, typeChart, rotated };
+        return { dataConvert, typeChart };
     }
 
 
@@ -92,8 +90,11 @@ class LineBarChart extends Component {
         data = this.setDataMultiChart(data);
 
         let newData = data.dataConvert;
+
+        // set height cho biểu đồ
+        let getLenghtData = newData[0].length;
+        let setHeightChart = (getLenghtData * 30) < 320 ? 320 : (getLenghtData * 60);
         let typeChart = data.typeChart;
-        let rotated = data.rotated;
 
         this.chart = c3.generate({
             bindto: this.refs.barChart,
@@ -101,6 +102,9 @@ class LineBarChart extends Component {
                 top: 20,
                 bottom: 20,
                 right: 20
+            },
+            size: {
+                height: setHeightChart,
             },
             data: {
                 x: 'x',
@@ -110,16 +114,14 @@ class LineBarChart extends Component {
             },
             bar: {
                 width: {
-                    ratio: 0.4
+                    ratio: 0.7
                 }
             },
             axis: {
-                rotated: rotated,
+                rotated: true,
                 x: {
                     type: 'category',
-                    tick: {
-                        multiline: true
-                    },
+
                 },
                 y: {
                     label: {
@@ -128,17 +130,28 @@ class LineBarChart extends Component {
                     },
                 }
             },
+
+            tooltip: {
+                format: {
+                    value: d3.format(',')
+                }
+            }
         });
     }
 
 
     render() {
         return (
-            <div className="row">
+            <div className="row" style={{ marginBottom: '10px' }}>
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <div className="lineBarChart">
-                        <section ref="barChart"></section>
-                    </div>
+                    <div className="box box-primary" >
+                        <div className="box-header with-border">
+                            <h4 className="box-title">Báo cáo thống kê công việc</h4>
+                        </div>
+                        <div className="box-body lineBarChart ">
+                            <div ref="barChart"></div>
+                        </div>
+                    </div >
                 </div>
             </div>
         )

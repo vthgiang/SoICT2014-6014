@@ -10,7 +10,7 @@
     text-align: center;
 }
 
-#viewprocess > div > a, #editprocess > div > a, #createprocess > div > a, #createtaskbyprocess > div > a, #viewtaskprocestab > div > a {
+#viewprocess > div > a, #editprocess > div > a, #createprocess > div > a, #createtaskbyprocess > div > a, #viewtaskprocesstab > div > a, #edittaskprocess > div > a {
     visibility: hidden;
 }
 
@@ -84,10 +84,14 @@
 #createtaskbyprocess > div > div > div.djs-palette.two-column.open, #createtaskbyprocess > div > div > div.djs-overlay-container > div > div > div {
     display: none;
 }
-#viewtaskprocestab > div > div > div.djs-palette.two-column.open > div.djs-palette-entries, #viewtaskprocestab > div > div > div.djs-palette.two-column.open {
+#viewtaskprocesstab > div > div > div.djs-palette.two-column.open > div.djs-palette-entries, #viewtaskprocesstab > div > div > div.djs-palette.two-column.open,
+#edittaskprocess > div > div > div.djs-palette.two-column.open > div.djs-palette-entries, #edittaskprocess > div > div > div.djs-palette.two-column.open,
+#viewprocess > div > div > div.djs-palette.two-column.open > div.djs-palette-entries, #viewprocess > div > div > div.djs-palette.two-column.open {
     display: none;
 }
-#viewtaskprocestab > div > div > div.djs-overlay-container > div > div > div {
+#viewtaskprocesstab > div > div > div.djs-overlay-container > div > div > div, 
+#viewprocess > div > div > div.djs-overlay-container > div > div > div,
+#edittaskprocess > div > div > div.djs-overlay-container > div > div > div {
     display: none;
 }
 
@@ -96,9 +100,13 @@
     overflow: scroll !important;
     background-color: white !important;
 } */
-#createprocess svg, #editprocess svg, #viewprocess svg, #createtaskbyprocess svg, #viewtaskprocestab svg{
+#createprocess svg, #editprocess svg, #viewprocess svg, #createtaskbyprocess svg {
     /* border: 1px solid black; */
     height: calc(100vh - 300px);
+}
+#viewtaskprocesstab svg, #edittaskprocess svg {
+    /* border: 1px solid black; */
+    height: calc(100vh - 200px);
 }
 .right-content {
     overflow: auto;
@@ -122,7 +130,8 @@
 #viewprocess > div > div > svg > g > g > g > g > g > text:nth-child(2) {
     display: none;
 }
-#viewtaskprocestab > div > div > svg > g > g.layer-base > g > g > g > text:nth-child(2) {
+#viewtaskprocesstab > div > div > svg > g > g.layer-base > g > g > g > text:nth-child(2),
+#edittaskprocess > div > div > svg > g > g.layer-base > g > g > g > text:nth-child(2) {
     display: none;
 }
 
@@ -131,7 +140,7 @@
     flex-direction: column-reverse;
 }
 
-.is-tabbed-pane #viewtaskprocestab svg{
+.is-tabbed-pane #viewtaskprocesstab svg {
     /* border: 1px solid black; */
     height: calc(100vh - 500px);
 }
@@ -142,7 +151,6 @@
     font-weight: bold; 
     width: 150px; 
     height: 45px; 
-    background-color: white;
     display: block; 
     display: -webkit-box; 
     -webkit-line-clamp: 3; /* số dòng */ 
@@ -184,9 +192,12 @@
     font-size: 12px; 
     line-height: 1em; 
     font-weight: bold; 
-    width: 150px; 
-    height: 45px; 
-    /* background-color: white; */
+    max-width: 150px; 
+    max-height: 45px; 
+    /* -webkit-text-stroke-width: 4px;
+    -webkit-text-stroke-color: #fff; */
+    /* text-shadow: 2px 0 0 #fff, -2px 0 0 #fff, 0 2px 0 #fff, 0 -2px 0 #fff, 1px 1px #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff; */
+    
     display: block; 
     display: -webkit-box; 
     -webkit-line-clamp: 3; /* số dòng */ 
@@ -194,9 +205,7 @@
     text-overflow: ellipsis; 
     overflow: hidden;
 }
-#createprocess > div > div > svg > g > g.layer-base > g > g > g > text {
-    display: none;
-}
+
 
 
 .list-task-process-gate-way-responsible {
@@ -205,10 +214,10 @@
     font-size: 10px; 
     line-height: 1em; 
     font-weight: bold; 
-    width: 150px; 
-    height: 35px; 
-    /* background-color: white; */
-    text-shadow: 2px 0 0 #fff, -2px 0 0 #fff, 0 2px 0 #fff, 0 -2px 0 #fff, 1px 1px #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff;
+    max-width: 150px; 
+    max-height: 35px; 
+    background-color: white;
+    /* text-shadow: 2px 0 0 #fff, -2px 0 0 #fff, 0 2px 0 #fff, 0 -2px 0 #fff, 1px 1px #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff; */
     display: block; 
     display: -webkit-box; 
     -webkit-line-clamp: 2; /* số dòng */ 
@@ -221,10 +230,10 @@
     text-align: center;
     font-size: 10px; 
     line-height: 1em; 
-    width: 150px; 
-    height: 35px; 
-    text-shadow: 2px 0 0 #fff, -2px 0 0 #fff, 0 2px 0 #fff, 0 -2px 0 #fff, 1px 1px #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff;
-    /* background-color: white; */
+    max-width: 150px; 
+    max-height: 35px; 
+    /* text-shadow: 2px 0 0 #fff, -2px 0 0 #fff, 0 2px 0 #fff, 0 -2px 0 #fff, 1px 1px #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff; */
+    background-color: white;
     display: block; 
     display: -webkit-box; 
     -webkit-line-clamp: 2; /* số dòng */ 

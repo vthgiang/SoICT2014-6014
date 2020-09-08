@@ -18,7 +18,7 @@ class AmountPieChart extends Component {
     setDataPieChart = () => {
         const { listAssets, setAmountOfAsset } = this.props;
         const { translate } = this.props;
-        let dataPieChart, numberOfBuilding = 0, numberOfVehicle = 0, numberOfMachine = 0, numberOfOrther = 0;
+        let dataPieChart, numberOfBuilding = 0, numberOfVehicle = 0, numberOfMachine = 0, numberOfOther = 0;
 
         if (listAssets) {
             listAssets.map(asset => {
@@ -33,7 +33,7 @@ class AmountPieChart extends Component {
                         numberOfMachine++;
                         break;
                     case "Other":
-                        numberOfOrther++;
+                        numberOfOther++;
                         break;
                 }
             });
@@ -43,7 +43,7 @@ class AmountPieChart extends Component {
             [translate('asset.dashboard.building'), numberOfBuilding],
             [translate('asset.dashboard.vehicle'), numberOfVehicle],
             [translate('asset.dashboard.machine'), numberOfMachine],
-            [translate('asset.dashboard.orther'), numberOfOrther],
+            [translate('asset.dashboard.other'), numberOfOther],
         ];
 
         // CHuyển dữ liệu lên component cha để export

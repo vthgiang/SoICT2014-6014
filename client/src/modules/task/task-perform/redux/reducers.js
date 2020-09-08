@@ -1,5 +1,5 @@
 import { performTaskConstants } from "./constants";
-import { taskManagementConstants } from "../../task-management/redux/constants"
+import { TaskProcessConstants } from "../../task-process/redux/constants"
 export function performtasks(state = {}, action) {
     switch (action.type) {
         case performTaskConstants.GETTASK_BYID_REQUEST:
@@ -164,7 +164,7 @@ export function performtasks(state = {}, action) {
             return {
                 ...state,
                 task: action.payload
-        };
+            };
         case performTaskConstants.EDIT_TASK_INFORMATION_FAILURE:
             return {
                 ...state,
@@ -612,6 +612,133 @@ export function performtasks(state = {}, action) {
                 isLoading: false,
                 error: action.error
             };
+        case performTaskConstants.CREATE_COMMENT_REQUEST:
+            return {
+                ...state,
+                adding: true
+            }
+        case performTaskConstants.CREATE_COMMENT_SUCCESS:
+            var comment = { ...state.task, commentsInProcess: action.payload }
+            return {
+                ...state,
+                task: comment
+            }
+        case performTaskConstants.CREATE_COMMENT_FAILURE:
+            return {
+                error: action.payload,
+            }
+        case performTaskConstants.CREATE_COMMENT_OF_COMMENT_REQUEST:
+            return {
+                ...state,
+                adding: true
+            }
+        case performTaskConstants.CREATE_COMMENT_OF_COMMENT_SUCCESS:
+            var comment = { ...state.task, commentsInProcess: action.payload }
+            return {
+                ...state,
+                task: comment
+            }
+        case performTaskConstants.CREATE_COMMENT_OF_COMMENT_FAILURE:
+            return {
+                ...state,
+                error: action.payload,
+            }
+        case performTaskConstants.EDIT_COMMENT_REQUEST:
+            return {
+                ...state,
+                editing: true
+            }
+        case performTaskConstants.EDIT_COMMENT_SUCCESS:
+            var comment = { ...state.task, commentsInProcess: action.payload }
+            return {
+                ...state,
+                task: comment
+            }
+        case performTaskConstants.EDIT_COMMENT_FAILURE:
+            return {
+                ...state,
+                error: action.payload,
+            }
+        case performTaskConstants.DELETE_COMMENT_REQUEST:
+            return {
+                ...state,
+                editing: true
+            }
+        case performTaskConstants.DELETE_COMMENT_SUCCESS:
+            var comment = { ...state.task, commentsInProcess: action.payload }
+            return {
+                ...state,
+                task: comment
+            }
+        case performTaskConstants.DELETE_COMMENT_FAILURE:
+            return {
+                ...state,
+                error: action.payload,
+            }
+        case performTaskConstants.EDIT_COMMENT_OF_COMMENT_REQUEST:
+            return {
+                ...state,
+                editing: true
+            }
+        case performTaskConstants.EDIT_COMMENT_OF_COMMENT_SUCCESS:
+            var comment = { ...state.task, commentsInProcess: action.payload }
+            return {
+                ...state,
+                task: comment
+            }
+        case performTaskConstants.EDIT_COMMENT_OF_COMMENT_FAILURE:
+            return {
+                ...state,
+                error: action.payload,
+            }
+        case performTaskConstants.DELETE_COMMENT_OF_COMMENT_REQUEST:
+            return {
+                ...state,
+                deleting: true
+            }
+        case performTaskConstants.DELETE_COMMENT_OF_COMMENT_SUCCESS:
+            var comment = { ...state.task, commentsInProcess: action.payload }
+            return {
+                ...state,
+                task: comment
+            }
+        case performTaskConstants.DELETE_COMMENT_OF_COMMENT_FAILURE:
+            return {
+                ...state,
+                error: action.payload,
+            }
+        case performTaskConstants.DELETE_FILE_COMMENT_REQUEST:
+            return {
+                ...state,
+                deleting: true
+            }
+        case performTaskConstants.DELETE_FILE_COMMENT_SUCCESS:
+            var comment = { ...state.task, commentsInProcess: action.payload }
+            return {
+                ...state,
+                task: comment
+            }
+        case performTaskConstants.DELETE_FILE_COMMENT_FAILURE:
+            return {
+                ...state,
+                error: action.payload,
+            }
+        case performTaskConstants.DELETE_FILE_CHILD_COMMENT_REQUEST:
+            return {
+                ...state,
+                deleting: true
+            }
+        case performTaskConstants.DELETE_FILE_CHILD_COMMENT_SUCCESS:
+            var comment = { ...state.task, commentsInProcess: action.payload }
+            return {
+                ...state,
+                task: comment
+            }
+        case performTaskConstants.DELETE_FILE_CHILD_COMMENT_FAILURE:
+            return {
+                ...state,
+                error: action.payload,
+            }
         default:
             return state
     }
