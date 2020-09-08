@@ -1,10 +1,13 @@
 import React, { Component } from "react";
-import { withTranslate } from "react-redux-multilingual";
 import { connect } from 'react-redux';
-import { getStorage } from '../../../../../config';
-import { ModalDetailTask } from "../../../task-dashboard/task-personal-dashboard/modalDetailTask";
+import { getStorage } from "../../../../../config";
+import { withTranslate } from "react-redux-multilingual";
+
+import { DialogModal, ErrorLabel, SelectBox, DatePicker } from "../../../../../common-components";
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { performTaskAction } from "../../../task-perform/redux/actions";
+import { ModalDetailTask } from "../../../task-dashboard/task-personal-dashboard/modalDetailTask";
+
 import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil'
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
@@ -12,6 +15,10 @@ import customModule from './../custom'
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import './../processDiagram.css'
+import { TaskFormValidator } from "../../../task-management/component/taskFormValidator";
+import { TaskProcessValidator } from "../taskProcessValidator";
+import { TaskProcessActions } from "../../redux/actions";
+
 
 //Xóa element khỏi pallette theo data-action
 var _getPaletteEntries = PaletteProvider.prototype.getPaletteEntries;
@@ -28,7 +35,8 @@ PaletteProvider.prototype.getPaletteEntries = function (element) {
 // khởi tạo giá trị mặc định zoomIn zoomOut
 var zlevel = 1;
 
-class ViewProcess extends Component {
+
+class ModalEditProcess extends Component {
 
     constructor(props) {
         super(props);
@@ -52,7 +60,7 @@ class ViewProcess extends Component {
                 { zoomScroll: ['value', ''] }
             ],
         });
-        this.generateId = 'viewtaskprocesstab';
+        this.generateId = 'edittaskprocess';
         this.modeling = this.modeler.get("modeling");
         this.initialDiagram = data.xmlDiagram;
     }
@@ -105,6 +113,7 @@ class ViewProcess extends Component {
             this.props.getDepartment();
             let { user } = this.props;
             let defaultUnit;
+
             if (user && user.organizationalUnitsOfUser) defaultUnit = user.organizationalUnitsOfUser.find(item =>
                 item.dean === this.state.currentRole
                 || item.viceDean === this.state.currentRole
@@ -113,8 +122,17 @@ class ViewProcess extends Component {
                 // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
                 defaultUnit = user.organizationalUnitsOfUser[0]
             }
+
             this.props.getChildrenOfOrganizationalUnits(defaultUnit && defaultUnit._id);
+
             this.modeler.importXML(nextProps.data.xmlDiagram, function (err) { });
+            this.setState(state => {
+                return {
+                    ...state,
+                    startDate: nextProps.data.startDate ? this.formatDate(nextProps.data.startDate) : '',
+                    endDate: nextProps.data.endDate ? this.formatDate(nextProps.data.endDate) : '',
+                }
+            });
             return true;
         }
         if (nextProps.data) {
@@ -138,6 +156,7 @@ class ViewProcess extends Component {
 
                             var outgoing = element1.outgoing;
                             outgoing.forEach(x => {
+                                console.log('x', x);
                                 if (info[x.businessObject.targetRef.id].status === "Inprocess") {
                                     var outgoingEdge = modeler.get('elementRegistry').get(x.id);
 
@@ -157,14 +176,10 @@ class ViewProcess extends Component {
                                 stroke: '#14984c', //E02001
                                 width: '5px'
                             });
-
                         }
-
                     }
                 }
-
             });
-
             return true;
         }
         return true;
@@ -353,101 +368,249 @@ class ViewProcess extends Component {
         return [day, month, year].join('-');
     }
 
-    formatStatus = (data) => {
-        const { translate } = this.props;
-        if (data === "Inprocess") return translate('task.task_management.inprocess');
-        else if (data === "WaitForApproval") return translate('task.task_management.wait_for_approval');
-        else if (data === "Finished") return translate('task.task_management.finished');
-        else if (data === "Delayed") return translate('task.task_management.delayed');
-        else if (data === "Canceled") return translate('task.task_management.canceled');
+    // hàm cập nhật Tên Quy trình
+    handleChangeBpmnName = async (e) => {
+        let { value } = e.target;
+        let msg = TaskProcessValidator.validateProcessName(value, this.props.translate);
+        await this.setState(state => {
+            return {
+                ...state,
+                processName: value,
+                errorOnProcessName: msg,
+            }
+        });
+    }
+
+    // hàm cập nhật mô tả quy trình
+    handleChangeBpmnDescription = async (e) => {
+        let { value } = e.target;
+        let msg = TaskProcessValidator.validateProcessDescription(value, this.props.translate);
+        await this.setState(state => {
+            return {
+                ...state,
+                processDescription: value,
+                errorOnProcessDescription: msg,
+            }
+        });
+    }
+
+    // hàm cập nhật ngày bắt đầu công việc
+    handleChangeTaskStartDate = (value) => {
+        this.validateTaskStartDate(value, true);
+    }
+    validateTaskStartDate = (value, willUpdateState = true) => {
+        let { translate } = this.props;
+        let msgStart = TaskFormValidator.validateTaskStartDate(value, this.state.endDate ? this.state.endDate : "", translate);
+        let msgEnd = TaskFormValidator.validateTaskEndDate(value, this.state.endDate ? this.state.endDate : "", translate);
+
+        if (willUpdateState) {
+            this.state.startDate = value;
+            this.state.errorOnStartDate = msgStart;
+            // this.state.errorOnEndDate = msgEnd;
+
+            this.setState(state => {
+                return {
+                    ...state,
+                };
+            });
+        }
+        return msgStart === undefined;
+    }
+
+    // hàm cập nhật ngày kết thúc công việc
+    handleChangeTaskEndDate = (value) => {
+        this.validateTaskEndDate(value, true);
+    }
+    validateTaskEndDate = (value, willUpdateState = true) => {
+        let { translate } = this.props;
+        let msgEnd = TaskFormValidator.validateTaskEndDate(this.state.startDate ? this.state.startDate : "", value, translate);
+        let msgStart = TaskFormValidator.validateTaskStartDate(this.state.startDate ? this.state.startDate : "", value, translate);
+
+        if (willUpdateState) {
+            this.state.endDate = value;
+            this.state.errorOnEndDate = msgEnd;
+            // this.state.errorOnStartDate = msgStart;
+
+            this.setState(state => {
+                return {
+                    ...state,
+                };
+            });
+        }
+        return msgEnd === undefined;
+    }
+
+    /**
+     * Hàm cập nhật chọn status
+     * @param {*} value giá trị status lựa chọn
+     */
+    handleSelectedStatus = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                status: value[0]
+            }
+        })
+    }
+
+    // hàm validate form tạo quy trình công việc
+    isFormValidated = () => {
+        let { errorOnEndDate, errorOnProcessDescription, errorOnProcessName, errorOnStartDate, startDate, endDate } = this.state;
+
+        return errorOnEndDate === undefined && errorOnProcessDescription === undefined && errorOnProcessName === undefined && errorOnStartDate === undefined
+            && startDate.trim() !== "" && endDate.trim() !== "";
+    }
+
+    // hàm lưu
+    save = () => {
+        let { processName, processDescription, status, startDate, endDate } = this.state;
+
+        let { idProcess } = this.props;
+
+        let data = {
+            processName: processName,
+            processDescription: processDescription,
+            status: status,
+            startDate: startDate,
+            endDate: endDate,
+        }
+
+        console.log('quang gửi data', data, idProcess);
+        this.props.editProcessInfo(idProcess, data);
+
     }
 
     render() {
         const { translate, role, user } = this.props;
-        const { id, info, startDate, endDate, status,
-            processDescription, processName } = this.state;
-        const { isTabPane } = this.props
+        const { idProcess } = this.props;
+        const { id, info, startDate, endDate, status, processDescription, processName, errorOnProcessName, errorOnEndDate, errorOnStartDate, errorOnProcessDescription } = this.state;
+
+        // Mảng cấu hình trạng thái công việc
+        let statusArr = [
+            { value: "Inprocess", text: translate('task.task_management.inprocess') },
+            { value: "WaitForApproval", text: translate('task.task_management.wait_for_approval') },
+            { value: "Finished", text: translate('task.task_management.finished') },
+            { value: "Delayed", text: translate('task.task_management.delayed') },
+            { value: "Canceled", text: translate('task.task_management.canceled') }
+        ];
 
         return (
             <React.Fragment>
-                <div>
-                    {id !== undefined &&
-                        <ModalDetailTask task={(info && info[`${id}`]) && info[`${id}`]} isProcess={true} />
-                    }
+                <DialogModal
+                    size='100' modalID={`modal-edit-process-task-list`} isLoading={false}
+                    formID="modal-edit-process-task-list"
+                    disableSubmit={!this.isFormValidated()}
+                    title={this.props.title}
+                    func={this.save}
+                    bodyStyle={{ paddingTop: 0, paddingBottom: 0 }}
+                >
+                    <div>
+                        {id !== undefined &&
+                            <ModalDetailTask task={(info && info[`${id}`]) && info[`${id}`]} isProcess={true} />
+                        }
 
-                    <div className={`${isTabPane ? 'is-tabbed-pane' : 'row'}`}>
-                        {/* Quy trình công việc */}
-                        <div className={`contain-border ${isTabPane ? '' : 'col-md-8'}`}>
-                            {/* Diagram */}
-                            <div id={this.generateId}></div>
-                            {/* Zoom button */}
-                            <div className="row">
-                                <div className="io-zoom-controls">
-                                    <ul className="io-zoom-reset io-control io-control-list">
-                                        <li>
-                                            <a style={{ cursor: "pointer" }} title="Reset zoom" onClick={this.handleZoomReset}>
-                                                <i className="fa fa-crosshairs"></i>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a style={{ cursor: "pointer" }} title="Zoom in" onClick={this.handleZoomIn}>
-                                                <i className="fa fa-plus"></i>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a style={{ cursor: "pointer" }} title="Zoom out" onClick={this.handleZoomOut}>
-                                                <i className="fa fa-minus"></i>
-                                            </a>
-                                        </li>
-                                    </ul>
+                        <div className={'row'}>
+                            {/* Quy trình công việc */}
+                            <div className={`contain-border col-md-8`}>
+                                {/* Diagram */}
+                                <div id={this.generateId}></div>
+                                {/* Zoom button */}
+                                <div className="row">
+                                    <div className="io-zoom-controls">
+                                        <ul className="io-zoom-reset io-control io-control-list">
+                                            <li>
+                                                <a style={{ cursor: "pointer" }} title="Reset zoom" onClick={this.handleZoomReset}>
+                                                    <i className="fa fa-crosshairs"></i>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a style={{ cursor: "pointer" }} title="Zoom in" onClick={this.handleZoomIn}>
+                                                    <i className="fa fa-plus"></i>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a style={{ cursor: "pointer" }} title="Zoom out" onClick={this.handleZoomOut}>
+                                                    <i className="fa fa-minus"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div className={`${isTabPane ? 'row' : 'right-content col-md-4'}`}>
+                            <div className={'right-content col-md-4'}>
 
-                            <div className={`${isTabPane ? "col-lg-6 col-md-6 col-sm-6 col-xs-6" : "box box-solid"}`}>
-                                { // !isTabPane && style={isTabPane ? {display: "flex", flexDirection: "row"} : {}}
-                                    <div className="box-header with-border">
-                                        {translate('task_template.general_information')}
-                                    </div>
-                                }
-                                <div className="box-body">
-
-                                    {/* tên quy trình */}
-                                    <dt>{translate("task.task_process.process_name")}</dt>
-                                    <dd>{processName}</dd>
-
-                                    {/* mô tả quy trình */}
-                                    <dt>{translate("task.task_process.process_description")}</dt>
-                                    <dd>{processDescription}</dd>
-
-                                    {/* mô tả quy trình */}
-                                    <dt>{translate("task.task_process.process_status")}</dt>
-                                    <dd>{this.formatStatus(status)}</dd>
-
-                                    {/* thời gian thực hiện quy trình */}
-                                    <dt>{translate("task.task_process.time_of_process")}</dt>
-                                    <dd>{this.formatDate(startDate)} <i className="fa fa-fw fa-caret-right"></i> {this.formatDate(endDate)}</dd>
+                                {/* Thông tin chung quy trình */}
+                                <div className="box-header with-border">
+                                    <h4>{translate('task_template.general_information')}</h4>
                                 </div>
-                            </div>
-                            <div className={` ${isTabPane ? "col-lg-6 col-md-6 col-sm-6 col-xs-6" : "box box-solid"}`}>
-                                { // !isTabPane &&
-                                    <div className="box-header with-border">
-                                        {translate("task.task_process.notice")}
-                                    </div>
-                                }
                                 <div className="box-body">
+                                    {/* Tên quy trình */}
+                                    <div className={`form-group ${errorOnProcessName === undefined ? "" : "has-error"}`}>
+                                        <label>{translate("task.task_process.process_name")}</label>
+                                        <input type="text"
+                                            value={processName}
+                                            className="form-control" placeholder={translate("task.task_process.process_name")}
+                                            onChange={this.handleChangeBpmnName}
+                                        />
+                                        <ErrorLabel content={errorOnProcessName} />
+                                    </div>
 
-                                    {/**Các thông tin của mẫu công việc */}
-                                    <dd><i className="fa fa-square" style={{ color: "#fff", border: "1px solid #000", borderRadius: "3px", marginRight: "5px" }}></i>{translate("task.task_process.wait_for_approval")}</dd>
-                                    <dd><i className="fa fa-square" style={{ color: "#84ffb8", border: "1px solid #14984c", borderRadius: "3px", marginRight: "5px" }}></i>{translate("task.task_process.inprocess")}</dd>
-                                    <dd><i className="fa fa-square" style={{ color: "#f9f9f9", border: "1px solid #c4c4c7", borderRadius: "3px", marginRight: "5px" }}></i>{translate("task.task_process.finished")}</dd>
+                                    {/* Mô tả quy trình */}
+                                    <div className={`form-group ${errorOnProcessDescription === undefined ? "" : "has-error"}`}>
+                                        <label>{translate("task.task_process.process_description")}</label>
+                                        <textarea type="text" rows={4} style={{ height: "108px" }}
+                                            value={processDescription}
+                                            className="form-control" placeholder={translate("task.task_process.process_description")}
+                                            onChange={this.handleChangeBpmnDescription}
+                                        />
+                                        <ErrorLabel content={errorOnProcessDescription} />
+                                    </div>
+
+                                    {/* Trạng thái quy trình */}
+                                    <div className={`form-group`}>
+                                        <label>{translate("task.task_process.process_status")}</label>
+
+                                        <SelectBox
+                                            id={`select-status-process-${idProcess}`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            items={statusArr}
+                                            multiple={false}
+                                            value={status}
+                                            onChange={this.handleSelectedStatus}
+                                        />
+
+                                        {/* <ErrorLabel content={errorOnProcessStatus} /> */}
+                                    </div>
+
+                                    {/* Ngày bắt đầu - kết thúc quy trình */}
+                                    <div className="row">
+                                        <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnStartDate === undefined ? "" : "has-error"}`}>
+                                            <label className="control-label">{translate('task.task_management.start_date')}*</label>
+                                            <DatePicker
+                                                id={`datepicker1-edit-process-${idProcess}`}
+                                                dateFormat="day-month-year"
+                                                value={startDate}
+                                                onChange={this.handleChangeTaskStartDate}
+                                            />
+                                            <ErrorLabel content={errorOnStartDate} />
+                                        </div>
+                                        <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnEndDate === undefined ? "" : "has-error"}`}>
+                                            <label className="control-label">{translate('task.task_management.end_date')}*</label>
+                                            <DatePicker
+                                                id={`datepicker2-edit-process-${idProcess}`}
+                                                value={endDate}
+                                                onChange={this.handleChangeTaskEndDate}
+                                            />
+                                            <ErrorLabel content={errorOnEndDate} />
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </DialogModal>
             </React.Fragment>
         )
     }
@@ -464,6 +627,7 @@ const actionCreators = {
     getTaskById: performTaskAction.getTaskById,
     getAllUsersWithRole: UserActions.getAllUsersWithRole,
     getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
+    editProcessInfo: TaskProcessActions.editProcessInfo,
 };
-const connectedViewProcess = connect(mapState, actionCreators)(withTranslate(ViewProcess));
-export { connectedViewProcess as ViewProcess };
+const connectedModalEditProcess = connect(mapState, actionCreators)(withTranslate(ModalEditProcess));
+export { connectedModalEditProcess as ModalEditProcess };

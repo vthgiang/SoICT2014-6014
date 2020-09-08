@@ -7,7 +7,7 @@ import Swal from 'sweetalert2';
 import c3 from 'c3';
 import 'c3/c3.css';
 
-class AssetPurchaseChart extends Component {
+class AssetMaintenanceChart extends Component {
     constructor(props) {
         super(props);
 
@@ -23,13 +23,13 @@ class AssetPurchaseChart extends Component {
             day = '0' + day;
 
         this.INFO_SEARCH = {
-            purchaseDateAfter: year + '-' + (month - 3),
-            purchaseDateBefore: [year, month].join('-'),
+            maintenanceDateAfter: year + '-' + (month - 3),
+            maintenanceDateBefore: [year, month].join('-'),
         }
 
         this.state = {
-            purchaseDateAfter: this.INFO_SEARCH.purchaseDateAfter,
-            purchaseDateBefore: this.INFO_SEARCH.purchaseDateBefore,
+            maintenanceDateAfter: this.INFO_SEARCH.maintenanceDateAfter,
+            maintenanceDateBefore: this.INFO_SEARCH.maintenanceDateBefore,
             defaultStartMonth: '0' + (month - 3) + '-' + year,
             defaultEndMonth: [month, year].join('-'),
             year: false,
@@ -37,15 +37,15 @@ class AssetPurchaseChart extends Component {
     }
 
     setDataColumnChartForMonth = () => {
-        const { listAssets, translate, getPurchaseData } = this.props;
-        let { purchaseDateAfter, purchaseDateBefore } = this.state;
+        const { listAssets, translate } = this.props;
+        let { maintenanceDateAfter, maintenanceDateBefore } = this.state;
 
-        let startDate = new Date(purchaseDateAfter);
-        let endDate = new Date(purchaseDateBefore);
+        let startDate = new Date(maintenanceDateAfter);
+        let endDate = new Date(maintenanceDateBefore);
         let period = Math.round((endDate - startDate) / 2592000000) + 1;
         let listMonth = [], value = [], countAsset = [], category = [], arr = [];
-        let m = purchaseDateAfter.slice(5, 7);
-        let y = purchaseDateAfter.slice(0, 4);
+        let m = maintenanceDateAfter.slice(5, 7);
+        let y = maintenanceDateAfter.slice(0, 4);
 
         for (let i = 0; i <= period; i++) {
             if (m > 12) {
@@ -67,10 +67,16 @@ class AssetPurchaseChart extends Component {
                 let maxDate = new Date(listMonth[i + 1]).getTime();
 
                 for (let j in listAssets) {
-                    let purchaseDate = new Date(listAssets[j].purchaseDate).getTime();
-                    if (purchaseDate < maxDate && purchaseDate >= minDate) {
-                        cnt++;
-                        val += listAssets[j].cost / 1000000;
+                    let maintenanceLogs = listAssets[j].maintainanceLogs;
+                    if (maintenanceLogs.length) {
+                        for (let k in maintenanceLogs) {
+                            let maintenanceDate = new Date(maintenanceLogs[k].createDate).getTime();
+
+                            if (maintenanceDate < maxDate && maintenanceDate >= minDate) {
+                                cnt++;
+                                val += maintenanceLogs[k].expense / 1000000;
+                            }
+                        }
                     }
                 }
                 countAsset.push(cnt);
@@ -85,7 +91,7 @@ class AssetPurchaseChart extends Component {
 
         category.pop();
         category.unshift('x');
-        countAsset.unshift(translate('asset.dashboard.amount'));
+        countAsset.unshift(translate('asset.dashboard.time'));
         value.unshift(translate('asset.dashboard.value'));
 
         let dataColumnChart = {
@@ -95,19 +101,18 @@ class AssetPurchaseChart extends Component {
             yValues: arr
         };
 
-        if (getPurchaseData && listAssets) {
-            getPurchaseData(dataColumnChart);
-        }
-
+        // if (getmaintenanceData && listAssets) {
+        //     getmaintenanceData(dataColumnChart);
+        // }
         return dataColumnChart;
     }
 
     setDataColumnChartForYear = () => {
-        const { listAssets, translate, getPurchaseData } = this.props;
-        let { purchaseDateAfter, purchaseDateBefore } = this.state;
+        const { listAssets, translate } = this.props;
+        let { maintenanceDateAfter, maintenanceDateBefore } = this.state;
 
-        let startDate = purchaseDateAfter.slice(0, 4);
-        let endDate = purchaseDateBefore.slice(0, 4);
+        let startDate = maintenanceDateAfter.slice(0, 4);
+        let endDate = maintenanceDateBefore.slice(0, 4);
         let period = endDate - startDate + 1;
         let value = [], countAsset = [], category = [], arr = [];
 
@@ -118,12 +123,18 @@ class AssetPurchaseChart extends Component {
             for (let i = 0; i < category.length; i++) {
                 let cnt = 0, val = 0;
                 for (let j in listAssets) {
-                    let purchaseDate = new Date(listAssets[j].purchaseDate).getFullYear();
+                    let maintenanceLogs = listAssets[j].maintainanceLogs;
+                    if (maintenanceLogs.length) {
+                        for (let k in maintenanceLogs) {
+                            let maintenanceDate = new Date(maintenanceLogs[k].createDate).getFullYear();
 
-                    if (purchaseDate == category[i]) {
-                        cnt++;
-                        val += listAssets[j].cost / 1000000;
+                            if (maintenanceDate == category[i]) {
+                                cnt++;
+                                val += maintenanceLogs[k].expense / 1000000;
+                            }
+                        }
                     }
+
                 }
                 countAsset.push(cnt);
                 value.push(val);
@@ -136,7 +147,7 @@ class AssetPurchaseChart extends Component {
         }
 
         category.unshift('x');
-        countAsset.unshift(translate('asset.dashboard.amount'));
+        countAsset.unshift(translate('asset.dashboard.time'));
         value.unshift(translate('asset.dashboard.value'));
 
         let dataColumnChart = {
@@ -146,9 +157,9 @@ class AssetPurchaseChart extends Component {
             yValues: arr
         };
 
-        if (getPurchaseData && listAssets) {
-            getPurchaseData(dataColumnChart);
-        }
+        // if (getmaintenanceData && listAssets) {
+        //     getmaintenanceData(dataColumnChart);
+        // }
         return dataColumnChart;
     }
 
@@ -159,7 +170,7 @@ class AssetPurchaseChart extends Component {
 
         if (translate('asset.dashboard.amount') === 'Số lượng') {
             let chart = c3.generate({
-                bindto: this.refs.PurchaseColumnChart,
+                bindto: this.refs.maintenanceColumnChart,
 
                 data: {
                     x: 'x',
@@ -183,7 +194,7 @@ class AssetPurchaseChart extends Component {
                             values: dataColumnChart.yValues
                         },
                         label: {
-                            text: translate('asset.dashboard.amount'),
+                            text: translate('asset.dashboard.time'),
                             position: 'outer-top'
                         }
                     },
@@ -206,7 +217,7 @@ class AssetPurchaseChart extends Component {
             })
         } else {
             let chart = c3.generate({
-                bindto: this.refs.PurchaseColumnChart,
+                bindto: this.refs.maintenanceColumnChart,
 
                 data: {
                     x: 'x',
@@ -230,7 +241,7 @@ class AssetPurchaseChart extends Component {
                             values: dataColumnChart.yValues
                         },
                         label: {
-                            text: translate('asset.dashboard.amount'),
+                            text: translate('asset.dashboard.time'),
                             position: 'outer-top'
                         }
                     },
@@ -255,20 +266,20 @@ class AssetPurchaseChart extends Component {
 
     handleChangeDateAfter = async (value) => {
         let month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)));
-        this.INFO_SEARCH.purchaseDateAfter = month;
+        this.INFO_SEARCH.maintenanceDateAfter = month;
     }
 
     handleChangeDateBefore = async (value) => {
         let month;
         month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)));
-        this.INFO_SEARCH.purchaseDateBefore = month;
+        this.INFO_SEARCH.maintenanceDateBefore = month;
     }
 
     handleSearchData = async () => {
-        let purchaseDateAfter = new Date(this.INFO_SEARCH.purchaseDateAfter);
-        let purchaseDateBefore = new Date(this.INFO_SEARCH.purchaseDateBefore);
+        let maintenanceDateAfter = new Date(this.INFO_SEARCH.maintenanceDateAfter);
+        let maintenanceDateBefore = new Date(this.INFO_SEARCH.maintenanceDateBefore);
 
-        if (purchaseDateAfter.getTime() > purchaseDateBefore.getTime()) {
+        if (maintenanceDateAfter.getTime() > maintenanceDateBefore.getTime()) {
             const { translate } = this.props;
             Swal.fire({
                 title: translate('kpi.evaluation.employee_evaluation.wrong_time'),
@@ -280,8 +291,8 @@ class AssetPurchaseChart extends Component {
             await this.setState(state => {
                 return {
                     ...state,
-                    purchaseDateAfter: this.INFO_SEARCH.purchaseDateAfter,
-                    purchaseDateBefore: this.INFO_SEARCH.purchaseDateBefore,
+                    maintenanceDateAfter: this.INFO_SEARCH.maintenanceDateAfter,
+                    maintenanceDateBefore: this.INFO_SEARCH.maintenanceDateBefore,
                 }
             })
         }
@@ -307,7 +318,7 @@ class AssetPurchaseChart extends Component {
                     <div className="form-group">
                         <label>{translate('task.task_management.from')}</label>
                         <DatePicker
-                            id="purchase_after"
+                            id="maintenance_after"
                             dateFormat="month-year"
                             value={defaultStartMonth}
                             onChange={this.handleChangeDateAfter}
@@ -317,7 +328,7 @@ class AssetPurchaseChart extends Component {
                     <div className="form-group">
                         <label>{translate('task.task_management.to')}</label>
                         <DatePicker
-                            id="purchase_before"
+                            id="maintenance_before"
                             dateFormat="month-year"
                             value={defaultEndMonth}
                             onChange={this.handleChangeDateBefore}
@@ -336,7 +347,7 @@ class AssetPurchaseChart extends Component {
                             <button type="button" className={`btn btn-xs ${year ? "btn-danger" : "active"}`} onClick={() => this.handleChangeViewChart(true)}>{translate('general.year')}</button>
                         </div>
                     </div>
-                    <div ref="PurchaseColumnChart"></div>
+                    <div ref="maintenanceColumnChart"></div>
                 </div>
 
             </React.Fragment>
@@ -344,4 +355,4 @@ class AssetPurchaseChart extends Component {
     }
 }
 
-export default withTranslate(AssetPurchaseChart);
+export default withTranslate(AssetMaintenanceChart);

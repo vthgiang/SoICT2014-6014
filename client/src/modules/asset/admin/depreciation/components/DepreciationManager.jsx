@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DataTableSetting, DatePicker, PaginateBar, SelectMulti, ExportExcel } from '../../../../../common-components';
+import { DataTableSetting, DatePicker, PaginateBar, SelectMulti, ExportExcel, TreeSelect } from '../../../../../common-components';
 
 import { AssetManagerActions } from '../../asset-information/redux/actions';
 import { AssetTypeActions } from "../../asset-type/redux/actions";
@@ -21,7 +21,7 @@ class DepreciationManager extends Component {
             month: "",
             page: 0,
             limit: 5,
-            managedBy : this.props.managedBy?this.props.managedBy:''
+            managedBy: this.props.managedBy ? this.props.managedBy : ''
         }
     }
 
@@ -81,14 +81,14 @@ class DepreciationManager extends Component {
     }
 
     // Bắt sự kiện click xem thông tin tài sản
-    handleView = async (value) => {
-        await this.setState(state => {
-            return {
-                currentRowView: value
-            }
-        });
-        window.$('#modal-view-asset').modal('show');
-    }
+    // handleView = async (value) => {
+    //     await this.setState(state => {
+    //         return {
+    //             currentRowView: value
+    //         }
+    //     });
+    //     window.$('#modal-view-asset').modal('show');
+    // }
 
     // Function lưu giá trị mã tài sản vào state khi thay đổi
     handleCodeChange = (event) => {
@@ -123,6 +123,18 @@ class DepreciationManager extends Component {
         this.setState({
             ...this.state,
             assetType: value
+        })
+    }
+
+    // Bắt sự kiện thay đổi nhóm tài sản
+    handleGroupChange = (value) => {
+        if (value.length === 0) {
+            value = null
+        }
+
+        this.setState({
+            ...this.state,
+            group: value
         })
     }
 
@@ -298,7 +310,7 @@ class DepreciationManager extends Component {
             let productUnitDepreciation = cost / (estimatedTotalProduction * (usefulLife / 12)); // Mức khấu hao đơn vị sản phẩm
             let accumulatedDepreciation = 0; // Giá trị hao mòn lũy kế
 
-            for (let i = 0; i < monthTotal; i++){
+            for (let i = 0; i < monthTotal; i++) {
                 accumulatedDepreciation += unitsProducedDuringTheYears[i].unitsProducedDuringTheYear * productUnitDepreciation;
             }
 
@@ -311,7 +323,6 @@ class DepreciationManager extends Component {
 
     // Bắt sự kiện click chỉnh sửa thông tin tài sản
     handleEditAsset = async (value) => {
-        console.log(value);
         await this.setState(state => {
             return {
                 ...state,
@@ -320,17 +331,35 @@ class DepreciationManager extends Component {
         });
         window.$('#modal-edit-asset').modal('show');
 
-        // Mở tab thứ 4
-        window.$('.nav-tabs li:eq(3) a').tab('show');
+        // Mở tab thứ 5
+        window.$('.nav-tabs li:eq(4) a').tab('show');
 
+    }
+    // Lấy danh sách loại tài sản cho tree select
+    getAssetTypes = () => {
+        let { assetType } = this.props;
+        let assetTypeName = assetType && assetType.listAssetTypes;
+        let typeArr = [];
+        assetTypeName.map(item => {
+            typeArr.push({
+                _id: item._id,
+                id: item._id,
+                name: item.typeName,
+                parent: item.parent ? item.parent._id : null
+            })
+        })
+        return typeArr;
     }
 
     render() {
         const { translate, assetsManager, assetType } = this.props;
-        const { page, limit, currentRowView, currentRowEditAsset, managedBy } = this.state;
+        var { page, limit, currentRowView, currentRowEditAsset, managedBy } = this.state;
 
         var lists = "", exportData;
         var assettypelist = assetType.listAssetTypes;
+        let typeArr = this.getAssetTypes();
+        let assetTypeName = this.state.assetType ? this.state.assetType : [];
+
         var formater = new Intl.NumberFormat();
         if (assetsManager.isLoading === false) {
             lists = assetsManager.listAssets;
@@ -364,18 +393,34 @@ class DepreciationManager extends Component {
                         </div>
                     </div>
 
-                    <div className="form-inline" style={{ marginBottom: 10 }}>
+                    <div className="form-inline">
                         {/* Phân loại */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('asset.general_information.type')}</label>
-                            <SelectMulti id={`multiSelectType`} multiple="multiple"
-                                options={{ nonSelectedText: translate('asset.general_information.select_asset_type'), allSelectedText: translate('asset.general_information.select_all_asset_type') }}
-                                onChange={this.handleTypeChange}
-                                items={[]}
+                            <TreeSelect
+                                data={typeArr}
+                                value={assetTypeName}
+                                handleChange={this.handleAssetTypeChange}
+                                mode="hierarchical"
+                            />
+                        </div>
+                        {/* Nhóm tài sản */}
+                        <div className="form-group">
+                            <label className="form-control-static">{translate('asset.general_information.asset_group')}</label>
+                            <SelectMulti id={`multiSelectGroupInManagement`} multiple="multiple"
+                                options={{ nonSelectedText: translate('asset.asset_info.select_group'), allSelectedText: translate('asset.general_information.select_all_group') }}
+                                onChange={this.handleGroupChange}
+                                items={[
+                                    { value: "Building", text: translate('asset.dashboard.building') },
+                                    { value: "Vehicle", text: translate('asset.dashboard.vehicle') },
+                                    { value: "Machine", text: translate('asset.dashboard.machine') },
+                                    { value: "Other", text: translate('asset.dashboard.other') },
+                                ]}
                             >
                             </SelectMulti>
                         </div>
-
+                    </div>
+                    <div className="form-inline" style={{ marginBottom: 10 }}>
                         {/* Tháng */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.month')}</label>
@@ -389,6 +434,7 @@ class DepreciationManager extends Component {
 
                         {/* Button tìm kiếm */}
                         <div className="form-group">
+                            <label htmlFor=""></label>
                             <button type="button" className="btn btn-success" title={translate('asset.general_information.search')} onClick={() => this.handleSubmitSearch()}>{translate('asset.general_information.search')}</button>
                         </div>
                         {exportData && <ExportExcel id="export-asset-depreciation-management" exportData={exportData} style={{ marginRight: 10 }} />}
@@ -440,7 +486,7 @@ class DepreciationManager extends Component {
                                         <tr key={index}>
                                             <td><a onClick={() => this.handleEditAsset(x)}>{x.code}</a></td>
                                             <td>{x.assetName}</td>
-                                            <td>{assettypelist && assettypelist.filter(item => item._id === x.assetType).pop() ? assettypelist.filter(item => item._id === x.assetType).pop().typeName : 'Asset type is deleted'}</td>
+                                            <td>{x.assetType && x.assetType.length ? x.assetType.map((item, index) => { let suffix = index < x.assetType.length - 1 ? ", " : ""; return item.typeName + suffix }) : 'Asset is deleted'}</td>
                                             <td>{formater.format(parseInt(x.cost))} VNĐ</td>
                                             <td>{this.formatDate(x.startDepreciation)}</td>
                                             <td>{x.usefulLife} tháng</td>
@@ -517,7 +563,7 @@ class DepreciationManager extends Component {
                     currentRowEditAsset &&
                     <AssetEditForm
                         _id={currentRowEditAsset._id}
-                        employeeId ={managedBy}
+                        employeeId={managedBy}
                         avatar={currentRowEditAsset.avatar}
                         code={currentRowEditAsset.code}
                         assetName={currentRowEditAsset.assetName}

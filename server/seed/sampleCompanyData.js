@@ -1663,9 +1663,29 @@ const sampleCompanyData = async () => {
 
         usageLogs: [],
         // bảo trì thiết bị
-        maintainanceLogs: [],
+        maintainanceLogs: [
+            {
+                maintainanceCode: "BT01",
+                createDate: new Date("2020-06-25"),
+                type: "1",
+                description: "",
+                startDate: new Date("2020-06-25"),
+                endDate: new Date("2020-06-30"),
+                expense: 1000000,
+                status: "3"
+            }
+        ],
         //sự cố
-        incidentLogs: [],
+        incidentLogs: [
+            {
+                incidentCode: "SC01",
+                type: "1",
+                reportedBy: users[7],
+                dateOfIncident: new Date("2020-06-24"),
+                description: "",
+                statusIncident: "",
+            }
+        ],
         //khấu hao
         cost: 50000000,
         residualValue: 10000000,
@@ -1705,9 +1725,29 @@ const sampleCompanyData = async () => {
         readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id],
         usageLogs: [],
         // bảo trì thiết bị
-        maintainanceLogs: [],
+        maintainanceLogs: [
+            {
+                maintainanceCode: "BT02",
+                createDate: new Date("2020-07-15"),
+                type: "1",
+                description: "",
+                startDate: new Date("2020-07-15"),
+                endDate: new Date("2020-07-30"),
+                expense: 3000000,
+                status: "3"
+            }
+        ],
         //sự cố
-        incidentLogs: [],
+        incidentLogs: [
+            {
+                incidentCode: "SC02",
+                type: "1",
+                reportedBy: users[8],
+                dateOfIncident: new Date("2020-07-10"),
+                description: "",
+                statusIncident: "",
+            }
+        ],
         //khấu hao
         cost: 40000000,
         residualValue: 5000000,
@@ -1747,9 +1787,27 @@ const sampleCompanyData = async () => {
         readByRoles: [roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, truongPhongHC._id, phoPhongHC._id],
         usageLogs: [],
         // bảo trì thiết bị
-        maintainanceLogs: [],
+        maintainanceLogs: [{
+            maintainanceCode: "BT03",
+            createDate: new Date("2020-08-25"),
+            type: "1",
+            description: "",
+            startDate: new Date("2020-08-25"),
+            endDate: new Date("2020-08-30"),
+            expense: 5000000,
+            status: "3"
+        }],
         //sự cố
-        incidentLogs: [],
+        incidentLogs: [
+            {
+                incidentCode: "SC03",
+                type: "1",
+                reportedBy: users[7],
+                dateOfIncident: new Date("2020-08-25"),
+                description: "",
+                statusIncident: "",
+            }
+        ],
         //khấu hao
         cost: 30000000,
         residualValue: 5000000,
@@ -1790,9 +1848,29 @@ const sampleCompanyData = async () => {
         readByRoles: [roleAdmin._id, roleSuperAdmin._id, roleDean._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
         usageLogs: [],
         // bảo trì thiết bị
-        maintainanceLogs: [],
+        maintainanceLogs: [
+            {
+                maintainanceCode: "BT04",
+                createDate: new Date("2020-09-02"),
+                type: "1",
+                description: "",
+                startDate: new Date("2020-09-02"),
+                endDate: new Date("2020-09-07"),
+                expense: 4500000,
+                status: "2"
+            }
+        ],
         //sự cố
-        incidentLogs: [],
+        incidentLogs: [
+            {
+                incidentCode: "SC04",
+                type: "1",
+                reportedBy: users[7],
+                dateOfIncident: new Date("2020-09-01"),
+                description: "",
+                statusIncident: "",
+            }
+        ],
         //khấu hao
         cost: 30000000,
         residualValue: 5000000,
@@ -1833,9 +1911,29 @@ const sampleCompanyData = async () => {
         readByRoles: [roleAdmin._id, roleDean._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
         usageLogs: [],
         // bảo trì thiết bị
-        maintainanceLogs: [],
+        maintainanceLogs: [
+            {
+                maintainanceCode: "BT05",
+                createDate: new Date("2020-08-01"),
+                type: "1",
+                description: "",
+                startDate: new Date("2020-08-02"),
+                endDate: new Date("2020-08-30"),
+                expense: 9000000,
+                status: "3"
+            }
+        ],
         //sự cố
-        incidentLogs: [],
+        incidentLogs: [
+            {
+                incidentCode: "SC05",
+                type: "1",
+                reportedBy: users[7],
+                dateOfIncident: new Date("2020-08-01"),
+                description: "",
+                statusIncident: "",
+            }
+        ],
         //khấu hao
         cost: 50000000,
         residualValue: 5000000,
@@ -2392,51 +2490,14 @@ const sampleCompanyData = async () => {
             type: "Hỏng hóc",
             updatedAt: new Date("2000-05-20"),
         },
-        { // 07
-            avatar: "/upload/asset/pictures/picture5.png",
-            assetName: "D3-103",
-            group: "Building",
-            usefulLife: "12",
-            unitsProducedDuringTheYears: [{
-                month: new Date("2020-05-20"),
-                unitsProducedDuringTheYear: 80
-            }],
-            estimatedTotalProduction: 1000,
-            code: "VVTM02.007",
-            company: vnist._id,
-            serial: "00007",
-            assetType: [listAssetType[25]._id],
-            purchaseDate: new Date("2000-05-20"),
-            warrantyExpirationDate: new Date("2077-06-20"),
-            managedBy: users[1]._id,
-            assignedToUser: null,
-            assignedToOrganizationalUnit: null,
-
-            location: listAsset1[1]._id,
-            status: "Sẵn sàng sử dụng",
-            typeRegisterForUse: 3,
-            description: "d3-103",
-            detailInfo: [],
-            readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
-            usageLogs: [],
-            // bảo trì thiết bị
-            maintainanceLogs: [],
-            //sự cố
-            incidentLogs: [],
-            //khấu hao
-            cost: 50000000,
-            residualValue: 10000000,
-            startDepreciation: new Date("2020-06-20"), // thời gian bắt đầu trích khấu hao
-            usefulLife: 20, // thời gian trích khấu hao
-            depreciationType: "Đường thẳng", // thời gian trích khấu hao
-            //thanh lý
-            disposalDate: null,
-            disposalType: '',
-            disposalCost: null,
-            disposalDesc: '',
-            //tài liệu đính kèm
-            archivedRecordNumber: "PKD007",
-            documents: [],
+        {
+            createdAt: new Date("2000-08-20"),
+            dateOfIncident: new Date("2000-08-20"),
+            description: "cháy",
+            incidentCode: "icd01",
+            statusIncident: "Chờ xử lý",
+            type: "Hỏng hóc",
+            updatedAt: new Date("2000-08-20"),
         }
         ],
         //khấu hao
@@ -2451,97 +2512,6 @@ const sampleCompanyData = async () => {
         disposalCost: null,
         disposalDesc: '',
         //tài liệu đính kèm
-        documents: [],
-    },
-    { // 07
-        avatar: "/upload/asset/pictures/picture5.png",
-        assetName: "D3-103",
-        group: "Building",
-        usefulLife: "12",
-        unitsProducedDuringTheYears: [{
-            month: new Date("2020-05-20"),
-            unitsProducedDuringTheYear: 80
-        }],
-        estimatedTotalProduction: 1000,
-        code: "VVTM02.007",
-        company: vnist._id,
-        serial: "00007",
-        assetType: [listAssetType[25]._id],
-        purchaseDate: new Date("2000-05-20"),
-        warrantyExpirationDate: new Date("2077-06-20"),
-        managedBy: users[1]._id,
-        assignedToUser: null,
-        assignedToOrganizationalUnit: null,
-
-        location: listAsset1[1]._id,
-        status: "Sẵn sàng sử dụng",
-        canRegisterForUse: true,
-        description: "d3-103",
-        detailInfo: [],
-        readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
-        usageLogs: [],
-        // bảo trì thiết bị
-        maintainanceLogs: [],
-        //sự cố
-        incidentLogs: [],
-        //khấu hao
-        cost: 50000000,
-        residualValue: 10000000,
-        startDepreciation: new Date("2020-06-20"), // thời gian bắt đầu trích khấu hao
-        usefulLife: 20, // thời gian trích khấu hao
-        depreciationType: "Đường thẳng", // thời gian trích khấu hao
-        //thanh lý
-        disposalDate: null,
-        disposalType: '',
-        disposalCost: null,
-        disposalDesc: '',
-        //tài liệu đính kèm
-        documents: [],
-    },
-    { // 07
-        avatar: "/upload/asset/pictures/picture5.png",
-        assetName: "D3-103",
-        group: "Building",
-        usefulLife: "12",
-        unitsProducedDuringTheYears: [{
-            month: new Date("2020-05-20"),
-            unitsProducedDuringTheYear: 80
-        }],
-        estimatedTotalProduction: 1000,
-        code: "VVTM02.007",
-        company: vnist._id,
-        serial: "00007",
-        assetType: [listAssetType[25]._id],
-        purchaseDate: new Date("2000-05-20"),
-        warrantyExpirationDate: new Date("2077-06-20"),
-        managedBy: users[1]._id,
-        assignedToUser: null,
-        assignedToOrganizationalUnit: null,
-
-        location: listAsset1[1]._id,
-        status: "Sẵn sàng sử dụng",
-        canRegisterForUse: true,
-        description: "d3-103",
-        detailInfo: [],
-        readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
-        usageLogs: [],
-        // bảo trì thiết bị
-        maintainanceLogs: [],
-        //sự cố
-        incidentLogs: [],
-        //khấu hao
-        cost: 50000000,
-        residualValue: 10000000,
-        startDepreciation: new Date("2020-06-20"), // thời gian bắt đầu trích khấu hao
-        usefulLife: 20, // thời gian trích khấu hao
-        depreciationType: "Đường thẳng", // thời gian trích khấu hao
-        //thanh lý
-        disposalDate: null,
-        disposalType: '',
-        disposalCost: null,
-        disposalDesc: '',
-        //tài liệu đính kèm
-        archivedRecordNumber: "PKD007",
         documents: [],
     }
     ])

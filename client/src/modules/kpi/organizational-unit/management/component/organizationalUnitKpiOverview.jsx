@@ -362,7 +362,7 @@ class KPIUnitManager extends Component {
                                                     <a href={`#dataResultTask`} data-toggle="modal" data-backdrop="static"
                                                         data-keyboard="false" title="Xem chi tiết KPI tháng này"><i
                                                             className="material-icons" onClick={() => this.handleShowEdit(item._id, item.organizationalUnit._id, item.date)}>view_list</i></a>
-                                                    {this.checkPermisson(currentUnit && currentUnit[0].deans) && <a href="#abc" onClick={() =>
+                                                    {this.checkPermisson(currentUnit && currentUnit[0] && currentUnit[0].deans) && <a href="#abc" onClick={() =>
                                                         this.showModalCopy(item._id)} className="copy" data-toggle="modal"
                                                         data-backdrop="static" data-keyboard="false" title="Thiết lập kpi tháng mới từ kpi tháng
                                         này"><i className="material-icons">content_copy</i></a>}

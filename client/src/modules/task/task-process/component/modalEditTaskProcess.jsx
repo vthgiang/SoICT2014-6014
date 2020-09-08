@@ -161,7 +161,7 @@ class ModalEditTaskProcess extends Component {
             return {
                 ...state,
                 processName: value,
-                errorOnProcessName: TaskProcessValidator.validateProcessName(value),
+                errorOnProcessName: TaskProcessValidator.validateProcessName(value, this.props.translate),
             }
         });
     }
@@ -173,7 +173,7 @@ class ModalEditTaskProcess extends Component {
             return {
                 ...state,
                 processDescription: value,
-                errorOnProcessDescription: TaskProcessValidator.validateProcessDescription(value),
+                errorOnProcessDescription: TaskProcessValidator.validateProcessDescription(value, this.props.translate),
             }
         });
     }
@@ -185,7 +185,7 @@ class ModalEditTaskProcess extends Component {
             return {
                 ...state,
                 viewer: value,
-                errorOnViewer: TaskProcessValidator.validateViewer(value),
+                errorOnViewer: TaskProcessValidator.validateViewer(value, this.props.translate),
             }
         })
 
@@ -198,7 +198,7 @@ class ModalEditTaskProcess extends Component {
             return {
                 ...state,
                 manager: value,
-                errorOnManager: TaskProcessValidator.validateManager(value),
+                errorOnManager: TaskProcessValidator.validateManager(value, this.props.translate),
             }
         })
     }

@@ -20,7 +20,6 @@ import { ViewProcess } from '../../task-process/component/task-process-managemen
 import { IncomingDataTab } from './incomingDataTab';
 import { OutgoingDataTab } from './outgoingDataTab';
 
-
 class ActionTab extends Component {
     constructor(props) {
         let idUser = getStorage("userId");

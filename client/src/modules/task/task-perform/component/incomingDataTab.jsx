@@ -113,10 +113,10 @@ class IncomingDataTab extends Component {
                                         : <div>{task.name} {translate('task.task_process.not_have_doc')}</div>
                                 }
                             </div>
-                            <CommentInProcess
+                            {/* <CommentInProcess
                                 task={task}
                                 inputAvatarCssClass="user-img-incoming-level1"
-                            />
+                            /> */}
                         </React.Fragment>
                     )
                 }

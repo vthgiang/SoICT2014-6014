@@ -67,7 +67,7 @@ exports.searchSalaries = async (params, company) => {
             'createAt': 'desc'
         }).skip(params.page).limit(params.limit);
 
-    let totalList = listSalarys.length;
+    let totalList = await Salary.countDocuments(keySearch);
 
     return {
         totalList,

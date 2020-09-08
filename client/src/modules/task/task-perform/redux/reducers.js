@@ -1,5 +1,5 @@
 import { performTaskConstants } from "./constants";
-import { taskManagementConstants } from "../../task-management/redux/constants"
+import { TaskProcessConstants } from "../../task-process/redux/constants"
 export function performtasks(state = {}, action) {
     switch (action.type) {
         case performTaskConstants.GETTASK_BYID_REQUEST:
