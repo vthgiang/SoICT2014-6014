@@ -169,9 +169,14 @@ exports.createTaskTemplate = async (body) => {
     let roleDeans = units.deans;
     let readByEmployee = body.readByEmployees;
     for (let i in roleDeans) {
-        console.log(typeof readByEmployee[0]);
-        console.log(typeof roleDeans[i]);
-        if (readByEmployee.indexOf(JSON.stringify(roleDeans[i])) === -1) {
+        let flag = true;
+        for (let x in readByEmployee) {
+            if (JSON.stringify(readByEmployee[x]) === JSON.stringify(roleDeans[i])) {
+                flag = false;
+                break; 
+            }
+        }
+        if (flag) {
             readByEmployee.push(roleDeans[i]);
         }
     }
