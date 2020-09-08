@@ -178,6 +178,7 @@ export function documents(state = initState, action) {
             };
 
         case DocumentConstants.GET_DOCUMENTS_SUCCESS:
+            console.log('--------------------', action.payload);
             return {
                 ...state,
                 isLoading: false,
@@ -190,6 +191,7 @@ export function documents(state = initState, action) {
                 }
             };
         case DocumentConstants.IMPORT_DOCUMENT_SUCCESS:
+            console.log('+++++++++++++++++++++++++++++', action.payload);
             return {
                 ...state,
                 isLoading: false,
@@ -197,7 +199,7 @@ export function documents(state = initState, action) {
                     ...state.administration,
                     data: {
                         ...state.administration.data,
-                        list: action.payload.docs
+                        list: action.payload
                     }
                 }
             };

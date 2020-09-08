@@ -24,7 +24,7 @@ export const configDocument = {
     },
     domains: {
         columnName: "Tên danh mục",
-        description: "Tên tiêu đề ứng với tên danh mục",
+        description: "Tên tiêu đề ứng với tên tài liệu",
         value: "Tên danh mục",
     },
     issuingBody: {
@@ -77,7 +77,7 @@ export const configDocument = {
         description: "Tên tiêu đề ứng với các tài liệu liên kết",
         value: "Các tài liệu liên kết",
     },
-    role: {
+    roles: {
         columnName: "Các chức vụ có quyền xem",
         description: "Tên tiêu đề ứng với các chức vụ có quyền xem",
         value: "Các chức vụ có quyền xem",
@@ -87,4 +87,57 @@ export const configDocument = {
         description: "Tên tiêu đề ứng với đơn vị quản lí",
         value: "Đơn vị quản lí",
     },
+}
+
+export const exportDocument = {
+    fileName: "Mẫu import tài liệu",
+    dataSheets: [{
+        sheetName: "Sheet1",
+        sheetTitle: "Danh sách tài liệu",
+        tables: [{
+            rowHeader: 1,
+            columns: [
+                { key: "name", value: "Tên tài liệu" },
+                { key: "description", value: "Mô tả tài liệu" },
+                { key: "archives", value: "Tên đường dẫn vị trí lưu" },
+                { key: "domains", value: "Tên danh mục" },
+                { key: "issuingBody", value: "Cơ quan ban hành" },
+                { key: "signer", value: "Người kí" },
+                { key: "versionName", value: "Tên phiên bản" },
+                { key: "officialNumber", value: "Số hiệu" },
+                { key: "issuingDate", value: "Ngày ban hành" },
+                { key: "effectiveDate", value: "Ngày hiệu lực" },
+                { key: "expiredDate", value: "Ngày hết hạn" },
+                { key: "category", value: "Loại tài liệu" },
+                { key: "relationshipDescription", value: "Mô tả quan hệ liên kết" },
+                { key: "documentRelationshipList", value: "Các tài liệu liên kết" },
+                { key: "roles", value: "Các chức vụ có quyền xem" },
+                { key: "organizationUnitManagement", value: "Đơn vị quản lí" },
+
+
+            ],
+            data: [
+                {
+                    name: "Hello",
+                    description: "xin chào",
+                    archives: ["Văn phòng B2 - Phòng 301 - Tủ A"],
+                    domains: ["Quy chế quản lý nội bộ công ty"],
+                    issuingBody: "Bam giám đốc",
+                    signer: "Mr.Happy",
+                    versionName: "vs 2",
+                    officialNumber: "OI4",
+                    issuingDate: "3/4/2020",
+                    effectiveDate: "5/4/2020",
+                    expiredDate: "4/5/2020",
+                    category: "Văn bản",
+                    relationshipDescription: "",
+                    documentRelationshipList: ["Đi chơi"],
+                    roles: ["Admin", "Dean"],
+                    organizationUnitManagement: "Ban giám đốc",
+
+                },
+            ]
+        }]
+
+    }]
 }
