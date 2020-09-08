@@ -75,7 +75,7 @@ class TaskReportViewForm extends Component {
      * Hàm gom nhóm các công việc theo thời gian
      */
     groupByDate = (tasks, dataAxisX) => {
-        if (dataAxisX && dataAxisX.indexOf(1) === 0) {
+        if (dataAxisX && dataAxisX.indexOf(1) === 0 || dataAxisX.length === 0) {
             return tasks.reduce((groups, item) => {
                 groups[item.time] = [...groups[item.time] || [], item];
                 return groups;
@@ -84,7 +84,7 @@ class TaskReportViewForm extends Component {
             return Object.entries(tasks).map(([o, datapoints]) => {
                 return datapoints.reduce((groups, item) => {
                     const getTime = item.time;
-                    groups[[o] + `|${getTime}`] = [...groups[[o] + `|${getTime}`] || [], item]
+                    groups[[o] + ` | ${getTime}`] = [...groups[[o] + ` | ${getTime}`] || [], item]
                     return groups;
                 }, [])
             })
@@ -107,7 +107,7 @@ class TaskReportViewForm extends Component {
             return Object.entries(tasks).map(([o, datapoints]) => {
                 return datapoints.reduce((groups, item) => {
                     const getRes = item.responsibleEmployees.toString();
-                    groups[[o] + `|${getRes}`] = [...groups[[o] + `|${getRes}`] || [], item];
+                    groups[[o] + ` | ${getRes}`] = [...groups[[o] + ` | ${getRes}`] || [], item];
                     return groups;
                 }, []);
             })
@@ -131,7 +131,7 @@ class TaskReportViewForm extends Component {
             return Object.entries(tasks).map(([o, datapoints]) => {
                 return datapoints.reduce((groups, item) => {
                     const getAcc = item.accountableEmployees.toString();
-                    groups[[o] + `|${getAcc}`] = [...groups[[o] + `|${getAcc}`] || [], item];
+                    groups[[o] + ` | ${getAcc}`] = [...groups[[o] + ` | ${getAcc}`] || [], item];
                     return groups;
                 }, []);
             })
@@ -141,7 +141,7 @@ class TaskReportViewForm extends Component {
                 return Object.entries(o).map(([obj, item]) => {
                     return item.reduce((groups, item) => {
                         const getAcc = item.accountableEmployees;
-                        groups[[obj] + `|${getAcc}`] = [...groups[[obj] + `|${getAcc}`] || [], item];
+                        groups[[obj] + ` | ${getAcc}`] = [...groups[[obj] + ` | ${getAcc}`] || [], item];
                         return groups;
                     }, [])
 
@@ -274,6 +274,7 @@ class TaskReportViewForm extends Component {
                 })
             })
         })
+        return results;
     }
 
     /**
@@ -413,7 +414,7 @@ class TaskReportViewForm extends Component {
          * dataForAxisXInChart là mảng chứa id chiều dữ liệu, kiểm tra id của chiều thời gian và người thực hiện có ở trong mảng dataForAxisXInChart hay không. 
          * nếu id = 1 chiều thời gian, id = 2 là chiều người thực hiện
          */
-        else if (dataForAxisXInChart.indexOf(1) === 0 && dataForAxisXInChart.indexOf(2) === 1) {
+        else if (dataForAxisXInChart.indexOf(1) === 0 && dataForAxisXInChart.indexOf(2) === 1 && dataForAxisXInChart.length === 2) {
             if (newlistTaskEvaluation) {
                 // Gọi hàm separateResponsibleEmployees tách người thực hiện
                 let results = this.separateResponsibleEmployees(newlistTaskEvaluation);
@@ -426,7 +427,7 @@ class TaskReportViewForm extends Component {
 
                 // Convert đầu ra các phân tử trong mảng cùng cấp và có cặp key, value
                 groupDataByResponsibleEmployees = groupDataByResponsibleEmployees.flatMap(x => Object.entries(x));
-
+                console.log('groupDataByResponsibleEmployees', groupDataByResponsibleEmployees)
                 // Tính tổng/Trung bình cộng, xử lý tên mới, và showInreport các trường thông tin theo tùy chọn của người dùng
                 output = this.dataAfterAggregate(groupDataByResponsibleEmployees);
 
@@ -438,7 +439,7 @@ class TaskReportViewForm extends Component {
          * dataForAxisXInChart là mảng chứa id chiều dữ liệu, kiểm tra id của chiều người thực hiện và thời gian có ở trong mảng dataForAxisXInChart hay không.
          *  id = 2 là chiều người thực hiện, nếu id = 1 chiều thời gian
         */
-        else if (dataForAxisXInChart.indexOf(1) === 1 && dataForAxisXInChart.indexOf(2) === 0) {
+        else if (dataForAxisXInChart.indexOf(1) === 1 && dataForAxisXInChart.indexOf(2) === 0 && dataForAxisXInChart.length === 2) {
 
             if (newlistTaskEvaluation) {
                 // Gọi hàm separateResponsibleEmployees tách người thực hiện
@@ -463,7 +464,7 @@ class TaskReportViewForm extends Component {
            * dataForAxisXInChart là mảng chứa id chiều dữ liệu, kiểm tra id của thời gian và người phê duyệt có ở trong mảng dataForAxisXInChart hay không.
            * nếu id = 1 chiều thời gian, id = 3 là chiều người phê duyệt,
         */
-        else if (dataForAxisXInChart.indexOf(1) === 0 && dataForAxisXInChart.indexOf(3) === 1) {
+        else if (dataForAxisXInChart.indexOf(1) === 0 && dataForAxisXInChart.indexOf(3) === 1 && dataForAxisXInChart.length === 2) {
             if (newlistTaskEvaluation) {
                 // Gọi hàm separateAccountableEmployees tách người phê duyệt
                 let results = this.separateAccountableEmployees(newlistTaskEvaluation);
@@ -488,7 +489,7 @@ class TaskReportViewForm extends Component {
           * dataForAxisXInChart là mảng chứa id chiều dữ liệu, kiểm tra id của người phê duyệt và thời gian có ở trong mảng dataForAxisXInChart hay không.
           * nếu id = 1 chiều thời gian, id = 3 là chiều người phê duyệt, id=3 nằm ở vị trí 0 trong mảng dataForAxisXInChart thì gom nhóm trước
        */
-        else if (dataForAxisXInChart.indexOf(1) === 1 && dataForAxisXInChart.indexOf(3) === 0) {
+        else if (dataForAxisXInChart.indexOf(1) === 1 && dataForAxisXInChart.indexOf(3) === 0 && dataForAxisXInChart.length === 2) {
             if (newlistTaskEvaluation) {
                 // Gọi hàm separateAccountableEmployees tách người phê duyệt
                 let results = this.separateAccountableEmployees(newlistTaskEvaluation);
@@ -508,20 +509,26 @@ class TaskReportViewForm extends Component {
             }
         }
 
-        else if (dataForAxisXInChart.indexOf(1) === 0 && dataForAxisXInChart.indexOf(2) === 1 && dataForAxisXInChart.indexOf(3) === 2) {
+        else if (dataForAxisXInChart.indexOf(1) === 0 && dataForAxisXInChart.indexOf(2) === 1 && dataForAxisXInChart.indexOf(3) === 2 && dataForAxisXInChart.length === 3) {
             if (newlistTaskEvaluation) {
+
                 let results = this.separateResponsibleEmployeesAndAccountableEmployees(newlistTaskEvaluation);
 
+                // Gom nhóm công việc theo thời gian
                 let groupDataByDate = this.groupByDate(results, dataForAxisXInChart);
 
+                // Sau đó gom nhóm theo người thực hiện
                 let groupDataByResponsibleEmployees = this.groupByResponsibleEmployees(groupDataByDate, dataForAxisXInChart);
 
+                // Sau đó gom nhóm theo người phê duyệt
                 let groupByAccountableEmployees = this.groupByAccountableEmployees(groupDataByResponsibleEmployees, dataForAxisXInChart);
 
-                groupByAccountableEmployees = groupByAccountableEmployees.flatMap(x => Object.entries(x));
+                // groupByAccountableEmployees đang là mảng 3 cấp 
+                groupByAccountableEmployees = groupByAccountableEmployees.flatMap(x => x.map(y => y));
+                console.log('groupByAccountableEmployees', groupByAccountableEmployees)
+                groupByAccountableEmployees = groupByAccountableEmployees.flatMap(z => Object.entries(z))
 
                 output = this.dataAfterAggregate(groupByAccountableEmployees);
-
             }
         }
 
@@ -530,6 +537,7 @@ class TaskReportViewForm extends Component {
             let separateDataChart = this.separateDataChart(output); // gọi hàm tách data
             pieChartData = separateDataChart.pieChartData; // Dữ liệu vẽ biểu đồ tròn
             barLineChartData = separateDataChart.barLineChartData; // Dữ liệu vẽ biểu đồ cột và đường
+
 
             // convert Data pieChart sang dạng C3js
             if (pieChartData && pieChartData.length > 0) {
@@ -551,15 +559,17 @@ class TaskReportViewForm extends Component {
                 >
                     {/* Modal Body */}
 
+                    {/* Biểu đồ đường và cột */}
                     {
                         barLineChartData.length > 0 && <LineBarChart barLineChartData={barLineChartData} />
                     }
 
+                    {/* Biểu đồ tròn  */}
                     <div className="row">
                         {
                             pieDataConvert && pieDataConvert.map((item, index) => (
                                 Object.entries(item).map(([code, data]) => (
-                                    <div key={index} className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                    <div key={index} className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                         <div className="pieChart">
                                             <PieChart pieChartData={data} namePieChart={code} />
                                         </div>
@@ -569,9 +579,12 @@ class TaskReportViewForm extends Component {
                         }
                     </div>
 
+                    {/* Button xuất excell */}
                     <div className="form-inline">
                         <button id="exportButton" className="btn btn-sm btn-success " style={{ marginBottom: '10px' }}><span className="fa fa-file-excel-o"></span> Export to Excel</button>
                     </div>
+
+                    {/* form hiển thị thông tin danh sách công việc được đưa vào biểu đồ */}
                     <div className="row">
                         <div className="col-md-12">
                             <div className="box">

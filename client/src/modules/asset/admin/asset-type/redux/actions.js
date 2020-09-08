@@ -39,18 +39,18 @@ function searchAssetTypes(data) {
 function getAssetTypes() {
     return dispatch => {
         dispatch({
-            type: AssetTypeConstants.GET_DOCUMENT_DOMAINS_REQUEST
+            type: AssetTypeConstants.GET_ALL_ASSET_TYPE_REQUEST
         });
         AssetTypeService.getAssetTypes()
             .then(res => {
                 dispatch({
-                    type: AssetTypeConstants.GET_DOCUMENT_DOMAINS_SUCCESS,
+                    type: AssetTypeConstants.GET_ALL_ASSET_TYPE_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(err => {
                 dispatch({
-                    type: AssetTypeConstants.GET_DOCUMENT_DOMAINS_FAILE
+                    type: AssetTypeConstants.GET_ALL_ASSET_TYPE_FAILE
                 });
 
             })
@@ -60,18 +60,18 @@ function getAssetTypes() {
 function createAssetTypes(data) {
     return dispatch => {
         dispatch({
-            type: AssetTypeConstants.CREATE_DOCUMENT_DOMAIN_REQUEST
+            type: AssetTypeConstants.CREATE_ASSET_TYPE_REQUEST
         });
         AssetTypeService.createAssetTypes(data)
             .then(res => {
                 dispatch({
-                    type: AssetTypeConstants.CREATE_DOCUMENT_DOMAIN_SUCCESS,
+                    type: AssetTypeConstants.CREATE_ASSET_TYPE_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(err => {
                 dispatch({
-                    type: AssetTypeConstants.CREATE_DOCUMENT_DOMAIN_FAILE
+                    type: AssetTypeConstants.CREATE_ASSET_TYPE_FAILE
                 });
             })
     }
@@ -80,18 +80,18 @@ function createAssetTypes(data) {
 function editAssetType(id, data) {
     return dispatch => {
         dispatch({
-            type: AssetTypeConstants.EDIT_DOCUMENT_DOMAIN_REQUEST
+            type: AssetTypeConstants.EDIT_ASSET_TYPE_REQUEST
         });
         AssetTypeService.editAssetType(id, data)
             .then(res => {
                 dispatch({
-                    type: AssetTypeConstants.EDIT_DOCUMENT_DOMAIN_SUCCESS,
+                    type: AssetTypeConstants.EDIT_ASSET_TYPE_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(err => {
                 dispatch({
-                    type: AssetTypeConstants.EDIT_DOCUMENT_DOMAIN_FAILE
+                    type: AssetTypeConstants.EDIT_ASSET_TYPE_FAILE
                 });
             })
     }
@@ -100,13 +100,13 @@ function editAssetType(id, data) {
 function deleteAssetTypes(data, type = "single") {
     return dispatch => {
         dispatch({
-            type: AssetTypeConstants.DELETE_DOCUMENT_DOMAIN_REQUEST
+            type: AssetTypeConstants.DELETE_ASSET_TYPE_REQUEST
         });
         if (type !== 'single') {
             AssetTypeService.deleteManyAssetType(data)
                 .then(res => {
                     dispatch({
-                        type: AssetTypeConstants.DELETE_DOCUMENT_DOMAIN_SUCCESS,
+                        type: AssetTypeConstants.DELETE_ASSET_TYPE_SUCCESS,
                         payload: {
                             list: res.data.content.list,
                             tree: res.data.content.tree
@@ -115,14 +115,14 @@ function deleteAssetTypes(data, type = "single") {
                 })
                 .catch(err => {
                     dispatch({
-                        type: AssetTypeConstants.DELETE_DOCUMENT_DOMAIN_FAILE
+                        type: AssetTypeConstants.DELETE_ASSET_TYPE_FAILE
                     });
                 })
         } else {
             AssetTypeService.deleteAssetTypes(data)
                 .then(res => {
                     dispatch({
-                        type: AssetTypeConstants.DELETE_DOCUMENT_DOMAIN_SUCCESS,
+                        type: AssetTypeConstants.DELETE_ASSET_TYPE_SUCCESS,
                         payload: {
                             list: res.data.content.list,
                             tree: res.data.content.tree
@@ -131,7 +131,7 @@ function deleteAssetTypes(data, type = "single") {
                 })
                 .catch(err => {
                     dispatch({
-                        type: AssetTypeConstants.DELETE_DOCUMENT_DOMAIN_FAILE
+                        type: AssetTypeConstants.DELETE_ASSET_TYPE_FAILE
                     });
                 })
         }

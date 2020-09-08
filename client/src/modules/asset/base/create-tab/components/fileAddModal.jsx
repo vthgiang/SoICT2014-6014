@@ -147,7 +147,7 @@ class FileAddModal extends Component {
                         {/* Mô tả */}
                         <div className={`form-group ${!errorOnDiscFile ? "" : "has-error"}`}>
                             <label>{translate('asset.general_information.description')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="description" value={description} onChange={this.handleDiscFileChange} autoComplete="off" />
+                            <textarea className="form-control" rows="3" name="description" value={description} onChange={this.handleDiscFileChange} autoComplete="off"></textarea>
                             <ErrorLabel content={errorOnDiscFile} />
                         </div>
 

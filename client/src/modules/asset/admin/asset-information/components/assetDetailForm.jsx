@@ -81,9 +81,9 @@ class AssetDetailForm extends Component {
                             <ul className="nav nav-tabs">
                                 <li className="active"><a title={translate('asset.general_information.general_information')} data-toggle="tab" href={`#view_general${_id}`}>{translate('asset.general_information.general_information')}</a></li>
                                 <li><a title={translate('asset.general_information.usage_information')} data-toggle="tab" href={`#view_usage${_id}`}>{translate('asset.general_information.usage_information')}</a></li>
+                                <li><a title={translate('asset.general_information.incident_information')} data-toggle="tab" href={`#view_incident${_id}`}>{translate('asset.general_information.incident_information')}</a></li>
                                 <li><a title={translate('asset.general_information.maintainance_information')} data-toggle="tab" href={`#view_maintainance${_id}`}>{translate('asset.general_information.maintainance_information')}</a></li>
                                 <li><a title={translate('asset.general_information.depreciation_information')} data-toggle="tab" href={`#view_depreciation${_id}`}>{translate('asset.general_information.depreciation_information')}</a></li>
-                                <li><a title={translate('asset.general_information.incident_information')} data-toggle="tab" href={`#view_incident${_id}`}>{translate('asset.general_information.incident_information')}</a></li>
                                 <li><a title={translate('asset.general_information.disposal_information')} data-toggle="tab" href={`#view_disposal${_id}`}>{translate('asset.general_information.disposal_information')}</a></li>
                                 <li><a title={translate('asset.general_information.attach_infomation')} data-toggle="tab" href={`#view_attachments${_id}`}>{translate('asset.general_information.attach_infomation')}</a></li>
                             </ul>
@@ -125,6 +125,12 @@ class AssetDetailForm extends Component {
                                     usageLogs={usageLogs}
                                 />
 
+                                {/* Thông tin sự cố */}
+                                <IncidentLogTab
+                                    id={`view_incident${_id}`}
+                                    incidentLogs={incidentLogs}
+                                />
+
                                 {/* Thông tin khấu hao */}
                                 <DepreciationTab
                                     id={`view_depreciation${_id}`}
@@ -135,12 +141,6 @@ class AssetDetailForm extends Component {
                                     estimatedTotalProduction={estimatedTotalProduction}
                                     unitsProducedDuringTheYears={unitsProducedDuringTheYears}
                                     depreciationType={depreciationType}
-                                />
-
-                                {/* Thông tin sự cố */}
-                                <IncidentLogTab
-                                    id={`view_incident${_id}`}
-                                    incidentLogs={incidentLogs}
                                 />
 
                                 {/* Thông tin thanh lý */}

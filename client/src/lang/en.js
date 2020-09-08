@@ -1664,6 +1664,7 @@ export default {
                 maintainance_logs: 'Repair history - replacement - upgrade',
                 incident_list: 'Asset incident list',
                 file_list: 'List of documents attached',
+                edit_document: 'Edit documents attached',
                 add_usage_info: 'Add new asset usage infomation',
                 edit_usage_info: 'Edit asset use request form',
                 delete_usage_info: 'Delete asset usage infomation',

@@ -409,9 +409,9 @@ class AssetEditForm extends Component {
                         <ul className="nav nav-tabs">
                             <li className="active"><a title={translate('asset.general_information.general_information')} data-toggle="tab" href={`#edit_general${_id}`}>{translate('asset.general_information.general_information')}</a></li>
                             <li><a title={translate('asset.general_information.usage_information')} data-toggle="tab" href={`#edit_usage${_id}`}>{translate('asset.general_information.usage_information')}</a></li>
+                            <li><a title={translate('asset.general_information.incident_information')} data-toggle="tab" href={`#edit_incident${_id}`}>{translate('asset.general_information.incident_information')}</a></li>
                             <li><a title={translate('asset.general_information.maintainance_information')} data-toggle="tab" href={`#edit_maintainance${_id}`}>{translate('asset.general_information.maintainance_information')}</a></li>
                             <li><a title={translate('asset.general_information.depreciation_information')} data-toggle="tab" href={`#edit_depreciation${_id}`}>{translate('asset.general_information.depreciation_information')}</a></li>
-                            <li><a title={translate('asset.general_information.incident_information')} data-toggle="tab" href={`#edit_incident${_id}`}>{translate('asset.general_information.incident_information')}</a></li>
                             <li><a title={translate('asset.general_information.disposal_information')} data-toggle="tab" href={`#edit_disposal${_id}`}>{translate('asset.general_information.disposal_information')}</a></li>
                             <li><a title={translate('asset.general_information.attach_infomation')} data-toggle="tab" href={`#edit_attachments${_id}`}>{translate('asset.general_information.attach_infomation')}</a></li>
                         </ul>
@@ -459,6 +459,15 @@ class AssetEditForm extends Component {
                                 handleRecallAsset={this.handleRecallAsset}
                             />
 
+                            {/* Thông tin sự cố */}
+                            <IncidentLogTab
+                                id={`edit_incident${_id}`}
+                                incidentLogs={incidentLogs}
+                                handleAddIncident={this.handleCreateIncidentLogs}
+                                handleEditIncident={this.handleEditIncidentLogs}
+                                handleDeleteIncident={this.handleDeleteIncidentLogs}
+                            />
+
                             {/* Thông tin bảo trì */}
                             <MaintainanceLogTab
                                 id={`edit_maintainance${_id}`}
@@ -480,15 +489,6 @@ class AssetEditForm extends Component {
                                 depreciationType={depreciationType}
                                 estimatedTotalProduction={estimatedTotalProduction}
                                 unitsProducedDuringTheYears={unitsProducedDuringTheYears}
-                            />
-
-                            {/* Thông tin sự cố */}
-                            <IncidentLogTab
-                                id={`edit_incident${_id}`}
-                                incidentLogs={incidentLogs}
-                                handleAddIncident={this.handleCreateIncidentLogs}
-                                handleEditIncident={this.handleEditIncidentLogs}
-                                handleDeleteIncident={this.handleDeleteIncidentLogs}
                             />
 
                             {/* Thông tin thanh lý */}
