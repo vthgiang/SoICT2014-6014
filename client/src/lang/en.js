@@ -1878,7 +1878,6 @@ export default {
             description: 'Description',
             count: 'Number of uses',
             creator: 'Creator',
-            unit: 'Unit',
             action: 'Action',
             priority: 'Priority',
             general_information: 'General information',
