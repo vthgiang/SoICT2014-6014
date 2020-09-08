@@ -78,7 +78,7 @@ class GeneralTab extends Component {
                     <div className="col-lg-4 col-md-4 col-ms-12 col-xs-12" style={{ textAlign: 'center' }}>
                         <div>
                             <a href={avatar} target="_blank">
-                                <ApiImage className="attachment-img avarta" id={`avater-imform-${id}`} src={`.${avatar}`} />
+                                {avatar && <ApiImage className="attachment-img avarta" id={`avater-imform-${id}`} src={`.${avatar}`} />}
                             </a>
                         </div>
                     </div>

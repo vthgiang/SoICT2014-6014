@@ -1323,6 +1323,7 @@ export default {
 
                 employee_management: {
                     file_name_export: 'Thông tin nhân viên',
+                    staff_no_unit_title: 'Do nhân viên chưa thuộc đơn vị nào',
                     no_gender: 'Chọn giới tính',
                     all_gender: 'Chọn tất cả giới tính',
                     brithday_lable: 'Sinh nhật',
@@ -1901,12 +1902,11 @@ export default {
             confirm_title: 'Bạn chắc chắn muốn xóa mẫu công việc này?',
             error_title: 'Không thể xóa mẫu công việc này do đã được sử dụng.',
             name: 'Tên mẫu',
-            unit: 'Đơn vị',
+            unit: 'Đơn vị quản lý công việc',
             tasktemplate_name: 'Tên mẫu công việc',
             description: 'Mô tả',
             count: 'Số lần sử dụng',
             creator: 'Người tạo mẫu',
-            unit: 'Đơn vị',
             action: 'Hành động',
             priority: 'Độ ưu tiên',
             general_information: 'Thông tin chung',

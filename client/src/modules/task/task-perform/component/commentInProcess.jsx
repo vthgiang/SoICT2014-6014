@@ -207,7 +207,10 @@ class CommentInProcess extends Component {
     }
     submitComment = async (taskId) => {
         var { comment } = this.state;
+        let { performtasks } = this.props
+        console.log(performtasks?.task?._id)
         const data = new FormData();
+        data.append("currentTask", performtasks?.task?._id)
         data.append("creator", comment.creator);
         data.append("description", comment.description);
         comment.files && comment.files.forEach(x => {
@@ -298,11 +301,11 @@ class CommentInProcess extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-		if(this.props.task.commentsInProcess !== nextProps.task.commentsInProcess) {
+        if (this.props.task.commentsInProcess !== nextProps.task.commentsInProcess) {
             return true
         }
         return true
-	}
+    }
 
     save = (taskId) => {
         let { deleteFile } = this.state
@@ -567,8 +570,8 @@ class CommentInProcess extends Component {
 }
 
 function mapState(state) {
-    const { auth } = state;
-    return { auth };
+    const { auth, performtasks } = state;
+    return { auth, performtasks };
 }
 const actionCreators = {
     editComment: performTaskAction.editComment,

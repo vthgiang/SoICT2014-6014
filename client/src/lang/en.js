@@ -1302,6 +1302,7 @@ export default {
 
                 employee_management: {
                     file_name_export: 'Thông tin nhân viên',
+                    staff_no_unit_title: 'Because the employee is not in any unit',
                     no_gender: 'Select gender',
                     all_gender: 'Select all gender',
                     brithday_lable: 'Month of Birth',
@@ -1878,7 +1879,6 @@ export default {
             description: 'Description',
             count: 'Number of uses',
             creator: 'Creator',
-            unit: 'Unit',
             action: 'Action',
             priority: 'Priority',
             general_information: 'General information',
