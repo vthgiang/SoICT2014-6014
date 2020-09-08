@@ -13,16 +13,7 @@ router.patch('/processes/:processId/diagram', auth, TaskProcessController.update
 router.delete("/diagrams/:diagramId", auth, TaskProcessController.deleteXmlDiagram);
 router.post("/processes/:processId/tasks/create", auth, TaskProcessController.createTaskByProcess);
 
-// //comments
-// router.post('/tasks/:taskId/comments', auth, uploadFile([{ name: 'files', path: '/files/taskprocess' }], 'array'), TaskProcessController.createComment)
-// router.patch('/tasks/:taskId/comments/:commentId', auth, uploadFile([{ name: 'files', path: '/files/taskprocess' }], 'array'), TaskProcessController.editComment)
-// router.delete('/tasks/:taskId/comments/:commentId', auth, TaskProcessController.deleteComment)
-// router.delete('/tasks/:taskId/comments/:commentId/files/:fileId', auth, TaskProcessController.deleteFileComment)
-// //child comments
-// router.post('/tasks/:taskId/comments/:commentId/child-comments', auth, uploadFile([{ name: 'files', path: '/files/taskprocess' }], 'array'), TaskProcessController.createChildComment)
-// router.patch('/tasks/:taskId/comments/:commentId/child-comments/:childCommentId', auth, uploadFile([{ name: 'files', path: '/files/taskprocess' }], 'array'), TaskProcessController.editChildComment)
-// router.delete('/tasks/:taskId/comments/:commentId/child-comments/:childCommentId', auth, TaskProcessController.deleteChildComment)
-// router.delete('/tasks/:taskId/comments/:commentId/child-comments/:childCommentId/files/:fileId', auth, TaskProcessController.deleteFileChildComment)
+
 
 
 module.exports = router;

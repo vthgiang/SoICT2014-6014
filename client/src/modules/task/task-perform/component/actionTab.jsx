@@ -19,7 +19,7 @@ import { SubTaskTab } from './subTaskTab';
 import { ViewProcess } from '../../task-process/component/task-process-management/viewProcess';
 import { IncomingDataTab } from './incomingDataTab';
 import { OutgoingDataTab } from './outgoingDataTab';
-import { CommentInProcess } from '../../task-process/component/commentInProcess';
+
 
 class ActionTab extends Component {
     constructor(props) {
@@ -1612,7 +1612,6 @@ class ActionTab extends Component {
                                     />
                                     
                                 </React.Fragment>
-
                             }
                         </div>
 

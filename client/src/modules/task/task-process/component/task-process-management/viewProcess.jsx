@@ -137,7 +137,6 @@ class ViewProcess extends Component {
 
                             var outgoing = element1.outgoing;
                             outgoing.forEach(x => {
-                                console.log('x', x);
                                 if (info[x.businessObject.targetRef.id].status === "Inprocess") {
                                     var outgoingEdge = modeler.get('elementRegistry').get(x.id);
 

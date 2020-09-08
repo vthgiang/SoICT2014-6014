@@ -227,7 +227,7 @@ class ModalEditTaskProcess extends Component {
         const modeling = this.modeler.get('modeling');
         let element1 = this.modeler.get('elementRegistry').get(this.state.id);
         modeling.updateProperties(element1, {
-            name: value,
+            shapeName: value,
         });
     }
 
