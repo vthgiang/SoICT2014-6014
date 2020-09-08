@@ -16,7 +16,7 @@ class AssetEditForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            employeeId: this.props.employeeId?this.props.employeeId:''
+            employeeId: this.props.employeeId ? this.props.employeeId : ''
         };
     }
 
@@ -219,22 +219,28 @@ class AssetEditForm extends Component {
     isFormValidated = () => {
         let { code, assetName, serial, assetType, managedBy, purchaseDate, warrantyExpirationDate, location, status,
             typeRegisterForUse, cost, usefulLife, startDepreciation, depreciationType, unitsProducedDuringTheYears, estimatedTotalProduction } = this.state;
-        
+
         if (this.state !== {}) {
             let unitProductionValidate = true;
             if (depreciationType === "Sản lượng") {
                 unitProductionValidate = this.validatorInput(estimatedTotalProduction);
             }
 
-            let result = this.validatorInput(code) && this.validatorInput(assetName) &&
-                this.validatorInput(serial) && this.validatorInput(assetType) &&
-                this.validatorInput(managedBy) && this.validatorInput(purchaseDate) &&
-                this.validatorInput(warrantyExpirationDate) && //this.validatorInput(location) &&
-                this.validatorInput(status) && this.validatorInput(typeRegisterForUse) &&
-                this.validatorInput(cost) && this.validatorInput(usefulLife) &&
-                this.validatorInput(startDepreciation) && this.validatorInput(depreciationType)
+            let result = this.validatorInput(code)
+                && this.validatorInput(assetName)
+                && this.validatorInput(serial)
+                && this.validatorInput(assetType)
+                // && this.validatorInput(managedBy) ??
+                && this.validatorInput(purchaseDate)
+                && this.validatorInput(warrantyExpirationDate)
+                && this.validatorInput(status)
+                // && this.validatorInput(cost) ??
+                // && this.validatorInput(location) ??
+                // && this.validatorInput(usefulLife) ??
+                // && this.validatorInput(typeRegisterForUse)
+                // && this.validatorInput(startDepreciation)
+                // && this.validatorInput(depreciationType) ??
                 && unitProductionValidate;
-
             return result;
         }
 
@@ -242,7 +248,7 @@ class AssetEditForm extends Component {
     }
 
     save = async () => {
-        let { maintainanceLogs, usageLogs, incidentLogs, files, assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate,employeeId } = this.state;
+        let { maintainanceLogs, usageLogs, incidentLogs, files, assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, employeeId } = this.state;
 
         await this.setState({
             img: "",
@@ -259,11 +265,10 @@ class AssetEditForm extends Component {
             })
         })
         formData.append("fileAvatar", this.state.avatar);
-
-        this.props.updateInformationAsset(this.state._id, formData,employeeId);
+        this.props.updateInformationAsset(this.state._id, formData, employeeId);
 
         // Thêm vào thông tin sử dụng
-        if (assignedToUser !== this.props.assignedToUser|| assignedToOrganizationalUnit !== this.props.assignedToOrganizationalUnit || handoverFromDate !== this.props.handoverFromDate || handoverToDate !== this.props.handoverToDate) {
+        if (assignedToUser !== this.props.assignedToUser || assignedToOrganizationalUnit !== this.props.assignedToOrganizationalUnit || handoverFromDate !== this.props.handoverFromDate || handoverToDate !== this.props.handoverToDate) {
             this.props.createUsage(this.state._id, {
                 usageLogs: {
                     usedByUser: this.state.assignedToUser,
@@ -389,14 +394,13 @@ class AssetEditForm extends Component {
             handoverToDate, location, description, status, typeRegisterForUse, detailInfo, usageLogs, maintainanceLogs, cost, residualValue, startDepreciation,
             usefulLife, depreciationType, incidentLogs, disposalDate, disposalType, unitsProducedDuringTheYears, disposalCost, disposalDesc, archivedRecordNumber,
             files, estimatedTotalProduction, readByRoles } = this.state;
-        console.log("Dòng 401", assignedToUser, assignedToOrganizationalUnit, status)
 
         return (
             <React.Fragment>
                 <DialogModal
                     size='75' modalID="modal-edit-asset" isLoading={assetsManager.isLoading}
                     formID="form-edit-asset"
-                    title={translate('asset.general_information.edit_info')} 
+                    title={translate('asset.general_information.edit_info')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
@@ -452,7 +456,7 @@ class AssetEditForm extends Component {
                                 handleAddUsage={this.handleCreateUsageLogs}
                                 handleEditUsage={this.handleEditUsageLogs}
                                 handleDeleteUsage={this.handleDeleteUsageLogs}
-                                handleRecallAsset = {this.handleRecallAsset}
+                                handleRecallAsset={this.handleRecallAsset}
                             />
 
                             {/* Thông tin sự cố */}
