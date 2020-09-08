@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from "react-redux-multilingual";
-// import { CommentInProcess } from './commentInProcess';
+import { CommentInProcess } from './commentInProcess';
 class IncomingDataTab extends Component {
 
     constructor(props) {
@@ -36,12 +36,14 @@ class IncomingDataTab extends Component {
         const { translate } = this.props;
         const { task, infoTaskProcess } = this.state;
         let listTask = [];
-
+        console.log(infoTaskProcess)
         if (task && task.length !== 0 && task.preceedingTasks && task.preceedingTasks.length !== 0 && infoTaskProcess) {
-            task.preceedingTasks.map((item, index) => {
+            task.preceedingTasks.forEach((item, index) => {
                 if (infoTaskProcess[`${item.task && item.task._id}`]) {
                     listTask[index] = {};
                     listTask[index].name = infoTaskProcess[`${item.task && item.task._id}`].name;
+                    listTask[index].commentsInProcess = infoTaskProcess[`${item.task && item.task._id}`].commentsInProcess;
+
 
                     if (infoTaskProcess[`${item.task && item.task._id}`].taskInformations && infoTaskProcess[`${item.task && item.task._id}`].taskInformations.length !== 0) {
                         listTask[index].informations = infoTaskProcess[`${item.task && item.task._id}`].taskInformations.filter(info => info.isOutput);
@@ -58,16 +60,16 @@ class IncomingDataTab extends Component {
                 }
             })
         }
-
+        console.log(this.props.infoTaskProcess)
         return (
             <React.Fragment>
                 {
                     listTask.length !== 0
                     && listTask.map((task, key) =>
                         <React.Fragment>
-                            <div key={key} className="description-box">
+                            {/* {console.log(task)} */}
+                            <div key={key} className="description-box incoming-content">
                                 <h4>{task.name}</h4>
-
                                 {/** Danh sách thông tin */}
                                 <div><strong>{translate('task.task_process.information')}</strong></div>
                                 {
@@ -125,7 +127,7 @@ class IncomingDataTab extends Component {
 
 
 function mapState(state) {
-    const { } = state;
+    const {} = state;
     return {};
 }
 const actions = {

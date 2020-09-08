@@ -157,13 +157,10 @@ class AssetIncidentChart extends Component {
         let { year } = this.state;
         let dataColumnChart = year ? this.setDataColumnChartForYear() : this.setDataColumnChartForMonth();
         console.log('data', dataColumnChart);
-        // if (translate('asset.dashboard.amount') === 'Số lượng') {
         let chart = c3.generate({
             bindto: this.refs.assetIncidentChart,
-
             data: {
                 columns: [
-                    // dataColumnChart.category,
                     dataColumnChart.count,
                 ],
                 type: 'bar',
@@ -192,7 +189,6 @@ class AssetIncidentChart extends Component {
                 show: false
             }
         })
-        // } 
     }
 
     handleChangeDateAfter = async (value) => {
@@ -246,6 +242,7 @@ class AssetIncidentChart extends Component {
         return (
             <React.Fragment>
                 <section className="form-inline" style={{ textAlign: "right" }}>
+                    {/* Chọn ngày bắt đầu và kết thúc để tìm kiếm */}
                     <div className="form-group">
                         <label>{translate('task.task_management.from')}</label>
                         <DatePicker
@@ -271,6 +268,7 @@ class AssetIncidentChart extends Component {
                     </div>
                 </section>
                 <div>
+                    {/* Chọn hiển thị theo tháng/ năm*/}
                     <br />
                     <div className="box-tools" style={{ textAlign: "right", marginRight: "60px" }}>
                         <div className="btn-group">

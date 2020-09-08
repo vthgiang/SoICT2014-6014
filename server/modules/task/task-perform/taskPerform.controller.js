@@ -1011,3 +1011,212 @@ exports.editDocument = async (req, res) => {
         })
     }
 }
+
+
+/**
+ * Tạo comment trong trang create KPI employee
+ */
+exports.createComment = async (req, res) => {
+    try {
+        var files = [];
+        if (req.files !== undefined) {
+            req.files.forEach((elem, index) => {
+                var path = elem.destination + '/' + elem.filename;
+                files.push({ name: elem.originalname, url: path })
+
+            })
+        }
+        var comments = await PerformTaskService.createComment(req.params, req.body, files);
+        await LogInfo(req.user.email, ` create comment `, req.user.company)
+        res.status(200).json({
+            success: true,
+            messages: ['create_comment_success'],
+            content: comments
+        })
+    } catch (error) {
+        await LogError(req.user.email, ` create comment kpi `, req.user.company)
+        res.status(400).json({
+            success: false,
+            messages: ['create_comment_fail'],
+            content: error
+        });
+    }
+}
+
+/**
+ * 
+ * Tạo comment trong comment trong trang create KPI employee (tạo replied comment)
+ */
+exports.createChildComment = async (req, res) => {
+    try {
+        var files = [];
+        if (req.files !== undefined) {
+            req.files.forEach((elem, index) => {
+                var path = elem.destination + '/' + elem.filename;
+                files.push({ name: elem.originalname, url: path })
+
+            })
+        }
+        var comments = await PerformTaskService.createChildComment(req.params, req.body, files);
+        await LogInfo(req.user.email, ` create comment `, req.user.company)
+        res.status(200).json({
+            success: true,
+            messages: ['create_child_comment_success'],
+            content: comments
+        })
+    } catch (error) {
+        await LogError(req.user.email, ` create child comment kpi `, req.user.company)
+        res.status(400).json({
+            success: false,
+            messages: ['create_child_comment_fail'],
+            content: error
+        });
+    }
+}
+
+/**
+ * 
+ *Sửa comment trong trang create KPI employee
+ */
+exports.editComment = async (req, res) => {
+    try {
+        let files = [];
+        if (req.files !== undefined) {
+            req.files.forEach((elem, index) => {
+                let path = elem.destination + '/' + elem.filename;
+                files.push({ name: elem.originalname, url: path })
+
+            })
+        }
+        let comments = await PerformTaskService.editComment(req.params, req.body, files);
+        await LogInfo(req.user.email, ` edit comment kpi `, req.user.company)
+        res.status(200).json({
+            success: true,
+            messages: ['edit_comment_success'],
+            content: comments
+        })
+    } catch (error) {
+        await LogError(req.user.email, ` edit comment kpi `, req.user.company)
+        res.status(400).json({
+            success: false,
+            messages: ['edit_comment_fail'],
+            content: error
+        });
+    }
+}
+
+/**
+ * Xóa comment trong trang create KPI employee
+ */
+exports.deleteComment = async (req, res) => {
+    try {
+
+        var comments = await PerformTaskService.deleteComment(req.params);
+        await LogInfo(req.user.email, ` delete comment kpi`, req.user.company)
+        res.status(200).json({
+            success: false,
+            messages: ['delete_comment_success'],
+            content: comments
+        })
+    } catch (error) {
+        await LogError(req.user.email, ` delete comment kpi `, req.user.company)
+        res.status(200).json({
+            success: false,
+            messages: ['delete_comment_fail'],
+            content: error
+        })
+    }
+}
+/**
+ * Sửa 1 comment trong trang create KPI employee (xóa comment replied)
+ */
+exports.editChildComment = async (req, res) => {
+    try {
+        let files = [];
+        if (req.files !== undefined) {
+            req.files.forEach((elem, index) => {
+                let path = elem.destination + '/' + elem.filename;
+                files.push({ name: elem.originalname, url: path })
+
+            })
+        }
+        var comments = await PerformTaskService.editChildComment(req.params, req.body, files);
+        await LogInfo(req.user.email, ` edit comment of comment kpi `, req.user.company)
+        res.status(200).json({
+            success: true,
+            messages: ['edit_comment_of_comment_success'],
+            content: comments
+        })
+    } catch (error) {
+        await LogError(req.user.email, ` edit comment of comment kpi `, req.user.company)
+        res.status(400).json({
+            success: true,
+            messages: ['edit_comment_of_comment_fail'],
+            content: error
+        })
+    }
+}
+
+/**
+ * Xóa comment của commnent trong trang create KPI employee (xóa comment replied)
+ */
+exports.deleteChildComment = async (req, res) => {
+    try {
+        var comments = await PerformTaskService.deleteChildComment(req.params);
+        await LogInfo(req.user.email, ` delete child comment kpi `, req.user.company)
+        res.status(200).json({
+            success: true,
+            messages: ['delete_child_comment_success'],
+            content: comments
+        })
+    } catch (error) {
+        await LogError(req.user.email, ` delete child comment kpi `, req.user.company)
+        res.status(400).json({
+            success: true,
+            messages: ['delete_child_comment_fail'],
+            content: error
+        })
+    }
+}
+/**
+ * Xóa file của comment
+ */
+exports.deleteFileComment = async (req, res) => {
+    // try {
+        var comments = await PerformTaskService.deleteFileComment(req.params);
+        await LogInfo(req.user.email, ` delete file comment `, req.user.company)
+        res.status(200).json({
+            success: true,
+            messages: ['delete_file_comment_success'],
+            content: comments
+        })
+    // } catch (error) {
+    //     await LogError(req.user.email, ` delete file comment `, req.user.company)
+    //     res.status(400).json({
+    //         success: true,
+    //         messages: ['delete_file_comment_fail'],
+    //         content: error
+    //     })
+    // }
+}
+/**
+ * Xóa file child comment
+ */
+exports.deleteFileChildComment = async (req, res) => {
+    try {
+        var comments = await PerformTaskService.deleteFileChildComment(req.params);
+        await LogInfo(req.user.email, ` delete file child comment `, req.user.company)
+        res.status(200).json({
+            success: true,
+            messages: ['delete_file_comment_success'],
+            content: comments
+        })
+    } catch (error) {
+        await LogError(req.user.email, ` delete file child comment `, req.user.company)
+        res.status(400).json({
+            success: true,
+            messages: ['delete_file_comment_fail'],
+            content: error
+        })
+    }
+}

@@ -422,8 +422,10 @@ exports.importDocument = async (company, data) => {
 
 
     }
-    let query = { page: '1', limit: '5' }
-    return await this.getDocuments(company, query);
+    let query = { page: null, limit: null }
+    let documents = await this.getDocuments(company, query);
+    //console.log('docccc', documents);
+    return documents;
 }
 
 

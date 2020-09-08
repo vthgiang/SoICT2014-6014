@@ -1537,6 +1537,7 @@ export default {
                 select_asset_type: 'Select asset type',
                 select_all_asset_type: 'Select all asset type',
                 select_all_status: 'Select all status',
+                select_all_group: 'Select all asset group',
                 ready_use: 'Ready to use',
                 using: 'Using',
                 damaged: 'Damaged',
@@ -1625,7 +1626,7 @@ export default {
                 building: 'Building',
                 vehicle: 'Vehicle',
                 machine: 'Machine',
-                orther: 'Other',
+                other: 'Other',
                 asset_by_group: ' Asset by group',
                 asset_by_type: ' Asset by type',
                 asset_purchase_and_dispose: ' Purchase and dispose',
@@ -2392,6 +2393,7 @@ export default {
             task_process: {
                 process_name: 'Process name',
                 process_description: 'Process description',
+                process_status: 'Process status',
                 creator: 'Creator',
                 manager: 'Manager',
                 viewer: 'Viewer',
@@ -2448,6 +2450,8 @@ export default {
                 get_all_task_process_fail: 'Get all task process fail',
                 update_task_process_success: 'Update task process successfully',
                 update_task_process_fail: 'Update task process fail',
+                edit_info_process_success: 'Edit process infomation successfully',
+                edit_info_process_fail: 'Edit process infomation fail',
 
                 error: {
                     empty_name: "Process name should not be empty",

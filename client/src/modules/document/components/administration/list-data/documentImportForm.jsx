@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { configDocument } from './fileConfigImportDocument.js'
+import { configDocument, exportDocument } from './fileConfigImportDocument.js'
 import { DialogModal, ImportFileExcel, ShowImportData, ConFigImportFile, ExportExcel } from '../../../../../common-components';
 //import { taskTemplateActions } from '../redux/actions';
 import { connect } from 'react-redux';
@@ -30,12 +30,32 @@ class DocumentImportForm extends Component {
     }
 
     handleImportExcel = (value, checkFileImport) => {
+        let startDate = new Date(1900, 1, 1, 0, 0, 0);
+        console.log('valueeee', value);
+        let date = -2209131850214;
         let values = [];
         let showValues = [];
         let k = -1;
         for (let i in value) {
             let x = value[i];
             if (x.name) {
+                k = k + 1;
+                let issuingDate = "";
+                let effectiveDate = "";
+                let expiredDate = "";
+                if (x.issuingDate) {
+
+                    issuingDate = date + x.issuingDate * 24 * 60 * 60 * 1000;
+                    let iDate = new Date(issuingDate)
+                    console.log('dayyyy', iDate.toString());
+                }
+                if (x.effectiveDate) {
+                    effectiveDate = date + x.effectiveDate * 24 * 60 * 60 * 1000;
+                }
+                if (x.expiredDate) {
+                    expiredDate = date + x.expiredDate * 24 * 60 * 60 * 1000;
+                }
+
                 values = [...value, {
                     "STT": k + 1,
                     "name": x.name,
@@ -46,13 +66,13 @@ class DocumentImportForm extends Component {
                     "signer": x.signer,
                     "officialNumber": x.officialNumber,
                     "versionName": x.versionName,
-                    "issuingDate": x.issuingDate,
-                    "effectiveDate": x.effectiveDate,
-                    "expiredDate": x.effectiveDate,
+                    "issuingDate": issuingDate,
+                    "effectiveDate": effectiveDate,
+                    "expiredDate": expiredDate,
                     "category": x.category,
                     "relationshipDescription": x.relationshipDescription,
                     "documentRelationshipList": [x.documentRelationshipList],
-                    "role": [x.role],
+                    "role": [x.roles],
                     "organizationUnitManager": x.organizationUnitManager,
                 }];
                 showValues = [...showValues, {
@@ -64,25 +84,25 @@ class DocumentImportForm extends Component {
                     "signer": x.signer,
                     "officialNumber": x.officialNumber,
                     "versionName": x.versionName,
-                    "issuingDate": x.issuingDate,
-                    "effectiveDate": x.effectiveDate,
-                    "expiredDate": x.effectiveDate,
+                    "issuingDate": issuingDate,
+                    "effectiveDate": effectiveDate,
+                    "expiredDate": expiredDate,
+                    "category": x.category,
                     "category": x.category,
                     "relationshipDescription": x.relationshipDescription,
                     "documentRelationshipList": [x.documentRelationshipList],
-                    "role": [
-                        
-                    ],
+                    "roles": [x.roles],
                     "organizationUnitManager": x.organizationUnitManager,
                 }]
             } else {
                 if (k >= 0) {
+                    console.log('xxxxx', x);
                     let out = {
                         "STT": "",
                         "name": "",
                         "description": "",
-                        "archives": "",
-                        "domains": "",
+                        "archives": [],
+                        "domains": [],
                         "issuingBody": "",
                         "signer": "",
                         "officialNumber": "",
@@ -92,8 +112,8 @@ class DocumentImportForm extends Component {
                         "expiredDate": "",
                         "category": "",
                         "relationshipDescription": "",
-                        "documentRelationshipList": "",
-                        "role": "",
+                        "documentRelationshipList": [],
+                        "roles": [],
                         "organizationUnitManager": "",
                     }
                     if (x.domains) {
@@ -101,11 +121,11 @@ class DocumentImportForm extends Component {
                         out.domains = [x.domains]
                     }
                     if (x.archives) {
-                        showValues[k].domains = [...showValues[k].archives, x.archives];
+                        showValues[k].archives = [...showValues[k].archives, x.archives];
                         out.archives = [x.archives];
                     }
                     if (x.roles) {
-                        showValues[k].domains = [...showValues[k].roles, x.roles];
+                        showValues[k].roles = [...showValues[k].roles, x.roles];
                         out.roles = [x.roles];
                     }
                     if (x.relationshipDocuments) {
@@ -145,6 +165,93 @@ class DocumentImportForm extends Component {
 
     }
 
+    handleExportFile = (dataExport) => {
+        for (let i in dataExport.dataSheets) {
+            for (let j in dataExport.dataSheets[i].tables) {
+                let data = dataExport.dataSheets[i].tables[j].data;
+                let newData = [];
+                for (let k in data) {
+                    let element = {};
+                    let x = data[k];
+                    let length_domains, length_archives, length_relationship, length_roles;
+                    if (x.name) {
+                        if (Array.isArray(x.domains)) {
+                            element.domains = x.domains[0] ? x.domains[0] : "";
+                            length_domains = x.domains.length;
+                        } else {
+                            element.domains = x.domains ? x.domains : "";
+                            length_domains = 0;
+                        }
+                        if (Array.isArray(x.archives)) {
+                            element.archives = x.archives[0] ? x.archives[0] : "";
+                            length_archives = x.archives.length;
+                        } else {
+                            element.archives = x.archives ? x.archives : "";
+                            length_archives = 0;
+                        }
+                        if (Array.isArray(x.documentRelationshipList)) {
+                            element.documentRelationshipList = x.documentRelationshipList[0] ? x.documentRelationshipList[0] : "";
+                            length_relationship = x.documentRelationshipList.length;
+                        } else {
+                            element.documentRelationshipList = x.documentRelationshipList ? x.documentRelationshipList : "";
+                            length_relationship = 0;
+                        }
+                        if (Array.isArray(x.roles)) {
+                            element.roles = x.roles[0] ? x.roles[0] : "";
+                            length_roles = x.roles.length;
+                        } else {
+                            element.roles = x.roles ? x.roles : "";
+                            length_roles = 0;
+                        }
+                        element.name = x.name;
+                        element.description = x.description ? x.description : "";
+                        element.issuingBody = x.issuingBody ? x.issuingBody : "";
+                        element.signer = x.signer ? x.signer : "";
+                        element.versionName = x.versionName ? x.versionName : "";
+                        element.officialNumber = x.officialNumber ? x.officialNumber : "";
+                        element.issuingDate = x.issuingDate ? x.issuingDate : "";
+                        element.effectiveDate = x.effectiveDate ? x.effectiveDate : "";
+                        element.expiredDate = x.expiredDate ? x.expiredDate : "";
+                        element.category = x.category ? x.category : "";
+                        element.relationshipDescription = x.relationshipDescription ? x.relationshipDescription : "";
+                        element.organizationUnitManager = x.organizationUnitManager ? x.organizationUnitManager : "";
+
+                        newData = [...newData, element];
+                        let max_length = Math.max(length_roles, length_domains, length_archives, length_relationship);
+                        if (max_length > 1) {
+                            for (let n = 1; n < max_length; n++) {
+                                let object = {
+                                    name: "",
+                                    description: "",
+                                    archives: n < length_archives ? x.archives[n] : "",
+                                    domains: n < length_domains ? x.domains[n] : "",
+                                    issuingBody: "",
+                                    signer: "",
+                                    versionName: "",
+                                    officialNumber: "",
+                                    issuingDate: "",
+                                    effectiveDate: "",
+                                    expiredDate: "",
+                                    category: "",
+                                    relationshipDescription: "",
+                                    documentRelationshipList: n < length_relationship ? x.documentRelationshipList[n] : "",
+                                    roles: n < length_roles ? x.roles[n] : "",
+                                    organizationUnitManagement: "",
+                                }
+                                newData = [...newData, object];
+
+                            }
+                        }
+
+
+                    }
+                }
+                dataExport.dataSheets[i].tables[j].data = newData;
+            }
+        }
+        return dataExport;
+    }
+
 
     save = () => {
         let { importShowData } = this.state;
@@ -155,6 +262,7 @@ class DocumentImportForm extends Component {
         const { translate } = this.props;
         console.log('stateeeeeeee');
         let { limit, page, importData, rowError, configData, checkFileImport } = this.state;
+        let dataExport = this.handleExportFile(exportDocument);
 
         return (
             <React.Fragment>
@@ -181,11 +289,11 @@ class DocumentImportForm extends Component {
                                     handleImportExcel={this.handleImportExcel}
                                 />
                             </div>
-                            {/* <div className="form-group col-md-4 col-xs-12">
+                            <div className="form-group col-md-4 col-xs-12">
                                 <label></label>
-                                <ExportExcel id="download_template_task_template" type='link' exportData={templateImportTaskTemplate2}
+                                <ExportExcel id="download_template_task_template" type='link' exportData={dataExport}
                                     buttonName='Download file import mẫu' />
-                            </div> */}
+                            </div>
                             <div className="form-group col-md-12 col-xs-12">
                                 <ShowImportData
                                     id="import_taskTemplate_show_data"

@@ -34,7 +34,6 @@ class ContentMaker extends Component {
     }
     pressEnter = (event) => {
         let code = event.keyCode || event.which;
-        console.log(code)
         if (code === 13 && !event.shiftKey) {
             let { onSubmit } = this.props
             onSubmit(event)
