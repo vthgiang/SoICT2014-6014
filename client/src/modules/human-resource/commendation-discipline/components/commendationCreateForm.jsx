@@ -216,7 +216,7 @@ class PraiseCreateForm extends Component {
                         <div className={`form-group ${errorOnEmployee && "has-error"}`}>
                             <label>{translate('human_resource.staff_number')}<span className="text-red">*</span></label>
                             <SelectBox
-                                id={`create-salary-employee`}
+                                id={`create-commendation-employee`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 value={employee}

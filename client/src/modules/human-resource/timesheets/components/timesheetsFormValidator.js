@@ -1,7 +1,3 @@
-import {
-    VALIDATOR
-} from '../../../../helpers/validator';
-
 export const TimesheetsFormValidator = {
     validateEmployeeNumber,
     validateMonth,
@@ -16,8 +12,6 @@ function validateEmployeeNumber(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = translate('human_resource.employee_number_required');
-    } else if (!VALIDATOR.isValidEmployeeNumber(value)) {
-        msg = translate('human_resource.staff_code_not_special');
     }
     return msg;
 }

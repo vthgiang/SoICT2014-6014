@@ -244,7 +244,7 @@ class TaskTimesheetLog extends Component {
                                                 <TimePicker
                                                     id={`time-picker-${currentTimer._id}`}
                                                     onChange={this.handleTimeChange}
-                                                    getDefaultValue = {this.getDefaultValue}
+                                                    // getDefaultValue = {this.getDefaultValue}
                                                 />
                                                 <ErrorLabel content={errorOnEndDate} />
                                             </div>

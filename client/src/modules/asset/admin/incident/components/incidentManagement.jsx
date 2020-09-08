@@ -384,6 +384,7 @@ class IncidentManagement extends Component {
                         reportedBy={currentRow.reportedBy}
                         dateOfIncident={this.formatDate2(currentRow.dateOfIncident)}
                         description={currentRow.description}
+                        statusIncident={currentRow.statusIncident}
                     />
                 }
 

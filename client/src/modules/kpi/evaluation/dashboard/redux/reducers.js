@@ -45,14 +45,16 @@ export function dashboardEvaluationEmployeeKpiSet(state = {}, action) {
     case  dashboardEmployeeKpiConstants.GET_ALL_CHILDREN_OF_UNIT_REQUEST:
       return {
         ...state,
+        childrenOrganizationalUnitLoading: false,
         childrenOrganizationalUnit: null,
         loading: true,
         isLoading: true
       };
 
-    case dashboardEmployeeKpiConstants.GET_ALL_CHILDREN_OF_UNIT_SUCCESS:      
+    case dashboardEmployeeKpiConstants.GET_ALL_CHILDREN_OF_UNIT_SUCCESS:   
       return {
         ...state,
+        childrenOrganizationalUnitLoading: true,
         loading: false,
         childrenOrganizationalUnit: action.payload,
         isLoading: false
@@ -61,6 +63,7 @@ export function dashboardEvaluationEmployeeKpiSet(state = {}, action) {
     case dashboardEmployeeKpiConstants.GET_ALL_CHILDREN_OF_UNIT_FAILURE:
       return { 
         ...state,
+        childrenOrganizationalUnitLoading: true,
         error: action.payload,
         isLoading: false
       };

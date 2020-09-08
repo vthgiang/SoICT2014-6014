@@ -22,7 +22,6 @@ class TimesheetsManagement extends Component {
         this.state = {
             allDayOfMonth: allDayOfMonth,
             dayNow: dayNow,
-            position: null,
             month: this.formatDate(Date.now(), true),
             employeeNumber: "",
             organizationalUnit: null,
@@ -126,20 +125,6 @@ class TimesheetsManagement extends Component {
         this.setState({
             ...this.state,
             organizationalUnit: value
-        })
-    }
-
-    /**
-     * Function lưu giá trị chức vụ vào state khi thay đổi
-     * @param {*} value : Array id chức vụ
-     */
-    handlePositionChange = (value) => {
-        if (value.length === 0) {
-            value = null
-        };
-        this.setState({
-            ...this.state,
-            position: value
         })
     }
 
@@ -303,27 +288,11 @@ class TimesheetsManagement extends Component {
 
         const { month, limit, page, allDayOfMonth, dayNow, organizationalUnit, currentRow } = this.state;
 
-        let { list } = department;
-        let listTimesheets = [], listPosition = [{ value: "", text: translate('human_resource.not_unit'), disabled: true }];
-
-        if (organizationalUnit) {
-            listPosition = [];
-            organizationalUnit.forEach(u => {
-                list.forEach(x => {
-                    if (x._id === u) {
-                        let roleDeans = x.deans.map(y => { return { _id: y._id, name: y.name } });
-                        let roleViceDeans = x.viceDeans.map(y => { return { _id: y._id, name: y.name } });
-                        let roleEmployees = x.employees.map(y => { return { _id: y._id, name: y.name } });
-                        listPosition = listPosition.concat(roleDeans).concat(roleViceDeans).concat(roleEmployees);
-                    }
-                })
-            })
-        }
-
+        let listTimesheets = [], exportData = [];
         if (timesheets.isLoading === false && timesheets.listTimesheets.length !== 0) {
             listTimesheets = timesheets.listTimesheets;
+            exportData = this.convertDataToExportData(listTimesheets);
         }
-        let exportData = this.convertDataToExportData(listTimesheets);
 
         let pageTotal = (timesheets.totalList % limit === 0) ?
             parseInt(timesheets.totalList / limit) :
@@ -351,24 +320,16 @@ class TimesheetsManagement extends Component {
                             <label className="form-control-static">{translate('human_resource.unit')}</label>
                             <SelectMulti id={`multiSelectUnit`} multiple="multiple"
                                 options={{ nonSelectedText: translate('human_resource.non_unit'), allSelectedText: translate('human_resource.all_unit') }}
-                                items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
+                                items={department.list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
                             </SelectMulti>
                         </div>
-                        {/* chức vụ */}
-                        <div className="form-group">
-                            <label className="form-control-static">{translate('human_resource.position')}</label>
-                            <SelectMulti id={`multiSelectPosition`} multiple="multiple"
-                                options={{ nonSelectedText: translate('human_resource.non_position'), allSelectedText: translate('human_resource.all_position') }}
-                                items={organizationalUnit === null ? listPosition : listPosition.map((p, i) => { return { value: p._id, text: p.name } })} onChange={this.handlePositionChange}>
-                            </SelectMulti>
-                        </div>
-                    </div>
-                    <div className="form-inline" style={{ marginBottom: 10 }}>
                         {/* Mã nhân viên */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('human_resource.staff_number')}</label>
                             <input type="text" className="form-control" name="employeeNumber" onChange={this.handleMSNVChange} placeholder={translate('human_resource.staff_number')} autoComplete="off" />
                         </div>
+                    </div>
+                    <div className="form-inline" style={{ marginBottom: 10 }}>
                         {/* Tháng */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('human_resource.month')}</label>
@@ -379,6 +340,8 @@ class TimesheetsManagement extends Component {
                                 value={month}
                                 onChange={this.handleMonthChange}
                             />
+                        </div>
+                        <div className="form-group">
                             <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => this.handleSunmitSearch()} >{translate('general.search')}</button>
                         </div>
                     </div>
@@ -482,7 +445,7 @@ class TimesheetsManagement extends Component {
                     currentRow &&
                     <TimesheetsEditForm
                         _id={currentRow._id}
-                        employeeNumber={currentRow.employee.employeeNumber}
+                        employeeNumber={currentRow.employee ? `${currentRow.employee.employeeNumber} - ${currentRow.employee.fullName}` : null}
                         month={this.formatDate(currentRow.month, true)}
                         workSession1={currentRow.workSession1}
                         workSession2={currentRow.workSession2}

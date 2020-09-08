@@ -471,14 +471,23 @@ class EditTaskTemplate extends Component {
         if (department.departmentsThatUserIsDean) {
             departmentsThatUserIsDean = department.departmentsThatUserIsDean;
         }
-        if (user.roledepartments) {
-            listRole = user.roledepartments;
-            for (let x in listRole.deans)
-                listRoles[x] = listRole.deans[x];
-            for (let x in listRole.viceDeans)
-                listRoles.push(listRole.viceDeans[x]);
-            for (let x in listRole.employees)
-                listRoles.push(listRole.employees[x]);
+        if (user.usersInUnitsOfCompany) {
+            listRole = user.usersInUnitsOfCompany;
+            for (let x in listRole) {
+                if (listRole[x].id === editingTemplate.organizationalUnit) {
+                    listRoles.push(Object.values(listRole[x].deans));
+                    listRoles.push(Object.values(listRole[x].viceDeans));
+                    listRoles.push(Object.values(listRole[x].employees));
+                }
+                
+            }
+            listRole = [];
+            for (let x in listRoles) {
+                for (let i in listRoles[x]) {
+                    listRole = listRole.concat(listRoles[x]);
+                }
+            }
+            listRoles = listRole;
         }
         if (user.usercompanys) usercompanys = user.usercompanys;
         if (user.userdepartments) userdepartments = user.userdepartments;
@@ -503,14 +512,14 @@ class EditTaskTemplate extends Component {
                         {/**Đơn vị của mẫu công việc */}
                         <div className={`form-group ${editingTemplate.errorOnUnit === undefined ? "" : "has-error"}`} >
                             <label className="control-label">{translate('task_template.unit')}*:</label>
-                            {departmentsThatUserIsDean !== undefined && editingTemplate.organizationalUnit !== "" &&
+                            {usersInUnitsOfCompany !== undefined && editingTemplate.organizationalUnit !== "" &&
                                 <SelectBox
                                     id={`edit-unit-select-box-${editingTemplate._id}`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={
-                                        departmentsThatUserIsDean.map(x => {
-                                            return { value: x._id, text: x.name };
+                                        usersInUnitsOfCompany.map(x => {
+                                            return { value: x.id, text: x.department };
                                         })
                                     }
                                     onChange={this.handleTaskTemplateUnit}
