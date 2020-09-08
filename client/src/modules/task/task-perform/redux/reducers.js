@@ -618,10 +618,10 @@ export function performtasks(state = {}, action) {
                 adding: true
             }
         case performTaskConstants.CREATE_COMMENT_SUCCESS:
-            var comment = { ...state.task, commentsInProcess: action.payload }
+            console.log(action.payload)
             return {
                 ...state,
-                task: comment
+                task: action.payload
             }
         case performTaskConstants.CREATE_COMMENT_FAILURE:
             return {
