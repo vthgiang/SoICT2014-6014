@@ -393,7 +393,7 @@ class DepreciationManager extends Component {
                         </div>
                     </div>
 
-                    <div className="form-inline" style={{ marginBottom: 10 }}>
+                    <div className="form-inline">
                         {/* Phân loại */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('asset.general_information.type')}</label>
@@ -420,7 +420,7 @@ class DepreciationManager extends Component {
                             </SelectMulti>
                         </div>
                     </div>
-                    <div className="form-inline">
+                    <div className="form-inline" style={{ marginBottom: 10 }}>
                         {/* Tháng */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.month')}</label>

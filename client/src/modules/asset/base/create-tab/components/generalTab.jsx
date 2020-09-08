@@ -175,7 +175,6 @@ class GeneralTab extends Component {
             }
         }
 
-
         await this.setState(state => {
             return {
                 ...state,
