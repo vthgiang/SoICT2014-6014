@@ -100,6 +100,18 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
             });
         }
 
+        if (!nextProps.createKpiUnit.currentKPI && this.state.dataStatus === this.DATA_STATUS.FINISHED) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    dataStatus: this.DATA_STATUS.QUERYING,
+                    willUpdate: true
+                }
+            });
+
+            return false;
+        }
+
         return false;
     }
 
@@ -582,17 +594,18 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
     
     render() {
         const { createKpiUnit, translate } = this.props;
-        let currentKpi;
+        let currentKpi, organizationalUnitKpiLoading;
 
         if(createKpiUnit) {
-            currentKpi = createKpiUnit.currentKPI
+            currentKpi = createKpiUnit.currentKPI;
+            organizationalUnitKpiLoading = createKpiUnit.organizationalUnitKpiLoading
         }
 
         return (
             <React.Fragment>
                 {currentKpi ?
                     <section ref="chart"></section>
-                    : <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
+                    : organizationalUnitKpiLoading && <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
                 }
             </React.Fragment>
         )

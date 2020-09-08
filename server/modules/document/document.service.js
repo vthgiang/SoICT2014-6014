@@ -730,6 +730,7 @@ exports.deleteManyDocumentArchive = async (array, company) => {
 }
 
 exports.editDocumentArchive = async (id, data) => {
+    console.log('dataaa', data);
     const archive = await DocumentArchive.findById(id);
     let array = data.array;
     archive.name = data.name;
@@ -741,12 +742,11 @@ exports.editDocumentArchive = async (id, data) => {
 
         const archive = await DocumentArchive.findById(array[i]);
         archive.path = await findPath(archive);
-        archive.save();
+        await archive.save();
     }
     const document = await this.getDocumentArchives(archive.company)
-    return archive;
+    return document;
 }
-
 async function findPath(data) {
     let path = "";
     let arrayParent = [];
@@ -790,7 +790,6 @@ async function deleteNode(id) {
 exports.importDocumentArchive = async (company, data) => {
 
     for (let i in data) {
-        console.log('inputtt', data[i])
         description = data[i].description;
         let archive = {
             name: data[i].name,
@@ -798,13 +797,11 @@ exports.importDocumentArchive = async (company, data) => {
         }
         if (data[i].pathParent) {
             let path = data[i].pathParent.split('-').map(x => { return x.trim() }).join(" - ");
-            console.log('pathhh', path);
             const parentArchive = await DocumentArchive.findOne({ path: path });
             if (parentArchive) {
                 archive.parent = parentArchive.id;
             }
         }
-        console.log(archive);
         let res = await this.createDocumentArchive(company, archive);
 
     }

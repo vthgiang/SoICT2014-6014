@@ -179,7 +179,7 @@ class SideBar extends Component {
                                     { name: 'menu.kpi_unit_dashboard', icon: 'fa fa-circle-o', path: '/kpi-units/dashboard' },
                                     { name: 'menu.kpi_unit_create', icon: 'fa fa-circle-o', path: '/kpi-units/create' },
                                     { name: 'menu.kpi_unit_manager', icon: 'fa fa-circle-o', path: '/kpi-units/manager' },
-                                    { name: 'menu.kpi_unit_statistic', icon: 'fa fa-circle-o', path: '/kpi-units/statisti' },
+                                    { name: 'menu.kpi_unit_statistic', icon: 'fa fa-circle-o', path: '/kpi-units/statistic' },
                                     { name: 'menu.kpi_member_dashboard', icon: 'fa fa-circle-o', path: '/kpi-member/dashboard' },
                                     { name: 'menu.kpi_member_manager', icon: 'fa fa-circle-o', path: '/kpi-member/manager' },
                                     { name: 'menu.kpi_personal_dashboard', icon: 'fa fa-circle-o', path: '/kpi-personals/dashboard' },
@@ -224,6 +224,10 @@ class SideBar extends Component {
                                     { name: 'menu.task_report', icon: 'fa fa-circle-o', path: '/task-report' },
                                 ]
                             }} />
+
+
+                            {/* Quản lý kế hoạch sản xuất */}
+                            <Item item={{ name: 'menu.manage_plans', icon: 'fa fa-calendar', path: '/manage-plans' }} />
                         </ul>
                     </section>
                 </aside>

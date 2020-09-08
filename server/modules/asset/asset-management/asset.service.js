@@ -510,6 +510,7 @@ exports.updateIncident = async(incidentId, data) => {
             "incidentLogs.$.reportedBy": data.reportedBy,
             "incidentLogs.$.dateOfIncident": data.dateOfIncident,
             "incidentLogs.$.description": data.description,
+            "incidentLogs.$.statusIncident": data.statusIncident,
             status: data.status
         }
     })

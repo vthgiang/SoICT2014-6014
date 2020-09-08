@@ -572,7 +572,7 @@ exports.searchEmployeeProfiles = async (params, company) => {
         })
     }
 
-    let totalList = listEmployees.length;
+    let totalList = await Employee.countDocuments(keySearch);
     let data = [];
     for (let n in listEmployees) {
         let value = await this.getAllPositionRolesAndOrganizationalUnitsOfUser(listEmployees[n].emailInCompany);

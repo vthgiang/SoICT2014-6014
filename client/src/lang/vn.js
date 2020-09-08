@@ -769,6 +769,8 @@ export default {
             //QUẢN LÝ ĐƠN HÀNG
             manage_orders: "Quản lý đơn hàng",
             manage_list_orders: "Danh sách đơn hàng",
+            // Quản lý kế hoạch sản xuất
+            manage_plans: "Quản lý kế hoạch sản xuất"
         },
 
         manage_system: {
@@ -1400,6 +1402,8 @@ export default {
                 add_holiday_title: 'Thêm mới kế hoạch làm việc',
                 add_by_hand: 'Thêm một kế hoạch làm việc',
                 add_import: 'Import file excel',
+                accept_application: 'Chấp nhận đơn xin nghỉ',
+                refuse_application: 'Từ chối đơn xin nghỉ',
 
                 // Thông điệp trả về từ server
                 type_required: 'Thể loại không được để trống',
@@ -1476,7 +1480,6 @@ export default {
             annual_leave_personal: {
                 list_annual_leave: 'Quy định về nghỉ phép của công ty',
                 inform_annual_leave: 'Thông tin nghỉ phép cá nhân',
-                note: 'Chú thích',
                 day: 'ngày',
                 total_number_leave_of_year: 'Tổng số ngày nghỉ phép cả năm',
                 leaved: 'Bạn đã nghỉ',
@@ -2245,6 +2248,11 @@ export default {
                 action_not_rating: 'Số hoạt động chưa được đánh giá tháng này',
 
                 left_can_edit_task: 'Thời gian còn lại để chỉnh sửa đánh giá công việc tháng trước',
+
+                // check deadline
+                warning_days: "ngày",
+                warning_hours: "giờ",
+                warning_minutes: "phút",
             },
             task_perform: {
 
@@ -2424,28 +2432,71 @@ export default {
             task_process: {
                 process_name: 'Tên quy trình',
                 process_description: 'Mô tả quy trình',
+                creator: 'Người tạo quy trình',
                 manager: 'Người quản lý',
                 viewer: 'Người được xem',
+                no_data: 'Không có dữ liệu',
                 time_of_process: 'Thời gian thực hiện quy trình',
+                process_information: 'Thông tin quy trình',
                 start_date: 'Ngày bắt đầu',
                 end_date: 'Ngày kết thúc',
-
+                create: 'Thêm mới',
                 inprocess: 'Đang thực hiện',
                 wait_for_approval: 'Chờ phê duyệt',
                 finished: 'Đã kết thúc',
                 delayed: 'Tạm hoãn',
                 canceled: 'Bị hủy',
-
+                general_infomation: "Thông tin chung",
                 notice: 'Chú thích',
                 information: 'Thông tin',
                 document: 'Tài liệu',
-
+                roles: 'Các vai trò',
                 list_of_data_and_info: 'Danh sách thông tin và tài liệu',
                 not_have_doc: 'Không có tài liệu',
                 not_have_info: 'Không có thông tin',
                 not_export_info: 'Không xuất thông tin',
+                task_process: 'Quy trình công việc',
+
+                export_doc: 'Xuất tài liệu',
+                export_info: 'Xuất thông tin',
+
+                create_task_with_template: 'Tạo công việc với mẫu',
+
+                add_modal: 'Thêm mới mẫu quy trình công việc',
+                view_process_template_modal: 'Xem mẫu quy trình công việc',
+                view_task_process_modal: 'Xem quy trình công việc',
+                edit_modal: 'Chỉnh sửa mẫu quy trình công việc',
+                add_task_process_modal: 'Thêm mới chuỗi công việc theo quy trình',
 
                 save: 'Lưu',
+
+                // message from server
+                get_all_success: 'Lấy tất cả mẫu quy trình thành công',
+                get_all_err: 'Lấy tất cả mẫu quy trình lỗi',
+                get_by_id_success: 'Lấy mẫu quy trình theo id thành công',
+                get_by_id_err: 'Lấy mẫu quy trình theo id lỗi',
+                create_success: 'Tạo mẫu quy trình thành công',
+                create_error: 'Tạo mẫu quy trình thất bại',
+                edit_success: 'Chỉnh sửa mẫu quy trình thành công',
+                edit_fail: 'Chỉnh sửa mẫu quy trình thất bại',
+                delete_success: 'Xóa mẫu quy trình thành công',
+                delete_fail: 'Xóa mẫu quy trình thất bại',
+                create_task_by_process_success: 'Tạo công việc theo quy trình thành công',
+                create_task_by_process_fail: 'Tạo công việc theo quy trình thất bại',
+                get_all_task_process_success: 'Lấy danh sach quy trình công việc thành công',
+                get_all_task_process_fail: 'Lấy danh sach quy trình công việc thất bại',
+                update_task_process_success: 'Cập nhật quy trình công việc thành công',
+                update_task_process_fail: 'Cập nhật quy trình công việc thành công',
+
+                error: {
+                    empty_name: "Tên quy trình không được bỏ trống",
+                    special_character: "Tên không chứa ký tự đặc biệt",
+
+                    empty_description: "Mô tả quy trình không được bỏ trống",
+
+                    empty_viewer: "Cần chỉ rõ những người có quyền xem mẫu quy trình",
+                    empty_manager: "Cần chỉ rõ những người quản lý mẫu quy trình",
+                }
 
             },
             task_template: {
@@ -2457,8 +2508,8 @@ export default {
                 delete_task_template_success: 'Xóa mẫu công việc thành công !',
                 delete_task_template_fail: 'Xóa mẫu công việc thất bại !',
                 error_task_template_creator_null: 'Nguời tạo mẫu công việc này không tồn tại hoặc đã bị xóa !',
-                error_task_template_organizational_unit: 'Phòng ban của mẫu công việc này không tồn tại hoặc đã bị xóa !'
-
+                error_task_template_organizational_unit: 'Phòng ban của mẫu công việc này không tồn tại hoặc đã bị xóa !',
+                view_task_process_template: 'Xem mẫu quy trình công việc',
             }
         },
 
@@ -3088,6 +3139,30 @@ export default {
             edit_report_manager_fail: 'Sửa mẫu báo cáo thất bại !',
             delete_report_manager_success: 'Xóa mẫu báo cáo thành công !',
             delete_report_manager_fail: 'Xóa mẫu báo cáo thất bại !',
+        },
+
+        // manage_plan
+
+        manage_plan: {
+            code: "Mã kế hoạch",
+            planName: "Tên kế hoạch",
+            search: "Tìm kiếm",
+            add_plan: "Thêm mới",
+            index: "STT",
+            description: "Mô tả",
+            edit: "Chỉnh sửa thông tin kế hoạch",
+            delete: "Xóa kế hoạch",
+            delete_success: "Xóa kế hoạch thành công!",
+            delete_fail: "Xóa kế hoạch thất bại!",
+            add: "Thêm kế hoạch",
+            add_title: "Thêm mới kế hoạch",
+            add_success: "Thêm kế hoạch thành công!",
+            add_fail: "Thêm kế hoạch thất bại!",
+            plan_description: "Mô tả kế hoạch",
+            edit_title: "Sửa một kế hoạch",
+            edit_plan_success: "Cập nhật kế hoạch thành công!",
+            edit_plan_fail: "Cập nhật kế hoạch thất bại!",
+            detail_info_plan: "Thông tin chi tiết kế hoạch"
         },
 
         footer: {

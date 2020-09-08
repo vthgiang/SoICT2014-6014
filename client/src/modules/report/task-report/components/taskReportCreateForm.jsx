@@ -208,13 +208,17 @@ class TaskReportCreateForm extends Component {
             if (!defaultUnit && user.organizationalUnitsOfUser.length > 0) { // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
                 defaultUnit = user.organizationalUnitsOfUser[0];
             }
-            this.props.getChildrenOfOrganizationalUnits(defaultUnit._id);
+
+            if (defaultUnit) {
+                this.props.getChildrenOfOrganizationalUnits(defaultUnit._id);
+            }
+            
             this.setState(state => {
                 return {
                     ...state,
                     newReport: {
                         ...this.state.newReport,
-                        organizationalUnit: defaultUnit._id,
+                        organizationalUnit: defaultUnit && defaultUnit._id,
                     }
                 };
             });

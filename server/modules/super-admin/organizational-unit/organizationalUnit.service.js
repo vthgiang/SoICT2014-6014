@@ -91,30 +91,32 @@ exports.getChildrenOfOrganizationalUnitsAsTree = async (id, role, organizational
 
     const tree = await arrayToTree(newData);
 
-    for(let j = 0; j < tree.length; j++){
-        let queue = [];
+    if (organizationalUnit) {
+        for (let j = 0; j < tree.length; j++) {
+            let queue = [];
 
-        if (organizationalUnit.name === tree[j].name) {
-            return tree[j];
-        }
-        
-        queue.push(tree[j]);
-        while(queue.length > 0){
-            v = queue.shift();
-            if(v.children !== undefined){
-                for(let i = 0; i < v.children.length; i++){
-                    let u = v.children[i];
-                    if(organizationalUnit.name === u.name){                        
-                        return u;
-                    }
-                    else{
-                        queue.push(u);
+            if (organizationalUnit.name === tree[j].name) {
+                return tree[j];
+            }
+            
+            queue.push(tree[j]);
+            while(queue.length > 0){
+                v = queue.shift();
+                if(v.children !== undefined){
+                    for(let i = 0; i < v.children.length; i++){
+                        let u = v.children[i];
+                        if(organizationalUnit.name === u.name){                        
+                            return u;
+                        }
+                        else{
+                            queue.push(u);
+                        }
                     }
                 }
             }
         }
     }
-
+   
     return null;
 }
 

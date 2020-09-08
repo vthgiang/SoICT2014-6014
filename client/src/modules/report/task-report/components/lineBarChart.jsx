@@ -17,11 +17,9 @@ class LineBarChart extends Component {
 
 
     setDataMultiChart = (data) => {
-        let dataConvert = [['x']], typeChart = {}, rotated;
+        let dataConvert = [['x']], typeChart = {};
         let indices = { time: 0 }; // chỉ số time = 0 ứng với mảng x trong dataConvert 
         if (data) {
-            // Nếu dữ liệu nhiều thì xoay trục biểu đồ
-            (data.length > 6) ? (rotated = true) : (rotated = false);
 
             data.forEach(x => {
                 dataConvert[indices.time].push(x.time);
@@ -35,7 +33,7 @@ class LineBarChart extends Component {
             })
         }
 
-        return { dataConvert, typeChart, rotated };
+        return { dataConvert, typeChart };
     }
 
 
@@ -93,7 +91,6 @@ class LineBarChart extends Component {
 
         let newData = data.dataConvert;
         let typeChart = data.typeChart;
-        let rotated = data.rotated;
 
         this.chart = c3.generate({
             bindto: this.refs.barChart,
@@ -114,7 +111,7 @@ class LineBarChart extends Component {
                 }
             },
             axis: {
-                rotated: rotated,
+                rotated: true,
                 x: {
                     type: 'category',
                     tick: {
@@ -137,7 +134,7 @@ class LineBarChart extends Component {
             <div className="row">
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <div className="lineBarChart">
-                        <section ref="barChart"></section>
+                        <div ref="barChart"></div>
                     </div>
                 </div>
             </div>

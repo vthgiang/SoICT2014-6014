@@ -35,13 +35,17 @@ exports.getOrganizationalUnitKpiSet = async (query) => {
         var department = { '_id': query.organizationalUnitId };
     }
 
-    // Status khác 2 --> chưa kết thúc
-    var kpiunit = await OrganizationalUnitKpiSet.findOne({
-        organizationalUnit: department._id,
-        status: { $ne: 2 }, date: { $lte: endOfCurrentMonth, $gt: endOfLastMonth }
-    })
-        .populate("organizationalUnit creator")
-        .populate({ path: "kpis", populate: { path: 'parent' } });
+    let kpiunit;
+    if (department) {
+        // Status khác 2 --> chưa kết thúc
+        kpiunit = await OrganizationalUnitKpiSet.findOne({
+            organizationalUnit: department._id,
+            status: { $ne: 2 }, date: { $lte: endOfCurrentMonth, $gt: endOfLastMonth }
+        })
+            .populate("organizationalUnit creator")
+            .populate({ path: "kpis", populate: { path: 'parent' } });
+    }
+    
 
     return kpiunit;
 }
@@ -52,7 +56,8 @@ exports.getOrganizationalUnitKpiSet = async (query) => {
  */
 exports.getParentOrganizationalUnitKpiSet = async (id) => {
     //req.params.id,
-    var department = await OrganizationalUnit.findOne({
+    let department, kpiunit;
+    department = await OrganizationalUnit.findOne({
         $or: [
             { 'deans': id },
             { 'viceDeans': id },
@@ -66,12 +71,15 @@ exports.getParentOrganizationalUnitKpiSet = async (id) => {
     let startOfCurrentMonth = new Date(currentYear, currentMonth);
     let startOfNextMonth = new Date(currentYear, currentMonth + 1);
 
-    var kpiunit = await OrganizationalUnitKpiSet.findOne({
-        organizationalUnit: department.parent,
-        date: { $gte: startOfCurrentMonth, $lt: startOfNextMonth }
-    })
-        .populate("organizationalUnit creator")
-        .populate({ path: "kpis", populate: { path: 'parent' } });
+    if (department) {
+        kpiunit = await OrganizationalUnitKpiSet.findOne({
+            organizationalUnit: department.parent,
+            date: { $gte: startOfCurrentMonth, $lt: startOfNextMonth }
+        })
+            .populate("organizationalUnit creator")
+            .populate({ path: "kpis", populate: { path: 'parent' } });
+    }
+    
     return kpiunit;
 
 }
@@ -84,7 +92,7 @@ exports.getParentOrganizationalUnitKpiSet = async (id) => {
  */
 exports.getAllOrganizationalUnitKpiSetByTime = async (roleId, organizationalUnitId, startDate, endDate) => {
     
-    let organizationalUnit;
+    let organizationalUnit, organizationalUnitKpiSets;
     if (!organizationalUnitId) {
         organizationalUnit = await OrganizationalUnit.findOne({
             $or: [
@@ -97,16 +105,19 @@ exports.getAllOrganizationalUnitKpiSetByTime = async (roleId, organizationalUnit
         organizationalUnit = { '_id': organizationalUnitId }
     }
 
-    let organizationalUnitKpiSets = await OrganizationalUnitKpiSet.find(
-        {
-            'organizationalUnit': organizationalUnit._id,
-            'date': {
-                $gte: startDate,
-                $lt: endDate
-            }
-        },
-        { automaticPoint: 1, employeePoint: 1, approvedPoint: 1, date: 1 }
-    )
+    if (organizationalUnit) {
+        organizationalUnitKpiSets = await OrganizationalUnitKpiSet.find(
+            {
+                'organizationalUnit': organizationalUnit._id,
+                'date': {
+                    $gte: startDate,
+                    $lt: endDate
+                }
+            },
+            { automaticPoint: 1, employeePoint: 1, approvedPoint: 1, date: 1 }
+        )
+    }
+    
     return organizationalUnitKpiSets;
 }
 
@@ -140,14 +151,17 @@ exports.getAllOrganizationalUnitKpiSetByTimeOfChildUnit = async (companyId, quer
  * @query {*} status trạng thái của OrganizationalUnitKPISet
  */
 exports.getAllOrganizationalUnitKpiSet = async (data) => {
-    var organizationalUnit = await OrganizationalUnit.findOne({
+    let keySearch, organizationalUnit, status;
+
+    organizationalUnit = await OrganizationalUnit.findOne({
         $or: [
             { 'deans': data.roleId },
             { 'viceDeans': data.roleId },
             { 'employees': data.roleId }
         ]
     });
-    let status = Number(data.status);
+
+    status = Number(data.status);
     if (data.startDate) {
         let startDate = data.startDate.split("-");
         var startdate = new Date(startDate[1] + "-" + startDate[0] + "-" + "01");
@@ -161,15 +175,20 @@ exports.getAllOrganizationalUnitKpiSet = async (data) => {
         endDate[0] = String(parseInt(endDate[0]) + 1);
         var enddate = new Date(endDate[2] + "-" + endDate[1] + "-" + endDate[0]);
     }
-    let keySearch = {
-        organizationalUnit: organizationalUnit._id
-    };
+
+    if (organizationalUnit) {
+        keySearch = {
+            organizationalUnit: organizationalUnit._id
+        };
+    }
+    
     if (status !== -1) {
         keySearch = {
             ...keySearch,
             status: status
         };
     }
+
     if (data.startDate && data.endDate) {
         keySearch = {
             ...keySearch,
@@ -188,9 +207,11 @@ exports.getAllOrganizationalUnitKpiSet = async (data) => {
             date: { "$lt": enddate }
         }
     }
-    var kpiunits = await OrganizationalUnitKpiSet.find(keySearch)
+
+    let kpiunits = await OrganizationalUnitKpiSet.find(keySearch)
         .skip(0).limit(12).populate("organizationalUnit creator")
         .populate({ path: "kpis", populate: { path: 'parent' } });
+    
     return kpiunits;
 }
 
