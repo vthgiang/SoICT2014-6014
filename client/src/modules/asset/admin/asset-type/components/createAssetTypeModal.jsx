@@ -7,7 +7,7 @@ import { DialogModal, TreeSelect, ErrorLabel } from '../../../../../common-compo
 import { AssetCreateValidator } from '../../../base/create-tab/components/combinedContent';
 import { AssetTypeActions } from '../redux/actions';
 
-class CreateForm extends Component {
+class CreateAssetTypeModal extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -65,21 +65,22 @@ class CreateForm extends Component {
             let result;
 
             for (let n in defaultInfo) {
-                result = this.validateNameField(defaultInfo[n].nameField, n);
+                result = this.validateNameField(defaultInfo[n].nameField, n) && this.validateValue(defaultInfo[n].value, n);
                 if (!result) {
                     this.validateNameField(defaultInfo[n].nameField, n);
+                    this.validateValue(defaultInfo[n].value, n)
                     break;
                 }
             }
 
             if (result) {
                 this.setState({
-                    defaultInfo: [...defaultInfo, { nameField: "" }]
+                    defaultInfo: [...defaultInfo, { nameField: "", value: "" }]
                 })
             }
         } else {
             this.setState({
-                defaultInfo: [...defaultInfo, { nameField: "" }]
+                defaultInfo: [...defaultInfo, { nameField: "", value: "" }]
             })
         }
 
@@ -109,6 +110,30 @@ class CreateForm extends Component {
     }
 
     /**
+     * Bắt sự kiện chỉnh sửa giá trị trường dữ liệu thông tin mặc định
+     */
+    handleChangeValue = (e, index) => {
+        var { value } = e.target;
+        this.validateValue(value, index);
+    }
+    validateValue = (value, className, willUpdateState = true) => {
+        // let msg = AssetCreateValidator.validateValue(value, this.props.translate);
+        let msg = undefined;
+        if (willUpdateState) {
+            var { defaultInfo } = this.state;
+            defaultInfo[className] = { ...defaultInfo[className], value: value }
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnValue: msg,
+                    defaultInfo: defaultInfo
+                }
+            });
+        }
+        return msg === undefined;
+    }
+
+    /**
      * Bắt sự kiện xóa thông tin mặc định
      */
     delete = (index) => {
@@ -120,6 +145,7 @@ class CreateForm extends Component {
         if (defaultInfo.length !== 0) {
             for (let n in defaultInfo) {
                 this.validateNameField(defaultInfo[n].nameField, n);
+                this.validateValue(defaultInfo[n].value, n)
             }
         } else {
             this.setState({
@@ -190,7 +216,7 @@ class CreateForm extends Component {
 
                         {/* Thông tin mặc định */}
                         <div className="form-group">
-                            <label>Các thuộc tinh mặc định:<a style={{ cursor: "pointer" }} title='Thêm thuộc tinh mặc định'><i className="fa fa-plus-square" style={{ color: "#00a65a", marginLeft: 5 }}
+                            <label>Thông tin mặc định:<a style={{ cursor: "pointer" }} title='Thêm thông tin mặc định'><i className="fa fa-plus-square" style={{ color: "#00a65a", marginLeft: 5 }}
                                 onClick={this.handleAddDefaultInfo} /></a></label>
                             <div className={`form-group ${(!errorOnNameField && !errorOnValue) ? "" : "has-error"}`}>
 
@@ -238,4 +264,4 @@ const mapDispatchToProps = {
     createAssetTypes: AssetTypeActions.createAssetTypes
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CreateForm));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CreateAssetTypeModal));

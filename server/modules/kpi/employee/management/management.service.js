@@ -78,7 +78,7 @@ exports.copyKPI = async (id, data) => {
  */
 exports.getAllEmployeeKpiInOrganizationalUnit = async (roleId, organizationalUnitId, month) => {
 
-    let organizationalUnit;
+    let organizationalUnit, employeeKpis;
     let now, currentYear, currentMonth, endOfCurrentMonth, endOfLastMonth;
 
     if (month) {
@@ -107,107 +107,109 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (roleId, organizationalUni
         organizationalUnit = { '_id': new mongoose.Types.ObjectId(organizationalUnitId) }
     }
 
-    let employeeKpis = await OrganizationalUnitKpiSet.aggregate([
-        {
-            $match:
+    if (organizationalUnit) {
+        employeeKpis = await OrganizationalUnitKpiSet.aggregate([
             {
-                $and: [
-                    { 'organizationalUnit': organizationalUnit._id },
-                    { 'date': { $gt: endOfLastMonth, $lte: endOfCurrentMonth } }
-                ]
-            }
-        },
+                $match:
+                {
+                    $and: [
+                        { 'organizationalUnit': organizationalUnit._id },
+                        { 'date': { $gt: endOfLastMonth, $lte: endOfCurrentMonth } }
+                    ]
+                }
+            },
 
-        // Tìm các organizationalUnitKpis từ bảng organizational_unit_kpis
-        {
-            $lookup: {
-                from: "organizational_unit_kpis",
-                localField: "kpis",
-                foreignField: "_id",
-                as: "organizationalUnitKpis"
-            }
-        },
-        { $unwind: "$organizationalUnitKpis" },
+            // Tìm các organizationalUnitKpis từ bảng organizational_unit_kpis
+            {
+                $lookup: {
+                    from: "organizational_unit_kpis",
+                    localField: "kpis",
+                    foreignField: "_id",
+                    as: "organizationalUnitKpis"
+                }
+            },
+            { $unwind: "$organizationalUnitKpis" },
 
-        // Tìm các employeeKpis từ bảng employee_kpis
-        {
-            $lookup: {
-                from: "employee_kpis",
-                localField: "organizationalUnitKpis._id",
-                foreignField: "parent",
-                as: "employeeKpis"
-            }
-        },
-        {
-            $unwind: {
-                path: "$employeeKpis",
-                preserveNullAndEmptyArrays: true
-            }
-        },
-        {
-            $addFields: {
-                'employeeKpis.parentName': "$organizationalUnitKpis.name",
-                'employeeKpis.parentWeight': "$organizationalUnitKpis.weight"
-            }
-        },
-        
-        // Tìm các parentNameOfUnitKpi từ bảng organizational_unit_kpis
-        {
-            $lookup: {
-                from: "organizational_unit_kpis",
-                localField: "organizationalUnitKpis.parent",
-                foreignField: "_id",
-                as: "parentNameOfUnitKpi"
-            }
-        },
-        {
-            $addFields: {
-                'employeeKpis.parentNameOfUnitKpi': "$parentNameOfUnitKpi.name",
-                'employeeKpis.parentOfUnitKpi': "$organizationalUnitKpis.parent"
-            }
-        },
+            // Tìm các employeeKpis từ bảng employee_kpis
+            {
+                $lookup: {
+                    from: "employee_kpis",
+                    localField: "organizationalUnitKpis._id",
+                    foreignField: "parent",
+                    as: "employeeKpis"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$employeeKpis",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $addFields: {
+                    'employeeKpis.parentName': "$organizationalUnitKpis.name",
+                    'employeeKpis.parentWeight': "$organizationalUnitKpis.weight"
+                }
+            },
+            
+            // Tìm các parentNameOfUnitKpi từ bảng organizational_unit_kpis
+            {
+                $lookup: {
+                    from: "organizational_unit_kpis",
+                    localField: "organizationalUnitKpis.parent",
+                    foreignField: "_id",
+                    as: "parentNameOfUnitKpi"
+                }
+            },
+            {
+                $addFields: {
+                    'employeeKpis.parentNameOfUnitKpi': "$parentNameOfUnitKpi.name",
+                    'employeeKpis.parentOfUnitKpi': "$organizationalUnitKpis.parent"
+                }
+            },
 
-        // Tìm các employeeKpiSet từ bảng employee_kpi_sets
-        {
-            $lookup: {
-                from: "employee_kpi_sets",
-                localField: "employeeKpis._id",
-                foreignField: "kpis",
-                as: "employeeKpiSet"
-            }
-        },
+            // Tìm các employeeKpiSet từ bảng employee_kpi_sets
+            {
+                $lookup: {
+                    from: "employee_kpi_sets",
+                    localField: "employeeKpis._id",
+                    foreignField: "kpis",
+                    as: "employeeKpiSet"
+                }
+            },
 
-        // Lấy thông tin employee
-        {
-            $lookup: {
-                from: "users",
-                localField: "employeeKpiSet.creator",
-                foreignField: "_id",
-                as: "employee"
-            }
-        },
-        {
-            $addFields: {
-                "employeeKpis.creator": "$employeeKpiSet.creator",
-                "employeeKpis.creatorInfo": {
-                    "_id": "$employee._id",
-                    "name": "$employee.name",
-                    "email": "$employee.email"
+            // Lấy thông tin employee
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "employeeKpiSet.creator",
+                    foreignField: "_id",
+                    as: "employee"
+                }
+            },
+            {
+                $addFields: {
+                    "employeeKpis.creator": "$employeeKpiSet.creator",
+                    "employeeKpis.creatorInfo": {
+                        "_id": "$employee._id",
+                        "name": "$employee.name",
+                        "email": "$employee.email"
+                    }
+                }
+            },
+
+            { $replaceRoot: { newRoot: "$employeeKpis" } },
+
+            // Nhóm theo các organizational unit kpi
+            {
+                $group: {
+                    '_id': "$parentName",
+                    'employeeKpi': { $push: "$$ROOT" }
                 }
             }
-        },
-
-        { $replaceRoot: { newRoot: "$employeeKpis" } },
-
-        // Nhóm theo các organizational unit kpi
-        {
-            $group: {
-                '_id': "$parentName",
-                'employeeKpi': { $push: "$$ROOT" }
-            }
-        }
-    ])
-
+        ])
+    }
+    
     return employeeKpis;
 }
 
@@ -221,7 +223,7 @@ exports.getAllEmployeeKpiSetInOrganizationalUnit = async (query) => {
     let beginOfCurrentMonth = new Date(query.month);
     let endOfCurrentMonth = new Date(beginOfCurrentMonth.getFullYear(), beginOfCurrentMonth.getMonth() + 1);
 
-    let organizationalUnit;
+    let organizationalUnit, employeeKpiSets;
     if (!query.organizationalUnitId) {
         organizationalUnit = await OrganizationalUnit.findOne({
             $or: [
@@ -234,55 +236,57 @@ exports.getAllEmployeeKpiSetInOrganizationalUnit = async (query) => {
         organizationalUnit = { '_id': new mongoose.Types.ObjectId(query.organizationalUnitId) }
     }
 
-    let employeeKpiSets = await OrganizationalUnit.aggregate([
-        { $match: { '_id': organizationalUnit._id } },
+    if (organizationalUnit) {
+        employeeKpiSets = await OrganizationalUnit.aggregate([
+            { $match: { '_id': organizationalUnit._id } },
 
-        {
-            $lookup: {
-                from: 'user_roles',
-                let: { viceDeans: '$viceDeans', employees: '$employees' },
-                pipeline: [
-                    {
-                        $match:
+            {
+                $lookup: {
+                    from: 'user_roles',
+                    let: { viceDeans: '$viceDeans', employees: '$employees' },
+                    pipeline: [
                         {
-                            $expr:
+                            $match:
                             {
-                                $or: [
-                                    { $in: ["$roleId", "$$viceDeans"] },
-                                    { $in: ["$roleId", "$$employees"] }
-                                ]
+                                $expr:
+                                {
+                                    $or: [
+                                        { $in: ["$roleId", "$$viceDeans"] },
+                                        { $in: ["$roleId", "$$employees"] }
+                                    ]
+                                }
                             }
                         }
-                    }
-                ],
-                as: 'employeeInOrganizationalUnit'
-            }
-        },
+                    ],
+                    as: 'employeeInOrganizationalUnit'
+                }
+            },
 
-        { $unwind: '$employeeInOrganizationalUnit' },
-        { $replaceRoot: { newRoot: '$employeeInOrganizationalUnit' } },
+            { $unwind: '$employeeInOrganizationalUnit' },
+            { $replaceRoot: { newRoot: '$employeeInOrganizationalUnit' } },
 
-        {
-            $lookup: {
-                from: 'employee_kpi_sets',
-                localField: 'userId',
-                foreignField: 'creator',
-                as: 'employee_kpi_sets'
-            }
-        },
+            {
+                $lookup: {
+                    from: 'employee_kpi_sets',
+                    localField: 'userId',
+                    foreignField: 'creator',
+                    as: 'employee_kpi_sets'
+                }
+            },
 
-        { $unwind: '$employee_kpi_sets' },
-        { $replaceRoot: { newRoot: '$employee_kpi_sets' } },
+            { $unwind: '$employee_kpi_sets' },
+            { $replaceRoot: { newRoot: '$employee_kpi_sets' } },
 
-        {
-            $match: {
-                'date': { $lte: endOfCurrentMonth, $gte: beginOfCurrentMonth }
-            }
-        },
+            {
+                $match: {
+                    'date': { $lte: endOfCurrentMonth, $gte: beginOfCurrentMonth }
+                }
+            },
 
-        { $project: { 'automaticPoint': 1, 'employeePoint': 1, 'approvedPoint': 1 } }
-    ]);
-
+            { $project: { 'automaticPoint': 1, 'employeePoint': 1, 'approvedPoint': 1 } }
+        ]);
+    }
+    
     return employeeKpiSets;
 }
 
@@ -294,35 +298,37 @@ exports.getAllChildrenOrganizational = async (companyId, roleId, organizationalU
     let arrayTreeOranizationalUnit = await OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree(companyId, roleId, organizationalUnitId);
     let childrenOrganizationalUnits, temporaryChild, deg = 0;
 
-    temporaryChild = arrayTreeOranizationalUnit.children;
+    if (arrayTreeOranizationalUnit) {
+        temporaryChild = arrayTreeOranizationalUnit.children;
 
-    childrenOrganizationalUnits = [{
-        'name': arrayTreeOranizationalUnit.name,
-        'id': arrayTreeOranizationalUnit.id,
-        'deg': deg
-    }]
+        childrenOrganizationalUnits = [{
+            'name': arrayTreeOranizationalUnit.name,
+            'id': arrayTreeOranizationalUnit.id,
+            'deg': deg
+        }]
 
-    while (temporaryChild) {
-        temporaryChild.map(x => {
-            childrenOrganizationalUnits = childrenOrganizationalUnits.concat({
-                'name': x.name,
-                'id': x.id,
-                'deg': deg + 1
-            });
-        })
-
-        let hasNodeChild = [];
-        temporaryChild.filter(x => x.hasOwnProperty("children")).map(x => {
-            x.children.map(x => {
-                hasNodeChild = hasNodeChild.concat(x)
+        while (temporaryChild) {
+            temporaryChild.map(x => {
+                childrenOrganizationalUnits = childrenOrganizationalUnits.concat({
+                    'name': x.name,
+                    'id': x.id,
+                    'deg': deg + 1
+                });
             })
-        });
 
-        if (hasNodeChild.length === 0) {
-            temporaryChild = undefined;
-        } else {
-            temporaryChild = hasNodeChild;
-            deg++;
+            let hasNodeChild = [];
+            temporaryChild.filter(x => x.hasOwnProperty("children")).map(x => {
+                x.children.map(x => {
+                    hasNodeChild = hasNodeChild.concat(x)
+                })
+            });
+
+            if (hasNodeChild.length === 0) {
+                temporaryChild = undefined;
+            } else {
+                temporaryChild = hasNodeChild;
+                deg++;
+            }
         }
     }
 
@@ -338,10 +344,13 @@ exports.getAllEmployeeKpiInChildrenOrganizationalUnit = async (companyId, roleId
 
     childrenOrganizationalUnits = await this.getAllChildrenOrganizational(companyId, roleId, organizationalUnitId);
 
-    for (let i = 0; i < childrenOrganizationalUnits.length; i++) {
-        employeeKpisInChildrenOrganizationalUnit.push(await this.getAllEmployeeKpiInOrganizationalUnit(null, childrenOrganizationalUnits[i].id, month));
-        employeeKpisInChildrenOrganizationalUnit[i].unshift({ 'name': childrenOrganizationalUnits[i].name, 'deg': childrenOrganizationalUnits[i].deg })
+    if (childrenOrganizationalUnits) {
+        for (let i = 0; i < childrenOrganizationalUnits.length; i++) {
+            employeeKpisInChildrenOrganizationalUnit.push(await this.getAllEmployeeKpiInOrganizationalUnit(null, childrenOrganizationalUnits[i].id, month));
+            employeeKpisInChildrenOrganizationalUnit[i].unshift({ 'name': childrenOrganizationalUnits[i].name, 'deg': childrenOrganizationalUnits[i].deg })
+        }
     }
+    
     return employeeKpisInChildrenOrganizationalUnit;
 }
 

@@ -108,7 +108,7 @@ class ProcessTemplate extends Component {
                     noResultsPerPage: pageTotal
                 }
             })
-            this.props.getAllXmlDiagram(this.state.pageNumber, this.state.noResultsPerPage, "");
+            this.props.getAllXmlDiagram(1, this.state.noResultsPerPage, "");
         }
     }
     render() {
@@ -129,7 +129,7 @@ class ProcessTemplate extends Component {
                     {
                         this.state.currentRow !== undefined &&
                         <ModalViewTaskProcess
-                            title={'Xem quy trình công việc'}
+                            title={translate("task.task_process.add_modal")}
                             listOrganizationalUnit={listOrganizationalUnit}
                             data={currentRow}
                             idProcess={currentRow._id}
@@ -143,7 +143,7 @@ class ProcessTemplate extends Component {
                     {
                         this.state.currentRow !== undefined &&
                         <ModalEditTaskProcess
-                            title={'Sửa quy trình công việc'}
+                            title={translate("task.task_process.edit_modal")}
                             data={currentRow}
                             listOrganizationalUnit={listOrganizationalUnit}
                             idProcess={currentRow._id}
@@ -161,7 +161,7 @@ class ProcessTemplate extends Component {
                     {
                         this.state.currentRow !== undefined &&
                         <ModalCreateTaskByProcess
-                            title={'Tạo chuỗi công việc theo quy trình'}
+                            title={translate("task.task_process.add_task_process_modal")}
                             data={currentRow}
                             listOrganizationalUnit={listOrganizationalUnit}
                             idProcess={currentRow._id}
@@ -183,7 +183,7 @@ class ProcessTemplate extends Component {
                                 showModalCreateProcess &&
                                 <ModalCreateTaskProcess
                                     listOrganizationalUnit={listOrganizationalUnit}
-                                    title="Thêm mới quy trình công việc"
+                                    title={translate("task.task_process.add_modal")}
                                 />
                             }
                         </React.Fragment>
@@ -192,27 +192,27 @@ class ProcessTemplate extends Component {
                         <div className="form-group">
                             <label className="form-control-static">{translate('task_template.name')}</label>
                             <input className="form-control" type="text" placeholder={translate('task_template.search_by_name')} ref={input => this.name = input} />
-                            <button type="button" className="btn btn-success" title="Tìm tiếm mẫu công việc" onClick={this.handleUpdateData}>{translate('task_template.search')}</button>
+                            <button type="button" className="btn btn-success" title={translate('task_template.search')} onClick={this.handleUpdateData}>{translate('task_template.search')}</button>
                         </div>
                     </div>
 
                     <DataTableSetting
-                        tableId="table-task-template"
+                        tableId="table-process-template"
                         columnArr={[
-                            'Tên mẫu công việc',
-                            'Mô tả',
-                            'Người tạo mẫu',
+                            translate("task.task_process.process_name"),
+                            translate('task_template.description'),
+                            translate('task_template.creator'),
                         ]}
                         limit={this.state.noResultsPerPage}
                         setLimit={this.setLimit}
                         hideColumnOption={true}
                     />
-                    <table className="table table-bordered table-striped table-hover" id="table-task-template">
+                    <table className="table table-bordered table-striped table-hover" id="table-process-template">
                         <thead>
                             <tr>
-                                <th title="Tên mẫu công việc">{translate('task_template.tasktemplate_name')}</th>
-                                <th title="Mô tả">{translate('task_template.description')}</th>
-                                <th title="Người tạo quy trình">{translate('task_template.creator')}</th>
+                                <th title={translate('task_template.tasktemplate_name')}>{translate('task_template.tasktemplate_name')}</th>
+                                <th title={translate('task_template.description')}>{translate('task_template.description')}</th>
+                                <th title={translate('task_template.creator')}>{translate('task_template.creator')}</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
                             </tr>
                         </thead>
@@ -246,7 +246,7 @@ class ProcessTemplate extends Component {
                                             </a>
                                         </td>
                                     </tr>
-                                }) : <tr><td colSpan={4}>Không có dữ liệu</td></tr>
+                                }) : <tr><td colSpan={4}>{translate("task.task_process.no_data")}</td></tr>
                             }
                         </tbody>
                     </table>

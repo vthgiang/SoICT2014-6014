@@ -1380,6 +1380,8 @@ export default {
                 add_holiday_title: 'Add new work schedule',
                 add_by_hand: 'Add one work schedule',
                 add_import: 'Import file excel',
+                accept_application: 'Accept leave application',
+                refuse_application: 'Refuse leave application',
 
                 // Thông điệp trả về từ server
                 type_required: 'Type required',
@@ -1456,7 +1458,6 @@ export default {
             annual_leave_personal: {
                 list_annual_leave: 'Regulations on corporate leave',
                 inform_annual_leave: 'Information on personal leave',
-                note: 'Note',
                 day: 'days',
                 total_number_leave_of_year: 'Total number of days off',
                 leaved: 'You have rested',
@@ -1536,6 +1537,7 @@ export default {
                 select_asset_type: 'Select asset type',
                 select_all_asset_type: 'Select all asset type',
                 select_all_status: 'Select all status',
+                select_all_group: 'Select all asset group',
                 ready_use: 'Ready to use',
                 using: 'Using',
                 damaged: 'Damaged',
@@ -1617,18 +1619,22 @@ export default {
                 bar_chart: 'Bar chart',
                 tree: 'Tree',
                 amount: 'Amount',
+                time: 'Times',
                 value: 'Value',
                 lost_value: 'Lost value (Million)',
                 sum_value: 'Total value (Million)',
                 building: 'Building',
                 vehicle: 'Vehicle',
                 machine: 'Machine',
-                orther: 'Other',
+                other: 'Other',
                 asset_by_group: ' Asset by group',
                 asset_by_type: ' Asset by type',
                 asset_purchase_and_dispose: ' Purchase and dispose',
                 purchase_asset: 'Statistics purchase asset chart',
                 disposal_asset: 'Statistics disposal asset chart',
+                asset_incident_and_maintenance: 'Incident and maintenance',
+                incident_asset: 'Statistics incident asset chart',
+                maintenance_asset: 'Statistics maintenance asset chart',
             },
 
             //  Quản lý loại tài sản
@@ -1658,6 +1664,7 @@ export default {
                 maintainance_logs: 'Repair history - replacement - upgrade',
                 incident_list: 'Asset incident list',
                 file_list: 'List of documents attached',
+                edit_document: 'Edit documents attached',
                 add_usage_info: 'Add new asset usage infomation',
                 edit_usage_info: 'Edit asset use request form',
                 delete_usage_info: 'Delete asset usage infomation',
@@ -2386,14 +2393,17 @@ export default {
             task_process: {
                 process_name: 'Process name',
                 process_description: 'Process description',
+                process_status: 'Process status',
+                creator: 'Creator',
                 manager: 'Manager',
                 viewer: 'Viewer',
+                no_data: 'Not have data',
                 time_of_process: 'Time of process',
                 process_information: "Process Information",
                 start_date: 'Start date',
                 end_date: 'End date',
                 create: 'Create',
-                inprocess: 'Iprocess',  
+                inprocess: 'Inprocess',
                 wait_for_approval: 'Wait for approval',
                 finished: 'Finished',
                 delayed: 'Delayed',
@@ -2408,7 +2418,50 @@ export default {
                 not_have_info: 'Not have information',
                 not_export_info: 'Not export information',
                 task_process: 'Task process',
+
+
+                export_doc: "Export document",
+                export_info: 'Export information',
+
+                create_task_with_template: 'Create task with template',
+
+                add_modal: 'Create new process template',
+                view_process_template_modal: 'View process template',
+                view_task_process_modal: 'View task process',
+                edit_modal: 'Edit process template',
+                add_task_process_modal: 'Create tasks by process',
+
                 save: 'Save',
+
+                // message from server
+                get_all_success: 'Get all process template successfully',
+                get_all_err: 'Get all process template fail',
+                get_by_id_success: 'Get process template by id successfully',
+                get_by_id_err: 'Get process template by id fail',
+                create_success: 'Create process template successfully',
+                create_error: 'Create process template fail',
+                edit_success: 'Edit process template successfully',
+                edit_fail: 'Edit process template fail',
+                delete_success: 'Delete process template successfully',
+                delete_fail: 'Delete process template fail',
+                create_task_by_process_success: 'Create tasks by process successfully',
+                create_task_by_process_fail: 'Create tasks by process fail',
+                get_all_task_process_success: 'Get all task process successfully',
+                get_all_task_process_fail: 'Get all task process fail',
+                update_task_process_success: 'Update task process successfully',
+                update_task_process_fail: 'Update task process fail',
+                edit_info_process_success: 'Edit process infomation successfully',
+                edit_info_process_fail: 'Edit process infomation fail',
+
+                error: {
+                    empty_name: "Process name should not be empty",
+                    special_character: "Process name should not be has special character",
+
+                    empty_description: "Process description should not be empty",
+
+                    empty_viewer: "It is necessary to indicate the viewer",
+                    empty_manager: "It is necessary to indicate the manager",
+                }
 
             },
             task_template: {
@@ -3051,25 +3104,25 @@ export default {
 
         // manage_plan
         manage_plan: {
-        code: "Plan Code",
-        planName: "Plan Name",
-        search: "Search",
-        add_plan: "Add Plan",
-        index: "Index",
-        description: "Description",
-        edit: "Edit this plan",
-        delete: "Delete this plan",
-        delete_success: "Delete plan successfully!",
-        delete_fail: "Delete plan fail!",
-        add: "Add plan",
-        add_title: "Add a new plan",
-        add_success: "Add plan successfully!",
-        add_fail: "Add plan fail!",
-        plan_description: "Plan Description",
-        edit_title: "Update a plan",
-        edit_plan_success: "Update plan successfully!",
-        edit_plan_fail: "Update plan fail!",
-        detail_info_plan: "Detail infomation of plan"
+            code: "Plan Code",
+            planName: "Plan Name",
+            search: "Search",
+            add_plan: "Add Plan",
+            index: "Index",
+            description: "Description",
+            edit: "Edit this plan",
+            delete: "Delete this plan",
+            delete_success: "Delete plan successfully!",
+            delete_fail: "Delete plan fail!",
+            add: "Add plan",
+            add_title: "Add a new plan",
+            add_success: "Add plan successfully!",
+            add_fail: "Add plan fail!",
+            plan_description: "Plan Description",
+            edit_title: "Update a plan",
+            edit_plan_success: "Update plan successfully!",
+            edit_plan_fail: "Update plan fail!",
+            detail_info_plan: "Detail infomation of plan"
         },
 
         footer: {

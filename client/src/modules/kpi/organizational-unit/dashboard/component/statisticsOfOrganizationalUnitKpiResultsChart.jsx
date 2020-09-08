@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-
 import { connect } from 'react-redux';
 
 import { dashboardOrganizationalUnitKpiActions } from '../redux/actions';
+
+import { forceCheckOrVisible } from '../../../../../common-components/index';
 
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -33,6 +34,9 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
+        // Chỉ thực hiện LazyLoading trong lần đầu tiên
+        forceCheckOrVisible(true, true);
+
         if (nextState.kindOfPoint !== this.state.kindOfPoint) {
             await this.setState(state => {
                 return {
@@ -350,12 +354,13 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
     }
 
     render() {
-        const { dashboardOrganizationalUnitKpi, translate,month } = this.props;
+        const { dashboardOrganizationalUnitKpi, translate, month } = this.props;
         let { exportData } =this.state;
-        let listEmployeeKpiSet;
+        let listEmployeeKpiSet, employeeKpiSetsLoading;
 
         if (dashboardOrganizationalUnitKpi.employeeKpiSets) {
-            listEmployeeKpiSet = dashboardOrganizationalUnitKpi.employeeKpiSets
+            listEmployeeKpiSet = dashboardOrganizationalUnitKpi.employeeKpiSets;
+            employeeKpiSetsLoading = dashboardOrganizationalUnitKpi.employeeKpiSetsLoading
         }
 
         return (            
@@ -370,7 +375,7 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
                                         
                         <section ref="chart"></section>
                     </section>
-                    : <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
+                    : employeeKpiSetsLoading && <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
                  
                 }
             </React.Fragment>

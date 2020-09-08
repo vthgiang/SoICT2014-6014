@@ -139,7 +139,6 @@ class SuperHome extends Component {
                 confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm'),
             })
         } else {
-            console.log('hello', this.INFO_SEARCH.startMonth, this.INFO_SEARCH.endMonth);
 
             await this.setState(state => {
                 return {
@@ -148,10 +147,15 @@ class SuperHome extends Component {
                     endMonth: this.INFO_SEARCH.endMonth
                 }
             })
+            let { startMonth, endMonth } = this.state;
+
+            this.props.getPaginateTasksByUser("[]", 1, 1000, "[]", "[]", "[]", null, startMonth, endMonth, null, null, true)
+
         }
     }
 
     render() {
+        console.log('renderrrrrrrrrr');
         const { tasks, translate } = this.props;
         const { startMonth, endMonth, willUpdate, callAction } = this.state;
 
@@ -297,6 +301,7 @@ const actionCreators = {
     getInformedTaskByUser: taskManagementActions.getInformedTaskByUser,
     getCreatorTaskByUser: taskManagementActions.getCreatorTaskByUser,
     getTaskByUser: taskManagementActions.getTasksByUser,
+    getPaginateTasksByUser: taskManagementActions.getPaginateTasksByUser,
 
 };
 const connectedHome = connect(mapState, actionCreators)(withTranslate(SuperHome));

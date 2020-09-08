@@ -112,8 +112,9 @@ exports.getUsers = async (company, query) => {
                 ]
             });
 
-            return _getAllUsersInOrganizationalUnit(department);
-
+            if (department) {
+                return _getAllUsersInOrganizationalUnit(department);
+            }
         } else {
             let departments = await OrganizationalUnit.find({
                 _id: {
@@ -149,11 +150,16 @@ exports.getAllEmployeeOfUnitByRole = async (role) => {
             }
         ]
     });
-    let employees = await UserRole.find({
-        roleId: {
-            $in: organizationalUnit.employees
-        }
-    }).populate('userId roleId');
+
+    let employees;
+    if (organizationalUnit) {
+        employee = await UserRole.find({
+            roleId: {
+                $in: organizationalUnit.employees
+            }
+        }).populate('userId roleId');
+    }
+    
     return employees;
 }
 

@@ -54,10 +54,21 @@ router.patch('/tasks/:taskId/task-comments/:commentId/comments/files/:fileId', a
 
 // Task Information
 router.patch('/tasks/:taskId/task-informations', auth, PerformTaskController.editTaskInformation);
-
 router.post('/tasks/:taskId', auth, PerformTaskController.editTask);
 router.post('/tasks/:taskId/evaluate', auth, PerformTaskController.evaluateTask);
 router.delete('/tasks/:taskId/evaluations/:evaluationId', auth, PerformTaskController.deleteEvaluation);
+
+
+//comments in process
+router.post('/process/tasks/:taskId/comments', auth, uploadFile([{ name: 'files', path: '/files/taskprocess' }], 'array'), PerformTaskController.createComment)
+router.patch('/process/tasks/:taskId/comments/:commentId', auth, uploadFile([{ name: 'files', path: '/files/taskprocess' }], 'array'), PerformTaskController.editComment)
+router.delete('/process/tasks/:taskId/comments/:commentId', auth, PerformTaskController.deleteComment)
+router.patch('/process/tasks/:taskId/comments/:commentId/files/:fileId', auth, PerformTaskController.deleteFileComment)
+//child comments
+router.post('/process/tasks/:taskId/comments/:commentId/child-comments', auth, uploadFile([{ name: 'files', path: '/files/taskprocess' }], 'array'), PerformTaskController.createChildComment)
+router.patch('/process/tasks/:taskId/comments/:commentId/child-comments/:childCommentId', auth, uploadFile([{ name: 'files', path: '/files/taskprocess' }], 'array'), PerformTaskController.editChildComment)
+router.delete('/process/tasks/:taskId/comments/:commentId/child-comments/:childCommentId', auth, PerformTaskController.deleteChildComment)
+router.patch('/process/tasks/:taskId/comments/:commentId/child-comments/:childCommentId/files/:fileId', auth, PerformTaskController.deleteFileChildComment)
 
 
 module.exports = router;

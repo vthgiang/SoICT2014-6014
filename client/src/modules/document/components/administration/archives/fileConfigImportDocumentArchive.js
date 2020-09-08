@@ -29,7 +29,7 @@ export const exportArchive = {
     dataSheets: [{
         sheetName: "Sheet1",
         sheetTitle: "Danh sách vị trí lưu trữ",
-        table: [{
+        tables: [{
             rowHeader: 1,
             columns: [
                 { key: "name", value: "Tên vị trí lưu trữ" },

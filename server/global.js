@@ -1,3 +1,5 @@
+const mongoose = require('mongoose');
+
 global.SERVER_DIR = __dirname;
 global.SERVER_BACKUP_DIR = __dirname + "/../backup";
 
@@ -7,6 +9,25 @@ global.SERVER_HELPERS_DIR = SERVER_DIR + "/helpers";
 global.SERVER_MIDDLEWARE_DIR = SERVER_DIR + "/middleware";
 global.SERVER_SEED_DIR = SERVER_DIR + "/seed";
 global.SERVER_LOGS_DIR = SERVER_DIR + "/logs";
+
+global.DB_CONNECTION = {};
+DB_CONNECTION['system'] = mongoose.createConnection(
+    process.env.DATABASE || `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/${process.env.DB_NAME}`,
+    process.env.DB_AUTHENTICATION === "true" ? 
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
+        user: process.env.DB_USERNAME,
+        pass: process.env.DB_PASSWORD,
+    } : {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
+    }
+);
 
 // Init backup automatic
 global.SERVER_BACKUP_TIME = '0 0 2 1 * *';
@@ -33,3 +54,4 @@ Configuration.findOne({database: process.env.DB_NAME}).then(res => {
         AUTO_BACKUP_DATABASE.start();
     }
 }).catch(err => console.log("message: ", err));
+

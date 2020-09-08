@@ -7,7 +7,7 @@ import Swal from 'sweetalert2';
 import c3 from 'c3';
 import 'c3/c3.css';
 
-class DisposalColumnChart extends Component {
+class AssetDisposalChart extends Component {
     constructor(props) {
         super(props);
 
@@ -35,7 +35,7 @@ class DisposalColumnChart extends Component {
             year: false,
         }
     }
-
+    // Lấy dữ liệu biểu đồ trường hợp chọn hiển thị theo tháng
     setDataColumnChartForMonth = () => {
         const { getDisposalData, listAssets, translate } = this.props;
         let { disposalDateAfter, disposalDateBefore } = this.state;
@@ -47,6 +47,7 @@ class DisposalColumnChart extends Component {
         let m = disposalDateAfter.slice(5, 7);
         let y = disposalDateAfter.slice(0, 4);
 
+        // Lấy danh sách các tháng trong khoảng tìm kiếm
         for (let i = 0; i <= period; i++) {
             if (m > 12) {
                 m = 1;
@@ -85,7 +86,6 @@ class DisposalColumnChart extends Component {
         for (let i = 0; i <= maxCnt; i++) {
             arr.push(i)
         }
-
         category.pop();
         category.unshift('x');
         countAsset.unshift(translate('asset.dashboard.amount'));
@@ -105,6 +105,7 @@ class DisposalColumnChart extends Component {
         return dataColumnChart;
     }
 
+    // Lấy dữ liệu biểu đồ trường hợp chọn hiển thị theo năm
     setDataColumnChartForYear = () => {
         const { getDisposalData, listAssets, translate } = this.props;
         let { disposalDateAfter, disposalDateBefore } = this.state;
@@ -114,6 +115,7 @@ class DisposalColumnChart extends Component {
         let period = endDate - startDate + 1;
         let value = [], countAsset = [], category = [], arr = [];
 
+        // Lấy danh sách các năm trong khoảng tìm kiếm
         for (let i = 0; i < period; i++) {
             category.push(parseInt(startDate) + i);
         }
@@ -159,6 +161,7 @@ class DisposalColumnChart extends Component {
         return dataColumnChart;
     }
 
+    // Thiết lập biểu đồ
     columnChart = () => {
         let { translate } = this.props;
         let { year } = this.state;
@@ -259,17 +262,20 @@ class DisposalColumnChart extends Component {
         }
     }
 
+    //Bắt sự kiện thay đổi ngày bắt đầu
     handleChangeDateAfter = async (value) => {
         let month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)));
         this.INFO_SEARCH.disposalDateAfter = month;
     }
 
+    //Bắt sự kiện thay đổi ngày kết thúc
     handleChangeDateBefore = async (value) => {
         let month;
         month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)));
         this.INFO_SEARCH.disposalDateBefore = month;
     }
 
+    //Bắt sự kiện tìm kiếm
     handleSearchData = async () => {
         let disposalDateAfter = new Date(this.INFO_SEARCH.disposalDateAfter);
         let disposalDateBefore = new Date(this.INFO_SEARCH.disposalDateBefore);
@@ -293,6 +299,7 @@ class DisposalColumnChart extends Component {
         }
     }
 
+    //Bắt sự kiện thay đổi kiểu hiển thị
     handleChangeViewChart = async (value) => {
         await this.setState(state => {
             return {
@@ -310,6 +317,7 @@ class DisposalColumnChart extends Component {
         return (
             <React.Fragment>
                 <section className="form-inline" style={{ textAlign: "right" }}>
+                    {/* Chọn ngày bắt đầu và kết thúc để tìm kiếm */}
                     <div className="form-group">
                         <label>{translate('task.task_management.from')}</label>
                         <DatePicker
@@ -333,6 +341,7 @@ class DisposalColumnChart extends Component {
                     <button className="btn btn-success" onClick={this.handleSearchData}>{translate('task.task_management.search')}</button>
                 </section>
                 <br />
+                {/* Chọn hiển thị theo tháng/năm */}
                 <div>
                     <div className="box-tools" style={{ textAlign: "right", marginRight: "60px" }}>
                         <div className="btn-group">
@@ -347,4 +356,4 @@ class DisposalColumnChart extends Component {
     }
 }
 
-export default withTranslate(DisposalColumnChart);
+export default withTranslate(AssetDisposalChart);
