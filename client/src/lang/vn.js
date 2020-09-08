@@ -1323,6 +1323,7 @@ export default {
 
                 employee_management: {
                     file_name_export: 'Thông tin nhân viên',
+                    staff_no_unit_title: 'Do nhân viên chưa thuộc đơn vị nào',
                     no_gender: 'Chọn giới tính',
                     all_gender: 'Chọn tất cả giới tính',
                     brithday_lable: 'Sinh nhật',

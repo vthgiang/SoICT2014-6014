@@ -8,10 +8,16 @@ import {
     GeneralTab, ContactTab, TaxTab, InsurranceTab, SalaryTab,
     DisciplineTab, AttachmentTab, ExperiencTab, CertificateTab, ContractTab
 } from '../../employee-info/components/combinedContent';
+
+import { EmployeeInfoActions } from '../../employee-info/redux/actions';
+
 class EmployeeDetailForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, };
+        this.state = {
+            dataStatus: this.DATA_STATUS.NOT_AVAILABLE
+        }
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -19,34 +25,60 @@ class EmployeeDetailForm extends Component {
             return {
                 ...prevState,
                 _id: nextProps._id,
-                employees: nextProps.employees,
-                salaries: nextProps.salaries,
-                annualLeaves: nextProps.annualLeaves,
-                commendations: nextProps.commendations,
-                disciplines: nextProps.disciplines,
-                courses: nextProps.courses,
-                roles: nextProps.roles
+                dataStatus: 0,
             }
         } else {
             return null;
         }
     }
 
+    shouldComponentUpdate = async (nextProps, nextState) => {
+        if (nextProps._id !== this.state._id && !nextProps.employeesInfo.isLoading) {
+            await this.props.getEmployeeProfile({ id: nextProps._id, callAPIByUser: false });
+            this.setState({
+                dataStatus: this.DATA_STATUS.QUERYING,
+                employees: [],
+                salaries: [],
+                annualLeaves: [],
+                commendations: [],
+                disciplines: [],
+                courses: [],
+                roles: []
+            })
+            return false;
+        };
+        if (this.state.dataStatus === this.DATA_STATUS.QUERYING && !nextProps.employeesInfo.isLoading) {
+            this.setState({
+                dataStatus: this.DATA_STATUS.AVAILABLE,
+                employees: nextProps.employeesInfo.employees,
+                salaries: nextProps.employeesInfo.salarys,
+                annualLeaves: nextProps.employeesInfo.annualLeaves,
+                commendations: nextProps.employeesInfo.commendations,
+                disciplines: nextProps.employeesInfo.disciplines,
+                courses: nextProps.employeesInfo.courses,
+                roles: nextProps.employeesInfo.roles,
+
+            });
+            return true;
+        };
+        return false;
+    }
+
     render() {
-        const { employeesManager, translate } = this.props;
+        const { employeesInfo, translate } = this.props;
 
-        let { _id, employees, salaries, annualLeaves, commendations, disciplines, courses, roles } = this.state;
-
+        let { _id, employees, salaries, annualLeaves, commendations, disciplines, courses, roles = [] } = this.state;
+        console.log(employees);
         return (
             <React.Fragment>
                 <DialogModal
-                    size='75' modalID="modal-view-employee" isLoading={employeesManager.isLoading}
-                    formID="form-view-employee"
+                    size='75' modalID={`modal-view-employee${_id}`} isLoading={employeesInfo.isLoading}
+                    formID={`form-view-employee${_id}`}
                     title="Thông tin nhân viên"
                     hasSaveButton={false}
                     hasNote={false}
                 >
-                    <form className="form-group" id="form-view-employee" style={{ marginTop: "-15px" }}>
+                    <form className="form-group" id={`form-view-employee${_id}`} style={{ marginTop: "-15px" }}>
                         {employees && employees.length !== 0 &&
                             employees.map((x, index) => (
                                 <div className="nav-tabs-custom row" key={index}>
@@ -131,9 +163,13 @@ class EmployeeDetailForm extends Component {
 }
 
 function mapState(state) {
-    const { employeesManager } = state;
-    return { employeesManager };
+    const { employeesInfo } = state;
+    return { employeesInfo };
 };
 
-const detailEmployee = connect(mapState, null)(withTranslate(EmployeeDetailForm));
+const actionCreators = {
+    getEmployeeProfile: EmployeeInfoActions.getEmployeeProfile,
+}
+
+const detailEmployee = connect(mapState, actionCreators)(withTranslate(EmployeeDetailForm));
 export { detailEmployee as EmployeeDetailForm };

@@ -170,6 +170,7 @@ class SalaryTab extends Component {
             return {
                 ...prevState,
                 id: nextProps.id,
+                pageCreate: nextProps.pageCreate,
                 salaries: nextProps.salaries,
                 annualLeaves: nextProps.annualLeaves,
             }
@@ -181,7 +182,7 @@ class SalaryTab extends Component {
     render() {
         const { id, translate } = this.props;
 
-        let { annualLeaves, salaries, currentRow, currentRowSabbatical } = this.state;
+        let { annualLeaves, salaries, pageCreate, currentRow, currentRowSabbatical } = this.state;
 
         let formater = new Intl.NumberFormat();
 
@@ -192,7 +193,8 @@ class SalaryTab extends Component {
                         {/* Table lịch sử lương */}
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border" ><h4 className="box-title">{translate('human_resource.profile.historySalary')}</h4></legend>
-                            <SalaryAddModal handleChange={this.handleAddSalary} id={`addSalary${id}`} />
+                            {pageCreate && <a style={{ marginBottom: '10px', marginTop: '2px' }} className="btn btn-success pull-right" title={translate('human_resource.profile.employee_management.staff_no_unit_title')} disabled >{translate('modal.create')}</a>}
+                            {!pageCreate && <SalaryAddModal handleChange={this.handleAddSalary} id={`addSalary${id}`} />}
                             <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
                                 <thead>
                                     <tr>
@@ -240,7 +242,8 @@ class SalaryTab extends Component {
                         {/* Table thông tin nghỉ phép */}
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border" ><h4 className="box-title">{translate('human_resource.profile.sabbatical')}</h4></legend>
-                            <AnnualLeaveAddModal handleChange={this.handleAddAnnualLeave} id={`addSabbatical${id}`} />
+                            {pageCreate && <a style={{ marginBottom: '10px', marginTop: '2px' }} className="btn btn-success pull-right" title={translate('human_resource.profile.employee_management.staff_no_unit_title')} disabled >{translate('modal.create')}</a>}
+                            {!pageCreate && <AnnualLeaveAddModal handleChange={this.handleAddAnnualLeave} id={`addSabbatical${id}`} />}
                             <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
                                 <thead>
                                     <tr>

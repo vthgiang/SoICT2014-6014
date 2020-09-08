@@ -183,7 +183,7 @@ class CommendationManagement extends Component {
 
         const { pageActive } = this.props;
 
-        const { limit, page, currentRow } = this.state
+        const { limit, page, organizationalUnits, currentRow } = this.state
 
         let { list } = department;
         let listCommendations = [], exportData = [];
@@ -210,6 +210,7 @@ class CommendationManagement extends Component {
                         <div className="form-group">
                             <label className="form-control-static">{translate('human_resource.commendation_discipline.commendation.table.decision_unit')}</label>
                             <SelectMulti id={`multiSelectUnitPraise`} multiple="multiple"
+                                value={organizationalUnits ? organizationalUnits : []}
                                 options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
                                 items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
                             </SelectMulti>

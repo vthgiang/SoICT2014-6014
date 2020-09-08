@@ -11,6 +11,7 @@ import {
 } from '../../employee-create/components/combinedContent';
 
 import { EmployeeManagerActions } from '../redux/actions';
+import { UserActions } from '../../../../super-admin/user/redux/actions';
 
 class EmployeeEditFrom extends Component {
     constructor(props) {
@@ -741,6 +742,12 @@ class EmployeeEditFrom extends Component {
         }
     }
 
+    // shouldComponentUpdate(nextProps, nextState){
+    //     if (nextProps._id !== prevState._id) {
+    //         this.props.getDepartmentOfUser({ email: value[0] });
+    //     }
+    // }
+
     render() {
         const { translate, employeesManager } = this.props;
 
@@ -753,7 +760,7 @@ class EmployeeEditFrom extends Component {
                 <DialogModal
                     size='75' modalID="modal-edit-employee" isLoading={employeesManager.isLoading}
                     formID="form-edit-employee"
-                    title="Chỉnh sửa thông tin nhân viên"
+                    title={translate('human_resource.profile.employee_management.edit_employee')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
@@ -890,12 +897,13 @@ class EmployeeEditFrom extends Component {
 };
 
 function mapState(state) {
-    const { employeesInfo, employeesManager } = state;
-    return { employeesInfo, employeesManager };
+    const { employeesInfo, employeesManager, user } = state;
+    return { employeesInfo, employeesManager, user };
 };
 
 const actionCreators = {
     updateInformationEmployee: EmployeeManagerActions.updateInformationEmployee,
+    getDepartmentOfUser: UserActions.getDepartmentOfUser,
 };
 
 const editFrom = connect(mapState, actionCreators)(withTranslate(EmployeeEditFrom));
