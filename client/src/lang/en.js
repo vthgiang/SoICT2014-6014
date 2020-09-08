@@ -27,6 +27,7 @@ export default {
             yes: 'Yes',
             no: 'No',
             month: 'Month',
+            year: 'Year',
             loading: 'Loading',
             no_data: 'No data',
             success: 'Successfully',
@@ -742,6 +743,9 @@ export default {
             //QUẢN LÝ ĐƠN HÀNG
             manage_orders: "Manage Orders",
             manage_list_orders: "Manage List Orders",
+
+            //QUẢN LÝ KẾ HOẠCH SẢN XUẤT
+            manage_plans: "Manage Plans"
         },
 
         manage_system: {
@@ -1015,6 +1019,7 @@ export default {
                         decision_unit: 'Decision unit',
                         reward_forms: 'Commendation forms',
                         reason_praise: 'Reason',
+                        reward_forms_short: 'Comm forms',
 
                     },
 
@@ -1058,6 +1063,7 @@ export default {
                         end_date: 'Expiration date',
                         discipline_forms: 'Discipline forms',
                         reason_discipline: 'Reason',
+                        discipline_forms_short: 'Discipline forms',
                     },
 
                     // Nhóm dành cho action
@@ -1374,6 +1380,8 @@ export default {
                 add_holiday_title: 'Add new work schedule',
                 add_by_hand: 'Add one work schedule',
                 add_import: 'Import file excel',
+                accept_application: 'Accept leave application',
+                refuse_application: 'Refuse leave application',
 
                 // Thông điệp trả về từ server
                 type_required: 'Type required',
@@ -1450,11 +1458,9 @@ export default {
             annual_leave_personal: {
                 list_annual_leave: 'Regulations on corporate leave',
                 inform_annual_leave: 'Information on personal leave',
-                note: 'Note',
                 day: 'days',
                 total_number_leave_of_year: 'Total number of days off',
                 leaved: 'You have rested',
-                view_detail: 'Details see page',
                 receiver: 'Receiver',
 
                 // Nhóm action
@@ -1519,6 +1525,7 @@ export default {
                 add: 'Add',
                 basic_information: 'Basic infomation',
                 detail_information: 'Detail information',
+                asset_properties: 'Properties of asset',
                 view: 'View asset information',
                 edit_info: 'Edit asset information',
                 delete_info: 'Delete asset information',
@@ -1562,7 +1569,7 @@ export default {
                 depreciation_information: 'Depreciation information',
                 incident_information: 'Incident information',
                 disposal_information: 'Disposal information',
-                attach_infomation: 'Attached information',
+                attach_infomation: 'Attached files',
 
                 serial_number: 'Serial number',
                 warranty_expiration_date: 'Warranty expiration date',
@@ -1645,7 +1652,7 @@ export default {
             // Quản lý thông tin tài sản
             asset_info: {
                 asset_info: 'Asset infomation',
-                field_name: 'Name of data field',
+                field_name: 'Name of properties',
                 value: 'Value',
 
                 usage_logs: 'Allocation history - transfer - withdrawal',
@@ -1653,7 +1660,7 @@ export default {
                 incident_list: 'Asset incident list',
                 file_list: 'List of documents attached',
                 add_usage_info: 'Add new asset usage infomation',
-                edit_usage_info: 'Edit asset usage infomation',
+                edit_usage_info: 'Edit asset use request form',
                 delete_usage_info: 'Delete asset usage infomation',
                 add_maintenance_card: 'Add new maintenance card',
                 edit_maintenance_card: 'Edit new maintenance card',
@@ -2205,9 +2212,14 @@ export default {
                 not_confirm: 'Not confirm this task',
 
                 left_task_expired: 'left is task expired',
-                action_not_rating: 'actions not rating this month',
+                action_not_rating: 'Actions not rating this month',
 
                 left_can_edit_task: 'Remaining time to edit task evaluation of previous month',
+
+                // check deadline
+                warning_days: "days",
+                warning_hours: "hours",
+                warning_minutes: "minutes",
             },
             task_perform: {
                 actions: "Actions",
@@ -2251,10 +2263,16 @@ export default {
                 delete: "Delete",
 
                 notice_end_task: 'Are you sure to finish this task',
-                notice_change_status_task: 'Are you sure to change status of this task',
+                notice_change_activate_task: 'Are you sure to change activated of this task',
+                activated_task_list: 'Activated tasks',
+                activated_all: 'Activated all following tasks',
                 choose_following_task: 'Choose the next task to be executed',
                 task_link_of_process: 'Link',
                 not_have_following: 'Not have following task',
+
+                is_task_process: 'This is a task of process',
+                activated_task: "Activate",
+                following_task: "the following tasks",
 
                 // TODO: code_mesage_task_perform
                 create_result_task_success: 'Evaluate task successfully',
@@ -2369,28 +2387,72 @@ export default {
             task_process: {
                 process_name: 'Process name',
                 process_description: 'Process description',
+                creator: 'Creator',
                 manager: 'Manager',
                 viewer: 'Viewer',
+                no_data: 'Not have data',
                 time_of_process: 'Time of process',
+                process_information: "Process Information",
                 start_date: 'Start date',
                 end_date: 'End date',
-
-                inprocess: 'Iprocess',
+                create: 'Create',
+                inprocess: 'Inprocess',
                 wait_for_approval: 'Wait for approval',
                 finished: 'Finished',
                 delayed: 'Delayed',
                 canceled: 'Canceled',
-
+                general_infomation: "General Infomation",
                 notice: 'Notice',
                 information: 'Information',
                 document: 'Document',
-
+                roles: 'Roles',
                 list_of_data_and_info: 'List of data and informations',
                 not_have_doc: 'Not have documents',
                 not_have_info: 'Not have information',
                 not_export_info: 'Not export information',
+                task_process: 'Task process',
+
+
+                export_doc: "Export document",
+                export_info: 'Export information',
+
+                create_task_with_template: 'Create task with template',
+
+                add_modal: 'Create new process template',
+                view_process_template_modal: 'View process template',
+                view_task_process_modal: 'View task process',
+                edit_modal: 'Edit process template',
+                add_task_process_modal: 'Create tasks by process',
 
                 save: 'Save',
+
+                // message from server
+                get_all_success: 'Get all process template successfully',
+                get_all_err: 'Get all process template fail',
+                get_by_id_success: 'Get process template by id successfully',
+                get_by_id_err: 'Get process template by id fail',
+                create_success: 'Create process template successfully',
+                create_error: 'Create process template fail',
+                edit_success: 'Edit process template successfully',
+                edit_fail: 'Edit process template fail',
+                delete_success: 'Delete process template successfully',
+                delete_fail: 'Delete process template fail',
+                create_task_by_process_success: 'Create tasks by process successfully',
+                create_task_by_process_fail: 'Create tasks by process fail',
+                get_all_task_process_success: 'Get all task process successfully',
+                get_all_task_process_fail: 'Get all task process fail',
+                update_task_process_success: 'Update task process successfully',
+                update_task_process_fail: 'Update task process fail',
+
+                error: {
+                    empty_name: "Process name should not be empty",
+                    special_character: "Process name should not be has special character",
+
+                    empty_description: "Process description should not be empty",
+
+                    empty_viewer: "It is necessary to indicate the viewer",
+                    empty_manager: "It is necessary to indicate the manager",
+                }
 
             },
             task_template: {
@@ -2401,7 +2463,7 @@ export default {
                 delete_task_template_success: 'Delete task template success !',
                 delete_task_template_fail: 'Delete task template fail !',
                 error_task_template_creator_null: 'Creator of this task template does not exist or has deleted',
-
+                view_task_process_template: 'View task process template'
             }
         },
 
@@ -3029,6 +3091,29 @@ export default {
             edit_report_manager_faile: 'Edit report fail !',
             delete_report_manager_success: 'Delete report success !',
             delete_report_manager_faile: 'Delete report fail !',
+        },
+
+        // manage_plan
+        manage_plan: {
+            code: "Plan Code",
+            planName: "Plan Name",
+            search: "Search",
+            add_plan: "Add Plan",
+            index: "Index",
+            description: "Description",
+            edit: "Edit this plan",
+            delete: "Delete this plan",
+            delete_success: "Delete plan successfully!",
+            delete_fail: "Delete plan fail!",
+            add: "Add plan",
+            add_title: "Add a new plan",
+            add_success: "Add plan successfully!",
+            add_fail: "Add plan fail!",
+            plan_description: "Plan Description",
+            edit_title: "Update a plan",
+            edit_plan_success: "Update plan successfully!",
+            edit_plan_fail: "Update plan fail!",
+            detail_info_plan: "Detail infomation of plan"
         },
 
         footer: {

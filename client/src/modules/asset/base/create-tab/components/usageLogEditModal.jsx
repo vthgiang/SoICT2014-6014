@@ -36,13 +36,25 @@ class UsageLogEditModal extends Component {
         }
     }
 
-    // /**
-    //  * Bắt sự kiện thay đổi người sử dụng
-    //  */
+    /**
+     * Bắt sự kiện thay đổi người sử dụng
+     */
     handleUsedByUserChange = (value) => {
+        let usedByUser = value[0] !== 'null' ? value[0] : null;
         this.setState({
             ...this.state,
-            usedByUser: value[0]
+            usedByUser: usedByUser
+        });
+    }
+
+    /**
+     * Bắt sự kiện thay đổi đơn vị sử dụng
+     */
+    handleUsedByOrganizationalUnitChange = (value) => {
+        let usedByOrganizationalUnit = value[0] !== 'null' ? value[0] : null;
+        this.setState({
+            ...this.state,
+            usedByOrganizationalUnit: usedByOrganizationalUnit
         });
     }
 
@@ -52,12 +64,14 @@ class UsageLogEditModal extends Component {
     }
     validateStartDate = (value, willUpdateState = true) => {
         let msg = AssetCreateValidator.validateStartDate(value, this.props.translate)
+        let partStart = value.split("-");
+        let startDate = new Date ( partStart[2], partStart[1] - 1, partStart[0]);
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
                     errorOnStartDate: msg,
-                    startDate: value,
+                    startDate: startDate,
                 }
             });
         }
@@ -68,14 +82,17 @@ class UsageLogEditModal extends Component {
     handleEndDateChange = (value) => {
         this.validateEndDate(value, true);
     }
+
     validateEndDate = (value, willUpdateState = true) => {
         let msg = AssetCreateValidator.validateEndDate(value, this.props.translate)
+        let partEnd = value.split("-");
+        let endDate = new Date ( partEnd[2], partEnd[1] - 1, partEnd[0]);
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
                     errorOnEndDate: msg,
-                    endDate: value,
+                    endDate: endDate,
                 }
             });
         }
@@ -104,7 +121,22 @@ class UsageLogEditModal extends Component {
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let result = this.validateDescription(this.state.description, false)
+        let checkUsed ;
+        let checkUsedByUser = true, checkUsedByOrganizationalUnit = true;
+        if(this.state.usedByUser == "" || !this.state.usedByUser){
+            checkUsedByUser = false
+        }
+        if(this.state.usedByOrganizationalUnit == "" || !this.state.usedByOrganizationalUnit){
+            checkUsedByOrganizationalUnit = false
+        }
+        
+        if(!checkUsedByUser && !checkUsedByOrganizationalUnit){
+            checkUsed = false;
+        } else {
+            checkUsed = true;
+        }
+
+        let result = this.validateDescription(this.state.description, false) && checkUsed;
 
         return result;
     }
@@ -115,9 +147,17 @@ class UsageLogEditModal extends Component {
         var startDate = [partStart[2], partStart[1], partStart[0]].join('-');
         var partEnd = this.formatDate(this.state.endDate).split('-');
         var endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+        let usedByUser = this.state.usedByUser;
+        let usedByOrganizationalUnit = this.state.usedByOrganizationalUnit;
 
         if (this.isFormValidated()) {
-            return this.props.handleChange({ ...this.state, startDate: startDate, endDate: endDate });
+            return this.props.handleChange({ 
+                ...this.state, 
+                assignedToUser: usedByUser, 
+                assignedToOrganizationalUnit: usedByOrganizationalUnit,
+                startDate: startDate, 
+                endDate: endDate 
+            });
         }
     }
 
@@ -129,6 +169,7 @@ class UsageLogEditModal extends Component {
                 _id: nextProps._id,
                 index: nextProps.index,
                 usedByUser: nextProps.usedByUser,
+                usedByOrganizationalUnit: nextProps.usedByOrganizationalUnit,
                 startDate: nextProps.startDate,
                 endDate: nextProps.endDate,
                 description: nextProps.description,
@@ -141,11 +182,10 @@ class UsageLogEditModal extends Component {
 
     render() {
         const { id } = this.props;
-        const { translate, user } = this.props;
-        const { usedByUser, startDate, endDate, description, errorOnDescription } = this.state;
+        const { translate, user, department } = this.props;
+        const { usedByUser, usedByOrganizationalUnit, startDate, endDate, description, errorOnDescription } = this.state;
 
-        var userlist = user.list;
-        console.log(this.state, 'this.state')
+        var userlist = user.list, departmentlist = department.list;
 
         return (
             <React.Fragment>
@@ -169,9 +209,27 @@ class UsageLogEditModal extends Component {
                                             id={`usedByUser${id}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            items={userlist.map(x => { return { value: x._id, text: x.name + " - " + x.email } })}
+                                            items={[{value: 'null', text: 'Chọn người sử dụng'}, ...userlist.map(x => { return { value: x._id, text: x.name + " - " + x.email } })]}
                                             onChange={this.handleUsedByUserChange}
                                             value={usedByUser}
+                                            multiple={false}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Đơn vị sử dụng */}
+                            <div className={`form-group`}>
+                                <label>{translate('asset.general_information.user')}</label>
+                                <div>
+                                    <div id="usedByUserBox">
+                                        <SelectBox
+                                            id={`usedByOrganizationalUnit${id}`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            items={[{value: 'null', text: 'Chọn đơn vị sử dụng'}, ...departmentlist.map(x => { return { value: x._id, text: x.name} })]}
+                                            onChange={this.handleUsedByOrganizationalUnitChange}
+                                            value={usedByOrganizationalUnit}
                                             multiple={false}
                                         />
                                     </div>
@@ -214,8 +272,8 @@ class UsageLogEditModal extends Component {
 };
 
 function mapState(state) {
-    var { user } = state;
-    return { user };
+    var { user, department } = state;
+    return { user, department };
 };
 
 const editModal = connect(mapState, null)(withTranslate(UsageLogEditModal));

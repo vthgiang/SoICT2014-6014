@@ -10,7 +10,7 @@ import { OrganizationalUnitKpiCreateModal } from './organizationalUnitKpiCreateM
 import { OrganizationalUnitKpiEditTargetModal } from './organizationalUnitKpiEditTargetModal';
 
 import { createUnitKpiActions } from '../redux/actions.js';
-import { UserActions} from '../../../../super-admin/user/redux/actions';
+import { UserActions } from '../../../../super-admin/user/redux/actions';
 
 var translate = '';
 
@@ -308,11 +308,12 @@ class OrganizationalUnitKpiCreate extends Component {
         const { translate } = this.props;
         const { editing, currentRole, organizationalUnitKpiSet, id, organizationalUnitKpi, organizationalUnit } = this.state;
 
-        let unitList, currentUnit, currentKPI;
+        let unitList, currentUnit, currentKPI, organizationalUnitKpiLoading, organizationalUnitsOfUserLoading;
 
-        if (user.organizationalUnitsOfUser) {
+        if (user) {
+            organizationalUnitsOfUserLoading = user.organizationalUnitsOfUserLoading;
             unitList = user.organizationalUnitsOfUser;
-            currentUnit = unitList.filter(item =>
+            currentUnit = unitList && unitList.filter(item =>
                 item.deans.includes(currentRole)
                 || item.viceDeans.includes(currentRole)
                 || item.employees.includes(currentRole));
@@ -320,13 +321,15 @@ class OrganizationalUnitKpiCreate extends Component {
 
         if (createKpiUnit.currentKPI) {
             currentKPI = createKpiUnit.currentKPI;
+            organizationalUnitKpiLoading = createKpiUnit.organizationalUnitKpiLoading
         }
 
         return (
-            <div className="box">
-                <div className="box-body">
-                    {currentKPI ?
-                        <div>
+            <React.Fragment>
+                { unitList && unitList.length !== 0
+                    ? currentKPI
+                        ? <div className="box">
+                            <div className="box-body">
                             <OrganizationalUnitKpiEditTargetModal
                                 id={id}
                                 organizationalUnitKpi={organizationalUnitKpi}
@@ -478,10 +481,12 @@ class OrganizationalUnitKpiCreate extends Component {
                                     </tbody>
                                 </table>
                             </div>
-                        </div> :
-                        <div>
+                            </div>
+                            </div>
+                        : organizationalUnitKpiLoading
+                        && <div>
                             <div style={{marginLeft: "-10px"}}>
-                                {this.checkPermisson(currentUnit && currentUnit[0].deans) &&
+                                {this.checkPermisson(currentUnit && currentUnit[0] && currentUnit[0].deans) &&
                                     <div>
                                         {this.checkStartKpiUnit(currentUnit) ?
                                             <React.Fragment>
@@ -500,19 +505,20 @@ class OrganizationalUnitKpiCreate extends Component {
                                     </div>
                                 }
                             </div>
-                            <h4 style={{ display: "inline-block", fontWeight: "600" }}>KPI {currentUnit && currentUnit[0].name}</h4>
+                            <h4 style={{ display: "inline-block", fontWeight: "600" }}>KPI {currentUnit && currentUnit[0] && currentUnit[0].name}</h4>
                             <p>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.not_initialize')} {this.formatDate(Date.now())}</p>
                         </div>
-                    }
-                </div>
-            </div>
+                    : organizationalUnitsOfUserLoading
+                    && <h4>Bạn chưa có đơn vị</h4>
+                }
+            </React.Fragment>
         );
     }
 }
 
 function mapState(state) {
-    const { createKpiUnit, user } = state;
-    return { createKpiUnit, user };
+    const { createKpiUnit, user, department } = state;
+    return { createKpiUnit, user, department };
 }
 
 const actionCreators = {
@@ -522,7 +528,7 @@ const actionCreators = {
     deleteKPIUnit: createUnitKpiActions.deleteKPIUnit,
     deleteTargetKPIUnit: createUnitKpiActions.deleteTargetKPIUnit,
     editStatusKPIUnit: createUnitKpiActions.editStatusKPIUnit,
-    getKPIParent: createUnitKpiActions.getKPIParent
+    getKPIParent: createUnitKpiActions.getKPIParent,
 };
 const connectedOrganizationalUnitKpiCreate = connect(mapState, actionCreators)(withTranslate(OrganizationalUnitKpiCreate));
 export { connectedOrganizationalUnitKpiCreate as OrganizationalUnitKpiCreate };

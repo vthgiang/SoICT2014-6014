@@ -1,7 +1,3 @@
-import {
-    VALIDATOR
-} from '../../../../helpers/validator';
-
 export const CommendationFromValidator = {
     validateEmployeeNumber,
     validateReason,
@@ -19,8 +15,6 @@ function validateEmployeeNumber(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = translate('human_resource.commendation_discipline.commendation.employee_number_required');
-    } else if (!VALIDATOR.isValidEmployeeNumber(value)) {
-        msg = translate('human_resource.commendation_discipline.commendation.staff_code_not_special');
     }
     return msg;
 }

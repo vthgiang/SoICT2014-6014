@@ -9,6 +9,7 @@ import { MaintainanceEditForm } from './maintainanceEditForm';
 
 import { AssetManagerActions } from '../../asset-information/redux/actions';
 import { MaintainanceActions } from '../redux/actions';
+import { AssetEditForm } from '../../asset-information/components/assetEditForm';
 
 class MaintainanceManagement extends Component {
     constructor(props) {
@@ -19,7 +20,8 @@ class MaintainanceManagement extends Component {
             type: null,
             status: null,
             page: 0,
-            limit: 100,
+            limit: 5,
+            managedBy : this.props.managedBy?this.props.managedBy:''
         }
     }
 
@@ -31,7 +33,7 @@ class MaintainanceManagement extends Component {
             month: null,
             status: null,
             page: 0,
-            limit: 100,
+            limit: 5,
         });
     }
 
@@ -253,9 +255,25 @@ class MaintainanceManagement extends Component {
        
     }
 
+    // Bắt sự kiện click chỉnh sửa thông tin tài sản
+    handleEditAsset = async (value) => {
+        console.log(value);
+        await this.setState(state => {
+            return {
+                ...state,
+                currentRowEditAsset: value
+            }
+        });
+        window.$('#modal-edit-asset').modal('show');
+
+        // Mở tab thứ 3
+        window.$('.nav-tabs li:eq(2) a').tab('show');
+
+    }
+
     render() {
         const { translate, assetsManager } = this.props;
-        const { page, limit, currentRow } = this.state;
+        const { page, limit, currentRow, currentRowEditAsset, managedBy } = this.state;
 
         var lists = "", exportData;
         var formater = new Intl.NumberFormat();
@@ -345,10 +363,10 @@ class MaintainanceManagement extends Component {
                     <table id="maintainance-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
+                                <th style={{ width: "8%" }}>{translate('asset.general_information.asset_code')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.form_code')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.create_date')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.type')}</th>
-                                <th style={{ width: "8%" }}>{translate('asset.general_information.asset_code')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.asset_name')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.content')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.start_date')}</th>
@@ -359,10 +377,10 @@ class MaintainanceManagement extends Component {
                                 <DataTableSetting
                                         tableId="maintainance-table"
                                         columnArr={[
+                                            translate('asset.general_information.asset_code'),
                                             translate('asset.general_information.form_code'),
                                             translate('asset.general_information.create_date'),
                                             translate('asset.general_information.type'),
-                                            translate('asset.general_information.asset_code'),
                                             translate('asset.general_information.asset_name'),
                                             translate('asset.general_information.content'),
                                             translate('asset.general_information.start_date'),
@@ -382,10 +400,10 @@ class MaintainanceManagement extends Component {
                                 lists.map(asset => {
                                     return asset.maintainanceLogs.map((x, index) => (
                                         <tr key={index}>
+                                            <td><a onClick={() => this.handleEditAsset(asset)}>{asset.code}</a></td>
                                             <td>{x.maintainanceCode}</td>
                                             <td>{x.createDate ? this.formatDate2(x.createDate) : ''}</td>
                                             <td>{x.type}</td>
-                                            <td>{asset.code}</td>
                                             <td>{asset.assetName}</td>
                                             <td>{x.description}</td>
                                             <td>{x.startDate ? this.formatDate2(x.startDate) : ''}</td>
@@ -433,6 +451,55 @@ class MaintainanceManagement extends Component {
                         endDate={this.formatDate2(currentRow.endDate)}
                         expense={currentRow.expense}
                         status={currentRow.status}
+                    />
+                }
+
+                {
+                    currentRowEditAsset &&
+                    <AssetEditForm
+                        _id={currentRowEditAsset._id}
+                        employeeId ={managedBy}
+                        avatar={currentRowEditAsset.avatar}
+                        code={currentRowEditAsset.code}
+                        assetName={currentRowEditAsset.assetName}
+                        serial={currentRowEditAsset.serial}
+                        assetType={currentRowEditAsset.assetType}
+                        group={currentRowEditAsset.group}
+                        purchaseDate={currentRowEditAsset.purchaseDate}
+                        warrantyExpirationDate={currentRowEditAsset.warrantyExpirationDate}
+                        managedBy={currentRowEditAsset.managedBy}
+                        assignedToUser={currentRowEditAsset.assignedToUser}
+                        assignedToOrganizationalUnit={currentRowEditAsset.assignedToOrganizationalUnit}
+                        handoverFromDate={currentRowEditAsset.handoverFromDate}
+                        handoverToDate={currentRowEditAsset.handoverToDate}
+                        location={currentRowEditAsset.location}
+                        description={currentRowEditAsset.description}
+                        status={currentRowEditAsset.status}
+                        canRegisterForUse={currentRowEditAsset.canRegisterForUse}
+                        detailInfo={currentRowEditAsset.detailInfo}
+                        readByRoles={currentRowEditAsset.readByRoles}
+                        cost={currentRowEditAsset.cost}
+                        residualValue={currentRowEditAsset.residualValue}
+                        startDepreciation={currentRowEditAsset.startDepreciation}
+                        usefulLife={currentRowEditAsset.usefulLife}
+                        depreciationType={currentRowEditAsset.depreciationType}
+                        estimatedTotalProduction={currentRowEditAsset.estimatedTotalProduction}
+                        unitsProducedDuringTheYears={currentRowEditAsset.unitsProducedDuringTheYears && currentRowEditAsset.unitsProducedDuringTheYears.map((x) => ({
+                            month: this.formatDate2(x.month),
+                            unitsProducedDuringTheYear: x.unitsProducedDuringTheYear
+                        })
+                        )}
+
+                        disposalDate={currentRowEditAsset.disposalDate}
+                        disposalType={currentRowEditAsset.disposalType}
+                        disposalCost={currentRowEditAsset.disposalCost}
+                        disposalDesc={currentRowEditAsset.disposalDesc}
+
+                        maintainanceLogs={currentRowEditAsset.maintainanceLogs}
+                        usageLogs={currentRowEditAsset.usageLogs}
+                        incidentLogs={currentRowEditAsset.incidentLogs}
+                        archivedRecordNumber={currentRowEditAsset.archivedRecordNumber}
+                        files={currentRowEditAsset.documents}
                     />
                 }
             </div>

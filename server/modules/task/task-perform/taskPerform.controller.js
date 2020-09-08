@@ -682,8 +682,8 @@ exports.editTask = async (req, res) => {
     else if (req.body.type === 'edit_archived') {
         editArchivedOfTask(req, res);
     }
-    else if (req.body.type === 'edit_status') {
-        editTaskStatus(req, res);
+    else if (req.body.type === 'edit_activate') {
+        editActivateOfTask(req, res);
     } 
     else if (req.query.type === 'confirm_task') {
         confirmTask(req, res);
@@ -920,9 +920,9 @@ editArchivedOfTask = async (req, res) => {
 /**
  * Chinh sua trang thai cua cong viec
  */
-editTaskStatus = async (req, res) => {
+editActivateOfTask = async (req, res) => {
     // try {
-        let task = await PerformTaskService.editTaskStatus(req.params.taskId, req.body);
+        let task = await PerformTaskService.editActivateOfTask(req.params.taskId, req.body);
         await LogInfo(req.user.email, ` edit status of task  `, req.user.company);
         res.status(200).json({
             success: true,

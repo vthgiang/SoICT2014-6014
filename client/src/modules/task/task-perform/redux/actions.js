@@ -1,7 +1,7 @@
-// import { taskManagementConstants, performTaskConstants } from "../../../../redux-constants/CombineConstants";
 import { performTaskConstants } from "./constants";
 import { taskManagementConstants } from "../../task-management/redux/constants";
-// import { alertActions } from "../../../../redux-actions/AlertActions";
+import { TaskProcessConstants } from "../../task-process/redux/constants";
+import { TaskProcessService } from "../../task-process/redux/services";
 import { performTaskService } from "./services";
 export const performTaskAction = {
     getTimesheetLogs,
@@ -40,7 +40,7 @@ export const performTaskAction = {
     deleteFileTask,
     editTaskByAccountableEmployees,
     editTaskByResponsibleEmployees,
-    editStatusOfTask,
+    editActivateOfTask,
     editArchivedOfTask,
     editDocument,
     deleteDocument,
@@ -56,6 +56,15 @@ export const performTaskAction = {
     editInformationTask,
     getTaskById,
     confirmTask,
+
+    createComment,
+    editComment,
+    deleteComment,
+    createChildComment,
+    editChildComment,
+    deleteChildComment,
+    deleteFileComment,
+    deleteFileChildComment,
 };
 
 
@@ -587,19 +596,19 @@ function deleteEvaluation(taskId, evaluateId) {
  * @param {*} id id task
  * @param {*} status trang thai muon cap nhat
  */
-function editStatusOfTask(id, status, typeOfTask, listSelected = []) {
+function editActivateOfTask(id, typeOfTask, listSelected = []) {
     return dispatch => {
-        dispatch({ type: taskManagementConstants.EDIT_STATUS_OF_TASK_REQUEST, id });
-        performTaskService.editStatusOfTask(id, status, typeOfTask, listSelected) //(taskid, { status: "dang thuc hien" })
+        dispatch({ type: performTaskConstants.EDIT_ACTIVATE_OF_TASK_REQUEST, id });
+        performTaskService.editActivateOfTask(id, typeOfTask, listSelected)
             .then(res => {
                 dispatch({
-                    type: taskManagementConstants.EDIT_STATUS_OF_TASK_SUCCESS,
+                    type: performTaskConstants.EDIT_ACTIVATE_OF_TASK_SUCCESS,
                     // payload: res.data.content.task
                     payload: res.data.content
                 });
             })
             .catch(error => {
-                dispatch({ type: taskManagementConstants.EDIT_STATUS_OF_TASK_FAILURE, error });
+                dispatch({ type: performTaskConstants.EDIT_ACTIVATE_OF_TASK_FAILURE, error });
             });
     };
 }
@@ -721,3 +730,155 @@ function confirmTask(taskId) {
             });
     }
 }
+
+function createComment(taskId, data) {
+    return dispatch => {
+        dispatch({ type: TaskProcessConstants.CREATE_COMMENT_REQUEST });
+        TaskProcessService.createComment(taskId, data)
+            .then(res => {
+                dispatch({
+                    type: TaskProcessConstants.CREATE_COMMENT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: TaskProcessConstants.CREATE_COMMENT_FAILURE,
+                    payload: error
+                })
+            })
+    }
+  }
+  
+  function editComment(taskId, commentId, data) {
+    return dispatch => {
+        dispatch({ type: TaskProcessConstants.EDIT_COMMENT_REQUEST });
+        TaskProcessService.editComment(taskId, commentId, data)
+            .then(res => {
+                dispatch({
+                    type: TaskProcessConstants.EDIT_COMMENT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: TaskProcessConstants.EDIT_COMMENT_FAILURE,
+                    payload: error
+                })
+            })
+    }
+  }
+  function deleteComment(taskId, commentId) {
+    return dispatch => {
+        dispatch({ type: TaskProcessConstants.DELETE_COMMENT_REQUEST });
+        TaskProcessService.deleteComment(taskId, commentId)
+            .then(res => {
+                dispatch({
+                    type: TaskProcessConstants.DELETE_COMMENT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: TaskProcessConstants.DELETE_COMMENT_FAILURE,
+                    payload: error
+                })
+            })
+    }
+  }
+  
+  
+  function createChildComment(taskId, commentId, data) {
+    return dispatch => {
+        dispatch({ type: TaskProcessConstants.CREATE_COMMENT_OF_COMMENT_REQUEST });
+        TaskProcessService.createChildComment(taskId, commentId, data)
+            .then(res => {
+                dispatch({
+                    type: TaskProcessConstants.CREATE_COMMENT_OF_COMMENT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: TaskProcessConstants.CREATE_COMMENT_OF_COMMENT_FAILURE,
+                    payload: error
+                })
+            })
+    }
+  }
+  
+  function editChildComment(taskId, commentId, childCommentId, data) {
+    return dispatch => {
+        dispatch({ type: TaskProcessConstants.EDIT_COMMENT_OF_COMMENT_REQUEST });
+        TaskProcessService.editChildComment(taskId, commentId, childCommentId, data)
+            .then(res => {
+                dispatch({
+                    type: TaskProcessConstants.EDIT_COMMENT_OF_COMMENT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: TaskProcessConstants.EDIT_COMMENT_OF_COMMENT_FAILURE,
+                    payload: error
+                })
+            })
+    }
+  }
+  
+  function deleteChildComment(taskId, commentId, childCommentId) {
+    return dispatch => {
+        dispatch({ type: TaskProcessConstants.DELETE_COMMENT_OF_COMMENT_REQUEST });
+        TaskProcessService.deleteChildComment(taskId, commentId, childCommentId)
+            .then(res => {
+                dispatch({
+                    type: TaskProcessConstants.DELETE_COMMENT_OF_COMMENT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: TaskProcessConstants.DELETE_COMMENT_OF_COMMENT_FAILURE,
+                    payload: error
+                })
+            })
+    }
+  }
+  
+  function deleteFileComment(fileId, commentId, taskId) {
+    return dispatch => {
+        dispatch({ type: TaskProcessConstants.DELETE_FILE_COMMENT_REQUEST });
+        TaskProcessService.deleteFileComment(fileId, commentId, taskId)
+            .then(res => {
+                dispatch({
+                    type: TaskProcessConstants.DELETE_FILE_COMMENT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: TaskProcessConstants.DELETE_FILE_COMMENT_FAILURE,
+                    payload: error
+                })
+            })
+    }
+  }
+  
+  function deleteFileChildComment(fileId, childCommentId, commentId, taskId) {
+    return dispatch => {
+        dispatch({ type: TaskProcessConstants.DELETE_FILE_CHILD_COMMENT_REQUEST });
+        TaskProcessService.deleteFileChildComment(fileId, childCommentId, commentId, taskId)
+            .then(res => {
+                dispatch({
+                    type: TaskProcessConstants.DELETE_FILE_CHILD_COMMENT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: TaskProcessConstants.DELETE_FILE_CHILD_COMMENT_FAILURE,
+                    payload: error
+                })
+            })
+    }
+  }

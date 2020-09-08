@@ -9,40 +9,40 @@ export const TaskProcessValidator = {
 
 
 // validate name
-function validateProcessName(value) {
+function validateProcessName(value, translate) {
     let msg;
     if (value.trim() === "") {
-        msg = "Tên quy trình không được bỏ trống"
+        msg = translate("task.task_process.error.empty_name")
     } else if (!VALIDATOR.isValidName(value)) {
-        msg = "Tên không chứa ký tự đặc biệt";
+        msg = translate("task.task_process.error.special_character")
     }
     return msg;
 }
 
 // validate description
-function validateProcessDescription(value) {
+function validateProcessDescription(value, translate) {
     let msg;
     if (value.trim() === "") {
-        msg = "Mô tả quy trình không được bỏ trống"
+        msg = translate("task.task_process.error.empty_description")
     }
     return msg;
 }
 
 // validate viewer
-function validateViewer(value) {
+function validateViewer(value, translate) {
     let msg;
     if (value.length === 0) {
-        msg = "Cần chỉ rõ những người có quyền xem mẫu quy trình"
+        msg = translate("task.task_process.error.empty_viewer")
     }
     return msg;
 }
 
 
 // validate manager
-function validateManager(value) {
+function validateManager(value, translate) {
     let msg;
     if (value.length === 0) {
-        msg = "Cần chỉ rõ những người quản lý mẫu quy trình"
+        msg = translate("task.task_process.error.empty_manager")
     }
     return msg;
 }

@@ -28,7 +28,8 @@ class AssetCreateForm extends Component {
                 handoverFromDate: null,
                 handoverToDate: null,
                 status: "",
-                canRegisterForUse: "",
+                typeRegisterForUse: "",
+                assetType: "",
                 description: "",
                 detailInfo: [],
                 residualValue: null,
@@ -160,7 +161,7 @@ class AssetCreateForm extends Component {
             // this.validatorInput(asset.assetType) &&
             // this.validatorInput(asset.managedBy) &&
             // this.validatorInput(asset.status) &&
-            // this.validatorInput(asset.canRegisterForUse) &&
+            // this.validatorInput(asset.typeRegisterForUse) &&
             // this.validatorInput(asset.cost) &&
             // this.validatorInput(asset.usefulLife) &&
             // this.validatorInput(asset.startDepreciation) &&
@@ -195,7 +196,7 @@ class AssetCreateForm extends Component {
     render() {
         const { translate, assetsManager } = this.props;
         const { img, asset, maintainanceLogs, usageLogs, incidentLogs, files } = this.state;
-        console.log(this.state, 'this.state-create')
+        // console.log(this.state, 'this.state-create')
 
         return (
             <React.Fragment>
@@ -222,7 +223,7 @@ class AssetCreateForm extends Component {
                         <div className="tab-content">
                             {/* Thông tin chung */}
                             <GeneralTab
-                                id="general"
+                                id={`create_general`}
                                 img={img}
                                 handleChange={this.handleChange}
                                 handleUpload={this.handleUpload}

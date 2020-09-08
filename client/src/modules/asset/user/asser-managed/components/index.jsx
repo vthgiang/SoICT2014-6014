@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { AssetManagement } from '../../../admin/asset-information/components/assetManagement';
-import { PurchaseRequestManager } from '../../../admin/use-request/components/PurchaseRequestManager';
+import { UseRequestManager } from '../../../admin/use-request/components/UseRequestManager';
 import { IncidentManagement } from '../../../admin/incident/components/incidentManagement';
 
 class EmployeeAssetManagement extends Component {
@@ -62,7 +62,7 @@ class EmployeeAssetManagement extends Component {
                         
                         <div className ="tab-content">
                         <AssetManagement managedBy = {managedBy} isActive={openTab1} />
-                        <PurchaseRequestManager managedBy={managedBy} isActive={openTab2} />
+                        <UseRequestManager managedBy={managedBy} isActive={openTab2} />
                         <IncidentManagement managedBy={managedBy} isActive={openTab3} />
                         </div>
                 

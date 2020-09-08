@@ -38,7 +38,7 @@ export const performTaskService = {
    
     editTaskByAccountableEmployees,
     editTaskByResponsibleEmployees,
-    editStatusOfTask,
+    editActivateOfTask,
     editArchivedOfTask,
     editDocument,
     deleteDocument,
@@ -54,6 +54,15 @@ export const performTaskService = {
     editInformationTask,
     getById,
     confirmTask,
+
+    createComment,
+    editComment,
+    deleteComment,
+    createChildComment,
+    editChildComment,
+    deleteChildComment,
+    deleteFileComment,
+    deleteFileChildComment,
 };
 
 /**
@@ -431,17 +440,16 @@ function editArchivedOfTask(taskId) {
 * @param {*} taskId id cua task
 * @param {*} status trang thai muon cap nhat
 */
-function editStatusOfTask(taskId, status, typeOfTask, listSelected) {
+function editActivateOfTask(taskId, typeOfTask, listSelected) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}`,
         method: 'POST',
         data: {
-            status: status,
             typeOfTask: typeOfTask,
             listSelected: listSelected,
-            type: 'edit_status',
+            type: 'edit_activate',
         }
-    }, false, true, 'task.task_management');
+    }, true, true, 'task.task_management');
 }
 
 /**
@@ -585,3 +593,81 @@ function editDocument(documentId, taskId, data) {
 }
 
 
+/**
+ * Tạo comment cho kpi set
+ */
+function createComment(taskId, data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/process/tasks/${taskId}/comments`,
+        method: 'POST',
+        data: data
+    }, false, true)
+}
+/**
+ * Tạo comment cho kpi set
+ */
+function createChildComment(taskId, commentId, data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/process/tasks/${taskId}/comments/${commentId}/child-comments`,
+        method: 'POST',
+        data: data
+    }, false, true)
+}
+
+/**
+ * Edit comment cho kpi set
+ */
+function editComment(taskId, commentId, data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/process/tasks/${taskId}/comments/${commentId}`,
+        method: 'PATCH',
+        data: data
+    }, false, true)
+}
+/**
+ * Delete comment
+ */
+function deleteComment(taskId, commentId) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/process/tasks/${taskId}/comments/${commentId}`,
+        method: 'DELETE',
+    }, false, true)
+}
+/**
+ * Edit comment of comment
+ */
+function editChildComment(taskId, commentId, childCommentId, data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/process/tasks/${taskId}/comments/${commentId}/child-comments/${childCommentId}`,
+        method: 'PATCH',
+        data: data
+    }, false, true)
+}
+/**
+ * Delete comment of comment
+ */
+function deleteChildComment(taskId, commentId, childCommentId) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/process/tasks/${taskId}/comments/${commentId}/child-comments/${childCommentId}`,
+        method: 'DELETE',
+    }, false, true)
+}
+
+/**
+ * Delete file of comment
+ */
+function deleteFileComment(fileId,commentId, taskId) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/process/tasks/${taskId}}/comments/${commentId}/files/${fileId}`,
+        method: 'DELETE',
+    }, false, true)
+}
+/**
+ * Delete file child comment
+ */
+function deleteFileChildComment(fileId, childCommentId, commentId, taskId) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/process/tasks/${taskId}/comments/${commentId}/child-comments/${childCommentId}/files/${fileId}`,
+        method: 'DELETE',
+    }, false, true)
+}

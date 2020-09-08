@@ -5,7 +5,7 @@ import moment from 'moment';
 
 import { DialogModal, ButtonModal, SelectBox, DatePicker, TreeSelect, ErrorLabel } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
-
+import { DocumentImportForm } from './documentImportForm';
 
 class CreateForm extends Component {
     constructor(props) {
@@ -407,6 +407,7 @@ class CreateForm extends Component {
             documentArchivedRecordPlaceOrganizationalUnit,
             documentArchivedRecordPlaceManager,
         } = this.state;
+        console.log('dateeee', documentIssuingDate)
         const formData = new FormData();
         formData.append('name', documentName);
         formData.append('category', documentCategory);
@@ -471,6 +472,14 @@ class CreateForm extends Component {
         let archive = archives.filter(arch => arch._id === select);
         return archive[0] ? archive[0].path : "";
     }
+    handleAddDocument = (event) => {
+        event.preventDefault();
+        window.$('#modal-create-document').modal('show');
+    }
+    handImportFile = (event) => {
+        event.preventDefault();
+        window.$('#modal_import_file_document').modal('show');
+    }
 
     render() {
         const { translate, role, documents, department } = this.props;
@@ -480,15 +489,24 @@ class CreateForm extends Component {
             errorExpiredDate, errorCategory, documentArchives } = this.state;
         const archives = documents.administration.archives.list;
         const categories = documents.administration.categories.list.map(category => { return { value: category._id, text: category.name } });
-        // console.log('rrrrrr', archives);
         const documentRoles = role.list.map(role => { return { value: role._id, text: role.name } });
         const relationshipDocs = documents.administration.data.list.map(doc => { return { value: doc._id, text: doc.name } });
-        // console.log('eeeeeeee', documentArchives)
-        // console.log('uuuuuuu', documentArchives ? this.findPath(archives, documentArchives[0]) : "");
         let path = documentArchives ? this.findPath(archives, documentArchives[0]) : "";
         return (
             <React.Fragment>
-                <ButtonModal modalID="modal-create-document" button_name={translate('general.add')} title={translate('manage_user.add_title')} />
+
+                <div className="form-inline">
+                    <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
+                        <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('manage_user.add_title')}
+                        >{translate('general.add')}</button>
+                        <ul className="dropdown-menu pull-right">
+                            <li><a href="#modal-create-document" title="ImportForm" onClick={(event) => { this.handleAddDocument(event) }}>{translate('task_template.add')}</a></li>
+                            <li><a href="#modal_import_file_document" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>ImportFile</a></li>
+                        </ul>
+                    </div>
+                </div>
+                {/* <ButtonModal modalID="modal-create-document" button_name={translate('general.add')} title={translate('manage_user.add_title')} /> */}
+                <DocumentImportForm />
                 <DialogModal
                     modalID="modal-create-document"
                     formID="form-create-document"
@@ -496,6 +514,7 @@ class CreateForm extends Component {
                     func={this.save} size="100"
                     disableSubmit={!this.isValidateForm()}
                 >
+
                     <form id="form-create-document">
                         <div className="nav-tabs-custom">
                             <ul className="nav nav-tabs">

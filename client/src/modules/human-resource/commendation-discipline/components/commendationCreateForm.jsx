@@ -7,18 +7,23 @@ import { DialogModal, ButtonModal, ErrorLabel, DatePicker, SelectBox } from '../
 import { CommendationFromValidator } from './commendationFormValidator';
 
 import { DisciplineActions } from '../redux/actions';
+import { EmployeeManagerActions } from '../../profile/employee-management/redux/actions';
 
 class PraiseCreateForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            employeeNumber: "",
+            employee: "",
             decisionNumber: "",
             organizationalUnit: "",
             startDate: this.formatDate(Date.now()),
             type: "",
             reason: "",
         };
+    }
+
+    componentDidMount() {
+        this.props.getAllEmployee();
     }
 
     /**
@@ -43,22 +48,22 @@ class PraiseCreateForm extends Component {
 
     }
 
-    /** Bắt sự kiện thay đổi mã nhân viên */
-    handleMSNVChange = (e) => {
-        let { value } = e.target;
-        this.validateEmployeeNumber(value, true);
+    /** Function bắt sự kiện thay đổi mã nhân viên */
+    handleMSNVChange = async (value) => {
+        this.validateEmployeeNumber(value[0], true);
     }
     validateEmployeeNumber = (value, willUpdateState = true) => {
-        const { translate } = this.props;
-        let msg = CommendationFromValidator.validateEmployeeNumber(value, translate)
+        let { translate } = this.props;
+        let msg = CommendationFromValidator.validateEmployeeNumber(value, translate);
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnEmployeeNumber: msg,
-                    employeeNumber: value,
+                    errorOnEmployee: msg,
+                    employee: value,
                 }
             });
+
         }
         return msg === undefined;
     }
@@ -171,9 +176,9 @@ class PraiseCreateForm extends Component {
 
     /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
     isFormValidated = () => {
-        const { employeeNumber, startDate, decisionNumber, organizationalUnit, type, reason } = this.state;
+        const { employee, startDate, decisionNumber, organizationalUnit, type, reason } = this.state;
         let result =
-            this.validateEmployeeNumber(employeeNumber, false) && this.validateStartDate(startDate, false) &&
+            this.validateEmployeeNumber(employee, false) && this.validateStartDate(startDate, false) &&
             this.validateDecisionNumber(decisionNumber, false) && this.validateOrganizationalUnit(organizationalUnit, false) &&
             this.validateType(type, false) && this.validateReason(reason, false);
         return result;
@@ -181,17 +186,21 @@ class PraiseCreateForm extends Component {
 
     /** Bắt sự kiện submit form */
     save = () => {
+        const { startDate } = this.state;
+        let partStart = startDate.split('-');
+        let startDateNew = new Date(partStart[2], partStart[1] - 1, partStart[0]);
         if (this.isFormValidated()) {
-            return this.props.createNewPraise(this.state);
+            return this.props.createNewPraise({ ...this.state, startDate: startDateNew });
         }
     }
 
     render() {
-        const { translate, discipline, department } = this.props;
+        const { translate, discipline, department, employeesManager } = this.props;
 
-        const { employeeNumber, startDate, reason, decisionNumber, organizationalUnit, type, errorOnStartDate,
-            errorOnEmployeeNumber, errorOnDecisionNumber, errorOnOrganizationalUnit, errorOnType, errorOnReason } = this.state;
+        const { employee, startDate, reason, decisionNumber, organizationalUnit, type, errorOnStartDate,
+            errorOnEmployee, errorOnDecisionNumber, errorOnOrganizationalUnit, errorOnType, errorOnReason } = this.state;
 
+        let listAllEmployees = employeesManager.listAllEmployees;
         return (
             <React.Fragment>
                 <ButtonModal modalID="modal-create-praise" button_name={translate('human_resource.commendation_discipline.commendation.add_commendation')} title={translate('human_resource.commendation_discipline.commendation.add_commendation_title')} />
@@ -203,12 +212,20 @@ class PraiseCreateForm extends Component {
                     disableSubmit={!this.isFormValidated()}
                 >
                     <form className="form-group" id="form-create-praise">
-                        {/* Mã nhân viên */}
-                        <div className={`form-group ${errorOnEmployeeNumber && "has-error"}`}>
+                        {/* Mã số nhân viên */}
+                        <div className={`form-group ${errorOnEmployee && "has-error"}`}>
                             <label>{translate('human_resource.staff_number')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="employeeNumber" value={employeeNumber} onChange={this.handleMSNVChange} autoComplete="off" placeholder={translate('human_resource.staff_number')} />
-                            <ErrorLabel content={errorOnEmployeeNumber} />
+                            <SelectBox
+                                id={`create-commendation-employee`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                value={employee}
+                                items={listAllEmployees.map(y => { return { value: y._id, text: `${y.employeeNumber} - ${y.fullName}` } }).concat([{ value: "", text: translate('human_resource.non_staff') }])}
+                                onChange={this.handleMSNVChange}
+                            />
+                            <ErrorLabel content={errorOnEmployee} />
                         </div>
+
                         <div className="row">
                             {/* Số quyết định */}
                             <div className={`col-sm-6 col-xs-12 form-group ${errorOnDecisionNumber && "has-error"}`}>
@@ -263,12 +280,13 @@ class PraiseCreateForm extends Component {
 };
 
 function mapState(state) {
-    const { discipline, department } = state;
-    return { discipline, department };
+    const { discipline, department, employeesManager } = state;
+    return { discipline, department, employeesManager };
 };
 
 const actionCreators = {
     createNewPraise: DisciplineActions.createNewPraise,
+    getAllEmployee: EmployeeManagerActions.getAllEmployee,
 };
 
 const createForm = connect(mapState, actionCreators)(withTranslate(PraiseCreateForm));

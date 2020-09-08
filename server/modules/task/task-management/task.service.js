@@ -1179,13 +1179,9 @@ exports.createTask = async (task) => {
     if( taskTemplate ) {
         formula = taskTemplate.formula;
     } else if( task.formula ){
-        formula = "progress / (dayUsed / totalDay)"; // default
-        // "progress / (dayUsed / totalDay) - 0.5 * (10 - (averageActionRating)) * 10"
+        // formula = "progress / (dayUsed / totalDay)"; // default
+        formula = "progress / (dayUsed / totalDay) - 0.5 * (10 - (averageActionRating)) * 10"
     } 
-    // else {
-    //     formula = task.formula;
-    // }
-
     var task = await Task.create({ //Tạo dữ liệu mẫu công việc
         organizationalUnit: task.organizationalUnit,
         creator: task.creator, //id của người tạo
@@ -1372,7 +1368,7 @@ exports.getTasksByUser = async (data) => {
  * @param {*} month 
  */
 exports.getAllTaskOfOrganizationalUnit = async (roleId, organizationalUnitId, month) => {
-    let organizationalUnit;
+    let organizationalUnit, tasksOfOrganizationalUnit;
     let now, currentYear, currentMonth, endOfCurrentMonth, endOfLastMonth;
 
     if (month) {
@@ -1401,104 +1397,106 @@ exports.getAllTaskOfOrganizationalUnit = async (roleId, organizationalUnitId, mo
         organizationalUnit = await OrganizationalUnit.findOne({ '_id': organizationalUnitId });
     }
 
-    let tasksOfOrganizationalUnit = await Task.aggregate([
-        { $match: { 'organizationalUnit': organizationalUnit._id } },
-        {
-            $match: {
-                $or: [
-                    { 'endDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
-                    { 'startDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
-                    { $and: [{ 'endDate': { $gte: endOfCurrentMonth } }, { 'startDate': { $lte: endOfLastMonth } }] }
-                ]
+    if (organizationalUnit) {
+        tasksOfOrganizationalUnit = await Task.aggregate([
+            { $match: { 'organizationalUnit': organizationalUnit._id } },
+            {
+                $match: {
+                    $or: [
+                        { 'endDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
+                        { 'startDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
+                        { $and: [{ 'endDate': { $gte: endOfCurrentMonth } }, { 'startDate': { $lte: endOfLastMonth } }] }
+                    ]
+                }
+            },
+
+            { $unwind: "$evaluations" },
+            {
+                $match: {
+                    $or: [
+                        { 'evaluations.date': undefined },
+                        { 'evaluations.date': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } }
+                    ]
+                }
+            },
+
+            {
+                $lookup: {
+                    from: "organizational_units",
+                    localField: "organizationalUnit",
+                    foreignField: "_id",
+                    as: "detailOrganizationalUnit"
+                }
+            },
+
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "responsibleEmployees",
+                    foreignField: "_id",
+                    as: "responsibleEmployeesInfo"
+                }
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "accountableEmployees",
+                    foreignField: "_id",
+                    as: "accountableEmployeesInfo"
+                }
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "consultedEmployees",
+                    foreignField: "_id",
+                    as: "consultedEmployeesInfo"
+                }
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "informedEmployees",
+                    foreignField: "_id",
+                    as: "informedEmployeesInfo"
+                }
+            },
+
+            {
+                $project: {
+                    'name': 1,
+                    'detailOrganizationalUnit.name': 1,
+                    'description': 1,
+                    'startDate': 1,
+                    'endDate': 1,
+                    'priority': 1,
+                    'evaluations': 1,
+
+                    'responsibleEmployees': 1,
+                    'accountableEmployees': 1,
+                    'consultedEmployees': 1,
+                    'informedEmployees': 1,
+
+                    'responsibleEmployeesInfo._id': 1,
+                    'responsibleEmployeesInfo.name': 1,
+                    'responsibleEmployeesInfo.email': 1,
+
+                    'accountableEmployeesInfo._id': 1,
+                    'accountableEmployeesInfo.name': 1,
+                    'accountableEmployeesInfo.email': 1,
+
+                    'consultedEmployeesInfo._id': 1,
+                    'consultedEmployeesInfo.name': 1,
+                    'consultedEmployeesInfo.email': 1,
+
+                    'informedEmployeesInfo._id': 1,
+                    'informedEmployeesInfo.name': 1,
+                    'informedEmployeesInfo.email': 1,
+                    'status': 1
+                }
             }
-        },
-
-        { $unwind: "$evaluations" },
-        {
-            $match: {
-                $or: [
-                    { 'evaluations.date': undefined },
-                    { 'evaluations.date': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } }
-                ]
-            }
-        },
-
-        {
-            $lookup: {
-                from: "organizational_units",
-                localField: "organizationalUnit",
-                foreignField: "_id",
-                as: "detailOrganizationalUnit"
-            }
-        },
-
-        {
-            $lookup: {
-                from: "users",
-                localField: "responsibleEmployees",
-                foreignField: "_id",
-                as: "responsibleEmployeesInfo"
-            }
-        },
-        {
-            $lookup: {
-                from: "users",
-                localField: "accountableEmployees",
-                foreignField: "_id",
-                as: "accountableEmployeesInfo"
-            }
-        },
-        {
-            $lookup: {
-                from: "users",
-                localField: "consultedEmployees",
-                foreignField: "_id",
-                as: "consultedEmployeesInfo"
-            }
-        },
-        {
-            $lookup: {
-                from: "users",
-                localField: "informedEmployees",
-                foreignField: "_id",
-                as: "informedEmployeesInfo"
-            }
-        },
-
-        {
-            $project: {
-                'name': 1,
-                'detailOrganizationalUnit.name': 1,
-                'description': 1,
-                'startDate': 1,
-                'endDate': 1,
-                'priority': 1,
-                'evaluations': 1,
-
-                'responsibleEmployees': 1,
-                'accountableEmployees': 1,
-                'consultedEmployees': 1,
-                'informedEmployees': 1,
-
-                'responsibleEmployeesInfo._id': 1,
-                'responsibleEmployeesInfo.name': 1,
-                'responsibleEmployeesInfo.email': 1,
-
-                'accountableEmployeesInfo._id': 1,
-                'accountableEmployeesInfo.name': 1,
-                'accountableEmployeesInfo.email': 1,
-
-                'consultedEmployeesInfo._id': 1,
-                'consultedEmployeesInfo.name': 1,
-                'consultedEmployeesInfo.email': 1,
-
-                'informedEmployeesInfo._id': 1,
-                'informedEmployeesInfo.name': 1,
-                'informedEmployeesInfo.email': 1,
-                'status': 1
-            }
-        }
-    ])
+        ])
+    }
 
     return tasksOfOrganizationalUnit;
 }
@@ -1514,10 +1512,13 @@ exports.getAllTaskOfChildrenOrganizationalUnit = async (companyId, roleId, month
 
     childrenOrganizationalUnits = await overviewService.getAllChildrenOrganizational(companyId, roleId, organizationalUnitId);
 
-    for (let i = 0; i < childrenOrganizationalUnits.length; i++) {
-        tasksOfChildrenOrganizationalUnit.push(await this.getAllTaskOfOrganizationalUnit(roleId, childrenOrganizationalUnits[i].id, month));
-        tasksOfChildrenOrganizationalUnit[i].unshift({ 'name': childrenOrganizationalUnits[i].name, 'deg': childrenOrganizationalUnits[i].deg })
+    if (childrenOrganizationalUnits) {
+        for (let i = 0; i < childrenOrganizationalUnits.length; i++) {
+            tasksOfChildrenOrganizationalUnit.push(await this.getAllTaskOfOrganizationalUnit(roleId, childrenOrganizationalUnits[i].id, month));
+            tasksOfChildrenOrganizationalUnit[i].unshift({ 'name': childrenOrganizationalUnits[i].name, 'deg': childrenOrganizationalUnits[i].deg })
+        }
     }
+    
     return tasksOfChildrenOrganizationalUnit;
 }
 

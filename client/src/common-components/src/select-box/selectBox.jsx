@@ -4,52 +4,96 @@ import './selectBox.css';
 class SelectBox extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            searchText: "",
+            searching: false,
+            previouslySelectedOptions: [],
+        }
     }
 
-    setOptionsSelect2 = (id, changeSearch, searchItems, multiple = false) => {
-        function delay(callback, ms) {
-            var timer = 0;
-            return function () {
-                var context = this, args = arguments;
-                clearTimeout(timer);
-                timer = setTimeout(function () {
-                    callback.apply(context, args);
-                }, ms || 0);
-            };
-        }
-        return {
-            ajax: {
-                data: function (params) {
-                    if (params.term !== undefined && params.term !== "") {
-                        let inputSearch;
-                        if (multiple === true) {
-                            let parentSelect = window.$("#" + id).parent();
-                            inputSearch = parentSelect.find('input.select2-search__field');
-                        } else {
-                            let children = window.$(".select2-dropdown--below");
-                            inputSearch = children.find('input.select2-search__field');
-                        }
-                        inputSearch.keyup(delay(function (e) {
-                            if (this.value === params.term)
-                                changeSearch(this.value);
-                        }, 500));
-                    }
-                },
-                processResults: function (data) {
+    delay = (callback, ms) => {
+        var timer = 0;
+        return function () {
+            var context = this, args = arguments;
+            clearTimeout(timer);
+            timer = setTimeout(function () {
+                callback.apply(context, args);
+            }, ms || 0);
+        };
+    }
+
+
+
+
+    bindSelectBoxEvent = () => {
+        const { id, multiple, onSearch } = this.props;
+
+        if (multiple) {
+            window.$("#" + id).parent().bind("keyup", "input.select2-search__field", this.delay((e) => {
+                if (e.which === 13) // Bỏ qua enter
+                    return;
+                
+                let searchBox = window.$("#" + id).parent().find('input.select2-search__field');
+                let previouslySelectedOptions = [].filter.call(this.refs.select.options, o => o.selected).map(o => {
+                    return { text: o.text, value: o.value };
+                });
+
+                // Lưu lại text search và các giá trị đã chọn
+                this.setState((state) => {
                     return {
-                        results: searchItems.map(x => { return { id: x.value, text: x.text } })
-                    };
-                },
+                        ...state,
+                        searchText: searchBox.val(),
+                        searching: true,
+                        previouslySelectedOptions: previouslySelectedOptions,
+                    }
+                });
+
+                if (onSearch) {
+                    onSearch(searchBox.val());
+                }
+            }, 1000));
+        } else {
+            window.$("#" + id).on('select2:open', (e) => {
+                let searchBox = window.$(".select2-search.select2-search--dropdown").find('input.select2-search__field');
+                
+                searchBox.bind("keydown", this.delay((e) => {
+                    if (e.which === 13) // Bỏ qua enter
+                        return;
+                    
+                    // Lưu lại text search
+                    this.setState((state) => {
+                        return {
+                            ...state,
+                            searchText: searchBox.val(),
+                            searching: true,
+                        }
+                    });
+
+                    if (onSearch) {
+                        onSearch(searchBox.val());
+                    }
+                }, 1000));
+                
+            });
+        }
+
+        let closeHandler = (e) => {
+            if (this.state.searching) {
+                this.setState((state) => {
+                    return {
+                        ...state,
+                        searching: false
+                    }
+                })
             }
         }
+        window.$("#" + id).unbind('select2:close', closeHandler);
+        window.$("#" + id).on('select2:close', closeHandler);
     }
 
-    componentDidMount() {
-        let { id, onChange, options = { minimumResultsForSearch: 15 }, changeSearch, searchItems, multiple } = this.props;
-        if (changeSearch !== undefined && changeSearch !== false) {
-            options = this.setOptionsSelect2(id, changeSearch, searchItems, multiple)
-        }
+
+    componentDidMount = () => {
+        const { id, onChange, options = { minimumResultsForSearch: 1 }, multiple, onSearch } = this.props;
         window.$("#" + id).select2(options);
 
         window.$("#" + id).on("change", () => {
@@ -60,21 +104,67 @@ class SelectBox extends Component {
                     value
                 }
             });
-            if (onChange !== undefined && onChange !== null) {
+            if (onChange) {
                 onChange(value); // Thông báo lại cho parent component về giá trị mới (để parent component lưu vào state của nó)
             }
         });
+
+        this.bindSelectBoxEvent();
     }
-    componentDidUpdate() {
-        let { id, options = {}, changeSearch, multiple, textSearch } = this.props;
-        if (changeSearch === undefined || changeSearch === false) {
-            window.$("#" + id).select2(options);
-        }
-    }
+
 
     getValue = () => { // Nếu không dùng onChange, có thể gọi phương thức này qua đối tượng ref để lấy các giá trị đã chọn
         let value = [].filter.call(this.refs.select.options, o => o.selected).map(o => o.value);
         return value;
+    }
+
+    componentDidUpdate() {
+        if (!this.state.searching) { 
+            const { id, options = {} } = this.props;
+            window.$("#" + id).select2(options);
+        } else {
+            const { id, multiple, items } = this.props;
+            
+            window.$("#" + id).find("option").remove(); // Xóa các option đã có
+
+            if (multiple) {
+                if (this.state.previouslySelectedOptions) { // Tạo lại các option đã chọn
+                    this.state.previouslySelectedOptions.forEach(pso => {
+                        let newOption = new Option(pso.text, pso.value, false, true);
+                        window.$("#" + id).append(newOption);
+                    });
+                }
+
+                items.forEach(element => { // Tạo thêm các option mới lấy từ server về
+                    if (!this.state.previouslySelectedOptions || !this.state.previouslySelectedOptions.find(pso => pso.value === element.value)) {
+                        let newOption = new Option(element.text, element.value, false, false);
+                        window.$("#" + id).append(newOption);
+                    }
+                });
+            } else {
+                items.forEach(element => { // Tạo các option mới lấy từ server về
+                    let newOption = new Option(element.text, element.value, false, false);
+                    window.$("#" + id).append(newOption);
+                });
+            }
+            
+
+            window.$("#" + id).select2();
+            window.$("#" + id).select2("open");
+
+            // Điền dữ liệu lại vào ô search
+            let searchBox;
+            if (multiple) {
+                searchBox = window.$("#" + id).parent().find('input.select2-search__field');
+                searchBox.val(this.state.searchText);
+                let width = ((this.state.searchText.length + 1) * 0.75) + 'em';
+                searchBox.css('width', width);
+            } else {
+                let searchBox = window.$(".select2-search.select2-search--dropdown").find('input.select2-search__field');
+                searchBox.val(this.state.searchText);
+            }
+            
+        }
     }
 
     static isEqual = (items1, items2) => {
@@ -95,13 +185,14 @@ class SelectBox extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id || !SelectBox.isEqual(nextProps.items, prevState.items) ||
-            nextProps.disabled !== prevState.disabled || !SelectBox.isEqual(nextProps.searchItems, prevState.searchItems)) {
+        if (prevState.searching) {
+            return null;
+        }
+        if (nextProps.id !== prevState.id || !SelectBox.isEqual(nextProps.items, prevState.items) || nextProps.disabled !== prevState.disabled) {
             return {
                 value: nextProps.value, // Lưu value ban đầu vào state
                 id: nextProps.id,
                 items: nextProps.items,
-                searchItems: nextProps.searchItems !== undefined ? nextProps.searchItems : [],
                 disabled: nextProps.disabled !== undefined ? nextProps.disabled : false
             }
         } else {
@@ -109,57 +200,52 @@ class SelectBox extends Component {
         }
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        // Chỉ render lại khi id thay đổi, hoặc khi tập items thay đổi, hoặc disabled thay đổi
-        if (nextProps.id !== this.state.id || !SelectBox.isEqual(nextProps.items, this.state.items) ||
-            (nextProps.disabled !== undefined ? nextProps.disabled : false) !== this.state.disabled ||
-            !SelectBox.isEqual(nextProps.searchItems !== undefined ? nextProps.searchItems : [], this.state.searchItems)) {
-
-            if (nextProps.searchItems !== undefined && !SelectBox.isEqual(nextProps.searchItems !== undefined ? nextProps.searchItems : [], this.state.searchItems)) {
-                let { id, changeSearch, searchItems, multiple } = nextProps;
-                if (changeSearch !== undefined && changeSearch !== false) {
-                    let options = this.setOptionsSelect2(id, changeSearch, searchItems, multiple)
-                    window.$("#" + nextProps.id).select2('open');
-                    window.$("#" + id).select2(options);
-                    window.$("#" + nextProps.id).select2('open');
-                }
-                let inputSearch;
-                if (multiple === true) {
-                    let parentSelect = window.$("#" + id).parent();
-                    let children = parentSelect.children(1);
-                    inputSearch = children.find('input.select2-search__field')
-                    console.log(inputSearch.val());
-                } else {
-                    let children = window.$(".select2-dropdown--below");
-                    inputSearch = children.find('input.select2-search__field');
-                }
-                inputSearch.val(nextProps.textSearch);
+    shouldComponentUpdate = (nextProps, nextState) => {
+        if (nextState.searching) {
+            if (SelectBox.isEqual(nextProps.items, nextState.items)) {
+                return false;
             }
+
+            this.setState(state => {
+                return {
+                    ...state,
+                    items: nextProps.items
+                }
+            });
+
             return true;
         }
-        return false;
+        // Chỉ render lại khi id thay đổi, hoặc khi tập items thay đổi, hoặc disabled thay đổi
+        if (nextProps.id !== this.state.id || !SelectBox.isEqual(nextProps.items, this.state.items) || (nextProps.disabled !== undefined ? nextProps.disabled : false) !== this.state.disabled)
+            return true;
+        return false;;
     }
 
     render() {
-        const { id, items = [], className, style, multiple = false, options = {}, disabled = false } = this.props;
+        const { id, items, className, style, multiple = false, options = {}, disabled = false } = this.props;
+        const { searching } = this.state;
         return (
             <React.Fragment>
                 <div className="select2">
                     <select className={className} style={style} ref="select" value={this.state.value} id={id} multiple={multiple} onChange={() => { }} disabled={disabled}>
-                        {options.placeholder !== undefined && multiple === false && <option></option>} {/*Ở chế độ single selection, nếu muốn mặc định không chọn gì*/}
-                        {items.map(item => {
-                            if (!(item.value instanceof Array)) { // Dạng bình thường
-                                return <option key={`key-${item.value}`} value={item.value}>{item.text}</option>
-                            } else {
-                                return ( // Dạng group
-                                    <optgroup key={item.text} label={item.text}>
-                                        {item.value.map(subItem => {
-                                            return <option key={subItem.value} value={subItem.value}>{subItem.text}</option>
-                                        })}
-                                    </optgroup>
-                                )
-                            }
-                        })}
+                        {!searching &&
+                            <React.Fragment>
+                                {options.placeholder !== undefined && multiple === false && <option></option>} {/*Ở chế độ single selection, nếu muốn mặc định không chọn gì*/}
+                                {items.map(item => {
+                                    if (!(item.value instanceof Array)) { // Dạng bình thường
+                                        return <option key={`key-${item.value}`} value={item.value}>{item.text}</option>
+                                    } else {
+                                        return ( // Dạng group
+                                            <optgroup key={item.text} label={item.text}>
+                                                {item.value.map(subItem => {
+                                                    return <option key={subItem.value} value={subItem.value}>{subItem.text}</option>
+                                                })}
+                                            </optgroup>
+                                        )
+                                    }
+                                })}
+                            </React.Fragment>
+                        }
                     </select>
                 </div>
             </React.Fragment>

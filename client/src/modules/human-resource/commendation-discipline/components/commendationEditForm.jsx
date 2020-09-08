@@ -108,9 +108,11 @@ class PraiseEditForm extends Component {
 
     /** Bắt sự kiện submit form */
     save = () => {
-        const { _id } = this.state;
+        const { startDate, _id } = this.state;
+        let partStart = startDate.split('-');
+        let startDateNew = new Date(partStart[2], partStart[1] - 1, partStart[0]);
         if (this.isFormValidated()) {
-            return this.props.updatePraise(_id, this.state);
+            return this.props.updatePraise(_id, { ...this.state, startDate: startDateNew });
         }
     }
 

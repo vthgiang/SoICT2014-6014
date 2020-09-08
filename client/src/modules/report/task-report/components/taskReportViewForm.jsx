@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { TaskReportActions } from '../redux/actions';
+import moment from 'moment';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal } from '../../../../common-components';
@@ -38,7 +39,7 @@ class TaskReportViewForm extends Component {
         const time = new Date(data);
         const month = time.getMonth();
         const year = time.getFullYear();
-        return `${year}-${month + 1}`;
+        return `${month + 1}-${year}`;
     }
 
 
@@ -73,11 +74,21 @@ class TaskReportViewForm extends Component {
      * 
      * Hàm gom nhóm các công việc theo thời gian
      */
-    groupByDate = (tasks) => {
-        return tasks.reduce((groups, item) => {
-            groups[item.time] = [...groups[item.time] || [], item];
-            return groups;
-        }, {});
+    groupByDate = (tasks, dataAxisX) => {
+        if (dataAxisX && dataAxisX.indexOf(1) === 0) {
+            return tasks.reduce((groups, item) => {
+                groups[item.time] = [...groups[item.time] || [], item];
+                return groups;
+            }, {});
+        } else {
+            return Object.entries(tasks).map(([o, datapoints]) => {
+                return datapoints.reduce((groups, item) => {
+                    const getTime = item.time;
+                    groups[[o] + `|${getTime}`] = [...groups[[o] + `|${getTime}`] || [], item]
+                    return groups;
+                }, [])
+            })
+        }
     }
 
 
@@ -86,11 +97,21 @@ class TaskReportViewForm extends Component {
      * 
      * Hàm gom nhóm các công việc theo người thực hiện
      */
-    groupByResponsibleEmployees = (tasks) => {
-        return tasks.reduce((groups, item) => {
-            groups[item.responsibleEmployees.toString()] = [...groups[item.responsibleEmployees.toString()] || [], item];
-            return groups;
-        }, {});
+    groupByResponsibleEmployees = (tasks, dataAxisX) => {
+        if (dataAxisX && dataAxisX.indexOf(2) === 0) {
+            return tasks.reduce((groups, item) => {
+                groups[item.responsibleEmployees.toString()] = [...groups[item.responsibleEmployees.toString()] || [], item];
+                return groups;
+            }, {});
+        } else {
+            return Object.entries(tasks).map(([o, datapoints]) => {
+                return datapoints.reduce((groups, item) => {
+                    const getRes = item.responsibleEmployees.toString();
+                    groups[[o] + `|${getRes}`] = [...groups[[o] + `|${getRes}`] || [], item];
+                    return groups;
+                }, []);
+            })
+        }
     }
 
 
@@ -99,11 +120,34 @@ class TaskReportViewForm extends Component {
      * 
      * Hàm gom nhóm các công việc theo người phê duyệt
      */
-    groupByAccountableEmployees = (tasks) => {
-        return tasks.reduce((groups, item) => {
-            groups[item.accountableEmployees.toString()] = [...groups[item.accountableEmployees.toString()] || [], item];
-            return groups;
-        }, {});
+    groupByAccountableEmployees = (tasks, dataAxisX) => {
+        if (dataAxisX && dataAxisX.indexOf(3) === 0) {
+            return tasks.reduce((groups, item) => {
+                groups[item.accountableEmployees.toString()] = [...groups[item.accountableEmployees.toString()] || [], item];
+                return groups;
+            }, {});
+        }
+        else if (dataAxisX && dataAxisX.indexOf(3) === 1) {
+            return Object.entries(tasks).map(([o, datapoints]) => {
+                return datapoints.reduce((groups, item) => {
+                    const getAcc = item.accountableEmployees.toString();
+                    groups[[o] + `|${getAcc}`] = [...groups[[o] + `|${getAcc}`] || [], item];
+                    return groups;
+                }, []);
+            })
+        }
+        else {
+            return tasks.map(o => {
+                return Object.entries(o).map(([obj, item]) => {
+                    return item.reduce((groups, item) => {
+                        const getAcc = item.accountableEmployees;
+                        groups[[obj] + `|${getAcc}`] = [...groups[[obj] + `|${getAcc}`] || [], item];
+                        return groups;
+                    }, [])
+
+                })
+            })
+        }
     }
 
 
@@ -188,6 +232,7 @@ class TaskReportViewForm extends Component {
                 results.push({
                     time: x.time,
                     task: x.task,
+                    accountableEmployees: x.accountableEmployees,
                     responsibleEmployees: y,
                 })
             })
@@ -213,6 +258,22 @@ class TaskReportViewForm extends Component {
             })
         });
         return results;
+    }
+
+    separateResponsibleEmployeesAndAccountableEmployees = (input) => {
+        let results = [];
+        input.forEach(x => {
+            x.responsibleEmployees.forEach(y => {
+                x.accountableEmployees.forEach(z => {
+                    results.push({
+                        time: x.time,
+                        task: x.task,
+                        responsibleEmployees: y,
+                        accountableEmployees: z,
+                    })
+                })
+            })
+        })
     }
 
     /**
@@ -291,7 +352,7 @@ class TaskReportViewForm extends Component {
         let output, pieChartData = [], barLineChartData = [], pieDataConvert;
 
         /**
-       * Convert data gom nhóm, tính tổng và tính trung bình cộng các trường thông tin.
+       * Convert data, gom nhóm, tính tổng và tính trung bình cộng các trường thông tin.
        *  Nếu chọn trục hoành là thời gian dataForAxisXInChart = 1
        */
 
@@ -300,22 +361,11 @@ class TaskReportViewForm extends Component {
 
             if (newlistTaskEvaluation) {
                 // Gọi hàm groupByDate gom nhóm theo thời gian
-                groupDataByDate = Object.entries(this.groupByDate(newlistTaskEvaluation));
+                groupDataByDate = Object.entries(this.groupByDate(newlistTaskEvaluation, dataForAxisXInChart));
 
                 // Tính tổng/Trung bình cộng, xử lý tên mới, và showInreport các trường thông tin theo tùy chọn của người dùng
                 output = this.dataAfterAggregate(groupDataByDate);
-
-                // tách data vẽ biểu đồ:  cột với đường ra riêng, tròn ra riêng
-                let separateDataChart = this.separateDataChart(output); // gọi hàm tách data
-                pieChartData = separateDataChart.pieChartData; // Dữ liệu vẽ biểu đồ tròn
-                barLineChartData = separateDataChart.barLineChartData; // Dữ liệu vẽ biểu đồ cột và đường
             }
-
-            // convert Data pieChart sang dạng C3js
-            if (pieChartData && pieChartData.length > 0) {
-                pieDataConvert = this.convertDataPieChartOneWay(pieChartData);
-            }
-
         }
 
         /**
@@ -325,30 +375,18 @@ class TaskReportViewForm extends Component {
 
         else if (dataForAxisXInChart.toString() === "2") {
             let groupDataByResponsibleEmployees;
-
             if (newlistTaskEvaluation) {
-                let results = [];
 
                 // Gọi hàm separateResponsibleEmployees tách người thực hiện
-                results = this.separateResponsibleEmployees(newlistTaskEvaluation);
+                let results = this.separateResponsibleEmployees(newlistTaskEvaluation);
 
                 // Gọi hàm groupByResponsibleEmployees nhóm công việc theo người thực hiện
-                groupDataByResponsibleEmployees = Object.entries(this.groupByResponsibleEmployees(results)); // Dùng Object.entries convert thành mảng các phần tử có cặp key,value
+                groupDataByResponsibleEmployees = Object.entries(this.groupByResponsibleEmployees(results, dataForAxisXInChart)); // Dùng Object.entries convert thành mảng các phần tử có cặp key,value
 
                 // Tính tổng/Trung bình cộng, xử lý tên mới, và showInreport các trường thông tin theo tùy chọn của người dùng
                 output = this.dataAfterAggregate(groupDataByResponsibleEmployees);
 
-                // tách data vẽ biểu đồ cột+đường với tròn
-                let separateDataChart = this.separateDataChart(output);
-                pieChartData = separateDataChart.pieChartData;
-                barLineChartData = separateDataChart.barLineChartData;
             }
-
-            // convert Data pieChart sang dạng C3js
-            if (pieChartData && pieChartData.length > 0) {
-                pieDataConvert = this.convertDataPieChartOneWay(pieChartData);
-            }
-
         }
         /**
             * Convert data, gom nhóm theo người phê duyệt, tính trung bình cộng các trường thông tin.
@@ -358,26 +396,15 @@ class TaskReportViewForm extends Component {
 
             let groupDataByAccountableEmployees;
             if (newlistTaskEvaluation) {
-                let results = [];
 
                 // Gọi hàm separateAccountableEmployees tách người phê duyệt
-                results = this.separateAccountableEmployees(newlistTaskEvaluation);
+                let results = this.separateAccountableEmployees(newlistTaskEvaluation);
 
                 // Gọi hàm groupByAccountableEmployees nhóm công việc theo người phê duyệt
-                groupDataByAccountableEmployees = Object.entries(this.groupByAccountableEmployees(results));
+                groupDataByAccountableEmployees = Object.entries(this.groupByAccountableEmployees(results, dataForAxisXInChart));
 
                 // Tính tổng/Trung bình cộng, xử lý tên mới, và showInreport các trường thông tin theo tùy chọn của người dùng
                 output = this.dataAfterAggregate(groupDataByAccountableEmployees);
-
-                // tách data vẽ biểu đồ cột+đường với tròn
-                let separateDataChart = this.separateDataChart(output);
-                pieChartData = separateDataChart.pieChartData;
-                barLineChartData = separateDataChart.barLineChartData;
-            }
-
-            // convert Data pieChart theo dạng c3
-            if (pieChartData && pieChartData.length > 0) {
-                pieDataConvert = this.convertDataPieChartOneWay(pieChartData);
             }
         }
 
@@ -392,36 +419,16 @@ class TaskReportViewForm extends Component {
                 let results = this.separateResponsibleEmployees(newlistTaskEvaluation);
 
                 // Gọi hàm groupByDate nhóm công việc theo thời gian
-                let groupDataByDate = this.groupByDate(results);
+                let groupDataByDate = this.groupByDate(results, dataForAxisXInChart);
 
                 // Tiếp tục gom nhóm theo người thực hiện: thực hiện đính kèm ngày với tên người thực hiện
-                let groupDataByResponsibleEmployees = Object.entries(groupDataByDate).map(([time, datapoints]) => {
-                    return datapoints.reduce((gr, item) => {
-                        let res = item.responsibleEmployees.toString();
-                        gr[[time] + ` ` + res] = [...gr[[time] + ` ` + res] || [], item];
-                        return gr;
-                    }, []);
-                });
+                let groupDataByResponsibleEmployees = this.groupByResponsibleEmployees(groupDataByDate, dataForAxisXInChart)
 
                 // Convert đầu ra các phân tử trong mảng cùng cấp và có cặp key, value
                 groupDataByResponsibleEmployees = groupDataByResponsibleEmployees.flatMap(x => Object.entries(x));
 
-                let output = [];
-
                 // Tính tổng/Trung bình cộng, xử lý tên mới, và showInreport các trường thông tin theo tùy chọn của người dùng
                 output = this.dataAfterAggregate(groupDataByResponsibleEmployees);
-
-                //tách data vẽ biểu đồ cột, đường với biểu dồ tròn
-                let separateDataChart = this.separateDataChart(output);
-                pieChartData = separateDataChart.pieChartData;
-                barLineChartData = separateDataChart.barLineChartData;
-
-
-                // Convert data sang dạng vẽ biểu đồ tròn của c3js
-                if (pieChartData && pieChartData.length > 0) {
-                    // convert Data pieChart
-                    pieDataConvert = this.convertDataPieChartOneWay(pieChartData);
-                }
 
             }
         }
@@ -438,34 +445,16 @@ class TaskReportViewForm extends Component {
                 let results = this.separateResponsibleEmployees(newlistTaskEvaluation);
 
                 // Gọi hàm groupByResponsibleEmployees nhóm công việc theo người thực hiện
-                let groupDataByResponsibleEmployees = this.groupByResponsibleEmployees(results);
+                let groupDataByResponsibleEmployees = this.groupByResponsibleEmployees(results, dataForAxisXInChart);
 
                 // Sau khi gom nhóm theo người thực hiện thì gom nhóm theo thời gian 
-                let groupDataByDate = Object.entries(groupDataByResponsibleEmployees).map(([time, datapoints]) => {
-                    return datapoints.reduce((gr, item) => {
-                        let res = item.time;
-                        gr[[time] + res] = [...gr[[time] + res] || [], item];
-                        return gr;
-                    }, []);
-                });
+                let groupDataByDate = this.groupByDate(groupDataByResponsibleEmployees, dataForAxisXInChart)
 
                 // Convert đầu ra các phân tử trong mảng cùng cấp và có cặp key, value
                 groupDataByDate = groupDataByDate.flatMap(x => Object.entries(x));
 
-                let output = [];
                 // Tính tổng/Trung bình cộng, xử lý tên mới, và showInreport các trường thông tin theo tùy chọn của người dùng
                 output = this.dataAfterAggregate(groupDataByDate);
-
-                //tách data vẽ biểu đồ cột, đường với biểu dồ tròn
-                let separateDataChart = this.separateDataChart(output);
-                pieChartData = separateDataChart.pieChartData;
-                barLineChartData = separateDataChart.barLineChartData;
-
-                if (pieChartData && pieChartData.length > 0) {
-                    // convert Data pieChart c3js
-                    pieDataConvert = this.convertDataPieChartOneWay(pieChartData);
-                }
-
             }
         }
 
@@ -479,35 +468,18 @@ class TaskReportViewForm extends Component {
                 // Gọi hàm separateAccountableEmployees tách người phê duyệt
                 let results = this.separateAccountableEmployees(newlistTaskEvaluation);
 
-                // Gọi hàm groupByDate nhóm công việc theo người thực hiện
-                let groupDataByDate = this.groupByDate(results);
-
+                // Gọi hàm groupByDate nhóm công việc theo thời gian
+                let groupDataByDate = this.groupByDate(results, dataForAxisXInChart);
 
                 // Sau khi gom nhóm theo thời gian thì gom nhóm theo người phê duyệt
-                let groupDataByAccountableEmployees = Object.entries(groupDataByDate).map(([time, datapoints]) => {
-                    return datapoints.reduce((gr, item) => {
-                        let acc = item.accountableEmployees.toString();
-                        gr[[time] + ` ` + acc] = [...gr[[time] + ` ` + acc] || [], item];
-                        return gr;
-                    }, []);
-                });
+                let groupDataByAccountableEmployees = this.groupByAccountableEmployees(groupDataByDate, dataForAxisXInChart);
 
                 // Convert đầu ra các phân tử trong mảng cùng cấp và có cặp key, value
                 groupDataByAccountableEmployees = groupDataByAccountableEmployees.flatMap(x => Object.entries(x));
 
-                let output = [];
                 // Tính tổng/Trung bình cộng, xử lý tên mới, và showInreport các trường thông tin theo tùy chọn của người dùng
                 output = this.dataAfterAggregate(groupDataByAccountableEmployees);
 
-                //tách data vẽ biểu đồ cột, đường với biểu dồ tròn
-                let separateDataChart = this.separateDataChart(output);
-                pieChartData = separateDataChart.pieChartData;
-                barLineChartData = separateDataChart.barLineChartData;
-
-                if (pieChartData && pieChartData.length > 0) {
-                    // convert Data pieChart c3js
-                    pieDataConvert = this.convertDataPieChartOneWay(pieChartData);
-                }
             }
         }
 
@@ -522,33 +494,46 @@ class TaskReportViewForm extends Component {
                 let results = this.separateAccountableEmployees(newlistTaskEvaluation);
 
                 // Gọi hàm groupByAccountableEmployees nhóm công việc theo người phê duyệt
-                let groupDataByAccountableEmployees = this.groupByAccountableEmployees(results);
+                let groupDataByAccountableEmployees = this.groupByAccountableEmployees(results, dataForAxisXInChart);
 
                 // Sau khi gom nhóm theo người phê duyệt thì tiếp tục gom nhóm theo thời gian
-                let groupDataByDate = Object.entries(groupDataByAccountableEmployees).map(([time, datapoints]) => {
-                    return datapoints.reduce((gr, item) => {
-                        let res = item.time;
-                        gr[[time] + res] = [...gr[[time] + res] || [], item];
-                        return gr;
-                    }, []);
-                });
+                let groupDataByDate = this.groupByDate(groupDataByAccountableEmployees, dataForAxisXInChart)
 
                 // Convert đầu ra các phân tử trong mảng cùng cấp và có cặp key, value
                 groupDataByDate = groupDataByDate.flatMap(x => Object.entries(x));
 
-                let output = [];
                 // Tính tổng/Trung bình cộng, xử lý tên mới, và showInreport các trường thông tin theo tùy chọn của người dùng
                 output = this.dataAfterAggregate(groupDataByDate);
 
-                //tách data vẽ biểu đồ cột, đường với biểu dồ tròn
-                let separateDataChart = this.separateDataChart(output);
-                pieChartData = separateDataChart.pieChartData;
-                barLineChartData = separateDataChart.barLineChartData;
+            }
+        }
 
-                if (pieChartData && pieChartData.length > 0) {
-                    // convert Data pieChart dạng c3js
-                    pieDataConvert = this.convertDataPieChartOneWay(pieChartData);
-                }
+        else if (dataForAxisXInChart.indexOf(1) === 0 && dataForAxisXInChart.indexOf(2) === 1 && dataForAxisXInChart.indexOf(3) === 2) {
+            if (newlistTaskEvaluation) {
+                let results = this.separateResponsibleEmployeesAndAccountableEmployees(newlistTaskEvaluation);
+
+                let groupDataByDate = this.groupByDate(results, dataForAxisXInChart);
+
+                let groupDataByResponsibleEmployees = this.groupByResponsibleEmployees(groupDataByDate, dataForAxisXInChart);
+
+                let groupByAccountableEmployees = this.groupByAccountableEmployees(groupDataByResponsibleEmployees, dataForAxisXInChart);
+
+                groupByAccountableEmployees = groupByAccountableEmployees.flatMap(x => Object.entries(x));
+
+                output = this.dataAfterAggregate(groupByAccountableEmployees);
+
+            }
+        }
+
+        if (output) {
+            // tách data vẽ biểu đồ:  cột với đường ra riêng, tròn ra riêng
+            let separateDataChart = this.separateDataChart(output); // gọi hàm tách data
+            pieChartData = separateDataChart.pieChartData; // Dữ liệu vẽ biểu đồ tròn
+            barLineChartData = separateDataChart.barLineChartData; // Dữ liệu vẽ biểu đồ cột và đường
+
+            // convert Data pieChart sang dạng C3js
+            if (pieChartData && pieChartData.length > 0) {
+                pieDataConvert = this.convertDataPieChartOneWay(pieChartData);
             }
         }
 
@@ -565,129 +550,133 @@ class TaskReportViewForm extends Component {
                     hasNote={false}
                 >
                     {/* Modal Body */}
-                    <div className="row">
-                        {
-                            barLineChartData.length > 0 &&
-                            <div className=" col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                                <LineBarChart barLineChartData={barLineChartData} />
-                            </div>
-                        }
 
+                    {
+                        barLineChartData.length > 0 && <LineBarChart barLineChartData={barLineChartData} />
+                    }
+
+                    <div className="row">
                         {
                             pieDataConvert && pieDataConvert.map((item, index) => (
                                 Object.entries(item).map(([code, data]) => (
-                                    <div key={index} className=" col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                                        <PieChart pieChartData={data} namePieChart={code} />
+                                    <div key={index} className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                        <div className="pieChart">
+                                            <PieChart pieChartData={data} namePieChart={code} />
+                                        </div>
                                     </div>
                                 ))
                             ))
-
                         }
                     </div>
+
                     <div className="form-inline">
                         <button id="exportButton" className="btn btn-sm btn-success " style={{ marginBottom: '10px' }}><span className="fa fa-file-excel-o"></span> Export to Excel</button>
                     </div>
-                    <div className="row box" >
-                        <div className="box-header">
-                            <div className="box-tools pull-right">
-                                <button className="btn btn-box-tool" data-widget="collapse"><i className="fa fa-minus"></i></button>
-                            </div>
-                        </div>
+                    <div className="row">
+                        <div className="col-md-12">
+                            <div className="box">
+                                <div className="box-header">
+                                    <div className="box-tools pull-right">
+                                        <button className="btn btn-box-tool" data-widget="collapse"><i className="fa fa-minus"></i></button>
+                                    </div>
+                                </div>
 
-                        <div className="col-md-12 box-body">
-                            <table className="table table-hover table-striped table-bordered" id="report_manager" style={{ marginBottom: '0px !important' }}>
-                                <thead>
-                                    <tr>
-                                        <th style={{ textAlign: 'center' }}>Công việc</th>
-                                        <th style={{ textAlign: 'center' }}>Người thực hiện</th>
-                                        <th style={{ textAlign: 'center' }}>Người phê duyệt</th>
-                                        <th style={{ textAlign: 'center' }}>
-                                            Điểm hệ thống tự tính
-                                    </th>
-                                        <th style={{ textAlign: 'center' }}>
-                                            Ngày bắt đầu
-                                    </th>
-                                        <th style={{ textAlign: 'center' }}>
-                                            Ngày kết thúc
-                                    </th>
-                                        <th style={{ textAlign: 'center' }}>
-                                            Ngày đánh giá
-                                    </th>
-                                        <th style={{ textAlign: 'center' }}>
-                                            Mức độ ưu tiên
-                                    </th>
-                                        <th style={{ textAlign: 'center' }}>
-                                            Trạng thái công việc
-                                    </th>
-                                        {
-                                            headTable && headTable.map((x, key) => (<th key={key}>{x}</th>))
-                                        }
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        tasks.listTaskEvaluations && tasks.listTaskEvaluations.map((item, key) => {
-                                            //Lấy tên người thực hiện 
-                                            let getNameResponsibleEmployees = item.responsibleEmployees.map(x1 => x1.name);
+                                <div className=" box-body">
+                                    <table className="table table-hover table-striped table-bordered" id="report_manager" style={{ marginBottom: '0px !important' }}>
+                                        <thead>
+                                            <tr>
+                                                <th style={{ textAlign: 'center' }}>Công việc</th>
+                                                <th style={{ textAlign: 'center' }}>Người thực hiện</th>
+                                                <th style={{ textAlign: 'center' }}>Người phê duyệt</th>
+                                                <th style={{ textAlign: 'center' }}>
+                                                    Điểm hệ thống tự tính
+                                                </th>
+                                                <th style={{ textAlign: 'center' }}>
+                                                    Ngày bắt đầu
+                                                </th>
+                                                <th style={{ textAlign: 'center' }}>
+                                                    Ngày kết thúc
+                                                </th>
+                                                <th style={{ textAlign: 'center' }}>
+                                                    Ngày đánh giá
+                                                </th>
+                                                <th style={{ textAlign: 'center' }}>
+                                                    Mức độ ưu tiên
+                                                </th>
+                                                <th style={{ textAlign: 'center' }}>
+                                                    Trạng thái công việc
+                                                </th>
+                                                {
+                                                    headTable && headTable.map((x, key) => (<th key={key}>{x}</th>))
+                                                }
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                tasks.listTaskEvaluations && tasks.listTaskEvaluations.map((item, key) => {
+                                                    //Lấy tên người thực hiện 
+                                                    let getNameResponsibleEmployees = item.responsibleEmployees.map(x1 => x1.name);
 
-                                            //Lấy tên người phê duyệt
-                                            let getNameAccountableEmployees = item.accountableEmployees.map(x2 => x2.name);
+                                                    //Lấy tên người phê duyệt
+                                                    let getNameAccountableEmployees = item.accountableEmployees.map(x2 => x2.name);
 
-                                            // lấy điểm tự động của các công việc
-                                            let result = item.results, point = [];
-                                            if (result) {
-                                                result = result[0];
-                                                point = result.automaticPoint;
-                                            }
-
-                                            let contentTable = [];
-                                            if (headTable) {
-                                                item.taskInformations.forEach(element => {
-                                                    if (element.type === 'Number') {
-                                                        contentTable = [...contentTable, element.value]
+                                                    // lấy điểm tự động của các công việc
+                                                    let result = item.results, point = [];
+                                                    if (result) {
+                                                        result = result[0];
+                                                        point = result.automaticPoint;
                                                     }
+
+                                                    let contentTable = [];
+                                                    if (headTable) {
+                                                        item.taskInformations.forEach(element => {
+                                                            if (element.type === 'Number') {
+                                                                contentTable = [...contentTable, element.value]
+                                                            }
+                                                        })
+                                                    }
+                                                    return (
+                                                        <tr key={key}>
+                                                            <td className="text-center" className="text-center">{item.name}</td>
+                                                            <td className="text-center">
+                                                                {
+                                                                    getNameResponsibleEmployees.join(', ')
+                                                                }
+                                                            </td>
+                                                            <td className="text-center">
+                                                                {
+                                                                    getNameAccountableEmployees.join(', ')
+                                                                }
+                                                            </td>
+                                                            <td className="text-center">
+                                                                {
+                                                                    point
+                                                                }
+                                                            </td>
+                                                            <td className="text-center">{item.startDate.slice(0, 10)}</td>
+                                                            <td className="text-center">{item.endDate.slice(0, 10)}</td>
+                                                            <td className="text-center">{item.date.slice(0, 10)}</td>
+                                                            <td className="text-center">
+                                                                {
+                                                                    item.priority === 1 ? 'Thấp' : (item.priority === 2 ? 'Trung bình' : 'Cao')
+                                                                }
+                                                            </td>
+                                                            <td className="text-center">{item.status}</td>
+                                                            {
+                                                                contentTable && contentTable.map((x, index) => (<td key={index}>{formater.format(parseInt(x))} VNĐ</td>))
+                                                            }
+                                                        </tr>
+                                                    )
                                                 })
                                             }
-                                            return (
-                                                <tr key={key}>
-                                                    <td className="text-center" className="text-center">{item.name}</td>
-                                                    <td className="text-center">
-                                                        {
-                                                            getNameResponsibleEmployees.join(', ')
-                                                        }
-                                                    </td>
-                                                    <td className="text-center">
-                                                        {
-                                                            getNameAccountableEmployees.join(', ')
-                                                        }
-                                                    </td>
-                                                    <td className="text-center">
-                                                        {
-                                                            point
-                                                        }
-                                                    </td>
-                                                    <td className="text-center">{item.startDate.slice(0, 10)}</td>
-                                                    <td className="text-center">{item.endDate.slice(0, 10)}</td>
-                                                    <td className="text-center">{item.date.slice(0, 10)}</td>
-                                                    <td className="text-center">
-                                                        {
-                                                            item.priority === 1 ? 'Thấp' : (item.priority === 2 ? 'Trung bình' : 'Cao')
-                                                        }
-                                                    </td>
-                                                    <td className="text-center">{item.status}</td>
-                                                    {
-                                                        contentTable && contentTable.map((x, index) => (<td key={index}>{formater.format(parseInt(x))} VNĐ</td>))
-                                                    }
-                                                </tr>
-                                            )
-                                        })
-                                    }
-                                </tbody>
-                            </table>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                {reports.isLoading ?
+                                    <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                                    tasks.listTaskEvaluations && tasks.listTaskEvaluations.length === 0 && <div className="table-info-panel" style={{ width: '100%' }}>{translate('confirm.no_data')}</div>}
+                            </div>
                         </div>
-                        {reports.isLoading ?
-                            <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                            tasks.listTaskEvaluations && tasks.listTaskEvaluations.length === 0 && <div className="table-info-panel" style={{ width: '100%' }}>{translate('confirm.no_data')}</div>}
                     </div>
                 </DialogModal>
             </React.Fragment>

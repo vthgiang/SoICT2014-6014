@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DatePicker, ErrorLabel, SelectBox, TreeSelect } from '../../../../../common-components';
+import { DatePicker, ErrorLabel, SelectBox, TreeSelect, SelectMulti } from '../../../../../common-components';
 
 import "./addAsset.css";
 import { AssetCreateValidator } from './combinedContent';
@@ -17,7 +17,7 @@ class GeneralTab extends Component {
         this.state = {
             detailInfo: [],
             // status: "Sẵn sàng sử dụng",
-            // canRegisterForUse: "Được phép đăng ký sử dụng",
+            // typeRegisterForUse: "Được phép đăng ký sử dụng",
         };
     }
 
@@ -148,36 +148,40 @@ class GeneralTab extends Component {
     handleAssetTypeChange = async (value) => {
         let { assetType } = this.props;
         let { detailInfo } = this.state;
-
-        let assetTypeList = assetType.listAssetTypes;
-        let currentAssetType = assetTypeList.filter((element) => element._id === value[0])[0];
-        let defaultInformation = currentAssetType.defaultInformation;
+        if (value.length === 0) {
+            value = null;
+        }
+        // let assetTypeList = assetType.listAssetTypes;
+        // let currentAssetType = assetTypeList.filter((element) => element._id === value[0])[0];
+        // let defaultInformation = currentAssetType ? currentAssetType.defaultInformation : [];
 
         // Thêm trường thông tin mặc định ở nhóm tài sản vào thông tin chi tiết
         let arr = [...detailInfo];
-        for (let i in defaultInformation) {
-            let check = true;
-            for (let j in detailInfo) {
-                if (defaultInformation[i].nameField === detailInfo[j].nameField ||
-                    defaultInformation[i].nameField === detailInfo[j].nameField) {
-                    check = false;
-                }
-            }
+        // for (let i in defaultInformation) {
+        //     let check = true;
+        //     for (let j in detailInfo) {
+        //         if (defaultInformation[i].nameField === detailInfo[j].nameField) {
+        //             check = false;
+        //         }
+        //     }
 
-            if (check) {
-                arr.push(defaultInformation[i]);
-            }
-        }
+        //     if (check) {
+        //         arr.push({
+        //             ...defaultInformation[i],
+        //             value: '',
+        //         });
+        //     }
+        // }
 
         await this.setState(state => {
             return {
                 ...state,
-                assetTypes: value[0],
+                assetTypes: value,
                 detailInfo: arr,
             }
         });
 
-        this.props.handleChange("assetType", value[0]);
+        this.props.handleChange("assetType", value);
         this.props.handleChange("detailInfo", arr);
     }
 
@@ -251,7 +255,7 @@ class GeneralTab extends Component {
         this.setState({
             assignedToOrganizationalUnit: string2literal(value[0])
         });
-        this.props.handleChange("assignedToOrganiztionalUnit", string2literal(value[0]));
+        this.props.handleChange("assignedToOrganizationalUnit", string2literal(value[0]));
     }
 
     /**
@@ -348,11 +352,11 @@ class GeneralTab extends Component {
     /**
      * Bắt sự kiện thay đổi quyền đăng ký sử dụng
      */
-    handleCanRegisterForUseChange = (value) => {
+    handleTypeRegisterForUseChange = (value) => {
         this.setState({
-            canRegisterForUse: value[0]
+            typeRegisterForUse: value[0]
         })
-        this.props.handleChange('canRegisterForUse', value[0]);
+        this.props.handleChange('typeRegisterForUse', value[0]);
     }
 
     /**
@@ -457,7 +461,7 @@ class GeneralTab extends Component {
     };
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id || nextProps.assignedToUser !== prevState.assignedToUser) {
+        if (nextProps.id !== prevState.id || nextProps.assignedToUser !== prevState.assignedToUser || nextProps.assignedToOrganizationalUnit !== prevState.assignedToOrganizationalUnit) {
             return {
                 ...prevState,
                 id: nextProps.id,
@@ -478,7 +482,7 @@ class GeneralTab extends Component {
                 handoverToDate: nextProps.handoverToDate,
                 description: nextProps.description,
                 status: nextProps.status,
-                canRegisterForUse: nextProps.canRegisterForUse,
+                typeRegisterForUse: nextProps.typeRegisterForUse,
                 detailInfo: nextProps.detailInfo,
                 usageLogs: nextProps.usageLogs,
                 readByRoles: nextProps.readByRoles,
@@ -498,21 +502,36 @@ class GeneralTab extends Component {
         } else {
             return null;
         }
+    }
 
+    getAssetTypes = () => {
+        let { assetType } = this.props;
+        let assetTypeName = assetType && assetType.listAssetTypes;
+        let typeArr = [];
+        assetTypeName.map(item => {
+            typeArr.push({
+                _id: item._id,
+                id: item._id,
+                name: item.typeName,
+                parent: item.parent ? item.parent._id : null
+            })
+        })
+        return typeArr;
     }
 
     render() {
         const { id } = this.props;
-        const { translate, user, assetType, assetsManager, role } = this.props;
-
+        const { translate, user, assetType, assetsManager, role, department } = this.props;
         const {
             img, code, assetName, assetTypes, group, serial, purchaseDate, warrantyExpirationDate, managedBy,
-            assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, location, description, status, canRegisterForUse, detailInfo,
+            assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, location, description, status, typeRegisterForUse, detailInfo,
             errorOnCode, errorOnAssetName, errorOnSerial, errorOnAssetType, errorOnLocation, errorOnPurchaseDate,
             errorOnWarrantyExpirationDate, errorOnManagedBy, errorOnNameField, errorOnValue, usageLogs, readByRoles
         } = this.state;
 
-        var userlist = user.list;
+        var userlist = user.list, departmentlist = department.list;
+        let startDate = status == "Đang sử dụng" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1].startDate) : '';
+        let endDate = status == "Đang sử dụng" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1].endDate) : '';
         var assettypelist = assetType.listAssetTypes;
         let dataList = assettypelist.map(node => {
             return {
@@ -533,12 +552,13 @@ class GeneralTab extends Component {
                 parent: node.location,
             }
         })
+        let typeArr = this.getAssetTypes();
 
         return (
             <div id={id} className="tab-pane active">
                 <div className="row">
                     {/* Ảnh tài sản */}
-                    <div className="col-md-4" style={{ textAlign: 'center' }}>
+                    <div className="col-md-4" style={{ textAlign: 'center', paddingLeft: '0px' }}>
                         <div>
                             <a href={img} target="_blank">
                                 <img className="attachment-img avarta" src={img} alt="Attachment" />
@@ -552,8 +572,7 @@ class GeneralTab extends Component {
 
                     <br />
                     {/* Thông tin cơ bản */}
-                    <div className="col-md-8">
-                        <label>{translate('asset.general_information.basic_information')}:</label>
+                    <div className="col-md-8" style={{ paddingLeft: '0px' }}>
                         <div>
                             <div id="form-create-asset-type" className="col-md-6">
                                 {/* Mã tài sản */}
@@ -600,9 +619,14 @@ class GeneralTab extends Component {
                                 </div>
 
                                 {/* Loại tài sản */}
-                                <div className={`form-group${!errorOnAssetType ? "" : "has-error"}`}>
+                                <div className={`form-group ${!errorOnAssetType ? "" : "has-error"}`}>
                                     <label>{translate('asset.general_information.asset_type')}<span className="text-red">*</span></label>
-                                    <TreeSelect data={dataList} value={[assetTypes]} handleChange={this.handleAssetTypeChange} mode="radioSelect" />
+                                    <TreeSelect
+                                        data={typeArr}
+                                        value={assetTypes ? assetTypes : []}
+                                        handleChange={this.handleAssetTypeChange}
+                                        mode="hierarchical"
+                                    />
                                 </div>
 
                                 {/* Ngày nhập */}
@@ -670,7 +694,7 @@ class GeneralTab extends Component {
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={assignedToUser}
-                                            items={[{ value: 'null', text: 'Chưa có người được giao sử dụng' }, ...userlist.map(x => { return { value: x.id, text: x.name + " - " + x.email} })]}
+                                            items={[{ value: 'null', text: 'Chưa có người được giao sử dụng' }, ...userlist.map(x => { return { value: x.id, text: x.name + " - " + x.email } })]}
                                             multiple={false}
                                             disabled
                                         />
@@ -682,10 +706,10 @@ class GeneralTab extends Component {
                                     <label>{translate('asset.general_information.organization_unit')}&emsp; </label>
                                     <div id="assignedToOrganizationalUnitBox">
                                         <SelectBox
-                                            id={`assignedToOrganizationalUnitBox${id}`}
+                                            id={`assignedToOrganizationalUnitBox${assignedToOrganizationalUnit}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            items={[{ value: 'null', text: 'Chưa có đơn vị được giao sử dụng' },]}
+                                            items={[{ value: 'null', text: 'Chưa có đơn vị được giao sử dụng' }, ...departmentlist.map(x => { return { value: x._id, text: x.name } })]}
                                             value={assignedToOrganizationalUnit}
                                             multiple={false}
                                             disabled
@@ -696,9 +720,9 @@ class GeneralTab extends Component {
                                 {/* Thời gian bắt đầu sử dụng */}
                                 <div className="form-group">
                                     <label>{translate('asset.general_information.handover_from_date')}&emsp; </label>
-                                   < DatePicker
-                                    id={`start-date${assignedToUser}`}
-                                    value={status == "Đang sử dụng" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1].startDate) : ''}
+                                    < DatePicker
+                                    id={`start-date${assignedToUser}-${assignedToOrganizationalUnit}`}
+                                    value={startDate}
                                     disabled
                                     />
                                 </div>
@@ -707,8 +731,8 @@ class GeneralTab extends Component {
                                 <div className="form-group">
                                     <label>{translate('asset.general_information.handover_to_date')}&emsp; </label>
                                     < DatePicker
-                                    id={`end-date${assignedToUser}`}
-                                    value={status == "Đang sử dụng" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1].endDate) : ''}
+                                    id={`end-date${assignedToUser}-${assignedToOrganizationalUnit}`}
+                                    value={endDate}
                                     disabled
                                     />
                                 </div>
@@ -752,16 +776,17 @@ class GeneralTab extends Component {
                                 <div className="form-group">
                                     <label>{translate('asset.general_information.can_register_for_use')}<span className="text-red">*</span></label>
                                     <SelectBox
-                                        id={`canRegisterForUse${id}`}
+                                        id={`typeRegisterForUse${id}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
-                                        value={canRegisterForUse}
+                                        value={typeRegisterForUse}
                                         items={[
                                             { value: '', text: '---Chọn quyền sử dụng---' },
-                                            { value: true, text: translate('asset.general_information.can_register') },
-                                            { value: false, text: translate('asset.general_information.cant_register') },
+                                            { value: 1, text: 'Không được đăng ký sử dụng' },
+                                            { value: 2, text: 'Đăng ký sử dụng theo giờ' },
+                                            { value: 3, text: 'Đăng ký sử dụng lâu dài' },
                                         ]}
-                                        onChange={this.handleCanRegisterForUseChange}
+                                        onChange={this.handleTypeRegisterForUseChange}
                                     />
                                 </div>
 
@@ -770,7 +795,7 @@ class GeneralTab extends Component {
 
                         {/* Thông tin chi tiết */}
                         <div className="col-md-12">
-                            <label>{translate('asset.general_information.detail_information')}:<a style={{ cursor: "pointer" }} title={translate('asset.general_information.detail_information')}><i className="fa fa-plus-square" style={{ color: "#00a65a", marginLeft: 5 }}
+                            <label>{translate('asset.general_information.asset_properties')}:<a style={{ cursor: "pointer" }} title={translate('asset.general_information.asset_properties')}><i className="fa fa-plus-square" style={{ color: "#00a65a", marginLeft: 5 }}
                                 onClick={this.handleAddDetailInfo} /></a></label>
                             <div className={`form-group ${(!errorOnNameField && !errorOnValue) ? "" : "has-error"}`}>
 
@@ -812,14 +837,13 @@ class GeneralTab extends Component {
 };
 
 function mapState(state) {
-    const { assetType, user, assetsManager, role } = state;
-    return { assetType, user, assetsManager, role };
+    const { assetType, user, assetsManager, role, department } = state;
+    return { assetType, user, assetsManager, role, department };
 };
 
 const actionCreators = {
     getUser: UserActions.get,
     getAssetType: AssetTypeActions.searchAssetTypes,
-    // getAllRoles:  RoleActions.get,
 };
 const generalTab = connect(mapState, actionCreators)(withTranslate(GeneralTab));
 export { generalTab as GeneralTab };

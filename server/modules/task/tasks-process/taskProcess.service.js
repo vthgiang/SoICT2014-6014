@@ -95,27 +95,29 @@ exports.getXmlDiagramById = (params) => {
 exports.createXmlDiagram = async (body) => {
     let info = [];
     for (const x in body.info) {
-        if (Object.keys(body.info[x]).length > 4) {
-            body.info[x].taskActions = (body.info[x].taskActions) ? body.info[x].taskActions.map(item => {
-                return {
-                    name: item.name,
-                    description: item.description,
-                    mandatory: item.mandatory,
-                }
-            }) : [];
-            body.info[x].taskInformations = (body.info[x].taskInformations) ? body.info[x].taskInformations.map((item, key) => {
-                return {
-                    code: "p" + parseInt(key + 1),
-                    name: item.name,
-                    description: item.description,
-                    filledByAccountableEmployeesOnly: item.filledByAccountableEmployeesOnly,
-                    type: item.type,
-                    extra: item.extra,
-                }
-            }) : [];
-
-            info.push(body.info[x])
+        // if (Object.keys(body.info[x]).length > 4) {
+        body.info[x].taskActions = (body.info[x].taskActions) ? body.info[x].taskActions.map(item => {
+            return {
+                name: item.name,
+                description: item.description,
+                mandatory: item.mandatory,
+            }
+        }) : [];
+        body.info[x].taskInformations = (body.info[x].taskInformations) ? body.info[x].taskInformations.map((item, key) => {
+            return {
+                code: "p" + parseInt(key + 1),
+                name: item.name,
+                description: item.description,
+                filledByAccountableEmployeesOnly: item.filledByAccountableEmployeesOnly,
+                type: item.type,
+                extra: item.extra,
+            }
+        }) : [];
+        if(body.info[x].formula === '') {
+            body.info[x].formula = "progress / (dayUsed / totalDay) - 0.5 * (10 - (averageActionRating)) * 10"
         }
+        info.push(body.info[x])
+        // }
     }
     console.log(info)
     let data = await ProcessTemplate.create({
@@ -319,6 +321,11 @@ exports.createTaskByProcess = async (processId, body) => {
             status = "Inprocess";
         }
 
+        let formula = data[i].formula;
+        if(data[i].formula === ''){
+            formula = "progress / (dayUsed / totalDay) - 0.5 * (10 - (averageActionRating)) * 10";
+        }
+
         let process = taskProcessId;
 
         let newTaskItem = await Task.create({
@@ -332,7 +339,7 @@ exports.createTaskByProcess = async (processId, body) => {
             description: data[i].description,
             startDate: startDate,
             endDate: endDate,
-            formula: data[i].formula,
+            formula: formula,
             priority: data[i].priority,
             taskTemplate: null,
             taskInformations: taskInformations,

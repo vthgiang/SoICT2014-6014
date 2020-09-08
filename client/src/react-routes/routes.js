@@ -78,7 +78,7 @@ import ManagerRecommendProcure from "../modules/asset/admin/purchase-request/com
 import ManagerRecommendDistribute from "../modules/asset/admin/use-request/components";
 import ManagerAssetType from "../modules/asset/admin/asset-type/components";
 import MaintainanceManager from "../modules/asset/admin/maintainance/components";
-import UsageManager from "../modules/asset/admin/usage/components";
+// import UsageManager from "../modules/asset/admin/usage/components";
 import IncidentManager from "../modules/asset/admin/incident/components";
 import ManagerDepreciation from "../modules/asset/admin/depreciation/components";
 import AssetManager from "../modules/asset/admin/asset-information/components";
@@ -99,6 +99,9 @@ import CrmGroup from '../modules/crm/group/components';
 
 //orders
 import OrderManagement from "../modules/order/components";
+
+// plans
+import PlanManagement from "../modules/plan/components";
 
 class Routes extends Component {
 
@@ -949,7 +952,7 @@ class Routes extends Component {
                         component={MaintainanceManager}
                     />
 
-                    <PrivateRoute
+                    {/* <PrivateRoute
                         isLoading={false}
                         key={'manage-usage-asset'}
                         arrPage={[
@@ -963,7 +966,7 @@ class Routes extends Component {
                         pageName={'manage_usage_asset'}
                         layout={Layout}
                         component={UsageManager}
-                    />
+                    /> */}
 
                     <PrivateRoute
                         isLoading={false}
@@ -1018,7 +1021,7 @@ class Routes extends Component {
                         key={'manage-asset-use-request'}
                         arrPage={[
                             { link: '/', name: 'home', icon: 'fa fa-home' },
-                            { link: '/manage-asset-use-request', name: 'manage-recommend-distribute-asset', icon: '' }
+                            { link: '/manage-asset-use-request', name: 'manage_recommend_distribute_asset', icon: '' }
                         ]}
                         auth={auth}
                         exact={true}
@@ -1129,6 +1132,28 @@ class Routes extends Component {
                         pageName={"manage-orders"}
                         layout={Layout}
                         component={OrderManagement}
+                    />
+
+                     {/* Plans Management */}
+
+                     <PrivateRoute
+                        isLoading={this.props.plan.isLoading}
+                        key={"manage-plans"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-plans",
+                                name: "manage_plans",
+                                icon: "fa fa-calendar",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-plans"}
+                        path={"/manage-plans"}
+                        pageName={"manage_plans"}
+                        layout={Layout}
+                        component={PlanManagement}
                     />
 
                     {/* NOT FOUND */}

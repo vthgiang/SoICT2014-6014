@@ -142,11 +142,17 @@ export function auth(state = initState, action) {
             };
 
         case AuthConstants.DOWNLOAD_FILE_SUCCESS:
-            return {
-                ...state,
-                show_files: [...state.show_files.filter(x => x.fileName !== action.payload.fileName), action.payload],
+            if (action.payload && action.payload.fileName) { // Hiển thị image download về qua chuyển đổi base64
+                return {
+                    ...state,
+                    show_files: [...state.show_files.filter(x => x.fileName !== action.payload.fileName), action.payload],
                     isLoading: false,
-            };
+                };
+            } else { // Save image về máy
+                return {
+                    ...state
+                };
+            }
 
         case AuthConstants.DOWNLOAD_FILE_FAILURE:
             return {

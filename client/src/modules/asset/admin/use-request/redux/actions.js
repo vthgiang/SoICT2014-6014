@@ -2,10 +2,13 @@ import { RecommendDistributeConstants } from "./constants";
 import { RecommendDistributeService } from "./services";
 import { AssetManagerActions } from "../../asset-information/redux/actions";
 
-export const RecommendDistributeActions = {
+export const UseRequestActions = {
     searchRecommendDistributes,
     updateRecommendDistribute,
-    deleteRecommendDistribute,
+    createUsage,
+    updateUsage,
+    deleteUsage,
+    recallAsset,
 };
 
 // Lấy danh sách phiếu đề nghị mua sắm thiết bị
@@ -66,24 +69,100 @@ function updateRecommendDistribute(id, infoRecommendDistribute) {
     }
 }
 
-// Xoá thông tin thông tin phiếu đăng ký sử dụng tài sản
-function deleteRecommendDistribute(id) {
+function createUsage(id, data) {
+    return async dispatch => {
+        try {
+            dispatch({
+                type: RecommendDistributeConstants.CREATE_USAGE_REQUEST
+            });
+            const response = await RecommendDistributeService.createUsage(id, data);
+            dispatch({
+                type: RecommendDistributeConstants.CREATE_USAGE_SUCCESS,
+                payload: response.data.content
+            });
+            return {
+                response
+            }
+        } catch (err) {
+            dispatch({
+                type: RecommendDistributeConstants.CREATE_USAGE_FAILURE,
+                error: err
+            });
+        }
+
+    };
+}
+
+function updateUsage(id, data) {
     return dispatch => {
         dispatch({
-            type: RecommendDistributeConstants.DELETE_RECOMMEND_DISTRIBUTE_REQUEST,
+            type: RecommendDistributeConstants.UPDATE_USAGE_REQUEST
         });
-        RecommendDistributeService.deleteRecommendDistribute(id)
+
+        RecommendDistributeService.updateUsage(id, data)
             .then(res => {
+                dispatch(AssetManagerActions.getAllAsset({
+                    code: "",
+                    assetName: "",
+                    assetType: null,
+                    month: null,
+                    status: "",
+                    page: 0,
+                    limit: 5,
+                }))
                 dispatch({
-                    type: RecommendDistributeConstants.DELETE_RECOMMEND_DISTRIBUTE_SUCCESS,
+                    type: RecommendDistributeConstants.UPDATE_USAGE_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(err => {
                 dispatch({
-                    type: RecommendDistributeConstants.DELETE_RECOMMEND_DISTRIBUTE_SUCCESS,
-                    error: err.response.data
+                    type: RecommendDistributeConstants.UPDATE_USAGE_FAILURE,
+                    error: err
                 });
             })
+    };
+}
+
+function deleteUsage(assetId, usageId) {
+    return async dispatch => {
+        try {
+            dispatch({
+                type: RecommendDistributeConstants.DELETE_USAGE_REQUEST
+            });
+            const response = await RecommendDistributeService.deleteUsage(assetId, usageId);
+            dispatch({
+                type: RecommendDistributeConstants.DELETE_USAGE_SUCCESS,
+                payload: response.data.content
+            });
+            return {
+                response
+            }
+        } catch (err) {
+            dispatch({
+                type: RecommendDistributeConstants.DELETE_USAGE_FAILURE,
+                error: err
+            });
+        }
+
     }
+}
+
+function recallAsset(id, data) {
+    return dispatch => {
+        dispatch({ type: RecommendDistributeConstants.RECALL_ASSET_REQUEST })
+        RecommendDistributeService.recallAsset(id, data)
+            .then(res => {
+                dispatch({
+                    type: RecommendDistributeConstants.RECALL_ASSET_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: RecommendDistributeConstants.RECALL_ASSET_FAILURE,
+                    payload: error
+                })
+            })
+    };
 }

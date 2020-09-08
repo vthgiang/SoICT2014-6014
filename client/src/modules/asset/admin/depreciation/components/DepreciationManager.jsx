@@ -8,7 +8,7 @@ import { AssetManagerActions } from '../../asset-information/redux/actions';
 import { AssetTypeActions } from "../../asset-type/redux/actions";
 import { UserActions } from '../../../../super-admin/user/redux/actions';
 
-import { AssetDetailForm } from '../../asset-information/components/combinedContent';
+import { AssetDetailForm, AssetEditForm } from '../../asset-information/components/combinedContent';
 import { DepreciationEditForm } from './depreciationEditForm';
 
 class DepreciationManager extends Component {
@@ -21,6 +21,7 @@ class DepreciationManager extends Component {
             month: "",
             page: 0,
             limit: 5,
+            managedBy : this.props.managedBy?this.props.managedBy:''
         }
     }
 
@@ -37,19 +38,6 @@ class DepreciationManager extends Component {
             }
         });
         window.$('#modal-view-asset').modal('show');
-    }
-
-    // Bắt sự kiện click chỉnh sửa thông tin tài sản
-    handleEdit = async (value, asset) => {
-        value.asset = asset;
-        await this.setState(state => {
-            return {
-                ...state,
-                currentRow: value
-            }
-        });
-
-        window.$('#modal-edit-depreciation').modal('show');
     }
 
     // Function format ngày hiện tại thành dạnh mm-yyyy
@@ -321,9 +309,25 @@ class DepreciationManager extends Component {
         return [parseInt(annualDepreciation), parseInt(annualDepreciation / 12), parseInt(remainingValue)];
     }
 
+    // Bắt sự kiện click chỉnh sửa thông tin tài sản
+    handleEditAsset = async (value) => {
+        console.log(value);
+        await this.setState(state => {
+            return {
+                ...state,
+                currentRowEditAsset: value
+            }
+        });
+        window.$('#modal-edit-asset').modal('show');
+
+        // Mở tab thứ 4
+        window.$('.nav-tabs li:eq(3) a').tab('show');
+
+    }
+
     render() {
         const { translate, assetsManager, assetType } = this.props;
-        const { page, limit, currentRowView, currentRow } = this.state;
+        const { page, limit, currentRowView, currentRowEditAsset, managedBy } = this.state;
 
         var lists = "", exportData;
         var assettypelist = assetType.listAssetTypes;
@@ -434,7 +438,7 @@ class DepreciationManager extends Component {
                                     let result = this.calculateDepreciation(x.depreciationType, x.cost, x.usefulLife, x.estimatedTotalProduction, x.unitsProducedDuringTheYears, x.startDepreciation);
                                     return (
                                         <tr key={index}>
-                                            <td>{x.code}</td>
+                                            <td><a onClick={() => this.handleEditAsset(x)}>{x.code}</a></td>
                                             <td>{x.assetName}</td>
                                             <td>{assettypelist && assettypelist.filter(item => item._id === x.assetType).pop() ? assettypelist.filter(item => item._id === x.assetType).pop().typeName : 'Asset type is deleted'}</td>
                                             <td>{formater.format(parseInt(x.cost))} VNĐ</td>
@@ -447,8 +451,6 @@ class DepreciationManager extends Component {
                                             <td>{this.addMonth(x.startDepreciation, x.usefulLife)}</td>
                                             <td style={{ textAlign: "center" }}>
                                                 <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title={translate('asset.general_information.view')}><i className="material-icons">view_list</i></a>
-                                                <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.depreciation.edit_depreciation')}><i
-                                                    className="material-icons">edit</i></a>
                                             </td>
                                         </tr>
                                     )
@@ -485,7 +487,7 @@ class DepreciationManager extends Component {
                         location={currentRowView.location}
                         description={currentRowView.description}
                         status={currentRowView.status}
-                        canRegisterForUse={currentRowView.canRegisterForUse}
+                        typeRegisterForUse={currentRowView.typeRegisterForUse}
                         detailInfo={currentRowView.detailInfo}
 
                         cost={currentRowView.cost}
@@ -510,24 +512,53 @@ class DepreciationManager extends Component {
                     />
                 }
 
-                {/* Form chỉnh sửa thông tin khấu hao */}
+                {/* Form chỉnh sửa thông tin tài sản */}
                 {
-                    currentRow &&
-                    <DepreciationEditForm
-                        _id={currentRow._id}
-                        asset={currentRow.asset}
-                        cost={currentRow.cost}
-                        residualValue={currentRow.residualValue}
-                        startDepreciation={this.formatDate(currentRow.startDepreciation)}
-                        endDepreciation={this.addMonth(currentRow.startDepreciation, currentRow.usefulLife)}
-                        usefulLife={currentRow.usefulLife}
-                        depreciationType={currentRow.depreciationType}
-                        estimatedTotalProduction={currentRow.estimatedTotalProduction}
-                        unitsProducedDuringTheYears={currentRow.unitsProducedDuringTheYears && currentRow.unitsProducedDuringTheYears.map((x) => ({
+                    currentRowEditAsset &&
+                    <AssetEditForm
+                        _id={currentRowEditAsset._id}
+                        employeeId ={managedBy}
+                        avatar={currentRowEditAsset.avatar}
+                        code={currentRowEditAsset.code}
+                        assetName={currentRowEditAsset.assetName}
+                        serial={currentRowEditAsset.serial}
+                        assetType={currentRowEditAsset.assetType}
+                        group={currentRowEditAsset.group}
+                        purchaseDate={currentRowEditAsset.purchaseDate}
+                        warrantyExpirationDate={currentRowEditAsset.warrantyExpirationDate}
+                        managedBy={currentRowEditAsset.managedBy}
+                        assignedToUser={currentRowEditAsset.assignedToUser}
+                        assignedToOrganizationalUnit={currentRowEditAsset.assignedToOrganizationalUnit}
+                        handoverFromDate={currentRowEditAsset.handoverFromDate}
+                        handoverToDate={currentRowEditAsset.handoverToDate}
+                        location={currentRowEditAsset.location}
+                        description={currentRowEditAsset.description}
+                        status={currentRowEditAsset.status}
+                        canRegisterForUse={currentRowEditAsset.canRegisterForUse}
+                        detailInfo={currentRowEditAsset.detailInfo}
+                        readByRoles={currentRowEditAsset.readByRoles}
+                        cost={currentRowEditAsset.cost}
+                        residualValue={currentRowEditAsset.residualValue}
+                        startDepreciation={currentRowEditAsset.startDepreciation}
+                        usefulLife={currentRowEditAsset.usefulLife}
+                        depreciationType={currentRowEditAsset.depreciationType}
+                        estimatedTotalProduction={currentRowEditAsset.estimatedTotalProduction}
+                        unitsProducedDuringTheYears={currentRowEditAsset.unitsProducedDuringTheYears && currentRowEditAsset.unitsProducedDuringTheYears.map((x) => ({
                             month: this.formatDate2(x.month),
                             unitsProducedDuringTheYear: x.unitsProducedDuringTheYear
                         })
                         )}
+
+                        disposalDate={currentRowEditAsset.disposalDate}
+                        disposalType={currentRowEditAsset.disposalType}
+                        disposalCost={currentRowEditAsset.disposalCost}
+                        disposalDesc={currentRowEditAsset.disposalDesc}
+
+                        maintainanceLogs={currentRowEditAsset.maintainanceLogs}
+                        usageLogs={currentRowEditAsset.usageLogs}
+                        incidentLogs={currentRowEditAsset.incidentLogs}
+                        archivedRecordNumber={currentRowEditAsset.archivedRecordNumber}
+                        files={currentRowEditAsset.documents}
                     />
                 }
             </div>

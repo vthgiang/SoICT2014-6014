@@ -44,11 +44,10 @@ class UsageLogTab extends Component {
 
     render() {
         const { id } = this.props;
-        const { translate, user } = this.props;
+        const { translate, user, department } = this.props;
         const { usageLogs } = this.state;
 
-        var userlist = user.list;
-        console.log('this.state', this.state);
+        var userlist = user.list, departmentlist= department.list;
 
         return (
             <div id={id} className="tab-pane">
@@ -62,6 +61,7 @@ class UsageLogTab extends Component {
                             <thead>
                                 <tr>
                                     <th>{translate('asset.general_information.user')}</th>
+                                    <th>{translate('asset.general_information.organization_unit')}</th>
                                     <th>{translate('asset.general_information.handover_from_date')}</th>
                                     <th>{translate('asset.general_information.handover_to_date')}</th>
                                     <th>{translate('asset.general_information.content')}</th>
@@ -72,6 +72,7 @@ class UsageLogTab extends Component {
                                     usageLogs.map((x, index) => (
                                         <tr key={index}>
                                             <td>{x.usedByUser && userlist.length && userlist.filter(item => item._id === x.usedByUser).pop() ? userlist.filter(item => item._id === x.usedByUser).pop().name : 'User is deleted'}</td>
+                                            <td>{x.usedByOrganizationalUnit && departmentlist.length && departmentlist.filter(item => item._id === x.usedByOrganizationalUnit).pop() ? departmentlist.filter(item => item._id === x.usedByOrganizationalUnit).pop().name : 'Organizational Unit is deleted'}</td>
                                             <td>{x.startDate ? this.formatDate(x.startDate) : ''}</td>
                                             <td>{x.endDate ? this.formatDate(x.endDate) : ''}</td>
                                             <td>{x.description}</td>
@@ -90,8 +91,8 @@ class UsageLogTab extends Component {
     }
 };
 function mapState(state) {
-    const { user } = state;
-    return { user };
+    const { user, department } = state;
+    return { user, department };
 };
 const usageLogTab = connect(mapState, null)(withTranslate(UsageLogTab));
 export { usageLogTab as UsageLogTab };

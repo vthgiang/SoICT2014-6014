@@ -119,15 +119,15 @@ class SideBar extends Component {
                                     { name: 'menu.manage_depreciation_asset', icon: 'fa fa-balance-scale', path: '/manage-depreciation-asset' },
                                     { name: 'menu.manage_maintainance_asset', icon: 'fa fa-sitemap', path: '/manage-maintainance-asset' },
                                     { name: 'menu.manage_incident_asset', icon: 'fa fa-calendar', path: '/manage-incident-asset' },
-                                    { name: 'menu.manage_recommend_distribute_asset', icon: 'fa fa-calendar', path: '/manage-recommend-distribute-asset' },
+                                    { name: 'menu.manage_recommend_distribute_asset', icon: 'fa fa-calendar', path: '/manage-asset-use-request' },
                                     { name: 'menu.manage_usage_asset', icon: 'fa fa-sitemap', path: '/manage-usage-asset' },
-                                    { name: 'menu.manage_recommend_procure', icon: 'fa fa-sitemap', path: '/manage-recommend-procure' },
+                                    { name: 'menu.manage_recommend_procure', icon: 'fa fa-sitemap', path: '/manage-asset-purchase-request' },
                                     { name: 'menu.manage_type_asset', icon: 'fa fa-dashboard', path: '/manage-type-asset' },
                                     { name: 'menu.view_building_list', icon: 'fa fa-building', path: '/view-building-list' },
                                     { name: 'menu.manage_assigned_asset', icon: 'fa fa-calendar', path: '/manage-assigned-asset' },
                                     { name: 'menu.employee_manage_asset_info', icon: 'fa fa-sitemap', path: '/employee-manage-info-asset' },
-                                    { name: 'menu.recommend_distribute_asset', icon: 'fa fa-calendar', path: '/recommend-distribute-asset' },
-                                    { name: 'menu.recommend_equipment_procurement', icon: 'fa fa-calendar', path: '/recommend-equipment-procurement' },
+                                    { name: 'menu.recommend_distribute_asset', icon: 'fa fa-calendar', path: '/asset-use-request' },
+                                    { name: 'menu.recommend_equipment_procurement', icon: 'fa fa-calendar', path: '/asset-purchase-request' },
                                 ]
                             }} />
 
@@ -179,7 +179,7 @@ class SideBar extends Component {
                                     { name: 'menu.kpi_unit_dashboard', icon: 'fa fa-circle-o', path: '/kpi-units/dashboard' },
                                     { name: 'menu.kpi_unit_create', icon: 'fa fa-circle-o', path: '/kpi-units/create' },
                                     { name: 'menu.kpi_unit_manager', icon: 'fa fa-circle-o', path: '/kpi-units/manager' },
-                                    { name: 'menu.kpi_unit_statistic', icon: 'fa fa-circle-o', path: '/kpi-units/statisti' },
+                                    { name: 'menu.kpi_unit_statistic', icon: 'fa fa-circle-o', path: '/kpi-units/statistic' },
                                     { name: 'menu.kpi_member_dashboard', icon: 'fa fa-circle-o', path: '/kpi-member/dashboard' },
                                     { name: 'menu.kpi_member_manager', icon: 'fa fa-circle-o', path: '/kpi-member/manager' },
                                     { name: 'menu.kpi_personal_dashboard', icon: 'fa fa-circle-o', path: '/kpi-personals/dashboard' },
@@ -224,6 +224,10 @@ class SideBar extends Component {
                                     { name: 'menu.task_report', icon: 'fa fa-circle-o', path: '/task-report' },
                                 ]
                             }} />
+
+
+                            {/* Quản lý kế hoạch sản xuất */}
+                            <Item item={{ name: 'menu.manage_plans', icon: 'fa fa-calendar', path: '/manage-plans' }} />
                         </ul>
                     </section>
                 </aside>

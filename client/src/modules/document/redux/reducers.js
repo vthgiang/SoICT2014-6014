@@ -102,6 +102,7 @@ export function documents(state = initState, action) {
         case DocumentConstants.IMPORT_DOCUMENT_DOMAIN_REQUEST:
         case DocumentConstants.IMPORT_DOCUMENT_ARCHIVE_REQUEST:
         case DocumentConstants.IMPORT_DOCUMENT_CATEGORY_REQUEST:
+        case DocumentConstants.IMPORT_DOCUMENT_REQUEST:
             return {
                 ...state,
                 isLoading: true,
@@ -134,6 +135,7 @@ export function documents(state = initState, action) {
         case DocumentConstants.IMPORT_DOCUMENT_DOMAIN_FAILE:
         case DocumentConstants.IMPORT_DOCUMENT_ARCHIVE_FAILE:
         case DocumentConstants.IMPORT_DOCUMENT_CATEGORY_FAILE:
+        case DocumentConstants.IMPORT_DOCUMENT_FAILE:
             return {
                 ...state,
                 isLoading: false,
@@ -184,6 +186,18 @@ export function documents(state = initState, action) {
                     data: {
                         ...state.administration.data,
                         list: action.payload
+                    }
+                }
+            };
+        case DocumentConstants.IMPORT_DOCUMENT_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                administration: {
+                    ...state.administration,
+                    data: {
+                        ...state.administration.data,
+                        list: action.payload.docs
                     }
                 }
             };
@@ -269,6 +283,7 @@ export function documents(state = initState, action) {
             };
 
         case DocumentConstants.CREATE_DOCUMENT_SUCCESS:
+
 
             return {
                 ...state,
@@ -396,6 +411,7 @@ export function documents(state = initState, action) {
             };
         case DocumentConstants.GET_DOCUMENT_ARCHIVE_SUCCESS:
         case DocumentConstants.CREATE_DOCUMENT_ARCHIVE_SUCCESS:
+        case DocumentConstants.EDIT_DOCUMENT_ARCHIVE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
@@ -404,15 +420,16 @@ export function documents(state = initState, action) {
                     archives: action.payload
                 }
             };
-        case DocumentConstants.EDIT_DOCUMENT_ARCHIVE_SUCCESS:
-            index = findIndex(state.administration.archives.list, action.payload._id);
-            if (index !== -1) state.administration.archives.list[index] = action.payload;
-            indexPaginate = findIndex(state.administration.archives.paginate, action.payload._id);
-            if (indexPaginate !== -1) state.administration.archives.paginate[indexPaginate] = action.payload;
-            return {
-                ...state,
-                isLoading: false
-            };
+
+
+        // index = findIndex(state.administration.archives.list, action.payload._id);
+        // if (index !== -1) state.administration.archives.list[index] = action.payload;
+        // indexPaginate = findIndex(state.administration.archives.paginate, action.payload._id);
+        // if (indexPaginate !== -1) state.administration.archives.paginate[indexPaginate] = action.payload;
+        // return {
+        //     ...state,
+        //     isLoading: false
+        // };
         case DocumentConstants.DELETE_DOCUMENT_ARCHIVE_SUCCESS:
             return {
                 ...state,

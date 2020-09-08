@@ -406,28 +406,28 @@ class ViewProcess extends Component {
                                 <div className="box-body">
 
                                     {/**Các thông tin của mẫu công việc */}
-                                    <dt>Tên quy trình</dt>
+                                    <dt>{translate("task.task_process.process_name")}</dt>
                                     <dd>{processName}</dd>
 
-                                    <dt>Mô tả quy trình</dt>
+                                    <dt>{translate("task.task_process.process_description")}</dt>
                                     <dd>{processDescription}</dd>
 
-                                    <dt>Thời gian thực hiện quy trình</dt>
+                                    <dt>{translate("task.task_process.time_of_process")}</dt>
                                     <dd>{this.formatDate(startDate)} <i className="fa fa-fw fa-caret-right"></i> {this.formatDate(endDate)}</dd>
                                 </div>
                             </div>
                             <div className={` ${isTabPane ? "col-lg-6 col-md-6 col-sm-6 col-xs-6" : "box box-solid"}`}>
                                 { // !isTabPane &&
                                     <div className="box-header with-border">
-                                        Chú thích
+                                        {translate("task.task_process.notice")}
                                     </div>
                                 }
                                 <div className="box-body">
 
                                     {/**Các thông tin của mẫu công việc */}
-                                    <dd><i className="fa fa-square" style={{ color: "#fff", border: "1px solid #000", borderRadius: "3px", marginRight: "5px" }}></i>Chờ phê duyệt</dd>
-                                    <dd><i className="fa fa-square" style={{ color: "#84ffb8", border: "1px solid #14984c", borderRadius: "3px", marginRight: "5px" }}></i>Đang thực hiện</dd>
-                                    <dd><i className="fa fa-square" style={{ color: "#f9f9f9", border: "1px solid #c4c4c7", borderRadius: "3px", marginRight: "5px" }}></i>Đã hoàn thành</dd>
+                                    <dd><i className="fa fa-square" style={{ color: "#fff", border: "1px solid #000", borderRadius: "3px", marginRight: "5px" }}></i>{translate("task.task_process.wait_for_approval")}</dd>
+                                    <dd><i className="fa fa-square" style={{ color: "#84ffb8", border: "1px solid #14984c", borderRadius: "3px", marginRight: "5px" }}></i>{translate("task.task_process.inprocess")}</dd>
+                                    <dd><i className="fa fa-square" style={{ color: "#f9f9f9", border: "1px solid #c4c4c7", borderRadius: "3px", marginRight: "5px" }}></i>{translate("task.task_process.finished")}</dd>
                                 </div>
                             </div>
                         </div>

@@ -11,7 +11,6 @@ exports.searchTimesheets = async (req, res) => {
         if (req.query.page !== undefined && req.query.limit !== undefined) {
             let params = {
                 organizationalUnit: req.query.organizationalUnit,
-                position: req.query.position,
                 employeeNumber: req.query.employeeNumber,
                 month: req.query.month,
                 page: Number(req.query.page),
@@ -40,17 +39,7 @@ exports.searchTimesheets = async (req, res) => {
 /** Tạo mới thông tin chấm công */
 exports.createTimesheets = async (req, res) => {
     try {
-        // Kiểm tra dữ liệu đầu vào
-        if (req.body.employeeNumber.trim() === "") {
-            await LogError(req.user.email, 'CREATE_TIMESHEETS', req.user.company);
-            res.status(400).json({
-                success: false,
-                messages: ["employee_number_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else if (req.body.month.trim() === "") {
+        if (req.body.month.trim() === "") {
             await LogError(req.user.email, 'CREATE_TIMESHEETS', req.user.company);
             res.status(400).json({
                 success: false,
@@ -61,17 +50,7 @@ exports.createTimesheets = async (req, res) => {
             });
         } else {
             let createTimesheets = await TimesheetService.createTimesheets(req.body, req.user.company._id);
-            // Kiểm tra sự tồn tại của mã nhân viên
-            if (createTimesheets === null) {
-                await LogError(req.user.email, 'CREATE_TIMESHEETS', req.user.company);
-                res.status(404).json({
-                    success: false,
-                    messages: ["staff_code_not_find"],
-                    content: {
-                        inputData: req.body
-                    }
-                });
-            } else if (createTimesheets === "have_exist") { // Kiểm tra trùng lặp
+            if (createTimesheets === "have_exist") { // Kiểm tra trùng lặp
                 await LogError(req.user.email, 'CREATE_TIMESHEETS', req.user.company);
                 res.status(400).json({
                     success: false,

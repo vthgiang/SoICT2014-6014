@@ -60,8 +60,6 @@ class SalaryImportForm extends Component {
      */
     handleOrganizationalUnitChange = (value) => {
         const { salary } = this.props;
-        salary.error["rowError"] = [];
-        salary.error["data"] = [];
         this.setState({
             organizationalUnit: value[0],
             importData: [],
