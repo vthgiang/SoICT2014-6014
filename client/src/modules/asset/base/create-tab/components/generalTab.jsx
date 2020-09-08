@@ -16,6 +16,7 @@ class GeneralTab extends Component {
         super(props);
         this.state = {
             detailInfo: [],
+            isObj: true,
             // status: "Sẵn sàng sử dụng",
             // typeRegisterForUse: "Được phép đăng ký sử dụng",
         };
@@ -145,44 +146,15 @@ class GeneralTab extends Component {
     /**
      * Bắt sự kiện thay đổi loại tài sản
      */
-    handleAssetTypeChange = async (value) => {
-        let { assetType } = this.props;
-        let { detailInfo } = this.state;
-        if (value.length === 0) {
-            value = null;
-        }
-        // let assetTypeList = assetType.listAssetTypes;
-        // let currentAssetType = assetTypeList.filter((element) => element._id === value[0])[0];
-        // let defaultInformation = currentAssetType ? currentAssetType.defaultInformation : [];
-
-        // Thêm trường thông tin mặc định ở nhóm tài sản vào thông tin chi tiết
-        let arr = [...detailInfo];
-        // for (let i in defaultInformation) {
-        //     let check = true;
-        //     for (let j in detailInfo) {
-        //         if (defaultInformation[i].nameField === detailInfo[j].nameField) {
-        //             check = false;
-        //         }
-        //     }
-
-        //     if (check) {
-        //         arr.push({
-        //             ...defaultInformation[i],
-        //             value: '',
-        //         });
-        //     }
-        // }
-
-        await this.setState(state => {
+    handleAssetTypeChange = (value) => {
+        this.setState(state => {
             return {
                 ...state,
                 assetTypes: value,
-                detailInfo: arr,
+                isObj: false
             }
         });
-
         this.props.handleChange("assetType", value);
-        this.props.handleChange("detailInfo", arr);
     }
 
     /**
@@ -523,7 +495,7 @@ class GeneralTab extends Component {
         const { id } = this.props;
         const { translate, user, assetType, assetsManager, role, department } = this.props;
         const {
-            img, code, assetName, assetTypes, group, serial, purchaseDate, warrantyExpirationDate, managedBy,
+            img, code, assetName, assetTypes, group, serial, purchaseDate, warrantyExpirationDate, managedBy, isObj,
             assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, location, description, status, typeRegisterForUse, detailInfo,
             errorOnCode, errorOnAssetName, errorOnSerial, errorOnAssetType, errorOnLocation, errorOnPurchaseDate,
             errorOnWarrantyExpirationDate, errorOnManagedBy, errorOnNameField, errorOnValue, usageLogs, readByRoles
@@ -533,14 +505,13 @@ class GeneralTab extends Component {
         let startDate = status == "Đang sử dụng" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1].startDate) : '';
         let endDate = status == "Đang sử dụng" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1].endDate) : '';
         var assettypelist = assetType.listAssetTypes;
-        let dataList = assettypelist.map(node => {
-            return {
-                ...node,
-                id: node._id,
-                name: node.typeName,
-                parent: node.parent ? node.parent._id : null,
-            }
-        })
+        let typeInTreeSelect = [];
+
+        if (assetTypes) {
+            isObj ? assetTypes.map(item => {
+                typeInTreeSelect.push(item._id)
+            }) : typeInTreeSelect = assetTypes;
+        }
 
         let assetbuilding = assetsManager && assetsManager.buildingAssets;
         let assetbuildinglist = assetbuilding && assetbuilding.list;
@@ -623,7 +594,7 @@ class GeneralTab extends Component {
                                     <label>{translate('asset.general_information.asset_type')}<span className="text-red">*</span></label>
                                     <TreeSelect
                                         data={typeArr}
-                                        value={assetTypes ? assetTypes : []}
+                                        value={typeInTreeSelect}
                                         handleChange={this.handleAssetTypeChange}
                                         mode="hierarchical"
                                     />
@@ -721,9 +692,9 @@ class GeneralTab extends Component {
                                 <div className="form-group">
                                     <label>{translate('asset.general_information.handover_from_date')}&emsp; </label>
                                     < DatePicker
-                                    id={`start-date${assignedToUser}-${assignedToOrganizationalUnit}`}
-                                    value={startDate}
-                                    disabled
+                                        id={`start-date${assignedToUser}-${assignedToOrganizationalUnit}`}
+                                        value={startDate}
+                                        disabled
                                     />
                                 </div>
 
@@ -731,9 +702,9 @@ class GeneralTab extends Component {
                                 <div className="form-group">
                                     <label>{translate('asset.general_information.handover_to_date')}&emsp; </label>
                                     < DatePicker
-                                    id={`end-date${assignedToUser}-${assignedToOrganizationalUnit}`}
-                                    value={endDate}
-                                    disabled
+                                        id={`end-date${assignedToUser}-${assignedToOrganizationalUnit}`}
+                                        value={endDate}
+                                        disabled
                                     />
                                 </div>
 

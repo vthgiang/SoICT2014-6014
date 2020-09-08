@@ -99,7 +99,7 @@ function addNewAsset(asset) {
  * @param {*} data 
  * @param {*} managedBy khi manageBy !="", role gọi service này không phải là admin
  */
-function updateInformationAsset(id, data,managedBy = "") {
+function updateInformationAsset(id, data, managedBy = "") {
     return dispatch => {
         dispatch({
             type: AssetConstants.UPDATE_INFOR_ASSET_REQUEST
@@ -107,8 +107,7 @@ function updateInformationAsset(id, data,managedBy = "") {
 
         AssetService.updateInformationAsset(id, data)
             .then(res => {
-                if(managedBy === "")
-                {
+                if (managedBy === "") {
                     dispatch(getAllAsset({
                         code: "",
                         assetName: "",
@@ -117,10 +116,9 @@ function updateInformationAsset(id, data,managedBy = "") {
                         status: "",
                         page: 0,
                         limit: 5,
-                    }));                   
+                    }));
                 }
-                else
-                {
+                else {
                     dispatch(getAllAsset({
                         code: "",
                         assetName: "",
@@ -129,8 +127,8 @@ function updateInformationAsset(id, data,managedBy = "") {
                         status: "",
                         page: 0,
                         limit: 5,
-                        managedBy:managedBy
-                    }));          
+                        managedBy: managedBy
+                    }));
                 }
 
                 dispatch({
@@ -152,7 +150,7 @@ function updateInformationAsset(id, data,managedBy = "") {
  * @param {*} id 
  * @param {*} managedBy khi manageBy !="", role gọi service này không phải là admin
  */
-function deleteAsset(id, managedBy ="") {
+function deleteAsset(id, managedBy = "") {
     return dispatch => {
         dispatch({
             type: AssetConstants.DELETE_ASSET_REQUEST
@@ -160,8 +158,7 @@ function deleteAsset(id, managedBy ="") {
 
         AssetService.deleteAsset(id)
             .then(res => {
-                if(managedBy === "")
-                {
+                if (managedBy === "") {
                     dispatch(getAllAsset({
                         code: "",
                         assetName: "",
@@ -170,10 +167,9 @@ function deleteAsset(id, managedBy ="") {
                         status: "",
                         page: 0,
                         limit: 5,
-                    }));                   
+                    }));
                 }
-                else
-                {
+                else {
                     dispatch(getAllAsset({
                         code: "",
                         assetName: "",
@@ -182,10 +178,10 @@ function deleteAsset(id, managedBy ="") {
                         status: "",
                         page: 0,
                         limit: 5,
-                        managedBy:managedBy
-                    }));          
+                        managedBy: managedBy
+                    }));
                 }
-                
+
                 dispatch({
                     type: AssetConstants.DELETE_ASSET_SUCCESS,
                     payload: res.data.content

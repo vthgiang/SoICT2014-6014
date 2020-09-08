@@ -131,10 +131,22 @@ class AssetManagement extends Component {
         if (value.length === 0) {
             value = null
         }
-        console.log('valueeeeeeeeee', value);
+
         this.setState({
             ...this.state,
             assetType: value
+        })
+    }
+
+    // Bắt sự kiện thay đổi nhóm tài sản
+    handleGroupChange = (value) => {
+        if (value.length === 0) {
+            value = null
+        }
+
+        this.setState({
+            ...this.state,
+            group: value
         })
     }
 
@@ -164,7 +176,6 @@ class AssetManagement extends Component {
 
     // Function bắt sự kiện tìm kiếm
     handleSubmitSearch = async () => {
-        console.log('this.state', this.state);
         this.props.getAllAsset(this.state);
     }
 
@@ -350,7 +361,7 @@ class AssetManagement extends Component {
                         </div>
                     </div>
                     <div className="form-inline">
-                        {/* Chon loai tai san */}
+                        {/* Loại tài sản */}
                         <div className="form-group">
                             <label>{translate('asset.general_information.type')}</label>
                             <TreeSelect
@@ -360,16 +371,23 @@ class AssetManagement extends Component {
                                 mode="hierarchical"
                             />
                         </div>
+                        {/* Nhóm tài sản */}
                         <div className="form-group">
-                            <label className="form-control-static">{translate('asset.general_information.purchase_date')}</label>
-                            <DatePicker
-                                id="month"
-                                dateFormat="month-year"
-                                value={purchaseDate}
-                                onChange={this.handleMonthChange}
-                            />
+                            <label className="form-control-static">{translate('asset.general_information.asset_group')}</label>
+                            <SelectMulti id={`multiSelectGroupInManagement`} multiple="multiple"
+                                options={{ nonSelectedText: translate('asset.asset_info.select_group'), allSelectedText: translate('asset.general_information.select_all_group') }}
+                                onChange={this.handleGroupChange}
+                                items={[
+                                    { value: "Building", text: translate('asset.dashboard.building') },
+                                    { value: "Vehicle", text: translate('asset.dashboard.vehicle') },
+                                    { value: "Machine", text: translate('asset.dashboard.machine') },
+                                    { value: "Other", text: translate('asset.dashboard.other') },
+                                ]}
+                            >
+                            </SelectMulti>
                         </div>
                     </div>
+
                     <div className="form-inline" style={{ marginBottom: 10 }}>
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.status')}</label>
@@ -398,7 +416,21 @@ class AssetManagement extends Component {
                             >
                             </SelectMulti>
                         </div>
+                    </div>
+                    <div className="form-inline">
+                        {/* Ngày nhập */}
                         <div className="form-group">
+                            <label className="form-control-static">{translate('asset.general_information.purchase_date')}</label>
+                            <DatePicker
+                                id="month"
+                                dateFormat="month-year"
+                                value={purchaseDate}
+                                onChange={this.handleMonthChange}
+                            />
+                        </div>
+                        {/* Nút tìm kiếm */}
+                        <div className="form-group">
+                            <label></label>
                             <button type="button" className="btn btn-success" title={translate('asset.general_information.search')} onClick={this.handleSubmitSearch}>{translate('asset.general_information.search')}</button>
                         </div>
                         {exportData && <ExportExcel id="export-asset-info-management" exportData={exportData} style={{ marginRight: 10 }} />}
