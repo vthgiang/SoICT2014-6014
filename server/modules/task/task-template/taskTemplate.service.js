@@ -167,8 +167,12 @@ exports.createTaskTemplate = async (body) => {
     // thêm quyền xem mẫu công việc cho trưởng đơn vị của công việc
     let units = await OrganizationalUnit.findById(body.organizationalUnit);
     let roleDeans = units.deans;
-    let readByEmployee = [];
-    readByEmployee = readByEmployee.concat(roleDeans, body.readByEmployees);
+    let readByEmployee = body.readByEmployees;
+    for (let i in roleDeans) {
+        if (readByEmployee.indexOf(roleDeans[i]) === -1) {
+            readByEmployee.concat(roleDeans[i]);
+        }
+    }
 
     //Tạo dữ liệu mẫu công việc
     var tasktemplate = await TaskTemplate.create({        
