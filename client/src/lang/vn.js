@@ -1645,6 +1645,7 @@ export default {
                 bar_chart: 'Biểu đồ cột',
                 tree: 'Cây',
                 amount: 'Số lượng',
+                time: 'Số lần',
                 value: 'Giá trị',
                 lost_value: 'Giá trị hao mòn (Triệu)',
                 sum_value: 'Tổng giá trị (Triệu)',
@@ -1657,6 +1658,9 @@ export default {
                 asset_purchase_and_dispose: 'Mua - bán tài sản',
                 purchase_asset: 'Thống kê mua sắm tài sản',
                 disposal_asset: 'Thống kê thanh lý tài sản',
+                asset_incident_and_maintenance: 'Sự cố - bảo trì',
+                incident_asset: 'Thống kê sự cố tài sản',
+                maintenance_asset: 'Thống kê bảo trì tài sản',
             },
 
             //  Quản lý loại tài sản
@@ -1686,6 +1690,7 @@ export default {
                 maintainance_logs: 'Lịch sử sửa chữa - thay thế - nâng cấp',
                 incident_list: 'Danh sách sự cố tài sản',
                 file_list: 'Danh sách tài liệu đính kèm',
+                edit_document: 'Chỉnh sửa tài liệu đính kèm',
                 add_usage_info: 'Thêm mới thông tin cấp phát sử dụng',
                 edit_usage_info: 'Chỉnh sửa phiếu đăng kí sử dụng',
                 delete_usage_info: 'Xóa thông tin cấp phát sử dụng',

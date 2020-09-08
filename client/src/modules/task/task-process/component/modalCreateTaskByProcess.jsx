@@ -12,7 +12,7 @@ import { TaskProcessValidator } from './taskProcessValidator';
 
 import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil'
 import BpmnModeler from 'bpmn-js/lib/Modeler';
-import customModule from './read-only'
+import customModule from './custom';
 import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
 
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';

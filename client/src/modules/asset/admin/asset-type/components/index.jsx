@@ -112,6 +112,7 @@ class AdministrationAssetTypes extends Component {
         const { list } = this.props.assetType.administration.types;
         const { domainParent, currentDomain, deleteNode } = this.state;
 
+        console.log('\n\n\n ***************', list);
         const dataTree = list.map(node => {
             return {
                 ...node,

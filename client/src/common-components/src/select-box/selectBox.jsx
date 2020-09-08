@@ -149,8 +149,7 @@ class SelectBox extends Component {
             }
             
 
-            window.$("#" + id).select2();
-            window.$("#" + id).select2("open");
+            window.$("#" + id).select2(); // Khởi tạo lại select2
 
             // Điền dữ liệu lại vào ô search
             let searchBox;
@@ -164,6 +163,8 @@ class SelectBox extends Component {
                 searchBox.val(this.state.searchText);
             }
             
+
+            window.$("#" + id).select2("open"); // Mở lại dropdown, do đang tiến hành search
         }
     }
 

@@ -7,7 +7,7 @@ import Swal from 'sweetalert2';
 import c3 from 'c3';
 import 'c3/c3.css';
 
-class DisposalColumnChart extends Component {
+class AssetDisposalChart extends Component {
     constructor(props) {
         super(props);
 
@@ -347,4 +347,4 @@ class DisposalColumnChart extends Component {
     }
 }
 
-export default withTranslate(DisposalColumnChart);
+export default withTranslate(AssetDisposalChart);

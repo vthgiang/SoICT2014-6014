@@ -108,7 +108,7 @@ class ProcessTemplate extends Component {
                     noResultsPerPage: pageTotal
                 }
             })
-            this.props.getAllXmlDiagram(this.state.pageNumber, this.state.noResultsPerPage, "");
+            this.props.getAllXmlDiagram(1, this.state.noResultsPerPage, "");
         }
     }
     render() {
