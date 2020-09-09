@@ -24,7 +24,7 @@ class EmployeeDetail extends Component {
         let employees, salaries, annualLeaves, commendations, disciplines, courses, roles = [];
 
         if (employeesInfo.employees) employees = employeesInfo.employees;
-        if (employeesInfo.salarys) salaries = employeesInfo.salarys;
+        if (employeesInfo.salaries) salaries = employeesInfo.salaries;
         if (employeesInfo.annualLeaves) annualLeaves = employeesInfo.annualLeaves;
         if (employeesInfo.commendations) commendations = employeesInfo.commendations;
         if (employeesInfo.disciplines) disciplines = employeesInfo.disciplines;

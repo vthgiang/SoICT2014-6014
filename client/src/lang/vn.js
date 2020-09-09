@@ -1333,7 +1333,7 @@ export default {
                     all_gender: 'Chọn tất cả giới tính',
                     brithday_lable: 'Sinh nhật',
                     brithday_lable_title: 'Tháng sinh nhật',
-                    contract_lable: 'Hết hạn hợn đồng',
+                    contract_lable: 'Hết hạn hợp đồng',
                     contract_lable_title: 'Tháng hết hạn hợp đồng',
                     contract_type_title: 'Loại hợp đồng lao động',
 
