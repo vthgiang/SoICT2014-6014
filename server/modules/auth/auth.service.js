@@ -1,6 +1,5 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const {loginValidation} = require('./auth.validation');
 const generator = require("generate-password");
 const nodemailer = require("nodemailer");
 const { Privilege, Role, User, UserRole } = require('../../models').schema;
@@ -10,9 +9,6 @@ const fs = require('fs');
  * Phương thức đăng nhập
  */
 exports.login = async (fingerprint, data) => { // data bao gom email va password
-
-    const {error} = loginValidation(data);
-    if(error) throw ["email_password_invalid"];
 
     const user = await User
         .findOne({email : data.email})
