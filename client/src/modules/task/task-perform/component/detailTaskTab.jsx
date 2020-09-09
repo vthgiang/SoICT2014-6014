@@ -589,7 +589,9 @@ class DetailTaskTab extends Component {
                     
                     item.results.map(result => {
                         if (!hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name]) {
-                            hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name] = result.hoursSpent ? Number.parseFloat(result.hoursSpent / (1000 * 60 * 60)).toFixed(2) : 0;
+                            if (result.hoursSpent) {
+                                hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name] = Number.parseFloat(result.hoursSpent / (1000 * 60 * 60)).toFixed(2);
+                            }
                         } else {
                             hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name] = hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name] + result.hoursSpent ? Number.parseFloat(result.hoursSpent / (1000 * 60 * 60)).toFixed(2) : 0;
                         }
