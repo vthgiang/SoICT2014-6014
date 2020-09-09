@@ -160,11 +160,9 @@ class MaintainanceLogAddModal extends Component {
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let result = this.validateMaintainanceCode(this.state.maintainanceCode, false) &&
-            this.validateCreateDate(this.state.createDate, false) &&
+        let result = this.validateCreateDate(this.state.createDate, false) &&
             this.validateDescription(this.state.description, false) &&
-            this.validateStartDate(this.state.startDate, false) &&
-            this.validateExpense(this.state.expense, false)
+            this.validateStartDate(this.state.startDate, false);
         
         return result;
     }
@@ -207,7 +205,7 @@ class MaintainanceLogAddModal extends Component {
 
                                 {/* Mã phiếu */}
                                 <div className={`form-group ${!errorOnMaintainanceCode ? "" : "has-error"}`}>
-                                    <label>{translate('asset.general_information.form_code')}<span className="text-red">*</span></label>
+                                    <label>{translate('asset.general_information.form_code')}</label>
                                     <input type="text" className="form-control" name="maintainanceCode" value={maintainanceCode} onChange={this.handleMaintainanceCodeChange} autoComplete="off" placeholder="Mã phiếu" />
                                     <ErrorLabel content={errorOnMaintainanceCode} />
                                 </div>
@@ -236,7 +234,7 @@ class MaintainanceLogAddModal extends Component {
                                 {/* Nội dung */}
                                 <div className={`form-group ${!errorOnDescription ? "" : "has-error"}`}>
                                     <label>{translate('asset.general_information.content')}<span className="text-red">*</span></label>
-                                    <textarea className="form-control" rows="3" style={{ height: 34 }} name="description" value={description} onChange={this.handleDescriptionChange} autoComplete="off" placeholder={translate('asset.general_information.content')}></textarea>
+                                    <textarea className="form-control" rows="3" name="description" value={description} onChange={this.handleDescriptionChange} autoComplete="off" placeholder={translate('asset.general_information.content')}></textarea>
                                     <ErrorLabel content={errorOnDescription} />
                                 </div>
                             </div>
@@ -265,7 +263,7 @@ class MaintainanceLogAddModal extends Component {
 
                                 {/* Chi phí */}
                                 <div className={`form-group ${!errorOnExpense ? "" : "has-error"}`}>
-                                    <label>{translate('asset.general_information.expense')} (VNĐ)<span className="text-red">*</span></label>
+                                    <label>{translate('asset.general_information.expense')} (VNĐ)</label>
                                     <input type="number" className="form-control" name="expense" value={expense} onChange={this.handleExpenseChange} autoComplete="off" placeholder={translate('asset.general_information.expense')} />
                                     <ErrorLabel content={errorOnExpense} />
                                 </div>
