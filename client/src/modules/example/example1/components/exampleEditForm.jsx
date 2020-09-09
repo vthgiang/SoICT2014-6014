@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { exampleActions } from '../redux/actions';
 import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-import { DialogModal, ErrorLabel } from '../../../common-components';
-import ValidationHelper from '../../../helpers/validationHelper';
+import { DialogModal, ErrorLabel } from '../../../../common-components';
+import ValidationHelper from '../../../../helpers/validationHelper';
 
 
 class ExampleEditForm extends Component {
@@ -24,8 +24,8 @@ class ExampleEditForm extends Component {
 
     save = () => {
         if (this.isFormValidated) {
-            const { exampleId, exampleName } = this.state;
-            this.props.editExample(exampleId, { exampleName });
+            const { exampleID, exampleName, description } = this.state;
+            this.props.editExample(exampleID, { exampleName, description });
         }
     }
 
@@ -41,12 +41,20 @@ class ExampleEditForm extends Component {
         });
     }
 
+    handleExampleDescription = (e) => {
+        const { value } = e.target;
+        this.setState({
+            description: value
+        })
+    }
+
     static getDerivedStateFromProps = (nextProps, prevState) => {
-        if (nextProps.exampleId !== prevState.exampleId) {
+        if (nextProps.exampleID !== prevState.exampleID) {
             return {
                 ...prevState,
-                exampleId: nextProps.exampleId,
+                exampleID: nextProps.exampleID,
                 exampleName: nextProps.exampleName,
+                description: nextProps.description,
                 exampleNameError: undefined
             }
         } else {
@@ -56,7 +64,7 @@ class ExampleEditForm extends Component {
 
     render() {
         const { example, translate } = this.props;
-        const { exampleName, exampleNameError } = this.state;
+        const { exampleName, exampleNameError, description } = this.state;
         return (
             <React.Fragment>
                 <DialogModal
@@ -74,6 +82,10 @@ class ExampleEditForm extends Component {
                             <input type="text" className="form-control" value={exampleName} onChange={this.handleExampleName} />
                             <ErrorLabel content={exampleNameError} />
                         </div>
+                        <div className={`form-group`}>
+                            <label>{translate('manage_example.description')}</label>
+                            <input type="text" className="form-control" value={description} onChange={this.handleExampleDescription} />
+                        </div>
                     </form>
                 </DialogModal>
             </React.Fragment>
@@ -82,7 +94,7 @@ class ExampleEditForm extends Component {
 }
 
 function mapStateToProps(state) {
-    const example = state.example2;
+    const example = state.example1;
     return { example }
 }
 

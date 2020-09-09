@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { ButtonModal, DialogModal, ErrorLabel } from '../../../common-components';
+import { ButtonModal, DialogModal, ErrorLabel } from '../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
-import ValidationHelper from '../../../helpers/validationHelper';
+import ValidationHelper from '../../../../helpers/validationHelper';
 import { exampleActions } from '../redux/actions';
 
 class ExampleCreateForm extends Component {

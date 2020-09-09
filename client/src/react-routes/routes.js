@@ -104,8 +104,8 @@ import OrderManagement from "../modules/order/components";
 import PlanManagement from "../modules/plan/components";
 
 // Example
-import ExampleManagement1 from "../modules/example1/components";
-import ExampleManagement2 from "../modules/example2/components";
+import ExampleManagement1 from "../modules/example/example1/components";
+import ExampleManagement2 from "../modules/example/example2/components";
 
 class Routes extends Component {
 
