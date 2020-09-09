@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ErrorLabel, DatePicker } from '../../../../../common-components';
+import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../../common-components';
 
 import { SalaryFormValidator } from '../../../salary/components/combinedContent';
 
@@ -169,6 +169,7 @@ class SalaryEditModal extends Component {
                 id: nextProps.id,
                 _id: nextProps._id,
                 index: nextProps.index,
+                organizationalUnit: nextProps.organizationalUnit,
                 unit: nextProps.unit,
                 month: nextProps.month,
                 mainSalary: nextProps.mainSalary,
@@ -183,11 +184,11 @@ class SalaryEditModal extends Component {
     }
 
     render() {
-        const { translate } = this.props;
+        const { translate, department } = this.props;
 
         const { id } = this.props;
 
-        const { unit, mainSalary, bonus, month, errorOnMainSalary,
+        const { unit, organizationalUnit, mainSalary, bonus, month, errorOnMainSalary,
             errorOnNameSalary, errorOnMoreMoneySalary } = this.state;
 
         return (
@@ -200,6 +201,19 @@ class SalaryEditModal extends Component {
                     disableSubmit={!this.isFormValidated()}
                 >
                     <form className="form-group" id={`form-edit-salary-${id}`}>
+                        {/* Đơn vị */}
+                        <div className={`form-group`}>
+                            <label>{translate('human_resource.unit')}<span className="text-red">*</span></label>
+                            <SelectBox
+                                id={`create-salary-unit${id}`}
+                                className="form-control select2"
+                                disabled={true}
+                                style={{ width: "100%" }}
+                                value={organizationalUnit}
+                                items={department.list.map((u, i) => { return { value: u._id, text: u.name } })}
+                                onChange={this.handleOrganizationalUnitChange}
+                            />
+                        </div>
                         {/* Tháng lương */}
                         <div className="form-group">
                             <label>{translate('human_resource.month')}<span className="text-red">*</span></label>
@@ -260,5 +274,10 @@ class SalaryEditModal extends Component {
     }
 };
 
-const editModal = connect(null, null)(withTranslate(SalaryEditModal));
+function mapState(state) {
+    const { department } = state;
+    return { department };
+};
+
+const editModal = connect(mapState, null)(withTranslate(SalaryEditModal));
 export { editModal as SalaryEditModal };

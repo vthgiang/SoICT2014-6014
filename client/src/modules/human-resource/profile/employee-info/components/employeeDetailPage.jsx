@@ -90,6 +90,7 @@ class EmployeeDetail extends Component {
                                         {/* Hợp đồng lao động */}
                                         <ContractTab
                                             id="view_contract"
+                                            employee={x}
                                             courses={courses}
                                             contracts={x.contracts}
                                         />

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ErrorLabel, DatePicker, ButtonModal } from '../../../../../common-components';
+import { DialogModal, ErrorLabel, DatePicker, ButtonModal, SelectBox } from '../../../../../common-components';
 
 import { SalaryFormValidator } from '../../../salary/components/combinedContent';
 
@@ -10,6 +10,7 @@ class SalaryAddModal extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            organizationalUnit: "",
             unit: "VND",
             month: this.formatDate(Date.now()),
             mainSalary: "",
@@ -34,6 +35,25 @@ class SalaryAddModal extends Component {
             return [month, year].join('-');
         }
         return date;
+    }
+
+    /** Function bắt sự kiện thay đổi đơn vị */
+    handleOrganizationalUnitChange = (value) => {
+        this.validateOrganizationalUnit(value[0], true);
+    }
+    validateOrganizationalUnit = (value, willUpdateState = true) => {
+        let { translate } = this.props;
+        let msg = SalaryFormValidator.validateEmployeeNumber(value, translate);
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnOrganizationalUnit: msg,
+                    organizationalUnit: value,
+                }
+            });
+        }
+        return msg === undefined;
     }
 
     /**
@@ -182,9 +202,9 @@ class SalaryAddModal extends Component {
 
     /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
     isFormValidated = () => {
-        let { bonus, mainSalary, month } = this.state;
-        let result = this.validateMainSalary(mainSalary, false) &&
-            this.validateMonthSalary(month, false);
+        let { bonus, mainSalary, month, organizationalUnit } = this.state;
+        let result = this.validateMainSalary(mainSalary, false) && this.validateOrganizationalUnit(organizationalUnit, false)
+        this.validateMonthSalary(month, false);
 
         if (result === true) {
             if (bonus !== []) {
@@ -210,12 +230,14 @@ class SalaryAddModal extends Component {
     }
 
     render() {
-        const { translate } = this.props;
+        const { translate, employeesInfo } = this.props;
 
         const { id } = this.props;
 
-        const { unit, mainSalary, bonus, month, errorOnMainSalary,
+        const { unit, mainSalary, bonus, month, errorOnMainSalary, errorOnOrganizationalUnit, organizationalUnit,
             errorOnNameSalary, errorOnMoreMoneySalary, errorOnMonthSalary } = this.state;
+
+        let organizationalUnits = employeesInfo.organizationalUnits;
 
         return (
             <React.Fragment>
@@ -228,6 +250,19 @@ class SalaryAddModal extends Component {
                     disableSubmit={!this.isFormValidated()}
                 >
                     <form className="form-group" id={`form-create-salary-${id}`}>
+                        {/* Đơn vị */}
+                        <div className={`form-group ${errorOnOrganizationalUnit && "has-error"}`}>
+                            <label>{translate('human_resource.unit')}<span className="text-red">*</span></label>
+                            <SelectBox
+                                id={`create-salary-unit${id}`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                value={organizationalUnit}
+                                items={organizationalUnits.map(y => { return { value: y._id, text: y.name } }).concat([{ value: "", text: translate('human_resource.non_unit') }])}
+                                onChange={this.handleOrganizationalUnitChange}
+                            />
+                            <ErrorLabel content={errorOnOrganizationalUnit} />
+                        </div>
                         {/* Tháng lương */}
                         <div className={`form-group ${errorOnMonthSalary && "has-error"}`}>
                             <label>{translate('human_resource.month')}<span className="text-red">*</span></label>
@@ -288,5 +323,10 @@ class SalaryAddModal extends Component {
     }
 };
 
-const addModal = connect(null, null)(withTranslate(SalaryAddModal));
+function mapState(state) {
+    const { employeesInfo } = state;
+    return { employeesInfo };
+};
+
+const addModal = connect(mapState, null)(withTranslate(SalaryAddModal));
 export { addModal as SalaryAddModal };

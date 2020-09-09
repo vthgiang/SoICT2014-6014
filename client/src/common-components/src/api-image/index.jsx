@@ -18,7 +18,6 @@ class ApiImage extends Component {
             return {
                 id: nextProps.id,
                 img: nextProps.src,
-                dataStatus: 0
             }
         }
         return null
@@ -48,12 +47,18 @@ class ApiImage extends Component {
         return true;
     }
 
+    componentDidMount() {
+        this.setState({
+            dataStatus: 0
+        })
+    }
+
     render() {
         const { className, style, src } = this.props;
 
         let { img } = this.state;
 
-        if (src.search(';base64,') >= 0) {
+        if (src && src.search(';base64,') >= 0) {
             img = src;
         }
 

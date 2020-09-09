@@ -564,12 +564,12 @@ class DetailTaskTab extends Component {
         checkEvaluationTaskAction = this.checkEvaluationTaskAction(task);
         checkEvaluationTaskAndKpiLink = this.checkEvaluationTaskAndKpiLink(task);
         checkDeadlineForEvaluation = this.checkDeadlineForEvaluation(task)
-        warning = (checkConfirmTask && checkConfirmTask.checkConfirm)
+        warning = (statusTask === "Inprocess") && ((checkConfirmTask && checkConfirmTask.checkConfirm)
             || (checkEvaluationTaskAction && checkEvaluationTaskAction.checkEvaluationTaskAction)
             || (checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkEvaluationTask)
             || (checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkKpiLink)
-            || (checkDeadlineForEvaluation && checkDeadlineForEvaluation.checkDeadlineForEvaluation);
-
+            || (checkDeadlineForEvaluation && checkDeadlineForEvaluation.checkDeadlineForEvaluation)
+            || (checkInactive && codeInProcess && (currentRole === "accountable" || (currentRole === "responsible" && checkHasAccountable === false))));
 
         return (
             <React.Fragment>
@@ -645,9 +645,10 @@ class DetailTaskTab extends Component {
                         {/* Thông tin chung */}
                         {/** Nhắc nhở */}
                         {
-                            task && warning
-                            && <div className="description-box" style={{ border: "3px double #e8cbcb" }}>
+                            task && warning &&
+                            <div className="description-box" style={{ border: "3px double #e8cbcb" }}>
                                 <h4>{translate('task.task_management.warning')}</h4>
+
                                 {/* Kích hoạt công việc phía sau trong quy trình */}
                                 {statusTask === "Inprocess" && checkInactive && codeInProcess && (currentRole === "accountable" || (currentRole === "responsible" && checkHasAccountable === false)) &&
                                     <div>
