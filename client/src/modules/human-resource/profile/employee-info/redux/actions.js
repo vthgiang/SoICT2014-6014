@@ -1,5 +1,9 @@
-import { Constants } from "./constants";
-import { EmployeeService } from "./services";
+import {
+    Constants
+} from "./constants";
+import {
+    EmployeeService
+} from "./services";
 export const EmployeeInfoActions = {
     getEmployeeProfile,
     updatePersonalInformation,
@@ -8,12 +12,12 @@ export const EmployeeInfoActions = {
 /**
  * Lấy thông tin nhân viên theo mã nhân viên
  */
-function getEmployeeProfile() {
+function getEmployeeProfile(data) {
     return dispatch => {
         dispatch({
             type: Constants.GET_PERSONAL_INFOR_REQUEST
         });
-        EmployeeService.getEmployeeProfile()
+        EmployeeService.getEmployeeProfile(data)
             .then(res => {
                 dispatch({
                     type: Constants.GET_PERSONAL_INFOR_SUCCESS,

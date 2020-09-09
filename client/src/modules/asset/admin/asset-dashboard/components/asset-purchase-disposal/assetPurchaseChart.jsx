@@ -105,7 +105,6 @@ class AssetPurchaseChart extends Component {
     setDataColumnChartForYear = () => {
         const { listAssets, translate, getPurchaseData } = this.props;
         let { purchaseDateAfter, purchaseDateBefore } = this.state;
-        console.log('aloooooooooo', listAssets);
 
         let startDate = purchaseDateAfter.slice(0, 4);
         let endDate = purchaseDateBefore.slice(0, 4);

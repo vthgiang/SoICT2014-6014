@@ -21,8 +21,8 @@ class ValuePieChart extends Component {
         const { translate } = this.props;
         const { listAssets, setValueOfAsset } = this.props;
 
-        let dataPieChart, valueOfBuilding = 0, valueOfVehicle = 0, valueOfMachine = 0, valueOfOrther = 0;
-        
+        let dataPieChart, valueOfBuilding = 0, valueOfVehicle = 0, valueOfMachine = 0, valueOfOther = 0;
+
         if (listAssets) {
             listAssets.map(asset => {
                 switch (asset.group) {
@@ -36,7 +36,7 @@ class ValuePieChart extends Component {
                         valueOfMachine += asset.cost;
                         break;
                     case "Other":
-                        valueOfOrther += asset.cost;
+                        valueOfOther += asset.cost;
                         break;
                 }
             });
@@ -46,9 +46,9 @@ class ValuePieChart extends Component {
             [translate('asset.dashboard.building'), valueOfBuilding],
             [translate('asset.dashboard.vehicle'), valueOfVehicle],
             [translate('asset.dashboard.machine'), valueOfMachine],
-            [translate('asset.dashboard.orther'), valueOfOrther],
+            [translate('asset.dashboard.other'), valueOfOther],
         ];
-        
+
         if (setValueOfAsset) {
             setValueOfAsset(dataPieChart);
         }

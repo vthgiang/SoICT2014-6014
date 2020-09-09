@@ -23,3 +23,30 @@ export const configDomain = {
         value: "Tên danh mục cha"
     },
 }
+export const exportDomain = {
+    fileName: "Mẫu import danh mục",
+    dataSheets: [{
+        sheetName: "Sheet1",
+        sheetTitle: "Danh sách danh mục",
+        tables: [{
+            rowHeader: 1,
+            columns: [
+                { key: "name", value: "Tên danh mục" },
+                { key: "description", value: "Mô tả danh mục" },
+                { key: "parent", value: "Danh mục cha" },
+            ],
+            data: [
+                {
+                    name: "Hello",
+                    description: "xin chào",
+                },
+                {
+                    name: "abc",
+                    pathParent: "Hello",
+                },
+
+            ]
+        }]
+
+    }]
+}

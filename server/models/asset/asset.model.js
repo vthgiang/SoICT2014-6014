@@ -8,7 +8,8 @@ const OrganizationalUnit = require('../super-admin/organizationalUnit.model')
 const AssetSchema = new Schema({
     group: {
         type: String,
-        enum: ["Building", "Vehicle", "Machine", "Other"]
+        enum: ["Building", "Vehicle", "Machine", "Other"],
+        required: true
     },
 
     company: { // công ty
@@ -40,6 +41,7 @@ const AssetSchema = new Schema({
     assetType: [{ //5.loại tài sản
         type: Schema.Types.ObjectId,
         ref: AssetType,
+        required: true
     }],
 
     purchaseDate: { //6.ngày nhập, ngày mua
@@ -77,15 +79,13 @@ const AssetSchema = new Schema({
 
     status: { //17.tình trạng: sẵn sàng sử dụng || đang sử dụng || hỏng hóc || mất || Thanh lý
         type: String,
-        enum: ["Sẵn sàng sử dụng", "Đang sử dụng", "Hỏng hóc", "Mất", "Thanh lý"]
-            // enum: ["InUse", "Unassigned", "InStorage", "Broken", "InRepair", "Disposed"]
-            // InUse, Active, InStorage, Broken, Lost, In Repair, Disposed, Transferred out, Inoperable
+        enum: ["Sẵn sàng sử dụng", "Đang sử dụng", "Hỏng hóc", "Mất", "Thanh lý"],
+        required: true
     },
 
     typeRegisterForUse: { //Đăng ký sử dụng: 1.Không được đăng ký, 2.Đăng ký sử dụng theo giờ, 3.Đăng ký sử dụng lâu dài
         type: Number,
-        //     type: String,
-        //    enum: ["Được phép đăng ký sử dụng", "Không được phép đăng ký sử dụng"]
+        required: true
     },
 
     description: { //18.mô tả
@@ -106,20 +106,23 @@ const AssetSchema = new Schema({
      */
     depreciationType: { // Cách tính khấu hao
         type: String,
-        enum: ["Đường thẳng", "Số dư giảm dần", "Sản lượng"],
-        // Reducing balance chính là Declining Balance Method
+        enum: ["Đường thẳng", "Số dư giảm dần", "Sản lượng"], // Reducing balance chính là Declining Balance Method
+        required: true
     },
 
-    cost: { //8. Nguyên giá
-        type: Number
+    cost: { // 8. Nguyên giá
+        type: Number,
+        required: true
     },
 
-    usefulLife: { //9. Thời gian sử dụng
-        type: Number
+    usefulLife: { // 9. Thời gian sử dụng
+        type: Number,
+        required: true
     },
 
     startDepreciation: { // thời gian bắt đầu trích khấu hao
-        type: Date
+        type: Date,
+        required: true
     },
 
     residualValue: { // 10. Giá trị thu hồi ước tính.

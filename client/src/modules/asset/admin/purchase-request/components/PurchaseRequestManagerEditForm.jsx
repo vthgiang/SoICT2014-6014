@@ -221,7 +221,7 @@ class PurchaseRequestEditForm extends Component {
                             <div className="col-sm-6">
                                 {/* Mã phiếu */}
                                 <div className="form-group">
-                                    <label>{translate('asset.general_information.form_code')}<span className="text-red">*</span></label>
+                                    <label>{translate('asset.general_information.form_code')}</label>
                                     <input type="text" className="form-control" name="recommendNumber" value={recommendNumber} onChange={this.handleRecommendNumberChange} />
                                 </div>
 
@@ -259,7 +259,7 @@ class PurchaseRequestEditForm extends Component {
                                 {/* Thiết bị đề nghị mua */}
                                 <div className={`form-group ${!errorOnEquipment ? "" : "has-error"}`}>
                                     <label>{translate('asset.manage_recommend_procure.asset_recommend')}<span className="text-red">*</span></label>
-                                    <textarea className="form-control" rows="3" style={{ height: 34 }} name="equipment" value={equipment} onChange={this.handleEquipmentChange}></textarea>
+                                    <input type="text" className="form-control" name="equipment" value={equipment} onChange={this.handleEquipmentChange} />
                                     <ErrorLabel content={errorOnEquipment} />
                                 </div>
 
@@ -332,7 +332,7 @@ class PurchaseRequestEditForm extends Component {
                                 {/* Ghi chú */}
                                 <div className="form-group">
                                     <label>{translate('asset.usage.note')}</label>
-                                    <textarea className="form-control" rows="3" style={{ height: 34 }} name="note" value={note} onChange={this.handleNoteChange}></textarea>
+                                    <textarea className="form-control" rows="3" name="note" value={note} onChange={this.handleNoteChange}></textarea>
                                 </div>
                             </div>
                         </div>

@@ -135,6 +135,7 @@ class PurchaseRequestEditForm extends Component {
             this.validateEquipment(this.state.equipment, false) &&
             this.validateTotal(this.state.total, false) &&
             this.validateUnit(this.state.unit, false);
+
         return result;
     }
 
@@ -193,7 +194,7 @@ class PurchaseRequestEditForm extends Component {
                             <div className="col-sm-6">
                                 {/* Mã phiếu */}
                                 <div className="form-group">
-                                    <label>{translate('asset.general_information.form_code')}<span className="text-red">*</span></label>
+                                    <label>{translate('asset.general_information.form_code')}</label>
                                     <input type="text" className="form-control" name="recommendNumber" value={recommendNumber} onChange={this.handleRecommendNumberChange} />
                                 </div>
 
@@ -231,7 +232,7 @@ class PurchaseRequestEditForm extends Component {
                                 {/* Thiết bị đề nghị mua */}
                                 <div className={`form-group ${!errorOnEquipment ? "" : "has-error"}`}>
                                     <label>{translate('asset.manage_recommend_procure.asset_recommend')}<span className="text-red">*</span></label>
-                                    <textarea className="form-control" rows="3" style={{ height: 34 }} name="equipment" value={equipment} onChange={this.handleEquipmentChange}></textarea>
+                                    <textarea className="form-control" rows="3" name="equipment" value={equipment} onChange={this.handleEquipmentChange}></textarea>
                                     <ErrorLabel content={errorOnEquipment} />
                                 </div>
                             </div>

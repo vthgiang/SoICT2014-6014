@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from "react-redux-multilingual";
-
+import { getStorage } from '../../../../../config';
 
 import { PaginateBar, SelectMulti, DataTableSetting } from '../../../../../common-components';
 
 import { TaskProcessActions } from '../../redux/actions';
 import { ModalViewProcess } from './modalViewProcess';
+import { ModalEditProcess } from './modalEditProcess';
 
 class TaskProcessManagement extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			currentRole: getStorage('currentRole'),
 			currentRow: {},
 			pageNumber: 1,
 			noResultsPerPage: 5,
@@ -28,7 +30,7 @@ class TaskProcessManagement extends Component {
 				currentRow: item,
 			}
 		});
-		window.$(`#modal-edit-process`).modal("show");
+		window.$(`#modal-edit-process-task-list`).modal("show");
 	}
 
 	deleteDiagram = async (xmlId) => {
@@ -45,6 +47,7 @@ class TaskProcessManagement extends Component {
 		});
 		window.$(`#modal-view-process-task-list`).modal("show");
 	}
+
 	showModalCreateProcess = async () => {
 		await this.setState(state => {
 			return {
@@ -54,24 +57,7 @@ class TaskProcessManagement extends Component {
 		});
 		window.$(`#modal-create-process-task`).modal("show");
 	}
-	showModalCreateTask = async (item) => {
-		await this.setState(state => {
-			return {
-				...state,
-				showModalCreateTask: true,
-				currentRow: item,
-			}
-		});
-		window.$(`#modal-create-task-by-process`).modal("show");
-	}
-	showCreateTask = (item) => {
-		this.setState(state => {
-			return {
-				template: item
-			}
-		});
-		window.$(`#modal-create-task`).modal('show')
-	}
+
 	setPage = async (pageTotal) => {
 		let oldCurrentPage = this.state.pageNumber;
 		await this.setState(state => {
@@ -83,6 +69,7 @@ class TaskProcessManagement extends Component {
 		let newCurrentPage = this.state.pageNumber;
 		this.props.getAllTaskProcess(this.state.pageNumber, this.state.noResultsPerPage, "");
 	}
+
 	setLimit = (pageTotal) => {
 		if (pageTotal !== this.state.noResultsPerPage) {
 			this.setState(state => {
@@ -97,12 +84,12 @@ class TaskProcessManagement extends Component {
 	}
 	render() {
 		const { translate, taskProcess, department } = this.props
-		const { showModalCreateProcess, currentRow } = this.state
+		const { currentRow, currentRole } = this.state
 		let listTaskProcess = [];
 		if (taskProcess && taskProcess.listTaskProcess) {
 			listTaskProcess = taskProcess.listTaskProcess
 		}
-
+		console.log('process', taskProcess?.processTemplate?.manager.indexOf(currentRole) !== -1, currentRole, taskProcess);
 		let totalPage = taskProcess.totalPage
 		let listOrganizationalUnit = department?.list
 		return (
@@ -112,6 +99,20 @@ class TaskProcessManagement extends Component {
 						this.state.currentRow !== undefined &&
 						<ModalViewProcess
 							title={translate("task.task_process.view_task_process_modal")}
+							listOrganizationalUnit={listOrganizationalUnit}
+							data={currentRow}
+							idProcess={currentRow._id}
+							xmlDiagram={currentRow.xmlDiagram}
+							processName={currentRow.processName}
+							processDescription={currentRow.processDescription}
+							infoTask={currentRow.taskList}
+							creator={currentRow.creator}
+						/>
+					}
+					{
+						this.state.currentRow !== undefined &&
+						<ModalEditProcess
+							title={'chỉnh sửa quy trình'}
 							listOrganizationalUnit={listOrganizationalUnit}
 							data={currentRow}
 							idProcess={currentRow._id}
@@ -161,10 +162,13 @@ class TaskProcessManagement extends Component {
 											<a onClick={() => { this.viewProcess(item) }} title={translate('task.task_template.view_detail_of_this_task_template')}>
 												<i className="material-icons">view_list</i>
 											</a>
-											{/* <a className="edit" onClick={() => { this.showEditProcess(item) }} title={translate('task_template.edit_this_task_template')}>
-												<i className="material-icons">edit</i>
-											</a>
-											<a className="delete" onClick={() => { this.deleteDiagram(item._id) }} title={translate('task_template.delete_this_task_template')}>
+											{ item && item?.processTemplate?.manager.indexOf(currentRole) !== -1 &&
+												<a className="edit" onClick={() => { this.showEditProcess(item) }} title={translate('task_template.edit_this_task_template')}>
+													<i className="material-icons">edit</i>
+												</a>
+											}
+
+											{/* <a className="delete" onClick={() => { this.deleteDiagram(item._id) }} title={translate('task_template.delete_this_task_template')}>
 												<i className="material-icons"></i>
 											</a>
 											<a className="" style={{ color: "#008D4C" }} onClick={() => { this.showModalCreateTask(item) }} title={translate('task_template.delete_this_task_template')}>

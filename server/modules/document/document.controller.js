@@ -7,6 +7,7 @@ const { LogInfo, LogError } = require('../../logs');
 exports.getDocuments = async (req, res) => {
     try {
         const documents = await DocumentServices.getDocuments(req.user.company._id, req.query);
+
         await LogInfo(req.user.email, 'GET_DOCUMENTS', req.user.company);
         res.status(200).json({
             success: true,
@@ -53,23 +54,24 @@ exports.createDocument = async (req, res) => {
 };
 
 exports.importDocument = async (req, res) => {
-    try {
+    // try {
 
-        const document = await DocumentServices.importDocument(req.user.company._id, req.body);
-        await LogInfo(req.user.email, 'IMPORT_DOCUMENT', req.user.company);
-        res.status(200).json({
-            success: true,
-            messages: ['import_document_success'],
-            content: document
-        });
-    } catch (error) {
-        await LogError(req.user.email, 'IMPORT_DOCUMENT', req.user.company);
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['import_document_faile'],
-            content: error
-        });
-    }
+    const document = await DocumentServices.importDocument(req.user.company._id, req.body);
+    await LogInfo(req.user.email, 'IMPORT_DOCUMENT', req.user.company);
+    console.log('------------------', document);
+    res.status(200).json({
+        success: true,
+        messages: ['import_document_success'],
+        content: document
+    });
+    // } catch (error) {
+    //     await LogError(req.user.email, 'IMPORT_DOCUMENT', req.user.company);
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: Array.isArray(error) ? error : ['import_document_faile'],
+    //         content: error
+    //     });
+    // }
 };
 exports.increaseNumberView = async (req, res) => {
     try {
