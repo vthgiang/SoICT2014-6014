@@ -37,7 +37,7 @@ exports.searchAssetProfiles = async (params, company) => {
     }
 
     // Thêm key tìm kiếm tài sản theo nhóm vào keySearch
-    if (params.status) {
+    if (params.group) {
         keySearch = { ...keySearch, group: { $in: params.group } };
     }
 
@@ -55,6 +55,7 @@ exports.searchAssetProfiles = async (params, company) => {
     if (params.group) {
         keySearch = { ...keySearch, group: { $in: params.group } };
     }
+
     // Thêm key tìm kiếm tài sản theo id người quản lý
     if (params.managedBy) {
         keySearch = { ...keySearch, managedBy: { $in: params.managedBy } };

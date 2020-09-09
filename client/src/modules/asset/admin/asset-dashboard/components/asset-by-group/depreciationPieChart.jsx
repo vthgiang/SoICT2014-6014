@@ -203,10 +203,5 @@ class DepreciationPieChart extends Component {
     }
 }
 
-function mapState(state) { }
+export default (withTranslate(DepreciationPieChart));
 
-const actions = {}
-
-const DepreciationPieChartConnected = connect(mapState, actions)(withTranslate(DepreciationPieChart));
-
-export { DepreciationPieChartConnected as DepreciationPieChart }
