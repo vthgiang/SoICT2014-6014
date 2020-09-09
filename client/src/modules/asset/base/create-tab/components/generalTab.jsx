@@ -16,6 +16,7 @@ class GeneralTab extends Component {
         super(props);
         this.state = {
             detailInfo: [],
+            isObj: true,
             // status: "Sẵn sàng sử dụng",
             // typeRegisterForUse: "Được phép đăng ký sử dụng",
         };
@@ -145,6 +146,7 @@ class GeneralTab extends Component {
     /**
      * Bắt sự kiện thay đổi loại tài sản
      */
+
     handleAssetTypeChange = async (value) => {
         let { assetType } = this.props;
         let { detailInfo } = this.state;
@@ -173,17 +175,14 @@ class GeneralTab extends Component {
             }
         }
 
-
         await this.setState(state => {
             return {
                 ...state,
                 assetTypes: value,
-                detailInfo: arr,
+                isObj: false
             }
         });
-
         this.props.handleChange("assetType", value);
-        this.props.handleChange("detailInfo", arr);
     }
 
     /**
@@ -526,7 +525,7 @@ class GeneralTab extends Component {
         const { id } = this.props;
         const { translate, user, assetType, assetsManager, role, department } = this.props;
         const {
-            img, code, assetName, assetTypes, group, serial, purchaseDate, warrantyExpirationDate, managedBy,
+            img, code, assetName, assetTypes, group, serial, purchaseDate, warrantyExpirationDate, managedBy, isObj,
             assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, location, description, status, typeRegisterForUse, detailInfo,
             errorOnCode, errorOnAssetName, errorOnSerial, errorOnAssetType, errorOnLocation, errorOnPurchaseDate,
             errorOnWarrantyExpirationDate, errorOnManagedBy, errorOnNameField, errorOnValue, usageLogs, readByRoles, errorOnNameFieldPosition, errorOnValuePosition
@@ -536,14 +535,13 @@ class GeneralTab extends Component {
         let startDate = status == "Đang sử dụng" && usageLogs && usageLogs.length ? this.formatDate(usageLogs[usageLogs.length - 1].startDate) : '';
         let endDate = status == "Đang sử dụng" && usageLogs && usageLogs.length ? this.formatDate(usageLogs[usageLogs.length - 1].endDate) : '';
         var assettypelist = assetType.listAssetTypes;
-        let dataList = assettypelist.map(node => {
-            return {
-                ...node,
-                id: node._id,
-                name: node.typeName,
-                parent: node.parent ? node.parent._id : null,
-            }
-        })
+        let typeInTreeSelect = [];
+
+        if (assetTypes) {
+            isObj ? assetTypes.map(item => {
+                typeInTreeSelect.push(item._id)
+            }) : typeInTreeSelect = assetTypes;
+        }
 
         let assetbuilding = assetsManager && assetsManager.buildingAssets;
         let assetbuildinglist = assetbuilding && assetbuilding.list;
@@ -626,7 +624,7 @@ class GeneralTab extends Component {
                                     <label>{translate('asset.general_information.asset_type')}<span className="text-red">*</span></label>
                                     <TreeSelect
                                         data={typeArr}
-                                        value={assetTypes ? assetTypes : []}
+                                        value={typeInTreeSelect}
                                         handleChange={this.handleAssetTypeChange}
                                         mode="hierarchical"
                                     />

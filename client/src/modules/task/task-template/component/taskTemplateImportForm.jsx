@@ -364,7 +364,7 @@ class TaskTemplateImportForm extends Component {
                             </div>
                             <div className="form-group col-md-4 col-xs-12">
                                 <label></label>
-                                <ExportExcel id="download_template_task_template" type='link' exportData={templateImportTaskTemplate2}
+                                <ExportExcel id="download_template_task_template" type='link' exportData={templateImportTaskTemplate}
                                     buttonName='Download file import mẫu' />
                             </div>
                             <div className="form-group col-md-12 col-xs-12">

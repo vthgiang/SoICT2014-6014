@@ -770,7 +770,11 @@ export default {
             manage_orders: "Quản lý đơn hàng",
             manage_list_orders: "Danh sách đơn hàng",
             // Quản lý kế hoạch sản xuất
-            manage_plans: "Quản lý kế hoạch sản xuất"
+            manage_plans: "Quản lý kế hoạch sản xuất",
+            //VÍ DỤ EXAMPLE
+            manage_examples: "Ví dụ CRUD",
+            manage_examples_1: "CRUD theo mô hình số 1",
+            manage_examples_2: "CRUD theo mô hình số 2",
         },
 
         manage_system: {
@@ -1323,6 +1327,7 @@ export default {
 
                 employee_management: {
                     file_name_export: 'Thông tin nhân viên',
+                    staff_no_unit_title: 'Do nhân viên chưa thuộc đơn vị nào',
                     no_gender: 'Chọn giới tính',
                     all_gender: 'Chọn tất cả giới tính',
                     brithday_lable: 'Sinh nhật',
@@ -1564,6 +1569,7 @@ export default {
                 select_asset_type: 'Chọn loại tài sản',
                 select_all_asset_type: 'Chọn tất cả loại tài sản',
                 select_all_status: 'Chọn tất cả trạng thái',
+                select_all_group: 'Chọn tất cả nhóm tài sản',
                 ready_use: 'Sẵn sàng sử dụng',
                 using: 'Đang sử dụng',
                 damaged: 'Hỏng hóc',
@@ -1652,7 +1658,7 @@ export default {
                 building: 'Mặt bằng',
                 vehicle: 'Phương tiện',
                 machine: 'Máy móc',
-                orther: 'Khác',
+                other: 'Khác',
                 asset_by_group: 'Thống kê theo nhóm',
                 asset_by_type: 'Thống kê theo loại',
                 asset_purchase_and_dispose: 'Mua - bán tài sản',
@@ -1900,12 +1906,11 @@ export default {
             confirm_title: 'Bạn chắc chắn muốn xóa mẫu công việc này?',
             error_title: 'Không thể xóa mẫu công việc này do đã được sử dụng.',
             name: 'Tên mẫu',
-            unit: 'Đơn vị',
+            unit: 'Đơn vị quản lý công việc',
             tasktemplate_name: 'Tên mẫu công việc',
             description: 'Mô tả',
             count: 'Số lần sử dụng',
             creator: 'Người tạo mẫu',
-            unit: 'Đơn vị',
             action: 'Hành động',
             priority: 'Độ ưu tiên',
             general_information: 'Thông tin chung',
@@ -2433,6 +2438,7 @@ export default {
             task_process: {
                 process_name: 'Tên quy trình',
                 process_description: 'Mô tả quy trình',
+                process_status: 'Trạng thái quy trình',
                 creator: 'Người tạo quy trình',
                 manager: 'Người quản lý',
                 viewer: 'Người được xem',
@@ -2487,7 +2493,9 @@ export default {
                 get_all_task_process_success: 'Lấy danh sach quy trình công việc thành công',
                 get_all_task_process_fail: 'Lấy danh sach quy trình công việc thất bại',
                 update_task_process_success: 'Cập nhật quy trình công việc thành công',
-                update_task_process_fail: 'Cập nhật quy trình công việc thành công',
+                update_task_process_fail: 'Cập nhật quy trình công việc thất bại',
+                edit_info_process_success: 'Chỉnh sửa thông tin quy trình công việc thành công',
+                edit_info_process_fail: 'Chỉnh sửa thông tin quy trình công việc thất bại',
 
                 error: {
                     empty_name: "Tên quy trình không được bỏ trống",
@@ -3164,6 +3172,28 @@ export default {
             edit_plan_success: "Cập nhật kế hoạch thành công!",
             edit_plan_fail: "Cập nhật kế hoạch thất bại!",
             detail_info_plan: "Thông tin chi tiết kế hoạch"
+        },
+
+        // manage example
+        manage_example: {
+            exampleName: "Tên ví dụ",
+            search: "Tìm kiếm",
+            add_example: "Thêm mới",
+            index: "STT",
+            description: "Mô tả",
+            edit: "Chỉnh sửa thông tin ví dụ",
+            delete: "Xóa ví dụ",
+            delete_success: "Xóa ví dụ thành công!",
+            delete_fail: "Xóa ví dụ thất bại!",
+            add: "Thêm ví dụ",
+            add_title: "Thêm mới ví dụ",
+            add_success: "Thêm ví dụ thành công!",
+            add_fail: "Thêm ví dụ thất bại!",
+            example_description: "Mô tả ví dụ",
+            edit_title: "Cập nhật ví dụ",
+            edit_example_success: "Cập nhật ví dụ thành công!",
+            edit_example_fail: "Cập nhật ví dụ thất bại!",
+            detail_info_example: "Thông tin chi tiết ví dụ"
         },
 
         footer: {

@@ -415,6 +415,7 @@ class EmployeeCreateForm extends Component {
                             {/* Tab lương thưởng - nghỉ phép*/}
                             <SalaryTab
                                 id="salary"
+                                pageCreate={true}
                                 salaries={salaries}
                                 annualLeaves={annualLeaves}
 

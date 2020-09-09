@@ -36,6 +36,7 @@ class GeneralTab extends Component {
     }
 
     convertGroupAsset = (group) => {
+        console.log('group', group);
         if (group === 'Building') {
             return 'Mặt bằng';
         } else if (group === 'Vehicle') {
@@ -88,7 +89,7 @@ class GeneralTab extends Component {
 
         const {
             img, avatar, code, assetName, serial, assetTypes, group, purchaseDate, warrantyExpirationDate,
-            managedBy, assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, location, 
+            managedBy, assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, location,
             description, status, typeRegisterForUse, detailInfo, usageLogs
         } = this.state;
         return (
@@ -205,7 +206,7 @@ class GeneralTab extends Component {
                                     {/* Quyền đăng ký sử dụng */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.can_register_for_use')}&emsp; </strong>
-                                        {typeRegisterForUse == 1? 'Không được đăng ký sử dụng' : (typeRegisterForUse == 2 ? "Đăng ký sử dụng theo giờ" : "Đăng ký sử dụng lâu dài")}
+                                        {typeRegisterForUse == 1 ? 'Không được đăng ký sử dụng' : (typeRegisterForUse == 2 ? "Đăng ký sử dụng theo giờ" : "Đăng ký sử dụng lâu dài")}
                                     </div>
                                 </div>
                             </div>

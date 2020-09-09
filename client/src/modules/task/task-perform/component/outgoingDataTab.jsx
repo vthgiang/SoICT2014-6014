@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from "react-redux-multilingual";
 import { performTaskAction } from '../redux/actions';
-// import { CommentInProcess } from './commentInProcess';
+import { CommentInProcess } from './commentInProcess';
 class OutgoingDataTab extends Component {
 
     constructor(props) {
@@ -132,15 +132,15 @@ class OutgoingDataTab extends Component {
     }
 
     render() {
-        const { translate } = this.props;
+        const { translate, performtasks } = this.props;
         const { task, isOutputInformation, isOutputDocument } = this.state;
-
+        console.log(task)
         return (
             <React.Fragment>
                 {
                     task &&
                     <React.Fragment>
-                        <div className="description-box">
+                        <div className="description-box outgoing-content">
                             <h4>{translate('task.task_process.list_of_data_and_info')}</h4>
 
                             { /** Danh sách thông tin */
@@ -197,15 +197,15 @@ class OutgoingDataTab extends Component {
                                     )
                                     : <div>{translate('task.task_process.not_have_doc')}</div>
                             }
-                            <button type="button" className="btn btn-success pull-right" style={{ margin: "2em 2em" }} onClick={() => this.handleSaveEdit()} disabled={this.DOCUMENT.length === 0 && this.INFORMATION.length === 0}>{translate('task.task_process.save')}</button>
+                            <button type="button" className="btn btn-success pull-right" style={{ margin: "2em 2em 50px 0px" }} onClick={() => this.handleSaveEdit()} disabled={this.DOCUMENT.length === 0 && this.INFORMATION.length === 0}>{translate('task.task_process.save')}</button>
 
 
                         </div>
                         { /** Trao đổi */}
-                        {/* <CommentInProcess
-                            task={task}
-                            inputAvatarCssClass = "user-img-outgoing-level1"
-                        /> */}
+                        <CommentInProcess
+                            task={performtasks.task}
+                            inputAvatarCssClass="user-img-outgoing-level1"
+                        />
                     </React.Fragment>
 
                 }
@@ -215,8 +215,8 @@ class OutgoingDataTab extends Component {
 }
 
 function mapState(state) {
-    const { } = state;
-    return {};
+    const { performtasks } = state;
+    return { performtasks };
 }
 const actions = {
     editDocument: performTaskAction.editDocument,

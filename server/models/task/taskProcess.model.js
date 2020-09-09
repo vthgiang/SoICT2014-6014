@@ -28,6 +28,12 @@ const TaskProcessSchema = new Schema({
         type: Date,
         required: true
     },
+    status: {
+        type: String,
+        default: "Inprocess",
+        required: true,
+        enum: ["Inprocess", "WaitForApproval", "Finished", "Delayed", "Canceled"],
+    },
     creator: {
         type: Schema.Types.ObjectId,
         required: true,

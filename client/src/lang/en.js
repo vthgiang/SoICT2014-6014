@@ -745,7 +745,12 @@ export default {
             manage_list_orders: "Manage List Orders",
 
             //QUẢN LÝ KẾ HOẠCH SẢN XUẤT
-            manage_plans: "Manage Plans"
+            manage_plans: "Manage Plans",
+
+            //VÍ DỤ EXAMPLE
+            manage_examples: "CRUD example",
+            manage_examples_1: "CRUD by model 1",
+            manage_examples_2: "CRUD by model 2",
         },
 
         manage_system: {
@@ -1302,6 +1307,7 @@ export default {
 
                 employee_management: {
                     file_name_export: 'Thông tin nhân viên',
+                    staff_no_unit_title: 'Because the employee is not in any unit',
                     no_gender: 'Select gender',
                     all_gender: 'Select all gender',
                     brithday_lable: 'Month of Birth',
@@ -1537,6 +1543,7 @@ export default {
                 select_asset_type: 'Select asset type',
                 select_all_asset_type: 'Select all asset type',
                 select_all_status: 'Select all status',
+                select_all_group: 'Select all asset group',
                 ready_use: 'Ready to use',
                 using: 'Using',
                 damaged: 'Damaged',
@@ -1625,7 +1632,7 @@ export default {
                 building: 'Building',
                 vehicle: 'Vehicle',
                 machine: 'Machine',
-                orther: 'Other',
+                other: 'Other',
                 asset_by_group: ' Asset by group',
                 asset_by_type: ' Asset by type',
                 asset_purchase_and_dispose: ' Purchase and dispose',
@@ -1877,7 +1884,6 @@ export default {
             description: 'Description',
             count: 'Number of uses',
             creator: 'Creator',
-            unit: 'Unit',
             action: 'Action',
             priority: 'Priority',
             general_information: 'General information',
@@ -2392,6 +2398,7 @@ export default {
             task_process: {
                 process_name: 'Process name',
                 process_description: 'Process description',
+                process_status: 'Process status',
                 creator: 'Creator',
                 manager: 'Manager',
                 viewer: 'Viewer',
@@ -2448,6 +2455,8 @@ export default {
                 get_all_task_process_fail: 'Get all task process fail',
                 update_task_process_success: 'Update task process successfully',
                 update_task_process_fail: 'Update task process fail',
+                edit_info_process_success: 'Edit process infomation successfully',
+                edit_info_process_fail: 'Edit process infomation fail',
 
                 error: {
                     empty_name: "Process name should not be empty",
@@ -3119,6 +3128,28 @@ export default {
             edit_plan_success: "Update plan successfully!",
             edit_plan_fail: "Update plan fail!",
             detail_info_plan: "Detail infomation of plan"
+        },
+
+        // manage example
+        manage_example: {
+            exampleName: "Example Name",
+            search: "Search",
+            add_example: "Add Example",
+            index: "Index",
+            description: "Description",
+            edit: "Edit this example",
+            delete: "Delete this example",
+            delete_success: "Delete example successfully!",
+            delete_fail: "Delete example fail!",
+            add: "Add example",
+            add_title: "Add a new example",
+            add_success: "Add example successfully!",
+            add_fail: "Add example fail!",
+            example_description: "Example Description",
+            edit_title: "Update a example",
+            edit_example_success: "Update example successfully!",
+            edit_example_fail: "Update example fail!",
+            detail_info_example: "Detail infomation of example"
         },
 
         footer: {

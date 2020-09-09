@@ -321,7 +321,11 @@ class SalaryManagement extends Component {
                                 value={this.formatDate(Date.now(), true)}
                                 onChange={this.handleMonthChange}
                             />
-                            {/* Nút tìm kiếm */}
+
+                        </div>
+                        {/* Nút tìm kiếm */}
+                        <div className="form-group">
+                            <label></label>
                             <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => this.handleSunmitSearch()} >{translate('general.search')}</button>
                         </div>
                     </div>

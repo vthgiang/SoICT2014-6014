@@ -33,7 +33,7 @@ class ViewProcess extends Component {
     constructor(props) {
         super(props);
         let { data } = this.props;
-        console.log('dtaa', data);
+
         this.state = {
             userId: getStorage("userId"),
             currentRole: getStorage('currentRole'),
@@ -44,6 +44,7 @@ class ViewProcess extends Component {
             zlevel: 1,
             startDate: "",
             endDate: "",
+            status: "",
         }
         this.modeler = new BpmnModeler({
             additionalModules: [
@@ -51,8 +52,8 @@ class ViewProcess extends Component {
                 { zoomScroll: ['value', ''] }
             ],
         });
-        this.generateId = 'viewtaskprocestab';
-        this.modeling = this.modeler.get("modeling")
+        this.generateId = 'viewtaskprocesstab';
+        this.modeling = this.modeler.get("modeling");
         this.initialDiagram = data.xmlDiagram;
     }
 
@@ -70,10 +71,9 @@ class ViewProcess extends Component {
             }
         });
 
+        eventBus.on('shape.move.start', 100000, () => { return false });
 
         this.modeler.on('element.click', 1000, (e) => this.interactPopup(e));
-
-
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -90,6 +90,7 @@ class ViewProcess extends Component {
                 info: info,
                 processDescription: nextProps.data.processDescription ? nextProps.data.processDescription : '',
                 processName: nextProps.data.processName ? nextProps.data.processName : '',
+                status: nextProps.data.status ? nextProps.data.status : '',
                 startDate: nextProps.data.startDate ? nextProps.data.startDate : '',
                 endDate: nextProps.data.endDate ? nextProps.data.endDate : '',
                 xmlDiagram: nextProps.data.xmlDiagram,
@@ -137,7 +138,6 @@ class ViewProcess extends Component {
 
                             var outgoing = element1.outgoing;
                             outgoing.forEach(x => {
-                                console.log('x', x);
                                 if (info[x.businessObject.targetRef.id].status === "Inprocess") {
                                     var outgoingEdge = modeler.get('elementRegistry').get(x.id);
 
@@ -283,7 +283,7 @@ class ViewProcess extends Component {
         });
     }
 
-
+    // các hàm thu nhỏ, phóng to, vừa màn hình cho diagram
     handleZoomOut = async () => {
         let zstep = 0.2;
         let canvas = this.modeler.get('canvas');
@@ -353,9 +353,18 @@ class ViewProcess extends Component {
         return [day, month, year].join('-');
     }
 
+    formatStatus = (data) => {
+        const { translate } = this.props;
+        if (data === "Inprocess") return translate('task.task_management.inprocess');
+        else if (data === "WaitForApproval") return translate('task.task_management.wait_for_approval');
+        else if (data === "Finished") return translate('task.task_management.finished');
+        else if (data === "Delayed") return translate('task.task_management.delayed');
+        else if (data === "Canceled") return translate('task.task_management.canceled');
+    }
+
     render() {
         const { translate, role, user } = this.props;
-        const { name, id, idProcess, info, startDate, endDate, errorOnEndDate, errorOnStartDate,
+        const { id, info, startDate, endDate, status,
             processDescription, processName } = this.state;
         const { isTabPane } = this.props
 
@@ -405,13 +414,19 @@ class ViewProcess extends Component {
                                 }
                                 <div className="box-body">
 
-                                    {/**Các thông tin của mẫu công việc */}
+                                    {/* tên quy trình */}
                                     <dt>{translate("task.task_process.process_name")}</dt>
                                     <dd>{processName}</dd>
 
+                                    {/* mô tả quy trình */}
                                     <dt>{translate("task.task_process.process_description")}</dt>
                                     <dd>{processDescription}</dd>
 
+                                    {/* mô tả quy trình */}
+                                    <dt>{translate("task.task_process.process_status")}</dt>
+                                    <dd>{this.formatStatus(status)}</dd>
+
+                                    {/* thời gian thực hiện quy trình */}
                                     <dt>{translate("task.task_process.time_of_process")}</dt>
                                     <dd>{this.formatDate(startDate)} <i className="fa fa-fw fa-caret-right"></i> {this.formatDate(endDate)}</dd>
                                 </div>

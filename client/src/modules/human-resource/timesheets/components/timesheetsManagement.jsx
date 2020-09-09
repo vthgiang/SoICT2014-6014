@@ -342,6 +342,7 @@ class TimesheetsManagement extends Component {
                             />
                         </div>
                         <div className="form-group">
+                            <label></label>
                             <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => this.handleSunmitSearch()} >{translate('general.search')}</button>
                         </div>
                     </div>

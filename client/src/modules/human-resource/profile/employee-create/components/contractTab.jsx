@@ -315,7 +315,7 @@ class ContractTab extends Component {
                     {/* Danh sách khoá học */}
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border"><h4 className="box-title">{translate('human_resource.profile.training_process')}</h4></legend>
-                        {pageCreate && <a style={{ marginBottom: '10px', marginTop: '2px' }} className="btn btn-success pull-right" title='Do nhân viên chưa thuộc đơn vị nào' data-toggle="modal" data-backdrop="static" href='' disabled >{translate('modal.create')}</a>}
+                        {pageCreate && <a style={{ marginBottom: '10px', marginTop: '2px' }} className="btn btn-success pull-right" title={translate('human_resource.profile.employee_management.staff_no_unit_title')} disabled >{translate('modal.create')}</a>}
                         {!pageCreate && <CourseAddModal roles={roles} handleChange={this.handleAddCourse} id={`addCourse${id}`} />}
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
                             <thead>
