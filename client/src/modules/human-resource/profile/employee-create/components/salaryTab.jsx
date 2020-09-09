@@ -180,7 +180,9 @@ class SalaryTab extends Component {
     }
 
     render() {
-        const { id, translate } = this.props;
+        const { translate, department, employeesInfo } = this.props;
+
+        const { id } = this.props;
 
         let { annualLeaves, salaries, pageCreate, currentRow, currentRowSabbatical } = this.state;
 
@@ -193,26 +195,28 @@ class SalaryTab extends Component {
                         {/* Table lịch sử lương */}
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border" ><h4 className="box-title">{translate('human_resource.profile.historySalary')}</h4></legend>
-                            {pageCreate && <a style={{ marginBottom: '10px', marginTop: '2px' }} className="btn btn-success pull-right" title={translate('human_resource.profile.employee_management.staff_no_unit_title')} disabled >{translate('modal.create')}</a>}
-                            {!pageCreate && <SalaryAddModal handleChange={this.handleAddSalary} id={`addSalary${id}`} />}
+                            {(pageCreate || employeesInfo.organizationalUnits.length === 0) && <a style={{ marginBottom: '10px', marginTop: '2px' }} className="btn btn-success pull-right" title={translate('human_resource.profile.employee_management.staff_no_unit_title')} disabled >{translate('modal.create')}</a>}
+                            {!pageCreate && employeesInfo.organizationalUnits.length !== 0 && <SalaryAddModal handleChange={this.handleAddSalary} id={`addSalary${id}`} />}
                             <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
                                 <thead>
                                     <tr>
                                         <th>{translate('human_resource.month')}</th>
                                         <th>{translate('human_resource.salary.table.main_salary')}</th>
                                         <th>{translate('human_resource.salary.table.total_salary')}</th>
+                                        <th>{translate('human_resource.unit')}</th>
                                         <th style={{ width: '120px' }}>{translate('table.action')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {salaries && salaries.length !== 0 &&
                                         salaries.map((x, index) => {
+                                            let total = 0;
                                             if (x.bonus.length !== 0) {
-                                                var total = 0;
                                                 for (let count in x.bonus) {
                                                     total = total + parseInt(x.bonus[count].number)
                                                 }
                                             }
+                                            let organizationalUnit = department.list.find(y => y._id === x.organizationalUnit);
                                             return (
                                                 <tr key={index}>
                                                     <td>{this.formatDate(x.month, true)}</td>
@@ -224,6 +228,7 @@ class SalaryTab extends Component {
                                                                 formater.format(total + parseInt(x.mainSalary))
                                                         } {x.unit}
                                                     </td>
+                                                    <td>{organizationalUnit.name}</td>
                                                     <td>
                                                         <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.salary.edit_salary')}><i className="material-icons">edit</i></a>
                                                         <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteSalary(index)}><i className="material-icons"></i></a>
@@ -242,8 +247,8 @@ class SalaryTab extends Component {
                         {/* Table thông tin nghỉ phép */}
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border" ><h4 className="box-title">{translate('human_resource.profile.sabbatical')}</h4></legend>
-                            {pageCreate && <a style={{ marginBottom: '10px', marginTop: '2px' }} className="btn btn-success pull-right" title={translate('human_resource.profile.employee_management.staff_no_unit_title')} disabled >{translate('modal.create')}</a>}
-                            {!pageCreate && <AnnualLeaveAddModal handleChange={this.handleAddAnnualLeave} id={`addSabbatical${id}`} />}
+                            {(pageCreate || employeesInfo.organizationalUnits.length === 0) && <a style={{ marginBottom: '10px', marginTop: '2px' }} className="btn btn-success pull-right" title={translate('human_resource.profile.employee_management.staff_no_unit_title')} disabled >{translate('modal.create')}</a>}
+                            {!pageCreate && employeesInfo.organizationalUnits.length !== 0 && <AnnualLeaveAddModal handleChange={this.handleAddAnnualLeave} id={`addSabbatical${id}`} />}
                             <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
                                 <thead>
                                     <tr>
@@ -251,23 +256,28 @@ class SalaryTab extends Component {
                                         <th>{translate('human_resource.annual_leave.table.end_date')}</th>
                                         <th>{translate('human_resource.annual_leave.table.reason')}</th>
                                         <th>{translate('human_resource.status')}</th>
+                                        <th>{translate('human_resource.unit')}</th>
                                         <th style={{ width: '120px' }}>{translate('general.action')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {(typeof annualLeaves !== 'undefined' && annualLeaves.length !== 0) &&
-                                        annualLeaves.map((x, index) => (
-                                            <tr key={index}>
-                                                <td>{this.formatDate(x.startDate)}</td>
-                                                <td>{this.formatDate(x.endDate)}</td>
-                                                <td>{x.reason}</td>
-                                                <td>{translate(`human_resource.annual_leave.status.${x.status}`)}</td>
-                                                <td >
-                                                    <a onClick={() => this.handleViewEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.annual_leave.edit_annual_leave')}><i className="material-icons">edit</i></a>
-                                                    <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteAnnualLeave(index)}><i className="material-icons"></i></a>
-                                                </td>
-                                            </tr>
-                                        ))}
+                                        annualLeaves.map((x, index) => {
+                                            let organizationalUnit = department.list.find(y => y._id === x.organizationalUnit);
+                                            return (
+                                                <tr key={index}>
+                                                    <td>{this.formatDate(x.startDate)}</td>
+                                                    <td>{this.formatDate(x.endDate)}</td>
+                                                    <td>{x.reason}</td>
+                                                    <td>{translate(`human_resource.annual_leave.status.${x.status}`)}</td>
+                                                    <td>{organizationalUnit.name}</td>
+                                                    <td >
+                                                        <a onClick={() => this.handleViewEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.annual_leave.edit_annual_leave')}><i className="material-icons">edit</i></a>
+                                                        <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteAnnualLeave(index)}><i className="material-icons"></i></a>
+                                                    </td>
+                                                </tr>
+                                            )
+                                        })}
                                 </tbody>
                             </table>
                             {
@@ -283,6 +293,7 @@ class SalaryTab extends Component {
                         _id={currentRow._id}
                         index={currentRow.index}
                         unit={currentRow.unit}
+                        organizationalUnit={currentRow.organizationalUnit}
                         month={this.formatDate(currentRow.month, true)}
                         mainSalary={currentRow.mainSalary}
                         bonus={currentRow.bonus}
@@ -295,6 +306,7 @@ class SalaryTab extends Component {
                         id={`editSabbatical${currentRowSabbatical.index}`}
                         _id={currentRowSabbatical._id}
                         index={currentRowSabbatical.index}
+                        organizationalUnit={currentRowSabbatical.organizationalUnit}
                         startDate={this.formatDate(currentRowSabbatical.startDate)}
                         endDate={this.formatDate(currentRowSabbatical.endDate)}
                         reason={currentRowSabbatical.reason}
@@ -307,5 +319,10 @@ class SalaryTab extends Component {
     }
 };
 
-const salaryTab = connect(null, null)(withTranslate(SalaryTab));
+function mapState(state) {
+    const { department, employeesInfo } = state;
+    return { department, employeesInfo };
+};
+
+const salaryTab = connect(mapState, null)(withTranslate(SalaryTab));
 export { salaryTab as SalaryTab };

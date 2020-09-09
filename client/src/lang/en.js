@@ -1225,6 +1225,7 @@ export default {
                 course_name: 'Course name',
                 start_day: 'Start day',
                 end_date: 'End day',
+                contract_end_date: 'Contract expiration date',
                 type_education: 'Type of education',
                 cost: 'Cost',
                 edit_contract: 'Edit labor contract',

@@ -242,10 +242,10 @@ class InsurranceTab extends Component {
                 ...prevState,
                 id: nextProps.id,
                 socialInsuranceDetails: nextProps.socialInsuranceDetails,
-                healthInsuranceNumber: nextProps.employee.healthInsuranceNumber,
-                healthInsuranceStartDate: nextProps.employee.healthInsuranceStartDate,
-                healthInsuranceEndDate: nextProps.employee.healthInsuranceEndDate,
-                socialInsuranceNumber: nextProps.employee.socialInsuranceNumber,
+                healthInsuranceNumber: nextProps.employee ? nextProps.employee.healthInsuranceNumber : '',
+                healthInsuranceStartDate: nextProps.employee ? nextProps.employee.healthInsuranceStartDate : '',
+                healthInsuranceEndDate: nextProps.employee ? nextProps.employee.healthInsuranceEndDate : '',
+                socialInsuranceNumber: nextProps.employee ? nextProps.employee.socialInsuranceNumber : '',
             }
         } else {
             return null;

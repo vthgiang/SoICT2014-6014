@@ -124,7 +124,6 @@ class UpdateEmployee extends Component {
                                     <div className="col-lg-4 col-md-4 col-ms-12 col-xs-12" style={{ textAlign: 'center' }}>
                                         <div>
                                             <ApiImage className="attachment-img avarta" id={`avatar-update`} src={avatar} />
-                                            {/* <img className="attachment-img avarta" src={this.state.img} alt="Attachment" /> */}
                                         </div>
                                         <div className="upload btn btn-default ">
                                             {translate('human_resource.profile.upload')}

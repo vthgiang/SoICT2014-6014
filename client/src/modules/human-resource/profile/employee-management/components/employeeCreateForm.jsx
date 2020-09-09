@@ -387,8 +387,10 @@ class EmployeeCreateForm extends Component {
                             <ContractTab
                                 id="contract"
                                 pageCreate={true}
+                                employee={employee}
                                 contracts={contracts}
                                 courses={courses}
+                                handleChange={this.handleChange}
 
                                 handleAddContract={this.handleChangeContract}
                                 handleEditContract={this.handleChangeContract}
