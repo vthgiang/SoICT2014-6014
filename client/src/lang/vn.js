@@ -1314,7 +1314,8 @@ export default {
                     note_page_personal: 'Tôi xin cam đoan những lời khai trên đây là đúng sự thật và chịu trách nhiệm cho những lời khai này.',
                     contact_other: '(Những thông tin khác vui lòng liên hệ các bên liên quan để được xử lý)',
                     update_infor_personal: 'Cập nhật thông tin nhân viên',
-                    no_data_personal: 'Chưa có thông tin cá nhân',
+                    no_data_personal: 'Bạn chưa có thông tin cá nhân',
+                    no_data_personal_to_update: 'Bạn chưa có thông tin cá nhân để cập nhật',
 
                     guaranteed_infor_to_update: 'Bạn chưa cam đoan thông tin cần cập nhật',
                     no_change_data: 'Không có thông tin nào được thay đổi',

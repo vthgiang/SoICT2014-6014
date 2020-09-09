@@ -1293,7 +1293,8 @@ export default {
                     note_page_personal: 'I hereby certify that all of the above statements are true and I am responsible for them.',
                     contact_other: '(Other information please contact the relevant parties to be processed)',
                     update_infor_personal: 'Update staff information',
-                    no_data_personal: 'No personal information yet',
+                    no_data_personal: 'You do not have personal information',
+                    no_data_personal_to_update: 'You do not have personal information to update',
 
                     guaranteed_infor_to_update: 'You have not guaranteed information to update',
                     no_change_data: 'No information changed',
