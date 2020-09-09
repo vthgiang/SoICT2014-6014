@@ -11,32 +11,32 @@ import { link } from '../modules/super-admin/link/redux/reducers';
 import { component } from '../modules/super-admin/component/redux/reducers';
 import { department } from '../modules/super-admin/organizational-unit/redux/reducers';
 
-import {employeesInfo} from '../modules/human-resource/profile/employee-info/redux/reducers';
-import {employeesManager} from '../modules/human-resource/profile/employee-management/redux/reducers';
-import {education} from '../modules/training/education-program/redux/reducers';
-import {course} from '../modules/training/course/redux/reducers';
-import {salary} from '../modules/human-resource/salary/redux/reducers';
-import {discipline} from '../modules/human-resource/commendation-discipline/redux/reducers';
-import {annualLeave} from '../modules/human-resource/annual-leave/redux/reducers';
-import {holiday} from '../modules/human-resource/holiday/redux/reducers';
-import {timesheets} from '../modules/human-resource/timesheets/redux/reducers';
+import { employeesInfo } from '../modules/human-resource/profile/employee-info/redux/reducers';
+import { employeesManager } from '../modules/human-resource/profile/employee-management/redux/reducers';
+import { education } from '../modules/training/education-program/redux/reducers';
+import { course } from '../modules/training/course/redux/reducers';
+import { salary } from '../modules/human-resource/salary/redux/reducers';
+import { discipline } from '../modules/human-resource/commendation-discipline/redux/reducers';
+import { annualLeave } from '../modules/human-resource/annual-leave/redux/reducers';
+import { holiday } from '../modules/human-resource/holiday/redux/reducers';
+import { timesheets } from '../modules/human-resource/timesheets/redux/reducers';
 
-import {notifications} from '../modules/notification/redux/reducers';
-import {documents} from '../modules/document/redux/reducers';
+import { notifications } from '../modules/notification/redux/reducers';
+import { documents } from '../modules/document/redux/reducers';
 
 import { createKpiUnit } from "../modules/kpi/organizational-unit/creation/redux/reducers";
 import { dashboardOrganizationalUnitKpi } from "../modules/kpi/organizational-unit/dashboard/redux/reducers";
 import { managerKpiUnit } from "../modules/kpi/organizational-unit/management/redux/reducers";
 import { statisticsOfOrganizationalUnitKpi } from "../modules/kpi/statistic/redux/reducers";
 
-import {createEmployeeKpiSet} from "../modules/kpi/employee/creation/redux/reducers"
-import {KPIPersonalManager} from "../modules/kpi/employee/management/redux/reducers"
-import {dashboardEmployeeKpiSet} from "../modules/kpi/employee/dashboard/redux/reducers"
+import { createEmployeeKpiSet } from "../modules/kpi/employee/creation/redux/reducers"
+import { KPIPersonalManager } from "../modules/kpi/employee/management/redux/reducers"
+import { dashboardEmployeeKpiSet } from "../modules/kpi/employee/dashboard/redux/reducers"
 
-import {tasktemplates} from '../modules/task/task-template/redux/reducers';
-import {kpimembers} from '../modules/kpi/evaluation/employee-evaluation/redux/reducers';
+import { tasktemplates } from '../modules/task/task-template/redux/reducers';
+import { kpimembers } from '../modules/kpi/evaluation/employee-evaluation/redux/reducers';
 
-import {dashboardEvaluationEmployeeKpiSet} from '../modules/kpi/evaluation/dashboard/redux/reducers';
+import { dashboardEvaluationEmployeeKpiSet } from '../modules/kpi/evaluation/dashboard/redux/reducers';
 
 import { performtasks } from "../modules/task/task-perform/redux/reducers";
 import { tasks } from "../modules/task/task-management/redux/reducers";
@@ -52,20 +52,27 @@ import { assetsManager } from "../modules/asset/admin/asset-information/redux/re
 
 
 //report 
-import {reports} from "../modules/report/task-report/redux/reducers";
+import { reports } from "../modules/report/task-report/redux/reducers";
 
 //material
 import { materials } from "../modules/warehouse-manager/material-manager/redux/reducers";
 
 //crm
-import {customer} from "../modules/crm/customer/redux/reducers";
-import {group} from "../modules/crm/group/redux/reducers";
+import { customer } from "../modules/crm/customer/redux/reducers";
+import { group } from "../modules/crm/group/redux/reducers";
 
 //order
 import { order } from "../modules/order/redux/reducers";
 
 //plan
 import { plan } from "../modules/plan/redux/reducers";
+
+
+//example1
+import { example1 } from "../modules/example/example1/redux/reducers";
+
+//example2
+import { example2 } from "../modules/example/example2/redux/reducers";
 
 const appReducer = combineReducers({
     //system
@@ -74,7 +81,7 @@ const appReducer = combineReducers({
     systemLinks,
     rootRoles,
     systemComponents,
-    
+
     //admin
     user,
     role,
@@ -95,7 +102,7 @@ const appReducer = combineReducers({
     annualLeave,
     holiday,
     timesheets,
-    
+
     // hr-tranning
     education,
     course,
@@ -145,8 +152,15 @@ const appReducer = combineReducers({
 
     //plane
     plan,
+
+    //example1
+    example1,
+
+    //example2
+    example2,
+
     Intl
-    
+
 });
 
 const rootReducer = (state, action) => {

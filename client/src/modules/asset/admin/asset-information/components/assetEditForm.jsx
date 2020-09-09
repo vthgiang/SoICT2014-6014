@@ -217,7 +217,7 @@ class AssetEditForm extends Component {
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let { code, assetName, serial, assetType, managedBy, purchaseDate, warrantyExpirationDate, location, status,
+        let { code, assetName, serial, assetType, managedBy, purchaseDate, warrantyExpirationDate, location, status, group,
             typeRegisterForUse, cost, usefulLife, startDepreciation, depreciationType, unitsProducedDuringTheYears, estimatedTotalProduction } = this.state;
 
         if (this.state !== {}) {
@@ -226,21 +226,27 @@ class AssetEditForm extends Component {
                 unitProductionValidate = this.validatorInput(estimatedTotalProduction);
             }
 
-            let result = this.validatorInput(code)
-                && this.validatorInput(assetName)
-                && this.validatorInput(serial)
-                && this.validatorInput(assetType)
-                // && this.validatorInput(managedBy) ??
-                && this.validatorInput(purchaseDate)
-                && this.validatorInput(warrantyExpirationDate)
-                && this.validatorInput(status)
-                // && this.validatorInput(cost) ??
-                // && this.validatorInput(location) ??
-                // && this.validatorInput(usefulLife) ??
-                // && this.validatorInput(typeRegisterForUse)
-                // && this.validatorInput(startDepreciation)
-                // && this.validatorInput(depreciationType) ??
+            let result = this.validatorInput(code) && this.validatorInput(assetName) &&
+                // this.validatorInput(serial) && 
+                this.validatorInput(assetType) && this.validatorInput(group) &&
+                // this.validatorInput(managedBy) && 
+                this.validatorInput(purchaseDate) &&
+                // this.validatorInput(warrantyExpirationDate) && //this.validatorInput(location) &&
+                this.validatorInput(status) && this.validatorInput(typeRegisterForUse) &&
+                this.validatorInput(cost) && this.validatorInput(usefulLife) &&
+                this.validatorInput(startDepreciation) && this.validatorInput(depreciationType)
                 && unitProductionValidate;
+
+            // console.log('\n\n\n ***', this.validatorInput(code) , this.validatorInput(assetName) ,
+            //     // this.validatorInput(serial) , 
+            //     this.validatorInput(assetType) , this.validatorInput(group) ,
+            //     // this.validatorInput(managedBy) , 
+            //     this.validatorInput(purchaseDate) ,
+            //     // this.validatorInput(warrantyExpirationDate) , //this.validatorInput(location) ,
+            //     this.validatorInput(status) , this.validatorInput(typeRegisterForUse) ,
+            //     this.validatorInput(cost) , this.validatorInput(usefulLife) ,
+            //     this.validatorInput(startDepreciation) , this.validatorInput(depreciationType)
+            //     , unitProductionValidate);
             return result;
         }
 

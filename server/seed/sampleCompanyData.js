@@ -30,7 +30,8 @@ const {
     CrmCustomer,
     CrmLocation,
     CrmGroup,
-    CrmCare
+    CrmCare,
+    Example
 } = require('../models').schema;
 
 const Terms = require('./terms');
@@ -2318,38 +2319,32 @@ const sampleCompanyData = async () => {
             usefulLife: 20, // thời gian trích khấu hao
             depreciationType: "Đường thẳng", // thời gian trích khấu hao
             //thanh lý
-            disposalDate: new Date("2020-07-20"),
+            disposalDate: null,
             disposalType: '',
-            disposalCost: 12000000,
+            disposalCost: null,
             disposalDesc: '',
             //tài liệu đính kèm
             documents: [],
         },
-        { //04
+        { // 06
             avatar: "/upload/asset/pictures/picture5.png",
-            assetName: "B1-202",
+            assetName: "D3-102",
             group: "Building",
-            usefulLife: "22",
+            usefulLife: "20",
             unitsProducedDuringTheYears: [{
                 month: new Date("2020-05-20"),
-                unitsProducedDuringTheYear: 3
+                unitsProducedDuringTheYear: 10
             }],
-            estimatedTotalProduction: 100,
-            code: "VVTM02.004",
+            estimatedTotalProduction: 300,
+            code: "VVTM02.006",
             company: vnist._id,
-            serial: "00004",
+            serial: "00006",
             assetType: [listAssetType[25]._id],
             purchaseDate: new Date("2000-05-20"),
             warrantyExpirationDate: new Date("2077-06-20"),
-            managedBy: users[1]._id,
+            managedBy: users[5]._id,
             assignedToUser: null,
             assignedToOrganizationalUnit: null,
-            readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
-            location: listAsset1[0]._id,
-            status: "Thanh lý",
-            canRegisterForUse: true,
-            description: "B1-202",
-            detailInfo: [],
 
             location: listAsset1[1]._id,
             status: "Sẵn sàng sử dụng",
@@ -2399,7 +2394,7 @@ const sampleCompanyData = async () => {
             location: listAsset1[1]._id,
             status: "Sẵn sàng sử dụng",
             typeRegisterForUse: 3,
-            description: "d3-102",
+            description: "d3-103",
             detailInfo: [],
             readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
             usageLogs: [],
@@ -2462,7 +2457,71 @@ const sampleCompanyData = async () => {
             location: listAsset1[1]._id,
             status: "Sẵn sàng sử dụng",
             canRegisterForUse: true,
-            description: "d3-102",
+            typeRegisterForUse: 3,
+            description: "d3-103",
+            detailInfo: [],
+            readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
+            usageLogs: [],
+            // bảo trì thiết bị
+            maintainanceLogs: [],
+            //sự cố
+            incidentLogs: [{
+                    createdAt: new Date("2000-05-20"),
+                    dateOfIncident: new Date("2000-05-20"),
+                    description: "hỏng hóc",
+                    incidentCode: "icd01",
+                    statusIncident: "Chờ xử lý",
+                    type: "Hỏng hóc",
+                    updatedAt: new Date("2000-05-20"),
+                },
+                {
+                    createdAt: new Date("2000-08-20"),
+                    dateOfIncident: new Date("2000-08-20"),
+                    description: "cháy",
+                    incidentCode: "icd01",
+                    statusIncident: "Chờ xử lý",
+                    type: "Hỏng hóc",
+                    updatedAt: new Date("2000-08-20"),
+                }
+            ],
+            //khấu hao
+            cost: 50000000,
+            residualValue: 10000000,
+            startDepreciation: new Date("2020-06-20"), // thời gian bắt đầu trích khấu hao
+            usefulLife: 20, // thời gian trích khấu hao
+            depreciationType: "Đường thẳng", // thời gian trích khấu hao
+            //thanh lý
+            disposalDate: null,
+            disposalType: '',
+            disposalCost: null,
+            disposalDesc: '',
+            //tài liệu đính kèm
+            documents: [],
+        },
+        { // 07
+            avatar: "/upload/asset/pictures/picture5.png",
+            assetName: "D3-103",
+            group: "Building",
+            usefulLife: "12",
+            unitsProducedDuringTheYears: [{
+                month: new Date("2020-05-20"),
+                unitsProducedDuringTheYear: 80
+            }],
+            estimatedTotalProduction: 1000,
+            code: "VVTM02.007",
+            company: vnist._id,
+            serial: "00007",
+            assetType: [listAssetType[25]._id],
+            purchaseDate: new Date("2000-05-20"),
+            warrantyExpirationDate: new Date("2077-06-20"),
+            managedBy: users[1]._id,
+            assignedToUser: null,
+            assignedToOrganizationalUnit: null,
+
+            location: listAsset1[1]._id,
+            status: "Sẵn sàng sử dụng",
+            typeRegisterForUse: 3,
+            description: "d3-103",
             detailInfo: [],
             readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
             usageLogs: [],
@@ -2585,6 +2644,24 @@ const sampleCompanyData = async () => {
         }
     ]);
     console.log("Khởi tạo xong danh sách vật tư");
+
+
+    /*---------------------------------------------------------------------------------------------
+        -----------------------------------------------------------------------------------------------
+            TẠO DỮ LIỆU VÍ DỤ MẪU
+        -----------------------------------------------------------------------------------------------
+        ----------------------------------------------------------------------------------------------- */
+    console.log("Khởi tạo dữ mẫu ví dụ");
+    var listExample = await Example.insertMany([{
+            exampleName: "Ví dụ 1",
+            description: "Ví dụ lấy đầy đủ các dữ liệu",
+        },
+        {
+            exampleName: "Ví dụ 2",
+            description: "Ví dụ lấy một phần dữ liệu",
+        }
+    ]);
+    console.log("Khởi tạo xong danh sách ví dụ mẫu");
 
     console.log("Tạo mẫu dữ liệu khách hàng");
 

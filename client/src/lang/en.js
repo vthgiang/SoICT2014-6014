@@ -745,7 +745,12 @@ export default {
             manage_list_orders: "Manage List Orders",
 
             //QUẢN LÝ KẾ HOẠCH SẢN XUẤT
-            manage_plans: "Manage Plans"
+            manage_plans: "Manage Plans",
+
+            //VÍ DỤ EXAMPLE
+            manage_examples: "CRUD example",
+            manage_examples_1: "CRUD by model 1",
+            manage_examples_2: "CRUD by model 2",
         },
 
         manage_system: {
@@ -3124,6 +3129,28 @@ export default {
             edit_plan_success: "Update plan successfully!",
             edit_plan_fail: "Update plan fail!",
             detail_info_plan: "Detail infomation of plan"
+        },
+
+        // manage example
+        manage_example: {
+            exampleName: "Example Name",
+            search: "Search",
+            add_example: "Add Example",
+            index: "Index",
+            description: "Description",
+            edit: "Edit this example",
+            delete: "Delete this example",
+            delete_success: "Delete example successfully!",
+            delete_fail: "Delete example fail!",
+            add: "Add example",
+            add_title: "Add a new example",
+            add_success: "Add example successfully!",
+            add_fail: "Add example fail!",
+            example_description: "Example Description",
+            edit_title: "Update a example",
+            edit_example_success: "Update example successfully!",
+            edit_example_fail: "Update example fail!",
+            detail_info_example: "Detail infomation of example"
         },
 
         footer: {
