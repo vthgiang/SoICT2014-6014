@@ -71,6 +71,10 @@ const order = require("./modules/order/order.route");
 
 const plan = require("./modules/plan/plan.route");
 
+// example
+
+const example = require("./modules/example/example.route");
+
 // APP
 const app = express();
 
@@ -152,6 +156,9 @@ app.use("/orders", order);
 
 // Plan
 app.use("/plans", plan);
+
+// example
+app.use("/examples", example);
 
 // Customer Management
 const crm = express.Router();

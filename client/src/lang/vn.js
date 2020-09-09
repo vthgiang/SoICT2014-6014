@@ -770,7 +770,11 @@ export default {
             manage_orders: "Quản lý đơn hàng",
             manage_list_orders: "Danh sách đơn hàng",
             // Quản lý kế hoạch sản xuất
-            manage_plans: "Quản lý kế hoạch sản xuất"
+            manage_plans: "Quản lý kế hoạch sản xuất",
+            //VÍ DỤ EXAMPLE
+            manage_examples: "Ví dụ CRUD",
+            manage_examples_1: "CRUD theo mô hình số 1",
+            manage_examples_2: "CRUD theo mô hình số 2",
         },
 
         manage_system: {
@@ -3110,6 +3114,28 @@ export default {
             edit_plan_success: "Cập nhật kế hoạch thành công!",
             edit_plan_fail: "Cập nhật kế hoạch thất bại!",
             detail_info_plan: "Thông tin chi tiết kế hoạch"
+        },
+
+        // manage example
+        manage_example: {
+            exampleName: "Tên ví dụ",
+            search: "Tìm kiếm",
+            add_example: "Thêm mới",
+            index: "STT",
+            description: "Mô tả",
+            edit: "Chỉnh sửa thông tin ví dụ",
+            delete: "Xóa ví dụ",
+            delete_success: "Xóa ví dụ thành công!",
+            delete_fail: "Xóa ví dụ thất bại!",
+            add: "Thêm ví dụ",
+            add_title: "Thêm mới ví dụ",
+            add_success: "Thêm ví dụ thành công!",
+            add_fail: "Thêm ví dụ thất bại!",
+            example_description: "Mô tả ví dụ",
+            edit_title: "Cập nhật ví dụ",
+            edit_example_success: "Cập nhật ví dụ thành công!",
+            edit_example_fail: "Cập nhật ví dụ thất bại!",
+            detail_info_example: "Thông tin chi tiết ví dụ"
         },
 
         footer: {
