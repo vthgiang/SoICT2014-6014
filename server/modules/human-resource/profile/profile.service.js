@@ -323,7 +323,7 @@ exports.getEmployeeNumberExpiresContractInCurrentMonth = async (company, month =
     let results = await Employee.count({
         company: company,
         status: "active",
-        "contracts.endDate": {
+        contractEndDate: {
             "$gt": firstDay,
             "$lte": lastDay
         }
@@ -337,18 +337,15 @@ exports.getEmployeeNumberExpiresContractInCurrentMonth = async (company, month =
  * @param {*} month 
  */
 exports.getEmployeeNumberHaveBirthdateInCurrentMonth = async (company, month = new Date()) => {
-    let results = await Employee.find({
+    return await Employee.countDocuments({
         company: company,
         status: "active",
-    }, {
-        _id: 1,
-        birthdate: 1
+        "$expr": {
+            "$eq": [{
+                "$month": "$birthdate"
+            }, month.getMonth() + 1]
+        }
     })
-    results = results.filter(x => {
-        let date = new Date(x.birthdate);
-        return date.getMonth() === month.getMonth()
-    });
-    return results.length;
 }
 
 /**
@@ -537,6 +534,19 @@ exports.searchEmployeeProfiles = async (params, company) => {
         }
     };
 
+    // Bắt sựu kiện theo tháng sinh
+    if (params.birthdate) {
+        let month = new Date(params.birthdate).getMonth() + 1;
+        console.log(month);
+        keySearch = {
+            ...keySearch,
+            "$expr": {
+                "$eq": [{
+                    "$month": "$birthdate"
+                }, month]
+            }
+        }
+    }
 
     // Lấy danh sách nhân viên
     let listEmployees = await Employee.find(keySearch, {
@@ -555,45 +565,8 @@ exports.searchEmployeeProfiles = async (params, company) => {
             'createdAt': 'desc'
         }).skip(params.page).limit(params.limit);
 
-    let totalList = await Employee.find(keySearch, {
-        _id: 1,
-    });
+    let totalList = await Employee.countDocuments(keySearch);
 
-    // // Lọc nhân viên theo tháng sinh
-    // if (params.birthdate) {
-    //     let birthdate = new Date(params.birthdate);
-    //     listEmployees = listEmployees.filter(x => {
-    //         let date = new Date(x.birthdate)
-    //         return date.getMonth() === birthdate.getMonth();
-    //     })
-    // }
-
-    // // Lọc nhân viên theo loại hợp đồng lao động
-    // if (params.typeOfContract) {
-    //     let typeOfContract = params.typeOfContract.toLowerCase().trim();
-    //     listEmployees = listEmployees.filter(x => {
-    //         let contract;
-    //         if (x.contracts.length !== 0) {
-    //             let contracts = x.contracts;
-    //             contract = contracts.filter(y => {
-    //                 let endDate = new Date(y.endDate);
-    //                 let date = new Date();
-    //                 return endDate.getTime() > date.getTime();
-    //             })
-    //         }
-    //         if (contract.length !== 0) {
-    //             contract = contract[0];
-    //             if (contract.contractType.toLowerCase().includes(typeOfContract)) {
-    //                 return true
-    //             } else {
-    //                 return false
-    //             }
-    //         } else {
-    //             return false;
-    //         }
-    //     })
-    // }
-    totalList = totalList.length;
     let expiresContract = await this.getEmployeeNumberExpiresContractInCurrentMonth(company, new Date());
     let employeesHaveBirthdateInCurrentMonth = await this.getEmployeeNumberHaveBirthdateInCurrentMonth(company, new Date())
     return {

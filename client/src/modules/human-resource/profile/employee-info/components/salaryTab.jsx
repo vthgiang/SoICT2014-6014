@@ -90,7 +90,7 @@ class SalaryTab extends Component {
                                                             formater.format(total + parseInt(x.mainSalary))
                                                     } {x.unit}
                                                 </td>
-                                                <td>{organizationalUnit.name}</td>
+                                                <td>{organizationalUnit ? organizationalUnit.name : 'Deleted'}</td>
                                             </tr>
                                         )
                                     })
@@ -125,7 +125,7 @@ class SalaryTab extends Component {
                                                 <td>{this.formatDate(x.endDate)}</td>
                                                 <td>{x.reason}</td>
                                                 <td>{translate(`human_resource.annual_leave.status.${x.status}`)}</td>
-                                                <td>{organizationalUnit.name}</td>
+                                                <td>{organizationalUnit ? organizationalUnit.name : "Deleted"}</td>
                                             </tr>
                                         )
                                     })}
