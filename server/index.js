@@ -71,15 +71,19 @@ const order = require("./modules/order/order.route");
 
 const plan = require("./modules/plan/plan.route");
 
+// example
+
+const example = require("./modules/example/example.route");
+
 // APP
 const app = express();
 
 // Bodyparser middleware
 app.use(cors());
 app.use(
-bodyParser.urlencoded({
-	extended: false,
-})
+	bodyParser.urlencoded({
+		extended: false,
+	})
 );
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -172,6 +176,9 @@ if(process.env.MULTI_TENANT === 'true'){
 
 	// Plan
 	app.use("/plans", plan);
+
+	// example
+	app.use("/examples", example);
 
 	// Customer Management
 	const crm = express.Router();

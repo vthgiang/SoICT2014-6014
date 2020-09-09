@@ -353,28 +353,28 @@ class GeneralTab extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id) {
+        if (nextProps.id !== prevState.id && nextProps.employee) {
             return {
                 ...prevState,
                 id: nextProps.id,
                 img: nextProps.img,
-                employeeNumber: nextProps.employee.employeeNumber,
-                employeeTimesheetId: nextProps.employee.employeeTimesheetId,
-                fullName: nextProps.employee.fullName,
-                gender: nextProps.employee.gender,
-                birthdate: GeneralTab.formatDate(nextProps.employee.birthdate),
-                birthplace: nextProps.employee.birthplace,
-                emailInCompany: nextProps.employee.emailInCompany,
-                maritalStatus: nextProps.employee.maritalStatus,
-                identityCardNumber: nextProps.employee.identityCardNumber,
-                identityCardDate: GeneralTab.formatDate(nextProps.employee.identityCardDate),
-                identityCardAddress: nextProps.employee.identityCardAddress,
-                ethnic: nextProps.employee.ethnic,
-                religion: nextProps.employee.religion,
-                nationality: nextProps.employee.nationality,
-                status: nextProps.employee.status,
-                startingDate: GeneralTab.formatDate(nextProps.employee.startingDate),
-                leavingDate: GeneralTab.formatDate(nextProps.employee.leavingDate),
+                employeeNumber: nextProps.employee ? nextProps.employee.employeeNumber : '',
+                employeeTimesheetId: nextProps.employee ? nextProps.employee.employeeTimesheetId : "",
+                fullName: nextProps.employee ? nextProps.employee.fullName : '',
+                gender: nextProps.employee ? nextProps.employee.gender : '',
+                birthdate: GeneralTab.formatDate(nextProps.employee ? nextProps.employee.birthdate : ''),
+                birthplace: nextProps.employee ? nextProps.employee.birthplace : '',
+                emailInCompany: nextProps.employee ? nextProps.employee.emailInCompany : '',
+                maritalStatus: nextProps.employee ? nextProps.employee.maritalStatus : '',
+                identityCardNumber: nextProps.employee ? nextProps.employee.identityCardNumber : '',
+                identityCardDate: GeneralTab.formatDate(nextProps.employee ? nextProps.employee.identityCardDate : ''),
+                identityCardAddress: nextProps.employee ? nextProps.employee.identityCardAddress : '',
+                ethnic: nextProps.employee ? nextProps.employee.ethnic : '',
+                religion: nextProps.employee ? nextProps.employee.religion : '',
+                nationality: nextProps.employee ? nextProps.employee.nationality : '',
+                status: nextProps.employee ? nextProps.employee.status : "",
+                startingDate: GeneralTab.formatDate(nextProps.employee ? nextProps.employee.startingDate : ''),
+                leavingDate: GeneralTab.formatDate(nextProps.employee ? nextProps.employee.leavingDate : ''),
 
                 errorOnBrithdate: undefined,
                 errorOnDateCMND: undefined,
@@ -406,9 +406,7 @@ class GeneralTab extends Component {
                     {/* Ảnh đại diện */}
                     <div className="col-lg-4 col-md-4 col-ms-12 col-xs-12" style={{ textAlign: 'center' }}>
                         <div>
-                            <a href={img} target="_blank">
-                                <ApiImage id={`avater-edit-create-${id}`} className='attachment-img avarta' src={img} />
-                            </a>
+                            {img && <ApiImage id={`avater-edit-create-${id}`} className='attachment-img avarta' src={img} />}
                         </div>
                         <div className="upload btn btn-default ">
                             {translate('human_resource.profile.upload')}

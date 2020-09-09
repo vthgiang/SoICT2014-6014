@@ -221,7 +221,7 @@ class AnnualLeaveManagement extends Component {
     render() {
         const { translate, annualLeave, department } = this.props;
 
-        const { month, limit, page, currentRow } = this.state;
+        const { month, limit, page, organizationalUnits, currentRow } = this.state;
 
         const { list } = department;
         let listAnnualLeaves = [], exportData = [];
@@ -246,6 +246,7 @@ class AnnualLeaveManagement extends Component {
                         <div className="form-group">
                             <label className="form-control-static">{translate('human_resource.unit')}</label>
                             <SelectMulti id={`multiSelectUnit`} multiple="multiple"
+                                value={organizationalUnits ? organizationalUnits : []}
                                 options={{ nonSelectedText: translate('human_resource.non_unit'), allSelectedText: translate('human_resource.all_unit') }}
                                 items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
                             </SelectMulti>
@@ -348,7 +349,7 @@ class AnnualLeaveManagement extends Component {
                     }
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
                 </div>
-                {
+                {   /* From chỉnh sửa thông tin nghỉ phép */
                     currentRow &&
                     <AnnualLeaveEditForm
                         _id={currentRow._id}

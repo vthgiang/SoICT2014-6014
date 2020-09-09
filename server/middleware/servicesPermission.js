@@ -151,7 +151,7 @@ exports.data = [
     { path: '/courses/:id', method: 'PATCH', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
 
     { path: '/employees', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-    { path: '/employees/:userId', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+    { path: '/employees/:id', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/employees/:userId', method: 'PATCH', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/employees', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/employees/:id', method: 'PUT', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
@@ -491,10 +491,18 @@ exports.data = [
     { path: '/crm/statistic/:id', method: 'PATCH', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/crm/statistic/:id', method: 'DELETE', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
 
-      //plan
-      { path: "/plans", method: "GET", roles: ["Super Admin", "Admin", "Dean", "Vice Dean", "Employee"] },
-      { path: "/plans", method: "POST", roles: ["Super Admin", "Admin", "Dean", "Vice Dean", "Employee"] },
-      { path: "/plans/:id", method: "DELETE", roles: ["Super Admin", "Admin", "Dean", "Vice Dean", "Employee"] },
-      { path: "/plans/:id", method: "PATCH", roles: ["Super Admin", "Admin", "Dean", "Vice Dean", "Employee"] },
-      { path: "/plans/:id", method: "GET", roles: ["Super Admin", "Admin", "Dean", "Vice Dean", "Employee"] },
+    //plan
+    { path: "/plans", method: "GET", roles: ["Super Admin", "Admin", "Dean", "Vice Dean", "Employee"] },
+    { path: "/plans", method: "POST", roles: ["Super Admin", "Admin", "Dean", "Vice Dean", "Employee"] },
+    { path: "/plans/:id", method: "DELETE", roles: ["Super Admin", "Admin", "Dean", "Vice Dean", "Employee"] },
+    { path: "/plans/:id", method: "PATCH", roles: ["Super Admin", "Admin", "Dean", "Vice Dean", "Employee"] },
+    { path: "/plans/:id", method: "GET", roles: ["Super Admin", "Admin", "Dean", "Vice Dean", "Employee"] },
+
+    //example
+    { path: "/examples", method: "GET", roles: ["Super Admin", "Admin", "Dean", "Vice Dean", "Employee"] },
+    { path: "/examples/getOnlyExampleName", method: "GET", roles: ["Super Admin", "Admin", "Dean", "Vice Dean", "Employee"] },
+    { path: "/examples", method: "POST", roles: ["Super Admin", "Admin", "Dean", "Vice Dean", "Employee"] },
+    { path: "/examples/:id", method: "DELETE", roles: ["Super Admin", "Admin", "Dean", "Vice Dean", "Employee"] },
+    { path: "/examples/:id", method: "PATCH", roles: ["Super Admin", "Admin", "Dean", "Vice Dean", "Employee"] },
+    { path: "/examples/:id", method: "GET", roles: ["Super Admin", "Admin", "Dean", "Vice Dean", "Employee"] },
 ];

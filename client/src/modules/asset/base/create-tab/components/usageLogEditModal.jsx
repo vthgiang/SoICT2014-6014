@@ -136,7 +136,9 @@ class UsageLogEditModal extends Component {
             checkUsed = true;
         }
 
-        let result = this.validateDescription(this.state.description, false) && checkUsed;
+        let result = this.validateDescription(this.state.description, false) && 
+            checkUsed && this.validateStartDate(this.state.startDate, false) &&
+            this.validateEndDate(this.state.endDate, false);
 
         return result;
     }
@@ -202,7 +204,7 @@ class UsageLogEditModal extends Component {
 
                             {/* Người sử dụng */}
                             <div className={`form-group`}>
-                                <label>{translate('asset.general_information.user')}</label>
+                                <label>{translate('asset.general_information.user')}<span className="text-red">*</span></label>
                                 <div>
                                     <div id="usedByUserBox">
                                         <SelectBox
@@ -238,7 +240,7 @@ class UsageLogEditModal extends Component {
 
                             {/* Thời gian bắt đầu sử dụng */}
                             <div className="form-group">
-                                <label>{translate('asset.general_information.handover_from_date')}</label>
+                                <label>{translate('asset.general_information.handover_from_date')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`edit-start-date-${id}`}
                                     value={this.formatDate(startDate)}
@@ -248,7 +250,7 @@ class UsageLogEditModal extends Component {
 
                             {/* Thời gian kết thúc sử dụng */}
                             <div className="form-group">
-                                <label>{translate('asset.general_information.handover_to_date')}</label>
+                                <label>{translate('asset.general_information.handover_to_date')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`edit-end-date-${id}`}
                                     value={this.formatDate(endDate)}
@@ -259,7 +261,7 @@ class UsageLogEditModal extends Component {
                             {/* Nội dung */}
                             <div className={`form-group ${!errorOnDescription ? "" : "has-error"}`}>
                                 <label>{translate('asset.general_information.content')}<span className="text-red">*</span></label>
-                                <textarea className="form-control" rows="3" style={{ height: 34 }} name="description" value={description} onChange={this.handleDescriptionChange} autoComplete="off"
+                                <textarea className="form-control" rows="3" name="description" value={description} onChange={this.handleDescriptionChange} autoComplete="off"
                                     placeholder="Nội dung"></textarea>
                                 <ErrorLabel content={errorOnDescription} />
                             </div>

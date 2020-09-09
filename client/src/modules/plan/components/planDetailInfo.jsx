@@ -44,7 +44,6 @@ class PlanDetailInfo extends Component {
                     size={50}
                     maxWidth={500}
                 >
-                    {console.log("render....kk")}
                     <form id={`form-detail-plan`}>
                         <div className={`form-group`}>
                             <label>{translate('manage_plan.code')}<span className="text-red">*</span></label>

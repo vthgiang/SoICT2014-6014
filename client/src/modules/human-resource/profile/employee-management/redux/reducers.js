@@ -39,7 +39,7 @@ export function employeesManager(state = initState, action) {
             } else if (action.payload.totalList !== undefined) { // Phải để khác undefined
                 return {
                     ...state,
-                    listEmployees: action.payload.data,
+                    listEmployees: action.payload.listEmployees,
                     totalList: action.payload.totalList,
                     expiresContract: action.payload.expiresContract,
                     employeesHaveBirthdateInCurrentMonth: action.payload.employeesHaveBirthdateInCurrentMonth,
@@ -70,16 +70,15 @@ export function employeesManager(state = initState, action) {
                     isLoading: false
             };
         case EmployeeConstants.UPDATE_INFOR_EMPLOYEE_SUCCESS:
-            console.log(action.payload);
             return {
                 ...state,
-                listEmployees: state.listEmployees.map(x => x.employees[0]._id === action.payload.employees[0]._id ? action.payload : x),
+                listEmployees: state.listEmployees.map(x => x._id === action.payload._id ? action.payload : x),
                     isLoading: false
             };
         case EmployeeConstants.DELETE_EMPLOYEE_SUCCESS:
             return {
                 ...state,
-                listEmployees: state.listEmployees.filter(x => (x.employees[0]._id !== action.payload._id)),
+                listEmployees: state.listEmployees.filter(x => (x._id !== action.payload._id)),
                     isLoading: false,
             };
         case EmployeeConstants.IMPORT_EMPLOYEE_SUCCESS:

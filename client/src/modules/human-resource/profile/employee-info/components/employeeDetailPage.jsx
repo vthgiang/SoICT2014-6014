@@ -14,7 +14,7 @@ class EmployeeDetail extends Component {
     }
 
     componentDidMount = async () => {
-        this.props.getEmployeeProfile();
+        this.props.getEmployeeProfile({ callAPIByUser: true });
         this.props.getDepartment();
     }
 
@@ -90,6 +90,7 @@ class EmployeeDetail extends Component {
                                         {/* Hợp đồng lao động */}
                                         <ContractTab
                                             id="view_contract"
+                                            employee={x}
                                             courses={courses}
                                             contracts={x.contracts}
                                         />

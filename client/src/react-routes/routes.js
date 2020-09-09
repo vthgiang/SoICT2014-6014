@@ -85,7 +85,7 @@ import AssetManager from "../modules/asset/admin/asset-information/components";
 import { ManagerAssetAssignedCrash } from '../modules/asset/user/asset-assigned/components';
 import { DashBoardAssets } from '../modules/asset/admin/asset-dashboard/components/assetDashBoard';
 import { BuildingAsset } from '../modules/asset/admin/building/components';
-import  EmployeeAssetManagement  from '../modules/asset/user/asser-managed/components';
+import EmployeeAssetManagement from '../modules/asset/user/asser-managed/components';
 
 
 //report
@@ -102,6 +102,10 @@ import OrderManagement from "../modules/order/components";
 
 // plans
 import PlanManagement from "../modules/plan/components";
+
+// Example
+import ExampleManagement1 from "../modules/example/example1/components";
+import ExampleManagement2 from "../modules/example/example2/components";
 
 class Routes extends Component {
 
@@ -884,7 +888,7 @@ class Routes extends Component {
                         pageName={'employee_manage_asset_info'}
                         layout={Layout}
                         component={EmployeeAssetManagement}
-                    />                    
+                    />
 
                     {/** Quản lý */}
                     <PrivateRoute
@@ -1134,9 +1138,9 @@ class Routes extends Component {
                         component={OrderManagement}
                     />
 
-                     {/* Plans Management */}
+                    {/* Plans Management */}
 
-                     <PrivateRoute
+                    <PrivateRoute
                         isLoading={this.props.plan.isLoading}
                         key={"manage-plans"}
                         arrPage={[
@@ -1154,6 +1158,47 @@ class Routes extends Component {
                         pageName={"manage_plans"}
                         layout={Layout}
                         component={PlanManagement}
+                    />
+
+                    {/* Example Management */}
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"manage-examples-1"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-examples-1",
+                                name: "manage_examples_1",
+                                icon: "fa fa-circle",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-examples-1"}
+                        path={"/manage-examples-1"}
+                        pageName={"manage_examples_1"}
+                        layout={Layout}
+                        component={ExampleManagement1}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"manage-examples-2"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-examples-1",
+                                name: "manage_examples_2",
+                                icon: "fa fa-adjust",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-examples-2"}
+                        path={"/manage-examples-2"}
+                        pageName={"manage_examples_2"}
+                        layout={Layout}
+                        component={ExampleManagement2}
                     />
 
                     {/* NOT FOUND */}

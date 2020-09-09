@@ -11,11 +11,15 @@ import {
 } from '../../employee-create/components/combinedContent';
 
 import { EmployeeManagerActions } from '../redux/actions';
+import { EmployeeInfoActions } from '../../employee-info/redux/actions';
 
 class EmployeeEditFrom extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, };
+        this.state = {
+            dataStatus: this.DATA_STATUS.NOT_AVAILABLE
+        };
     }
 
     /**
@@ -38,8 +42,10 @@ class EmployeeEditFrom extends Component {
     handleChange = (name, value) => {
         const { employee } = this.state;
         if (name === 'startingDate' || name === 'leavingDate' || name === 'birthdate' || name === 'identityCardDate' || name === 'taxDateOfIssue' || name === 'healthInsuranceStartDate' || name === 'healthInsuranceEndDate') {
-            var partValue = value.split('-');
-            value = [partValue[2], partValue[1], partValue[0]].join('-');
+            if (value) {
+                let partValue = value.split('-');
+                value = [partValue[2], partValue[1], partValue[0]].join('-');
+            }
         }
         this.setState({
             employee: {
@@ -604,26 +610,28 @@ class EmployeeEditFrom extends Component {
     /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
     isFormValidated = () => {
         const { employee } = this.state;
-        let result = this.validatorInput(employee.employeeNumber) && this.validatorInput(employee.employeeTimesheetId) &&
-            this.validatorInput(employee.fullName) && this.validatorInput(employee.birthdate) &&
-            this.validatorInput(employee.emailInCompany) && this.validatorInput(employee.identityCardNumber) &&
-            this.validatorInput(employee.identityCardDate) && this.validatorInput(employee.identityCardAddress) &&
-            this.validatorInput(employee.phoneNumber) && this.validatorInput(employee.temporaryResidence);
-
-        if (employee.healthInsuranceStartDate && employee.healthInsuranceEndDate) {
-            if (new Date(employee.healthInsuranceEndDate).getTime() < new Date(employee.healthInsuranceStartDate).getTime()) {
+        let result = true;
+        if (employee) {
+            result = this.validatorInput(employee.employeeNumber) && this.validatorInput(employee.employeeTimesheetId) &&
+                this.validatorInput(employee.fullName) && this.validatorInput(employee.birthdate) &&
+                this.validatorInput(employee.emailInCompany) && this.validatorInput(employee.identityCardNumber) &&
+                this.validatorInput(employee.identityCardDate) && this.validatorInput(employee.identityCardAddress) &&
+                this.validatorInput(employee.phoneNumber) && this.validatorInput(employee.temporaryResidence);
+            if (employee.healthInsuranceStartDate && employee.healthInsuranceEndDate) {
+                if (new Date(employee.healthInsuranceEndDate).getTime() < new Date(employee.healthInsuranceStartDate).getTime()) {
+                    return false;
+                }
+            } else if ((employee.healthInsuranceStartDate && !employee.healthInsuranceEndDate) ||
+                (!employee.healthInsuranceStartDate && employee.healthInsuranceEndDate)) {
                 return false;
             }
-        } else if ((employee.healthInsuranceStartDate && !employee.healthInsuranceEndDate) ||
-            (!employee.healthInsuranceStartDate && employee.healthInsuranceEndDate)) {
-            return false;
-        }
-        if (employee.leavingDate && employee.startingDate) {
-            if (new Date(employee.leavingDate).getTime() < new Date(employee.startingDate).getTime()) {
+            if (employee.leavingDate && employee.startingDate) {
+                if (new Date(employee.leavingDate).getTime() < new Date(employee.startingDate).getTime()) {
+                    return false;
+                }
+            } else if (employee.leavingDate && !employee.startingDate) {
                 return false;
             }
-        } else if (employee.leavingDate && !employee.startingDate) {
-            return false;
         }
         return result;
     }
@@ -695,22 +703,7 @@ class EmployeeEditFrom extends Component {
             return {
                 ...prevState,
                 _id: nextProps._id,
-                img: `.${nextProps.employees[0].avatar}`,
-                avatar: "",
-                employee: nextProps.employees[0],
-                experiences: nextProps.employees[0].experiences,
-                degrees: nextProps.employees[0].degrees,
-                certificates: nextProps.employees[0].certificates,
-                contracts: nextProps.employees[0].contracts,
-                files: nextProps.employees[0].files,
-                commendations: nextProps.commendations,
-                salaries: nextProps.salaries,
-                annualLeaves: nextProps.annualLeaves,
-                disciplines: nextProps.disciplines,
-                socialInsuranceDetails: nextProps.employees[0].socialInsuranceDetails,
-                courses: nextProps.courses,
-                organizationalUnits: nextProps.organizationalUnits,
-                roles: nextProps.roles,
+                dataStatus: 0,
 
                 editExperiences: [],
                 deleteExperiences: [],
@@ -734,154 +727,205 @@ class EmployeeEditFrom extends Component {
                 deleteCourses: [],
                 editFiles: [],
                 deleteFiles: [],
-
             }
         } else {
             return null;
         }
     }
 
+    shouldComponentUpdate = async (nextProps, nextState) => {
+        if (nextProps._id !== this.state._id && !nextProps.employeesInfo.isLoading) {
+            await this.props.getEmployeeProfile({ id: nextProps._id, callAPIByUser: false });
+            this.setState({
+                dataStatus: this.DATA_STATUS.QUERYING,
+                img: undefined,
+                avatar: "",
+                employee: '',
+                experiences: [],
+                degrees: [],
+                certificates: [],
+                contracts: [],
+                files: [],
+                socialInsuranceDetails: [],
+                salaries: [],
+                annualLeaves: [],
+                commendations: [],
+                disciplines: [],
+                courses: [],
+                roles: [],
+            })
+            return false;
+        };
+
+        if (this.state.dataStatus === this.DATA_STATUS.QUERYING && !nextProps.employeesInfo.isLoading) {
+            await this.setState({
+                dataStatus: this.DATA_STATUS.AVAILABLE,
+                img: `.${nextProps.employeesInfo.employees[0].avatar}`,
+                avatar: "",
+                employee: nextProps.employeesInfo.employees[0],
+                experiences: nextProps.employeesInfo.employees[0].experiences,
+                degrees: nextProps.employeesInfo.employees[0].degrees,
+                certificates: nextProps.employeesInfo.employees[0].certificates,
+                contracts: nextProps.employeesInfo.employees[0].contracts,
+                files: nextProps.employeesInfo.employees[0].files,
+                socialInsuranceDetails: nextProps.employeesInfo.employees[0].socialInsuranceDetails,
+                salaries: nextProps.employeesInfo.salarys,
+                annualLeaves: nextProps.employeesInfo.annualLeaves,
+                commendations: nextProps.employeesInfo.commendations,
+                disciplines: nextProps.employeesInfo.disciplines,
+                courses: nextProps.employeesInfo.courses,
+                roles: nextProps.employeesInfo.roles.map(x => x._id),
+                organizationalUnits: nextProps.employeesInfo.organizationalUnits.map(x => x._id),
+            });
+            return true;
+        };
+        return true;
+    }
+
     render() {
-        const { translate, employeesManager } = this.props;
-
-        const { _id, img, employee, degrees, certificates, socialInsuranceDetails, contracts, courses,
-            organizationalUnits, roles, commendations, disciplines, salaries, annualLeaves, files } = this.state;
-
         console.log(this.state);
+        const { translate, employeesInfo } = this.props;
+
+        let { _id, img, employee, degrees, certificates, socialInsuranceDetails, contracts, courses,
+            organizationalUnits, roles, commendations, disciplines, salaries, annualLeaves, files } = this.state;
         return (
             <React.Fragment>
                 <DialogModal
-                    size='75' modalID="modal-edit-employee" isLoading={employeesManager.isLoading}
-                    formID="form-edit-employee"
-                    title="Chỉnh sửa thông tin nhân viên"
+                    size='75' modalID={`modal-edit-employee${_id}`} isLoading={employeesInfo.isLoading}
+                    formID={`form-edit-employee${_id}`}
+                    title={translate('human_resource.profile.employee_management.edit_employee')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
                     {/* <form className="form-group" id="form-edit-employee"> */}
-                    <div className="nav-tabs-custom row" style={{ marginTop: '-15px' }} >
-                        <ul className="nav nav-tabs">
-                            <li className="active"><a title={translate('human_resource.profile.tab_name.menu_general_infor_title')} data-toggle="tab" href={`#edit_general${_id}`}>{translate('human_resource.profile.tab_name.menu_general_infor')}</a></li>
-                            <li><a title={translate('human_resource.profile.tab_name.menu_contact_infor_title')} data-toggle="tab" href={`#edit_contact${_id}`}>{translate('human_resource.profile.tab_name.menu_contact_infor')}</a></li>
-                            <li><a title={translate('human_resource.profile.tab_name.menu_education_experience_title')} data-toggle="tab" href={`#edit_experience${_id}`}>{translate('human_resource.profile.tab_name.menu_education_experience')}</a></li>
-                            <li><a title={translate('human_resource.profile.tab_name.menu_diploma_certificate_title')} data-toggle="tab" href={`#edit_diploma${_id}`}>{translate('human_resource.profile.tab_name.menu_diploma_certificate')}</a></li>
-                            <li><a title={translate('human_resource.profile.tab_name.menu_account_tax_title')} data-toggle="tab" href={`#edit_account${_id}`}>{translate('human_resource.profile.tab_name.menu_account_tax')}</a></li>
-                            <li><a title={translate('human_resource.profile.tab_name.menu_insurrance_infor_title')} data-toggle="tab" href={`#edit_insurrance${_id}`}>{translate('human_resource.profile.tab_name.menu_insurrance_infor')}</a></li>
-                            <li><a title={translate('human_resource.profile.tab_name.menu_contract_training_title')} data-toggle="tab" href={`#edit_contract${_id}`}>{translate('human_resource.profile.tab_name.menu_contract_training')}</a></li>
-                            <li><a title={translate('human_resource.profile.tab_name.menu_reward_discipline_title')} data-toggle="tab" href={`#edit_reward${_id}`}>{translate('human_resource.profile.tab_name.menu_reward_discipline')}</a></li>
-                            <li><a title={translate('human_resource.profile.tab_name.menu_salary_sabbatical_title')} data-toggle="tab" href={`#edit_salary${_id}`}>{translate('human_resource.profile.tab_name.menu_salary_sabbatical')}</a></li>
-                            <li><a title={translate('human_resource.profile.tab_name.menu_attachments_title')} data-toggle="tab" href={`#edit_attachments${_id}`}>{translate('human_resource.profile.tab_name.menu_attachments')}</a></li>
-                        </ul>
-                        < div className="tab-content">
-                            {/* Tab thông tin chung */}
-                            <GeneralTab
-                                id={`edit_general${_id}`}
-                                img={img}
-                                handleChange={this.handleChange}
-                                handleUpload={this.handleUpload}
-                                employee={employee}
-                            />
-                            {/* Tab thông tin liên hệ */}
-                            <ContactTab
-                                id={`edit_contact${_id}`}
-                                handleChange={this.handleChange}
-                                employee={employee}
-                            />
-                            {/* Tab học vấn - kinh nghiệm */}
-                            <ExperienceTab
-                                id={`edit_experience${_id}`}
-                                employee={employee}
-                                handleChange={this.handleChange}
+                    {employee &&
+                        <div className="nav-tabs-custom row" style={{ marginTop: '-15px' }}>
+                            <ul className="nav nav-tabs">
+                                <li className="active"><a title={translate('human_resource.profile.tab_name.menu_general_infor_title')} data-toggle="tab" href={`#edit_general${_id}`}>{translate('human_resource.profile.tab_name.menu_general_infor')}</a></li>
+                                <li><a title={translate('human_resource.profile.tab_name.menu_contact_infor_title')} data-toggle="tab" href={`#edit_contact${_id}`}>{translate('human_resource.profile.tab_name.menu_contact_infor')}</a></li>
+                                <li><a title={translate('human_resource.profile.tab_name.menu_education_experience_title')} data-toggle="tab" href={`#edit_experience${_id}`}>{translate('human_resource.profile.tab_name.menu_education_experience')}</a></li>
+                                <li><a title={translate('human_resource.profile.tab_name.menu_diploma_certificate_title')} data-toggle="tab" href={`#edit_diploma${_id}`}>{translate('human_resource.profile.tab_name.menu_diploma_certificate')}</a></li>
+                                <li><a title={translate('human_resource.profile.tab_name.menu_account_tax_title')} data-toggle="tab" href={`#edit_account${_id}`}>{translate('human_resource.profile.tab_name.menu_account_tax')}</a></li>
+                                <li><a title={translate('human_resource.profile.tab_name.menu_insurrance_infor_title')} data-toggle="tab" href={`#edit_insurrance${_id}`}>{translate('human_resource.profile.tab_name.menu_insurrance_infor')}</a></li>
+                                <li><a title={translate('human_resource.profile.tab_name.menu_contract_training_title')} data-toggle="tab" href={`#edit_contract${_id}`}>{translate('human_resource.profile.tab_name.menu_contract_training')}</a></li>
+                                <li><a title={translate('human_resource.profile.tab_name.menu_reward_discipline_title')} data-toggle="tab" href={`#edit_reward${_id}`}>{translate('human_resource.profile.tab_name.menu_reward_discipline')}</a></li>
+                                <li><a title={translate('human_resource.profile.tab_name.menu_salary_sabbatical_title')} data-toggle="tab" href={`#edit_salary${_id}`}>{translate('human_resource.profile.tab_name.menu_salary_sabbatical')}</a></li>
+                                <li><a title={translate('human_resource.profile.tab_name.menu_attachments_title')} data-toggle="tab" href={`#edit_attachments${_id}`}>{translate('human_resource.profile.tab_name.menu_attachments')}</a></li>
+                            </ul>
+                            <div className="tab-content">
+                                {/* Tab thông tin chung */
+                                    <GeneralTab
+                                        id={`edit_general${_id}`}
+                                        img={img}
+                                        handleChange={this.handleChange}
+                                        handleUpload={this.handleUpload}
+                                        employee={employee}
+                                    />}
+                                {/* Tab thông tin liên hệ */}
+                                <ContactTab
+                                    id={`edit_contact${_id}`}
+                                    handleChange={this.handleChange}
+                                    employee={employee}
+                                />
+                                {/* Tab học vấn - kinh nghiệm */}
+                                <ExperienceTab
+                                    id={`edit_experience${_id}`}
+                                    employee={employee}
+                                    handleChange={this.handleChange}
 
-                                handleAddExperience={this.handleCreateExperiences}
-                                handleEditExperience={this.handleEditExperiences}
-                                handleDeleteExperience={this.handleDeleteExperiences}
-                            />
-                            {/* Tab bằng cấp - chứng chỉ */}
-                            <CertificateTab
-                                id={`edit_diploma${_id}`}
-                                degrees={degrees}
-                                certificates={certificates}
+                                    handleAddExperience={this.handleCreateExperiences}
+                                    handleEditExperience={this.handleEditExperiences}
+                                    handleDeleteExperience={this.handleDeleteExperiences}
+                                />
+                                {/* Tab bằng cấp - chứng chỉ */}
+                                <CertificateTab
+                                    id={`edit_diploma${_id}`}
+                                    degrees={degrees}
+                                    certificates={certificates}
 
-                                handleAddDegree={this.handleCreateDegree}
-                                handleEditDegree={this.handleEditDegree}
-                                handleDeleteDegree={this.handleDeleteDegree}
+                                    handleAddDegree={this.handleCreateDegree}
+                                    handleEditDegree={this.handleEditDegree}
+                                    handleDeleteDegree={this.handleDeleteDegree}
 
-                                handleAddCertificate={this.handleCreateCertificate}
-                                handleEditCertificate={this.handleEditCertificate}
-                                handleDeleteCertificate={this.handleDeleteCertificate}
-                            />
-                            {/* Tab Tài khoản - thuế */}
-                            <TaxTab
-                                id={`edit_account${_id}`}
-                                employee={employee}
-                                handleChange={this.handleChange} />
-                            {/* Tab thông tin bảo hiểm */}
-                            <InsurranceTab
-                                id={`edit_insurrance${_id}`}
-                                socialInsuranceDetails={socialInsuranceDetails}
-                                employee={employee}
-                                handleChange={this.handleChange}
+                                    handleAddCertificate={this.handleCreateCertificate}
+                                    handleEditCertificate={this.handleEditCertificate}
+                                    handleDeleteCertificate={this.handleDeleteCertificate}
+                                />
+                                {/* Tab Tài khoản - thuế */}
+                                <TaxTab
+                                    id={`edit_account${_id}`}
+                                    employee={employee}
+                                    handleChange={this.handleChange} />
+                                {/* Tab thông tin bảo hiểm */}
+                                <InsurranceTab
+                                    id={`edit_insurrance${_id}`}
+                                    socialInsuranceDetails={socialInsuranceDetails}
+                                    employee={employee}
+                                    handleChange={this.handleChange}
 
-                                handleAddBHXH={this.handleCreateBHXH}
-                                handleEditBHXH={this.handleEditBHXH}
-                                handleDeleteBHXH={this.handleDeleteBHXH}
-                            />
-                            {/* Tab hợp đồng - quá trình đào tạo*/}
-                            <ContractTab
-                                id={`edit_contract${_id}`}
-                                pageCreate={false}
-                                contracts={contracts}
-                                courses={courses}
-                                organizationalUnits={organizationalUnits}
-                                roles={roles}
+                                    handleAddBHXH={this.handleCreateBHXH}
+                                    handleEditBHXH={this.handleEditBHXH}
+                                    handleDeleteBHXH={this.handleDeleteBHXH}
+                                />
+                                {/* Tab hợp đồng - quá trình đào tạo*/}
+                                <ContractTab
+                                    id={`edit_contract${_id}`}
+                                    pageCreate={false}
+                                    employee={employee}
+                                    contracts={contracts}
+                                    courses={courses}
+                                    organizationalUnits={organizationalUnits}
+                                    roles={roles}
+                                    handleChange={this.handleChange}
 
-                                handleAddContract={this.handleCreateContract}
-                                handleEditContract={this.handleEditContract}
-                                handleDeleteContract={this.handleDeleteContract}
+                                    handleAddContract={this.handleCreateContract}
+                                    handleEditContract={this.handleEditContract}
+                                    handleDeleteContract={this.handleDeleteContract}
 
-                                handleAddCourse={this.handleCreateCourse}
-                                handleEditCourse={this.handleEditCourse}
-                                handleDeleteCourse={this.handleDeleteCourse}
-                            />
-                            {/* Tab khen thưởng - kỷ luật*/}
-                            <DisciplineTab
-                                id={`edit_reward${_id}`}
-                                commendations={commendations}
-                                disciplines={disciplines}
-                                handleAddConmmendation={this.handleCreateConmmendation}
-                                handleEditConmmendation={this.handleEditConmmendation}
-                                handleDeleteConmmendation={this.handleDeleteConmmendation}
+                                    handleAddCourse={this.handleCreateCourse}
+                                    handleEditCourse={this.handleEditCourse}
+                                    handleDeleteCourse={this.handleDeleteCourse}
+                                />
+                                {/* Tab khen thưởng - kỷ luật*/}
+                                <DisciplineTab
+                                    id={`edit_reward${_id}`}
+                                    commendations={commendations}
+                                    disciplines={disciplines}
+                                    handleAddConmmendation={this.handleCreateConmmendation}
+                                    handleEditConmmendation={this.handleEditConmmendation}
+                                    handleDeleteConmmendation={this.handleDeleteConmmendation}
 
-                                handleAddDiscipline={this.handleCreateDiscipline}
-                                handleEditDiscipline={this.handleEditDiscipline}
-                                handleDeleteDiscipline={this.handleDeleteDiscipline}
-                            />
-                            {/* Tab lương thưởng - nghỉ phép*/}
-                            <SalaryTab
-                                id={`edit_salary${_id}`}
-                                salaries={salaries}
-                                annualLeaves={annualLeaves}
-                                handleAddSalary={this.handleCreateSalary}
-                                handleEditSalary={this.handleEditSalary}
-                                handleDeleteSalary={this.handleDeleteSalary}
+                                    handleAddDiscipline={this.handleCreateDiscipline}
+                                    handleEditDiscipline={this.handleEditDiscipline}
+                                    handleDeleteDiscipline={this.handleDeleteDiscipline}
+                                />
+                                {/* Tab lương thưởng - nghỉ phép*/}
+                                <SalaryTab
+                                    id={`edit_salary${_id}`}
+                                    salaries={salaries}
+                                    annualLeaves={annualLeaves}
 
-                                handleAddAnnualLeave={this.handleCreateAnnualLeave}
-                                handleEditAnnualLeave={this.handleEditAnnualLeave}
-                                handleDeleteAnnualLeave={this.handleDeleteAnnualLeave}
-                            />
-                            {/* Tab tài liệu đính kèm */}
-                            <FileTab
-                                id={`edit_attachments${_id}`}
-                                files={files}
-                                employee={employee}
-                                handleChange={this.handleChange}
+                                    handleAddSalary={this.handleCreateSalary}
+                                    handleEditSalary={this.handleEditSalary}
+                                    handleDeleteSalary={this.handleDeleteSalary}
 
-                                handleAddFile={this.handleCreateFile}
-                                handleEditFile={this.handleEditFile}
-                                handleDeleteFile={this.handleDeleteFile}
-                            />
-                        </div>
-                    </div>
+                                    handleAddAnnualLeave={this.handleCreateAnnualLeave}
+                                    handleEditAnnualLeave={this.handleEditAnnualLeave}
+                                    handleDeleteAnnualLeave={this.handleDeleteAnnualLeave}
+                                />
+                                {/* Tab tài liệu đính kèm */}
+                                <FileTab
+                                    id={`edit_attachments${_id}`}
+                                    files={files}
+                                    employee={employee}
+                                    handleChange={this.handleChange}
+
+                                    handleAddFile={this.handleCreateFile}
+                                    handleEditFile={this.handleEditFile}
+                                    handleDeleteFile={this.handleDeleteFile}
+                                />
+                            </div>
+                        </div>}
                     {/* </form> */}
                 </DialogModal>
             </React.Fragment>
@@ -896,6 +940,7 @@ function mapState(state) {
 
 const actionCreators = {
     updateInformationEmployee: EmployeeManagerActions.updateInformationEmployee,
+    getEmployeeProfile: EmployeeInfoActions.getEmployeeProfile,
 };
 
 const editFrom = connect(mapState, actionCreators)(withTranslate(EmployeeEditFrom));
