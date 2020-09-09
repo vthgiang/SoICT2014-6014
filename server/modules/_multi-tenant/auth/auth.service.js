@@ -1,21 +1,27 @@
 const bcrypt = require('bcryptjs');
+const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const generator = require("generate-password");
 const nodemailer = require("nodemailer");
-const { Privilege, Role, User, UserRole } = require('../../models').schema;
+const { Privilege, Role, User, UserRole } = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
 const fs = require('fs');
+const {connect} =  require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 /**
  * Phương thức đăng nhập
  */
 exports.login = async (fingerprint, data) => { // data bao gom email va password
+    if(!data.portal) throw ["portal invalid"];
 
-    const user = await User
+    if(!DB_CONNECTION[data.portal]) DB_CONNECTION[data.portal] = connect(data.portal);
+    
+    const user = await User(DB_CONNECTION[data.portal])
         .findOne({email : data.email})
         .populate([
-            { path: 'roles', model: UserRole, populate: { path: 'roleId'} }, 
-            { path: 'company', model: Company, select: '_id name shortName active' }
+            { path: 'roles', populate: { path: 'roleId'} },
         ]);
+    const company = await Company(DB_CONNECTION[process.env.DB_NAME])
+        .findOne({ shortName: data.portal });
 
     if(!user) throw ["email_password_invalid"];
     const validPass = await bcrypt.compare(data.password, user.password);
@@ -23,18 +29,19 @@ exports.login = async (fingerprint, data) => { // data bao gom email va password
         throw ['email_password_invalid'];
     }
     if(user.roles.length < 1) throw ['acc_have_not_role'];
+
     if(user.roles[0].roleId.name !== 'System Admin'){ 
         
         //Không phải phiên đăng nhập của system admin 
         if(!user.active) throw ['acc_blocked'];
-        if(!user.company.active) throw ['service_off']
+        if(!company.active) throw ['service_off']
     
         const token = await jwt.sign(
             {
                 _id: user._id, 
                 email: user.email, 
                 name: user.name,
-                company: user.company, 
+                company, 
                 fingerprint: fingerprint
             }, 
             process.env.TOKEN_SECRET
@@ -51,7 +58,7 @@ exports.login = async (fingerprint, data) => { // data bao gom email va password
                 name: user.name,
                 email: user.email,
                 roles: user.roles,
-                company: user.company
+                company
             }
         };
     } else{
@@ -86,8 +93,8 @@ exports.login = async (fingerprint, data) => { // data bao gom email va password
  * @param {*} id : id người dùng
  * @param {*} token 
  */
-exports.logout = async (id, token) => {
-    var user = await User.findById(id);
+exports.logout = async (portal, id) => {
+    var user = await User(DB_CONNECTION[portal]).findById(id);
     if(user.numberDevice >= 1) user.numberDevice -= 1;
     user.save();
 
