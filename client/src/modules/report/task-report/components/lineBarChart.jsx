@@ -93,7 +93,7 @@ class LineBarChart extends Component {
 
         // set height cho biểu đồ
         let getLenghtData = newData[0].length;
-        let setHeightChart = (getLenghtData * 30) < 320 ? 320 : (getLenghtData * 60);
+        let setHeightChart = (getLenghtData * 40) < 320 ? 320 : (getLenghtData * 60);
         let typeChart = data.typeChart;
 
         this.chart = c3.generate({
@@ -121,7 +121,9 @@ class LineBarChart extends Component {
                 rotated: true,
                 x: {
                     type: 'category',
-
+                    tick: {
+                        multiline: true
+                    },
                 },
                 y: {
                     label: {

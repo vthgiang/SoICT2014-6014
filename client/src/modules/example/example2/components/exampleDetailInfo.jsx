@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { exampleActions } from '../redux/actions';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-import { DialogModal } from '../../../common-components';
+import { DialogModal } from '../../../../common-components';
 
 class ExampleDetailInfo extends Component {
     constructor(props) {

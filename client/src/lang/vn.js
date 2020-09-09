@@ -1253,6 +1253,7 @@ export default {
                 course_name: 'Tên khoá học',
                 start_day: 'Ngày bắt đầu',
                 end_date: 'Ngày kết thúc',
+                contract_end_date: 'Ngày hết hạn hợp đồng',
                 type_education: 'Loại đào tạo',
                 cost: 'Chi phí',
                 edit_contract: 'Chỉnh sửa hợp đồng lao động',
@@ -1667,6 +1668,7 @@ export default {
                 asset_incident_and_maintenance: 'Sự cố - bảo trì',
                 incident_asset: 'Thống kê sự cố tài sản',
                 maintenance_asset: 'Thống kê bảo trì tài sản',
+                statistic_by: 'Thống kê theo',
             },
 
             //  Quản lý loại tài sản
@@ -2051,8 +2053,8 @@ export default {
                 action_add: 'Thêm công việc con',
                 action_start_timer: 'Bắt đầu bấm giờ',
 
-                from: 'Từ tháng',
-                to: 'Đến tháng',
+                from: 'Từ ',
+                to: 'Đến',
                 lower_from: 'từ',
                 lower_to: 'đến',
                 month: 'Tháng',

@@ -81,7 +81,6 @@ class EmployeeManagement extends Component {
         window.$('#modal_import_file').modal('show');
     }
 
-    //
     /**
      *  Bắt sự kiện click xem thông tin nhân viên
      * @param {*} value : Thông tin nhân viên muốn xem
@@ -107,7 +106,7 @@ class EmployeeManagement extends Component {
                 currentRow: value
             }
         });
-        window.$('#modal-edit-employee').modal('show');
+        window.$(`#modal-edit-employee${value._id}`).modal('show');
     }
 
     /**
@@ -920,23 +919,13 @@ class EmployeeManagement extends Component {
                 }
 
                 {/* From xem thông tin nhân viên */
-
                     <EmployeeDetailForm
                         _id={currentRowView ? currentRowView._id : ""}
                     />
                 }
-                {/** From chinh sửa thông tin nhân viên */
-                    currentRow &&
+                {/* From chinh sửa thông tin nhân viên */
                     <EmployeeEditFrom
-                        _id={this.state.currentRow.employees[0]._id}
-                        employees={this.state.currentRow.employees}
-                        salaries={this.state.currentRow.salarys}
-                        annualLeaves={this.state.currentRow.annualLeaves}
-                        commendations={this.state.currentRow.commendations}
-                        disciplines={this.state.currentRow.disciplines}
-                        courses={this.state.currentRow.courses}
-                        organizationalUnits={this.state.currentRow.organizationalUnits.map(x => x._id)}
-                        roles={this.state.currentRow.roles.map(x => x.roleId._id)}
+                        _id={currentRow ? currentRow._id : ""}
                     />
                 }
             </div>

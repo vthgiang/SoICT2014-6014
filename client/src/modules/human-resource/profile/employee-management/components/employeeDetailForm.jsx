@@ -68,7 +68,6 @@ class EmployeeDetailForm extends Component {
         const { employeesInfo, translate } = this.props;
 
         let { _id, employees, salaries, annualLeaves, commendations, disciplines, courses, roles = [] } = this.state;
-        console.log(employees);
         return (
             <React.Fragment>
                 <DialogModal
@@ -131,6 +130,7 @@ class EmployeeDetailForm extends Component {
                                         {/* Hợp đồng lao động */}
                                         <ContractTab
                                             id={`view_contract${_id}`}
+                                            employee={x}
                                             courses={courses}
                                             contracts={x.contracts}
                                         />

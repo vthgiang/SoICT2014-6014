@@ -2,9 +2,10 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { exampleActions } from "../redux/actions";
-import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../common-components";
+import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../common-components";
 import ExampleCreateForm from "./exampleCreateForm";
 import ExampleEditForm from "./exampleEditForm";
+import ExampleDetailInfo from "./exampleDetailInfo";
 
 class ExampleManagementTable extends Component {
     constructor(props) {
@@ -19,7 +20,7 @@ class ExampleManagementTable extends Component {
 
     componentDidMount() {
         let { exampleName, page, limit } = this.state;
-        this.props.getExamples({ exampleName, page, limit });
+        this.props.getOnlyExampleName({ exampleName, page, limit });
     }
 
     handleChangeExampleName = (e) => {
@@ -33,7 +34,7 @@ class ExampleManagementTable extends Component {
         await this.setState({
             page: 0
         });
-        this.props.getExamples(this.state);
+        this.props.getOnlyExampleName(this.state);
     }
 
     setPage = async (pageNumber) => {
@@ -42,14 +43,14 @@ class ExampleManagementTable extends Component {
             page: parseInt(currentPage)
         });
 
-        this.props.getExamples(this.state);
+        this.props.getOnlyExampleName(this.state);
     }
 
     setLimit = async (number) => {
         await this.setState({
             limit: parseInt(number)
         });
-        this.props.getExamples(this.state);
+        this.props.getOnlyExampleName(this.state);
     }
 
     handleDelete = (id) => {
@@ -66,6 +67,16 @@ class ExampleManagementTable extends Component {
         window.$('#modal-edit-example').modal('show');
     }
 
+    handleShowDetailInfo = async (id) => {
+        await this.setState((state) => {
+            return {
+                ...state,
+                exampleId: id
+            }
+        });
+        window.$(`#modal-detail-info-example`).modal('show');
+    }
+
     render() {
         const { example, translate } = this.props;
         let lists = [];
@@ -80,9 +91,14 @@ class ExampleManagementTable extends Component {
                 {
                     this.state.currentRow &&
                     <ExampleEditForm
-                        exampleID={this.state.currentRow._id}
+                        exampleId={this.state.currentRow._id}
                         exampleName={this.state.currentRow.exampleName}
                         description={this.state.currentRow.description}
+                    />
+                }
+                {
+                    <ExampleDetailInfo
+                        exampleId={this.state.exampleId}
                     />
                 }
                 <div className="box-body qlcv">
@@ -101,14 +117,12 @@ class ExampleManagementTable extends Component {
                             <tr>
                                 <th>{translate('manage_example.index')}</th>
                                 <th>{translate('manage_example.exampleName')}</th>
-                                <th>{translate('manage_example.description')}</th>
                                 <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
                                     <DataTableSetting
                                         tableId="example-table"
                                         columnArr={[
                                             translate('manage_example.index'),
-                                            translate('manage_example.exampleName'),
-                                            translate('manage_example.description'),
+                                            translate('manage_example.exampleName')
                                         ]}
                                         limit={this.state.limit}
                                         hideColumnOption={true}
@@ -123,9 +137,9 @@ class ExampleManagementTable extends Component {
                                     <tr key={index}>
                                         <td>{index + 1 + page * this.state.limit}</td>
                                         <td>{example.exampleName}</td>
-                                        <td>{example.description}</td>
                                         <td style={{ textAlign: "center" }}>
-                                            <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_example.edit')} onClick={() => this.handleEdit(example)}><i className="material-icons">edit</i></a>
+                                            <a className="edit text-green" style={{ width: '5px' }} title={translate('manage_example.detail_info_example')} onClick={() => this.handleShowDetailInfo(example._id)}><i className="material-icons">visibility</i></a>
+                                            < a className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_example.edit')} onClick={() => this.handleEdit(example)}><i className="material-icons">edit</i></a>
                                             <DeleteNotification
                                                 content={translate('manage_example.delete')}
                                                 data={{
@@ -153,12 +167,12 @@ class ExampleManagementTable extends Component {
 
 
 function mapStateToProps(state) {
-    const example = state.example1;
+    const example = state.example2;
     return { example }
 }
 
 const mapDispatchToProps = {
-    getExamples: exampleActions.getExamples,
+    getOnlyExampleName: exampleActions.getOnlyExampleName,
     deleteExample: exampleActions.deleteExample
 }
 

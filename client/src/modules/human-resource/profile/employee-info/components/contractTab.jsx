@@ -47,6 +47,8 @@ class ContractTab extends Component {
                 id: nextProps.id,
                 contracts: nextProps.contracts,
                 courses: nextProps.courses,
+                contractType: nextProps.employee ? nextProps.employee.contractType : "",
+                contractEndDate: nextProps.employee ? nextProps.employee.contractEndDate : "",
             }
         } else {
             return null;
@@ -68,13 +70,25 @@ class ContractTab extends Component {
     render() {
         const { translate, course } = this.props;
 
-        const { id, contracts, courses } = this.state;
+        const { id, contracts, courses, contractType, contractEndDate } = this.state;
 
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border"><h4 className="box-title">{translate('human_resource.profile.labor_contract')}</h4></legend>
+                        <div className="row">
+                            {/* Ngày hết hạn hợp đồng*/}
+                            <div className="form-group col-md-4">
+                                <strong>{translate('human_resource.profile.contract_end_date')}&emsp; </strong>
+                                {this.formatDate(contractEndDate)}
+                            </div>
+                            {/* Loại hợp đồng*/}
+                            <div className="form-group col-md-4">
+                                <strong>{translate('human_resource.profile.type_contract')}&emsp; </strong>
+                                {contractType}
+                            </div>
+                        </div>
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}  >
                             <thead>
                                 <tr>

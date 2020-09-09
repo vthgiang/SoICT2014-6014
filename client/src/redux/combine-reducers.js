@@ -69,10 +69,10 @@ import { plan } from "../modules/plan/redux/reducers";
 
 
 //example1
-import { example1 } from "../modules/example1/redux/reducers";
+import { example1 } from "../modules/example/example1/redux/reducers";
 
 //example2
-import { example2 } from "../modules/example2/redux/reducers";
+import { example2 } from "../modules/example/example2/redux/reducers";
 
 const appReducer = combineReducers({
     //system
