@@ -1966,13 +1966,13 @@ const sampleCompanyData = async () => {
             maintainanceLogs: [],
             //sự cố
             incidentLogs: [{
-                createdAt: new Date("2000-05-20"),
-                dateOfIncident: new Date("2000-05-20"),
+                createdAt: new Date("2020-05-20"),
+                dateOfIncident: new Date("2020-05-20"),
                 description: "aaaaaa",
                 incidentCode: "icd03",
                 statusIncident: "Chờ xử lý",
                 type: "Hỏng hóc",
-                updatedAt: new Date("2000-05-20"),
+                updatedAt: new Date("2020-05-20"),
             }],
             //khấu hao
             cost: 30000000,
@@ -2005,7 +2005,7 @@ const sampleCompanyData = async () => {
         company: vnist._id,
         serial: "00000",
         assetType: [listAssetType[25]._id],
-        purchaseDate: new Date("1956-06-20"),
+        purchaseDate: new Date("2019-06-20"),
         warrantyExpirationDate: new Date("2099-06-20"),
         managedBy: users[1]._id,
         assignedToUser: null,
@@ -2050,7 +2050,7 @@ const sampleCompanyData = async () => {
         company: vnist._id,
         serial: "000002",
         assetType: [listAssetType[25]._id],
-        purchaseDate: new Date("1956-06-20"),
+        purchaseDate: new Date("2019-06-20"),
         warrantyExpirationDate: new Date("2099-06-20"),
         managedBy: users[5]._id,
         assignedToUser: null,
@@ -2067,13 +2067,13 @@ const sampleCompanyData = async () => {
         maintainanceLogs: [],
         //sự cố
         incidentLogs: [{
-            createdAt: new Date("2000-05-20"),
-            dateOfIncident: new Date("2000-05-20"),
+            createdAt: new Date("2020-05-20"),
+            dateOfIncident: new Date("2020-05-20"),
             description: "aaaaaa",
             incidentCode: "icd04",
             statusIncident: "Chờ xử lý",
             type: "Hỏng quạt",
-            updatedAt: new Date("2000-05-20"),
+            updatedAt: new Date("2020-05-20"),
         }],
         //khấu hao
         cost: 50000000,
@@ -2103,7 +2103,7 @@ const sampleCompanyData = async () => {
         company: vnist._id,
         serial: "000002",
         assetType: [listAssetType[25]._id],
-        purchaseDate: new Date("1956-06-20"),
+        purchaseDate: new Date("2019-06-20"),
         warrantyExpirationDate: new Date("2099-06-20"),
         managedBy: users[5]._id,
         assignedToUser: null,
@@ -2120,13 +2120,13 @@ const sampleCompanyData = async () => {
         maintainanceLogs: [],
         //sự cố
         incidentLogs: [{
-            createdAt: new Date("2000-05-20"),
-            dateOfIncident: new Date("2000-05-20"),
+            createdAt: new Date("2020-05-20"),
+            dateOfIncident: new Date("2020-05-20"),
             description: "aaaaaa",
             incidentCode: "icd04",
             statusIncident: "Chờ xử lý",
             type: "Hỏng quạt",
-            updatedAt: new Date("2000-05-20"),
+            updatedAt: new Date("2020-05-20"),
         }],
         //khấu hao
         cost: 50000000,
@@ -2158,7 +2158,7 @@ const sampleCompanyData = async () => {
             company: vnist._id,
             serial: "00001",
             assetType: [listAssetType[25]._id],
-            purchaseDate: new Date("2000-05-20"),
+            purchaseDate: new Date("2020-05-20"),
             warrantyExpirationDate: new Date("2077-06-20"),
             managedBy: users[1]._id,
             assignedToUser: null,
@@ -2250,7 +2250,7 @@ const sampleCompanyData = async () => {
             company: vnist._id,
             serial: "00003",
             assetType: [listAssetType[25]._id],
-            purchaseDate: new Date("2000-05-20"),
+            purchaseDate: new Date("2020-05-20"),
             warrantyExpirationDate: new Date("2077-06-20"),
             managedBy: users[1]._id,
             assignedToUser: null,
@@ -2295,7 +2295,52 @@ const sampleCompanyData = async () => {
             company: vnist._id,
             serial: "00004",
             assetType: [listAssetType[25]._id],
-            purchaseDate: new Date("2000-05-20"),
+            purchaseDate: new Date("2020-05-20"),
+            warrantyExpirationDate: new Date("2077-06-20"),
+            managedBy: users[1]._id,
+            assignedToUser: null,
+            assignedToOrganizationalUnit: null,
+            readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
+            location: listAsset1[0]._id,
+            status: "Thanh lý",
+            typeRegisterForUse: 3,
+            description: "B1-202",
+            detailInfo: [],
+
+            usageLogs: [],
+            // bảo trì thiết bị
+            maintainanceLogs: [],
+            //sự cố
+            incidentLogs: [],
+            //khấu hao
+            cost: 50000000,
+            residualValue: 10000000,
+            startDepreciation: new Date("2020-06-20"), // thời gian bắt đầu trích khấu hao
+            usefulLife: 20, // thời gian trích khấu hao
+            depreciationType: "Đường thẳng", // thời gian trích khấu hao
+            //thanh lý
+            disposalDate: new Date("2020-07-20"),
+            disposalType: '',
+            disposalCost: 12000000,
+            disposalDesc: '',
+            //tài liệu đính kèm
+            documents: [],
+        },
+        { //04
+            avatar: "/upload/asset/pictures/picture5.png",
+            assetName: "B1-202",
+            group: "Building",
+            usefulLife: "22",
+            unitsProducedDuringTheYears: [{
+                month: new Date("2020-05-20"),
+                unitsProducedDuringTheYear: 3
+            }],
+            estimatedTotalProduction: 100,
+            code: "VVTM02.004",
+            company: vnist._id,
+            serial: "00004",
+            assetType: [listAssetType[25]._id],
+            purchaseDate: new Date("2020-05-20"),
             warrantyExpirationDate: new Date("2077-06-20"),
             managedBy: users[1]._id,
             assignedToUser: null,
@@ -2340,7 +2385,7 @@ const sampleCompanyData = async () => {
             company: vnist._id,
             serial: "00006",
             assetType: [listAssetType[25]._id],
-            purchaseDate: new Date("2000-05-20"),
+            purchaseDate: new Date("2020-05-20"),
             warrantyExpirationDate: new Date("2077-06-20"),
             managedBy: users[5]._id,
             assignedToUser: null,
@@ -2349,52 +2394,7 @@ const sampleCompanyData = async () => {
             location: listAsset1[1]._id,
             status: "Sẵn sàng sử dụng",
             typeRegisterForUse: 3,
-            description: "d3-101",
-            detailInfo: [],
-            readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
-            usageLogs: [],
-            // bảo trì thiết bị
-            maintainanceLogs: [],
-            //sự cố
-            incidentLogs: [],
-            //khấu hao
-            cost: 50000000,
-            residualValue: 10000000,
-            startDepreciation: new Date("2020-06-20"), // thời gian bắt đầu trích khấu hao
-            usefulLife: 20, // thời gian trích khấu hao
-            depreciationType: "Đường thẳng", // thời gian trích khấu hao
-            //thanh lý
-            disposalDate: null,
-            disposalType: '',
-            disposalCost: null,
-            disposalDesc: '',
-            //tài liệu đính kèm
-            documents: [],
-        },
-        { // 06
-            avatar: "/upload/asset/pictures/picture5.png",
-            assetName: "D3-102",
-            group: "Building",
-            usefulLife: "20",
-            unitsProducedDuringTheYears: [{
-                month: new Date("2020-05-20"),
-                unitsProducedDuringTheYear: 10
-            }],
-            estimatedTotalProduction: 300,
-            code: "VVTM02.006",
-            company: vnist._id,
-            serial: "00006",
-            assetType: [listAssetType[25]._id],
-            purchaseDate: new Date("2000-05-20"),
-            warrantyExpirationDate: new Date("2077-06-20"),
-            managedBy: users[5]._id,
-            assignedToUser: null,
-            assignedToOrganizationalUnit: null,
-
-            location: listAsset1[1]._id,
-            status: "Sẵn sàng sử dụng",
-            typeRegisterForUse: 3,
-            description: "d3-103",
+            description: "d3-102",
             detailInfo: [],
             readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
             usageLogs: [],
@@ -2402,22 +2402,22 @@ const sampleCompanyData = async () => {
             maintainanceLogs: [],
             //sự cố
             incidentLogs: [{
-                    createdAt: new Date("2000-05-20"),
-                    dateOfIncident: new Date("2000-05-20"),
+                    createdAt: new Date("2020-05-20"),
+                    dateOfIncident: new Date("2020-05-20"),
                     description: "hỏng hóc",
                     incidentCode: "icd01",
                     statusIncident: "Chờ xử lý",
                     type: "Hỏng hóc",
-                    updatedAt: new Date("2000-05-20"),
+                    updatedAt: new Date("2020-05-20"),
                 },
                 {
-                    createdAt: new Date("2000-08-20"),
-                    dateOfIncident: new Date("2000-08-20"),
+                    createdAt: new Date("2020-08-20"),
+                    dateOfIncident: new Date("2020-08-20"),
                     description: "cháy",
                     incidentCode: "icd01",
                     statusIncident: "Chờ xử lý",
                     type: "Hỏng hóc",
-                    updatedAt: new Date("2000-08-20"),
+                    updatedAt: new Date("2020-08-20"),
                 }
             ],
             //khấu hao
@@ -2448,7 +2448,7 @@ const sampleCompanyData = async () => {
             company: vnist._id,
             serial: "00007",
             assetType: [listAssetType[25]._id],
-            purchaseDate: new Date("2000-05-20"),
+            purchaseDate: new Date("2020-05-20"),
             warrantyExpirationDate: new Date("2077-06-20"),
             managedBy: users[1]._id,
             assignedToUser: null,
@@ -2456,8 +2456,8 @@ const sampleCompanyData = async () => {
 
             location: listAsset1[1]._id,
             status: "Sẵn sàng sử dụng",
+            typeRegisterForUse: 3,
             canRegisterForUse: true,
-            typeRegisterForUse: 3,
             description: "d3-103",
             detailInfo: [],
             readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
@@ -2529,22 +2529,22 @@ const sampleCompanyData = async () => {
             maintainanceLogs: [],
             //sự cố
             incidentLogs: [{
-                    createdAt: new Date("2000-05-20"),
-                    dateOfIncident: new Date("2000-05-20"),
+                    createdAt: new Date("2020-05-20"),
+                    dateOfIncident: new Date("2020-05-20"),
                     description: "hỏng hóc",
                     incidentCode: "icd01",
                     statusIncident: "Chờ xử lý",
                     type: "Hỏng hóc",
-                    updatedAt: new Date("2000-05-20"),
+                    updatedAt: new Date("2020-05-20"),
                 },
                 {
-                    createdAt: new Date("2000-08-20"),
-                    dateOfIncident: new Date("2000-08-20"),
+                    createdAt: new Date("2020-08-20"),
+                    dateOfIncident: new Date("2020-08-20"),
                     description: "cháy",
                     incidentCode: "icd01",
                     statusIncident: "Chờ xử lý",
                     type: "Hỏng hóc",
-                    updatedAt: new Date("2000-08-20"),
+                    updatedAt: new Date("2020-08-20"),
                 }
             ],
             //khấu hao

@@ -20,6 +20,7 @@ class AssetManagement extends Component {
             assetType: "",
             purchaseDate: null,
             status: "",
+            group: "",
             typeRegisterForUse: "",
             page: 0,
             limit: 5,
@@ -361,16 +362,6 @@ class AssetManagement extends Component {
                         </div>
                     </div>
                     <div className="form-inline">
-                        {/* Loại tài sản */}
-                        <div className="form-group">
-                            <label>{translate('asset.general_information.type')}</label>
-                            <TreeSelect
-                                data={typeArr}
-                                value={assetTypeName}
-                                handleChange={this.handleAssetTypeChange}
-                                mode="hierarchical"
-                            />
-                        </div>
                         {/* Nhóm tài sản */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('asset.general_information.asset_group')}</label>
@@ -385,6 +376,16 @@ class AssetManagement extends Component {
                                 ]}
                             >
                             </SelectMulti>
+                        </div>
+                        {/* Loại tài sản */}
+                        <div className="form-group">
+                            <label>{translate('asset.general_information.asset_type')}</label>
+                            <TreeSelect
+                                data={typeArr}
+                                value={assetTypeName}
+                                handleChange={this.handleAssetTypeChange}
+                                mode="hierarchical"
+                            />
                         </div>
                     </div>
 

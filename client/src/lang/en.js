@@ -1642,6 +1642,7 @@ export default {
                 asset_incident_and_maintenance: 'Incident and maintenance',
                 incident_asset: 'Statistics incident asset chart',
                 maintenance_asset: 'Statistics maintenance asset chart',
+                statistic_by: 'Statistic by',
             },
 
             //  Quản lý loại tài sản
