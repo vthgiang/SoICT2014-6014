@@ -198,7 +198,7 @@ class EditForm extends Component {
 
                 {/* Loại tài sản cha */}
                 <div className="form-group">
-                    <label>{translate('asset.asset_type.parent_asset_type')}<span className="text-red">*</span></label>
+                    <label>{translate('asset.asset_type.parent_asset_type')}</label>
                     <TreeSelect data={dataList} value={[domainParent]} handleChange={this.handleParent} mode="radioSelect" />
                 </div>
 

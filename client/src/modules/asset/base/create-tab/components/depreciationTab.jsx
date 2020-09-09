@@ -249,19 +249,25 @@ class DepreciationTab extends Component {
     validateYear = (value, index, willUpdateState = true) => {
         let time = value.split("-");
         let date = new Date(time[1], time[0], 0)
-        let partDepreciation = this.state.startDepreciation.split('-');
-        let startDepreciation = [partDepreciation[2], partDepreciation[1], partDepreciation[0]].join('-');
 
-        let partEndDepreciation = this.state.endDepreciation.split('-');
-        let endDepreciation = [partEndDepreciation[2], partEndDepreciation[1], partEndDepreciation[0]].join('-');
-
+        let startDepreciation = undefined, endDepreciation = undefined;
+        if (this.state.startDepreciation) {
+            let partDepreciation = this.state.startDepreciation.split('-');
+            startDepreciation = [partDepreciation[2], partDepreciation[1], partDepreciation[0]].join('-');
+        }
+        
+        if (this.state.endDepreciation) {
+            let partEndDepreciation = this.state.endDepreciation.split('-');
+            endDepreciation = [partEndDepreciation[2], partEndDepreciation[1], partEndDepreciation[0]].join('-');
+        }
+        
         let msg = undefined;
 
         if (value.toString().trim() === "") {
             msg = "Tháng sản lượng sản phẩm không được để trống";
-        } else if (date.getTime() < new Date(startDepreciation).getTime()) {
+        } else if (startDepreciation && date.getTime() < new Date(startDepreciation).getTime()) {
             msg = "Tháng sản lượng sản phẩm không được trước ngày bắt đầu tính khấu hao";
-        } else if (date.getTime() > new Date(endDepreciation).getTime()) {
+        } else if (endDepreciation && date.getTime() > new Date(endDepreciation).getTime()) {
             msg = "Tháng sản lượng sản phẩm không được sau ngày kết thúc tính khấu hao";
         }
 
@@ -372,7 +378,7 @@ class DepreciationTab extends Component {
 
                         {/* Thời gian bắt đầu trích khấu hao */}
                         <div className={`form-group ${!errorOnStartDepreciation ? "" : "has-error"} `}>
-                            <label htmlFor="startDepreciation">{translate('asset.general_information.start_depreciation')}</label>
+                            <label htmlFor="startDepreciation">{translate('asset.general_information.start_depreciation')}<span className="text-red">*</span></label>
                             <DatePicker
                                 id={`startDepreciation${id}`}
                                 value={startDepreciation}
