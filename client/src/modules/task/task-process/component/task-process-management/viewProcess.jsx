@@ -122,7 +122,11 @@ class ViewProcess extends Component {
             let modeling = this.modeling;
             let state = this.state;
             this.modeler.importXML(nextProps.data.xmlDiagram, function (err) {
+                // handle zoom fit
+                let canvas = modeler.get('canvas');
+                canvas.zoom('fit-viewport');
 
+                // change color for task
                 let infoTask = nextProps.data.tasks
                 let info = state.info;
 
