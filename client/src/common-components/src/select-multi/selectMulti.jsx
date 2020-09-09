@@ -53,7 +53,7 @@ class SelectMulti extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id || !SelectMulti.isEqual(nextProps.items, prevState.items) || nextProps.disabled !== prevState.disabled) {
+        if (nextProps.id !== prevState.id || !SelectMulti.isEqual(nextProps.items, prevState.items) || nextProps.disabled !== prevState.disabled || nextProps.value !== prevState.value) {
             return {
                 value: nextProps.value, // Lưu value ban đầu vào state
                 id: nextProps.id,
@@ -67,7 +67,7 @@ class SelectMulti extends Component {
 
     shouldComponentUpdate(nextProps, nextState) {
         // Chỉ render lại khi id thay đổi, hoặc khi tập items thay đổi
-        if (nextProps.id !== this.state.id || !SelectMulti.isEqual(nextProps.items, this.state.items) || nextProps.disabled !== this.state.disabled)
+        if (nextProps.id !== this.state.id || !SelectMulti.isEqual(nextProps.items, this.state.items) || nextProps.disabled !== this.state.disabled || nextProps.value !== this.state.value)
             return true;
         return false;
     }

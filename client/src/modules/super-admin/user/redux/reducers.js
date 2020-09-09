@@ -268,6 +268,7 @@ export function user(state = initState, action) {
         case UserConstants.GETDEPARTMENT_OFUSER_REQUEST:
             return {
                 ...state,
+                organizationalUnitsOfUserLoading: false,
                 isLoading: true
             };
 
@@ -281,6 +282,7 @@ export function user(state = initState, action) {
             };
             return {
                 ...state,
+                organizationalUnitsOfUserLoading: true,
                 organizationalUnitsOfUser: action.payload,
                 isLoading: false
             };
@@ -288,6 +290,7 @@ export function user(state = initState, action) {
         case UserConstants.GETDEPARTMENT_OFUSER_FAILURE:
             return {
                 ...state,
+                organizationalUnitsOfUserLoading: true,
                 error: action.error,
                 isLoading: false
             };

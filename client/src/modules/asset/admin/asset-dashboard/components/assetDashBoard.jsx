@@ -14,6 +14,7 @@ import { AssetIsExpired } from './asset-is-expired/assetIsExpired';
 import { AssetByType } from './asset-by-type/assetByType';
 import { translate } from 'react-redux-multilingual/lib/utils';
 import { PurchaseAndDisposal } from './asset-purchase-disposal/purchaseAndDisposal';
+import { IncidentAndMaintenance } from './asset-incident-maintenance/incidentAndMaintenance';
 
 class DashBoardAssets extends Component {
 
@@ -117,8 +118,8 @@ class DashBoardAssets extends Component {
         forceCheckOrVisible(true, false);
     }
 
-     // Function format dữ liệu Date thành string
-     formatDate(date, monthYear = false) {
+    // Function format dữ liệu Date thành string
+    formatDate(date, monthYear = false) {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -153,7 +154,7 @@ class DashBoardAssets extends Component {
                 }
             })
         }
-        
+
         assetByGroup = {
             fileName: "Thống kê các nhóm tài sản",
             dataSheets: [
@@ -205,7 +206,7 @@ class DashBoardAssets extends Component {
                 }
             })
         }
-        
+
         assetByType = {
             fileName: "Thống kê các loại tài sản",
             dataSheets: [
@@ -260,10 +261,10 @@ class DashBoardAssets extends Component {
                         dayAvailable: item.day + (dayAvailable ? " ngày" : "")
                     }
                 }
-               
+
             })
         }
-        
+
         assetIsExpired = {
             fileName: "Thống kê hạn sử dụng tài sản",
             dataSheets: [
@@ -283,7 +284,7 @@ class DashBoardAssets extends Component {
                                 { key: "user", value: "Người sử dụng" },
                                 { key: "organizaitonalUnit", value: "Đơn vị sử dụng" },
                                 { key: "status", value: "Trạng thái" },
-                                { key: "dayAvailable", value: "Thời gian còn lại"}
+                                { key: "dayAvailable", value: "Thời gian còn lại" }
                             ],
                             data: exportData
                         },
@@ -322,8 +323,8 @@ class DashBoardAssets extends Component {
                 }
             })
         }
-        
-        
+
+
         if (disposalData && disposalData.category && disposalData.category.length !== 0
             && disposalData.count && disposalData.count.length !== 0
             && disposalData.value && disposalData.value.length !== 0
@@ -402,8 +403,8 @@ class DashBoardAssets extends Component {
                 }
             })
         }
-        
-        
+
+
         if (assetCostData && assetCostData.length !== 0) {
             assetCostExportData = assetCostData.map((cost, index) => {
                 return {
@@ -459,7 +460,7 @@ class DashBoardAssets extends Component {
     render() {
         const { translate } = this.props;
         const { listAssets, recommendProcure, recommendDistribute, exportData, currentTab } = this.state;
-       
+
         return (
             <div className="qlcv">
                 <div className="row" style={{ marginTop: 10 }}>
@@ -531,6 +532,7 @@ class DashBoardAssets extends Component {
                         <li><a href="#administration-asset-by-type" data-toggle="tab" onClick={() => this.handleNavTabs("assetByType")}>{translate('asset.dashboard.asset_by_type')}</a></li>
                         <li><a href="#administration-asset-statistics" data-toggle="tab" onClick={() => this.handleNavTabs("assetStatistics")}>Thống kê theo trạng thái và giá trị</a></li>
                         <li><a href="#administration-purchase-disposal" data-toggle="tab" onClick={() => this.handleNavTabs("purchaseDisposal")}>{translate('asset.dashboard.asset_purchase_and_dispose')}</a></li>
+                        <li><a href="#administration-incident-maintenance" data-toggle="tab" onClick={() => this.handleNavTabs("incidentMaintenance")}>{translate('asset.dashboard.asset_incident_and_maintenance')}</a></li>
                         <li><a href="#administration-asset-is-expired" data-toggle="tab" onClick={() => this.handleNavTabs("assetIsExpired")}>Hạn sử dụng tài sản</a> </li>
                         {exportData && currentTab && exportData[currentTab] && <ExportExcel type="link" style={{ padding: "15px" }} id="export-asset-dashboard" exportData={exportData[currentTab]} />}
                     </ul>
@@ -569,6 +571,17 @@ class DashBoardAssets extends Component {
                             </LazyLoadComponent>
                         </div>
 
+                        {/* Thống kê mua bán tài sản*/}
+                        <div className="tab-pane" id="administration-incident-maintenance">
+                            <LazyLoadComponent
+                                key="AdministrationIncidentAndMaintenance"
+                            >
+                                <IncidentAndMaintenance
+                                // setPurchaseAndDisposalExportData={this.setPurchaseAndDisposalExportData}
+                                />
+                            </LazyLoadComponent>
+                        </div>
+
                         {/** Biểu đồ thống kê tài sản */}
                         <div className="tab-pane" id="administration-asset-statistics">
                             <LazyLoadComponent
@@ -585,7 +598,7 @@ class DashBoardAssets extends Component {
                             <LazyLoadComponent
                                 key="AdministrationAssetExpired"
                             >
-                                <AssetIsExpired 
+                                <AssetIsExpired
                                     setAssetIsExpiredExportData={this.setAssetIsExpiredExportData}
                                 />
                             </LazyLoadComponent>

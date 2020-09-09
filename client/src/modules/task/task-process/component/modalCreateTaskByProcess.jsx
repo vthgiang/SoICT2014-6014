@@ -1,18 +1,20 @@
 import React, { Component } from "react";
-import { withTranslate } from "react-redux-multilingual";
 import { connect } from 'react-redux';
-import { FormInfoTask } from "./formInfoTask";
-import { DialogModal, SelectBox, DatePicker } from "../../../../common-components";
-import { UserActions } from "../../../super-admin/user/redux/actions";
 import { getStorage } from '../../../../config';
+import { withTranslate } from "react-redux-multilingual";
+import { DialogModal, DatePicker, ErrorLabel } from "../../../../common-components";
+import { FormCreateTaskByProcess } from "./formCreateTaskByProcess";
+
+import { UserActions } from "../../../super-admin/user/redux/actions";
 import { TaskProcessActions } from "../redux/actions";
 import { TaskFormValidator } from "../../task-management/component/taskFormValidator";
-import { FormCreateTaskByProcess } from "./formCreateTaskByProcess";
+import { TaskProcessValidator } from './taskProcessValidator';
+
 import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil'
 import BpmnModeler from 'bpmn-js/lib/Modeler';
-import BpmnViewer from 'bpmn-js'
-import customModule from './read-only'
+import customModule from './custom';
 import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
+
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import './processDiagram.css'
@@ -145,10 +147,12 @@ class ModalCreateTaskByProcess extends Component {
     // hàm cập nhật Tên Quy trình
     handleChangeBpmnName = async (e) => {
         let { value } = e.target;
+        let msg = TaskProcessValidator.validateProcessName(value, this.props.translate);
         await this.setState(state => {
             return {
                 ...state,
                 processName: value,
+                errorOnProcessName: msg,
             }
         });
     }
@@ -156,10 +160,12 @@ class ModalCreateTaskByProcess extends Component {
     // hàm cập nhật mô tả quy trình
     handleChangeBpmnDescription = async (e) => {
         let { value } = e.target;
+        let msg = TaskProcessValidator.validateProcessDescription(value, this.props.translate);
         await this.setState(state => {
             return {
                 ...state,
                 processDescription: value,
+                errorOnProcessDescription: msg,
             }
         });
     }
@@ -233,46 +239,27 @@ class ModalCreateTaskByProcess extends Component {
         })
     }
 
-    // hàm cập nhật thông tin người xem
-    handleChangeViewer = async (value) => {
-        await this.setState(state => {
-
-            return {
-                ...state,
-                viewer: value,
-            }
-        })
-    }
-
-    // cập nhật thông tin người quản lý
-    handleChangeManager = async (value) => {
-        await this.setState(state => {
-
-            return {
-                ...state,
-                manager: value,
-            }
-        })
-    }
-
     // hàm cập nhật ngày bắt đầu công việc
     handleChangeTaskStartDate = (value) => {
         this.validateTaskStartDate(value, true);
     }
     validateTaskStartDate = (value, willUpdateState = true) => {
         let { translate } = this.props;
-        let msg = TaskFormValidator.validateTaskStartDate(value, this.state.endDate ? this.state.endDate : "", translate);
+        let msgStart = TaskFormValidator.validateTaskStartDate(value, this.state.endDate ? this.state.endDate : "", translate);
+        let msgEnd = TaskFormValidator.validateTaskEndDate(value, this.state.endDate ? this.state.endDate : "", translate);
 
         if (willUpdateState) {
             this.state.startDate = value;
-            this.state.errorOnStartDate = msg;
+            this.state.errorOnStartDate = msgStart;
+            // this.state.errorOnEndDate = msgEnd;
+
             this.setState(state => {
                 return {
                     ...state,
                 };
             });
         }
-        return msg === undefined;
+        return msgStart === undefined;
     }
 
     // hàm cập nhật ngày kết thúc công việc
@@ -281,18 +268,21 @@ class ModalCreateTaskByProcess extends Component {
     }
     validateTaskEndDate = (value, willUpdateState = true) => {
         let { translate } = this.props;
-        let msg = TaskFormValidator.validateTaskEndDate(this.state.startDate ? this.state.startDate : "", value, translate);
+        let msgEnd = TaskFormValidator.validateTaskEndDate(this.state.startDate ? this.state.startDate : "", value, translate);
+        let msgStart = TaskFormValidator.validateTaskStartDate(this.state.startDate ? this.state.startDate : "", value, translate);
 
         if (willUpdateState) {
             this.state.endDate = value;
-            this.state.errorOnEndDate = msg;
+            this.state.errorOnEndDate = msgEnd;
+            // this.state.errorOnStartDate = msgStart;
+
             this.setState(state => {
                 return {
                     ...state,
                 };
             });
         }
-        return msg === undefined;
+        return msgEnd === undefined;
     }
 
     // hàm cập nhật độ ưu tiên
@@ -498,6 +488,14 @@ class ModalCreateTaskByProcess extends Component {
             })
     }
 
+    // hàm validate form tạo quy trình công việc
+    isTaskFormValidated = () => {
+        let { errorOnEndDate, errorOnProcessDescription, errorOnProcessName, errorOnStartDate, startDate, endDate } = this.state;
+
+        return errorOnEndDate === undefined && errorOnProcessDescription === undefined && errorOnProcessName === undefined && errorOnStartDate === undefined 
+                && startDate.trim() !== "" && endDate.trim() !== "";
+    }
+
     // Hàm lưu thông tin 
     save = async () => {
         let { info, startDate, endDate, userId, processName, processDescription, xmlDiagram } = this.state;
@@ -536,20 +534,23 @@ class ModalCreateTaskByProcess extends Component {
     render() {
         const { translate, role, user } = this.props;
         const { name, id, idProcess, info, taskName, showInfo, startDate, endDate, errorOnEndDate, errorOnStartDate,
-            processDescription, processName, viewer, manager, selected, infoTask } = this.state;
+            processDescription, processName, selected, infoTask, errorOnProcessName, errorOnProcessDescription } = this.state;
         const { listOrganizationalUnit } = this.props
+
         let listUser = user.usersWithRole
         let listRole = [];
         let task = Object.assign({}, info)
+
         if (role && role.list.length !== 0) listRole = role.list;
         let listItem = listRole.filter(e => ['Admin', 'Super Admin', 'Dean', 'Vice Dean', 'Employee'].indexOf(e.name) === -1)
             .map(item => { return { text: item.name, value: item._id } });
+
         return (
             <React.Fragment>
                 <DialogModal
                     size='100' modalID={`modal-create-task-by-process`} isLoading={false}
                     formID="form-create-task-by-process"
-                    // disableSubmit={!this.isTaskFormValidated()}
+                    disableSubmit={!this.isTaskFormValidated()}
                     title={this.props.title}
                     func={this.save}
                     bodyStyle={{ paddingTop: 0, paddingBottom: 0 }}
@@ -559,9 +560,9 @@ class ModalCreateTaskByProcess extends Component {
                         <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none", marginBottom: 0 }}>
                             <ul className="nav nav-tabs">
                                 {/* Nút tab thông tin quy trình */}
-                                <li className="active"><a href="#info-create-task" onClick={() => this.handleChangeContent("info")} data-toggle="tab">Thông tin quy trình</a></li>
+                                <li className="active"><a href="#info-create-task" onClick={() => this.handleChangeContent("info")} data-toggle="tab">{translate("task.task_process.process_information")}</a></li>
                                 {/* Nút tab quy trình - công việc */}
-                                <li><a href="#process-create-task" onClick={() => this.handleChangeContent("process")} data-toggle="tab">Tạo công việc trong quy trình</a></li>
+                                <li><a href="#process-create-task" onClick={() => this.handleChangeContent("process")} data-toggle="tab">{translate("task.task_process.task_process")}</a></li>
                             </ul>
 
                             {/* Tab Thông tin quy trình */}
@@ -570,13 +571,14 @@ class ModalCreateTaskByProcess extends Component {
                                     <div className='row'>
                                         <div className='col-md-6'>
                                             {/* Tên quy trình */}
-                                            <div className="form-group">
-                                                <label>Tên quy trình</label>
+                                            <div className={`form-group ${errorOnProcessName === undefined ? "" : "has-error"}`}>
+                                                <label>{translate("task.task_process.process_name")}</label>
                                                 <input type="text"
                                                     value={processName}
-                                                    className="form-control" placeholder="Mô tả công việc"
+                                                    className="form-control" placeholder={translate("task.task_process.process_name")}
                                                     onChange={this.handleChangeBpmnName}
                                                 />
+                                                <ErrorLabel content={errorOnProcessName} />
                                             </div>
 
                                             {/* Ngày bắt đầu - kết thúc quy trình */}
@@ -589,6 +591,7 @@ class ModalCreateTaskByProcess extends Component {
                                                         value={startDate}
                                                         onChange={this.handleChangeTaskStartDate}
                                                     />
+                                                    <ErrorLabel content={errorOnStartDate} />
                                                 </div>
                                                 <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnEndDate === undefined ? "" : "has-error"}`}>
                                                     <label className="control-label">{translate('task.task_management.end_date')}*</label>
@@ -597,19 +600,21 @@ class ModalCreateTaskByProcess extends Component {
                                                         value={endDate}
                                                         onChange={this.handleChangeTaskEndDate}
                                                     />
+                                                    <ErrorLabel content={errorOnEndDate} />
                                                 </div>
                                             </div>
                                         </div>
 
                                         {/* Mô tả quy trình */}
                                         <div className='col-md-6'>
-                                            <div className="form-group">
-                                                <label>Mô tả quy trình</label>
+                                            <div className={`form-group ${errorOnProcessDescription === undefined ? "" : "has-error"}`}>
+                                                <label>{translate("task.task_process.process_description")}</label>
                                                 <textarea type="text" rows={4} style={{ height: "108px" }}
                                                     value={processDescription}
-                                                    className="form-control" placeholder="Mô tả công việc"
+                                                    className="form-control" placeholder={translate("task.task_process.process_description")}
                                                     onChange={this.handleChangeBpmnDescription}
                                                 />
+                                                <ErrorLabel content={errorOnProcessDescription} />
                                             </div>
                                         </div>
                                     </div>
@@ -664,7 +669,7 @@ class ModalCreateTaskByProcess extends Component {
                                                 (showInfo) &&
                                                 <div>
                                                     <div>
-                                                        <h3>Tạo công việc với mẫu {taskName}</h3>
+                                                        <h3>{translate("task.task_process.create_task_with_template")} {taskName}</h3>
                                                     </div>
 
                                                     <FormCreateTaskByProcess

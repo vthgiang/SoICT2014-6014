@@ -10,13 +10,13 @@ const {
  * @company : Id công ty người tìm kiếm
  */
 exports.searchTimesheets = async (params, company) => {
-    var keySearchEmployee, keySearch = {
+    let keySearchEmployee, keySearch = {
         company: company
     };
 
     // Bắt sựu kiện đơn vị tìm kiếm khác undefined 
-    if (params.organizationalUnit !== undefined) {
-        let emailInCompany = await EmployeeService.getEmployeeEmailsByOrganizationalUnitsAndPositions(params.organizationalUnit, params.position);
+    if (params.organizationalUnit) {
+        let emailInCompany = await EmployeeService.getEmployeeEmailsByOrganizationalUnitsAndPositions(params.organizationalUnit, undefined);
         keySearchEmployee = {
             ...keySearchEmployee,
             emailInCompany: {
@@ -26,7 +26,7 @@ exports.searchTimesheets = async (params, company) => {
     }
 
     // Bắt sựu kiện MSNV tìm kiếm khác undefined
-    if (params.employeeNumber !== undefined && params.employeeNumber.length !== 0) {
+    if (params.employeeNumber) {
         keySearchEmployee = {
             ...keySearchEmployee,
             employeeNumber: {
@@ -35,7 +35,7 @@ exports.searchTimesheets = async (params, company) => {
             }
         }
     }
-    if (keySearchEmployee !== undefined) {
+    if (keySearchEmployee) {
         var employeeInfo = await Employee.find(keySearchEmployee);
         var employee = employeeInfo.map(x => x._id);
         keySearch = {
@@ -47,7 +47,7 @@ exports.searchTimesheets = async (params, company) => {
     }
 
     // Bắt sựu kiện tháng tìm kiếm khác null
-    if (params.month !== undefined && params.month.length !== 0) {
+    if (params.month) {
         keySearch = {
             ...keySearch,
             month: new Date(params.month)
@@ -58,11 +58,10 @@ exports.searchTimesheets = async (params, company) => {
     let totalList = await Timesheet.count(keySearch);
     let listTimesheets = await Timesheet.find(keySearch).populate({
             path: 'employee',
-            model: Employee,
             select: 'employeeNumber fullName'
         })
         .sort({
-            'createDate': 'desc'
+            'createAt': 'desc'
         }).skip(params.page).limit(params.limit);
 
     return {
@@ -77,46 +76,35 @@ exports.searchTimesheets = async (params, company) => {
  * @param {*} company : Id công ty
  */
 exports.createTimesheets = async (data, company) => {
-    // Lấy thông tin nhân viên
-    let employeeInfo = await Employee.findOne({
-        employeeNumber: data.employeeNumber,
-        company: company
-    }, {
-        _id: 1,
-        emailInCompany: 1
-    });
     let month = new Date(data.month);
-    if (employeeInfo !== null) {
-        let isSalary = await Timesheet.findOne({
-            employee: employeeInfo._id,
+    let isSalary = await Timesheet.findOne({
+        employee: data.employee,
+        company: company,
+        month: month
+    }, {
+        field1: 1
+    });
+    if (isSalary !== null) {
+        return "have_exist"
+    } else {
+        // Thêm thông tin chấm công
+        let createTimesheets = await Timesheet.create({
+            employee: data.employee,
             company: company,
-            month: month
-        }, {
-            field1: 1
+            month: month,
+            workSession1: data.workSession1,
+            workSession2: data.workSession2,
         });
-        if (isSalary !== null) {
-            return "have_exist"
-        } else {
-            // Thêm thông tin chấm công
-            let createTimesheets = await Timesheet.create({
-                employee: employeeInfo._id,
-                company: company,
-                month: month,
-                workSession1: data.workSession1,
-                workSession2: data.workSession2,
-            });
-            // Lấy thông tin chấm công vừa cập nhật
-            let newTimesheets = await Timesheet.findOne({
-                _id: createTimesheets._id
-            }).populate([{
-                path: 'employee',
-                model: Employee,
-                select: 'employeeNumber fullName'
-            }])
+        // Lấy thông tin chấm công vừa cập nhật
+        let newTimesheets = await Timesheet.findOne({
+            _id: createTimesheets._id
+        }).populate([{
+            path: 'employee',
+            select: 'employeeNumber fullName'
+        }])
 
-            return newTimesheets
-        }
-    } else return null
+        return newTimesheets
+    }
 }
 
 /**
@@ -146,7 +134,6 @@ exports.updateTimesheets = async (id, data) => {
         _id: id
     }).populate([{
         path: 'employee',
-        model: Employee,
         select: 'employeeNumber fullName'
     }])
 

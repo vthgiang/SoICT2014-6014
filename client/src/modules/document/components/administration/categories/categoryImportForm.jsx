@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { configCategory } from './fileConfigDocumentCategory'
+import { configCategory, exportCategory } from './fileConfigDocumentCategory'
 import { DialogModal, ImportFileExcel, ShowImportData, ConFigImportFile, ExportExcel } from '../../../../../common-components';
 //import { taskTemplateActions } from '../redux/actions';
 import { connect } from 'react-redux';
@@ -7,8 +7,8 @@ import { withTranslate } from 'react-redux-multilingual';
 import { AuthActions } from '../../../../auth/redux/actions';
 import { DocumentActions } from '../../../redux/actions'
 
-class CategoryImportForm extends Component{
-    constructor(props){
+class CategoryImportForm extends Component {
+    constructor(props) {
         super(props);
         this.state = {
             configData: configCategory,
@@ -116,11 +116,11 @@ class CategoryImportForm extends Component{
                                     handleImportExcel={this.handleImportExcel}
                                 />
                             </div>
-                            {/* <div className="form-group col-md-4 col-xs-12">
+                            <div className="form-group col-md-4 col-xs-12">
                                 <label></label>
-                                <ExportExcel id="download_template_task_template" type='link' exportData={templateImportTaskTemplate2}
+                                <ExportExcel id="download_template_task_template" type='link' exportData={exportCategory}
                                     buttonName='Download file import mẫu' />
-                            </div> */}
+                            </div>
                             <div className="form-group col-md-12 col-xs-12">
                                 <ShowImportData
                                     id="import_taskTemplate_show_data"

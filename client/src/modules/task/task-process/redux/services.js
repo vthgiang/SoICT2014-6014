@@ -12,13 +12,16 @@ export const TaskProcessService = {
     createTaskByProcess,
     getAllTaskProcess,
     updateDiagram,
+
+    editProcessInfo,
+
 };
 
 
 /**
  * Lấy tất cả xml diagram
  */
-function getAllXmlDiagram( pageNumber, noResultsPerPage, name ) {
+function getAllXmlDiagram(pageNumber, noResultsPerPage, name) {
     let userId = getStorage("userId");
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/process`,
@@ -36,7 +39,7 @@ function getAllXmlDiagram( pageNumber, noResultsPerPage, name ) {
 /**
  * Lấy tất cả task-process
  */
-function getAllTaskProcess( pageNumber, noResultsPerPage, name ) {
+function getAllTaskProcess(pageNumber, noResultsPerPage, name) {
     let userId = getStorage("userId");
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/process`,
@@ -118,9 +121,9 @@ function createTaskByProcess(data, processId) {
 }
 
 /**
- * Tạo công việc theo quy trình
- * @param {String} processId dữ liệu gửi lên body 
- * @param {String} diagram id của process
+ * Chỉnh sửa diagram cho quy trình
+ * @param {String} processId id của process
+ * @param {String} diagram dữ liệu gửi lên body 
  */
 function updateDiagram(processId, diagram) {
     return sendRequest({
@@ -129,3 +132,17 @@ function updateDiagram(processId, diagram) {
         data: diagram,
     }, true, true, 'task.task_process');
 }
+
+/**
+ * Tạo công việc theo quy trình
+ * @param {String} processId id của process 
+ * @param {Object} data dữ liệu cần chỉnh sửa
+ */
+function editProcessInfo(processId, data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/process/processes/${processId}`,
+        method: 'PATCH',
+        data: data,
+    }, true, true, 'task.task_process');
+}
+

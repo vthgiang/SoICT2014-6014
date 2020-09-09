@@ -176,7 +176,7 @@ class EvaluateByAccountableEmployee extends Component {
             unit = user.organizationalUnitsOfUser[0]._id;
         }
         let cloneKpi = []
-        if ( hasAccountable === true && KPIPersonalManager && KPIPersonalManager.kpiSets) {
+        if (hasAccountable === true && KPIPersonalManager && KPIPersonalManager.kpiSets) {
             cloneKpi = (KPIPersonalManager.kpiSets.kpis.filter(e => (e.type === 1)).map(x => { return x._id }));
         }
         // let date = this.formatDate(new Date());
@@ -257,7 +257,7 @@ class EvaluateByAccountableEmployee extends Component {
         if (evaluations) {
             if (evaluations.results.length !== 0) {
                 let role = "Accountable";
-                if( !hasAccountable ) {
+                if (!hasAccountable) {
                     role = "Responsible";
                 }
 
@@ -1155,7 +1155,7 @@ class EvaluateByAccountableEmployee extends Component {
                             description = description === '' ? description + `Điểm đánh giá mới cho ${currentTask.task.accountableEmployees[i].name}: ` + results[`approvedPoint${currentTask.task.accountableEmployees[i]._id}`].value : description + '. ' + `Điểm đánh giá mới cho ${currentTask.task.accountableEmployees[i].name}: ` + results[`approvedPoint${currentTask.task.accountableEmployees[i]._id}`].value;
                         }
 
-                        if (results[`approvedPoint${currentTask.task.consultedEmployees[i]._id}`].value !== currentTask.results[`approvedPoint${currentTask.task.consultedEmployees[i]._id}`].value) {
+                        if (results[`approvedPoint${currentTask.task.accountableEmployees[i]._id}`].value !== currentTask.results[`approvedPoint${currentTask.task.accountableEmployees[i]._id}`].value) {
                             description = description === '' ? description + `% đóng góp mới cho ${currentTask.task.accountableEmployees[i].name}: ` + results[`approvedPoint${currentTask.task.accountableEmployees[i]._id}`].value : description + '. ' + `% đóng góp mới cho ${currentTask.task.accountableEmployees[i].name}: ` + results[`approvedPoint${currentTask.task.accountableEmployees[i]._id}`].value;
                         }
                     }
@@ -1342,7 +1342,7 @@ class EvaluateByAccountableEmployee extends Component {
                         {!(checkNoteMonth && (dentaDate > 7)) &&
                             <div className='pull-right'>
                                 {/* disabled={disabled || disableSubmit} */}
-                                {(id !== 'new' &&  role === "accountable") && <button style={{ marginRight: '5px' }} className="btn btn-danger" onClick={this.deleteEval}>{translate('task.task_management.delete_eval')}</button>}
+                                {(id !== 'new' && role === "accountable") && <button style={{ marginRight: '5px' }} className="btn btn-danger" onClick={this.deleteEval}>{translate('task.task_management.delete_eval')}</button>}
                                 <button disabled={disabled || disableSubmit} className="btn btn-success" onClick={this.save}>{translate('task.task_management.btn_save_eval')}</button>
                             </div>
                         }
@@ -1427,8 +1427,8 @@ class EvaluateByAccountableEmployee extends Component {
                                                     (KPIPersonalManager.kpiSets.kpis.filter(e => (e.type === 1)).map(x => { return { value: x._id, text: x.name } }))
                                                     : []) :
                                                     ((KPIPersonalManager && KPIPersonalManager.kpiSets) ?
-                                                    (KPIPersonalManager.kpiSets.kpis.filter(e => (e.type === 0)).map(x => { return { value: x._id, text: x.name } }))
-                                                    : [])
+                                                        (KPIPersonalManager.kpiSets.kpis.filter(e => (e.type === 0)).map(x => { return { value: x._id, text: x.name } }))
+                                                        : [])
                                             }
                                             onChange={this.handleKpiChange}
                                             multiple={true}

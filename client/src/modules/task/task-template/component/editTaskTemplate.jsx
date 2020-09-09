@@ -471,14 +471,22 @@ class EditTaskTemplate extends Component {
         if (department.departmentsThatUserIsDean) {
             departmentsThatUserIsDean = department.departmentsThatUserIsDean;
         }
-        if (user.roledepartments) {
-            listRole = user.roledepartments;
-            for (let x in listRole.deans)
-                listRoles[x] = listRole.deans[x];
-            for (let x in listRole.viceDeans)
-                listRoles.push(listRole.viceDeans[x]);
-            for (let x in listRole.employees)
-                listRoles.push(listRole.employees[x]);
+        if (user.usersInUnitsOfCompany) {
+            listRole = user.usersInUnitsOfCompany;
+            for (let x in listRole) {
+                listRoles.push(Object.values(listRole[x].deans));
+                listRoles.push(Object.values(listRole[x].viceDeans));
+                listRoles.push(Object.values(listRole[x].employees));
+            }
+            listRole = [];
+            for (let x in listRoles) {
+                for (let i in listRoles[x]) {
+                    if (listRole.indexOf(listRoles[x][i]) === -1) {
+                        listRole = listRole.concat(listRoles[x][i]);
+                    }
+                }
+            }
+            listRoles = listRole;
         }
         if (user.usercompanys) usercompanys = user.usercompanys;
         if (user.userdepartments) userdepartments = user.userdepartments;
@@ -503,14 +511,14 @@ class EditTaskTemplate extends Component {
                         {/**Đơn vị của mẫu công việc */}
                         <div className={`form-group ${editingTemplate.errorOnUnit === undefined ? "" : "has-error"}`} >
                             <label className="control-label">{translate('task_template.unit')}*:</label>
-                            {departmentsThatUserIsDean !== undefined && editingTemplate.organizationalUnit !== "" &&
+                            {usersInUnitsOfCompany !== undefined && editingTemplate.organizationalUnit !== "" &&
                                 <SelectBox
                                     id={`edit-unit-select-box-${editingTemplate._id}`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={
-                                        departmentsThatUserIsDean.map(x => {
-                                            return { value: x._id, text: x.name };
+                                        usersInUnitsOfCompany.map(x => {
+                                            return { value: x.id, text: x.department };
                                         })
                                     }
                                     onChange={this.handleTaskTemplateUnit}
@@ -587,12 +595,12 @@ class EditTaskTemplate extends Component {
 
                             {/**Người thực hiện mẫu công việc này */}
                             <label className="control-label" >{translate('task_template.performer')}</label>
-                            {unitMembers && editingTemplate.responsibleEmployees &&
+                            {allUnitsMember && editingTemplate.responsibleEmployees &&
                                 <SelectBox
                                     id={isProcess ? `edit-responsible-select-box-${editingTemplate._id}-${id}` : `edit-responsible-select-box-${editingTemplate._id}`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
-                                    items={unitMembers}
+                                    items={allUnitsMember}
                                     onChange={this.handleTaskTemplateResponsible}
                                     value={editingTemplate.responsibleEmployees}
                                     multiple={true}
@@ -604,12 +612,12 @@ class EditTaskTemplate extends Component {
 
                             {/**Người phê duyệt mẫu công việc này */}
                             <label className="control-label">{translate('task_template.approver')}</label>
-                            {unitMembers && editingTemplate.accountableEmployees &&
+                            {allUnitsMember && editingTemplate.accountableEmployees &&
                                 <SelectBox
                                     id={isProcess ? `edit-accountable-select-box-${editingTemplate._id}-${id}` : `edit-accountable-select-box-${editingTemplate._id}`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
-                                    items={unitMembers}
+                                    items={allUnitsMember}
                                     onChange={this.handleTaskTemplateAccountable}
                                     value={editingTemplate.accountableEmployees}
                                     multiple={true}

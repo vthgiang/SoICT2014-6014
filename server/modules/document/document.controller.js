@@ -7,7 +7,7 @@ const { LogInfo, LogError } = require('../../logs');
 exports.getDocuments = async (req, res) => {
     try {
         const documents = await DocumentServices.getDocuments(req.user.company._id, req.query);
-        console.log('gettt', documents)
+
         await LogInfo(req.user.email, 'GET_DOCUMENTS', req.user.company);
         res.status(200).json({
             success: true,
@@ -44,7 +44,6 @@ exports.createDocument = async (req, res) => {
             content: document
         });
     } catch (error) {
-        console.log(error)
         await LogError(req.user.email, 'CREATE_DOCUMENT', req.user.company);
         res.status(400).json({
             success: false,
@@ -58,15 +57,14 @@ exports.importDocument = async (req, res) => {
     // try {
 
     const document = await DocumentServices.importDocument(req.user.company._id, req.body);
-    console.log('import', document);
     await LogInfo(req.user.email, 'IMPORT_DOCUMENT', req.user.company);
+    console.log('------------------', document);
     res.status(200).json({
         success: true,
         messages: ['import_document_success'],
         content: document
     });
     // } catch (error) {
-    //     console.log(error)
     //     await LogError(req.user.email, 'IMPORT_DOCUMENT', req.user.company);
     //     res.status(400).json({
     //         success: false,
@@ -161,7 +159,6 @@ exports.addDocumentLog = async (req, res) => {
 }
 
 exports.deleteDocument = async (req, res) => {
-    console.log('---------------------')
     try {
         const doc = await DocumentServices.deleteDocument(req.params.id);
 
@@ -190,7 +187,6 @@ exports.downloadDocumentFile = async (req, res) => {
         }
 
     } catch (error) {
-        console.log("ERROR: ", error)
         await LogError(req.user.email, 'DOWNLOAD_DOCUMENT_FILE', req.user.company);
         res.status(400).json({
             success: false,
@@ -208,7 +204,6 @@ exports.downloadDocumentFileScan = async (req, res) => {
             res.download(file.path, file.name);
         }
     } catch (error) {
-        console.log("ERROR: ", error)
         await LogError(req.user.email, 'DOWNLOAD_DOCUMENT_FILE_SCAN', req.user.company);
         res.status(400).json({
             success: false,

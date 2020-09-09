@@ -16,6 +16,10 @@ class SelectFollowingTaskModal extends Component {
         };
     }
 
+    /**
+     * Hàm cập nhật chọn status
+     * @param {*} value giá trị status lựa chọn
+     */
     handleSelectedStatus = (value) => {
         this.setState(state => {
             return {
@@ -25,6 +29,11 @@ class SelectFollowingTaskModal extends Component {
         })
     }
 
+    /**
+     * Hàm cập nhật các following task muốn kích hoạt
+     * @param {*} e event - đối tượng sự kiện khi tác động thay đổi input
+     * @param {*} id id của công việc được chọn
+     */
     changeSelectedFollowingTask = async (e, id) => {
         let { value, checked } = e.target;
 
@@ -37,9 +46,11 @@ class SelectFollowingTaskModal extends Component {
                 ...state,
             }
         });
-        console.log('0000', this.state);
     }
 
+    /**
+     * Hàm lưu, gửi request đến server
+     */
     save = () => {
         let selectedFollowing = this.state.selectedFollowing;
         let listFollowing = [];
@@ -49,6 +60,7 @@ class SelectFollowingTaskModal extends Component {
             }
         }
 
+        // Thông báo xác nhận kích hoạt công việc
         Swal.fire({
             title: this.props.translate('task.task_perform.notice_change_activate_task'),
             icon: 'warning',
@@ -64,11 +76,30 @@ class SelectFollowingTaskModal extends Component {
         })
     }
 
+    /**
+     * Hàm validate form gửi dữ liệu
+     */
+    isFormValidated = () => {
+        let { selectedFollowing } = this.state;
+        let listFollowing = [];
+        for (let i in selectedFollowing) {
+            if (selectedFollowing[i].checked) {
+                listFollowing.push(selectedFollowing[i].value);
+            }
+        }
+
+        if (listFollowing.length > 0) {
+            return true;
+        }
+        return false;
+    }
+
     render() {
         const { user, translate } = this.props;
         const { task } = this.props;
-        const { statusOptions } = this.state;
+        const { statusOptions, selectedFollowing } = this.state;
 
+        // biến kiểm tra có công việc CHƯA kích hoạt hay không
         let checkHasNonActivatedFollowTask = false;
         if (task) {
             for (let i in task.followingTasks) {
@@ -78,6 +109,7 @@ class SelectFollowingTaskModal extends Component {
             }
         }
 
+        // biến kiểm tra có công việc ĐÃ kích hoạt hay không
         let checkHasActivatedFollowTask = false;
         if (task) {
             for (let i in task.followingTasks) {
@@ -87,6 +119,7 @@ class SelectFollowingTaskModal extends Component {
             }
         }
 
+        // Mảng cấu hình trạng thái công việc
         let statusArr = [
             { value: "Inprocess", text: translate('task.task_management.inprocess') },
             { value: "WaitForApproval", text: translate('task.task_management.wait_for_approval') },
@@ -102,26 +135,12 @@ class SelectFollowingTaskModal extends Component {
                     formID="form-select-following-task"
                     title={this.props.title}
                     func={this.save}
-                    // disableSubmit={!this.isTaskTemplateFormValidated()}
+                    disableSubmit={!this.isFormValidated()}
                     size={50}
+                    hasSaveButton={checkHasNonActivatedFollowTask}
                 >
-
-                    {/* <div className="form-group">
-                        <label>{translate('task.task_management.detail_status')}</label>
-                        {
-                            <SelectBox
-                                id={`select-status-following-task-${task._id}`}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={statusArr}
-                                multiple={false}
-                                value={statusOptions}
-                                onChange={this.handleSelectedStatus}
-                            />
-                        }
-                    </div> */}
+                    {/* Danh sách các công việc ĐÃ kích hoạt */}
                     {checkHasActivatedFollowTask &&
-                    // {task.followingTasks.length !== 0 &&
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">{translate('task.task_perform.activated_task_list')}</legend>
                             {task.followingTasks.map((x, key) => {
@@ -135,8 +154,9 @@ class SelectFollowingTaskModal extends Component {
                         </fieldset>
                     }
 
+                    {/* Danh sách công việc CHƯA kích hoạt */}
                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border">{translate('task.task_perform.choose_following_task')}</legend>
+                        <legend className="scheduler-border">{translate('task.task_perform.choose_following_task')}<span style={{ color: "red" }}> *</span></legend>
 
                         {task.followingTasks.length !== 0 ?
                             (checkHasNonActivatedFollowTask ?
@@ -146,7 +166,7 @@ class SelectFollowingTaskModal extends Component {
                                             <label style={{ fontWeight: "normal", margin: "7px 0px" }}>
                                                 <input
                                                     type="checkbox"
-                                                    checked={this.state.selectedFollowing[x.task._id] && this.state.selectedFollowing[x.task._id].checked === true}
+                                                    checked={selectedFollowing[x.task._id] && selectedFollowing[x.task._id].checked === true}
                                                     value={x.task._id}
                                                     name="following" onChange={(e) => this.changeSelectedFollowingTask(e, x.task._id)}
                                                 />&nbsp;&nbsp;&nbsp;{x.task.name} {x.link ? `- ${translate('task.task_perform.task_link_of_process')}: ${x.link}` : ''}

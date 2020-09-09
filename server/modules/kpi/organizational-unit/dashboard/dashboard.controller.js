@@ -3,7 +3,7 @@ const DashboardOrganizationalUnitService = require('./dashboard.service');
 
 exports.getChildrenOfOrganizationalUnitsAsTree = async (req, res) => {
     try {
-        var tree = await DashboardOrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree(req.user.company._id, req.query.role);
+        let tree = await DashboardOrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree(req.user.company._id, req.query.role);
         
         await LogInfo(req.user.email, 'GET_CHILDREN_DEPARTMENTS', req.user.company);
         res.status(200).json({

@@ -2,10 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { AssetService } from '../../../asset-information/redux/services';
-import { AssetTypeService } from '../../../asset-type/redux/services';
 
-import PurchaseColumnChart from './assetPurchaseChart';
-import DisposalColumnChart from './assetDisposalChart';
+import AssetPurchaseChart from './assetPurchaseChart';
+import AssetDisposalChart from './assetDisposalChart';
 
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 
@@ -70,7 +69,7 @@ class PurchaseAndDisposal extends Component {
                                     <div className="box-title">{translate('asset.dashboard.purchase_asset')}</div>
                                 </div>
                                 <div className="box-body qlcv">
-                                    < PurchaseColumnChart
+                                    < AssetPurchaseChart
                                         listAssets={listAssets}
                                         getPurchaseData={this.getPurchaseData}
                                     />
@@ -85,7 +84,7 @@ class PurchaseAndDisposal extends Component {
                                     <div className="box-title">{translate('asset.dashboard.disposal_asset')}</div>
                                 </div>
                                 <div className="box-body qlcv">
-                                    <DisposalColumnChart
+                                    <AssetDisposalChart
                                         listAssets={listAssets}
                                         getDisposalData={this.getDisposalData}
                                     />

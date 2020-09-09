@@ -14,7 +14,7 @@ class EmployeeDetail extends Component {
     }
 
     componentDidMount = async () => {
-        this.props.getEmployeeProfile();
+        this.props.getEmployeeProfile({ callAPIByUser: true });
         this.props.getDepartment();
     }
 

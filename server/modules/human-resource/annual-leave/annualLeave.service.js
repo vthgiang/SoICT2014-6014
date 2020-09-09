@@ -5,7 +5,7 @@ const {
 } = require('../../../models').schema;
 
 /**
- * Lấy số lượng ngày nghỉ phép của nhân viên trong năm hiện tại
+ * Lấy số lượng ngày nghỉ phép đã được chấp nhận của nhân viên theo email và năm
  * @param {*} email : email công ty nhân viên
  * @param {*} company : Id công ty
  */
@@ -278,7 +278,7 @@ exports.searchAnnualLeaves = async (params, company) => {
     }
 
     // Bắt sựu kiện tìm kiếm theo trạng thái
-    if (params.status !== undefined) {
+    if (params.status) {
         keySearch = {
             ...keySearch,
             status: {
@@ -288,7 +288,7 @@ exports.searchAnnualLeaves = async (params, company) => {
     };
 
     // Bắt sựu kiện tìm kiếm theo tháng 
-    if (params.month !== undefined && params.month.length !== 0) {
+    if (params.month) {
         let date = new Date(params.month);
         let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
         let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
@@ -314,7 +314,7 @@ exports.searchAnnualLeaves = async (params, company) => {
         .sort({
             'createdAt': 'desc'
         }).skip(params.page).limit(params.limit);
-    let totalList = listAnnualLeaves.length;
+    let totalList = await AnnualLeave.countDocuments(keySearch);
 
     return {
         totalList,

@@ -142,20 +142,6 @@ class AnnualLeaveManagement extends Component {
 
     /** Function bắt sự kiện tìm kiếm */
     handleSunmitSearch = async () => {
-        // let { month } = this.state;
-        // if (month) {
-        //     let partMonth = this.formatDate(Date.now(), true).split('-');
-        //     let month = [partMonth[1], partMonth[0]].join('-');
-        //     await this.setState({
-        //         ...this.state,
-        //         month: month
-        //     })
-        // } else {
-        //     await this.setState({
-        //         ...this.state,
-        //         month: month
-        //     })
-        // }
         this.props.searchAnnualLeaves(this.state);
     }
 
@@ -235,7 +221,7 @@ class AnnualLeaveManagement extends Component {
     render() {
         const { translate, annualLeave, department } = this.props;
 
-        const { month, limit, page, currentRow } = this.state;
+        const { month, limit, page, organizationalUnits, currentRow } = this.state;
 
         const { list } = department;
         let listAnnualLeaves = [], exportData = [];
@@ -260,6 +246,7 @@ class AnnualLeaveManagement extends Component {
                         <div className="form-group">
                             <label className="form-control-static">{translate('human_resource.unit')}</label>
                             <SelectMulti id={`multiSelectUnit`} multiple="multiple"
+                                value={organizationalUnits ? organizationalUnits : []}
                                 options={{ nonSelectedText: translate('human_resource.non_unit'), allSelectedText: translate('human_resource.all_unit') }}
                                 items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
                             </SelectMulti>
@@ -301,13 +288,13 @@ class AnnualLeaveManagement extends Component {
                     <table id="sabbatical-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th style={{ width: "10%" }}>{translate('human_resource.staff_number')}</th>
-                                <th style={{ width: "14%" }}>{translate('human_resource.staff_name')}</th>
-                                <th style={{ width: "9%" }}>{translate('human_resource.annual_leave.table.start_date')}</th>
-                                <th style={{ width: "9%" }}>{translate('human_resource.annual_leave.table.end_date')}</th>
-                                <th style={{ width: "12%" }}>{translate('human_resource.unit')}</th>
+                                <th>{translate('human_resource.staff_number')}</th>
+                                <th>{translate('human_resource.staff_name')}</th>
+                                <th>{translate('human_resource.annual_leave.table.start_date')}</th>
+                                <th>{translate('human_resource.annual_leave.table.end_date')}</th>
+                                <th>{translate('human_resource.unit')}</th>
                                 <th>{translate('human_resource.annual_leave.table.reason')}</th>
-                                <th style={{ width: "11%" }}>{translate('human_resource.status')}</th>
+                                <th>{translate('human_resource.status')}</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>{translate('human_resource.annual_leave.table.action')}
                                     <DataTableSetting
                                         tableId="sabbatical-table"
@@ -341,7 +328,7 @@ class AnnualLeaveManagement extends Component {
                                             <td>{x.reason}</td>
                                             <td>{translate(`human_resource.annual_leave.status.${x.status}`)}</td>
                                             <td style={{ textAlign: "center" }}>
-                                                <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.annual_leave.delete_annual_leave')}><i className="material-icons">edit</i></a>
+                                                <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.annual_leave.edit_annual_leave')}><i className="material-icons">edit</i></a>
                                                 <DeleteNotification
                                                     content={translate('human_resource.annual_leave.delete_annual_leave')}
                                                     data={{
@@ -362,7 +349,7 @@ class AnnualLeaveManagement extends Component {
                     }
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
                 </div>
-                {
+                {   /* From chỉnh sửa thông tin nghỉ phép */
                     currentRow &&
                     <AnnualLeaveEditForm
                         _id={currentRow._id}

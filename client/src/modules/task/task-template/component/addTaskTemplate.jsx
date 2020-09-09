@@ -412,14 +412,22 @@ class AddTaskTemplate extends Component {
         if (department.departmentsThatUserIsDean) {
             departmentsThatUserIsDean = department.departmentsThatUserIsDean;
         }
-        if (user.roledepartments) {
-            listRole = user.roledepartments;
-            for (let x in listRole.deans)
-                listRoles[x] = listRole.deans[x];
-            for (let x in listRole.viceDeans)
-                listRoles.push(listRole.viceDeans[x]);
-            for (let x in listRole.employees)
-                listRoles.push(listRole.employees[x]);
+        if (user.usersInUnitsOfCompany) {
+            listRole = user.usersInUnitsOfCompany;
+            for (let x in listRole) {
+                listRoles.push(Object.values(listRole[x].deans));
+                listRoles.push(Object.values(listRole[x].viceDeans));
+                listRoles.push(Object.values(listRole[x].employees));
+            }
+            listRole = [];
+            for (let x in listRoles) {
+                for (let i in listRoles[x]) {
+                    if (listRole.indexOf(listRoles[x][i]) === -1) {
+                        listRole = listRole.concat(listRoles[x][i]);
+                    }
+                }
+            }
+            listRoles = listRole;
         }
         if (user.usercompanys) usercompanys = user.usercompanys;
         if (user.userdepartments) userdepartments = user.userdepartments;
@@ -446,14 +454,14 @@ class AddTaskTemplate extends Component {
                         {/**Đơn vị(phòng ban) của Task template*/}
                         <div className={`form-group ${this.state.newTemplate.errorOnUnit === undefined ? "" : "has-error"}`} style={{ marginLeft: 0, marginRight: 0 }}>
                             <label className="control-label">{translate('task_template.unit')}*:</label>
-                            {units !== undefined && newTemplate.organizationalUnit !== "" &&
+                            {usersInUnitsOfCompany !== undefined && newTemplate.organizationalUnit !== "" &&
                                 <SelectBox
                                     id={`unit-select-box`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={
-                                        units.map(x => {
-                                            return { value: x._id, text: x.name };
+                                        usersInUnitsOfCompany.map(x => {
+                                            return { value: x.id, text: x.department };
                                         })
                                     }
                                     value={newTemplate.organizationalUnit}
@@ -528,12 +536,12 @@ class AddTaskTemplate extends Component {
                         {/**Người chịu trách nhiệm mẫu công việc */}
                         <div className='form-group' >
                             <label className="control-label">{translate('task_template.performer')}</label>
-                            {unitMembers &&
+                            {allUnitsMember &&
                                 <SelectBox
                                     id={isProcess ? `responsible-select-box-${id}` : "responsible-select-box"}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
-                                    items={unitMembers}
+                                    items={allUnitsMember}
                                     value={newTemplate.responsibleEmployees}
                                     onChange={this.handleTaskTemplateResponsible}
                                     multiple={true}
@@ -544,12 +552,12 @@ class AddTaskTemplate extends Component {
                         {/**Người phê duyệt mẫu công việc */}
                         <div className='form-group' >
                             <label className="control-label">{translate('task_template.approver')}</label>
-                            {unitMembers &&
+                            {allUnitsMember &&
                                 <SelectBox
                                     id={isProcess ? `accountable-select-box-${id}` : "accountable-select-box"}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
-                                    items={unitMembers}
+                                    items={allUnitsMember}
                                     value={newTemplate.accountableEmployees}
                                     onChange={this.handleTaskTemplateAccountable}
                                     multiple={true}
