@@ -433,7 +433,7 @@ exports.getAllTaskProcess = async (query) => {
                     { path: "process", model: TaskProcess },
                 ]
             },
-            { path: 'processTemplate', model: ProcessTemplate, select: 'processName' },
+            { path: 'processTemplate', model: ProcessTemplate, select: 'processName manager' },
         ]);
 
 
@@ -487,4 +487,53 @@ exports.updateDiagram = async (params, body) => {
         data: data,
         pageTotal: totalPages
     }
+}
+/**
+ * Cập nhật thông tin quy trình công việc
+ * @param {String} params tham số 
+ * @param {Object} body dữ liệu body
+ */
+exports.editProcessInfo = async (params, body) => {
+    let { processName, processDescription, status, startDate, endDate } =body;
+
+    let splitterStartDate = startDate.split('-');
+    let start = new Date(splitterStartDate[2], splitterStartDate[1]-1, splitterStartDate[0]);
+    let splitterEndDate = endDate.split('-');
+    let end = new Date(splitterEndDate[2], splitterEndDate[1]-1, splitterEndDate[0]);
+
+    let diagram = await TaskProcess.findByIdAndUpdate(params.processId,
+        { $set: {
+             processName: processName, 
+             processDescription: processDescription, 
+             status: status, 
+             startDate: start, 
+             endDate: end, 
+            } 
+        },
+        { new: true }
+    )
+    let newProcess = await TaskProcess.findById(params.processId)
+        .populate([
+            { path: 'creator', model: User, select: 'name' },
+            {
+                path: 'tasks', model: Task, populate: [
+                    { path: "parent", select: "name" },
+                    { path: "taskTemplate", select: "formula" },
+                    { path: "organizationalUnit", model: OrganizationalUnit },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
+                    { path: "evaluations.results.employee", select: "name email _id" },
+                    { path: "evaluations.results.organizationalUnit", select: "name _id" },
+                    { path: "evaluations.results.kpis" },
+                    { path: "taskActions.creator", model: User, select: 'name email avatar' },
+                    { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
+                    { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
+                    { path: "taskComments.creator", model: User, select: 'name email avatar' },
+                    { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
+                    { path: "documents.creator", model: User, select: 'name email avatar' },
+                    { path: "process", model: TaskProcess },
+                ]
+            },
+            { path: 'processTemplate', model: ProcessTemplate, select: 'processName' },
+        ]);
+    return newProcess
 }

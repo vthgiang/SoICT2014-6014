@@ -376,6 +376,7 @@ class EmployeeCreatePage extends Component {
                         {/* Tab lương thưởng - nghỉ phép */}
                         <SalaryTab
                             id="historySalary"
+                            pageCreate={true}
                             salaries={salaries}
                             annualLeaves={annualLeaves}
 

@@ -197,3 +197,27 @@ exports.updateDiagram = async (req, res) => {
 		});
 	}
 }
+
+/**
+ * cập nhật thông tin quy trình công việc
+ * @param {*} req 
+ * @param {*} res 
+ */
+exports.editProcessInfo = async (req, res) => {
+	try {
+		var data = await TaskProcessService.editProcessInfo(req.params, req.body);
+		await LogInfo(req.user.email, `update info process`, req.user.company);
+		res.status(200).json({
+			success: true,
+			messages: ['edit_info_process_success'],
+			content: data,
+		});
+	} catch (error) {
+		await LogError(req.user.email, `update info process`, req.user.company);
+		res.status(400).json({
+			success: false,
+			messages: ['edit_info_process_fail'],
+			content: error,
+		});
+	}
+}

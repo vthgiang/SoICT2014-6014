@@ -49,6 +49,7 @@ class MaintainanceLogTab extends Component {
 
         console.log('this.state', this.state);
         var formater = new Intl.NumberFormat();
+        console.log('\n\n\n\n\n', typeof 6, typeof typeof 6);
 
         return (
             <div id={id} className="tab-pane">
@@ -90,7 +91,7 @@ class MaintainanceLogTab extends Component {
 
                         <div className="form-group">
                             <strong>{translate('asset.maintainance.total_cost')}:&emsp; </strong>
-                            {(maintainanceLogs && maintainanceLogs.length !== 0) && maintainanceLogs.map(item => parseInt(item.expense)).reduce((sum, number) => sum + number, 0)} VNĐ
+                            {(maintainanceLogs && maintainanceLogs.length !== 0) && maintainanceLogs.map(item => parseInt(typeof item.expense === 'number' ? item.expense : 0)).reduce((sum, number) => sum + number, 0)} VNĐ
                         </div>
 
                         {

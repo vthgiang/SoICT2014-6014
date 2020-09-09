@@ -6,11 +6,19 @@ const {
 } = require('../../../logs');
 
 /**
- * Lấy thông tin cá nhân theo userId
+ * Lấy thông tin cá nhân của nhân viên theo userId (id người dùng) hoặc emplyeeId (id nhân viên);
  */
 exports.getEmployeeProfile = async (req, res) => {
     try {
-        var inforEmployee = await EmployeeService.getEmployeeProfile(req.params.userId);
+        let inforEmployee;
+        if (req.query.callAPIByUser === "true") { // Theo uerId
+            let user = await UserService.getUser(req.params.id);
+            inforEmployee = await EmployeeService.getEmployeeProfile(user.email);
+        } else { // Theo employeeId
+            let employee = await EmployeeService.getEmployeeInforById(req.params.id);
+            console.log(employee);
+            inforEmployee = await EmployeeService.getEmployeeProfile(employee.emailInCompany);
+        };
         await LogInfo(req.user.email, 'GET_INFOR_PERSONAL', req.user.company);
         res.status(200).json({
             success: true,
@@ -70,7 +78,6 @@ exports.searchEmployeeProfiles = async (req, res) => {
         } else {
             let params = {
                 organizationalUnits: req.query.organizationalUnits,
-                position: req.query.position,
                 employeeNumber: req.query.employeeNumber,
                 gender: req.query.gender,
                 status: req.query.status,

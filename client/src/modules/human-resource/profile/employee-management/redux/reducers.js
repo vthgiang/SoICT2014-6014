@@ -39,7 +39,7 @@ export function employeesManager(state = initState, action) {
             } else if (action.payload.totalList !== undefined) { // Phải để khác undefined
                 return {
                     ...state,
-                    listEmployees: action.payload.data,
+                    listEmployees: action.payload.listEmployees,
                     totalList: action.payload.totalList,
                     expiresContract: action.payload.expiresContract,
                     employeesHaveBirthdateInCurrentMonth: action.payload.employeesHaveBirthdateInCurrentMonth,

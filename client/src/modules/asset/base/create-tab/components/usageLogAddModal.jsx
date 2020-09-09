@@ -133,7 +133,9 @@ class UsageLogAddModal extends Component {
             checkUsed = true;
         }
 
-        let result = this.validateDescription(this.state.description, false) && checkUsed;
+        let result = this.validateDescription(this.state.description, false) && 
+            checkUsed && this.validateStartDate(this.state.startDate, false) &&
+            this.validateEndDate(this.state.endDate, false);
 
         return result;
     }
@@ -190,7 +192,7 @@ class UsageLogAddModal extends Component {
 
                             {/* Người sử dụng */}
                             <div className={`form-group`}>
-                                <label>{translate('asset.general_information.user')}</label>
+                                <label>{translate('asset.general_information.user')}<span className="text-red">*</span></label>
                                 <div>
                                     <div id="usedByUserBox">
                                         <SelectBox
@@ -225,7 +227,7 @@ class UsageLogAddModal extends Component {
 
                             {/* Thời gian bắt đầu sử dụng */}
                             <div className={`form-group`}>
-                                <label>{translate('asset.general_information.handover_from_date')}</label>
+                                <label>{translate('asset.general_information.handover_from_date')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`add-start-date-${id}`}
                                     value={startDate}
@@ -235,7 +237,7 @@ class UsageLogAddModal extends Component {
 
                             {/* Thời gian kết thúc sử dụng */}
                             <div className={`form-group`}>
-                                <label>{translate('asset.general_information.handover_to_date')}</label>
+                                <label>{translate('asset.general_information.handover_to_date')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`add-end-date-${id}`}
                                     value={endDate}
