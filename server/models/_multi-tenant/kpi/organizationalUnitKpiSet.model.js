@@ -6,13 +6,13 @@ const OrganizationalUnitKpiSetSchema = new Schema({
     // Lưu thông tin đơn vị quản lý kpi này
     organizationalUnit: {
         type: Schema.Types.ObjectId,
-        ref: 'organizational_units',
+        ref: 'OrganizationalUnit',
         required: true
     },
     // Lưu thông tin người thiết lập kpi
     creator: {
         type: Schema.Types.ObjectId,
-        ref: 'users',
+        ref: 'User',
         required: true
     },
     // KPi tháng nào
@@ -23,7 +23,7 @@ const OrganizationalUnitKpiSetSchema = new Schema({
     // Danh sách các KPI trong tập kpi này
     kpis: [{
         type: Schema.Types.ObjectId,
-        ref: 'organizational_unit_kpis',
+        ref: 'OrganizationalUnitKpi',
         required: true
     }],
     automaticPoint: {
@@ -46,7 +46,7 @@ const OrganizationalUnitKpiSetSchema = new Schema({
     comments: [{ // Trao đổi khi thiết lập KPIs
         creator: {
             type: Schema.Types.ObjectId,
-            ref: 'users',
+            ref: 'User',
             required: true
         },
         content: {
@@ -72,7 +72,7 @@ const OrganizationalUnitKpiSetSchema = new Schema({
         comments: [{  // Comments của comment
             creator: {
                 type: Schema.Types.ObjectId,
-                ref: 'users',
+                ref: 'User',
                 required: true
             },
             content: {
@@ -101,4 +101,8 @@ const OrganizationalUnitKpiSetSchema = new Schema({
     timestamps: true
 });
 
-module.exports = OrganizationalUnitKpiSet = (db) => db.model("organizational_unit_kpi_sets", OrganizationalUnitKpiSetSchema);
+module.exports = (db) => {
+    if(!db.models.OrganizationalUnitKpiSet)
+        return db.model('OrganizationalUnitKpiSet', OrganizationalUnitKpiSetSchema);
+    return db.models.OrganizationalUnitKpiSet;
+}

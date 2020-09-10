@@ -25,10 +25,6 @@ const EmployeeSchema = new Schema({
     leavingDate: { // Ngày nghỉ việc
         type: Date,
     },
-    company: {
-        type: Schema.Types.ObjectId,
-        ref: 'companies'
-    },
     employeeTimesheetId: { // mã số chấm công của nhân viên
         type: String,
         required: true
@@ -248,4 +244,8 @@ const EmployeeSchema = new Schema({
     timestamps: true,
 });
 
-module.exports = Employee = (db) => db.model("employees", EmployeeSchema);
+module.exports = (db) => {
+    if(!db.models.Employee)
+        return db.model('Employee', EmployeeSchema);
+    return db.models.Employee;
+}

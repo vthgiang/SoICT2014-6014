@@ -1,5 +1,7 @@
 const { TaskProcess, ProcessTemplate } = require('../../../models').schema;
-const { User, Privilege, TaskTemplate, Task } = require('../../../models/index').schema;
+const { User, Privilege, Role, Task } = require('../../../models/index').schema;
+const TaskService = require('../task-management/task.service');
+const nodemailer = require("nodemailer");
 const mongoose = require('mongoose');
 
 /**
@@ -68,6 +70,8 @@ exports.getAllXmlDiagram = async (query) => {
 
     taskProcesses = taskProcess[0].processes;
     await ProcessTemplate.populate(taskProcesses, { path: 'creator', model: User, select: 'name' });
+    await ProcessTemplate.populate(taskProcesses, { path: 'manager', model: Role, select: 'name' });
+    await ProcessTemplate.populate(taskProcesses, { path: 'viewer', model: Role, select: 'name' });
 
     let totalCount = 0;
     if (JSON.stringify(taskProcesses) !== JSON.stringify([])) {
@@ -295,6 +299,7 @@ exports.createTaskByProcess = async (processId, body) => {
     })
 
     let listTask = [];
+    let mailInfoArr = [];
     let taskProcessId = newTaskProcess._id;
 
     for (let i in data) {
@@ -329,7 +334,6 @@ exports.createTaskByProcess = async (processId, body) => {
         }
 
         let process = taskProcessId;
-
         let newTaskItem = await Task.create({
             process: process,
             codeInProcess: data[i].code,
@@ -356,6 +360,9 @@ exports.createTaskByProcess = async (processId, body) => {
             confirmedByEmployees: data[i].responsibleEmployees.concat(data[i].accountableEmployees).concat(data[i].consultedEmployees).includes(data[i].creator) ? data[i].creator : []
         });
 
+        let x = await TaskService.sendEmailFoCreateTask(newTaskItem);
+
+        mailInfoArr.push(x);
         listTask.push(newTaskItem._id);
     }
 
@@ -399,7 +406,13 @@ exports.createTaskByProcess = async (processId, body) => {
 
     await TaskProcess.findByIdAndUpdate(taskProcessId, { $set: { tasks: listTask } }, { new: true });
 
-    return await ProcessTemplate.find().populate({ path: 'creator', model: User, select: 'name' });;
+    let myProcess = await ProcessTemplate.find().populate([
+        { path: 'creator', model: User, select: 'name' },
+        { path: 'viewer', model: Role, select: 'name' },
+        { path: 'manager', model: Role, select: 'name' },
+    ]);;
+
+    return { process: myProcess, mailInfo: mailInfoArr}
 }
 
 /**

@@ -2396,13 +2396,15 @@ export default {
                     accountable: 'Accountable role',
 
                     err_range: 'Value must be between 0 and 100',
-                    err_contribute: 'Sum of contribution should be 100',
+                    err_contribute: 'Sum of contributions should be 100',
+                    err_not_enough_contribute: 'Sum of all contributions should be 100',
                     err_empty: "Value must be required"
                 }
             },
             task_process: {
                 process_name: 'Process name',
                 process_description: 'Process description',
+                num_task: 'Number of tasks in process',
                 process_status: 'Process status',
                 creator: 'Creator',
                 manager: 'Manager',

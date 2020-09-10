@@ -5,12 +5,7 @@ const Schema = mongoose.Schema;
 const TimesheetsSchema = new Schema({
     employee: {
         type: Schema.Types.ObjectId,
-        ref: 'employees',
-        required: true,
-    },
-    company: {
-        type: Schema.Types.ObjectId,
-        ref: 'companies',
+        ref: 'Employee',
         required: true,
     },
     month: {
@@ -27,4 +22,8 @@ const TimesheetsSchema = new Schema({
     timestamps: true,
 });
 
-module.exports = Timesheets = (db) => db.model("timesheets", TimesheetsSchema);
+module.exports = (db) => {
+    if(!db.models.Timesheets)
+        return db.model('Timesheets', TimesheetsSchema);
+    return db.models.Timesheets;
+}
