@@ -1,11 +1,10 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const Company = require('./company.model');
 
 const ImportConfiguraionSchema = new Schema({
     company: {
         type: Schema.Types.ObjectId,
-        ref: Company,
+        ref: 'Company',
         required: true
     },
     configuration: {
@@ -16,9 +15,12 @@ const ImportConfiguraionSchema = new Schema({
         type: String,
         enum: ['salary', 'taskTemplate']
     },
-
 }, {
     timestamps: true
 });
 
-module.exports = ImportConfiguraion = (db) => db.model("import_configuraions", ImportConfiguraionSchema);
+module.exports = (db) => {
+    if(!db.models.ImportConfiguraion)
+        return db.model('ImportConfiguraion', ImportConfiguraionSchema);
+    return db.models.ImportConfiguraion;
+}

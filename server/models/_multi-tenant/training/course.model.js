@@ -15,10 +15,6 @@ const CourseSchema = new Schema({
         required: true,
         enum:['external','internal'] //external- đào tạo ngoài, internal-đào tại nội bộ
     },
-    company: {
-        type: Schema.Types.ObjectId,
-        ref: 'companies'
-    },
     offeredBy: { // Đơn vị tổ chức/cung cấp khóa học, có thể ở ngoài công ty
         type: String,
         required: true
@@ -52,7 +48,7 @@ const CourseSchema = new Schema({
     },
     educationProgram: {
         type: Schema.Types.ObjectId,
-        ref: 'education_programs',
+        ref: 'EducationProgram',
         required: true
     },
 }, {

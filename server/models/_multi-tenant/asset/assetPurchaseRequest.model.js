@@ -3,10 +3,6 @@ const Schema = mongoose.Schema;
 
 // Bảng đề nghị mua sắm thiết bị
 const AssetPurchaseRequestSchema = new Schema({
-    company: { //công ty
-        type: Schema.Types.ObjectId,
-        ref: 'companies'
-    },
     recommendNumber: { //mã phiếu
         type: String,
         required: true
@@ -17,7 +13,7 @@ const AssetPurchaseRequestSchema = new Schema({
     },
     proponent: { //người đề nghị
         type: Schema.Types.ObjectId,
-        ref: 'users'
+        ref: 'User'
     },
     equipment: { //Tên thiết bị đề nghị mua sắm
         type: String,
@@ -39,7 +35,7 @@ const AssetPurchaseRequestSchema = new Schema({
     },
     approver: { //người phê duyệt
         type: Schema.Types.ObjectId,
-        ref: 'users'
+        ref: 'User'
     },
     status: {//trạng thái, tình trạng: chờ phê duyệt || không chấp nhận || đã chấp nhận
         type: String
@@ -55,4 +51,8 @@ const AssetPurchaseRequestSchema = new Schema({
     
 });
 
-module.exports = AssetPurchaseRequest = (db) => db.model("asset_purchase_requests", AssetPurchaseRequestSchema);
+module.exports = (db) => {
+    if(!db.models.AssetPurchaseRequest)
+        return db.model('AssetPurchaseRequest', AssetPurchaseRequestSchema);
+    return db.models.AssetPurchaseRequest;
+}

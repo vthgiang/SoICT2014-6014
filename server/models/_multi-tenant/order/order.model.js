@@ -20,4 +20,8 @@ const OrderSchema = new Schema({
   },
 });
 
-module.exports = Order = (db) => db.model("orders", OrderSchema);
+module.exports = (db) => {
+  if(!db.models.Order)
+      return db.model('Order', OrderSchema);
+  return db.models.Order;
+}

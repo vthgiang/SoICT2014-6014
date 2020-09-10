@@ -9,7 +9,7 @@ const EmployeeKpiSchema = new Schema({
     },
     parent: {
         type: Schema.Types.ObjectId,
-        ref: 'organizational_unit_kpis',
+        ref: 'OrganizationalUnit',
     },
     weight: {
         type: Number,
@@ -48,4 +48,8 @@ const EmployeeKpiSchema = new Schema({
     timestamps :true
 });
 
-module.exports = EmployeeKpi = (db) => db.model("employee_kpis", EmployeeKpiSchema);
+module.exports = (db) => {
+    if(!db.models.EmployeeKpi)
+        return db.model('EmployeeKpi', EmployeeKpiSchema);
+    return db.models.EmployeeKpi;
+}
