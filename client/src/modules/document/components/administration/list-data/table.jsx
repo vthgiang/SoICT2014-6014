@@ -138,10 +138,21 @@ class Table extends Component {
         })
     }
     handleDomainChange = (value) => {
-        console.log('domainnnnn', value);
-        this.setState({ domain: value });
+        this.setState(state => {
+            return {
+                ...state,
+                domain: value,
+            }
+        })
     }
-
+    handleDomains = value => {
+        this.setState(state => {
+            return {
+                ...state,
+                documentDomains: value,
+            }
+        })
+    }
     handleNameChange = (e) => {
         const value = e.target.value;
         this.setState(state => {
@@ -279,7 +290,7 @@ class Table extends Component {
         const { domains, categories, archives } = this.props.documents.administration;
         const { paginate } = docs;
         const { isLoading } = this.props.documents;
-        const { currentRow, archive, category, domain } = this.state;
+        const { currentRow, archive, domain, category } = this.state;
         const listDomain = domains.list
         const listCategory = this.convertData(categories.list)
         const listArchive = archives.list;
@@ -370,8 +381,9 @@ class Table extends Component {
                     <div className="form-group" >
                         <label>{translate('document.store.information')}</label>
                         <TreeSelect
+                            id="tree-select-search-archive"
                             data={listArchive}
-                            className="form-control select2"
+                            className="form-control"
                             handleChange={this.handleArchiveChange}
                             value={archive}
                             mode="hierarchical"
@@ -385,8 +397,9 @@ class Table extends Component {
                     <div className="form-group">
                         <label>{translate('document.domain')}</label>
                         <TreeSelect
+                            id="tree-select-search-domain"
                             data={listDomain}
-                            className="form-control select2"
+                            className="form-control"
                             handleChange={this.handleDomainChange}
                             value={domain}
                             mode="hierarchical"

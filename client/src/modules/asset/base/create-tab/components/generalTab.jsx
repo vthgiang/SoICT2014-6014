@@ -532,8 +532,8 @@ class GeneralTab extends Component {
         } = this.state;
 
         var userlist = user.list, departmentlist = department.list;
-        let startDate = status == "Đang sử dụng" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1].startDate) : '';
-        let endDate = status == "Đang sử dụng" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1].endDate) : '';
+        let startDate = status == "Đang sử dụng" && usageLogs && usageLogs.length ? this.formatDate(usageLogs[usageLogs.length - 1].startDate) : '';
+        let endDate = status == "Đang sử dụng" && usageLogs && usageLogs.length ? this.formatDate(usageLogs[usageLogs.length - 1].endDate) : '';
         var assettypelist = assetType.listAssetTypes;
         let typeInTreeSelect = [];
 
@@ -594,7 +594,7 @@ class GeneralTab extends Component {
 
                                 {/* Số serial */}
                                 <div className={`form-group ${!errorOnSerial ? "" : "has-error"} `}>
-                                    <label htmlFor="serial">{translate('asset.general_information.serial_number')}<span className="text-red">*</span></label>
+                                    <label htmlFor="serial">{translate('asset.general_information.serial_number')}</label>
                                     <input type="text" className="form-control" name="serial" value={serial} onChange={this.handleSerialChange} placeholder={translate('asset.general_information.serial_number')}
                                         autoComplete="off" />
                                     <ErrorLabel content={errorOnSerial} />
@@ -643,7 +643,7 @@ class GeneralTab extends Component {
 
                                 {/* Ngày bảo hành */}
                                 <div className={`form-group ${!errorOnWarrantyExpirationDate ? "" : "has-error"}`}>
-                                    <label htmlFor="warrantyExpirationDate">{translate('asset.general_information.warranty_expiration_date')}<span className="text-red">*</span></label>
+                                    <label htmlFor="warrantyExpirationDate">{translate('asset.general_information.warranty_expiration_date')}</label>
                                     <DatePicker
                                         id={`warrantyExpirationDate${id}`}
                                         value={warrantyExpirationDate ? this.formatDate(warrantyExpirationDate) : ''}
@@ -654,7 +654,7 @@ class GeneralTab extends Component {
 
                                 {/* Người quản lý */}
                                 <div className={`form-group${!errorOnManagedBy ? "" : "has-error"}`}>
-                                    <label>{translate('asset.general_information.manager')}<span className="text-red">*</span></label>
+                                    <label>{translate('asset.general_information.manager')}</label>
                                     <div id="managedByBox">
                                         <SelectBox
                                             id={`managedBy${id}`}
@@ -685,8 +685,54 @@ class GeneralTab extends Component {
                                 </div>
                             </div>
 
-                            {/* Người sử dụng */}
                             <div className="col-md-6">
+
+                                {/* Vị trí tài sản */}
+                                <div className={`form-group ${!errorOnLocation ? "" : "has-error"}`}>
+                                    <label htmlFor="location">{translate('asset.general_information.asset_location')}</label>
+                                    <TreeSelect data={buildingList} value={[location]} handleChange={this.handleLocationChange} mode="radioSelect" />
+                                    <ErrorLabel content={errorOnLocation} />
+                                </div>
+
+                                {/* Trạng thái */}
+                                <div className="form-group">
+                                    <label>{translate('asset.general_information.status')}<span className="text-red">*</span></label>
+                                    <SelectBox
+                                        id={`status${id}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        value={status}
+                                        items={[
+                                            { value: '', text: '---Chọn trạng thái---' },
+                                            { value: 'Sẵn sàng sử dụng', text: translate('asset.general_information.ready_use') },
+                                            { value: 'Đang sử dụng', text: translate('asset.general_information.using') },
+                                            { value: 'Hỏng hóc', text: translate('asset.general_information.damaged') },
+                                            { value: 'Mất', text: translate('asset.general_information.lost') },
+                                            { value: 'Thanh lý', text: translate('asset.general_information.disposal') },
+                                        ]}
+                                        onChange={this.handleStatusChange}
+                                    />
+                                </div>
+
+                                {/* Quyền đăng ký sử dụng */}
+                                <div className="form-group">
+                                    <label>{translate('asset.general_information.can_register_for_use')}<span className="text-red">*</span></label>
+                                    <SelectBox
+                                        id={`typeRegisterForUse${id}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        value={typeRegisterForUse}
+                                        items={[
+                                            { value: '', text: '---Chọn quyền sử dụng---' },
+                                            { value: 1, text: 'Không được đăng ký sử dụng' },
+                                            { value: 2, text: 'Đăng ký sử dụng theo giờ' },
+                                            { value: 3, text: 'Đăng ký sử dụng lâu dài' },
+                                        ]}
+                                        onChange={this.handleTypeRegisterForUseChange}
+                                    />
+                                </div>
+
+                                {/* Người sử dụng */}
                                 <div className={`form-group`}>
                                     <label>{translate('asset.general_information.user')}&emsp; </label>
                                     <div id="assignedToUserBox">
@@ -737,58 +783,11 @@ class GeneralTab extends Component {
                                         disabled
                                     />
                                 </div>
-
-
-                                {/* Vị trí tài sản */}
-                                <div className={`form-group ${!errorOnLocation ? "" : "has-error"}`}>
-                                    <label htmlFor="location">{translate('asset.general_information.asset_location')}</label>
-                                    <TreeSelect data={buildingList} value={[location]} handleChange={this.handleLocationChange} mode="radioSelect" />
-                                    <ErrorLabel content={errorOnLocation} />
-                                </div>
-
+                                
                                 {/* Mô tả */}
                                 <div className="form-group">
                                     <label htmlFor="description">{translate('asset.general_information.description')}</label>
-                                    <input type="text" className="form-control" name="description" value={description} onChange={this.handleDescriptionChange} placeholder="Mô tả"
-                                        autoComplete="off" />
-                                </div>
-
-                                {/* Trạng thái */}
-                                <div className="form-group">
-                                    <label>{translate('asset.general_information.status')}<span className="text-red">*</span></label>
-                                    <SelectBox
-                                        id={`status${id}`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        value={status}
-                                        items={[
-                                            { value: '', text: '---Chọn trạng thái---' },
-                                            { value: 'Sẵn sàng sử dụng', text: translate('asset.general_information.ready_use') },
-                                            { value: 'Đang sử dụng', text: translate('asset.general_information.using') },
-                                            { value: 'Hỏng hóc', text: translate('asset.general_information.damaged') },
-                                            { value: 'Mất', text: translate('asset.general_information.lost') },
-                                            { value: 'Thanh lý', text: translate('asset.general_information.disposal') },
-                                        ]}
-                                        onChange={this.handleStatusChange}
-                                    />
-                                </div>
-
-                                {/* Quyền đăng ký sử dụng */}
-                                <div className="form-group">
-                                    <label>{translate('asset.general_information.can_register_for_use')}<span className="text-red">*</span></label>
-                                    <SelectBox
-                                        id={`typeRegisterForUse${id}`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        value={typeRegisterForUse}
-                                        items={[
-                                            { value: '', text: '---Chọn quyền sử dụng---' },
-                                            { value: 1, text: 'Không được đăng ký sử dụng' },
-                                            { value: 2, text: 'Đăng ký sử dụng theo giờ' },
-                                            { value: 3, text: 'Đăng ký sử dụng lâu dài' },
-                                        ]}
-                                        onChange={this.handleTypeRegisterForUseChange}
-                                    />
+                                    <textarea className="form-control" rows="3" name="description" value={description} onChange={this.handleDescriptionChange} placeholder="Enter ..." autoComplete="off" ></textarea>
                                 </div>
 
                             </div>

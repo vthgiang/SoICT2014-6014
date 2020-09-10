@@ -228,6 +228,17 @@ class SideBar extends Component {
 
                             {/* Quản lý kế hoạch sản xuất */}
                             <Item item={{ name: 'menu.manage_plans', icon: 'fa fa-calendar', path: '/manage-plans' }} />
+
+                            {/* CRUD ví dụ theo 2 mô hình lấy dữ liệu */}
+                            <GroupItem groupItem={{
+                                name: 'menu.manage_examples',
+                                icon: 'fa fa-edit',
+                                list: [
+                                    { name: 'menu.manage_examples_1', icon: 'fa fa-circle', path: '/manage-examples-1' },
+                                    { name: 'menu.manage_examples_2', icon: 'fa fa-adjust', path: '/manage-examples-2' },
+                                ]
+                            }} />
+
                         </ul>
                     </section>
                 </aside>

@@ -47,7 +47,7 @@ class SalaryTab extends Component {
     }
 
     render() {
-        const { translate } = this.props;
+        const { translate, department } = this.props;
 
         const { id, annualLeaves, salaries } = this.state;
 
@@ -65,17 +65,20 @@ class SalaryTab extends Component {
                                     <th>{translate('human_resource.month')}</th>
                                     <th>{translate('human_resource.salary.table.main_salary')}</th>
                                     <th>{translate('human_resource.salary.table.total_salary')}</th>
+                                    <th>{translate('human_resource.unit')}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {salaries && salaries.length !== 0 &&
                                     salaries.map((x, index) => {
+                                        let total = 0;
                                         if (x.bonus.length !== 0) {
-                                            var total = 0;
+
                                             for (let count in x.bonus) {
                                                 total = total + parseInt(x.bonus[count].number)
                                             }
                                         }
+                                        let organizationalUnit = department.list.find(y => y._id === x.organizationalUnit);
                                         return (
                                             <tr key={index}>
                                                 <td>{this.formatDate(x.month, true)}</td>
@@ -87,6 +90,7 @@ class SalaryTab extends Component {
                                                             formater.format(total + parseInt(x.mainSalary))
                                                     } {x.unit}
                                                 </td>
+                                                <td>{organizationalUnit ? organizationalUnit.name : 'Deleted'}</td>
                                             </tr>
                                         )
                                     })
@@ -108,18 +112,23 @@ class SalaryTab extends Component {
                                     <th>{translate('human_resource.annual_leave.table.end_date')}</th>
                                     <th>{translate('human_resource.annual_leave.table.reason')}</th>
                                     <th>{translate('human_resource.status')}</th>
+                                    <th>{translate('human_resource.unit')}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {annualLeaves && annualLeaves.length !== 0 &&
-                                    annualLeaves.map((x, index) => (
-                                        <tr key={index}>
-                                            <td>{this.formatDate(x.startDate)}</td>
-                                            <td>{this.formatDate(x.endDate)}</td>
-                                            <td>{x.reason}</td>
-                                            <td>{translate(`human_resource.annual_leave.status.${x.status}`)}</td>
-                                        </tr>
-                                    ))}
+                                    annualLeaves.map((x, index) => {
+                                        let organizationalUnit = department.list.find(y => y._id === x.organizationalUnit);
+                                        return (
+                                            <tr key={index}>
+                                                <td>{this.formatDate(x.startDate)}</td>
+                                                <td>{this.formatDate(x.endDate)}</td>
+                                                <td>{x.reason}</td>
+                                                <td>{translate(`human_resource.annual_leave.status.${x.status}`)}</td>
+                                                <td>{organizationalUnit ? organizationalUnit.name : "Deleted"}</td>
+                                            </tr>
+                                        )
+                                    })}
                             </tbody>
                         </table>
                         {
@@ -133,5 +142,10 @@ class SalaryTab extends Component {
     }
 };
 
-const salaryTab = connect(null, null)(withTranslate(SalaryTab));
+function mapState(state) {
+    const { department } = state;
+    return { department };
+};
+
+const salaryTab = connect(mapState, null)(withTranslate(SalaryTab));
 export { salaryTab as SalaryTab };

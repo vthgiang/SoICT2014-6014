@@ -182,7 +182,7 @@ class DisciplineManager extends Component {
 
         const { pageActive } = this.props;
 
-        const { limit, page, currentRow } = this.state;
+        const { limit, page, organizationalUnits, currentRow } = this.state;
 
         let { list } = department;
 
@@ -209,6 +209,7 @@ class DisciplineManager extends Component {
                         <div className="form-group">
                             <label className="form-control-static">{translate('human_resource.commendation_discipline.commendation.table.decision_unit')}</label>
                             <SelectMulti id={`multiSelectUnitDiscipline`} multiple="multiple"
+                                value={organizationalUnits ? organizationalUnits : []}
                                 options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
                                 items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
                             </SelectMulti>
@@ -299,7 +300,7 @@ class DisciplineManager extends Component {
                         (!listDisciplines || listDisciplines.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
                     <PaginateBar id="discipline" pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
-                    {   /** Form chỉnh sửa thông tin kỷ luật */
+                    {   /* Form chỉnh sửa thông tin kỷ luật */
                         currentRow !== undefined &&
                         <DisciplineEditForm
                             _id={currentRow._id}

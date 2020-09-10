@@ -770,7 +770,11 @@ export default {
             manage_orders: "Quản lý đơn hàng",
             manage_list_orders: "Danh sách đơn hàng",
             // Quản lý kế hoạch sản xuất
-            manage_plans: "Quản lý kế hoạch sản xuất"
+            manage_plans: "Quản lý kế hoạch sản xuất",
+            //VÍ DỤ EXAMPLE
+            manage_examples: "Ví dụ CRUD",
+            manage_examples_1: "CRUD theo mô hình số 1",
+            manage_examples_2: "CRUD theo mô hình số 2",
         },
 
         manage_system: {
@@ -1249,6 +1253,7 @@ export default {
                 course_name: 'Tên khoá học',
                 start_day: 'Ngày bắt đầu',
                 end_date: 'Ngày kết thúc',
+                contract_end_date: 'Ngày hết hạn hợp đồng',
                 type_education: 'Loại đào tạo',
                 cost: 'Chi phí',
                 edit_contract: 'Chỉnh sửa hợp đồng lao động',
@@ -1305,11 +1310,13 @@ export default {
 
                 // Quản lý thông tin cá nhân
                 employee_info: {
+                    export_bhxh: 'Quá trình đóng bảo hiểm xã hội',
                     // Nhóm dành cho UI
                     note_page_personal: 'Tôi xin cam đoan những lời khai trên đây là đúng sự thật và chịu trách nhiệm cho những lời khai này.',
                     contact_other: '(Những thông tin khác vui lòng liên hệ các bên liên quan để được xử lý)',
                     update_infor_personal: 'Cập nhật thông tin nhân viên',
-                    no_data_personal: 'Chưa có thông tin cá nhân',
+                    no_data_personal: 'Bạn chưa có thông tin cá nhân',
+                    no_data_personal_to_update: 'Bạn chưa có thông tin cá nhân để cập nhật',
 
                     guaranteed_infor_to_update: 'Bạn chưa cam đoan thông tin cần cập nhật',
                     no_change_data: 'Không có thông tin nào được thay đổi',
@@ -1323,11 +1330,12 @@ export default {
 
                 employee_management: {
                     file_name_export: 'Thông tin nhân viên',
+                    staff_no_unit_title: 'Do nhân viên chưa thuộc đơn vị nào',
                     no_gender: 'Chọn giới tính',
                     all_gender: 'Chọn tất cả giới tính',
                     brithday_lable: 'Sinh nhật',
                     brithday_lable_title: 'Tháng sinh nhật',
-                    contract_lable: 'Hết hạn hợn đồng',
+                    contract_lable: 'Hết hạn hợp đồng',
                     contract_lable_title: 'Tháng hết hạn hợp đồng',
                     contract_type_title: 'Loại hợp đồng lao động',
 
@@ -1662,6 +1670,7 @@ export default {
                 asset_incident_and_maintenance: 'Sự cố - bảo trì',
                 incident_asset: 'Thống kê sự cố tài sản',
                 maintenance_asset: 'Thống kê bảo trì tài sản',
+                statistic_by: 'Thống kê theo',
             },
 
             //  Quản lý loại tài sản
@@ -1901,12 +1910,11 @@ export default {
             confirm_title: 'Bạn chắc chắn muốn xóa mẫu công việc này?',
             error_title: 'Không thể xóa mẫu công việc này do đã được sử dụng.',
             name: 'Tên mẫu',
-            unit: 'Đơn vị',
+            unit: 'Đơn vị quản lý công việc',
             tasktemplate_name: 'Tên mẫu công việc',
             description: 'Mô tả',
             count: 'Số lần sử dụng',
             creator: 'Người tạo mẫu',
-            unit: 'Đơn vị',
             action: 'Hành động',
             priority: 'Độ ưu tiên',
             general_information: 'Thông tin chung',
@@ -2047,8 +2055,8 @@ export default {
                 action_add: 'Thêm công việc con',
                 action_start_timer: 'Bắt đầu bấm giờ',
 
-                from: 'Từ tháng',
-                to: 'Đến tháng',
+                from: 'Từ ',
+                to: 'Đến',
                 lower_from: 'từ',
                 lower_to: 'đến',
                 month: 'Tháng',
@@ -3168,6 +3176,28 @@ export default {
             edit_plan_success: "Cập nhật kế hoạch thành công!",
             edit_plan_fail: "Cập nhật kế hoạch thất bại!",
             detail_info_plan: "Thông tin chi tiết kế hoạch"
+        },
+
+        // manage example
+        manage_example: {
+            exampleName: "Tên ví dụ",
+            search: "Tìm kiếm",
+            add_example: "Thêm mới",
+            index: "STT",
+            description: "Mô tả",
+            edit: "Chỉnh sửa thông tin ví dụ",
+            delete: "Xóa ví dụ",
+            delete_success: "Xóa ví dụ thành công!",
+            delete_fail: "Xóa ví dụ thất bại!",
+            add: "Thêm ví dụ",
+            add_title: "Thêm mới ví dụ",
+            add_success: "Thêm ví dụ thành công!",
+            add_fail: "Thêm ví dụ thất bại!",
+            example_description: "Mô tả ví dụ",
+            edit_title: "Cập nhật ví dụ",
+            edit_example_success: "Cập nhật ví dụ thành công!",
+            edit_example_fail: "Cập nhật ví dụ thất bại!",
+            detail_info_example: "Thông tin chi tiết ví dụ"
         },
 
         footer: {

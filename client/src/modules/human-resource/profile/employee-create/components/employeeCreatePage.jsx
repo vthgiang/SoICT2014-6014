@@ -336,6 +336,7 @@ class EmployeeCreatePage extends Component {
                         {/* Tab  bảo hiểm */}
                         <InsurranceTab
                             id="baohiem"
+                            pageCreate={true}
                             socialInsuranceDetails={employee.socialInsuranceDetails}
                             employee={employee}
                             handleChange={this.handleChange}
@@ -348,8 +349,10 @@ class EmployeeCreatePage extends Component {
                         <ContractTab
                             id="hopdong"
                             pageCreate={true}
+                            employee={employee}
                             contracts={contracts}
                             courses={courses}
+                            handleChange={this.handleChange}
 
                             handleAddContract={this.handleChangeContract}
                             handleEditContract={this.handleChangeContract}
@@ -376,6 +379,7 @@ class EmployeeCreatePage extends Component {
                         {/* Tab lương thưởng - nghỉ phép */}
                         <SalaryTab
                             id="historySalary"
+                            pageCreate={true}
                             salaries={salaries}
                             annualLeaves={annualLeaves}
 

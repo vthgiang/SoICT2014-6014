@@ -415,17 +415,16 @@ class AddTaskTemplate extends Component {
         if (user.usersInUnitsOfCompany) {
             listRole = user.usersInUnitsOfCompany;
             for (let x in listRole) {
-                if (listRole[x].id === newTemplate.organizationalUnit) {
-                    listRoles.push(Object.values(listRole[x].deans));
-                    listRoles.push(Object.values(listRole[x].viceDeans));
-                    listRoles.push(Object.values(listRole[x].employees));
-                }
-                
+                listRoles.push(Object.values(listRole[x].deans));
+                listRoles.push(Object.values(listRole[x].viceDeans));
+                listRoles.push(Object.values(listRole[x].employees));
             }
             listRole = [];
             for (let x in listRoles) {
                 for (let i in listRoles[x]) {
-                    listRole = listRole.concat(listRoles[x]);
+                    if (listRole.indexOf(listRoles[x][i]) === -1) {
+                        listRole = listRole.concat(listRoles[x][i]);
+                    }
                 }
             }
             listRoles = listRole;
@@ -537,12 +536,12 @@ class AddTaskTemplate extends Component {
                         {/**Người chịu trách nhiệm mẫu công việc */}
                         <div className='form-group' >
                             <label className="control-label">{translate('task_template.performer')}</label>
-                            {unitMembers &&
+                            {allUnitsMember &&
                                 <SelectBox
                                     id={isProcess ? `responsible-select-box-${id}` : "responsible-select-box"}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
-                                    items={unitMembers}
+                                    items={allUnitsMember}
                                     value={newTemplate.responsibleEmployees}
                                     onChange={this.handleTaskTemplateResponsible}
                                     multiple={true}
@@ -553,12 +552,12 @@ class AddTaskTemplate extends Component {
                         {/**Người phê duyệt mẫu công việc */}
                         <div className='form-group' >
                             <label className="control-label">{translate('task_template.approver')}</label>
-                            {unitMembers &&
+                            {allUnitsMember &&
                                 <SelectBox
                                     id={isProcess ? `accountable-select-box-${id}` : "accountable-select-box"}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
-                                    items={unitMembers}
+                                    items={allUnitsMember}
                                     value={newTemplate.accountableEmployees}
                                     onChange={this.handleTaskTemplateAccountable}
                                     multiple={true}

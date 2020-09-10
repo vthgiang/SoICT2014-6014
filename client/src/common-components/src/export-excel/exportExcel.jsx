@@ -181,7 +181,7 @@ class ExportExcel extends Component {
             <React.Fragment>
                 {type === 'button' && <button type="button" style={style} className={className} title={title} onClick={this.handleExportExcel} >{buttonName}<i className="fa fa-fw fa-file-excel-o"> </i></button>}
                 {type === 'link' &&
-                    < a className='pull-right' style={Object.assign({ cursor: "pointer" }, style)} onClick={this.handleExportExcel}>
+                    <a className='pull-right' style={Object.assign({ cursor: "pointer" }, style)} onClick={this.handleExportExcel}>
                         <i className="fa fa-fw fa-download"></i> {buttonName}<i className="fa fa-fw fa-file-excel-o"></i>
                     </a>
                 }

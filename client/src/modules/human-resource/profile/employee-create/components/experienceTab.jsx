@@ -163,10 +163,10 @@ class ExperienceTab extends Component {
             return {
                 ...prevState,
                 id: nextProps.id,
-                experiences: nextProps.employee.experiences,
-                professionalSkill: nextProps.employee.professionalSkill,
-                foreignLanguage: nextProps.employee.foreignLanguage,
-                educationalLevel: nextProps.employee.educationalLevel,
+                experiences: nextProps.employee ? nextProps.employee.experiences : "",
+                professionalSkill: nextProps.employee ? nextProps.employee.professionalSkill : "",
+                foreignLanguage: nextProps.employee ? nextProps.employee.foreignLanguage : "",
+                educationalLevel: nextProps.employee ? nextProps.employee.educationalLevel : "",
             }
         } else {
             return null;
@@ -239,7 +239,7 @@ class ExperienceTab extends Component {
                                             <td>{this.formatDate(x.endDate, true)}</td>
                                             <td>{x.company}</td>
                                             <td>{x.position}</td>
-                                            <td >
+                                            <td>
                                                 <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.profile.edit_experience')}><i className="material-icons">edit</i></a>
                                                 <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete(index)}><i className="material-icons"></i></a>
                                             </td>

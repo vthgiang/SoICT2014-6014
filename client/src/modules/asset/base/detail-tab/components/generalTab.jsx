@@ -97,7 +97,7 @@ class GeneralTab extends Component {
                 <div className="box-body" >
                     <div className="row" style={{ paddingRight: '0px', paddingLeft: '0px' }}>
                         {/* Anh tài sản */}
-                        <div className="col-xl-4 col-lg-5" style={{ textAlign: 'center', paddingLeft: '0px' }}>
+                        <div className="col-md-4 " style={{ textAlign: 'center', paddingLeft: '0px' }}>
                             <div>
                                 <a href={process.env.REACT_APP_SERVER + avatar} target="_blank">
                                     <img className="attachment-img avarta" src={process.env.REACT_APP_SERVER + avatar} alt="Attachment" />
@@ -107,7 +107,7 @@ class GeneralTab extends Component {
 
                         {/* Thông tin cơ bản */}
                         <br />
-                        <div className="col-xl-8 col-lg-7 " style={{ paddingRight: '0px', paddingLeft: '0px' }}>
+                        <div className="col-md-8  " style={{ paddingRight: '0px', paddingLeft: '0px', minWidth: '350px' }}>
                             <div>
                                 <div className="col-md-6">
 

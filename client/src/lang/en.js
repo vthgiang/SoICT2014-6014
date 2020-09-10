@@ -745,7 +745,12 @@ export default {
             manage_list_orders: "Manage List Orders",
 
             //QUẢN LÝ KẾ HOẠCH SẢN XUẤT
-            manage_plans: "Manage Plans"
+            manage_plans: "Manage Plans",
+
+            //VÍ DỤ EXAMPLE
+            manage_examples: "CRUD example",
+            manage_examples_1: "CRUD by model 1",
+            manage_examples_2: "CRUD by model 2",
         },
 
         manage_system: {
@@ -1225,6 +1230,7 @@ export default {
                 course_name: 'Course name',
                 start_day: 'Start day',
                 end_date: 'End day',
+                contract_end_date: 'Contract expiration date',
                 type_education: 'Type of education',
                 cost: 'Cost',
                 edit_contract: 'Edit labor contract',
@@ -1283,11 +1289,13 @@ export default {
 
                 // Quản lý thông tin cá nhân
                 employee_info: {
+                    export_bhxh: 'The process of paying social insurance',
                     // Nhóm dành cho UI
                     note_page_personal: 'I hereby certify that all of the above statements are true and I am responsible for them.',
                     contact_other: '(Other information please contact the relevant parties to be processed)',
                     update_infor_personal: 'Update staff information',
-                    no_data_personal: 'No personal information yet',
+                    no_data_personal: 'You do not have personal information',
+                    no_data_personal_to_update: 'You do not have personal information to update',
 
                     guaranteed_infor_to_update: 'You have not guaranteed information to update',
                     no_change_data: 'No information changed',
@@ -1302,6 +1310,7 @@ export default {
 
                 employee_management: {
                     file_name_export: 'Thông tin nhân viên',
+                    staff_no_unit_title: 'Because the employee is not in any unit',
                     no_gender: 'Select gender',
                     all_gender: 'Select all gender',
                     brithday_lable: 'Month of Birth',
@@ -1635,6 +1644,7 @@ export default {
                 asset_incident_and_maintenance: 'Incident and maintenance',
                 incident_asset: 'Statistics incident asset chart',
                 maintenance_asset: 'Statistics maintenance asset chart',
+                statistic_by: 'Statistic by',
             },
 
             //  Quản lý loại tài sản
@@ -1878,7 +1888,6 @@ export default {
             description: 'Description',
             count: 'Number of uses',
             creator: 'Creator',
-            unit: 'Unit',
             action: 'Action',
             priority: 'Priority',
             general_information: 'General information',
@@ -3123,6 +3132,28 @@ export default {
             edit_plan_success: "Update plan successfully!",
             edit_plan_fail: "Update plan fail!",
             detail_info_plan: "Detail infomation of plan"
+        },
+
+        // manage example
+        manage_example: {
+            exampleName: "Example Name",
+            search: "Search",
+            add_example: "Add Example",
+            index: "Index",
+            description: "Description",
+            edit: "Edit this example",
+            delete: "Delete this example",
+            delete_success: "Delete example successfully!",
+            delete_fail: "Delete example fail!",
+            add: "Add example",
+            add_title: "Add a new example",
+            add_success: "Add example successfully!",
+            add_fail: "Add example fail!",
+            example_description: "Example Description",
+            edit_title: "Update a example",
+            edit_example_success: "Update example successfully!",
+            edit_example_fail: "Update example fail!",
+            detail_info_example: "Detail infomation of example"
         },
 
         footer: {

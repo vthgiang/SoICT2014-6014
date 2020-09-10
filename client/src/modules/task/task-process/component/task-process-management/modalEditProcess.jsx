@@ -66,6 +66,7 @@ class ModalEditProcess extends Component {
     }
 
     componentDidMount() {
+        this.props.getAllUserOfCompany();
 
         this.modeler.attachTo('#' + this.generateId);
         var eventBus = this.modeler.get('eventBus');
@@ -101,6 +102,7 @@ class ModalEditProcess extends Component {
                 status: nextProps.data.status ? nextProps.data.status : '',
                 startDate: nextProps.data.startDate ? nextProps.data.startDate : '',
                 endDate: nextProps.data.endDate ? nextProps.data.endDate : '',
+                viewer: nextProps.data.viewer ? nextProps.data.viewer : '',
                 xmlDiagram: nextProps.data.xmlDiagram,
             }
         } else {
@@ -140,7 +142,11 @@ class ModalEditProcess extends Component {
             let modeling = this.modeling;
             let state = this.state;
             this.modeler.importXML(nextProps.data.xmlDiagram, function (err) {
+                // handle zoom fit
+                let canvas = modeler.get('canvas');
+                canvas.zoom('fit-viewport');
 
+                // chỉnh màu sắc task
                 let infoTask = nextProps.data.tasks
                 let info = state.info;
 
@@ -353,7 +359,7 @@ class ModalEditProcess extends Component {
         })
     }
 
-
+    // Format date dd-mm-yyyy
     formatDate(date) {
         let d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -453,17 +459,29 @@ class ModalEditProcess extends Component {
         })
     }
 
+    // Hàm cập nhật người được xem quy trình
+    handleChangeViewer = async (value) => {
+        await this.setState(state => {
+
+            return {
+                ...state,
+                viewer: value,
+                errorOnViewer: TaskProcessValidator.validateViewer(value, this.props.translate),
+            }
+        })
+    }
+
     // hàm validate form tạo quy trình công việc
     isFormValidated = () => {
-        let { errorOnEndDate, errorOnProcessDescription, errorOnProcessName, errorOnStartDate, startDate, endDate } = this.state;
+        let { errorOnEndDate, errorOnProcessDescription, errorOnProcessName, errorOnStartDate, errorOnViewer, startDate, endDate, viewer } = this.state;
 
-        return errorOnEndDate === undefined && errorOnProcessDescription === undefined && errorOnProcessName === undefined && errorOnStartDate === undefined
+        return errorOnEndDate === undefined && errorOnProcessDescription === undefined && errorOnProcessName === undefined && errorOnStartDate === undefined && errorOnViewer === undefined
             && startDate.trim() !== "" && endDate.trim() !== "";
     }
 
     // hàm lưu
     save = () => {
-        let { processName, processDescription, status, startDate, endDate } = this.state;
+        let { processName, processDescription, status, startDate, endDate, viewer } = this.state;
 
         let { idProcess } = this.props;
 
@@ -473,6 +491,8 @@ class ModalEditProcess extends Component {
             status: status,
             startDate: startDate,
             endDate: endDate,
+
+            viewer: viewer,
         }
 
         console.log('quang gửi data', data, idProcess);
@@ -483,8 +503,14 @@ class ModalEditProcess extends Component {
     render() {
         const { translate, role, user } = this.props;
         const { idProcess } = this.props;
-        const { id, info, startDate, endDate, status, processDescription, processName, errorOnProcessName, errorOnEndDate, errorOnStartDate, errorOnProcessDescription } = this.state;
-
+        const { id, info, viewer, startDate, endDate, status, processDescription, processName, errorOnViewer, errorOnProcessName, errorOnEndDate, errorOnStartDate, errorOnProcessDescription } = this.state;
+        
+        // lấy danh sách các nhân viên trong cả công ty
+        let listUserCompany = user?.usercompanys;
+        let listItem = [];
+        if (listUserCompany && listUserCompany.length !== 0) {
+            listItem = listUserCompany.map(item => { return { text: item.name, value: item._id } });
+        }
         // Mảng cấu hình trạng thái công việc
         let statusArr = [
             { value: "Inprocess", text: translate('task.task_management.inprocess') },
@@ -583,7 +609,22 @@ class ModalEditProcess extends Component {
 
                                         {/* <ErrorLabel content={errorOnProcessStatus} /> */}
                                     </div>
-
+                                    <div className={`form-group ${errorOnViewer === undefined ? "" : "has-error"}`}>
+                                        {/* Người được xem quy trình */}
+                                        <label className="control-label">{translate("task.task_process.viewer")}</label>
+                                        {
+                                            <SelectBox
+                                                id={`select-viewer-employee-edit-task-process-${idProcess}`}
+                                                className="form-control select2"
+                                                style={{ width: "100%" }}
+                                                items={listItem}
+                                                onChange={this.handleChangeViewer}
+                                                multiple={true}
+                                                value={viewer}
+                                            />
+                                        }
+                                        <ErrorLabel content={errorOnViewer} />
+                                    </div>
                                     {/* Ngày bắt đầu - kết thúc quy trình */}
                                     <div className="row">
                                         <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnStartDate === undefined ? "" : "has-error"}`}>
@@ -623,6 +664,7 @@ function mapState(state) {
 }
 
 const actionCreators = {
+    getAllUserOfCompany: UserActions.getAllUserOfCompany,
     getDepartment: UserActions.getDepartmentOfUser,
     getTaskById: performTaskAction.getTaskById,
     getAllUsersWithRole: UserActions.getAllUsersWithRole,

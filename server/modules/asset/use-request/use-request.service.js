@@ -86,14 +86,25 @@ exports.deleteRecommendDistribute = async(id) => {
  * @id: id phiếu đề nghị cap phat thiết bị muốn update
  */
 exports.updateRecommendDistribute = async(id, data) => {
+    let dateStartUse, dateEndUse;
+    if (data.startTime) {
+        dateStartUse = data.startTime + ' ' + data.dateStartUse;
+    } else {
+        dateStartUse = data.dateStartUse;
+    }
+    if (data.stopTime) {
+        dateEndUse = data.stopTime + ' ' + data.dateEndUse;
+    } else {
+        dateEndUse = data.dateEndUse;
+    }
     var recommendDistributeChange = {
         recommendNumber: data.recommendNumber,
         dateCreate: data.dateCreate,
         proponent: data.proponent, // Người đề nghị
         reqContent: data.reqContent, // Người đề nghị
         asset: data.asset,
-        dateStartUse: data.dateStartUse,
-        dateEndUse: data.dateEndUse,
+        dateStartUse: dateStartUse,
+        dateEndUse: dateEndUse,
         approver: data.approver, // Người phê duyệt
         note: data.note,
         status: data.status,
