@@ -55,4 +55,8 @@ const CourseSchema = new Schema({
     timestamps: true,
 });
 
-module.exports = Course = (db) => db.model("courses", CourseSchema);
+module.exports = (db) => {
+    if(!db.models.Course)
+        return db.model('Course', CourseSchema);
+    return db.models.Course;
+}
