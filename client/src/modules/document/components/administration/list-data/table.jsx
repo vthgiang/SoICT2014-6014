@@ -201,7 +201,9 @@ class Table extends Component {
     findRole = (id) => {
         const listRole = this.props.role.list;
         let role = listRole.filter((role) => role._id === id);
-        return role[0].name;
+        if (role && role.length)
+            return role[0].name;
+        else return "";
     }
     convertDataToExportData = (data) => {
 
