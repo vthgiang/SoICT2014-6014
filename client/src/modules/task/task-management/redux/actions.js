@@ -275,17 +275,19 @@ function getCreatorTaskByUser(unit, number, perPage, status, priority, special, 
  * @param {*} endDate kết thúc công việc
  */
 
-function getPaginateTasksByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime = false) {
+function getPaginateTasksByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime = false, calledId = null) {
     return dispatch => {
         dispatch({
-            type: taskManagementConstants.GET_PAGINATE_TASK_BYUSER_REQUEST
+            type: taskManagementConstants.GET_PAGINATE_TASK_BYUSER_REQUEST, 
+            calledId: calledId,
         });
 
         taskManagementService.getPaginateTasksByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime)
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.GET_PAGINATE_TASK_BYUSER_SUCCESS,
-                    payload: res.data.content
+                    payload: res.data.content,
+                    calledId: calledId,
                 })
             })
             .catch(error => {

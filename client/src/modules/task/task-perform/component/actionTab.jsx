@@ -1599,7 +1599,7 @@ class ActionTab extends Component {
 
 
                         {/** Dữ liệu vào */}
-                        <div className={selected === "incoming-data" ? "active tab-pane" : "tab-pane"} id="incoming-data">
+                        {/* <div className={selected === "incoming-data" ? "active tab-pane" : "tab-pane"} id="incoming-data">
                             {
                                 (task && task.process) &&
                                 <React.Fragment>
@@ -1612,7 +1612,7 @@ class ActionTab extends Component {
                                     
                                 </React.Fragment>
                             }
-                        </div>
+                        </div> */}
 
                         {/** Dữ liệu ra */}
                         <div className={selected === "outgoing-data" ? "active tab-pane" : "tab-pane"} id="outgoing-data">
