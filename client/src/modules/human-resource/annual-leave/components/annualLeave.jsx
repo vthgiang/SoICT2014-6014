@@ -99,36 +99,44 @@ class AnnualLeave extends Component {
         };
 
         return (
-            <div className="row qlcv">
-                <div className="col-lg-4 col-md-6 col-sm-6 col-xs-12 pull-right">
-                    <AnnualLeaveApplicationForm />
-                </div>
-                <div className="col-lg-8 col-md-6 col-sm-6 col-xs-12">
-                    <div className="form-inline">
-                        {/* Năm */}
-                        <div className="form-group">
-                            <label style={{ width: 'auto' }}>{translate('human_resource.holiday.year')}</label>
-                            <DatePicker
-                                id="year"
-                                dateFormat="year"
-                                value={year}
-                                onChange={this.handleYearChange}
-                            />
-                        </div>
-                        {/* Nút tìm kiếm */}
-                        <div className="form-group">
+            <div className="box" >
+                <div className=" row box-body qlcv">
+                    <div className="col-lg-4 col-md-6 col-sm-6 col-xs-12 pull-right">
+                        <AnnualLeaveApplicationForm />
+                    </div>
+                    <div className="col-lg-8 col-md-6 col-sm-6 col-xs-12">
+                        <div className="form-inline">
+                            {/* Năm */}
+                            <div className="form-group">
+                                <label style={{ width: 'auto' }}>{translate('human_resource.holiday.year')}</label>
+                                <DatePicker
+                                    id="year"
+                                    dateFormat="year"
+                                    value={year}
+                                    onChange={this.handleYearChange}
+                                />
+                            </div>
+                            {/* Nút tìm kiếm */}
                             <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => this.handleSunmitSearch()} >{translate('general.search')}</button>
                         </div>
                     </div>
-                </div>
-                <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
-                    <div className="box box-success">
-                        <div className="box-header with-border">
-                            <h3 className="box-title">{translate('human_resource.annual_leave_personal.inform_annual_leave')}</h3>
-                        </div>
-                        <div className="box-body">
-                            <p><span>{`${translate('human_resource.annual_leave_personal.total_number_leave_of_year')}: ${numberDateLeaveOfYear} ngày`}</span></p>
-                            <p><span>{`${translate('human_resource.annual_leave_personal.leaved')}: ${annualLeave.numberAnnulLeave} ngày`}</span></p>
+                    <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
+                        <div className="description-box" style={{ paddingRight: 10 }}>
+                            <h4>{translate('human_resource.annual_leave_personal.inform_annual_leave')}</h4>
+                            <div>
+                                <strong>
+                                    {translate('human_resource.annual_leave_personal.total_number_leave_of_year')}:
+                                </strong>
+                                &nbsp;&nbsp;
+                                <span>{`${numberDateLeaveOfYear} ngày`}</span>
+                            </div>
+                            <div>
+                                <strong>
+                                    {translate('human_resource.annual_leave_personal.leaved')}:
+                                </strong>
+                                &nbsp;&nbsp;
+                                <span>{`${annualLeave.numberAnnulLeave} ngày`}</span>
+                            </div>
                             <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
                                 <thead>
                                     <tr>
@@ -163,14 +171,8 @@ class AnnualLeave extends Component {
                                     (!listAnnualLeavesOfOneYear || listAnnualLeavesOfOneYear.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                             }
                         </div>
-                    </div>
-                </div>
-                <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
-                    <div className="box box-primary">
-                        <div className="box-header with-border">
-                            <h3 className="box-title">{translate('human_resource.annual_leave_personal.list_annual_leave')}</h3>
-                        </div>
-                        <div className="box-body">
+                        <div className="description-box" style={{ paddingRight: 10, marginTop: 15 }}>
+                            <h4>{translate('human_resource.annual_leave_personal.list_annual_leave')}</h4>
                             <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
                                 <thead>
                                     <tr>
@@ -199,8 +201,8 @@ class AnnualLeave extends Component {
                             }
                         </div>
                     </div>
-                </div>
-            </div >
+                </div >
+            </div>
         );
     }
 };
