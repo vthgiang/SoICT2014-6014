@@ -290,7 +290,7 @@ class AssetPurchaseChart extends Component {
         await this.setState(state => {
             return {
                 ...state,
-                year: value[0]
+                year: value[0],
             }
         })
     }
@@ -300,12 +300,11 @@ class AssetPurchaseChart extends Component {
         let { year } = this.state;
         let { purchaseDateAfter, purchaseDateBefore } = this.INFO_SEARCH;
 
-        let dateFormat = year == "true" ? "year" : "month-year";
+        let format = year == "true" ? "year" : "month-year";
         let startValue = year == "true" ? purchaseDateAfter.slice(0, 4) : purchaseDateAfter.slice(5, 7) + ' - ' + purchaseDateAfter.slice(0, 4);
         let endValue = year == "true" ? purchaseDateBefore.slice(0, 4) : purchaseDateBefore.slice(5, 7) + ' - ' + purchaseDateBefore.slice(0, 4);
 
         this.columnChart();
-
         return (
             <React.Fragment>
                 <div className="form-inline" style={{ textAlign: "right" }}>
@@ -324,13 +323,14 @@ class AssetPurchaseChart extends Component {
                             onChange={this.handleChangeViewChart}
                             value={year}
                             multiple={false}
+                            options={{ minimumResultsForSearch: 3 }}
                         />
                     </div>
                     <div className="form-group">
                         <label style={{ width: "60px" }}>{translate('task.task_management.from')}</label>
                         <DatePicker
-                            id="purchase_after"
-                            dateFormat={dateFormat}
+                            id={`purchase_after${year}`}
+                            dateFormat={format}
                             value={startValue}
                             onChange={this.handleChangeDateAfter}
                             disabled={false}
@@ -339,8 +339,8 @@ class AssetPurchaseChart extends Component {
                     <div className="form-group">
                         <label style={{ width: "60px" }}>{translate('task.task_management.to')}</label>
                         <DatePicker
-                            id="purchase_before"
-                            dateFormat={dateFormat}
+                            id={`purchase_before${year}`}
+                            dateFormat={format}
                             value={endValue}
                             onChange={this.handleChangeDateBefore}
                             disabled={false}
