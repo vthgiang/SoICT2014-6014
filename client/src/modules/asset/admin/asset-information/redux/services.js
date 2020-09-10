@@ -33,6 +33,13 @@ function getAll(data) {
             limit: data !== undefined ? data.limit : data,
             managedBy: data !== undefined ? data.managedBy : data,
             currentRole: data !== undefined ? data.currentRole : data,
+            startDepreciation: data !== undefined ? data.startDepreciation : data,
+            depreciationType: data !== undefined ? data.depreciationType : data,
+
+            maintainanceCode: data !== undefined ? data.maintainanceCode : data,
+            maintainCreateDate: data !== undefined ? data.maintainCreateDate : data,
+            maintainStatus: data !== undefined ? data.maintainStatus : data,
+            maintainType: data !== undefined ? data.maintainType : data,
         }
     }, false, true, 'asset.asset_info');
 }
