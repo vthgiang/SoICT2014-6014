@@ -94,8 +94,10 @@ class DepreciationBarChart extends Component {
 
         if (listAssets) {
             listAssets.map(asset => {
-                let idx = idAssetType.indexOf(asset.assetType);
-                countDepreciation[idx] += this.calculateDepreciation(asset.depreciationType, asset.cost, asset.usefulLife, asset.estimatedTotalProduction, asset.unitsProducedDuringTheYears, asset.startDepreciation) / 1000000;
+                for (let k in asset.assetType) {
+                    let idx = idAssetType.indexOf(asset.assetType[k]._id);
+                    countDepreciation[idx] += this.calculateDepreciation(asset.depreciationType, asset.cost, asset.usefulLife, asset.estimatedTotalProduction, asset.unitsProducedDuringTheYears, asset.startDepreciation) / 1000000;
+                }
             })
             for (let i in assetType) {
                 let longName = assetType[i].typeName.slice(0, 20) + "...";
@@ -114,7 +116,7 @@ class DepreciationBarChart extends Component {
         if (listAssets && assetType && setDepreciationOfAsset) {
             setDepreciationOfAsset(data);
         }
-        
+
         return data;
     }
 

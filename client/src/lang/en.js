@@ -1289,6 +1289,7 @@ export default {
 
                 // Quản lý thông tin cá nhân
                 employee_info: {
+                    export_bhxh: 'The process of paying social insurance',
                     // Nhóm dành cho UI
                     note_page_personal: 'I hereby certify that all of the above statements are true and I am responsible for them.',
                     contact_other: '(Other information please contact the relevant parties to be processed)',

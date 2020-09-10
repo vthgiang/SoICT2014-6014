@@ -313,9 +313,9 @@ class AssetDisposalChart extends Component {
         let { year } = this.state;
         let { disposalDateAfter, disposalDateBefore } = this.INFO_SEARCH;
 
-        let dateFormat = year == "true" ? "year" : "month-year";
-        let startValue = year == "true" ? disposalDateAfter.slice(0, 4) : disposalDateAfter.slice(5, 7) + ' - ' + disposalDateAfter.slice(0, 4);
-        let endValue = year == "true" ? disposalDateBefore.slice(0, 4) : disposalDateBefore.slice(5, 7) + ' - ' + disposalDateBefore.slice(0, 4);
+        let dateFormat = year === "true" ? "year" : "month-year";
+        let startValue = year === "true" ? disposalDateAfter.slice(0, 4) : disposalDateAfter.slice(5, 7) + ' - ' + disposalDateAfter.slice(0, 4);
+        let endValue = year === "true" ? disposalDateBefore.slice(0, 4) : disposalDateBefore.slice(5, 7) + ' - ' + disposalDateBefore.slice(0, 4);
 
         this.columnChart();
         return (
@@ -337,6 +337,7 @@ class AssetDisposalChart extends Component {
                             onChange={this.handleChangeViewChart}
                             value={year}
                             multiple={false}
+                            options={{ minimumResultsForSearch: 3 }}
                         />
                     </div>
 
@@ -344,7 +345,7 @@ class AssetDisposalChart extends Component {
                     <div className="form-group">
                         <label style={{ width: "60px" }}>{translate('task.task_management.from')}</label>
                         <DatePicker
-                            id="disposal_after"
+                            id={`disposal_after${dateFormat}`}
                             dateFormat={dateFormat}
                             value={startValue}
                             onChange={this.handleChangeDateAfter}
@@ -354,7 +355,7 @@ class AssetDisposalChart extends Component {
                     <div className="form-group">
                         <label style={{ width: "60px" }}>{translate('task.task_management.to')}</label>
                         <DatePicker
-                            id="disposal_before"
+                            id={`disposal_before${dateFormat}`}
                             dateFormat={dateFormat}
                             value={endValue}
                             onChange={this.handleChangeDateBefore}
