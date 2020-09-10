@@ -7,22 +7,12 @@ import { DialogModal } from '../../../../common-components';
 class ExampleDetailInfo extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
-    }
-
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.exampleId !== prevState.exampleId) {
-            return {
-                ...prevState,
-                exampleId: nextProps.exampleId
-            }
-        } else {
-            return null;
+        this.state = {
         }
-
     }
-    shouldComponentUpdate(nextProps, nextState) {
-        if (nextProps.exampleId !== this.state.exampleId) {
+
+    shouldComponentUpdate(nextProps) {
+        if (nextProps.exampleId !== this.props.exampleId) {
             this.props.getExampleDetail(nextProps.exampleId);
             return false;
         }
@@ -32,6 +22,7 @@ class ExampleDetailInfo extends Component {
     render() {
         const { translate, example } = this.props;
         let currentDetailExample = {};
+        console.log(example.currentDetailExample);
         if (example.currentDetailExample) {
             currentDetailExample = example.currentDetailExample;
         }
