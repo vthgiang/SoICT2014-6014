@@ -168,7 +168,7 @@ class IncidentEditForm extends Component {
 
         var userlist = user.list;
         var assetlist = assetsManager.listAssets;
-        console.log("Đang test")
+
         return (
             <React.Fragment>
                 <DialogModal

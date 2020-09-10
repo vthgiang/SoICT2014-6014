@@ -947,11 +947,11 @@ exports.getPaginatedTasksByUser = async (task) => {
 
     var keySearch = {
         $or: [
-           { informedEmployees: { $in: [user] } },
-           { creator: { $in: [user] } },
-           { responsibleEmployees: { $in: [user] } },
-           { consultedEmployees: { $in: [user] } },
-           { accountableEmployees: { $in: [user] } },
+            { informedEmployees: { $in: [user] } },
+            { creator: { $in: [user] } },
+            { responsibleEmployees: { $in: [user] } },
+            { consultedEmployees: { $in: [user] } },
+            { accountableEmployees: { $in: [user] } },
         ],
         isArchived: false
     };
@@ -1148,27 +1148,27 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (task) => {
 exports.sendEmailFoCreateTask = async (task) => {
     task = await task.populate("organizationalUnit creator parent").execPopulate();
 
-    let transporter = nodemailer.createTransport({
+    var transporter = nodemailer.createTransport({
         service: 'Gmail',
         auth: { user: 'vnist.qlcv@gmail.com', pass: 'qlcv123@' }
     });
 
-    let email, userId, user, users, userIds;
+    var email, userId, user, users, userIds;
 
-    let resId = task.responsibleEmployees;  // lấy id người thực hiện
-    let res = await User.find({ _id: { $in: resId } });
+    var resId = task.responsibleEmployees;  // lấy id người thực hiện
+    var res = await User.find({ _id: { $in: resId } });
     res = res.map(item => item.name);
     userIds = resId;
-    let accId = task.accountableEmployees;  // lấy id người phê duyệt
-    let acc = await User.find({ _id: { $in: accId } });
+    var accId = task.accountableEmployees;  // lấy id người phê duyệt
+    var acc = await User.find({ _id: { $in: accId } });
     userIds.push(...accId);
 
-    let conId = task.consultedEmployees;  // lấy id người hỗ trợ
-    let con = await User.find({ _id: { $in: conId } })
+    var conId = task.consultedEmployees;  // lấy id người hỗ trợ
+    var con = await User.find({ _id: { $in: conId } })
     userIds.push(...conId);
 
-    let infId = task.informedEmployees;  // lấy id người quan sát
-    let inf = await User.find({ _id: { $in: infId } })
+    var infId = task.informedEmployees;  // lấy id người quan sát
+    var inf = await User.find({ _id: { $in: infId } })
     userIds.push(...infId);  // lấy ra id của tất cả người dùng có nhiệm vụ
 
     // loại bỏ các id trùng nhau
@@ -1185,7 +1185,7 @@ exports.sendEmailFoCreateTask = async (task) => {
     console.log(con);
     email = user.map(item => item.email); // Lấy ra tất cả email của người dùng
     email.push("trinhhong102@gmail.com");
-    let html = `<p>Bạn được giao nhiệm vụ trong công việc:  <a href="${process.env.WEBSITE}/task?taskId=${task._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${task._id} </a></p> ` +
+    var html = `<p>Bạn được giao nhiệm vụ trong công việc:  <a href="${process.env.WEBSITE}/task?taskId=${task._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${task._id} </a></p> ` +
         `<h3>Thông tin công việc</h3>` +
         `<p>Tên công việc : ${task.name}</p>` +
         `<p>Mô tả : ${task.description}</p>` +
@@ -1200,15 +1200,15 @@ exports.sendEmailFoCreateTask = async (task) => {
         })}
                     </ul>` +
         `${con.length > 0 ? `<p>Người hỗ trợ</p> ` +
-        `<ul>${con.map((item) => {
-            return `<li>${item.name}</li>`
-        })}
-                    </ul>` : "" }` +
+            `<ul>${con.map((item) => {
+                return `<li>${item.name}</li>`
+            })}
+                    </ul>` : ""}` +
         `${inf.length > 0 ? `<p>Người quan sát</p> ` +
-        `<ul>${inf.map((item) => {
-            return `<li>${item.name}</li>`
-        })}
-                    </ul>` : "" }`
+            `<ul>${inf.map((item) => {
+                return `<li>${item.name}</li>`
+            })}
+                    </ul>` : ""}`
         ;
 
         return { task: task, user: userIds, email: email, html: html };
@@ -1246,12 +1246,12 @@ exports.createTask = async (task) => {
     }
 
     let formula;
-    if( taskTemplate ) {
+    if (taskTemplate) {
         formula = taskTemplate.formula;
-    } else if( task.formula ){
+    } else if (task.formula) {
         // formula = "progress / (dayUsed / totalDay)"; // default
         formula = "progress / (dayUsed / totalDay) - 0.5 * (10 - (averageActionRating)) * 10"
-    } 
+    }
     var task = await Task.create({ //Tạo dữ liệu mẫu công việc
         organizationalUnit: task.organizationalUnit,
         creator: task.creator, //id của người tạo
@@ -1525,14 +1525,14 @@ exports.getAllTaskOfChildrenOrganizationalUnit = async (companyId, roleId, month
             tasksOfChildrenOrganizationalUnit[i].unshift({ 'name': childrenOrganizationalUnits[i].name, 'deg': childrenOrganizationalUnits[i].deg })
         }
     }
-    
+
     return tasksOfChildrenOrganizationalUnit;
 }
 
-exports.sendEmailCheckTaskLastMonth = async () => {  
+exports.sendEmailCheckTaskLastMonth = async () => {
     let today = new Date();
     let day = today.getDate();
-    let month = today.getMonth()+1;
+    let month = today.getMonth() + 1;
     let daySend = 30;
     switch (month) {
         case 1:
@@ -1587,7 +1587,7 @@ exports.sendEmailCheckTaskLastMonth = async () => {
                 }
                 if (taskList) {
                     let inprocessTask = taskList.filter(task => task.status === "Inprocess");
-                    
+
                     let distinctTasks = [];
                     for (let k in inprocessTask) {     // lọc task trùng nhau
                         let check = false;
@@ -1600,7 +1600,7 @@ exports.sendEmailCheckTaskLastMonth = async () => {
                         }
                         if (!check) distinctTasks.push(inprocessTask[k])
                     }
-               
+
                     distinctTasks.length && distinctTasks.map(x => {
                         let evaluations;
                         let currentEvaluate = [];
@@ -1654,7 +1654,7 @@ exports.sendEmailCheckTaskLastMonth = async () => {
                 // xu ly Action not evaluated
                 var TaskHasActionsAccountable = [];
                 var TaskHasActionsResponsible = [];
-                
+
                 if (accTasks) {
                     let inprocessAccountableTask = accTasks.filter(task => task.status === "Inprocess")
                     inprocessAccountableTask.length && inprocessAccountableTask.map(x => {
@@ -1718,31 +1718,31 @@ exports.sendEmailCheckTaskLastMonth = async () => {
                 if (flag) {  // gui email
                     let userEmail = [email[j]];
                     userEmail.push("trinhhong102@gmail.com");
-                    let html = `<h1>Thông báo danh sách công việc tháng ${new Date().getMonth()+1} </h1> ` +
-                    `<h3>Thông tin công việc</h3>` +
-                    `${tasksByUser.expire.length > 0 ? `<p>Công việc quá hạn</p> ` +
-                    `<ul>${tasksByUser.expire.map((item) => {
-                        return `<li><a href="${process.env.WEBSITE}/task?taskId=${item.task._id}" target="_blank">${item.task.name}</a></li>`
-                    })}
-                                </ul>` : '' }` +
-                    `${tasksByUser.deadlineincoming.length > 0 ? `<p>Công việc sắp hết hạn</p> ` +
-                    `<ul>${tasksByUser.deadlineincoming.map((item) => {
-                        return `<li><a href="${process.env.WEBSITE}/task?taskId=${item.task._id}" target="_blank">${item.task.name}</a></li>`
-                    })}
-                                </ul>` : "" }` +
-                    `${notLinkedTasks.length > 0 ? `<p>Công việc chưa được liên kết KPI tháng</p> ` +
-                    `<ul>${notLinkedTasks.map((item) => {
-                        return `<li><a href="${process.env.WEBSITE}/task?taskId=${item._id}" target="_blank">${item.name}</a></li>`
-                    })}
-                                </ul>` : "" }` +
-                    `${taskHasActions.length > 0 ? `<p>Công việc có hoạt động chưa đánh giá</p> ` +
-                    `<ul>${taskHasActions.map((item) => {
-                        return `<li><a href="${process.env.WEBSITE}/task?taskId=${item._id}" target="_blank">${item.name}</a></li>`
-                    })}
-                                </ul>` : "" }`
-                    ;
+                    let html = `<h1>Thông báo danh sách công việc tháng ${new Date().getMonth() + 1} </h1> ` +
+                        `<h3>Thông tin công việc</h3>` +
+                        `${tasksByUser.expire.length > 0 ? `<p>Công việc quá hạn</p> ` +
+                            `<ul>${tasksByUser.expire.map((item) => {
+                                return `<li><a href="${process.env.WEBSITE}/task?taskId=${item.task._id}" target="_blank">${item.task.name}</a></li>`
+                            })}
+                                </ul>` : ''}` +
+                        `${tasksByUser.deadlineincoming.length > 0 ? `<p>Công việc sắp hết hạn</p> ` +
+                            `<ul>${tasksByUser.deadlineincoming.map((item) => {
+                                return `<li><a href="${process.env.WEBSITE}/task?taskId=${item.task._id}" target="_blank">${item.task.name}</a></li>`
+                            })}
+                                </ul>` : ""}` +
+                        `${notLinkedTasks.length > 0 ? `<p>Công việc chưa được liên kết KPI tháng</p> ` +
+                            `<ul>${notLinkedTasks.map((item) => {
+                                return `<li><a href="${process.env.WEBSITE}/task?taskId=${item._id}" target="_blank">${item.name}</a></li>`
+                            })}
+                                </ul>` : ""}` +
+                        `${taskHasActions.length > 0 ? `<p>Công việc có hoạt động chưa đánh giá</p> ` +
+                            `<ul>${taskHasActions.map((item) => {
+                                return `<li><a href="${process.env.WEBSITE}/task?taskId=${item._id}" target="_blank">${item.name}</a></li>`
+                            })}
+                                </ul>` : ""}`
+                        ;
                     sendEmail("vnist.qlcv@gmail.com", userEmail, "Thông báo danh sách công việc", '', html);
-               }
+                }
             }
         }
     }

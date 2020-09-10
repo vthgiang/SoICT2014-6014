@@ -28,7 +28,7 @@ class ApiImage extends Component {
             await this.props.downloadFile(nextProps.src, `avatar_${nextProps.id}`, false);
             this.setState({
                 dataStatus: this.DATA_STATUS.QUERYING,
-                count: nextProps.auth.show_files.length,
+                count: nextProps.auth.numberFile,
             });
         };
         if (this.state.dataStatus === this.DATA_STATUS.QUERYING && !nextProps.auth.isLoading) {
@@ -37,8 +37,8 @@ class ApiImage extends Component {
             });
             return false;
         };
-        if (this.state.dataStatus === this.DATA_STATUS.AVAILABLE && !nextProps.auth.isLoading && nextProps.auth.show_files.length > this.state.count) {
-            let img = nextProps.auth.show_files.find(x => x.fileName === `avatar_${nextProps.id}`);
+        if (this.state.dataStatus === this.DATA_STATUS.AVAILABLE && !nextProps.auth.isLoading && nextProps.auth.numberFile > this.state.count) {
+            let img = nextProps.auth.showFiles.find(x => x.fileName === `avatar_${nextProps.id}`);
             this.setState({
                 dataStatus: this.DATA_STATUS.FINISHED,
                 img: img ? img.file : '',

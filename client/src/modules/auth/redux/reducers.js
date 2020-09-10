@@ -15,7 +15,8 @@ var initState = {
     error: null,
     forgotPassword: false,
     reset_password: false,
-    show_files: [],
+    showFiles: [],
+    numberFile: 0,
     isLoading: false
 }
 
@@ -145,7 +146,8 @@ export function auth(state = initState, action) {
             if (action.payload && action.payload.fileName) { // Hiển thị image download về qua chuyển đổi base64
                 return {
                     ...state,
-                    show_files: [...state.show_files.filter(x => x.fileName !== action.payload.fileName), action.payload],
+                    showFiles: [...state.showFiles.filter(x => x.fileName !== action.payload.fileName), action.payload],
+                    numberFile: state.numberFile + 1,
                     isLoading: false,
                 };
             } else { // Save image về máy
@@ -154,15 +156,15 @@ export function auth(state = initState, action) {
                 };
             }
 
-        case AuthConstants.DOWNLOAD_FILE_FAILURE:
-            return {
-                ...state,
-                isLoading: false,
-            };
+            case AuthConstants.DOWNLOAD_FILE_FAILURE:
+                return {
+                    ...state,
+                    isLoading: false,
+                };
 
-        default:
-            return {
-                ...state
-            };
+            default:
+                return {
+                    ...state
+                };
     }
 }

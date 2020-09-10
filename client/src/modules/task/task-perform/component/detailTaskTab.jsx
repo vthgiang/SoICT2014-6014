@@ -262,7 +262,6 @@ class DetailTaskTab extends Component {
                     return true;
                 }
             })
-
             // Lọc các phần tử trùng lặp
             let idArray = listEmployeeNotConfirm.map(item => item._id);
             idArray = idArray.map((item, index, array) => {
@@ -281,10 +280,11 @@ class DetailTaskTab extends Component {
                 checkConfirmCurrentUser = true
             };
         }
-
+        
         if (listEmployeeNotConfirm.length !== 0) {
             checkConfirmOtherUser = true;
         }
+
         listEmployeeNotConfirm = listEmployeeNotConfirm.filter(item => item.active);
 
         return {
@@ -601,7 +601,7 @@ class DetailTaskTab extends Component {
                 }
             })
         }
-
+        
         return (
             <React.Fragment>
                 {(showToolbar) &&
@@ -786,9 +786,10 @@ class DetailTaskTab extends Component {
                             {/* Vai trò */}
                             {task &&
                                 <div className="description-box">
-                                    <h4>{translate('task.task_management.role')}</h4>
-                                    <div className="row">
+                                    <div className="row row-equal-height">
                                         <div className="col-sm-6">
+                                            <h4>{translate('task.task_management.role')}</h4>
+                                        
                                             {/* Người thực hiện */}
                                             <strong>{translate('task.task_management.responsible')}: </strong>
                                             &nbsp;&nbsp;
@@ -873,9 +874,9 @@ class DetailTaskTab extends Component {
 
                                         <div className="col-sm-6">
                                         {
-                                            hoursSpentOfEmployeeInTask
+                                            hoursSpentOfEmployeeInTask && JSON.stringify(hoursSpentOfEmployeeInTask) !== '{}'
                                             && <HoursSpentOfEmployeeChart
-                                                refs="roleBox"
+                                                refs="totalTime"
                                                 data={hoursSpentOfEmployeeInTask}
                                             />
                                         }
@@ -890,7 +891,7 @@ class DetailTaskTab extends Component {
                                         evalList.map((eva, keyEva) => {
                                             return (
                                                 <div key={keyEva} className="description-box">
-                                                    <h4 style={{ cursor: "pointer" }} className="pull-right" onClick={() => this.calculateHoursSpentOnTask(task._id, task.timesheetLogs, eva._id, eva.prevDate, eva.date)} title="Cập nhật thời gian bấm giờ"><i class="fa fa-fw fa-clock-o">&nbsp;&nbsp;</i></h4>
+                                                    {showToolbar && <h4 style={{ cursor: "pointer" }} className="pull-right" onClick={() => this.calculateHoursSpentOnTask(task._id, task.timesheetLogs, eva._id, eva.prevDate, eva.date)} title="Cập nhật thời gian bấm giờ"><i class="fa fa-fw fa-clock-o">&nbsp;&nbsp;</i></h4>}
                                                     <h4>{translate('task.task_management.detail_eval')}&nbsp;{this.formatDate(eva.prevDate)} <i className="fa fa-fw fa-caret-right"></i> {this.formatDate(eva.date)}</h4>
 
                                                     {
@@ -950,28 +951,11 @@ class DetailTaskTab extends Component {
 
                                                     {/* Thời gian bấm giờ */}
                                                     {
-                                                        eva.results.length !== 0 &&
-                                                        <div className="row">
-                                                            <div className="col-sm-6">
-                                                                <div><strong>Thời gian bấm giờ</strong> (Giờ)</div>
-                                                                <ul>
-                                                                    {(eva.results.length !== 0) ?
-                                                                        eva.results.map((res, index) => {
-                                                                            return <li key={index}>{res.employee.name}: &nbsp;&nbsp; {res.hoursSpent ? this.convertTime(res.hoursSpent) : 0}</li>
-                                                                        }) : <li>{translate('task.task_management.detail_not_eval')}</li>
-                                                                    }
-                                                                </ul>
-                                                            </div>
-                                                            <div className="col-sm-6">
-                                                                {
-                                                                    hoursSpentOfEmployeeInEvaluation[eva.date]
-                                                                    && <HoursSpentOfEmployeeChart
-                                                                        refs={"evaluationBox" + eva.date}
-                                                                        data={hoursSpentOfEmployeeInEvaluation[eva.date]}
-                                                                    />
-                                                                }
-                                                            </div>
-                                                        </div>
+                                                        eva.results.length !== 0 && hoursSpentOfEmployeeInEvaluation[eva.date] && JSON.stringify(hoursSpentOfEmployeeInEvaluation[eva.date]) !== '{}'
+                                                        && <HoursSpentOfEmployeeChart
+                                                            refs={"evaluationBox" + eva.date}
+                                                            data={hoursSpentOfEmployeeInEvaluation[eva.date]}
+                                                        />
                                                     }
 
                                                 </div>

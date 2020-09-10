@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DatePicker, ErrorLabel } from '../../../../../common-components';
+import { DatePicker, ErrorLabel, ExportExcel } from '../../../../../common-components';
 
 import { toast } from 'react-toastify';
 import ServerResponseAlert from '../../../../alert/components/serverResponseAlert';
@@ -250,16 +250,59 @@ class InsurranceTab extends Component {
         } else {
             return null;
         }
+    };
+
+    /**
+     * Function chyển đổi quá trình đóng bảo hiểm thành dạng dữ liệu dùng export
+     * @param {*} data : quá trình đóng bảo hiểm
+     */
+    convertDataToExportData = (data) => {
+        const { translate, employee } = this.props;
+
+        data = data.map((x, index) => {
+            return {
+                STT: index + 1,
+                startDate: this.formatDate(x.startDate, true),
+                endDate: this.formatDate(x.endDate, true),
+                company: x.company,
+                position: x.position
+            }
+        })
+
+        let exportData = {
+            fileName: translate('human_resource.profile.employee_info.export_bhxh'),
+            dataSheets: [
+                {
+                    sheetName: "Sheet1",
+                    sheetTitle: `${translate('human_resource.profile.employee_info.export_bhxh')}: ${employee.fullName} - ${employee.employeeNumber}`,
+                    tables: [
+                        {
+                            columns: [
+                                { key: "STT", value: translate('human_resource.stt') },
+                                { key: "startDate", value: translate('human_resource.profile.from_month_year') },
+                                { key: "endDate", value: translate('human_resource.profile.to_month_year') },
+                                { key: "company", value: translate('human_resource.profile.unit') },
+                                { key: "position", value: translate('table.position') }
+                            ],
+                            data: data
+                        },
+                    ]
+                },
+            ]
+        }
+        return exportData
     }
 
 
     render() {
         const { translate } = this.props;
 
-        const { id } = this.props;
+        const { id, pageCreate } = this.props;
 
         const { healthInsuranceNumber, healthInsuranceStartDate, healthInsuranceEndDate, errorOnHealthInsuranceStartDate,
             socialInsuranceNumber, socialInsuranceDetails, errorOnHealthInsuranceEndDate, currentRow } = this.state;
+
+        let exportData = this.convertDataToExportData(socialInsuranceDetails);
 
         return (
             <div id={id} className="tab-pane">
@@ -308,6 +351,7 @@ class InsurranceTab extends Component {
                             <div className="col-md-12">
                                 <h4 className="row col-md-6">{translate('human_resource.profile.bhxh_process')}:</h4>
                                 <SocialInsuranceAddModal handleChange={this.handleAddBHXH} id={`addBHXH${id}`} />
+                                {!pageCreate && <ExportExcel id={`edit-create-export-bhxh${id}`} buttonName={translate('human_resource.name_button_export')} exportData={exportData} style={{ marginTop: 2, marginRight: 15 }} />}
                                 <table className="table table-striped table-bordered table-hover " style={{ marginBottom: 0 }} >
                                     <thead>
                                         <tr>

@@ -30,7 +30,7 @@ class Table extends Component {
         super(props);
         this.state = {
             category: "",
-            domain: "",
+            // domain: "",
             archive: "",
             name: "",
             option: {
@@ -138,10 +138,20 @@ class Table extends Component {
         })
     }
     handleDomainChange = (value) => {
-        this.setState({ domain: value });
+        this.setState(state => {
+            return {
+                ...state,
+                domain: value,
+            }
+        })
     }
     handleDomains = value => {
-        this.setState({ documentDomains: value });
+        this.setState(state => {
+            return {
+                ...state,
+                documentDomains: value,
+            }
+        })
     }
     handleNameChange = (e) => {
         const value = e.target.value;
@@ -271,7 +281,7 @@ class Table extends Component {
                 },
             ]
         }
-        console.log('exxxx', exportData);
+        //console.log('exxxx', exportData);
         return exportData
     }
     render() {
@@ -280,11 +290,10 @@ class Table extends Component {
         const { domains, categories, archives } = this.props.documents.administration;
         const { paginate } = docs;
         const { isLoading } = this.props.documents;
-        const { currentRow, archive, category } = this.state;
+        const { currentRow, archive, domain, category } = this.state;
         const listDomain = domains.list
         const listCategory = this.convertData(categories.list)
         const listArchive = archives.list;
-        console.log('ttttttttttttt', this.props.documents.administration);
         let list = [];
         if (isLoading === false) {
             list = docs.list;
@@ -372,8 +381,9 @@ class Table extends Component {
                     <div className="form-group" >
                         <label>{translate('document.store.information')}</label>
                         <TreeSelect
+                            id="tree-select-search-archive"
                             data={listArchive}
-                            className="form-control select2"
+                            className="form-control"
                             handleChange={this.handleArchiveChange}
                             value={archive}
                             mode="hierarchical"
@@ -387,9 +397,11 @@ class Table extends Component {
                     <div className="form-group">
                         <label>{translate('document.domain')}</label>
                         <TreeSelect
+                            id="tree-select-search-domain"
                             data={listDomain}
-                            className="form-control select2"
+                            className="form-control"
                             handleChange={this.handleDomainChange}
+                            value={domain}
                             mode="hierarchical"
                             style={{ width: "100%" }}
                         />
@@ -511,7 +523,7 @@ class Table extends Component {
             // value: this.state.value,
             name: this.state.name,
             category: this.state.category[0],
-            domains: this.state.domain[0],
+            domains: this.state.domain ? this.state.domain : "",
             archives: this.state.archive[0],
         };
         await this.props.getAllDocuments(data);
