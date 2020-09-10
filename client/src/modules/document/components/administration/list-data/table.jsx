@@ -30,7 +30,7 @@ class Table extends Component {
         super(props);
         this.state = {
             category: "",
-            domain: "",
+            // domain: "",
             archive: "",
             name: "",
             option: {
@@ -281,7 +281,7 @@ class Table extends Component {
                 },
             ]
         }
-        console.log('exxxx', exportData);
+        //console.log('exxxx', exportData);
         return exportData
     }
     render() {
@@ -294,7 +294,6 @@ class Table extends Component {
         const listDomain = domains.list
         const listCategory = this.convertData(categories.list)
         const listArchive = archives.list;
-        console.log('ttttttttttttt', this.props.documents.administration);
         let list = [];
         if (isLoading === false) {
             list = docs.list;
@@ -524,7 +523,7 @@ class Table extends Component {
             // value: this.state.value,
             name: this.state.name,
             category: this.state.category[0],
-            domains: this.state.domain[0],
+            domains: this.state.domain ? this.state.domain : "",
             archives: this.state.archive[0],
         };
         await this.props.getAllDocuments(data);

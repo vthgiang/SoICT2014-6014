@@ -24,7 +24,7 @@ class TreeSelect extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        if (nextProps.data !== this.props.data || nextProps.id !== this.state.id || nextProps.value !== nextProps.value) // Chỉ render 1 lần, trừ khi id, value, data thay đổi
+        if (nextProps.data !== this.props.data || nextProps.id !== this.state.id || nextProps.value !== nextState.value) // Chỉ render 1 lần, trừ khi id, value, data thay đổi
             return true;
         return false;  // Tự chủ động update (do đã lưu value vào state)
     }

@@ -33,7 +33,7 @@ export const DocumentActions = {
     editDocumentArchive,
     deleteDocumentArchive,
     importDocumentArchive,
-    
+
 };
 
 function getDocuments(data = undefined) {
@@ -117,6 +117,19 @@ function editDocument(id, data, option = undefined) {
                         dispatch({ type: DocumentConstants.ADD_VERSION_DOCUMENT_FAILE });
                     });
                 break;
+            case 'EDIT_VERSION':
+                DocumentServices.editDocument(id, data, option)
+                    .then(res => {
+                        dispatch({
+                            type: DocumentConstants.EDIT_VERSION_DOCUMENT_SUCCESS,
+                            payload: res.data.content
+                        })
+                    })
+                    .catch(err => {
+                        dispatch({ type: DocumentConstants.ADD_VERSION_DOCUMENT_FAILE });
+                    });
+                break;
+
 
             default:
                 DocumentServices.editDocument(id, data)
@@ -253,6 +266,7 @@ function editDocumentCategory(id, data) {
             })
     }
 }
+
 
 function deleteDocumentCategory(id) {
     return dispatch => {
