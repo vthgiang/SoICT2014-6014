@@ -171,7 +171,7 @@ class AnnualLeave extends Component {
                                     (!listAnnualLeavesOfOneYear || listAnnualLeavesOfOneYear.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                             }
                         </div>
-                        <div className="description-box" style={{ paddingRight: 10, marginTop: 15 }}>
+                        <div className="description-box" style={{ paddingRight: 10, marginTop: 25 }}>
                             <h4>{translate('human_resource.annual_leave_personal.list_annual_leave')}</h4>
                             <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
                                 <thead>
