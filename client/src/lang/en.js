@@ -1360,13 +1360,14 @@ export default {
             // Quản lý kế hoạch làm việc (lịch nghỉ lễ tết)
             holiday: {
                 file_name_export: 'Work plan',
-                number_date_leave_of_year: 'Number of days off',
+                number_date_leave_of_year: 'Maximum number of leave days',
                 date_year: 'date/year',
                 year: 'year',
+                save_as: 'Save',
                 number_date: 'Number date',
-                list_holiday: 'Holiday plans, Tet holidays',
-                list_no_leave: 'No leave is allowed',
-                list_auto_leave: 'Leave is allowed',
+                list_holiday: 'Time off holidays, Tet holidays',
+                list_no_leave: 'Time is not allowed to take leave',
+                list_auto_leave: 'Time is allowed to take leave',
 
                 // Nhóm dành cho table
                 table: {
@@ -1378,9 +1379,9 @@ export default {
                 },
 
                 // Nhóm thể loại kế hoạch làm Việc
-                holiday: 'Holiday',
-                auto_leave: 'Auto leave',
-                no_leave: 'No leave',
+                holiday: 'Time off holidays, Tet holidays',
+                auto_leave: 'Time is not allowed to take leave',
+                no_leave: 'Time is allowed to take leave',
 
                 // Nhóm dành cho action
                 edit_holiday: 'Edit work schedule',
