@@ -33,6 +33,9 @@ class UserDocumentsData extends Component {
         this.props.getAllDepartments();
         this.props.getAllDocuments(getStorage('currentRole'));
         this.props.getAllDocuments(getStorage('currentRole'), { page: this.state.page, limit: this.state.limit });
+        this.props.getDocumentDomains();
+        this.props.getDocumentArchive();
+        this.props.getDocumentCategories();
     }
 
     toggleDocumentInformation = async (data) => {
@@ -155,11 +158,10 @@ class UserDocumentsData extends Component {
         const docs = this.props.documents.user.data;
         const { paginate } = docs;
         const { isLoading } = this.props.documents;
-        const { currentRow, archive, category } = this.state;
+        const { currentRow, archive, category, domain } = this.state;
         const listDomain = domains.list
         const listCategory = this.convertData(categories.list)
         const listArchive = archives.list;
-        console.log('currrrrrrrrrrr', currentRow)
         let list = [];
         if (isLoading === false) {
             list = docs.list;
@@ -220,8 +222,9 @@ class UserDocumentsData extends Component {
                         <div className="form-group" >
                             <label>{translate('document.store.information')}</label>
                             <TreeSelect
+                                id="tree-select-search-archive"
                                 data={listArchive}
-                                className="form-control select2"
+                                className="form-control"
                                 handleChange={this.handleArchiveChange}
                                 value={archive}
                                 mode="hierarchical"
@@ -234,9 +237,11 @@ class UserDocumentsData extends Component {
                         <div className="form-group">
                             <label>{translate('document.domain')}</label>
                             <TreeSelect
+                                id="tree-select-search-domain"
                                 data={listDomain}
-                                className="form-control select2"
+                                className="form-control"
                                 handleChange={this.handleDomainChange}
+                                value={domain}
                                 mode="hierarchical"
                                 style={{ width: "100%" }}
                             />
@@ -372,6 +377,9 @@ const mapDispatchToProps = {
     increaseNumberView: DocumentActions.increaseNumberView,
     downloadDocumentFile: DocumentActions.downloadDocumentFile,
     downloadDocumentFileScan: DocumentActions.downloadDocumentFileScan,
+    getDocumentDomains: DocumentActions.getDocumentDomains,
+    getDocumentCategories: DocumentActions.getDocumentCategories,
+    getDocumentArchive: DocumentActions.getDocumentArchive,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(UserDocumentsData));
