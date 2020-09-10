@@ -18,7 +18,6 @@ class ApiImage extends Component {
             return {
                 id: nextProps.id,
                 img: nextProps.src,
-                dataStatus: 0
             }
         }
         return null
@@ -28,7 +27,8 @@ class ApiImage extends Component {
         if (nextProps.src && nextProps.src.search(';base64,') < 0 && !nextProps.auth.isLoading && this.state.dataStatus === this.DATA_STATUS.NOT_AVAILABLE) {
             await this.props.downloadFile(nextProps.src, `avatar_${nextProps.id}`, false);
             this.setState({
-                dataStatus: this.DATA_STATUS.QUERYING
+                dataStatus: this.DATA_STATUS.QUERYING,
+                count: nextProps.auth.show_files.length,
             });
         };
         if (this.state.dataStatus === this.DATA_STATUS.QUERYING && !nextProps.auth.isLoading) {
@@ -36,8 +36,8 @@ class ApiImage extends Component {
                 dataStatus: this.DATA_STATUS.AVAILABLE
             });
             return false;
-        }
-        if (this.state.dataStatus === this.DATA_STATUS.AVAILABLE && !nextProps.auth.isLoading && nextProps.auth.show_files.length !== 0) {
+        };
+        if (this.state.dataStatus === this.DATA_STATUS.AVAILABLE && !nextProps.auth.isLoading && nextProps.auth.show_files.length > this.state.count) {
             let img = nextProps.auth.show_files.find(x => x.fileName === `avatar_${nextProps.id}`);
             this.setState({
                 dataStatus: this.DATA_STATUS.FINISHED,
@@ -48,12 +48,18 @@ class ApiImage extends Component {
         return true;
     }
 
+    componentDidMount() {
+        this.setState({
+            dataStatus: 0
+        })
+    }
+
     render() {
         const { className, style, src } = this.props;
 
         let { img } = this.state;
 
-        if (src.search(';base64,') >= 0) {
+        if (src && src.search(';base64,') >= 0) {
             img = src;
         }
 

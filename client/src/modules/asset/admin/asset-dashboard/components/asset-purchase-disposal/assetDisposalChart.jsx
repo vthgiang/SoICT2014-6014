@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-import { DatePicker } from '../../../../../../common-components';
+import { DatePicker, SelectBox } from '../../../../../../common-components';
 import Swal from 'sweetalert2';
 
 import c3 from 'c3';
@@ -32,7 +32,7 @@ class AssetDisposalChart extends Component {
             disposalDateBefore: this.INFO_SEARCH.disposalDateBefore,
             defaultStartMonth: '0' + (month - 3) + '-' + year,
             defaultEndMonth: [month, year].join('-'),
-            year: false,
+            year: "false",
         }
     }
     // Lấy dữ liệu biểu đồ trường hợp chọn hiển thị theo tháng
@@ -165,7 +165,7 @@ class AssetDisposalChart extends Component {
     columnChart = () => {
         let { translate } = this.props;
         let { year } = this.state;
-        let dataColumnChart = year ? this.setDataColumnChartForYear() : this.setDataColumnChartForMonth();
+        let dataColumnChart = year == "true" ? this.setDataColumnChartForYear() : this.setDataColumnChartForMonth();
 
         if (translate('asset.dashboard.amount') === "Số lượng") {
             let chart = c3.generate({
@@ -264,14 +264,13 @@ class AssetDisposalChart extends Component {
 
     //Bắt sự kiện thay đổi ngày bắt đầu
     handleChangeDateAfter = async (value) => {
-        let month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)));
+        let month = value.length == 4 ? value : value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)));
         this.INFO_SEARCH.disposalDateAfter = month;
     }
 
     //Bắt sự kiện thay đổi ngày kết thúc
     handleChangeDateBefore = async (value) => {
-        let month;
-        month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)));
+        let month = value.length == 4 ? value : value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)));
         this.INFO_SEARCH.disposalDateBefore = month;
     }
 
@@ -304,53 +303,70 @@ class AssetDisposalChart extends Component {
         await this.setState(state => {
             return {
                 ...state,
-                year: value
+                year: value[0]
             }
         })
     }
 
     render() {
         const { translate } = this.props;
-        let { defaultStartMonth, defaultEndMonth, year } = this.state;
-        this.columnChart();
+        let { year } = this.state;
+        let { disposalDateAfter, disposalDateBefore } = this.INFO_SEARCH;
 
+        let dateFormat = year == "true" ? "year" : "month-year";
+        let startValue = year == "true" ? disposalDateAfter.slice(0, 4) : disposalDateAfter.slice(5, 7) + ' - ' + disposalDateAfter.slice(0, 4);
+        let endValue = year == "true" ? disposalDateBefore.slice(0, 4) : disposalDateBefore.slice(5, 7) + ' - ' + disposalDateBefore.slice(0, 4);
+
+        this.columnChart();
         return (
             <React.Fragment>
-                <section className="form-inline" style={{ textAlign: "right" }}>
+
+                <div className="form-inline" style={{ textAlign: "right" }}>
+
+                    {/* Chọn hiển thị theo tháng/năm */}
+                    <div className="form-group">
+                        <label>{translate('asset.dashboard.statistic_by')}</label>
+                        <SelectBox
+                            id="selectTypeOfStatistic"
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            items={[
+                                { value: false, text: `${translate('general.month')}` },
+                                { value: true, text: `${translate('general.year')}` }
+                            ]}
+                            onChange={this.handleChangeViewChart}
+                            value={year}
+                            multiple={false}
+                        />
+                    </div>
+
                     {/* Chọn ngày bắt đầu và kết thúc để tìm kiếm */}
                     <div className="form-group">
-                        <label>{translate('task.task_management.from')}</label>
+                        <label style={{ width: "60px" }}>{translate('task.task_management.from')}</label>
                         <DatePicker
                             id="disposal_after"
-                            dateFormat="month-year"
-                            value={defaultStartMonth}
+                            dateFormat={dateFormat}
+                            value={startValue}
                             onChange={this.handleChangeDateAfter}
                             disabled={false}
                         />
                     </div>
                     <div className="form-group">
-                        <label>{translate('task.task_management.to')}</label>
+                        <label style={{ width: "60px" }}>{translate('task.task_management.to')}</label>
                         <DatePicker
                             id="disposal_before"
-                            dateFormat="month-year"
-                            value={defaultEndMonth}
+                            dateFormat={dateFormat}
+                            value={endValue}
                             onChange={this.handleChangeDateBefore}
                             disabled={false}
                         />
                     </div>
                     <button className="btn btn-success" onClick={this.handleSearchData}>{translate('task.task_management.search')}</button>
-                </section>
-                <br />
-                {/* Chọn hiển thị theo tháng/năm */}
-                <div>
-                    <div className="box-tools" style={{ textAlign: "right", marginRight: "60px" }}>
-                        <div className="btn-group">
-                            <button type="button" className={`btn btn-xs ${year ? "active" : "btn-danger"}`} onClick={() => this.handleChangeViewChart(false)}>{translate('general.month')}</button>
-                            <button type="button" className={`btn btn-xs ${year ? "btn-danger" : "active"}`} onClick={() => this.handleChangeViewChart(true)}>{translate('general.year')}</button>
-                        </div>
-                    </div>
-                    <div ref="DisposalColumnChart"></div>
                 </div>
+
+                {/* Biểu đồ */}
+                <div ref="DisposalColumnChart"></div>
+
             </React.Fragment>
         )
     }

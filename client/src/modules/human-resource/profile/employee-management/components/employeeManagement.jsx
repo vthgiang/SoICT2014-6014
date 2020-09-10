@@ -65,7 +65,6 @@ class EmployeeManagement extends Component {
         } else {
             return date
         }
-
     }
 
     // Function bắt sự kiện thêm lương nhân viên bằng tay
@@ -81,7 +80,6 @@ class EmployeeManagement extends Component {
         window.$('#modal_import_file').modal('show');
     }
 
-    //
     /**
      *  Bắt sự kiện click xem thông tin nhân viên
      * @param {*} value : Thông tin nhân viên muốn xem
@@ -107,7 +105,7 @@ class EmployeeManagement extends Component {
                 currentRow: value
             }
         });
-        window.$('#modal-edit-employee').modal('show');
+        window.$(`#modal-edit-employee${value._id}`).modal('show');
     }
 
     /**
@@ -231,6 +229,15 @@ class EmployeeManagement extends Component {
             page: parseInt(page),
         });
         this.props.getAllEmployee(this.state);
+    }
+
+    handleExportExcel = async () => {
+        const { employeesManager } = this.props;
+        let arrEmail = employeesManager.listEmployees.map(x => x.emailInCompany);
+        await this.setState({
+            exportDataStatus: 0
+        });
+        await this.props.getAllEmployee({ exportData: true, arrEmail: arrEmail });
     }
 
     /**
@@ -371,25 +378,29 @@ class EmployeeManagement extends Component {
                     endDate: this.formatDate(y.endDate),
                 }
             });
-            let salarys = x.salarys.map(x => {
+            let salaries = x.salaries.map(y => {
+                let organizationalUnit = list.find(u => u._id === y.organizationalUnit);
                 return {
-                    ...x,
+                    ...y,
                     employeeNumber: employee.employeeNumber,
-                    fullName: employee.fullName
+                    fullName: employee.fullName,
+                    organizationalUnit: organizationalUnit.name,
                 }
             });
             let annualLeaves = x.annualLeaves.map(y => {
+                let organizationalUnit = list.find(u => u._id === y.organizationalUnit);
                 return {
                     ...y,
+                    organizationalUnit: organizationalUnit.name,
                     employeeNumber: employee.employeeNumber,
                     fullName: employee.fullName,
                     startDate: this.formatDate(y.startDate),
                     endDate: this.formatDate(y.endDate),
                 }
             });
-            let courses = x.courses.map(x => {
+            let courses = x.courses.map(y => {
                 return {
-                    ...x,
+                    ...y,
                     employeeNumber: employee.employeeNumber,
                     fullName: employee.fullName
                 }
@@ -403,7 +414,7 @@ class EmployeeManagement extends Component {
             filesSheet = filesSheet.concat(files);
             commendationsSheet = commendationsSheet.concat(commendations);
             disciplinesSheet = disciplinesSheet.concat(disciplines);
-            salarysSheet = salarysSheet.concat(salarys);
+            salarysSheet = salarysSheet.concat(salaries);
             annualLeavesSheet = annualLeavesSheet.concat(annualLeaves);
             coursesSheet = coursesSheet.concat(courses);
         });
@@ -472,6 +483,7 @@ class EmployeeManagement extends Component {
                 STT: index + 1,
                 employeeNumber: x.employeeNumber,
                 fullName: x.fullName,
+                organizationalUnit: x.organizationalUnit,
                 mainSalary: parseInt(x.mainSalary),
                 total: total,
                 month: month,
@@ -694,6 +706,7 @@ class EmployeeManagement extends Component {
                                 { key: "year", value: "Năm" },
                                 { key: "employeeNumber", value: "Mã số nhân viên" },
                                 { key: "fullName", value: "Họ và tên" },
+                                { key: "organizationalUnit", value: "Đơn vị" },
                                 { key: "mainSalary", value: "Tiền lương chính", type: "Number" },
                                 ...columns,
                                 { key: "total", value: "Tổng lương", type: "Number" },
@@ -714,6 +727,7 @@ class EmployeeManagement extends Component {
                                 { key: "endDate", value: "Ngày kết thúc" },
                                 { key: "reason", value: "Lý do" },
                                 { key: "status", value: "Trạng thái" },
+                                { key: "organizationalUnit", value: "Đơn vị" },
                             ],
                             data: annualLeavesSheet
                         }
@@ -724,16 +738,37 @@ class EmployeeManagement extends Component {
         return exportData
     }
 
+    shouldComponentUpdate = async (nextProps, nextState) => {
+        if (this.state.exportDataStatus === 0 && nextProps.employeesManager.isLoading) {
+            await this.setState({
+                exportDataStatus: 1
+            })
+        };
+        if (this.state.exportDataStatus === 1 && !nextProps.employeesManager.isLoading) {
+            await this.setState({
+                exportDataStatus: 2
+            })
+        };
+        return true;
+    };
+
+    componentDidUpdate() {
+        const { exportDataStatus } = this.state;
+        const { employeesManager } = this.props;
+        if (exportDataStatus === 1 && !employeesManager.isLoading && employeesManager.exportData.length !== 0) {
+            let exportData = this.convertDataToExportData(employeesManager.exportData);
+            ExportExcel.export(exportData);
+        };
+    }
 
     render() {
         const { employeesManager, translate, department } = this.props;
 
         let { importEmployee, limit, page, organizationalUnits, currentRow, currentRowView } = this.state;
 
-        let listEmployees = [], exportData = [];
+        let listEmployees = [];
         if (employeesManager.listEmployees) {
             listEmployees = employeesManager.listEmployees;
-            // exportData = this.convertDataToExportData(listEmployees);
         }
 
         let pageTotal = ((employeesManager.totalList % limit) === 0) ?
@@ -753,7 +788,7 @@ class EmployeeManagement extends Component {
                                 <li><a style={{ cursor: 'pointer' }} onClick={this.createEmployee}>{translate('human_resource.profile.employee_management.add_by_hand')}</a></li>
                             </ul>
                         </div>
-                        <ExportExcel id="export-employee" buttonName={translate('human_resource.name_button_export')} exportData={exportData} style={{ marginRight: 15, marginTop: 0 }} />
+                        <button type="button" style={{ marginRight: 15, marginTop: 0 }} className="btn btn-primary pull-right" onClick={this.handleExportExcel} >{translate('human_resource.name_button_export')}<i className="fa fa-fw fa-file-excel-o"> </i></button>
                     </div>
                     <div className="form-inline">
                         {/* Đơn vị */}
@@ -854,7 +889,7 @@ class EmployeeManagement extends Component {
                                 <th>{translate('human_resource.staff_name')}</th>
                                 <th>{translate('human_resource.profile.gender')}</th>
                                 <th>{translate('human_resource.profile.date_birth')}</th>
-                                <th>{translate('human_resource.profile.employee_management.contract_lable_title')}</th>
+                                <th>{translate('human_resource.profile.contract_end_date')}</th>
                                 <th>{translate('human_resource.profile.type_contract')}</th>
                                 <th>{translate('human_resource.status')}</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}
@@ -865,7 +900,7 @@ class EmployeeManagement extends Component {
                                             translate('human_resource.staff_name'),
                                             translate('human_resource.profile.gender'),
                                             translate('human_resource.profile.date_birth'),
-                                            translate('human_resource.profile.employee_management.contract_lable_title'),
+                                            translate('human_resource.profile.contract_end_date'),
                                             translate('human_resource.profile.type_contract'),
                                             translate('human_resource.status'),
                                         ]}
@@ -884,8 +919,8 @@ class EmployeeManagement extends Component {
                                         <td>{x.fullName}</td>
                                         <td>{translate(`human_resource.profile.${x.gender}`)}</td>
                                         <td>{this.formatDate(x.birthdate)}</td>
-                                        <td>{}</td>
-                                        <td>{}</td>
+                                        <td>{this.formatDate(x.contractEndDate)}</td>
+                                        <td>{x.contractType}</td>
                                         <td>{translate(`human_resource.profile.${x.status}`)}</td>
                                         <td>
                                             <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title={translate('human_resource.profile.employee_management.view_employee')}><i className="material-icons">view_list</i></a>
@@ -920,23 +955,13 @@ class EmployeeManagement extends Component {
                 }
 
                 {/* From xem thông tin nhân viên */
-
                     <EmployeeDetailForm
                         _id={currentRowView ? currentRowView._id : ""}
                     />
                 }
-                {/** From chinh sửa thông tin nhân viên */
-                    currentRow &&
+                {/* From chinh sửa thông tin nhân viên */
                     <EmployeeEditFrom
-                        _id={this.state.currentRow.employees[0]._id}
-                        employees={this.state.currentRow.employees}
-                        salaries={this.state.currentRow.salarys}
-                        annualLeaves={this.state.currentRow.annualLeaves}
-                        commendations={this.state.currentRow.commendations}
-                        disciplines={this.state.currentRow.disciplines}
-                        courses={this.state.currentRow.courses}
-                        organizationalUnits={this.state.currentRow.organizationalUnits.map(x => x._id)}
-                        roles={this.state.currentRow.roles.map(x => x.roleId._id)}
+                        _id={currentRow ? currentRow._id : ""}
                     />
                 }
             </div>

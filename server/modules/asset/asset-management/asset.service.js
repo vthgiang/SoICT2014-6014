@@ -21,6 +21,7 @@ exports.getAssetInforById = async (id) => {
  */
 exports.searchAssetProfiles = async (params, company) => {
     let keySearch = { company: company };
+    console.log("params", params)
     // Bắt sựu kiện MSTS tìm kiếm khác ""
     if (params.code) {
         keySearch = { ...keySearch, code: { $regex: params.code, $options: "i" } }
@@ -37,7 +38,7 @@ exports.searchAssetProfiles = async (params, company) => {
     }
 
     // Thêm key tìm kiếm tài sản theo nhóm vào keySearch
-    if (params.status) {
+    if (params.group) {
         keySearch = { ...keySearch, group: { $in: params.group } };
     }
 
@@ -55,6 +56,17 @@ exports.searchAssetProfiles = async (params, company) => {
     if (params.group) {
         keySearch = { ...keySearch, group: { $in: params.group } };
     }
+
+    // Thêm key tìm kiếm tài sản theo người sử dụng
+    if (params.handoverUser) {
+        keySearch = { ...keySearch, assignedToUser: { $in: params.handoverUser } };
+    }
+
+    // Thêm key tìm kiếm tài sản theo đơn vị
+    if (params.handoverUnit) {
+        keySearch = { ...keySearch, assignedToOrganizationalUnit: { $in: params.handoverUnit } };
+    }
+
     // Thêm key tìm kiếm tài sản theo id người quản lý
     if (params.managedBy) {
         keySearch = { ...keySearch, managedBy: { $in: params.managedBy } };
@@ -72,6 +84,21 @@ exports.searchAssetProfiles = async (params, company) => {
         keySearch = {
             ...keySearch,
             purchaseDate: {
+                $gt: start,
+                $lte: end
+            }
+        }
+    }
+
+    // Thêm key tìm kiếm tài sản theo ngày thanh lý tài sản
+    if (params.disposalDate) {
+        let date = params.disposalDate.split("-");
+        let start = new Date(date[1], date[0] - 1, 1);
+        let end = new Date(date[1], date[0], 1);
+
+        keySearch = {
+            ...keySearch,
+            disposalDate: {
                 $gt: start,
                 $lte: end
             }

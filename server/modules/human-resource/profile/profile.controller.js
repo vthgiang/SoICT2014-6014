@@ -16,7 +16,6 @@ exports.getEmployeeProfile = async (req, res) => {
             inforEmployee = await EmployeeService.getEmployeeProfile(user.email);
         } else { // Theo employeeId
             let employee = await EmployeeService.getEmployeeInforById(req.params.id);
-            console.log(employee);
             inforEmployee = await EmployeeService.getEmployeeProfile(employee.emailInCompany);
         };
         await LogInfo(req.user.email, 'GET_INFOR_PERSONAL', req.user.company);
@@ -71,7 +70,14 @@ exports.updatePersonalInformation = async (req, res) => {
 exports.searchEmployeeProfiles = async (req, res) => {
     try {
         let data;
-        if (req.query.numberMonth) {
+        if (req.query.exportData) {
+            let arrEmail = req.query.arrEmail;
+            data = [];
+            for (let i = 0; i < arrEmail.length; i++) {
+                let employee = await EmployeeService.getEmployeeProfile(arrEmail[i]);
+                data = [...data, employee]
+            }
+        } else if (req.query.numberMonth) {
             data = await EmployeeService.getEmployeesOfNumberMonth(req.query.organizationalUnits, req.query.numberMonth, req.user.company._id);
         } else if (req.query.page === undefined && req.query.limit === undefined) {
             data = await EmployeeService.getEmployees(req.user.company._id, req.query.organizationalUnits, req.query.position, false, req.query.status);

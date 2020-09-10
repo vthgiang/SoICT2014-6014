@@ -100,6 +100,9 @@ class FileTab extends Component {
 
     /** Hàm tiện ích so sánh 2 đồi tượng */
     static isEqual(objA, objB) {
+        if (!objA || !objB) {
+            return false
+        };
         // Tạo các mảng chứa tên các property
         let aProps = Object.getOwnPropertyNames(objA);
         let bProps = Object.getOwnPropertyNames(objB);
@@ -122,7 +125,7 @@ class FileTab extends Component {
                 ...prevState,
                 id: nextProps.id,
                 files: nextProps.files,
-                archivedRecordNumber: nextProps.employee.archivedRecordNumber,
+                archivedRecordNumber: nextProps.employee ? nextProps.employee.archivedRecordNumber : '',
                 employee: nextProps.employee,
             }
         } else {
