@@ -21,10 +21,6 @@ const CrmGroupSchema = new Schema({
     promotion: {
         type: String
     },
-    company: {
-        type: Schema.Types.ObjectId,
-        ref: 'companies'
-    }
 },{
     timestamps: true,
     toJSON: { virtuals: true }
@@ -32,4 +28,8 @@ const CrmGroupSchema = new Schema({
 
 CrmGroupSchema.plugin(mongoosePaginate);
 
-module.exports = CrmGroup = (db) => db.model("crm_groups", CrmGroupSchema);
+module.exports = (db) => {
+    if(!db.models.CrmGroup)
+        return db.model('CrmGroup', CrmGroupSchema);
+    return db.models.CrmGroup;
+}

@@ -84,17 +84,7 @@ class HoursSpentOfEmployeeChart extends Component {
         this.chart = c3.generate({
             bindto: document.getElementById(refs),
             size: {
-                height: 160
-            },
-            title: {
-                text: refs === "totalTime" ? "Tổng thời gian bấm giờ" : "Thời gian bấm giờ",
-                position: "upper-left",
-                padding: {
-                    top: 5,
-                    right: 0,
-                    bottom: 13,
-                    left: 0
-                }
+                height: 160,
             },
 
             data: {

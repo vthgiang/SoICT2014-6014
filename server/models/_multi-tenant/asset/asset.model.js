@@ -7,11 +7,6 @@ const AssetSchema = new Schema({
         enum: ["Building", "Vehicle", "Machine", "Other"]
     },
 
-    company: { // công ty
-        type: Schema.Types.ObjectId,
-        ref: 'companies',
-    },
-
     /***************************************************************************************************
      * Tab thông tin chung
      */
@@ -35,7 +30,7 @@ const AssetSchema = new Schema({
 
     assetType: [{ //5.loại tài sản
         type: Schema.Types.ObjectId,
-        ref: 'asset_types',
+        ref: 'AssetType',
     }],
 
     purchaseDate: { //6.ngày nhập, ngày mua
@@ -50,19 +45,19 @@ const AssetSchema = new Schema({
 
     managedBy: { //11.Người quản lý
         type: Schema.Types.ObjectId,
-        ref: 'users',
+        ref: 'User',
         // required: true
     },
 
     assignedToUser: { //12.Người đang được giao sử dụng
         type: Schema.Types.ObjectId,
-        ref: 'users',
+        ref: 'User',
         // required: true
     },
 
     assignedToOrganizationalUnit: { //13.Đơn vị đang được giao sử dụng
         type: Schema.Types.ObjectId,
-        ref: 'organizational_units',
+        ref: 'OrganizationalUnit',
     },
 
     location: { // 16.vị trí tài sản
@@ -95,7 +90,7 @@ const AssetSchema = new Schema({
 
     readByRoles: [{ // quyền xem theo Role
         type: Schema.Types.ObjectId,
-        ref: 'root_roles'
+        ref: 'RootRole'
     }],
     /***********************************************************************************************
      * Tab Khấu hao
@@ -149,11 +144,11 @@ const AssetSchema = new Schema({
     usageLogs: [{ //ghi lại lịch sử sử dụng
         usedByUser: { // người sử dụng
             type: Schema.Types.ObjectId,
-            ref: 'users',
+            ref: 'User',
         },
         usedByOrganizationalUnit: {
             type: Schema.Types.ObjectId,
-            ref: 'organizational_units',
+            ref: 'OrganizationalUnit',
         },
         startDate: { // ngày bắt đầu sử dụng
             type: Date
@@ -221,7 +216,7 @@ const AssetSchema = new Schema({
         },
         reportedBy: { //Người báo cáo
             type: Schema.Types.ObjectId,
-            ref: 'users',
+            ref: 'User',
             // required: true
         },
         dateOfIncident: { //Ngày phát hiện
@@ -333,4 +328,8 @@ const AssetSchema = new Schema({
 
 });
 
-module.exports = Asset = (db) => db.model("assets", AssetSchema);
+module.exports = (db) => {
+    if(!db.models.Asset)
+        return db.model('Asset', AssetSchema);
+    return db.models.Asset;
+}

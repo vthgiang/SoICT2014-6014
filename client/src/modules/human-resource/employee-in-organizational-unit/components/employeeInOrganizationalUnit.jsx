@@ -20,13 +20,22 @@ class DepartmentManage extends Component {
         this.props.getRole();
     }
 
-    /** Function bắt sự kiện chỉnh sửa nhân sự các đơn vị */
+    /**
+     * Function bắt sự kiện chỉnh sửa nhân sự các đơn vị
+     * @param {*} id : Id đơn vị cần sửa
+     */
     handleShowEdit = async (id) => {
         await this.setState({
             ...this.state,
             currentRow: id
         })
         window.$(`#modal-edit-unit${id}`).modal('show');
+    }
+
+    componentDidUpdate() {
+        window.$('#employee-tree-table').css({ "border": "1px solid #9E9E9E", 'backgroundColor': 'whitesmoke' });
+        window.$('#employee-tree-table th').css({ "border": "1px solid #9E9E9E" });
+        window.$('#employee-tree-table td').css({ "border": "1px solid #9E9E9E" });
     }
 
     render() {
@@ -42,10 +51,11 @@ class DepartmentManage extends Component {
         let column = [{ name: translate('manage_department.name'), key: "name" }, { name: translate('manage_department.description'), key: "description" }];
 
         return (
-            <div className="box">
-                <div className="box-body qlcv">
+            <div className="">
+                <div className="qlcv">
                     <TreeTable
                         behaviour="show-children"
+                        tableId='employee-tree-table'
                         column={column}
                         data={data}
                         titleAction={{

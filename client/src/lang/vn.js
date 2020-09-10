@@ -2436,6 +2436,7 @@ export default {
 
                     err_range: 'Giá trị không được vượt quá khoảng 0-100',
                     err_contribute: 'Tổng phần trăm đóng góp phải là 100',
+                    err_not_enough_contribute: 'Tổng phần trăm đóng góp phải là 100',
                     err_empty: 'Giá trị không được để trống'
                 }
 
@@ -2443,6 +2444,7 @@ export default {
             task_process: {
                 process_name: 'Tên quy trình',
                 process_description: 'Mô tả quy trình',
+                num_task: 'Số lượng công việc trong quy trình',
                 process_status: 'Trạng thái quy trình',
                 creator: 'Người tạo quy trình',
                 manager: 'Người quản lý',

@@ -4,12 +4,12 @@ const Schema = mongoose.Schema;
 const TaskReportSchema = new Schema({
     organizationalUnit: {
         type: Schema.Types.ObjectId,
-        ref: 'organizational_units',
+        ref: 'OrganizationalUnit',
         required: true
     },
     taskTemplate: {
         type: Schema.Types.ObjectId,
-        ref: 'task_templates',
+        ref: 'TaskTemplate',
         required: true
     },
     name: {
@@ -22,19 +22,19 @@ const TaskReportSchema = new Schema({
     },
     creator: {
         type: Schema.Types.ObjectId,
-        ref: 'users'
+        ref: 'User'
     },
     readByEmployees: [{
         type: Schema.Types.ObjectId,
-        ref: 'roles',
+        ref: 'Role',
     }],
     responsibleEmployees: [{ //Người thực hiện
         type: Schema.Types.ObjectId,
-        ref: 'users',
+        ref: 'User',
     }],
     accountableEmployees: [{// Người phê duyệt
         type: Schema.Types.ObjectId,
-        ref: 'users',
+        ref: 'User',
     }],
     status: {// 0: tất cả, 1: Finished, 2: Inprocess.
         type: Number,
@@ -91,4 +91,8 @@ const TaskReportSchema = new Schema({
     timestamps: true
 });
 
-module.exports = TaskReport = (db) => db.model("task_reports", TaskReportSchema);
+module.exports = (db) => {
+    if(!db.models.TaskReport)
+        return db.model('TaskReport', TaskReportSchema);
+    return db.models.TaskReport;
+}

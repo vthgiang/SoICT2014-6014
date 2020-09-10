@@ -16,14 +16,3 @@
 .hoursSpentOfEmployee .c3-tooltip .value {
     width: 25%;
 }
-
-.hoursSpentOfEmployee .c3-title {
-    font-size: 14px;
-    font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-weight: 600;
-}
-.hoursSpentOfEmployee.totalTime .c3-title {
-    font-size: 18px;
-    font-family: 'Source Sans Pro', sans-serif;
-    font-weight: 600;
-}
