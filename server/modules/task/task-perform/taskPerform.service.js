@@ -44,6 +44,7 @@ exports.getTaskById = async (id, userId) => {
                 { path: "commentsInProcess.comments.creator", model: User, select: 'name email avatar' },
             ]
         },
+        { path: "hoursSpentOnTask.contributions.employee", model: User, select: 'name' },
         {
             path: "process", model: TaskProcess, populate: {
                 path: "tasks", model: Task, populate: [
@@ -1202,6 +1203,7 @@ exports.editTaskByResponsibleEmployees = async (data, taskId) => {
         { path: "documents.creator", model: User, select: 'name email avatar' },
         { path: "followingTasks.task", model: Task, select: 'name' },
         { path: "preceedingTasks.task", model: Task, select: 'name' },
+        { path: "hoursSpentOnTask.contributions.employee", model: User, select: 'name' },
         {
             path: "process", model: TaskProcess, populate: {
                 path: "tasks", model: Task, populate: [
@@ -1344,6 +1346,7 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
         { path: "documents.creator", model: User, select: 'name email avatar' },
         { path: "followingTasks.task", model: Task, select: 'name' },
         { path: "preceedingTasks.task", model: Task, select: 'name' },
+        { path: "hoursSpentOnTask.contributions.employee", model: User, select: 'name' },
         {
             path: "process", model: TaskProcess, populate: {
                 path: "tasks", model: Task, populate: [
@@ -1456,6 +1459,7 @@ exports.evaluateTaskByConsultedEmployees = async (data, taskId) => {
         { path: "documents.creator", model: User, select: 'name email avatar' },
         { path: "followingTasks.task", model: Task, select: 'name' },
         { path: "preceedingTasks.task", model: Task, select: 'name' },
+        { path: "hoursSpentOnTask.contributions.employee", model: User, select: 'name' },
         {
             path: "process", model: TaskProcess, populate: {
                 path: "tasks", model: Task, populate: [
@@ -1688,6 +1692,7 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
         { path: "documents.creator", model: User, select: 'name email avatar' },
         { path: "followingTasks.task", model: Task, select: 'name' },
         { path: "preceedingTasks.task", model: Task, select: 'name' },
+        { path: "hoursSpentOnTask.contributions.employee", model: User, select: 'name' },
         {
             path: "process", model: TaskProcess, populate: {
                 path: "tasks", model: Task, populate: [
@@ -2060,6 +2065,7 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
         { path: "documents.creator", model: User, select: 'name email avatar' },
         { path: "followingTasks.task", model: Task, select: 'name' },
         { path: "preceedingTasks.task", model: Task, select: 'name' },
+        { path: "hoursSpentOnTask.contributions.employee", model: User, select: 'name' },
         {
             path: "process", model: TaskProcess, populate: {
                 path: "tasks", model: Task, populate: [
@@ -2164,6 +2170,7 @@ exports.editHoursSpentInEvaluate = async (data, taskId) => {
         { path: "documents.creator", model: User, select: 'name email avatar' },
         { path: "followingTasks.task", model: Task, select: 'name' },
         { path: "preceedingTasks.task", model: Task, select: 'name' },
+        { path: "hoursSpentOnTask.contributions.employee", model: User, select: 'name' },
         {
             path: "process", model: TaskProcess, populate: {
                 path: "tasks", model: Task, populate: [
@@ -2221,6 +2228,7 @@ exports.deleteEvaluation = async (params) => {
         { path: "documents.creator", model: User, select: 'name email avatar' },
         { path: "followingTasks.task", model: Task, select: 'name' },
         { path: "preceedingTasks.task", model: Task, select: 'name' },
+        { path: "hoursSpentOnTask.contributions.employee", model: User, select: 'name' },
         {
             path: "process", model: TaskProcess, populate: {
                 path: "tasks", model: Task, populate: [
@@ -2444,6 +2452,7 @@ exports.editActivateOfTask = async (taskID, body) => {
         { path: "documents.creator", model: User, select: 'name email avatar' },
         { path: "followingTasks.task", model: Task, select: 'name' },
         { path: "preceedingTasks.task", model: Task, select: 'name' },
+        { path: "hoursSpentOnTask.contributions.employee", model: User, select: 'name' },
         {
             path: "process", model: TaskProcess, populate: {
                 path: "tasks", model: Task, populate: [

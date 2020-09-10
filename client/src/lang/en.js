@@ -1230,6 +1230,7 @@ export default {
                 course_name: 'Course name',
                 start_day: 'Start day',
                 end_date: 'End day',
+                contract_end_date: 'Contract expiration date',
                 type_education: 'Type of education',
                 cost: 'Cost',
                 edit_contract: 'Edit labor contract',
@@ -1288,11 +1289,13 @@ export default {
 
                 // Quản lý thông tin cá nhân
                 employee_info: {
+                    export_bhxh: 'The process of paying social insurance',
                     // Nhóm dành cho UI
                     note_page_personal: 'I hereby certify that all of the above statements are true and I am responsible for them.',
                     contact_other: '(Other information please contact the relevant parties to be processed)',
                     update_infor_personal: 'Update staff information',
-                    no_data_personal: 'No personal information yet',
+                    no_data_personal: 'You do not have personal information',
+                    no_data_personal_to_update: 'You do not have personal information to update',
 
                     guaranteed_infor_to_update: 'You have not guaranteed information to update',
                     no_change_data: 'No information changed',
@@ -1641,6 +1644,7 @@ export default {
                 asset_incident_and_maintenance: 'Incident and maintenance',
                 incident_asset: 'Statistics incident asset chart',
                 maintenance_asset: 'Statistics maintenance asset chart',
+                statistic_by: 'Statistic by',
             },
 
             //  Quản lý loại tài sản

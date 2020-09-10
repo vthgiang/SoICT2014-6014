@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
+import { ExportExcel } from '../../../../../common-components'
+
 class InsurranceTab extends Component {
     constructor(props) {
         super(props);
@@ -40,14 +42,54 @@ class InsurranceTab extends Component {
                 ...prevState,
                 id: nextProps.id,
                 socialInsuranceDetails: nextProps.socialInsuranceDetails,
-                healthInsuranceNumber: nextProps.employee.healthInsuranceNumber,
-                healthInsuranceStartDate: nextProps.employee.healthInsuranceStartDate,
-                healthInsuranceEndDate: nextProps.employee.healthInsuranceEndDate,
-                socialInsuranceNumber: nextProps.employee.socialInsuranceNumber,
+                healthInsuranceNumber: nextProps.employee ? nextProps.employee.healthInsuranceNumber : '',
+                healthInsuranceStartDate: nextProps.employee ? nextProps.employee.healthInsuranceStartDate : '',
+                healthInsuranceEndDate: nextProps.employee ? nextProps.employee.healthInsuranceEndDate : '',
+                socialInsuranceNumber: nextProps.employee ? nextProps.employee.socialInsuranceNumber : '',
             }
         } else {
             return null;
         }
+    }
+
+    /**
+     * Function chyển đổi quá trình đóng bảo hiểm thành dạng dữ liệu dùng export
+     * @param {*} data : quá trình đóng bảo hiểm
+     */
+    convertDataToExportData = (data) => {
+        const { translate, employee } = this.props;
+
+        data = data.map((x, index) => {
+            return {
+                STT: index + 1,
+                startDate: this.formatDate(x.startDate, true),
+                endDate: this.formatDate(x.endDate, true),
+                company: x.company,
+                position: x.position
+            }
+        })
+        let exportData = {
+            fileName: translate('human_resource.profile.employee_info.export_bhxh'),
+            dataSheets: [
+                {
+                    sheetName: "Sheet1",
+                    sheetTitle: `${translate('human_resource.profile.employee_info.export_bhxh')}: ${employee.fullName} - ${employee.employeeNumber}`,
+                    tables: [
+                        {
+                            columns: [
+                                { key: "STT", value: translate('human_resource.stt') },
+                                { key: "startDate", value: translate('human_resource.profile.from_month_year') },
+                                { key: "endDate", value: translate('human_resource.profile.to_month_year') },
+                                { key: "company", value: translate('human_resource.profile.unit') },
+                                { key: "position", value: translate('table.position') }
+                            ],
+                            data: data
+                        },
+                    ]
+                },
+            ]
+        }
+        return exportData
     }
 
 
@@ -55,6 +97,8 @@ class InsurranceTab extends Component {
         const { translate } = this.props;
 
         const { id, healthInsuranceNumber, healthInsuranceStartDate, healthInsuranceEndDate, socialInsuranceNumber, socialInsuranceDetails } = this.state;
+
+        let exportData = this.convertDataToExportData(socialInsuranceDetails);
 
         return (
             <div id={id} className="tab-pane">
@@ -87,6 +131,7 @@ class InsurranceTab extends Component {
                             <strong>{translate('human_resource.profile.number_BHXH')}&emsp; </strong>
                             {socialInsuranceNumber}
                         </div>
+                        <ExportExcel id="detail-export-bhxh" buttonName={translate('human_resource.name_button_export')} exportData={exportData} style={{ marginBottom: 10 }} />
                         <h4 className="col-md-6" style={{ paddingLeft: 0, fontSize: 16 }}>{translate('human_resource.profile.bhxh_process')}:</h4>
                         <table className="table table-striped table-bordered table-hover " style={{ marginBottom: 0 }} >
                             <thead>

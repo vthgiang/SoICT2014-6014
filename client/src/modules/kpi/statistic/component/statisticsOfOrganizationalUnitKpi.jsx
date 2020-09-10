@@ -568,12 +568,10 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
                         </div>
 
 
-                        <div className="row">
-                            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                            <fieldset className="scheduler-border qlcv">
-                                <legend className="scheduler-border">
+                        <div className="row row-equal-height">
+                            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{padding: 10}}>
+                                <div className="description-box" style={{height: "100%"}}>
                                     <h4 className="box-title">Cây KPI đơn vị</h4>
-                                </legend>
                                     <div className="details-tree" id="details-tree">
                                         <Tree 
                                             id="tree-qlcv-document"
@@ -583,10 +581,10 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
                                         />
                                     </div>
                                     <SlimScroll outerComponentId="details-tree" innerComponentId="tree-qlcv-document" innerComponentWidth={"100%"} activate={true} />
-                            </fieldset>
+                                </div>
                             </div>
 
-                            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ padding: 10 }}>
                                 {
                                     details &&
                                     <DetailsOfOrganizationalUnitKpiForm

@@ -96,9 +96,26 @@ app.use("/upload/asset/pictures", express.static("upload/asset/pictures"));
 // Function gọi Api vào thời gian xác định
 schedulerController.chedulesCallApi();
 
-if (process.env.MULTI_TENANT === 'true') {
-	// api multi-tenant
-} else {
+if(process.env.MULTI_TENANT === 'true'){
+	const router = express.Router();
+
+	router.use('/auth', require('./modules/_multi-tenant/auth/auth.route'));
+
+    // router.use('/user', require('./modules/_multi-tenant/super-admin/user/user.route'));
+    // router.use('/role', require('./modules/_multi-tenant/super-admin/role/role.route'));
+    // router.use('/component', require("./modules/_multi-tenant/super-admin/component/component.route"));
+    // router.use('/link', require("./modules/_multi-tenant/super-admin/link/link.route"));
+    // router.use('/organizational-units', require("./modules/_multi-tenant/super-admin/organizational-unit/organizationalUnit.route"));
+    // router.use('/privilege', require("./modules/_multi-tenant/super-admin/privilege/privilege.route"));
+    
+    // router.use('/system-admin/company', require("./modules/_multi-tenant/system-admin/company/company.route"));
+    // router.use('/system-admin/system-component', require("./modules/_multi-tenant/system-admin/system-component/systemComponent.route"));
+    // router.use('/system-admin/system-link', require("./modules/_multi-tenant/system-admin/system-link/systemLink.route"));
+    // router.use('/system-admin/root-role', require("./modules/_multi-tenant/system-admin/root-role/rootRole.route"));
+	// router.use('/system-admin/system-setting', require("./modules/_multi-tenant/system-admin/system-setting/systemSetting.route"));
+	
+	app.use(router);
+}else{
 	app.use("/auth", auth);
 
 	app.use("/documents", documents);

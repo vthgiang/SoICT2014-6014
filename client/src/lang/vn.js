@@ -1253,6 +1253,7 @@ export default {
                 course_name: 'Tên khoá học',
                 start_day: 'Ngày bắt đầu',
                 end_date: 'Ngày kết thúc',
+                contract_end_date: 'Ngày hết hạn hợp đồng',
                 type_education: 'Loại đào tạo',
                 cost: 'Chi phí',
                 edit_contract: 'Chỉnh sửa hợp đồng lao động',
@@ -1309,11 +1310,13 @@ export default {
 
                 // Quản lý thông tin cá nhân
                 employee_info: {
+                    export_bhxh: 'Quá trình đóng bảo hiểm xã hội',
                     // Nhóm dành cho UI
                     note_page_personal: 'Tôi xin cam đoan những lời khai trên đây là đúng sự thật và chịu trách nhiệm cho những lời khai này.',
                     contact_other: '(Những thông tin khác vui lòng liên hệ các bên liên quan để được xử lý)',
                     update_infor_personal: 'Cập nhật thông tin nhân viên',
-                    no_data_personal: 'Chưa có thông tin cá nhân',
+                    no_data_personal: 'Bạn chưa có thông tin cá nhân',
+                    no_data_personal_to_update: 'Bạn chưa có thông tin cá nhân để cập nhật',
 
                     guaranteed_infor_to_update: 'Bạn chưa cam đoan thông tin cần cập nhật',
                     no_change_data: 'Không có thông tin nào được thay đổi',
@@ -1332,7 +1335,7 @@ export default {
                     all_gender: 'Chọn tất cả giới tính',
                     brithday_lable: 'Sinh nhật',
                     brithday_lable_title: 'Tháng sinh nhật',
-                    contract_lable: 'Hết hạn hợn đồng',
+                    contract_lable: 'Hết hạn hợp đồng',
                     contract_lable_title: 'Tháng hết hạn hợp đồng',
                     contract_type_title: 'Loại hợp đồng lao động',
 
@@ -1667,6 +1670,7 @@ export default {
                 asset_incident_and_maintenance: 'Sự cố - bảo trì',
                 incident_asset: 'Thống kê sự cố tài sản',
                 maintenance_asset: 'Thống kê bảo trì tài sản',
+                statistic_by: 'Thống kê theo',
             },
 
             //  Quản lý loại tài sản
@@ -2051,8 +2055,8 @@ export default {
                 action_add: 'Thêm công việc con',
                 action_start_timer: 'Bắt đầu bấm giờ',
 
-                from: 'Từ tháng',
-                to: 'Đến tháng',
+                from: 'Từ ',
+                to: 'Đến',
                 lower_from: 'từ',
                 lower_to: 'đến',
                 month: 'Tháng',

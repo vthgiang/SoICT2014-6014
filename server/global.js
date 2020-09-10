@@ -11,7 +11,7 @@ global.SERVER_SEED_DIR = SERVER_DIR + "/seed";
 global.SERVER_LOGS_DIR = SERVER_DIR + "/logs";
 
 global.DB_CONNECTION = {};
-DB_CONNECTION['system'] = mongoose.createConnection(
+DB_CONNECTION[process.env.DB_NAME] = mongoose.createConnection(
     process.env.DATABASE || `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/${process.env.DB_NAME}`,
     process.env.DB_AUTHENTICATION === "true" ? 
     {

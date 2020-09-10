@@ -224,6 +224,12 @@ const EmployeeSchema = new Schema({
         company: String,
         position: String
     }],
+    contractEndDate: {
+        type: Date
+    },
+    contractType: {
+        type: String
+    },
     contracts: [{
         name: String,
         contractType: String,
