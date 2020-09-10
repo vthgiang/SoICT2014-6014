@@ -34,7 +34,12 @@ class EmployeeDetail extends Component {
         return (
             <React.Fragment>
                 {
-                    employees && employees.length === 0 && employeesInfo.isLoading === false && < span className="text-red">{translate('human_resource.profile.employee_info.no_data_personal')}</span>
+                    employees && employees.length === 0 && employeesInfo.isLoading === false &&
+                    <div className="box">
+                        <div className="box-body qlcv" style={{ height: '100vh' }}>
+                            <strong>{translate('human_resource.profile.employee_info.no_data_personal')}</strong>
+                        </div>
+                    </div>
                 }
                 {(typeof employees !== 'undefined' && employees.length !== 0) &&
                     employees.map((x, index) => (

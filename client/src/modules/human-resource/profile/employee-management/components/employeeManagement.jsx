@@ -65,7 +65,6 @@ class EmployeeManagement extends Component {
         } else {
             return date
         }
-
     }
 
     // Function bắt sự kiện thêm lương nhân viên bằng tay
@@ -754,8 +753,10 @@ class EmployeeManagement extends Component {
     };
 
     componentDidUpdate() {
-        if (this.state.exportDataStatus === 1 && !this.props.employeesManager.isLoading && this.props.employeesManager.exportData.length !== 0) {
-            let exportData = this.convertDataToExportData(this.props.employeesManager.exportData);
+        const { exportDataStatus } = this.state;
+        const { employeesManager } = this.props;
+        if (exportDataStatus === 1 && !employeesManager.isLoading && employeesManager.exportData.length !== 0) {
+            let exportData = this.convertDataToExportData(employeesManager.exportData);
             ExportExcel.export(exportData);
         };
     }
