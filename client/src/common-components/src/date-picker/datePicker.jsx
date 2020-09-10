@@ -83,10 +83,11 @@ class DatePicker extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id || nextProps.value !== prevState.value) {
+        if (nextProps.id !== prevState.id || nextProps.value !== prevState.value || nextProps.dateFormat !== prevState.dateFormat) {
             return {
                 value: nextProps.value, // Lưu value ban đầu vào state
-                id: nextProps.id
+                id: nextProps.id,
+                dateFormat: nextProps.dateFormat,
             }
         } else {
             return null;
@@ -94,7 +95,7 @@ class DatePicker extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        if (nextProps.id !== this.state.id || nextState.value !== this.state.value) // Chỉ render 1 lần, trừ khi id,value thay đổi
+        if (nextProps.id !== this.state.id || nextProps.value !== this.state.value || nextProps.dateFormat !== this.state.dateFormat) // Chỉ render 1 lần, trừ khi id,value thay đổi
             return true;
         return false;  // Tự chủ động update (do đã lưu value vào state)
     }
