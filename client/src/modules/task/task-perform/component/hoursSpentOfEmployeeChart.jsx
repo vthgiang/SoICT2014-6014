@@ -66,7 +66,12 @@ class HoursSpentOfEmployeeChart extends Component {
     setDataPieChart = (data) => {
         let dataChart;
         dataChart = Object.entries(data);
-
+        
+        if (dataChart && dataChart.length !== 0) {
+            dataChart = dataChart.map(item => {
+                return [item[0] + " (" + item[1] + "h)", item[1]]
+            })
+        }
         return dataChart;
     }
 
@@ -78,22 +83,39 @@ class HoursSpentOfEmployeeChart extends Component {
         
         this.chart = c3.generate({
             bindto: document.getElementById(refs),
+            size: {
+                height: 160
+            },
+            title: {
+                text: refs === "totalTime" ? "Tổng thời gian bấm giờ" : "Thời gian bấm giờ",
+                position: "upper-left",
+                padding: {
+                    top: 5,
+                    right: 0,
+                    bottom: 13,
+                    left: 0
+                }
+            },
 
             data: {
                 columns: dataPieChart,
                 type: 'pie',
             },
 
-            legend: {
-                show: true
-            },
-
             tooltip: {
                 format: {
+                    name: function (name) {
+                        name = name.split("(");
+                        return name[0];
+                    },
                     value: function (value) {
                         return value + "h"
                     }
                 }
+            },
+
+            legend: {
+                position: 'right'
             }
         });
     }
@@ -103,7 +125,7 @@ class HoursSpentOfEmployeeChart extends Component {
 
         return (
             <React.Fragment>
-                <div id={refs} className="hoursSpentOfEmployee"></div>
+                <div id={refs} className={"hoursSpentOfEmployee " + refs}></div>
             </React.Fragment>
         )
     }

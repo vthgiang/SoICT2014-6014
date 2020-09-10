@@ -18,6 +18,7 @@ import './../processDiagram.css'
 import { TaskFormValidator } from "../../../task-management/component/taskFormValidator";
 import { TaskProcessValidator } from "../taskProcessValidator";
 import { TaskProcessActions } from "../../redux/actions";
+import getEmployeeSelectBoxItems from "../../../organizationalUnitHelper";
 
 
 //Xóa element khỏi pallette theo data-action
@@ -67,6 +68,7 @@ class ModalEditProcess extends Component {
 
     componentDidMount() {
         this.props.getAllUserOfCompany();
+        this.props.getAllUserInAllUnitsOfCompany()
 
         this.modeler.attachTo('#' + this.generateId);
         var eventBus = this.modeler.get('eventBus');
@@ -511,6 +513,14 @@ class ModalEditProcess extends Component {
         if (listUserCompany && listUserCompany.length !== 0) {
             listItem = listUserCompany.map(item => { return { text: item.name, value: item._id } });
         }
+
+        let usersInUnitsOfCompany;
+        if (user && user.usersInUnitsOfCompany) {
+            usersInUnitsOfCompany = user.usersInUnitsOfCompany;
+        }
+
+        let allUnitsMember = getEmployeeSelectBoxItems(usersInUnitsOfCompany);
+
         // Mảng cấu hình trạng thái công việc
         let statusArr = [
             { value: "Inprocess", text: translate('task.task_management.inprocess') },
@@ -612,12 +622,12 @@ class ModalEditProcess extends Component {
                                     <div className={`form-group ${errorOnViewer === undefined ? "" : "has-error"}`}>
                                         {/* Người được xem quy trình */}
                                         <label className="control-label">{translate("task.task_process.viewer")}</label>
-                                        {
+                                        {allUnitsMember &&
                                             <SelectBox
                                                 id={`select-viewer-employee-edit-task-process-${idProcess}`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
-                                                items={listItem}
+                                                items={allUnitsMember}
                                                 onChange={this.handleChangeViewer}
                                                 multiple={true}
                                                 value={viewer}
@@ -669,6 +679,7 @@ const actionCreators = {
     getTaskById: performTaskAction.getTaskById,
     getAllUsersWithRole: UserActions.getAllUsersWithRole,
     getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
+    getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
     editProcessInfo: TaskProcessActions.editProcessInfo,
 };
 const connectedModalEditProcess = connect(mapState, actionCreators)(withTranslate(ModalEditProcess));

@@ -62,8 +62,8 @@ class ModalViewTaskProcess extends Component {
                 info: info,
                 processDescription: nextProps.data.processDescription ? nextProps.data.processDescription : '',
                 processName: nextProps.data.processName ? nextProps.data.processName : '',
-                viewer: nextProps.data.viewer ? nextProps.data.viewer : [],
-                manager: nextProps.data.manager ? nextProps.data.manager : [],
+                viewer: nextProps.data.viewer ? nextProps.data.viewer.map(x=>x._id) : [],
+                manager: nextProps.data.manager ? nextProps.data.manager.map(x=>x._id) : [],
                 xmlDiagram: nextProps.data.xmlDiagram,
             }
         } else {

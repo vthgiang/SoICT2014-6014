@@ -311,12 +311,13 @@ class AssetMaintenanceChart extends Component {
         let { year } = this.state;
         let { maintenanceDateAfter, maintenanceDateBefore } = this.INFO_SEARCH;
 
-        let dateFormat = year == "true" ? "year" : "month-year";
-        let startValue = year == "true" ? maintenanceDateAfter.slice(0, 4) : maintenanceDateAfter.slice(5, 7) + ' - ' + maintenanceDateAfter.slice(0, 4);
-        let endValue = year == "true" ? maintenanceDateBefore.slice(0, 4) : maintenanceDateBefore.slice(5, 7) + ' - ' + maintenanceDateBefore.slice(0, 4);
+        let dateFormat = year === "true" ? "year" : "month-year";
+        let startValue = year === "true" ? maintenanceDateAfter.slice(0, 4) : maintenanceDateAfter.slice(5, 7) + ' - ' + maintenanceDateAfter.slice(0, 4);
+        let endValue = year === "true" ? maintenanceDateBefore.slice(0, 4) : maintenanceDateBefore.slice(5, 7) + ' - ' + maintenanceDateBefore.slice(0, 4);
 
 
         this.columnChart();
+        console.log(dateFormat);
 
         return (
             <React.Fragment>
@@ -344,7 +345,7 @@ class AssetMaintenanceChart extends Component {
                     <div className="form-group">
                         <label>{translate('task.task_management.from')}</label>
                         <DatePicker
-                            id="maintenance_after"
+                            id={`maintain_after`}
                             dateFormat={dateFormat}
                             value={startValue}
                             onChange={this.handleChangeDateAfter}
@@ -355,7 +356,7 @@ class AssetMaintenanceChart extends Component {
                     <div className="form-group">
                         <label>{translate('task.task_management.to')}</label>
                         <DatePicker
-                            id="maintenance_before"
+                            id={`maintain_before`}
                             dateFormat={dateFormat}
                             value={endValue}
                             onChange={this.handleChangeDateBefore}
