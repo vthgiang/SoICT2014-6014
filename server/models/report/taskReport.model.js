@@ -79,7 +79,10 @@ const TaskReportSchema = new Schema({
         aggregationType: { // 0: tính theo kiểu trung bình cộng, 1: tính theo kiểu tổng
             type: Number
         },
-        charType: { // 0: Barchart, 1: Line Chart, 2: Pie chart,....
+        chartType: { // 0: Barchart, 1: Line Chart, 2: Pie chart,....
+            type: Number
+        },
+        coefficient: {
             type: Number
         }
     }],
