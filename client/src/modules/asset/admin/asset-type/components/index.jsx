@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
-
 import './domains.css'
 
 import { Tree, SlimScroll, ExportExcel } from '../../../../../common-components';
 
 import { AssetTypeActions } from '../redux/actions';
-import CreateForm from './createForm';
+
+import CreateAssetTypeModal from './createAssetTypeModal';
 import EditForm from './editForm';
+import { ImportAssetTypeModal } from './importAssetTypeModal'
 
 class AdministrationAssetTypes extends Component {
     constructor(props) {
@@ -70,7 +72,7 @@ class AdministrationAssetTypes extends Component {
         let data = dataTree.map((item, index) => {
             let information = "";
             item.defaultInformation.map(info => {
-                information = information + info.nameField + ' - ' + info.value + '\n';
+                information = information + info.nameField + '\n';
             })
 
             return {
@@ -95,7 +97,7 @@ class AdministrationAssetTypes extends Component {
                                 { key: "code", value: "Mã loại tài sản" },
                                 { key: "name", value: "Tên loại tài sản" },
                                 { key: "description", value: "Mô tả" },
-                                { key: "information", value: "Thông tin mặc định" }
+                                { key: "information", value: "Thuộc tính mặc định" }
                             ],
                             data: data
                         },
@@ -112,6 +114,7 @@ class AdministrationAssetTypes extends Component {
         const { list } = this.props.assetType.administration.types;
         const { domainParent, currentDomain, deleteNode } = this.state;
 
+        console.log('\n\n\n ***************', list);
         const dataTree = list.map(node => {
             return {
                 ...node,
@@ -139,10 +142,11 @@ class AdministrationAssetTypes extends Component {
                     {/* Thêm */}
                     <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title='Thêm'>{translate('task_template.add')}</button>
                     <ul className="dropdown-menu pull-right">
-                        <li><a href="#modal-add-task-template" title="ImportForm" onClick={() => { window.$('#modal-create-asset-type').modal('show') }}>{translate('task_template.add')}</a></li>
-                        <li><a href="#modal_import_file" title="ImportForm" onClick={() => { window.$('#modal-create-asset-type').modal('show') }}>ImportFile</a></li>
+                        <li><a style={{ cursor: "pointer" }} onClick={() => { window.$('#modal-create-asset-type').modal('show') }}>{translate('task_template.add')}</a></li>
+                        <li><a style={{ cursor: "pointer" }} onClick={() => { window.$('#import_asset_type').modal('show') }}>Thêm file</a></li>
                     </ul>
-                    <CreateForm domainParent={domainParent} />
+                    <ImportAssetTypeModal/>
+                    <CreateAssetTypeModal domainParent={domainParent} />
                 </div>
 
                 <div className="box-body">

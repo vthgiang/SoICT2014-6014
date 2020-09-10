@@ -6,11 +6,18 @@ const {
 } = require('../../../logs');
 
 /**
- * Lấy thông tin cá nhân theo userId
+ * Lấy thông tin cá nhân của nhân viên theo userId (id người dùng) hoặc emplyeeId (id nhân viên);
  */
 exports.getEmployeeProfile = async (req, res) => {
     try {
-        var inforEmployee = await EmployeeService.getEmployeeProfile(req.params.userId);
+        let inforEmployee;
+        if (req.query.callAPIByUser === "true") { // Theo uerId
+            let user = await UserService.getUser(req.params.id);
+            inforEmployee = await EmployeeService.getEmployeeProfile(user.email);
+        } else { // Theo employeeId
+            let employee = await EmployeeService.getEmployeeInforById(req.params.id);
+            inforEmployee = await EmployeeService.getEmployeeProfile(employee.emailInCompany);
+        };
         await LogInfo(req.user.email, 'GET_INFOR_PERSONAL', req.user.company);
         res.status(200).json({
             success: true,
@@ -63,14 +70,20 @@ exports.updatePersonalInformation = async (req, res) => {
 exports.searchEmployeeProfiles = async (req, res) => {
     try {
         let data;
-        if (req.query.numberMonth) {
+        if (req.query.exportData) {
+            let arrEmail = req.query.arrEmail;
+            data = [];
+            for (let i = 0; i < arrEmail.length; i++) {
+                let employee = await EmployeeService.getEmployeeProfile(arrEmail[i]);
+                data = [...data, employee]
+            }
+        } else if (req.query.numberMonth) {
             data = await EmployeeService.getEmployeesOfNumberMonth(req.query.organizationalUnits, req.query.numberMonth, req.user.company._id);
         } else if (req.query.page === undefined && req.query.limit === undefined) {
             data = await EmployeeService.getEmployees(req.user.company._id, req.query.organizationalUnits, req.query.position, false, req.query.status);
         } else {
             let params = {
                 organizationalUnits: req.query.organizationalUnits,
-                position: req.query.position,
                 employeeNumber: req.query.employeeNumber,
                 gender: req.query.gender,
                 status: req.query.status,

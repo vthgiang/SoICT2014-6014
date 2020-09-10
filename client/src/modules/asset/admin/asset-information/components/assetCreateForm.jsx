@@ -155,17 +155,18 @@ class AssetCreateForm extends Component {
             this.validatorInput(asset.code) &&
             this.validatorInput(asset.assetName) &&
             // this.validatorInput(asset.serial) &&
-            this.validatorInput(asset.purchaseDate)
+            this.validatorInput(asset.purchaseDate) &&
             // && this.validatorInput(asset.warrantyExpirationDate) &&
             // //this.validatorInput(asset.location) &&
-            // this.validatorInput(asset.assetType) &&
+            this.validatorInput(asset.assetType) &&
             // this.validatorInput(asset.managedBy) &&
-            // this.validatorInput(asset.status) &&
-            // this.validatorInput(asset.typeRegisterForUse) &&
-            // this.validatorInput(asset.cost) &&
-            // this.validatorInput(asset.usefulLife) &&
-            // this.validatorInput(asset.startDepreciation) &&
-            // this.validatorInput(asset.depreciationType);
+            this.validatorInput(asset.status) &&
+            this.validatorInput(asset.typeRegisterForUse) &&
+            this.validatorInput(asset.group) &&
+            this.validatorInput(asset.cost) &&
+            this.validatorInput(asset.usefulLife) &&
+            this.validatorInput(asset.startDepreciation) &&
+            this.validatorInput(asset.depreciationType);
         
         return result;
     }
@@ -211,11 +212,11 @@ class AssetCreateForm extends Component {
                     <div className="nav-tabs-custom" style={{ marginTop: '-15px' }}>
                         {/* Nav-tabs */}
                         <ul className="nav nav-tabs">
-                            <li className="active"><a title={translate('asset.general_information.general_information')} data-toggle="tab" href={`#general`}>{translate('asset.general_information.general_information')}</a></li>
+                            <li className="active"><a title={translate('asset.general_information.general_information')} data-toggle="tab" href={`#create_general`}>{translate('asset.general_information.general_information')}</a></li>
                             <li><a title={translate('asset.general_information.usage_information')} data-toggle="tab" href={`#usage`}>{translate('asset.general_information.usage_information')}</a></li>
+                            <li><a title={translate('asset.general_information.incident_information')} data-toggle="tab" href={`#incident`}>{translate('asset.general_information.incident_information')}</a></li>
                             <li><a title={translate('asset.general_information.maintainance_information')} data-toggle="tab" href={`#maintainance`}>{translate('asset.general_information.maintainance_information')}</a></li>
                             <li><a title={translate('asset.general_information.depreciation_information')} data-toggle="tab" href={`#depreciation`}>{translate('asset.general_information.depreciation_information')}</a></li>
-                            <li><a title={translate('asset.general_information.incident_information')} data-toggle="tab" href={`#incident`}>{translate('asset.general_information.incident_information')}</a></li>
                             <li><a title={translate('asset.general_information.disposal_information')} data-toggle="tab" href={`#disposal`}>{translate('asset.general_information.disposal_information')}</a></li>
                             <li><a title={translate('asset.general_information.attach_infomation')} data-toggle="tab" href={`#attachments`}>{translate('asset.general_information.attach_infomation')}</a></li>
                         </ul>
@@ -248,14 +249,7 @@ class AssetCreateForm extends Component {
                                 handleEditUsage={this.handleChangeUsageLog}
                                 handleDeleteUsage={this.handleChangeUsageLog}
                             />
-
-                            {/* Thông tin khấu hao */}
-                            <DepreciationTab
-                                id="depreciation"
-                                asset={asset}
-                                handleChange={this.handleChange}
-                            />
-
+                            
                             {/* Thông tin sự cố */}
                             <IncidentLogTab
                                 id="incident"
@@ -263,6 +257,13 @@ class AssetCreateForm extends Component {
                                 handleAddIncident={this.handleChangeIncidentLog}
                                 handleEditIncident={this.handleChangeIncidentLog}
                                 handleDeleteIncident={this.handleChangeIncidentLog}
+                            />
+
+                            {/* Thông tin khấu hao */}
+                            <DepreciationTab
+                                id="depreciation"
+                                asset={asset}
+                                handleChange={this.handleChange}
                             />
 
                             {/* Thông tin thanh lý */}

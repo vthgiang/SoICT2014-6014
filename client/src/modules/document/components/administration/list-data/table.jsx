@@ -138,10 +138,20 @@ class Table extends Component {
         })
     }
     handleDomainChange = (value) => {
-        this.setState({ domain: value });
+        this.setState(state => {
+            return {
+                ...state,
+                domain: value,
+            }
+        })
     }
     handleDomains = value => {
-        this.setState({ documentDomains: value });
+        this.setState(state => {
+            return {
+                ...state,
+                documentDomains: value,
+            }
+        })
     }
     handleNameChange = (e) => {
         const value = e.target.value;
@@ -172,12 +182,12 @@ class Table extends Component {
     }
     convertDataToExportData = (data) => {
         // console.log(data);
-        let datas = [];
+        let newData = [];
         for (let i = 0; i < data.length; i++) {
-            if (data.versions && data.domains) {
+            if (data.versions && data.versions.length) {
                 let x = data[i];
                 let domain = "";
-                let leng = x.versions.length > x.domains.length ? x.versions.length : x.domains.length;
+                let length = x.versions.length > x.domains.length ? x.versions.length : x.domains.length;
                 if (x.domains.length > 0) {
                     domain = x.domains[0].name;
                 }
@@ -197,8 +207,8 @@ class Table extends Component {
                     officialNumber: x.officialNumber,
                     category: x.category.description,
                 }
-                datas = [...datas, out];
-                for (let j = 1; j < leng; j++) {
+                newData = [...newData, out];
+                for (let j = 1; j < length; j++) {
                     let versionName = "", issuingDate = "", effectiveDate = "", expiredDate = "", domain = "";
                     if (x.versions[j]) {
                         versionName = x.versions[j].versionName;
@@ -225,7 +235,7 @@ class Table extends Component {
                         officialNumber: "",
                         categor: "",
                     }
-                    datas = [...datas, out];
+                    newData = [...newData, out];
                 }
             }
         }
@@ -265,13 +275,13 @@ class Table extends Component {
                                 { key: "numberOfView", value: "Số lần xem" },
                                 { key: "numberOfDownload", value: "Số lần download" },
                             ],
-                            data: datas
+                            data: newData
                         }
                     ]
                 },
             ]
         }
-        console.log(exportData);
+        console.log('exxxx', exportData);
         return exportData
     }
     render() {
@@ -280,16 +290,16 @@ class Table extends Component {
         const { domains, categories, archives } = this.props.documents.administration;
         const { paginate } = docs;
         const { isLoading } = this.props.documents;
-        const { currentRow, archive, category } = this.state;
+        const { currentRow, archive, domain, category } = this.state;
         const listDomain = domains.list
         const listCategory = this.convertData(categories.list)
         const listArchive = archives.list;
-        console.log('ttttttttttttt', paginate);
+        console.log('ttttttttttttt', this.props.documents.administration);
         let list = [];
         if (isLoading === false) {
             list = docs.list;
         }
-        let exportData = this.convertDataToExportData(list);
+        let exportData = list ? this.convertDataToExportData(list) : "";
         return (
             <div className="qlcv">
                 <CreateForm />
@@ -372,8 +382,9 @@ class Table extends Component {
                     <div className="form-group" >
                         <label>{translate('document.store.information')}</label>
                         <TreeSelect
+                            id="tree-select-search-archive"
                             data={listArchive}
-                            className="form-control select2"
+                            className="form-control"
                             handleChange={this.handleArchiveChange}
                             value={archive}
                             mode="hierarchical"
@@ -387,9 +398,11 @@ class Table extends Component {
                     <div className="form-group">
                         <label>{translate('document.domain')}</label>
                         <TreeSelect
+                            id="tree-select-search-domain"
                             data={listDomain}
-                            className="form-control select2"
+                            className="form-control"
                             handleChange={this.handleDomainChange}
+                            value={domain}
                             mode="hierarchical"
                             style={{ width: "100%" }}
                         />

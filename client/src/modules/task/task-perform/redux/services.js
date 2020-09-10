@@ -55,6 +55,7 @@ export const performTaskService = {
     getById,
     confirmTask,
 
+    //Comment in process
     createComment,
     editComment,
     deleteComment,
@@ -369,7 +370,6 @@ function deleteFileCommentOfAction(fileId, actionId, taskId, type) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-actions/${actionId}/comments/files/${fileId}`,
         method: 'PATCH',
-
     }, false, true, 'task.task_perform');
 };
 
@@ -568,7 +568,7 @@ function deleteEvaluation(taskId, evaluationId) {
 function deleteFileTask(fileId, documentId, taskId) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/documents/${documentId}/files/${fileId}`,
-        method: 'DELETE',
+        method: 'PATCH',
     }, true, true, 'task.task_perform');
 }
 /**
@@ -658,8 +658,8 @@ function deleteChildComment(taskId, commentId, childCommentId) {
  */
 function deleteFileComment(fileId,commentId, taskId) {
     return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/performtask/process/tasks/${taskId}}/comments/${commentId}/files/${fileId}`,
-        method: 'DELETE',
+        url: `${process.env.REACT_APP_SERVER}/performtask/process/tasks/${taskId}/comments/${commentId}/files/${fileId}`,
+        method: 'PATCH',
     }, false, true)
 }
 /**
@@ -668,6 +668,6 @@ function deleteFileComment(fileId,commentId, taskId) {
 function deleteFileChildComment(fileId, childCommentId, commentId, taskId) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/performtask/process/tasks/${taskId}/comments/${commentId}/child-comments/${childCommentId}/files/${fileId}`,
-        method: 'DELETE',
+        method: 'PATCH',
     }, false, true)
 }

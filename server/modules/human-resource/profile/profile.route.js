@@ -30,7 +30,7 @@ const data = [{
 /**
  * Lấy thông tin cá nhân
  */
-router.get('/:userId', auth, EmployeeController.getEmployeeProfile);
+router.get('/:id', auth, EmployeeController.getEmployeeProfile);
 
 /**
  * Cập nhật thông tin cá nhân

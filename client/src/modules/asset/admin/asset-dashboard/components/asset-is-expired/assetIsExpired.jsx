@@ -100,7 +100,7 @@ class AssetIsExpired extends Component {
             var assettypelist = assetType.listAssetTypes;
         if (listAssets)
             lists = listAssets;
-        
+
         // Lấy dữ liệu để export
         if (ExpiryDateAssets && ExpiryDateAssets.length !== 0 || willExpiryDateAssets && willExpiryDateAssets.length !== 0) {
             if (ExpiryDateAssets && ExpiryDateAssets.length !== 0) {
@@ -110,6 +110,7 @@ class AssetIsExpired extends Component {
 
             }
         }
+        console.log('will', ExpiryDateAssets);
 
         return (
             <React.Fragment>
@@ -137,7 +138,7 @@ class AssetIsExpired extends Component {
                                         <tr key={index}>
                                             <td>{x.asset.code}</td>
                                             <td>{x.asset.assetName}</td>
-                                            <td>{x.asset.assetType && assettypelist.length && assettypelist.find(item => item._id === x.asset.assetType) ? assettypelist.find(item => item._id === x.asset.assetType).typeName : 'Asset is deleted'}</td>
+                                            <td>{x.asset.assetType && x.asset.assetType.length ? x.asset.assetType.map((item, index) => { let suffix = index < x.asset.assetType.length - 1 ? ", " : ""; return item.typeName + suffix }) : 'Asset is deleted'}</td>
                                             <td>{this.formatDate(x.asset.purchaseDate)}</td>
                                             <td>{x.asset.managedBy && userlist.length && userlist.find(item => item._id === x.asset.managedBy) ? userlist.find(item => item._id === x.asset.managedBy).name : 'User is deleted'}</td>
                                             <td>{x.asset.assignedToUser ? (userlist.length && userlist.find(item => item._id === x.asset.assignedToUser) ? userlist.find(item => item._id === x.asset.assignedToUser).name : 'User is deleted') : ''}</td>
@@ -151,7 +152,7 @@ class AssetIsExpired extends Component {
                                         <tr key={index}>
                                             <td>{x.asset.code}</td>
                                             <td>{x.asset.assetName}</td>
-                                            <td>{x.asset.assetType && assettypelist.length && assettypelist.find(item => item._id === x.asset.assetType) ? assettypelist.find(item => item._id === x.asset.assetType).typeName : 'Asset is deleted'}</td>
+                                            <td>{x.asset.assetType && x.asset.assetType.length ? x.asset.assetType.map((item, index) => { let suffix = index < x.asset.assetType.length - 1 ? ", " : ""; return item.typeName + suffix }) : 'Asset is deleted'}</td>
                                             <td>{this.formatDate(x.asset.purchaseDate)}</td>
                                             <td>{x.asset.managedBy && userlist.length && userlist.find(item => item._id === x.asset.managedBy) ? userlist.find(item => item._id === x.asset.managedBy).name : 'User is deleted'}</td>
                                             <td>{x.asset.assignedToUser ? (userlist.length && userlist.find(item => item._id === x.asset.assignedToUser) ? userlist.find(item => item._id === x.asset.assignedToUser).name : 'User is deleted') : ''}</td>

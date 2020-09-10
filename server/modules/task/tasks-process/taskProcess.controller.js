@@ -24,14 +24,14 @@ exports.getAllXmlDiagrams = async (req, res) => {
 		await LogInfo(req.user.email, `get all xml diagram `, req.user.company);
 		res.status(200).json({
 			success: true,
-			messages: ['export thanh công'],
+			messages: ['get_all_success'],
 			content: data
 		});
 	} catch (error) {
 		await LogError(req.user.email, `get all xml diagram `, req.user.company);
 		res.status(400).json({
 			success: false,
-			messages: ['abc'],
+			messages: ['get_all_err'],
 			content: error
 		});
 	}
@@ -45,14 +45,14 @@ exports.getXmlDiagramById = async (req, res) => {
 		await LogInfo(req.user.email, `get all xml diagram `, req.user.company);
 		res.status(200).json({
 			success: true,
-			messages: ['export thanh công'],
+			messages: ['get_by_id_success'],
 			content: data
 		});
 	} catch (error) {
 		await LogError(req.user.email, `get all xml diagram `, req.user.company);
 		res.status(400).json({
 			success: false,
-			messages: ['abc'],
+			messages: ['get_by_id_err'],
 			content: error
 		});
 	}
@@ -66,14 +66,14 @@ exports.createXmlDiagram = async (req, res) => {
 		await LogInfo(req.user.email, `create xml diagram `, req.user.company);
 		res.status(200).json({
 			success: true,
-			messages: ['export thanh công'],
+			messages: ['create_success'],
 			content: data
 		});
 	} catch (error) {
 		await LogError(req.user.email, `create xml diagram `, req.user.company);
 		res.status(400).json({
 			success: false,
-			messages: ['abc'],
+			messages: ['create_error'],
 			content: error
 		});
 	}
@@ -130,8 +130,7 @@ exports.deleteXmlDiagram = async (req, res) => {
  * @param {*} res 
  */
 exports.createTaskByProcess = async (req, res) => {
-	try {
-		console.log("controller")
+	// try {
 		var data = await TaskProcessService.createTaskByProcess(req.params.processId, req.body);
 		await LogInfo(req.user.email, `create_task_by_process`, req.user.company);
 		res.status(200).json({
@@ -139,14 +138,14 @@ exports.createTaskByProcess = async (req, res) => {
 			messages: ['create_task_by_process_success'],
 			content: data,
 		});
-	} catch (error) {
-		await LogError(req.user.email, `create_task_by_process`, req.user.company);
-		res.status(400).json({
-			success: false,
-			messages: ['create_task_by_process_fail'],
-			content: error,
-		});
-	}
+	// } catch (error) {
+	// 	await LogError(req.user.email, `create_task_by_process`, req.user.company);
+	// 	res.status(400).json({
+	// 		success: false,
+	// 		messages: ['create_task_by_process_fail'],
+	// 		content: error,
+	// 	});
+	// }
 }
 
 /**
@@ -167,7 +166,7 @@ exports.getAllTaskProcess = async (req, res) => {
 		await LogError(req.user.email, `create_task_by_process`, req.user.company);
 		res.status(400).json({
 			success: false,
-			messages: ['create_task_by_process_fail'],
+			messages: ['get_all_task_process_fail'],
 			content: error,
 		});
 	}
@@ -185,14 +184,38 @@ exports.updateDiagram = async (req, res) => {
 		await LogInfo(req.user.email, `update diagram`, req.user.company);
 		res.status(200).json({
 			success: true,
-			messages: ['get_all_task_process_success'],
+			messages: ['update_task_process_success'],
 			content: data,
 		});
 	} catch (error) {
 		await LogError(req.user.email, `update diagram`, req.user.company);
 		res.status(400).json({
 			success: false,
-			messages: ['create_task_by_process_fail'],
+			messages: ['update_task_process_fail'],
+			content: error,
+		});
+	}
+}
+
+/**
+ * cập nhật thông tin quy trình công việc
+ * @param {*} req 
+ * @param {*} res 
+ */
+exports.editProcessInfo = async (req, res) => {
+	try {
+		var data = await TaskProcessService.editProcessInfo(req.params, req.body);
+		await LogInfo(req.user.email, `update info process`, req.user.company);
+		res.status(200).json({
+			success: true,
+			messages: ['edit_info_process_success'],
+			content: data,
+		});
+	} catch (error) {
+		await LogError(req.user.email, `update info process`, req.user.company);
+		res.status(400).json({
+			success: false,
+			messages: ['edit_info_process_fail'],
 			content: error,
 		});
 	}

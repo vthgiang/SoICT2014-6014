@@ -36,6 +36,7 @@ class GeneralTab extends Component {
     }
 
     convertGroupAsset = (group) => {
+        console.log('group', group);
         if (group === 'Building') {
             return 'Mặt bằng';
         } else if (group === 'Vehicle') {
@@ -88,7 +89,7 @@ class GeneralTab extends Component {
 
         const {
             img, avatar, code, assetName, serial, assetTypes, group, purchaseDate, warrantyExpirationDate,
-            managedBy, assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, location, 
+            managedBy, assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, location,
             description, status, typeRegisterForUse, detailInfo, usageLogs
         } = this.state;
         return (
@@ -96,7 +97,7 @@ class GeneralTab extends Component {
                 <div className="box-body" >
                     <div className="row" style={{ paddingRight: '0px', paddingLeft: '0px' }}>
                         {/* Anh tài sản */}
-                        <div className="col-xl-4 col-lg-5" style={{ textAlign: 'center', paddingLeft: '0px' }}>
+                        <div className="col-md-4 " style={{ textAlign: 'center', paddingLeft: '0px' }}>
                             <div>
                                 <a href={process.env.REACT_APP_SERVER + avatar} target="_blank">
                                     <img className="attachment-img avarta" src={process.env.REACT_APP_SERVER + avatar} alt="Attachment" />
@@ -106,7 +107,7 @@ class GeneralTab extends Component {
 
                         {/* Thông tin cơ bản */}
                         <br />
-                        <div className="col-xl-8 col-lg-7 " style={{ paddingRight: '0px', paddingLeft: '0px' }}>
+                        <div className="col-md-8  " style={{ paddingRight: '0px', paddingLeft: '0px', minWidth: '350px' }}>
                             <div>
                                 <div className="col-md-6">
 
@@ -205,7 +206,7 @@ class GeneralTab extends Component {
                                     {/* Quyền đăng ký sử dụng */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.can_register_for_use')}&emsp; </strong>
-                                        {typeRegisterForUse == 1? 'Không được đăng ký sử dụng' : (typeRegisterForUse == 2 ? "Đăng ký sử dụng theo giờ" : "Đăng ký sử dụng lâu dài")}
+                                        {typeRegisterForUse == 1 ? 'Không được đăng ký sử dụng' : (typeRegisterForUse == 2 ? "Đăng ký sử dụng theo giờ" : "Đăng ký sử dụng lâu dài")}
                                     </div>
                                 </div>
                             </div>

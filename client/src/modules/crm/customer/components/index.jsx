@@ -106,14 +106,12 @@ class CrmCustomer extends Component {
     }
 
     componentDidMount(){
-        let company = getStorage('companyId');
         let { limit, page } = this.state;
-        this.props.getCustomers({company});
-        this.props.getCustomers({company, limit, page});
+        this.props.getCustomers();
+        this.props.getCustomers({limit, page});
     }
 
     handleInfo = async (customer) => {
-        console.log("FJLSKDJFLKSDF", customer)
         await this.setState({ customer });
 
         window.$('#modal-crm-customer-info').modal('show');
@@ -133,9 +131,7 @@ class CrmCustomer extends Component {
     }
 
     searchWithOption = async () => {
-        const company = getStorage('companyId');
         const data = {
-            company,
             limit: this.state.limit,
             page: 1,
             key: this.state.option,
@@ -145,10 +141,8 @@ class CrmCustomer extends Component {
     }
 
     setPage = (page) => {
-        const company = getStorage('companyId');
         this.setState({ page });
         const data = {
-            company,
             limit: this.state.limit,
             page: page,
             key: this.state.option,
@@ -158,10 +152,8 @@ class CrmCustomer extends Component {
     }
 
     setLimit = (number) => {
-        const company = getStorage('companyId');
         this.setState({ limit: number });
         const data = {
-            company,
             limit: number,
             page: this.state.page,
             key: this.state.option,

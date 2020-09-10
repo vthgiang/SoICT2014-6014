@@ -18,3 +18,29 @@ export const configCategory = {
         value: "Mô tả loại tài liệu"
     },
 }
+export const exportCategory = {
+    fileName: "Mẫu import loại tài liệu",
+    dataSheets: [{
+        sheetName: "Sheet1",
+        sheetTitle: "Danh sách loại tài liệu",
+        tables: [{
+            rowHeader: 1,
+            columns: [
+                { key: "name", value: "Tên loại tài liệu" },
+                { key: "description", value: "Mô tả loại tài liệu" },
+            ],
+            data: [
+                {
+                    name: "Bản kiểm điểm",
+                    description: "Bản kiểm điểm",
+                },
+                {
+                    name: "Đơn",
+                    description: "Đơn dùng dể xin phép",
+                },
+
+            ]
+        }]
+
+    }]
+}

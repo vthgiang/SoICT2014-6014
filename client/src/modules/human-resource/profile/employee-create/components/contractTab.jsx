@@ -5,6 +5,8 @@ import { withTranslate } from 'react-redux-multilingual';
 import { toast } from 'react-toastify';
 import ServerResponseAlert from '../../../../alert/components/serverResponseAlert';
 
+import { DatePicker } from '../../../../../common-components';
+
 import { ContractAddModal, ContractEditModal, CourseAddModal, CourseEditModal } from './combinedContent';
 
 import { CourseActions } from '../../../../training/course/redux/actions';
@@ -39,7 +41,18 @@ class ContractTab extends Component {
         }
         return date;
 
+    };
+
+    getCurrentContract = (contracts) => {
+        let contract = contracts[0];
+        contracts.forEach(x => {
+            if (new Date(contract.startDate).getTime() < new Date(x.startDate).getTime()) {
+                contract = x
+            }
+        })
+        return contract
     }
+
 
     componentDidMount() {
         this.props.getListCourse({ organizationalUnits: this.state.organizationalUnits, positions: this.state.roles });
@@ -121,6 +134,15 @@ class ContractTab extends Component {
                 }]
             })
             this.props.handleAddContract(this.state.contracts, data);
+            let contract = this.getCurrentContract(this.state.contracts);
+
+            this.setState({
+                contractEndDate: contract.endDate,
+                contractType: contract.contractType
+            })
+            this.props.handleChange('contractEndDate', contract.endDate ? contract.endDate : "");
+            this.props.handleChange('contractType', contract.contractType);
+
         } else {
             toast.error(
                 <ServerResponseAlert
@@ -149,6 +171,14 @@ class ContractTab extends Component {
                 contracts: contracts
             })
             this.props.handleEditContract(contracts, data);
+
+            let contract = this.getCurrentContract(this.state.contracts);
+            this.setState({
+                contractEndDate: contract.endDate,
+                contractType: contract.contractType
+            })
+            this.props.handleChange('contractEndDate', contract.endDate ? contract.endDate : "");
+            this.props.handleChange('contractType', contract.contractType);
         } else {
             toast.error(
                 <ServerResponseAlert
@@ -173,7 +203,19 @@ class ContractTab extends Component {
             ...this.state,
             contracts: [...contracts]
         })
-        this.props.handleDeleteContract(contracts, data)
+        this.props.handleDeleteContract(contracts, data);
+        let contract = {};
+        if (contracts.length !== 0) {
+            contract = this.getCurrentContract(contracts);
+        };
+
+        await this.setState({
+            contractEndDate: contract.endDate ? contract.endDate : "",
+            contractType: contract.contractType ? contract.contractType : "",
+        });
+
+        await this.props.handleChange('contractEndDate', contract.endDate ? contract.endDate : "");
+        await this.props.handleChange('contractType', contract.contractType ? contract.contractType : "");
     }
 
 
@@ -249,6 +291,8 @@ class ContractTab extends Component {
                 ...prevState,
                 id: nextProps.id,
                 contracts: nextProps.contracts,
+                contractEndDate: nextProps.employee ? nextProps.employee.contractEndDate : '',
+                contractType: nextProps.employee ? nextProps.employee.contractType : '',
                 courses: nextProps.courses,
                 pageCreate: nextProps.pageCreate,
                 organizationalUnits: nextProps.organizationalUnits,
@@ -265,15 +309,35 @@ class ContractTab extends Component {
 
         const { id } = this.props;
 
-        const { contracts, courses, pageCreate, roles, currentRow, currentCourseRow } = this.state;
+        const { contracts, contractEndDate, contractType, courses, pageCreate, roles, currentRow, currentCourseRow } = this.state;
 
+        console.log(contractEndDate);
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
                     {/* Danh sách hợp đồng lao động */}
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border"><h4 className="box-title">{translate('human_resource.profile.labor_contract')}</h4></legend>
-                        <ContractAddModal handleChange={this.handleAddContract} id={`addContract${id}`} />
+                        <div className="row">
+                            {/* Ngày hết hạn hợp đồng */}
+                            <div className="form-group col-md-4">
+                                <label>{translate('human_resource.profile.contract_end_date')}</label>
+                                <DatePicker
+                                    id={`contractEndDate-${id}`}
+                                    disabled={true}
+                                    value={this.formatDate(contractEndDate)}
+                                    onChange={this.handleContractEndDateChange}
+                                />
+                            </div>
+                            {/* Loại hợp đồng */}
+                            <div className="form-group col-md-4">
+                                <label >{translate('human_resource.profile.type_contract')}</label>
+                                <input type="text" className="form-control" name="contractType" value={contractType ? contractType : ''} disabled />
+                            </div>
+                            <div className="form-group col-md-4 col-xs-12">
+                                <ContractAddModal handleChange={this.handleAddContract} id={`addContract${id}`} />
+                            </div>
+                        </div>
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}  >
                             <thead>
                                 <tr>
@@ -315,7 +379,7 @@ class ContractTab extends Component {
                     {/* Danh sách khoá học */}
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border"><h4 className="box-title">{translate('human_resource.profile.training_process')}</h4></legend>
-                        {pageCreate && <a style={{ marginBottom: '10px', marginTop: '2px' }} className="btn btn-success pull-right" title='Do nhân viên chưa thuộc đơn vị nào' data-toggle="modal" data-backdrop="static" href='' disabled >{translate('modal.create')}</a>}
+                        {pageCreate && <a style={{ marginBottom: '10px', marginTop: '2px' }} className="btn btn-success pull-right" title={translate('human_resource.profile.employee_management.staff_no_unit_title')} disabled >{translate('modal.create')}</a>}
                         {!pageCreate && <CourseAddModal roles={roles} handleChange={this.handleAddCourse} id={`addCourse${id}`} />}
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
                             <thead>

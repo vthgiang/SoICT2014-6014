@@ -87,7 +87,7 @@ class DepreciationPieChart extends Component {
     // Thiết lập dữ liệu biểu đồ
     setDataPieChart = () => {
         const { listAssets, translate, setDepreciationOfAsset } = this.props;
-        let dataPieChart, depreciationExpenseOfBuilding = 0, depreciationExpenseOfVehicle = 0, depreciationExpenseOfMachine = 0, depreciationExpenseOfOrther = 0;
+        let dataPieChart, depreciationExpenseOfBuilding = 0, depreciationExpenseOfVehicle = 0, depreciationExpenseOfMachine = 0, depreciationExpenseOfOther = 0;
         let depreciationOfAsset = [];
 
         if (listAssets) {
@@ -113,7 +113,7 @@ class DepreciationPieChart extends Component {
                         depreciationExpenseOfMachine += asset.depreciationExpense;
                         break;
                     case "Other":
-                        depreciationExpenseOfOrther += asset.depreciationExpense;
+                        depreciationExpenseOfOther += asset.depreciationExpense;
                         break;
                 }
             });
@@ -123,7 +123,7 @@ class DepreciationPieChart extends Component {
             [translate('asset.dashboard.building'), depreciationExpenseOfBuilding > 0 ? depreciationExpenseOfBuilding : 0],
             [translate('asset.dashboard.vehicle'), depreciationExpenseOfVehicle],
             [translate('asset.dashboard.machine'), depreciationExpenseOfMachine],
-            [translate('asset.dashboard.orther'), depreciationExpenseOfOrther],
+            [translate('asset.dashboard.other'), depreciationExpenseOfOther],
         ];
 
         if (setDepreciationOfAsset) {
@@ -203,10 +203,5 @@ class DepreciationPieChart extends Component {
     }
 }
 
-function mapState(state) { }
+export default (withTranslate(DepreciationPieChart));
 
-const actions = {}
-
-const DepreciationPieChartConnected = connect(mapState, actions)(withTranslate(DepreciationPieChart));
-
-export { DepreciationPieChartConnected as DepreciationPieChart }

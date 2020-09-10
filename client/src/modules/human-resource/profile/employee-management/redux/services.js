@@ -18,17 +18,19 @@ function getAll(data) {
         url: `${ process.env.REACT_APP_SERVER }/employees`,
         method: 'GET',
         params: {
-            numberMonth: data !== undefined ? data.numberMonth : data,
-            organizationalUnits: data !== undefined ? data.organizationalUnits : data,
-            position: data !== undefined ? data.position : data,
-            employeeNumber: data !== undefined ? data.employeeNumber : data,
-            gender: data !== undefined ? data.gender : data,
-            status: data !== undefined ? data.status : data,
-            endDateOfContract: data !== undefined ? data.endDateOfContract : data,
-            birthdate: data !== undefined ? data.birthdate : data,
-            typeOfContract: data !== undefined ? data.typeOfContract : data,
-            page: data !== undefined ? data.page : data,
-            limit: data !== undefined ? data.limit : data
+            exportData: data ? data.exportData : data,
+            arrEmail: data ? data.arrEmail : data,
+            numberMonth: data ? data.numberMonth : data,
+            organizationalUnits: data ? data.organizationalUnits : data,
+            position: data ? data.position : data,
+            employeeNumber: data ? data.employeeNumber : data,
+            gender: data ? data.gender : data,
+            status: data ? data.status : data,
+            endDateOfContract: data ? data.endDateOfContract : data,
+            birthdate: data ? data.birthdate : data,
+            typeOfContract: data ? data.typeOfContract : data,
+            page: data ? data.page : data,
+            limit: data ? data.limit : data
         }
     }, false, true, 'human_resource.profile.employee_management');
 }

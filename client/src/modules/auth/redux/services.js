@@ -24,7 +24,9 @@ async function login(user) {
     return sendRequest({
         url: `${ process.env.REACT_APP_SERVER }/auth/login`,
         method: 'POST',
-        data: user
+        data: {
+            ...user, portal: 'vnist'
+        }
     }, false, false, 'auth')
 }
 

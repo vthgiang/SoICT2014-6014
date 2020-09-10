@@ -11,7 +11,7 @@ import { AssetCreateValidator } from './assetCreateValidator';
 class DepreciationTab extends Component {
     constructor(props) {
         super(props);
-        this.state = { };
+        this.state = {};
     }
 
     // Function format dữ liệu Date thành string
@@ -24,7 +24,7 @@ class DepreciationTab extends Component {
         if (month.length < 2) {
             month = '0' + month;
         }
-            
+
         if (day.length < 2) {
             day = '0' + day;
         }
@@ -176,7 +176,7 @@ class DepreciationTab extends Component {
                 currentDate = moment(`${splitDay[2]}-${splitDay[1]}-${splitDay[0]}`),
                 futureMonth = moment(currentDate).add(usefulLife, 'M'),
                 futureMonthEnd = moment(futureMonth).endOf('month');
-            
+
             if (currentDate.date() !== futureMonth.date() && futureMonth.isSame(futureMonthEnd.format('YYYY-MM-DD'))) {
                 futureMonth = futureMonth.add(1, 'd');
             }
@@ -249,19 +249,25 @@ class DepreciationTab extends Component {
     validateYear = (value, index, willUpdateState = true) => {
         let time = value.split("-");
         let date = new Date(time[1], time[0], 0)
-        let partDepreciation = this.state.startDepreciation.split('-');
-        let startDepreciation = [partDepreciation[2], partDepreciation[1], partDepreciation[0]].join('-');
 
-        let partEndDepreciation = this.state.endDepreciation.split('-');
-        let endDepreciation = [partEndDepreciation[2], partEndDepreciation[1], partEndDepreciation[0]].join('-');
-
+        let startDepreciation = undefined, endDepreciation = undefined;
+        if (this.state.startDepreciation) {
+            let partDepreciation = this.state.startDepreciation.split('-');
+            startDepreciation = [partDepreciation[2], partDepreciation[1], partDepreciation[0]].join('-');
+        }
+        
+        if (this.state.endDepreciation) {
+            let partEndDepreciation = this.state.endDepreciation.split('-');
+            endDepreciation = [partEndDepreciation[2], partEndDepreciation[1], partEndDepreciation[0]].join('-');
+        }
+        
         let msg = undefined;
 
         if (value.toString().trim() === "") {
             msg = "Tháng sản lượng sản phẩm không được để trống";
-        } else if (date.getTime() < new Date(startDepreciation).getTime()) {
+        } else if (startDepreciation && date.getTime() < new Date(startDepreciation).getTime()) {
             msg = "Tháng sản lượng sản phẩm không được trước ngày bắt đầu tính khấu hao";
-        } else if (date.getTime() > new Date(endDepreciation).getTime()) {
+        } else if (endDepreciation && date.getTime() > new Date(endDepreciation).getTime()) {
             msg = "Tháng sản lượng sản phẩm không được sau ngày kết thúc tính khấu hao";
         }
 
@@ -272,6 +278,7 @@ class DepreciationTab extends Component {
                 return {
                     ...state,
                     errorOnMonth: msg,
+                    errorOnMonthPosition: msg ? index : null,
                     unitsProducedDuringTheYears: unitsProducedDuringTheYears
                 }
             });
@@ -298,6 +305,7 @@ class DepreciationTab extends Component {
                 return {
                     ...state,
                     errorOnValue: msg,
+                    errorOnValuePosition: msg ? className : null,
                     unitsProducedDuringTheYears: unitsProducedDuringTheYears
                 }
             });
@@ -332,11 +340,11 @@ class DepreciationTab extends Component {
     render() {
         const { id } = this.props;
         const { translate } = this.props;
-        
+
         const {
             cost, residualValue, usefulLife, startDepreciation, depreciationType, errorOnCost, errorOnStartDepreciation,
-            errorOnUsefulLife, errorOnDepreciationType, errorOnMonth, errorOnValue, unitsProducedDuringTheYears, errorOnEstimatedTotalProduction, estimatedTotalProduction
-        } = this.state;
+            errorOnUsefulLife, errorOnDepreciationType, errorOnMonth, errorOnValue, unitsProducedDuringTheYears, errorOnEstimatedTotalProduction, 
+            estimatedTotalProduction, errorOnMonthPosition, errorOnValuePosition } = this.state;
 
         return (
             <div id={id} className="tab-pane">
@@ -370,7 +378,7 @@ class DepreciationTab extends Component {
 
                         {/* Thời gian bắt đầu trích khấu hao */}
                         <div className={`form-group ${!errorOnStartDepreciation ? "" : "has-error"} `}>
-                            <label htmlFor="startDepreciation">{translate('asset.general_information.start_depreciation')}</label>
+                            <label htmlFor="startDepreciation">{translate('asset.general_information.start_depreciation')}<span className="text-red">*</span></label>
                             <DatePicker
                                 id={`startDepreciation${id}`}
                                 value={startDepreciation}
@@ -415,46 +423,50 @@ class DepreciationTab extends Component {
                             <div className="col-md-12" style={{ paddingLeft: '0px' }}>
                                 <label>{translate('asset.depreciation.months_production')}:
                                     <a style={{ cursor: "pointer" }} title={translate('asset.general_information.asset_properties')}><i className="fa fa-plus-square" style={{ color: "#00a65a", marginLeft: 5 }}
-                                    onClick={this.handleAddUnitsProduced} /></a>
+                                        onClick={this.handleAddUnitsProduced} /></a>
                                 </label>
-                                <div className={`form-group ${(!errorOnMonth && !errorOnValue) ? "" : "has-error"}`}>
 
-                                    {/* Bảng thông tin chi tiết */}
-                                    <table className="table">
-                                        <thead>
-                                            <tr>
-                                                <th style={{ paddingLeft: '0px' }}>{translate('page.month')}</th>
-                                                <th style={{ paddingLeft: '0px' }}>{translate('asset.depreciation.production')}</th>
-                                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {(!unitsProducedDuringTheYears || unitsProducedDuringTheYears.length === 0) ? <tr>
-                                                <td colSpan={3}>
-                                                    <center> {translate('table.no_data')}</center>
-                                                </td>
-                                            </tr> :
-                                                unitsProducedDuringTheYears.map((x, index) => {
-                                                    return <tr key={index}>
-                                                        <td style={{ paddingLeft: '0px' }}>
+                                {/* Bảng thông tin chi tiết */}
+                                <table className="table">
+                                    <thead>
+                                        <tr>
+                                            <th style={{ paddingLeft: '0px' }}>{translate('page.month')}</th>
+                                            <th style={{ paddingLeft: '0px' }}>{translate('asset.depreciation.production')}</th>
+                                            <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {(!unitsProducedDuringTheYears || unitsProducedDuringTheYears.length === 0) ? <tr>
+                                            <td colSpan={3}>
+                                                <center> {translate('table.no_data')}</center>
+                                            </td>
+                                        </tr> :
+                                            unitsProducedDuringTheYears.map((x, index) => {
+                                                return <tr key={index}>
+                                                    <td style={{ paddingLeft: '0px' }}>
+                                                        <div className={`form-group ${(parseInt(errorOnMonthPosition) === index && errorOnMonth) ? "has-error" : ""}`}>
                                                             <DatePicker
                                                                 id={index}
                                                                 dateFormat="month-year"
                                                                 value={x.month}
                                                                 onChange={(e) => this.handleMonthChange(e, index)}
                                                             />
-                                                        </td>
-                                                        <td style={{ paddingLeft: '0px' }}><input className="form-control" type="number" value={x.unitsProducedDuringTheYear} name="unitsProducedDuringTheYears" style={{ width: "100%" }} onChange={(e) => this.handleChangeValue(e, index)} /></td>
-                                                        <td style={{ textAlign: "center" }}>
-                                                            <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete(index)}><i className="material-icons"></i></a>
-                                                        </td>
-                                                    </tr>
-                                                })}
-                                        </tbody>
-                                    </table>
-                                    <ErrorLabel content={errorOnMonth} />
-                                    <ErrorLabel content={errorOnValue} />
-                                </div>
+                                                            {(parseInt(errorOnMonthPosition) === index && errorOnMonth) && <ErrorLabel content={errorOnMonth} />}
+                                                        </div>
+                                                    </td>
+                                                    <td style={{ paddingLeft: '0px' }}>
+                                                        <div className={`form-group ${(parseInt(errorOnValuePosition) === index && errorOnValue) ? "has-error" : ""}`}>
+                                                            <input className="form-control" type="number" value={x.unitsProducedDuringTheYear} name="unitsProducedDuringTheYears" style={{ width: "100%" }} onChange={(e) => this.handleChangeValue(e, index)} />
+                                                            {(parseInt(errorOnValuePosition) === index && errorOnValue) && <ErrorLabel content={errorOnValue} />}
+                                                        </div>
+                                                    </td>
+                                                    <td style={{ textAlign: "center" }}>
+                                                        <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete(index)}><i className="material-icons"></i></a>
+                                                    </td>
+                                                </tr>
+                                            })}
+                                    </tbody>
+                                </table>
                             </div>
                         }
                     </fieldset>

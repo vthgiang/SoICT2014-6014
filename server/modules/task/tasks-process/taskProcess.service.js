@@ -113,7 +113,9 @@ exports.createXmlDiagram = async (body) => {
                 extra: item.extra,
             }
         }) : [];
-
+        if (body.info[x].formula === '') {
+            body.info[x].formula = "progress / (dayUsed / totalDay) - 0.5 * (10 - (averageActionRating)) * 10"
+        }
         info.push(body.info[x])
         // }
     }
@@ -288,6 +290,8 @@ exports.createTaskByProcess = async (processId, body) => {
         startDate: startDateProcess,
         endDate: endDateProcess,
         creator: body.creator,
+        viewer: body.viewer,
+        manager: body.manager,
     })
 
     let listTask = [];
@@ -319,6 +323,11 @@ exports.createTaskByProcess = async (processId, body) => {
             status = "Inprocess";
         }
 
+        let formula = data[i].formula;
+        if (data[i].formula === '') {
+            formula = "progress / (dayUsed / totalDay) - 0.5 * (10 - (averageActionRating)) * 10";
+        }
+
         let process = taskProcessId;
 
         let newTaskItem = await Task.create({
@@ -332,7 +341,7 @@ exports.createTaskByProcess = async (processId, body) => {
             description: data[i].description,
             startDate: startDate,
             endDate: endDate,
-            formula: data[i].formula,
+            formula: formula,
             priority: data[i].priority,
             taskTemplate: null,
             taskInformations: taskInformations,
@@ -402,12 +411,19 @@ exports.getAllTaskProcess = async (query) => {
     let name = query.name;
     let noResultsPerPage = parseInt(query.noResultsPerPage);
     let pageNumber = parseInt(query.pageNumber);
+    let userId = query.userId;
 
     let data = await TaskProcess.find({
         processName: { $regex: name, $options: 'i' },
+        $or: [
+            { viewer: { $in: [userId] } },
+            { manager: { $in: [userId] } },
+        ]
     }).skip(noResultsPerPage * (pageNumber - 1)).limit(noResultsPerPage)
         .populate([
             { path: 'creator', model: User, select: 'name' },
+            // { path: 'viewer', model: User, select: 'name' },
+            { path: 'manager', model: User, select: 'name' },
             {
                 path: 'tasks', model: Task, populate: [
                     { path: "parent", select: "name" },
@@ -430,7 +446,13 @@ exports.getAllTaskProcess = async (query) => {
         ]);
 
 
-    let totalCount = await TaskProcess.countDocuments({ processName: { $regex: name, $options: 'i' } });
+    let totalCount = await TaskProcess.countDocuments({
+        processName: { $regex: name, $options: 'i' },
+        $or: [
+            { viewer: { $in: [userId] } },
+            { manager: { $in: [userId] } },
+        ]
+    });
     let totalPages = Math.ceil(totalCount / noResultsPerPage);
     return {
         data: data,
@@ -449,9 +471,17 @@ exports.updateDiagram = async (params, body) => {
         { $set: { xmlDiagram: body.diagram } },
         { new: true }
     )
-    let data = await TaskProcess.find({}).skip(0).limit(5)
+    let data = await TaskProcess.find({
+        processName: { $regex: name, $options: 'i' },
+        $or: [
+            { viewer: { $in: [userId] } },
+            { manager: { $in: [userId] } },
+        ]
+    }).skip(0).limit(5)
         .populate([
             { path: 'creator', model: User, select: 'name' },
+            // { path: 'viewer', model: User, select: 'name' },
+            { path: 'manager', model: User, select: 'name' },
             {
                 path: 'tasks', model: Task, populate: [
                     { path: "parent", select: "name" },
@@ -474,10 +504,69 @@ exports.updateDiagram = async (params, body) => {
         ]);
 
 
-    let totalCount = await TaskProcess.countDocuments({ processName: { $regex: "", $options: 'i' } });
+    let totalCount = await TaskProcess.countDocuments({
+        processName: { $regex: name, $options: 'i' },
+        $or: [
+            { viewer: { $in: [userId] } },
+            { manager: { $in: [userId] } },
+        ]
+    });
     let totalPages = Math.ceil(totalCount / 5);
     return {
         data: data,
         pageTotal: totalPages
     }
+}
+/**
+ * Cập nhật thông tin quy trình công việc
+ * @param {String} params tham số 
+ * @param {Object} body dữ liệu body
+ */
+exports.editProcessInfo = async (params, body) => {
+    let { processName, processDescription, status, startDate, endDate, viewer } = body;
+
+    let splitterStartDate = startDate.split('-');
+    let start = new Date(splitterStartDate[2], splitterStartDate[1] - 1, splitterStartDate[0]);
+    let splitterEndDate = endDate.split('-');
+    let end = new Date(splitterEndDate[2], splitterEndDate[1] - 1, splitterEndDate[0]);
+
+    let diagram = await TaskProcess.findByIdAndUpdate(params.processId,
+        {
+            $set: {
+                processName: processName,
+                processDescription: processDescription,
+                status: status,
+                startDate: start,
+                endDate: end,
+                viewer: viewer,
+            }
+        },
+        { new: true }
+    )
+    let newProcess = await TaskProcess.findById(params.processId)
+        .populate([
+            { path: 'creator', model: User, select: 'name' },
+            // { path: 'viewer', model: User, select: 'name' },
+            { path: 'manager', model: User, select: 'name' },
+            {
+                path: 'tasks', model: Task, populate: [
+                    { path: "parent", select: "name" },
+                    { path: "taskTemplate", select: "formula" },
+                    { path: "organizationalUnit", model: OrganizationalUnit },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
+                    { path: "evaluations.results.employee", select: "name email _id" },
+                    { path: "evaluations.results.organizationalUnit", select: "name _id" },
+                    { path: "evaluations.results.kpis" },
+                    { path: "taskActions.creator", model: User, select: 'name email avatar' },
+                    { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
+                    { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
+                    { path: "taskComments.creator", model: User, select: 'name email avatar' },
+                    { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
+                    { path: "documents.creator", model: User, select: 'name email avatar' },
+                    { path: "process", model: TaskProcess },
+                ]
+            },
+            { path: 'processTemplate', model: ProcessTemplate, select: 'processName' },
+        ]);
+    return newProcess
 }

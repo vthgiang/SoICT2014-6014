@@ -9,7 +9,7 @@ const {
  * Lấy thông tin tài sản theo id
  * @id : id thông tin tài sản cần lấy
  */
-exports.getAssetInforById = async(id) => {
+exports.getAssetInforById = async (id) => {
     return await Asset.findById(id);
 }
 
@@ -19,45 +19,61 @@ exports.getAssetInforById = async(id) => {
  * @params : dữ liệu key tìm kiếm
  * @company : Id công ty người tìm kiếm
  */
-exports.searchAssetProfiles = async(params, company) => {
+exports.searchAssetProfiles = async (params, company) => {
     let keySearch = { company: company };
-    console.log(params)
-        // Bắt sựu kiện MSTS tìm kiếm khác ""
+    console.log("params", params)
+    // Bắt sựu kiện MSTS tìm kiếm khác ""
     if (params.code) {
-        keySearch = {...keySearch, code: { $regex: params.code, $options: "i" } }
+        keySearch = { ...keySearch, code: { $regex: params.code, $options: "i" } }
     }
 
     // Bắt sựu kiện Tên tài sản tìm kiếm khác ""
     if (params.assetName) {
-        keySearch = {...keySearch, assetName: { $regex: params.assetName, $options: "i" } }
+        keySearch = { ...keySearch, assetName: { $regex: params.assetName, $options: "i" } }
     }
 
     // Thêm key tìm kiếm tài sản theo trạng thái hoạt động vào keySearch
     if (params.status) {
-        keySearch = {...keySearch, status: { $in: params.status } };
+        keySearch = { ...keySearch, status: { $in: params.status } };
+    }
+
+    // Thêm key tìm kiếm tài sản theo nhóm vào keySearch
+    if (params.group) {
+        keySearch = { ...keySearch, group: { $in: params.group } };
     }
 
     // Thêm key tìm kiếm theo loại tài sản vào keySearch
     if (params.assetType) {
-        keySearch = {...keySearch, assetType: { $in: params.assetType } };
+        keySearch = { ...keySearch, assetType: { $in: params.assetType } };
     }
 
     // Thêm key tìm kiếm tài sản theo trạng thái hoạt động vào keySearch
     if (params.typeRegisterForUse) {
-        keySearch = {...keySearch, typeRegisterForUse: { $in: params.typeRegisterForUse } };
+        keySearch = { ...keySearch, typeRegisterForUse: { $in: params.typeRegisterForUse } };
     }
 
     // Thêm key tìm kiếm tài sản theo nhóm tài sản
     if (params.group) {
-        keySearch = {...keySearch, group: { $in: params.group } };
+        keySearch = { ...keySearch, group: { $in: params.group } };
     }
+
+    // Thêm key tìm kiếm tài sản theo người sử dụng
+    if (params.handoverUser) {
+        keySearch = { ...keySearch, assignedToUser: { $in: params.handoverUser } };
+    }
+
+    // Thêm key tìm kiếm tài sản theo đơn vị
+    if (params.handoverUnit) {
+        keySearch = { ...keySearch, assignedToOrganizationalUnit: { $in: params.handoverUnit } };
+    }
+
     // Thêm key tìm kiếm tài sản theo id người quản lý
     if (params.managedBy) {
-        keySearch = {...keySearch, managedBy: { $in: params.managedBy } };
+        keySearch = { ...keySearch, managedBy: { $in: params.managedBy } };
     }
 
     if (params.currentRole) {
-        keySearch = {...keySearch, readByRoles: { $in: params.currentRole } };
+        keySearch = { ...keySearch, readByRoles: { $in: params.currentRole } };
     }
     // Thêm key tìm kiếm tài sản theo ngày nhập tài sản
     if (params.purchaseDate) {
@@ -74,6 +90,21 @@ exports.searchAssetProfiles = async(params, company) => {
         }
     }
 
+    // Thêm key tìm kiếm tài sản theo ngày thanh lý tài sản
+    if (params.disposalDate) {
+        let date = params.disposalDate.split("-");
+        let start = new Date(date[1], date[0] - 1, 1);
+        let end = new Date(date[1], date[0], 1);
+
+        keySearch = {
+            ...keySearch,
+            disposalDate: {
+                $gt: start,
+                $lte: end
+            }
+        }
+    }
+
     // Lấy danh sách tài sản
     let totalList = await Asset.count(keySearch);
     let listAssets = await Asset.find(keySearch).populate('assetType')
@@ -84,7 +115,7 @@ exports.searchAssetProfiles = async(params, company) => {
 /**
  * Danh sách mặt bằng dạng cây
  */
-exports.getListBuildingAsTree = async(company) => {
+exports.getListBuildingAsTree = async (company) => {
     const list = await Asset.find({ company: company, group: "Building" }).populate('assetType');
     const dataConverted = list.map(building => {
         return {
@@ -106,13 +137,11 @@ exports.getListBuildingAsTree = async(company) => {
  * @arrayObject :mảng chứa các object
  */
 exports.mergeUrlFileToObject = (arrayFile, arrayObject) => {
-    console.log(arrayObject, arrayFile);
     if (arrayFile) {
         arrayObject.forEach(x => {
             arrayFile.forEach(y => {
                 x.files.forEach(item => {
                     if (item.fileName === y.originalname) {
-                        console.log(y);
                         let path = y.destination + '/' + y.filename
                         item.fileName = y.originalname;
                         item.url = path;
@@ -132,7 +161,7 @@ exports.mergeUrlFileToObject = (arrayFile, arrayObject) => {
  * @company : Id công ty
  * @fileInfo : Thông tin file đính kèm
  */
-exports.createAsset = async(data, company, fileInfo) => {
+exports.createAsset = async (data, company, fileInfo) => {
 
     let avatar = fileInfo.avatar === "" ? data.avatar : fileInfo.avatar,
         file = fileInfo.file;
@@ -198,7 +227,7 @@ exports.createAsset = async(data, company, fileInfo) => {
 /**
  * Cập nhât thông tin tài sản theo id
  */
-exports.updateAssetInformation = async(id, data, fileInfo, company) => {
+exports.updateAssetInformation = async (id, data, fileInfo, company) => {
     let {
         createMaintainanceLogs,
         deleteMaintainanceLogs,
@@ -213,7 +242,6 @@ exports.updateAssetInformation = async(id, data, fileInfo, company) => {
         editFiles,
         deleteFiles
     } = data;
-
     let avatar = fileInfo.avatar === "" ? data.avatar : fileInfo.avatar,
         file = fileInfo.file;
     let oldAsset = await Asset.findById(id);
@@ -292,7 +320,7 @@ exports.updateAssetInformation = async(id, data, fileInfo, company) => {
     oldAsset.save();
 
     // Function edit, create, Delete Document of collection
-    queryEditCreateDeleteDocumentInCollection = async(assetId, company, collection, arrDelete, arrEdit, arrCreate) => {
+    queryEditCreateDeleteDocumentInCollection = async (assetId, company, collection, arrDelete, arrEdit, arrCreate) => {
         let queryDelete = arrDelete ? arrDelete.map(x => {
             return { deleteOne: { "filter": { "_id": x._id } } }
         }) : [];
@@ -300,7 +328,7 @@ exports.updateAssetInformation = async(id, data, fileInfo, company) => {
             return { updateOne: { "filter": { "_id": x._id }, "update": { $set: x } } }
         }) : [];
         let queryCrete = arrCreate ? arrCreate.map(x => {
-            return { insertOne: { "document": {...x, asset: assetId, company: company } } }
+            return { insertOne: { "document": { ...x, asset: assetId, company: company } } }
         }) : [];
         let query = [...queryDelete, ...queryEdit, ...queryCrete];
         if (query.length !== 0) {
@@ -318,7 +346,7 @@ exports.updateAssetInformation = async(id, data, fileInfo, company) => {
  * Xoá thông tin tài sản
  * @id : Id tài sản cần xoá
  */
-exports.deleteAsset = async(id) => {
+exports.deleteAsset = async (id) => {
     let asset = await Asset.findOneAndDelete({ _id: id });
 
     return asset;
@@ -327,7 +355,7 @@ exports.deleteAsset = async(id) => {
 /**
  * Chỉnh sửa thông tin khấu hao tài sản
  */
-exports.updateDepreciation = async(id, data) => {
+exports.updateDepreciation = async (id, data) => {
     return await Asset.update({ _id: id }, {
         cost: data.cost,
         residualValue: data.residualValue,
@@ -351,8 +379,7 @@ exports.updateDepreciation = async(id, data) => {
 /*
  * Thêm mới phiếu bảo trì cho sự cố
  */
-exports.createMaintainanceForIncident = async(id, incidentId, data) => {
-    console.log(data, 'data-maintainance')
+exports.createMaintainanceForIncident = async (id, incidentId, data) => {
     return await Asset.update({ _id: data.assetId, "incidentLogs._id": incidentId }, {
         $addToSet: { maintainanceLogs: data },
         $set: {
@@ -367,14 +394,14 @@ exports.createMaintainanceForIncident = async(id, incidentId, data) => {
 /*
  * Lấy danh sách tất cả các phiếu bảo trì của tất cả tài sản hoặc có thể lấy ra danh sách các phiếu bảo trì gần nhất của tất cả tài sản
  */
-exports.searchMaintainances = async(id, data, company) => {
+exports.searchMaintainances = async (id, data, company) => {
 
 }
 
 /*
  * Thêm mới phiếu bảo trì
  */
-exports.createMaintainance = async(id, data, incident_id) => {
+exports.createMaintainance = async (id, data, incident_id) => {
     if (incident_id) {
         return await Asset.update({ _id: id, "incidentLogs._id": incident_id }, {
             $set: {
@@ -390,7 +417,7 @@ exports.createMaintainance = async(id, data, incident_id) => {
 /**
  * Chỉnh sửa phiếu bảo trì
  */
-exports.updateMaintainance = async(maintainanceId, data) => {
+exports.updateMaintainance = async (maintainanceId, data) => {
     return await Asset.update({ _id: data.assetId, "maintainanceLogs._id": maintainanceId }, {
         $set: {
             "maintainanceLogs.$.maintainanceCode": data.maintainanceCode,
@@ -408,7 +435,7 @@ exports.updateMaintainance = async(maintainanceId, data) => {
 /**
  * Xóa thông tin phiếu bảo trì
  */
-exports.deleteMaintainance = async(assetId, maintainanceId) => {
+exports.deleteMaintainance = async (assetId, maintainanceId) => {
     return await Asset.update({ _id: assetId }, { "$pull": { "maintainanceLogs": { "_id": maintainanceId } } });
 }
 
@@ -416,14 +443,14 @@ exports.deleteMaintainance = async(assetId, maintainanceId) => {
 /*
  * Lấy danh sách tất cả lịch sử sử dụng của tất cả tài sản hoặc có thể lấy ra danh sách các lịch sử sử dụng gần nhất của tất cả tài sản
  */
-exports.searchUsages = async(id, data, company) => {
+exports.searchUsages = async (id, data, company) => {
 
 }
 
 /**
  * Thêm mới thông tin sử dụng
  */
-exports.createUsage = async(id, data) => {
+exports.createUsage = async (id, data) => {
     let assignedToUser = (data.assignedToUser && data.assignedToUser !== 'null') ? data.assignedToUser : null;
     let assignedToOrganizationalUnit = (data.assignedToOrganizationalUnit && data.assignedToOrganizationalUnit !== 'null') ? data.assignedToOrganizationalUnit : null
     await Asset.update({ _id: id }, {
@@ -441,7 +468,7 @@ exports.createUsage = async(id, data) => {
 /**
  * Chỉnh sửa thông tin sử dụng
  */
-exports.updateUsage = async(assetId, data) => {
+exports.updateUsage = async (assetId, data) => {
     let asset = await Asset.update({ _id: assetId }, {
         $set: {
             assignedToUser: data.assignedToUser,
@@ -463,28 +490,28 @@ exports.updateUsage = async(assetId, data) => {
 /** 
  * Thu hồi tài sản
  */
-exports.recallAsset = async(assetId, data) => {
-        let nowDate = new Date();
-        let asset = await Asset.findById(assetId);
-        let usageLogs = asset.usageLogs[asset.usageLogs.length - 1];
-        let updateUsageLogs = await Asset.update({ _id: assetId, "usageLogs.usedByUser": usageLogs._id }, {
-            $set: {
-                "usageLogs.$.endDate": nowDate,
-            }
-        })
-        let updateAsset = await Asset.update({ _id: assetId }, {
-            $set: {
-                assignedToUser: null,
-                assignedToOrganizationalUnit: null,
-                status: "Sẵn sàng sử dụng",
-            }
-        })
-        return updateAsset;
-    }
-    /**
-     * Xóa thông tin sử dụng
-     */
-exports.deleteUsage = async(assetId, usageId) => {
+exports.recallAsset = async (assetId, data) => {
+    let nowDate = new Date();
+    let asset = await Asset.findById(assetId);
+    let usageLogs = asset.usageLogs[asset.usageLogs.length - 1];
+    let updateUsageLogs = await Asset.update({ _id: assetId, "usageLogs.usedByUser": usageLogs._id }, {
+        $set: {
+            "usageLogs.$.endDate": nowDate,
+        }
+    })
+    let updateAsset = await Asset.update({ _id: assetId }, {
+        $set: {
+            assignedToUser: null,
+            assignedToOrganizationalUnit: null,
+            status: "Sẵn sàng sử dụng",
+        }
+    })
+    return updateAsset;
+}
+/**
+ * Xóa thông tin sử dụng
+ */
+exports.deleteUsage = async (assetId, usageId) => {
     return await Asset.update({ _id: assetId }, { "$pull": { "usageLogs": { "_id": usageId } } });
 }
 
@@ -492,7 +519,7 @@ exports.deleteUsage = async(assetId, usageId) => {
 /**
  * Thêm mới thông tin sự cố tài sản
  */
-exports.createIncident = async(id, data) => {
+exports.createIncident = async (id, data) => {
     return await Asset.update({ _id: id }, {
         status: data.status,
         $addToSet: { incidentLogs: data }
@@ -502,7 +529,7 @@ exports.createIncident = async(id, data) => {
 /**
  * Chỉnh sửa thông tin sự cố tài sản
  */
-exports.updateIncident = async(incidentId, data) => {
+exports.updateIncident = async (incidentId, data) => {
     return await Asset.update({ _id: data.assetId, "incidentLogs._id": incidentId }, {
         $set: {
             "incidentLogs.$.incidentCode": data.incidentCode,
@@ -519,6 +546,6 @@ exports.updateIncident = async(incidentId, data) => {
 /**
  * Xóa thông tin sự cố tài sản
  */
-exports.deleteIncident = async(assetId, incidentId) => {
+exports.deleteIncident = async (assetId, incidentId) => {
     return await Asset.update({ _id: assetId }, { "$pull": { "incidentLogs": { "_id": incidentId } } });
 }

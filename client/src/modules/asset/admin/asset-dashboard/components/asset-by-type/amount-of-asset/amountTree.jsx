@@ -40,8 +40,10 @@ class AmountTree extends Component {
         let chart = [];
         if (listAssets) {
             listAssets.map(asset => {
-                let idx = idAssetType.indexOf(asset.assetType);
-                countAssetType[idx]++;
+                for (let k in asset.assetType) {
+                    let idx = idAssetType.indexOf(asset.assetType[k]._id);
+                    countAssetType[idx]++;
+                }
             })
             for (let i in assetType) {
 

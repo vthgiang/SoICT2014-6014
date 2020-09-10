@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const moment = require("moment");
 const { TaskReport, Task, TaskTemplate, Role, OrganizationalUnit, User } = require('../../../models').schema;
 
 
@@ -82,11 +83,14 @@ exports.getTaskReportById = async (id) => {
 exports.createTaskReport = async (data, user) => {
     // convert startDate từ string sang Date
     let startTime, start = null, endTime, end = null;
-    if (data.startDate && data.endDate) {
+
+    if (data.startDate) {
         startTime = data.startDate.split("-");
         start = new Date(startTime[2], startTime[1] - 1, startTime[0]);
+    }
 
-        // convert endDate từ string sang Date
+    // convert endDate từ string sang Date
+    if (data.endDate) {
         endTime = data.endDate.split("-");
         end = new Date(endTime[2], endTime[1] - 1, endTime[0]);
     }
@@ -103,9 +107,10 @@ exports.createTaskReport = async (data, user) => {
             type: value.type,
             filter: value.filter,
             newName: value.newName,
-            charType: value.charType,
+            chartType: value.chartType,
             showInReport: value.showInReport,
             aggregationType: value.aggregationType,
+            coefficient: value.coefficient,
         }
     }
 
@@ -126,6 +131,8 @@ exports.createTaskReport = async (data, user) => {
         dataForAxisXInChart: listDataInChart,
 
     })
+
+
     let getNewTaskReport = await TaskReport.findById(newTaskReport._id).populate({ path: 'creator', select: "_id name" });
     return getNewTaskReport;
 }

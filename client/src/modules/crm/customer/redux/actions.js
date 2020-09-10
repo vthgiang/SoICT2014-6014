@@ -9,8 +9,8 @@ export const CrmCustomerActions = {
     deleteCustomer,
 };
 
-function getCustomers(data){
-    if(data.limit !== undefined){
+function getCustomers(data = undefined){
+    if(data !== undefined){
         return dispatch => {
             dispatch({ type: CrmCustomerConstants.PAGINATE_CRM_CUSTOMERS_REQUEST});
             CrmCustomerServices.getCustomers(data)
@@ -25,7 +25,7 @@ function getCustomers(data){
     }
     return dispatch => {
         dispatch({ type: CrmCustomerConstants.GET_CRM_CUSTOMERS_REQUEST});
-        CrmCustomerServices.getCustomers(data)
+        CrmCustomerServices.getCustomers()
         .then(res => {
             dispatch({
                 type: CrmCustomerConstants.GET_CRM_CUSTOMERS_SUCCESS,

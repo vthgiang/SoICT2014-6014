@@ -179,7 +179,7 @@ class SideBar extends Component {
                                     { name: 'menu.kpi_unit_dashboard', icon: 'fa fa-circle-o', path: '/kpi-units/dashboard' },
                                     { name: 'menu.kpi_unit_create', icon: 'fa fa-circle-o', path: '/kpi-units/create' },
                                     { name: 'menu.kpi_unit_manager', icon: 'fa fa-circle-o', path: '/kpi-units/manager' },
-                                    { name: 'menu.kpi_unit_statistic', icon: 'fa fa-circle-o', path: '/kpi-units/statisti' },
+                                    { name: 'menu.kpi_unit_statistic', icon: 'fa fa-circle-o', path: '/kpi-units/statistic' },
                                     { name: 'menu.kpi_member_dashboard', icon: 'fa fa-circle-o', path: '/kpi-member/dashboard' },
                                     { name: 'menu.kpi_member_manager', icon: 'fa fa-circle-o', path: '/kpi-member/manager' },
                                     { name: 'menu.kpi_personal_dashboard', icon: 'fa fa-circle-o', path: '/kpi-personals/dashboard' },
@@ -228,6 +228,17 @@ class SideBar extends Component {
 
                             {/* Quản lý kế hoạch sản xuất */}
                             <Item item={{ name: 'menu.manage_plans', icon: 'fa fa-calendar', path: '/manage-plans' }} />
+
+                            {/* CRUD ví dụ theo 2 mô hình lấy dữ liệu */}
+                            <GroupItem groupItem={{
+                                name: 'menu.manage_examples',
+                                icon: 'fa fa-edit',
+                                list: [
+                                    { name: 'menu.manage_examples_1', icon: 'fa fa-circle', path: '/manage-examples-1' },
+                                    { name: 'menu.manage_examples_2', icon: 'fa fa-adjust', path: '/manage-examples-2' },
+                                ]
+                            }} />
+
                         </ul>
                     </section>
                 </aside>

@@ -770,7 +770,11 @@ export default {
             manage_orders: "Quản lý đơn hàng",
             manage_list_orders: "Danh sách đơn hàng",
             // Quản lý kế hoạch sản xuất
-            manage_plans: "Quản lý kế hoạch sản xuất"
+            manage_plans: "Quản lý kế hoạch sản xuất",
+            //VÍ DỤ EXAMPLE
+            manage_examples: "Ví dụ CRUD",
+            manage_examples_1: "CRUD theo mô hình số 1",
+            manage_examples_2: "CRUD theo mô hình số 2",
         },
 
         manage_system: {
@@ -1249,6 +1253,7 @@ export default {
                 course_name: 'Tên khoá học',
                 start_day: 'Ngày bắt đầu',
                 end_date: 'Ngày kết thúc',
+                contract_end_date: 'Ngày hết hạn hợp đồng',
                 type_education: 'Loại đào tạo',
                 cost: 'Chi phí',
                 edit_contract: 'Chỉnh sửa hợp đồng lao động',
@@ -1305,11 +1310,13 @@ export default {
 
                 // Quản lý thông tin cá nhân
                 employee_info: {
+                    export_bhxh: 'Quá trình đóng bảo hiểm xã hội',
                     // Nhóm dành cho UI
                     note_page_personal: 'Tôi xin cam đoan những lời khai trên đây là đúng sự thật và chịu trách nhiệm cho những lời khai này.',
                     contact_other: '(Những thông tin khác vui lòng liên hệ các bên liên quan để được xử lý)',
                     update_infor_personal: 'Cập nhật thông tin nhân viên',
-                    no_data_personal: 'Chưa có thông tin cá nhân',
+                    no_data_personal: 'Bạn chưa có thông tin cá nhân',
+                    no_data_personal_to_update: 'Bạn chưa có thông tin cá nhân để cập nhật',
 
                     guaranteed_infor_to_update: 'Bạn chưa cam đoan thông tin cần cập nhật',
                     no_change_data: 'Không có thông tin nào được thay đổi',
@@ -1323,11 +1330,12 @@ export default {
 
                 employee_management: {
                     file_name_export: 'Thông tin nhân viên',
+                    staff_no_unit_title: 'Do nhân viên chưa thuộc đơn vị nào',
                     no_gender: 'Chọn giới tính',
                     all_gender: 'Chọn tất cả giới tính',
                     brithday_lable: 'Sinh nhật',
                     brithday_lable_title: 'Tháng sinh nhật',
-                    contract_lable: 'Hết hạn hợn đồng',
+                    contract_lable: 'Hết hạn hợp đồng',
                     contract_lable_title: 'Tháng hết hạn hợp đồng',
                     contract_type_title: 'Loại hợp đồng lao động',
 
@@ -1402,6 +1410,8 @@ export default {
                 add_holiday_title: 'Thêm mới kế hoạch làm việc',
                 add_by_hand: 'Thêm một kế hoạch làm việc',
                 add_import: 'Import file excel',
+                accept_application: 'Chấp nhận đơn xin nghỉ',
+                refuse_application: 'Từ chối đơn xin nghỉ',
 
                 // Thông điệp trả về từ server
                 type_required: 'Thể loại không được để trống',
@@ -1478,7 +1488,6 @@ export default {
             annual_leave_personal: {
                 list_annual_leave: 'Quy định về nghỉ phép của công ty',
                 inform_annual_leave: 'Thông tin nghỉ phép cá nhân',
-                note: 'Chú thích',
                 day: 'ngày',
                 total_number_leave_of_year: 'Tổng số ngày nghỉ phép cả năm',
                 leaved: 'Bạn đã nghỉ',
@@ -1563,6 +1572,7 @@ export default {
                 select_asset_type: 'Chọn loại tài sản',
                 select_all_asset_type: 'Chọn tất cả loại tài sản',
                 select_all_status: 'Chọn tất cả trạng thái',
+                select_all_group: 'Chọn tất cả nhóm tài sản',
                 ready_use: 'Sẵn sàng sử dụng',
                 using: 'Đang sử dụng',
                 damaged: 'Hỏng hóc',
@@ -1644,18 +1654,23 @@ export default {
                 bar_chart: 'Biểu đồ cột',
                 tree: 'Cây',
                 amount: 'Số lượng',
+                time: 'Số lần',
                 value: 'Giá trị',
                 lost_value: 'Giá trị hao mòn (Triệu)',
                 sum_value: 'Tổng giá trị (Triệu)',
                 building: 'Mặt bằng',
                 vehicle: 'Phương tiện',
                 machine: 'Máy móc',
-                orther: 'Khác',
+                other: 'Khác',
                 asset_by_group: 'Thống kê theo nhóm',
                 asset_by_type: 'Thống kê theo loại',
                 asset_purchase_and_dispose: 'Mua - bán tài sản',
                 purchase_asset: 'Thống kê mua sắm tài sản',
                 disposal_asset: 'Thống kê thanh lý tài sản',
+                asset_incident_and_maintenance: 'Sự cố - bảo trì',
+                incident_asset: 'Thống kê sự cố tài sản',
+                maintenance_asset: 'Thống kê bảo trì tài sản',
+                statistic_by: 'Thống kê theo',
             },
 
             //  Quản lý loại tài sản
@@ -1685,6 +1700,7 @@ export default {
                 maintainance_logs: 'Lịch sử sửa chữa - thay thế - nâng cấp',
                 incident_list: 'Danh sách sự cố tài sản',
                 file_list: 'Danh sách tài liệu đính kèm',
+                edit_document: 'Chỉnh sửa tài liệu đính kèm',
                 add_usage_info: 'Thêm mới thông tin cấp phát sử dụng',
                 edit_usage_info: 'Chỉnh sửa phiếu đăng kí sử dụng',
                 delete_usage_info: 'Xóa thông tin cấp phát sử dụng',
@@ -1894,12 +1910,11 @@ export default {
             confirm_title: 'Bạn chắc chắn muốn xóa mẫu công việc này?',
             error_title: 'Không thể xóa mẫu công việc này do đã được sử dụng.',
             name: 'Tên mẫu',
-            unit: 'Đơn vị',
+            unit: 'Đơn vị quản lý công việc',
             tasktemplate_name: 'Tên mẫu công việc',
             description: 'Mô tả',
             count: 'Số lần sử dụng',
             creator: 'Người tạo mẫu',
-            unit: 'Đơn vị',
             action: 'Hành động',
             priority: 'Độ ưu tiên',
             general_information: 'Thông tin chung',
@@ -2040,8 +2055,8 @@ export default {
                 action_add: 'Thêm công việc con',
                 action_start_timer: 'Bắt đầu bấm giờ',
 
-                from: 'Từ tháng',
-                to: 'Đến tháng',
+                from: 'Từ ',
+                to: 'Đến',
                 lower_from: 'từ',
                 lower_to: 'đến',
                 month: 'Tháng',
@@ -2427,13 +2442,16 @@ export default {
             task_process: {
                 process_name: 'Tên quy trình',
                 process_description: 'Mô tả quy trình',
+                process_status: 'Trạng thái quy trình',
+                creator: 'Người tạo quy trình',
                 manager: 'Người quản lý',
                 viewer: 'Người được xem',
+                no_data: 'Không có dữ liệu',
                 time_of_process: 'Thời gian thực hiện quy trình',
                 process_information: 'Thông tin quy trình',
                 start_date: 'Ngày bắt đầu',
                 end_date: 'Ngày kết thúc',
-                create : 'Thêm mới',
+                create: 'Thêm mới',
                 inprocess: 'Đang thực hiện',
                 wait_for_approval: 'Chờ phê duyệt',
                 finished: 'Đã kết thúc',
@@ -2449,7 +2467,49 @@ export default {
                 not_have_info: 'Không có thông tin',
                 not_export_info: 'Không xuất thông tin',
                 task_process: 'Quy trình công việc',
+
+                export_doc: 'Xuất tài liệu',
+                export_info: 'Xuất thông tin',
+
+                create_task_with_template: 'Tạo công việc với mẫu',
+
+                add_modal: 'Thêm mới mẫu quy trình công việc',
+                view_process_template_modal: 'Xem mẫu quy trình công việc',
+                view_task_process_modal: 'Xem quy trình công việc',
+                edit_modal: 'Chỉnh sửa mẫu quy trình công việc',
+                add_task_process_modal: 'Thêm mới chuỗi công việc theo quy trình',
+
                 save: 'Lưu',
+
+                // message from server
+                get_all_success: 'Lấy tất cả mẫu quy trình thành công',
+                get_all_err: 'Lấy tất cả mẫu quy trình lỗi',
+                get_by_id_success: 'Lấy mẫu quy trình theo id thành công',
+                get_by_id_err: 'Lấy mẫu quy trình theo id lỗi',
+                create_success: 'Tạo mẫu quy trình thành công',
+                create_error: 'Tạo mẫu quy trình thất bại',
+                edit_success: 'Chỉnh sửa mẫu quy trình thành công',
+                edit_fail: 'Chỉnh sửa mẫu quy trình thất bại',
+                delete_success: 'Xóa mẫu quy trình thành công',
+                delete_fail: 'Xóa mẫu quy trình thất bại',
+                create_task_by_process_success: 'Tạo công việc theo quy trình thành công',
+                create_task_by_process_fail: 'Tạo công việc theo quy trình thất bại',
+                get_all_task_process_success: 'Lấy danh sach quy trình công việc thành công',
+                get_all_task_process_fail: 'Lấy danh sach quy trình công việc thất bại',
+                update_task_process_success: 'Cập nhật quy trình công việc thành công',
+                update_task_process_fail: 'Cập nhật quy trình công việc thất bại',
+                edit_info_process_success: 'Chỉnh sửa thông tin quy trình công việc thành công',
+                edit_info_process_fail: 'Chỉnh sửa thông tin quy trình công việc thất bại',
+
+                error: {
+                    empty_name: "Tên quy trình không được bỏ trống",
+                    special_character: "Tên không chứa ký tự đặc biệt",
+
+                    empty_description: "Mô tả quy trình không được bỏ trống",
+
+                    empty_viewer: "Cần chỉ rõ những người có quyền xem mẫu quy trình",
+                    empty_manager: "Cần chỉ rõ những người quản lý mẫu quy trình",
+                }
 
             },
             task_template: {
@@ -3116,6 +3176,28 @@ export default {
             edit_plan_success: "Cập nhật kế hoạch thành công!",
             edit_plan_fail: "Cập nhật kế hoạch thất bại!",
             detail_info_plan: "Thông tin chi tiết kế hoạch"
+        },
+
+        // manage example
+        manage_example: {
+            exampleName: "Tên ví dụ",
+            search: "Tìm kiếm",
+            add_example: "Thêm mới",
+            index: "STT",
+            description: "Mô tả",
+            edit: "Chỉnh sửa thông tin ví dụ",
+            delete: "Xóa ví dụ",
+            delete_success: "Xóa ví dụ thành công!",
+            delete_fail: "Xóa ví dụ thất bại!",
+            add: "Thêm ví dụ",
+            add_title: "Thêm mới ví dụ",
+            add_success: "Thêm ví dụ thành công!",
+            add_fail: "Thêm ví dụ thất bại!",
+            example_description: "Mô tả ví dụ",
+            edit_title: "Cập nhật ví dụ",
+            edit_example_success: "Cập nhật ví dụ thành công!",
+            edit_example_fail: "Cập nhật ví dụ thất bại!",
+            detail_info_example: "Thông tin chi tiết ví dụ"
         },
 
         footer: {

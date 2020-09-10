@@ -35,6 +35,7 @@ class FormCreateTaskByProcess extends Component {
                 priority: 3,
                 preceedingTasks: [],
                 followingTasks: [],
+                formula: '',
             },
 
         };
@@ -481,8 +482,6 @@ class FormCreateTaskByProcess extends Component {
                             <input type="Name" className="form-control" placeholder={translate('task_template.tasktemplate_name')} value={taskItem.name} onChange={this.handleTaskTemplateName} />
                             <ErrorLabel content={this.state.taskItem.errorOnName} />
                         </div>
-
-                        {/* độ ưu tiên cviec ---- older*/}
                     </div>
 
                     <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
@@ -522,7 +521,7 @@ class FormCreateTaskByProcess extends Component {
                             value={taskItem.startDate}
                             onChange={this.handleChangeTaskStartDate}
                         />
-                        {/* <ErrorLabel content={errorOnStartDate} /> */}
+                        <ErrorLabel content={this.state.taskItem.errorOnStartDate} />
                     </div>
                     <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${this.state.taskItem.errorOnEndDate === undefined ? "" : "has-error"}`}>
                         <label className="control-label">{translate('task.task_management.end_date')}*</label>
@@ -531,7 +530,7 @@ class FormCreateTaskByProcess extends Component {
                             value={taskItem.endDate}
                             onChange={this.handleChangeTaskEndDate}
                         />
-                        {/* <ErrorLabel content={errorOnEndDate} /> */}
+                        <ErrorLabel content={this.state.taskItem.errorOnEndDate} />
                     </div>
                 </div>
 
@@ -611,9 +610,7 @@ class FormCreateTaskByProcess extends Component {
 
                         }
                     </div>
-
                 </div>
-
             </React.Fragment>
         );
     }

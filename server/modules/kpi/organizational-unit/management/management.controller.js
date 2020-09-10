@@ -1,14 +1,13 @@
 const managerService = require('./management.service');
 const { LogInfo, LogError } = require('../../../../logs');
 
+
 /**
  * lấy tất cả kpi đơn vị
  * @param {*} req 
  * @param {*} res 
  */
-
-
-exports.copyKPI =async (req, res) => {
+exports.copyKPI = async (req, res) => {
     try {
         var kpiunit = await managerService.copyKPI(req.params.id, req.query);
         LogInfo(req.user.email, ' copy kpi unit ',req.user.company)

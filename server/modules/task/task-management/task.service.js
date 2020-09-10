@@ -947,11 +947,11 @@ exports.getPaginatedTasksByUser = async (task) => {
 
     var keySearch = {
         $or: [
-           { informedEmployees: { $in: [user] } },
-           { creator: { $in: [user] } },
-           { responsibleEmployees: { $in: [user] } },
-           { consultedEmployees: { $in: [user] } },
-           { accountableEmployees: { $in: [user] } },
+            { informedEmployees: { $in: [user] } },
+            { creator: { $in: [user] } },
+            { responsibleEmployees: { $in: [user] } },
+            { consultedEmployees: { $in: [user] } },
+            { accountableEmployees: { $in: [user] } },
         ],
         isArchived: false
     };
@@ -1176,16 +1176,12 @@ exports.createTask = async (task) => {
     }
 
     let formula;
-    if( taskTemplate ) {
+    if (taskTemplate) {
         formula = taskTemplate.formula;
-    } else if( task.formula ){
+    } else if (task.formula) {
         // formula = "progress / (dayUsed / totalDay)"; // default
         formula = "progress / (dayUsed / totalDay) - 0.5 * (10 - (averageActionRating)) * 10"
-    } 
-    // else {
-    //     formula = task.formula;
-    // }
-
+    }
     var task = await Task.create({ //Tạo dữ liệu mẫu công việc
         organizationalUnit: task.organizationalUnit,
         creator: task.creator, //id của người tạo
@@ -1267,15 +1263,15 @@ exports.createTask = async (task) => {
         })}
                     </ul>` +
         `${con.length > 0 ? `<p>Người hỗ trợ</p> ` +
-        `<ul>${con.map((item) => {
-            return `<li>${item.name}</li>`
-        })}
-                    </ul>` : "" }` +
+            `<ul>${con.map((item) => {
+                return `<li>${item.name}</li>`
+            })}
+                    </ul>` : ""}` +
         `${inf.length > 0 ? `<p>Người quan sát</p> ` +
-        `<ul>${inf.map((item) => {
-            return `<li>${item.name}</li>`
-        })}
-                    </ul>` : "" }`
+            `<ul>${inf.map((item) => {
+                return `<li>${item.name}</li>`
+            })}
+                    </ul>` : ""}`
         ;
 
     return { task: task, user: userIds, email: email, html: html };
@@ -1372,7 +1368,7 @@ exports.getTasksByUser = async (data) => {
  * @param {*} month 
  */
 exports.getAllTaskOfOrganizationalUnit = async (roleId, organizationalUnitId, month) => {
-    let organizationalUnit;
+    let organizationalUnit, tasksOfOrganizationalUnit;
     let now, currentYear, currentMonth, endOfCurrentMonth, endOfLastMonth;
 
     if (month) {
@@ -1401,104 +1397,106 @@ exports.getAllTaskOfOrganizationalUnit = async (roleId, organizationalUnitId, mo
         organizationalUnit = await OrganizationalUnit.findOne({ '_id': organizationalUnitId });
     }
 
-    let tasksOfOrganizationalUnit = await Task.aggregate([
-        { $match: { 'organizationalUnit': organizationalUnit._id } },
-        {
-            $match: {
-                $or: [
-                    { 'endDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
-                    { 'startDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
-                    { $and: [{ 'endDate': { $gte: endOfCurrentMonth } }, { 'startDate': { $lte: endOfLastMonth } }] }
-                ]
+    if (organizationalUnit) {
+        tasksOfOrganizationalUnit = await Task.aggregate([
+            { $match: { 'organizationalUnit': organizationalUnit._id } },
+            {
+                $match: {
+                    $or: [
+                        { 'endDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
+                        { 'startDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
+                        { $and: [{ 'endDate': { $gte: endOfCurrentMonth } }, { 'startDate': { $lte: endOfLastMonth } }] }
+                    ]
+                }
+            },
+
+            { $unwind: "$evaluations" },
+            {
+                $match: {
+                    $or: [
+                        { 'evaluations.date': undefined },
+                        { 'evaluations.date': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } }
+                    ]
+                }
+            },
+
+            {
+                $lookup: {
+                    from: "organizational_units",
+                    localField: "organizationalUnit",
+                    foreignField: "_id",
+                    as: "detailOrganizationalUnit"
+                }
+            },
+
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "responsibleEmployees",
+                    foreignField: "_id",
+                    as: "responsibleEmployeesInfo"
+                }
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "accountableEmployees",
+                    foreignField: "_id",
+                    as: "accountableEmployeesInfo"
+                }
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "consultedEmployees",
+                    foreignField: "_id",
+                    as: "consultedEmployeesInfo"
+                }
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "informedEmployees",
+                    foreignField: "_id",
+                    as: "informedEmployeesInfo"
+                }
+            },
+
+            {
+                $project: {
+                    'name': 1,
+                    'detailOrganizationalUnit.name': 1,
+                    'description': 1,
+                    'startDate': 1,
+                    'endDate': 1,
+                    'priority': 1,
+                    'evaluations': 1,
+
+                    'responsibleEmployees': 1,
+                    'accountableEmployees': 1,
+                    'consultedEmployees': 1,
+                    'informedEmployees': 1,
+
+                    'responsibleEmployeesInfo._id': 1,
+                    'responsibleEmployeesInfo.name': 1,
+                    'responsibleEmployeesInfo.email': 1,
+
+                    'accountableEmployeesInfo._id': 1,
+                    'accountableEmployeesInfo.name': 1,
+                    'accountableEmployeesInfo.email': 1,
+
+                    'consultedEmployeesInfo._id': 1,
+                    'consultedEmployeesInfo.name': 1,
+                    'consultedEmployeesInfo.email': 1,
+
+                    'informedEmployeesInfo._id': 1,
+                    'informedEmployeesInfo.name': 1,
+                    'informedEmployeesInfo.email': 1,
+                    'status': 1
+                }
             }
-        },
-
-        { $unwind: "$evaluations" },
-        {
-            $match: {
-                $or: [
-                    { 'evaluations.date': undefined },
-                    { 'evaluations.date': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } }
-                ]
-            }
-        },
-
-        {
-            $lookup: {
-                from: "organizational_units",
-                localField: "organizationalUnit",
-                foreignField: "_id",
-                as: "detailOrganizationalUnit"
-            }
-        },
-
-        {
-            $lookup: {
-                from: "users",
-                localField: "responsibleEmployees",
-                foreignField: "_id",
-                as: "responsibleEmployeesInfo"
-            }
-        },
-        {
-            $lookup: {
-                from: "users",
-                localField: "accountableEmployees",
-                foreignField: "_id",
-                as: "accountableEmployeesInfo"
-            }
-        },
-        {
-            $lookup: {
-                from: "users",
-                localField: "consultedEmployees",
-                foreignField: "_id",
-                as: "consultedEmployeesInfo"
-            }
-        },
-        {
-            $lookup: {
-                from: "users",
-                localField: "informedEmployees",
-                foreignField: "_id",
-                as: "informedEmployeesInfo"
-            }
-        },
-
-        {
-            $project: {
-                'name': 1,
-                'detailOrganizationalUnit.name': 1,
-                'description': 1,
-                'startDate': 1,
-                'endDate': 1,
-                'priority': 1,
-                'evaluations': 1,
-
-                'responsibleEmployees': 1,
-                'accountableEmployees': 1,
-                'consultedEmployees': 1,
-                'informedEmployees': 1,
-
-                'responsibleEmployeesInfo._id': 1,
-                'responsibleEmployeesInfo.name': 1,
-                'responsibleEmployeesInfo.email': 1,
-
-                'accountableEmployeesInfo._id': 1,
-                'accountableEmployeesInfo.name': 1,
-                'accountableEmployeesInfo.email': 1,
-
-                'consultedEmployeesInfo._id': 1,
-                'consultedEmployeesInfo.name': 1,
-                'consultedEmployeesInfo.email': 1,
-
-                'informedEmployeesInfo._id': 1,
-                'informedEmployeesInfo.name': 1,
-                'informedEmployeesInfo.email': 1,
-                'status': 1
-            }
-        }
-    ])
+        ])
+    }
 
     return tasksOfOrganizationalUnit;
 }
@@ -1514,17 +1512,20 @@ exports.getAllTaskOfChildrenOrganizationalUnit = async (companyId, roleId, month
 
     childrenOrganizationalUnits = await overviewService.getAllChildrenOrganizational(companyId, roleId, organizationalUnitId);
 
-    for (let i = 0; i < childrenOrganizationalUnits.length; i++) {
-        tasksOfChildrenOrganizationalUnit.push(await this.getAllTaskOfOrganizationalUnit(roleId, childrenOrganizationalUnits[i].id, month));
-        tasksOfChildrenOrganizationalUnit[i].unshift({ 'name': childrenOrganizationalUnits[i].name, 'deg': childrenOrganizationalUnits[i].deg })
+    if (childrenOrganizationalUnits) {
+        for (let i = 0; i < childrenOrganizationalUnits.length; i++) {
+            tasksOfChildrenOrganizationalUnit.push(await this.getAllTaskOfOrganizationalUnit(roleId, childrenOrganizationalUnits[i].id, month));
+            tasksOfChildrenOrganizationalUnit[i].unshift({ 'name': childrenOrganizationalUnits[i].name, 'deg': childrenOrganizationalUnits[i].deg })
+        }
     }
+
     return tasksOfChildrenOrganizationalUnit;
 }
 
-exports.sendEmailCheckTaskLastMonth = async () => {  
+exports.sendEmailCheckTaskLastMonth = async () => {
     let today = new Date();
     let day = today.getDate();
-    let month = today.getMonth()+1;
+    let month = today.getMonth() + 1;
     let daySend = 30;
     switch (month) {
         case 1:
@@ -1579,7 +1580,7 @@ exports.sendEmailCheckTaskLastMonth = async () => {
                 }
                 if (taskList) {
                     let inprocessTask = taskList.filter(task => task.status === "Inprocess");
-                    
+
                     let distinctTasks = [];
                     for (let k in inprocessTask) {     // lọc task trùng nhau
                         let check = false;
@@ -1592,7 +1593,7 @@ exports.sendEmailCheckTaskLastMonth = async () => {
                         }
                         if (!check) distinctTasks.push(inprocessTask[k])
                     }
-               
+
                     distinctTasks.length && distinctTasks.map(x => {
                         let evaluations;
                         let currentEvaluate = [];
@@ -1646,7 +1647,7 @@ exports.sendEmailCheckTaskLastMonth = async () => {
                 // xu ly Action not evaluated
                 var TaskHasActionsAccountable = [];
                 var TaskHasActionsResponsible = [];
-                
+
                 if (accTasks) {
                     let inprocessAccountableTask = accTasks.filter(task => task.status === "Inprocess")
                     inprocessAccountableTask.length && inprocessAccountableTask.map(x => {
@@ -1710,31 +1711,31 @@ exports.sendEmailCheckTaskLastMonth = async () => {
                 if (flag) {  // gui email
                     let userEmail = [email[j]];
                     userEmail.push("trinhhong102@gmail.com");
-                    let html = `<h1>Thông báo danh sách công việc tháng ${new Date().getMonth()+1} </h1> ` +
-                    `<h3>Thông tin công việc</h3>` +
-                    `${tasksByUser.expire.length > 0 ? `<p>Công việc quá hạn</p> ` +
-                    `<ul>${tasksByUser.expire.map((item) => {
-                        return `<li><a href="${process.env.WEBSITE}/task?taskId=${item.task._id}" target="_blank">${item.task.name}</a></li>`
-                    })}
-                                </ul>` : '' }` +
-                    `${tasksByUser.deadlineincoming.length > 0 ? `<p>Công việc sắp hết hạn</p> ` +
-                    `<ul>${tasksByUser.deadlineincoming.map((item) => {
-                        return `<li><a href="${process.env.WEBSITE}/task?taskId=${item.task._id}" target="_blank">${item.task.name}</a></li>`
-                    })}
-                                </ul>` : "" }` +
-                    `${notLinkedTasks.length > 0 ? `<p>Công việc chưa được liên kết KPI tháng</p> ` +
-                    `<ul>${notLinkedTasks.map((item) => {
-                        return `<li><a href="${process.env.WEBSITE}/task?taskId=${item._id}" target="_blank">${item.name}</a></li>`
-                    })}
-                                </ul>` : "" }` +
-                    `${taskHasActions.length > 0 ? `<p>Công việc có hoạt động chưa đánh giá</p> ` +
-                    `<ul>${taskHasActions.map((item) => {
-                        return `<li><a href="${process.env.WEBSITE}/task?taskId=${item._id}" target="_blank">${item.name}</a></li>`
-                    })}
-                                </ul>` : "" }`
-                    ;
+                    let html = `<h1>Thông báo danh sách công việc tháng ${new Date().getMonth() + 1} </h1> ` +
+                        `<h3>Thông tin công việc</h3>` +
+                        `${tasksByUser.expire.length > 0 ? `<p>Công việc quá hạn</p> ` +
+                            `<ul>${tasksByUser.expire.map((item) => {
+                                return `<li><a href="${process.env.WEBSITE}/task?taskId=${item.task._id}" target="_blank">${item.task.name}</a></li>`
+                            })}
+                                </ul>` : ''}` +
+                        `${tasksByUser.deadlineincoming.length > 0 ? `<p>Công việc sắp hết hạn</p> ` +
+                            `<ul>${tasksByUser.deadlineincoming.map((item) => {
+                                return `<li><a href="${process.env.WEBSITE}/task?taskId=${item.task._id}" target="_blank">${item.task.name}</a></li>`
+                            })}
+                                </ul>` : ""}` +
+                        `${notLinkedTasks.length > 0 ? `<p>Công việc chưa được liên kết KPI tháng</p> ` +
+                            `<ul>${notLinkedTasks.map((item) => {
+                                return `<li><a href="${process.env.WEBSITE}/task?taskId=${item._id}" target="_blank">${item.name}</a></li>`
+                            })}
+                                </ul>` : ""}` +
+                        `${taskHasActions.length > 0 ? `<p>Công việc có hoạt động chưa đánh giá</p> ` +
+                            `<ul>${taskHasActions.map((item) => {
+                                return `<li><a href="${process.env.WEBSITE}/task?taskId=${item._id}" target="_blank">${item.name}</a></li>`
+                            })}
+                                </ul>` : ""}`
+                        ;
                     sendEmail("vnist.qlcv@gmail.com", userEmail, "Thông báo danh sách công việc", '', html);
-               }
+                }
             }
         }
     }

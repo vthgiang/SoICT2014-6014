@@ -9,7 +9,7 @@ import { taskReportFormValidator } from './taskReportFormValidator';
 import { TaskReportViewForm } from './taskReportViewForm';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { taskTemplateActions } from '../../../task/task-template/redux/actions';
-import { taskManagementActions } from '../../../task/task-management/redux/actions'
+import { taskManagementActions } from '../../../task/task-management/redux/actions';
 import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
 import './transferList.css';
 
@@ -34,7 +34,8 @@ class TaskReportCreateForm extends Component {
                     { id: 3, name: 'Người phê duyệt', checked: false },
                 ],
                 itemListBoxRight: [],
-                itemListTemp: [],
+                itemListTempLeft: [],
+                itemListTempRight: [],
             },
             currentRole: getStorage('currentRole'),
         }
@@ -208,13 +209,17 @@ class TaskReportCreateForm extends Component {
             if (!defaultUnit && user.organizationalUnitsOfUser.length > 0) { // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
                 defaultUnit = user.organizationalUnitsOfUser[0];
             }
-            this.props.getChildrenOfOrganizationalUnits(defaultUnit._id);
+
+            if (defaultUnit) {
+                this.props.getChildrenOfOrganizationalUnits(defaultUnit._id);
+            }
+
             this.setState(state => {
                 return {
                     ...state,
                     newReport: {
                         ...this.state.newReport,
-                        organizationalUnit: defaultUnit._id,
+                        organizationalUnit: defaultUnit && defaultUnit._id,
                     }
                 };
             });
@@ -441,8 +446,9 @@ class TaskReportCreateForm extends Component {
 
 
     handleLeftListChange = (e) => {
+
         let { value, name, checked } = e.target;
-        let { itemListTemp, itemListBoxLeft } = this.state.newReport;
+        let { itemListTempLeft, itemListBoxLeft } = this.state.newReport;
 
         // Kiểm tra xem item nào được click 
         let listBoxLeftLength = itemListBoxLeft.length;
@@ -454,7 +460,6 @@ class TaskReportCreateForm extends Component {
             }
         }
 
-
         // set lại giá trị cho State 
         this.setState({
             newReport: {
@@ -463,97 +468,33 @@ class TaskReportCreateForm extends Component {
             }
         });
 
-        // kiểm tra xem trong mảng itemListTemp đã tồn tại item được click hay chưa: false = -1
-        const findIndexItem = itemListTemp.findIndex(x => x.id === parseInt(name)); // name là id get từ input 
+        // Nếu click 2 lần vào check bõ thì xóa item đó trong biến tạm itemListTempLeft
+        // kiểm tra xem trong mảng itemListTempLeft đã tồn tại item được click hay chưa: false = -1
+        const findIndexItem = itemListTempLeft.findIndex(x => x.id === parseInt(name)); // name là id get từ input 
 
         // Nếu trong mảng có tồn tại item được click thì xóa nó đi, dùng slice cắt lấy các item khác item dc click
         if (findIndexItem > -1) {
-            itemListTemp = [...itemListTemp.slice(0, findIndexItem), ...itemListTemp.slice(findIndexItem + 1)]
+            itemListTempLeft = [...itemListTempLeft.slice(0, findIndexItem), ...itemListTempLeft.slice(findIndexItem + 1)]
         } else {
-            // Nếu chưa có trong mảng thì thêm nó vào itemListTemp
-            itemListTemp.push({ id: parseInt(name), name: value, checked: false });
+
+            // Nếu chưa có trong mảng thì thêm nó vào itemListTempLeft
+            itemListTempLeft.push({ id: parseInt(name), name: value, checked: false });
         }
 
         this.setState({
             newReport: {
                 ...this.state.newReport,
-                itemListTemp: itemListTemp,
+                itemListTempLeft: itemListTempLeft,
             }
         })
     }
 
-    handleRightListChange = (e) => {
-        let { value, name, checked } = e.target;
-        let { itemListTemp, itemListBoxRight } = this.state.newReport;
-        let listBoxRightLength = itemListBoxRight.length;
-
-        for (let i = 0; i < listBoxRightLength; i++) {
-            if (itemListBoxRight[i].name === value) {
-                itemListBoxRight[i].checked = checked;
-                break;
-            }
-        }
-
-        // set lại giá trị cho State 
-        this.setState({
-            newReport: {
-                ...this.state.newReport,
-                itemListBoxRight,
-            }
-        });
-
-        // kiểm tra xem trong mảng itemListTemp đã tồn tại item được click hay chưa: false = -1
-        const findIndexItem = itemListTemp.findIndex(x => x.id === parseInt(name)); // name là id get từ input 
-
-        // Nếu trong mảng có tồn tại item được click thì xóa nó đi, dùng slice cắt lấy các item khác item dc click
-        if (findIndexItem > -1) {
-            itemListTemp = [...itemListTemp.slice(0, findIndexItem), ...itemListTemp.slice(findIndexItem + 1)]
-        } else {
-            // Nếu chưa có trong mảng thì thêm nó vào itemListTemp
-            itemListTemp.push({ id: parseInt(name), name: value, checked: false });
-        }
-
-        this.setState({
-            newReport: {
-                ...this.state.newReport,
-                itemListTemp: itemListTemp,
-            }
-        })
-    }
-
-    handleClickTransferLeftList = () => {
-        let { itemListTemp, itemListBoxLeft, itemListBoxRight } = this.state.newReport;
-
-        let idInListBoxRight = itemListBoxRight.map(x => x.id); // array id in itemListBoxRight
-        let idInListTemp = itemListTemp.map(x => parseInt(x.id)); // array id khi mình chọn vào checkbox của listBoxRight
-
-        // const checkId = idInListBoxRight.includes(parseInt(idInListTemp)); // true or false
-        const checkId = idInListTemp.some(item => idInListBoxRight.indexOf(item) >= 0); // true or false
-
-        // Lọc item khác với item đã chọn
-        idInListTemp.forEach(x => {
-            itemListBoxRight = itemListBoxRight.filter(y => y.id !== x)
-        })
-
-
-
-        this.setState({
-            newReport: {
-                ...this.state.newReport,
-                itemListBoxRight: checkId ? itemListBoxRight
-                    : itemListBoxRight,
-
-                itemListBoxLeft: checkId ? [...itemListBoxLeft, itemListTemp].flat(1) : itemListBoxLeft,
-                itemListTemp: [],
-            }
-        })
-    }
-
+    // Bắt sự kiện click nút chuyển data sang form bên phải
     handleClickTransferRightList = () => {
-        let { itemListTemp, itemListBoxLeft, itemListBoxRight } = this.state.newReport;
+        let { itemListTempLeft, itemListBoxLeft, itemListBoxRight } = this.state.newReport;
 
         let idInListBoxLeft = itemListBoxLeft.map(x => x.id); // array id in itemListBoxLeft
-        let idInListTemp = itemListTemp.map(x => parseInt(x.id)); // array id khi mình chọn vào checkbox của listBoxLeft
+        let idInListTemp = itemListTempLeft.map(x => parseInt(x.id)); // array id khi mình chọn vào checkbox của listBoxLeft
 
         /**
          * Check xem id khi mình chọn checkbox thì item đó có trong list item box left hay ko
@@ -576,11 +517,79 @@ class TaskReportCreateForm extends Component {
                 itemListBoxLeft: checkId ? itemListBoxLeft
                     : itemListBoxLeft,
 
-                itemListBoxRight: checkId ? [...itemListBoxRight, itemListTemp].flat(1) : itemListBoxRight,
-                itemListTemp: [],
+                itemListBoxRight: checkId ? [...itemListBoxRight, itemListTempLeft].flat(1) : itemListBoxRight,
+                itemListTempLeft: [],
             }
         })
     }
+
+
+    handleRightListChange = (e) => {
+        let { value, name, checked } = e.target;
+        let { itemListTempRight, itemListBoxRight } = this.state.newReport;
+        let listBoxRightLength = itemListBoxRight.length;
+
+        for (let i = 0; i < listBoxRightLength; i++) {
+            if (itemListBoxRight[i].name === value) {
+                itemListBoxRight[i].checked = checked;
+                break;
+            }
+        }
+
+        // set lại giá trị cho State 
+        this.setState({
+            newReport: {
+                ...this.state.newReport,
+                itemListBoxRight,
+            }
+        });
+
+        // kiểm tra xem trong mảng itemListTempRight đã tồn tại item được click hay chưa: false = -1
+        const findIndexItem = itemListTempRight.findIndex(x => x.id === parseInt(name)); // name là id get từ input 
+
+        // Nếu trong mảng có tồn tại item được click thì xóa nó đi, dùng slice cắt lấy các item khác item dc click
+        if (findIndexItem > -1) {
+            itemListTempRight = [...itemListTempRight.slice(0, findIndexItem), ...itemListTempRight.slice(findIndexItem + 1)]
+        } else {
+            // Nếu chưa có trong mảng thì thêm nó vào itemListTempRight
+            itemListTempRight.push({ id: parseInt(name), name: value, checked: false });
+        }
+
+        this.setState({
+            newReport: {
+                ...this.state.newReport,
+                itemListTempRight: itemListTempRight,
+            }
+        })
+    }
+
+    handleClickTransferLeftList = () => {
+        let { itemListTempRight, itemListBoxLeft, itemListBoxRight } = this.state.newReport;
+
+        let idInListBoxRight = itemListBoxRight.map(x => x.id); // array id in itemListBoxRight
+        let idInListTemp = itemListTempRight.map(x => parseInt(x.id)); // array id khi mình chọn vào checkbox của listBoxRight
+
+        // const checkId = idInListBoxRight.includes(parseInt(idInListTemp)); // true or false
+        const checkId = idInListTemp.some(item => idInListBoxRight.indexOf(item) >= 0); // true or false
+
+        // Lọc item khác với item đã chọn
+        idInListTemp.forEach(x => {
+            itemListBoxRight = itemListBoxRight.filter(y => y.id !== x)
+        })
+
+
+        this.setState({
+            newReport: {
+                ...this.state.newReport,
+                itemListBoxRight: checkId ? itemListBoxRight
+                    : itemListBoxRight,
+
+                itemListBoxLeft: checkId ? [...itemListBoxLeft, itemListTempRight].flat(1) : itemListBoxLeft,
+                itemListTempRight: [],
+            }
+        })
+    }
+
 
     /**
      * Xử lý hiện form view
@@ -680,7 +689,7 @@ class TaskReportCreateForm extends Component {
                     <div className="row" >
                         <div className="col-md-12 col-lg-12" style={{ display: 'flex', justifyContent: 'flex-end' }}>
                             <div className="form-inline d-flex justify-content-end">
-                                <button id="exportButton" className="btn btn-sm btn-success " title="Xem chi tiết" style={{ marginBottom: '10px' }} onClick={() => this.handleView()} ><span className="fa fa-eye" style={{ color: '#4e4e4e' }}></span> Xem</button>
+                                <button id="exportButton" className="btn btn-sm btn-success " title="Xem chi tiết" style={{ marginBottom: '6px' }} onClick={() => this.handleView()} ><span className="fa fa-fw fa-line-chart" style={{ color: 'rgb(66 65 64)', fontSize: '15px' }}></span> Xem</button>
                             </div>
                         </div>
                     </div>
@@ -1005,14 +1014,14 @@ class TaskReportCreateForm extends Component {
                                                             <button type="button" className="btn btn-sm btn-default" onClick={this.handleClickTransferRightList}>
                                                                 <span className="material-icons">
                                                                     keyboard_arrow_right
-                                                    </span>
+                                                                </span>
                                                             </button>
                                                         </div>
                                                         <div className="item-button">
                                                             <button type="button" className="btn btn-sm btn-default" onClick={this.handleClickTransferLeftList}>
                                                                 <span className="material-icons">
                                                                     keyboard_arrow_left
-                                                </span>
+                                                                </span>
                                                             </button>
                                                         </div>
                                                     </div>

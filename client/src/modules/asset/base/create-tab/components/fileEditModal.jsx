@@ -144,7 +144,7 @@ class FileEditModal extends Component {
                 <DialogModal
                     size='50' modalID={`modal-edit-file-${id}`} isLoading={false}
                     formID={`form-edit-file-${id}`}
-                    title={translate('manage_employee.edit_file')}
+                    title={translate('asset.general_information.edit_document')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
@@ -160,7 +160,7 @@ class FileEditModal extends Component {
                         {/* Mô tả */}
                         <div className={`form-group ${!errorOnDiscFile ? "" : "has-error"}`}>
                             <label>{translate('asset.general_information.description')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="description" value={description} onChange={this.handleDiscFileChange} autoComplete="off" />
+                            <textarea className="form-control" rows="3" name="description" value={description} onChange={this.handleDiscFileChange} autoComplete="off"></textarea>
                             <ErrorLabel content={errorOnDiscFile} />
                         </div>
 

@@ -18,13 +18,15 @@ export function dashboardOrganizationalUnitKpi(state = initState, action) {
                 ...state,
                 employeeKpis: null,
                 loading: true,
-                isLoading: false
+                isLoading: false,
+                employeeKpisLoading: true
             }
         case dashboardOrganizationalUnitKpiConstants.GET_ALL_EMPLOYEEKPI_IN_ORGANIZATIONALUNIT_SUCCESS:
             return {
                 ...state,
                 loading: false,
                 isLoading: false,
+                employeeKpisLoading: false,
                 employeeKpis: action.payload
             }
         case dashboardOrganizationalUnitKpiConstants.GET_ALL_EMPLOYEEKPI_IN_ORGANIZATIONALUNIT_FAILURE:
@@ -57,6 +59,7 @@ export function dashboardOrganizationalUnitKpi(state = initState, action) {
         case dashboardOrganizationalUnitKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_IN_ORGANIZATIONALUNIT_REQUEST:
             return {
                 ...state,
+                employeeKpiSetsLoading: false,
                 employeeKpiSets: null,
                 loading: true,
                 isLoading: false
@@ -64,6 +67,7 @@ export function dashboardOrganizationalUnitKpi(state = initState, action) {
         case dashboardOrganizationalUnitKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_IN_ORGANIZATIONALUNIT_SUCCESS:
             return {
                 ...state,
+                employeeKpiSetsLoading: true,
                 loading: false,
                 isLoading: false,
                 employeeKpiSets: action.payload
@@ -71,6 +75,7 @@ export function dashboardOrganizationalUnitKpi(state = initState, action) {
         case dashboardOrganizationalUnitKpiConstants.GET_ALL_EMPLOYEEKPI_IN_CHILDREN_ORGANIZATIONALUNIT_REQUEST:
             return {
                 ...state,
+                employeeKpiSetsLoading: true,
                 employeeKpisOfChildUnit: null,
                 loading: true,
                 isLoading: false

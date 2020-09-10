@@ -112,6 +112,7 @@ class EditForm extends Component {
                 return {
                     ...state,
                     errorOnNameField: msg,
+                    errorPosition: msg ? className : null,
                     defaultInfo: defaultInfo
                 }
             });
@@ -171,7 +172,7 @@ class EditForm extends Component {
     render() {
         const { translate, assetType } = this.props;
         const { tree, list } = assetType.administration.types;
-        const { domainId, domainCode, domainName, domainDescription, domainParent, errorName, defaultInfo, errorOnNameField, errorOnValue } = this.state;
+        const { domainId, domainCode, domainName, domainDescription, domainParent, errorName, defaultInfo, errorOnNameField, errorPosition } = this.state;
 
         let dataList = list.map(node => {
             return {
@@ -197,7 +198,7 @@ class EditForm extends Component {
 
                 {/* Loại tài sản cha */}
                 <div className="form-group">
-                    <label>{translate('asset.asset_type.parent_asset_type')}<span className="text-red">*</span></label>
+                    <label>{translate('asset.asset_type.parent_asset_type')}</label>
                     <TreeSelect data={dataList} value={[domainParent]} handleChange={this.handleParent} mode="radioSelect" />
                 </div>
 
@@ -211,38 +212,39 @@ class EditForm extends Component {
                 <div className="form-group">
                     <label>Các thuộc tính mặc định:<a style={{ cursor: "pointer" }} title='Thêm thuộc tính mặc định'><i className="fa fa-plus-square" style={{ color: "#00a65a", marginLeft: 5 }}
                         onClick={this.handleAddDefaultInfo} /></a></label>
-                    <div className={`form-group ${(!errorOnNameField && !errorOnValue) ? "" : "has-error"}`}>
 
-                        {/* Bảng thông tin chi tiết */}
-                        <table className="table">
-                            <thead>
-                                <tr>
-                                    <th style={{ paddingLeft: '0px' }}>{translate('asset.asset_info.field_name')}</th>
-                                    <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {(!defaultInfo || defaultInfo.length === 0) ? <tr>
-                                    <td colSpan={3}>
-                                        <center> {translate('table.no_data')}</center>
-                                    </td>
-                                </tr> :
-                                    defaultInfo.map((x, index) => {
-                                        return <tr key={index}>
-                                            {/* Tên trường dữ liệu */}
-                                            <td style={{ paddingLeft: '0px' }}><input className="form-control" type="text" value={x.nameField} name="nameField" style={{ width: "100%" }} onChange={(e) => this.handleChangeNameField(e, index)} /></td>
-                                            
-                                            {/* Hành động */}
-                                            <td style={{ textAlign: "center" }}>
-                                                <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete(index)}><i className="material-icons"></i></a>
-                                            </td>
-                                        </tr>
-                                    })}
-                            </tbody>
-                        </table>
-                        <ErrorLabel content={errorOnNameField} />
-                        <ErrorLabel content={errorOnValue} />
-                    </div>
+                    {/* Bảng thông tin chi tiết */}
+                    <table className="table">
+                        <thead>
+                            <tr>
+                                <th style={{ paddingLeft: '0px' }}>{translate('asset.asset_info.field_name')}</th>
+                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {(!defaultInfo || defaultInfo.length === 0) ? <tr>
+                                <td colSpan={3}>
+                                    <center> {translate('table.no_data')}</center>
+                                </td>
+                            </tr> :
+                                defaultInfo.map((x, index) => {
+                                    return <tr key={index}>
+                                        {/* Tên trường dữ liệu */}
+                                        <td style={{ paddingLeft: '0px' }}>
+                                            <div className={`form-group ${(parseInt(errorPosition) === index && errorOnNameField) ? "has-error" : ""}`}>
+                                                <input className="form-control" type="text" value={x.nameField} name="nameField" style={{ width: "100%" }} onChange={(e) => this.handleChangeNameField(e, index)} />
+                                                {(parseInt(errorPosition) === index && errorOnNameField) && <ErrorLabel content={errorOnNameField} />}
+                                            </div>
+                                        </td>
+
+                                        {/* Hành động */}
+                                        <td style={{ textAlign: "center" }}>
+                                            <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete(index)}><i className="material-icons"></i></a>
+                                        </td>
+                                    </tr>
+                                })}
+                        </tbody>
+                    </table>
                 </div>
 
                 {/* Button */}
