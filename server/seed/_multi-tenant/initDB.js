@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 const Terms = require('../terms');
 
 const { 
-    User, RoleType, Role, Link, Privilege, RootRole, SystemComponent, SystemLink
+    User, UserRole, RoleType, Role, Link, Privilege, RootRole, SystemComponent, SystemLink
 } = require('../../models/_multi-tenant');
 
 require('dotenv').config();

@@ -1144,71 +1144,8 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (task) => {
         "tasks": organizationUnitTasks
     };
 }
-/**
- * Tạo công việc mới
- */
-exports.createTask = async (task) => {
-    // Lấy thông tin công việc cha
-    var level = 1;
-    if (mongoose.Types.ObjectId.isValid(task.parent)) {
-        var parent = await Task.findById(task.parent);
-        if (parent) level = parent.level + 1;
-    }
 
-    // convert thời gian từ string sang date
-    var splitter = task.startDate.split("-");
-    var startDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-    splitter = task.endDate.split("-");
-    var endDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-
-    let taskTemplate, cloneActions = [];
-    if (task.taskTemplate !== "") {
-        taskTemplate = await TaskTemplate.findById(task.taskTemplate);
-        var taskActions = taskTemplate.taskActions;
-
-        for (let i in taskActions) {
-            cloneActions[i] = {
-                mandatory: taskActions[i].mandatory,
-                name: taskActions[i].name,
-                description: taskActions[i].description,
-            }
-        }
-    }
-
-    let formula;
-    if (taskTemplate) {
-        formula = taskTemplate.formula;
-    } else if (task.formula) {
-        // formula = "progress / (dayUsed / totalDay)"; // default
-        formula = "progress / (dayUsed / totalDay) - 0.5 * (10 - (averageActionRating)) * 10"
-    }
-    var task = await Task.create({ //Tạo dữ liệu mẫu công việc
-        organizationalUnit: task.organizationalUnit,
-        creator: task.creator, //id của người tạo
-        name: task.name,
-        description: task.description,
-        startDate: startDate,
-        endDate: endDate,
-        priority: task.priority,
-        formula: formula,
-        taskTemplate: taskTemplate ? taskTemplate : null,
-        taskInformations: taskTemplate ? taskTemplate.taskInformations : [],
-        taskActions: taskTemplate ? cloneActions : [],
-        parent: (task.parent === "") ? null : task.parent,
-        level: level,
-        responsibleEmployees: task.responsibleEmployees,
-        accountableEmployees: task.accountableEmployees,
-        consultedEmployees: task.consultedEmployees,
-        informedEmployees: task.informedEmployees,
-        confirmedByEmployees: task.responsibleEmployees.concat(task.accountableEmployees).concat(task.consultedEmployees).includes(task.creator) ? task.creator : []
-    });
-
-    if (task.taskTemplate !== null) {
-        await TaskTemplate.findByIdAndUpdate(
-            task.taskTemplate, { $inc: { 'numberOfUse': 1 } }, { new: true }
-        );
-    }
-
+exports.sendEmailFoCreateTask = async (task) => {
     task = await task.populate("organizationalUnit creator parent").execPopulate();
 
     var transporter = nodemailer.createTransport({
@@ -1274,7 +1211,77 @@ exports.createTask = async (task) => {
                     </ul>` : ""}`
         ;
 
-    return { task: task, user: userIds, email: email, html: html };
+        return { task: task, user: userIds, email: email, html: html };
+}
+
+/**
+ * Tạo công việc mới
+ */
+exports.createTask = async (task) => {
+    // Lấy thông tin công việc cha
+    var level = 1;
+    if (mongoose.Types.ObjectId.isValid(task.parent)) {
+        var parent = await Task.findById(task.parent);
+        if (parent) level = parent.level + 1;
+    }
+
+    // convert thời gian từ string sang date
+    var splitter = task.startDate.split("-");
+    var startDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+    splitter = task.endDate.split("-");
+    var endDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+
+    let taskTemplate, cloneActions = [];
+    if (task.taskTemplate !== "") {
+        taskTemplate = await TaskTemplate.findById(task.taskTemplate);
+        var taskActions = taskTemplate.taskActions;
+
+        for (let i in taskActions) {
+            cloneActions[i] = {
+                mandatory: taskActions[i].mandatory,
+                name: taskActions[i].name,
+                description: taskActions[i].description,
+            }
+        }
+    }
+
+    let formula;
+    if (taskTemplate) {
+        formula = taskTemplate.formula;
+    } else if (task.formula) {
+        // formula = "progress / (dayUsed / totalDay)"; // default
+        formula = "progress / (dayUsed / totalDay) - 0.5 * (10 - (averageActionRating)) * 10"
+    }
+    var task = await Task.create({ //Tạo dữ liệu mẫu công việc
+        organizationalUnit: task.organizationalUnit,
+        creator: task.creator, //id của người tạo
+        name: task.name,
+        description: task.description,
+        startDate: startDate,
+        endDate: endDate,
+        priority: task.priority,
+        formula: formula,
+        taskTemplate: taskTemplate ? taskTemplate : null,
+        taskInformations: taskTemplate ? taskTemplate.taskInformations : [],
+        taskActions: taskTemplate ? cloneActions : [],
+        parent: (task.parent === "") ? null : task.parent,
+        level: level,
+        responsibleEmployees: task.responsibleEmployees,
+        accountableEmployees: task.accountableEmployees,
+        consultedEmployees: task.consultedEmployees,
+        informedEmployees: task.informedEmployees,
+        confirmedByEmployees: task.responsibleEmployees.concat(task.accountableEmployees).concat(task.consultedEmployees).includes(task.creator) ? task.creator : []
+    });
+
+    if (task.taskTemplate !== null) {
+        await TaskTemplate.findByIdAndUpdate(
+            task.taskTemplate, { $inc: { 'numberOfUse': 1 } }, { new: true }
+        );
+    }
+
+    let mail = await sendEmailFoCreateTask(task);
+
+    return { task: task, user: mail.user, email: mail.email, html: mail.html };
 }
 
 /**

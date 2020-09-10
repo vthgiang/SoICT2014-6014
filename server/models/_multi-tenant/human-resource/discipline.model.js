@@ -5,12 +5,8 @@ const Schema = mongoose.Schema;
 const DisciplineSchema = new Schema({
     employee: {
         type: Schema.Types.ObjectId,
-        ref: 'employees',
+        ref: 'Employee',
         required: true,
-    },
-    company: {
-        type: Schema.Types.ObjectId,
-        ref: 'companies'
     },
     decisionNumber: { // số hiệu quyết định kỷ luật
         type: String,
@@ -18,7 +14,7 @@ const DisciplineSchema = new Schema({
     },
     organizationalUnit: { // cấp ra quyết định
         type: Schema.Types.ObjectId,
-        ref: 'organizational_units'
+        ref: 'OrganizationalUnit'
     },
     startDate: {
         type: Date,
@@ -39,4 +35,8 @@ const DisciplineSchema = new Schema({
     timestamps: true,
 });
 
-module.exports = Discipline = (db) => db.model("disciplines", DisciplineSchema);
+module.exports = (db) => {
+    if(!db.models.Discipline)
+        return db.model('Discipline', DisciplineSchema);
+    return db.models.Discipline;
+}

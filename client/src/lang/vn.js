@@ -1381,13 +1381,14 @@ export default {
             // Quản lý kế hoạch làm việc (lịch nghỉ lễ tết)
             holiday: {
                 file_name_export: 'Kế hoạch làm việc',
-                number_date_leave_of_year: 'Số ngày nghỉ phép',
+                number_date_leave_of_year: 'Số ngày nghỉ tối đa',
                 date_year: 'ngày/năm',
                 year: 'Năm',
+                save_as: 'Lưu lại',
                 number_date: 'Số ngày',
-                list_holiday: 'Kế hoạch nghỉ lễ, nghỉ tết',
-                list_no_leave: 'Thời gian không được nghỉ',
-                list_auto_leave: 'Thời gian được nghỉ phép',
+                list_holiday: 'Thời gian nghỉ lễ, nghỉ tết',
+                list_no_leave: 'Thời gian không được xin nghỉ phép',
+                list_auto_leave: 'Thời gian được xin nghỉ phép',
 
                 // Nhóm dành cho table
                 table: {
@@ -1399,9 +1400,9 @@ export default {
                 },
 
                 // Nhóm thể loại kế hoạch làm Việc
-                holiday: 'Nghỉ lễ',
-                auto_leave: 'Được nghỉ',
-                no_leave: 'Không được phép nghỉ',
+                holiday: 'Thời gian nghỉ lễ, nghỉ tết',
+                auto_leave: 'Thời gian không được xin nghỉ phép',
+                no_leave: 'Thời gian được xin nghỉ phép',
 
                 // Nhóm dành cho action
                 edit_holiday: 'Chỉnh sửa kế hoạch làm việc',
@@ -2435,6 +2436,7 @@ export default {
 
                     err_range: 'Giá trị không được vượt quá khoảng 0-100',
                     err_contribute: 'Tổng phần trăm đóng góp phải là 100',
+                    err_not_enough_contribute: 'Tổng phần trăm đóng góp phải là 100',
                     err_empty: 'Giá trị không được để trống'
                 }
 
@@ -2442,6 +2444,7 @@ export default {
             task_process: {
                 process_name: 'Tên quy trình',
                 process_description: 'Mô tả quy trình',
+                num_task: 'Số lượng công việc trong quy trình',
                 process_status: 'Trạng thái quy trình',
                 creator: 'Người tạo quy trình',
                 manager: 'Người quản lý',

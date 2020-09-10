@@ -1,8 +1,7 @@
-.hoursSpentOfEmployee {
-    height: 150px !important;
-}
-
 .hoursSpentOfEmployee .c3-tooltip-container {
+    width: 35%;
+}
+.hoursSpentOfEmployee.totalTime .c3-tooltip-container {
     width: 60%;
 }
 
@@ -10,7 +9,6 @@
     box-shadow: none;
     width: 100%;
 }
-
 .hoursSpentOfEmployee .c3-tooltip .name {
     text-align: left;
     width: 75%;

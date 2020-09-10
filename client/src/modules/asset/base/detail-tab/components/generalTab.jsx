@@ -36,7 +36,6 @@ class GeneralTab extends Component {
     }
 
     convertGroupAsset = (group) => {
-        console.log('group', group);
         if (group === 'Building') {
             return 'Mặt bằng';
         } else if (group === 'Vehicle') {

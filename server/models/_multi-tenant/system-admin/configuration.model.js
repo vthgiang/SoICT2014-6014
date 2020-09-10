@@ -41,4 +41,8 @@ const ConfiguraionSchema = new Schema({
     timestamps: true
 });
 
-module.exports = Configuraion = (db) => db.model("configuraions", ConfiguraionSchema);
+module.exports = (db) => {
+    if(!db.models.Configuraion)
+        return db.model('Configuraion', ConfiguraionSchema);
+    return db.models.Configuraion;
+}

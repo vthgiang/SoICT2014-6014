@@ -17,4 +17,8 @@ const RootRoleSchema = new Schema({
 
 RootRoleSchema.plugin(mongoosePaginate);
 
-module.exports = RootRole = (db) => db.model("root_roles", RootRoleSchema);
+module.exports = (db) => {
+    if(!db.models.RootRole)
+        return db.model('RootRole', RootRoleSchema);
+    return db.models.RootRole;
+}

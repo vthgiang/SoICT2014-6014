@@ -18,6 +18,7 @@ import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import './processDiagram.css'
+import getEmployeeSelectBoxItems from "../../organizationalUnitHelper";
 
 //Xóa element khỏi pallette theo data-action
 var _getPaletteEntries = PaletteProvider.prototype.getPaletteEntries;
@@ -64,7 +65,9 @@ class ModalCreateTaskByProcess extends Component {
     }
 
     componentDidMount() {
-        this.props.getAllUserOfCompany();
+        // Lấy tất cả nhân viên trong công ty
+        // this.props.getAllUserOfCompany();
+        this.props.getAllUserInAllUnitsOfCompany()
         this.props.getDepartment();
         this.props.getAllUsersWithRole();
         let { user } = this.props;
@@ -522,7 +525,7 @@ class ModalCreateTaskByProcess extends Component {
     isTaskFormValidated = () => {
         let { errorOnEndDate, errorOnProcessDescription, errorOnProcessName, errorOnStartDate, startDate, endDate, viewer, manager, errorOnManager, errorOnViewer } = this.state;
 
-        return errorOnEndDate === undefined && errorOnProcessDescription === undefined && errorOnProcessName === undefined && errorOnStartDate === undefined 
+        return errorOnEndDate === undefined && errorOnProcessDescription === undefined && errorOnProcessName === undefined && errorOnStartDate === undefined
             && errorOnViewer === undefined && errorOnManager === undefined && manager.length !== 0 && viewer.length !== 0
             && startDate.trim() !== "" && endDate.trim() !== "";
     }
@@ -577,6 +580,19 @@ class ModalCreateTaskByProcess extends Component {
         }
         let listRole = [];
         if (role && role.list.length !== 0) listRole = role.list;
+
+
+        let usersOfChildrenOrganizationalUnit;
+        if (user.usersOfChildrenOrganizationalUnit) {
+            usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
+        }
+        let usersInUnitsOfCompany;
+        if (user && user.usersInUnitsOfCompany) {
+            usersInUnitsOfCompany = user.usersInUnitsOfCompany;
+        }
+
+        let allUnitsMember = getEmployeeSelectBoxItems(usersInUnitsOfCompany);
+        let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
 
         return (
             <React.Fragment>
@@ -653,12 +669,12 @@ class ModalCreateTaskByProcess extends Component {
                                             <div className={`form-group ${errorOnViewer === undefined ? "" : "has-error"}`}>
                                                 {/* Người được xem quy trình */}
                                                 <label className="control-label">{translate("task.task_process.viewer")}</label>
-                                                {
+                                                {allUnitsMember &&
                                                     <SelectBox
                                                         id={`select-viewer-employee-create-task-by-process-${indexRenderer}-${idProcess}`}
                                                         className="form-control select2"
                                                         style={{ width: "100%" }}
-                                                        items={listItem}
+                                                        items={allUnitsMember}
                                                         onChange={this.handleChangeViewer}
                                                         multiple={true}
                                                         value={viewer}
@@ -669,12 +685,12 @@ class ModalCreateTaskByProcess extends Component {
                                             <div className={`form-group ${errorOnManager === undefined ? "" : "has-error"}`}>
                                                 {/* Người quản lý quy trình */}
                                                 <label className="control-label" >{translate("task.task_process.manager")}</label>
-                                                {
+                                                {allUnitsMember &&
                                                     <SelectBox
                                                         id={`select-manager-employee-create-task-by-process-${indexRenderer}-${idProcess}`}
                                                         className="form-control select2"
                                                         style={{ width: "100%" }}
-                                                        items={listItem}
+                                                        items={allUnitsMember}
                                                         onChange={this.handleChangeManager}
                                                         multiple={true}
                                                         value={manager}
@@ -776,6 +792,7 @@ const actionCreators = {
     getAllUserOfCompany: UserActions.getAllUserOfCompany,
     getDepartment: UserActions.getDepartmentOfUser,
     getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
+    getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
     createXmlDiagram: TaskProcessActions.createXmlDiagram,
     getXmlDiagramById: TaskProcessActions.getXmlDiagramById,
     createTaskByProcess: TaskProcessActions.createTaskByProcess,

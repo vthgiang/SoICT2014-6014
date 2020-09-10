@@ -5,12 +5,12 @@ const Schema = mongoose.Schema;
 const TimesheetLogSchema = new Schema({
     task: { //lưu id của công việc 
         type: Schema.Types.ObjectId,
-        ref: 'tasks',
+        ref: 'Task',
         required: true
     },
     user: {
         type: Schema.Types.ObjectId,
-        ref: 'users',
+        ref: 'User',
         required: true
     },
     // Thời gian bắt đầu bấm giờ 
@@ -37,4 +37,8 @@ const TimesheetLogSchema = new Schema({
     }
 });
 
-module.exports = TimesheetLog = (db) => db.model("timesheet_logs", TimesheetLogSchema);
+module.exports = (db) => {
+    if(!db.models.TimesheetLog)
+        return db.model('TimesheetLog', TimesheetLogSchema);
+    return db.models.TimesheetLog;
+}

@@ -216,6 +216,9 @@ class AssetManagement extends Component {
 
     // Function bắt sự kiện tìm kiếm
     handleSubmitSearch = async () => {
+        await this.setState({
+            page: 0,
+        });
         this.props.getAllAsset(this.state);
     }
 
@@ -387,6 +390,18 @@ class AssetManagement extends Component {
         })
 
         return data
+    }
+
+    convertGroupAsset = (group) => {
+        if (group === 'Building') {
+            return 'Mặt bằng';
+        } else if (group === 'Vehicle') {
+            return 'Xe cộ'
+        } else if (group === 'Machine') {
+            return 'Máy móc'
+        } else {
+            return 'Khác'
+        }
     }
 
     render() {
@@ -569,26 +584,28 @@ class AssetManagement extends Component {
                             <tr>
                                 <th style={{ width: "8%" }}>{translate('asset.general_information.asset_code')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.asset_name')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.asset_group')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.asset_type')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.purchase_date')}</th>
-                                <th style={{ width: "10%" }}>{translate('asset.general_information.disposal_date')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.manager')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.user')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.organization_unit')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.status')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.disposal_date')}</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>{translate('asset.general_information.action')}
                                     <DataTableSetting
                                         tableId="asset-table"
                                         columnArr={[
                                             translate('asset.general_information.asset_code'),
                                             translate('asset.general_information.asset_name'),
+                                            translate('asset.general_information.asset_group'),
                                             translate('asset.general_information.asset_type'),
                                             translate('asset.general_information.purchase_date'),
-                                            translate('asset.general_information.disposal_date'),
                                             translate('asset.general_information.manager'),
                                             translate('asset.general_information.user'),
                                             translate('asset.general_information.organizaiton_unit'),
-                                            translate('asset.general_information.status')
+                                            translate('asset.general_information.status'),
+                                            translate('asset.general_information.disposal_date')
                                         ]}
                                         limit={limit}
                                         setLimit={this.setLimit}
@@ -603,13 +620,14 @@ class AssetManagement extends Component {
                                     <tr key={index}>
                                         <td>{x.code}</td>
                                         <td>{x.assetName}</td>
+                                        <td>{this.convertGroupAsset(x.group)}</td>
                                         <td>{x.assetType && x.assetType.length ? x.assetType.map((item, index) => { let suffix = index < x.assetType.length - 1 ? ", " : ""; return item.typeName + suffix }) : 'Asset is deleted'}</td>
                                         <td>{this.formatDate(x.purchaseDate)}</td>
-                                        <td>{x.disposalDate ? this.formatDate(x.disposalDate) : "Chưa thanh lý"}</td>
                                         <td>{x.managedBy && userlist.length && userlist.find(item => item._id === x.managedBy) ? userlist.find(item => item._id === x.managedBy).name : 'User is deleted'}</td>
                                         <td>{x.assignedToUser ? (userlist.length && userlist.find(item => item._id === x.assignedToUser) ? userlist.find(item => item._id === x.assignedToUser).name : 'User is deleted') : ''}</td>
                                         <td>{x.assignedToOrganizationalUnit ? (departmentlist.length && departmentlist.find(item => item._id === x.assignedToOrganizationalUnit) ? departmentlist.find(item => item._id === x.assignedToOrganizationalUnit).name : 'Organizational Unit is deleted') : ''}</td>
                                         <td>{x.status}</td>
+                                        <td>{x.disposalDate ? this.formatDate(x.disposalDate) : "Chưa thanh lý"}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title={translate('asset.general_information.view')}><i className="material-icons">view_list</i></a>
                                             <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.general_information.edit_info')}><i className="material-icons">edit</i></a>

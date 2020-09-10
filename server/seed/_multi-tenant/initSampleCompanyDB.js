@@ -12,6 +12,11 @@ const {
     Privilege,
     User,
     UserRole,
+
+    RootRole,
+    SystemLink,
+    SystemComponent,
+
     Employee,
     AnnualLeave,
     Discipline,
@@ -82,13 +87,32 @@ const initSampleCompanyDB = async() => {
         }
     );
     if(!systemDB) throw('DB vnist cannot connect');
-	console.log("DB vnist connected");
+    console.log("DB vnist connected");
+    
+    /**
+     * 1.1 Khởi tạo model cho db
+     */
+    const initModels = (db) => {
+        console.log("models", db.models);
+        if(!db.models.User) User(db);
+        if(!db.models.Role) Role(db);
+        if(!db.models.UserRole) UserRole(db);
+        if(!db.models.Link) Link(db);
+        if(!db.models.Component) Component(db);
+        if(!db.models.OrganizationalUnit) OrganizationalUnit(db);
+        if(!db.models.RootRole) RootRole(db);
+        console.log("models_list", db.models);
+    }
+    
+    initModels(vnistDB);
+    initModels(systemDB);
 
 
 	/**
 	 * 2. Xóa dữ liệu db cũ của công ty vnist
 	 */
     vnistDB.dropDatabase(); 
+
 
 
     /**
@@ -326,11 +350,11 @@ const initSampleCompanyDB = async() => {
 
         let allLinks = await SystemLink(systemDB).find()
             .populate({
-                path: 'root_roles'
-            });;
+                path: 'roles'
+            });
         let activeLinks = await SystemLink(systemDB).find({ _id: { $in: linkArr } })
             .populate({
-                path: 'root_roles'
+                path: 'roles'
             });
 
         let dataLinks = allLinks.map(link => {

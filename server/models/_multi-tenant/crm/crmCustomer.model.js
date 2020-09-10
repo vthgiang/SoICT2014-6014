@@ -26,7 +26,7 @@ const CrmCustomerSchema = new Schema({
     },
     group: { // nhóm khách hàng
         type: Schema.Types.ObjectId,
-        ref: 'crm_groups'
+        ref: 'CrmGroup'
     },
     birth: { // ngày sinh
         type: Date
@@ -39,20 +39,16 @@ const CrmCustomerSchema = new Schema({
     },
     documents: [{ // các tài liệu liên quan đến khách hàng
         type: Schema.Types.ObjectId,
-        ref: 'documents'
+        ref: 'Document'
     }],
     liabilities: [{ // công nợ khách hàng
         type: Schema.Types.ObjectId,
-        ref: 'crm_liabilities'
+        ref: 'CrmLiability'
     }],
     loyal: { // khách hàng thân thiết
         type: Boolean,
         default: false
     },
-    company: { // khách hàng của công ty nào
-        type: Schema.Types.ObjectId,
-        ref: 'companies'
-    }
 },{
     timestamps: true,
     toJSON: { virtuals: true }
@@ -60,4 +56,8 @@ const CrmCustomerSchema = new Schema({
 
 CrmCustomerSchema.plugin(mongoosePaginate);
 
-module.exports = CrmCustomer = (db) => db.model("crm_customers", CrmCustomerSchema);
+module.exports = (db) => {
+    if(!db.models.CrmCustomer)
+        return db.model('CrmCustomer', CrmCustomerSchema);
+    return db.models.CrmCustomer;
+}

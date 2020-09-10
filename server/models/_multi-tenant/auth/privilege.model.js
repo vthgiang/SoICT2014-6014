@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-// Create Schema
 const PrivilegeSchema = new Schema({
     resourceId: {
         type: Schema.Types.ObjectId,
@@ -14,7 +13,7 @@ const PrivilegeSchema = new Schema({
     },
     roleId: {
         type: Schema.Types.ObjectId,
-        ref: 'roles',
+        ref: 'Role',
         required: true
     },
     actions: [{
@@ -23,4 +22,8 @@ const PrivilegeSchema = new Schema({
     }]
 });
 
-module.exports = Privilege = (db) => db.model("privileges", PrivilegeSchema);
+module.exports = (db) => {
+    if(!db.models.Privilege) 
+        return db.model('Privilege', PrivilegeSchema);
+    return db.models.Privilege;
+}

@@ -275,7 +275,7 @@ legend.legend-box-info {
     box-shadow: none;
     border: 1px solid #f4f4f4;
     padding: 5px 0 10px 10px;
-    line-height: 2.2;
+    line-height: 2.3;
     margin-top: 10px;
     margin-bottom: 10px;
 }
@@ -290,6 +290,7 @@ legend.legend-box-info {
 
 .description-box strong {
     font-weight: 600;
+    padding-right: 10px;
 }
 
 
