@@ -3,6 +3,8 @@ import {
 } from './constants';
 const initState = {
     isLoading: false,
+    exportData: [],
+
     totalList: 0,
     expiresContract: 0,
     employeesHaveBirthdateInCurrentMonth: 0,
@@ -26,15 +28,23 @@ export function employeesManager(state = initState, action) {
         case EmployeeConstants.IMPORT_EMPLOYEE_REQUEST:
             return {
                 ...state,
-                isLoading: true
+                isLoading: true,
+                    exportData: [],
             };
         case EmployeeConstants.GETALL_SUCCESS:
-            if (action.payload.arrMonth) {
+            if (action.exportData) {
+                return {
+                    ...state,
+                    exportData: action.payload,
+                    isLoading: false
+                }
+            } else if (action.payload.arrMonth) {
                 return {
                     ...state,
                     arrMonth: action.payload.arrMonth,
                     listEmployeesHaveStartingDateOfNumberMonth: action.payload.listEmployeesHaveStartingDateOfNumberMonth,
                     listEmployeesHaveLeavingDateOfNumberMonth: action.payload.listEmployeesHaveLeavingDateOfNumberMonth,
+                    isLoading: false
                 }
             } else if (action.payload.totalList !== undefined) { // Phải để khác undefined
                 return {

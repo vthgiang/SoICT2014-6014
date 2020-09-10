@@ -9,7 +9,7 @@ import { taskReportFormValidator } from './taskReportFormValidator';
 import { TaskReportViewForm } from './taskReportViewForm';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { taskTemplateActions } from '../../../task/task-template/redux/actions';
-import { taskManagementActions } from '../../../task/task-management/redux/actions'
+import { taskManagementActions } from '../../../task/task-management/redux/actions';
 import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
 import './transferList.css';
 
@@ -213,7 +213,7 @@ class TaskReportCreateForm extends Component {
             if (defaultUnit) {
                 this.props.getChildrenOfOrganizationalUnits(defaultUnit._id);
             }
-            
+
             this.setState(state => {
                 return {
                     ...state,

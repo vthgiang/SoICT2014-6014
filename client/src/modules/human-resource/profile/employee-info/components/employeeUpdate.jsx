@@ -111,7 +111,12 @@ class UpdateEmployee extends Component {
         return (
             <React.Fragment>
                 {
-                    employees && employees.length === 0 && employeesInfo.isLoading === false && < span className="text-red">{translate('human_resource.profile.employee_info.no_data_personal')}</span>
+                    employees && employees.length === 0 && employeesInfo.isLoading === false &&
+                    <div className="box">
+                        <div className="box-body qlcv" style={{ height: '100vh' }}>
+                            <strong>{translate('human_resource.profile.employee_info.no_data_personal_to_update')}</strong>
+                        </div>
+                    </div>
                 }
                 {
                     (employees && employees.length !== 0) &&
@@ -123,7 +128,7 @@ class UpdateEmployee extends Component {
                                     {/* Ảnh đại diện */}
                                     <div className="col-lg-4 col-md-4 col-ms-12 col-xs-12" style={{ textAlign: 'center' }}>
                                         <div>
-                                            <ApiImage className="attachment-img avarta" id={`avatar-update`} src={avatar} />
+                                            {avatar && <ApiImage className="attachment-img avarta" id={`avatar-update`} src={avatar} />}
                                         </div>
                                         <div className="upload btn btn-default ">
                                             {translate('human_resource.profile.upload')}

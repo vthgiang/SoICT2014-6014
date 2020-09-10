@@ -12,6 +12,8 @@ import { EvaluationModal } from './evaluationModal';
 import { getStorage } from '../../../../config';
 import { SelectFollowingTaskModal } from './selectFollowingTaskModal';
 
+import { HoursSpentOfEmployeeChart } from './hoursSpentOfEmployeeChart';
+
 import { withTranslate } from 'react-redux-multilingual';
 import './detailTaskTab.css';
 import Swal from 'sweetalert2';
@@ -496,9 +498,10 @@ class DetailTaskTab extends Component {
 
         let task;
         let codeInProcess, typeOfTask, statusTask, checkInactive = true, evaluations, evalList = [];
-
         // Các biến dùng trong phần Nhắc Nhở
         let warning = false, checkConfirmTask, checkEvaluationTaskAction, checkEvaluationTaskAndKpiLink, checkDeadlineForEvaluation;
+        // Các biến dùng cho biểu đồ đóng góp thời gian
+        let hoursSpentOfEmployeeInTask, hoursSpentOfEmployeeInEvaluation = {};
 
         if (isProcess) {
             task = this.props.task
@@ -570,6 +573,34 @@ class DetailTaskTab extends Component {
             || (checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkKpiLink)
             || (checkDeadlineForEvaluation && checkDeadlineForEvaluation.checkDeadlineForEvaluation)
             || (checkInactive && codeInProcess && (currentRole === "accountable" || (currentRole === "responsible" && checkHasAccountable === false))));
+
+        // Xử lý dữ liệu biểu đồ đóng góp thời gian công việc
+        if (task && task.hoursSpentOnTask) {
+            hoursSpentOfEmployeeInTask = {};
+
+            task.hoursSpentOnTask.contributions.map(item => {
+                hoursSpentOfEmployeeInTask[item.employee.name] = Number.parseFloat(item.hoursSpent / (1000 * 60 * 60)).toFixed(2)
+            });
+        }
+        if (task && task.evaluations && task.evaluations.length !== 0) {
+            task.evaluations.map(item => {
+                if (item.results && item.results.length !== 0) {
+                    hoursSpentOfEmployeeInEvaluation[item.date] = {};
+                    
+                    item.results.map(result => {
+                        if (!hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name]) {
+                            if (result.hoursSpent) {
+                                hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name] = Number.parseFloat(result.hoursSpent / (1000 * 60 * 60)).toFixed(2);
+                            }
+                        } else {
+                            hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name] = hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name] + result.hoursSpent ? Number.parseFloat(result.hoursSpent / (1000 * 60 * 60)).toFixed(2) : 0;
+                        }
+                    })
+                } else {
+                    hoursSpentOfEmployeeInEvaluation[item.date] = null;
+                }
+            })
+        }
 
         return (
             <React.Fragment>
@@ -756,88 +787,99 @@ class DetailTaskTab extends Component {
                             {task &&
                                 <div className="description-box">
                                     <h4>{translate('task.task_management.role')}</h4>
+                                    <div className="row">
+                                        <div className="col-sm-6">
+                                            {/* Người thực hiện */}
+                                            <strong>{translate('task.task_management.responsible')}: </strong>
+                                            &nbsp;&nbsp;
+                                            <span>
+                                                {
+                                                    (task && task.responsibleEmployees && task.responsibleEmployees.length !== 0) &&
+                                                    task.responsibleEmployees.map((item, index) => {
+                                                        let seperator = index !== 0 ? ", " : "";
+                                                        if (task.inactiveEmployees.indexOf(item._id) !== -1) { // tìm thấy item._id
+                                                            return <span key={index}><strike>{seperator}{item.name}</strike></span>
+                                                        } else {
+                                                            return <span key={index}>{seperator}{item.name}</span>
+                                                        }
+                                                    })
+                                                }
+                                            </span>
+                                            <br />
 
-                                    <div>
-                                        {/* Người thực hiện */}
-                                        <strong>{translate('task.task_management.responsible')}: </strong>
-                                        &nbsp;&nbsp;
-                                        <span>
+                                            {/* Người phê duyệt */}
+                                            <strong>{translate('task.task_management.accountable')}: </strong>
+                                            &nbsp;&nbsp;
+                                            <span>
+                                                {
+                                                    (task && task.accountableEmployees && task.accountableEmployees.length !== 0) &&
+                                                    task.accountableEmployees.map((item, index) => {
+                                                        let seperator = index !== 0 ? ", " : "";
+                                                        if (task.inactiveEmployees.indexOf(item._id) !== -1) { // tìm thấy item._id
+                                                            return <span key={index}><strike>{seperator}{item.name}</strike></span>
+                                                        } else {
+                                                            return <span key={index}>{seperator}{item.name}</span>
+                                                        }
+                                                    })
+                                                }
+                                            </span>
+                                            <br />
+
                                             {
-                                                (task && task.responsibleEmployees && task.responsibleEmployees.length !== 0) &&
-                                                task.responsibleEmployees.map((item, index) => {
-                                                    let seperator = index !== 0 ? ", " : "";
-                                                    if (task.inactiveEmployees.indexOf(item._id) !== -1) { // tìm thấy item._id
-                                                        return <span key={index}><strike>{seperator}{item.name}</strike></span>
-                                                    } else {
-                                                        return <span key={index}>{seperator}{item.name}</span>
-                                                    }
-                                                })
+                                                (task && task.consultedEmployees && task.consultedEmployees.length !== 0) &&
+                                                <React-Fragment>
+                                                    {/* Người hỗ trợ */}
+                                                    <strong>{translate('task.task_management.consulted')}: </strong>
+                                                    &nbsp;&nbsp;
+                                                    <span>
+                                                        {
+                                                            (task && task.consultedEmployees.length !== 0) &&
+                                                            task.consultedEmployees.map((item, index) => {
+                                                                let seperator = index !== 0 ? ", " : "";
+                                                                if (task.inactiveEmployees.indexOf(item._id) !== -1) { // tìm thấy item._id
+                                                                    return <span key={index}><strike>{seperator}{item.name}</strike></span>
+                                                                } else {
+                                                                    return <span key={index}>{seperator}{item.name}</span>
+                                                                }
+                                                            })
+                                                        }
+                                                    </span>
+                                                    <br />
+                                                </React-Fragment>
                                             }
-                                        </span>
-                                        <br />
-
-                                        {/* Người phê duyệt */}
-                                        <strong>{translate('task.task_management.accountable')}: </strong>
-                                        &nbsp;&nbsp;
-                                        <span>
                                             {
-                                                (task && task.accountableEmployees && task.accountableEmployees.length !== 0) &&
-                                                task.accountableEmployees.map((item, index) => {
-                                                    let seperator = index !== 0 ? ", " : "";
-                                                    if (task.inactiveEmployees.indexOf(item._id) !== -1) { // tìm thấy item._id
-                                                        return <span key={index}><strike>{seperator}{item.name}</strike></span>
-                                                    } else {
-                                                        return <span key={index}>{seperator}{item.name}</span>
-                                                    }
-                                                })
+                                                (task && task.informedEmployees && task.informedEmployees.length !== 0) &&
+                                                <React-Fragment>
+                                                    {/* Người quan sát */}
+                                                    <strong>{translate('task.task_management.informed')}: </strong>
+                                                    &nbsp;&nbsp;
+                                                    <span>
+                                                        {
+                                                            (task && task.informedEmployees.length !== 0) &&
+                                                            task.informedEmployees.map((item, index) => {
+                                                                let seperator = index !== 0 ? ", " : "";
+                                                                if (task.inactiveEmployees.indexOf(item._id) !== -1) { // tìm thấy item._id
+                                                                    return <span key={index}><strike>{seperator}{item.name}</strike></span>
+                                                                } else {
+                                                                    return <span key={index}>{seperator}{item.name}</span>
+                                                                }
+                                                            })
+                                                        }
+                                                    </span>
+                                                    <br />
+                                                </React-Fragment>
                                             }
-                                        </span>
-                                        <br />
+                                        </div>
 
+                                        <div className="col-sm-6">
                                         {
-                                            (task && task.consultedEmployees && task.consultedEmployees.length !== 0) &&
-                                            <React-Fragment>
-                                                {/* Người tư vấn */}
-                                                <strong>{translate('task.task_management.consulted')}: </strong>
-                                                &nbsp;&nbsp;
-                                                <span>
-                                                    {
-                                                        (task && task.consultedEmployees.length !== 0) &&
-                                                        task.consultedEmployees.map((item, index) => {
-                                                            let seperator = index !== 0 ? ", " : "";
-                                                            if (task.inactiveEmployees.indexOf(item._id) !== -1) { // tìm thấy item._id
-                                                                return <span key={index}><strike>{seperator}{item.name}</strike></span>
-                                                            } else {
-                                                                return <span key={index}>{seperator}{item.name}</span>
-                                                            }
-                                                        })
-                                                    }
-                                                </span>
-                                                <br />
-                                            </React-Fragment>
+                                            hoursSpentOfEmployeeInTask
+                                            && <HoursSpentOfEmployeeChart
+                                                refs="roleBox"
+                                                data={hoursSpentOfEmployeeInTask}
+                                            />
                                         }
-                                        {
-                                            (task && task.informedEmployees && task.informedEmployees.length !== 0) &&
-                                            <React-Fragment>
-                                                {/* Người hỗ trợ */}
-                                                <strong>{translate('task.task_management.informed')}: </strong>
-                                                &nbsp;&nbsp;
-                                                <span>
-                                                    {
-                                                        (task && task.informedEmployees.length !== 0) &&
-                                                        task.informedEmployees.map((item, index) => {
-                                                            let seperator = index !== 0 ? ", " : "";
-                                                            if (task.inactiveEmployees.indexOf(item._id) !== -1) { // tìm thấy item._id
-                                                                return <span key={index}><strike>{seperator}{item.name}</strike></span>
-                                                            } else {
-                                                                return <span key={index}>{seperator}{item.name}</span>
-                                                            }
-                                                        })
-                                                    }
-                                                </span>
-                                                <br />
-                                            </React-Fragment>
-                                        }
+                                        </div>
                                     </div>
                                 </div>
                             }
@@ -909,15 +951,26 @@ class DetailTaskTab extends Component {
                                                     {/* Thời gian bấm giờ */}
                                                     {
                                                         eva.results.length !== 0 &&
-                                                        <div>
-                                                            <div><strong>Thời gian bấm giờ</strong> (Giờ)</div>
-                                                            <ul>
-                                                                {(eva.results.length !== 0) ?
-                                                                    eva.results.map((res, index) => {
-                                                                        return <li key={index}>{res.employee.name}: &nbsp;&nbsp; {res.hoursSpent ? this.convertTime(res.hoursSpent) : 0}</li>
-                                                                    }) : <li>{translate('task.task_management.detail_not_eval')}</li>
+                                                        <div className="row">
+                                                            <div className="col-sm-6">
+                                                                <div><strong>Thời gian bấm giờ</strong> (Giờ)</div>
+                                                                <ul>
+                                                                    {(eva.results.length !== 0) ?
+                                                                        eva.results.map((res, index) => {
+                                                                            return <li key={index}>{res.employee.name}: &nbsp;&nbsp; {res.hoursSpent ? this.convertTime(res.hoursSpent) : 0}</li>
+                                                                        }) : <li>{translate('task.task_management.detail_not_eval')}</li>
+                                                                    }
+                                                                </ul>
+                                                            </div>
+                                                            <div className="col-sm-6">
+                                                                {
+                                                                    hoursSpentOfEmployeeInEvaluation[eva.date]
+                                                                    && <HoursSpentOfEmployeeChart
+                                                                        refs={"evaluationBox" + eva.date}
+                                                                        data={hoursSpentOfEmployeeInEvaluation[eva.date]}
+                                                                    />
                                                                 }
-                                                            </ul>
+                                                            </div>
                                                         </div>
                                                     }
 

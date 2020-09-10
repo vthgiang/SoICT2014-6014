@@ -64,7 +64,7 @@ class EvaluationModal extends Component {
 
         evaluationOfMonth = task && task.evaluations.find(e => (monthOfEval === new Date(e.date).getMonth() && yearOfEval === new Date(e.date).getFullYear()));
 
-        if (evaluations.length > 0) {
+        if (evaluations && evaluations.length > 0) {
             if (!evaluationOfMonth) { // có đánh giá các tháng nhưng chưa có đánh giá tháng này
                 checkEval = true;
                 checkMonth = false;
@@ -157,9 +157,9 @@ class EvaluationModal extends Component {
 
         let dateParam = this.TODAY;
         let now = new Date();
-        let startDate = new Date(task.startDate);
+        let startDate = task && new Date(task.startDate);
 
-        if (now.getTime() < startDate.getTime()) {
+        if (startDate && now.getTime() < startDate.getTime()) {
             dateParam = this.formatDate(startDate);
         }
 
