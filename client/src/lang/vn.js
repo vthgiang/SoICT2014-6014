@@ -1310,6 +1310,7 @@ export default {
 
                 // Quản lý thông tin cá nhân
                 employee_info: {
+                    export_bhxh: 'Quá trình đóng bảo hiểm xã hội',
                     // Nhóm dành cho UI
                     note_page_personal: 'Tôi xin cam đoan những lời khai trên đây là đúng sự thật và chịu trách nhiệm cho những lời khai này.',
                     contact_other: '(Những thông tin khác vui lòng liên hệ các bên liên quan để được xử lý)',
