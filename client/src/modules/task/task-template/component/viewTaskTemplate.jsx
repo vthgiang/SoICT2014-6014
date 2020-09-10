@@ -74,9 +74,12 @@ class ViewTaskTemplate extends Component {
 
                             <div>
                                 <strong>{translate('task_template.formula')}:</strong>
-                                <span>{taskTemplate?.formula}. {translate('task_template.parameters')}:</span>
+                                <span>{taskTemplate?.formula}</span>
                             </div>
                             
+                            <div>
+                                <strong>{translate('task_template.parameters')}:</strong>
+                            </div>
                             <ul>
                                 <li><span style={{ fontWeight: 600 }}>overdueDate</span> - Thời gian quá hạn (ngày)</li>
                                 <li><span style={{ fontWeight: 600 }}>dayUsed</span> - Thời gian làm việc tính đến ngày đánh giá (ngày)</li>
