@@ -83,37 +83,34 @@ class DatePicker extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        // if (nextProps.id !== prevState.id) {
-        //     return {
-        //         value: nextProps.value, // Lưu value ban đầu vào state
-        //         id: nextProps.id
-        //     }
-        // } else {
-        //     return null;
-        // }
-
-        return {
-            ...prevState,
-            value: nextProps.value, // Lưu value ban đầu vào state
-            id: nextProps.id
+        if (nextProps.id !== prevState.id || nextProps.value !== prevState.value || nextProps.dateFormat !== prevState.dateFormat) {
+            return {
+                value: nextProps.value, // Lưu value ban đầu vào state
+                id: nextProps.id,
+                dateFormat: nextProps.dateFormat,
+            }
+        } else {
+            return null;
         }
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        if (nextProps.id !== this.state.id || nextState.value !== this.state.value) // Chỉ render 1 lần, trừ khi id,value thay đổi
+        if (nextProps.id !== this.state.id || nextProps.value !== this.state.value || nextProps.dateFormat !== this.state.dateFormat) // Chỉ render 1 lần, trừ khi id,value thay đổi
             return true;
         return false;  // Tự chủ động update (do đã lưu value vào state)
     }
 
     render() {
-        const { id, dateFormat, disabled = false, defaultValue, style = {} } = this.props;
+        const { id, disabled = false, defaultValue, style = {} } = this.props;
+
+        const { value } = this.state;
         return (
             <React.Fragment>
                 <div className={'input-group date has-feedback'} id={id}>
                     <div className="input-group-addon">
                         <i style={{ width: 16, height: 16 }} className="fa fa-calendar" />
                     </div>
-                    <input type="text" style={style} className="form-control" value={this.state.value ? this.state.value : defaultValue} ref="datePicker" onChange={() => { }} disabled={disabled} />
+                    <input type="text" style={style} className="form-control" value={value !== undefined ? value : defaultValue} ref="datePicker" onChange={() => { }} disabled={disabled} />
                 </div>
             </React.Fragment>
         );

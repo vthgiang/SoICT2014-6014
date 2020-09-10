@@ -1209,7 +1209,7 @@ exports.createNotificationEndOfContract = async () => {
         let dateCheck = new Date(dateNow.getFullYear(), dateNow.getMonth(), dateNow.getDate() + arrayTime[n]);
         dateCheck = new Date(this.formatDate(dateCheck, false));
         let employees = await Employee.find({
-            "contracts.endDate": dateCheck
+            contractEndDate: dateCheck
         }, {
             emailInCompany: 1,
             _id: 1
@@ -1558,9 +1558,26 @@ exports.importContract = async (company, data) => {
             return result;
         })
         for (let x of importData) {
+            let crurrentContract = x.contracts[0];
+            x.contracts.forEach(y => {
+                if (new Date(crurrentContract.startDate).getTime() < new Date(y.startDate).getTime()) {
+                    crurrentContract = y;
+                }
+            });
             let editEmployee = await Employee.findOne({
                 _id: x._id
             });
+
+            if (crurrentContract.endDate && editEmployee.contractEndDate &&
+                new Date(crurrentContract.endDate).getTime() > new Date(editEmployee.contractEndDate).getTime()) {
+
+                editEmployee.contractEndDate = crurrentContract.endDate;
+                editEmployee.contractType = crurrentContract.contractType;
+            } else if (crurrentContract.endDate && !editEmployee.contractEndDate) {
+                editEmployee.contractEndDate = crurrentContract.endDate;
+                editEmployee.contractType = crurrentContract.contractType;
+            }
+            
             editEmployee.contracts = editEmployee.contracts.concat(x.contracts);
             editEmployee.save();
         }

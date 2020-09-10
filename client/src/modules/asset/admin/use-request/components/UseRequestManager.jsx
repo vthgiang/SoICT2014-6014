@@ -228,7 +228,7 @@ class UseRequestManager extends Component {
 
     render() {
         const { translate, recommendDistribute, isActive} = this.props;
-        const { page, limit, currentRow, currentRowEditAsset, managedBy } = this.state;
+        const { page, limit, currentRow ,currentRowEditAsset, managedBy } = this.state;
 
         var listRecommendDistributes = "", exportData;
         if (recommendDistribute.isLoading === false) {
@@ -359,7 +359,7 @@ class UseRequestManager extends Component {
                     {/* PaginateBar */}
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
                 </div>
-
+                
                 {/* Form chỉnh sửa phiếu đăng ký sử dụng */}
                 {
                     currentRow &&

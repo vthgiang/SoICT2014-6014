@@ -118,13 +118,15 @@ exports.showDocument = async (req, res) => {
 
 exports.editDocument = async (req, res) => {
     //try {
-    if (req.files && Object.keys(req.files).length > 0) {
+    if (req.files && req.files.file) {
         let pathFile = req.files.file[0].destination + '/' + req.files.file[0].filename;
-        let pathFileScan = req.files.fileScan[0].destination + '/' + req.files.fileScan[0].filename;
-
         req.body.file = pathFile;
+    }
+    if (req.files && req.files.fileScan) {
+        let pathFileScan = req.files.fileScan[0].destination + '/' + req.files.fileScan[0].filename;
         req.body.scannedFileOfSignedDocument = pathFileScan;
     }
+    console.log('pathhhh', req.files);
     const document = await DocumentServices.editDocument(req.params.id, req.body, req.query);
 
     await LogInfo(req.user.email, 'EDIT_DOCUMENT', req.user.company);

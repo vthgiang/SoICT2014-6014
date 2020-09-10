@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
+// import { CalenderUsage } from './calenderUsage';
 import { UsageLogAddModal, UsageLogEditModal } from './combinedContent';
 import { UseRequestActions } from '../../../admin/use-request/redux/actions'
 class UsageLogTab extends Component {
@@ -197,6 +197,7 @@ class UsageLogTab extends Component {
                 usageLogs: nextProps.usageLogs,
                 assignedToUser: nextProps.assignedToUser,
                 assignedToOrganizationalUnit: nextProps.assignedToOrganizationalUnit,
+                typeRegisterForUse: nextProps.typeRegisterForUse,
             }
         } else {
             return null;
@@ -207,9 +208,9 @@ class UsageLogTab extends Component {
     render() {
         const { id } = this.props;
         const { translate, user, department } = this.props;
-        const { assignedToOrganizationalUnit, assignedToUser, usageLogs, currentRow } = this.state;
+        const { assignedToOrganizationalUnit, assignedToUser, usageLogs, currentRow, typeRegisterForUse } = this.state;
         var userlist = user.list, departmentlist = department.list;
-
+        console.log("typeRegister", typeRegisterForUse);
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body qlcv">
@@ -242,6 +243,8 @@ class UsageLogTab extends Component {
                         </div>
 
                         {/* Bảng thông tin sử dụng */}
+                        {
+                            typeRegisterForUse !== 2 && 
                         <table className="table table-striped table-bordered table-hover">
                             <thead>
                                 <tr>
@@ -274,7 +277,13 @@ class UsageLogTab extends Component {
                                 }
                             </tbody>
                         </table>
-                        {
+                        }
+                        {/* {
+                            typeRegisterForUse == 2 &&
+                        
+                        <CalenderUsage usageLogs = {usageLogs}/>
+                        } */}
+                        {   typeRegisterForUse !== 2 &&
                             (!usageLogs || usageLogs.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </fieldset>

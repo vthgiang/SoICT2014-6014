@@ -204,14 +204,18 @@ class ContractTab extends Component {
             contracts: [...contracts]
         })
         this.props.handleDeleteContract(contracts, data);
+        let contract = {};
+        if (contracts.length !== 0) {
+            contract = this.getCurrentContract(contracts);
+        };
 
-        let contract = this.getCurrentContract(this.state.contracts);
-        this.setState({
-            contractEndDate: contract.endDate,
-            contractType: contract.contractType
-        })
-        this.props.handleChange('contractEndDate', contract.endDate ? contract.endDate : "");
-        this.props.handleChange('contractType', contract.contractType);
+        await this.setState({
+            contractEndDate: contract.endDate ? contract.endDate : "",
+            contractType: contract.contractType ? contract.contractType : "",
+        });
+
+        await this.props.handleChange('contractEndDate', contract.endDate ? contract.endDate : "");
+        await this.props.handleChange('contractType', contract.contractType ? contract.contractType : "");
     }
 
 
@@ -307,6 +311,7 @@ class ContractTab extends Component {
 
         const { contracts, contractEndDate, contractType, courses, pageCreate, roles, currentRow, currentCourseRow } = this.state;
 
+        console.log(contractEndDate);
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
