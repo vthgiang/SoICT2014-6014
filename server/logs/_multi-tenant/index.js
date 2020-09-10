@@ -15,32 +15,44 @@ const Log = (company, content) => {
             myFormat
         ),
         transports: [
-            new transports.File({ filename: `./logs/_multi-tenant/${company}/error.log`, level: 'error' }),
-            new transports.File({ filename: `./logs/_multi-tenant/${company}/info.log`, level: 'info' }),
-            new transports.File({ filename: `./logs/_multi-tenant/${company}/debug.log`, level: 'debug' }),
-            new transports.File({ filename: `./logs/_multi-tenant/${company}/combined.log` })
+            new transports.File({ filename: `./logs/_multi-tenant/history/${company}/error.log`, level: 'error' }),
+            new transports.File({ filename: `./logs/_multi-tenant/history/${company}/info.log`, level: 'info' }),
+            new transports.File({ filename: `./logs/_multi-tenant/history/${company}/debug.log`, level: 'debug' }),
+            new transports.File({ filename: `./logs/_multi-tenant/history/${company}/combined.log` })
         ]
     };
 
     return createLogger(option);
 }
 
-const setLog = (type, log, data) => {
-    if(type === 'info') log.info(data);
-    else log.error(data);
-}
-
-module.exports = async(type, user, content, portal) => {
-    try {
-        const com = await Company(DB_CONNECTION[process.env.DB_NAME]).findOne({shortName: portal});
-        if(com === null){
-            const log = Log(process.env.DB_NAME, content);
-            setLog(type, log, user);
-        }else{
-            const log = Log(portal, content);
-            com.log && setLog(type, log, user);
+module.exports = {
+    info: async(user, content, portal) => {
+        try {
+            const com = await Company(DB_CONNECTION[process.env.DB_NAME]).findOne({shortName: portal});
+            if(com === null){
+                const log = Log(process.env.DB_NAME, content);
+                log.info(user)
+            }else{
+                const log = Log(portal, content);
+                com.log && log.info(user)
+            }
+        } catch (error) {
+            console.log(error);
         }
-    } catch (error) {
-        console.log(error);
-    }
+    },
+
+    error: async(user, content, portal) => {
+        try {
+            const com = await Company(DB_CONNECTION[process.env.DB_NAME]).findOne({shortName: portal});
+            if(com === null){
+                const log = Log(process.env.DB_NAME, content);
+                log.error(user)
+            }else{
+                const log = Log(portal, content);
+                com.log && log.error(user)
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    },
 }
