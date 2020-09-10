@@ -14,7 +14,6 @@ class DatePicker extends Component {
     componentDidMount = () => {
         const { id, dateFormat, onChange, deleteValue = true } = this.props;
         let zIndex = 1050;
-
         dateFormat === "month-year" ?
             window.$("#" + id).datepicker({
                 autoclose: true,
@@ -56,6 +55,7 @@ class DatePicker extends Component {
 
     componentDidUpdate = () => {
         const { id, dateFormat } = this.props;
+        window.$("#" + id).datepicker("destroy");
         dateFormat === "month-year" ?
             window.$("#" + id).datepicker({
                 autoclose: true,

@@ -303,12 +303,13 @@ class ManageHoliday extends Component {
                             <div className="box-solid description description-box" style={{ paddingRight: 10, marginTop: 25 }}>
                                 <h4>{translate('human_resource.holiday.list_auto_leave')}</h4>
                                 {/* Số ngày nghỉ phép trong một năm */}
-                                <div className="pull-right" style={{ marginBottom: 10 }}>
+                                <div style={{ marginBottom: 10 }}>
                                     <label style={{ width: 'auto' }} >{`${translate('human_resource.holiday.number_date_leave_of_year')} (${translate('human_resource.holiday.date_year')})`}&ensp;</label>
                                     <input className="form-control" style={{ width: 80, display: 'inline' }} value={numberDateLeave} onChange={this.handleNumberDateOfYearChange} type="Number" />
                                     &ensp;
-                                    <button type="button" className="btn btn-primary pull-right" onClick={this.updateNumberDateOfYear}>{translate('human_resource.holiday.save_as')}</button>
+                                    <button type="button" style={{ marginTop: -5 }} className="btn btn-primary" onClick={this.updateNumberDateOfYear}>{translate('human_resource.holiday.save_as')}</button>
                                 </div>
+
                                 <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
                                     <thead>
                                         <tr>
