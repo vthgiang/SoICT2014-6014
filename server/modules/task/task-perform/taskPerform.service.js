@@ -868,8 +868,9 @@ exports.evaluationAction = async (params, body) => {
 
 
         //tính điểm trung bình
+        let accountableRating
         if (rating.length > 0) {
-            let accountableRating = rating.reduce((accumulator, currentValue) => { return accumulator + currentValue }, 0) / rating.length
+            accountableRating = rating.reduce((accumulator, currentValue) => { return accumulator + currentValue }, 0) / rating.length
         }
 
 
@@ -1245,7 +1246,7 @@ exports.editTaskByResponsibleEmployees = async (data, taskId) => {
  * @param {String} taskID id của công việc cần edit
  */
 exports.editTaskByAccountableEmployees = async (data, taskId) => {
-    let { description, name, priority, status, formula, startDate, endDate, progress, info, date,
+    let { description, name, priority, status, formula, parent, startDate, endDate, progress, info, date,
         accountableEmployees, consultedEmployees, responsibleEmployees, informedEmployees, inactiveEmployees } = data;
 
     // Chuẩn hóa ngày bắt đầu và ngày kết thúc
@@ -1279,6 +1280,7 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
                 priority: parseInt(priority[0]),
                 status: status[0],
                 formula: formula,
+                parent: parent,
 
                 startDate: startOfTask,
                 endDate: endOfTask,
