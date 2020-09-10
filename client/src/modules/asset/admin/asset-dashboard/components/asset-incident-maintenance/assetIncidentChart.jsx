@@ -252,7 +252,7 @@ class AssetIncidentChart extends Component {
                     <div className="form-group">
                         <label>{translate('asset.dashboard.statistic_by')}</label>
                         <SelectBox
-                            id="selectTypeOfStatistic"
+                            id="selectTypeOfStatistic4"
                             className="form-control select2"
                             style={{ width: "100%" }}
                             items={[
@@ -262,6 +262,7 @@ class AssetIncidentChart extends Component {
                             onChange={this.handleChangeViewChart}
                             value={year}
                             multiple={false}
+                            options={{ minimumResultsForSearch: 3 }}
                         />
                     </div>
 
