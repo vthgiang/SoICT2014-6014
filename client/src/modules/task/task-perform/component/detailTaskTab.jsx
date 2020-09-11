@@ -435,7 +435,7 @@ class DetailTaskTab extends Component {
 
     calculateHoursSpentOnTask = async (taskId, timesheetLogs, evaluateId, startDate, endDate) => {
         let results = [];
-
+        
         for (let i in timesheetLogs) {
             let log = timesheetLogs[i];
 
@@ -445,8 +445,9 @@ class DetailTaskTab extends Component {
             if (startedAt.getTime() >= new Date(startDate).getTime() && stoppedAt.getTime() <= new Date(endDate).getTime()) {
                 let { creator, duration } = log;
                 let check = true;
+                let newResults = [];
 
-                let newResults = results.map(item => {
+                newResults = results.map(item => {
                     if (creator === item.employee) {
                         check = false;
                         return {
@@ -466,7 +467,7 @@ class DetailTaskTab extends Component {
 
                     newResults.push(employeeHoursSpent);
                 }
-
+                
                 results = [...newResults];
             }
         }
@@ -588,12 +589,14 @@ class DetailTaskTab extends Component {
                     hoursSpentOfEmployeeInEvaluation[item.date] = {};
                     
                     item.results.map(result => {
-                        if (!hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name]) {
-                            if (result.hoursSpent) {
-                                hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name] = Number.parseFloat(result.hoursSpent / (1000 * 60 * 60)).toFixed(2);
+                        if (result.employee) {
+                            if (!hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name]) {
+                                if (result.hoursSpent) {
+                                    hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name] = Number.parseFloat(result.hoursSpent / (1000 * 60 * 60)).toFixed(2);
+                                }
+                            } else {
+                                hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name] = hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name] + result.hoursSpent ? Number.parseFloat(result.hoursSpent / (1000 * 60 * 60)).toFixed(2) : 0;
                             }
-                        } else {
-                            hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name] = hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name] + result.hoursSpent ? Number.parseFloat(result.hoursSpent / (1000 * 60 * 60)).toFixed(2) : 0;
                         }
                     })
                 } else {
@@ -601,7 +604,7 @@ class DetailTaskTab extends Component {
                 }
             })
         }
-        
+
         return (
             <React.Fragment>
                 {(showToolbar) &&
