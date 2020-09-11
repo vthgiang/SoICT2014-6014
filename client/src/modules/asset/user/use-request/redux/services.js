@@ -16,6 +16,7 @@ function searchRecommendDistributes(data) {
             createReceiptsDate: data.createReceiptsDate,
             reqUseEmployee: data.reqUseEmployee,
             reqUseStatus: data.reqUseStatus,
+            approver: data.approver,
             page: data.page,
             limit: data.limit,
             managedBy: data.managedBy

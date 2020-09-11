@@ -6,17 +6,14 @@ const {
 
 const EducationProgramController = require("./educationProgram.controller");
 
-// Lấy danh sách các chương trình đào tạo
-router.get('/', auth, EducationProgramController.searchEducationPrograms);
 
-// create a new a educationProgram
-router.post('/', auth, EducationProgramController.createEducationProgram);
+router.get('/educationPrograms', auth, EducationProgramController.searchEducationPrograms);
 
-// delete a educationProgram
-router.delete('/:id', auth, EducationProgramController.deleteEducationProgram);
+router.post('/educationPrograms', auth, EducationProgramController.createEducationProgram);
 
-// update a educationProgram
-router.patch('/:id', auth, EducationProgramController.updateEducationProgram);
+router.patch('/educationPrograms/:id', auth, EducationProgramController.updateEducationProgram);
+router.delete('/educationPrograms/:id', auth, EducationProgramController.deleteEducationProgram);
+
 
 
 module.exports = router;

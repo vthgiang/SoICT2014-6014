@@ -40,9 +40,9 @@ if(process.env.MULTI_TENANT === 'true'){
 	router.use('/auth', require('./modules/_multi-tenant/auth/auth.route'));
 
     // router.use('/user', require('./modules/_multi-tenant/super-admin/user/user.route'));
-    // router.use('/role', require('./modules/_multi-tenant/super-admin/role/role.route'));
-    // router.use('/component', require("./modules/_multi-tenant/super-admin/component/component.route"));
-    // router.use('/link', require("./modules/_multi-tenant/super-admin/link/link.route"));
+    router.use('/role', require('./modules/_multi-tenant/super-admin/role/role.route'));
+    router.use('/component', require("./modules/_multi-tenant/super-admin/component/component.route"));
+    router.use('/link', require("./modules/_multi-tenant/super-admin/link/link.route"));
     // router.use('/organizational-units', require("./modules/_multi-tenant/super-admin/organizational-unit/organizationalUnit.route"));
     // router.use('/privilege', require("./modules/_multi-tenant/super-admin/privilege/privilege.route"));
     
@@ -62,7 +62,7 @@ if(process.env.MULTI_TENANT === 'true'){
 	app.use("/commendation", require("./modules/human-resource/commendation/commendation.route"));
 	app.use("/discipline", require("./modules/human-resource/discipline/discipline.route"));
 	app.use("/holiday", require("./modules/human-resource/holiday/holiday.route"));
-	app.use("/employees", require("./modules/human-resource/profile/profile.route"));
+	app.use("/employee", require("./modules/human-resource/profile/profile.route"));
 	app.use("/salary", require("./modules/human-resource/salary/salary.route"));
 	app.use("/timesheet", require("./modules/human-resource/timesheets/timesheets.route"));
 
@@ -94,7 +94,7 @@ if(process.env.MULTI_TENANT === 'true'){
 	app.use("/performtask", require("./modules/task/task-perform/taskPerform.route"));
 	app.use("/task/task-templates", require("./modules/task/task-template/taskTemplate.route"));
 	app.use("/process", require("./modules/task/tasks-process/taskProcess.route"));
-	app.use("/educationPrograms", require("./modules/trainning/education-program/educationProgram.route"));
+	app.use("/educationProgram", require("./modules/trainning/education-program/educationProgram.route"));
 	app.use("/courses", require("./modules/trainning/course/course.route"));
 
 	//asset

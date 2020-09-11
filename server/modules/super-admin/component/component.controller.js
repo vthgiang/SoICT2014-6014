@@ -8,7 +8,7 @@ const { LogInfo, LogError } = require(SERVER_LOGS_DIR);
 
 exports.getComponents = async (req, res) => {
     try {
-        let {company} = req.query;
+        let company = !req.query.company ? (!req.user.company ? undefined : req.user.company._id) : req.query.company;
         let components = await ComponentService.getComponents(company, req.query);
 
         await LogInfo(req.user.email, 'GET_ALL_COMPONENTS', req.user.company);

@@ -1324,12 +1324,20 @@ export default {
 
                     // Thông điệp trả về từ server
                     get_infor_personal_success: 'Lấy thông tin cá nhân thành công',
-                    get_infor_personal_false: 'Lấy thông tin cá nhân thất bại',
+                    get_infor_personal_faile: 'Lấy thông tin cá nhân thất bại',
                     edit_infor_personal_success: 'Cập nhật thông tin cá nhân thành công',
-                    edit_infor_personal_false: 'Cập nhật thông tin cá nhân thất bại',
+                    edit_infor_personal_faile: 'Cập nhật thông tin cá nhân thất bại',
                 },
 
                 employee_management: {
+                    // Nhón dành cho UI
+                    have: 'Có',
+                    staff: 'nhân viên',
+                    contract_expiration: 'hết hạn hợp đồng',
+                    and: 'và',
+                    have_birthday: 'có sinh nhật',
+                    this_month: 'trong tháng này',
+
                     file_name_export: 'Thông tin nhân viên',
                     staff_no_unit_title: 'Do nhân viên chưa thuộc đơn vị nào',
                     no_gender: 'Chọn giới tính',
@@ -1352,13 +1360,15 @@ export default {
 
                     // Thông điệp trả về từ server
                     get_list_employee_success: 'Lấy danh sách nhân viên thành công',
-                    get_list_employee_false: 'Lấy danh sách nhân viên thất bại',
+                    get_list_employee_faile: 'Lấy danh sách nhân viên thất bại',
                     create_employee_success: 'Thêm mới nhân viên thành công',
-                    create_employee_false: 'Thêm mới nhân viên thất bại',
+                    create_employee_faile: 'Thêm mới nhân viên thất bại',
                     delete_employee_success: 'Xoá thông tin nhân viên thành công',
-                    delete_employee_false: 'Xoá thông tin nhân viên thất bại',
+                    delete_employee_faile: 'Xoá thông tin nhân viên thất bại',
                     edit_employee_success: 'Chỉnh sửa thông tin nhân viên thành công',
-                    edit_employee_false: 'Chỉnh sửa thông tin nhân viên thất bại',
+                    edit_employee_faile: 'Chỉnh sửa thông tin nhân viên thất bại',
+                    import_employee_success: 'Import thông tin nhân viên thành công',
+                    import_employee_faile: 'Import thông tin nhân viên thất bại',
                     employee_number_required: 'Mã nhân viên không được để trống',
                     email_in_company_required: 'Email công ty không được để trống',
                     employee_number_have_exist: 'Mã nhân viên đã tồn tại',
@@ -1507,6 +1517,26 @@ export default {
 
             // Quản khoá đào tạo
             course: {
+                no_course_type: 'Chọn loại đào tạo',
+                all_course_type: 'Chọn tất cả loại đào tạo',
+                start_date: 'Thời gian bắt đầu',
+                end_date: 'Thời gian kết thúc',
+
+                table: {
+                    course_code: 'Mã khoá đào tạo',
+                    course_name: 'Tên khoá đào tạo',
+                    start_date: 'Bắt đầu',
+                    end_date: 'Kết thúc',
+                    course_place: 'Địa điểm đào tạo',
+                    offered_by: 'Đơn vị đào tạo',
+                    course_type: 'Loại đào tạo',
+                },
+
+                // Loại đào tao
+                type: {
+                    internal: 'Đào tạo nội bộ',
+                    external: 'Đào tạo ngoài',
+                },
 
                 // Thông điệp trả về từ server
                 name_required: 'Tên khoá đào tạo không được để trống',
@@ -1533,6 +1563,23 @@ export default {
 
             // Quản lý chương trình đào tạo
             education_program: {
+
+                education_program_code: 'Mã chương trình đào tạo',
+                education_program_name: 'Tên chương trình đào tạo',
+
+                table: {
+                    program_code: 'Mã chương trình',
+                    program_name: 'Tên chương trình',
+                    apply_for_organizational_units: 'Áp dụng cho đơn vị',
+                    apply_for_positions: 'Áp dụng cho chức vụ',
+                    total_courses: 'Tổng số khoá học',
+                },
+
+                // Nhóm dành cho action
+                add_education_program: 'Thêm chương trình đào tạo',
+                edit_education_program: 'Chỉnh sửa chương trình đào tạo',
+                delete_education_program: 'Xoá chương trình đào tạo',
+                view_education_program: 'Thông tin chương trình đào tạo',
 
                 // Thông điệp trả về từ server
                 apply_for_organizational_units_required: 'Áp dụng cho đơn vị không được để trống',

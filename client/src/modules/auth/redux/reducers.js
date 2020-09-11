@@ -16,7 +16,6 @@ var initState = {
     forgotPassword: false,
     reset_password: false,
     showFiles: [],
-    numberFile: 0,
     isLoading: false
 }
 
@@ -147,7 +146,6 @@ export function auth(state = initState, action) {
                 return {
                     ...state,
                     showFiles: [...state.showFiles.filter(x => x.fileName !== action.payload.fileName), action.payload],
-                    numberFile: state.numberFile + 1,
                     isLoading: false,
                 };
             } else { // Save image về máy

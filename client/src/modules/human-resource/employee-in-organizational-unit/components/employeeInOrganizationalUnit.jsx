@@ -51,7 +51,7 @@ class DepartmentManage extends Component {
         let column = [{ name: translate('manage_department.name'), key: "name" }, { name: translate('manage_department.description'), key: "description" }];
 
         return (
-            <div className="">
+            <div>
                 <div className="qlcv">
                     <TreeTable
                         behaviour="show-children"

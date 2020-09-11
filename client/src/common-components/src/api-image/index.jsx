@@ -5,70 +5,69 @@ import { withTranslate } from 'react-redux-multilingual';
 import { AuthActions } from '../../../modules/auth/redux/actions';
 
 class ApiImage extends Component {
+    static DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
+    
     constructor(props) {
         super(props);
-        this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
         this.state = {
-            dataStatus: this.DATA_STATUS.NOT_AVAILABLE
+            dataStatus: ApiImage.DATA_STATUS.NOT_AVAILABLE
         }
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if ((nextProps.id !== prevState.id && nextProps.src)) {
-            return {
-                id: nextProps.id,
-                img: nextProps.src,
+        if (nextProps.src && nextProps.src !== prevState.src) {
+            if (nextProps.src.search(';base64,') < 0) { // Cần download ảnh để hiển thị
+                nextProps.downloadFile(nextProps.src, `${nextProps.src}`, false);
+                return {
+                    ...prevState,
+                    src: nextProps.src,
+                    dataStatus: ApiImage.DATA_STATUS.QUERYING,
+                };
+            } else { // Ảnh đã ở dạng base64, sẵn sàng hiển thị
+                return {
+                    ...prevState,
+                    src: nextProps.src,
+                    image: nextProps.src,
+                    dataStatus: ApiImage.DATA_STATUS.AVAILABLE,
+                }
             }
         }
-        return null
+        return null;
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
-        let numberImage = 1;
-        if(nextProps.numberImage && nextProps.numberImage !== 0){
-            numberImage = nextProps.numberImage;
-        }
-        if (nextProps.src && nextProps.src.search(';base64,') < 0 && !nextProps.auth.isLoading && this.state.dataStatus === this.DATA_STATUS.NOT_AVAILABLE) {
-            await this.props.downloadFile(nextProps.src, `avatar_${nextProps.id}`, false);
-            this.setState({
-                dataStatus: this.DATA_STATUS.QUERYING,
-                count: nextProps.auth.numberFile,
-            });
-        };
-        if (this.state.dataStatus === this.DATA_STATUS.QUERYING && !nextProps.auth.isLoading) {
-            this.setState({
-                dataStatus: this.DATA_STATUS.AVAILABLE
+        if (this.state.dataStatus === ApiImage.DATA_STATUS.QUERYING && nextProps.auth.showFiles && nextProps.auth.showFiles.find(x => x.fileName === nextState.src)) { // Dữ liệu đã về
+            this.setState(state => {
+                return {
+                    ...state,
+                    dataStatus: ApiImage.DATA_STATUS.AVAILABLE,
+                    image: nextProps.auth.showFiles.find(x => x.fileName === nextState.src).file,
+                }
             });
             return false;
-        };
-        if (this.state.dataStatus === this.DATA_STATUS.AVAILABLE && !nextProps.auth.isLoading && nextProps.auth.numberFile >= this.state.count+numberImage) {
-            let img = nextProps.auth.showFiles.find(x => x.fileName === `avatar_${nextProps.id}`);
-            this.setState({
-                dataStatus: this.DATA_STATUS.FINISHED,
-                img: img ? img.file : '',
+        }
+
+        if (this.state.dataStatus === ApiImage.DATA_STATUS.AVAILABLE) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    dataStatus: ApiImage.DATA_STATUS.FINISHED,
+                }
             });
             return true;
         };
-        return true;
+
+        return false;
     }
 
-    componentDidMount() {
-        this.setState({
-            dataStatus: 0
-        })
-    }
 
     render() {
-        const { className, style, src } = this.props;
+        const { className, style, alt="File not available"} = this.props;
 
-        let { img } = this.state;
-
-        if (src && src.search(';base64,') >= 0) {
-            img = src;
-        }
+        let { image } = this.state;
 
         return (
-            <img className={className} style={style} src={img} alt="Attachment" />
+            <img className={className} style={style} src={image} alt={alt} />
         );
     }
 }
