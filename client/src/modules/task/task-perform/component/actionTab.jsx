@@ -989,7 +989,7 @@ class ActionTab extends Component {
                                                         {showFile.some(obj => obj === item._id) &&
                                                             <div>
                                                                 {item.files.map((elem, index) => {
-                                                                    return <div key={index}>
+                                                                    return <div key={index} className="show-files-task">
                                                                         {this.isImage(elem.name) ?
                                                                             <React.Fragment>
                                                                                 <ApiImage className="attachment-img files-attach" style={{ marginTop: "5px" }} id={`image-${elem?._id}`} src={elem.url} />
@@ -1089,15 +1089,14 @@ class ActionTab extends Component {
                                                                         {showFile.some(obj => obj === child._id) &&
                                                                             <li style={{ display: "inline-table" }}>
                                                                                 {child.files.map((elem, index) => {
-                                                                                    return <div key={index}>
+                                                                                    return <div key={index} className="show-files-task">
                                                                                         {this.isImage(elem.name) ?
                                                                                             <React.Fragment>
-                                                                                                <ApiImage className="attachment-img files-attach" style={{ marginTop: "5px" }} id={`image-${elem._id}`} src={elem.url} />
+                                                                                                <ApiImage className="attachment-img files-attach" style={{ marginTop: "5px",cursor: "pointer" }} id={`image-${elem._id}`} src={elem.url} />
                                                                                                 <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
                                                                                             </React.Fragment>
-
                                                                                             :
-                                                                                            <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
+                                                                                            <a style={{ cursor: "pointer" }} style={{ marginTop: "5px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
                                                                                         }
                                                                                     </div>
                                                                                 })}
@@ -1136,7 +1135,6 @@ class ActionTab extends Component {
                                                                                     { console.log("abc") }
                                                                                     return <div key={index}>
                                                                                         <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { this.handleDeleteFile(file._id, file.name, item._id, "commentofaction") }}><i className="fa fa-times"></i></a>
-                                                                                        
                                                                                     </div>
                                                                                 })}
                                                                             </div>}
@@ -1259,10 +1257,13 @@ class ActionTab extends Component {
                                                                     <div><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => this.handleShowFile(item._id)}><b><i className="fa fa-paperclip" aria-hidden="true"> {translate("task.task_perform.file_attach")} ({item.files && item.files.length})</i></b></a> </div></li>
                                                                 {showFile.some(obj => obj === item._id) &&
                                                                     <li style={{ display: "inline-table" }}>{item.files.map((elem, index) => {
-                                                                        return <div key={index}>
+                                                                        return <div key={index} className="show-files-task">
                                                                             {this.isImage(elem.name) ?
-                                                                                <ApiImage numberImage={numberImage} className="attachment-img files-attach" style={{ marginTop: "5px" }} id={`image-${elem?._id}`} src={elem.url} /> :
-                                                                                <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
+                                                                                <React.Fragment>
+                                                                                    <ApiImage numberImage={numberImage} className="attachment-img files-attach" style={{ marginTop: "5px" }} id={`image-${elem?._id}`} src={elem.url} />
+                                                                                    <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
+                                                                                </React.Fragment>
+                                                                                : <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
                                                                             }
                                                                         </div>
                                                                     })}
@@ -1362,9 +1363,13 @@ class ActionTab extends Component {
                                                                                 {showFile.some(obj => obj === child._id) &&
                                                                                     <li style={{ display: "inline-table" }}>
                                                                                         {child.files.map((elem, index) => {
-                                                                                            return <div key={index}>
+                                                                                            return <div key={index} className="show-files-task">
                                                                                                 {this.isImage(elem.name) ?
-                                                                                                    <ApiImage className="attachment-img files-attach" style={{ marginTop: "5px" }} id={`image-${elem?._id}`} src={elem.url} /> :
+                                                                                                    <React.Fragment>
+                                                                                                        <ApiImage className="attachment-img files-attach" style={{ marginTop: "5px" }} id={`image-${elem?._id}`} src={elem.url} />
+                                                                                                        <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
+                                                                                                    </React.Fragment>
+                                                                                                    :
                                                                                                     <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
                                                                                                 }
                                                                                             </div>
@@ -1502,9 +1507,13 @@ class ActionTab extends Component {
                                                         <ul style={{ listStyle: 'none' }}>
                                                             {item.files.map((elem, index) => {
                                                                 return (
-                                                                    <div key={index}>
+                                                                    <div key={index} className="show-files-task">
                                                                         {this.isImage(elem.name) ?
-                                                                            <ApiImage className="attachment-img files-attach" style={{ marginTop: "5px" }} id={`image-${elem?._id}`} src={elem.url} /> :
+                                                                            <React.Fragment>
+                                                                                <ApiImage className="attachment-img files-attach" style={{ marginTop: "5px" }} id={`image-${elem?._id}`} src={elem.url} />
+                                                                                <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
+                                                                            </React.Fragment>
+                                                                            :
                                                                             <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
                                                                         }
 
