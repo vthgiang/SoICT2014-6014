@@ -10,6 +10,7 @@ import { TaskFormValidator } from '../../task-management/component/taskFormValid
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import Swal from 'sweetalert2'
 import { TaskTemplateFormValidator } from '../../task-template/component/taskTemplateFormValidator';
+import { taskManagementActions } from '../../task-management/redux/actions';
 
 class ModalEditTaskByAccountableEmployee extends Component {
 
@@ -26,6 +27,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
         let taskDescription = task && task.description;
         let progress = task && task.progress;
         let formula = task && task.formula;
+        let parent = (task && task.parent) ? task.parent._id : "";
+        let parentTask = task && task.parent;
 
         let info = {}, taskInfo = task && task.taskInformations;
         for (let i in taskInfo) {
@@ -116,6 +119,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
             priorityOptions: priorityOptions,
             progress: progress,
             formula: formula,
+            parent: parent,
+            parentTask: parentTask,
             startDate: startDate,
             endDate: endDate,
             responsibleEmployees: responsibleEmployees,
@@ -130,6 +135,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
 
     componentDidMount() {
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
+        // unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime = false, calledId = null
+        this.props.getPaginateTasksByUser("[]", "1", "5", "[]", "[]", "[]", null, null, null, null, null, false, "listSearch");
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -697,6 +704,19 @@ class ModalEditTaskByAccountableEmployee extends Component {
             && (this.state.errorOnProgress === undefined && this.state.errorOnEndDate === undefined && this.state.errorOnStartDate === undefined && check);
     }
 
+    onSearch = async (txt) => {
+
+        await this.props.getPaginateTasksByUser("[]", "1", "5", "[]", "[]", "[]", txt, null, null, null, null, false, "listSearch");
+
+        await this.setState(state => {
+            return {
+                ...state,
+                parent: state.parentTask ? state.parentTask._id : "",
+            }
+        })
+        console.log('abpernt', this.state.parent);
+    }
+
     handleSelectedPriority = (value) => {
         this.setState(state => {
             return {
@@ -713,6 +733,18 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 statusOptions: value
             }
         })
+    }
+
+    handleSelectedParent = async (value) => {
+        let val = value[0];
+
+        await this.setState(state => {
+            return {
+                ...state,
+                parent: val,
+            }
+        })
+        console.log('ppppp', value, this.state.parent);
     }
 
     handleSelectedResponsibleEmployee = (value) => {
@@ -864,6 +896,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
             status: this.state.statusOptions,
             priority: this.state.priorityOptions,
             formula: this.state.formula,
+            parent: this.state.parent,
             user: this.state.userId,
             progress: this.state.progress,
             date: this.formatDate(Date.now()),
@@ -879,7 +912,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
 
             info: this.state.info,
         }
-
+        console.log('data', data);
         this.props.editTaskByAccountableEmployees(data, taskId);
 
         this.handleAddTaskLog(inactiveEmployees);
@@ -912,14 +945,40 @@ class ModalEditTaskByAccountableEmployee extends Component {
 
         const { user, tasktemplates, translate } = this.props;
         const { task, errorOnEndDate, errorOnStartDate, errorTaskName, errorTaskDescription, errorOnFormula, taskName, taskDescription, statusOptions, priorityOptions,
-            startDate, endDate, formula, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees, inactiveEmployees
+            startDate, endDate, formula, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees, inactiveEmployees, parent, parentTask
         } = this.state;
 
-        const { perform, id, role, title, hasAccountable } = this.props;
+        const { tasks, perform, id, role, title, hasAccountable } = this.props;
 
         let departmentUsers, usercompanys;
         if (user.userdepartments) departmentUsers = user.userdepartments;
         if (user.usercompanys) usercompanys = user.usercompanys;
+
+        // list công việc cha.
+        let listParentTask = [{ value: "", text: `--${translate('task.task_management.add_parent_task')}--` }];
+
+        if (tasks.listSearchTasks) {
+            let arr = tasks.listSearchTasks.map(x => { return { value: x._id, text: x.name } });
+
+            if (parentTask) {
+                // kiểm tra parent cũ có trong list search hay không
+                let hasParentItem = arr.find(e => e.value === parentTask._id);
+
+                //không có parent trong arr
+                !hasParentItem && listParentTask.unshift({ value: parentTask._id, text: parentTask.name })
+                console.log('arr',arr);
+                for (let i in arr) {
+                    if (arr[i].value === parentTask._id) {
+                        listParentTask.unshift({ value: parentTask._id, text: parentTask.name })
+                    }
+                    else listParentTask.push({ value: arr[i].value, text: arr[i].text })
+                }
+            }
+            else {
+                listParentTask = [...listParentTask, ...arr];
+            }
+        }
+
 
         let priorityArr = [
             { value: 1, text: translate('task.task_management.low') },
@@ -974,8 +1033,20 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                             className="form-control" onChange={this.handleTaskDescriptionChange} />
                                         <ErrorLabel content={errorTaskDescription} />
                                     </div>
+                                    <div className="form-group">
+                                        <label>{translate('task.task_management.add_parent_task')}</label>
+                                        <SelectBox
+                                            id={`select-parent-${perform}-${role}`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            items={listParentTask}
+                                            multiple={false}
+                                            value={parent}
+                                            onChange={this.handleSelectedParent}
+                                            onSearch={this.onSearch}
+                                        />
+                                    </div>
                                 </div>
-
                             </fieldset>
 
                             {/*Thông tin chi tiết*/}
@@ -1230,6 +1301,7 @@ const actionGetState = { //dispatchActionToProps
     getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
     editTaskByAccountableEmployees: performTaskAction.editTaskByAccountableEmployees,
     addTaskLog: performTaskAction.addTaskLog,
+    getPaginateTasksByUser: taskManagementActions.getPaginateTasksByUser,
 }
 
 const modalEditTaskByAccountableEmployee = connect(mapStateToProps, actionGetState)(withTranslate(ModalEditTaskByAccountableEmployee));

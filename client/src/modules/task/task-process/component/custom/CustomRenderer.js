@@ -45,7 +45,7 @@ export default class CustomRenderer extends BaseRenderer {
         const shape = this.bpmnRenderer.drawShape(parentNode, element);
 
         if (element.type == 'bpmn:Task') {
-            element.height = 130;
+            element.height = 150;
             element.width = 160;
             let b = element.businessObject.$attrs.shapeName
             const line = drawLine(parentNode, 0, 50, 160, 50, 'black');
@@ -75,7 +75,7 @@ export default class CustomRenderer extends BaseRenderer {
             let foreignObject1 = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
             foreignObject1.setAttribute('x', 5);
             foreignObject1.setAttribute('y', 60);
-            foreignObject1.setAttribute('height', 40);
+            foreignObject1.setAttribute('height', 60);
             foreignObject1.setAttribute('width', 150);
 
             let div1 = document.createElement('div');
@@ -88,27 +88,41 @@ export default class CustomRenderer extends BaseRenderer {
             let responsibleName = element.businessObject.$attrs.responsibleName
             div1.innerHTML = responsibleName ? responsibleName : "";
             foreignObject1.appendChild(div1);
-            svgAppend(parentNode, foreignObject1);
 
-
-            //Vẽ người phê duyệt công việc
-            let foreignObject2 = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
-            foreignObject2.setAttribute('x', 5);
-            foreignObject2.setAttribute('y', 90);
-            foreignObject2.setAttribute('height', 40);
-            foreignObject2.setAttribute('width', 150);
 
             let div2 = document.createElement('div');
             let att2 = document.createAttribute("class");        // Create a "href" attribute
             att2.value = "list-task-process-accountable";            // Set the value of the href attribute
             div2.setAttributeNode(att2);
-
             att2 = document.createAttribute("style");        // Create a "href" attribute
             div2.setAttributeNode(att2);
             let accountableName = element.businessObject.$attrs.accountableName
             div2.innerHTML = accountableName ? accountableName : "";
-            foreignObject2.appendChild(div2);
+            foreignObject1.appendChild(div2);
+            svgAppend(parentNode, foreignObject1);
+
+
+            let progress = element.businessObject.$attrs.progress
+           
+                //Vẽ người thực hiện công việc
+            let foreignObject2 = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
+            foreignObject2.setAttribute('x', 125);
+            foreignObject2.setAttribute('y', 125);
+            foreignObject2.setAttribute('height', 30);
+            foreignObject2.setAttribute('width', 30);
+
+            let div3 = document.createElement('div');
+            let att3 = document.createAttribute("class");        // Create a "href" attribute
+            att3.value = "progress-task-process";            // Set the value of the href attribute
+            div3.setAttributeNode(att3);
+
+            att3 = document.createAttribute("style");        // Create a "href" attribute
+            div3.setAttributeNode(att3);
+            
+            div3.innerHTML = progress ? progress + "%" : "0%";
+            foreignObject2.appendChild(div3);
             svgAppend(parentNode, foreignObject2);
+
         }
 
 
@@ -142,7 +156,7 @@ export default class CustomRenderer extends BaseRenderer {
             let foreignObject1 = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
             foreignObject1.setAttribute('x', -50);
             foreignObject1.setAttribute('y', 60);
-            foreignObject1.setAttribute('height', 35);
+            foreignObject1.setAttribute('height', 70);
             foreignObject1.setAttribute('width', 150);
 
             let div1 = document.createElement('div');
@@ -155,18 +169,6 @@ export default class CustomRenderer extends BaseRenderer {
             let responsibleName = element.businessObject.$attrs.responsibleName
             div1.innerHTML = responsibleName ? responsibleName : "";
             foreignObject1.appendChild(div1);
-            svgAppend(parentNode, foreignObject1);
-
-
-
-
-
-            //Vẽ người phê duyệt công việc
-            let foreignObject2 = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
-            foreignObject2.setAttribute('x', -50);
-            foreignObject2.setAttribute('y', 95);
-            foreignObject2.setAttribute('height', 35);
-            foreignObject2.setAttribute('width', 150);
 
             let div2 = document.createElement('div');
             let att2 = document.createAttribute("class");        // Create a "href" attribute
@@ -177,8 +179,15 @@ export default class CustomRenderer extends BaseRenderer {
             div2.setAttributeNode(att2);
             let accountableName = element.businessObject.$attrs.accountableName
             div2.innerHTML = accountableName ? accountableName : "";
-            foreignObject2.appendChild(div2);
-            svgAppend(parentNode, foreignObject2);
+            foreignObject1.appendChild(div2);
+            svgAppend(parentNode, foreignObject1);
+
+
+
+
+
+
+
         }
         return shape;
     }

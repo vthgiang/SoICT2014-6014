@@ -8,7 +8,7 @@ import 'moment/locale/vi';
 import Files from 'react-files';
 import './actionTab.css';
 
-import { ContentMaker, DialogModal, DateTimeConverter } from '../../../../common-components';
+import { ContentMaker, DialogModal, DateTimeConverter, ApiImage } from '../../../../common-components';
 import { getStorage } from '../../../../config';
 
 import { performTaskAction } from '../redux/actions';
@@ -136,7 +136,6 @@ class ActionTab extends Component {
                     id: nextProps.id
                 }
             })
-            console.log("Should component")
             this.props.getTimesheetLogs(nextProps.id);
             this.props.getStatusTimer(nextProps.id);
             this.props.getSubTask(nextProps.id);
@@ -793,7 +792,15 @@ class ActionTab extends Component {
             }
         });
     }
-
+    isImage = (src) => {
+        let string = src.split(".")
+        let image = ['jpg', 'jpeg', 'png', 'psd', 'pdf', 'tiff', 'gif']
+        if (image.indexOf(string[string.length - 1]) !== -1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     render() {
 
         let task, informations, statusTask, documents, actionComments, taskActions, taskComments, logTimer, logs;
@@ -820,7 +827,6 @@ class ActionTab extends Component {
         if (performtasks.logs) {
             logs = performtasks.logs;
         };
-
         return (
             <div>
                 <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none" }}>
@@ -983,7 +989,16 @@ class ActionTab extends Component {
                                                         {showFile.some(obj => obj === item._id) &&
                                                             <div>
                                                                 {item.files.map((elem, index) => {
-                                                                    return <div key={index}><a style={{ cursor: "pointer" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a></div>
+                                                                    return <div key={index} className="show-files-task">
+                                                                        {this.isImage(elem.name) ?
+                                                                            <React.Fragment>
+                                                                                <ApiImage className="attachment-img files-attach" style={{ marginTop: "5px" }} id={`image-${elem?._id}`} src={elem.url} />
+                                                                                <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
+                                                                            </React.Fragment>
+                                                                            :
+                                                                            <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
+                                                                        }
+                                                                    </div>
                                                                 })}
                                                             </div>
                                                         }
@@ -1073,8 +1088,17 @@ class ActionTab extends Component {
                                                                             <div><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => this.handleShowFile(child._id)}><b><i className="fa fa-paperclip" aria-hidden="true"> {translate("task.task_perform.file_attach")} ({child.files && child.files.length})</i></b></a></div></li>
                                                                         {showFile.some(obj => obj === child._id) &&
                                                                             <li style={{ display: "inline-table" }}>
-                                                                                {child.files.map(elem => {
-                                                                                    return <div><a style={{ cursor: "pointer" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a></div>
+                                                                                {child.files.map((elem, index) => {
+                                                                                    return <div key={index} className="show-files-task">
+                                                                                        {this.isImage(elem.name) ?
+                                                                                            <React.Fragment>
+                                                                                                <ApiImage className="attachment-img files-attach" style={{ marginTop: "5px",cursor: "pointer" }} id={`image-${elem._id}`} src={elem.url} />
+                                                                                                <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
+                                                                                            </React.Fragment>
+                                                                                            :
+                                                                                            <a style={{ cursor: "pointer" }} style={{ marginTop: "5px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
+                                                                                        }
+                                                                                    </div>
                                                                                 })}
                                                                             </li>
                                                                         }
@@ -1082,7 +1106,6 @@ class ActionTab extends Component {
                                                                     </ul>
                                                                 </div>
                                                             }
-
                                                             {/*Chỉnh sửa nội dung bình luận của hoạt động */}
                                                             {editComment === child._id &&
                                                                 <React.Fragment>
@@ -1109,6 +1132,7 @@ class ActionTab extends Component {
                                                                         {child.files.length > 0 &&
                                                                             <div className="tool-level2" style={{ marginTop: -15 }}>
                                                                                 {child.files.map((file, index) => {
+                                                                                    { console.log("abc") }
                                                                                     return <div key={index}>
                                                                                         <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { this.handleDeleteFile(file._id, file.name, item._id, "commentofaction") }}><i className="fa fa-times"></i></a>
                                                                                     </div>
@@ -1189,8 +1213,14 @@ class ActionTab extends Component {
                         <div className={selected === "taskComment" ? "active tab-pane" : "tab-pane"} id="taskComment">
                             {typeof taskComments !== 'undefined' && taskComments.length !== 0 ?
                                 taskComments.map((item, key) => {
+                                    let numberImage = 0;
+                                    item.files.forEach(x => {
+                                        if (this.isImage(x.name)) {
+                                            numberImage = numberImage + 1
+                                        }
+                                    })
                                     return (
-                                        <div  key={key}>
+                                        <div key={key}>
                                             <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + item.creator?.avatar)} alt="User Image" />
 
                                             {editTaskComment !== item._id && // Khi đang edit thì ẩn đi
@@ -1220,16 +1250,24 @@ class ActionTab extends Component {
 
                                                     <ul className="list-inline tool-level1">
                                                         <li><span className="text-sm">{<DateTimeConverter dateTime={item.createdAt} />}</span></li>
-
                                                         <li><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => this.handleShowChildTaskComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> {translate("task.task_perform.comment")} ({item.comments.length}) &nbsp;</a></li>
                                                         {item.files.length > 0 &&
                                                             <React.Fragment>
                                                                 <li style={{ display: "inline-table" }}>
                                                                     <div><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => this.handleShowFile(item._id)}><b><i className="fa fa-paperclip" aria-hidden="true"> {translate("task.task_perform.file_attach")} ({item.files && item.files.length})</i></b></a> </div></li>
                                                                 {showFile.some(obj => obj === item._id) &&
-                                                                    <li style={{ display: "inline-table" }}>{item.files.map(elem => {
-                                                                        return <div><a style={{ cursor: "pointer" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a></div>
-                                                                    })}</li>
+                                                                    <li style={{ display: "inline-table" }}>{item.files.map((elem, index) => {
+                                                                        return <div key={index} className="show-files-task">
+                                                                            {this.isImage(elem.name) ?
+                                                                                <React.Fragment>
+                                                                                    <ApiImage numberImage={numberImage} className="attachment-img files-attach" style={{ marginTop: "5px" }} id={`image-${elem?._id}`} src={elem.url} />
+                                                                                    <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
+                                                                                </React.Fragment>
+                                                                                : <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
+                                                                            }
+                                                                        </div>
+                                                                    })}
+                                                                    </li>
                                                                 }
                                                             </React.Fragment>
                                                         }
@@ -1261,8 +1299,8 @@ class ActionTab extends Component {
                                                         {/* Hiện file đã tải lên */}
                                                         {item.files.length > 0 &&
                                                             <div className="tool-level1" style={{ marginTop: -15 }}>
-                                                                {item.files.map(file => {
-                                                                    return <div>
+                                                                {item.files.map((file, index) => {
+                                                                    return <div key={index} >
                                                                         <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { this.handleDeleteFile(file._id, file.name, item._id, "taskcomment") }}><i className="fa fa-times"></i></a>
                                                                     </div>
                                                                 })}
@@ -1324,8 +1362,17 @@ class ActionTab extends Component {
                                                                                     <div><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => this.handleShowFile(child._id)}><b><i className="fa fa-paperclip" aria-hidden="true"> {translate("task.task_perform.file_attach")} ({child.files && child.files.length})</i></b></a></div></li>
                                                                                 {showFile.some(obj => obj === child._id) &&
                                                                                     <li style={{ display: "inline-table" }}>
-                                                                                        {child.files.map(elem => {
-                                                                                            return <div><a style={{ cursor: "pointer" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a></div>
+                                                                                        {child.files.map((elem, index) => {
+                                                                                            return <div key={index} className="show-files-task">
+                                                                                                {this.isImage(elem.name) ?
+                                                                                                    <React.Fragment>
+                                                                                                        <ApiImage className="attachment-img files-attach" style={{ marginTop: "5px" }} id={`image-${elem?._id}`} src={elem.url} />
+                                                                                                        <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
+                                                                                                    </React.Fragment>
+                                                                                                    :
+                                                                                                    <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
+                                                                                                }
+                                                                                            </div>
                                                                                         })}
                                                                                     </li>
                                                                                 }
@@ -1458,11 +1505,19 @@ class ActionTab extends Component {
                                                             {item.description}
                                                         </div>
                                                         <ul style={{ listStyle: 'none' }}>
-                                                            {item.files.map((child, index) => {
+                                                            {item.files.map((elem, index) => {
                                                                 return (
-                                                                    <React.Fragment>
-                                                                        <li><a style={{ cursor: "pointer" }} onClick={(e) => this.requestDownloadFile(e, child.url, child.name)} >{child.name}</a></li>
-                                                                    </React.Fragment>
+                                                                    <div key={index} className="show-files-task">
+                                                                        {this.isImage(elem.name) ?
+                                                                            <React.Fragment>
+                                                                                <ApiImage className="attachment-img files-attach" style={{ marginTop: "5px" }} id={`image-${elem?._id}`} src={elem.url} />
+                                                                                <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
+                                                                            </React.Fragment>
+                                                                            :
+                                                                            <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
+                                                                        }
+
+                                                                    </div>
                                                                 )
                                                             })}
                                                         </ul>
@@ -1598,21 +1653,21 @@ class ActionTab extends Component {
                         </div>
 
 
-                        {/** Dữ liệu vào */}
-                        {/* <div className={selected === "incoming-data" ? "active tab-pane" : "tab-pane"} id="incoming-data">
+                        {/* Dữ liệu vào */}
+                        <div className={selected === "incoming-data" ? "active tab-pane" : "tab-pane"} id="incoming-data">
                             {
                                 (task && task.process) &&
                                 <React.Fragment>
-                                    <IncomingDataTab
+                                    {/* <IncomingDataTab
                                         isIncomingData={task && task.preceedingTasks && task.preceedingTasks.length !== 0}
                                         taskId={task._id}
                                         task={task}
                                         infoTaskProcess={task.process.tasks}
-                                    />
-                                    
+                                    /> */}
+
                                 </React.Fragment>
                             }
-                        </div> */}
+                        </div>
 
                         {/** Dữ liệu ra */}
                         <div className={selected === "outgoing-data" ? "active tab-pane" : "tab-pane"} id="outgoing-data">

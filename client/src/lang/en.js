@@ -98,7 +98,8 @@ export default {
             wrong5_block: 'Wrong password 5 time. Account blocked',
             request_forgot_password_success: 'Request change password success. System sent email for you. Please check email',
             reset_password_success: 'Reset password thành công',
-            otp_invalid: 'OTP invalid'
+            otp_invalid: 'OTP invalid',
+            portal_invalid: 'Portal invalid',
         },
 
         system_admin: {
