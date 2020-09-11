@@ -3,25 +3,28 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const generator = require("generate-password");
 const nodemailer = require("nodemailer");
-const { Privilege, Role, User, UserRole } = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
+const Models = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
+const { Privilege, Role, User, UserRole, Company } = Models;
 const fs = require('fs');
-const {connect} =  require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const {connect, initModels} =  require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 /**
  * Phương thức đăng nhập
  */
 exports.login = async (fingerprint, data) => { // data bao gom email va password
-    if(!data.portal) throw ["portal invalid"];
+    if(!data.portal) throw ["portal_invalid"];
 
-    if(!DB_CONNECTION[data.portal]) DB_CONNECTION[data.portal] = connect(data.portal);
-    
-    const user = await User(DB_CONNECTION[data.portal])
+    const company = await Company(connect(DB_CONNECTION, process.env.DB_NAME))
+        .findOne({ shortName: data.portal });
+    if(data.portal !== process.env.DB_NAME && !company) throw ["portal_invalid"];
+    await initModels(connect(DB_CONNECTION, data.portal), Models); 
+
+    const user = await User(connect(DB_CONNECTION, data.portal))
         .findOne({email : data.email})
         .populate([
             { path: 'roles', populate: { path: 'roleId'} },
         ]);
-    const company = await Company(DB_CONNECTION[process.env.DB_NAME])
-        .findOne({ shortName: data.portal });
+    console.log("LOGIN-USER", user.roles);
 
     if(!user) throw ["email_password_invalid"];
     const validPass = await bcrypt.compare(data.password, user.password);
@@ -30,63 +33,37 @@ exports.login = async (fingerprint, data) => { // data bao gom email va password
     }
     if(user.roles.length < 1) throw ['acc_have_not_role'];
 
-    if(user.roles[0].roleId.name !== 'System Admin'){ 
-        
-        //Không phải phiên đăng nhập của system admin 
+    if(user.roles[0].roleId.name !== 'System Admin'){  
         if(!user.active) throw ['acc_blocked'];
         if(!company.active) throw ['service_off']
-    
-        const token = await jwt.sign(
-            {
-                _id: user._id, 
-                email: user.email, 
-                name: user.name,
-                company, 
-                fingerprint: fingerprint
-            }, 
-            process.env.TOKEN_SECRET
-        );
-        
-        user.status = 0;
-        user.numberDevice += 1;
-        user.save();
-
-        return { 
-            token,
-            user: {
-                _id: user._id,
-                name: user.name,
-                email: user.email,
-                roles: user.roles,
-                company
-            }
-        };
-    } else{
-        //Phiên đăng nhập của system admin
-        const token = await jwt.sign(
-            {
-                _id: user._id, 
-                email: user.email,  
-                name: user.name,
-                fingerprint: fingerprint
-            }, 
-            process.env.TOKEN_SECRET
-        );
-
-        user.status = 0; 
-        user.numberDevice += 1;
-        user.save();
-
-        return { 
-            token,
-            user: {
-                _id: user._id,
-                name: user.name,
-                email: user.email,
-                roles: user.roles
-            }
-        };
     }
+    const token = await jwt.sign(
+        {
+            _id: user._id, 
+            email: user.email, 
+            name: user.name,
+            company: user.roles[0].roleId.name !== 'System Admin' ? company : undefined,
+            portal: user.roles[0].roleId.name !== 'System Admin' ? company.shortName : process.env.DB_NAME, 
+            fingerprint: fingerprint
+        }, 
+        process.env.TOKEN_SECRET
+    );
+    
+    user.status = 0;
+    user.numberDevice += 1;
+    user.save();
+
+    return { 
+        token,
+        user: {
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            roles: user.roles,
+            company: user.roles[0].roleId.name !== 'System Admin' ? company : undefined, 
+            portal: user.roles[0].roleId.name !== 'System Admin' ? company.shortName : process.env.DB_NAME, 
+        }
+    };
 }
 /**
  * Đăng xuất tài khoản người dùng

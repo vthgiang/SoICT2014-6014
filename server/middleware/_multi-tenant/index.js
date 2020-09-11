@@ -1,10 +1,12 @@
 const jwt = require('jsonwebtoken');
-const { User, Role, UserRole, Privilege, Link, Company } = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
+const Models = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
+const { User, Role, UserRole, Privilege, Link, Company } = Models;
 const ObjectId = require('mongoose').Types.ObjectId;
 const { data, checkServicePermission } = require('./servicesPermission');
 const multer = require('multer');
 const fs = require('fs');
 const CryptoJS = require("crypto-js");
+const { initModels, connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 /**
  * ****************************************
@@ -39,6 +41,7 @@ exports.authFunc = (checkPage = true) => {
              * Xác định db truy vấn cho request
              */
             req.portal = !req.user.company ? process.env.DB_NAME : req.user.company.shortName; 
+            initModels(connect(DB_CONNECTION, req.portal), Models);
 
             if (process.env.DEVELOPMENT !== 'true') {
 
@@ -48,7 +51,7 @@ exports.authFunc = (checkPage = true) => {
                     throw ["role_invalid"]; //trả về lỗi nếu current role là một giá trị không xác định
                 }
 
-                const role = await Role(DB_CONNECTION[req.portal]).findById(currentRole); //current role của người dùng
+                const role = await Role(connect(DB_CONNECTION, req.portal)).findById(currentRole); //current role của người dùng
                 if (role === null) throw ["role_invalid"];
                 /**
                  * So sánh  fingerprint trong token với fingerprint được gửi lên từ máy của người dùng
@@ -57,14 +60,14 @@ exports.authFunc = (checkPage = true) => {
                  */
                 if (verified.fingerprint !== fingerprint) throw ['fingerprint_invalid']; // phát hiện lỗi client copy jwt và paste vào localstorage của trình duyệt để không phải đăng nhập
 
-                const userToken = await User(DB_CONNECTION[req.portal]).findById(req.user._id);
+                const userToken = await User(connect(DB_CONNECTION, req.portal)).findById(req.user._id);
                 if (userToken.numberDevice === 0) throw ['acc_log_out'];
 
                 /**
                  * Kiểm tra xem current role có đúng với người dùng hay không?
                  */
                 const userId = req.user._id;
-                const userrole = await UserRole(DB_CONNECTION[req.portal]).findOne({
+                const userrole = await UserRole(connect(DB_CONNECTION, req.portal)).findOne({
                     userId,
                     roleId: role._id
                 });
@@ -76,9 +79,9 @@ exports.authFunc = (checkPage = true) => {
                     /**
                      * Kiểm tra công ty của người dùng có đang được kích hoạt hay không?
                      */
-                    const company = await Company(DB_CONNECTION[process.env.DB_NAME]).findById(req.user.company._id);
+                    const company = await Company(connect(DB_CONNECTION, process.env.DB_NAME)).findById(req.user.company._id);
                     if (!company.active) { //dịch vụ của công ty người dùng đã tạm dừng
-                        const resetUser = await User.findById(req.user._id);
+                        const resetUser = await User(connect(DB_CONNECTION, req.portal)).findById(req.user._id);
                         resetUser.tokens = []; //đăng xuất tất cả các phiên đăng nhập của người dùng khỏi hệ thống
                         await resetUser.save();
                         throw ['service_off'];
@@ -96,20 +99,18 @@ exports.authFunc = (checkPage = true) => {
                 //const url = req.headers.referer.substr(req.headers.origin.length, req.headers.referer.length - req.headers.origin.length);
                 const url = req.header('current-page');
                 const link = role.name !== 'System Admin' ?
-                    await Link(DB_CONNECTION[req.portal]).findOne({
+                    await Link(connect(DB_CONNECTION, req.portal)).findOne({
                         url,
-                        company: req.user.company._id,
                         deleteSoft: false
                     }) :
-                    await Link(DB_CONNECTION[req.portal]).findOne({
-                        url,
-                        company: undefined
+                    await Link(connect(DB_CONNECTION, req.portal)).findOne({
+                        url
                     });
                 if (link === null) throw ['url_invalid'];
 
                 if (checkPage) {
                     const roleArr = [role._id].concat(role.parents);
-                    const privilege = await Privilege(DB_CONNECTION[req.portal]).findOne({
+                    const privilege = await Privilege(connect(DB_CONNECTION, req.portal)).findOne({
                         resourceId: link._id,
                         resourceType: 'Link',
                         roleId: {
@@ -127,7 +128,6 @@ exports.authFunc = (checkPage = true) => {
                 if (!checkSP) throw ['service_permission_invalid'];
 
             }
-
 
             next();
 
@@ -151,10 +151,10 @@ exports.auth = this.authFunc();
 exports.uploadFile = (arrData, type) => {
     var name, arrFile;
     // Tạo folder chứa file khi chưa có folder
-    const checkExistUploads = async(company) => {
+    const checkExistUploads = async(portal) => {
         if(company !== undefined)
             return await arrData.forEach(x => {
-                let dir = `./upload/private/${company.shortName+company._id}${x.path}`;
+                let dir = `./upload/private/${portal}${x.path}`;
                 if (!fs.existsSync(dir)) {
                     fs.mkdirSync(dir, {
                         recursive: true
@@ -172,12 +172,12 @@ exports.uploadFile = (arrData, type) => {
     const getFile = multer({
         storage: multer.diskStorage({
             destination: (req, file, cb) => {
-                checkExistUploads(req.user.company);
+                checkExistUploads(req.user.portal);
                 if (type === 'single' || type === 'array') {
                     if(staticPath.indexOf(arrData[0].path) !== -1) {
                         cb(null, `./upload${arrData[0].path}`);
                     }else{
-                        cb(null, `./upload/private/${req.user.company.shortName+req.user.company._id}${arrData[0].path}`);
+                        cb(null, `./upload/private/${req.user.portal}${arrData[0].path}`);
                     }
                 } else if (type === 'fields') {
                     for (let n in arrData) {
@@ -185,7 +185,7 @@ exports.uploadFile = (arrData, type) => {
                             if(staticPath.indexOf(arrData[n].path) !== -1) {
                                 cb(null, `./upload${arrData[n].path}`);
                             }else{
-                                cb(null, `./upload/private/${req.user.company.shortName+req.user.company._id}${arrData[n].path}`);
+                                cb(null, `./upload/private/${req.user.portal}${arrData[n].path}`);
                             }
                             break;
                         }

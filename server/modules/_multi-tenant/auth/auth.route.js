@@ -5,7 +5,7 @@ const { auth, authFunc, uploadFile } = require(`${SERVER_MIDDLEWARE_DIR}/_multi-
 
 router.post("/login", AuthController.login);
 router.get("/logout", auth, AuthController.logout);
-// router.get("/logout-all-account", auth, AuthController.logoutAllAccount);
+router.get("/logout-all-account", auth, AuthController.logoutAllAccount);
 // router.post("/forget-password", AuthController.forgetPassword);
 // router.post("/reset-password", AuthController.resetPassword);
 // router.get("/get-profile/:id", authFunc(false), AuthController.getProfile);

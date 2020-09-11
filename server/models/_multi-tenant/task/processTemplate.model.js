@@ -30,7 +30,7 @@ const ProcessTemplateSchema = new Schema({
         },
         organizationalUnit: {
             type: Schema.Types.ObjectId,
-            ref: OrganizationalUnit,
+            ref: 'OrganizationalUnit',
             required: true
         },
         name: {

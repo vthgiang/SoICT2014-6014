@@ -3,15 +3,16 @@ const Logger = require(`${SERVER_LOGS_DIR}/_multi-tenant`);
 
 exports.login = async (req, res) => {
     try {
+        console.log("user-login-request", req.body)
         const loginUser = await AuthService.login(req.header('fingerprint'), req.body);
-        await Logger("info", req.body.email, 'login_success', req.body.portal);
+        await Logger.info(req.body.email, 'login_success', req.body.portal);
         res.status(200).json({
             success: true,
             messages: ['login_success'],
             content: loginUser
         });
     } catch (error) {
-        await Logger("error", req.body.email, 'login_faile', req.body.portal);
+        await Logger.error(req.body.email, 'login_faile', req.body.portal);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['login_faile'],
