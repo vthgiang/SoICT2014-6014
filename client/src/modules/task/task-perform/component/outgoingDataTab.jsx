@@ -142,7 +142,7 @@ class OutgoingDataTab extends Component {
                         <div className="description-box outgoing-content">
                             <h4>{translate('task.task_process.list_of_data_and_info')}</h4>
 
-                            <strong>T{translate('task.task_process.information')}:</strong>
+                            <strong>{translate('task.task_process.information')}:</strong>
                             { /** Danh sách thông tin */
                                 task.taskInformations
                                     && task.taskInformations.length !== 0
