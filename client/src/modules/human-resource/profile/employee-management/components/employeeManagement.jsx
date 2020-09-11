@@ -780,7 +780,7 @@ class EmployeeManagement extends Component {
             <div className="box">
                 <div className="box-body qlcv">
                     <div className="form-inline">
-                        {/* button thêm mới nhân viên */}
+                        {/* Button thêm mới nhân viên */}
                         <div className="dropdown pull-right">
                             <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('human_resource.profile.employee_management.add_employee_title')} >{translate('human_resource.profile.employee_management.add_employee')}</button>
                             <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
@@ -800,7 +800,7 @@ class EmployeeManagement extends Component {
                                 items={department.list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
                             </SelectMulti>
                         </div>
-                        {/*Mã nhân viên  */}
+                        {/* Mã nhân viên  */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.staff_number')}</label>
                             <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} placeholder={translate('page.staff_number')} autoComplete="off" />
@@ -860,26 +860,26 @@ class EmployeeManagement extends Component {
                     </div>
                     <div className="form-group col-md-12 row" >
                         {(Number(employeesManager.expiresContract) > 0 || Number(employeesManager.employeesHaveBirthdateInCurrentMonth) > 0) &&
-                            <span>Có</span>
+                            <span>{translate('human_resource.profile.employee_management.have')}&nbsp;</span>
                         }
                         {Number(employeesManager.expiresContract) > 0 &&
                             <React.Fragment>
-                                <span className="text-danger" style={{ fontWeight: "bold" }}>{` ${employeesManager.expiresContract} nhân viên`}</span>
-                                <span>{` hết hạn hợp đồng`}</span>
+                                <span className="text-danger" style={{ fontWeight: "bold" }}>{` ${employeesManager.expiresContract} ${translate('human_resource.profile.employee_management.staff')}`}</span>
+                                <span>&nbsp;{translate('human_resource.profile.employee_management.contract_expiration')}</span>
                             </React.Fragment>
                         }
                         {(Number(employeesManager.expiresContract) > 0 && Number(employeesManager.employeesHaveBirthdateInCurrentMonth) > 0) &&
-                            <span>{` và`}</span>
+                            <span>&nbsp;{translate('human_resource.profile.employee_management.and')}&nbsp;</span>
                         }
                         {
                             Number(employeesManager.employeesHaveBirthdateInCurrentMonth) > 0 &&
                             <React.Fragment>
-                                <span className="text-success" style={{ fontWeight: "bold" }}>{` ${employeesManager.employeesHaveBirthdateInCurrentMonth} nhân viên`}</span>
-                                <span>{` có sinh nhật`}</span>
+                                <span className="text-success" style={{ fontWeight: "bold" }}>{` ${employeesManager.employeesHaveBirthdateInCurrentMonth} ${translate('human_resource.profile.employee_management.staff')}`}</span>
+                                <span>&nbsp;{translate('human_resource.profile.employee_management.have_birthday')}</span>
                             </React.Fragment>
                         }
                         {(Number(employeesManager.expiresContract) > 0 || Number(employeesManager.employeesHaveBirthdateInCurrentMonth)) > 0 &&
-                            <span>{` trong tháng này (${this.formatDate(Date.now(), true)})`}</span>
+                            <span>&nbsp;{`${translate('human_resource.profile.employee_management.this_month')} (${this.formatDate(Date.now(), true)})`}</span>
                         }
                     </div>
                     <table id="employee-table" className="table table-striped table-bordered table-hover">

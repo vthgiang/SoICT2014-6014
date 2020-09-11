@@ -62,7 +62,7 @@ if(process.env.MULTI_TENANT === 'true'){
 	app.use("/commendation", require("./modules/human-resource/commendation/commendation.route"));
 	app.use("/discipline", require("./modules/human-resource/discipline/discipline.route"));
 	app.use("/holiday", require("./modules/human-resource/holiday/holiday.route"));
-	app.use("/employees", require("./modules/human-resource/profile/profile.route"));
+	app.use("/employee", require("./modules/human-resource/profile/profile.route"));
 	app.use("/salary", require("./modules/human-resource/salary/salary.route"));
 	app.use("/timesheet", require("./modules/human-resource/timesheets/timesheets.route"));
 
@@ -94,7 +94,7 @@ if(process.env.MULTI_TENANT === 'true'){
 	app.use("/performtask", require("./modules/task/task-perform/taskPerform.route"));
 	app.use("/task/task-templates", require("./modules/task/task-template/taskTemplate.route"));
 	app.use("/process", require("./modules/task/tasks-process/taskProcess.route"));
-	app.use("/educationPrograms", require("./modules/trainning/education-program/educationProgram.route"));
+	app.use("/educationProgram", require("./modules/trainning/education-program/educationProgram.route"));
 	app.use("/courses", require("./modules/trainning/course/course.route"));
 
 	//asset

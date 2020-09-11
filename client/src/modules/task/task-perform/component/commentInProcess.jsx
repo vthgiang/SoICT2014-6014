@@ -329,7 +329,7 @@ class CommentInProcess extends Component {
         const { task, inputAvatarCssClass } = this.props
         comments = task?.commentsInProcess
         return (
-            <React.Fragment>
+            <div className="no-line-height">
                 {comments ?
                     //Hiển thị bình luận của công việc
                     comments.map(item => {
@@ -570,7 +570,7 @@ class CommentInProcess extends Component {
                     }}
                     onSubmit={(e) => this.submitComment(task._id)}
                 />
-            </React.Fragment>
+            </div>
         );
     }
 }

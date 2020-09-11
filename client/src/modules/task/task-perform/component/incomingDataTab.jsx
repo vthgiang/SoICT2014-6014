@@ -23,8 +23,15 @@ class IncomingDataTab extends Component {
         const { translate } = this.props;
         let { task } = this.props
         let { showComment } = this.state
+        let information,document
         let listTask = [];
         if (task) {
+            if(task.taskInformations) {
+                information = task.taskInformations
+            }
+            if(task.document) {
+                document = task.document
+            }
             task.preceedingTasks.forEach(x => {
                 listTask.push(x.task)
             })
@@ -34,15 +41,14 @@ class IncomingDataTab extends Component {
                 {
                     listTask && listTask.map((task, key) =>
                         <React.Fragment
-                            key = {key}
                         >
                             <div key={key} className="description-box incoming-content">
                                 <h4>{task.name}</h4>
                                 {/** Danh sách thông tin */}
-                                <div><strong>{translate('task.task_process.information')}</strong></div>
+                                <strong>{translate('task.task_process.information')}:</strong>
                                 {
-                                    task?.taskInformations?.length !== 0 ?
-                                        task?.taskInformations.map((info, key) =>
+                                    information.length !== 0 ?
+                                    information.map((info, key) =>
                                             info.isOutput &&
                                             <div key={key}>
                                                 <ul>
@@ -52,14 +58,15 @@ class IncomingDataTab extends Component {
                                                 </ul>
                                             </div>
                                         )
-                                        : <div>{translate('task.task_process.not_export_info')}</div>
+                                        : <span>{translate('task.task_process.not_have_info')}</span>
                                 }
 
                                 {/** Danh sách tài liệu */}
-                                <div><strong>{translate('task.task_process.document')}</strong></div>
+                                <div></div>
+                                <strong>{translate('task.task_process.document')}:</strong>
                                 {
-                                    task?.documents?.length !== 0
-                                        ? task?.documents.map((document, key) =>
+                                    document && document.length !== 0
+                                        ? document.map((document, key) =>
                                             document.isOutput &&
                                             <div key={key}>
                                                 <ul>
@@ -78,13 +85,17 @@ class IncomingDataTab extends Component {
                                                 </ul>
                                             </div>
                                         )
-                                        : <div>{translate('task.task_process.not_have_doc')}</div>
+                                        : <span>{translate('task.task_process.not_have_doc')}</span>
                                 }
-                                <a style={{ cursor: "pointer" }} onClick={() => this.showComment(task?._id)}><b>Bình luận </b></a>
-                                {showComment === "" ?
-                                    <i className="fa fa-angle-double-up"></i>
-                                    : <i className="fa fa-angle-double-down"></i>
-                                }
+
+                                <div></div>
+                                <a style={{ cursor: "pointer" }} onClick={() => this.showComment(task?._id)}>
+                                    <b>Trao đổi </b>
+                                    {showComment === "" ?
+                                        <i className="fa fa-angle-double-down"></i>
+                                        : <i className="fa fa-angle-double-up"></i>
+                                    }
+                                </a>
                                 {showComment === task._id &&
                                     <CommentInProcess
                                         task={task}

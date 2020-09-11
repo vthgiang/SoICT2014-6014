@@ -231,7 +231,7 @@ class DisciplineManager extends Component {
                         {/* Hình thức kỷ luật*/}
                         <div className="form-group">
                             <label className="form-control-static">{translate('human_resource.commendation_discipline.discipline.table.discipline_forms_short')}</label>
-                            <input type="text" className="form-control" name="type" onChange={this.handleChange} placeholder={translate('human_resource.commendation_discipline.discipline.table.discipline_forms_short')} autoComplete="off" />
+                            <input type="text" className="form-control" name="type" onChange={this.handleChange} placeholder={translate('human_resource.commendation_discipline.discipline.table.discipline_forms')} autoComplete="off" />
                             <button type="button" className="btn btn-success" onClick={this.handleSubmitSearch} title={translate('page.add_search')} >{translate('page.add_search')}</button>
                         </div>
                     </div>

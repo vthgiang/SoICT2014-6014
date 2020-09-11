@@ -133,6 +133,18 @@ class UseRequestManager extends Component {
             reqUseEmployee: value
         })
     }
+
+    // Function lưu giá trị status vào state khi thay đổi
+    handleAppoverChange = (value) => {
+        if (value.length === 0) {
+            value = null
+        };
+
+        this.setState({
+            ...this.state,
+            approver: value
+        })
+    }
     // Function lưu giá trị status vào state khi thay đổi
     handleStatusChange = (value) => {
         if (value.length === 0) {
@@ -318,8 +330,7 @@ class UseRequestManager extends Component {
                         </div> */}
                     </div>
 
-
-                    <div className="form-inline" style={{ marginBottom: 10 }}>
+                    <div className="form-inline">
                         {/* Người được đăng ký sử dụng */}
                         <div className="form-group">
                             <label>Người đăng ký</label>
@@ -333,6 +344,23 @@ class UseRequestManager extends Component {
                                 onChange={this.handleReqForUsingEmployeeChange}
                             />
                         </div>
+
+                        {/* Người phê duyệt đăng ký sử dụng */}
+                        <div className="form-group">
+                            <label>Người phê duyệt</label>
+                            <SelectMulti
+                                id={`handleAppoverChange`}
+                                multiple="multiple"
+                                options={{ nonSelectedText: "Chọn người phê duyệt", allSelectedText: "Chọn tất cả" }}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={userIdArr}
+                                onChange={this.handleAppoverChange}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="form-inline" style={{ marginBottom: 10 }}>
                         {/* Trạng thái */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.status')}</label>
@@ -350,6 +378,7 @@ class UseRequestManager extends Component {
 
                         {/* Button tìm kiếm */}
                         <div className="form-group">
+                            <label></label>
                             <button type="button" className="btn btn-success" title={translate('page.add_search')} onClick={() => this.handleSubmitSearch()} >{translate('page.add_search')}</button>
                         </div>
                         {exportData && <ExportExcel id="export-asset-recommened-distribute-management" exportData={exportData} style={{ marginRight: 10 }} />}

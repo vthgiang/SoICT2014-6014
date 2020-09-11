@@ -18,13 +18,17 @@ class ListEducation extends Component {
             page: 0,
             limit: 5,
         };
-        this.handleChange = this.handleChange.bind(this);
     }
+
     componentDidMount() {
         this.props.getListEducation(this.state);
         this.props.getDepartment();
     }
-    // Function bắt sự kiện chỉnh sửa chương trình đào tạo
+
+    /**
+     * Function bắt sự kiện chỉnh sửa chương trình đào tạo
+     * @param {*} value : Thông tin chương trình đào tạo
+     */
     handleEdit = async (value) => {
         await this.setState({
             ...this.state,
@@ -33,7 +37,10 @@ class ListEducation extends Component {
         window.$(`#modal-edit-education${value._id}`).modal('show');
     }
 
-    // Function bắt sự kiện xem thông tin chương trình đào tạo
+    /**
+     * Function bắt sự kiện xem thông tin chương trình đào tạo
+     * @param {*} value : Thông tin chương trình đào tạo
+     */
     handleView = async (value) => {
         await this.setState({
             ...this.state,
@@ -43,7 +50,10 @@ class ListEducation extends Component {
     }
 
 
-    // Function lưu giá trị unit vào state khi thay đổi
+    /**
+     * Function lưu giá trị đơn vị vào state khi thay đổi
+     * @param {*} value : Array id đơn vị
+     */
     handleUnitChange = (value) => {
         if (value.length === 0) {
             value = null
@@ -54,7 +64,10 @@ class ListEducation extends Component {
         })
     }
 
-    // Function lưu giá trị chức vụ vào state khi thay đổi
+    /**
+     * Function lưu giá trị chức vụ vào state khi thay đổi
+     * @param {*} value : Array id chức vụ
+     */
     handlePositionChange = (value) => {
         if (value.length === 0) {
             value = null
@@ -65,17 +78,17 @@ class ListEducation extends Component {
         })
     }
 
-    handleChange(event) {
-        const { name, value } = event.target;
-        this.setState({
-            [name]: value
-        });
-    }
-
+    /**
+     * Bắt sự kiện tìm kiếm chương trình đào tạo
+     */
     handleSunmitSearch = () => {
         this.props.getListEducation(this.state);
     }
 
+    /**
+     * Function thay đổi số dòng hiện thị trên 1 trang
+     * @param {*} number : Số dòng hiện thị trên 1 trang
+     */
     setLimit = async (number) => {
         await this.setState({
             limit: parseInt(number),
@@ -83,6 +96,10 @@ class ListEducation extends Component {
         this.props.getListEducation(this.state);
     }
 
+    /**
+     * Function thay đổi số trang muốn xem
+     * @param {*} pageNumber : Số trang muốn xem
+     */
     setPage = async (pageNumber) => {
         let page = (pageNumber - 1) * (this.state.limit);
         await this.setState({
@@ -93,9 +110,12 @@ class ListEducation extends Component {
 
     render() {
         const { translate, education, department } = this.props;
-        const { organizationalUnit, currentEditRow, currentViewRow } = this.state;
+
+        const { limit, page, organizationalUnit, currentEditRow, currentViewRow } = this.state;
+
         const { list } = department;
-        let listEducations = [], listPosition = [{ value: "", text: "Bạn chưa chọn đơn vị", disabled: true }];
+        let listEducations = [], listPosition = [{ value: "", text: translate('human_resource.not_unit'), disabled: true }];
+
         if (organizationalUnit !== null) {
             listPosition = [];
             organizationalUnit.forEach(u => {
@@ -109,18 +129,22 @@ class ListEducation extends Component {
                 })
             })
         }
+
         if (education.isLoading === false) {
             listEducations = education.listEducations;
         }
-        let pageTotal = (education.totalList % this.state.limit === 0) ?
-            parseInt(education.totalList / this.state.limit) :
-            parseInt((education.totalList / this.state.limit) + 1);
-        let page = parseInt((this.state.page / this.state.limit) + 1);
+
+        let pageTotal = (education.totalList % limit === 0) ?
+            parseInt(education.totalList / limit) :
+            parseInt((education.totalList / limit) + 1);
+        let crurrentPage = parseInt((page / limit) + 1);
+
         return (
             <div className="box">
                 <div className="box-body qlcv">
                     <EducationProgramCreateForm />
                     <div className="form-inline">
+                        {/* Đơn vị */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('human_resource.unit')}</label>
                             <SelectMulti id={`multiSelectUnit`} multiple="multiple"
@@ -130,6 +154,7 @@ class ListEducation extends Component {
                         </div>
                     </div>
                     <div className="form-inline" style={{ marginBottom: 10 }}>
+                        {/* Chức vụ */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('human_resource.position')}</label>
                             <SelectMulti id={`multiSelectPosition`} multiple="multiple"
@@ -137,24 +162,27 @@ class ListEducation extends Component {
                                 items={organizationalUnit === null ? listPosition : listPosition.map((p, i) => { return { value: p._id, text: p.name } })} onChange={this.handlePositionChange}>
                             </SelectMulti>
                         </div>
-                        <button type="button" className="btn btn-success" onClick={this.handleSunmitSearch} title="Tìm kiếm" >Tìm kiếm</button>
+                        {/* button tìm kiếm */}
+                        <button type="button" className="btn btn-success" onClick={this.handleSunmitSearch} >{translate('general.search')}</button>
                     </div>
+
                     <table id="education-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th title="Mã chương trình đào tạo">Mã chương trình</th>
-                                <th title="Tên chương trình đào tạo">Tên chương trình</th>
-                                <th>Áp dụng cho đơn vị</th>
-                                <th>Áp dụng cho chức vụ</th>
-                                <th>Tổng số khoá học</th>
-                                <th style={{ width: '120px' }}>Hành động
-                                <DataTableSetting
+                                <th title={translate('training.education_program.education_program_code')}>{translate('training.education_program.table.program_code')}</th>
+                                <th title={translate('training.education_program.education_program_name')}>{translate('training.education_program.table.program_name')}</th>
+                                <th>{translate('training.education_program.table.apply_for_organizational_units')}</th>
+                                <th>{translate('training.education_program.table.apply_for_positions')}</th>
+                                <th>{translate('training.education_program.table.total_courses')}</th>
+                                <th style={{ width: '120px' }}>{translate('general.action')}
+                                    <DataTableSetting
                                         tableId="education-table"
                                         columnArr={[
-                                            "Mã chương trình",
-                                            "Tên chương trình đào tạo",
-                                            "Áp dụng cho đơn vị",
-                                            "Áp dụng cho chức vụ"
+                                            translate('training.education_program.table.program_code'),
+                                            translate('training.education_program.table.program_name'),
+                                            translate('training.education_program.table.apply_for_organizational_units'),
+                                            translate('training.education_program.table.apply_for_positions'),
+                                            translate('training.education_program.table.total_courses')
                                         ]}
                                         limit={this.state.limit}
                                         setLimit={this.setLimit}
@@ -164,7 +192,7 @@ class ListEducation extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(typeof listEducations !== 'undefined' && listEducations.length !== 0) &&
+                            {listEducations && listEducations.length !== 0 &&
                                 listEducations.map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.programId}</td>
@@ -187,10 +215,10 @@ class ListEducation extends Component {
                                         </td>
                                         <td>{x.totalList}</td>
                                         <td>
-                                            <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title="Thông tin chương trình đào tạo"><i className="material-icons">view_list</i></a>
-                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa chương trình đào tạo"><i className="material-icons">edit</i></a>
+                                            <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title={translate('training.education_program.view_education_program')}><i className="material-icons">view_list</i></a>
+                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('training.education_program.edit_education_program')}><i className="material-icons">edit</i></a>
                                             {Number(x.totalList) === 0 && <DeleteNotification
-                                                content="Xoá chương trình đào tạo"
+                                                content={translate('training.education_program.delete_education_program')}
                                                 data={{
                                                     id: x._id,
                                                     info: x.name + " - " + x.programId
@@ -204,30 +232,31 @@ class ListEducation extends Component {
                     </table>
                     {education.isLoading ?
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                        (typeof listEducations === 'undefined' || listEducations.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                        (!listEducations || listEducations.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
-                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
+                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={crurrentPage} func={this.setPage} />
                 </div>
-                {
-                    currentEditRow !== undefined &&
+
+                {   /* Form chỉnh sửa chương trình đào tạo */
+                    currentEditRow &&
                     <EducationProgramEditForm
-                        _id={this.state.currentEditRow._id}
-                        name={this.state.currentEditRow.name}
-                        programId={this.state.currentEditRow.programId}
-                        organizationalUnit={this.state.currentEditRow.applyForOrganizationalUnits.map(x => x._id)}
-                        position={this.state.currentEditRow.applyForPositions.map(x => x._id)}
-                        totalList={this.state.currentEditRow.totalList}
+                        _id={currentEditRow._id}
+                        name={currentEditRow.name}
+                        programId={currentEditRow.programId}
+                        organizationalUnit={currentEditRow.applyForOrganizationalUnits.map(x => x._id)}
+                        position={currentEditRow.applyForPositions.map(x => x._id)}
+                        totalList={currentEditRow.totalList}
                     />
                 }
-                {
-                    currentViewRow !== undefined &&
+                {   /* Form xem thông tin chương trình đào tạo */
+                    currentViewRow &&
                     <EducationProgramDetailForm
-                        _id={this.state.currentViewRow._id}
-                        name={this.state.currentViewRow.name}
-                        programId={this.state.currentViewRow.programId}
-                        listCourses={this.state.currentViewRow.listCourses}
-                        totalList={this.state.currentViewRow.totalList}
-                        data={this.state.currentViewRow}
+                        _id={currentViewRow._id}
+                        name={currentViewRow.name}
+                        programId={currentViewRow.programId}
+                        listCourses={currentViewRow.listCourses}
+                        totalList={currentViewRow.totalList}
+                        data={currentViewRow}
                     />
                 }
             </div>

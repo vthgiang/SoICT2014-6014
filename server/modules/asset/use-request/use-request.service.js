@@ -5,7 +5,7 @@ const { Asset, UserRole } = require('../../../models').schema;
  * Lấy danh sách phiếu đề nghị cấp thiết bị
  */
 exports.searchRecommendDistributes = async (query, company) => {
-    const { receiptsCode, createReceiptsDate, reqUseStatus, reqUseEmployee, page, limit, managedBy } = query;
+    const { receiptsCode, createReceiptsDate, reqUseStatus, reqUseEmployee, approver, page, limit, managedBy } = query;
     var keySearch = { company: company };
 
     // Bắt sựu kiện mã phiếu tìm kiếm khác ""
@@ -18,12 +18,17 @@ exports.searchRecommendDistributes = async (query, company) => {
         keySearch = { ...keySearch, status: { $in: reqUseStatus } };
     };
 
-    // Thêm key tìm kiếm phiếu theo người đăng ký vào keySearch
+    // Thêm key tìm kiếm theo đăng ký vào keySearch
     if (reqUseEmployee) {
         keySearch = { ...keySearch, proponent: { $in: reqUseEmployee } };
     };
 
-    // Thêm key tìm kiếm phiếu theo ngày lập phiếu vào keySearch
+    // Thêm key tìm kiếm theo người phê duyệt vào keySearch
+    if (approver) {
+        keySearch = { ...keySearch, approver: { $in: approver } };
+    };
+
+    // Thêm key tìm theo ngày lập phiếu vào keySearch
     if (createReceiptsDate) {
         let date = createReceiptsDate.split("-");
         let start = new Date(date[1], date[0] - 1, 1);

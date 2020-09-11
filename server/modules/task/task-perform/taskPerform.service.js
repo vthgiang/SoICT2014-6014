@@ -240,6 +240,8 @@ exports.stopTimesheetLog = async (params, body) => {
         stoppedAt = now
     }
 
+
+    // Lưu vào timeSheetLog
     let duration = stoppedAt - body.startedAt
     let timer = await Task.findOneAndUpdate(
         { "_id": params.taskId, "timesheetLogs._id": body.timesheetLog },
@@ -255,8 +257,8 @@ exports.stopTimesheetLog = async (params, body) => {
     ).populate({ path: "timesheetLogs.creator", select: "name" });
 
 
-    timer.hoursSpentOnTask.totalHoursSpent += duration;
-
+    // Lưu vào hoursSpentOnTask
+    let newTotalHoursSpent = timer.hoursSpentOnTask.totalHoursSpent + duration;
     let contributions = timer.hoursSpentOnTask.contributions;
     let check = true;
     let newContributions = contributions.map(item => {
@@ -275,15 +277,66 @@ exports.stopTimesheetLog = async (params, body) => {
             employee: body.employee,
             hoursSpent: duration,
         }
+        if (!newContributions) {
+            newContributions = []
+        }
         newContributions.push(contributionEmployee)
     }
 
-    timer.hoursSpentOnTask.contributions = newContributions;
+    let newTask = await Task.findOneAndUpdate(
+        { "_id": params.taskId },
+        {
+            $set:
+            {
+                "hoursSpentOnTask.totalHoursSpent": newTotalHoursSpent,
+                "hoursSpentOnTask.contributions": newContributions
+            }
+        },
+    )
+    newTask = await Task.findById(params.taskId)
+        .populate([
+            { path: "parent", select: "name" },
+            { path: "taskTemplate", select: "formula" },
+            { path: "organizationalUnit", model: OrganizationalUnit },
+            { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id active" },
+            { path: "evaluations.results.employee", select: "name email _id active" },
+            { path: "evaluations.results.organizationalUnit", select: "name _id" },
+            { path: "evaluations.results.kpis" },
+            { path: "taskActions.creator", model: User, select: 'name email avatar' },
+            { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
+            { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
+            { path: "taskComments.creator", model: User, select: 'name email avatar' },
+            { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
+            { path: "documents.creator", model: User, select: 'name email avatar' },
+            { path: "followingTasks.task", model: Task, select: 'name' },
+            { path: "preceedingTasks.task", model: Task, select: 'name' },
+            { path: "hoursSpentOnTask.contributions.employee", model: User, select: 'name' },
+            {
+                path: "process", model: TaskProcess, populate: {
+                    path: "tasks", model: Task, populate: [
+                        { path: "parent", select: "name" },
+                        { path: "taskTemplate", select: "formula" },
+                        { path: "organizationalUnit", model: OrganizationalUnit },
+                        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id active" },
+                        { path: "evaluations.results.employee", select: "name email _id active" },
+                        { path: "evaluations.results.organizationalUnit", select: "name _id" },
+                        { path: "evaluations.results.kpis" },
+                        { path: "taskActions.creator", model: User, select: 'name email avatar' },
+                        { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
+                        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
+                        { path: "taskComments.creator", model: User, select: 'name email avatar' },
+                        { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
+                        { path: "documents.creator", model: User, select: 'name email avatar' },
+                        { path: "process", model: TaskProcess },
+                        { path: "commentsInProcess.creator", model: User, select: 'name email avatar' },
+                        { path: "commentsInProcess.comments.creator", model: User, select: 'name email avatar' },
+                    ]
+                }
+            },
+        ]);
+    newTask.evaluations.reverse();
 
-    // Lưu lại thông tin đâ chỉnh sửa
-    timer.save();
-
-    return timer.timesheetLogs;
+    return newTask;
 }
 
 /**
@@ -2139,7 +2192,7 @@ exports.editHoursSpentInEvaluate = async (data, taskId) => {
         }
     }
 
-    let taskUpdate = await Task.findOneAndUpdate(
+    let newTask = await Task.findOneAndUpdate(
         { "_id": taskId, "evaluations._id": evaluateId },
         {
             $set:
@@ -2149,7 +2202,7 @@ exports.editHoursSpentInEvaluate = async (data, taskId) => {
         }
     )
     
-    let newTask = await Task.findById(taskId)
+    newTask = await Task.findById(taskId)
         .populate([
             { path: "parent", select: "name" },
             { path: "taskTemplate", select: "formula" },
