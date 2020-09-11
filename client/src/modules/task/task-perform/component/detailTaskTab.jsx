@@ -736,7 +736,7 @@ class DetailTaskTab extends Component {
                                 {
                                     checkEvaluationTaskAction && checkEvaluationTaskAction.checkEvaluationTaskAction
                                     && <div>
-                                        <strong>{translate('task.task_management.action_not_rating')}:<span style={{ color: "red" }}>{checkEvaluationTaskAction.numberOfTaskActionNotEvaluate}</span></strong>
+                                        <strong>{translate('task.task_management.action_not_rating')}:</strong><span style={{ color: "red" }}>{checkEvaluationTaskAction.numberOfTaskActionNotEvaluate}</span>
                                     </div>
                                 }
 
@@ -744,7 +744,7 @@ class DetailTaskTab extends Component {
                                 {
                                     checkDeadlineForEvaluation && checkDeadlineForEvaluation.checkDeadlineForEvaluation
                                     && <div>
-                                        <strong>{translate('task.task_management.left_can_edit_task')}:<span style={{ color: "red" }}>{checkDeadlineForEvaluation.deadlineForEvaluation}</span></strong>
+                                        <strong>{translate('task.task_management.left_can_edit_task')}:</strong><span style={{ color: "red" }}>{checkDeadlineForEvaluation.deadlineForEvaluation}</span>
                                     </div>
                                 }
                             </div>
