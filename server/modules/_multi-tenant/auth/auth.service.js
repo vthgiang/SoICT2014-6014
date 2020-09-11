@@ -68,6 +68,7 @@ exports.login = async (fingerprint, data) => { // data bao gom email va password
         }
     };
 }
+
 /**
  * Đăng xuất tài khoản người dùng
  * @param {*} id : id người dùng
@@ -82,11 +83,12 @@ exports.logout = async (portal, id) => {
 
     return user;
 }
+
 /**
  * Đăng xuất tất cả tài khoản người dùng
  * @param {*} id : id người dùng
  */
-exports.logoutAllAccount = async (id) => {
+exports.logoutAllAccount = async (portal, id) => {
     var user = await User(connect(DB_CONNECTION, portal))
         .findById(id);
     user.numberDevice = 0;

@@ -40,9 +40,9 @@ if(process.env.MULTI_TENANT === 'true'){
 	router.use('/auth', require('./modules/_multi-tenant/auth/auth.route'));
 
     // router.use('/user', require('./modules/_multi-tenant/super-admin/user/user.route'));
-    // router.use('/role', require('./modules/_multi-tenant/super-admin/role/role.route'));
-    // router.use('/component', require("./modules/_multi-tenant/super-admin/component/component.route"));
-    // router.use('/link', require("./modules/_multi-tenant/super-admin/link/link.route"));
+    router.use('/role', require('./modules/_multi-tenant/super-admin/role/role.route'));
+    router.use('/component', require("./modules/_multi-tenant/super-admin/component/component.route"));
+    router.use('/link', require("./modules/_multi-tenant/super-admin/link/link.route"));
     // router.use('/organizational-units', require("./modules/_multi-tenant/super-admin/organizational-unit/organizationalUnit.route"));
     // router.use('/privilege', require("./modules/_multi-tenant/super-admin/privilege/privilege.route"));
     

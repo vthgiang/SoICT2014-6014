@@ -43,7 +43,7 @@ exports.logout = async (req, res) => {
 
 exports.logoutAllAccount = async (req, res) => {
     try {
-        const logout = await AuthService.logoutAllAccount(req.user._id);
+        const logout = await AuthService.logoutAllAccount(req.portal, req.user._id);
         
         await Logger.info(req.user.email, 'logout_all_success', req.portal);
         res.status(200).json({

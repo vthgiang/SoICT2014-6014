@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const LinkController = require('./link.controller');
-const { auth } = require('../../../../middleware');
+const { auth } = require(`${SERVER_MIDDLEWARE_DIR}/_multi-tenant`);
 
 
 router.get("/links", auth, LinkController.getLinks);
