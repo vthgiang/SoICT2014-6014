@@ -1,4 +1,5 @@
 const { createLogger, format, transports } = require('winston');
+const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 const { combine, timestamp, label, printf } = format;
 const { Company } = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
 
@@ -28,7 +29,9 @@ const Log = (company, content) => {
 module.exports = {
     info: async(user, content, portal) => {
         try {
-            const com = await Company(DB_CONNECTION[process.env.DB_NAME]).findOne({shortName: portal});
+            if(!portal) portal = process.env.DB_NAME;
+            const com = await Company(connect(DB_CONNECTION, process.env.DB_NAME))
+            .findOne({shortName: portal});
             if(com === null){
                 const log = Log(process.env.DB_NAME, content);
                 log.info(user)
@@ -43,7 +46,9 @@ module.exports = {
 
     error: async(user, content, portal) => {
         try {
-            const com = await Company(DB_CONNECTION[process.env.DB_NAME]).findOne({shortName: portal});
+            if(!portal) portal = process.env.DB_NAME;
+            const com = await Company(connect(DB_CONNECTION, process.env.DB_NAME))
+                .findOne({shortName: portal});
             if(com === null){
                 const log = Log(process.env.DB_NAME, content);
                 log.error(user)

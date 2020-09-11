@@ -27,7 +27,7 @@ class HoursSpentOfEmployeeChart extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.refs !== prevState.refs) {
+        if (nextProps.refs !== prevState.refs || nextProps.data !== prevState.data) {
             return {
                 ...prevState,
                 refs: nextProps.refs,

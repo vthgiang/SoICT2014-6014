@@ -15,8 +15,8 @@ const AssetUseRequestSchema = new Schema({
         required: true
     },
     dateCreate: { //ngày lập
-        type: String,
-        defaut: Date.now
+        type: Date,
+        // default: Date.now
     },
     proponent: { //người đề nghị
         type: Schema.Types.ObjectId,
@@ -30,12 +30,12 @@ const AssetUseRequestSchema = new Schema({
         ref: Asset
     },
     dateStartUse: { //thời gian đăng ký sử dụng từ ngày
-        type: String,
-        defaut: Date.now,
+        type: Date,
+        default: Date.now,
     },
     dateEndUse: { //thời gian đăng ký sử dụng đến ngày
-        type: String,
-        defaut: Date.now,
+        type: Date,
+        default: Date.now,
     },
     approver: { //người phê duyệt
         type: Schema.Types.ObjectId,

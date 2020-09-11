@@ -7,14 +7,15 @@ export const RecommendDistributeService = {
 }
 
 // Lấy danh sách phiếu đề nghị mua sắm thiết bị
-function searchRecommendDistributes(data ) {
+function searchRecommendDistributes(data) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/use-request/use-requests`,
+        url: `${process.env.REACT_APP_SERVER}/use-request/use-requests`,
         method: 'GET',
         params: {
-            recommendNumber: data.recommendNumber,
-            month: data.month,
-            status: data.status,
+            receiptsCode: data.receiptsCode,
+            createReceiptsDate: data.createReceiptsDate,
+            reqUseEmployee: data.reqUseEmployee,
+            reqUseStatus: data.reqUseStatus,
             page: data.page,
             limit: data.limit,
             managedBy: data.managedBy
@@ -25,7 +26,7 @@ function searchRecommendDistributes(data ) {
 // Tạo mới thông tin phiếu đề nghị mua sắm thiết bị
 function createRecommendDistribute(data) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/use-request/use-requests`,
+        url: `${process.env.REACT_APP_SERVER}/use-request/use-requests`,
         method: 'POST',
         data: data
     }, true, true, 'asset.recommend_distribute');
@@ -34,7 +35,7 @@ function createRecommendDistribute(data) {
 // Cập nhật thông tin phiếu đề nghị mua sắm thiết bị
 function updateRecommendDistribute(id, data) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/use-request/use-requests/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/use-request/use-requests/${id}`,
         method: 'PUT',
         data: data
     }, true, true, 'asset.recommend_distribute');
@@ -43,7 +44,7 @@ function updateRecommendDistribute(id, data) {
 // Xoá thông tin phiếu đề nghị mua sắm thiết bị
 function deleteRecommendDistribute(id) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/use-request/use-requests/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/use-request/use-requests/${id}`,
         method: 'DELETE',
     }, true, true, 'asset.recommend_distribute');
 }
