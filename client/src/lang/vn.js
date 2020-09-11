@@ -98,7 +98,8 @@ export default {
             wrong5_block: 'Bạn đã nhập sai mật khẩu 5 lần. Tài khoản của bạn đã bị tạm khóa',
             request_forgot_password_success: 'Yêu cầu thay đổi mật khẩu thành công. Hệ thống đã gửi yêu cầu xác nhận thay đổi mật khẩu vào email của bạn',
             reset_password_success: 'Thiết lập mật khẩu thành công',
-            otp_invalid: 'Yêu cầu thiết lập lại mật khẩu không hợp lệ'
+            otp_invalid: 'Yêu cầu thiết lập lại mật khẩu không hợp lệ',
+            portal_invalid: 'Portal không hợp lệ',
         },
 
         system_admin: {
@@ -574,7 +575,7 @@ export default {
             acc_blocked: 'Tài khoản đã bị khóa',
             acc_have_not_role: 'Tài khoản chưa được phân quyền',
             reset_password_success: 'Reset mật khẩu thành công!',
-            reset_password_faile: 'Reset mật khẩu thất bại!'
+            reset_password_faile: 'Reset mật khẩu thất bại!',
         },
 
         confirm: {

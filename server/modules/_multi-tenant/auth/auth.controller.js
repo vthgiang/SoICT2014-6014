@@ -3,7 +3,6 @@ const Logger = require(`${SERVER_LOGS_DIR}/_multi-tenant`);
 
 exports.login = async (req, res) => {
     try {
-        console.log("user-login-request", req.body)
         const loginUser = await AuthService.login(req.header('fingerprint'), req.body);
         await Logger.info(req.body.email, 'login_success', req.body.portal);
         res.status(200).json({
@@ -12,6 +11,7 @@ exports.login = async (req, res) => {
             content: loginUser
         });
     } catch (error) {
+        console.log(error)
         await Logger.error(req.body.email, 'login_faile', req.body.portal);
         res.status(400).json({
             success: false,
@@ -25,14 +25,14 @@ exports.logout = async (req, res) => {
     try {
         const logout = await AuthService.logout(req.portal, req.user._id);
 
-        await LogInfo(req.user.email, 'logout_suscess', req.user.company);
+        await Logger.info(req.user.email, 'logout_suscess', req.portal);
         res.status(200).json({
             success: true,
             messages: ['logout_success'],
             content: logout
         });
     } catch (error) {
-        await LogError(req.user.email, 'logout_faile', req.user.company);
+        await Logger.error(req.user.email, 'logout_faile', req.portal);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['logout_faile'],
@@ -45,7 +45,7 @@ exports.logoutAllAccount = async (req, res) => {
     try {
         const logout = await AuthService.logoutAllAccount(req.user._id);
         
-        await LogInfo(req.user.email, 'LOG_OUT_ALL_ACCOUNT', req.user.company);
+        await Logger.info(req.user.email, 'logout_all_success', req.portal);
         res.status(200).json({
             success: true,
             messages: ['logout_all_success'],
@@ -53,7 +53,7 @@ exports.logoutAllAccount = async (req, res) => {
         });
     } catch (error) {
 
-        await LogError(req.user.email, 'LOG_OUT_ALL_ACCOUNT', req.user.company);
+        await Logger.error(req.user.email, 'logout_all_faile', req.portal);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['logout_all_faile'],
@@ -64,9 +64,10 @@ exports.logoutAllAccount = async (req, res) => {
 
 exports.forgetPassword = async (req, res) => {
     try {
-        const forgetPassword = await AuthService.forgetPassword(req.body.email);
+        const { portal, email } = req.body;
+        const forgetPassword = await AuthService.forgetPassword(portal, email);
 
-        await LogInfo(req.body.email, 'FORGET_PASSWORD');
+        await Logger.info(req.body.email, 'request_forgot_password_success');
         res.status(200).json({
             success: true,
             messages: ['request_forgot_password_success'],
@@ -74,7 +75,7 @@ exports.forgetPassword = async (req, res) => {
         });
     } catch (error) {
 
-        await LogError(req.body.email, 'FORGET_PASSWORD');
+        await Logger.error(req.body.email, 'request_forgot_password_faile');
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['request_forgot_password_faile'],
@@ -85,9 +86,9 @@ exports.forgetPassword = async (req, res) => {
 
 exports.resetPassword = async (req, res) => {
     try {
-        const resetPassword = await AuthService.resetPassword(req.body.otp, req.body.email, req.body.password);
+        const resetPassword = await AuthService.resetPassword(req.portal, req.body.otp, req.body.email, req.body.password);
 
-        await LogInfo(req.body.email, 'RESET_PASSWORD');
+        await Logger.info(req.body.email, 'reset_password_success');
         res.status(200).json({
             success: true,
             messages: ['reset_password_success'],
@@ -95,7 +96,7 @@ exports.resetPassword = async (req, res) => {
         });
     } catch (error) {
 
-        await LogError(req.body.email, 'RESET_PASSWORD');
+        await Logger.error(req.body.email, 'reset_password_faile');
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['reset_password_faile'],
@@ -113,9 +114,9 @@ exports.changeInformation = async (req, res) => {
             avatar = path.substr(1, path.length)
             console.log("file: ", req.files)
         }
-        const profile = await AuthService.changeInformation(req.params.id, req.body.name, req.body.email, avatar);
+        const profile = await AuthService.changeInformation(req.portal, req.params.id, req.body.name, req.body.email, avatar);
 
-        await LogInfo(req.user.email, 'CHANGE_USER_INFORMATION', req.user.company);
+        await Logger.info(req.user.email, 'change_user_information_success', req.portal);
         res.status(200).json({
             success: true,
             messages: ['change_user_information_success'],
@@ -123,7 +124,7 @@ exports.changeInformation = async (req, res) => {
         });
     } catch (error) {
 
-        await LogError(req.user.email,'CHANGE_USER_INFORMATION', req.user.company);
+        await Logger.error(req.user.email, 'change_user_information_faile', req.portal);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['change_user_information_faile'],
@@ -134,9 +135,9 @@ exports.changeInformation = async (req, res) => {
 
 exports.changePassword = async (req, res) => {
     try {
-        const user = await AuthService.changePassword(req.params.id, req.body.password, req.body.new_password);
+        const user = await AuthService.changePassword(req.portal, req.params.id, req.body.password, req.body.new_password);
 
-        await LogInfo(req.user.email, 'CHANGE_USER_PASSWORD', req.user.company);
+        await Logger.info(req.user.email, 'change_user_password_success', req.portal);
         res.status(200).json({
             success: true,
             messages: ['change_user_password_success'],
@@ -144,7 +145,7 @@ exports.changePassword = async (req, res) => {
         });
     } catch (error) {
 
-        await LogError(req.user.email,'CHANGE_USER_PASSWORD', req.user.company);
+        await Logger.error(req.user.email, 'change_user_password_faile', req.portal);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['change_user_password_faile'],
@@ -155,9 +156,9 @@ exports.changePassword = async (req, res) => {
 
 exports.getLinksThatRoleCanAccess = async (req, res) => {
     try {
-        const data = await AuthService.getLinksThatRoleCanAccess(req.params.id);
+        const data = await AuthService.getLinksThatRoleCanAccess(req.portal, req.params.id);
 
-        await LogInfo(req.user.email,'GET_LINKS_OF_ROLE', req.user.company);
+        await Logger.info(req.user.email, 'get_links_of_role_success', req.portal);
         res.status(200).json({
             success: true,
             messages: ['get_links_of_role_success'],
@@ -165,7 +166,7 @@ exports.getLinksThatRoleCanAccess = async (req, res) => {
         });
     } catch (error) {
 
-        await LogError(req.user.email,'GET_LINKS_OF_ROLE', req.user.company);
+        await Logger.error(req.user.email, 'get_links_of_role_faile', req.portal);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['get_links_of_role_faile'],
@@ -176,9 +177,9 @@ exports.getLinksThatRoleCanAccess = async (req, res) => {
 
 exports.getProfile = async (req, res) => {
     try {
-        const profile = await AuthService.getProfile(req.params.id);
+        const profile = await AuthService.getProfile(req.portal, req.params.id);
 
-        await LogInfo(req.user.email, 'GET_PROFILE', req.user.company);
+        await Logger.info(req.user.email, 'show_profile_success', req.portal);
         res.status(200).json({
             success: true,
             messages: ['show_profile_success'],
@@ -186,7 +187,7 @@ exports.getProfile = async (req, res) => {
         });
     } catch (error) {
 
-        await LogError(req.user.email, 'GET_PROFILE');
+        await Logger.info(req.user.email, 'show_profile_faile', req.portal);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['show_profile_faile'],

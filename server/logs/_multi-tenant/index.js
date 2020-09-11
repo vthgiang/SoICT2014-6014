@@ -29,6 +29,7 @@ const Log = (company, content) => {
 module.exports = {
     info: async(user, content, portal) => {
         try {
+            if(!portal) portal = process.env.DB_NAME;
             const com = await Company(connect(DB_CONNECTION, process.env.DB_NAME))
             .findOne({shortName: portal});
             if(com === null){
@@ -45,8 +46,9 @@ module.exports = {
 
     error: async(user, content, portal) => {
         try {
+            if(!portal) portal = process.env.DB_NAME;
             const com = await Company(connect(DB_CONNECTION, process.env.DB_NAME))
-            .findOne({shortName: portal});
+                .findOne({shortName: portal});
             if(com === null){
                 const log = Log(process.env.DB_NAME, content);
                 log.error(user)

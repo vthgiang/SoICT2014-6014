@@ -8,6 +8,8 @@ require("dotenv").config();
 require('./connectDatabase');
 require('./global');
 
+if(process.env.MULTI_TENANT) console.log(`Running app Multi-Tenant [${process.env.MULTI_TENANT}]`);
+
 // Application Modules
 const schedulerController = require("./modules/scheduler/scheduler.controller");
 

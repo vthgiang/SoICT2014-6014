@@ -62,7 +62,7 @@ class Login extends Component {
                                 <span className="glyphicon glyphicon-lock form-control-feedback" />
                             </div>
                             <div className="form-group has-feedback">
-                                <input name="portal" onChange={this.handleChange} type="text" className="form-control" placeholder="portal"/>
+                                <input name="portal" onChange={this.handleChange} type="text" className="form-control" placeholder="Portal"/>
                                 <span className="glyphicon glyphicon-hdd form-control-feedback" />
                             </div>
                             <div className="row">
