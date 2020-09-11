@@ -179,8 +179,14 @@ function stopTimerTask(taskId, newTimer) {
         performTaskService.stopTimerTask(taskId, newTimer)
             .then(
                 payload => {
-                    dispatch({ type: performTaskConstants.STOP_TIMER_SUCCESS, payload })
-                    dispatch({ type: taskManagementConstants.EDIT_TASK_SUCCESS, payload })
+                    dispatch({
+                        type: performTaskConstants.STOP_TIMER_SUCCESS,
+                        payload: payload.data.content
+                    })
+                    dispatch({
+                        type: taskManagementConstants.EDIT_TASK_SUCCESS,
+                        payload: payload.data.content
+                    })
                 },
                 error => {
                     dispatch({ type: performTaskConstants.STOP_TIMER_FAILURE, error });
