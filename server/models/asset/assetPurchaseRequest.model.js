@@ -14,8 +14,7 @@ const AssetPurchaseRequestSchema = new Schema({
         required: true
     },
     dateCreate: { //ngày lập
-        type: String,
-        defaut: Date.now
+        type: Date,
     },
     proponent: { //người đề nghị
         type: Schema.Types.ObjectId,
@@ -54,7 +53,7 @@ const AssetPurchaseRequestSchema = new Schema({
         type: Date,
         default: Date.now
     }
-    
+
 });
 
 module.exports = AssetPurchaseRequest = mongoose.model("asset_purchase_requests", AssetPurchaseRequestSchema);
