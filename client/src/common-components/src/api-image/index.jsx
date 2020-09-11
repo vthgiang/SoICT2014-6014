@@ -75,7 +75,7 @@ class ApiImage extends Component {
 
 
     render() {
-        const { className, style, alt="File not available"} = this.props;
+        const { className, style={cursor: "pointer"}, alt="File not available"} = this.props;
 
         let { image } = this.state;
 
