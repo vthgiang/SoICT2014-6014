@@ -30,7 +30,6 @@ class TasksIsNotLinked extends Component {
 
         if (taskList) {
             let inprocessTask = taskList.filter(task => task.status === "Inprocess")
-            console.log('tasklist', inprocessTask);
             let distinctTasks = [];
             for (let i in inprocessTask) {
                 let check = false;

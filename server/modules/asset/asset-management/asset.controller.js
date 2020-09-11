@@ -31,6 +31,7 @@ exports.searchAssetProfiles = async (req, res) => {
                 limit: Number(req.query.limit),
                 managedBy: req.query.managedBy,
                 currentRole: req.query.currentRole,
+
                 startDepreciation: req.query.startDepreciation,
                 depreciationType: req.query.depreciationType,
 
@@ -38,6 +39,10 @@ exports.searchAssetProfiles = async (req, res) => {
                 maintainCreateDate: req.query.maintainCreateDate,
                 maintainStatus: req.query.maintainStatus,
                 maintainType: req.query.maintainType,
+
+                incidentCode: req.query.incidentCode,
+                incidentStatus: req.query.incidentStatus,
+                incidentType: req.query.incidentType,
             }
             data = await AssetService.searchAssetProfiles(params, req.user.company._id);
 

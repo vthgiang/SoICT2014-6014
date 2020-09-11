@@ -82,6 +82,18 @@ div.qlcv > .form-inline > div.react-dropdown-tree-select, div.qlcv > .form-inlin
 
 
 
+/* Ghi đè todolist của AdminLTE */
+.todo-list > li {
+    border: 1px solid #f4f4f4;
+    background: none;
+}
+.todo-list .handle {
+    cursor: none;
+}
+
+
+
+
 /* Css cho Link */
 a {
     color: #385898;
@@ -111,12 +123,11 @@ a:hover, a:active, a:focus {
 .c3-tooltip .value {
     width: 30%;
 }
-
-
 text.c3-axis-x-label, text.c3-axis-y-label {
     font-weight: bold;
     font-size: 120%
 }
+
 
 
 /*
@@ -275,7 +286,7 @@ legend.legend-box-info {
     box-shadow: none;
     border: 1px solid #f4f4f4;
     padding: 5px 0 10px 10px;
-    line-height: 2.2;
+    line-height: 2.3;
     margin-top: 10px;
     margin-bottom: 10px;
 }
@@ -290,6 +301,7 @@ legend.legend-box-info {
 
 .description-box strong {
     font-weight: 600;
+    padding-right: 10px;
 }
 
 

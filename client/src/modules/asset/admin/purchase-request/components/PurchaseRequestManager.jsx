@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti,ExportExcel } from '../../../../../common-components';
+import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti, ExportExcel } from '../../../../../common-components';
 
 import { RecommendProcureActions } from '../../../user/purchase-request/redux/actions';
 import { UserActions } from "../../../../super-admin/user/redux/actions";
@@ -100,7 +100,23 @@ class PurchaseRequestManager extends Component {
     handleMonthChange = (value) => {
         this.setState({
             ...this.state,
-            month: value
+            proposalDate: value
+        });
+    }
+
+    // Function lưu người đề nghị vào state khi thay đổi
+    handleProposalEmployeeChange = (value) => {
+        this.setState({
+            ...this.state,
+            proponent: value
+        });
+    }
+
+    // Function lưu giá trị tháng vào state khi thay đổi
+    handleApproverChange = (value) => {
+        this.setState({
+            ...this.state,
+            approver: value
         });
     }
 
@@ -120,6 +136,7 @@ class PurchaseRequestManager extends Component {
     handleSubmitSearch = async () => {
         await this.setState({
             ...this.state,
+            page: 0
         })
 
         this.props.searchRecommendProcures(this.state);
@@ -146,34 +163,34 @@ class PurchaseRequestManager extends Component {
     /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
     convertDataToExportData = (data) => {
         let fileName = "Bảng quản lý đề nghị mua sắm tài sản ";
-        if (data) {           
-            data = data.map((x, index) => {     
+        if (data) {
+            data = data.map((x, index) => {
 
-                let code =x.recommendNumber;              
-                let equipment =x.equipment;
-                let assigner =(x.proponent) ? x.proponent.email : 'Không tìm thấy người đề nghị'
+                let code = x.recommendNumber;
+                let equipment = x.equipment;
+                let assigner = (x.proponent) ? x.proponent.email : 'Không tìm thấy người đề nghị'
                 let createDate = x.dateCreate;
-                let note =x.note;
-                let supplier =x.supplier;
-                let amount =x.total;
+                let note = x.note;
+                let supplier = x.supplier;
+                let amount = x.total;
                 let cost = parseInt(x.estimatePrice);
-                let status = x.status; 
-                let approver =(x.approver)?x.approver.email: "";
+                let status = x.status;
+                let approver = (x.approver) ? x.approver.email : "";
 
-                return  {
-                    index : index+1,
-                    code : code,
-                    createDate:createDate,                    
-                    assigner:assigner,
-                    note:note,
-                    supplier:supplier,
-                    amount:amount,
-                    cost:cost,
-                    status:status,
-                    equipment:equipment,
-                    approver:approver
+                return {
+                    index: index + 1,
+                    code: code,
+                    createDate: createDate,
+                    assigner: assigner,
+                    note: note,
+                    supplier: supplier,
+                    amount: amount,
+                    cost: cost,
+                    status: status,
+                    equipment: equipment,
+                    approver: approver
                 }
-                
+
             })
         }
 
@@ -182,21 +199,21 @@ class PurchaseRequestManager extends Component {
             dataSheets: [
                 {
                     sheetName: "sheet1",
-                    sheetTitle : fileName,
+                    sheetTitle: fileName,
                     tables: [
                         {
                             rowHeader: 2,
                             columns: [
                                 { key: "index", value: "STT" },
                                 { key: "code", value: "Mã phiếu" },
-                                { key: "assigner", value:" Người đăng kí"},
+                                { key: "assigner", value: " Người đăng kí" },
                                 { key: "approver", value: "Người phê duyệt" },
-                                { key: "createDate", value: "Ngày tạo" },                                
+                                { key: "createDate", value: "Ngày tạo" },
                                 { key: "equipment", value: "Thiết bị đề nghị mua sắm" },
                                 { key: "note", value: "Ghi chú" },
                                 { key: "amount", value: "Số lượng" },
-                                { key: "cost", value: "Đơn giá" }, 
-                                { key: "supplier", value: "Nhà cung cấp" },                             
+                                { key: "cost", value: "Đơn giá" },
+                                { key: "supplier", value: "Nhà cung cấp" },
                                 { key: "status", value: "Trạng thái" },
                             ],
                             data: data
@@ -205,18 +222,32 @@ class PurchaseRequestManager extends Component {
                 },
             ]
         }
-        return exportData;        
-       
+        return exportData;
+
+    }
+
+    getUserId = () => {
+        let { user } = this.props;
+        let listUser = user && user.list;
+        let userArr = [];
+        listUser.map(x => {
+            userArr.push({
+                value: x._id,
+                text: x.name
+            })
+        })
+
+        return userArr;
     }
 
     render() {
         const { translate, recommendProcure } = this.props;
         const { page, limit, currentRowView, currentRow } = this.state;
 
-        var listRecommendProcures = "",exportData;
+        var listRecommendProcures = "", exportData;
         if (recommendProcure.isLoading === false) {
             listRecommendProcures = recommendProcure.listRecommendProcures;
-            exportData=this.convertDataToExportData(listRecommendProcures)
+            exportData = this.convertDataToExportData(listRecommendProcures)
         }
 
         var pageTotal = ((recommendProcure.totalList % limit) === 0) ?
@@ -224,6 +255,7 @@ class PurchaseRequestManager extends Component {
             parseInt((recommendProcure.totalList / limit) + 1);
 
         var currentPage = parseInt((page / limit) + 1);
+        let userIdArr = this.getUserId();
 
         return (
             <div className="box" >
@@ -239,17 +271,46 @@ class PurchaseRequestManager extends Component {
 
                         {/* Tháng */}
                         <div className="form-group">
-                            <label className="form-control-static">{translate('page.month')}</label>
+                            <label className="form-control-static">Ngày lập phiếu</label>
                             <DatePicker
                                 id="month"
                                 dateFormat="month-year"
-                                value={this.formatDate(Date.now())}
+                                // value={this.formatDate(Date.now())}
                                 onChange={this.handleMonthChange}
                             />
 
                         </div>
                     </div>
+                    <div className="form-inline">
 
+                        {/* Người đề nghị */}
+                        <div className="form-group">
+                            <label>Người đề nghị</label>
+                            <SelectMulti
+                                id={`handleProposalEmployeeChange`}
+                                multiple="multiple"
+                                options={{ nonSelectedText: "Chọn người đề nghị", allSelectedText: "Chọn tất cả" }}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={userIdArr}
+                                onChange={this.handleProposalEmployeeChange}
+                            />
+                        </div>
+
+                        {/* Người phê duyệt */}
+                        <div className="form-group">
+                            <label>Người phê duyệt</label>
+                            <SelectMulti
+                                id={`handleApproverChange`}
+                                multiple="multiple"
+                                options={{ nonSelectedText: "Chọn người phê duyệt", allSelectedText: "Chọn tất cả" }}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={userIdArr}
+                                onChange={this.handleApproverChange}
+                            />
+                        </div>
+                    </div>
                     <div className="form-inline" style={{ marginBottom: 10 }}>
                         {/* Trạng thái */}
                         <div className="form-group">
@@ -271,7 +332,7 @@ class PurchaseRequestManager extends Component {
                             <label></label>
                             <button type="button" className="btn btn-success" title={translate('page.add_search')} onClick={() => this.handleSubmitSearch()} >{translate('page.add_search')}</button>
                         </div>
-                        {exportData&&<ExportExcel id="export-asset-incident-management" exportData={exportData} style={{ marginRight:10 }} />}
+                        {exportData && <ExportExcel id="export-asset-incident-management" exportData={exportData} style={{ marginRight: 10 }} />}
                     </div>
 
                     {/* Bảng phiếu đăng ký mua sắm tài sản */}
@@ -309,7 +370,7 @@ class PurchaseRequestManager extends Component {
                                 listRecommendProcures.map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.recommendNumber}</td>
-                                        <td>{x.dateCreate}</td>
+                                        <td>{this.formatDate2(x.dateCreate)}</td>
                                         <td>{x.proponent ? x.proponent.name : 'User is deleted'}</td>
                                         <td>{x.equipment}</td>
                                         <td>{x.approver ? x.approver.name : 'User is deleted'}</td>

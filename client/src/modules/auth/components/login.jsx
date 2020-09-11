@@ -10,19 +10,13 @@ class Login extends Component {
         super(props);
 
         this.state = {
-            email: null,
-            password: null,
             emailForgot: null,
             newPassword: null,
             confirmNewPassword: null
         };
-
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.forgotPassword = this.forgotPassword.bind(this);
     }
 
-    handleChange(e) {
+    handleChange = (e) => {
         const target = e.target;
         const name = target.name;
         const value = target.value;
@@ -31,14 +25,12 @@ class Login extends Component {
         });
     }
 
-    handleSubmit(e) {
-        e.preventDefault();
-        let { email, password } = this.state;
-        let user = { email, password };
-		this.props.login(user);
+    handleSubmit = () => {
+        let { email, password, portal } = this.state;
+		this.props.login({ email, password, portal});
     }
 
-    forgotPassword(){
+    forgotPassword = () => {
         const { emailForgot } = this.state;
         this.props.forgotPassword(emailForgot);
     }
@@ -50,7 +42,7 @@ class Login extends Component {
             <div className="hold-transition login-page" style={{ minHeight: '100vh' }}>
                 <div className="login-box" style={{ marginTop: 0, marginBottom: 0, paddingTop: '7vh' }}>
                     <div className="login-logo">
-                        <a href="/"><b>VNIST</b>-Việc</a>
+                        <a href="/"><b>VNIST</b>-QLDN</a>
                     </div>
                     {
                         auth.error &&
@@ -60,14 +52,18 @@ class Login extends Component {
                         </div>
                     }
                     <div className="login-box-body">
-                        <form onSubmit={this.handleSubmit}> 
+                        <form> 
                             <div className="form-group has-feedback">
                                 <input name="email" onChange={this.handleChange} type="email" className="form-control" placeholder={ translate('form.email') } required/>
                                 <span className="glyphicon glyphicon-envelope form-control-feedback" />
                             </div>
                             <div className="form-group has-feedback">
-                            <input name="password" onChange={this.handleChange} type="password" className="form-control" placeholder={ translate('form.password') } required/>
+                                <input name="password" onChange={this.handleChange} type="password" className="form-control" placeholder={ translate('form.password') } required/>
                                 <span className="glyphicon glyphicon-lock form-control-feedback" />
+                            </div>
+                            <div className="form-group has-feedback">
+                                <input name="portal" onChange={this.handleChange} type="text" className="form-control" placeholder="Portal"/>
+                                <span className="glyphicon glyphicon-hdd form-control-feedback" />
                             </div>
                             <div className="row">
                                 <div className="col-xs-8">
@@ -75,7 +71,7 @@ class Login extends Component {
                                     <ForgotPassword />
                                 </div>
                                 <div className="col-xs-4">
-                                    <button className="btn btn-primary btn-block btn-flat">{ translate('form.signin') }</button>
+                                    <button type="button" className="btn btn-primary btn-block btn-flat" onClick={this.handleSubmit}>{ translate('form.signin') }</button>
                                 </div>
                             </div>
                         </form>

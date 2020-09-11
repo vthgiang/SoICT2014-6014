@@ -44,7 +44,6 @@ class TasksSchedule extends Component {
 
   }
 
-
   handleSelectStatus = async (taskStatus) => {
     if (taskStatus.length === 0) {
       taskStatus = ["Inprocess"];
@@ -302,6 +301,7 @@ class TasksSchedule extends Component {
 
   getTaskGroups() {
     const { tasks, translate } = this.props;
+    console.log('tasks', tasks);
     let { taskStatus } = this.state;
     var taskList1, tasksByStatus1;
     let groupName = [], distinctGroupName = [], id = [], distinctId = [];
@@ -513,7 +513,7 @@ class TasksSchedule extends Component {
     const { tasks, translate } = this.props;
     const { TaskOrganizationUnitDashboard } = this.props;
     const { defaultTimeStart, defaultTimeEnd, taskStatus } = this.state;
-
+    console.log('render');
     let task = tasks && tasks.task;
     let today = new Date();
 
@@ -620,6 +620,8 @@ const actions = {
   getInformedTaskByUser: taskManagementActions.getInformedTaskByUser,
   getTaskById: performTaskAction.getTaskById,
   getTaskInOrganizationUnitByMonth: taskManagementActions.getTaskInOrganizationUnitByMonth,
+  getPaginateTasksByUser: taskManagementActions.getPaginateTasksByUser,
+
 }
 const connectedSchedule = connect(mapState, actions)(withTranslate(TasksSchedule))
 export { connectedSchedule as TasksSchedule }
