@@ -280,7 +280,7 @@ class DetailTaskTab extends Component {
                 checkConfirmCurrentUser = true
             };
         }
-        
+
         if (listEmployeeNotConfirm.length !== 0) {
             checkConfirmOtherUser = true;
         }
@@ -586,7 +586,7 @@ class DetailTaskTab extends Component {
             task.evaluations.map(item => {
                 if (item.results && item.results.length !== 0) {
                     hoursSpentOfEmployeeInEvaluation[item.date] = {};
-                    
+
                     item.results.map(result => {
                         if (!hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name]) {
                             if (result.hoursSpent) {
@@ -601,7 +601,7 @@ class DetailTaskTab extends Component {
                 }
             })
         }
-        
+
         return (
             <React.Fragment>
                 {(showToolbar) &&
@@ -678,14 +678,18 @@ class DetailTaskTab extends Component {
                         {
                             task && warning &&
                             <div className="description-box" style={{ border: "3px double #e8cbcb" }}>
+                                {statusTask === "Inprocess" && checkInactive && codeInProcess && (currentRole === "accountable" || (currentRole === "responsible" && checkHasAccountable === false)) &&
+                                    <h4 style={{ cursor: "pointer", marginRight: "5px", color: "green" }} className={'pull-right'} onClick={() => this.handleEndTask(id, "Inprocess", codeInProcess, typeOfTask)} title={`${translate('task.task_perform.activated_task')} ${translate('task.task_perform.following_task')}`} >
+                                        <i className="fa fa-rocket"></i>
+                                    </h4>
+                                }
                                 <h4>{translate('task.task_management.warning')}</h4>
+
 
                                 {/* Kích hoạt công việc phía sau trong quy trình */}
                                 {statusTask === "Inprocess" && checkInactive && codeInProcess && (currentRole === "accountable" || (currentRole === "responsible" && checkHasAccountable === false)) &&
                                     <div>
-                                        <strong>{translate('task.task_perform.is_task_process')}.
-                                            <a style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => this.handleEndTask(id, "Inprocess", codeInProcess, typeOfTask)}> {translate('task.task_perform.activated_task')}</a> {translate('task.task_perform.following_task')}
-                                        </strong>
+                                        <strong>{translate('task.task_perform.is_task_process')}.</strong>
                                     </div>
                                 }
 
@@ -789,7 +793,7 @@ class DetailTaskTab extends Component {
                                     <div className="row row-equal-height">
                                         <div className="col-sm-6">
                                             <h4>{translate('task.task_management.role')}</h4>
-                                        
+
                                             {/* Người thực hiện */}
                                             <strong>{translate('task.task_management.responsible')}: </strong>
                                             &nbsp;&nbsp;
@@ -873,13 +877,13 @@ class DetailTaskTab extends Component {
                                         </div>
 
                                         <div className="col-sm-6">
-                                        {
-                                            hoursSpentOfEmployeeInTask && JSON.stringify(hoursSpentOfEmployeeInTask) !== '{}'
-                                            && <HoursSpentOfEmployeeChart
-                                                refs="totalTime"
-                                                data={hoursSpentOfEmployeeInTask}
-                                            />
-                                        }
+                                            {
+                                                hoursSpentOfEmployeeInTask && JSON.stringify(hoursSpentOfEmployeeInTask) !== '{}'
+                                                && <HoursSpentOfEmployeeChart
+                                                    refs="totalTime"
+                                                    data={hoursSpentOfEmployeeInTask}
+                                                />
+                                            }
                                         </div>
                                     </div>
                                 </div>

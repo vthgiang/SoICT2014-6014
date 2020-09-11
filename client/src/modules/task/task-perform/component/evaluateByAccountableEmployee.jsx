@@ -627,26 +627,42 @@ class EvaluateByAccountableEmployee extends Component {
     validateSumContribute = () => {
         let { translate } = this.props;
         let msg = undefined;
-        let sum = this.calcSumContribution();
-        if (sum > 100) {
+        let res = this.calcSumContribution();
+        console.log('res', res);
+        if (res.sum > 100) {
             msg = translate('task.task_perform.modal_approve_task.err_contribute');
+        }
+        else if (res.checkAllEvalContribution && res.sum < 100) {
+            msg = translate('task.task_perform.modal_approve_task.err_not_enough_contribute');
+            // msg = "ko đủ 100 %"
         }
         return msg;
     }
 
     // hàm tính tổng phần trăm đóng góp hiện tại ->> để validate
     calcSumContribution = () => {
-        let { results } = this.state;
+        let { results, task } = this.state;
         let sum = 0;
+        let numOfContributor = 0;
+        let checkAllEvalContribution = false;
+
+        let numOfMember = 0;
+        numOfMember = task.accountableEmployees.length + task.responsibleEmployees.length + task.consultedEmployees.length;
+
         for (let i in results) {
             if (results[i].target === "Contribution") {
                 if (results[i].value) {
                     sum = sum + results[i].value;
+                    numOfContributor = numOfContributor + 1;
                 }
             }
         }
 
-        return sum;
+        if (numOfContributor === numOfMember) {
+            checkAllEvalContribution = true;
+        }
+
+        return { sum, checkAllEvalContribution };
     }
 
     // begin: các hàm cập nhật đóng góp và điểm phê duyệt
