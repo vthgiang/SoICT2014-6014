@@ -24,6 +24,10 @@ class ApiImage extends Component {
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
+        let numberImage = 1;
+        if(nextProps.numberImage && nextProps.numberImage !== 0){
+            numberImage = nextProps.numberImage;
+        }
         if (nextProps.src && nextProps.src.search(';base64,') < 0 && !nextProps.auth.isLoading && this.state.dataStatus === this.DATA_STATUS.NOT_AVAILABLE) {
             await this.props.downloadFile(nextProps.src, `avatar_${nextProps.id}`, false);
             this.setState({
@@ -37,7 +41,7 @@ class ApiImage extends Component {
             });
             return false;
         };
-        if (this.state.dataStatus === this.DATA_STATUS.AVAILABLE && !nextProps.auth.isLoading && nextProps.auth.numberFile > this.state.count) {
+        if (this.state.dataStatus === this.DATA_STATUS.AVAILABLE && !nextProps.auth.isLoading && nextProps.auth.numberFile >= this.state.count+numberImage) {
             let img = nextProps.auth.showFiles.find(x => x.fileName === `avatar_${nextProps.id}`);
             this.setState({
                 dataStatus: this.DATA_STATUS.FINISHED,

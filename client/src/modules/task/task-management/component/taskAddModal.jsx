@@ -40,7 +40,8 @@ class TaskAddModal extends Component {
         this.props.getTaskTemplateByUser("1", "0", "[]"); //pageNumber, noResultsPerPage, arrayUnit, name=""
         // Lấy tất cả nhân viên trong công ty
         this.props.getAllUserOfCompany();
-        this.props.getAllUserInAllUnitsOfCompany()
+        this.props.getAllUserInAllUnitsOfCompany();
+        this.props.getPaginateTasksByUser("[]", "1", "5", "[]", "[]", "[]", null, null, null, null, null, false, "listSearch");
     }
 
     handleSubmit = async (event) => {
@@ -223,13 +224,36 @@ class TaskAddModal extends Component {
     }
 
 
-    handleChangeTaskParent = (event) => {
-        let value = event.target.value;
-        this.state.newTask.parent = value;
-        this.setState(state => {
+    handleSelectedParent = async (value) => {
+        let val = value[0];
+        
+        await this.setState(state => {
+            state.newTask.parent = val;
             return {
                 ...state,
-            };
+            }
+        })
+    }
+
+    // handleChangeTaskParent = (event) => {
+    //     let value = event.target.value;
+    //     this.state.newTask.parent = value;
+    //     this.setState(state => {
+    //         return {
+    //             ...state,
+    //         };
+    //     });
+    // }
+
+    onSearch = async (txt) => {
+
+        await this.props.getPaginateTasksByUser("[]", "1", "5", "[]", "[]", "[]", txt, null, null, null, null, false, "listSearch");
+
+        this.setState(state=>{
+            state.newTask.parent = "";
+            return {
+                ...state,
+            }
         });
     }
 
@@ -323,7 +347,7 @@ class TaskAddModal extends Component {
             if (defaultUnit) {
                 this.props.getChildrenOfOrganizationalUnits(defaultUnit._id);
             }
-            
+
             this.setState(state => { // Khởi tạo giá trị cho organizationalUnit của newTask
                 return {
                     ...state,
@@ -342,7 +366,7 @@ class TaskAddModal extends Component {
 
     render() {
         const { newTask } = this.state;
-        const { tasktemplates, user, KPIPersonalManager, translate } = this.props;
+        const { tasktemplates, user, KPIPersonalManager, translate, tasks } = this.props;
 
         let units, userdepartments, listTaskTemplate, listKPIPersonal, usercompanys;
 
@@ -375,6 +399,13 @@ class TaskAddModal extends Component {
         let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
 
         if (KPIPersonalManager.kpipersonals) listKPIPersonal = KPIPersonalManager.kpipersonals;
+
+        let listParentTask = [{ value: "", text: `--${translate('task.task_management.add_parent_task')}--` }];
+        
+        if (tasks.listSearchTasks) {
+            let arr = tasks.listSearchTasks.map(x => { return { value: x._id, text: x.name } });
+            listParentTask = [...listParentTask, ...arr];
+        }
 
         return (
             <React.Fragment>
@@ -457,7 +488,7 @@ class TaskAddModal extends Component {
                                 </select>
                             </div>
 
-                            <div className="form-group">
+                            {/* <div className="form-group">
                                 <label className="control-label">{translate('task.task_management.add_parent_task')}</label>
                                 <select className="form-control" value={newTask.parent} onChange={this.handleChangeTaskParent}>
                                     <option value="">--{translate('task.task_management.add_parent_task')}--</option>
@@ -466,7 +497,22 @@ class TaskAddModal extends Component {
                                             return <option key={item._id} value={item._id}>{item.name}</option>
                                         })}
                                 </select>
+                            </div> */}
+
+                            <div className="form-group">
+                                <label>{translate('task.task_management.add_parent_task')}</label>
+                                <SelectBox
+                                    id={`select-parent-new-task`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={listParentTask}
+                                    multiple={false}
+                                    value={newTask.parent}
+                                    onChange={this.handleSelectedParent}
+                                    onSearch={this.onSearch}
+                                />
                             </div>
+
                         </fieldset>
                     </div>
 
@@ -560,7 +606,8 @@ const actionCreators = {
     getAllUserOfCompany: UserActions.getAllUserOfCompany,
     getAllKPIPersonalByUserID: managerKpiActions.getAllKPIPersonalByUserID,
     getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
-    getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany
+    getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
+    getPaginateTasksByUser: taskManagementActions.getPaginateTasksByUser,
 };
 
 const connectedModalAddTask = connect(mapState, actionCreators)(withTranslate(TaskAddModal));

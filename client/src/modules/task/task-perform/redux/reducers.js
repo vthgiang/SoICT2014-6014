@@ -618,7 +618,6 @@ export function performtasks(state = {}, action) {
                 adding: true
             }
         case performTaskConstants.CREATE_COMMENT_SUCCESS:
-            console.log(action.payload)
             return {
                 ...state,
                 task: action.payload
@@ -633,10 +632,9 @@ export function performtasks(state = {}, action) {
                 adding: true
             }
         case performTaskConstants.CREATE_COMMENT_OF_COMMENT_SUCCESS:
-            var comment = { ...state.task, commentsInProcess: action.payload }
             return {
                 ...state,
-                task: comment
+                task: action.payload
             }
         case performTaskConstants.CREATE_COMMENT_OF_COMMENT_FAILURE:
             return {
@@ -649,10 +647,9 @@ export function performtasks(state = {}, action) {
                 editing: true
             }
         case performTaskConstants.EDIT_COMMENT_SUCCESS:
-            var comment = { ...state.task, commentsInProcess: action.payload }
             return {
                 ...state,
-                task: comment
+                task: action.payload
             }
         case performTaskConstants.EDIT_COMMENT_FAILURE:
             return {
@@ -681,10 +678,9 @@ export function performtasks(state = {}, action) {
                 editing: true
             }
         case performTaskConstants.EDIT_COMMENT_OF_COMMENT_SUCCESS:
-            var comment = { ...state.task, commentsInProcess: action.payload }
             return {
                 ...state,
-                task: comment
+                task: action.payload
             }
         case performTaskConstants.EDIT_COMMENT_OF_COMMENT_FAILURE:
             return {
@@ -713,10 +709,9 @@ export function performtasks(state = {}, action) {
                 deleting: true
             }
         case performTaskConstants.DELETE_FILE_COMMENT_SUCCESS:
-            var comment = { ...state.task, commentsInProcess: action.payload }
             return {
                 ...state,
-                task: comment
+                task: action.payload
             }
         case performTaskConstants.DELETE_FILE_COMMENT_FAILURE:
             return {
@@ -729,10 +724,10 @@ export function performtasks(state = {}, action) {
                 deleting: true
             }
         case performTaskConstants.DELETE_FILE_CHILD_COMMENT_SUCCESS:
-            var comment = { ...state.task, commentsInProcess: action.payload }
+            
             return {
                 ...state,
-                task: comment
+                task: action.payload
             }
         case performTaskConstants.DELETE_FILE_CHILD_COMMENT_FAILURE:
             return {

@@ -1249,6 +1249,11 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
     let { description, name, priority, status, formula, parent, startDate, endDate, progress, info, date,
         accountableEmployees, consultedEmployees, responsibleEmployees, informedEmployees, inactiveEmployees } = data;
 
+    // Chuẩn hóa parent 
+    if(parent === '') {
+        parent = null;
+    }
+
     // Chuẩn hóa ngày bắt đầu và ngày kết thúc
     let splitStartDate = startDate.split("-");
     let startOfTask = new Date(splitStartDate[2], splitStartDate[1] - 1, splitStartDate[0]);
@@ -2651,7 +2656,6 @@ exports.editDocument = async (taskId, documentId, body, files) => {
  *  thêm bình luận
  */
 exports.createComment = async (params, body, files) => {
-    console.log(body)
     const commentss = {
         description: body.description,
         creator: body.creator,
@@ -2662,52 +2666,52 @@ exports.createComment = async (params, body, files) => {
         { $push: { commentsInProcess: commentss } }, { new: true }
     )
     let comment = await Task.findOne({ _id: body.currentTask })
-    .populate([
-        { path: "parent", select: "name" },
-        { path: "taskTemplate", select: "formula" },
-        { path: "organizationalUnit", model: OrganizationalUnit },
-        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id active" },
-        { path: "evaluations.results.employee", select: "name email _id active" },
-        { path: "evaluations.results.organizationalUnit", select: "name _id" },
-        { path: "evaluations.results.kpis" },
-        { path: "taskActions.creator", model: User, select: 'name email avatar' },
-        { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
-        { path: "commentsInProcess.creator", model: User, select: 'name email avatar' },
-        { path: "commentsInProcess.comments.creator", model: User, select: 'name email avatar' },
-        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
-        { path: "taskComments.creator", model: User, select: 'name email avatar' },
-        { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
-        { path: "documents.creator", model: User, select: 'name email avatar' },
-        { path: "followingTasks.task", model: Task },
-        {
-            path: "preceedingTasks.task", model: Task, populate: [
-                { path: "commentsInProcess.creator", model: User, select: 'name email avatar' },
-                { path: "commentsInProcess.comments.creator", model: User, select: 'name email avatar' },
-            ]
-        },
-        {
-            path: "process", model: TaskProcess, populate: {
-                path: "tasks", model: Task, populate: [
-                    { path: "parent", select: "name" },
-                    { path: "taskTemplate", select: "formula" },
-                    { path: "organizationalUnit", model: OrganizationalUnit },
-                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id active" },
-                    { path: "evaluations.results.employee", select: "name email _id active" },
-                    { path: "evaluations.results.organizationalUnit", select: "name _id" },
-                    { path: "evaluations.results.kpis" },
-                    { path: "taskActions.creator", model: User, select: 'name email avatar' },
-                    { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
-                    { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
-                    { path: "taskComments.creator", model: User, select: 'name email avatar' },
-                    { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
-                    { path: "documents.creator", model: User, select: 'name email avatar' },
-                    { path: "process", model: TaskProcess },
+        .populate([
+            { path: "parent", select: "name" },
+            { path: "taskTemplate", select: "formula" },
+            { path: "organizationalUnit", model: OrganizationalUnit },
+            { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id active" },
+            { path: "evaluations.results.employee", select: "name email _id" },
+            { path: "evaluations.results.organizationalUnit", select: "name _id" },
+            { path: "evaluations.results.kpis" },
+            { path: "taskActions.creator", model: User, select: 'name email avatar' },
+            { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
+            { path: "commentsInProcess.creator", model: User, select: 'name email avatar' },
+            { path: "commentsInProcess.comments.creator", model: User, select: 'name email avatar' },
+            { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
+            { path: "taskComments.creator", model: User, select: 'name email avatar' },
+            { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
+            { path: "documents.creator", model: User, select: 'name email avatar' },
+            { path: "followingTasks.task", model: Task },
+            {
+                path: "preceedingTasks.task", model: Task, populate: [
                     { path: "commentsInProcess.creator", model: User, select: 'name email avatar' },
                     { path: "commentsInProcess.comments.creator", model: User, select: 'name email avatar' },
                 ]
-            }
-        },
-    ])
+            },
+            {
+                path: "process", model: TaskProcess, populate: {
+                    path: "tasks", model: Task, populate: [
+                        { path: "parent", select: "name" },
+                        { path: "taskTemplate", select: "formula" },
+                        { path: "organizationalUnit", model: OrganizationalUnit },
+                        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
+                        { path: "evaluations.results.employee", select: "name email _id" },
+                        { path: "evaluations.results.organizationalUnit", select: "name _id" },
+                        { path: "evaluations.results.kpis" },
+                        { path: "taskActions.creator", model: User, select: 'name email avatar' },
+                        { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
+                        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
+                        { path: "taskComments.creator", model: User, select: 'name email avatar' },
+                        { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
+                        { path: "documents.creator", model: User, select: 'name email avatar' },
+                        { path: "process", model: TaskProcess },
+                        { path: "commentsInProcess.creator", model: User, select: 'name email avatar' },
+                        { path: "commentsInProcess.comments.creator", model: User, select: 'name email avatar' },
+                    ]
+                }
+            },
+        ])
     return comment;
 }
 
@@ -2732,12 +2736,54 @@ exports.editComment = async (params, body, files) => {
             }
         }
     )
-    let comment = await Task.findOne({ "_id": params.taskId, "commentsInProcess._id": params.commentId })
+    let comment = await Task.findOne({ "_id": body.currentTask })
         .populate([
-            { path: 'commentsInProcess.creator', model: User, select: 'name email avatar ' },
-            { path: 'commentsInProcess.comments.creator', model: User, select: 'name email avatar' }
+            { path: "parent", select: "name" },
+            { path: "taskTemplate", select: "formula" },
+            { path: "organizationalUnit", model: OrganizationalUnit },
+            { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id active" },
+            { path: "evaluations.results.employee", select: "name email _id" },
+            { path: "evaluations.results.organizationalUnit", select: "name _id" },
+            { path: "evaluations.results.kpis" },
+            { path: "taskActions.creator", model: User, select: 'name email avatar' },
+            { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
+            { path: "commentsInProcess.creator", model: User, select: 'name email avatar' },
+            { path: "commentsInProcess.comments.creator", model: User, select: 'name email avatar' },
+            { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
+            { path: "taskComments.creator", model: User, select: 'name email avatar' },
+            { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
+            { path: "documents.creator", model: User, select: 'name email avatar' },
+            { path: "followingTasks.task", model: Task },
+            {
+                path: "preceedingTasks.task", model: Task, populate: [
+                    { path: "commentsInProcess.creator", model: User, select: 'name email avatar' },
+                    { path: "commentsInProcess.comments.creator", model: User, select: 'name email avatar' },
+                ]
+            },
+            {
+                path: "process", model: TaskProcess, populate: {
+                    path: "tasks", model: Task, populate: [
+                        { path: "parent", select: "name" },
+                        { path: "taskTemplate", select: "formula" },
+                        { path: "organizationalUnit", model: OrganizationalUnit },
+                        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
+                        { path: "evaluations.results.employee", select: "name email _id" },
+                        { path: "evaluations.results.organizationalUnit", select: "name _id" },
+                        { path: "evaluations.results.kpis" },
+                        { path: "taskActions.creator", model: User, select: 'name email avatar' },
+                        { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
+                        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
+                        { path: "taskComments.creator", model: User, select: 'name email avatar' },
+                        { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
+                        { path: "documents.creator", model: User, select: 'name email avatar' },
+                        { path: "process", model: TaskProcess },
+                        { path: "commentsInProcess.creator", model: User, select: 'name email avatar' },
+                        { path: "commentsInProcess.comments.creator", model: User, select: 'name email avatar' },
+                    ]
+                }
+            },
         ])
-    return comment.commentsInProcess;
+    return comment;
 }
 
 /**
@@ -2797,12 +2843,54 @@ exports.createChildComment = async (params, body, files) => {
             }
         }
     )
-    let comment = await Task.findOne({ "_id": params.taskId, "commentsInProcess._id": params.commentId })
+    let comment = await Task.findOne({ "_id": body.currentTask })
         .populate([
-            { path: 'commentsInProcess.creator', model: User, select: 'name email avatar ' },
-            { path: 'commentsInProcess.comments.creator', model: User, select: 'name email avatar' }
+            { path: "parent", select: "name" },
+            { path: "taskTemplate", select: "formula" },
+            { path: "organizationalUnit", model: OrganizationalUnit },
+            { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id active" },
+            { path: "evaluations.results.employee", select: "name email _id" },
+            { path: "evaluations.results.organizationalUnit", select: "name _id" },
+            { path: "evaluations.results.kpis" },
+            { path: "taskActions.creator", model: User, select: 'name email avatar' },
+            { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
+            { path: "commentsInProcess.creator", model: User, select: 'name email avatar' },
+            { path: "commentsInProcess.comments.creator", model: User, select: 'name email avatar' },
+            { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
+            { path: "taskComments.creator", model: User, select: 'name email avatar' },
+            { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
+            { path: "documents.creator", model: User, select: 'name email avatar' },
+            { path: "followingTasks.task", model: Task },
+            {
+                path: "preceedingTasks.task", model: Task, populate: [
+                    { path: "commentsInProcess.creator", model: User, select: 'name email avatar' },
+                    { path: "commentsInProcess.comments.creator", model: User, select: 'name email avatar' },
+                ]
+            },
+            {
+                path: "process", model: TaskProcess, populate: {
+                    path: "tasks", model: Task, populate: [
+                        { path: "parent", select: "name" },
+                        { path: "taskTemplate", select: "formula" },
+                        { path: "organizationalUnit", model: OrganizationalUnit },
+                        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
+                        { path: "evaluations.results.employee", select: "name email _id" },
+                        { path: "evaluations.results.organizationalUnit", select: "name _id" },
+                        { path: "evaluations.results.kpis" },
+                        { path: "taskActions.creator", model: User, select: 'name email avatar' },
+                        { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
+                        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
+                        { path: "taskComments.creator", model: User, select: 'name email avatar' },
+                        { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
+                        { path: "documents.creator", model: User, select: 'name email avatar' },
+                        { path: "process", model: TaskProcess },
+                        { path: "commentsInProcess.creator", model: User, select: 'name email avatar' },
+                        { path: "commentsInProcess.comments.creator", model: User, select: 'name email avatar' },
+                    ]
+                }
+            },
         ])
-    return comment.commentsInProcess;
+    return comment;
 }
 /**
  * Edit comment of comment
@@ -2845,12 +2933,54 @@ exports.editChildComment = async (params, body, files) => {
     )
 
 
-    let comment = await Task.findOne({ "_id": params.taskId, "commentsInProcess._id": params.commentId, "commentsInProcess.comments._id": params.childCommentId })
+    let comment = await Task.findOne({ "_id": body.currentTask })
         .populate([
-            { path: 'commentsInProcess.creator', model: User, select: 'name email avatar ' },
-            { path: 'commentsInProcess.comments.creator', model: User, select: 'name email avatar' }
+            { path: "parent", select: "name" },
+            { path: "taskTemplate", select: "formula" },
+            { path: "organizationalUnit", model: OrganizationalUnit },
+            { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id active" },
+            { path: "evaluations.results.employee", select: "name email _id" },
+            { path: "evaluations.results.organizationalUnit", select: "name _id" },
+            { path: "evaluations.results.kpis" },
+            { path: "taskActions.creator", model: User, select: 'name email avatar' },
+            { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
+            { path: "commentsInProcess.creator", model: User, select: 'name email avatar' },
+            { path: "commentsInProcess.comments.creator", model: User, select: 'name email avatar' },
+            { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
+            { path: "taskComments.creator", model: User, select: 'name email avatar' },
+            { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
+            { path: "documents.creator", model: User, select: 'name email avatar' },
+            { path: "followingTasks.task", model: Task },
+            {
+                path: "preceedingTasks.task", model: Task, populate: [
+                    { path: "commentsInProcess.creator", model: User, select: 'name email avatar' },
+                    { path: "commentsInProcess.comments.creator", model: User, select: 'name email avatar' },
+                ]
+            },
+            {
+                path: "process", model: TaskProcess, populate: {
+                    path: "tasks", model: Task, populate: [
+                        { path: "parent", select: "name" },
+                        { path: "taskTemplate", select: "formula" },
+                        { path: "organizationalUnit", model: OrganizationalUnit },
+                        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
+                        { path: "evaluations.results.employee", select: "name email _id" },
+                        { path: "evaluations.results.organizationalUnit", select: "name _id" },
+                        { path: "evaluations.results.kpis" },
+                        { path: "taskActions.creator", model: User, select: 'name email avatar' },
+                        { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
+                        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
+                        { path: "taskComments.creator", model: User, select: 'name email avatar' },
+                        { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
+                        { path: "documents.creator", model: User, select: 'name email avatar' },
+                        { path: "process", model: TaskProcess },
+                        { path: "commentsInProcess.creator", model: User, select: 'name email avatar' },
+                        { path: "commentsInProcess.comments.creator", model: User, select: 'name email avatar' },
+                    ]
+                }
+            },
         ])
-    return comment.commentsInProcess
+    return comment;
 }
 
 /**

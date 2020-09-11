@@ -280,7 +280,7 @@ class DetailTaskTab extends Component {
                 checkConfirmCurrentUser = true
             };
         }
-        
+
         if (listEmployeeNotConfirm.length !== 0) {
             checkConfirmOtherUser = true;
         }
@@ -435,7 +435,7 @@ class DetailTaskTab extends Component {
 
     calculateHoursSpentOnTask = async (taskId, timesheetLogs, evaluateId, startDate, endDate) => {
         let results = [];
-        
+
         for (let i in timesheetLogs) {
             let log = timesheetLogs[i];
 
@@ -467,7 +467,7 @@ class DetailTaskTab extends Component {
 
                     newResults.push(employeeHoursSpent);
                 }
-                
+
                 results = [...newResults];
             }
         }
@@ -587,7 +587,7 @@ class DetailTaskTab extends Component {
             task.evaluations.map(item => {
                 if (item.results && item.results.length !== 0) {
                     hoursSpentOfEmployeeInEvaluation[item.date] = {};
-                    
+
                     item.results.map(result => {
                         if (result.employee) {
                             if (!hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name]) {
@@ -681,14 +681,19 @@ class DetailTaskTab extends Component {
                         {
                             task && warning &&
                             <div className="description-box" style={{ border: "3px double #e8cbcb" }}>
+
+                                {statusTask === "Inprocess" && checkInactive && codeInProcess && (currentRole === "accountable" || (currentRole === "responsible" && checkHasAccountable === false)) &&
+                                    <h4 style={{ cursor: "pointer", marginRight: "5px", color: "green" }} className={'pull-right'} onClick={() => this.handleEndTask(id, "Inprocess", codeInProcess, typeOfTask)} title={`${translate('task.task_perform.activated_task')} ${translate('task.task_perform.following_task')}`} >
+                                        <i className="fa fa-rocket"></i>
+                                    </h4>
+                                }
                                 <h4>{translate('task.task_management.warning')}</h4>
+
 
                                 {/* Kích hoạt công việc phía sau trong quy trình */}
                                 {statusTask === "Inprocess" && checkInactive && codeInProcess && (currentRole === "accountable" || (currentRole === "responsible" && checkHasAccountable === false)) &&
                                     <div>
-                                        <strong>{translate('task.task_perform.is_task_process')}.
-                                            <a style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => this.handleEndTask(id, "Inprocess", codeInProcess, typeOfTask)}> {translate('task.task_perform.activated_task')}</a> {translate('task.task_perform.following_task')}
-                                        </strong>
+                                        <strong>{translate('task.task_perform.is_task_process')}.</strong>
                                     </div>
                                 }
 
@@ -736,7 +741,7 @@ class DetailTaskTab extends Component {
                                 {
                                     checkEvaluationTaskAction && checkEvaluationTaskAction.checkEvaluationTaskAction
                                     && <div>
-                                        <strong>{translate('task.task_management.action_not_rating')}:<span style={{ color: "red" }}>{checkEvaluationTaskAction.numberOfTaskActionNotEvaluate}</span></strong>
+                                        <strong>{translate('task.task_management.action_not_rating')}:</strong><span style={{ color: "red" }}>{checkEvaluationTaskAction.numberOfTaskActionNotEvaluate}</span>
                                     </div>
                                 }
 
@@ -744,7 +749,7 @@ class DetailTaskTab extends Component {
                                 {
                                     checkDeadlineForEvaluation && checkDeadlineForEvaluation.checkDeadlineForEvaluation
                                     && <div>
-                                        <strong>{translate('task.task_management.left_can_edit_task')}:<span style={{ color: "red" }}>{checkDeadlineForEvaluation.deadlineForEvaluation}</span></strong>
+                                        <strong>{translate('task.task_management.left_can_edit_task')}:</strong><span style={{ color: "red" }}>{checkDeadlineForEvaluation.deadlineForEvaluation}</span>
                                     </div>
                                 }
                             </div>
@@ -787,7 +792,7 @@ class DetailTaskTab extends Component {
                             {task &&
                                 <div className="description-box">
                                     <h4>{translate('task.task_management.role')}</h4>
-                                
+
                                     {/* Người thực hiện */}
                                     <strong>{translate('task.task_management.responsible')}:</strong>
                                     <span>
@@ -864,8 +869,8 @@ class DetailTaskTab extends Component {
                                             <br />
                                         </React-Fragment>
                                     }
-                                    
-                                    
+
+
                                     {
                                         hoursSpentOfEmployeeInTask && JSON.stringify(hoursSpentOfEmployeeInTask) !== '{}' &&
                                         <div>
@@ -942,7 +947,7 @@ class DetailTaskTab extends Component {
                                                     ) : <div><strong>{translate('task.task_management.detail_all_not_kpi')}</strong></div>
                                                 }
 
-                                                
+
                                                 {/* Thời gian bấm giờ */}
                                                 <strong>Thời gian đóng góp:</strong>
                                                 {showToolbar && <a style={{ cursor: "pointer" }} onClick={() => this.calculateHoursSpentOnTask(task._id, task.timesheetLogs, eva._id, eva.prevDate, eva.date)} title="Cập nhật thời gian bấm giờ">Nhấn chuột để cập nhật dữ liệu <i class="fa fa-fw fa-clock-o"></i></a>}
@@ -953,7 +958,7 @@ class DetailTaskTab extends Component {
                                                         <HoursSpentOfEmployeeChart
                                                             refs={"evaluationBox" + eva.date}
                                                             data={hoursSpentOfEmployeeInEvaluation[eva.date]}
-                                                            />
+                                                        />
                                                     </React.Fragment>
                                                 }
 
