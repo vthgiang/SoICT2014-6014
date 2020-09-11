@@ -991,7 +991,11 @@ class ActionTab extends Component {
                                                                 {item.files.map((elem, index) => {
                                                                     return <div key={index}>
                                                                         {this.isImage(elem.name) ?
-                                                                            <ApiImage className="attachment-img files-attach" style={{ marginTop: "5px" }} id={`image-${elem?._id}`} src={elem.url} /> :
+                                                                            <React.Fragment>
+                                                                                <ApiImage className="attachment-img files-attach" style={{ marginTop: "5px" }} id={`image-${elem?._id}`} src={elem.url} />
+                                                                                <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
+                                                                            </React.Fragment>
+                                                                            :
                                                                             <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
                                                                         }
                                                                     </div>
@@ -1087,7 +1091,12 @@ class ActionTab extends Component {
                                                                                 {child.files.map((elem, index) => {
                                                                                     return <div key={index}>
                                                                                         {this.isImage(elem.name) ?
-                                                                                            <ApiImage className="attachment-img files-attach" style={{ marginTop: "5px" }} id={`image-${elem?._id}`} src={elem.url} /> :
+                                                                                            <React.Fragment>
+                                                                                                <ApiImage className="attachment-img files-attach" style={{ marginTop: "5px" }} id={`image-${elem._id}`} src={elem.url} />
+                                                                                                <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
+                                                                                            </React.Fragment>
+
+                                                                                            :
                                                                                             <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
                                                                                         }
                                                                                     </div>
@@ -1098,7 +1107,6 @@ class ActionTab extends Component {
                                                                     </ul>
                                                                 </div>
                                                             }
-
                                                             {/*Chỉnh sửa nội dung bình luận của hoạt động */}
                                                             {editComment === child._id &&
                                                                 <React.Fragment>
@@ -1127,15 +1135,8 @@ class ActionTab extends Component {
                                                                                 {child.files.map((file, index) => {
                                                                                     { console.log("abc") }
                                                                                     return <div key={index}>
-                                                                                        {this.isImage(file.name) ?
-                                                                                            <ApiImage className="attachment-img avarta" id={`avater-imform-${child._id}`} src={file.url} />
-                                                                                            :
-                                                                                            <React.Fragment>
-                                                                                                <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { this.handleDeleteFile(file._id, file.name, item._id, "commentofaction") }}><i className="fa fa-times"></i></a>
-                                                                                            </React.Fragment>
-
-                                                                                        }
-
+                                                                                        <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { this.handleDeleteFile(file._id, file.name, item._id, "commentofaction") }}><i className="fa fa-times"></i></a>
+                                                                                        
                                                                                     </div>
                                                                                 })}
                                                                             </div>}
@@ -1214,6 +1215,12 @@ class ActionTab extends Component {
                         <div className={selected === "taskComment" ? "active tab-pane" : "tab-pane"} id="taskComment">
                             {typeof taskComments !== 'undefined' && taskComments.length !== 0 ?
                                 taskComments.map((item, key) => {
+                                    let numberImage = 0;
+                                    item.files.forEach(x => {
+                                        if (this.isImage(x.name)) {
+                                            numberImage = numberImage + 1
+                                        }
+                                    })
                                     return (
                                         <div key={key}>
                                             <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + item.creator?.avatar)} alt="User Image" />
@@ -1254,7 +1261,7 @@ class ActionTab extends Component {
                                                                     <li style={{ display: "inline-table" }}>{item.files.map((elem, index) => {
                                                                         return <div key={index}>
                                                                             {this.isImage(elem.name) ?
-                                                                                <ApiImage className="attachment-img files-attach" style={{ marginTop: "5px" }} id={`image-${elem?._id}`} src={elem.url} /> :
+                                                                                <ApiImage numberImage={numberImage} className="attachment-img files-attach" style={{ marginTop: "5px" }} id={`image-${elem?._id}`} src={elem.url} /> :
                                                                                 <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
                                                                             }
                                                                         </div>
