@@ -1310,7 +1310,16 @@ export default {
                 },
 
                 employee_management: {
-                    file_name_export: 'Thông tin nhân viên',
+
+                    // Nhón dành cho UI
+                    have: 'Have',
+                    staff: 'staff',
+                    contract_expiration: 'contract expiration',
+                    and: 'and',
+                    have_birthday: 'have birthdays ',
+                    this_month: 'this month',
+
+                    file_name_export: 'Employee imformation',
                     staff_no_unit_title: 'Because the employee is not in any unit',
                     no_gender: 'Select gender',
                     all_gender: 'Select all gender',
