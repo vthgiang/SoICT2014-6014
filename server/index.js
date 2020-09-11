@@ -62,7 +62,7 @@ if(process.env.MULTI_TENANT === 'true'){
 	app.use("/commendation", require("./modules/human-resource/commendation/commendation.route"));
 	app.use("/discipline", require("./modules/human-resource/discipline/discipline.route"));
 	app.use("/holiday", require("./modules/human-resource/holiday/holiday.route"));
-	app.use("/employees", require("./modules/human-resource/profile/profile.route"));
+	app.use("/employee", require("./modules/human-resource/profile/profile.route"));
 	app.use("/salary", require("./modules/human-resource/salary/salary.route"));
 	app.use("/timesheet", require("./modules/human-resource/timesheets/timesheets.route"));
 

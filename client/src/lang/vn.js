@@ -1330,6 +1330,14 @@ export default {
                 },
 
                 employee_management: {
+                    // Nhón dành cho UI
+                    have: 'Có',
+                    staff: 'nhân viên',
+                    contract_expiration: 'hết hạn hợp đồng',
+                    and: 'và',
+                    have_birthday: 'có sinh nhật',
+                    this_month: 'trong tháng này',
+
                     file_name_export: 'Thông tin nhân viên',
                     staff_no_unit_title: 'Do nhân viên chưa thuộc đơn vị nào',
                     no_gender: 'Chọn giới tính',

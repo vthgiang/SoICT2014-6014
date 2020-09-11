@@ -27,41 +27,25 @@ const data = [{
     }
 ]
 
-/**
- * Lấy thông tin cá nhân
- */
-router.get('/:id', auth, EmployeeController.getEmployeeProfile);
+// Lấy thông tin cá nhân
+router.get('/employees/:id', auth, EmployeeController.getEmployeeProfile);
 
-/**
- * Cập nhật thông tin cá nhân
- */
-router.patch('/:userId', auth, uploadFile([{
+// Cập nhật thông tin cá nhân
+router.patch('/employees/:userId', auth, uploadFile([{
     name: 'fileAvatar',
     path: '/human-resource/avatars'
 }], 'single'), EmployeeController.updatePersonalInformation);
 
-/**
- * Lấy danh sách nhân viên
- */
-router.get('/', auth, EmployeeController.searchEmployeeProfiles);
+// Lấy danh sách nhân viên
+router.get('/employees', auth, EmployeeController.searchEmployeeProfiles);
 
-/**
- * Thêm mới một nhân viên
- */
-router.post('/', auth, uploadFile(data, 'fields'), EmployeeController.createEmployee);
+router.post('/employees', auth, uploadFile(data, 'fields'), EmployeeController.createEmployee);
 
-/**
- * Cập nhật thông tin nhân viên theo id
- */
-router.put('/:id', auth, uploadFile(data, 'fields'), EmployeeController.updateEmployeeInformation);
-
-/**
- * Xoá thông tin nhân viên
- */
-router.delete('/:id', auth, EmployeeController.deleteEmployee);
+router.put('/employees/:id', auth, uploadFile(data, 'fields'), EmployeeController.updateEmployeeInformation)
+router.delete('/employees/:id', auth, EmployeeController.deleteEmployee);
 
 // Import thông tin nhân viên
-router.post('/import', auth, EmployeeController.importEmployees);
+router.post('/employees/import', auth, EmployeeController.importEmployees);
 
 
 module.exports = router;
