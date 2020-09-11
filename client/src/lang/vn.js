@@ -770,7 +770,11 @@ export default {
             manage_orders: "Quản lý đơn hàng",
             manage_list_orders: "Danh sách đơn hàng",
             // Quản lý kế hoạch sản xuất
-            manage_plans: "Quản lý kế hoạch sản xuất"
+            manage_plans: "Quản lý kế hoạch sản xuất",
+            //VÍ DỤ EXAMPLE
+            manage_examples: "Ví dụ CRUD",
+            manage_examples_1: "CRUD theo mô hình số 1",
+            manage_examples_2: "CRUD theo mô hình số 2",
         },
 
         manage_system: {
@@ -1249,6 +1253,7 @@ export default {
                 course_name: 'Tên khoá học',
                 start_day: 'Ngày bắt đầu',
                 end_date: 'Ngày kết thúc',
+                contract_end_date: 'Ngày hết hạn hợp đồng',
                 type_education: 'Loại đào tạo',
                 cost: 'Chi phí',
                 edit_contract: 'Chỉnh sửa hợp đồng lao động',
@@ -1305,11 +1310,13 @@ export default {
 
                 // Quản lý thông tin cá nhân
                 employee_info: {
+                    export_bhxh: 'Quá trình đóng bảo hiểm xã hội',
                     // Nhóm dành cho UI
                     note_page_personal: 'Tôi xin cam đoan những lời khai trên đây là đúng sự thật và chịu trách nhiệm cho những lời khai này.',
                     contact_other: '(Những thông tin khác vui lòng liên hệ các bên liên quan để được xử lý)',
                     update_infor_personal: 'Cập nhật thông tin nhân viên',
-                    no_data_personal: 'Chưa có thông tin cá nhân',
+                    no_data_personal: 'Bạn chưa có thông tin cá nhân',
+                    no_data_personal_to_update: 'Bạn chưa có thông tin cá nhân để cập nhật',
 
                     guaranteed_infor_to_update: 'Bạn chưa cam đoan thông tin cần cập nhật',
                     no_change_data: 'Không có thông tin nào được thay đổi',
@@ -1328,7 +1335,7 @@ export default {
                     all_gender: 'Chọn tất cả giới tính',
                     brithday_lable: 'Sinh nhật',
                     brithday_lable_title: 'Tháng sinh nhật',
-                    contract_lable: 'Hết hạn hợn đồng',
+                    contract_lable: 'Hết hạn hợp đồng',
                     contract_lable_title: 'Tháng hết hạn hợp đồng',
                     contract_type_title: 'Loại hợp đồng lao động',
 
@@ -1374,13 +1381,14 @@ export default {
             // Quản lý kế hoạch làm việc (lịch nghỉ lễ tết)
             holiday: {
                 file_name_export: 'Kế hoạch làm việc',
-                number_date_leave_of_year: 'Số ngày nghỉ phép',
+                number_date_leave_of_year: 'Số ngày nghỉ tối đa',
                 date_year: 'ngày/năm',
                 year: 'Năm',
+                save_as: 'Lưu lại',
                 number_date: 'Số ngày',
-                list_holiday: 'Kế hoạch nghỉ lễ, nghỉ tết',
-                list_no_leave: 'Thời gian không được nghỉ',
-                list_auto_leave: 'Thời gian được nghỉ phép',
+                list_holiday: 'Thời gian nghỉ lễ, nghỉ tết',
+                list_no_leave: 'Thời gian không được xin nghỉ phép',
+                list_auto_leave: 'Thời gian được xin nghỉ phép',
 
                 // Nhóm dành cho table
                 table: {
@@ -1392,9 +1400,9 @@ export default {
                 },
 
                 // Nhóm thể loại kế hoạch làm Việc
-                holiday: 'Nghỉ lễ',
-                auto_leave: 'Được nghỉ',
-                no_leave: 'Không được phép nghỉ',
+                holiday: 'Thời gian nghỉ lễ, nghỉ tết',
+                auto_leave: 'Thời gian không được xin nghỉ phép',
+                no_leave: 'Thời gian được xin nghỉ phép',
 
                 // Nhóm dành cho action
                 edit_holiday: 'Chỉnh sửa kế hoạch làm việc',
@@ -1663,6 +1671,7 @@ export default {
                 asset_incident_and_maintenance: 'Sự cố - bảo trì',
                 incident_asset: 'Thống kê sự cố tài sản',
                 maintenance_asset: 'Thống kê bảo trì tài sản',
+                statistic_by: 'Thống kê theo',
             },
 
             //  Quản lý loại tài sản
@@ -2047,8 +2056,8 @@ export default {
                 action_add: 'Thêm công việc con',
                 action_start_timer: 'Bắt đầu bấm giờ',
 
-                from: 'Từ tháng',
-                to: 'Đến tháng',
+                from: 'Từ ',
+                to: 'Đến',
                 lower_from: 'từ',
                 lower_to: 'đến',
                 month: 'Tháng',
@@ -2427,6 +2436,7 @@ export default {
 
                     err_range: 'Giá trị không được vượt quá khoảng 0-100',
                     err_contribute: 'Tổng phần trăm đóng góp phải là 100',
+                    err_not_enough_contribute: 'Tổng phần trăm đóng góp phải là 100',
                     err_empty: 'Giá trị không được để trống'
                 }
 
@@ -2434,6 +2444,7 @@ export default {
             task_process: {
                 process_name: 'Tên quy trình',
                 process_description: 'Mô tả quy trình',
+                num_task: 'Số lượng công việc trong quy trình',
                 process_status: 'Trạng thái quy trình',
                 creator: 'Người tạo quy trình',
                 manager: 'Người quản lý',
@@ -3168,6 +3179,28 @@ export default {
             edit_plan_success: "Cập nhật kế hoạch thành công!",
             edit_plan_fail: "Cập nhật kế hoạch thất bại!",
             detail_info_plan: "Thông tin chi tiết kế hoạch"
+        },
+
+        // manage example
+        manage_example: {
+            exampleName: "Tên ví dụ",
+            search: "Tìm kiếm",
+            add_example: "Thêm mới",
+            index: "STT",
+            description: "Mô tả",
+            edit: "Chỉnh sửa thông tin ví dụ",
+            delete: "Xóa ví dụ",
+            delete_success: "Xóa ví dụ thành công!",
+            delete_fail: "Xóa ví dụ thất bại!",
+            add: "Thêm ví dụ",
+            add_title: "Thêm mới ví dụ",
+            add_success: "Thêm ví dụ thành công!",
+            add_fail: "Thêm ví dụ thất bại!",
+            example_description: "Mô tả ví dụ",
+            edit_title: "Cập nhật ví dụ",
+            edit_example_success: "Cập nhật ví dụ thành công!",
+            edit_example_fail: "Cập nhật ví dụ thất bại!",
+            detail_info_example: "Thông tin chi tiết ví dụ"
         },
 
         footer: {

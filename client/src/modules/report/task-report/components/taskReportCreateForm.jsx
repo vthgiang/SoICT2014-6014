@@ -9,7 +9,7 @@ import { taskReportFormValidator } from './taskReportFormValidator';
 import { TaskReportViewForm } from './taskReportViewForm';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { taskTemplateActions } from '../../../task/task-template/redux/actions';
-import { taskManagementActions } from '../../../task/task-management/redux/actions'
+import { taskManagementActions } from '../../../task/task-management/redux/actions';
 import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
 import './transferList.css';
 
@@ -213,7 +213,7 @@ class TaskReportCreateForm extends Component {
             if (defaultUnit) {
                 this.props.getChildrenOfOrganizationalUnits(defaultUnit._id);
             }
-            
+
             this.setState(state => {
                 return {
                     ...state,
@@ -689,7 +689,7 @@ class TaskReportCreateForm extends Component {
                     <div className="row" >
                         <div className="col-md-12 col-lg-12" style={{ display: 'flex', justifyContent: 'flex-end' }}>
                             <div className="form-inline d-flex justify-content-end">
-                                <button id="exportButton" className="btn btn-sm btn-success " title="Xem chi tiết" style={{ marginBottom: '10px' }} onClick={() => this.handleView()} ><span className="fa fa-eye" style={{ color: '#4e4e4e' }}></span> Xem</button>
+                                <button id="exportButton" className="btn btn-sm btn-success " title="Xem chi tiết" style={{ marginBottom: '6px' }} onClick={() => this.handleView()} ><span className="fa fa-fw fa-line-chart" style={{ color: 'rgb(66 65 64)', fontSize: '15px' }}></span> Xem</button>
                             </div>
                         </div>
                     </div>

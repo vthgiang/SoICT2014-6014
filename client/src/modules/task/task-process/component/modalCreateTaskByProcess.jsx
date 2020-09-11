@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from 'react-redux';
 import { getStorage } from '../../../../config';
 import { withTranslate } from "react-redux-multilingual";
-import { DialogModal, DatePicker, ErrorLabel } from "../../../../common-components";
+import { DialogModal, DatePicker, ErrorLabel, SelectBox } from "../../../../common-components";
 import { FormCreateTaskByProcess } from "./formCreateTaskByProcess";
 
 import { UserActions } from "../../../super-admin/user/redux/actions";
@@ -18,6 +18,7 @@ import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import './processDiagram.css'
+import getEmployeeSelectBoxItems from "../../organizationalUnitHelper";
 
 //Xóa element khỏi pallette theo data-action
 var _getPaletteEntries = PaletteProvider.prototype.getPaletteEntries;
@@ -47,6 +48,10 @@ class ModalCreateTaskByProcess extends Component {
             zlevel: 1,
             startDate: "",
             endDate: "",
+            manager: [],
+            viewer: [],
+
+            indexRenderer: 0,
         }
         this.modeler = new BpmnModeler({
             additionalModules: [
@@ -60,6 +65,9 @@ class ModalCreateTaskByProcess extends Component {
     }
 
     componentDidMount() {
+        // Lấy tất cả nhân viên trong công ty
+        // this.props.getAllUserOfCompany();
+        this.props.getAllUserInAllUnitsOfCompany()
         this.props.getDepartment();
         this.props.getAllUsersWithRole();
         let { user } = this.props;
@@ -285,6 +293,31 @@ class ModalCreateTaskByProcess extends Component {
         return msgEnd === undefined;
     }
 
+
+    // Hàm cập nhật người được xem quy trình
+    handleChangeViewer = async (value) => {
+        await this.setState(state => {
+
+            return {
+                ...state,
+                viewer: value,
+                errorOnViewer: TaskProcessValidator.validateViewer(value, this.props.translate),
+            }
+        })
+    }
+
+    // Hàm cập nhật người quản lý quy trình
+    handleChangeManager = async (value) => {
+        await this.setState(state => {
+
+            return {
+                ...state,
+                manager: value,
+                errorOnManager: TaskProcessValidator.validateManager(value, this.props.translate),
+            }
+        })
+    }
+
     // hàm cập nhật độ ưu tiên
     handleChangeTaskPriority = (value) => {
         this.state.info[`${this.state.id}`].priority = value;
@@ -490,15 +523,16 @@ class ModalCreateTaskByProcess extends Component {
 
     // hàm validate form tạo quy trình công việc
     isTaskFormValidated = () => {
-        let { errorOnEndDate, errorOnProcessDescription, errorOnProcessName, errorOnStartDate, startDate, endDate } = this.state;
+        let { errorOnEndDate, errorOnProcessDescription, errorOnProcessName, errorOnStartDate, startDate, endDate, viewer, manager, errorOnManager, errorOnViewer } = this.state;
 
-        return errorOnEndDate === undefined && errorOnProcessDescription === undefined && errorOnProcessName === undefined && errorOnStartDate === undefined 
-                && startDate.trim() !== "" && endDate.trim() !== "";
+        return errorOnEndDate === undefined && errorOnProcessDescription === undefined && errorOnProcessName === undefined && errorOnStartDate === undefined
+            && errorOnViewer === undefined && errorOnManager === undefined && manager.length !== 0 && viewer.length !== 0
+            && startDate.trim() !== "" && endDate.trim() !== "";
     }
 
     // Hàm lưu thông tin 
     save = async () => {
-        let { info, startDate, endDate, userId, processName, processDescription, xmlDiagram } = this.state;
+        let { info, startDate, endDate, userId, processName, processDescription, xmlDiagram, viewer, manager } = this.state;
 
         let xmlStr;
         this.modeler.saveXML({ format: true }, function (err, xml) {
@@ -520,6 +554,8 @@ class ModalCreateTaskByProcess extends Component {
         let data = {
             processName: processName,
             processDescription: processDescription,
+            viewer: viewer,
+            manager: manager,
             xmlDiagram: this.state.xmlDiagram,
             creator: userId,
             taskList: info,
@@ -533,17 +569,30 @@ class ModalCreateTaskByProcess extends Component {
 
     render() {
         const { translate, role, user } = this.props;
-        const { name, id, idProcess, info, taskName, showInfo, startDate, endDate, errorOnEndDate, errorOnStartDate,
-            processDescription, processName, selected, infoTask, errorOnProcessName, errorOnProcessDescription } = this.state;
+        const { id, idProcess, info, taskName, showInfo, startDate, endDate, errorOnEndDate, errorOnStartDate, errorOnManager, errorOnViewer,
+            processDescription, processName, selected, viewer, manager, errorOnProcessName, errorOnProcessDescription, indexRenderer } = this.state;
         const { listOrganizationalUnit } = this.props
 
-        let listUser = user.usersWithRole
+        let listUserCompany = user?.usercompanys;
+        let listItem = [];
+        if (listUserCompany && listUserCompany.length !== 0) {
+            listItem = listUserCompany.map(item => { return { text: item.name, value: item._id } });
+        }
         let listRole = [];
-        let task = Object.assign({}, info)
-
         if (role && role.list.length !== 0) listRole = role.list;
-        let listItem = listRole.filter(e => ['Admin', 'Super Admin', 'Dean', 'Vice Dean', 'Employee'].indexOf(e.name) === -1)
-            .map(item => { return { text: item.name, value: item._id } });
+
+
+        let usersOfChildrenOrganizationalUnit;
+        if (user.usersOfChildrenOrganizationalUnit) {
+            usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
+        }
+        let usersInUnitsOfCompany;
+        if (user && user.usersInUnitsOfCompany) {
+            usersInUnitsOfCompany = user.usersInUnitsOfCompany;
+        }
+
+        let allUnitsMember = getEmployeeSelectBoxItems(usersInUnitsOfCompany);
+        let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
 
         return (
             <React.Fragment>
@@ -581,8 +630,21 @@ class ModalCreateTaskByProcess extends Component {
                                                 <ErrorLabel content={errorOnProcessName} />
                                             </div>
 
+                                            {/* Mô tả quy trình */}
+                                            <div className={`form-group ${errorOnProcessDescription === undefined ? "" : "has-error"}`}>
+                                                <label>{translate("task.task_process.process_description")}</label>
+                                                <textarea type="text" rows={4} style={{ minHeight: '103.5px' }}
+                                                    value={processDescription}
+                                                    className="form-control" placeholder={translate("task.task_process.process_description")}
+                                                    onChange={this.handleChangeBpmnDescription}
+                                                />
+                                                <ErrorLabel content={errorOnProcessDescription} />
+                                            </div>
+                                        </div>
+
+                                        <div className='col-md-6'>
                                             {/* Ngày bắt đầu - kết thúc quy trình */}
-                                            <div className="row">
+                                            <div className="row form-group">
                                                 <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnStartDate === undefined ? "" : "has-error"}`}>
                                                     <label className="control-label">{translate('task.task_management.start_date')}*</label>
                                                     <DatePicker
@@ -603,18 +665,38 @@ class ModalCreateTaskByProcess extends Component {
                                                     <ErrorLabel content={errorOnEndDate} />
                                                 </div>
                                             </div>
-                                        </div>
 
-                                        {/* Mô tả quy trình */}
-                                        <div className='col-md-6'>
-                                            <div className={`form-group ${errorOnProcessDescription === undefined ? "" : "has-error"}`}>
-                                                <label>{translate("task.task_process.process_description")}</label>
-                                                <textarea type="text" rows={4} style={{ height: "108px" }}
-                                                    value={processDescription}
-                                                    className="form-control" placeholder={translate("task.task_process.process_description")}
-                                                    onChange={this.handleChangeBpmnDescription}
-                                                />
-                                                <ErrorLabel content={errorOnProcessDescription} />
+                                            <div className={`form-group ${errorOnViewer === undefined ? "" : "has-error"}`}>
+                                                {/* Người được xem quy trình */}
+                                                <label className="control-label">{translate("task.task_process.viewer")}</label>
+                                                {allUnitsMember &&
+                                                    <SelectBox
+                                                        id={`select-viewer-employee-create-task-by-process-${indexRenderer}-${idProcess}`}
+                                                        className="form-control select2"
+                                                        style={{ width: "100%" }}
+                                                        items={allUnitsMember}
+                                                        onChange={this.handleChangeViewer}
+                                                        multiple={true}
+                                                        value={viewer}
+                                                    />
+                                                }
+                                                <ErrorLabel content={errorOnViewer} />
+                                            </div>
+                                            <div className={`form-group ${errorOnManager === undefined ? "" : "has-error"}`}>
+                                                {/* Người quản lý quy trình */}
+                                                <label className="control-label" >{translate("task.task_process.manager")}</label>
+                                                {allUnitsMember &&
+                                                    <SelectBox
+                                                        id={`select-manager-employee-create-task-by-process-${indexRenderer}-${idProcess}`}
+                                                        className="form-control select2"
+                                                        style={{ width: "100%" }}
+                                                        items={allUnitsMember}
+                                                        onChange={this.handleChangeManager}
+                                                        multiple={true}
+                                                        value={manager}
+                                                    />
+                                                }
+                                                <ErrorLabel content={errorOnManager} />
                                             </div>
                                         </div>
                                     </div>
@@ -707,8 +789,10 @@ function mapState(state) {
 }
 
 const actionCreators = {
+    getAllUserOfCompany: UserActions.getAllUserOfCompany,
     getDepartment: UserActions.getDepartmentOfUser,
     getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
+    getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
     createXmlDiagram: TaskProcessActions.createXmlDiagram,
     getXmlDiagramById: TaskProcessActions.getXmlDiagramById,
     createTaskByProcess: TaskProcessActions.createTaskByProcess,

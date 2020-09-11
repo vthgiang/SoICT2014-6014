@@ -375,6 +375,7 @@ class EmployeeCreateForm extends Component {
                             {/* Tab thông tin bảo hiểm */}
                             <InsurranceTab
                                 id="insurrance"
+                                pageCreate={true}
                                 socialInsuranceDetails={employee.socialInsuranceDetails}
                                 employee={employee}
                                 handleChange={this.handleChange}
@@ -387,8 +388,10 @@ class EmployeeCreateForm extends Component {
                             <ContractTab
                                 id="contract"
                                 pageCreate={true}
+                                employee={employee}
                                 contracts={contracts}
                                 courses={courses}
+                                handleChange={this.handleChange}
 
                                 handleAddContract={this.handleChangeContract}
                                 handleEditContract={this.handleChangeContract}

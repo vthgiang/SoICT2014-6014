@@ -30,7 +30,6 @@ class TasksIsNotLinked extends Component {
 
         if (taskList) {
             let inprocessTask = taskList.filter(task => task.status === "Inprocess")
-            console.log('tasklist', inprocessTask);
             let distinctTasks = [];
             for (let i in inprocessTask) {
                 let check = false;
@@ -91,7 +90,7 @@ class TasksIsNotLinked extends Component {
                         <div className="box-header with-border">
                             <div className="box-title">{translate('task.task_management.task_is_not_linked_up_with_monthly_kpi')}</div>
                         </div>
-                        <div className="box-body" style={{ height: "300px" }}>
+                        <div className="box-body" style={{ height: "300px", overflow: "auto" }}>
                             {
                                 notLinkedTasks ?
                                     <ul className="todo-list">

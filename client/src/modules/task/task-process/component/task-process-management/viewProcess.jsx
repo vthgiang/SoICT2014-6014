@@ -122,7 +122,11 @@ class ViewProcess extends Component {
             let modeling = this.modeling;
             let state = this.state;
             this.modeler.importXML(nextProps.data.xmlDiagram, function (err) {
+                // handle zoom fit
+                let canvas = modeler.get('canvas');
+                canvas.zoom('fit-viewport');
 
+                // change color for task
                 let infoTask = nextProps.data.tasks
                 let info = state.info;
 
@@ -437,12 +441,18 @@ class ViewProcess extends Component {
                                         {translate("task.task_process.notice")}
                                     </div>
                                 }
-                                <div className="box-body">
+                                <div className="box-body" style={{lineHeight: "2"}}>
 
                                     {/**Các thông tin của mẫu công việc */}
-                                    <dd><i className="fa fa-square" style={{ color: "#fff", border: "1px solid #000", borderRadius: "3px", marginRight: "5px" }}></i>{translate("task.task_process.wait_for_approval")}</dd>
-                                    <dd><i className="fa fa-square" style={{ color: "#84ffb8", border: "1px solid #14984c", borderRadius: "3px", marginRight: "5px" }}></i>{translate("task.task_process.inprocess")}</dd>
-                                    <dd><i className="fa fa-square" style={{ color: "#f9f9f9", border: "1px solid #c4c4c7", borderRadius: "3px", marginRight: "5px" }}></i>{translate("task.task_process.finished")}</dd>
+                                    <div style={{display: "flex", alignItems: "center"}}>
+                                        <div style={{ backgroundColor: "#fff", height: "15px", width: "20px", border: "1px solid #000", borderRadius: "3px", marginRight: "5px" }}></div>{translate("task.task_process.wait_for_approval")}
+                                    </div>
+                                    <div style={{display: "flex", alignItems: "center"}}>
+                                        <div style={{ backgroundColor: "#84ffb8", height: "15px", width: "20px", border: "1px solid #14984c", borderRadius: "3px", marginRight: "5px" }}></div>{translate("task.task_process.inprocess")}
+                                    </div>
+                                    <div style={{display: "flex", alignItems: "center"}}>
+                                        <div style={{ backgroundColor: "#f9f9f9", height: "15px", width: "20px", border: "1px solid #c4c4c7", borderRadius: "3px", marginRight: "5px" }}></div>{translate("task.task_process.finished")}
+                                    </div>
                                 </div>
                             </div>
                         </div>

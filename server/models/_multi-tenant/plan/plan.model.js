@@ -15,4 +15,8 @@ const PlanSchema = new Schema({
     }
 });
 
-module.exports = Plan = (db) => db.model('plans', PlanSchema);
+module.exports = (db) => {
+    if(!db.models.Plan)
+        return db.model('Plan', PlanSchema);
+    return db.models.Plan;
+}

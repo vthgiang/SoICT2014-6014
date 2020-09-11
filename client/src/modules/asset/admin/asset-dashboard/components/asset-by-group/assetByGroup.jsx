@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 import { AssetService } from '../../../asset-information/redux/services';
 import { AssetTypeService } from '../../../asset-type/redux/services';
 
-import { AmountPieChart } from './amountPieChart';
-import { ValuePieChart } from './valuePieChart';
-import { DepreciationPieChart } from './depreciationPieChart';
+import AmountPieChart from './amountPieChart';
+import ValuePieChart from './valuePieChart';
+import DepreciationPieChart from './depreciationPieChart';
 
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 

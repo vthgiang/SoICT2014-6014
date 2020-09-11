@@ -87,10 +87,17 @@ class ModalCreateTaskProcess extends Component {
 		this.state = {
 			userId: getStorage("userId"),
 			currentRole: getStorage('currentRole'),
+
 			showInfo: false,
 			selectedCreate: 'info',
 			info: {},
 			save: false,
+
+			manager: [],
+			viewer: [],
+			processName: '',
+			processDescription: '',
+
 			indexRenderer: 0,
 		}
 		this.initialDiagram = initialDiagram
@@ -520,7 +527,8 @@ class ModalCreateTaskProcess extends Component {
 		if (!hasStart || !hasEnd) {
 			check = false;
 		}
-		return check
+		return check && this.state.manager.length !== 0 && this.state.viewer.length !== 0 
+			&& this.state.processDescription.trim() !== '' && this.state.processName.trim() !== ''
 			&& this.state.errorOnManager === undefined && this.state.errorOnProcessDescription === undefined
 			&& this.state.errorOnProcessName === undefined && this.state.errorOnViewer === undefined;
 	}
@@ -662,6 +670,7 @@ class ModalCreateTaskProcess extends Component {
 													<ErrorLabel content={this.state.errorOnProcessName} />
 												</div>
 												<div className={`form-group ${this.state.errorOnViewer === undefined ? "" : "has-error"}`}>
+													{/* Người được xem mẫu quy trình */}
 													<label className="control-label">{translate("task.task_process.viewer")}</label>
 													{
 														<SelectBox
@@ -677,6 +686,7 @@ class ModalCreateTaskProcess extends Component {
 													<ErrorLabel content={this.state.errorOnViewer} />
 												</div>
 												<div className={`form-group ${this.state.errorOnManager === undefined ? "" : "has-error"}`}>
+													{/* Người quản lý mẫu quy trình */}
 													<label className="control-label" >{translate("task.task_process.manager")}</label>
 													{
 														<SelectBox

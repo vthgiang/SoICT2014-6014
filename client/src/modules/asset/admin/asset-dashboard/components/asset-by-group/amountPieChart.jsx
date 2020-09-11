@@ -118,10 +118,4 @@ class AmountPieChart extends Component {
     }
 }
 
-function mapState(state) { }
-
-const actions = {}
-
-const AmountPieChartConnected = connect(mapState, actions)(withTranslate(AmountPieChart));
-
-export { AmountPieChartConnected as AmountPieChart }
+export default (withTranslate(AmountPieChart));

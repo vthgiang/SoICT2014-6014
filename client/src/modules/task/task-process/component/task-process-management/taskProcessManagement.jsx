@@ -8,12 +8,14 @@ import { PaginateBar, SelectMulti, DataTableSetting } from '../../../../../commo
 import { TaskProcessActions } from '../../redux/actions';
 import { ModalViewProcess } from './modalViewProcess';
 import { ModalEditProcess } from './modalEditProcess';
+import { forwardRef } from 'react';
 
 class TaskProcessManagement extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			currentRole: getStorage('currentRole'),
+			currentUser: getStorage("userId"),
 			currentRow: {},
 			pageNumber: 1,
 			noResultsPerPage: 5,
@@ -82,16 +84,29 @@ class TaskProcessManagement extends Component {
 			this.props.getAllTaskProcess(1, this.state.noResultsPerPage, "");
 		}
 	}
+
+	isManager = (itemProcess) => {
+		let { currentUser } = this.state;
+		let check = false;
+		let manager = itemProcess.manager;
+		for (let x in manager) {
+			if ((manager[x].id) === currentUser) {
+				check = true;
+			}
+		}
+		return check;
+	}
+
 	render() {
 		const { translate, taskProcess, department } = this.props
-		const { currentRow, currentRole } = this.state
+		const { currentRow, currentRole, currentUser } = this.state
 		let listTaskProcess = [];
 		if (taskProcess && taskProcess.listTaskProcess) {
 			listTaskProcess = taskProcess.listTaskProcess
 		}
-		console.log('process', taskProcess?.processTemplate?.manager.indexOf(currentRole) !== -1, currentRole, taskProcess);
 		let totalPage = taskProcess.totalPage
 		let listOrganizationalUnit = department?.list
+
 		return (
 			<div className="box">
 				<div className="box-body qlcv">
@@ -147,6 +162,7 @@ class TaskProcessManagement extends Component {
 							<tr>
 								<th title={translate("task.task_process.process_name")}>{translate("task.task_process.process_name")}</th>
 								<th title={translate('task_template.description')}>{translate('task_template.description')}</th>
+								<th title={translate('task.task_process.manager')}>{translate('task.task_process.manager')}</th>
 								<th title={translate("task.task_process.creator")}>{translate("task.task_process.creator")}</th>
 								<th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
 							</tr>
@@ -157,12 +173,13 @@ class TaskProcessManagement extends Component {
 									return <tr key={key} >
 										<td>{item.processName}</td>
 										<td>{item.processDescription}</td>
+										<td>{(item.manager && item.manager.length !== 0) && item.manager.map(x => x.name + ', ')}</td>
 										<td>{item.creator?.name}</td>
 										<td>
 											<a onClick={() => { this.viewProcess(item) }} title={translate('task.task_template.view_detail_of_this_task_template')}>
 												<i className="material-icons">view_list</i>
 											</a>
-											{ item && item?.processTemplate?.manager.indexOf(currentRole) !== -1 &&
+											{this.isManager(item) &&
 												<a className="edit" onClick={() => { this.showEditProcess(item) }} title={translate('task_template.edit_this_task_template')}>
 													<i className="material-icons">edit</i>
 												</a>
@@ -176,7 +193,7 @@ class TaskProcessManagement extends Component {
 											</a> */}
 										</td>
 									</tr>
-								}) : <tr><td colSpan={4}>{translate("task.task_process.no_data")}</td></tr>
+								}) : <tr><td colSpan={5}>{translate("task.task_process.no_data")}</td></tr>
 							}
 						</tbody>
 					</table>

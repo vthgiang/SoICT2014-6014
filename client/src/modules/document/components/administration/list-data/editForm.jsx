@@ -5,6 +5,7 @@ import { DialogModal, ButtonModal, DateTimeConverter, SelectBox, DatePicker, Tre
 import { DocumentActions } from '../../../redux/actions';
 import moment from 'moment';
 import { getStorage } from "../../../../../config";
+import EditVersion from "./editVersion";
 class EditForm extends Component {
     constructor(props) {
         super(props);
@@ -428,7 +429,6 @@ class EditForm extends Component {
         const roleList = role.list.map(role => { return { value: role._id, text: role.name } });
         const relationshipDocs = documents.administration.data.list.filter(doc => doc._id !== documentId).map(doc => { return { value: doc._id, text: doc.name } })
         const archives = documents.administration.archives.list;
-        console.log("fffffffffffff", documentDescription !== this.props.documentDescription)
         let title = "";
         let description = "";
         const formData = new FormData();
@@ -543,10 +543,10 @@ class EditForm extends Component {
             if (!title.includes("Chỉnh sửa đơn vị quản lí")) {
                 title += "Chỉnh sửa đơn vị quản lí"
             }
-            console.log('iiiiiiiiiiiiiiiiiii', documentArchivedRecordPlaceOrganizationalUnit, this.props.documentArchivedRecordPlaceOrganizationalUnit, documentArchivedRecordPlaceOrganizationalUnit !== this.props.documentArchivedRecordPlaceOrganizationalUnit)
+            //console.log('iiiiiiiiiiiiiiiiiii', documentArchivedRecordPlaceOrganizationalUnit, this.props.documentArchivedRecordPlaceOrganizationalUnit, documentArchivedRecordPlaceOrganizationalUnit !== this.props.documentArchivedRecordPlaceOrganizationalUnit)
             let newDepartment;
             newDepartment = department.list.filter(d => d._id === documentArchivedRecordPlaceOrganizationalUnit)
-            console.log('newDepartment', newDepartment)
+            // console.log('newDepartment', newDepartment)
             description += "Đơn vị quản lí mới " + newDepartment[0].name + ". "
             formData.append('archivedRecordPlaceOrganizationalUnit', documentArchivedRecordPlaceOrganizationalUnit);
         }
@@ -568,6 +568,12 @@ class EditForm extends Component {
             this.props.editDocument(documentId, formData);
         }
     }
+    toggleEditVersion = async (data) => {
+        await this.setState({
+            currentVersion: data
+        });
+        window.$('#modal-edit-document-version').modal('show');
+    }
 
     addNewVersion = id => {
         const {
@@ -579,11 +585,12 @@ class EditForm extends Component {
             documentFileScan
         } = this.state;
         let title, descriptions;
+        // console.log('dateeee', documentIssuingDate)
         title = "Thêm phiên bản mới";
         const formData = new FormData();
         if (documentVersionName) {
             formData.append('versionName', documentVersionName);
-            descriptions = "Tên phiên bản mới: " + documentVersionName
+            descriptions = "Tên phiên bản mới: " + documentVersionName + ". ";
         }
         if (documentIssuingDate) {
             descriptions += "Ngày ban hành " + moment(documentIssuingDate, "DD-MM-YYYY") + ". ";
@@ -681,7 +688,7 @@ class EditForm extends Component {
             documentIssuingBody, documentOfficialNumber, documentSigner, documentVersions,
             documentRelationshipDescription, documentRelationshipDocuments,
             documentRoles, documentArchives,
-            documentArchivedRecordPlaceInfo, documentArchivedRecordPlaceOrganizationalUnit,
+            documentArchivedRecordPlaceOrganizationalUnit, currentVersion,
         } = this.state;
         const { errorName, errorIssuingBody, errorOfficialNumber, errorSigner, errorVersionName, errorDocumentFile, errorDocumentFileScan, } = this.state;
         const { translate, role, documents, department } = this.props;
@@ -692,7 +699,7 @@ class EditForm extends Component {
         const archives = documents.administration.archives.list;
         let path = documentArchives ? this.findPath(archives, documentArchives[0]) : "";
 
-        console.log('rrrrrrrr', !this.isValidateForm());
+        //  console.log('rrrrrrrr', !this.isValidateForm());
         return (
             <React.Fragment>
                 <DialogModal
@@ -703,6 +710,19 @@ class EditForm extends Component {
                     func={this.save}
                     disableSubmit={!this.isValidateForm()}
                 >
+                    {
+                        currentVersion &&
+                        <EditVersion
+                            documentId={documentId}
+                            versionId={currentVersion._id}
+                            versionName={currentVersion.versionName}
+                            issuingDate={currentVersion.issuingDate}
+                            effectiveDate={currentVersion.effectiveDate}
+                            expiredDate={currentVersion.expiredDate}
+                            documentFile={currentVersion.documentFile}
+                            documentFileScan={currentVersion.documentFileScan}
+                        />
+                    }
                     <form id="form-edit-document">
                         <div className="nav-tabs-custom">
                             <ul className="nav nav-tabs">
@@ -832,6 +852,9 @@ class EditForm extends Component {
                                                         <th>{translate('document.expired_date')}</th>
                                                         <th>{translate('document.doc_version.file')}</th>
                                                         <th>{translate('document.doc_version.scanned_file_of_signed_document')}</th>
+                                                        <th style={{ width: '80px', textAlign: 'center' }}>
+                                                            {translate('general.action')}
+                                                        </th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -845,6 +868,9 @@ class EditForm extends Component {
                                                                     <td><DateTimeConverter dateTime={version.expiredDate} type="DD-MM-YYYY" /></td>
                                                                     <td><a href="#" onClick={() => this.requestDownloadDocumentFile(documentId, documentName, i)}><u>{version.file ? translate('document.download') : ""}</u></a></td>
                                                                     <td><a href="#" onClick={() => this.requestDownloadDocumentFileScan(documentId, "SCAN_" + documentName, i)}><u>{version.scannedFileOfSignedDocument ? translate('document.download') : ""}</u></a></td>
+                                                                    <td>
+                                                                        <a className="text-yellow" title={translate('document.edit')} onClick={() => this.toggleEditVersion(version)}><i className="material-icons">edit</i></a>
+                                                                    </td>
                                                                 </tr>
                                                             }) : <tr><td colSpan={7}>{translate('document.no_version')}</td></tr>
                                                     }

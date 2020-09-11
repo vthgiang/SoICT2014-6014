@@ -8,6 +8,7 @@ const TaskProcess = require('../../../models/task/taskProcess.model');
 const User = require('../../../models/auth/user.model');
 const fs = require('fs');
 const moment = require("moment");
+const OrganizationalUnitService = require('../../super-admin/organizational-unit/organizationalUnit.service');
 
 /**
  * Lấy mẫu công việc theo Id
@@ -25,7 +26,7 @@ exports.getTaskById = async (id, userId) => {
         { path: "taskTemplate", select: "formula" },
         { path: "organizationalUnit", model: OrganizationalUnit },
         { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id active" },
-        { path: "evaluations.results.employee", select: "name email _id" },
+        { path: "evaluations.results.employee", select: "name email _id active" },
         { path: "evaluations.results.organizationalUnit", select: "name _id" },
         { path: "evaluations.results.kpis" },
         { path: "taskActions.creator", model: User, select: 'name email avatar' },
@@ -43,14 +44,15 @@ exports.getTaskById = async (id, userId) => {
                 { path: "commentsInProcess.comments.creator", model: User, select: 'name email avatar' },
             ]
         },
+        { path: "hoursSpentOnTask.contributions.employee", model: User, select: 'name' },
         {
             path: "process", model: TaskProcess, populate: {
                 path: "tasks", model: Task, populate: [
                     { path: "parent", select: "name" },
                     { path: "taskTemplate", select: "formula" },
                     { path: "organizationalUnit", model: OrganizationalUnit },
-                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
-                    { path: "evaluations.results.employee", select: "name email _id" },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id active" },
+                    { path: "evaluations.results.employee", select: "name email _id active" },
                     { path: "evaluations.results.organizationalUnit", select: "name _id" },
                     { path: "evaluations.results.kpis" },
                     { path: "taskActions.creator", model: User, select: 'name email avatar' },
@@ -866,8 +868,9 @@ exports.evaluationAction = async (params, body) => {
 
 
         //tính điểm trung bình
+        let accountableRating
         if (rating.length > 0) {
-            let accountableRating = rating.reduce((accumulator, currentValue) => { return accumulator + currentValue }, 0) / rating.length
+            accountableRating = rating.reduce((accumulator, currentValue) => { return accumulator + currentValue }, 0) / rating.length
         }
 
 
@@ -1189,8 +1192,8 @@ exports.editTaskByResponsibleEmployees = async (data, taskId) => {
         { path: "parent", select: "name" },
         { path: "taskTemplate", select: "formula" },
         { path: "organizationalUnit", model: OrganizationalUnit },
-        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
-        { path: "evaluations.results.employee", select: "name email _id" },
+        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id active" },
+        { path: "evaluations.results.employee", select: "name email _id active" },
         { path: "evaluations.results.organizationalUnit", select: "name _id" },
         { path: "evaluations.results.kpis" },
         { path: "taskActions.creator", model: User, select: 'name email avatar' },
@@ -1201,14 +1204,15 @@ exports.editTaskByResponsibleEmployees = async (data, taskId) => {
         { path: "documents.creator", model: User, select: 'name email avatar' },
         { path: "followingTasks.task", model: Task, select: 'name' },
         { path: "preceedingTasks.task", model: Task, select: 'name' },
+        { path: "hoursSpentOnTask.contributions.employee", model: User, select: 'name' },
         {
             path: "process", model: TaskProcess, populate: {
                 path: "tasks", model: Task, populate: [
                     { path: "parent", select: "name" },
                     { path: "taskTemplate", select: "formula" },
                     { path: "organizationalUnit", model: OrganizationalUnit },
-                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
-                    { path: "evaluations.results.employee", select: "name email _id" },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id active" },
+                    { path: "evaluations.results.employee", select: "name email _id active" },
                     { path: "evaluations.results.organizationalUnit", select: "name _id" },
                     { path: "evaluations.results.kpis" },
                     { path: "taskActions.creator", model: User, select: 'name email avatar' },
@@ -1242,7 +1246,7 @@ exports.editTaskByResponsibleEmployees = async (data, taskId) => {
  * @param {String} taskID id của công việc cần edit
  */
 exports.editTaskByAccountableEmployees = async (data, taskId) => {
-    let { description, name, priority, status, formula, startDate, endDate, progress, info, date,
+    let { description, name, priority, status, formula, parent, startDate, endDate, progress, info, date,
         accountableEmployees, consultedEmployees, responsibleEmployees, informedEmployees, inactiveEmployees } = data;
 
     // Chuẩn hóa ngày bắt đầu và ngày kết thúc
@@ -1276,6 +1280,7 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
                 priority: parseInt(priority[0]),
                 status: status[0],
                 formula: formula,
+                parent: parent,
 
                 startDate: startOfTask,
                 endDate: endOfTask,
@@ -1331,8 +1336,8 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
         { path: "parent", select: "name" },
         { path: "taskTemplate", select: "formula" },
         { path: "organizationalUnit", model: OrganizationalUnit },
-        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
-        { path: "evaluations.results.employee", select: "name email _id" },
+        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id active" },
+        { path: "evaluations.results.employee", select: "name email _id active" },
         { path: "evaluations.results.organizationalUnit", select: "name _id" },
         { path: "evaluations.results.kpis" },
         { path: "taskActions.creator", model: User, select: 'name email avatar' },
@@ -1343,14 +1348,15 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
         { path: "documents.creator", model: User, select: 'name email avatar' },
         { path: "followingTasks.task", model: Task, select: 'name' },
         { path: "preceedingTasks.task", model: Task, select: 'name' },
+        { path: "hoursSpentOnTask.contributions.employee", model: User, select: 'name' },
         {
             path: "process", model: TaskProcess, populate: {
                 path: "tasks", model: Task, populate: [
                     { path: "parent", select: "name" },
                     { path: "taskTemplate", select: "formula" },
                     { path: "organizationalUnit", model: OrganizationalUnit },
-                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
-                    { path: "evaluations.results.employee", select: "name email _id" },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id active" },
+                    { path: "evaluations.results.employee", select: "name email _id active" },
                     { path: "evaluations.results.organizationalUnit", select: "name _id" },
                     { path: "evaluations.results.kpis" },
                     { path: "taskActions.creator", model: User, select: 'name email avatar' },
@@ -1443,8 +1449,8 @@ exports.evaluateTaskByConsultedEmployees = async (data, taskId) => {
         { path: "parent", select: "name" },
         { path: "taskTemplate", select: "formula" },
         { path: "organizationalUnit", model: OrganizationalUnit },
-        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
-        { path: "evaluations.results.employee", select: "name email _id" },
+        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id active" },
+        { path: "evaluations.results.employee", select: "name email _id active" },
         { path: "evaluations.results.organizationalUnit", select: "name _id" },
         { path: "evaluations.results.kpis" },
         { path: "taskActions.creator", model: User, select: 'name email avatar' },
@@ -1455,14 +1461,15 @@ exports.evaluateTaskByConsultedEmployees = async (data, taskId) => {
         { path: "documents.creator", model: User, select: 'name email avatar' },
         { path: "followingTasks.task", model: Task, select: 'name' },
         { path: "preceedingTasks.task", model: Task, select: 'name' },
+        { path: "hoursSpentOnTask.contributions.employee", model: User, select: 'name' },
         {
             path: "process", model: TaskProcess, populate: {
                 path: "tasks", model: Task, populate: [
                     { path: "parent", select: "name" },
                     { path: "taskTemplate", select: "formula" },
                     { path: "organizationalUnit", model: OrganizationalUnit },
-                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
-                    { path: "evaluations.results.employee", select: "name email _id" },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id active" },
+                    { path: "evaluations.results.employee", select: "name email _id active" },
                     { path: "evaluations.results.organizationalUnit", select: "name _id" },
                     { path: "evaluations.results.kpis" },
                     { path: "taskActions.creator", model: User, select: 'name email avatar' },
@@ -1675,8 +1682,8 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
         { path: "parent", select: "name" },
         { path: "taskTemplate", select: "formula" },
         { path: "organizationalUnit", model: OrganizationalUnit },
-        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
-        { path: "evaluations.results.employee", select: "name email _id" },
+        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id active" },
+        { path: "evaluations.results.employee", select: "name email _id active" },
         { path: "evaluations.results.organizationalUnit", select: "name _id" },
         { path: "evaluations.results.kpis" },
         { path: "taskActions.creator", model: User, select: 'name email avatar' },
@@ -1687,14 +1694,15 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
         { path: "documents.creator", model: User, select: 'name email avatar' },
         { path: "followingTasks.task", model: Task, select: 'name' },
         { path: "preceedingTasks.task", model: Task, select: 'name' },
+        { path: "hoursSpentOnTask.contributions.employee", model: User, select: 'name' },
         {
             path: "process", model: TaskProcess, populate: {
                 path: "tasks", model: Task, populate: [
                     { path: "parent", select: "name" },
                     { path: "taskTemplate", select: "formula" },
                     { path: "organizationalUnit", model: OrganizationalUnit },
-                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
-                    { path: "evaluations.results.employee", select: "name email _id" },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id active" },
+                    { path: "evaluations.results.employee", select: "name email _id active" },
                     { path: "evaluations.results.organizationalUnit", select: "name _id" },
                     { path: "evaluations.results.kpis" },
                     { path: "taskActions.creator", model: User, select: 'name email avatar' },
@@ -2047,8 +2055,8 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
         { path: "parent", select: "name" },
         { path: "taskTemplate", select: "formula" },
         { path: "organizationalUnit", model: OrganizationalUnit },
-        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
-        { path: "evaluations.results.employee", select: "name email _id" },
+        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id active" },
+        { path: "evaluations.results.employee", select: "name email _id active" },
         { path: "evaluations.results.organizationalUnit", select: "name _id" },
         { path: "evaluations.results.kpis" },
         { path: "taskActions.creator", model: User, select: 'name email avatar' },
@@ -2059,14 +2067,15 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
         { path: "documents.creator", model: User, select: 'name email avatar' },
         { path: "followingTasks.task", model: Task, select: 'name' },
         { path: "preceedingTasks.task", model: Task, select: 'name' },
+        { path: "hoursSpentOnTask.contributions.employee", model: User, select: 'name' },
         {
             path: "process", model: TaskProcess, populate: {
                 path: "tasks", model: Task, populate: [
                     { path: "parent", select: "name" },
                     { path: "taskTemplate", select: "formula" },
                     { path: "organizationalUnit", model: OrganizationalUnit },
-                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
-                    { path: "evaluations.results.employee", select: "name email _id" },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id active" },
+                    { path: "evaluations.results.employee", select: "name email _id active" },
                     { path: "evaluations.results.organizationalUnit", select: "name _id" },
                     { path: "evaluations.results.kpis" },
                     { path: "taskActions.creator", model: User, select: 'name email avatar' },
@@ -2151,8 +2160,8 @@ exports.editHoursSpentInEvaluate = async (data, taskId) => {
         { path: "parent", select: "name" },
         { path: "taskTemplate", select: "formula" },
         { path: "organizationalUnit", model: OrganizationalUnit },
-        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
-        { path: "evaluations.results.employee", select: "name email _id" },
+        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id active" },
+        { path: "evaluations.results.employee", select: "name email _id active" },
         { path: "evaluations.results.organizationalUnit", select: "name _id" },
         { path: "evaluations.results.kpis" },
         { path: "taskActions.creator", model: User, select: 'name email avatar' },
@@ -2163,14 +2172,15 @@ exports.editHoursSpentInEvaluate = async (data, taskId) => {
         { path: "documents.creator", model: User, select: 'name email avatar' },
         { path: "followingTasks.task", model: Task, select: 'name' },
         { path: "preceedingTasks.task", model: Task, select: 'name' },
+        { path: "hoursSpentOnTask.contributions.employee", model: User, select: 'name' },
         {
             path: "process", model: TaskProcess, populate: {
                 path: "tasks", model: Task, populate: [
                     { path: "parent", select: "name" },
                     { path: "taskTemplate", select: "formula" },
                     { path: "organizationalUnit", model: OrganizationalUnit },
-                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
-                    { path: "evaluations.results.employee", select: "name email _id" },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id active" },
+                    { path: "evaluations.results.employee", select: "name email _id active" },
                     { path: "evaluations.results.organizationalUnit", select: "name _id" },
                     { path: "evaluations.results.kpis" },
                     { path: "taskActions.creator", model: User, select: 'name email avatar' },
@@ -2208,8 +2218,8 @@ exports.deleteEvaluation = async (params) => {
         { path: "parent", select: "name" },
         { path: "taskTemplate", select: "formula" },
         { path: "organizationalUnit", model: OrganizationalUnit },
-        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
-        { path: "evaluations.results.employee", select: "name email _id" },
+        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id active" },
+        { path: "evaluations.results.employee", select: "name email _id active" },
         { path: "evaluations.results.organizationalUnit", select: "name _id" },
         { path: "evaluations.results.kpis" },
         { path: "taskActions.creator", model: User, select: 'name email avatar' },
@@ -2220,14 +2230,15 @@ exports.deleteEvaluation = async (params) => {
         { path: "documents.creator", model: User, select: 'name email avatar' },
         { path: "followingTasks.task", model: Task, select: 'name' },
         { path: "preceedingTasks.task", model: Task, select: 'name' },
+        { path: "hoursSpentOnTask.contributions.employee", model: User, select: 'name' },
         {
             path: "process", model: TaskProcess, populate: {
                 path: "tasks", model: Task, populate: [
                     { path: "parent", select: "name" },
                     { path: "taskTemplate", select: "formula" },
                     { path: "organizationalUnit", model: OrganizationalUnit },
-                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
-                    { path: "evaluations.results.employee", select: "name email _id" },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id active" },
+                    { path: "evaluations.results.employee", select: "name email _id active" },
                     { path: "evaluations.results.organizationalUnit", select: "name _id" },
                     { path: "evaluations.results.kpis" },
                     { path: "taskActions.creator", model: User, select: 'name email avatar' },
@@ -2431,8 +2442,8 @@ exports.editActivateOfTask = async (taskID, body) => {
         { path: "parent", select: "name" },
         { path: "taskTemplate", select: "formula" },
         { path: "organizationalUnit", model: OrganizationalUnit },
-        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
-        { path: "evaluations.results.employee", select: "name email _id" },
+        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id active" },
+        { path: "evaluations.results.employee", select: "name email _id active" },
         { path: "evaluations.results.organizationalUnit", select: "name _id" },
         { path: "evaluations.results.kpis" },
         { path: "taskActions.creator", model: User, select: 'name email avatar' },
@@ -2443,14 +2454,15 @@ exports.editActivateOfTask = async (taskID, body) => {
         { path: "documents.creator", model: User, select: 'name email avatar' },
         { path: "followingTasks.task", model: Task, select: 'name' },
         { path: "preceedingTasks.task", model: Task, select: 'name' },
+        { path: "hoursSpentOnTask.contributions.employee", model: User, select: 'name' },
         {
             path: "process", model: TaskProcess, populate: {
                 path: "tasks", model: Task, populate: [
                     { path: "parent", select: "name" },
                     { path: "taskTemplate", select: "formula" },
                     { path: "organizationalUnit", model: OrganizationalUnit },
-                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
-                    { path: "evaluations.results.employee", select: "name email _id" },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id active" },
+                    { path: "evaluations.results.employee", select: "name email _id active" },
                     { path: "evaluations.results.organizationalUnit", select: "name _id" },
                     { path: "evaluations.results.kpis" },
                     { path: "taskActions.creator", model: User, select: 'name email avatar' },

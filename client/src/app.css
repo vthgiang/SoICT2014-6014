@@ -16,6 +16,9 @@ Ví dụ:
 </div>
 */
 
+
+
+
 div.qlcv div.selectmulti,
 div.qlcv > .form-inline > button, div.qlcv > .form-inline > .form-group > button,
 div.qlcv > .form-inline >.form-control, div.qlcv > .form-inline > .form-group >.form-control,
@@ -27,6 +30,19 @@ div.qlcv > .form-inline > div.react-dropdown-tree-select, div.qlcv > .form-inlin
 
 
 @media (min-width: 768px){
+    div.qlcv > .form-inline > .form-group,
+    div.qlcv > .form-group {
+        display: -ms-inline-flexbox;
+        display: -webkit-inline-flex;
+        display: inline-flex;
+
+        -ms-flex-align: center;
+        -webkit-align-items: center;
+        -webkit-box-align: center;
+
+        align-items: center;
+    }
+
     div.qlcv > .form-inline > div.selectmulti, div.qlcv > .form-inline > .form-group > div.selectmulti,
     div.qlcv > .form-inline > button, div.qlcv > .form-inline > .form-group > button,
     div.qlcv > .form-inline >.form-control, div.qlcv > .form-inline > .form-group > .form-control,
@@ -259,7 +275,7 @@ legend.legend-box-info {
     box-shadow: none;
     border: 1px solid #f4f4f4;
     padding: 5px 0 10px 10px;
-    line-height: 2.2;
+    line-height: 2.3;
     margin-top: 10px;
     margin-bottom: 10px;
 }
@@ -274,6 +290,7 @@ legend.legend-box-info {
 
 .description-box strong {
     font-weight: 600;
+    padding-right: 10px;
 }
 
 

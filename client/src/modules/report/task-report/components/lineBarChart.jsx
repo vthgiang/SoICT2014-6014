@@ -10,46 +10,12 @@ class LineBarChart extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            barAndLineChart: false,
-            pieChart: false,
         }
-    }
-
-
-    setDataMultiChart = (data) => {
-        let dataConvert = [['x']], typeChart = {};
-        let indices = { time: 0 }; // chỉ số time = 0 ứng với mảng x trong dataConvert 
-        if (data) {
-
-            data.forEach(x => {
-                dataConvert[indices.time].push(x.time);
-                x.tasks.forEach(({ code, value, chartType }) => {
-                    if (!(code in indices))
-                        indices[code] = dataConvert.push([code]) - 1;
-                    dataConvert[indices[code]].push(value);
-
-                    typeChart = { ...typeChart, [code]: chartType }; // lấy dạng biểu dồ cho từng trường thông tin để vẽ biểu đồ tương ứng( bar, line)
-                })
-            })
-        }
-
-        return { dataConvert, typeChart };
-    }
-
-
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.barLineChartData && nextProps.barLineChartData.length > 0) {
-            return {
-                ...prevState,
-                barAndLineChart: true,
-            }
-        }
-        return null;
     }
 
 
     shouldComponentUpdate(nextProps, nextState) {
-        if (nextProps.barLineChartData && nextProps.barLineChartData.length > 0) {
+        if (nextProps.barLineChartData) {
             this.renderBarAndLineChart(nextProps.barLineChartData);
         }
         return true;
@@ -57,13 +23,13 @@ class LineBarChart extends Component {
 
 
     componentDidMount() {
-        if (this.props.barLineChartData && this.props.barLineChartData.length > 0) {
+        if (this.props.barLineChartData) {
             this.renderBarAndLineChart(this.props.barLineChartData);
         }
     }
 
 
-    // Xóa các  barchart đã render khi chưa đủ dữ liệu
+    // Xóa các barchart đã render khi chưa đủ dữ liệu
     removePreviousBarChart() {
         const chart = this.refs.barChart;
         if (chart) {
@@ -74,7 +40,7 @@ class LineBarChart extends Component {
     }
 
 
-    // Xóa các  Piechart đã render khi chưa đủ dữ liệu
+    // Xóa các Piechart đã render khi chưa đủ dữ liệu
     removePrceviousPieChart() {
         const chart = this.refs.pieChart;
         if (chart) {
@@ -87,13 +53,12 @@ class LineBarChart extends Component {
 
     renderBarAndLineChart = (data) => {
         this.removePreviousBarChart();
-        data = this.setDataMultiChart(data);
 
         let newData = data.dataConvert;
 
         // set height cho biểu đồ
         let getLenghtData = newData[0].length;
-        let setHeightChart = (getLenghtData * 30) < 320 ? 320 : (getLenghtData * 60);
+        let setHeightChart = (getLenghtData * 40) < 320 ? 320 : (getLenghtData * 60);
         let typeChart = data.typeChart;
 
         this.chart = c3.generate({
@@ -121,7 +86,9 @@ class LineBarChart extends Component {
                 rotated: true,
                 x: {
                     type: 'category',
-
+                    tick: {
+                        multiline: true
+                    },
                 },
                 y: {
                     label: {

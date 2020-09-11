@@ -532,8 +532,8 @@ class GeneralTab extends Component {
         } = this.state;
 
         var userlist = user.list, departmentlist = department.list;
-        let startDate = status == "Đang sử dụng" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1].startDate) : '';
-        let endDate = status == "Đang sử dụng" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1].endDate) : '';
+        let startDate = status == "Đang sử dụng" && usageLogs && usageLogs.length ? this.formatDate(usageLogs[usageLogs.length - 1].startDate) : '';
+        let endDate = status == "Đang sử dụng" && usageLogs && usageLogs.length ? this.formatDate(usageLogs[usageLogs.length - 1].endDate) : '';
         var assettypelist = assetType.listAssetTypes;
         let typeInTreeSelect = [];
 
@@ -594,7 +594,7 @@ class GeneralTab extends Component {
 
                                 {/* Số serial */}
                                 <div className={`form-group ${!errorOnSerial ? "" : "has-error"} `}>
-                                    <label htmlFor="serial">{translate('asset.general_information.serial_number')}<span className="text-red">*</span></label>
+                                    <label htmlFor="serial">{translate('asset.general_information.serial_number')}</label>
                                     <input type="text" className="form-control" name="serial" value={serial} onChange={this.handleSerialChange} placeholder={translate('asset.general_information.serial_number')}
                                         autoComplete="off" />
                                     <ErrorLabel content={errorOnSerial} />
@@ -643,7 +643,7 @@ class GeneralTab extends Component {
 
                                 {/* Ngày bảo hành */}
                                 <div className={`form-group ${!errorOnWarrantyExpirationDate ? "" : "has-error"}`}>
-                                    <label htmlFor="warrantyExpirationDate">{translate('asset.general_information.warranty_expiration_date')}<span className="text-red">*</span></label>
+                                    <label htmlFor="warrantyExpirationDate">{translate('asset.general_information.warranty_expiration_date')}</label>
                                     <DatePicker
                                         id={`warrantyExpirationDate${id}`}
                                         value={warrantyExpirationDate ? this.formatDate(warrantyExpirationDate) : ''}
@@ -654,7 +654,7 @@ class GeneralTab extends Component {
 
                                 {/* Người quản lý */}
                                 <div className={`form-group${!errorOnManagedBy ? "" : "has-error"}`}>
-                                    <label>{translate('asset.general_information.manager')}<span className="text-red">*</span></label>
+                                    <label>{translate('asset.general_information.manager')}</label>
                                     <div id="managedByBox">
                                         <SelectBox
                                             id={`managedBy${id}`}
@@ -685,72 +685,13 @@ class GeneralTab extends Component {
                                 </div>
                             </div>
 
-                            {/* Người sử dụng */}
                             <div className="col-md-6">
-                                <div className={`form-group`}>
-                                    <label>{translate('asset.general_information.user')}&emsp; </label>
-                                    <div id="assignedToUserBox">
-                                        <SelectBox
-                                            id={`assignedToUserBox${assignedToUser}`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            value={assignedToUser}
-                                            items={[{ value: 'null', text: 'Chưa có người được giao sử dụng' }, ...userlist.map(x => { return { value: x.id, text: x.name + " - " + x.email } })]}
-                                            multiple={false}
-                                            disabled
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* Đơn vị sử dụng */}
-                                <div className="form-group">
-                                    <label>{translate('asset.general_information.organization_unit')}&emsp; </label>
-                                    <div id="assignedToOrganizationalUnitBox">
-                                        <SelectBox
-                                            id={`assignedToOrganizationalUnitBox${assignedToOrganizationalUnit}`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            items={[{ value: 'null', text: 'Chưa có đơn vị được giao sử dụng' }, ...departmentlist.map(x => { return { value: x._id, text: x.name } })]}
-                                            value={assignedToOrganizationalUnit}
-                                            multiple={false}
-                                            disabled
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* Thời gian bắt đầu sử dụng */}
-                                <div className="form-group">
-                                    <label>{translate('asset.general_information.handover_from_date')}&emsp; </label>
-                                    < DatePicker
-                                        id={`start-date${assignedToUser}-${assignedToOrganizationalUnit}`}
-                                        value={startDate}
-                                        disabled
-                                    />
-                                </div>
-
-                                {/* Thời gian kết thúc sử dụng */}
-                                <div className="form-group">
-                                    <label>{translate('asset.general_information.handover_to_date')}&emsp; </label>
-                                    < DatePicker
-                                        id={`end-date${assignedToUser}-${assignedToOrganizationalUnit}`}
-                                        value={endDate}
-                                        disabled
-                                    />
-                                </div>
-
 
                                 {/* Vị trí tài sản */}
                                 <div className={`form-group ${!errorOnLocation ? "" : "has-error"}`}>
                                     <label htmlFor="location">{translate('asset.general_information.asset_location')}</label>
                                     <TreeSelect data={buildingList} value={[location]} handleChange={this.handleLocationChange} mode="radioSelect" />
                                     <ErrorLabel content={errorOnLocation} />
-                                </div>
-
-                                {/* Mô tả */}
-                                <div className="form-group">
-                                    <label htmlFor="description">{translate('asset.general_information.description')}</label>
-                                    <input type="text" className="form-control" name="description" value={description} onChange={this.handleDescriptionChange} placeholder="Mô tả"
-                                        autoComplete="off" />
                                 </div>
 
                                 {/* Trạng thái */}
@@ -789,6 +730,64 @@ class GeneralTab extends Component {
                                         ]}
                                         onChange={this.handleTypeRegisterForUseChange}
                                     />
+                                </div>
+
+                                {/* Người sử dụng */}
+                                <div className={`form-group`}>
+                                    <label>{translate('asset.general_information.user')}&emsp; </label>
+                                    <div id="assignedToUserBox">
+                                        <SelectBox
+                                            id={`assignedToUserBox${assignedToUser}`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            value={assignedToUser ? assignedToUser : ""}
+                                            items={[{ value: 'null', text: 'Chưa có người được giao sử dụng' }, ...userlist.map(x => { return { value: x.id, text: x.name + " - " + x.email } })]}
+                                            multiple={false}
+                                            disabled
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Đơn vị sử dụng */}
+                                <div className="form-group">
+                                    <label>{translate('asset.general_information.organization_unit')}&emsp; </label>
+                                    <div id="assignedToOrganizationalUnitBox">
+                                        <SelectBox
+                                            id={`assignedToOrganizationalUnitBox${assignedToOrganizationalUnit}`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            items={[{ value: 'null', text: 'Chưa có đơn vị được giao sử dụng' }, ...departmentlist.map(x => { return { value: x._id, text: x.name } })]}
+                                            value={assignedToOrganizationalUnit ? assignedToOrganizationalUnit: ""}
+                                            multiple={false}
+                                            disabled
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Thời gian bắt đầu sử dụng */}
+                                <div className="form-group">
+                                    <label>{translate('asset.general_information.handover_from_date')}&emsp; </label>
+                                    < DatePicker
+                                        id={`start-date${assignedToUser}-${assignedToOrganizationalUnit}`}
+                                        value={startDate}
+                                        disabled
+                                    />
+                                </div>
+
+                                {/* Thời gian kết thúc sử dụng */}
+                                <div className="form-group">
+                                    <label>{translate('asset.general_information.handover_to_date')}&emsp; </label>
+                                    < DatePicker
+                                        id={`end-date${assignedToUser}-${assignedToOrganizationalUnit}`}
+                                        value={endDate}
+                                        disabled
+                                    />
+                                </div>
+                                
+                                {/* Mô tả */}
+                                <div className="form-group">
+                                    <label htmlFor="description">{translate('asset.general_information.description')}</label>
+                                    <textarea className="form-control" rows="3" name="description" value={description} onChange={this.handleDescriptionChange} placeholder="Enter ..." autoComplete="off" ></textarea>
                                 </div>
 
                             </div>
