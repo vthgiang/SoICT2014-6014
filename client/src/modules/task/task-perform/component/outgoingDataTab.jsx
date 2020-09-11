@@ -142,6 +142,7 @@ class OutgoingDataTab extends Component {
                         <div className="description-box outgoing-content">
                             <h4>{translate('task.task_process.list_of_data_and_info')}</h4>
 
+                            <strong>T{translate('task.task_process.information')}:</strong>
                             { /** Danh sách thông tin */
                                 task.taskInformations
                                     && task.taskInformations.length !== 0
@@ -160,10 +161,11 @@ class OutgoingDataTab extends Component {
                                             <span> - {info.type}</span>
                                         </div>
                                     )
-                                    : <div>{translate('task.task_process.not_have_info')}</div>
+                                    : <span>{translate('task.task_process.not_have_info')}</span>
                             }
 
-
+                            <div></div>
+                            <strong>{translate('task.task_process.document')}:</strong>
                             { /** Danh sách tài liệu */
                                 task.documents
                                     && task.documents.length !== 0
@@ -194,17 +196,23 @@ class OutgoingDataTab extends Component {
                                             }
                                         </div>
                                     )
-                                    : <div>{translate('task.task_process.not_have_doc')}</div>
+                                    : <span>{translate('task.task_process.not_have_doc')}</span>
                             }
-                            <button type="button" className="btn btn-success pull-right" style={{ margin: "2em 2em 50px 0px" }} onClick={() => this.handleSaveEdit()} disabled={this.DOCUMENT.length === 0 && this.INFORMATION.length === 0}>{translate('task.task_process.save')}</button>
+                            <div style={{ marginRight: 10 }}>
+                                <button type="button" style={{ width: "100%"}} className="btn btn-block btn-default" onClick={() => this.handleSaveEdit()} disabled={this.DOCUMENT.length === 0 && this.INFORMATION.length === 0}>{translate('task.task_process.save')}</button>
+                            </div>
 
 
                         </div>
+
                         { /** Trao đổi */}
-                        <CommentInProcess
-                            task={performtasks.task}
-                            inputAvatarCssClass="user-img-outgoing-level1"
-                        />
+                        <div className="description-box">
+                            <h4 style={{marginBottom: "1.3em"}}>Trao đổi với các công việc khác về dữ liệu ra</h4>
+                            <CommentInProcess
+                                task={performtasks.task}
+                                inputAvatarCssClass="user-img-outgoing-level1"
+                            />
+                        </div>
                     </React.Fragment>
 
                 }
