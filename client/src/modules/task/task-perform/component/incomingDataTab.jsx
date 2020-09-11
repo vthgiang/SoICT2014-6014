@@ -40,7 +40,7 @@ class IncomingDataTab extends Component {
                                 <h4>{task.name}</h4>
                                 {/** Danh sách thông tin */}
                                 <div><strong>{translate('task.task_process.information')}</strong></div>
-                                {/* {
+                                {
                                     task?.taskInformations?.length !== 0 ?
                                         task?.taskInformations.map((info, key) =>
                                             info.isOutput &&
@@ -53,7 +53,7 @@ class IncomingDataTab extends Component {
                                             </div>
                                         )
                                         : <div>{translate('task.task_process.not_export_info')}</div>
-                                } */}
+                                }
 
                                 {/** Danh sách tài liệu */}
                                 <div><strong>{translate('task.task_process.document')}</strong></div>
