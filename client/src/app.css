@@ -82,6 +82,18 @@ div.qlcv > .form-inline > div.react-dropdown-tree-select, div.qlcv > .form-inlin
 
 
 
+/* Ghi đè todolist của AdminLTE */
+.todo-list > li {
+    border: 1px solid #f4f4f4;
+    background: none;
+}
+.todo-list .handle {
+    cursor: none;
+}
+
+
+
+
 /* Css cho Link */
 a {
     color: #385898;
@@ -111,12 +123,11 @@ a:hover, a:active, a:focus {
 .c3-tooltip .value {
     width: 30%;
 }
-
-
 text.c3-axis-x-label, text.c3-axis-y-label {
     font-weight: bold;
     font-size: 120%
 }
+
 
 
 /*

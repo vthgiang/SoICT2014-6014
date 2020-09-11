@@ -941,12 +941,12 @@ class DetailTaskTab extends Component {
 
                                                 
                                                 {/* Thời gian bấm giờ */}
+                                                <strong>Thời gian đóng góp:</strong>
+                                                {showToolbar && <a style={{ cursor: "pointer" }} onClick={() => this.calculateHoursSpentOnTask(task._id, task.timesheetLogs, eva._id, eva.prevDate, eva.date)} title="Cập nhật thời gian bấm giờ">Nhấn chuột để cập nhật dữ liệu <i class="fa fa-fw fa-clock-o"></i></a>}
                                                 {
                                                     eva.results.length !== 0 && hoursSpentOfEmployeeInEvaluation[eva.date] && JSON.stringify(hoursSpentOfEmployeeInEvaluation[eva.date]) !== '{}'
                                                     &&
                                                     <React.Fragment>
-                                                        <strong>Thời gian đóng góp:</strong>
-                                                        {showToolbar && <a style={{ cursor: "pointer" }} onClick={() => this.calculateHoursSpentOnTask(task._id, task.timesheetLogs, eva._id, eva.prevDate, eva.date)} title="Cập nhật thời gian bấm giờ">Nhấn chuột để cập nhật dữ liệu <i class="fa fa-fw fa-clock-o"></i></a>}
                                                         <HoursSpentOfEmployeeChart
                                                             refs={"evaluationBox" + eva.date}
                                                             data={hoursSpentOfEmployeeInEvaluation[eva.date]}
