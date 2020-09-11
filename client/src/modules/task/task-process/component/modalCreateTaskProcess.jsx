@@ -24,7 +24,7 @@ import './processDiagram.css'
 ElementFactory.prototype._getDefaultSize = function (semantic) {
 
 	if (is(semantic, 'bpmn:Task')) {
-		return { width: 160, height: 130 };
+		return { width: 160, height: 150 };
 	}
 
 	if (is(semantic, 'bpmn:Gateway')) {
