@@ -1514,7 +1514,7 @@ class ActionTab extends Component {
                                                             <strong>{item.creator?.name} </strong>
                                                             {item.description}
                                                         </div>
-                                                        <ul style={{ listStyle: 'none' }}>
+                                                        <div>
                                                             {item.files.map((elem, index) => {
                                                                 return (
                                                                     <div key={index} className="show-files-task">
@@ -1530,14 +1530,15 @@ class ActionTab extends Component {
                                                                     </div>
                                                                 )
                                                             })}
-                                                        </ul>
+                                                        </div>
                                                     </div>
                                                 }
                                                 {showEditTaskFile === item._id &&
                                                     <React.Fragment>
-                                                        <div>
+                                                        <div style={{ marginTop: '15px' }}>
+                                                            <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
                                                             <ContentMaker
-                                                                inputCssClass="text-input-file-level1" controlCssClass="tool-level2 row"
+                                                                inputCssClass="text-input-level1" controlCssClass="tool-level2 row"
                                                                 // styletext={{ marginTop: "15px" }}
                                                                 onFilesChange={this.onEditFileTask}
                                                                 onFilesError={this.onFilesError}
