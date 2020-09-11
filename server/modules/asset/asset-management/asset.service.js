@@ -148,7 +148,6 @@ exports.searchAssetProfiles = async (params, company) => {
         let date = params.maintainCreateDate.split("-");
         let start = new Date(date[1], date[0] - 1, 1);
         let end = new Date(date[1], date[0], 1);
-
         keySearch = {
             ...keySearch,
             "maintainanceLogs.createDate": {
