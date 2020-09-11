@@ -23,8 +23,15 @@ class IncomingDataTab extends Component {
         const { translate } = this.props;
         let { task } = this.props
         let { showComment } = this.state
+        let information,document
         let listTask = [];
         if (task) {
+            if(task.taskInformations) {
+                information = task.taskInformations
+            }
+            if(task.document) {
+                document = task.document
+            }
             task.preceedingTasks.forEach(x => {
                 listTask.push(x.task)
             })
@@ -34,15 +41,14 @@ class IncomingDataTab extends Component {
                 {
                     listTask && listTask.map((task, key) =>
                         <React.Fragment
-                            key = {key}
                         >
                             <div key={key} className="description-box incoming-content">
                                 <h4>{task.name}</h4>
                                 {/** Danh sách thông tin */}
                                 <div><strong>{translate('task.task_process.information')}</strong></div>
                                 {
-                                    task?.taskInformations?.length !== 0 ?
-                                        task?.taskInformations.map((info, key) =>
+                                    information.length !== 0 ?
+                                    information.map((info, key) =>
                                             info.isOutput &&
                                             <div key={key}>
                                                 <ul>
@@ -58,8 +64,8 @@ class IncomingDataTab extends Component {
                                 {/** Danh sách tài liệu */}
                                 <div><strong>{translate('task.task_process.document')}</strong></div>
                                 {
-                                    task?.documents?.length !== 0
-                                        ? task?.documents.map((document, key) =>
+                                    document.length !== 0
+                                        ? document.map((document, key) =>
                                             document.isOutput &&
                                             <div key={key}>
                                                 <ul>

@@ -127,8 +127,6 @@ class ActionTab extends Component {
     }
 
     shouldComponentUpdate = (nextProps, nextState) => {
-        // let lang = getStorage("lang")
-        // moment.locale(lang)
         if (nextProps.id !== this.state.id) {
             this.setState(state => {
                 return {
@@ -801,6 +799,18 @@ class ActionTab extends Component {
             return false;
         }
     }
+
+    // abc = (url) => {
+    //     Swal.fire({
+    //         imageUrl: this.state.src,
+    //         imageHeight: 700,
+    //         imageAlt: 'A tall image'
+    //       })
+    // }
+
+    setSrc = (src) => {
+        this.setState({src: src});
+    }
     render() {
 
         let task, informations, statusTask, documents, actionComments, taskActions, taskComments, logTimer, logs;
@@ -1260,7 +1270,7 @@ class ActionTab extends Component {
                                                                         return <div key={index} className="show-files-task">
                                                                             {this.isImage(elem.name) ?
                                                                                 <React.Fragment>
-                                                                                    <ApiImage numberImage={numberImage} className="attachment-img files-attach" style={{ marginTop: "5px" }} id={`image-${elem?._id}`} src={elem.url} />
+                                                                                    <ApiImage numberImage={numberImage} setSrc={this.setSrc} onClick={() => this.abc(elem.url)} fileName={elem.name} className="attachment-img files-attach" style={{ marginTop: "5px" }} id={`image-${elem?._id}`} src={elem.url} />
                                                                                     <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
                                                                                 </React.Fragment>
                                                                                 : <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
