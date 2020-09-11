@@ -1249,6 +1249,11 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
     let { description, name, priority, status, formula, parent, startDate, endDate, progress, info, date,
         accountableEmployees, consultedEmployees, responsibleEmployees, informedEmployees, inactiveEmployees } = data;
 
+    // Chuẩn hóa parent 
+    if(parent === '') {
+        parent = null;
+    }
+
     // Chuẩn hóa ngày bắt đầu và ngày kết thúc
     let splitStartDate = startDate.split("-");
     let startOfTask = new Date(splitStartDate[2], splitStartDate[1] - 1, splitStartDate[0]);
@@ -2707,7 +2712,7 @@ exports.createComment = async (params, body, files) => {
                 }
             },
         ])
-    return comment.commentsInProcess;
+    return comment;
 }
 
 

@@ -1278,7 +1278,7 @@ exports.createTask = async (task) => {
         );
     }
 
-    let mail = await sendEmailFoCreateTask(task);
+    let mail = await this.sendEmailFoCreateTask(task);
 
     return { task: task, user: mail.user, email: mail.email, html: mail.html };
 }

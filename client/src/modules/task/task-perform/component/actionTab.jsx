@@ -1649,12 +1649,12 @@ class ActionTab extends Component {
                             {
                                 (task && task.process) &&
                                 <React.Fragment>
-                                    <IncomingDataTab
+                                    {/* <IncomingDataTab
                                         isIncomingData={task && task.preceedingTasks && task.preceedingTasks.length !== 0}
                                         taskId={task._id}
                                         task={task}
                                         infoTaskProcess={task.process.tasks}
-                                    />
+                                    /> */}
 
                                 </React.Fragment>
                             }
