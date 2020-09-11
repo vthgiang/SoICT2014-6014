@@ -265,3 +265,8 @@
 .outgoing-content {
     margin-bottom: 65px !important; 
 }
+
+.files-attach {
+    width: 40%;
+    height: 40%;
+}

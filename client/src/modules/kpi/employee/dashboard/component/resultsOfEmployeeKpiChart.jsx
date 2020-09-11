@@ -339,8 +339,6 @@ class ResultsOfEmployeeKpiChart extends Component {
                     <div className="form-group">
                         <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
                     </div>
-
-                   
                 </section>
 
                 <section ref="chart"></section>

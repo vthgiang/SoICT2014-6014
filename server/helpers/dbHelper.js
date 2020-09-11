@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-exports.connect = (dbName) => {
+exports.initConnect = (dbName) => {
     return mongoose.createConnection(
         `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/${dbName}`,
         process.env.DB_AUTHENTICATION === "true" ? 
@@ -18,4 +18,18 @@ exports.connect = (dbName) => {
             useFindAndModify: false,
         }
     );
+}
+
+exports.connect = (db, portal) => {
+    return db.useDb(portal, { useCache: true });
+}
+
+exports.initModels = (db, models) => {
+    /**
+     * db: 1 kết nối đến cơ sở dữ liệu nào đó 
+     * models: các models được khai báo trong thư mục models
+     */
+    for (const [key, model] of Object.entries(models)) {
+        if(!db.models[key]) model(db)
+    }
 }

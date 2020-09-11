@@ -101,6 +101,7 @@ class SelectBox extends Component {
             this.setState(state => {
                 return {
                     ...state,
+                    innerChange: true,
                     value
                 }
             });
@@ -188,9 +189,10 @@ class SelectBox extends Component {
         if (prevState.searching) {
             return null;
         }
-        if (nextProps.id !== prevState.id || !SelectBox.isEqual(nextProps.items, prevState.items) || nextProps.disabled !== prevState.disabled) {
+        if (nextProps.id !== prevState.id || !SelectBox.isEqual(nextProps.items, prevState.items) || nextProps.disabled !== prevState.disabled || nextProps.value !== prevState.value) {
             return {
-                value: nextProps.value, // Lưu value ban đầu vào state
+                value: prevState.innerChange ? prevState.value : nextProps.value, // Lưu value ban đầu vào state
+                innerChange: false,
                 id: nextProps.id,
                 items: nextProps.items,
                 disabled: nextProps.disabled !== undefined ? nextProps.disabled : false
@@ -215,8 +217,8 @@ class SelectBox extends Component {
 
             return true;
         }
-        // Chỉ render lại khi id thay đổi, hoặc khi tập items thay đổi, hoặc disabled thay đổi
-        if (nextProps.id !== this.state.id || !SelectBox.isEqual(nextProps.items, this.state.items) || (nextProps.disabled !== undefined ? nextProps.disabled : false) !== this.state.disabled)
+        // Chỉ render lại khi id thay đổi, hoặc khi tập items thay đổi, value thay đổi, hoặc disabled thay đổi
+        if (nextProps.id !== this.state.id || !SelectBox.isEqual(nextProps.items, this.state.items) || nextProps.value !== this.state.value || (nextProps.disabled !== undefined ? nextProps.disabled : false) !== this.state.disabled)
             return true;
         return false;;
     }

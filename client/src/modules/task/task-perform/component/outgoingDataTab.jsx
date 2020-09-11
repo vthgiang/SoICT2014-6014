@@ -134,7 +134,6 @@ class OutgoingDataTab extends Component {
     render() {
         const { translate, performtasks } = this.props;
         const { task, isOutputInformation, isOutputDocument } = this.state;
-        console.log(task)
         return (
             <React.Fragment>
                 {

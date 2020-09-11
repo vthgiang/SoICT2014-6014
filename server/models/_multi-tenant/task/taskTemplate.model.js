@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const TaskTemplateSchema = new Schema({
     organizationalUnit: {
         type: Schema.Types.ObjectId,
-        ref: 'organizational_units',
+        ref: 'OrganizationalUnit',
         //require: true
     },
     name: {
@@ -14,7 +14,7 @@ const TaskTemplateSchema = new Schema({
     },
     creator: {
         type: Schema.Types.ObjectId,
-        ref: 'users',
+        ref: 'User',
         //require: true
     },
     priority: { // 1: Thấp, 2: Trung Bình, 3: Cao
@@ -72,24 +72,24 @@ const TaskTemplateSchema = new Schema({
     }],
     readByEmployees: [{
         type: Schema.Types.ObjectId,
-        ref: 'roles',
+        ref: 'Role',
         //require: true
     }],
     responsibleEmployees: [{
         type: Schema.Types.ObjectId,
-        ref: 'users'
+        ref: 'User'
     }],
     accountableEmployees: [{
         type: Schema.Types.ObjectId,
-        ref: 'users'
+        ref: 'User'
     }],
     consultedEmployees: [{
         type: Schema.Types.ObjectId,
-        ref: 'users'
+        ref: 'User'
     }],
     informedEmployees: [{
         type: Schema.Types.ObjectId,
-        ref: 'users'
+        ref: 'User'
     }],
     description: {
         type: String,
@@ -112,4 +112,9 @@ const TaskTemplateSchema = new Schema({
 }, {
     timestamps: true
 });
-module.exports = TaskTemplate = (db) => db.model("task_templates", TaskTemplateSchema);
+
+module.exports = (db) => {
+    if(!db.models.TaskTemplate)
+        return db.model('TaskTemplate', TaskTemplateSchema);
+    return db.models.TaskTemplate;
+}

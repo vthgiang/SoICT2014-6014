@@ -148,7 +148,6 @@ exports.searchAssetProfiles = async (params, company) => {
         let date = params.maintainCreateDate.split("-");
         let start = new Date(date[1], date[0] - 1, 1);
         let end = new Date(date[1], date[0], 1);
-
         keySearch = {
             ...keySearch,
             "maintainanceLogs.createDate": {
@@ -156,6 +155,23 @@ exports.searchAssetProfiles = async (params, company) => {
                 $lte: end
             }
         }
+    }
+
+    // TÌM KIẾM TRONG SỰ CỐ
+
+    // Thêm key tìm kiếm tài sản theo mã sự cố
+    if (params.incidentCode) {
+        keySearch = { ...keySearch, "incidentLogs.incidentCode": { $regex: params.incidentCode, $options: "i" } }
+    }
+
+    // Thêm key tìm kiếm tài sản theo loại sự cố
+    if (params.incidentType) {
+        keySearch = { ...keySearch, "incidentLogs.type": { $in: params.incidentType } };
+    }
+
+    // Thêm key tìm kiếm tài sản theo trạng thái sự cố
+    if (params.incidentStatus) {
+        keySearch = { ...keySearch, "incidentLogs.statusIncident": { $in: params.incidentStatus } };
     }
 
     // Lấy danh sách tài sản

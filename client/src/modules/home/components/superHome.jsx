@@ -43,7 +43,6 @@ class SuperHome extends Component {
     }
 
     componentDidMount = async () => {
-        console.log('did home');
         await this.props.getResponsibleTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null, false);
         await this.props.getAccountableTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null, false);
         await this.props.getConsultedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null, false);
@@ -64,33 +63,33 @@ class SuperHome extends Component {
         });
     }
 
-    shouldComponentUpdate = async (nextProps, nextState) => {
-        if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
-            if (!nextProps.tasks.responsibleTasks || !nextProps.tasks.accountableTasks || !nextProps.tasks.consultedTasks || !nextProps.tasks.informedTasks || !nextProps.tasks.creatorTasks || !nextProps.tasks.tasksbyuser) {
-                return false;
-            }
+    // shouldComponentUpdate = async (nextProps, nextState) => {
+    //     if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
+    //         if (!nextProps.tasks.responsibleTasks || !nextProps.tasks.accountableTasks || !nextProps.tasks.consultedTasks || !nextProps.tasks.informedTasks || !nextProps.tasks.creatorTasks || !nextProps.tasks.tasksbyuser) {
+    //             return false;
+    //         }
 
-            this.setState(state => {
-                return {
-                    ...state,
-                    dataStatus: this.DATA_STATUS.AVAILABLE,
-                    callAction: true
-                }
-            });
-        } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE && nextState.willUpdate) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    dataStatus: this.DATA_STATUS.FINISHED,
-                    willUpdate: false       // Khi true sẽ cập nhật dữ liệu vào props từ redux
-                }
-            });
+    //         this.setState(state => {
+    //             return {
+    //                 ...state,
+    //                 dataStatus: this.DATA_STATUS.AVAILABLE,
+    //                 callAction: true
+    //             }
+    //         });
+    //     } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE && nextState.willUpdate) {
+    //         this.setState(state => {
+    //             return {
+    //                 ...state,
+    //                 dataStatus: this.DATA_STATUS.FINISHED,
+    //                 willUpdate: false       // Khi true sẽ cập nhật dữ liệu vào props từ redux
+    //             }
+    //         });
 
-            return true;
-        }
+    //         return true;
+    //     }
 
-        return false;
-    }
+    //     return false;
+    // }
 
     generateDataPoints(noOfDps) {
         let xVal = 1, yVal = 100;
@@ -149,13 +148,14 @@ class SuperHome extends Component {
             })
             let { startMonth, endMonth } = this.state;
 
-            this.props.getPaginateTasksByUser("[]", 1, 1000, "[]", "[]", "[]", null, startMonth, endMonth, null, null, true)
-
+            this.props.getResponsibleTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, startMonth, endMonth, null, null, true);
+            this.props.getAccountableTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, startMonth, endMonth, null, null, true);
+            this.props.getConsultedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, startMonth, endMonth, null, null, true);
+            this.props.getInformedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, startMonth, endMonth, null, null, true);
         }
     }
 
     render() {
-        console.log('renderrrrrrrrrr');
         const { tasks, translate } = this.props;
         const { startMonth, endMonth, willUpdate, callAction } = this.state;
 
@@ -215,7 +215,11 @@ class SuperHome extends Component {
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.tasks_calendar')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
                             </div>
-                            <TasksSchedule />
+                            <TasksSchedule
+                                startMonth={startMonth}
+                                endMonth={endMonth}
+                                home={true}
+                            />
                         </div>
 
                     </div>
@@ -302,7 +306,6 @@ const actionCreators = {
     getCreatorTaskByUser: taskManagementActions.getCreatorTaskByUser,
     getTaskByUser: taskManagementActions.getTasksByUser,
     getPaginateTasksByUser: taskManagementActions.getPaginateTasksByUser,
-
 };
 const connectedHome = connect(mapState, actionCreators)(withTranslate(SuperHome));
 export { connectedHome as SuperHome };

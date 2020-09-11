@@ -10,7 +10,7 @@ const RoleSchema = new Schema({
     },
     company: {
         type: Schema.Types.ObjectId,
-        ref: 'companies'
+        ref: 'Company'
     },
     parents: [{ // các roles cha. Role này sẽ có tất cả các quyền của những role cha khai báo trong mảng này
         type: Schema.Types.ObjectId,
@@ -18,7 +18,7 @@ const RoleSchema = new Schema({
     }],
     type: {
         type: Schema.Types.ObjectId,
-        ref: 'role_types'
+        ref: 'RoleType'
     }
 },{
     timestamps: true,
@@ -26,23 +26,27 @@ const RoleSchema = new Schema({
 });
 
 RoleSchema.virtual('users', {
-    ref: 'user_roles',
+    ref: 'UserRole',
     localField: '_id',
     foreignField: 'roleId'
 });
 
 RoleSchema.virtual('links', {
-    ref: 'privileges',
+    ref: 'Privilege',
     localField: '_id',
     foreignField: 'roleId'
 });
 
 RoleSchema.virtual('components', {
-    ref: 'privileges',
+    ref: 'Privilege',
     localField: '_id',
     foreignField: 'roleId'
 });
 
 RoleSchema.plugin(mongoosePaginate);
 
-module.exports = Role = (db) => db.model("roles", RoleSchema);
+module.exports = (db) => {
+    if(!db.models.Role) 
+        return db.model('Role', RoleSchema);
+    return db.models.Role;
+}
