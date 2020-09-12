@@ -242,11 +242,11 @@
 }
 
 .progress-task-process {
-    font-size: 20px; 
-    max-width: 30px;
+    font-size: 15px; 
+    max-width: 40px;
     max-height: 25px;
     margin-bottom: 5px;
-    margin-right: 3px;
+    margin-right: 7px;
     font-weight: bold;
 }
 

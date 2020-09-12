@@ -800,16 +800,9 @@ class ActionTab extends Component {
         }
     }
 
-    // abc = (url) => {
-    //     Swal.fire({
-    //         imageUrl: this.state.src,
-    //         imageHeight: 700,
-    //         imageAlt: 'A tall image'
-    //       })
-    // }
 
     setSrc = (src) => {
-        this.setState({src: src});
+        this.setState({ src: src });
     }
     render() {
 
@@ -865,7 +858,6 @@ class ActionTab extends Component {
                             {typeof taskActions !== 'undefined' && taskActions.length !== 0 ?
                                 // Hiển thị hoạt động của công việc
                                 taskActions.map(item => {
-                                    // if (item.parent === null)
                                     return (
                                         <div key={item._id}>
                                             {item.creator ?
@@ -909,7 +901,7 @@ class ActionTab extends Component {
                                                         {/* Các chức năng tương tác với action */}
                                                         {item.creator &&
                                                             <React.Fragment>
-                                                                <li><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => { this.handleShowEvaluations(item._id) }}><i className="fa fa-thumbs-o-up margin-r-5"></i>{translate("task.task_perform.evaluation")} ({item.evaluations && item.evaluations.length})</a></li>
+                                                                {item.evaluations && item.evaluations.length > 0 && <li><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => { this.handleShowEvaluations(item._id) }}><i className="fa fa-thumbs-o-up margin-r-5"></i>{translate("task.task_perform.evaluation")} ({item.evaluations && item.evaluations.length})</a></li>}
                                                                 {(role === "accountable" || role === "consulted" || role === "creator" || role === "informed") &&
                                                                     <li style={{ display: "inline-table" }} className="list-inline">
                                                                         {(
@@ -948,52 +940,49 @@ class ActionTab extends Component {
                                                         {/* Các kết quả đánh giá của action */}
 
                                                         {showEvaluations.some(obj => obj === item._id) &&
-                                                            <React.Fragment>
-                                                                <div style={{ marginBottom: 10 }}>
-                                                                    <ul className="list-inline">
-                                                                        <li style={{ marginLeft: '0px' }}>
-                                                                            {typeof item.evaluations !== 'undefined' && item.evaluations.length !== 0 &&
-                                                                                item.evaluations.map(element => {
-                                                                                    if (task) {
-                                                                                        if (task.accountableEmployees.some(obj => obj._id === element.creator._id)) {
-                                                                                            return <div>
-                                                                                                <ul className="list-inline">
-                                                                                                    <li><b>{element.creator.name} - {element.rating}/10 </b></li>
-                                                                                                    <li></li>
-                                                                                                </ul>
+                                                            <div style={{ marginBottom: "10px" }}>
+                                                                <ul className="list-inline">
+                                                                    <li>
+                                                                        {typeof item.evaluations !== 'undefined' && item.evaluations.length !== 0 &&
+                                                                            item.evaluations.map(element => {
+                                                                                if (task) {
+                                                                                    if (task.accountableEmployees.some(obj => obj._id === element.creator._id)) {
+                                                                                        return <div>
+                                                                                            <ul className="list-inline">
+                                                                                                <li><b>{element.creator.name} - {element.rating}/10 </b></li>
+                                                                                                <li></li>
+                                                                                            </ul>
 
-                                                                                            </div>
-                                                                                        }
-                                                                                        if (task.accountableEmployees.some(obj => obj._id !== element.creator._id)) {
-                                                                                            return <div> {element.creator.name} - {element.rating}/10 </div>
-                                                                                        }
+                                                                                        </div>
                                                                                     }
-                                                                                })
-                                                                            }
-                                                                        </li>
-                                                                        {item.evaluations.some(checkUserId) &&
-                                                                            <React.Fragment>
-                                                                                <li>{translate("task.task_perform.re_evaluation")}</li>
-                                                                                <li>
-                                                                                    <Rating
-                                                                                        fractions={2}
-                                                                                        emptySymbol="fa fa-star-o fa-2x high"
-                                                                                        fullSymbol="fa fa-star fa-2x high"
-                                                                                        initialRating={0}
-                                                                                        onClick={(value) => {
-                                                                                            this.setValueRating(item._id, task._id, value, 0);
-                                                                                        }}
-                                                                                        onHover={(value) => {
-                                                                                            this.setHover(item._id, value)
-                                                                                        }}
-                                                                                    />
-                                                                                    <div style={{ display: "inline", marginLeft: "5px" }}>{this.hover[item._id]}</div> </li>
-                                                                            </React.Fragment>
+                                                                                    if (task.accountableEmployees.some(obj => obj._id !== element.creator._id)) {
+                                                                                        return <div> {element.creator.name} - {element.rating}/10 </div>
+                                                                                    }
+                                                                                }
+                                                                            })
                                                                         }
-                                                                    </ul>
-
-                                                                </div>
-                                                            </React.Fragment>
+                                                                    </li>
+                                                                    {item.evaluations.some(checkUserId) &&
+                                                                        <React.Fragment>
+                                                                            <li>{translate("task.task_perform.re_evaluation")}</li>
+                                                                            <li>
+                                                                                <Rating
+                                                                                    fractions={2}
+                                                                                    emptySymbol="fa fa-star-o fa-2x high"
+                                                                                    fullSymbol="fa fa-star fa-2x high"
+                                                                                    initialRating={0}
+                                                                                    onClick={(value) => {
+                                                                                        this.setValueRating(item._id, task._id, value, 0);
+                                                                                    }}
+                                                                                    onHover={(value) => {
+                                                                                        this.setHover(item._id, value)
+                                                                                    }}
+                                                                                />
+                                                                                <div style={{ display: "inline", marginLeft: "5px" }}>{this.hover[item._id]}</div> </li>
+                                                                        </React.Fragment>
+                                                                    }
+                                                                </ul>
+                                                            </div>
                                                         }
                                                         {/* Các file đính kèm của action */}
                                                         {showFile.some(obj => obj === item._id) &&
@@ -1001,10 +990,13 @@ class ActionTab extends Component {
                                                                 {item.files.map((elem, index) => {
                                                                     return <div key={index} className="show-files-task">
                                                                         {this.isImage(elem.name) ?
-                                                                            <React.Fragment>
-                                                                                <ApiImage className="attachment-img files-attach" style={{ marginTop: "5px" }} id={`image-${elem?._id}`} src={elem.url} />
-                                                                                <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
-                                                                            </React.Fragment>
+                                                                            <ApiImage 
+                                                                                className="attachment-img files-attach"
+                                                                                style={{ marginTop: "5px" }}
+                                                                                src={elem.url}
+                                                                                file={elem}
+                                                                                requestDownloadFile={this.requestDownloadFile}
+                                                                            />
                                                                             :
                                                                             <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
                                                                         }
@@ -1101,10 +1093,13 @@ class ActionTab extends Component {
                                                                                 {child.files.map((elem, index) => {
                                                                                     return <div key={index} className="show-files-task">
                                                                                         {this.isImage(elem.name) ?
-                                                                                            <React.Fragment>
-                                                                                                <ApiImage className="attachment-img files-attach" style={{ marginTop: "5px",cursor: "pointer" }} id={`image-${elem._id}`} src={elem.url} />
-                                                                                                <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
-                                                                                            </React.Fragment>
+                                                                                            <ApiImage 
+                                                                                                className="attachment-img files-attach" 
+                                                                                                style={{ marginTop: "5px"}} 
+                                                                                                src={elem.url}
+                                                                                                file={elem} 
+                                                                                                requestDownloadFile={this.requestDownloadFile}
+                                                                                            />
                                                                                             :
                                                                                             <a style={{ cursor: "pointer" }} style={{ marginTop: "5px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
                                                                                         }
@@ -1142,7 +1137,6 @@ class ActionTab extends Component {
                                                                         {child.files.length > 0 &&
                                                                             <div className="tool-level2" style={{ marginTop: -15 }}>
                                                                                 {child.files.map((file, index) => {
-                                                                                    { console.log("abc") }
                                                                                     return <div key={index}>
                                                                                         <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { this.handleDeleteFile(file._id, file.name, item._id, "commentofaction") }}><i className="fa fa-times"></i></a>
                                                                                     </div>
@@ -1269,10 +1263,13 @@ class ActionTab extends Component {
                                                                     <li style={{ display: "inline-table" }}>{item.files.map((elem, index) => {
                                                                         return <div key={index} className="show-files-task">
                                                                             {this.isImage(elem.name) ?
-                                                                                <React.Fragment>
-                                                                                    <ApiImage numberImage={numberImage} setSrc={this.setSrc} onClick={() => this.abc(elem.url)} fileName={elem.name} className="attachment-img files-attach" style={{ marginTop: "5px" }} id={`image-${elem?._id}`} src={elem.url} />
-                                                                                    <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
-                                                                                </React.Fragment>
+                                                                                <ApiImage
+                                                                                    className="attachment-img files-attach"
+                                                                                    style={{ marginTop: "5px" }}
+                                                                                    src={elem.url}
+                                                                                    file={elem}
+                                                                                    requestDownloadFile={this.requestDownloadFile}
+                                                                                />
                                                                                 : <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
                                                                             }
                                                                         </div>
@@ -1375,10 +1372,13 @@ class ActionTab extends Component {
                                                                                         {child.files.map((elem, index) => {
                                                                                             return <div key={index} className="show-files-task">
                                                                                                 {this.isImage(elem.name) ?
-                                                                                                    <React.Fragment>
-                                                                                                        <ApiImage className="attachment-img files-attach" style={{ marginTop: "5px" }} id={`image-${elem?._id}`} src={elem.url} />
-                                                                                                        <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
-                                                                                                    </React.Fragment>
+                                                                                                    <ApiImage
+                                                                                                        className="attachment-img files-attach"
+                                                                                                        style={{ marginTop: "5px" }}
+                                                                                                        src={elem.url}
+                                                                                                        file={elem}
+                                                                                                        requestDownloadFile={this.requestDownloadFile}
+                                                                                                    />
                                                                                                     :
                                                                                                     <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
                                                                                                 }
@@ -1519,10 +1519,13 @@ class ActionTab extends Component {
                                                                 return (
                                                                     <div key={index} className="show-files-task">
                                                                         {this.isImage(elem.name) ?
-                                                                            <React.Fragment>
-                                                                                <ApiImage className="attachment-img files-attach" style={{ marginTop: "5px" }} id={`image-${elem?._id}`} src={elem.url} />
-                                                                                <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
-                                                                            </React.Fragment>
+                                                                            <ApiImage
+                                                                                className="attachment-img files-attach"
+                                                                                style={{ marginTop: "5px" }}
+                                                                                src={elem.url}
+                                                                                file={elem}
+                                                                                requestDownloadFile={this.requestDownloadFile}
+                                                                            />
                                                                             :
                                                                             <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
                                                                         }
