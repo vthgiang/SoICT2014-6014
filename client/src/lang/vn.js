@@ -939,6 +939,7 @@ export default {
             salary: {
                 // list_salary: 'Danh sách bảng lương nhân viên',
                 file_name_export: 'Bảng theo dõi lương thưởng',
+                other_salary: 'Lương thưởng khác',
 
                 // Nhóm dành cho table
                 table: {
@@ -987,7 +988,7 @@ export default {
 
             // Quản lý nghỉ phép
             annual_leave: {
-                // list_annual_leave: 'Danh sách đơn xin nghỉ',
+                file_export_name: 'Bảng thống kê nghỉ phép',
 
                 // Nhóm dành cho table
                 table: {
@@ -1174,6 +1175,7 @@ export default {
                 religion: 'Tôn giáo',
                 active: 'Đang làm việc',
                 leave: 'Đã nghỉ làm',
+                status_work: 'Tình trạng lao động',
 
                 mobile_phone: 'Điện thoại di động',
                 mobile_phone_1: 'Điện thoại di động 1',

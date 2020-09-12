@@ -917,6 +917,7 @@ export default {
             salary: {
                 // list_salary: 'List of staff salary',
                 file_name_export: 'Salary tracking table',
+                other_salary: 'Other salary',
 
                 // Nhóm dành cho table
                 table: {
@@ -965,7 +966,7 @@ export default {
 
             // Quản lý nghỉ phép
             annual_leave: {
-                // list_annual_leave: 'List of staff annual leave',
+                file_export_name: 'Annual leave statistics table',
 
                 // Nhóm dành cho table
                 table: {
@@ -1152,6 +1153,7 @@ export default {
                 religion: 'Religion',
                 active: 'Working',
                 leave: 'Quit job',
+                status_work: 'Labor status',
 
                 mobile_phone: 'Mobile phone',
                 mobile_phone_1: 'Mobile phone 1',

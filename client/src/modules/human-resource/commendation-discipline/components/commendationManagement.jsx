@@ -157,6 +157,7 @@ class CommendationManagement extends Component {
             dataSheets: [
                 {
                     sheetName: "sheet1",
+                    sheetTitle: translate('human_resource.commendation_discipline.commendation.file_name_export'),
                     tables: [
                         {
                             columns: [

@@ -155,6 +155,7 @@ class DisciplineManager extends Component {
             dataSheets: [
                 {
                     sheetName: "sheet1",
+                    sheetTitle: translate('human_resource.commendation_discipline.discipline.file_name_export'),
                     tables: [
                         {
                             columns: [

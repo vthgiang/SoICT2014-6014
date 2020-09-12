@@ -139,14 +139,16 @@ class ManageHoliday extends Component {
         });
         let exportData = {
             fileName: translate('human_resource.holiday.file_name_export'),
+
             dataSheets: [
                 {
                     sheetName: "sheet1",
+                    sheetTitle: translate('human_resource.holiday.file_name_export'),
                     tables: [
                         {
                             columns: [
                                 { key: "STT", value: translate('human_resource.stt') },
-                                { key: 'type', value: translate('human_resource.holiday.table.type') },
+                                { key: 'type', value: translate('human_resource.holiday.table.type'), width: 35 },
                                 { key: "startDate", value: translate('human_resource.holiday.table.start_date') },
                                 { key: "endDate", value: translate('human_resource.holiday.table.end_date') },
                                 { key: "description", value: translate('human_resource.holiday.table.describe_timeline'), },

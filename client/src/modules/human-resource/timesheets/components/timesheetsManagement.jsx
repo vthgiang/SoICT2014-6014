@@ -289,7 +289,7 @@ class TimesheetsManagement extends Component {
         const { month, limit, page, allDayOfMonth, dayNow, organizationalUnit, currentRow } = this.state;
 
         let listTimesheets = [], exportData = [];
-        if (timesheets.isLoading === false && timesheets.listTimesheets.length !== 0) {
+        if (timesheets.isLoading === false) {
             listTimesheets = timesheets.listTimesheets;
             exportData = this.convertDataToExportData(listTimesheets);
         }
@@ -329,6 +329,7 @@ class TimesheetsManagement extends Component {
                             <input type="text" className="form-control" name="employeeNumber" onChange={this.handleMSNVChange} placeholder={translate('human_resource.staff_number')} autoComplete="off" />
                         </div>
                     </div>
+
                     <div className="form-inline" style={{ marginBottom: 10 }}>
                         {/* Tháng */}
                         <div className="form-group">
@@ -346,17 +347,20 @@ class TimesheetsManagement extends Component {
                             <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => this.handleSunmitSearch()} >{translate('general.search')}</button>
                         </div>
                     </div>
+
                     <div className="form-inline">
                         <label>{translate('human_resource.timesheets.symbol')}: &emsp; &emsp; </label><i style={{ color: "#08b30e", fontSize: 19 }} className="glyphicon glyphicon-ok"></i><span> -- {translate('human_resource.timesheets.do_work')} </span>
                                             &emsp;&emsp;&emsp;<i style={{ color: "red", fontSize: 19 }} className="glyphicon glyphicon-remove"></i><span> -- {translate('human_resource.timesheets.not_work')}</span>
 
                     </div>
+
                     <DataTableSetting
                         tableId="table-timesheets"
                         limit={this.state.limit}
                         setLimit={this.setLimit}
                         hideColumnOption={false}
                     />
+
                     <div id="croll-table" className="form-inline">
                         <div className="sticky col-lg-4 col-md-4 col-sm-6 col-xs-7 " style={{ padding: 0 }}>
                             <table id="table-timesheets" className="keeping table table-bordered">
