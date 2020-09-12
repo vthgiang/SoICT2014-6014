@@ -1151,7 +1151,7 @@ export default {
                     menu_attachments_title: 'Tài liệu đính kèm',
                 },
 
-                staff_number: 'Mã số nhân viên',
+                staff_number: 'Mã nhân viên',
                 full_name: 'Họ và tên',
                 attendance_code: 'Mã số chấm công',
                 gender: 'Giới tính',
@@ -1187,7 +1187,7 @@ export default {
                 nexus: 'Quan hệ',
                 address: 'Địa chỉ',
                 permanent_address: 'Hộ khẩu thường trú',
-                current_residence: 'Chỗ ở hiện tại',
+                current_residence: 'Nơi ở hiện tại',
                 wards: 'Xã/Phường',
                 district: 'Huyện/Quận',
                 province: 'Tỉnh/Thành phố',
@@ -1231,14 +1231,14 @@ export default {
 
 
                 bank_account: 'Tài khoản ngân hàng',
-                personal_income_tax: 'Thuế thu nhập cá nhân',
+                personal_income_tax: 'Mã số thuế thu nhập cá nhân',
                 account_number: 'Số tài khoản',
                 bank_name: 'Tên ngân hàng',
                 bank_branch: 'Chi nhánh',
                 tax_number: 'Mã số thuế',
-                representative: 'Người đại diện',
-                day_active: 'Ngày hoạt động',
-                managed_by: 'Quản lý bởi',
+                representative: 'Đại diện của người nộp thuế',
+                day_active: 'Ngày cấp mã số thuế',
+                managed_by: 'Cơ quan quản lý thuế',
 
                 bhyt: 'Bảo hiểm y tế',
                 number_BHYT: 'Mã số BHYT',
@@ -1332,6 +1332,34 @@ export default {
                 },
 
                 employee_management: {
+                    // Nhóm dánh cho export excel
+                    file_export_name: 'Thông tin nhân viên',
+                    export: {
+                        sheet1: '1.Nhân viên',
+                        sheet2: '2.HS Nhân viên - Kinh nghiệm',
+                        sheet3: '3.HS Nhân viên - Bằng cấp',
+                        sheet4: '4.HS Nhân viên - Chứng chỉ',
+                        sheet5: '5.HS Nhân viên - Hợp đồng',
+                        sheet6: '6.HS Nhân viên - Bảo hiểm XH',
+                        sheet7: '7.HS Nhân viên - Tài liệu',
+                        sheet8: '8.HS Nhân viên - Khen thưởng',
+                        sheet9: '9.HS Nhân viên - Kỷ luật',
+                        sheet10: '10.HS Nhân viên - Lương thưởng',
+                        sheet11: '11.HS Nhân viên - Nghỉ phép',
+
+                        emergency_contact_person: 'Người liên hệ khẩn cấp',
+                        relation_with_emergency_contact_person: 'Quan hệ với người liên hệ khẩn cấp',
+                        emergency_contact_person_address: 'Địa chỉ người liên hệ khẩn cấp',
+                        emergency_contact_person_phone_number: 'Điện thoại di động người liên hệ khẩn cấp',
+                        emergency_contact_person_home_nhone: 'Điện thoại nhà riêng người liên hệ khẩn cấp',
+                        emergency_contact_person_email: 'Email người liên hệ khẩn cấp',
+                        atmNumber: 'Số tài khoản ngân hàng',
+                        bank_address: 'Chi nhánh ngân hàng',
+                        health_insurance_start_date: 'Ngày BHYT có hiệu lực',
+                        health_insurance_end_date: 'Ngày BHYT hết hạn',
+
+                    },
+
                     // Nhón dành cho UI
                     have: 'Có',
                     staff: 'nhân viên',

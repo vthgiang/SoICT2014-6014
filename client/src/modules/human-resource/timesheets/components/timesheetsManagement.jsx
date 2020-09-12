@@ -266,9 +266,9 @@ class TimesheetsManagement extends Component {
                             }],
                             rowHeader: 2,
                             columns: [
-                                { key: "STT", value: translate('human_resource.stt'), width: 5 },
+                                { key: "STT", value: translate('human_resource.stt'), width: 7 },
                                 { key: "employeeNumber", value: translate('human_resource.staff_number') },
-                                { key: "fullName", value: translate('human_resource.staff_name') },
+                                { key: "fullName", value: translate('human_resource.staff_name'), width: 20 },
                                 { key: "space", value: "", width: '10' },
                                 ...addColumns,
                                 { key: "total", value: translate('human_resource.timesheets.total_timesheets') },

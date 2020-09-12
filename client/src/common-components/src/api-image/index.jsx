@@ -7,7 +7,7 @@ import { AuthActions } from '../../../modules/auth/redux/actions';
 
 class ApiImage extends Component {
     static DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
-    
+
     constructor(props) {
         super(props);
         this.state = {
@@ -75,14 +75,14 @@ class ApiImage extends Component {
 
 
     render() {
-        const { className, style={cursor: "pointer"}, alt="File not available" , file, requestDownloadFile} = this.props;
+        const { className, style = { cursor: "pointer" }, alt = "File not available", file, requestDownloadFile } = this.props;
 
         let { image } = this.state;
 
         return (
             <React.Fragment>
-            <img className={className} style={style} src={image} alt={alt} onClick={this.showImage}/>
-            <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => requestDownloadFile(e, file.url, file.name)}> {file.name} </a>
+                <img className={className} style={style} src={image} alt={alt} onClick={this.showImage} />
+                {file && <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => requestDownloadFile(e, file.url, file.name)}> {file.name} </a>}
             </React.Fragment>
         );
     }

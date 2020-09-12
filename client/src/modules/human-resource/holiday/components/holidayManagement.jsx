@@ -147,7 +147,7 @@ class ManageHoliday extends Component {
                     tables: [
                         {
                             columns: [
-                                { key: "STT", value: translate('human_resource.stt') },
+                                { key: "STT", value: translate('human_resource.stt'), width: 7 },
                                 { key: 'type', value: translate('human_resource.holiday.table.type'), width: 35 },
                                 { key: "startDate", value: translate('human_resource.holiday.table.start_date') },
                                 { key: "endDate", value: translate('human_resource.holiday.table.end_date') },

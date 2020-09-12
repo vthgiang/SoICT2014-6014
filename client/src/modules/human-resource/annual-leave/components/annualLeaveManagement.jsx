@@ -201,10 +201,10 @@ class AnnualLeaveManagement extends Component {
                     tables: [
                         {
                             columns: [
-                                { key: "STT", value: translate('human_resource.stt') },
+                                { key: "STT", value: translate('human_resource.stt'), width: 7 },
                                 { key: "employeeNumber", value: translate('human_resource.staff_number') },
-                                { key: "fullName", value: translate('human_resource.staff_name') },
-                                { key: "organizationalUnit", value: translate('human_resource.unit') },
+                                { key: "fullName", value: translate('human_resource.staff_name'), width: 20 },
+                                { key: "organizationalUnit", value: translate('human_resource.unit'), width: 25 },
                                 { key: "startDate", value: translate('human_resource.annual_leave.table.start_date') },
                                 { key: "endDate", value: translate('human_resource.annual_leave.table.end_date') },
                                 { key: "reason", value: translate('human_resource.annual_leave.table.reason') },

@@ -1312,6 +1312,33 @@ export default {
                 },
 
                 employee_management: {
+                    // Nhóm dánh cho export excel
+                    file_export_name: 'Staffs imformation',
+                    export: {
+                        sheet1: '1.Nhân viên',
+                        sheet2: '2.HS Nhân viên - Kinh nghiệm',
+                        sheet3: '3.HS Nhân viên - Bằng cấp',
+                        sheet4: '4.HS Nhân viên - Chứng chỉ',
+                        sheet5: '5.HS Nhân viên - Hợp đồng',
+                        sheet6: '6.HS Nhân viên - Bảo hiểm XH',
+                        sheet7: '7.HS Nhân viên - Tài liệu',
+                        sheet8: '8.HS Nhân viên - Khen thưởng',
+                        sheet9: '9.HS Nhân viên - Kỷ luật',
+                        sheet10: '10.HS Nhân viên - Lương thưởng',
+                        sheet11: '11.HS Nhân viên - Nghỉ phép',
+
+                        emergency_contact_person: 'Người liên hệ khẩn cấp',
+                        relation_with_emergency_contact_person: 'Quan hệ với người liên hệ khẩn cấp',
+                        emergency_contact_person_address: 'Địa chỉ người liên hệ khẩn cấp',
+                        emergency_contact_person_phone_number: 'Điện thoại di động người liên hệ khẩn cấp',
+                        emergency_contact_person_home_nhone: 'Điện thoại nhà riêng người liên hệ khẩn cấp',
+                        emergency_contact_person_email: 'Email người liên hệ khẩn cấp',
+                        atmNumber: 'Số tài khoản ngân hàng',
+                        bank_address: 'Chi nhánh ngân hàng',
+                        health_insurance_start_date: 'Ngày BHYT có hiệu lực',
+                        health_insurance_end_date: 'Ngày BHYT hết hạn',
+                    },
+
                     // Nhón dành cho UI
                     have: 'Have',
                     staff: 'staff',
