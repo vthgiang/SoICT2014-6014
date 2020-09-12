@@ -689,6 +689,9 @@ const actionCreators = {
     editEmployeeKpiSet: createKpiSetActions.editEmployeeKpiSet,
     deleteEmployeeKpiSet: createKpiSetActions.deleteEmployeeKpiSet,
     updateEmployeeKpiSetStatus: createKpiSetActions.updateEmployeeKpiSetStatus,
+    getCurrentKPIUnit: createUnitKpiActions.getCurrentKPIUnit,
+
+
 };
 
 const connectedCreateEmployeeKpiSet = connect(mapState, actionCreators)(withTranslate(CreateEmployeeKpiSet));
