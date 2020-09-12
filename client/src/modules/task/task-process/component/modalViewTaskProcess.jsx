@@ -188,56 +188,36 @@ class ModalViewTaskProcess extends Component {
                             </ul>
                             <div className="tab-content">
                                 <div className={selectedView === "info" ? "active tab-pane" : "tab-pane"} id="info-view">
-                                    <div className="row">
+                                    <div className="description-box without-border">
                                         {/* Thông tin chung */}
-                                        <div className="col-md-6">
-                                            <div className="box">
-                                                <div className="box-header with-border">
-                                                    {translate("task.task_process.general_infomation")}
-                                                </div>
-                                                <div className="box-body">
-                                                    <dt>{translate("task.task_process.process_name")}</dt>
-                                                    <dd>{processName}</dd>
-
-                                                    <dt>{translate("task.task_process.process_description")}</dt>
-                                                    <dd>{processDescription}</dd>
-                                                </div>
-                                            </div>
+                                        <div>
+                                            <strong>{translate("task.task_process.process_name")}:</strong>
+                                            <span>{processName}</span>
                                         </div>
+                                        <div>
+                                            <strong>{translate("task.task_process.process_description")}:</strong>
+                                            <span>{processDescription}</span>
+                                        </div>
+
+
                                         {/* Người xem, quản lý */}
-                                        <div className="col-md-6">
-                                            <div className="box">
-                                                <div className="box-header with-border">
-                                                    {translate("task.task_process.roles")}
-                                                </div>
-                                                <div className="box-body">
-                                                    <dt>{translate("task.task_process.viewer")}</dt>
-                                                    <dd>
-                                                        <ul>
-                                                            {
-                                                                listViewer.map((x, key) => {
-                                                                    return <li key={key}>{x.text}</li>
-                                                                })
-                                                            }
-                                                        </ul>
-                                                    </dd>
-
-                                                    <dt>{translate("task.task_process.manager")}</dt>
-                                                    <dd>
-                                                        <ul>
-                                                            {
-                                                                listManager.map((x, key) => {
-                                                                    return <li key={key}>{x.text}</li>
-                                                                })
-                                                            }
-                                                        </ul>
-                                                    </dd>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <strong>{translate("task.task_process.viewer")}:</strong>
+                                        <ul>
+                                            {
+                                                listViewer.map((x, key) => {
+                                                    return <li key={key}>{x.text}</li>
+                                                })
+                                            }
+                                        </ul>
+                                        <strong>{translate("task.task_process.manager")}:</strong>
+                                        <ul>
+                                            {
+                                                listManager.map((x, key) => {
+                                                    return <li key={key}>{x.text}</li>
+                                                })
+                                            }
+                                        </ul>
                                     </div>
-
-
                                 </div>
                             </div>
 
