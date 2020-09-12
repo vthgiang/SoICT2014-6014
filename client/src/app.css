@@ -290,6 +290,9 @@ legend.legend-box-info {
     margin-top: 10px;
     margin-bottom: 10px;
 }
+.description-box.without-border {
+    border: none;
+}
 .description-box div.no-line-height {
     line-height: initial;
 }

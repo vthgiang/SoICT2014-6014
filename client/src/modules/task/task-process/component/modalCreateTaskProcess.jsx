@@ -669,6 +669,19 @@ class ModalCreateTaskProcess extends Component {
 													/>
 													<ErrorLabel content={this.state.errorOnProcessName} />
 												</div>
+
+												{/* Mô tả quy trình */}
+												<div className={`form-group ${this.state.errorOnProcessDescription === undefined ? "" : "has-error"}`}>
+													<label className="control-label">{translate("task.task_process.process_description")}</label>
+													<textarea type="text" rows={4}
+														value={processDescription}
+														className="form-control" placeholder={translate("task.task_process.process_description")}
+														onChange={this.handleChangeBpmnDescription}
+													/>
+													<ErrorLabel content={this.state.errorOnProcessDescription} />
+												</div>
+
+
 												<div className={`form-group ${this.state.errorOnViewer === undefined ? "" : "has-error"}`}>
 													{/* Người được xem mẫu quy trình */}
 													<label className="control-label">{translate("task.task_process.viewer")}</label>
@@ -685,6 +698,8 @@ class ModalCreateTaskProcess extends Component {
 													}
 													<ErrorLabel content={this.state.errorOnViewer} />
 												</div>
+
+
 												<div className={`form-group ${this.state.errorOnManager === undefined ? "" : "has-error"}`}>
 													{/* Người quản lý mẫu quy trình */}
 													<label className="control-label" >{translate("task.task_process.manager")}</label>
@@ -700,19 +715,6 @@ class ModalCreateTaskProcess extends Component {
 														/>
 													}
 													<ErrorLabel content={this.state.errorOnManager} />
-												</div>
-											</div>
-
-											{/* Mô tả quy trình */}
-											<div className='col-md-6'>
-												<div className={`form-group ${this.state.errorOnProcessDescription === undefined ? "" : "has-error"}`}>
-													<label className="control-label">{translate("task.task_process.process_description")}</label>
-													<textarea type="text" rows={8}
-														value={processDescription}
-														className="form-control" placeholder={translate("task.task_process.process_description")}
-														onChange={this.handleChangeBpmnDescription}
-													/>
-													<ErrorLabel content={this.state.errorOnProcessDescription} />
 												</div>
 											</div>
 										</div>

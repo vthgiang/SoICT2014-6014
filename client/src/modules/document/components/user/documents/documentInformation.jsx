@@ -90,7 +90,7 @@ class DocumentInformation extends Component {
         const roleList = role.list.map(role => { return { value: role._id, text: role.name } });
         const relationshipDocs = documents.administration.data.list.filter(doc => doc._id !== documentId).map(doc => { return { value: doc._id, text: doc.name } })
         let roles = this.findDocumentRole(roleList, documentRoles);
-        console.log('----------------', roles)
+        console.log('----------------', documentArchives)
         //let logs = documentLogs.reverse();
         return (
             <React.Fragment>
@@ -146,7 +146,9 @@ class DocumentInformation extends Component {
                                         </div>
                                         <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                             <strong>{translate('document.domain')}&emsp; </strong>
-                                            {documentDomains ? documentDomains.join(" ") : ""}
+                                            {documentDomains ? documentDomains.map(y =>
+                                                <div>{y}</div>
+                                            ) : null}
                                         </div>
                                         <div className="for{ translate('document.description') }m-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                             <strong>{translate('document.description')}&emsp; </strong>
@@ -154,7 +156,9 @@ class DocumentInformation extends Component {
                                         </div>
                                         <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                             <strong>Lưu trữ&emsp; </strong>
-                                            {documentArchives ? documentArchives.join(" ") : ""}
+                                            {documentArchives ? documentArchives.map(y =>
+                                                <div>{y}</div>
+                                            ) : null}
                                         </div>
                                     </div>
                                 </div>
@@ -177,7 +181,7 @@ class DocumentInformation extends Component {
                                                 </thead>
                                                 <tbody>
                                                     {
-                                                        documentVersions !== undefined && documentVersions.length > 0 ?
+                                                        documentVersions && documentVersions.length > 0 ?
                                                             documentVersions.map((version, i) => {
                                                                 return <tr key={i}>
                                                                     <td>{version.versionName}</td>
@@ -198,41 +202,36 @@ class DocumentInformation extends Component {
 
                                 <div className="description-box">
                                     <legend className="scheduler-border">{translate('document.relationship.title')}</legend>
-                                    <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
-                                        <strong>{translate('document.relationship.description')}&emsp; </strong>
-                                        {documentRelationshipDescription}
-                                    </div>
+                                    <div className="row">
+                                        <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
+                                            <strong>{translate('document.relationship.description')}&emsp; </strong>
+                                            {documentRelationshipDescription}
+                                        </div>
 
-                                    <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
-                                        <strong>{translate('document.relationship.list')}&emsp; </strong>
-                                        {documentRelationshipDocuments ? documentRelationshipDocuments.join("-") : ""}
+                                        <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
+                                            <strong>{translate('document.relationship.list')}&emsp; </strong>
+                                            {documentRelationshipDocuments ? documentRelationshipDocuments.map(y =>
+                                                <div>{y}</div>
+                                            ) : null}
+                                        </div>
                                     </div>
+                                    <div className="row">
+                                        <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
+                                            <strong>{translate('document.roles')}&emsp; </strong>
+                                            {roles ? roles.map(y =>
+                                                <div>{y[0]}</div>
+                                            ) : null}
+                                        </div>
 
+
+                                        <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
+                                            <strong>{translate('document.store.organizational_unit_manage')}&emsp; </strong>
+                                            {documentArchivedRecordPlaceOrganizationalUnit ? documentArchivedRecordPlaceOrganizationalUnit.name : ""}
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div className="description-box">
-                                    <legend className="scheduler-border">{translate('document.roles')}</legend>
-                                    <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
-                                        <strong>{translate('document.roles')}&emsp; </strong>
-                                        {roles ? roles.map(y =>
-                                            <div>{y[0]}</div>
-                                        ) : null}
-                                    </div>
 
-                                </div>
-
-                                <div className="description-box">
-                                    <legend className="scheduler-border">{translate('document.store.title')}</legend>
-                                    <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
-                                        <strong>{translate('document.store.information')}&emsp; </strong>
-                                        {documentArchivedRecordPlaceInfo}
-                                    </div>
-                                    <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
-                                        <strong>{translate('document.store.organizational_unit_manage')}&emsp; </strong>
-                                        {documentArchivedRecordPlaceOrganizationalUnit ? documentArchivedRecordPlaceOrganizationalUnit.name : ""}
-                                    </div>
-
-                                </div>
                             </div>
                         </div>
                         <div className="col-xs-12 col-sm-12 col-md-5 col-lg-5" style={{ padding: "10px 0 10px 0", borderLeft: "1px solid #f4f4f4" }}>

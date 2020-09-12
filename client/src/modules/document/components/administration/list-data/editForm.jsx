@@ -676,11 +676,12 @@ class EditForm extends Component {
         this.props.downloadDocumentFileScan(id, fileName, numberVersion);
     }
     findPath = (archives, select) => {
-        if (select) {
-            let archive = archives.filter(arch => arch._id === select);
-            return archive.length ? [archive[0].path] : "";
-        }
-        else return null;
+        let paths = select.map(s => {
+            let archive = archives.filter(arch => arch._id === s);
+            return archive[0] ? archive[0].path : "";
+        })
+        return paths;
+
     }
     render() {
         const {
@@ -697,7 +698,7 @@ class EditForm extends Component {
         const roleList = role.list.map(role => { return { value: role._id, text: role.name } });
         const relationshipDocs = documents.administration.data.list.filter(doc => doc._id !== documentId).map(doc => { return { value: doc._id, text: doc.name } })
         const archives = documents.administration.archives.list;
-        let path = documentArchives ? this.findPath(archives, documentArchives[0]) : "";
+        let path = documentArchives ? this.findPath(archives, documentArchives) : "";
 
         //  console.log('rrrrrrrr', !this.isValidateForm());
         return (
@@ -913,19 +914,6 @@ class EditForm extends Component {
                                         </div>
                                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                             <div className="form-group">
-                                                <label>{translate('document.store.information')}</label>
-                                                <TreeSelect
-                                                    data={archives}
-                                                    value={documentArchives}
-                                                    handleChange={this.handleArchives}
-                                                    mode="hierarchical"
-                                                />
-                                            </div>
-                                            <div className="form-group">
-                                                <label>{translate('document.administration.domains.path_detail')}</label>
-                                                <textarea style={{ height: '30px' }} type="text" className="form-control" value={path} disable />
-                                            </div>
-                                            <div className="form-group">
                                                 <label>{translate('document.store.organizational_unit_manage')}</label>
                                                 <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
                                                     id={`select-edit-documents-organizational-unit-manage${documentId}`}
@@ -937,6 +925,21 @@ class EditForm extends Component {
                                                     multiple={false}
                                                 />
                                             </div>
+                                            <div className="form-group">
+                                                <label>{translate('document.store.information')}</label>
+                                                <TreeSelect
+                                                    data={archives}
+                                                    value={documentArchives}
+                                                    handleChange={this.handleArchives}
+                                                    mode="hierarchical"
+                                                />
+                                            </div>
+                                            <div className="form-group">
+                                                {path && path.length ? path.map(y =>
+                                                    <div>{y}</div>
+                                                ) : null}
+                                            </div>
+
                                         </div>
                                     </div>
                                 </div>
