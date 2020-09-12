@@ -21,42 +21,35 @@ class IncomingDataTab extends Component {
     }
     render() {
         const { translate } = this.props;
-        let { task } = this.props
-        let { showComment } = this.state
-        let information,document
+        const { preceedingTasks } = this.props;
+        const { showComment } = this.state;
+
         let listTask = [];
-        if (task) {
-            if(task.taskInformations) {
-                information = task.taskInformations
-            }
-            if(task.document) {
-                document = task.document
-            }
-            task.preceedingTasks.forEach(x => {
-                listTask.push(x.task)
+        if (preceedingTasks) {
+            preceedingTasks.forEach(item => {
+                listTask.push(item.task);
             })
         }
+
         return (
             <React.Fragment>
                 {
                     listTask && listTask.map((task, key) =>
-                        <React.Fragment
-                        >
+                        <React.Fragment>
                             <div key={key} className="description-box incoming-content">
                                 <h4>{task.name}</h4>
                                 {/** Danh sách thông tin */}
                                 <strong>{translate('task.task_process.information')}:</strong>
                                 {
-                                    information.length !== 0 ?
-                                    information.map((info, key) =>
+                                    task.taskInformations && task.taskInformations.length !== 0 ?
+                                    task.taskInformations.map((info, key) =>
                                             info.isOutput &&
-                                            <div key={key}>
-                                                <ul>
-                                                    <strong>{info.name}</strong>
-                                                    <span> - {info.description}</span>
-                                                    <span> - {info.type}</span>
-                                                </ul>
-                                            </div>
+                                            <ul key={key}>
+                                                <li>
+                                                    <strong>{info.name}:</strong>
+                                                    <span>{info.value}</span>
+                                                </li>
+                                            </ul>
                                         )
                                         : <span>{translate('task.task_process.not_have_info')}</span>
                                 }
@@ -65,42 +58,42 @@ class IncomingDataTab extends Component {
                                 <div></div>
                                 <strong>{translate('task.task_process.document')}:</strong>
                                 {
-                                    document && document.length !== 0
-                                        ? document.map((document, key) =>
+                                    task.documents && task.documents.length !== 0
+                                        ? task.documents.map((document, key) =>
                                             document.isOutput &&
-                                            <div key={key}>
-                                                <ul>
-                                                    <li style={{ listStyle: "none" }}><strong>{document.description}</strong></li>
-                                                    <ul>
-                                                        {
-                                                            document.files
-                                                            && document.files.length !== 0
-                                                            && document.files.map(file =>
-                                                                <li style={{ listStyle: "none", wordWrap: "break-word" }}>
-                                                                    <strong>{file.name} </strong><span><a>{file.url}</a></span>
-                                                                </li>
-                                                            )
-                                                        }
-                                                    </ul>
-                                                </ul>
-                                            </div>
+                                            <ul key={key}>
+                                                <li><strong>{document.description} ({document.files.length} tài liệu)</strong></li>
+                                                {
+                                                    document.files
+                                                    && document.files.length !== 0
+                                                    && document.files.map(file =>
+                                                        <li style={{ listStyle: "none", wordWrap: "break-word" }}>
+                                                            <a href={file.url}>{file.name}</a>
+                                                        </li>
+                                                    )
+                                                }
+                                            </ul>
                                         )
                                         : <span>{translate('task.task_process.not_have_doc')}</span>
                                 }
 
-                                <div></div>
-                                <a style={{ cursor: "pointer" }} onClick={() => this.showComment(task?._id)}>
-                                    <b>Trao đổi </b>
-                                    {showComment === "" ?
-                                        <i className="fa fa-angle-double-down"></i>
-                                        : <i className="fa fa-angle-double-up"></i>
-                                    }
-                                </a>
+                                {/* Comment */}
+                                <div style={{ marginTop: 10 }}>
+                                    <a style={{ cursor: "pointer" }} onClick={() => this.showComment(task?._id)}>
+                                        <b>Trao đổi </b>
+                                        {showComment === "" ?
+                                            <i className="fa fa-angle-double-down"></i>
+                                            : <i className="fa fa-angle-double-up"></i>
+                                        }
+                                    </a>
+                                </div>
                                 {showComment === task._id &&
-                                    <CommentInProcess
-                                        task={task}
-                                        inputAvatarCssClass="user-img-incoming-level1"
-                                    />
+                                    <div style={{ marginTop: 10 }}>
+                                        <CommentInProcess
+                                            task={task}
+                                            inputAvatarCssClass="user-img-incoming-level1"
+                                        />
+                                    </div>
                                 }
                             </div>
                         </React.Fragment>
