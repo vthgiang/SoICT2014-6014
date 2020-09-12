@@ -406,7 +406,7 @@ class GeneralTab extends Component {
                     {/* Ảnh đại diện */}
                     <div className="col-lg-4 col-md-4 col-ms-12 col-xs-12" style={{ textAlign: 'center' }}>
                         <div>
-                            {img && <ApiImage id={`avater-edit-create-${id}`} className='attachment-img avarta' src={img} />}
+                            {img && <ApiImage className='attachment-img avarta' src={img} />}
                         </div>
                         <div className="upload btn btn-default ">
                             {translate('human_resource.profile.upload')}

@@ -32,7 +32,7 @@ class SelectBox extends Component {
             window.$("#" + id).parent().bind("keyup", "input.select2-search__field", this.delay((e) => {
                 if (e.which === 13) // Bỏ qua enter
                     return;
-                
+
                 let searchBox = window.$("#" + id).parent().find('input.select2-search__field');
                 let previouslySelectedOptions = [].filter.call(this.refs.select.options, o => o.selected).map(o => {
                     return { text: o.text, value: o.value };
@@ -55,11 +55,11 @@ class SelectBox extends Component {
         } else {
             window.$("#" + id).on('select2:open', (e) => {
                 let searchBox = window.$(".select2-search.select2-search--dropdown").find('input.select2-search__field');
-                
+
                 searchBox.bind("keydown", this.delay((e) => {
                     if (e.which === 13) // Bỏ qua enter
                         return;
-                    
+
                     // Lưu lại text search
                     this.setState((state) => {
                         return {
@@ -73,7 +73,7 @@ class SelectBox extends Component {
                         onSearch(searchBox.val());
                     }
                 }, delay));
-                
+
             });
         }
 
@@ -102,7 +102,7 @@ class SelectBox extends Component {
                 return {
                     ...state,
                     innerChange: true,
-                    value: multiple? value: value[0],
+                    value: multiple ? value : value[0],
                 }
             });
             if (onChange) {
@@ -123,7 +123,7 @@ class SelectBox extends Component {
         const { id, multiple, options = { minimumResultsForSearch: 1 }, items } = this.props;
         const { searching, previouslySelectedOptions, searchText } = this.state;
 
-        if (!searching) { 
+        if (!searching) {
             window.$("#" + id).select2(options);
         } else {
             window.$("#" + id).find("option").remove(); // Xóa các option đã có
@@ -148,7 +148,7 @@ class SelectBox extends Component {
                     window.$("#" + id).append(newOption);
                 });
             }
-            
+
 
             window.$("#" + id).select2(); // Khởi tạo lại select2
 
@@ -226,6 +226,8 @@ class SelectBox extends Component {
     render() {
         const { id, items, className, style, multiple = false, options = {}, disabled = false } = this.props;
         const { searching } = this.state;
+        console.log(this.props.value);
+        console.log(this.state.value);
         return (
             <React.Fragment>
                 <div className="select2">

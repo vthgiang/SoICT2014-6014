@@ -55,7 +55,7 @@ exports.getAllCourses = async (company, organizationalUnits, positions) => {
  * @company : Id công ty
  */
 exports.searchCourses = async (params, company) => {
-    var keySearch = {
+    let keySearch = {
         company: company
     }
     if (params.educationProgram !== undefined) {
@@ -81,8 +81,8 @@ exports.searchCourses = async (params, company) => {
             type: params.type
         }
     }
-    var totalList = await Course.count(keySearch);
-    var listCourses = await Course.find(keySearch)
+    let totalList = await Course.countDocuments(keySearch);
+    let listCourses = await Course.find(keySearch)
         .skip(params.page).limit(params.limit)
         .populate({
             path: 'educationProgram',
@@ -117,7 +117,7 @@ exports.searchCourses = async (params, company) => {
  * @company : Id công ty 
  */
 exports.createCourse = async (data, company) => {
-    var isCourse = await Course.findOne({
+    let isCourse = await Course.findOne({
         courseId: data.courseId,
         company: company
     }, {
@@ -198,7 +198,7 @@ exports.deleteCourse = async (id) => {
  * @data : Dữ liệu chỉnh sửa khoá đào tạo
  */
 exports.updateCourse = async (id, data) => {
-    var courseChange = {
+    let courseChange = {
         name: data.name,
         offeredBy: data.offeredBy,
         coursePlace: data.coursePlace,

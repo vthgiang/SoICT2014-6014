@@ -1517,10 +1517,28 @@ export default {
 
             // Quản khoá đào tạo
             course: {
+                // Nhóm dành cho UI
+                study_at: 'Học tại',
+                from: 'từ',
+                to: 'đến',
+                with_lecturer: 'với giảng viên',
+                offered_by: 'Đào tạo bởi',
+                belong_type: 'Thuộc loại',
+                with_cost: 'với chi phí',
+                commitment_time: 'và thời gian cam kết làm việc',
+                month: 'tháng',
+                staff: 'nhân viên',
+                attend: 'Tham gia',
+
                 no_course_type: 'Chọn loại đào tạo',
                 all_course_type: 'Chọn tất cả loại đào tạo',
                 start_date: 'Thời gian bắt đầu',
                 end_date: 'Thời gian kết thúc',
+                start_date_before_end_date: 'Thời gian bắt đầu phải trước thời gian kết thúc',
+                end_date_after_start_date: 'Thời gian kết thúc phải sau thời gian bắt đầu',
+                employee_attend: 'Nhân viên tham gia',
+                select_education_program: 'Chọn chương trình đào tạo',
+
 
                 table: {
                     course_code: 'Mã khoá đào tạo',
@@ -1530,6 +1548,11 @@ export default {
                     course_place: 'Địa điểm đào tạo',
                     offered_by: 'Đơn vị đào tạo',
                     course_type: 'Loại đào tạo',
+                    lecturer: 'Giảng viên',
+                    education_program: 'Thuộc chương trình đào tạo',
+                    cost: 'Chi phí đào tạo',
+                    employee_commitment_time: 'Thời gian cam kết (đơn vị: Tháng)',
+                    result: 'Kết quả',
                 },
 
                 // Loại đào tao
@@ -1537,6 +1560,18 @@ export default {
                     internal: 'Đào tạo nội bộ',
                     external: 'Đào tạo ngoài',
                 },
+
+                // Kết quả đào tạo
+                result: {
+                    pass: 'Đạt',
+                    falied: 'Không đạt',
+                },
+
+                // Nhóm action
+                add_course: 'Thêm khoá đào tạo',
+                edit_course: 'Chỉnh sửa khoá đào tạo',
+                delete_course: 'Xoá khoá đào tạo',
+                view_course: 'Thông tin khoá đào tạo',
 
                 // Thông điệp trả về từ server
                 name_required: 'Tên khoá đào tạo không được để trống',

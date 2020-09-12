@@ -1310,7 +1310,6 @@ export default {
                 },
 
                 employee_management: {
-
                     // Nhón dành cho UI
                     have: 'Have',
                     staff: 'staff',
@@ -1493,10 +1492,27 @@ export default {
         // Modules quản lý đào tạo
         training: {
             course: {
+                // Nhóm dành cho UI
+                study_at: 'Study at',
+                from: 'from',
+                to: 'to',
+                with_lecturer: 'with lecturer',
+                offered_by: 'Training by',
+                belong_type: 'Type of training',
+                with_cost: 'with a cost of',
+                commitment_time: 'and commitment time',
+                month: 'months',
+                staff: 'staff',
+                attend: 'involved',
+
                 no_course_type: 'Select training type',
                 all_course_type: 'Select all training type',
-                start_date: 'Starting time',
+                start_date: 'Start time',
                 end_date: 'End time',
+                start_date_before_end_date: 'The start time must be before the end time',
+                end_date_after_start_date: 'The end time must be after the start time',
+                employee_attend: 'Staff involved',
+                select_education_program: 'Select training program',
 
                 table: {
                     course_code: 'Course code',
@@ -1506,6 +1522,11 @@ export default {
                     course_place: 'Course place',
                     offered_by: 'Offered by',
                     course_type: 'Training type',
+                    lecturer: 'Lecturers',
+                    education_program: 'Under the training program',
+                    cost: 'Training costs',
+                    employee_commitment_time: 'Commitment time (unit: Month)',
+                    result: 'Result',
                 },
 
                 // Loại đào tao
@@ -1513,6 +1534,18 @@ export default {
                     internal: 'Internal',
                     external: 'External',
                 },
+
+                // Kết quả đào tạo
+                result: {
+                    pass: 'Pass',
+                    falied: 'Failed',
+                },
+
+                // Nhóm action
+                add_course: 'Add training course',
+                edit_course: 'edit training course',
+                delete_course: 'delete training course',
+                view_course: 'Training course information',
 
                 // Thông điệp trả về từ server
                 name_required: 'Name of the training course required',
