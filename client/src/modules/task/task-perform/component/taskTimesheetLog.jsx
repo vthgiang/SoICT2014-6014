@@ -163,12 +163,12 @@ class TaskTimesheetLog extends Component {
                 });
             }
             //Check thời gian kết thúc không được gian lận
-            if(milisec - Date.now() > 300000) {
-                this.setState({
-                    disabled: true,
-                    errorOnEndDate: "Thời điểm kết thúc không được vượt quá hiện tại"
-                });
-            }
+            // if(milisec - Date.now() > 300000) {
+            //     this.setState({
+            //         disabled: true,
+            //         errorOnEndDate: "Thời điểm kết thúc không được vượt quá hiện tại"
+            //     });
+            // }
         }
     }
 
