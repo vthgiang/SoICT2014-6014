@@ -243,6 +243,7 @@ class TaskTimesheetLog extends Component {
                                     {showEndDate &&
                                         <React.Fragment>
                                             <div className={`form-group ${!errorOnEndDate ? "" : "has-error"}`}>
+                                                <ErrorLabel content={errorOnEndDate} />
                                                 <DatePicker
                                                     id={`date-picker-${currentTimer._id}`}
                                                     onChange={this.handleDateChange}
@@ -251,9 +252,8 @@ class TaskTimesheetLog extends Component {
                                                 <TimePicker
                                                     id={`time-picker-${currentTimer._id}`}
                                                     onChange={this.handleTimeChange}
-                                                    // getDefaultValue = {this.getDefaultValue}
+                                                    getDefaultValue = {this.getDefaultValue}
                                                 />
-                                                <ErrorLabel content={errorOnEndDate} />
                                             </div>
                                         </React.Fragment>
                                     }
