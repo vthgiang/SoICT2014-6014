@@ -10,8 +10,7 @@ import { ViewTaskTemplate } from "../../task-template/component/viewTaskTemplate
 
 import BpmnViewer from 'bpmn-js';
 import BpmnModeler from 'bpmn-js/lib/Modeler';
-// import customModule from './read-only';
-import customModule from './custom';
+import customModule from './custom-task-process-template';
 
 var zlevel = 1;
 class ModalViewTaskProcess extends Component {

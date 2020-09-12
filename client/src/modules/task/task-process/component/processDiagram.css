@@ -246,10 +246,20 @@
     max-width: 40px;
     max-height: 25px;
     margin-bottom: 5px;
-    margin-right: 7px;
     font-weight: bold;
+    text-align: right;
+    margin-right: 6px;
 }
 
-#createprocess > div > div > svg > g > g.layer-base > g > g > g > foreignObject > div {
-    display: none;
+.parent-task-process-gate-way-title {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+.gate-way-progress {
+    font-size: 15px; 
+    font-weight: bold;
+    text-align: center;
 }
