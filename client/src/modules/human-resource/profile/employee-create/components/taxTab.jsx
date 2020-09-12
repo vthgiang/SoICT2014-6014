@@ -98,13 +98,13 @@ class TaxTab extends Component {
             return {
                 ...prevState,
                 id: nextProps.id,
-                atmNumber: nextProps.employee.atmNumber,
-                bankName: nextProps.employee.bankName,
-                bankAddress: nextProps.employee.bankAddress,
-                taxNumber: nextProps.employee.taxNumber,
-                taxRepresentative: nextProps.employee.taxRepresentative,
-                taxDateOfIssue: nextProps.employee.taxDateOfIssue,
-                taxAuthority: nextProps.employee.taxAuthority,
+                atmNumber: nextProps.employee ? nextProps.employee.atmNumber : "",
+                bankName: nextProps.employee ? nextProps.employee.bankName : "",
+                bankAddress: nextProps.employee ? nextProps.employee.bankAddress : "",
+                taxNumber: nextProps.employee ? nextProps.employee.taxNumber : "",
+                taxRepresentative: nextProps.employee ? nextProps.employee.taxRepresentative : "",
+                taxDateOfIssue: nextProps.employee ? nextProps.employee.taxDateOfIssue : "",
+                taxAuthority: nextProps.employee ? nextProps.employee.taxAuthority : "",
             }
         } else {
             return null;

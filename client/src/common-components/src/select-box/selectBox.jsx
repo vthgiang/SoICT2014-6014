@@ -26,13 +26,13 @@ class SelectBox extends Component {
 
 
     bindSelectBoxEvent = () => {
-        const { id, multiple, onSearch } = this.props;
+        const { id, multiple, onSearch, delay = 1000 } = this.props;
 
         if (multiple) {
             window.$("#" + id).parent().bind("keyup", "input.select2-search__field", this.delay((e) => {
                 if (e.which === 13) // Bỏ qua enter
                     return;
-                
+
                 let searchBox = window.$("#" + id).parent().find('input.select2-search__field');
                 let previouslySelectedOptions = [].filter.call(this.refs.select.options, o => o.selected).map(o => {
                     return { text: o.text, value: o.value };
@@ -51,15 +51,15 @@ class SelectBox extends Component {
                 if (onSearch) {
                     onSearch(searchBox.val());
                 }
-            }, 1000));
+            }, delay));
         } else {
             window.$("#" + id).on('select2:open', (e) => {
                 let searchBox = window.$(".select2-search.select2-search--dropdown").find('input.select2-search__field');
-                
+
                 searchBox.bind("keydown", this.delay((e) => {
                     if (e.which === 13) // Bỏ qua enter
                         return;
-                    
+
                     // Lưu lại text search
                     this.setState((state) => {
                         return {
@@ -72,8 +72,8 @@ class SelectBox extends Component {
                     if (onSearch) {
                         onSearch(searchBox.val());
                     }
-                }, 1000));
-                
+                }, delay));
+
             });
         }
 
@@ -93,7 +93,7 @@ class SelectBox extends Component {
 
 
     componentDidMount = () => {
-        const { id, onChange, options = { minimumResultsForSearch: 1 }, multiple, onSearch } = this.props;
+        const { id, onChange, options = { minimumResultsForSearch: 1 }, multiple } = this.props;
         window.$("#" + id).select2(options);
 
         window.$("#" + id).on("change", () => {
@@ -101,7 +101,8 @@ class SelectBox extends Component {
             this.setState(state => {
                 return {
                     ...state,
-                    value
+                    innerChange: true,
+                    value: multiple ? value : value[0],
                 }
             });
             if (onChange) {
@@ -119,24 +120,24 @@ class SelectBox extends Component {
     }
 
     componentDidUpdate() {
-        if (!this.state.searching) { 
-            const { id, options = {} } = this.props;
+        const { id, multiple, options = { minimumResultsForSearch: 1 }, items } = this.props;
+        const { searching, previouslySelectedOptions, searchText } = this.state;
+
+        if (!searching) {
             window.$("#" + id).select2(options);
         } else {
-            const { id, multiple, items } = this.props;
-            
             window.$("#" + id).find("option").remove(); // Xóa các option đã có
 
             if (multiple) {
-                if (this.state.previouslySelectedOptions) { // Tạo lại các option đã chọn
-                    this.state.previouslySelectedOptions.forEach(pso => {
+                if (previouslySelectedOptions) { // Tạo lại các option đã chọn
+                    previouslySelectedOptions.forEach(pso => {
                         let newOption = new Option(pso.text, pso.value, false, true);
                         window.$("#" + id).append(newOption);
                     });
                 }
 
                 items.forEach(element => { // Tạo thêm các option mới lấy từ server về
-                    if (!this.state.previouslySelectedOptions || !this.state.previouslySelectedOptions.find(pso => pso.value === element.value)) {
+                    if (!previouslySelectedOptions || !previouslySelectedOptions.find(pso => pso.value === element.value)) {
                         let newOption = new Option(element.text, element.value, false, false);
                         window.$("#" + id).append(newOption);
                     }
@@ -147,7 +148,7 @@ class SelectBox extends Component {
                     window.$("#" + id).append(newOption);
                 });
             }
-            
+
 
             window.$("#" + id).select2(); // Khởi tạo lại select2
 
@@ -155,16 +156,15 @@ class SelectBox extends Component {
             let searchBox;
             if (multiple) {
                 searchBox = window.$("#" + id).parent().find('input.select2-search__field');
-                searchBox.val(this.state.searchText);
-                let width = ((this.state.searchText.length + 1) * 0.75) + 'em';
+                searchBox.val(searchText);
+                let width = (searchText.length + 1) * 0.75 + 'em';
                 searchBox.css('width', width);
+                window.$("#" + id).select2("open"); // Mở lại dropdown, do đang tiến hành search. Dạng multiple phải thiết lập text cho searchBox trước, mở dropdown sau
             } else {
+                window.$("#" + id).select2("open"); // Mở lại dropdown, do đang tiến hành search. Dạng single phải mở dropdown trước, thiết lập text cho searchBox sau
                 let searchBox = window.$(".select2-search.select2-search--dropdown").find('input.select2-search__field');
-                searchBox.val(this.state.searchText);
+                searchBox.val(searchText);
             }
-            
-
-            window.$("#" + id).select2("open"); // Mở lại dropdown, do đang tiến hành search
         }
     }
 
@@ -189,9 +189,10 @@ class SelectBox extends Component {
         if (prevState.searching) {
             return null;
         }
-        if (nextProps.id !== prevState.id || !SelectBox.isEqual(nextProps.items, prevState.items) || nextProps.disabled !== prevState.disabled) {
+        if (nextProps.id !== prevState.id || !SelectBox.isEqual(nextProps.items, prevState.items) || nextProps.disabled !== prevState.disabled || (nextProps.value && nextProps.value !== prevState.value)) {
             return {
-                value: nextProps.value, // Lưu value ban đầu vào state
+                value: prevState.innerChange ? prevState.value : nextProps.value, // Lưu value ban đầu vào state
+                innerChange: false,
                 id: nextProps.id,
                 items: nextProps.items,
                 disabled: nextProps.disabled !== undefined ? nextProps.disabled : false
@@ -216,8 +217,8 @@ class SelectBox extends Component {
 
             return true;
         }
-        // Chỉ render lại khi id thay đổi, hoặc khi tập items thay đổi, hoặc disabled thay đổi
-        if (nextProps.id !== this.state.id || !SelectBox.isEqual(nextProps.items, this.state.items) || (nextProps.disabled !== undefined ? nextProps.disabled : false) !== this.state.disabled)
+        // Chỉ render lại khi id thay đổi, hoặc khi tập items thay đổi, value thay đổi, hoặc disabled thay đổi
+        if (nextProps.id !== this.state.id || !SelectBox.isEqual(nextProps.items, this.state.items) || (nextProps.value && nextProps.value !== this.state.value) || (nextProps.disabled !== undefined ? nextProps.disabled : false) !== this.state.disabled)
             return true;
         return false;;
     }
@@ -225,6 +226,8 @@ class SelectBox extends Component {
     render() {
         const { id, items, className, style, multiple = false, options = {}, disabled = false } = this.props;
         const { searching } = this.state;
+        console.log(this.props.value);
+        console.log(this.state.value);
         return (
             <React.Fragment>
                 <div className="select2">

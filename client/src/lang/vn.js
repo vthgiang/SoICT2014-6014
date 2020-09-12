@@ -98,7 +98,8 @@ export default {
             wrong5_block: 'Bạn đã nhập sai mật khẩu 5 lần. Tài khoản của bạn đã bị tạm khóa',
             request_forgot_password_success: 'Yêu cầu thay đổi mật khẩu thành công. Hệ thống đã gửi yêu cầu xác nhận thay đổi mật khẩu vào email của bạn',
             reset_password_success: 'Thiết lập mật khẩu thành công',
-            otp_invalid: 'Yêu cầu thiết lập lại mật khẩu không hợp lệ'
+            otp_invalid: 'Yêu cầu thiết lập lại mật khẩu không hợp lệ',
+            portal_invalid: 'Portal không hợp lệ',
         },
 
         system_admin: {
@@ -574,7 +575,7 @@ export default {
             acc_blocked: 'Tài khoản đã bị khóa',
             acc_have_not_role: 'Tài khoản chưa được phân quyền',
             reset_password_success: 'Reset mật khẩu thành công!',
-            reset_password_faile: 'Reset mật khẩu thất bại!'
+            reset_password_faile: 'Reset mật khẩu thất bại!',
         },
 
         confirm: {
@@ -770,7 +771,11 @@ export default {
             manage_orders: "Quản lý đơn hàng",
             manage_list_orders: "Danh sách đơn hàng",
             // Quản lý kế hoạch sản xuất
-            manage_plans: "Quản lý kế hoạch sản xuất"
+            manage_plans: "Quản lý kế hoạch sản xuất",
+            //VÍ DỤ EXAMPLE
+            manage_examples: "Ví dụ CRUD",
+            manage_examples_1: "CRUD theo mô hình số 1",
+            manage_examples_2: "CRUD theo mô hình số 2",
         },
 
         manage_system: {
@@ -934,6 +939,7 @@ export default {
             salary: {
                 // list_salary: 'Danh sách bảng lương nhân viên',
                 file_name_export: 'Bảng theo dõi lương thưởng',
+                other_salary: 'Lương thưởng khác',
 
                 // Nhóm dành cho table
                 table: {
@@ -982,7 +988,7 @@ export default {
 
             // Quản lý nghỉ phép
             annual_leave: {
-                // list_annual_leave: 'Danh sách đơn xin nghỉ',
+                file_export_name: 'Bảng thống kê nghỉ phép',
 
                 // Nhóm dành cho table
                 table: {
@@ -1145,7 +1151,7 @@ export default {
                     menu_attachments_title: 'Tài liệu đính kèm',
                 },
 
-                staff_number: 'Mã số nhân viên',
+                staff_number: 'Mã nhân viên',
                 full_name: 'Họ và tên',
                 attendance_code: 'Mã số chấm công',
                 gender: 'Giới tính',
@@ -1169,6 +1175,7 @@ export default {
                 religion: 'Tôn giáo',
                 active: 'Đang làm việc',
                 leave: 'Đã nghỉ làm',
+                status_work: 'Tình trạng lao động',
 
                 mobile_phone: 'Điện thoại di động',
                 mobile_phone_1: 'Điện thoại di động 1',
@@ -1180,7 +1187,7 @@ export default {
                 nexus: 'Quan hệ',
                 address: 'Địa chỉ',
                 permanent_address: 'Hộ khẩu thường trú',
-                current_residence: 'Chỗ ở hiện tại',
+                current_residence: 'Nơi ở hiện tại',
                 wards: 'Xã/Phường',
                 district: 'Huyện/Quận',
                 province: 'Tỉnh/Thành phố',
@@ -1224,14 +1231,14 @@ export default {
 
 
                 bank_account: 'Tài khoản ngân hàng',
-                personal_income_tax: 'Thuế thu nhập cá nhân',
+                personal_income_tax: 'Mã số thuế thu nhập cá nhân',
                 account_number: 'Số tài khoản',
                 bank_name: 'Tên ngân hàng',
                 bank_branch: 'Chi nhánh',
                 tax_number: 'Mã số thuế',
-                representative: 'Người đại diện',
-                day_active: 'Ngày hoạt động',
-                managed_by: 'Quản lý bởi',
+                representative: 'Đại diện của người nộp thuế',
+                day_active: 'Ngày cấp mã số thuế',
+                managed_by: 'Cơ quan quản lý thuế',
 
                 bhyt: 'Bảo hiểm y tế',
                 number_BHYT: 'Mã số BHYT',
@@ -1249,6 +1256,7 @@ export default {
                 course_name: 'Tên khoá học',
                 start_day: 'Ngày bắt đầu',
                 end_date: 'Ngày kết thúc',
+                contract_end_date: 'Ngày hết hạn hợp đồng',
                 type_education: 'Loại đào tạo',
                 cost: 'Chi phí',
                 edit_contract: 'Chỉnh sửa hợp đồng lao động',
@@ -1305,29 +1313,68 @@ export default {
 
                 // Quản lý thông tin cá nhân
                 employee_info: {
+                    export_bhxh: 'Quá trình đóng bảo hiểm xã hội',
                     // Nhóm dành cho UI
                     note_page_personal: 'Tôi xin cam đoan những lời khai trên đây là đúng sự thật và chịu trách nhiệm cho những lời khai này.',
                     contact_other: '(Những thông tin khác vui lòng liên hệ các bên liên quan để được xử lý)',
                     update_infor_personal: 'Cập nhật thông tin nhân viên',
-                    no_data_personal: 'Chưa có thông tin cá nhân',
+                    no_data_personal: 'Bạn chưa có thông tin cá nhân',
+                    no_data_personal_to_update: 'Bạn chưa có thông tin cá nhân để cập nhật',
 
                     guaranteed_infor_to_update: 'Bạn chưa cam đoan thông tin cần cập nhật',
                     no_change_data: 'Không có thông tin nào được thay đổi',
 
                     // Thông điệp trả về từ server
                     get_infor_personal_success: 'Lấy thông tin cá nhân thành công',
-                    get_infor_personal_false: 'Lấy thông tin cá nhân thất bại',
+                    get_infor_personal_faile: 'Lấy thông tin cá nhân thất bại',
                     edit_infor_personal_success: 'Cập nhật thông tin cá nhân thành công',
-                    edit_infor_personal_false: 'Cập nhật thông tin cá nhân thất bại',
+                    edit_infor_personal_faile: 'Cập nhật thông tin cá nhân thất bại',
                 },
 
                 employee_management: {
+                    // Nhóm dánh cho export excel
+                    file_export_name: 'Thông tin nhân viên',
+                    export: {
+                        sheet1: '1.Nhân viên',
+                        sheet2: '2.HS Nhân viên - Kinh nghiệm',
+                        sheet3: '3.HS Nhân viên - Bằng cấp',
+                        sheet4: '4.HS Nhân viên - Chứng chỉ',
+                        sheet5: '5.HS Nhân viên - Hợp đồng',
+                        sheet6: '6.HS Nhân viên - Bảo hiểm XH',
+                        sheet7: '7.HS Nhân viên - Tài liệu',
+                        sheet8: '8.HS Nhân viên - Khen thưởng',
+                        sheet9: '9.HS Nhân viên - Kỷ luật',
+                        sheet10: '10.HS Nhân viên - Lương thưởng',
+                        sheet11: '11.HS Nhân viên - Nghỉ phép',
+
+                        emergency_contact_person: 'Người liên hệ khẩn cấp',
+                        relation_with_emergency_contact_person: 'Quan hệ với người liên hệ khẩn cấp',
+                        emergency_contact_person_address: 'Địa chỉ người liên hệ khẩn cấp',
+                        emergency_contact_person_phone_number: 'Điện thoại di động người liên hệ khẩn cấp',
+                        emergency_contact_person_home_nhone: 'Điện thoại nhà riêng người liên hệ khẩn cấp',
+                        emergency_contact_person_email: 'Email người liên hệ khẩn cấp',
+                        atmNumber: 'Số tài khoản ngân hàng',
+                        bank_address: 'Chi nhánh ngân hàng',
+                        health_insurance_start_date: 'Ngày BHYT có hiệu lực',
+                        health_insurance_end_date: 'Ngày BHYT hết hạn',
+
+                    },
+
+                    // Nhón dành cho UI
+                    have: 'Có',
+                    staff: 'nhân viên',
+                    contract_expiration: 'hết hạn hợp đồng',
+                    and: 'và',
+                    have_birthday: 'có sinh nhật',
+                    this_month: 'trong tháng này',
+
                     file_name_export: 'Thông tin nhân viên',
+                    staff_no_unit_title: 'Do nhân viên chưa thuộc đơn vị nào',
                     no_gender: 'Chọn giới tính',
                     all_gender: 'Chọn tất cả giới tính',
                     brithday_lable: 'Sinh nhật',
                     brithday_lable_title: 'Tháng sinh nhật',
-                    contract_lable: 'Hết hạn hợn đồng',
+                    contract_lable: 'Hết hạn hợp đồng',
                     contract_lable_title: 'Tháng hết hạn hợp đồng',
                     contract_type_title: 'Loại hợp đồng lao động',
 
@@ -1343,13 +1390,15 @@ export default {
 
                     // Thông điệp trả về từ server
                     get_list_employee_success: 'Lấy danh sách nhân viên thành công',
-                    get_list_employee_false: 'Lấy danh sách nhân viên thất bại',
+                    get_list_employee_faile: 'Lấy danh sách nhân viên thất bại',
                     create_employee_success: 'Thêm mới nhân viên thành công',
-                    create_employee_false: 'Thêm mới nhân viên thất bại',
+                    create_employee_faile: 'Thêm mới nhân viên thất bại',
                     delete_employee_success: 'Xoá thông tin nhân viên thành công',
-                    delete_employee_false: 'Xoá thông tin nhân viên thất bại',
+                    delete_employee_faile: 'Xoá thông tin nhân viên thất bại',
                     edit_employee_success: 'Chỉnh sửa thông tin nhân viên thành công',
-                    edit_employee_false: 'Chỉnh sửa thông tin nhân viên thất bại',
+                    edit_employee_faile: 'Chỉnh sửa thông tin nhân viên thất bại',
+                    import_employee_success: 'Import thông tin nhân viên thành công',
+                    import_employee_faile: 'Import thông tin nhân viên thất bại',
                     employee_number_required: 'Mã nhân viên không được để trống',
                     email_in_company_required: 'Email công ty không được để trống',
                     employee_number_have_exist: 'Mã nhân viên đã tồn tại',
@@ -1373,13 +1422,14 @@ export default {
             // Quản lý kế hoạch làm việc (lịch nghỉ lễ tết)
             holiday: {
                 file_name_export: 'Kế hoạch làm việc',
-                number_date_leave_of_year: 'Số ngày nghỉ phép',
+                number_date_leave_of_year: 'Số ngày nghỉ tối đa',
                 date_year: 'ngày/năm',
                 year: 'Năm',
+                save_as: 'Lưu lại',
                 number_date: 'Số ngày',
-                list_holiday: 'Kế hoạch nghỉ lễ, nghỉ tết',
-                list_no_leave: 'Thời gian không được nghỉ',
-                list_auto_leave: 'Thời gian được nghỉ phép',
+                list_holiday: 'Thời gian nghỉ lễ, nghỉ tết',
+                list_no_leave: 'Thời gian không được xin nghỉ phép',
+                list_auto_leave: 'Thời gian được xin nghỉ phép',
 
                 // Nhóm dành cho table
                 table: {
@@ -1391,9 +1441,9 @@ export default {
                 },
 
                 // Nhóm thể loại kế hoạch làm Việc
-                holiday: 'Nghỉ lễ',
-                auto_leave: 'Được nghỉ',
-                no_leave: 'Không được phép nghỉ',
+                holiday: 'Thời gian nghỉ lễ, nghỉ tết',
+                auto_leave: 'Thời gian không được xin nghỉ phép',
+                no_leave: 'Thời gian được xin nghỉ phép',
 
                 // Nhóm dành cho action
                 edit_holiday: 'Chỉnh sửa kế hoạch làm việc',
@@ -1497,6 +1547,61 @@ export default {
 
             // Quản khoá đào tạo
             course: {
+                // Nhóm dành cho UI
+                study_at: 'Học tại',
+                from: 'từ',
+                to: 'đến',
+                with_lecturer: 'với giảng viên',
+                offered_by: 'Đào tạo bởi',
+                belong_type: 'Thuộc loại',
+                with_cost: 'với chi phí',
+                commitment_time: 'và thời gian cam kết làm việc',
+                month: 'tháng',
+                staff: 'nhân viên',
+                attend: 'Tham gia',
+
+                no_course_type: 'Chọn loại đào tạo',
+                all_course_type: 'Chọn tất cả loại đào tạo',
+                start_date: 'Thời gian bắt đầu',
+                end_date: 'Thời gian kết thúc',
+                start_date_before_end_date: 'Thời gian bắt đầu phải trước thời gian kết thúc',
+                end_date_after_start_date: 'Thời gian kết thúc phải sau thời gian bắt đầu',
+                employee_attend: 'Nhân viên tham gia',
+                select_education_program: 'Chọn chương trình đào tạo',
+
+
+                table: {
+                    course_code: 'Mã khoá đào tạo',
+                    course_name: 'Tên khoá đào tạo',
+                    start_date: 'Bắt đầu',
+                    end_date: 'Kết thúc',
+                    course_place: 'Địa điểm đào tạo',
+                    offered_by: 'Đơn vị đào tạo',
+                    course_type: 'Loại đào tạo',
+                    lecturer: 'Giảng viên',
+                    education_program: 'Thuộc chương trình đào tạo',
+                    cost: 'Chi phí đào tạo',
+                    employee_commitment_time: 'Thời gian cam kết (đơn vị: Tháng)',
+                    result: 'Kết quả',
+                },
+
+                // Loại đào tao
+                type: {
+                    internal: 'Đào tạo nội bộ',
+                    external: 'Đào tạo ngoài',
+                },
+
+                // Kết quả đào tạo
+                result: {
+                    pass: 'Đạt',
+                    falied: 'Không đạt',
+                },
+
+                // Nhóm action
+                add_course: 'Thêm khoá đào tạo',
+                edit_course: 'Chỉnh sửa khoá đào tạo',
+                delete_course: 'Xoá khoá đào tạo',
+                view_course: 'Thông tin khoá đào tạo',
 
                 // Thông điệp trả về từ server
                 name_required: 'Tên khoá đào tạo không được để trống',
@@ -1523,6 +1628,23 @@ export default {
 
             // Quản lý chương trình đào tạo
             education_program: {
+
+                education_program_code: 'Mã chương trình đào tạo',
+                education_program_name: 'Tên chương trình đào tạo',
+
+                table: {
+                    program_code: 'Mã chương trình',
+                    program_name: 'Tên chương trình',
+                    apply_for_organizational_units: 'Áp dụng cho đơn vị',
+                    apply_for_positions: 'Áp dụng cho chức vụ',
+                    total_courses: 'Tổng số khoá học',
+                },
+
+                // Nhóm dành cho action
+                add_education_program: 'Thêm chương trình đào tạo',
+                edit_education_program: 'Chỉnh sửa chương trình đào tạo',
+                delete_education_program: 'Xoá chương trình đào tạo',
+                view_education_program: 'Thông tin chương trình đào tạo',
 
                 // Thông điệp trả về từ server
                 apply_for_organizational_units_required: 'Áp dụng cho đơn vị không được để trống',
@@ -1662,6 +1784,7 @@ export default {
                 asset_incident_and_maintenance: 'Sự cố - bảo trì',
                 incident_asset: 'Thống kê sự cố tài sản',
                 maintenance_asset: 'Thống kê bảo trì tài sản',
+                statistic_by: 'Thống kê theo',
             },
 
             //  Quản lý loại tài sản
@@ -1901,12 +2024,11 @@ export default {
             confirm_title: 'Bạn chắc chắn muốn xóa mẫu công việc này?',
             error_title: 'Không thể xóa mẫu công việc này do đã được sử dụng.',
             name: 'Tên mẫu',
-            unit: 'Đơn vị',
+            unit: 'Đơn vị quản lý công việc',
             tasktemplate_name: 'Tên mẫu công việc',
             description: 'Mô tả',
             count: 'Số lần sử dụng',
             creator: 'Người tạo mẫu',
-            unit: 'Đơn vị',
             action: 'Hành động',
             priority: 'Độ ưu tiên',
             general_information: 'Thông tin chung',
@@ -2047,8 +2169,8 @@ export default {
                 action_add: 'Thêm công việc con',
                 action_start_timer: 'Bắt đầu bấm giờ',
 
-                from: 'Từ tháng',
-                to: 'Đến tháng',
+                from: 'Từ ',
+                to: 'Đến',
                 lower_from: 'từ',
                 lower_to: 'đến',
                 month: 'Tháng',
@@ -2427,6 +2549,7 @@ export default {
 
                     err_range: 'Giá trị không được vượt quá khoảng 0-100',
                     err_contribute: 'Tổng phần trăm đóng góp phải là 100',
+                    err_not_enough_contribute: 'Tổng phần trăm đóng góp phải là 100',
                     err_empty: 'Giá trị không được để trống'
                 }
 
@@ -2434,6 +2557,8 @@ export default {
             task_process: {
                 process_name: 'Tên quy trình',
                 process_description: 'Mô tả quy trình',
+                num_task: 'Số lượng công việc trong quy trình',
+                process_status: 'Trạng thái quy trình',
                 creator: 'Người tạo quy trình',
                 manager: 'Người quản lý',
                 viewer: 'Người được xem',
@@ -2450,13 +2575,12 @@ export default {
                 canceled: 'Bị hủy',
                 general_infomation: "Thông tin chung",
                 notice: 'Chú thích',
-                information: 'Thông tin',
-                document: 'Tài liệu',
+                information: 'Thông tin xuất ra',
+                document: 'Tài liệu xuất ra',
                 roles: 'Các vai trò',
-                list_of_data_and_info: 'Danh sách thông tin và tài liệu',
-                not_have_doc: 'Không có tài liệu',
-                not_have_info: 'Không có thông tin',
-                not_export_info: 'Không xuất thông tin',
+                list_of_data_and_info: 'Chọn thông tin và tài liệu xuất ra cho các công việc phía sau',
+                not_have_doc: 'Công việc này không có tài liệu',
+                not_have_info: 'Công việc này không có thông tin',
                 task_process: 'Quy trình công việc',
 
                 export_doc: 'Xuất tài liệu',
@@ -2488,7 +2612,9 @@ export default {
                 get_all_task_process_success: 'Lấy danh sach quy trình công việc thành công',
                 get_all_task_process_fail: 'Lấy danh sach quy trình công việc thất bại',
                 update_task_process_success: 'Cập nhật quy trình công việc thành công',
-                update_task_process_fail: 'Cập nhật quy trình công việc thành công',
+                update_task_process_fail: 'Cập nhật quy trình công việc thất bại',
+                edit_info_process_success: 'Chỉnh sửa thông tin quy trình công việc thành công',
+                edit_info_process_fail: 'Chỉnh sửa thông tin quy trình công việc thất bại',
 
                 error: {
                     empty_name: "Tên quy trình không được bỏ trống",
@@ -3165,6 +3291,28 @@ export default {
             edit_plan_success: "Cập nhật kế hoạch thành công!",
             edit_plan_fail: "Cập nhật kế hoạch thất bại!",
             detail_info_plan: "Thông tin chi tiết kế hoạch"
+        },
+
+        // manage example
+        manage_example: {
+            exampleName: "Tên ví dụ",
+            search: "Tìm kiếm",
+            add_example: "Thêm mới",
+            index: "STT",
+            description: "Mô tả",
+            edit: "Chỉnh sửa thông tin ví dụ",
+            delete: "Xóa ví dụ",
+            delete_success: "Xóa ví dụ thành công!",
+            delete_fail: "Xóa ví dụ thất bại!",
+            add: "Thêm ví dụ",
+            add_title: "Thêm mới ví dụ",
+            add_success: "Thêm ví dụ thành công!",
+            add_fail: "Thêm ví dụ thất bại!",
+            example_description: "Mô tả ví dụ",
+            edit_title: "Cập nhật ví dụ",
+            edit_example_success: "Cập nhật ví dụ thành công!",
+            edit_example_fail: "Cập nhật ví dụ thất bại!",
+            detail_info_example: "Thông tin chi tiết ví dụ"
         },
 
         footer: {

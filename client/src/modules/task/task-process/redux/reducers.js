@@ -138,151 +138,21 @@ export function taskProcess(state = {}, action) {
                 error: action.error,
                 isLoading: false
             };
-        case TaskProcessConstants.CREATE_COMMENT_REQUEST:
+        case TaskProcessConstants.EDIT_PROCESS_INFO_REQUEST:
             return {
                 ...state,
-                adding: true
-            }
-        case TaskProcessConstants.CREATE_COMMENT_SUCCESS:
+                isLoading: true
+            };
+        case TaskProcessConstants.EDIT_PROCESS_INFO_SUCCESS:
             return {
                 ...state,
-                currentKPI: {
-                    ...state.currentKPI,
-                    comments: action.payload
-                }
-            }
-        case TaskProcessConstants.CREATE_COMMENT_FAILURE:
+                listTaskProcess: state.listTaskProcess.map(elem => elem._id === action.processId ? action.payload.content : elem),
+            };
+        case TaskProcessConstants.EDIT_PROCESS_INFO_FAIL:
             return {
-                error: action.payload,
-            }
-        case TaskProcessConstants.CREATE_COMMENT_OF_COMMENT_REQUEST:
-            return {
-                ...state,
-                adding: true
-            }
-        case TaskProcessConstants.CREATE_COMMENT_OF_COMMENT_SUCCESS:
-            return {
-                ...state,
-                currentKPI: {
-                    ...state.currentKPI,
-                    comments: action.payload
-                }
-            }
-        case TaskProcessConstants.CREATE_COMMENT_OF_COMMENT_FAILURE:
-            return {
-                ...state,
-                error: action.payload,
-            }
-        case TaskProcessConstants.EDIT_COMMENT_REQUEST:
-            return {
-                ...state,
-                editing: true
-            }
-        case TaskProcessConstants.EDIT_COMMENT_SUCCESS:
-            return {
-                ...state,
-                idLoading: false,
-                currentKPI: {
-                    ...state.currentKPI,
-                    comments: action.payload,
-
-                }
-            }
-        case TaskProcessConstants.EDIT_COMMENT_FAILURE:
-            return {
-                ...state,
-                error: action.payload,
-            }
-        case TaskProcessConstants.DELETE_COMMENT_REQUEST:
-            return {
-                ...state,
-                editing: true
-            }
-        case TaskProcessConstants.DELETE_COMMENT_SUCCESS:
-            return {
-                ...state,
-                currentKPI: {
-                    ...state.currentKPI,
-                    comments: action.payload
-                }
-            }
-        case TaskProcessConstants.DELETE_COMMENT_FAILURE:
-            return {
-                ...state,
-                error: action.payload,
-            }
-        case TaskProcessConstants.EDIT_COMMENT_OF_COMMENT_REQUEST:
-            return {
-                ...state,
-                editing: true
-            }
-        case TaskProcessConstants.EDIT_COMMENT_OF_COMMENT_SUCCESS:
-            return {
-                ...state,
-                currentKPI: {
-                    ...state.currentKPI,
-                    comments: action.payload
-                }
-            }
-        case TaskProcessConstants.EDIT_COMMENT_OF_COMMENT_FAILURE:
-            return {
-                ...state,
-                error: action.payload,
-            }
-        case TaskProcessConstants.DELETE_COMMENT_OF_COMMENT_REQUEST:
-            return {
-                ...state,
-                deleting: true
-            }
-        case TaskProcessConstants.DELETE_COMMENT_OF_COMMENT_SUCCESS:
-            return {
-                ...state,
-                currentKPI: {
-                    ...state.currentKPI,
-                    comments: action.payload
-                }
-            }
-        case TaskProcessConstants.DELETE_COMMENT_OF_COMMENT_FAILURE:
-            return {
-                ...state,
-                error: action.payload,
-            }
-        case TaskProcessConstants.DELETE_FILE_COMMENT_REQUEST:
-            return {
-                ...state,
-                deleting: true
-            }
-        case TaskProcessConstants.DELETE_FILE_COMMENT_SUCCESS:
-            return {
-                ...state,
-                currentKPI: {
-                    ...state.currentKPI,
-                    comments: action.payload
-                }
-            }
-        case TaskProcessConstants.DELETE_FILE_COMMENT_FAILURE:
-            return {
-                ...state,
-                error: action.payload,
-            }
-        case TaskProcessConstants.DELETE_FILE_CHILD_COMMENT_REQUEST:
-            return {
-                ...state,
-                deleting: true
-            }
-        case TaskProcessConstants.DELETE_FILE_CHILD_COMMENT_SUCCESS:
-            return {
-                ...state,
-                currentKPI: {
-                    ...state.currentKPI,
-                    comments: action.payload
-                }
-            }
-        case TaskProcessConstants.DELETE_FILE_CHILD_COMMENT_FAILURE:
-            return {
-                ...state,
-                error: action.payload,
-            }
+                error: action.error,
+                isLoading: false
+            };
         default:
             return state
     }

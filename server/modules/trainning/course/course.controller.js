@@ -138,7 +138,7 @@ exports.createCourse = async (req, res) => {
             });
         } else {
             // Kiểm tra sự trùng lặp mã khoá học
-            var data = await CourseService.createCourse(req.body, req.user.company._id);
+            let data = await CourseService.createCourse(req.body, req.user.company._id);
             if (data === 'have_exist') {
                 await LogError(req.user.email, 'CREATE_COURSE', req.user.company);
                 res.status(400).json({
@@ -174,7 +174,7 @@ exports.createCourse = async (req, res) => {
  */
 exports.deleteCourse = async (req, res) => {
     try {
-        var data = await CourseService.deleteCourse(req.params.id);
+        let data = await CourseService.deleteCourse(req.params.id);
         await LogInfo(req.user.email, 'DELETE_COURSE', req.user.company);
         res.status(200).json({
             success: true,
@@ -282,7 +282,7 @@ exports.updateCourse = async (req, res) => {
             });
         } else {
             // Cập nhật thông tin khoá học
-            var data = await CourseService.updateCourse(req.params.id, req.body);
+            let data = await CourseService.updateCourse(req.params.id, req.body);
             await LogInfo(req.user.email, 'EDIT_COURSE', req.user.company);
             res.status(200).json({
                 success: true,

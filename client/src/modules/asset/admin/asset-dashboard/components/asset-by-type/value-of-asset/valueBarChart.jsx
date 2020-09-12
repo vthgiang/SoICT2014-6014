@@ -31,8 +31,10 @@ class ValueBarChart extends Component {
         let chart = [];
         if (listAssets) {
             listAssets.map(asset => {
-                let idx = idAssetType.indexOf(asset.assetType);
-                countAssetValue[idx] += asset.cost / 1000000;
+                for (let k in asset.assetType) {
+                    let idx = idAssetType.indexOf(asset.assetType[k]._id);
+                    countAssetValue[idx] += asset.cost / 1000000;
+                }
             })
             for (let i in assetType) {
 
@@ -52,7 +54,7 @@ class ValueBarChart extends Component {
         if (listAssets && assetType && setValueOfAsset) {
             setValueOfAsset(data);
         }
-        
+
         return data;
     }
 

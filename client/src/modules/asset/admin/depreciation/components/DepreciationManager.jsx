@@ -106,11 +106,19 @@ class DepreciationManager extends Component {
         });
     }
 
-    // Function lưu giá trị tháng vào state khi thay đổi
-    handleMonthChange = (value) => {
+    // Function lưu giá trị tháng bắt đầu khấu hao vào state khi thay đổi
+    handleMonthStartChange = (value) => {
         this.setState({
             ...this.state,
-            month: value
+            startDepreciation: value
+        });
+    }
+
+    // Function lưu loại khấu hao
+    handleDepreciationTypeChange = (value) => {
+        this.setState({
+            ...this.state,
+            depreciationType: value
         });
     }
 
@@ -142,6 +150,7 @@ class DepreciationManager extends Component {
     handleSubmitSearch = async () => {
         await this.setState({
             ...this.state,
+            page: 0
         })
         this.props.getAllAsset(this.state);
     }
@@ -351,6 +360,19 @@ class DepreciationManager extends Component {
         return typeArr;
     }
 
+    convertGroupAsset = (group) => {
+        if (group === 'Building') {
+            return 'Mặt bằng';
+        } else if (group === 'Vehicle') {
+            return 'Xe cộ'
+        } else if (group === 'Machine') {
+            return 'Máy móc'
+        } else {
+            return 'Khác'
+        }
+
+    }
+
     render() {
         const { translate, assetsManager, assetType } = this.props;
         var { page, limit, currentRowView, currentRowEditAsset, managedBy } = this.state;
@@ -393,17 +415,7 @@ class DepreciationManager extends Component {
                         </div>
                     </div>
 
-                    <div className="form-inline" style={{ marginBottom: 10 }}>
-                        {/* Phân loại */}
-                        <div className="form-group">
-                            <label className="form-control-static">{translate('asset.general_information.type')}</label>
-                            <TreeSelect
-                                data={typeArr}
-                                value={assetTypeName}
-                                handleChange={this.handleAssetTypeChange}
-                                mode="hierarchical"
-                            />
-                        </div>
+                    <div className="form-inline">
                         {/* Nhóm tài sản */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('asset.general_information.asset_group')}</label>
@@ -419,22 +431,48 @@ class DepreciationManager extends Component {
                             >
                             </SelectMulti>
                         </div>
-                    </div>
-                    <div className="form-inline">
-                        {/* Tháng */}
+
+                        {/* Phân loại */}
                         <div className="form-group">
-                            <label className="form-control-static">{translate('page.month')}</label>
+                            <label className="form-control-static">{translate('asset.general_information.asset_type')}</label>
+                            <TreeSelect
+                                data={typeArr}
+                                value={assetTypeName}
+                                handleChange={this.handleAssetTypeChange}
+                                mode="hierarchical"
+                            />
+                        </div>
+                    </div>
+                    <div className="form-inline" style={{ marginBottom: 10 }}>
+
+                        {/* Loại khấu hao */}
+                        <div className="form-group">
+                            <label className="form-control-static">Loại khấu hao</label>
+                            <SelectMulti id={`multiSelectDepreTypeInManagement`} multiple="multiple"
+                                options={{ nonSelectedText: "Chọn loại khấu hao", allSelectedText: "Chọn tất cả" }}
+                                onChange={this.handleDepreciationTypeChange}
+                                items={[
+                                    { value: "Đường thẳng", text: "Đường thẳng" },
+                                    { value: "Số dư giảm dần", text: "Số dư giảm dần" },
+                                    { value: "Sản lượng", text: "Sản lượng" },
+                                ]}
+                            >
+                            </SelectMulti>
+                        </div>
+
+                        {/* Tháng bắt đầu trích khấu hao */}
+                        <div className="form-group">
+                            <label className="form-control-static">Bắt đầu khấu hao</label>
                             <DatePicker
-                                id="month1"
+                                id="month-start-depreciation"
                                 dateFormat="month-year"
-                                value={this.formatDate2(Date.now())}
-                                onChange={this.handleMonthChange}
+                                // value={this.formatDate2(Date.now())}
+                                onChange={this.handleMonthStartChange}
                             />
                         </div>
 
                         {/* Button tìm kiếm */}
                         <div className="form-group">
-                            <label htmlFor=""></label>
                             <button type="button" className="btn btn-success" title={translate('asset.general_information.search')} onClick={() => this.handleSubmitSearch()}>{translate('asset.general_information.search')}</button>
                         </div>
                         {exportData && <ExportExcel id="export-asset-depreciation-management" exportData={exportData} style={{ marginRight: 10 }} />}
@@ -446,6 +484,7 @@ class DepreciationManager extends Component {
                             <tr>
                                 <th style={{ width: "8%" }}>{translate('asset.general_information.asset_code')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.asset_name')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.asset_group')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.asset_type')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.original_price')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.start_depreciation')}</th>
@@ -461,6 +500,7 @@ class DepreciationManager extends Component {
                                         columnArr={[
                                             translate('asset.general_information.asset_code'),
                                             translate('asset.general_information.asset_name'),
+                                            translate('asset.general_information.asset_group'),
                                             translate('asset.general_information.asset_type'),
                                             translate('asset.general_information.original_price'),
                                             translate('asset.general_information.start_depreciation'),
@@ -486,6 +526,7 @@ class DepreciationManager extends Component {
                                         <tr key={index}>
                                             <td><a onClick={() => this.handleEditAsset(x)}>{x.code}</a></td>
                                             <td>{x.assetName}</td>
+                                            <td>{this.convertGroupAsset(x.group)}</td>
                                             <td>{x.assetType && x.assetType.length ? x.assetType.map((item, index) => { let suffix = index < x.assetType.length - 1 ? ", " : ""; return item.typeName + suffix }) : 'Asset is deleted'}</td>
                                             <td>{formater.format(parseInt(x.cost))} VNĐ</td>
                                             <td>{this.formatDate(x.startDepreciation)}</td>

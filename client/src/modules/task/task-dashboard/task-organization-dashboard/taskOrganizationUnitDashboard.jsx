@@ -337,7 +337,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                 <div className="box-title">{translate('task.task_management.dashboard_overdue')}</div>
                             </div>
 
-                            <div className="box-body" style={{ height: "300px" }}>
+                            <div className="box-body" style={{ height: "300px", overflow: "auto"}}>
                                 {
                                     (tasks && tasks.tasksbyuser) ?
                                         <ul className="todo-list">
@@ -364,7 +364,7 @@ class TaskOrganizationUnitDashboard extends Component {
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.dashboard_about_to_overdue')}</div>
                             </div>
-                            <div className="box-body" style={{ height: "300px" }}>
+                            <div className="box-body" style={{ minHeight: "300px" }}>
                                 {
                                     (tasks && tasks.tasksbyuser) ?
                                         <ul className="todo-list">

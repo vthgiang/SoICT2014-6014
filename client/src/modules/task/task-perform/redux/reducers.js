@@ -87,7 +87,8 @@ export function performtasks(state = {}, action) {
         case performTaskConstants.STOP_TIMER_SUCCESS:
             return {
                 ...state,
-                logtimer: action.payload.data.content,
+                task: action.payload,
+                logtimer: action.payload.timesheetLogs,
                 currentTimer: null,
             };
         case performTaskConstants.STOP_TIMER_FAILURE:
@@ -612,147 +613,124 @@ export function performtasks(state = {}, action) {
                 isLoading: false,
                 error: action.error
             };
-        case TaskProcessConstants.CREATE_COMMENT_REQUEST:
+        case performTaskConstants.CREATE_COMMENT_REQUEST:
             return {
                 ...state,
                 adding: true
             }
-        case TaskProcessConstants.CREATE_COMMENT_SUCCESS:
+        case performTaskConstants.CREATE_COMMENT_SUCCESS:
             return {
                 ...state,
-                currentKPI: {
-                    ...state.currentKPI,
-                    comments: action.payload
-                }
+                task: action.payload
             }
-        case TaskProcessConstants.CREATE_COMMENT_FAILURE:
+        case performTaskConstants.CREATE_COMMENT_FAILURE:
             return {
                 error: action.payload,
             }
-        case TaskProcessConstants.CREATE_COMMENT_OF_COMMENT_REQUEST:
+        case performTaskConstants.CREATE_COMMENT_OF_COMMENT_REQUEST:
             return {
                 ...state,
                 adding: true
             }
-        case TaskProcessConstants.CREATE_COMMENT_OF_COMMENT_SUCCESS:
+        case performTaskConstants.CREATE_COMMENT_OF_COMMENT_SUCCESS:
             return {
                 ...state,
-                currentKPI: {
-                    ...state.currentKPI,
-                    comments: action.payload
-                }
+                task: action.payload
             }
-        case TaskProcessConstants.CREATE_COMMENT_OF_COMMENT_FAILURE:
+        case performTaskConstants.CREATE_COMMENT_OF_COMMENT_FAILURE:
             return {
                 ...state,
                 error: action.payload,
             }
-        case TaskProcessConstants.EDIT_COMMENT_REQUEST:
+        case performTaskConstants.EDIT_COMMENT_REQUEST:
             return {
                 ...state,
                 editing: true
             }
-        case TaskProcessConstants.EDIT_COMMENT_SUCCESS:
+        case performTaskConstants.EDIT_COMMENT_SUCCESS:
             return {
                 ...state,
-                idLoading: false,
-                currentKPI: {
-                    ...state.currentKPI,
-                    comments: action.payload,
-
-                }
+                task: action.payload
             }
-        case TaskProcessConstants.EDIT_COMMENT_FAILURE:
+        case performTaskConstants.EDIT_COMMENT_FAILURE:
             return {
                 ...state,
                 error: action.payload,
             }
-        case TaskProcessConstants.DELETE_COMMENT_REQUEST:
+        case performTaskConstants.DELETE_COMMENT_REQUEST:
             return {
                 ...state,
                 editing: true
             }
-        case TaskProcessConstants.DELETE_COMMENT_SUCCESS:
+        case performTaskConstants.DELETE_COMMENT_SUCCESS:
+            var comment = { ...state.task, commentsInProcess: action.payload }
             return {
                 ...state,
-                currentKPI: {
-                    ...state.currentKPI,
-                    comments: action.payload
-                }
+                task: comment
             }
-        case TaskProcessConstants.DELETE_COMMENT_FAILURE:
+        case performTaskConstants.DELETE_COMMENT_FAILURE:
             return {
                 ...state,
                 error: action.payload,
             }
-        case TaskProcessConstants.EDIT_COMMENT_OF_COMMENT_REQUEST:
+        case performTaskConstants.EDIT_COMMENT_OF_COMMENT_REQUEST:
             return {
                 ...state,
                 editing: true
             }
-        case TaskProcessConstants.EDIT_COMMENT_OF_COMMENT_SUCCESS:
+        case performTaskConstants.EDIT_COMMENT_OF_COMMENT_SUCCESS:
             return {
                 ...state,
-                currentKPI: {
-                    ...state.currentKPI,
-                    comments: action.payload
-                }
+                task: action.payload
             }
-        case TaskProcessConstants.EDIT_COMMENT_OF_COMMENT_FAILURE:
+        case performTaskConstants.EDIT_COMMENT_OF_COMMENT_FAILURE:
             return {
                 ...state,
                 error: action.payload,
             }
-        case TaskProcessConstants.DELETE_COMMENT_OF_COMMENT_REQUEST:
+        case performTaskConstants.DELETE_COMMENT_OF_COMMENT_REQUEST:
             return {
                 ...state,
                 deleting: true
             }
-        case TaskProcessConstants.DELETE_COMMENT_OF_COMMENT_SUCCESS:
+        case performTaskConstants.DELETE_COMMENT_OF_COMMENT_SUCCESS:
+            var comment = { ...state.task, commentsInProcess: action.payload }
             return {
                 ...state,
-                currentKPI: {
-                    ...state.currentKPI,
-                    comments: action.payload
-                }
+                task: comment
             }
-        case TaskProcessConstants.DELETE_COMMENT_OF_COMMENT_FAILURE:
+        case performTaskConstants.DELETE_COMMENT_OF_COMMENT_FAILURE:
             return {
                 ...state,
                 error: action.payload,
             }
-        case TaskProcessConstants.DELETE_FILE_COMMENT_REQUEST:
+        case performTaskConstants.DELETE_FILE_COMMENT_REQUEST:
             return {
                 ...state,
                 deleting: true
             }
-        case TaskProcessConstants.DELETE_FILE_COMMENT_SUCCESS:
+        case performTaskConstants.DELETE_FILE_COMMENT_SUCCESS:
             return {
                 ...state,
-                currentKPI: {
-                    ...state.currentKPI,
-                    comments: action.payload
-                }
+                task: action.payload
             }
-        case TaskProcessConstants.DELETE_FILE_COMMENT_FAILURE:
+        case performTaskConstants.DELETE_FILE_COMMENT_FAILURE:
             return {
                 ...state,
                 error: action.payload,
             }
-        case TaskProcessConstants.DELETE_FILE_CHILD_COMMENT_REQUEST:
+        case performTaskConstants.DELETE_FILE_CHILD_COMMENT_REQUEST:
             return {
                 ...state,
                 deleting: true
             }
-        case TaskProcessConstants.DELETE_FILE_CHILD_COMMENT_SUCCESS:
+        case performTaskConstants.DELETE_FILE_CHILD_COMMENT_SUCCESS:
+            
             return {
                 ...state,
-                currentKPI: {
-                    ...state.currentKPI,
-                    comments: action.payload
-                }
+                task: action.payload
             }
-        case TaskProcessConstants.DELETE_FILE_CHILD_COMMENT_FAILURE:
+        case performTaskConstants.DELETE_FILE_CHILD_COMMENT_FAILURE:
             return {
                 ...state,
                 error: action.payload,

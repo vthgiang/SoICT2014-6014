@@ -30,7 +30,7 @@ class Table extends Component {
         super(props);
         this.state = {
             category: "",
-            domain: "",
+            // domain: "",
             archive: "",
             name: "",
             option: {
@@ -138,10 +138,20 @@ class Table extends Component {
         })
     }
     handleDomainChange = (value) => {
-        this.setState({ domain: value });
+        this.setState(state => {
+            return {
+                ...state,
+                domain: value,
+            }
+        })
     }
     handleDomains = value => {
-        this.setState({ documentDomains: value });
+        this.setState(state => {
+            return {
+                ...state,
+                documentDomains: value,
+            }
+        })
     }
     handleNameChange = (e) => {
         const value = e.target.value;
@@ -160,6 +170,24 @@ class Table extends Component {
             }
         })
     }
+    formatDate(date, monthYear = false) {
+        if (date) {
+            let d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
+            if (monthYear === true) {
+                return [month, year].join('-');
+            } else return [day, month, year].join('-');
+        } else {
+            return date
+        }
+    }
+
     convertData = (data) => {
         let array = data.map(item => {
             return {
@@ -170,65 +198,137 @@ class Table extends Component {
         array.unshift({ value: "", text: "Tất cả các loại" });
         return array;
     }
+    findRole = (id) => {
+        const listRole = this.props.role.list;
+        let role = listRole.filter((role) => role._id === id);
+        if (role && role.length)
+            return role[0].name;
+        else return "";
+    }
     convertDataToExportData = (data) => {
-        // console.log(data);
-        let datas = [];
+
+        console.log("dataaaaaaa", data);
+        let newData = [];
         for (let i = 0; i < data.length; i++) {
-            if (data.versions && data.domains) {
-                let x = data[i];
-                let domain = "";
-                let leng = x.versions.length > x.domains.length ? x.versions.length : x.domains.length;
-                if (x.domains.length > 0) {
-                    domain = x.domains[0].name;
-                }
-                let out = {
-                    STT: i + 1,
-                    name: x.name,
-                    description: x.description,
-                    versionName: x.versions[0].versionName,
-                    domain: domain,
-                    issuingDate: new Date(x.versions[0].issuingDate),
-                    effectiveDate: new Date(x.versions[0].effectiveDate),
-                    expiredDate: new Date(x.versions[0].expiredDate),
-                    numberOfView: x.numberOfView,
-                    numberOfDownload: x.numberOfDownload,
-                    issuingBody: x.issuingBody,
-                    signer: x.signer,
-                    officialNumber: x.officialNumber,
-                    category: x.category.description,
-                }
-                datas = [...datas, out];
-                for (let j = 1; j < leng; j++) {
-                    let versionName = "", issuingDate = "", effectiveDate = "", expiredDate = "", domain = "";
-                    if (x.versions[j]) {
-                        versionName = x.versions[j].versionName;
-                        issuingDate = new Date(x.versions[j].issuingDate);
-                        effectiveDate = new Date(x.versions[j].effectiveDate);
-                        expiredDate = new Date(x.versions[j].expiredDate);
-                    }
-                    if (x.domains[j]) {
-                        domain = x.domains[j].name;
-                    }
-                    out = {
-                        STT: "",
+            let element = {};
+            let x = data[i];
+            let length = 0;
+            let domain = "";
+            let length_domains, length_archives, length_relationship, length_roles, length_versions, length_logs, length_views, length_downloads;
+            if (x.domains && x.domains.length) {
+                element.domains = x.domains[0].name;
+                length_domains = x.domains.length;
+            } else {
+                element.domains = "";
+                length_domains = 0;
+            }
+            if (x.archives && x.archives.length) {
+                element.archives = x.archives[0].path;
+                length_archives = x.archives.length;
+            } else {
+                element.archives = "";
+                length_archives = 0;
+            }
+            if (x.roles && x.roles.length) {
+                element.roles = this.findRole(x.roles[0]);
+                length_roles = x.roles.length;
+            } else {
+                element.roles = 0;
+                length_roles = 0;
+            }
+            if (x.relationshipDocuments && x.relationshipDocuments.length) {
+                element.relationshipDocuments = x.relationshipDocuments[0].name;
+                length_relationship = x.relationshipDocuments.length;
+            } else {
+                element.relationshipDocuments = "";
+                length_relationship = 0;
+            }
+            if (x.versions && x.versions.length) {
+                element.versionName = x.versions[0].versionName;
+                element.issuingDate = this.formatDate(x.versions[0].issuingDate);
+                element.effectiveDate = this.formatDate(x.versions[0].effectiveDate);
+                element.expiredDate = this.formatDate(x.versions[0].expiredDate);
+                length_versions = x.versions.length;
+            } else {
+                element.versionName = "";
+                element.issuingDate = "";
+                element.effectiveDate = "";
+                element.expiredDate = "";
+                length_versions = 0;
+            }
+            if (x.views && x.views.length) {
+                element.viewer = x.views[0].viewer.name;
+                element.timeView = this.formatDate(x.views[0].time);
+                length_views = x.views.length;
+            } else {
+                element.viewer = "";
+                element.timeView = "";
+                length_views = 0;
+            }
+            if (x.downloads && x.downloads.length) {
+                element.downloader = x.downloads[0].downloader.name;
+                element.timeDownload = this.formatDate(x.downloads[0].time);
+                length_downloads = x.downloads.length;
+            } else {
+                element.downloader = "";
+                element.timeDownload = "";
+                length_downloads = 0;
+            }
+            if (x.logs && x.logs.length) {
+                element.title = x.logs[0].title;
+                element.description = x.logs[0].description;
+                length_logs = x.logs.length;
+            } else {
+                element.title = "";
+                element.descriptionLogs = "";
+                length_logs = 0;
+            }
+            element.name = x.name;
+            element.description = x.description ? x.description : "";
+            element.issuingBody = x.issuingBody ? x.issuingBody : "";
+            element.signer = x.signer ? x.signer : "";
+            element.category = x.category ? x.category.name : "";
+            element.relationshipDescription = x.relationshipDescription ? x.relationshipDescription : "";
+            element.organizationUnitManager = x.organizationUnitManager ? x.organizationUnitManager.name : "";
+            element.officialNumber = x.officialNumber ? x.officialNumber : "";
+            let max_length = Math.max(length_domains, length_archives, length_relationship, length_roles, length_versions, length_logs, length_views, length_downloads);
+            //console.log('eleeeeeeeeeee', element);
+            newData = [...newData, element];
+            if (max_length > 1) {
+                for (let i = 1; i < max_length; i++) {
+                    let object = {
                         name: "",
                         description: "",
-                        domain: domain,
-                        versionName: versionName,
-                        issuingDate: issuingDate,
-                        effectiveDate: effectiveDate,
-                        expiredDate: expiredDate,
-                        numberOfView: "",
-                        numberOfDownload: "",
                         issuingBody: "",
                         signer: "",
+                        category: "",
+                        relationshipDescription: "",
+                        organizationUnitManager: "",
                         officialNumber: "",
-                        categor: "",
+                        domains: i < length_domains ? x.domains[i].name : "",
+                        archives: i < length_archives ? x.archives[i].path : "",
+                        roles: i < length_roles ? this.findRole(x.roles[i]) : "",
+                        relationshipDocuments: i < length_relationship ? x.relationshipDocuments[i].name : "",
+                        versionName: i < length_versions ? x.versions[i].versionName : "",
+                        issuingDate: i < length_versions ? this.formatDate(x.versions[i].issuingDate) : "",
+                        effectiveDate: i < length_versions ? this.formatDate(x.versions[i].effectiveDate) : "",
+                        expiredDate: i < length_versions ? this.formatDate(x.versions[i].expiredDate) : "",
+                        viewer: i < length_views ? x.views[i].viewer.name : "",
+                        timeView: i < length_views ? this.formatDate(x.views[i].time) : "",
+                        downloader: i < length_downloads ? x.downloads[i].downloader.name : "",
+                        timeDownload: i < length_downloads ? this.formatDate(x.downloads[i].time) : "",
+                        title: i < length_logs ? x.logs[i].title : "",
+                        descriptionLogs: i < length_logs ? x.logs[i].description : "",
+
                     }
-                    datas = [...datas, out];
+                    // console.log('exxxx', object);
+                    newData = [...newData, object];
                 }
             }
+
+
         }
+        console.log('exxxx', newData);
         let exportData = {
             fileName: "Bảng thống kê tài liệu",
             dataSheets: [
@@ -238,40 +338,58 @@ class Table extends Component {
                         {
                             tableName: "Bảng thống kê tài liệu",
                             merges: [{
-                                key: "Vesions",
+                                key: "Versions",
                                 columnName: "Phiên bản",
                                 keyMerge: 'versionName',
-                                colspan: 4
+                                colspan: 3
                             }, {
-                                key: "Infomation",
-                                columnName: "Thông tin chung",
-                                keyMerge: 'name',
-                                colspan: 7
-                            }],
+                                key: "Views",
+                                columnName: "Người đã xem",
+                                keyMerge: 'viewer',
+                                colspan: 2
+                            }, {
+                                key: "Downloads",
+                                columnName: "Người đã tải",
+                                keyMerge: 'downloader',
+                                colspan: 2,
+                            }, {
+                                key: "Logs",
+                                columnName: "Lịch sử chỉnh sửa",
+                                keyMerge: 'title',
+                                colspan: 2,
+                            },
+                            ],
                             rowHeader: 2,
                             columns: [
                                 { key: "STT", value: "STT" },
                                 { key: "name", value: "Tên" },
-                                { key: "officialNumber", value: "Số hiệu" },
-                                { key: "category", value: "Loai tài liệu" },
                                 { key: "description", value: "Mô tả" },
-                                { key: "signer", value: "Người ký" },
-                                { key: "domain", value: "Danh mục" },
+                                { key: "category", value: "Loai tài liệu" },
                                 { key: "issuingBody", value: "Cơ quan ban hành" },
+                                { key: "signer", value: "Người ký" },
+                                { key: "relationshipDescription", value: "Mô tả liên kết" },
+                                { key: "organizationUnitManager", value: "Cơ quan quản lí" },
+                                { key: "domains", value: "Danh mục" },
+                                { key: "archives", value: "Địa chỉ lưu trữ" },
+                                { key: "roles", value: "Các chức danh được xem" },
                                 { key: "versionName", value: "Tên phiên bản" },
                                 { key: "issuingDate", value: "Ngày ban hành" },
-                                { key: "effectiveDate", value: "Ngày áp dụng" },
-                                { key: "expiredDate", value: "Ngày hết hạn" },
-                                { key: "numberOfView", value: "Số lần xem" },
-                                { key: "numberOfDownload", value: "Số lần download" },
+                                { key: "effectiveDate", value: "Ngày hiệu lực" },
+                                { key: "viewer", value: "Người đã xem" },
+                                { key: "timeView", value: "Thời gian xem" },
+                                { key: "downloader", value: "Người đã tải" },
+                                { key: "timeDownload", value: "Người đã tải" },
+                                { key: "title", value: "Tiêu đề chỉnh sửa" },
+                                { key: "descriptionLogs", value: "Chỉnh sửa chi tiết" },
+
                             ],
-                            data: datas
+                            data: newData
                         }
                     ]
                 },
             ]
         }
-        console.log(exportData);
+
         return exportData
     }
     render() {
@@ -280,16 +398,17 @@ class Table extends Component {
         const { domains, categories, archives } = this.props.documents.administration;
         const { paginate } = docs;
         const { isLoading } = this.props.documents;
-        const { currentRow, archive, category } = this.state;
+        const { currentRow, archive, domain, category } = this.state;
         const listDomain = domains.list
         const listCategory = this.convertData(categories.list)
         const listArchive = archives.list;
-        console.log('ttttttttttttt', paginate);
         let list = [];
         if (isLoading === false) {
             list = docs.list;
         }
-        let exportData = this.convertDataToExportData(list);
+
+        let exportData = list ? this.convertDataToExportData(list) : "";
+        console.log('exportDataaaaaaaaaaaaaaaa', this.props.role)
         return (
             <div className="qlcv">
                 <CreateForm />
@@ -372,8 +491,9 @@ class Table extends Component {
                     <div className="form-group" >
                         <label>{translate('document.store.information')}</label>
                         <TreeSelect
+                            id="tree-select-search-archive"
                             data={listArchive}
-                            className="form-control select2"
+                            className="form-control"
                             handleChange={this.handleArchiveChange}
                             value={archive}
                             mode="hierarchical"
@@ -387,9 +507,11 @@ class Table extends Component {
                     <div className="form-group">
                         <label>{translate('document.domain')}</label>
                         <TreeSelect
+                            id="tree-select-search-domain"
                             data={listDomain}
-                            className="form-control select2"
+                            className="form-control"
                             handleChange={this.handleDomainChange}
+                            value={domain}
                             mode="hierarchical"
                             style={{ width: "100%" }}
                         />
@@ -511,7 +633,7 @@ class Table extends Component {
             // value: this.state.value,
             name: this.state.name,
             category: this.state.category[0],
-            domains: this.state.domain[0],
+            domains: this.state.domain ? this.state.domain : "",
             archives: this.state.archive[0],
         };
         await this.props.getAllDocuments(data);

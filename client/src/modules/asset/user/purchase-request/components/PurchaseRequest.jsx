@@ -142,7 +142,7 @@ class PurchaseRequest extends Component {
 
                     {/* Form thêm mới phiếu đề nghị mua sắm thiết bị */}
                     <PurchaseRequestCreateForm />
-                    
+
                     {/* Thanh tìm kiếm */}
                     <div className="form-inline">
 
@@ -154,7 +154,7 @@ class PurchaseRequest extends Component {
 
                         {/* Tháng */}
                         <div className="form-group">
-                            <label className="form-control-static">{translate('page.month')}</label>
+                            <label className="form-control-static">Ngày đề nghị</label>
                             <DatePicker
                                 id="month"
                                 dateFormat="month-year"

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { configDomain } from './fileConfigurationImportDomain.js'
+import { configDomain, exportDomain } from './fileConfigurationImportDomain.js'
 import { DialogModal, ImportFileExcel, ShowImportData, ConFigImportFile, ExportExcel } from '../../../../../common-components';
 //import { taskTemplateActions } from '../redux/actions';
 import { connect } from 'react-redux';
@@ -8,7 +8,7 @@ import { AuthActions } from '../../../../auth/redux/actions';
 import { DocumentActions } from '../../../redux/actions'
 
 class DomainImportForm extends Component {
-    constructor(props) { 
+    constructor(props) {
         super(props);
         this.state = {
             configData: configDomain,
@@ -117,11 +117,11 @@ class DomainImportForm extends Component {
                                     handleImportExcel={this.handleImportExcel}
                                 />
                             </div>
-                            {/* <div className="form-group col-md-4 col-xs-12">
+                            <div className="form-group col-md-4 col-xs-12">
                                 <label></label>
-                                <ExportExcel id="download_template_task_template" type='link' exportData={templateImportTaskTemplate2}
+                                <ExportExcel id="download_template_task_template" type='link' exportData={exportDomain}
                                     buttonName='Download file import mẫu' />
-                            </div> */}
+                            </div>
                             <div className="form-group col-md-12 col-xs-12">
                                 <ShowImportData
                                     id="import_taskTemplate_show_data"

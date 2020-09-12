@@ -179,8 +179,14 @@ function stopTimerTask(taskId, newTimer) {
         performTaskService.stopTimerTask(taskId, newTimer)
             .then(
                 payload => {
-                    dispatch({ type: performTaskConstants.STOP_TIMER_SUCCESS, payload })
-                    dispatch({ type: taskManagementConstants.EDIT_TASK_SUCCESS, payload })
+                    dispatch({
+                        type: performTaskConstants.STOP_TIMER_SUCCESS,
+                        payload: payload.data.content
+                    })
+                    dispatch({
+                        type: taskManagementConstants.EDIT_TASK_SUCCESS,
+                        payload: payload.data.content
+                    })
                 },
                 error => {
                     dispatch({ type: performTaskConstants.STOP_TIMER_FAILURE, error });
@@ -733,17 +739,17 @@ function confirmTask(taskId) {
 
 function createComment(taskId, data) {
     return dispatch => {
-        dispatch({ type: TaskProcessConstants.CREATE_COMMENT_REQUEST });
-        TaskProcessService.createComment(taskId, data)
+        dispatch({ type: performTaskConstants.CREATE_COMMENT_REQUEST });
+        performTaskService.createComment(taskId, data)
             .then(res => {
                 dispatch({
-                    type: TaskProcessConstants.CREATE_COMMENT_SUCCESS,
+                    type: performTaskConstants.CREATE_COMMENT_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(error => {
                 dispatch({
-                    type: TaskProcessConstants.CREATE_COMMENT_FAILURE,
+                    type: performTaskConstants.CREATE_COMMENT_FAILURE,
                     payload: error
                 })
             })
@@ -752,17 +758,17 @@ function createComment(taskId, data) {
   
   function editComment(taskId, commentId, data) {
     return dispatch => {
-        dispatch({ type: TaskProcessConstants.EDIT_COMMENT_REQUEST });
-        TaskProcessService.editComment(taskId, commentId, data)
+        dispatch({ type: performTaskConstants.EDIT_COMMENT_REQUEST });
+        performTaskService.editComment(taskId, commentId, data)
             .then(res => {
                 dispatch({
-                    type: TaskProcessConstants.EDIT_COMMENT_SUCCESS,
+                    type: performTaskConstants.EDIT_COMMENT_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(error => {
                 dispatch({
-                    type: TaskProcessConstants.EDIT_COMMENT_FAILURE,
+                    type: performTaskConstants.EDIT_COMMENT_FAILURE,
                     payload: error
                 })
             })
@@ -770,17 +776,17 @@ function createComment(taskId, data) {
   }
   function deleteComment(taskId, commentId) {
     return dispatch => {
-        dispatch({ type: TaskProcessConstants.DELETE_COMMENT_REQUEST });
-        TaskProcessService.deleteComment(taskId, commentId)
+        dispatch({ type: performTaskConstants.DELETE_COMMENT_REQUEST });
+        performTaskService.deleteComment(taskId, commentId)
             .then(res => {
                 dispatch({
-                    type: TaskProcessConstants.DELETE_COMMENT_SUCCESS,
+                    type: performTaskConstants.DELETE_COMMENT_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(error => {
                 dispatch({
-                    type: TaskProcessConstants.DELETE_COMMENT_FAILURE,
+                    type: performTaskConstants.DELETE_COMMENT_FAILURE,
                     payload: error
                 })
             })
@@ -790,17 +796,17 @@ function createComment(taskId, data) {
   
   function createChildComment(taskId, commentId, data) {
     return dispatch => {
-        dispatch({ type: TaskProcessConstants.CREATE_COMMENT_OF_COMMENT_REQUEST });
-        TaskProcessService.createChildComment(taskId, commentId, data)
+        dispatch({ type: performTaskConstants.CREATE_COMMENT_OF_COMMENT_REQUEST });
+        performTaskService.createChildComment(taskId, commentId, data)
             .then(res => {
                 dispatch({
-                    type: TaskProcessConstants.CREATE_COMMENT_OF_COMMENT_SUCCESS,
+                    type: performTaskConstants.CREATE_COMMENT_OF_COMMENT_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(error => {
                 dispatch({
-                    type: TaskProcessConstants.CREATE_COMMENT_OF_COMMENT_FAILURE,
+                    type: performTaskConstants.CREATE_COMMENT_OF_COMMENT_FAILURE,
                     payload: error
                 })
             })
@@ -809,17 +815,17 @@ function createComment(taskId, data) {
   
   function editChildComment(taskId, commentId, childCommentId, data) {
     return dispatch => {
-        dispatch({ type: TaskProcessConstants.EDIT_COMMENT_OF_COMMENT_REQUEST });
-        TaskProcessService.editChildComment(taskId, commentId, childCommentId, data)
+        dispatch({ type: performTaskConstants.EDIT_COMMENT_OF_COMMENT_REQUEST });
+        performTaskService.editChildComment(taskId, commentId, childCommentId, data)
             .then(res => {
                 dispatch({
-                    type: TaskProcessConstants.EDIT_COMMENT_OF_COMMENT_SUCCESS,
+                    type: performTaskConstants.EDIT_COMMENT_OF_COMMENT_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(error => {
                 dispatch({
-                    type: TaskProcessConstants.EDIT_COMMENT_OF_COMMENT_FAILURE,
+                    type: performTaskConstants.EDIT_COMMENT_OF_COMMENT_FAILURE,
                     payload: error
                 })
             })
@@ -828,17 +834,17 @@ function createComment(taskId, data) {
   
   function deleteChildComment(taskId, commentId, childCommentId) {
     return dispatch => {
-        dispatch({ type: TaskProcessConstants.DELETE_COMMENT_OF_COMMENT_REQUEST });
-        TaskProcessService.deleteChildComment(taskId, commentId, childCommentId)
+        dispatch({ type: performTaskConstants.DELETE_COMMENT_OF_COMMENT_REQUEST });
+        performTaskService.deleteChildComment(taskId, commentId, childCommentId)
             .then(res => {
                 dispatch({
-                    type: TaskProcessConstants.DELETE_COMMENT_OF_COMMENT_SUCCESS,
+                    type: performTaskConstants.DELETE_COMMENT_OF_COMMENT_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(error => {
                 dispatch({
-                    type: TaskProcessConstants.DELETE_COMMENT_OF_COMMENT_FAILURE,
+                    type: performTaskConstants.DELETE_COMMENT_OF_COMMENT_FAILURE,
                     payload: error
                 })
             })
@@ -847,17 +853,17 @@ function createComment(taskId, data) {
   
   function deleteFileComment(fileId, commentId, taskId) {
     return dispatch => {
-        dispatch({ type: TaskProcessConstants.DELETE_FILE_COMMENT_REQUEST });
-        TaskProcessService.deleteFileComment(fileId, commentId, taskId)
+        dispatch({ type: performTaskConstants.DELETE_FILE_COMMENT_REQUEST });
+        performTaskService.deleteFileComment(fileId, commentId, taskId)
             .then(res => {
                 dispatch({
-                    type: TaskProcessConstants.DELETE_FILE_COMMENT_SUCCESS,
+                    type: performTaskConstants.DELETE_FILE_COMMENT_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(error => {
                 dispatch({
-                    type: TaskProcessConstants.DELETE_FILE_COMMENT_FAILURE,
+                    type: performTaskConstants.DELETE_FILE_COMMENT_FAILURE,
                     payload: error
                 })
             })
@@ -866,17 +872,17 @@ function createComment(taskId, data) {
   
   function deleteFileChildComment(fileId, childCommentId, commentId, taskId) {
     return dispatch => {
-        dispatch({ type: TaskProcessConstants.DELETE_FILE_CHILD_COMMENT_REQUEST });
-        TaskProcessService.deleteFileChildComment(fileId, childCommentId, commentId, taskId)
+        dispatch({ type: performTaskConstants.DELETE_FILE_CHILD_COMMENT_REQUEST });
+        performTaskService.deleteFileChildComment(fileId, childCommentId, commentId, taskId)
             .then(res => {
                 dispatch({
-                    type: TaskProcessConstants.DELETE_FILE_CHILD_COMMENT_SUCCESS,
+                    type: performTaskConstants.DELETE_FILE_CHILD_COMMENT_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(error => {
                 dispatch({
-                    type: TaskProcessConstants.DELETE_FILE_CHILD_COMMENT_FAILURE,
+                    type: performTaskConstants.DELETE_FILE_CHILD_COMMENT_FAILURE,
                     payload: error
                 })
             })

@@ -10,8 +10,7 @@ import { ViewTaskTemplate } from "../../task-template/component/viewTaskTemplate
 
 import BpmnViewer from 'bpmn-js';
 import BpmnModeler from 'bpmn-js/lib/Modeler';
-// import customModule from './read-only';
-import customModule from './custom';
+import customModule from './custom-task-process-template';
 
 var zlevel = 1;
 class ModalViewTaskProcess extends Component {
@@ -62,8 +61,8 @@ class ModalViewTaskProcess extends Component {
                 info: info,
                 processDescription: nextProps.data.processDescription ? nextProps.data.processDescription : '',
                 processName: nextProps.data.processName ? nextProps.data.processName : '',
-                viewer: nextProps.data.viewer ? nextProps.data.viewer : [],
-                manager: nextProps.data.manager ? nextProps.data.manager : [],
+                viewer: nextProps.data.viewer ? nextProps.data.viewer.map(x=>x._id) : [],
+                manager: nextProps.data.manager ? nextProps.data.manager.map(x=>x._id) : [],
                 xmlDiagram: nextProps.data.xmlDiagram,
             }
         } else {
@@ -188,56 +187,36 @@ class ModalViewTaskProcess extends Component {
                             </ul>
                             <div className="tab-content">
                                 <div className={selectedView === "info" ? "active tab-pane" : "tab-pane"} id="info-view">
-                                    <div className="row">
+                                    <div className="description-box without-border">
                                         {/* Thông tin chung */}
-                                        <div className="col-md-6">
-                                            <div className="box">
-                                                <div className="box-header with-border">
-                                                    {translate("task.task_process.general_infomation")}
-                                                </div>
-                                                <div className="box-body">
-                                                    <dt>{translate("task.task_process.process_name")}</dt>
-                                                    <dd>{processName}</dd>
-
-                                                    <dt>{translate("task.task_process.process_description")}</dt>
-                                                    <dd>{processDescription}</dd>
-                                                </div>
-                                            </div>
+                                        <div>
+                                            <strong>{translate("task.task_process.process_name")}:</strong>
+                                            <span>{processName}</span>
                                         </div>
+                                        <div>
+                                            <strong>{translate("task.task_process.process_description")}:</strong>
+                                            <span>{processDescription}</span>
+                                        </div>
+
+
                                         {/* Người xem, quản lý */}
-                                        <div className="col-md-6">
-                                            <div className="box">
-                                                <div className="box-header with-border">
-                                                    {translate("task.task_process.roles")}
-                                                </div>
-                                                <div className="box-body">
-                                                    <dt>{translate("task.task_process.viewer")}</dt>
-                                                    <dd>
-                                                        <ul>
-                                                            {
-                                                                listViewer.map((x, key) => {
-                                                                    return <li key={key}>{x.text}</li>
-                                                                })
-                                                            }
-                                                        </ul>
-                                                    </dd>
-
-                                                    <dt>{translate("task.task_process.manager")}</dt>
-                                                    <dd>
-                                                        <ul>
-                                                            {
-                                                                listManager.map((x, key) => {
-                                                                    return <li key={key}>{x.text}</li>
-                                                                })
-                                                            }
-                                                        </ul>
-                                                    </dd>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <strong>{translate("task.task_process.viewer")}:</strong>
+                                        <ul>
+                                            {
+                                                listViewer.map((x, key) => {
+                                                    return <li key={key}>{x.text}</li>
+                                                })
+                                            }
+                                        </ul>
+                                        <strong>{translate("task.task_process.manager")}:</strong>
+                                        <ul>
+                                            {
+                                                listManager.map((x, key) => {
+                                                    return <li key={key}>{x.text}</li>
+                                                })
+                                            }
+                                        </ul>
                                     </div>
-
-
                                 </div>
                             </div>
 

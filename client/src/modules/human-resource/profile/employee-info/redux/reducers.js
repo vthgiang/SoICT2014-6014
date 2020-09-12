@@ -1,8 +1,10 @@
-import { Constants } from './constants';
-const initState ={
+import {
+    Constants
+} from './constants';
+const initState = {
     isLoading: false,
     employees: "",
-    salarys: "",
+    salaries: "",
     annualLeaves: "",
     commendations: "",
     disciplines: "",
@@ -25,33 +27,33 @@ export function employeesInfo(state = initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                employees: action.payload.employees,
-                salarys: action.payload.salarys,
-                annualLeaves: action.payload.annualLeaves,
-                commendations: action.payload.commendations,
-                disciplines: action.payload.disciplines,
-                courses: action.payload.courses,
-                roles : action.payload.roles,
-                organizationalUnits : action.payload.organizationalUnits
+                    employees: action.payload.employees,
+                    salaries: action.payload.salaries,
+                    annualLeaves: action.payload.annualLeaves,
+                    commendations: action.payload.commendations,
+                    disciplines: action.payload.disciplines,
+                    courses: action.payload.courses,
+                    roles: action.payload.roles,
+                    organizationalUnits: action.payload.organizationalUnits
 
             };
         case Constants.UPDATE_PERSONAL_INFOR_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                infoEmployeeUpdate: action.payload
+                    infoEmployeeUpdate: action.payload
             };
         case Constants.GET_PERSONAL_INFOR_FAILURE:
             return {
                 ...state,
                 isLoading: false,
-                error: action.error.message
+                    error: action.error.message
             };
         case Constants.UPDATE_PERSONAL_INFOR_FAILURE:
             return {
                 ...state,
                 isLoading: false,
-                error: action.error
+                    error: action.error
             };
         default:
             return state

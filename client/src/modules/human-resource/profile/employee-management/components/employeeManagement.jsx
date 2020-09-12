@@ -65,7 +65,6 @@ class EmployeeManagement extends Component {
         } else {
             return date
         }
-
     }
 
     // Function bắt sự kiện thêm lương nhân viên bằng tay
@@ -81,7 +80,6 @@ class EmployeeManagement extends Component {
         window.$('#modal_import_file').modal('show');
     }
 
-    //
     /**
      *  Bắt sự kiện click xem thông tin nhân viên
      * @param {*} value : Thông tin nhân viên muốn xem
@@ -89,10 +87,11 @@ class EmployeeManagement extends Component {
     handleView = async (value) => {
         await this.setState(state => {
             return {
+                ...state,
                 currentRowView: value
             }
         });
-        window.$('#modal-view-employee').modal('show');
+        window.$(`#modal-view-employee${value._id}`).modal('show');
     }
 
     /**
@@ -106,7 +105,7 @@ class EmployeeManagement extends Component {
                 currentRow: value
             }
         });
-        window.$('#modal-edit-employee').modal('show');
+        window.$(`#modal-edit-employee${value._id}`).modal('show');
     }
 
     /**
@@ -232,12 +231,21 @@ class EmployeeManagement extends Component {
         this.props.getAllEmployee(this.state);
     }
 
+    handleExportExcel = async () => {
+        const { employeesManager } = this.props;
+        let arrEmail = employeesManager.listEmployees.map(x => x.emailInCompany);
+        await this.setState({
+            exportDataStatus: 0
+        });
+        await this.props.getAllEmployee({ exportData: true, arrEmail: arrEmail });
+    }
+
     /**
      * Function chyển đổi dữ liệu thông tin nhân viên thành dạng dữ liệu dùng export
      * @param {*} data : Thông tin nhân viên
      */
     convertDataToExportData = (data) => {
-        const { list } = this.props.department;
+        const { department, translate } = this.props;
         let employeeInforSheet = data.map((x, index) => {
             let organizationalUnits = x.organizationalUnits.map(y => y.name);
             let position = x.roles.map(y => y.roleId.name);
@@ -249,7 +257,7 @@ class EmployeeManagement extends Component {
                 organizationalUnits: organizationalUnits.join(', '),
                 position: position.join(', '),
                 birthdate: this.formatDate(employee.birthdate),
-                gender: employee.gender,
+                gender: translate(`human_resource.profile.${employee.gender}`),
                 employeeTimesheetId: employee.employeeTimesheetId,
                 identityCardNumber: employee.identityCardNumber,
                 identityCardDate: this.formatDate(employee.identityCardDate),
@@ -257,8 +265,8 @@ class EmployeeManagement extends Component {
                 birthplace: employee.birthplace,
                 permanentResidence: employee.permanentResidence,
                 temporaryResidence: employee.temporaryResidence,
-                maritalStatus: employee.maritalStatus,
-                status: employee.status,
+                maritalStatus: translate(`human_resource.profile.${employee.maritalStatus}`),
+                status: translate(`human_resource.profile.${employee.status}`),
                 startingDate: this.formatDate(employee.startingDate),
                 leavingDate: this.formatDate(employee.leavingDate),
                 emailInCompany: employee.emailInCompany,
@@ -271,7 +279,7 @@ class EmployeeManagement extends Component {
                 nationality: employee.nationality,
                 educationalLevel: employee.educationalLevel,
                 foreignLanguage: employee.foreignLanguage,
-                professionalSkill: employee.professionalSkill,
+                professionalSkill: translate(`human_resource.profile.${employee.professionalSkill}`),
                 phoneNumber: employee.phoneNumber,
                 phoneNumber2: employee.phoneNumber2,
                 personalEmail: employee.personalEmail,
@@ -311,6 +319,7 @@ class EmployeeManagement extends Component {
             let degrees = employee.degrees.map(y => {
                 return {
                     ...y,
+                    degreeType: translate(`human_resource.profile.${y.degreeType}`),
                     employeeNumber: employee.employeeNumber,
                     fullName: employee.fullName
                 }
@@ -345,12 +354,13 @@ class EmployeeManagement extends Component {
             let files = employee.files.map(y => {
                 return {
                     ...y,
+                    status: translate(`human_resource.profile.${y.status}`),
                     employeeNumber: employee.employeeNumber,
                     fullName: employee.fullName
                 }
             });
             let commendations = x.commendations.map(y => {
-                let decisionUnit = list.find(u => u._id === y.organizationalUnit);
+                let decisionUnit = department.list.find(u => u._id === y.organizationalUnit);
                 return {
                     ...y,
                     employeeNumber: employee.employeeNumber,
@@ -360,7 +370,7 @@ class EmployeeManagement extends Component {
                 }
             });
             let disciplines = x.disciplines.map(y => {
-                let decisionUnit = list.find(u => u._id === y.organizationalUnit);
+                let decisionUnit = department.list.find(u => u._id === y.organizationalUnit);
                 return {
                     ...y,
                     employeeNumber: employee.employeeNumber,
@@ -370,25 +380,30 @@ class EmployeeManagement extends Component {
                     endDate: this.formatDate(y.endDate),
                 }
             });
-            let salarys = x.salarys.map(x => {
+            let salaries = x.salaries.map(y => {
+                let organizationalUnit = department.list.find(u => u._id === y.organizationalUnit);
                 return {
-                    ...x,
+                    ...y,
                     employeeNumber: employee.employeeNumber,
-                    fullName: employee.fullName
+                    fullName: employee.fullName,
+                    organizationalUnit: organizationalUnit.name,
                 }
             });
             let annualLeaves = x.annualLeaves.map(y => {
+                let organizationalUnit = department.list.find(u => u._id === y.organizationalUnit);
                 return {
                     ...y,
+                    status: translate(`human_resource.profile.${y.status}`),
+                    organizationalUnit: organizationalUnit.name,
                     employeeNumber: employee.employeeNumber,
                     fullName: employee.fullName,
                     startDate: this.formatDate(y.startDate),
                     endDate: this.formatDate(y.endDate),
                 }
             });
-            let courses = x.courses.map(x => {
+            let courses = x.courses.map(y => {
                 return {
-                    ...x,
+                    ...y,
                     employeeNumber: employee.employeeNumber,
                     fullName: employee.fullName
                 }
@@ -402,7 +417,7 @@ class EmployeeManagement extends Component {
             filesSheet = filesSheet.concat(files);
             commendationsSheet = commendationsSheet.concat(commendations);
             disciplinesSheet = disciplinesSheet.concat(disciplines);
-            salarysSheet = salarysSheet.concat(salarys);
+            salarysSheet = salarysSheet.concat(salaries);
             annualLeavesSheet = annualLeavesSheet.concat(annualLeaves);
             coursesSheet = coursesSheet.concat(courses);
         });
@@ -471,6 +486,7 @@ class EmployeeManagement extends Component {
                 STT: index + 1,
                 employeeNumber: x.employeeNumber,
                 fullName: x.fullName,
+                organizationalUnit: x.organizationalUnit,
                 mainSalary: parseInt(x.mainSalary),
                 total: total,
                 month: month,
@@ -478,241 +494,255 @@ class EmployeeManagement extends Component {
                 ...bonus
             };
         })
-        let columns = otherSalary.map((x, index) => {
-            return { key: `bonus${index}`, value: x, type: "Number" }
-        })
+
+        let columns = [{ key: 'bonus0', value: 0 }];
+        if (otherSalary.length !== 0) {
+            columns = otherSalary.map((x, index) => {
+                return { key: `bonus${index}`, value: x, }
+            })
+        }
 
 
         let exportData = {
-            fileName: "Bảng theo dõi thông tin nhân viên",
+            fileName: translate(`human_resource.profile.employee_management.file_export_name`),
             dataSheets: [
                 {
-                    sheetName: "1.Nhân viên",
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet1`),
                     tables: [
                         {
                             columns: [
-                                { key: "STT", value: "STT" },
-                                { key: "employeeNumber", value: "Mã số nhân viên" },
-                                { key: "fullName", value: "Họ và tên" },
-                                { key: "organizationalUnits", value: "Phòng ban" },
-                                { key: "position", value: "Chức vụ" },
-                                { key: "birthdate", value: "Ngày sinh" },
-                                { key: "gender", value: "Giới tính" },
-                                { key: "employeeTimesheetId", value: "Mã số chấm công" },
-                                { key: "identityCardNumber", value: "Số chứng minh thư" },
-                                { key: "identityCardDate", value: "Ngày cấp chứng minh thư" },
-                                { key: "identityCardAddress", value: "Nơi cấp chứng minh thư" },
-                                { key: "birthplace", value: "Nơi sinh" },
-                                { key: "permanentResidence", value: "Hộ khẩu thưởng trú" },
-                                { key: "temporaryResidence", value: "Nơi ở hiện tại" },
-                                { key: "maritalStatus", value: "Tình trạng hôn nhân" },
-                                { key: "status", value: "Tình trạng lao động" },
-                                { key: "startingDate", value: "Ngày bắt đầu làm việc" },
-                                { key: "leavingDate", value: "Ngày nghỉ việc" },
-                                { key: "emailInCompany", value: "Email công ty" },
-                                { key: "taxNumber", value: "Mã số thuế thu nhập cá nhân" },
-                                { key: "taxRepresentative", value: "Đại diện của người nộp thuế" },
-                                { key: "taxDateOfIssue", value: "Ngày cấp mã số thuế" },
-                                { key: "taxAuthority", value: "Cơ quan quản lý thuế" },
-                                { key: "ethnic", value: "Dân tộc" },
-                                { key: "religion", value: "Tôn giáo" },
-                                { key: "nationality", value: "Quốc tịch" },
-                                { key: "educationalLevel", value: "Trình độ văn hoá" },
-                                { key: "foreignLanguage", value: "Trình độ ngoại ngữ" },
-                                { key: "professionalSkill", value: "Trình độ chuyên môn" },
-                                { key: "phoneNumber", value: "Điện thoại di động 1" },
-                                { key: "phoneNumber2", value: "Điện thoại di động 2" },
-                                { key: "personalEmail", value: "Email cá nhân 1" },
-                                { key: "personalEmail2", value: "Email cá nhân 2" },
-                                { key: "homePhone", value: "Điện thoại nhà riêng" },
-                                { key: "emergencyContactPerson", value: "Người liên hệ khẩn cấp" },
-                                { key: "relationWithEmergencyContactPerson", value: "Quan hệ với người liên hệ khẩn cấp" },
-                                { key: "emergencyContactPersonAddress", value: "Địa chỉ người liên hệ khẩn cấp" },
-                                { key: "emergencyContactPersonPhoneNumber", value: "Điện thoại di động người liên hệ khẩn cấp" },
-                                { key: "emergencyContactPersonHomePhone", value: "Điện thoại nhà riêng người liên hệ khẩn cấp" },
-                                { key: "emergencyContactPersonEmail", value: "Email người liên hệ khẩn cấp" },
-                                { key: "atmNumber", value: "Số tài khoản ngân hàng" },
-                                { key: "bankName", value: "Tên ngân hàng" },
-                                { key: "bankAddress", value: "Chi nhánh ngân hàng" },
-                                { key: "healthInsuranceNumber", value: "Mã số BHYT" },
-                                { key: "healthInsuranceStartDate", value: "Ngày BHYT có hiệu lực" },
-                                { key: "healthInsuranceEndDate", value: "Ngày BHYT hết hạn" },
-                                { key: "socialInsuranceNumber", value: "Mã số BHXH" },
-                                { key: "archivedRecordNumber", value: "Nơi lưu trữ hồ sơ" },
+                                { key: "STT", value: translate(`human_resource.stt`), width: 7 },
+                                { key: "employeeNumber", value: translate(`human_resource.profile.staff_number`) },
+                                { key: "fullName", value: translate(`human_resource.profile.full_name`), width: 20 },
+                                { key: "organizationalUnits", value: translate(`human_resource.unit`), width: 25 },
+                                { key: "position", value: translate(`human_resource.position`), width: 25 },
+                                { key: "birthdate", value: translate(`human_resource.profile.date_birth`) },
+                                { key: "gender", value: translate(`human_resource.profile.gender`) },
+                                { key: "employeeTimesheetId", value: translate(`human_resource.profile.attendance_code`) },
+                                { key: "identityCardNumber", value: translate(`human_resource.profile.id_card`) },
+                                { key: "identityCardDate", value: translate(`human_resource.profile.date_issued`) },
+                                { key: "identityCardAddress", value: translate(`human_resource.profile.issued_by`) },
+                                { key: "birthplace", value: translate(`human_resource.profile.place_birth`), width: 35 },
+                                { key: "permanentResidence", value: translate(`human_resource.profile.permanent_address`), width: 35 },
+                                { key: "temporaryResidence", value: translate(`human_resource.profile.current_residence`), width: 35 },
+                                { key: "maritalStatus", value: translate(`human_resource.profile.relationship`) },
+                                { key: "status", value: translate(`human_resource.profile.status_work`) },
+                                { key: "startingDate", value: translate(`human_resource.profile.starting_date`) },
+                                { key: "leavingDate", value: translate(`human_resource.profile.leaving_date`) },
+                                { key: "emailInCompany", value: translate(`human_resource.profile.email_company`), width: 35 },
+                                { key: "taxNumber", value: translate(`human_resource.profile.personal_income_tax`) },
+                                { key: "taxRepresentative", value: translate(`human_resource.profile.representative`), width: 20 },
+                                { key: "taxDateOfIssue", value: translate(`human_resource.profile.day_active`) },
+                                { key: "taxAuthority", value: translate(`human_resource.profile.managed_by`), width: 35 },
+                                { key: "ethnic", value: translate(`human_resource.profile.ethnic`) },
+                                { key: "religion", value: translate(`human_resource.profile.religion`) },
+                                { key: "nationality", value: translate(`human_resource.profile.nationality`) },
+                                { key: "educationalLevel", value: translate(`human_resource.profile.educational_level`) },
+                                { key: "foreignLanguage", value: translate(`human_resource.profile.language_level`) },
+                                { key: "professionalSkill", value: translate(`human_resource.profile.qualification`) },
+                                { key: "phoneNumber", value: translate(`human_resource.profile.mobile_phone_1`) },
+                                { key: "phoneNumber2", value: translate(`human_resource.profile.mobile_phone_2`) },
+                                { key: "personalEmail", value: translate(`human_resource.profile.personal_email_1`), width: 35 },
+                                { key: "personalEmail2", value: translate(`human_resource.profile.personal_email_2`), width: 35 },
+                                { key: "homePhone", value: translate(`human_resource.profile.home_phone`) },
+                                { key: "emergencyContactPerson", value: translate(`human_resource.profile.employee_management.export.emergency_contact_person`), width: 20 },
+                                { key: "relationWithEmergencyContactPerson", value: translate(`human_resource.profile.employee_management.export.relation_with_emergency_contact_person`) },
+                                { key: "emergencyContactPersonAddress", value: translate(`human_resource.profile.employee_management.export.emergency_contact_person_address`), width: 35 },
+                                { key: "emergencyContactPersonPhoneNumber", value: translate(`human_resource.profile.employee_management.export.emergency_contact_person_phone_number`) },
+                                { key: "emergencyContactPersonHomePhone", value: translate(`human_resource.profile.employee_management.export.emergency_contact_person_home_nhone`) },
+                                { key: "emergencyContactPersonEmail", value: translate(`human_resource.profile.employee_management.export.emergency_contact_person_email`), width: 35 },
+                                { key: "atmNumber", value: translate(`human_resource.profile.employee_management.export.atmNumber`) },
+                                { key: "bankName", value: translate(`human_resource.profile.bank_name`) },
+                                { key: "bankAddress", value: translate(`human_resource.profile.employee_management.export.bank_address`) },
+                                { key: "healthInsuranceNumber", value: translate(`human_resource.profile.number_BHYT`) },
+                                { key: "healthInsuranceStartDate", value: translate(`human_resource.profile.employee_management.export.health_insurance_start_date`) },
+                                { key: "healthInsuranceEndDate", value: translate(`human_resource.profile.employee_management.export.health_insurance_end_date`) },
+                                { key: "socialInsuranceNumber", value: translate(`human_resource.profile.number_BHXH`) },
+                                { key: "archivedRecordNumber", value: translate(`human_resource.profile.attachments_code`) },
                             ],
                             data: employeeInforSheet
                         }
                     ]
                 },
                 {
-                    sheetName: '2.HS Nhân viên - Kinh nghiệm',
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet2`),
                     tables: [
                         {
                             columns: [
-                                { key: "STT", value: "STT" },
-                                { key: "employeeNumber", value: "Mã số nhân viên" },
-                                { key: "fullName", value: "Họ và tên" },
-                                { key: "startDate", value: "Từ tháng/năm" },
-                                { key: "endDate", value: "Đến tháng/năm" },
-                                { key: "company", value: "Đơn vị công tác" },
-                                { key: "position", value: "Chức vụ" },
+                                { key: "STT", value: translate(`human_resource.stt`), width: 7 },
+                                { key: "employeeNumber", value: translate(`human_resource.profile.staff_number`) },
+                                { key: "fullName", value: translate(`human_resource.profile.full_name`), width: 20 },
+                                { key: "startDate", value: translate(`human_resource.profile.from_month_year`) },
+                                { key: "endDate", value: translate(`human_resource.profile.to_month_year`) },
+                                { key: "company", value: translate(`human_resource.profile.unit`), width: 35 },
+                                { key: "position", value: translate(`human_resource.position`), width: 25 }
                             ],
                             data: experiencesSheet
                         }
                     ]
                 },
                 {
-                    sheetName: '3.HS Nhân viên - Bằng cấp',
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet3`),
                     tables: [
                         {
                             columns: [
-                                { key: "STT", value: "STT" },
-                                { key: "employeeNumber", value: "Mã số nhân viên" },
-                                { key: "fullName", value: "Họ và tên" },
-                                { key: "name", value: "Tên bằng cấp" },
-                                { key: "issuedBy", value: "Nơi đào tạo" },
-                                { key: "year", value: "Năm tốt nghiệp" },
-                                { key: "degreeType", value: "Xếp loại" },
+                                { key: "STT", value: translate(`human_resource.stt`), width: 7 },
+                                { key: "employeeNumber", value: translate(`human_resource.profile.staff_number`) },
+                                { key: "fullName", value: translate(`human_resource.profile.full_name`), width: 20 },
+                                { key: "name", value: translate(`human_resource.profile.name_diploma`), width: 25 },
+                                { key: "issuedBy", value: translate(`human_resource.profile.diploma_issued_by`), width: 35 },
+                                { key: "year", value: translate(`human_resource.profile.graduation_year`) },
+                                { key: "degreeType", value: translate(`human_resource.profile.ranking_learning`) },
                             ],
                             data: degreesSheet
                         }
                     ]
                 },
                 {
-                    sheetName: '4.HS Nhân viên - Chứng chỉ',
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet4`),
                     tables: [
                         {
                             columns: [
-                                { key: "STT", value: "STT" },
-                                { key: "employeeNumber", value: "Mã số nhân viên" },
-                                { key: "fullName", value: "Họ và tên" },
-                                { key: "name", value: "Tên chứng chỉ" },
-                                { key: "issuedBy", value: "Nơi cấp" },
-                                { key: "startDate", value: "Ngày cấp" },
-                                { key: "endDate", value: "Ngày hết hạn" },
+                                { key: "STT", value: translate(`human_resource.stt`), width: 7 },
+                                { key: "employeeNumber", value: translate(`human_resource.profile.staff_number`) },
+                                { key: "fullName", value: translate(`human_resource.profile.full_name`), width: 20 },
+                                { key: "name", value: translate(`human_resource.profile.name_certificate`), width: 25 },
+                                { key: "issuedBy", value: translate(`human_resource.profile.issued_by`), width: 35 },
+                                { key: "startDate", value: translate(`human_resource.profile.date_issued`) },
+                                { key: "endDate", value: translate(`human_resource.profile.end_date_certificate`) },
                             ],
                             data: certificatesSheet
                         }
                     ]
                 },
                 {
-                    sheetName: '5.HS Nhân viên - Hợp đồng',
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet5`),
                     tables: [
                         {
                             columns: [
-                                { key: "STT", value: "STT" },
-                                { key: "employeeNumber", value: "Mã số nhân viên" },
-                                { key: "fullName", value: "Họ và tên" },
-                                { key: "name", value: "Tên hợp đồng" },
-                                { key: "contractType", value: "Loại hợp đồng" },
-                                { key: "startDate", value: "Ngày có hiệu lực" },
-                                { key: "endDate", value: "Ngày hết hạn" },
+                                { key: "STT", value: translate(`human_resource.stt`), width: 7 },
+                                { key: "employeeNumber", value: translate(`human_resource.profile.staff_number`) },
+                                { key: "fullName", value: translate(`human_resource.profile.full_name`), width: 20 },
+                                { key: "name", value: translate(`human_resource.profile.name_contract`), width: 35 },
+                                { key: "contractType", value: translate(`human_resource.profile.type_contract`), width: 25 },
+                                { key: "startDate", value: translate(`human_resource.profile.start_date`) },
+                                { key: "endDate", value: translate(`human_resource.profile.end_date_certificate`) },
                             ],
                             data: contractsSheet
                         }
                     ]
                 },
                 {
-                    sheetName: '6.HS Nhân viên - Bảo hiểm XH',
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet6`),
                     tables: [
                         {
                             columns: [
-                                { key: "STT", value: "STT" },
-                                { key: "employeeNumber", value: "Mã số nhân viên" },
-                                { key: "fullName", value: "Họ và tên" },
-                                { key: "startDate", value: "Từ tháng/năm" },
-                                { key: "endDate", value: "Đến tháng/năm" },
-                                { key: "company", value: "Đơn vị công tác" },
-                                { key: "position", value: "Chức vụ" },
+                                { key: "STT", value: translate(`human_resource.stt`), width: 7 },
+                                { key: "employeeNumber", value: translate(`human_resource.profile.staff_number`) },
+                                { key: "fullName", value: translate(`human_resource.profile.full_name`), width: 20 },
+                                { key: "startDate", value: translate(`human_resource.profile.from_month_year`) },
+                                { key: "endDate", value: translate(`human_resource.profile.to_month_year`) },
+                                { key: "company", value: translate(`human_resource.profile.unit`), width: 35 },
+                                { key: "position", value: translate(`human_resource.position`), width: 25 }
                             ],
                             data: socialInsuranceDetailsSheet
                         }
                     ]
                 },
                 {
-                    sheetName: '7.HS Nhân viên - Tài liệu',
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet7`),
                     tables: [
                         {
                             columns: [
-                                { key: "STT", value: "STT" },
-                                { key: "employeeNumber", value: "Mã số nhân viên" },
-                                { key: "fullName", value: "Họ và tên" },
-                                { key: "name", value: "Tên tài liệu" },
-                                { key: "description", value: "Mô tả" },
-                                { key: "number", value: "Số lượng" },
-                                { key: "status", value: "Trạng thái" },
+                                { key: "STT", value: translate(`human_resource.stt`), width: 7 },
+                                { key: "employeeNumber", value: translate(`human_resource.profile.staff_number`) },
+                                { key: "fullName", value: translate(`human_resource.profile.full_name`), width: 20 },
+                                { key: "name", value: translate(`human_resource.profile.file_name`) },
+                                { key: "description", value: translate(`general.description`), width: 35 },
+                                { key: "number", value: translate(`human_resource.profile.number`) },
+                                { key: "status", value: translate(`human_resource.status`) },
                             ],
                             data: filesSheet
                         }
                     ]
                 },
                 {
-                    sheetName: '8.HS Nhân viên - Khen thưởng',
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet8`),
                     tables: [
                         {
                             columns: [
-                                { key: "STT", value: "STT" },
-                                { key: "employeeNumber", value: "Mã số nhân viên" },
-                                { key: "fullName", value: "Họ và tên" },
-                                { key: "decisionNumber", value: "Số ra quyết định" },
-                                { key: "decisionUnit", value: "Cấp ra quyết định" },
-                                { key: "startDate", value: "Ngày ra quyết định" },
-                                { key: "type", value: "Hình thức khen thưởng" },
-                                { key: "reason", value: "Lý do khen thưởng" },
+                                { key: "STT", value: translate(`human_resource.stt`), width: 7 },
+                                { key: "employeeNumber", value: translate(`human_resource.profile.staff_number`) },
+                                { key: "fullName", value: translate(`human_resource.profile.full_name`), width: 20 },
+                                { key: "decisionNumber", value: translate('human_resource.commendation_discipline.commendation.table.decision_number') },
+                                { key: "decisionUnit", value: translate('human_resource.commendation_discipline.commendation.table.decision_unit'), width: 25 },
+                                { key: "startDate", value: translate('human_resource.commendation_discipline.commendation.table.decision_date') },
+                                { key: "type", value: translate('human_resource.commendation_discipline.commendation.table.reward_forms') },
+                                { key: "reason", value: translate('human_resource.commendation_discipline.commendation.table.reason_praise'), width: 35 },
                             ],
                             data: commendationsSheet
                         }
                     ]
                 },
                 {
-                    sheetName: '9.HS Nhân viên - Kỷ luật',
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet9`),
                     tables: [
                         {
                             columns: [
-                                { key: "STT", value: "STT" },
-                                { key: "employeeNumber", value: "Mã số nhân viên" },
-                                { key: "fullName", value: "Họ và tên" },
-                                { key: "decisionNumber", value: "Số ra quyết định" },
-                                { key: "decisionUnit", value: "Cấp ra quyết định" },
-                                { key: "startDate", value: "Ngày có hiệu lực" },
-                                { key: "endDate", value: "Ngày có hiệu lực" },
-                                { key: "type", value: "Hình thức kỷ luật" },
-                                { key: "reason", value: "Lý do kỷ luật" },
+                                { key: "STT", value: translate(`human_resource.stt`), width: 7 },
+                                { key: "employeeNumber", value: translate(`human_resource.profile.staff_number`) },
+                                { key: "fullName", value: translate(`human_resource.profile.full_name`), width: 20 },
+                                { key: "decisionNumber", value: translate('human_resource.commendation_discipline.commendation.table.decision_number') },
+                                { key: "decisionUnit", value: translate('human_resource.commendation_discipline.commendation.table.decision_unit'), width: 25 },
+                                { key: "startDate", value: translate('human_resource.commendation_discipline.discipline.table.start_date') },
+                                { key: "endDate", value: translate('human_resource.commendation_discipline.discipline.table.end_date') },
+                                { key: "type", value: translate('human_resource.commendation_discipline.discipline.table.discipline_forms') },
+                                { key: "reason", value: translate('human_resource.commendation_discipline.discipline.table.reason_discipline'), width: 35 },
                             ],
                             data: disciplinesSheet
                         }
                     ]
                 },
                 {
-                    sheetName: '10.HS Nhân viên - Lương thưởng',
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet10`),
                     tables: [
                         {
+                            rowHeader: 2,
+                            merges: [{
+                                key: "other",
+                                columnName: translate('human_resource.salary.other_salary'),
+                                keyMerge: 'bonus0',
+                                colspan: columns.length
+                            }],
+
                             columns: [
-                                { key: "STT", value: "STT" },
-                                { key: "month", value: "Tháng" },
-                                { key: "year", value: "Năm" },
-                                { key: "employeeNumber", value: "Mã số nhân viên" },
-                                { key: "fullName", value: "Họ và tên" },
-                                { key: "mainSalary", value: "Tiền lương chính", type: "Number" },
+                                { key: "STT", value: translate(`human_resource.stt`), width: 7 },
+                                { key: "month", value: translate('human_resource.month') },
+                                { key: "year", value: translate('human_resource.holiday.year') },
+                                { key: "employeeNumber", value: translate(`human_resource.profile.staff_number`) },
+                                { key: "fullName", value: translate(`human_resource.profile.full_name`), width: 20 },
+                                { key: "organizationalUnit", value: translate('human_resource.unit'), width: 25 },
+                                { key: "mainSalary", value: translate('human_resource.salary.table.main_salary'), },
                                 ...columns,
-                                { key: "total", value: "Tổng lương", type: "Number" },
+                                { key: "total", value: translate('human_resource.salary.table.total_salary'), },
                             ],
                             data: salarysSheet
                         }
                     ]
                 },
                 {
-                    sheetName: '11.HS Nhân viên - Nghỉ phép',
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet11`),
                     tables: [
                         {
                             columns: [
-                                { key: "STT", value: "STT" },
-                                { key: "employeeNumber", value: "Mã số nhân viên" },
-                                { key: "fullName", value: "Họ và tên" },
-                                { key: "startDate", value: "Ngày bắt đầu" },
-                                { key: "endDate", value: "Ngày kết thúc" },
-                                { key: "reason", value: "Lý do" },
-                                { key: "status", value: "Trạng thái" },
+                                { key: "STT", value: translate(`human_resource.stt`), width: 7 },
+                                { key: "employeeNumber", value: translate(`human_resource.profile.staff_number`) },
+                                { key: "fullName", value: translate(`human_resource.profile.full_name`), width: 20 },
+                                { key: "organizationalUnit", value: translate('human_resource.unit'), width: 25 },
+                                { key: "startDate", value: translate('human_resource.annual_leave.table.start_date') },
+                                { key: "endDate", value: translate('human_resource.annual_leave.table.end_date') },
+                                { key: "reason", value: translate('human_resource.annual_leave.table.reason'), width: 35 },
+                                { key: "status", value: translate('human_resource.status') },
                             ],
                             data: annualLeavesSheet
                         }
@@ -723,31 +753,37 @@ class EmployeeManagement extends Component {
         return exportData
     }
 
+    shouldComponentUpdate = async (nextProps, nextState) => {
+        if (this.state.exportDataStatus === 0 && nextProps.employeesManager.isLoading) {
+            await this.setState({
+                exportDataStatus: 1
+            })
+        };
+        if (this.state.exportDataStatus === 1 && !nextProps.employeesManager.isLoading) {
+            await this.setState({
+                exportDataStatus: 2
+            })
+        };
+        return true;
+    };
+
+    componentDidUpdate() {
+        const { exportDataStatus } = this.state;
+        const { employeesManager } = this.props;
+        if (exportDataStatus === 1 && !employeesManager.isLoading && employeesManager.exportData.length !== 0) {
+            let exportData = this.convertDataToExportData(employeesManager.exportData);
+            ExportExcel.export(exportData);
+        };
+    }
 
     render() {
         const { employeesManager, translate, department } = this.props;
 
-        const { importEmployee, limit, page, organizationalUnits, currentRow, currentRowView } = this.state;
+        let { importEmployee, limit, page, organizationalUnits, currentRow, currentRowView } = this.state;
 
-        let lists, listPosition = [{ value: "", text: translate('human_resource.not_unit'), disabled: true }], list = department.list;
-        if (organizationalUnits !== null) {
-            listPosition = [];
-            organizationalUnits.forEach(u => {
-                list.forEach(x => {
-                    if (x._id === u) {
-                        let roleDeans = x.deans.map(y => { return { _id: y._id, name: y.name } });
-                        let roleViceDeans = x.viceDeans.map(y => { return { _id: y._id, name: y.name } });
-                        let roleEmployees = x.employees.map(y => { return { _id: y._id, name: y.name } });
-                        listPosition = listPosition.concat(roleDeans).concat(roleViceDeans).concat(roleEmployees);
-                    }
-                })
-            })
-        }
-
-        let exportData;
+        let listEmployees = [];
         if (employeesManager.listEmployees) {
-            lists = employeesManager.listEmployees;
-            exportData = this.convertDataToExportData(lists);
+            listEmployees = employeesManager.listEmployees;
         }
 
         let pageTotal = ((employeesManager.totalList % limit) === 0) ?
@@ -759,7 +795,7 @@ class EmployeeManagement extends Component {
             <div className="box">
                 <div className="box-body qlcv">
                     <div className="form-inline">
-                        {/* nuuton thêm mới nhân viên */}
+                        {/* Button thêm mới nhân viên */}
                         <div className="dropdown pull-right">
                             <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('human_resource.profile.employee_management.add_employee_title')} >{translate('human_resource.profile.employee_management.add_employee')}</button>
                             <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
@@ -767,49 +803,33 @@ class EmployeeManagement extends Component {
                                 <li><a style={{ cursor: 'pointer' }} onClick={this.createEmployee}>{translate('human_resource.profile.employee_management.add_by_hand')}</a></li>
                             </ul>
                         </div>
-                        <ExportExcel id="export-employee" buttonName={translate('human_resource.name_button_export')} exportData={exportData} style={{ marginRight: 15, marginTop: 0 }} />
+                        <button type="button" style={{ marginRight: 15, marginTop: 0 }} className="btn btn-primary pull-right" onClick={this.handleExportExcel} >{translate('human_resource.name_button_export')}<i className="fa fa-fw fa-file-excel-o"> </i></button>
                     </div>
+
                     <div className="form-inline">
                         {/* Đơn vị */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.unit')}</label>
                             <SelectMulti id={`multiSelectUnit`} multiple="multiple"
                                 options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
-                                value={organizationalUnits !== null ? organizationalUnits : []}
-                                items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
+                                value={organizationalUnits ? organizationalUnits : []}
+                                items={department.list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
                             </SelectMulti>
                         </div>
-                        {/* Chức vụ */}
-                        <div className="form-group">
-                            <label className="form-control-static">{translate('page.position')}</label>
-                            <SelectMulti id={`multiSelectPosition`} multiple="multiple"
-                                options={{ nonSelectedText: translate('page.non_position'), allSelectedText: translate('page.all_position') }}
-                                items={organizationalUnits === null ? listPosition : listPosition.map((p, i) => { return { value: p._id, text: p.name } })} onChange={this.handlePositionChange}>
-                            </SelectMulti>
-                        </div>
-                    </div>
-                    <div className="form-inline">
-                        {/*Mã nhân viên  */}
+                        {/* Mã nhân viên  */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.staff_number')}</label>
                             <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} placeholder={translate('page.staff_number')} autoComplete="off" />
                         </div>
+                    </div>
+
+                    <div className="form-inline">
                         {/* Giới tính */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('human_resource.profile.gender')}</label>
                             <SelectMulti id={`multiSelectGender`} multiple="multiple"
                                 options={{ nonSelectedText: translate('human_resource.profile.employee_management.no_gender'), allSelectedText: translate('human_resource.profile.employee_management.all_gender') }}
-                                items={[{ value: "male", text: "Nam" }, { value: "female", text: "Nữ" }]} onChange={this.handleGenderChange}>
-                            </SelectMulti>
-                        </div>
-                    </div>
-                    <div className="form-inline">
-                        {/* Trạng thái */}
-                        <div className="form-group">
-                            <label className="form-control-static">{translate('page.status')}</label>
-                            <SelectMulti id={`multiSelectStatus`} multiple="multiple"
-                                options={{ nonSelectedText: translate('human_resource.non_status'), allSelectedText: translate('human_resource.all_status') }}
-                                items={[{ value: "active", text: translate('human_resource.profile.active') }, { value: "leave", text: translate('human_resource.profile.leave') }]} onChange={this.handleStatusChange}>
+                                items={[{ value: "male", text: translate('human_resource.profile.male') }, { value: "female", text: translate('human_resource.profile.female') }]} onChange={this.handleGenderChange}>
                             </SelectMulti>
                         </div>
                         {/* Tháng sinh */}
@@ -822,9 +842,14 @@ class EmployeeManagement extends Component {
                                 onChange={this.handleBirthdateChange}
                             />
                         </div>
-
                     </div>
-                    <div className="form-inline" style={{ marginBottom: 15 }}>
+
+                    <div className="form-inline">
+                        {/* Loại hợp đồng lao động */}
+                        <div className="form-group">
+                            <label className="form-control-static">{translate('human_resource.profile.type_contract')}</label>
+                            <input type="text" className="form-control" name="typeOfContract" onChange={this.handleChange} placeholder={translate('human_resource.profile.employee_management.contract_type_title')} />
+                        </div>
                         {/* Tháng hết hợp đồng lao động */}
                         <div className="form-group">
                             <label title={translate('human_resource.profile.employee_management.contract_lable_title')} className="form-control-static">{translate('human_resource.profile.employee_management.contract_lable')}</label>
@@ -835,40 +860,49 @@ class EmployeeManagement extends Component {
                                 onChange={this.handleEndDateOfContractChange}
                             />
                         </div>
-                        {/* Loại hợp đồng lao động */}
+                    </div>
+
+                    <div className="form-inline" style={{ marginBottom: 15 }}>
+                        {/* Trạng thái */}
                         <div className="form-group">
-                            <label className="form-control-static">{translate('human_resource.profile.type_contract')}</label>
-                            <input type="text" className="form-control" name="typeOfContract" onChange={this.handleChange} placeholder={translate('human_resource.profile.employee_management.contract_type_title')} />
+                            <label className="form-control-static">{translate('page.status')}</label>
+                            <SelectMulti id={`multiSelectStatus`} multiple="multiple"
+                                options={{ nonSelectedText: translate('human_resource.non_status'), allSelectedText: translate('human_resource.all_status') }}
+                                items={[{ value: "active", text: translate('human_resource.profile.active') }, { value: "leave", text: translate('human_resource.profile.leave') }]} onChange={this.handleStatusChange}>
+                            </SelectMulti>
                         </div>
                         {/* Button tìm kiếm */}
                         <div className="form-group">
+                            <label></label>
                             <button type="button" className="btn btn-success" title={translate('general.search')} onClick={this.handleSunmitSearch} >{translate('general.search')}</button>
                         </div>
                     </div>
+
                     <div className="form-group col-md-12 row" >
                         {(Number(employeesManager.expiresContract) > 0 || Number(employeesManager.employeesHaveBirthdateInCurrentMonth) > 0) &&
-                            <span>Có</span>
+                            <span>{translate('human_resource.profile.employee_management.have')}&nbsp;</span>
                         }
                         {Number(employeesManager.expiresContract) > 0 &&
                             <React.Fragment>
-                                <span className="text-danger" style={{ fontWeight: "bold" }}>{` ${employeesManager.expiresContract} nhân viên`}</span>
-                                <span>{` hết hạn hợp đồng`}</span>
+                                <span className="text-danger" style={{ fontWeight: "bold" }}>{` ${employeesManager.expiresContract} ${translate('human_resource.profile.employee_management.staff')}`}</span>
+                                <span>&nbsp;{translate('human_resource.profile.employee_management.contract_expiration')}</span>
                             </React.Fragment>
                         }
                         {(Number(employeesManager.expiresContract) > 0 && Number(employeesManager.employeesHaveBirthdateInCurrentMonth) > 0) &&
-                            <span>{` và`}</span>
+                            <span>&nbsp;{translate('human_resource.profile.employee_management.and')}&nbsp;</span>
                         }
                         {
                             Number(employeesManager.employeesHaveBirthdateInCurrentMonth) > 0 &&
                             <React.Fragment>
-                                <span className="text-success" style={{ fontWeight: "bold" }}>{` ${employeesManager.employeesHaveBirthdateInCurrentMonth} nhân viên`}</span>
-                                <span>{` có sinh nhật`}</span>
+                                <span className="text-success" style={{ fontWeight: "bold" }}>{` ${employeesManager.employeesHaveBirthdateInCurrentMonth} ${translate('human_resource.profile.employee_management.staff')}`}</span>
+                                <span>&nbsp;{translate('human_resource.profile.employee_management.have_birthday')}</span>
                             </React.Fragment>
                         }
                         {(Number(employeesManager.expiresContract) > 0 || Number(employeesManager.employeesHaveBirthdateInCurrentMonth)) > 0 &&
-                            <span>{` trong tháng này (${this.formatDate(Date.now(), true)})`}</span>
+                            <span>&nbsp;{`${translate('human_resource.profile.employee_management.this_month')} (${this.formatDate(Date.now(), true)})`}</span>
                         }
                     </div>
+
                     <table id="employee-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
@@ -876,8 +910,8 @@ class EmployeeManagement extends Component {
                                 <th>{translate('human_resource.staff_name')}</th>
                                 <th>{translate('human_resource.profile.gender')}</th>
                                 <th>{translate('human_resource.profile.date_birth')}</th>
-                                <th>{translate('human_resource.unit')}</th>
-                                <th>{translate('human_resource.position')}</th>
+                                <th>{translate('human_resource.profile.contract_end_date')}</th>
+                                <th>{translate('human_resource.profile.type_contract')}</th>
                                 <th>{translate('human_resource.status')}</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}
                                     <DataTableSetting
@@ -887,8 +921,8 @@ class EmployeeManagement extends Component {
                                             translate('human_resource.staff_name'),
                                             translate('human_resource.profile.gender'),
                                             translate('human_resource.profile.date_birth'),
-                                            translate('human_resource.unit'),
-                                            translate('human_resource.position'),
+                                            translate('human_resource.profile.contract_end_date'),
+                                            translate('human_resource.profile.type_contract'),
                                             translate('human_resource.status'),
                                         ]}
                                         limit={this.state.limit}
@@ -899,32 +933,24 @@ class EmployeeManagement extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {lists && lists.length !== 0 &&
-                                lists.map((x, index) => (
+                            {listEmployees && listEmployees.length !== 0 &&
+                                listEmployees.map((x, index) => (
                                     <tr key={index}>
-                                        <td>{x.employees.map(y => y.employeeNumber)}</td>
-                                        <td>{x.employees.map(y => y.fullName)}</td>
-                                        <td>{x.employees.map(y => y.gender)}</td>
-                                        <td>{this.formatDate(x.employees.map(y => y.birthdate))}</td>
-                                        <td>{x.organizationalUnits.length !== 0 ? x.organizationalUnits.map(unit => (
-                                            <React.Fragment key={unit._id}>
-                                                {unit.name}<br />
-                                            </React.Fragment>
-                                        )) : null}</td>
-                                        <td>{x.roles.length !== 0 ? x.roles.map(role => (
-                                            <React.Fragment key={role._id}>
-                                                {role.roleId.name}<br />
-                                            </React.Fragment>
-                                        )) : null}</td>
-                                        <td>{x.employees.map(y => y.status)}</td>
-                                        < td >
+                                        <td>{x.employeeNumber}</td>
+                                        <td>{x.fullName}</td>
+                                        <td>{translate(`human_resource.profile.${x.gender}`)}</td>
+                                        <td>{this.formatDate(x.birthdate)}</td>
+                                        <td>{this.formatDate(x.contractEndDate)}</td>
+                                        <td>{x.contractType}</td>
+                                        <td>{translate(`human_resource.profile.${x.status}`)}</td>
+                                        <td>
                                             <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title={translate('human_resource.profile.employee_management.view_employee')}><i className="material-icons">view_list</i></a>
                                             <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.profile.employee_management.edit_employee')}><i className="material-icons">edit</i></a>
                                             <DeleteNotification
                                                 content={translate('human_resource.profile.employee_management.delete_employee')}
                                                 data={{
-                                                    id: x.employees.map(y => y._id),
-                                                    info: x.employees.map(y => y.fullName) + " - " + x.employees.map(y => y.employeeNumber)
+                                                    id: x._id,
+                                                    info: x.fullName + " - " + x.employeeNumber
                                                 }}
                                                 func={this.props.deleteEmployee}
                                             />
@@ -937,43 +963,26 @@ class EmployeeManagement extends Component {
                     </table>
                     {employeesManager.isLoading ?
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                        (!lists || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                        (!listEmployees || listEmployees.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
 
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
                 </div>
-                {/** From thêm mới thông tin nhân viên */}
+                {/* From thêm mới thông tin nhân viên */}
                 <EmployeeCreateForm />
 
-                {   /** From import thông tin nhân viên*/
+                {/* From import thông tin nhân viên*/
                     importEmployee && <EmployeeImportForm />
                 }
 
-                {   /** From xem thông tin nhân viên */
-                    currentRowView &&
+                {/* From xem thông tin nhân viên */
                     <EmployeeDetailForm
-                        _id={this.state.currentRowView.employees[0]._id}
-                        employees={this.state.currentRowView.employees}
-                        salaries={this.state.currentRowView.salarys}
-                        annualLeaves={this.state.currentRowView.annualLeaves}
-                        commendations={this.state.currentRowView.commendations}
-                        disciplines={this.state.currentRowView.disciplines}
-                        courses={this.state.currentRowView.courses}
-                        roles={this.state.currentRowView.roles}
+                        _id={currentRowView ? currentRowView._id : ""}
                     />
                 }
-                {   /** From chinh sửa thông tin nhân viên */
-                    currentRow &&
+                {/* From chinh sửa thông tin nhân viên */
                     <EmployeeEditFrom
-                        _id={this.state.currentRow.employees[0]._id}
-                        employees={this.state.currentRow.employees}
-                        salaries={this.state.currentRow.salarys}
-                        annualLeaves={this.state.currentRow.annualLeaves}
-                        commendations={this.state.currentRow.commendations}
-                        disciplines={this.state.currentRow.disciplines}
-                        courses={this.state.currentRow.courses}
-                        organizationalUnits={this.state.currentRow.organizationalUnits.map(x => x._id)}
-                        roles={this.state.currentRow.roles.map(x => x.roleId._id)}
+                        _id={currentRow ? currentRow._id : ""}
                     />
                 }
             </div>

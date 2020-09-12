@@ -102,8 +102,7 @@ class IncidentEditForm extends Component {
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let result = this.validateIncidentCode(this.state.incidentCode, false) &&
-            this.validateDateOfIncident(this.state.dateOfIncident, false) &&
+        let result = this.validateDateOfIncident(this.state.dateOfIncident, false) &&
             this.validateIncidentDescription(this.state.description, false)
 
         return result;
@@ -169,7 +168,7 @@ class IncidentEditForm extends Component {
 
         var userlist = user.list;
         var assetlist = assetsManager.listAssets;
-        console.log("Đang test")
+
         return (
             <React.Fragment>
                 <DialogModal
@@ -185,7 +184,7 @@ class IncidentEditForm extends Component {
                         <div className="col-md-12">
                             {/* Mã sự cố */}
                             <div className={`form-group ${!errorOnIncidentCode ? "" : "has-error"}`}>
-                                <label>{translate('asset.general_information.incident_code')}<span className="text-red">*</span></label>
+                                <label>{translate('asset.general_information.incident_code')}</label>
                                 <input type="text" className="form-control" name="incidentCode" value={incidentCode} onChange={this.handleIncidentCodeChange} autoComplete="off" placeholder={translate('asset.general_information.incident_code')} />
                                 <ErrorLabel content={errorOnIncidentCode} />
                             </div>
@@ -251,7 +250,7 @@ class IncidentEditForm extends Component {
                             {/* Nội dung */}
                             <div className={`form-group ${!errorOnDescription ? "" : "has-error"}`}>
                                 <label>{translate('asset.general_information.content')}<span className="text-red">*</span></label>
-                                <textarea className="form-control" rows="3" style={{ height: 34 }} name="description" value={description} onChange={this.handleDescriptionChange} autoComplete="off"
+                                <textarea className="form-control" rows="3" name="description" value={description} onChange={this.handleDescriptionChange} autoComplete="off"
                                     placeholder={translate('asset.general_information.content')}></textarea>
                                 <ErrorLabel content={errorOnDescription} />
                             </div>

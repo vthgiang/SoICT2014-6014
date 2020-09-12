@@ -43,7 +43,6 @@ class SuperHome extends Component {
     }
 
     componentDidMount = async () => {
-        console.log('did home');
         await this.props.getResponsibleTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null, false);
         await this.props.getAccountableTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null, false);
         await this.props.getConsultedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null, false);
@@ -64,33 +63,33 @@ class SuperHome extends Component {
         });
     }
 
-    shouldComponentUpdate = async (nextProps, nextState) => {
-        if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
-            if (!nextProps.tasks.responsibleTasks || !nextProps.tasks.accountableTasks || !nextProps.tasks.consultedTasks || !nextProps.tasks.informedTasks || !nextProps.tasks.creatorTasks || !nextProps.tasks.tasksbyuser) {
-                return false;
-            }
+    // shouldComponentUpdate = async (nextProps, nextState) => {
+    //     if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
+    //         if (!nextProps.tasks.responsibleTasks || !nextProps.tasks.accountableTasks || !nextProps.tasks.consultedTasks || !nextProps.tasks.informedTasks || !nextProps.tasks.creatorTasks || !nextProps.tasks.tasksbyuser) {
+    //             return false;
+    //         }
 
-            this.setState(state => {
-                return {
-                    ...state,
-                    dataStatus: this.DATA_STATUS.AVAILABLE,
-                    callAction: true
-                }
-            });
-        } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE && nextState.willUpdate) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    dataStatus: this.DATA_STATUS.FINISHED,
-                    willUpdate: false       // Khi true sẽ cập nhật dữ liệu vào props từ redux
-                }
-            });
+    //         this.setState(state => {
+    //             return {
+    //                 ...state,
+    //                 dataStatus: this.DATA_STATUS.AVAILABLE,
+    //                 callAction: true
+    //             }
+    //         });
+    //     } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE && nextState.willUpdate) {
+    //         this.setState(state => {
+    //             return {
+    //                 ...state,
+    //                 dataStatus: this.DATA_STATUS.FINISHED,
+    //                 willUpdate: false       // Khi true sẽ cập nhật dữ liệu vào props từ redux
+    //             }
+    //         });
 
-            return true;
-        }
+    //         return true;
+    //     }
 
-        return false;
-    }
+    //     return false;
+    // }
 
     generateDataPoints(noOfDps) {
         let xVal = 1, yVal = 100;
@@ -139,7 +138,6 @@ class SuperHome extends Component {
                 confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm'),
             })
         } else {
-            console.log('hello', this.INFO_SEARCH.startMonth, this.INFO_SEARCH.endMonth);
 
             await this.setState(state => {
                 return {
@@ -148,6 +146,12 @@ class SuperHome extends Component {
                     endMonth: this.INFO_SEARCH.endMonth
                 }
             })
+            let { startMonth, endMonth } = this.state;
+
+            this.props.getResponsibleTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, startMonth, endMonth, null, null, true);
+            this.props.getAccountableTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, startMonth, endMonth, null, null, true);
+            this.props.getConsultedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, startMonth, endMonth, null, null, true);
+            this.props.getInformedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, startMonth, endMonth, null, null, true);
         }
     }
 
@@ -211,7 +215,11 @@ class SuperHome extends Component {
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.tasks_calendar')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
                             </div>
-                            <TasksSchedule />
+                            <TasksSchedule
+                                startMonth={startMonth}
+                                endMonth={endMonth}
+                                home={true}
+                            />
                         </div>
 
                     </div>
@@ -224,7 +232,7 @@ class SuperHome extends Component {
                                 <div className="box-title">{translate('task.task_management.dashboard_overdue')}</div>
                             </div>
 
-                            <div className="box-body" style={{ height: "300px" }}>
+                            <div className="box-body" style={{ minHeight: "300px" }}>
                                 {
                                     (tasks && tasks.tasksbyuser) ?
                                         <ul className="todo-list">
@@ -251,7 +259,7 @@ class SuperHome extends Component {
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.dashboard_about_to_overdue')}</div>
                             </div>
-                            <div className="box-body" style={{ height: "300px" }}>
+                            <div className="box-body" style={{ minHeight: "300px" }}>
                                 {
                                     (tasks && tasks.tasksbyuser) ?
                                         <ul className="todo-list">
@@ -297,7 +305,7 @@ const actionCreators = {
     getInformedTaskByUser: taskManagementActions.getInformedTaskByUser,
     getCreatorTaskByUser: taskManagementActions.getCreatorTaskByUser,
     getTaskByUser: taskManagementActions.getTasksByUser,
-
+    getPaginateTasksByUser: taskManagementActions.getPaginateTasksByUser,
 };
 const connectedHome = connect(mapState, actionCreators)(withTranslate(SuperHome));
 export { connectedHome as SuperHome };

@@ -319,7 +319,7 @@ class OrganizationalUnitKpiCreate extends Component {
                 || item.employees.includes(currentRole));
         }
 
-        if (createKpiUnit.currentKPI) {
+        if (createKpiUnit) {
             currentKPI = createKpiUnit.currentKPI;
             organizationalUnitKpiLoading = createKpiUnit.organizationalUnitKpiLoading
         }

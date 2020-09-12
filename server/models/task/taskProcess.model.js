@@ -28,11 +28,27 @@ const TaskProcessSchema = new Schema({
         type: Date,
         required: true
     },
+    status: {
+        type: String,
+        default: "Inprocess",
+        required: true,
+        enum: ["Inprocess", "WaitForApproval", "Finished", "Delayed", "Canceled"],
+    },
     creator: {
         type: Schema.Types.ObjectId,
         required: true,
         ref: User,
     },
+    viewer: [{
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: User,
+    }],
+    manager: [{
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: User,
+    }],
     tasks: [{
         type: Schema.Types.ObjectId,
         ref: Task,
