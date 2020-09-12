@@ -408,51 +408,44 @@ class ViewProcess extends Component {
                             </div>
                         </div>
 
-                        <div className={`${isTabPane ? 'row' : 'right-content col-md-4'}`}>
-
-                            <div className={`${isTabPane ? "col-lg-6 col-md-6 col-sm-6 col-xs-6" : "box box-solid"}`}>
-                                { // !isTabPane && style={isTabPane ? {display: "flex", flexDirection: "row"} : {}}
-                                    <div className="box-header with-border">
-                                        {translate('task_template.general_information')}
-                                    </div>
-                                }
-                                <div className="box-body">
-
-                                    {/* tên quy trình */}
-                                    <dt>{translate("task.task_process.process_name")}</dt>
-                                    <dd>{processName}</dd>
-
-                                    {/* mô tả quy trình */}
-                                    <dt>{translate("task.task_process.process_description")}</dt>
-                                    <dd>{processDescription}</dd>
-
-                                    {/* mô tả quy trình */}
-                                    <dt>{translate("task.task_process.process_status")}</dt>
-                                    <dd>{this.formatStatus(status)}</dd>
-
-                                    {/* thời gian thực hiện quy trình */}
-                                    <dt>{translate("task.task_process.time_of_process")}</dt>
-                                    <dd>{this.formatDate(startDate)} <i className="fa fa-fw fa-caret-right"></i> {this.formatDate(endDate)}</dd>
+                        <div className={`${isTabPane? "": "col-md-4"}`}>
+                            <div className='description-box'>
+                                {/* tên quy trình */}
+                                <div>
+                                    <strong>{translate("task.task_process.process_name")}:</strong>
+                                    <span>{processName}</span>
                                 </div>
-                            </div>
-                            <div className={` ${isTabPane ? "col-lg-6 col-md-6 col-sm-6 col-xs-6" : "box box-solid"}`}>
-                                { // !isTabPane &&
-                                    <div className="box-header with-border">
-                                        {translate("task.task_process.notice")}
-                                    </div>
-                                }
-                                <div className="box-body" style={{ lineHeight: "2" }}>
 
-                                    {/**Các thông tin của mẫu công việc */}
-                                    <div style={{ display: "flex", alignItems: "center" }}>
-                                        <div style={{ backgroundColor: "#fff", height: "15px", width: "20px", border: "1px solid #000", borderRadius: "3px", marginRight: "5px" }}></div>{translate("task.task_process.wait_for_approval")}
-                                    </div>
-                                    <div style={{ display: "flex", alignItems: "center" }}>
-                                        <div style={{ backgroundColor: "#84ffb8", height: "15px", width: "20px", border: "1px solid #14984c", borderRadius: "3px", marginRight: "5px" }}></div>{translate("task.task_process.inprocess")}
-                                    </div>
-                                    <div style={{ display: "flex", alignItems: "center" }}>
-                                        <div style={{ backgroundColor: "#f9f9f9", height: "15px", width: "20px", border: "1px solid #c4c4c7", borderRadius: "3px", marginRight: "5px" }}></div>{translate("task.task_process.finished")}
-                                    </div>
+                                {/* mô tả quy trình */}
+                                <div>
+                                    <strong>{translate("task.task_process.process_description")}:</strong>
+                                    <span>{processDescription}</span>
+                                </div>
+
+                                {/* mô tả quy trình */}
+                                <div>
+                                    <strong>{translate("task.task_process.process_status")}:</strong>
+                                    <span>{this.formatStatus(status)}</span>
+                                </div>
+
+                                {/* thời gian thực hiện quy trình */}
+                                <div>
+                                    <strong>{translate("task.task_process.time_of_process")}:</strong>
+                                    <span>{this.formatDate(startDate)} <i className="fa fa-fw fa-caret-right"></i> {this.formatDate(endDate)}</span>
+                                </div>
+
+                                <div>
+                                    <strong>{translate("task.task_process.notice")}:</strong>
+                                </div>
+                                
+                                <div style={{ display: "flex", alignItems: "center" }}>
+                                    <div style={{ backgroundColor: "#fff", height: "30px", width: "40px", border: "2px solid #000", borderRadius: "3px", marginRight: "5px", marginTop: 4 }}></div>{translate("task.task_process.wait_for_approval")}
+                                </div>
+                                <div style={{ display: "flex", alignItems: "center" }}>
+                                    <div style={{ backgroundColor: "#84ffb8", height: "30px", width: "40px", border: "2px solid #14984c", borderRadius: "3px", marginRight: "5px", marginTop: 4 }}></div>{translate("task.task_process.inprocess")}
+                                </div>
+                                <div style={{ display: "flex", alignItems: "center" }}>
+                                    <div style={{ backgroundColor: "#f9f9f9", height: "30px", width: "40px", border: "2px solid #c4c4c7", borderRadius: "3px", marginRight: "5px", marginTop: 4 }}></div>{translate("task.task_process.finished")}
                                 </div>
                             </div>
                         </div>

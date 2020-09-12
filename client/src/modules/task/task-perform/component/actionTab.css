@@ -55,26 +55,6 @@
     border: 1px solid #989da5;
 }
 
-.text-input-file-level1{
-    margin-left: 50px;
-    margin-right: 20px;
-}
-
-.text-input-file-level1 textarea{
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
-
-    background-color: #e2e0ff;
-    padding: 5px 10px;
-    margin-top: 15px;
-    width: 100%;
-    height: auto;
-    font-size: 13px;
-
-    border: 1px solid #989da5;
-}
-
 
 
 
@@ -263,7 +243,7 @@
 }
 
 .outgoing-content {
-    margin-bottom: 65px !important; 
+    margin-bottom: 30px !important; 
 }
 
 .files-attach {

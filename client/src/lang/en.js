@@ -2474,10 +2474,9 @@ export default {
                 information: 'Information',
                 document: 'Document',
                 roles: 'Roles',
-                list_of_data_and_info: 'List of data and informations',
-                not_have_doc: 'Not have documents',
-                not_have_info: 'Not have information',
-                not_export_info: 'Not export information',
+                list_of_data_and_info: 'Choose output information and documents for the following tasks in the process',
+                not_have_doc: 'The task does not have documents',
+                not_have_info: 'The task does not have information',
                 task_process: 'Task process',
 
 

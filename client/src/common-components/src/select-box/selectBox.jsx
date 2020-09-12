@@ -93,7 +93,7 @@ class SelectBox extends Component {
 
 
     componentDidMount = () => {
-        const { id, onChange, options = { minimumResultsForSearch: 1 } } = this.props;
+        const { id, onChange, options = { minimumResultsForSearch: 1 }, multiple } = this.props;
         window.$("#" + id).select2(options);
 
         window.$("#" + id).on("change", () => {
@@ -102,7 +102,7 @@ class SelectBox extends Component {
                 return {
                     ...state,
                     innerChange: true,
-                    value
+                    value: multiple? value: value[0],
                 }
             });
             if (onChange) {

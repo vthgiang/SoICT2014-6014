@@ -87,7 +87,8 @@ export function performtasks(state = {}, action) {
         case performTaskConstants.STOP_TIMER_SUCCESS:
             return {
                 ...state,
-                logtimer: action.payload.data.content,
+                task: action.payload,
+                logtimer: action.payload.timesheetLogs,
                 currentTimer: null,
             };
         case performTaskConstants.STOP_TIMER_FAILURE:
