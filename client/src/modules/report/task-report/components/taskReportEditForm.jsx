@@ -7,7 +7,7 @@ import { TaskReportActions } from '../redux/actions';
 import { taskReportFormValidator } from './taskReportFormValidator';
 import { DialogModal, ErrorLabel, SelectBox, DatePicker } from '../../../../common-components';
 import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
-
+import './transferList.css';
 class TaskReportEditForm extends Component {
     constructor(props) {
         super(props);
@@ -25,20 +25,15 @@ class TaskReportEditForm extends Component {
                 endDate: '',
                 frequency: '',
                 coefficient: 1,
-                taskInformations: []
+                taskInformations: [],
+                itemListTempLeft: [],
+                itemListTempRight: [],
             },
+
         }
     }
 
-
-    /**
-    * Hàm bắt sự kiên thay đổi input NameTaskReport
-    * @param {*} e 
-    */
-
-
     componentDidMount() {
-        this.props.getTaskReportById(this.props.taskReportId);
         // get department of current user 
         this.props.getDepartment();
         // lấy tất cả nhân viên của công ty
@@ -47,39 +42,7 @@ class TaskReportEditForm extends Component {
         this.props.getAllUserInAllUnitsOfCompany();
         this.props.getTaskTemplateByUser("1", "0", "[]");
         this.props.getRoleSameDepartment(localStorage.getItem("currentRole"));
-    }
-
-    /**
-    * Bắt sự kiện thay đổi cho ô input mô tả báo cáo
-    * @param {*} e 
-    */
-    handleDesReportChange = (e) => {
-        let value = e.target.value;
-        this.validateDescriptionTaskReport(value, true);
-    }
-
-
-    /**
-     * Hàm kiểm tra validate cho input mô tả báo cáo
-     * @param {*} value 
-     * @param {*} willUpdateState 
-     */
-    validateDescriptionTaskReport = (value, willUpdateState = true) => {
-        let msg = taskReportFormValidator.validateDescriptionTaskReport(value)
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    editingReport: {
-                        ...this.state.editingReport,
-                        errorOnDescriptiontTaskReport: msg,
-                        description: value,
-
-                    }
-                }
-            });
-        }
-        return msg === undefined;
+        // this.props.getTaskReportById(this.props.taskReportId);
     }
 
     /**
@@ -96,17 +59,77 @@ class TaskReportEditForm extends Component {
                 return {
                     ...state,
                     editingReport: {
-                        ...this.state.editingReport,
+                        ...state.editingReport,
                         organizationalUnit: value,
                         responsibleEmployees: [],
                         accountableEmployees: [],
                         taskTemplate: '',
-
                     }
                 }
             });
         }
     }
+
+
+    /**
+     * Hàm xử lý sự kiện thay đổi tên báo cáo
+     * @param {*} value 
+     * @param {*} willUpdateState 
+     */
+    validateNameTaskReport = (value, willUpdateState = true) => {
+        let msg = taskReportFormValidator.validateNameTaskReport(value)
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    editingReport: {
+                        ...state.editingReport,
+                        errorOnNameTaskReport: msg,
+                        name: value,
+                    }
+                }
+            });
+        }
+        return msg === undefined;
+    }
+
+
+    handleNameTaskReportChange = (e) => {
+        let value = e.target.value;
+        this.validateNameTaskReport(value, true);
+    }
+
+
+    /**
+    * Bắt sự kiện thay đổi cho ô input mô tả báo cáo
+    * @param {*} e 
+    */
+    handleDesTaskReportChange = (e) => {
+        let value = e.target.value;
+        this.validateDescriptionTaskReport(value, true);
+    }
+
+    /**
+     * Hàm kiểm tra validate cho input mô tả báo cáo
+     * @param {*} value 
+     * @param {*} willUpdateState 
+     */
+    validateDescriptionTaskReport = (value, willUpdateState = true) => {
+        let msg = taskReportFormValidator.validateDescriptionTaskReport(value)
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    editingReport: {
+                        ...state.editingReport,
+                        errorOnDescriptiontTaskReport: msg,
+                        description: value,
+                    }
+                }
+            });
+        }
+        return msg === undefined;
+    }
+
 
     /**
      * Hàm xử lý validate chọn mãu công việc
@@ -121,7 +144,7 @@ class TaskReportEditForm extends Component {
                     return {
                         ...state,
                         editingReport: {
-                            ...this.state.editingReport,
+                            ...state.editingReport,
                             taskTemplate: '',
                             status: '',
                             startDate: '',
@@ -131,7 +154,6 @@ class TaskReportEditForm extends Component {
                             errorOnDescriptiontTaskReport: undefined,
                             errorOnNameTaskReport: undefined,
                             errorOnTaskTemplateReport: msg,
-
                         }
                     }
                 });
@@ -139,8 +161,8 @@ class TaskReportEditForm extends Component {
                 let taskTemplate = this.props.tasktemplates.items.find((taskTemplate) =>
                     taskTemplate._id === value
                 );
-                let taskInformations = [];
 
+                let taskInformations = [];
                 if (taskTemplate.taskInformations) {
                     for (let [index, value] of taskTemplate.taskInformations.entries()) {
                         taskInformations[index] = {
@@ -150,18 +172,18 @@ class TaskReportEditForm extends Component {
                         }
                     }
                 }
+
                 this.setState(state => {
                     return {
                         ...state,
                         editingReport: {
-                            ...this.state.editingReport,
+                            ...state.editingReport,
                             // nameTaskReport: taskTemplate.name,
                             // descriptionTaskReport: taskTemplate.description,
                             taskTemplate: taskTemplate._id,
                             responsibleEmployees: taskTemplate.responsibleEmployees,
                             accountableEmployees: taskTemplate.accountableEmployees,
                             taskInformations: taskInformations,
-
                         }
                     }
                 })
@@ -177,41 +199,7 @@ class TaskReportEditForm extends Component {
     handleChangeTaskTemplate = async (e) => {
         let { value } = e.target;
         this.validateTasktemplateReport(value, true);
-
     }
-
-
-    handleNameTaskReportChange = (e) => {
-        let value = e.target.value;
-        this.validateNameTaskReport(value, true);
-    }
-
-    /**
-     * Hàm xử lý sự kiện thay đổi tên báo cáo
-     * @param {*} value 
-     * @param {*} willUpdateState 
-     */
-    validateNameTaskReport = (value, willUpdateState = true) => {
-        let msg = taskReportFormValidator.validateNameTaskReport(value)
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    editingReport: {
-                        ...this.state.editingReport,
-                        errorOnNameTaskReport: msg,
-                        name: value,
-                    }
-                }
-            });
-        }
-        return msg === undefined;
-    }
-
-    handleDesTaskReportChange = (e) => {
-        let value = e.target.value;
-        this.validateDescriptionTaskReport(value, true);
-    }
-
 
 
     /**
@@ -223,7 +211,7 @@ class TaskReportEditForm extends Component {
             return {
                 ...state,
                 editingReport: {
-                    ...this.state.editingReport,
+                    ...state.editingReport,
                     status: value,
                 }
             }
@@ -239,7 +227,7 @@ class TaskReportEditForm extends Component {
             return {
                 ...state,
                 editingReport: {
-                    ...this.state.editingReport,
+                    ...state.editingReport,
                     frequency: value,
                 }
             }
@@ -255,7 +243,7 @@ class TaskReportEditForm extends Component {
             return {
                 ...state,
                 editingReport: {
-                    ...this.state.editingReport,
+                    ...state.editingReport,
                     responsibleEmployees: value,
                 }
             }
@@ -271,7 +259,7 @@ class TaskReportEditForm extends Component {
             return {
                 ...state,
                 editingReport: {
-                    ...this.state.editingReport,
+                    ...state.editingReport,
                     accountableEmployees: value,
                 }
             }
@@ -288,7 +276,7 @@ class TaskReportEditForm extends Component {
                 return {
                     ...state,
                     editingReport: {
-                        ...this.state.editingReport,
+                        ...state.editingReport,
                         startDate: '',
                     }
                 }
@@ -298,14 +286,14 @@ class TaskReportEditForm extends Component {
                 return {
                     ...state,
                     editingReport: {
-                        ...this.state.editingReport,
+                        ...state.editingReport,
                         startDate: value,
                     }
                 }
             })
         }
-
     }
+
 
     /**
      * Hàm bắt sự kiện thy đổi ngày kết thúc
@@ -317,7 +305,7 @@ class TaskReportEditForm extends Component {
                 return {
                     ...state,
                     editingReport: {
-                        ...this.state.editingReport,
+                        ...state.editingReport,
                         endDate: '',
                     }
                 }
@@ -327,14 +315,14 @@ class TaskReportEditForm extends Component {
                 return {
                     ...state,
                     editingReport: {
-                        ...this.state.editingReport,
+                        ...state.editingReport,
                         endDate: value,
                     }
                 }
             })
         }
-
     }
+
 
     /**
      * Hàm bắt sự kiện thay đổi điều kiện lọc
@@ -361,10 +349,11 @@ class TaskReportEditForm extends Component {
      * @param {*} index 
      * @param {*} item 
      */
-    handleEditChecked = (index, item) => {
+    handleEditShowInReport = (index, item) => {
         let { editingReport } = this.state;
         let value = item.target.checked;
         let taskInformations = editingReport.taskInformations;
+
         taskInformations[index] = { ...taskInformations[index], showInReport: value };
         this.setState({
             editingReport: {
@@ -411,12 +400,13 @@ class TaskReportEditForm extends Component {
         })
     }
 
+
     /**
      * Hàm xử lý khi thay đổi input chọn dạng biểu đồ
      * @param {*} index 
      * @param {*} value 
      */
-    handleEditChart = (index, value) => {
+    handleEditChartType = (index, value) => {
         let { editingReport } = this.state;
         let taskInformations = editingReport.taskInformations;
         taskInformations[index] = { ...taskInformations[index], charType: value.toString() };
@@ -431,19 +421,21 @@ class TaskReportEditForm extends Component {
      * Hàm kiểm tra đã validate chưa
      */
     isFormValidated = () => {
+        const { editingReport } = this.state;
         let result =
-            this.validateNameTaskReport(this.state.editingReport.name, false) &&
-            this.validateDescriptionTaskReport(this.state.editingReport.description, false);
+            this.validateNameTaskReport(editingReport.name, false) &&
+            this.validateDescriptionTaskReport(editingReport.description, false);
         return result;
     }
+
 
     /**
     * Hàm xử lý khi ấn lưu
     */
     save = () => {
+        const { taskReportId, editingReport } = this.state;
         if (this.isFormValidated()) {
-            this.props.editTaskReport(this.state.taskReportId, this.state.editingReport);
-            console.log('this.state.editingReport', this.state.editingReport)
+            this.props.editTaskReport(taskReportId, editingReport);
         }
     }
 
@@ -460,6 +452,8 @@ class TaskReportEditForm extends Component {
             return null;
         }
     }
+
+
     shouldComponentUpdate = (nextProps, nextState) => {
         if (nextProps.taskReportId !== this.state.taskReportId) {
             this.props.getTaskReportById(nextProps.taskReportId);
@@ -477,6 +471,7 @@ class TaskReportEditForm extends Component {
             this.props.getChildrenOfOrganizationalUnits(listTaskReportById.organizationalUnit._id);
 
             let editingReport = {
+                ...this.state.editingReport,
                 ...listTaskReportById,
                 organizationalUnit: listTaskReportById.organizationalUnit._id,
                 responsibleEmployees: listTaskReportById.responsibleEmployees.map(x => x._id),
@@ -518,22 +513,183 @@ class TaskReportEditForm extends Component {
         return date
     }
 
-    render() {
 
-        const { translate, reports, tasktemplates, user, tasks } = this.props;
+    /**
+     * Hàm xử lý khi listbox chọn chiều dữ liệu thay đổi
+     * @param {} e 
+     */
+    handleLeftListChange = (e) => {
+        const { editingReport } = this.state;
+        let { value, name, checked } = e.target;
+        let { itemListTempLeft, listDataChart } = editingReport;
+
+        // Kiểm tra xem item nào được click 
+        let listBoxLeftLength = listDataChart.length;
+
+        for (let i = 0; i < listBoxLeftLength; i++) {
+            if (listDataChart[i].name === value) {
+                listDataChart[i].checked = checked;
+                break;
+            }
+        }
+
+        // set lại giá trị cho State 
+        this.setState({
+            editingReport: {
+                ...editingReport,
+                listDataChart,
+            }
+        });
+
+        // Nếu click 2 lần vào check bõ thì xóa item đó trong biến tạm itemListTempLeft
+        // kiểm tra xem trong mảng itemListTempLeft đã tồn tại item được click hay chưa: false = -1, nếu tồn tại nghĩa là click 2 lần thì xóa nó đi
+        const findIndexItem = itemListTempLeft.findIndex(x => x.id === parseInt(name)); // name là id get từ input 
+
+        // Nếu trong mảng có tồn tại item được click thì xóa nó đi, dùng slice cắt lấy các item khác item dc click
+        if (findIndexItem > -1) {
+            itemListTempLeft = [...itemListTempLeft.slice(0, findIndexItem), ...itemListTempLeft.slice(findIndexItem + 1)]
+        }
+        else {
+            // Nếu chưa có trong mảng thì thêm nó vào itemListTempLeft
+            itemListTempLeft.push({ id: parseInt(name), name: value, checked: false });
+        }
+
+        this.setState({
+            editingReport: {
+                ...editingReport,
+                itemListTempLeft: itemListTempLeft,
+            }
+        })
+    }
+
+    // Bắt sự kiện click nút chuyển data sang listBox dữ liệu được đưa vào biểu đồ
+    handleClickTransferRightList = () => {
+        const { editingReport } = this.state;
+        let { itemListTempLeft, listDataChart, dataForAxisXInChart } = editingReport;
+
+        let idInListBoxLeft = listDataChart.map(x => x.id); // array id in listDataChart
+        let idInListTemp = itemListTempLeft.map(x => parseInt(x.id)); // array id khi mình chọn vào checkbox của listBoxLeft
+
+        /**
+         * Check xem id khi mình chọn checkbox thì item đó có trong list item box left hay ko
+         * mục đích: phần setState
+         * nếu trùng thì xóa đi item đó trong listBoxleft 
+         * nếu không trùng thì add thêm vào 
+         */
+        // const checkId = idInListBoxLeft.includes(parseInt(idInListTemp));
+        const checkId = idInListTemp.some(item => idInListBoxLeft.indexOf(item) >= 0);
+
+        // Lọc Lấy item khác với item đã chọn--> mục đích remove item đó bên listLeft 
+        idInListTemp.forEach(x => {
+            listDataChart = listDataChart.filter(y => y.id !== x)
+        })
+
+        // 
+        this.setState({
+            editingReport: {
+                ...editingReport,
+                listDataChart: checkId ? listDataChart
+                    : listDataChart,
+
+                dataForAxisXInChart: checkId ? [...dataForAxisXInChart, itemListTempLeft].flat(1) : dataForAxisXInChart,
+                itemListTempLeft: [],
+            }
+        })
+    }
+
+    /**
+     * Hàm xử lý khi listbox chiều dữ liệu được đưa vào biểu đồ thay đổi
+     * @param {} e
+     */
+    handleRightListChange = (e) => {
+        const { editingReport } = this.state;
+
+        let { value, name, checked } = e.target;
+        let { itemListTempRight, dataForAxisXInChart } = editingReport;
+        let listBoxRightLength = dataForAxisXInChart.length;
+
+        for (let i = 0; i < listBoxRightLength; i++) {
+            if (dataForAxisXInChart[i].name === value) {
+                dataForAxisXInChart[i].checked = checked;
+                break;
+            }
+        }
+
+        // set lại giá trị cho State 
+        this.setState({
+            editingReport: {
+                ...editingReport,
+                dataForAxisXInChart,
+            }
+        });
+
+        // kiểm tra xem trong mảng itemListTempRight đã tồn tại item được click hay chưa: false = -1
+        const findIndexItem = itemListTempRight.findIndex(x => x.id === parseInt(name)); // name là id get từ input 
+
+        // Nếu trong mảng có tồn tại item được click thì xóa nó đi, dùng slice cắt lấy các item khác item dc click
+        if (findIndexItem > -1) {
+            itemListTempRight = [...itemListTempRight.slice(0, findIndexItem), ...itemListTempRight.slice(findIndexItem + 1)]
+        } else {
+            // Nếu chưa có trong mảng thì thêm nó vào itemListTempRight
+            itemListTempRight.push({ id: parseInt(name), name: value, checked: false });
+        }
+
+        this.setState({
+            editingReport: {
+                ...editingReport,
+                itemListTempRight: itemListTempRight,
+            }
+        })
+    }
+
+    // Hàm bắt sự kiện click nút chuyển data sang listBox chiều dữ liệu trong biểu đồ 
+    handleClickTransferLeftList = () => {
+        const { editingReport } = this.state;
+        let { itemListTempRight, listDataChart, dataForAxisXInChart } = editingReport;
+
+        let idInListBoxRight = dataForAxisXInChart.map(x => x.id); // array id in dataForAxisXInChart
+        let idInListTemp = itemListTempRight.map(x => parseInt(x.id)); // array id khi mình chọn vào checkbox của listBoxRight
+
+        // const checkId = idInListBoxRight.includes(parseInt(idInListTemp)); // true or false
+        const checkId = idInListTemp.some(item => idInListBoxRight.indexOf(item) >= 0); // true or false
+
+        // Lọc item khác với item đã chọn
+        idInListTemp.forEach(x => {
+            dataForAxisXInChart = dataForAxisXInChart.filter(y => y.id !== x)
+        })
+
+
+        this.setState({
+            editingReport: {
+                ...editingReport,
+                dataForAxisXInChart: checkId ? dataForAxisXInChart
+                    : dataForAxisXInChart,
+
+                listDataChart: checkId ? [...listDataChart, itemListTempRight].flat(1) : listDataChart,
+                itemListTempRight: [],
+            }
+        })
+    }
+
+    render() {
+        const { translate, reports, tasktemplates, user } = this.props;
         const { editingReport } = this.state;
         const { errorOnNameTaskReport, errorOnDescriptiontTaskReport, errorOnTaskTemplateReport } = this.state.editingReport;
         let listTaskTemplate, units, listRole, listRoles = [];
         let listTaskReportById = reports.listTaskReportById;
-        console.log('listTaskReportById', listTaskReportById)
+
+        // Lấy danh sách đơn vị của người dùng hiện tại
         if (user.organizationalUnitsOfUser) {
             units = user.organizationalUnitsOfUser;
         }
-        console.log('editingReport', editingReport)
+
         let usersOfChildrenOrganizationalUnit;
         if (user.usersOfChildrenOrganizationalUnit) {
             usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
         }
+
+        // Lấy thông tin nhân viên của đơn vị
+        let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
 
         if (user.roledepartments) {
             listRole = user.roledepartments;
@@ -544,13 +700,15 @@ class TaskReportEditForm extends Component {
             for (let x in listRole.employees)
                 listRoles = [...listRoles, listRole.employees[x]];
         }
-        let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
+
+        // Lấy danh sách mẫu công việc theo đơn vị 
         if (tasktemplates.items && editingReport.organizationalUnit) {
             listTaskTemplate = tasktemplates.items.filter(function (taskTemplate) {
                 return taskTemplate.organizationalUnit._id === editingReport.organizationalUnit
             })
         }
-        console.log('editingReport.startDate', editingReport.startDate)
+
+        console.log('listTaskReportById', listTaskReportById)
         return (
             <React.Fragment>
                 <DialogModal
@@ -753,7 +911,6 @@ class TaskReportEditForm extends Component {
                                         value={editingReport.startDate}
                                         onChange={this.handleEditStartDate}
                                         disabled={false}
-
                                     />
                                 </div>
                             }
@@ -777,101 +934,198 @@ class TaskReportEditForm extends Component {
 
                     {
                         (editingReport.taskTemplate !== '') &&
-                        <div className="row" id="showTable">
-                            <hr />
-                            <div className="col-md-12">
-                                <table className="table table-hover table-striped table-bordered" id="report_manager">
-                                    <thead>
-                                        <tr>
-                                            <th>Mã thông tin</th>
-                                            <th>Trường thông tin</th>
-                                            <th>Kiểu dữ liệu</th>
-                                            <th>Điều kiện lọc</th>
-                                            <th>Hiển thị trong báo cáo</th>
-                                            <th>Tên mới</th>
-                                            <th>Cách tính</th>
-                                            <th>Dạng biểu đồ</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            editingReport && editingReport.taskInformations ? editingReport.taskInformations.map((item, index) => (
-                                                <tr key={index}>
-                                                    <td>{item.code}</td>
-                                                    <td>{item.name}</td>
-                                                    <td>{(item.type === 'SetOfValues' ? 'Tập dữ liệu' : (item.type))}</td>
+                        <React.Fragment>
+                            <div className="row" id="showTable">
+                                <hr />
+                                <div className="col-md-12">
+                                    <table className="table table-hover table-striped table-bordered" id="report_manager">
+                                        <thead>
+                                            <tr>
+                                                <th>Mã thông tin</th>
+                                                <th>Trường thông tin</th>
+                                                <th>Kiểu dữ liệu</th>
+                                                <th>Điều kiện lọc</th>
+                                                <th>Hiển thị trong báo cáo</th>
+                                                <th>Tên mới</th>
+                                                <th>Cách tính</th>
+                                                <th>Dạng biểu đồ</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                editingReport && editingReport.taskInformations ? editingReport.taskInformations.map((item, index) => (
+                                                    <tr key={index}>
+                                                        <td>{item.code}</td>
+                                                        <td>{item.name}</td>
+                                                        <td>{(item.type === 'SetOfValues' ? 'Tập dữ liệu' : (item.type))}</td>
 
-                                                    {
-                                                        editingReport && editingReport.taskInformations &&
-                                                        <td><input className="form-control" style={{ width: '100%' }} type="text" value={item.filter} onChange={(e) => this.handleEditFilter(index, e)} /></td>
-                                                    }
-                                                    <td>
                                                         {
-                                                            (item.type === 'Number') ?
-                                                                <div className="checkbox" style={{ paddingLeft: "20%" }}>
-                                                                    <label>
-                                                                        <input name="showInReport" type="checkbox" checked={item.showInReport} onChange={(e) => this.handleEditChecked(index, e)} />
+                                                            editingReport && editingReport.taskInformations &&
+                                                            <td><input className="form-control" style={{ width: '100%' }} type="text" value={item.filter} onChange={(e) => this.handleEditFilter(index, e)} /></td>
+                                                        }
+                                                        <td>
+                                                            {
+                                                                (item.type === 'Number') ?
+                                                                    <div className="checkbox" style={{ paddingLeft: "20%" }}>
+                                                                        <label>
+                                                                            <input name="showInReport" type="checkbox" checked={item.showInReport} onChange={(e) => this.handleEditShowInReport(index, e)} />
 
-                                                                    </label>
-                                                                </div>
-                                                                : ''
-                                                        }
-                                                    </td>
-                                                    <td>
-                                                        {
-                                                            (item.type === 'Number') ?
-                                                                <input className="form-control" style={{ width: '100%' }} type="text" value={item.newName} onChange={(e) => this.handleEditNewName(index, e)} /> : ''
-                                                        }
+                                                                        </label>
+                                                                    </div>
+                                                                    : ''
+                                                            }
+                                                        </td>
+                                                        <td>
+                                                            {
+                                                                (item.type === 'Number') ?
+                                                                    <input className="form-control" style={{ width: '100%' }} type="text" value={item.newName} onChange={(e) => this.handleEditNewName(index, e)} /> : ''
+                                                            }
 
-                                                    </td>
-                                                    <td>
-                                                        {
-                                                            (item.type === 'Number') ?
-                                                                <SelectBox
-                                                                    id={`select-box-calulator-${item.code}`}
-                                                                    className="form-control select2"
-                                                                    style={{ width: "100%" }}
-                                                                    onChange={(e) => this.handleEditAggregationType(index, e)}
-                                                                    value={item.aggregationType}
-                                                                    items={
-                                                                        [
-                                                                            { value: '0', text: 'Trung bình cộng' },
-                                                                            { value: '1', text: 'Tổng' },
-                                                                        ]
-                                                                    }
-                                                                    multiple={false}
-                                                                />
-                                                                : ''
-                                                        }
-                                                    </td>
-                                                    <td data-select2-id="1111">
-                                                        {
-                                                            (item.type === 'Number') ?
-                                                                <SelectBox
-                                                                    id={`select-box-chart-${item.code}`}
-                                                                    className="form-control select2"
-                                                                    style={{ width: "100%" }}
-                                                                    onChange={(e) => this.handleEditChart(index, e)}
-                                                                    value={item.charType}
-                                                                    items={
-                                                                        [
-                                                                            { value: '0', text: 'Cột' },
-                                                                            { value: '1', text: 'Đường' },
-                                                                            { value: '2', text: 'Tròn' },
-                                                                        ]
-                                                                    }
-                                                                    multiple={false}
-                                                                />
-                                                                : ''
-                                                        }
-                                                    </td>
-                                                </tr>
-                                            )) : <tr><td colSpan={8}><center>{translate('report_manager.no_data')}</center></td></tr>
-                                        }
-                                    </tbody>
-                                </table>
+                                                        </td>
+                                                        <td>
+                                                            {
+                                                                (item.type === 'Number') ?
+                                                                    <SelectBox
+                                                                        id={`select-box-calulator-${item.code}`}
+                                                                        className="form-control select2"
+                                                                        style={{ width: "100%" }}
+                                                                        onChange={(e) => this.handleEditAggregationType(index, e)}
+                                                                        value={item.aggregationType}
+                                                                        items={
+                                                                            [
+                                                                                { value: 0, text: 'Trung bình cộng' },
+                                                                                { value: 1, text: 'Tổng' },
+                                                                            ]
+                                                                        }
+                                                                        multiple={false}
+                                                                    />
+                                                                    : ''
+                                                            }
+                                                        </td>
+                                                        <td data-select2-id="1111">
+                                                            {
+                                                                (item.type === 'Number') ?
+                                                                    <SelectBox
+                                                                        id={`select-box-chart-${item.code}`}
+                                                                        className="form-control select2"
+                                                                        style={{ width: "100%" }}
+                                                                        onChange={(e) => this.handleEditChartType(index, e)}
+                                                                        value={item.chartType}
+                                                                        items={
+                                                                            [
+                                                                                { value: 0, text: 'Cột' },
+                                                                                { value: 1, text: 'Đường' },
+                                                                                { value: 2, text: 'Tròn' },
+                                                                            ]
+                                                                        }
+                                                                        multiple={false}
+                                                                    />
+                                                                    : ''
+                                                            }
+                                                        </td>
+                                                    </tr>
+                                                )) : <tr><td colSpan={8}><center>{translate('report_manager.no_data')}</center></td></tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
-                        </div>
+
+                            {/* form chọn chiều dữ liệu */}
+                            <div className="row" style={{ marginTop: '15px' }}>
+                                <div className="col-md-6 col-sm-12">
+                                    <div className="row">
+                                        <div className="box-display" >
+                                            <div className="col-md-5 ">
+                                                <div className="border">
+                                                    <div className="box-title">
+                                                        <span><b>Chọn chiều dữ liệu trong biểu đồ</b></span>
+                                                    </div>
+                                                    <div className="box-body box-size">
+                                                        <div className="listItem-left">
+                                                            {
+                                                                editingReport && editingReport.listDataChart && editingReport.listDataChart.map((x, index) => (
+                                                                    <div className="item" key={index}>
+                                                                        <input className="checkbox-input" type="checkbox" id={`myCheckBoxId${index}-left`} name={x.id} value={x.name} checked={!!x.checked} onChange={this.handleLeftListChange} />
+                                                                        <div className=" checkbox-text">
+                                                                            <label htmlFor={`myCheckBoxId${index}-left`}>{x.name}</label>
+                                                                        </div>
+                                                                    </div>
+                                                                ))
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="col-md-2 " align="center" style={{ margin: 'auto' }} >
+                                                {/* Button khi hiển thị trên giao diện tren pc */}
+                                                <div className="only-pc">
+                                                    <div className="listButton ">
+                                                        <div className="item-button">
+                                                            <button type="button" className="btn btn-sm btn-default" onClick={this.handleClickTransferRightList}>
+                                                                <span className="material-icons">
+                                                                    keyboard_arrow_right
+                                                                </span>
+                                                            </button>
+                                                        </div>
+                                                        <div className="item-button">
+                                                            <button type="button" className="btn btn-sm btn-default" onClick={this.handleClickTransferLeftList}>
+                                                                <span className="material-icons">
+                                                                    keyboard_arrow_left
+                                                                </span>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {/* end */}
+
+                                                {/* Giao diện trên mobile  */}
+                                                <div className="only-mobile">
+                                                    <div className="listButton ">
+                                                        <div className="item-button">
+                                                            <button type="button" ref="btn-down" className="btn btn-sm btn-default" onClick={this.handleClickTransferRightList}>
+                                                                <span className="material-icons">
+                                                                    keyboard_arrow_down
+                                                            </span>
+                                                            </button>
+                                                        </div>
+                                                        <div className="item-button">
+                                                            <button type="button" ref="btn-up" className="btn btn-sm btn-default" onClick={this.handleClickTransferLeftList}>
+                                                                <span className="material-icons">
+                                                                    keyboard_arrow_up
+                                                            </span>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="col-md-5 ">
+                                                <div className="border">
+                                                    <div className="box-title">
+                                                        <span><b>Dữ liệu được đưa vào biểu đồ</b></span>
+                                                    </div>
+                                                    <div className="box-body box-size">
+                                                        <div className="listItem-left">
+                                                            {
+                                                                editingReport && editingReport.dataForAxisXInChart && editingReport.dataForAxisXInChart.map((x, index) => (
+                                                                    <div className="item" key={index} >
+                                                                        <input className="checkbox-input" type="checkbox" id={`myCheckBoxId${index}-right`} name={x.id} value={x.name} checked={!!x.checked} onChange={this.handleRightListChange} />
+                                                                        <div className=" checkbox-text">
+                                                                            <label htmlFor={`myCheckBoxId${index}-right`}>{`${index + 1}. ${x.name}`}</label>
+                                                                        </div>
+                                                                    </div>
+                                                                ))
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </React.Fragment>
                     }
 
                 </DialogModal>

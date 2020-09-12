@@ -10,6 +10,8 @@ import { TaskReportActions } from '../redux/actions';
 import { TaskReportCreateForm } from './taskReportCreateForm';
 import { TaskReportEditForm } from './taskReportEditForm';
 import { TaskReportDetailForm } from './taskReportDetailForm';
+import moment from 'moment';
+
 
 class TaskReportManager extends Component {
     constructor(props) {
@@ -21,6 +23,7 @@ class TaskReportManager extends Component {
             month: null,
             creator: '',
             currentRole: localStorage.getItem("userId"),
+            chartStatus: false,
         }
     }
     componentDidMount() {
@@ -153,6 +156,7 @@ class TaskReportManager extends Component {
         })
         await window.$('#modal-detail-taskreport').modal('show');
     }
+
     /**
      * Bắt sự kiện setting số dòng hiện thị trên một trang
      * @param {*} number 
@@ -162,7 +166,6 @@ class TaskReportManager extends Component {
             limit: parseInt(number),
         });
         this.props.getTaskReports(this.state);
-
     }
 
     checkPermissonCreator = (creator) => {
@@ -244,7 +247,6 @@ class TaskReportManager extends Component {
                             <label className="form-control-static">{translate('report_manager.creator')}</label>
                             <input className="form-control" type="text" onKeyUp={this.handleEnterLimitSetting} name="creator" onChange={this.handleChangeCreator} placeholder={translate('report_manager.search_by_creator')} />
                         </div>
-
                     </div>
 
                     <div className="form-inline" style={{ marginBottom: 10 }}>
