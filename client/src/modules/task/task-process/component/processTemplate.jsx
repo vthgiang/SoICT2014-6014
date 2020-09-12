@@ -191,15 +191,16 @@ class ProcessTemplate extends Component {
                                     {translate("task.task_process.create")}
                                 </button>
                             </div> */}
-                            <div className="form-inline">
-                                <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
-                                    <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title='Thêm'>{translate('task_template.add')}</button>
-                                    <ul className="dropdown-menu pull-right">
-                                        <li><a href="#modal-add-task-template" title="ImportForm" onClick={(event) => { this.showModalCreateProcess(event) }}>{translate('task_template.add')}</a></li>
-                                        <li><a href="#modal_import_file" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>Thêm file</a></li>
-                                    </ul>
-                                </div>
+                        
+                            {/* Button thêm mới */}
+                            <div className="dropdown pull-right" style={{ marginTop: 5 }}>
+                                <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title='Thêm'>{translate('task_template.add')}</button>
+                                <ul className="dropdown-menu pull-right">
+                                    <li><a href="#modal-add-task-template" title="ImportForm" onClick={(event) => { this.showModalCreateProcess(event) }}>{translate('task_template.add')}</a></li>
+                                    <li><a href="#modal_import_file" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>Thêm file</a></li>
+                                </ul>
                             </div>
+                        
                             {
                                 showModalCreateProcess &&
                                 <ModalCreateTaskProcess

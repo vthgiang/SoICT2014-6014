@@ -12,7 +12,7 @@ import { is } from 'bpmn-js/lib/util/ModelUtil';
 import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil'
 
 import ElementFactory from 'bpmn-js/lib/features/modeling/ElementFactory';
-import customModule from './custom'
+import customModule from './custom-task-process'
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
@@ -698,6 +698,17 @@ class ModalEditTaskProcess extends Component {
                                                 <ErrorLabel content={this.state.errorOnProcessName} />
                                             </div>
 
+                                            {/* Mô tả quy trình */}
+                                            <div className={`form-group ${this.state.errorOnProcessDescription === undefined ? "" : "has-error"}`}>
+                                                <label className="control-label">{translate("task.task_process.process_description")}</label>
+                                                <textarea type="text" rows={4}
+                                                    value={processDescription}
+                                                    className="form-control" placeholder="Mô tả công việc"
+                                                    onChange={this.handleChangeBpmnDescription}
+                                                />
+                                                <ErrorLabel content={this.state.errorOnProcessDescription} />
+                                            </div>
+
                                             {/* Người xem quy trình */}
                                             <div className={`form-group ${this.state.errorOnViewer === undefined ? "" : "has-error"}`}>
                                                 <label className="control-label">{translate("task.task_process.viewer")}</label>
@@ -730,19 +741,6 @@ class ModalEditTaskProcess extends Component {
                                                     />
                                                 }
                                                 <ErrorLabel content={this.state.errorOnManager} />
-                                            </div>
-                                        </div>
-
-                                        <div className='col-md-6'>
-                                            {/* Mô tả quy trình */}
-                                            <div className={`form-group ${this.state.errorOnProcessDescription === undefined ? "" : "has-error"}`}>
-                                                <label className="control-label">{translate("task.task_process.process_description")}</label>
-                                                <textarea type="text" rows={8}
-                                                    value={processDescription}
-                                                    className="form-control" placeholder="Mô tả công việc"
-                                                    onChange={this.handleChangeBpmnDescription}
-                                                />
-                                                <ErrorLabel content={this.state.errorOnProcessDescription} />
                                             </div>
                                         </div>
                                     </div>

@@ -237,7 +237,7 @@ class Table extends Component {
                 length_roles = 0;
             }
             if (x.relationshipDocuments && x.relationshipDocuments.length) {
-                element.relationshipDocuments = element.relationshipDocuments[0].name;
+                element.relationshipDocuments = x.relationshipDocuments[0].name;
                 length_relationship = x.relationshipDocuments.length;
             } else {
                 element.relationshipDocuments = "";
