@@ -290,22 +290,23 @@ legend.legend-box-info {
     margin-top: 10px;
     margin-bottom: 10px;
 }
-
 .description-box div.no-line-height {
     line-height: initial;
 }
-
 .description-box > ol, .description-box > ul {
     margin: 0;
 }
-
 .description-box h4 {
     font-weight: 600;
+    line-height: 1.5;
 }
-
 .description-box strong {
     font-weight: 600;
     padding-right: 10px;
+}
+.description-box input[type='checkbox'],
+.description-box input[type='radio']{
+    margin-top: 0.5em;
 }
 
 
@@ -391,7 +392,7 @@ button:focus {
         display: inline-block;
         vertical-align: top;
         position: relative;
-        margin: 1px 0 0 0;
+        margin: 1px 8px 0 0;
         cursor: pointer;
         border: 1px solid var(--bc, var(--border));
         background: var(--b, var(--background));
