@@ -28,7 +28,7 @@ exports.getEmployeeProfile = async (req, res) => {
         await LogError(req.user.email, 'GET_INFOR_PERSONAL', req.user.company);
         res.status(400).json({
             success: false,
-            messages: ["get_infor_personal_false"],
+            messages: ["get_infor_personal_faile"],
             content: {
                 error: error
             }
@@ -56,7 +56,7 @@ exports.updatePersonalInformation = async (req, res) => {
         await LogError(req.user.email, 'EDIT_INFOR_PERSONAL', req.user.company);
         res.status(400).json({
             success: false,
-            messages: ["edit_infor_personal_false"],
+            messages: ["edit_infor_personal_faile"],
             content: {
                 error: error
             }
@@ -105,7 +105,7 @@ exports.searchEmployeeProfiles = async (req, res) => {
         await LogError(req.user.email, 'GET_EMPLOYEES', req.user.company);
         res.status(400).json({
             success: false,
-            messages: ["get_list_employee_false"],
+            messages: ["get_list_employee_faile"],
             content: {
                 error: error
             }
@@ -278,7 +278,7 @@ exports.createEmployee = async (req, res) => {
         await LogError(req.user.email, 'CREATE_EMPLOYEE', req.user.company);
         res.status(400).json({
             success: false,
-            messages: ["create_employee_false"],
+            messages: ["create_employee_faile"],
             content: {
                 error: error
             }
@@ -446,7 +446,7 @@ exports.updateEmployeeInformation = async (req, res) => {
         await LogError(req.user.email, 'EDIT_EMPLOYEE', req.user.company);
         res.status(400).json({
             success: false,
-            messages: ["edit_employee_false"],
+            messages: ["edit_employee_faile"],
             content: {
                 error: error
             }
@@ -468,7 +468,7 @@ exports.deleteEmployee = async (req, res) => {
     } catch (error) {
         res.status(400).json({
             success: false,
-            messages: ["delete_employee_false"],
+            messages: ["delete_employee_faile"],
             content: {
                 error: error
             }

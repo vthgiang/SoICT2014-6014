@@ -1,18 +1,21 @@
 import {
     EducationConstants
 } from "./constants";
+
 import {
     EducationService
 } from "./services";
+
 export const EducationActions = {
     getListEducation,
     createNewEducation,
     deleteEducation,
     updateEducation,
 };
+
 /**
  * Lấy danh sách các chương trình đào tạo theo key
- * @data : dữ liệu của Key
+ * @data : Dữ liệu của Key
  */
 function getListEducation(data) {
     return dispatch => {
@@ -60,6 +63,7 @@ function createNewEducation(data) {
             })
     }
 }
+
 /**
  * Xoá một chương trình đào tạo
  * @id : Id chương trình đào tạo cần xoá

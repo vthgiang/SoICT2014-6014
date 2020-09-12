@@ -7,7 +7,7 @@ const { LogInfo, LogError } = require('../../../logs');
 
 exports.getLinks = async (req, res) => {
     try {
-        let {company} = req.query;
+        let company = !req.query.company ? (!req.user.company ? undefined : req.user.company._id) : req.query.company;
         let links = await LinkService.getLinks(company, req.query);
  
         await LogInfo(req.user.email, 'GET_ALL_LINKS', req.user.company);

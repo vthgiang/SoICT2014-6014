@@ -162,6 +162,14 @@ class TaskTimesheetLog extends Component {
                     errorOnEndDate: undefined
                 });
             }
+            
+            //Check thời gian kết thúc không được gian lận
+            if(milisec - Date.now() > 300000) {
+                this.setState({
+                    disabled: true,
+                    errorOnEndDate: "Thời điểm kết thúc không được vượt quá hiện tại"
+                });
+            }
         }
     }
 
@@ -236,6 +244,7 @@ class TaskTimesheetLog extends Component {
                                     {showEndDate &&
                                         <React.Fragment>
                                             <div className={`form-group ${!errorOnEndDate ? "" : "has-error"}`}>
+                                                <ErrorLabel content={errorOnEndDate} />
                                                 <DatePicker
                                                     id={`date-picker-${currentTimer._id}`}
                                                     onChange={this.handleDateChange}
@@ -244,9 +253,8 @@ class TaskTimesheetLog extends Component {
                                                 <TimePicker
                                                     id={`time-picker-${currentTimer._id}`}
                                                     onChange={this.handleTimeChange}
-                                                    // getDefaultValue = {this.getDefaultValue}
+                                                    getDefaultValue = {this.getDefaultValue}
                                                 />
-                                                <ErrorLabel content={errorOnEndDate} />
                                             </div>
                                         </React.Fragment>
                                     }

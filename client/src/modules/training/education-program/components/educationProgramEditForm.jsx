@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { EducationProgramFormValidator } from './combinedContent';
 
 import { DialogModal, ErrorLabel, SelectMulti } from '../../../../common-components';
+
 import { EducationActions } from '../redux/actions';
 
 class EducationProgramEditForm extends Component {
@@ -11,10 +13,15 @@ class EducationProgramEditForm extends Component {
         super(props);
         this.state = {};
     }
-    // Function lưu giá trị unit vào state khi thay đổi
+
+    /**
+     * Function lưu giá trị unit vào state khi thay đổi
+     * @param {*} value : Array id đơn vị áp dụng
+     */
     handleUnitChange = (value) => {
-        let position = this.state.position;
-        this.state.organizationalUnit.forEach(u => {
+        let { position, organizationalUnit } = this.state;
+
+        organizationalUnit.forEach(u => {
             let check = value.lastIndexOf(u);
             if (check === -1) {
                 this.props.department.list.forEach(x => {
@@ -28,11 +35,13 @@ class EducationProgramEditForm extends Component {
                 })
             }
         })
+
         this.validatePosition(position, true);
         this.validateOrganizationalUnit(value, true);
     }
     validateOrganizationalUnit = (value, willUpdateState = true) => {
-        let msg = EducationProgramFormValidator.validateOrganizationalUnit(value, this.props.translate);
+        const { translate } = this.props;
+        let msg = EducationProgramFormValidator.validateOrganizationalUnit(value, translate);
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -45,7 +54,10 @@ class EducationProgramEditForm extends Component {
         return msg === undefined;
     }
 
-    // Function lưu giá trị chức vụ vào state khi thay đổi
+    /**
+     * Function lưu giá trị chức vụ vào state khi thay đổi
+     * @param {*} value : Array id chức vụ áp dụng
+     */
     handlePositionChange = (value) => {
         this.validatePosition(value, true);
     }
@@ -63,13 +75,16 @@ class EducationProgramEditForm extends Component {
         return msg === undefined;
     }
 
-    // Bắt sự kiện thay đổi tên chương trình đào tạo
+    /** Bắt sự kiện thay đổi tên chương trình đào tạo */
     handleProgramNameChange = (e) => {
         const { value } = e.target;
+
         this.validateProgramName(value, true);
     }
     validateProgramName = (value, willUpdateState = true) => {
-        let msg = EducationProgramFormValidator.validateProgramName(value, this.props.translate);
+        const { translate } = this.props;
+
+        let msg = EducationProgramFormValidator.validateProgramName(value, translate);
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -82,18 +97,22 @@ class EducationProgramEditForm extends Component {
         return msg === undefined;
     }
 
-    // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
+    /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
     isFormValidated = () => {
+        const { organizationalUnit, position, name } = this.state;
         let result =
-            this.validateOrganizationalUnit(this.state.organizationalUnit, false) && this.validatePosition(this.state.position, false) &&
-            this.validateProgramName(this.state.name, false);
+            this.validateOrganizationalUnit(organizationalUnit, false) && this.validatePosition(position, false) &&
+            this.validateProgramName(name, false);
         return result;
     }
+
+    /** Bắt sự kiện thêm chương trình đào tạo */
     save = (e) => {
         if (this.isFormValidated()) {
             this.props.updateEducation(this.state._id, this.state);
         }
     }
+
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps._id !== prevState._id) {
             return {
@@ -113,15 +132,17 @@ class EducationProgramEditForm extends Component {
             return null;
         }
     }
+
     render() {
-        const { translate, education } = this.props;
+        const { translate, education, department } = this.props;
+
         const { _id, name, programId, organizationalUnit, position, errorOnProgramName,
             errorOnOrganizationalUnit, errorOnPosition, totalList } = this.state;
-        const { list } = this.props.department;
+
         let listPosition = [];
         if (organizationalUnit !== null) {
             organizationalUnit.forEach(u => {
-                list.forEach(x => {
+                department.list.forEach(x => {
                     if (x._id === u) {
                         let roleDeans = x.deans.map(y => { return { _id: y._id, name: y.name } });
                         let roleViceDeans = x.viceDeans.map(y => { return { _id: y._id, name: y.name } });
@@ -131,29 +152,32 @@ class EducationProgramEditForm extends Component {
                 })
             })
         }
+
         return (
             <React.Fragment>
                 <DialogModal
                     modalID={`modal-edit-education${_id}`} isLoading={education.isLoading}
                     formID={`form-edit-education${_id}`}
-                    title="Chỉnh sửa chương trình đào tạo"
+                    title={translate('training.education_program.edit_education_program')}
                     func={this.save}
                     size={50}
                     maxWidth={500}
                     disableSubmit={!this.isFormValidated()}
                 >
                     <form className="form-group" id={`form-edit-education${_id}`} >
-                        <div className={`form-group ${errorOnOrganizationalUnit === undefined ? "" : "has-error"}`}>
-                            <label>Áp dụng cho đơn vị<span className="text-red">*</span></label>
+                        {/* Áp dụng cho đơn vị */}
+                        <div className={`form-group ${errorOnOrganizationalUnit && "has-error"}`}>
+                            <label>{translate('training.education_program.table.apply_for_organizational_units')}<span className="text-red">*</span></label>
                             <SelectMulti id={`edit-multiSelectUnit${_id}`} multiple="multiple" display='inline-block'
                                 value={organizationalUnit} disabled={Number(totalList) > 0 ? true : false}
                                 options={{ nonSelectedText: translate('human_resource.non_unit'), allSelectedText: translate('human_resource.all_unit') }}
-                                items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
+                                items={department.list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
                             </SelectMulti>
                             <ErrorLabel content={errorOnOrganizationalUnit} />
                         </div>
-                        <div className={`form-group ${errorOnPosition === undefined ? "" : "has-error"}`}>
-                            <label>Áp dụng cho chức vụ<span className="text-red">*</span></label>
+                        {/* Áp dụng cho chức vụ */}
+                        <div className={`form-group ${errorOnPosition && "has-error"}`}>
+                            <label>{translate('training.education_program.table.apply_for_positions')}<span className="text-red">*</span></label>
                             <SelectMulti id={`edit-multiSelectPosition${_id}`} multiple="multiple" display='inline-block'
                                 value={position} disabled={Number(totalList) > 0 ? true : false}
                                 options={{ nonSelectedText: translate('human_resource.non_position'), allSelectedText: translate('human_resource.all_position') }}
@@ -161,12 +185,14 @@ class EducationProgramEditForm extends Component {
                             </SelectMulti>
                             <ErrorLabel content={errorOnPosition} />
                         </div>
+                        {/* Mã chương trình đào tạo*/}
                         <div className="form-group" >
-                            <label>Mã chương trình đào tạo<span className="text-red">*</span></label>
+                            <label>{translate('training.education_program.education_program_code')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" name="programId" value={programId} disabled />
                         </div>
-                        <div className={`form-group ${errorOnProgramName === undefined ? "" : "has-error"}`}>
-                            <label>Tên chương trình đào tạo<span className="text-red">*</span></label>
+                        {/* Tên chương trình đào tạo*/}
+                        <div className={`form-group ${errorOnProgramName && "has-error"}`}>
+                            <label>{translate('training.education_program.education_program_name')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" name="name" value={name} onChange={this.handleProgramNameChange} />
                             <ErrorLabel content={errorOnProgramName} />
                         </div>
@@ -177,6 +203,7 @@ class EducationProgramEditForm extends Component {
         );
     }
 };
+
 function mapState(state) {
     const { education, department } = state;
     return { education, department };

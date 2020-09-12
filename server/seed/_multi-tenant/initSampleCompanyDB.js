@@ -214,11 +214,19 @@ const initSampleCompanyDB = async() => {
     /**
      * 5. Tạo các role mặc định cho công ty vnist
      */
-    const roleAbstract = await RoleType(systemDB).findOne({
+    await RoleType(vnistDB).insertMany([
+        { name: Terms.ROLE_TYPES.ROOT }, 
+        { name: Terms.ROLE_TYPES.POSITION },
+        { name: Terms.ROLE_TYPES.COMPANY_DEFINED }
+    ]);
+    const roleAbstract = await RoleType(vnistDB).findOne({
         name: Terms.ROLE_TYPES.ROOT
     });
-    const roleChucDanh = await RoleType(systemDB).findOne({
+    const roleChucDanh = await RoleType(vnistDB).findOne({
         name: Terms.ROLE_TYPES.POSITION
+    });
+    const roleTuDinhNghia = await RoleType(vnistDB).findOne({
+        name: Terms.ROLE_TYPES.COMPANY_DEFINED
     });
     const roleAdmin = await Role(vnistDB).create({
         name: Terms.ROOT_ROLES.ADMIN.name,
@@ -419,7 +427,7 @@ const initSampleCompanyDB = async() => {
         dataSystemComponents.filter((component, index) => dataSystemComponents.indexOf(component) === index);
         const systemComponents = await SystemComponent(systemDB)
             .find({ _id: { $in: dataSystemComponents }})
-            .populate({ path: 'root_roles' });
+            .populate({ path: 'roles' });
 
         for (let i = 0; i < systemComponents.length; i++) {
             let sysLinks = await SystemLink(systemDB)

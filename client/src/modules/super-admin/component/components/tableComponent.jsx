@@ -9,7 +9,6 @@ import { LinkActions } from '../../link/redux/actions';
 import { RoleActions } from '../../role/redux/actions';
 
 import ComponentInfoForm from './componentInfoForm';
-import { getStorage } from '../../../../config';
 
 class TableComponent extends Component {
     constructor(props) {
@@ -23,11 +22,10 @@ class TableComponent extends Component {
     }
 
     componentDidMount() {
-        let company = getStorage('companyId');
         let {page, limit} = this.state;
-        this.props.getLinks({ company, type: "active" });
-        this.props.get({ company, type: "active" });
-        this.props.get({ company, type: "active", page, limit });
+        this.props.getLinks({ type: "active" });
+        this.props.get({ type: "active" });
+        this.props.get({ type: "active", page, limit });
         this.props.getRoles();
     }
 
@@ -119,10 +117,8 @@ class TableComponent extends Component {
 
     searchWithOption = () => {
         let {option, limit, value} = this.state;
-        let company = getStorage('companyId');
         const params = {
             type: "active",
-            company,
             limit,
             page: 1,
             key: option,
@@ -134,10 +130,8 @@ class TableComponent extends Component {
     setPage = (page) => {
         this.setState({ page });
         let {option, limit, value} = this.state;
-        let company = getStorage('companyId');
         const params = {
             type: "active",
-            company,
             limit,
             page,
             key: option,
@@ -149,10 +143,8 @@ class TableComponent extends Component {
     setLimit = (number) => {
         this.setState({ limit: number });
         let {option, value, page} = this.state;
-        let company = getStorage('companyId');
         const params = {
             type: "active",
-            company,
             limit: number,
             page,
             key: option,

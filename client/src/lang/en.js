@@ -98,7 +98,8 @@ export default {
             wrong5_block: 'Wrong password 5 time. Account blocked',
             request_forgot_password_success: 'Request change password success. System sent email for you. Please check email',
             reset_password_success: 'Reset password thành công',
-            otp_invalid: 'OTP invalid'
+            otp_invalid: 'OTP invalid',
+            portal_invalid: 'Portal invalid',
         },
 
         system_admin: {
@@ -1302,14 +1303,23 @@ export default {
 
                     // Thông điệp trả về từ server
                     get_infor_personal_success: 'Get information personal success',
-                    get_infor_personal_false: 'Get information personal false',
+                    get_infor_personal_faile: 'Get information personal faile',
                     edit_infor_personal_success: 'Update information personal success',
-                    edit_infor_personal_false: 'Update infor personal false',
+                    edit_infor_personal_faile: 'Update infor personal faile',
 
                 },
 
                 employee_management: {
-                    file_name_export: 'Thông tin nhân viên',
+
+                    // Nhón dành cho UI
+                    have: 'Have',
+                    staff: 'staff',
+                    contract_expiration: 'contract expiration',
+                    and: 'and',
+                    have_birthday: 'have birthdays ',
+                    this_month: 'this month',
+
+                    file_name_export: 'Employee imformation',
                     staff_no_unit_title: 'Because the employee is not in any unit',
                     no_gender: 'Select gender',
                     all_gender: 'Select all gender',
@@ -1325,17 +1335,19 @@ export default {
                     delete_employee: 'Delete staff',
                     add_employee: 'Add staff',
                     add_employee_title: 'Add new staff',
-                    add_by_hand: 'Add a s',
+                    add_by_hand: 'Add a staff',
                     add_import: 'Import file excel',
                     // Thông điệp trả về từ server
                     get_list_employee_success: 'Get list employee success',
-                    get_list_employee_false: 'Get list employee false',
+                    get_list_employee_faile: 'Get list employee faile',
                     create_employee_success: 'Create employee success',
-                    create_employee_false: 'Create employee false',
+                    create_employee_faile: 'Create employee faile',
                     delete_employee_success: 'Delete employee success',
-                    delete_employee_false: 'Delete employee false',
+                    delete_employee_faile: 'Delete employee faile',
                     edit_employee_success: 'Edit employee success',
-                    edit_employee_false: 'Edit employee false',
+                    edit_employee_faile: 'Edit employee faile',
+                    import_employee_success: 'Import employee success',
+                    import_employee_faile: 'Import employee faile',
                     employee_number_required: 'Staff code required',
                     email_in_company_required: 'Email in company required',
                     employee_number_have_exist: 'Employee number have exist',
@@ -1481,6 +1493,26 @@ export default {
         // Modules quản lý đào tạo
         training: {
             course: {
+                no_course_type: 'Select training type',
+                all_course_type: 'Select all training type',
+                start_date: 'Starting time',
+                end_date: 'End time',
+
+                table: {
+                    course_code: 'Course code',
+                    course_name: 'Course name',
+                    start_date: 'Starting time',
+                    end_date: 'End time',
+                    course_place: 'Course place',
+                    offered_by: 'Offered by',
+                    course_type: 'Training type',
+                },
+
+                // Loại đào tao
+                type: {
+                    internal: 'Internal',
+                    external: 'External',
+                },
 
                 // Thông điệp trả về từ server
                 name_required: 'Name of the training course required',
@@ -1508,8 +1540,25 @@ export default {
             // Quản lý chương trình đào tạo
             education_program: {
 
+                education_program_code: 'Training program code',
+                education_program_name: 'Training program name',
+
+                table: {
+                    program_code: 'Program code',
+                    program_name: 'Program name',
+                    apply_for_organizational_units: 'Apply for units',
+                    apply_for_positions: 'Apply for positions',
+                    total_courses: 'Total course',
+                },
+
+                // Nhóm dành cho action
+                add_education_program: 'Add training program',
+                edit_education_program: 'Edit training program',
+                delete_education_program: 'Delete training program',
+                view_education_program: 'Training program information',
+
                 // Thông điệp trả về từ server
-                apply_for_organizational_units_required: 'Apply for organizational units required',
+                apply_for_organizational_units_required: 'Apply for units required',
                 apply_for_positions_required: 'Apply for positions required',
                 program_id_required: 'Program id required',
                 name_required: 'Program name required',
@@ -1521,7 +1570,7 @@ export default {
                 create_education_program_faile: 'Create education program faile',
                 delete_education_program_success: 'Delete education program success',
                 delete_education_program_faile: 'Delete education program faile',
-                edit_education_program_success: 'Edit ducation program success',
+                edit_education_program_success: 'Edit education program success',
                 edit_education_program_faile: 'Edit education program faile',
             }
         },
@@ -2425,10 +2474,9 @@ export default {
                 information: 'Information',
                 document: 'Document',
                 roles: 'Roles',
-                list_of_data_and_info: 'List of data and informations',
-                not_have_doc: 'Not have documents',
-                not_have_info: 'Not have information',
-                not_export_info: 'Not export information',
+                list_of_data_and_info: 'Choose output information and documents for the following tasks in the process',
+                not_have_doc: 'The task does not have documents',
+                not_have_info: 'The task does not have information',
                 task_process: 'Task process',
 
 

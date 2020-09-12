@@ -8,72 +8,10 @@ require("dotenv").config();
 require('./connectDatabase');
 require('./global');
 
+if(process.env.MULTI_TENANT) console.log(`Running app Multi-Tenant [${process.env.MULTI_TENANT}]`);
+
 // Application Modules
 const schedulerController = require("./modules/scheduler/scheduler.controller");
-const auth = require("./modules/auth/auth.route");
-
-const documents = require("./modules/document/document.route");
-
-const annualLeave = require("./modules/human-resource/annual-leave/annualLeave.route");
-const commendation = require("./modules/human-resource/commendation/commendation.route");
-const discipline = require("./modules/human-resource/discipline/discipline.route");
-const holiday = require("./modules/human-resource/holiday/holiday.route");
-const profile = require("./modules/human-resource/profile/profile.route");
-const salary = require("./modules/human-resource/salary/salary.route");
-const timesheet = require("./modules/human-resource/timesheets/timesheets.route");
-
-const employeeKpiCreation = require("./modules/kpi/employee/creation/creation.route");
-const employeeKpiDashboard = require("./modules/kpi/employee/dashboard/dashboard.route");
-const employeeKpiManagement = require("./modules/kpi/employee/management/management.route");
-const employeeKpiEvaluation = require("./modules/kpi/evaluation/employee-evaluation/employeeEvaluation.route");
-const employeeKpiEvaluationDashboard = require("./modules/kpi/evaluation/dashboard/dashboard.route");
-const organizationalUnitKpiCreation = require("./modules/kpi/organizational-unit/creation/creation.route");
-const organizationalUnitKpiDashboard = require("./modules/kpi/organizational-unit/dashboard/dashboard.route");
-const organizationalUnitKpiManagement = require("./modules/kpi/organizational-unit/management/management.route");
-
-const notifications = require("./modules/notification/notification.route");
-
-const component = require("./modules/super-admin/component/component.route");
-const link = require("./modules/super-admin/link/link.route");
-const organizationalUnit = require("./modules/super-admin/organizational-unit/organizationalUnit.route");
-const privilege = require("./modules/super-admin/privilege/privilege.route");
-const role = require("./modules/super-admin/role/role.route");
-const user = require("./modules/super-admin/user/user.route");
-
-const company = require("./modules/system-admin/company/company.route");
-const systemComponent = require("./modules/system-admin/system-component/systemComponent.route");
-const systemLink = require("./modules/system-admin/system-link/systemLink.route");
-const rootRole = require("./modules/system-admin/root-role/rootRole.route");
-const systemSetting = require("./modules/system-admin/system-setting/systemSetting.route");
-
-const tasktemplate = require("./modules/task/task-template/taskTemplate.route");
-const taskManagement = require("./modules/task/task-management/task.route");
-const taskPerform = require("./modules/task/task-perform/taskPerform.route");
-const processes = require("./modules/task/tasks-process/taskProcess.route");
-const educationPrograms = require("./modules/trainning/education-program/educationProgram.route");
-const courses = require("./modules/trainning/course/course.route");
-
-//asset
-const assetType = require("./modules/asset/asset-type/asset-type.route");
-const asset = require("./modules/asset/asset-management/asset.route");
-const recommendProcure = require("./modules/asset/purchase-request/purchase-request.route");
-const recommendDistribute = require("./modules/asset/use-request/use-request.route");
-
-// report
-const taskReport = require("./modules/report/task-report/taskReport.route");
-
-//material
-const material = require("./modules/warehouse/material/material.router");
-
-//order
-const order = require("./modules/order/order.route");
-// plan
-
-const plan = require("./modules/plan/plan.route");
-
-// example
-
-const example = require("./modules/example/example.route");
 
 // APP
 const app = express();
@@ -101,11 +39,11 @@ if(process.env.MULTI_TENANT === 'true'){
 
 	router.use('/auth', require('./modules/_multi-tenant/auth/auth.route'));
 
-    // router.use('/user', require('./modules/_multi-tenant/super-admin/user/user.route'));
-    // router.use('/role', require('./modules/_multi-tenant/super-admin/role/role.route'));
-    // router.use('/component', require("./modules/_multi-tenant/super-admin/component/component.route"));
-    // router.use('/link', require("./modules/_multi-tenant/super-admin/link/link.route"));
-    // router.use('/organizational-units', require("./modules/_multi-tenant/super-admin/organizational-unit/organizationalUnit.route"));
+    router.use('/user', require('./modules/_multi-tenant/super-admin/user/user.route'));
+    router.use('/role', require('./modules/_multi-tenant/super-admin/role/role.route'));
+    router.use('/component', require("./modules/_multi-tenant/super-admin/component/component.route"));
+    router.use('/link', require("./modules/_multi-tenant/super-admin/link/link.route"));
+    router.use('/organizational-units', require("./modules/_multi-tenant/super-admin/organizational-unit/organizationalUnit.route"));
     // router.use('/privilege', require("./modules/_multi-tenant/super-admin/privilege/privilege.route"));
     
     // router.use('/system-admin/company', require("./modules/_multi-tenant/system-admin/company/company.route"));
@@ -116,69 +54,69 @@ if(process.env.MULTI_TENANT === 'true'){
 	
 	app.use(router);
 }else{
-	app.use("/auth", auth);
+	app.use("/auth", require("./modules/auth/auth.route"));
 
-	app.use("/documents", documents);
+	app.use("/documents", require("./modules/document/document.route"));
 
-	app.use("/annualLeave", annualLeave);
-	app.use("/commendation", commendation);
-	app.use("/discipline", discipline);
-	app.use("/holiday", holiday);
-	app.use("/employees", profile);
-	app.use("/salary", salary);
-	app.use("/timesheet", timesheet);
+	app.use("/annualLeave", require("./modules/human-resource/annual-leave/annualLeave.route"));
+	app.use("/commendation", require("./modules/human-resource/commendation/commendation.route"));
+	app.use("/discipline", require("./modules/human-resource/discipline/discipline.route"));
+	app.use("/holiday", require("./modules/human-resource/holiday/holiday.route"));
+	app.use("/employee", require("./modules/human-resource/profile/profile.route"));
+	app.use("/salary", require("./modules/human-resource/salary/salary.route"));
+	app.use("/timesheet", require("./modules/human-resource/timesheets/timesheets.route"));
 
-	app.use("/kpi/employee/creation", employeeKpiCreation);
-	app.use("/kpi/employee/dashboard", employeeKpiDashboard);
-	app.use("/kpi/employee/management", employeeKpiManagement);
-	app.use("/kpi/evaluation/dashboard", employeeKpiEvaluationDashboard);
-	app.use("/kpi/evaluation/employee-evaluation", employeeKpiEvaluation);
-	app.use("/kpi/organizational-unit/creation", organizationalUnitKpiCreation);
-	app.use("/kpi/organizational-unit/dashboard", organizationalUnitKpiDashboard);
-	app.use("/kpi/organizational-unit/management", organizationalUnitKpiManagement);
+	app.use("/kpi/employee/creation", require("./modules/kpi/employee/creation/creation.route"));
+	app.use("/kpi/employee/dashboard", require("./modules/kpi/employee/dashboard/dashboard.route"));
+	app.use("/kpi/employee/management", require("./modules/kpi/employee/management/management.route"));
+	app.use("/kpi/evaluation/dashboard", require("./modules/kpi/evaluation/dashboard/dashboard.route"));
+	app.use("/kpi/evaluation/employee-evaluation", require("./modules/kpi/evaluation/employee-evaluation/employeeEvaluation.route"));
+	app.use("/kpi/organizational-unit/creation", require("./modules/kpi/organizational-unit/creation/creation.route"));
+	app.use("/kpi/organizational-unit/dashboard", require("./modules/kpi/organizational-unit/dashboard/dashboard.route"));
+	app.use("/kpi/organizational-unit/management", require("./modules/kpi/organizational-unit/management/management.route"));
 
-	app.use("/notifications", notifications);
+	app.use("/notifications", require("./modules/notification/notification.route"));
 
-	app.use("/component", component);
-	app.use("/link", link);
-	app.use("/organizational-units", organizationalUnit);
-	app.use("/privilege", privilege);
-	app.use("/role", role);
-	app.use("/user", user);
+	app.use("/component", require("./modules/super-admin/component/component.route"));
+	app.use("/link", require("./modules/super-admin/link/link.route"));
+	app.use("/organizational-units", require("./modules/super-admin/organizational-unit/organizationalUnit.route"));
+	app.use("/privilege", require("./modules/super-admin/privilege/privilege.route"));
+	app.use("/role", require("./modules/super-admin/role/role.route"));
+	app.use("/user", require("./modules/super-admin/user/user.route"));
 
-	app.use("/system-admin/company", company);
-	app.use("/system-admin/system-component", systemComponent);
-	app.use("/system-admin/system-link", systemLink);
-	app.use("/system-admin/root-role", rootRole);
-	app.use("/system-admin/system-setting", systemSetting);
+	app.use("/system-admin/company", require("./modules/system-admin/company/company.route"));
+	app.use("/system-admin/system-component", require("./modules/system-admin/system-component/systemComponent.route"));
+	app.use("/system-admin/system-link", require("./modules/system-admin/system-link/systemLink.route"));
+	app.use("/system-admin/root-role", require("./modules/system-admin/root-role/rootRole.route"));
+	app.use("/system-admin/system-setting", require("./modules/system-admin/system-setting/systemSetting.route"));
 
-	app.use("/task", taskManagement);
-	app.use("/performtask", taskPerform);
-	app.use("/task/task-templates", tasktemplate);
-	app.use("/process", processes);
-	app.use("/educationPrograms", educationPrograms);
-	app.use("/courses", courses);
+	app.use("/task", require("./modules/task/task-management/task.route"));
+	app.use("/performtask", require("./modules/task/task-perform/taskPerform.route"));
+	app.use("/task/task-templates", require("./modules/task/task-template/taskTemplate.route"));
+	app.use("/process", require("./modules/task/tasks-process/taskProcess.route"));
+	app.use("/educationProgram", require("./modules/trainning/education-program/educationProgram.route"));
+	app.use("/courses", require("./modules/trainning/course/course.route"));
 
 	//asset
-	app.use("/assettype", assetType);
-	app.use("/asset", asset);
-	app.use("/purchase-request", recommendProcure);
-	app.use("/use-request", recommendDistribute);
+	app.use("/assettype", require("./modules/asset/asset-type/asset-type.route"));
+	app.use("/asset", require("./modules/asset/asset-management/asset.route"));
+	app.use("/purchase-request", require("./modules/asset/purchase-request/purchase-request.route"));
+	app.use("/use-request", require("./modules/asset/use-request/use-request.route"));
 
 	// Task report
-	app.use("/taskreports", taskReport);
+	app.use("/taskreports", require("./modules/report/task-report/taskReport.route"));
 
 	// material
-	app.use("/materials", material);
+	app.use("/materials", require("./modules/warehouse/material/material.router"));
 
 	//order
-	app.use("/orders", order);
+	app.use("/orders", require("./modules/order/order.route"));
 
 	// Plan
-	app.use("/plans", plan);
+	app.use("/plans", require("./modules/plan/plan.route"));
 
 	// example
-	app.use("/examples", example);
+	app.use("/examples", require("./modules/example/example.route"));
 
 	// Customer Management
 	const crm = express.Router();

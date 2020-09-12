@@ -3,25 +3,31 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const generator = require("generate-password");
 const nodemailer = require("nodemailer");
-const { Privilege, Role, User, UserRole } = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
+const Models = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
+const { Privilege, Role, User, UserRole, Company } = Models;
 const fs = require('fs');
-const {connect} =  require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const {connect, initModels} =  require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 /**
  * Phương thức đăng nhập
  */
 exports.login = async (fingerprint, data) => { // data bao gom email va password
-    if(!data.portal) throw ["portal invalid"];
+    if(!data.portal) throw ["portal_invalid"];
 
-    if(!DB_CONNECTION[data.portal]) DB_CONNECTION[data.portal] = connect(data.portal);
-    
-    const user = await User(DB_CONNECTION[data.portal])
+    let company;
+    if(data.portal !== process.env.DB_NAME){
+        company = await Company(connect(DB_CONNECTION, process.env.DB_NAME))
+            .findOne({ shortName: data.portal });
+        if(!company) throw ["portal_invalid"];
+    }
+
+    await initModels(connect(DB_CONNECTION, data.portal), Models); 
+
+    const user = await User(connect(DB_CONNECTION, data.portal))
         .findOne({email : data.email})
         .populate([
             { path: 'roles', populate: { path: 'roleId'} },
         ]);
-    const company = await Company(DB_CONNECTION[process.env.DB_NAME])
-        .findOne({ shortName: data.portal });
 
     if(!user) throw ["email_password_invalid"];
     const validPass = await bcrypt.compare(data.password, user.password);
@@ -30,84 +36,63 @@ exports.login = async (fingerprint, data) => { // data bao gom email va password
     }
     if(user.roles.length < 1) throw ['acc_have_not_role'];
 
-    if(user.roles[0].roleId.name !== 'System Admin'){ 
-        
-        //Không phải phiên đăng nhập của system admin 
+    if(user.roles[0].roleId.name !== 'System Admin'){  
         if(!user.active) throw ['acc_blocked'];
         if(!company.active) throw ['service_off']
-    
-        const token = await jwt.sign(
-            {
-                _id: user._id, 
-                email: user.email, 
-                name: user.name,
-                company, 
-                fingerprint: fingerprint
-            }, 
-            process.env.TOKEN_SECRET
-        );
-        
-        user.status = 0;
-        user.numberDevice += 1;
-        user.save();
-
-        return { 
-            token,
-            user: {
-                _id: user._id,
-                name: user.name,
-                email: user.email,
-                roles: user.roles,
-                company
-            }
-        };
-    } else{
-        //Phiên đăng nhập của system admin
-        const token = await jwt.sign(
-            {
-                _id: user._id, 
-                email: user.email,  
-                name: user.name,
-                fingerprint: fingerprint
-            }, 
-            process.env.TOKEN_SECRET
-        );
-
-        user.status = 0; 
-        user.numberDevice += 1;
-        user.save();
-
-        return { 
-            token,
-            user: {
-                _id: user._id,
-                name: user.name,
-                email: user.email,
-                roles: user.roles
-            }
-        };
     }
+    const token = await jwt.sign(
+        {
+            _id: user._id, 
+            email: user.email, 
+            name: user.name,
+            company: user.roles[0].roleId.name !== 'System Admin' ? company : undefined,
+            portal: user.roles[0].roleId.name !== 'System Admin' ? company.shortName : process.env.DB_NAME, 
+            fingerprint: fingerprint
+        }, 
+        process.env.TOKEN_SECRET
+    );
+    
+    user.status = 0;
+    user.numberDevice += 1;
+    user.save();
+
+    return { 
+        token,
+        user: {
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            roles: user.roles,
+            company: user.roles[0].roleId.name !== 'System Admin' ? company : undefined, 
+            portal: user.roles[0].roleId.name !== 'System Admin' ? company.shortName : process.env.DB_NAME, 
+        }
+    };
 }
+
 /**
  * Đăng xuất tài khoản người dùng
  * @param {*} id : id người dùng
  * @param {*} token 
  */
 exports.logout = async (portal, id) => {
-    var user = await User(DB_CONNECTION[portal]).findById(id);
+    var user = await User(connect(DB_CONNECTION, portal))
+        .findById(id);
+
     if(user.numberDevice >= 1) user.numberDevice -= 1;
     user.save();
 
     return user;
 }
+
 /**
  * Đăng xuất tất cả tài khoản người dùng
  * @param {*} id : id người dùng
  */
-exports.logoutAllAccount = async (id) => {
-    var user = await User.findById(id);
+exports.logoutAllAccount = async (portal, id) => {
+    var user = await User(connect(DB_CONNECTION, portal))
+        .findById(id);
     user.numberDevice = 0;
-    user.save();
+    await user.save();
     
     return user;
 }
@@ -116,12 +101,13 @@ exports.logoutAllAccount = async (id) => {
  * Quên mật khẩu tài khoản người dùng
  * @email: email người dùng
  */
-exports.forgetPassword = async (email) => {
-    var user = await User.findOne({ email });
+exports.forgetPassword = async (portal, email) => {
+    var user = await User(connect(DB_CONNECTION, portal))
+        .findOne({ email });
     if(user === null) throw["email_invalid"];
     var code = await generator.generate({ length: 6, numbers: true });
     user.resetPasswordToken = code;
-    user.save();
+    await user.save();
     var transporter = await nodemailer.createTransport({
         service: 'Gmail',
         auth: { user: 'vnist.qlcv@gmail.com', pass: 'qlcv123@' }
@@ -170,8 +156,9 @@ exports.forgetPassword = async (email) => {
  * @param {*} email 
  * @param {*} password 
  */
-exports.resetPassword = async (otp, email, password) => {
-    var user = await User.findOne({ email, resetPasswordToken: otp });
+exports.resetPassword = async (portal, otp, email, password) => {
+    var user = await User(connect(DB_CONNECTION, portal))
+        .findOne({ email, resetPasswordToken: otp });
     if(user === null) throw ['otp_invalid'];
     var salt = bcrypt.genSaltSync(10);
     var hash = bcrypt.hashSync(password, salt);
@@ -189,11 +176,12 @@ exports.resetPassword = async (otp, email, password) => {
  * @param {*} email 
  * @param {*} avatar 
  */
-exports.changeInformation = async (id, name, email, avatar=undefined) => {
-    let user = await User.findById(id).populate([
-        { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
-        { path: 'company' }
-    ]);
+exports.changeInformation = async (portal, id, name, email, avatar=undefined) => {
+    let user = await User(connect(DB_CONNECTION, portal))
+        .findById(id)
+        .populate([
+            { path: 'roles', populate: { path: 'roleId' } }
+        ]);
     let deleteAvatar = '.'+user.avatar;
     user.email = email;
     user.name = name;
@@ -212,11 +200,12 @@ exports.changeInformation = async (id, name, email, avatar=undefined) => {
  * @param {*} password : mật khẩu cũ
  * @param {*} new_password : mật khẩu mới
  */
-exports.changePassword = async (id, password, new_password) => {
-    const user = await User.findById(id).populate([
-        { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
-        { path: 'company' }
-    ]);
+exports.changePassword = async (portal, id, password, new_password) => {
+    const user = await User(connect(DB_CONNECTION, portal))
+        .findById(id)
+        .populate([
+            { path: 'roles', populate: { path: 'roleId' } }
+        ]);
     const validPass = await bcrypt.compare(password, user.password);
     // Kiểm tra mật khẩu cũ nhập vào có đúng hay không
     if(!validPass) throw ['password_invalid'];
@@ -234,14 +223,17 @@ exports.changePassword = async (id, password, new_password) => {
  * Lấy ra các trang mà người dùng có quyền truy cập
  * @param {*} idRole : id role người dùng
  */
-exports.getLinksThatRoleCanAccess = async (idRole) => {
-    const role = await Role.findById(idRole); //lay duoc role hien tai
+exports.getLinksThatRoleCanAccess = async (portal, idRole) => {
+    const role = await Role(connect(DB_CONNECTION, portal))
+        .findById(idRole); //lay duoc role hien tai
     let roles = [role._id];
     roles = roles.concat(role.parents);
-    const privilege = await Privilege.find({ 
-        roleId: { $in: roles },
-        resourceType: 'Link'
-    }).populate({ path: 'resourceId', model: Link }); 
+    const privilege = await Privilege(connect(DB_CONNECTION, portal))
+        .find({ 
+            roleId: { $in: roles },
+            resourceType: 'Link'
+        })
+        .populate({ path: 'resourceId' }); 
     const links = await privilege.filter(pri => pri.resourceId.deleteSoft === false).map( pri => pri.resourceId );
 
     return links;
@@ -251,13 +243,12 @@ exports.getLinksThatRoleCanAccess = async (idRole) => {
  * Lấy ra thông tn người dùng
  * @param {*} id : id người dùng
  */
-exports.getProfile = async (id) => {
-    let user = await User
+exports.getProfile = async (portal, id) => {
+    let user = await User(connect(DB_CONNECTION, portal))
         .findById(id)
         .select('-password -status -deleteSoft -tokens')
         .populate([
-            { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
-            { path: 'company' }
+            { path: 'roles',  populate: { path: 'roleId' } }
         ]);
     if(user === null) throw['user_not_found'];
     
