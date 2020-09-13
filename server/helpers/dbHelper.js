@@ -21,7 +21,11 @@ exports.initConnect = (dbName) => {
 }
 
 exports.connect = (db, portal) => {
-    return db.useDb(portal, { useCache: true });
+    if(db.name !== portal){
+        return db.useDb(portal, { useCache: true });
+    }else{
+        return db;
+    }
 }
 
 exports.initModels = (db, models) => {
