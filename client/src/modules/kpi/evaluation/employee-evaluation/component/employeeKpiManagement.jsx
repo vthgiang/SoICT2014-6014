@@ -213,13 +213,15 @@ class EmployeeKpiManagement extends Component {
         }
         if(listTasks&&listKpis)
         {
-           
             for(let i=0;i<listKpis.length;i++){
                 let d = new Date(listKpis[i].date),
                     month = (d.getMonth()+1),
                     year = d.getFullYear(),
                     date = month+"-"+year;
-                data[date]=[]
+                if(!data.hasOwnProperty(date))
+                {
+                    data[date]=[]
+                }
                 
                 let kpis =listKpis[i].kpis.map((x,index)=>{
                     let name = x.name;
@@ -281,8 +283,10 @@ class EmployeeKpiManagement extends Component {
                     oneKpiSetTasks,
                     kpis:kpis
                 }
+                let keys= Object.keys(data);
                 data[date].push( oneSet);
             }
+            
             let keys= Object.keys(data);
             for(let i=0;i<keys.length;i++){
                 let temp ={
