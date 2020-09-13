@@ -20,7 +20,7 @@ router.post('/tasks/:taskId/logs', auth, PerformTaskController.addTaskLog);
 router.post('/tasks/:taskId/files', auth, uploadFile([{ name: 'files', path: '/files' }], 'array'), PerformTaskController.uploadFile)
 router.patch('/tasks/:taskId/documents', auth, uploadFile([{ name: 'files', path: '/files' }], 'array'), PerformTaskController.editDocument)
 router.delete('/tasks/:taskId/documents/:documentId', auth, PerformTaskController.deleteDocument)
-router.delete('/tasks/:taskId/documents/:documentId/files/:fileId', auth, PerformTaskController.deleteFileTask)
+router.patch('/tasks/:taskId/documents/:documentId/files/:fileId', auth, PerformTaskController.deleteFileTask)
 
 
 //Task Action

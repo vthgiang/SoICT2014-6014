@@ -59,9 +59,9 @@ class CalendarUsage extends Component {
 
   componentDidMount() {
     let data = {
-      recommendNumber: "",
+      receiptsCode: "",
       month: "",
-      status: null,
+      reqUseStatus: null,
       page: 0,
       limit: 5,
       managedBy: this.props.managedBy ? this.props.managedBy : '',
@@ -96,9 +96,9 @@ class CalendarUsage extends Component {
         })
 
       let data = {
-        recommendNumber: "",
+        receiptsCode: "",
         month: "",
-        status: null,
+        reqUseStatus: null,
         page: 0,
         limit: 5,
         managedBy: this.props.managedBy ? this.props.managedBy : '',
@@ -122,7 +122,7 @@ class CalendarUsage extends Component {
 
   formatDate(value) {
     let partTime, partDate, date, time;
-    if (value.length > 10) {
+    if (value.length > 12 && value.length < 24) {
       partTime = value.split(' ');
       partDate = partTime[2].split('-');
       date = [partDate[2], partDate[1], partDate[0]].join('-');

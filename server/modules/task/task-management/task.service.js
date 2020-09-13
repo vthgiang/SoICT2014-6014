@@ -281,13 +281,12 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (task) => {
     };
 
     if (JSON.parse(aPeriodOfTime)) {
-
         keySearch = {
             ...keySearch,
             $or: [
-                { 'endDate': { $lte: new Date(endDate), $gt: new Date(startDate) } },
-                { 'startDate': { $lte: new Date(endDate), $gt: new Date(startDate) } },
-                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lte: new Date(startDate) } }] }
+                { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
             ]
         }
     } else {
@@ -1144,6 +1143,76 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (task) => {
         "tasks": organizationUnitTasks
     };
 }
+
+exports.sendEmailFoCreateTask = async (task) => {
+    task = await task.populate("organizationalUnit creator parent").execPopulate();
+
+    var transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: { user: 'vnist.qlcv@gmail.com', pass: 'qlcv123@' }
+    });
+
+    var email, userId, user, users, userIds;
+
+    var resId = task.responsibleEmployees;  // lấy id người thực hiện
+    var res = await User.find({ _id: { $in: resId } });
+    res = res.map(item => item.name);
+    userIds = resId;
+    var accId = task.accountableEmployees;  // lấy id người phê duyệt
+    var acc = await User.find({ _id: { $in: accId } });
+    userIds.push(...accId);
+
+    var conId = task.consultedEmployees;  // lấy id người hỗ trợ
+    var con = await User.find({ _id: { $in: conId } })
+    userIds.push(...conId);
+
+    var infId = task.informedEmployees;  // lấy id người quan sát
+    var inf = await User.find({ _id: { $in: infId } })
+    userIds.push(...infId);  // lấy ra id của tất cả người dùng có nhiệm vụ
+
+    // loại bỏ các id trùng nhau
+    userIds = userIds.map(u => u.toString());
+    for (let i = 0, max = userIds.length; i < max; i++) {
+        if (userIds.indexOf(userIds[i]) != userIds.lastIndexOf(userIds[i])) {
+            userIds.splice(userIds.indexOf(userIds[i]), 1);
+            i--;
+        }
+    }
+    user = await User.find({
+        _id: { $in: userIds }
+    })
+
+    email = user.map(item => item.email); // Lấy ra tất cả email của người dùng
+    email.push("trinhhong102@gmail.com");
+    var html = `<p>Bạn được giao nhiệm vụ trong công việc:  <a href="${process.env.WEBSITE}/task?taskId=${task._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${task._id} </a></p> ` +
+        `<h3>Thông tin công việc</h3>` +
+        `<p>Tên công việc : ${task.name}</p>` +
+        `<p>Mô tả : ${task.description}</p>` +
+        `<p>Người thực hiện</p> ` +
+        `<ul>${res.map((item) => {
+            return `<li>${item}</li>`
+        })}
+                    </ul>`+
+        `<p>Người phê duyệt</p> ` +
+        `<ul>${acc.map((item) => {
+            return `<li>${item.name}</li>`
+        })}
+                    </ul>` +
+        `${con.length > 0 ? `<p>Người hỗ trợ</p> ` +
+            `<ul>${con.map((item) => {
+                return `<li>${item.name}</li>`
+            })}
+                    </ul>` : ""}` +
+        `${inf.length > 0 ? `<p>Người quan sát</p> ` +
+            `<ul>${inf.map((item) => {
+                return `<li>${item.name}</li>`
+            })}
+                    </ul>` : ""}`
+        ;
+
+        return { task: task, user: userIds, email: email, html: html };
+}
+
 /**
  * Tạo công việc mới
  */
@@ -1209,72 +1278,9 @@ exports.createTask = async (task) => {
         );
     }
 
-    task = await task.populate("organizationalUnit creator parent").execPopulate();
+    let mail = await this.sendEmailFoCreateTask(task);
 
-    var transporter = nodemailer.createTransport({
-        service: 'Gmail',
-        auth: { user: 'vnist.qlcv@gmail.com', pass: 'qlcv123@' }
-    });
-
-    var email, userId, user, users, userIds;
-
-    var resId = task.responsibleEmployees;  // lấy id người thực hiện
-    var res = await User.find({ _id: { $in: resId } });
-    res = res.map(item => item.name);
-    userIds = resId;
-    var accId = task.accountableEmployees;  // lấy id người phê duyệt
-    var acc = await User.find({ _id: { $in: accId } });
-    userIds.push(...accId);
-
-    var conId = task.consultedEmployees;  // lấy id người hỗ trợ
-    var con = await User.find({ _id: { $in: conId } })
-    userIds.push(...conId);
-
-    var infId = task.informedEmployees;  // lấy id người quan sát
-    var inf = await User.find({ _id: { $in: infId } })
-    userIds.push(...infId);  // lấy ra id của tất cả người dùng có nhiệm vụ
-
-    // loại bỏ các id trùng nhau
-    userIds = userIds.map(u => u.toString());
-    for (let i = 0, max = userIds.length; i < max; i++) {
-        if (userIds.indexOf(userIds[i]) != userIds.lastIndexOf(userIds[i])) {
-            userIds.splice(userIds.indexOf(userIds[i]), 1);
-            i--;
-        }
-    }
-    user = await User.find({
-        _id: { $in: userIds }
-    })
-    console.log(con);
-    email = user.map(item => item.email); // Lấy ra tất cả email của người dùng
-    email.push("trinhhong102@gmail.com");
-    var html = `<p>Bạn được giao nhiệm vụ trong công việc:  <a href="${process.env.WEBSITE}/task?taskId=${task._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${task._id} </a></p> ` +
-        `<h3>Thông tin công việc</h3>` +
-        `<p>Tên công việc : ${task.name}</p>` +
-        `<p>Mô tả : ${task.description}</p>` +
-        `<p>Người thực hiện</p> ` +
-        `<ul>${res.map((item) => {
-            return `<li>${item}</li>`
-        })}
-                    </ul>`+
-        `<p>Người phê duyệt</p> ` +
-        `<ul>${acc.map((item) => {
-            return `<li>${item.name}</li>`
-        })}
-                    </ul>` +
-        `${con.length > 0 ? `<p>Người hỗ trợ</p> ` +
-            `<ul>${con.map((item) => {
-                return `<li>${item.name}</li>`
-            })}
-                    </ul>` : ""}` +
-        `${inf.length > 0 ? `<p>Người quan sát</p> ` +
-            `<ul>${inf.map((item) => {
-                return `<li>${item.name}</li>`
-            })}
-                    </ul>` : ""}`
-        ;
-
-    return { task: task, user: userIds, email: email, html: html };
+    return { task: task, user: mail.user, email: mail.email, html: mail.html };
 }
 
 /**

@@ -1,4 +1,7 @@
+const { connection } = require("mongoose");
+
 const { Role } = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
+const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 /**
  * Kiểm tra vai trò hiện tại của user có được phép sử dụng service hay không?
@@ -7,7 +10,9 @@ const { Role } = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
  */
 exports.checkServicePermission = async (portal, data, path, method, currentRole) => {
     var result = false;
-    var role = await Role(DB_CONNECTION[portal]).findById(currentRole).populate({ path: 'parents', model: Role }); //tìm thông tin về role này và các role cha của nó
+    var role = await Role(connect(DB_CONNECTION, portal))
+        .findById(currentRole)
+        .populate({ path: 'parents' }); //tìm thông tin về role này và các role cha của nó
     var roleArr = [role.name].concat(role.parents.map(role => role.name));
     for (let index = 0; index < data.length; index++) {
         const element = data[index];

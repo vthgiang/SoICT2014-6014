@@ -147,11 +147,13 @@ class CommentInProcess extends Component {
 
     editComment = async (e, description, commentId, taskId) => {
         e.preventDefault()
+        let { performtasks } = this.props
         let { newCommentEdited } = this.state;
         let data = new FormData();
         newCommentEdited.files.forEach(x => {
             data.append("files", x)
         })
+        data.append("currentTask", performtasks?.task?._id);
         data.append("creator", newCommentEdited.creator);
         data.append("type", "edit")
         if (newCommentEdited.description === "") {
@@ -179,8 +181,10 @@ class CommentInProcess extends Component {
     }
     editChildComment = async (e, description, childCommentId, commentId, taskId) => {
         e.preventDefault();
+        let { performtasks } = this.props
         let { newChildCommentEdited } = this.state;
         let data = new FormData();
+        data.append("currentTask", performtasks?.task?._id)
         newChildCommentEdited.files.forEach(x => {
             data.append("files", x)
         })
@@ -233,7 +237,9 @@ class CommentInProcess extends Component {
     }
     submitChildComment = async (taskId, commentId) => {
         var { childComment } = this.state;
+        let { performtasks } = this.props
         const data = new FormData();
+        data.append("currentTask", performtasks?.task?._id);
         data.append("creator", childComment.creator);
         data.append("description", childComment.description);
         childComment.files && childComment.files.forEach(x => {
@@ -323,7 +329,7 @@ class CommentInProcess extends Component {
         const { task, inputAvatarCssClass } = this.props
         comments = task?.commentsInProcess
         return (
-            <React.Fragment>
+            <div className="no-line-height">
                 {comments ?
                     //Hiển thị bình luận của công việc
                     comments.map(item => {
@@ -564,7 +570,7 @@ class CommentInProcess extends Component {
                     }}
                     onSubmit={(e) => this.submitComment(task._id)}
                 />
-            </React.Fragment>
+            </div>
         );
     }
 }

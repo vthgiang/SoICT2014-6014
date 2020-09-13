@@ -155,18 +155,29 @@ export function tasks(state = {}, action) {
                 isLoading: false
             };
         case taskManagementConstants.GET_PAGINATE_TASK_BYUSER_REQUEST:
+            if (action.calledId) {
+                return {
+                    ...state,
+                    isLoading: true
+                };
+            }
             return {
                 ...state,
-                creatorTasks: null,
                 tasks: null,
                 pages: null,
-                loadingCreator: true,
                 isLoading: true
-            };
+            }
+
         case taskManagementConstants.GET_PAGINATE_TASK_BYUSER_SUCCESS:
+            if (action.calledId === 'listSearch') {
+                return {
+                    ...state,
+                    listSearchTasks: action.payload.tasks,
+                    isLoading: false
+                };
+            }
             return {
                 ...state,
-                creatorTasks: action.payload.tasks,
                 tasks: action.payload.tasks,
                 pages: action.payload.totalPage,
                 isLoading: false

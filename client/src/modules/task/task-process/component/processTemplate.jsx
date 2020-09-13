@@ -15,6 +15,7 @@ import { TaskProcessActions } from '../redux/actions';
 import { RoleActions } from '../../../super-admin/role/redux/actions';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 import Swal from 'sweetalert2';
+// import { FormImportProcessTemplate } from './formImportProcessTemplate';
 class ProcessTemplate extends Component {
     constructor(props) {
         super(props);
@@ -71,6 +72,17 @@ class ProcessTemplate extends Component {
         });
         window.$(`#modal-create-process-task`).modal("show");
     }
+
+    handImportFile = async () => {
+        await this.setState(state => {
+            return {
+                ...state,
+                showModalImportProcess: true
+            }
+        });
+        window.$(`#modal-import-process-task`).modal("show");
+    }
+
     showModalCreateTask = async (item) => {
         await this.setState(state => {
             return {
@@ -113,7 +125,7 @@ class ProcessTemplate extends Component {
     }
     render() {
         const { translate, taskProcess, department } = this.props
-        const { showModalCreateProcess, currentRow } = this.state
+        const { showModalCreateProcess, currentRow, showModalImportProcess } = this.state
         let listDiagram = [];
         if (taskProcess && taskProcess.xmlDiagram) {
             listDiagram = taskProcess.xmlDiagram.filter((item) => {
@@ -174,11 +186,21 @@ class ProcessTemplate extends Component {
                     }
                     {this.checkHasComponent('create-task-process-button') &&
                         <React.Fragment>
-                            <div className="pull-right">
+                            {/* <div className="pull-right">
                                 <button className="btn btn-success" onClick={() => { this.showModalCreateProcess() }}>
                                     {translate("task.task_process.create")}
                                 </button>
+                            </div> */}
+                        
+                            {/* Button thêm mới */}
+                            <div className="dropdown pull-right" style={{ marginTop: 5 }}>
+                                <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title='Thêm'>{translate('task_template.add')}</button>
+                                <ul className="dropdown-menu pull-right">
+                                    <li><a href="#modal-add-task-template" title="ImportForm" onClick={(event) => { this.showModalCreateProcess(event) }}>{translate('task_template.add')}</a></li>
+                                    <li><a href="#modal_import_file" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>Thêm file</a></li>
+                                </ul>
                             </div>
+                        
                             {
                                 showModalCreateProcess &&
                                 <ModalCreateTaskProcess
@@ -186,6 +208,13 @@ class ProcessTemplate extends Component {
                                     title={translate("task.task_process.add_modal")}
                                 />
                             }
+                            {/* {
+                                showModalImportProcess &&
+                                <FormImportProcessTemplate
+                                    listOrganizationalUnit={listOrganizationalUnit}
+                                    title={translate("task.task_process.add_modal")}
+                                />
+                            } */}
                         </React.Fragment>
                     }
                     <div className="form-inline">
@@ -212,6 +241,8 @@ class ProcessTemplate extends Component {
                             <tr>
                                 <th title={translate('task_template.tasktemplate_name')}>{translate('task_template.tasktemplate_name')}</th>
                                 <th title={translate('task_template.description')}>{translate('task_template.description')}</th>
+                                <th title={translate('task.task_process.num_task')}>{translate('task.task_process.num_task')}</th>
+								<th title={translate('task.task_process.manager')}>{translate('task.task_process.manager')}</th>
                                 <th title={translate('task_template.creator')}>{translate('task_template.creator')}</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
                             </tr>
@@ -222,6 +253,8 @@ class ProcessTemplate extends Component {
                                     return <tr key={key} >
                                         <td>{item.processName}</td>
                                         <td>{item.processDescription}</td>
+                                        <td>{item.tasks.length}</td>
+										<td>{(item.manager && item.manager.length !== 0) && item.manager.map(x => x.name + ', ')}</td>
                                         <td>{item.creator?.name}</td>
                                         <td>
                                             <a onClick={() => { this.viewProcess(item) }} title={translate('task.task_template.view_task_process_template')}>
@@ -246,7 +279,7 @@ class ProcessTemplate extends Component {
                                             </a>
                                         </td>
                                     </tr>
-                                }) : <tr><td colSpan={4}>{translate("task.task_process.no_data")}</td></tr>
+                                }) : <tr><td colSpan={6}>{translate("task.task_process.no_data")}</td></tr>
                             }
                         </tbody>
                     </table>

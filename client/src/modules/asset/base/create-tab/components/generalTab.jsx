@@ -179,10 +179,12 @@ class GeneralTab extends Component {
             return {
                 ...state,
                 assetTypes: value,
+                detailInfo: arr,
                 isObj: false
             }
         });
         this.props.handleChange("assetType", value);
+        this.props.handleChange("detailInfo", this.state.detailInfo);
     }
 
     /**
@@ -740,7 +742,7 @@ class GeneralTab extends Component {
                                             id={`assignedToUserBox${assignedToUser}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            value={assignedToUser}
+                                            value={assignedToUser ? assignedToUser : ""}
                                             items={[{ value: 'null', text: 'Chưa có người được giao sử dụng' }, ...userlist.map(x => { return { value: x.id, text: x.name + " - " + x.email } })]}
                                             multiple={false}
                                             disabled
@@ -757,7 +759,7 @@ class GeneralTab extends Component {
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={[{ value: 'null', text: 'Chưa có đơn vị được giao sử dụng' }, ...departmentlist.map(x => { return { value: x._id, text: x.name } })]}
-                                            value={assignedToOrganizationalUnit}
+                                            value={assignedToOrganizationalUnit ? assignedToOrganizationalUnit: ""}
                                             multiple={false}
                                             disabled
                                         />

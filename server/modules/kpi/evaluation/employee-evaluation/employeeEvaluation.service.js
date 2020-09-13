@@ -201,7 +201,6 @@ exports.getKpisByKpiSetId = async (id) => {
  * Lấy tất cả công việc theo Id của kpi
  * @param {*} data 
  */
-
 exports.getTasksByKpiId = async (data) => {
     let task = await getResultTaskByMonth(data);
 
@@ -230,7 +229,6 @@ exports.getTasksByKpiId = async (data) => {
  */
 
 exports.setTaskImportanceLevel = async (id, kpiType, data) => {
-    console.log('typeee', kpiType);
     let date = new Date(data[0].date);
     for (const element of data) {
         let setPoint = await updateTaskImportanceLevel(element.taskId, element.employeeId, parseInt(element.point), element.date);
@@ -339,7 +337,41 @@ async function updateTaskImportanceLevel(taskId, employeeId, point, date) {
     }
     return setPoint;
 }
+exports.getTasksByListKpis =async(data) =>
+{
+    let listkpis =[],infosearch=[];
+    for(let i=0;i<data.length;i++){
+        
+        let employee_kpi_set = await EmployeeKPISet.findById(data[i])
+            .populate("creator")
+            .populate({ path: "kpis"})
+        listkpis.push(employee_kpi_set);
+    }
+    
+    for(let i =0;i< listkpis.length;i++)
+    {
+        infosearch.push([]);
+        let kpis = listkpis[i].kpis;
+        for(let j =0;j< kpis.length;j++){
+            infosearch[infosearch.length-1].push({ id:kpis[j]._id, employeeId: listkpis[i].creator._id, date: listkpis[i].date, kpiType:kpis[j].type })
+        }
+    }
 
+    let listTask = [],tasks;
+    for(let i =0;i< infosearch.length;i++)
+    {
+        listTask.push([]);
+        for(let j =0;j< infosearch[i].length;j++)
+        {
+            listTask[listTask.length-1].push([]);
+            tasks =await getResultTaskByMonth(infosearch[i][j]);
+            let lastIndex =listTask[listTask.length-1].length-1;
+            listTask[listTask.length-1][lastIndex]=tasks;
+        }
+        
+    }
+    return listTask;
+}
 async function getResultTaskByMonth(data) {
     let date = new Date(data.date);
     let monthkpi = parseInt(date.getMonth() + 1);

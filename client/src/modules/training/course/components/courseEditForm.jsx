@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { CourseFormValidator } from './combinedContent';
 
 import { DialogModal, DatePicker, ErrorLabel, SelectBox } from '../../../../common-components';
+
 import { EmployeeManagerActions } from '../../../human-resource/profile/employee-management/redux/actions';
 import { CourseActions } from '../redux/actions';
 
@@ -12,17 +14,20 @@ class CourseEditForm extends Component {
         super(props);
         this.state = {};
     }
+
     componentDidMount() {
-        this.props.getAllEmployee({ organizationalUnits: this.state.applyForOrganizationalUnits, position: this.state.applyForPositions });
+        const { applyForOrganizationalUnits, applyForPositions } = this.state;
+        this.props.getAllEmployee({ organizationalUnits: applyForOrganizationalUnits, position: applyForPositions });
     }
 
-    // Bắt sự kiện thay đổi tên kháo đào tạo
+    /** Bắt sự kiện thay đổi tên kháo đào tạo */
     handleCourseNameChange = (e) => {
         const { value } = e.target;
         this.validateCourseName(value, true);
     }
     validateCourseName = (value, willUpdateState = true) => {
-        let msg = CourseFormValidator.validateCourseName(value, this.props.translate);
+        const { translate } = this.props;
+        let msg = CourseFormValidator.validateCourseName(value, translate);
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -35,13 +40,14 @@ class CourseEditForm extends Component {
         return msg === undefined;
     }
 
-    // Bắt sự kiện thay đổi địa điểm đào tạo
+    /** Bắt sự kiện thay đổi địa điểm đào tạo */
     handleCoursePlaceChange = (e) => {
         const { value } = e.target;
         this.validateCoursePlace(value, true);
     }
     validateCoursePlace = (value, willUpdateState = true) => {
-        let msg = CourseFormValidator.validateCoursePlace(value, this.props.translate);
+        const { translate } = this.props;
+        let msg = CourseFormValidator.validateCoursePlace(value, translate);
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -54,13 +60,14 @@ class CourseEditForm extends Component {
         return msg === undefined;
     }
 
-    // Bắt sự kiện thay đổi đơn vị đào tạo
+    /** Bắt sự kiện thay đổi đơn vị đào tạo */
     handleOfferedByChange = (e) => {
         const { value } = e.target;
         this.validateOfferedBy(value, true);
     }
     validateOfferedBy = (value, willUpdateState = true) => {
-        let msg = CourseFormValidator.validateOfferedBy(value, this.props.translate);
+        const { translate } = this.props;
+        let msg = CourseFormValidator.validateOfferedBy(value, translate);
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -73,7 +80,7 @@ class CourseEditForm extends Component {
         return msg === undefined;
     }
 
-    // Bắt sự kiện thay đổi loại đào tạo và giảng viên
+    /** Bắt sự kiện thay đổi loại đào tạo và giảng viên */
     handleChange = (e) => {
         const { name, value } = e.target;
         this.setState({
@@ -81,13 +88,14 @@ class CourseEditForm extends Component {
         });
     }
 
-    // Bắt sự kiện thay chi phí đào tạo
+    /** Bắt sự kiện thay chi phí đào tạo */
     handleCostChange = (e) => {
         const { value } = e.target;
         this.validateCost(value, true);
     }
     validateCost = (value, willUpdateState = true) => {
-        let msg = CourseFormValidator.validateCost(value, this.props.translate);
+        const { translate } = this.props;
+        let msg = CourseFormValidator.validateCost(value, translate);
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -100,13 +108,15 @@ class CourseEditForm extends Component {
         return msg === undefined;
     }
 
-    // Bắt sự kiện thay đổi thời gian cam kết
+    /** Bắt sự kiện thay đổi thời gian cam kết */
     handleEmployeeCommitmentTimeChange = (e) => {
         const { value } = e.target;
         this.validateEmployeeCommitmentTime(value, true);
     }
     validateEmployeeCommitmentTime = (value, willUpdateState = true) => {
-        let msg = CourseFormValidator.validateEmployeeCommitmentTime(value, this.props.translate);
+        const { translate } = this.props;
+
+        let msg = CourseFormValidator.validateEmployeeCommitmentTime(value, translate);
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -119,16 +129,19 @@ class CourseEditForm extends Component {
         return msg === undefined;
     }
 
-    // Bắt sự kiện thay đổi thuộc chương trình đào tạo
+    /** Bắt sự kiện thay đổi thuộc chương trình đào tạo */
     handleEducationProgramChange = (value) => {
+        const { education } = this.props;
         if (value[0] !== '') {
-            let educationInfo = this.props.education.listAll.filter(x => x._id === value[0]);
+            let educationInfo = education.listAll.filter(x => x._id === value[0]);
+
             this.props.getAllEmployee({ organizationalUnits: educationInfo[0].applyForOrganizationalUnits, position: educationInfo[0].applyForPositions });
         }
         this.validateEducationProgram(value[0], true);
     }
     validateEducationProgram = (value, willUpdateState = true) => {
-        let msg = CourseFormValidator.validateEducationProgram(value, this.props.translate);
+        const { translate } = this.props;
+        let msg = CourseFormValidator.validateEducationProgram(value, translate);
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -141,9 +154,14 @@ class CourseEditForm extends Component {
         return msg === undefined;
     }
 
-    // Bắt sự kiện thay đổi thời gian bắt đầu
+    /**
+     * Bắt sự kiện thay đổi thời gian bắt đầu
+     * @param {*} value : Thời gian bắt đầu
+     */
     handleStartDateChange = (value) => {
+        const { translate } = this.props;
         let { errorOnEndDate, endDate } = this.state;
+
         let errorOnStartDate;
         let partValue = value.split('-');
         let date = new Date([partValue[2], partValue[1], partValue[0]].join('-'));
@@ -152,10 +170,11 @@ class CourseEditForm extends Component {
         let d = new Date([partEndDate[2], partEndDate[1], partEndDate[0]].join('-'));
 
         if (date.getTime() > d.getTime()) {
-            errorOnStartDate = "Thời gian bắt đầu phải trước thời gian kết thúc";
+            errorOnStartDate = translate('training.course.start_date_before_end_date');
         } else {
-            errorOnEndDate = errorOnEndDate === 'Thời gian kết thúc phải sau thời gian bắt đầu' ? undefined : errorOnEndDate
+            errorOnEndDate = undefined
         }
+
         this.setState({
             startDate: value,
             errorOnStartDate: errorOnStartDate,
@@ -163,20 +182,27 @@ class CourseEditForm extends Component {
         })
     }
 
-    // Bắt sự kiện thay đổi thời gian kết thúc
+    /**
+     * Bắt sự kiện thay đổi thời gian kết thúc
+     * @param {*} value : Thời gian kết thúc
+     */
     handleEndDateChange = (value) => {
+        const { translate } = this.props;
         let { startDate, errorOnStartDate } = this.state;
+
+        let errorOnEndDate;
         let partValue = value.split('-');
         let date = new Date([partValue[2], partValue[1], partValue[0]].join('-'));
 
         let partStartDate = startDate.split('-');
         let d = new Date([partStartDate[2], partStartDate[1], partStartDate[0]].join('-'));
-        let errorOnEndDate;
+
         if (d.getTime() > date.getTime()) {
-            errorOnEndDate = "Thời gian kết thúc phải sau thời gian bắt đầu";
+            errorOnEndDate = translate('training.course.end_date_after_start_date');
         } else {
-            errorOnStartDate = errorOnStartDate === 'Thời gian bắt đầu phải trước thời gian kết thúc' ? undefined : errorOnStartDate
+            errorOnStartDate = undefined;
         }
+
         this.setState({
             endDate: value,
             errorOnStartDate: errorOnStartDate,
@@ -184,14 +210,20 @@ class CourseEditForm extends Component {
         })
     }
 
-    // Bắt sự kiện thêm nhân viên tham gia
+    /**
+     * Bắt sự kiện thêm nhân viên tham gia
+     * @param {*} value : Array id nhân viên tham gia
+     */
     handleEmployeeChange = (value) => {
         this.setState({
             addEmployees: value.map(x => { return { _id: x, result: 'failed' } })
         })
     }
 
-    // Bắt sự kiện xoá nhân viên thêm gia
+    /**
+     * Bắt sự kiện xoá nhân viên tham gia
+     * @param {*} id : Id nhân viên muốn xoá
+     */
     handleDelete = (id) => {
         console.log(id);
         console.log(this.state.listEmployees)
@@ -200,7 +232,7 @@ class CourseEditForm extends Component {
         })
     }
 
-    // Bắt sự kiện click buttom thêm nhân viên tham gia
+    /** Bắt sự kiện click buttom thêm nhân viên tham gia */
     handleAdd = (e) => {
         e.preventDefault();
         this.setState({
@@ -209,6 +241,11 @@ class CourseEditForm extends Component {
         })
     }
 
+    /**
+     * Bắt sự kiện thay đổi kết quả khoá học của nhân viên
+     * @param {*} id : Id nhân viên
+     * @param {*} value : Kết quả khoá học
+     */
     handleResultChange = async (id, value) => {
         let listEmployees = this.state.listEmployees;
         for (let n in listEmployees) {
@@ -225,29 +262,37 @@ class CourseEditForm extends Component {
         })
     }
 
-    // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
+    /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
     isFormValidated = () => {
+        const { startDate, endDate, name, coursePlace, educationProgram, cost, employeeCommitmentTime } = this.state;
+
         let result =
-            this.validateCourseName(this.state.name, false) &&
-            this.validateCoursePlace(this.state.coursePlace, false) && this.validateCost(this.state.cost, false) &&
-            this.validateEducationProgram(this.state.educationProgram, false) && this.validateEmployeeCommitmentTime(this.state.employeeCommitmentTime, false);
-        let partStart = this.state.startDate.split('-');
-        let startDate = [partStart[2], partStart[1], partStart[0]].join('-');
-        let partEnd = this.state.endDate.split('-');
-        let endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
-        if (new Date(startDate).getTime() <= new Date(endDate).getTime()) {
+            this.validateCourseName(name, false) &&
+            this.validateCoursePlace(coursePlace, false) && this.validateCost(cost, false) &&
+            this.validateEducationProgram(educationProgram, false) && this.validateEmployeeCommitmentTime(employeeCommitmentTime, false);
+
+        let partStart = startDate.split('-');
+        let startDateNew = [partStart[2], partStart[1], partStart[0]].join('-');
+        let partEnd = endDate.split('-');
+        let endDateNew = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+
+        if (new Date(startDateNew).getTime() <= new Date(endDateNew).getTime()) {
             return result;
         } else return false;
     }
 
     save = () => {
-        let partStart = this.state.startDate.split('-');
-        let startDate = [partStart[2], partStart[1], partStart[0]].join('-');
-        let partEnd = this.state.startDate.split('-');
-        let endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
-        let listEmployees = this.state.listEmployees.concat(this.state.addEmployees);
+        let { startDate, endDate, listEmployees } = this.state;
+
+        let partStart = startDate.split('-');
+        let startDateNew = [partStart[2], partStart[1], partStart[0]].join('-');
+        let partEnd = endDate.split('-');
+        let endDateNew = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+
+        listEmployees = listEmployees.concat(this.state.addEmployees);
+
         if (this.isFormValidated()) {
-            this.props.updateCourse(this.state._id, { ...this.state, listEmployees: listEmployees, startDate: startDate, endDate: endDate });
+            this.props.updateCourse(this.state._id, { ...this.state, listEmployees: listEmployees, startDate: startDateNew, endDate: endDateNew });
         }
     }
 
@@ -295,18 +340,18 @@ class CourseEditForm extends Component {
     }
 
     render() {
-        let userlist = [];
         const { education, translate, course, employeesManager } = this.props;
+
         const { _id, name, courseId, type, offeredBy, coursePlace, startDate, unit, listEmployees, endDate, cost, lecturer,
             employeeCommitmentTime, educationProgram, errorOnCourseName, errorOnCoursePlace, errorOnOfferedBy,
             errorOnCost, errorOnEmployeeCommitmentTime, errorOnEducationProgram, errorOnStartDate, errorOnEndDate } = this.state;
 
-        let listEducations = education.listAll;
+        let listEducations = education.listAll, employeeInfors = [], userlist = [];
+
         if (employeesManager.listEmployeesOfOrganizationalUnits.length !== 0) {
             userlist = employeesManager.listEmployeesOfOrganizationalUnits;
         }
 
-        let employeeInfors = [];
         if (listEmployees.length !== 0) {
             for (let n in listEmployees) {
                 userlist = userlist.filter(x => x._id !== listEmployees[n]._id);
@@ -315,12 +360,13 @@ class CourseEditForm extends Component {
                 employeeInfors = employeeInfor.concat(employeeInfors);
             }
         }
+
         return (
             <React.Fragment>
                 <DialogModal
                     modalID={`modal-edit-course${_id}`} isLoading={course.isLoading}
                     formID={`form-edit-course${_id}`}
-                    title="Chỉnh sửa khoá đào tạo"
+                    title={translate('training.course.edit_course')}
                     func={this.save}
                     size={75}
                     maxWidth={850}
@@ -328,19 +374,22 @@ class CourseEditForm extends Component {
                 >
                     <form className="form-group" id={`form-edit-course${_id}`} >
                         <div className="row">
+                            {/* Mã khoá đào tạo*/}
                             <div className="form-group col-sm-6 col-xs-12">
-                                <label>Mã khoá đào tạo<span className="text-red">*</span></label>
+                                <label>{translate('training.course.table.course_code')}<span className="text-red">*</span></label>
                                 <input type="text" className="form-control" name="courseId" value={courseId} autoComplete="off" disabled />
                             </div>
-                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnCourseName === undefined ? "" : "has-error"}`}>
-                                <label>Tên khoá đào tạo<span className="text-red">*</span></label>
+                            {/* Tên khoá đào tạo*/}
+                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnCourseName && "has-error"}`}>
+                                <label>{translate('training.course.table.course_name')}<span className="text-red">*</span></label>
                                 <input type="text" className="form-control" name="name" value={name} onChange={this.handleCourseNameChange} autoComplete="off" />
                                 <ErrorLabel content={errorOnCourseName} />
                             </div>
                         </div>
                         <div className="row">
-                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnStartDate === undefined ? "" : "has-error"}`}>
-                                <label>Thời gian bắt đầu<span className="text-red">*</span></label>
+                            {/* Thời gian bắt đầu */}
+                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnStartDate && "has-error"}`}>
+                                <label>{translate('training.course.start_date')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`edit_start_date${_id}`}
                                     deleteValue={false}
@@ -349,8 +398,9 @@ class CourseEditForm extends Component {
                                 />
                                 <ErrorLabel content={errorOnStartDate} />
                             </div>
-                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnEndDate === undefined ? "" : "has-error"}`}>
-                                <label>Thời gian kết thúc<span className="text-red">*</span></label>
+                            {/* Thời gian kết thúc */}
+                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnEndDate && "has-error"}`}>
+                                <label>{translate('training.course.end_date')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`edit_end_date${_id}`}
                                     deleteValue={false}
@@ -361,33 +411,38 @@ class CourseEditForm extends Component {
                             </div>
                         </div>
                         <div className="row">
-                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnCoursePlace === undefined ? "" : "has-error"}`}>
-                                <label>Địa điểm đào tạo<span className="text-red">*</span></label>
+                            {/* Địa điểm đào tạo */}
+                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnCoursePlace && "has-error"}`}>
+                                <label>{translate('training.course.table.course_place')}<span className="text-red">*</span></label>
                                 <input type="text" className="form-control" name="coursePlace" value={coursePlace} onChange={this.handleCoursePlaceChange} autoComplete="off" />
                                 <ErrorLabel content={errorOnCoursePlace} />
                             </div>
-                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnOfferedBy === undefined ? "" : "has-error"}`}>
-                                <label>Đơn vị đào tạo<span className="text-red">*</span></label>
+                            {/* Đơn vị đào tạo */}
+                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnOfferedBy && "has-error"}`}>
+                                <label>{translate('training.course.table.offered_by')}<span className="text-red">*</span></label>
                                 <input type="text" className="form-control" name="offeredBy" value={offeredBy} onChange={this.handleOfferedByChange} autoComplete="off" />
                                 <ErrorLabel content={errorOnOfferedBy} />
                             </div>
                         </div>
                         <div className="row">
+                            {/* Giảng viên */}
                             <div className="form-group col-sm-6 col-xs-12">
-                                <label>Giảng viên</label>
+                                <label>{translate('training.course.table.lecturer')}</label>
                                 <input type="text" className="form-control" name="lecturer" value={lecturer} onChange={this.handleChange} autoComplete="off" />
                             </div>
+                            {/* Loại đào tạo */}
                             <div className="form-group col-sm-6 col-xs-12">
-                                <label>Loại đào tạo<span className="text-red">*</span></label>
+                                <label>{translate('training.course.table.course_type')}<span className="text-red">*</span></label>
                                 <select className="form-control" value={type} name="type" onChange={this.handleChange}>
-                                    <option value="internal">Đào tạo nội bộ</option>
-                                    <option value="external">Đào tạo ngoài</option>
+                                    <option value="internal">{translate('training.course.type.internal')}</option>
+                                    <option value="external">{translate('training.course.type.external')}</option>
                                 </select>
                             </div>
                         </div>
                         <div className="row">
-                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnEducationProgram === undefined ? "" : "has-error"}`}>
-                                <label>Thuộc chương trình đào tạo<span className="text-red">*</span></label>
+                            {/* Thuộc chương trình đào tạo*/}
+                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnEducationProgram && "has-error"}`}>
+                                <label>{translate('training.course.table.education_program')}<span className="text-red">*</span></label>
                                 <SelectBox
                                     id={`edit-educationProgram${_id}`}
                                     className="form-control select2"
@@ -399,8 +454,9 @@ class CourseEditForm extends Component {
                                 />
                                 <ErrorLabel content={errorOnEducationProgram} />
                             </div>
-                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnCost === undefined ? "" : "has-error"}`}>
-                                <label>Chi phí đào tạo<span className="text-red">*</span></label>
+                            {/* Chi phi đào tạo */}
+                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnCost && "has-error"}`}>
+                                <label>{translate('training.course.table.cost')}<span className="text-red">*</span></label>
                                 <div>
                                     <input type="number" className="form-control" name="cost" value={cost} onChange={this.handleCostChange} style={{ display: "inline", width: "80%" }} autoComplete="off" placeholder="Chi phí đào tạo" />
                                     <select className="form-control" name="unit" value={unit} onChange={this.handleChange} style={{ display: "inline", width: "20%" }}>
@@ -412,14 +468,15 @@ class CourseEditForm extends Component {
                             </div>
                         </div>
                         <div className="row">
-                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnEmployeeCommitmentTime === undefined ? "" : "has-error"}`}>
-                                <label>Thời gian cam kết (đơn vị: Tháng)<span className="text-red">*</span></label>
+                            {/* Thời gian cam kêt */}
+                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnEmployeeCommitmentTime && "has-error"}`}>
+                                <label>{translate('training.course.table.employee_commitment_time')}<span className="text-red">*</span></label>
                                 <input type="number" className="form-control" name="employeeCommitmentTime" value={employeeCommitmentTime} onChange={this.handleEmployeeCommitmentTimeChange} autoComplete="off" />
                                 <ErrorLabel content={errorOnEmployeeCommitmentTime} />
                             </div>
                         </div>
                         <div className="form-group" style={{ marginBottom: 0, marginTop: 20 }}>
-                            <label>Nhân viên tham gia</label>
+                            <label>{translate('training.course.employee_attend')}</label>
                             <div>
                                 <div className="employeeBox2">
                                     <SelectBox
@@ -437,15 +494,15 @@ class CourseEditForm extends Component {
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
                             <thead>
                                 <tr>
-                                    <th>Mã nhân viên</th>
-                                    <th>Tên nhân viên</th>
-                                    <th>Kết quả</th>
-                                    <th style={{ width: "120px" }}>Hành động</th>
+                                    <th>{translate('human_resource.staff_number')}</th>
+                                    <th>{translate('human_resource.staff_name')}</th>
+                                    <th>{translate('training.course.table.result')}</th>
+                                    <th style={{ width: "120px" }}>{translate('general.action')}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {
-                                    (employeeInfors.length !== 0 && employeeInfors !== undefined) &&
+                                    (employeeInfors.length !== 0 && employeeInfors) &&
                                     employeeInfors.map((x, index) => (
                                         <tr key={index}>
                                             <td>{x.employeeNumber}</td>
@@ -455,12 +512,12 @@ class CourseEditForm extends Component {
                                                     <div className="radio-inline">
                                                         <input type="radio" name={`result${x._id}`} value="pass" checked={x.result === 'pass'}
                                                             onChange={() => this.handleResultChange(x._id, x.result)} />
-                                                        <label>Đạt</label>
+                                                        <label>{translate('training.course.result.pass')}</label>
                                                     </div>
                                                     <div className="radio-inline">
                                                         <input type="radio" name={`result${x._id}`} value="failed" checked={x.result === "failed"}
                                                             onChange={() => this.handleResultChange(x._id, x.result)} />
-                                                        <label>Không đạt</label>
+                                                        <label>{translate('training.course.result.falied')}</label>
                                                     </div>
                                                 </div>
                                             </td>
@@ -474,7 +531,7 @@ class CourseEditForm extends Component {
                         </table>
                         {employeesManager.isLoading ?
                             <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                            (typeof employeeInfors === 'undefined' || employeeInfors.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (!employeeInfors || employeeInfors.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </form>
                 </DialogModal>

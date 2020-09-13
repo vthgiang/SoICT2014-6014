@@ -21,7 +21,6 @@ exports.getAssetInforById = async (id) => {
  */
 exports.searchAssetProfiles = async (params, company) => {
     let keySearch = { company: company };
-    console.log("params", params)
     // Bắt sựu kiện MSTS tìm kiếm khác ""
     if (params.code) {
         keySearch = { ...keySearch, code: { $regex: params.code, $options: "i" } }
@@ -72,9 +71,31 @@ exports.searchAssetProfiles = async (params, company) => {
         keySearch = { ...keySearch, managedBy: { $in: params.managedBy } };
     }
 
+    // Thêm key tìm kiếm tài sản theo loại khấu hao
+    if (params.depreciationType) {
+        keySearch = { ...keySearch, depreciationType: { $in: params.depreciationType } };
+    }
+
+    // Thêm key tìm kiếm tài sản theo vai trò
     if (params.currentRole) {
         keySearch = { ...keySearch, readByRoles: { $in: params.currentRole } };
     }
+
+    // Thêm key tìm kiếm tài sản theo ngày bắt đầu khấu hao
+    if (params.startDepreciation) {
+        let date = params.startDepreciation.split("-");
+        let start = new Date(date[1], date[0] - 1, 1);
+        let end = new Date(date[1], date[0], 1);
+
+        keySearch = {
+            ...keySearch,
+            startDepreciation: {
+                $gt: start,
+                $lte: end
+            }
+        }
+    }
+
     // Thêm key tìm kiếm tài sản theo ngày nhập tài sản
     if (params.purchaseDate) {
         let date = params.purchaseDate.split("-");
@@ -103,6 +124,54 @@ exports.searchAssetProfiles = async (params, company) => {
                 $lte: end
             }
         }
+    }
+
+    // TÌM KIẾM TRONG BẢO TRÌ
+
+    // Thêm key tìm kiếm tài sản theo phiếu bảo trì
+    if (params.maintainanceCode) {
+        keySearch = { ...keySearch, "maintainanceLogs.maintainanceCode": { $regex: params.maintainanceCode, $options: "i" } }
+    }
+
+    // Thêm key tìm kiếm tài sản theo loại bảo trì
+    if (params.maintainType) {
+        keySearch = { ...keySearch, "maintainanceLogs.type": { $in: params.maintainType } };
+    }
+
+    // Thêm key tìm kiếm tài sản theo trạng thái bảo trì
+    if (params.maintainStatus) {
+        keySearch = { ...keySearch, "maintainanceLogs.status": { $in: params.maintainStatus } };
+    }
+
+    // Thêm key tìm kiếm tài sản theo ngày lập phiếu bảo trì
+    if (params.maintainCreateDate) {
+        let date = params.maintainCreateDate.split("-");
+        let start = new Date(date[1], date[0] - 1, 1);
+        let end = new Date(date[1], date[0], 1);
+        keySearch = {
+            ...keySearch,
+            "maintainanceLogs.createDate": {
+                $gt: start,
+                $lte: end
+            }
+        }
+    }
+
+    // TÌM KIẾM TRONG SỰ CỐ
+
+    // Thêm key tìm kiếm tài sản theo mã sự cố
+    if (params.incidentCode) {
+        keySearch = { ...keySearch, "incidentLogs.incidentCode": { $regex: params.incidentCode, $options: "i" } }
+    }
+
+    // Thêm key tìm kiếm tài sản theo loại sự cố
+    if (params.incidentType) {
+        keySearch = { ...keySearch, "incidentLogs.type": { $in: params.incidentType } };
+    }
+
+    // Thêm key tìm kiếm tài sản theo trạng thái sự cố
+    if (params.incidentStatus) {
+        keySearch = { ...keySearch, "incidentLogs.statusIncident": { $in: params.incidentStatus } };
     }
 
     // Lấy danh sách tài sản

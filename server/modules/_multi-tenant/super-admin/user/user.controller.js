@@ -1,6 +1,5 @@
 const UserService = require('./user.service');
-const { LogInfo, LogError } = require('../../../logs');
-const { Console } = require('winston/lib/winston/transports');
+const Logger = require(`${SERVER_LOGS_DIR}/_multi-tenant`);
 
 exports.getUsers = async (req, res) => {
     if (req.query.role) {
@@ -13,9 +12,9 @@ exports.getUsers = async (req, res) => {
     }
     else {
         try {
-            var users = await UserService.getUsers(req.user.company._id, req.query);
+            var users = await UserService.getUsers(req.portal, req.query);
 
-            LogInfo(req.user.email, 'GET_USERS', req.user.company);
+            Logger.info(req.user.email, 'get_users_success', req.portal);
 
             res.status(200).json({
                 success: true,
@@ -24,7 +23,7 @@ exports.getUsers = async (req, res) => {
             });
         } catch (error) {
 
-            LogError(req.user.email, 'GET_USERS', req.user.company);
+            Logger.error(req.user.email, 'get_users_faile', req.portal);
             res.status(400).json({
                 success: false,
                 messages: Array.isArray(error) ? error : ['get_users_faile'],
@@ -36,15 +35,17 @@ exports.getUsers = async (req, res) => {
 
 getAllEmployeeOfUnitByRole = async (req, res) => {
     try {
-        const employees = await UserService.getAllEmployeeOfUnitByRole(req.query.role);
-        await LogInfo(req.user.email, `GET_ALL_EMPLOYEE`, req.user.company);
+        const employees = await UserService.getAllEmployeeOfUnitByRole(req.portal, req.query.role);
+
+        await Logger.info(req.user.email, `get_all_employee_success`, req.portal);
         res.status(200).json({
             success: true,
             messages: ['get_all_employee_success'],
             content: employees
         });
     } catch (error) {
-        await LogError(req.user.email, `GET_ALL_EMPLOYEE`, req.user.company);
+        
+        await Logger.error(req.user.email, `get_all_employee_fail`, req.portal);
         res.status(400).json({
             messages: ['get_all_employee_fail'],
             content: error
@@ -54,16 +55,17 @@ getAllEmployeeOfUnitByRole = async (req, res) => {
 };
 getAllEmployeeOfUnitByIds = async (req, res) => {
     try {
-        console.log(req.query.ids);
-        const employees = await UserService.getAllEmployeeOfUnitByIds(req.query.ids);
-        await LogInfo(req.user.email, `GET_ALL_EMPLOYEE`, req.user.company);
+        const employees = await UserService.getAllEmployeeOfUnitByIds(req.portal, req.query.ids);
+
+        await Logger.info(req.user.email, `get_all_employee_success`, req.portal);
         res.status(200).json({
             success: true,
             messages: ['get_all_employee_success'],
             content: employees
         });
     } catch (error) {
-        await LogError(req.user.email, `GET_ALL_EMPLOYEE`, req.user.company);
+
+        await Logger.error(req.user.email, `GET_ALL_EMPLOYEE`, req.portal);
         res.status(400).json({
             messages: ['get_all_employee_fail'],
             content: error
@@ -74,8 +76,9 @@ getAllEmployeeOfUnitByIds = async (req, res) => {
 exports.getUser = async (req, res) => {
 
     try {
-        var user = await UserService.getUser(req.params.id);
-        LogInfo(req.user.email, 'SHOW_USER', req.user.company);
+        var user = await UserService.getUser(req.portal, req.params.id);
+
+        Logger.info(req.user.email, 'SHOW_USER', req.portal);
         res.status(200).json({
             success: true,
             messages: ['show_user_success'],
@@ -83,7 +86,7 @@ exports.getUser = async (req, res) => {
         });
     } catch (error) {
 
-        LogError(req.user.email, 'SHOW_USER', req.user.company);
+        Logger.error(req.user.email, 'SHOW_USER', req.portal);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['show_user_faile'],
@@ -94,9 +97,9 @@ exports.getUser = async (req, res) => {
 
 exports.getOrganizationalUnitsOfUser = async (req, res) => {
     try {
-        const department = await UserService.getOrganizationalUnitsOfUser(req.params.id);
+        const department = await UserService.getOrganizationalUnitsOfUser(req.portal, req.params.id);
 
-        await LogInfo(req.user.email, 'GET_DEPARTMENT_OF_USER', req.user.company);
+        await Logger.info(req.user.email, 'GET_DEPARTMENT_OF_USER', req.portal);
         res.status(200).json({
             success: true,
             messages: ['get_department_of_user_success'],
@@ -104,7 +107,7 @@ exports.getOrganizationalUnitsOfUser = async (req, res) => {
         });
     } catch (error) {
 
-        await LogError(req.user.email, 'GET_DEPARTMENT_OF_USER', req.user.company);
+        await Logger.error(req.user.email, 'GET_DEPARTMENT_OF_USER', req.portal);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['get_department_of_user_faile'],
@@ -116,11 +119,11 @@ exports.getOrganizationalUnitsOfUser = async (req, res) => {
 
 exports.createUser = async (req, res) => {
     try {
-        var user = await UserService.createUser(req.body, req.user.company._id);
-        await UserService.addRolesForUser(user._id, req.body.roles);
-        var result = await UserService.getUser(user._id);
+        var user = await UserService.createUser(req.portal, req.body);
+        await UserService.addRolesForUser(req.portal, user._id, req.body.roles);
+        var result = await UserService.getUser(req.portal, user._id);
 
-        LogInfo(req.user.email, 'CREATE_USER', req.user.company);
+        Logger.info(req.user.email, 'create_user_success', req.portal);
         res.status(200).json({
             success: true,
             messages: ['create_user_success'],
@@ -128,7 +131,7 @@ exports.createUser = async (req, res) => {
         });
     } catch (error) {
 
-        LogError(req.user.email, 'CREATE_USER', req.user.company);
+        Logger.error(req.user.email, 'create_user_faile', req.portal);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['create_user_faile'],
@@ -139,19 +142,19 @@ exports.createUser = async (req, res) => {
 
 exports.editUser = async (req, res) => {
     try {
-        var user = await UserService.editUser(req.params.id, req.body);
-        await UserService.editRolesForUser(user._id, req.body.roles);
-        var result = await UserService.getUser(user._id);
+        var user = await UserService.editUser(req.portal, req.params.id, req.body);
+        await UserService.editRolesForUser(req.portal, user._id, req.body.roles);
+        var result = await UserService.getUser(req.portal, user._id);
 
-        LogInfo(req.user.email, 'EDIT_USER', req.user.company);
+        Logger.info(req.user.email, 'edit_user_success', req.portal);
         res.status(200).json({
             success: true,
             messages: ['edit_user_success'],
             content: result
         });
     } catch (error) {
-        console.log("errrr: ", error)
-        LogError(req.user.email, 'EDIT_USER', req.user.company);
+       
+        Logger.error(req.user.email, 'edit_user_faile', req.portal);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['edit_user_faile'],
@@ -162,9 +165,9 @@ exports.editUser = async (req, res) => {
 
 exports.deleteUser = async (req, res) => {
     try {
-        var deleteUser = await UserService.deleteUser(req.params.id);
+        var deleteUser = await UserService.deleteUser(req.portal, req.params.id);
 
-        LogInfo(req.user.email, 'DELETE_USER', req.user.company);
+        Logger.info(req.user.email, 'delete_user_success', req.portal);
         res.status(200).json({
             success: true,
             messages: ['delete_user_success'],
@@ -172,7 +175,7 @@ exports.deleteUser = async (req, res) => {
         });
     } catch (error) {
 
-        LogError(req.user.email, 'DELETE_USER', req.user.company);
+        Logger.error(req.user.email, 'delete_user_faile', req.portal);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['delete_user_faile'],
@@ -183,19 +186,20 @@ exports.deleteUser = async (req, res) => {
 
 exports.getAllUsersWithRole = async (req, res) => {
     try {
-        let users = await UserService.getAllUsersWithRole();
-        LogInfo(req.user.email, 'GET ALL USER WITH ROLE', req.user.company);
+        let users = await UserService.getAllUsersWithRole(req.portal);
+
+        Logger.info(req.user.email, 'get_all_user_with_role_success', req.portal);
         res.status(200).json({
             success: true,
-            messages: ['delete_user_success'],
+            messages: ['get_all_user_with_role_success'],
             content: users
         });
     } catch (error) {
 
-        LogError(req.user.email, 'GET ALL USER WITH ROLE', req.user.company);
+        Logger.error(req.user.email, 'get_all_user_with_role_faile', req.portal);
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['delete_user_faile'],
+            messages: Array.isArray(error) ? error : ['get_all_user_with_role_faile'],
             content: error
         });
     }

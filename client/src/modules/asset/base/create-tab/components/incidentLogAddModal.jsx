@@ -127,7 +127,9 @@ class IncidentLogAddModal extends Component {
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
         let result = this.validateDateOfIncident(this.state.dateOfIncident, false) &&
-            this.validateIncidentDescription(this.state.description, false)
+            this.validateIncidentDescription(this.state.description, false) && 
+            this.validateDateOfIncident(this.state.dateOfIncident, false)
+            
         return result;
     }
 
@@ -198,7 +200,7 @@ class IncidentLogAddModal extends Component {
 
                             {/* Thời gian phát hiện sự cố */}
                             <div className="form-group">
-                                <label>{translate('asset.general_information.date_incident')}</label>
+                                <label>{translate('asset.general_information.date_incident')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`add-dateOfIncident-${id}`}
                                     value={dateOfIncident}

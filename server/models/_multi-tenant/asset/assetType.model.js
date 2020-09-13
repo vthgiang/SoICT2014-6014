@@ -4,11 +4,6 @@ const mongoosePaginate = require('mongoose-paginate-v2');
 
 // Create Schema
 const AssetTypeSchema = new Schema({
-    company: { // Công ty
-        type: Schema.Types.ObjectId,
-        ref: 'companies',
-    },
-
     typeNumber: { // Mã loại
         type: String,
         required: true
@@ -46,4 +41,8 @@ const AssetTypeSchema = new Schema({
 
 AssetTypeSchema.plugin(mongoosePaginate);
 
-module.exports = AssetType = (db) => db.model("asset_type", AssetTypeSchema);
+module.exports = (db) => {
+    if(!db.models.AssetType)
+        return db.model('AssetType', AssetTypeSchema);
+    return db.models.AssetType;
+}

@@ -110,22 +110,33 @@ class TaskDashboard extends Component {
     }
 
     handleSelectMonthStart = (value) => {
-        let month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)));
-        let monthtitle = value.slice(0, 2) + '-' + (new Number(value.slice(3, 7)));
+        let month, monthtitle;
+
+        if (value.slice(0, 2) < 10) {
+            month = value.slice(3, 7) + '-0' + (new Number(value.slice(0, 2)));
+        } else {
+            month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)));
+        }
+
+        monthtitle = value.slice(3, 7) + '-' + value.slice(0, 2);
 
         this.INFO_SEARCH.startMonth = month;
         this.INFO_SEARCH.startMonthTitle = monthtitle;
     }
 
     handleSelectMonthEnd = (value) => {
-        let month;
-        let monthtitle;
+        let month, monthtitle;
 
         if (value.slice(0, 2) < 12) {
-            month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)) + 1);
+            if (value.slice(0, 2) < 9) {
+                month = value.slice(3, 7) + '-0' + (new Number(value.slice(0, 2)) + 1);
+            } else {
+                month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)) + 1);
+            }
+            
             monthtitle = value.slice(0, 2) + '-' + value.slice(3, 7);
         } else {
-            month = (new Number(value.slice(3, 7)) + 1) + '-' + '1';
+            month = (new Number(value.slice(3, 7)) + 1) + '-' + '01';
             monthtitle = '12' + '-' + (new Number(value.slice(3, 7)));
         }
 
@@ -326,7 +337,7 @@ class TaskDashboard extends Component {
                     </div>
                 </div>
                 <div className="row">
-                    <div className="col-xs-6">
+                    <div className="col-xs-12">
                         <div className="box box-primary">
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.dashboard_area_result')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
@@ -342,7 +353,7 @@ class TaskDashboard extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="col-xs-6">
+                    <div className="col-xs-12">
                         <div className="box box-primary">
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.detail_status')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
@@ -367,7 +378,7 @@ class TaskDashboard extends Component {
                                 <div className="box-title">{translate('task.task_management.dashboard_overdue')}</div>
                             </div>
 
-                            <div className="box-body" style={{ height: "300px", overflow: "auto" }}>
+                            <div className="box-body" style={{ minHeight: "300px" }}>
                                 {
                                     (tasks && tasks.tasksbyuser) ?
                                         <ul className="todo-list">
@@ -394,7 +405,7 @@ class TaskDashboard extends Component {
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.dashboard_about_to_overdue')}</div>
                             </div>
-                            <div className="box-body" style={{ height: "300px", overflow: "auto" }}>
+                            <div className="box-body" style={{ minHeight: "300px" }}>
                                 {
                                     (tasks && tasks.tasksbyuser) ?
                                         <ul className="todo-list">

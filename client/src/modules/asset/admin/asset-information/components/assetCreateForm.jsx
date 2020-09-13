@@ -213,10 +213,10 @@ class AssetCreateForm extends Component {
                         {/* Nav-tabs */}
                         <ul className="nav nav-tabs">
                             <li className="active"><a title={translate('asset.general_information.general_information')} data-toggle="tab" href={`#create_general`}>{translate('asset.general_information.general_information')}</a></li>
+                            <li><a title={translate('asset.general_information.depreciation_information')} data-toggle="tab" href={`#depreciation`}>{translate('asset.general_information.depreciation_information')}</a></li>
                             <li><a title={translate('asset.general_information.usage_information')} data-toggle="tab" href={`#usage`}>{translate('asset.general_information.usage_information')}</a></li>
                             <li><a title={translate('asset.general_information.incident_information')} data-toggle="tab" href={`#incident`}>{translate('asset.general_information.incident_information')}</a></li>
                             <li><a title={translate('asset.general_information.maintainance_information')} data-toggle="tab" href={`#maintainance`}>{translate('asset.general_information.maintainance_information')}</a></li>
-                            <li><a title={translate('asset.general_information.depreciation_information')} data-toggle="tab" href={`#depreciation`}>{translate('asset.general_information.depreciation_information')}</a></li>
                             <li><a title={translate('asset.general_information.disposal_information')} data-toggle="tab" href={`#disposal`}>{translate('asset.general_information.disposal_information')}</a></li>
                             <li><a title={translate('asset.general_information.attach_infomation')} data-toggle="tab" href={`#attachments`}>{translate('asset.general_information.attach_infomation')}</a></li>
                         </ul>
@@ -232,6 +232,13 @@ class AssetCreateForm extends Component {
                                 detailInfo={asset.detailInfo}
                             />
 
+                            {/* Thông tin khấu hao */}
+                            <DepreciationTab
+                                id="depreciation"
+                                asset={asset}
+                                handleChange={this.handleChange}
+                            />
+                            
                             {/* Thông tin bảo trì */}
                             <MaintainanceLogTab
                                 id="maintainance"
@@ -257,13 +264,6 @@ class AssetCreateForm extends Component {
                                 handleAddIncident={this.handleChangeIncidentLog}
                                 handleEditIncident={this.handleChangeIncidentLog}
                                 handleDeleteIncident={this.handleChangeIncidentLog}
-                            />
-
-                            {/* Thông tin khấu hao */}
-                            <DepreciationTab
-                                id="depreciation"
-                                asset={asset}
-                                handleChange={this.handleChange}
                             />
 
                             {/* Thông tin thanh lý */}
