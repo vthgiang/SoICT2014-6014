@@ -1,9 +1,11 @@
 import {
     CourseConstants
 } from "./constants";
+
 import {
     CourseService
 } from "./services";
+
 export const CourseActions = {
     getListCourse,
     createNewCourse,
@@ -11,7 +13,10 @@ export const CourseActions = {
     updateCourse,
 };
 
-// lấy danh sách các khoá đào tạo
+/**
+ * Lấy danh sách các khoá đào tạo
+ * @param {*} data : Key tìm kiếm
+ */
 function getListCourse(data) {
     return dispatch => {
         dispatch({
@@ -34,7 +39,10 @@ function getListCourse(data) {
     }
 }
 
-// Tạo mới khoá đào tạo
+/**
+ * Tạo mới khoá đào tạo
+ * @param {*} data : Thông tin khoá đào tạo
+ */
 function createNewCourse(data) {
     return dispatch => {
         dispatch({
@@ -57,7 +65,10 @@ function createNewCourse(data) {
     }
 }
 
-// Xoá một khoá đào tạo
+/**
+ * Xoá một khoá đào tạo
+ * @param {*} id : Id nhân viên cần xoá
+ */
 function deleteCourse(id) {
     return dispatch => {
         dispatch({
@@ -79,7 +90,11 @@ function deleteCourse(id) {
     }
 }
 
-// cập nhật thông tin của khoá đào tạo
+/**
+ * Cập nhật thông tin của khoá đào tạo
+ * @param {*} id : Id khoá đào tạo cần cập nhật
+ * @param {*} infoCourse : Thông tin khoá đào tạo
+ */
 function updateCourse(id, infoCourse) {
     return dispatch => {
         dispatch({

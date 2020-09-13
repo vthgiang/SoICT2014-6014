@@ -136,12 +136,14 @@ class EducationProgramDetailForm extends Component {
                 >
                     <form className="form-group" id={`form-view-education${_id}`} >
                         <div className="qlcv">
+                            {/* Mã khoá đào tạo */}
                             <div className="form-inline" >
                                 <div className="form-group">
                                     <label style={{ width: 110 }} className="form-control-static">{translate('training.course.table.course_code')}</label>
                                     <input type="text" className="form-control" name="courseId" onChange={this.handleChange} />
                                 </div>
                             </div>
+                            {/* Loại đào tạo */}
                             <div className="form-inline" style={{ marginBottom: 10 }}>
                                 <div className="form-group">
                                     <label style={{ width: 110 }} className="form-control-static">{translate('training.course.table.course_type')}</label>

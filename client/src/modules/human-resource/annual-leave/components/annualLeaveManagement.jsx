@@ -183,31 +183,32 @@ class AnnualLeaveManagement extends Component {
                     STT: index + 1,
                     employeeNumber: x.employee.employeeNumber,
                     fullName: x.employee.fullName,
-                    organizationalUnit: organizationalUnit ? organizationalUnit.name : null,
+                    organizationalUnit: organizationalUnit ? organizationalUnit.name : "Deleted",
                     startDate: new Date(x.startDate),
                     endDate: new Date(x.endDate),
                     reason: x.reason,
-                    status: x.status === "pass" ? "Đã chấp nhận" : (x.status === "process" ? "Chờ phê duyệt" : "Không cấp nhận")
+                    status: x.status === "pass" ? translate('human_resource.annual_leave.status.pass') : (x.status === "process" ? translate('human_resource.annual_leave.status.process') : translate('human_resource.annual_leave.status.faile'))
                 };
 
             })
         }
         let exportData = {
-            fileName: "Bảng thống kê nghỉ phép",
+            fileName: translate('human_resource.annual_leave.file_export_name'),
             dataSheets: [
                 {
                     sheetName: "sheet1",
+                    sheetTitle: translate('human_resource.annual_leave.file_export_name'),
                     tables: [
                         {
                             columns: [
-                                { key: "STT", value: "STT" },
-                                { key: "employeeNumber", value: "Mã số nhân viên" },
-                                { key: "fullName", value: "Họ và tên" },
-                                { key: "organizationalUnit", value: "Phòng ban" },
-                                { key: "startDate", value: "Ngày bắt đầu" },
-                                { key: "endDate", value: "Ngày kết thúc" },
-                                { key: "reason", value: "Lý do" },
-                                { key: "status", value: "Trạng thái" },
+                                { key: "STT", value: translate('human_resource.stt'), width: 7 },
+                                { key: "employeeNumber", value: translate('human_resource.staff_number') },
+                                { key: "fullName", value: translate('human_resource.staff_name'), width: 20 },
+                                { key: "organizationalUnit", value: translate('human_resource.unit'), width: 25 },
+                                { key: "startDate", value: translate('human_resource.annual_leave.table.start_date') },
+                                { key: "endDate", value: translate('human_resource.annual_leave.table.end_date') },
+                                { key: "reason", value: translate('human_resource.annual_leave.table.reason') },
+                                { key: "status", value: translate('human_resource.status') },
                             ],
                             data: data
                         }
@@ -241,6 +242,7 @@ class AnnualLeaveManagement extends Component {
                 <div className="box-body qlcv">
                     <AnnualLeaveCreateForm />
                     <ExportExcel id="export-annual_leave" buttonName={translate('human_resource.name_button_export')} exportData={exportData} style={{ marginRight: 15, marginTop: 2 }} />
+
                     <div className="form-inline">
                         {/* Đơn vị */}
                         <div className="form-group">
@@ -257,6 +259,7 @@ class AnnualLeaveManagement extends Component {
                             <input type="text" className="form-control" name="employeeNumber" onChange={this.handleMSNVChange} placeholder={translate('human_resource.staff_number')} autoComplete="off" />
                         </div>
                     </div>
+
                     <div className="form-inline" style={{ marginBottom: 10 }}>
                         {/* Tháng */}
                         <div className="form-group">
@@ -285,6 +288,7 @@ class AnnualLeaveManagement extends Component {
                         {/* Button tìm kiếm */}
                         <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => this.handleSunmitSearch()} >{translate('general.search')}</button>
                     </div>
+
                     <table id="sabbatical-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>

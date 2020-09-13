@@ -689,11 +689,8 @@ const actionCreators = {
     editEmployeeKpiSet: createKpiSetActions.editEmployeeKpiSet,
     deleteEmployeeKpiSet: createKpiSetActions.deleteEmployeeKpiSet,
     updateEmployeeKpiSetStatus: createKpiSetActions.updateEmployeeKpiSetStatus,
-    createComment: createKpiSetActions.createComment,
-    createCommentOfComment: createKpiSetActions.createCommentOfComment,
     getCurrentKPIUnit: createUnitKpiActions.getCurrentKPIUnit,
-    editComment: createKpiSetActions.editComment,
-    deleteComment: createKpiSetActions.deleteComment,
+
 
 };
 

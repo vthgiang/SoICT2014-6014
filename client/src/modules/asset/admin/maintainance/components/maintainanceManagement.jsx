@@ -250,8 +250,8 @@ class MaintainanceManagement extends Component {
         });
         window.$('#modal-edit-asset').modal('show');
 
-        // Mở tab thứ 4
-        window.$('.nav-tabs li:eq(3) a').tab('show');
+        // Mở tab thứ 5
+        window.$('.nav-tabs li:eq(4) a').tab('show');
 
     }
 

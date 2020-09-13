@@ -153,6 +153,22 @@ export function kpimembers(state = {}, action) {
         loading: false,
         tasks: action.payload,
       };
+      case kpiMemberConstants.GET_TASK_BY_LIST_KPI_FAILURE:
+      return {
+        error: action.payload
+      };
+    case kpiMemberConstants.GET_TASK_BY_LIST_KPI_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        tasksList: null
+      };
+    case kpiMemberConstants.GET_TASK_BY_LIST_KPI_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        tasksList: action.payload,
+      };
     case kpiMemberConstants.SET_POINTKPI_REQUEST:
       return {
         ...state,

@@ -390,7 +390,7 @@ class AssetAssignedManager extends Component {
                         managedBy={currentRowView.managedBy}
                         assignedToUser={currentRowView.assignedToUser}
                         assignedToOrganizationalUnit={currentRowView.assignedToOrganizationalUnit}
-
+                        typeRegisterForUse = {currentRowView.typeRegisterForUse}
                         location={currentRowView.location}
                         description={currentRowView.description}
                         status={currentRowView.status}

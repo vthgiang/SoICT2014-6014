@@ -939,6 +939,7 @@ export default {
             salary: {
                 // list_salary: 'Danh sách bảng lương nhân viên',
                 file_name_export: 'Bảng theo dõi lương thưởng',
+                other_salary: 'Lương thưởng khác',
 
                 // Nhóm dành cho table
                 table: {
@@ -987,7 +988,7 @@ export default {
 
             // Quản lý nghỉ phép
             annual_leave: {
-                // list_annual_leave: 'Danh sách đơn xin nghỉ',
+                file_export_name: 'Bảng thống kê nghỉ phép',
 
                 // Nhóm dành cho table
                 table: {
@@ -1150,7 +1151,7 @@ export default {
                     menu_attachments_title: 'Tài liệu đính kèm',
                 },
 
-                staff_number: 'Mã số nhân viên',
+                staff_number: 'Mã nhân viên',
                 full_name: 'Họ và tên',
                 attendance_code: 'Mã số chấm công',
                 gender: 'Giới tính',
@@ -1174,6 +1175,7 @@ export default {
                 religion: 'Tôn giáo',
                 active: 'Đang làm việc',
                 leave: 'Đã nghỉ làm',
+                status_work: 'Tình trạng lao động',
 
                 mobile_phone: 'Điện thoại di động',
                 mobile_phone_1: 'Điện thoại di động 1',
@@ -1185,7 +1187,7 @@ export default {
                 nexus: 'Quan hệ',
                 address: 'Địa chỉ',
                 permanent_address: 'Hộ khẩu thường trú',
-                current_residence: 'Chỗ ở hiện tại',
+                current_residence: 'Nơi ở hiện tại',
                 wards: 'Xã/Phường',
                 district: 'Huyện/Quận',
                 province: 'Tỉnh/Thành phố',
@@ -1229,14 +1231,14 @@ export default {
 
 
                 bank_account: 'Tài khoản ngân hàng',
-                personal_income_tax: 'Thuế thu nhập cá nhân',
+                personal_income_tax: 'Mã số thuế thu nhập cá nhân',
                 account_number: 'Số tài khoản',
                 bank_name: 'Tên ngân hàng',
                 bank_branch: 'Chi nhánh',
                 tax_number: 'Mã số thuế',
-                representative: 'Người đại diện',
-                day_active: 'Ngày hoạt động',
-                managed_by: 'Quản lý bởi',
+                representative: 'Đại diện của người nộp thuế',
+                day_active: 'Ngày cấp mã số thuế',
+                managed_by: 'Cơ quan quản lý thuế',
 
                 bhyt: 'Bảo hiểm y tế',
                 number_BHYT: 'Mã số BHYT',
@@ -1330,6 +1332,34 @@ export default {
                 },
 
                 employee_management: {
+                    // Nhóm dánh cho export excel
+                    file_export_name: 'Thông tin nhân viên',
+                    export: {
+                        sheet1: '1.Nhân viên',
+                        sheet2: '2.HS Nhân viên - Kinh nghiệm',
+                        sheet3: '3.HS Nhân viên - Bằng cấp',
+                        sheet4: '4.HS Nhân viên - Chứng chỉ',
+                        sheet5: '5.HS Nhân viên - Hợp đồng',
+                        sheet6: '6.HS Nhân viên - Bảo hiểm XH',
+                        sheet7: '7.HS Nhân viên - Tài liệu',
+                        sheet8: '8.HS Nhân viên - Khen thưởng',
+                        sheet9: '9.HS Nhân viên - Kỷ luật',
+                        sheet10: '10.HS Nhân viên - Lương thưởng',
+                        sheet11: '11.HS Nhân viên - Nghỉ phép',
+
+                        emergency_contact_person: 'Người liên hệ khẩn cấp',
+                        relation_with_emergency_contact_person: 'Quan hệ với người liên hệ khẩn cấp',
+                        emergency_contact_person_address: 'Địa chỉ người liên hệ khẩn cấp',
+                        emergency_contact_person_phone_number: 'Điện thoại di động người liên hệ khẩn cấp',
+                        emergency_contact_person_home_nhone: 'Điện thoại nhà riêng người liên hệ khẩn cấp',
+                        emergency_contact_person_email: 'Email người liên hệ khẩn cấp',
+                        atmNumber: 'Số tài khoản ngân hàng',
+                        bank_address: 'Chi nhánh ngân hàng',
+                        health_insurance_start_date: 'Ngày BHYT có hiệu lực',
+                        health_insurance_end_date: 'Ngày BHYT hết hạn',
+
+                    },
+
                     // Nhón dành cho UI
                     have: 'Có',
                     staff: 'nhân viên',
@@ -1517,10 +1547,28 @@ export default {
 
             // Quản khoá đào tạo
             course: {
+                // Nhóm dành cho UI
+                study_at: 'Học tại',
+                from: 'từ',
+                to: 'đến',
+                with_lecturer: 'với giảng viên',
+                offered_by: 'Đào tạo bởi',
+                belong_type: 'Thuộc loại',
+                with_cost: 'với chi phí',
+                commitment_time: 'và thời gian cam kết làm việc',
+                month: 'tháng',
+                staff: 'nhân viên',
+                attend: 'Tham gia',
+
                 no_course_type: 'Chọn loại đào tạo',
                 all_course_type: 'Chọn tất cả loại đào tạo',
                 start_date: 'Thời gian bắt đầu',
                 end_date: 'Thời gian kết thúc',
+                start_date_before_end_date: 'Thời gian bắt đầu phải trước thời gian kết thúc',
+                end_date_after_start_date: 'Thời gian kết thúc phải sau thời gian bắt đầu',
+                employee_attend: 'Nhân viên tham gia',
+                select_education_program: 'Chọn chương trình đào tạo',
+
 
                 table: {
                     course_code: 'Mã khoá đào tạo',
@@ -1530,6 +1578,11 @@ export default {
                     course_place: 'Địa điểm đào tạo',
                     offered_by: 'Đơn vị đào tạo',
                     course_type: 'Loại đào tạo',
+                    lecturer: 'Giảng viên',
+                    education_program: 'Thuộc chương trình đào tạo',
+                    cost: 'Chi phí đào tạo',
+                    employee_commitment_time: 'Thời gian cam kết (đơn vị: Tháng)',
+                    result: 'Kết quả',
                 },
 
                 // Loại đào tao
@@ -1537,6 +1590,18 @@ export default {
                     internal: 'Đào tạo nội bộ',
                     external: 'Đào tạo ngoài',
                 },
+
+                // Kết quả đào tạo
+                result: {
+                    pass: 'Đạt',
+                    falied: 'Không đạt',
+                },
+
+                // Nhóm action
+                add_course: 'Thêm khoá đào tạo',
+                edit_course: 'Chỉnh sửa khoá đào tạo',
+                delete_course: 'Xoá khoá đào tạo',
+                view_course: 'Thông tin khoá đào tạo',
 
                 // Thông điệp trả về từ server
                 name_required: 'Tên khoá đào tạo không được để trống',
@@ -1872,6 +1937,7 @@ export default {
             // Quản lý đề nghị mua sắm thiết bị
             manage_recommend_procure: {
                 asset_recommend: 'Thiết bị đề nghị mua sắm',
+                equipment_description: 'Mô tả thiết bị',
                 add_recommend_card: 'Thêm mới phiếu đề nghị mua sắm tài sản',
                 view_recommend_card: 'Xem thông tin phiếu đề nghị mua sắm tài sản',
                 edit_recommend_card: 'Chỉnh sửa phiếu đề nghị mua sắm tài sản',
@@ -2365,7 +2431,7 @@ export default {
 
                 is_task_process: 'Đây là công việc theo quy trình',
                 activated_task: "Kích hoạt",
-                following_task: "các công việc phía sau",
+                following_task: "Nhấn chuột để kích hoạt các công việc phía sau",
 
 
                 // TODO: code_mesage_task_perform

@@ -148,23 +148,23 @@ class OutgoingDataTab extends Component {
                                     && task.taskInformations.length !== 0
                                     ? task.taskInformations.map((info) =>
                                         <div>
-                                            <input
-                                                type="checkbox"
-                                                title={translate('task.task_process.export_info')}
-                                                style={{ margin: "0.5em 0.5em", padding: "0.6em" }}
-                                                name={info.description}
-                                                onClick={() => this.handleCheckBoxOutputInformation(info)}
-                                                checked={isOutputInformation[info._id]}
-                                            />
-                                            <strong>{info.name}</strong>
-                                            <span> - {info.description}</span>
-                                            <span> - {info.type}</span>
+                                            <label>
+                                                <input
+                                                    type="checkbox"
+                                                    title={translate('task.task_process.export_info')}
+                                                    name={info.description}
+                                                    onClick={() => this.handleCheckBoxOutputInformation(info)}
+                                                    checked={isOutputInformation[info._id]}
+                                                />
+                                                <strong>{info.name}:</strong>
+                                            </label>
+                                            <span>{info.value}</span>
                                         </div>
                                     )
                                     : <span>{translate('task.task_process.not_have_info')}</span>
                             }
 
-                            <div></div>
+                            <div style={{ marginTop: 10}}></div>
                             <strong>{translate('task.task_process.document')}:</strong>
                             { /** Danh sách tài liệu */
                                 task.documents
@@ -172,25 +172,23 @@ class OutgoingDataTab extends Component {
                                     ? task.documents.map(document =>
                                         <div>
                                             <div>
-                                                <input
-                                                    type="checkbox"
-                                                    title={translate('task.task_process.export_doc')}
-                                                    style={{ margin: "0.5em 0.5em", padding: "0.6em" }}
-                                                    name={document.description}
-                                                    onClick={() => this.handleCheckBoxOutputDocument(document)}
-                                                    checked={isOutputDocument[document._id]}
-                                                />
-                                                <strong>{document.description}</strong>
+                                                <label>
+                                                    <input
+                                                        type="checkbox"
+                                                        title={translate('task.task_process.export_doc')}
+                                                        name={document.description}
+                                                        onClick={() => this.handleCheckBoxOutputDocument(document)}
+                                                        checked={isOutputDocument[document._id]}
+                                                    />
+                                                    <strong>{document.description} ({document.files.length} tài liệu)</strong>
+                                                </label>
                                             </div>
 
                                             {
                                                 document.files && document.files.length !== 0
                                                 && document.files.map(file =>
                                                     <div>
-                                                        <ul style={{ wordWrap: "break-word" }}>
-                                                            <strong>{file.name} </strong>
-                                                            <span><a>{file.url}</a></span>
-                                                        </ul>
+                                                        <a href={file.url}>{file.name}</a>
                                                     </div>
                                                 )
                                             }
@@ -198,7 +196,7 @@ class OutgoingDataTab extends Component {
                                     )
                                     : <span>{translate('task.task_process.not_have_doc')}</span>
                             }
-                            <div style={{ marginRight: 10 }}>
+                            <div style={{ marginTop: 20 }}>
                                 <button type="button" style={{ width: "100%"}} className="btn btn-block btn-default" onClick={() => this.handleSaveEdit()} disabled={this.DOCUMENT.length === 0 && this.INFORMATION.length === 0}>{translate('task.task_process.save')}</button>
                             </div>
 

@@ -63,11 +63,10 @@
   }
   .task-progress{
     z-index: -1;
-    /* background-color: rgb(104, 152, 255); */
-    height: 21px;
+    height: 100%;
     position: absolute;
-    top: 0.5px;
-    border-radius: 3px;
+    top: 0px;
+    border-radius: 2px;
   }
   .flex-right {
     display: flex;

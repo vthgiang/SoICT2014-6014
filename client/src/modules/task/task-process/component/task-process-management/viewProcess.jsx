@@ -8,7 +8,7 @@ import { performTaskAction } from "../../../task-perform/redux/actions";
 import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil'
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
-import customModule from './../custom'
+import customModule from '../custom-task-process'
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import './../processDiagram.css'
@@ -409,7 +409,7 @@ class ViewProcess extends Component {
                         </div>
 
                         <div className={`${isTabPane? "": "col-md-4"}`}>
-                            <div className='description-box'>
+                            <div className='description-box without-border'>
                                 {/* tên quy trình */}
                                 <div>
                                     <strong>{translate("task.task_process.process_name")}:</strong>

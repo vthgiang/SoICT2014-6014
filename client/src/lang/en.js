@@ -917,6 +917,7 @@ export default {
             salary: {
                 // list_salary: 'List of staff salary',
                 file_name_export: 'Salary tracking table',
+                other_salary: 'Other salary',
 
                 // Nhóm dành cho table
                 table: {
@@ -965,7 +966,7 @@ export default {
 
             // Quản lý nghỉ phép
             annual_leave: {
-                // list_annual_leave: 'List of staff annual leave',
+                file_export_name: 'Annual leave statistics table',
 
                 // Nhóm dành cho table
                 table: {
@@ -1152,6 +1153,7 @@ export default {
                 religion: 'Religion',
                 active: 'Working',
                 leave: 'Quit job',
+                status_work: 'Labor status',
 
                 mobile_phone: 'Mobile phone',
                 mobile_phone_1: 'Mobile phone 1',
@@ -1310,6 +1312,32 @@ export default {
                 },
 
                 employee_management: {
+                    // Nhóm dánh cho export excel
+                    file_export_name: 'Staffs imformation',
+                    export: {
+                        sheet1: '1.Nhân viên',
+                        sheet2: '2.HS Nhân viên - Kinh nghiệm',
+                        sheet3: '3.HS Nhân viên - Bằng cấp',
+                        sheet4: '4.HS Nhân viên - Chứng chỉ',
+                        sheet5: '5.HS Nhân viên - Hợp đồng',
+                        sheet6: '6.HS Nhân viên - Bảo hiểm XH',
+                        sheet7: '7.HS Nhân viên - Tài liệu',
+                        sheet8: '8.HS Nhân viên - Khen thưởng',
+                        sheet9: '9.HS Nhân viên - Kỷ luật',
+                        sheet10: '10.HS Nhân viên - Lương thưởng',
+                        sheet11: '11.HS Nhân viên - Nghỉ phép',
+
+                        emergency_contact_person: 'Người liên hệ khẩn cấp',
+                        relation_with_emergency_contact_person: 'Quan hệ với người liên hệ khẩn cấp',
+                        emergency_contact_person_address: 'Địa chỉ người liên hệ khẩn cấp',
+                        emergency_contact_person_phone_number: 'Điện thoại di động người liên hệ khẩn cấp',
+                        emergency_contact_person_home_nhone: 'Điện thoại nhà riêng người liên hệ khẩn cấp',
+                        emergency_contact_person_email: 'Email người liên hệ khẩn cấp',
+                        atmNumber: 'Số tài khoản ngân hàng',
+                        bank_address: 'Chi nhánh ngân hàng',
+                        health_insurance_start_date: 'Ngày BHYT có hiệu lực',
+                        health_insurance_end_date: 'Ngày BHYT hết hạn',
+                    },
 
                     // Nhón dành cho UI
                     have: 'Have',
@@ -1493,10 +1521,27 @@ export default {
         // Modules quản lý đào tạo
         training: {
             course: {
+                // Nhóm dành cho UI
+                study_at: 'Study at',
+                from: 'from',
+                to: 'to',
+                with_lecturer: 'with lecturer',
+                offered_by: 'Training by',
+                belong_type: 'Type of training',
+                with_cost: 'with a cost of',
+                commitment_time: 'and commitment time',
+                month: 'months',
+                staff: 'staff',
+                attend: 'involved',
+
                 no_course_type: 'Select training type',
                 all_course_type: 'Select all training type',
-                start_date: 'Starting time',
+                start_date: 'Start time',
                 end_date: 'End time',
+                start_date_before_end_date: 'The start time must be before the end time',
+                end_date_after_start_date: 'The end time must be after the start time',
+                employee_attend: 'Staff involved',
+                select_education_program: 'Select training program',
 
                 table: {
                     course_code: 'Course code',
@@ -1506,6 +1551,11 @@ export default {
                     course_place: 'Course place',
                     offered_by: 'Offered by',
                     course_type: 'Training type',
+                    lecturer: 'Lecturers',
+                    education_program: 'Under the training program',
+                    cost: 'Training costs',
+                    employee_commitment_time: 'Commitment time (unit: Month)',
+                    result: 'Result',
                 },
 
                 // Loại đào tao
@@ -1513,6 +1563,18 @@ export default {
                     internal: 'Internal',
                     external: 'External',
                 },
+
+                // Kết quả đào tạo
+                result: {
+                    pass: 'Pass',
+                    falied: 'Failed',
+                },
+
+                // Nhóm action
+                add_course: 'Add training course',
+                edit_course: 'edit training course',
+                delete_course: 'delete training course',
+                view_course: 'Training course information',
 
                 // Thông điệp trả về từ server
                 name_required: 'Name of the training course required',
@@ -1847,6 +1909,7 @@ export default {
             // Quản lý đề nghị mua sắm thiết bị
             manage_recommend_procure: {
                 asset_recommend: 'Asset recommend procure',
+                equipment_description: 'Equipment description',
                 add_recommend_card: 'Add new form recommend procure asset',
                 view_recommend_card: 'View form recommend procure asset',
                 edit_recommend_card: 'Edit form recommend procure asset',
@@ -2337,7 +2400,7 @@ export default {
 
                 is_task_process: 'This is a task of process',
                 activated_task: "Activate",
-                following_task: "the following tasks",
+                following_task: "Click here to activate the following tasks",
 
                 // TODO: code_mesage_task_perform
                 create_result_task_success: 'Evaluate task successfully',

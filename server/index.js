@@ -95,7 +95,7 @@ if(process.env.MULTI_TENANT === 'true'){
 	app.use("/task/task-templates", require("./modules/task/task-template/taskTemplate.route"));
 	app.use("/process", require("./modules/task/tasks-process/taskProcess.route"));
 	app.use("/educationProgram", require("./modules/trainning/education-program/educationProgram.route"));
-	app.use("/courses", require("./modules/trainning/course/course.route"));
+	app.use("/course", require("./modules/trainning/course/course.route"));
 
 	//asset
 	app.use("/assettype", require("./modules/asset/asset-type/asset-type.route"));
