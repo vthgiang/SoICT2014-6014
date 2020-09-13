@@ -2430,7 +2430,7 @@ export default {
 
                 is_task_process: 'Đây là công việc theo quy trình',
                 activated_task: "Kích hoạt",
-                following_task: "các công việc phía sau",
+                following_task: "Nhấn chuột để kích hoạt các công việc phía sau",
 
 
                 // TODO: code_mesage_task_perform

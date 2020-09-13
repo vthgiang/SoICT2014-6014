@@ -2399,7 +2399,7 @@ export default {
 
                 is_task_process: 'This is a task of process',
                 activated_task: "Activate",
-                following_task: "the following tasks",
+                following_task: "Click here to activate the following tasks",
 
                 // TODO: code_mesage_task_perform
                 create_result_task_success: 'Evaluate task successfully',
