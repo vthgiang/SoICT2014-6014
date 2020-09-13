@@ -1909,6 +1909,7 @@ export default {
             // Quản lý đề nghị mua sắm thiết bị
             manage_recommend_procure: {
                 asset_recommend: 'Asset recommend procure',
+                equipment_description: 'Equipment description',
                 add_recommend_card: 'Add new form recommend procure asset',
                 view_recommend_card: 'View form recommend procure asset',
                 edit_recommend_card: 'Edit form recommend procure asset',
@@ -2399,7 +2400,7 @@ export default {
 
                 is_task_process: 'This is a task of process',
                 activated_task: "Activate",
-                following_task: "the following tasks",
+                following_task: "Click here to activate the following tasks",
 
                 // TODO: code_mesage_task_perform
                 create_result_task_success: 'Evaluate task successfully',

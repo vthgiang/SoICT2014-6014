@@ -89,3 +89,4 @@ class PieChart extends Component {
 
 const pieChart = connect(null, null)(withTranslate(PieChart));
 export { pieChart as PieChart };
+

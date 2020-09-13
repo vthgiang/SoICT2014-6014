@@ -202,7 +202,6 @@ function dataAfterAggregate(input) {
             }
             return item;
         })
-
         const result = aggregate(allTasks); // gọi hàm tính trung bình cộng và tổng. 
         return {
             time,

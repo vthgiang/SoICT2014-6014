@@ -189,9 +189,8 @@ class UseRequestManagerEditForm extends Component {
     isFormValidated = () => {
         let result = this.validateDateCreate(this.state.dateCreate, false) &&
             this.validateReqContent(this.state.reqContent, false) &&
-            this.validateDateStartUse(this.state.dateCreate, false) &&
-            this.validateDateEndUse(this.state.dateCreate, false)
-
+            this.validateDateStartUse(this.state.dateCreate, false)
+            
         return result;
     }
 
@@ -364,7 +363,7 @@ class UseRequestManagerEditForm extends Component {
 
                                 {/* Thời gian đăng ký sử dụng đến ngày */}
                                 <div className={`form-group ${!errorOnDateEndUse ? "" : "has-error"}`}>
-                                    <label>{translate('asset.general_information.handover_to_date')}<span className="text-red">*</span></label>
+                                    <label>{translate('asset.general_information.handover_to_date')}</label>
                                     <DatePicker
                                         id={`edit_end_use${_id}`}
                                         value={dateEndUse}

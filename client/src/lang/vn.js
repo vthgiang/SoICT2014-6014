@@ -1937,6 +1937,7 @@ export default {
             // Quản lý đề nghị mua sắm thiết bị
             manage_recommend_procure: {
                 asset_recommend: 'Thiết bị đề nghị mua sắm',
+                equipment_description: 'Mô tả thiết bị',
                 add_recommend_card: 'Thêm mới phiếu đề nghị mua sắm tài sản',
                 view_recommend_card: 'Xem thông tin phiếu đề nghị mua sắm tài sản',
                 edit_recommend_card: 'Chỉnh sửa phiếu đề nghị mua sắm tài sản',
@@ -2430,7 +2431,7 @@ export default {
 
                 is_task_process: 'Đây là công việc theo quy trình',
                 activated_task: "Kích hoạt",
-                following_task: "các công việc phía sau",
+                following_task: "Nhấn chuột để kích hoạt các công việc phía sau",
 
 
                 // TODO: code_mesage_task_perform

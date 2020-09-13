@@ -37,24 +37,14 @@ exports.searchRecommendDistributes = async (req, res) => {
  */
 exports.createRecommendDistribute = async (req, res) => {
     try {
-        if (req.body.recommendNumber.trim() === "") {
-            await LogError(req.user.email, 'CREATE_RECOMMENDDISTRIBUTE', req.user.company);
-            res.status(400).json({
-                success: false,
-                messages: ["type_number_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else {
-            var newRecommendDistribute = await RecommendDistributeService.createRecommendDistribute(req.body, req.user.company._id);
-            await LogInfo(req.user.email, 'CREATE_RECOMMENDDISTRIBUTE', req.user.company);
-            res.status(200).json({
-                success: true,
-                messages: ["create_recommend_distribute_success"],
-                content: newRecommendDistribute
-            });
-        }
+        var newRecommendDistribute = await RecommendDistributeService.createRecommendDistribute(req.body, req.user.company._id);
+        await LogInfo(req.user.email, 'CREATE_RECOMMENDDISTRIBUTE', req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ["create_recommend_distribute_success"],
+            content: newRecommendDistribute
+        });
+        
     } catch (error) {
         await LogError(req.user.email, 'CREATE_RECOMMENDDISTRIBUTE', req.user.company);
         res.status(400).json({
@@ -96,24 +86,14 @@ exports.deleteRecommendDistribute = async (req, res) => {
  */
 exports.updateRecommendDistribute = async (req, res) => {
     try {
-        if (req.body.recommendNumber.trim() === "") {
-            await LogError(req.user.email, 'EDIT_RECOMMENDDISTRIBUTE', req.user.company);
-            res.status(400).json({
-                success: false,
-                messages: ["type_number_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else {
-            var recommenddistributeUpdate = await RecommendDistributeService.updateRecommendDistribute(req.params.id, req.body);
-            await LogInfo(req.user.email, 'EDIT_RECOMMENDDISTRIBUTE', req.user.company);
-            res.status(200).json({
-                success: true,
-                messages: ["edit_recommend_distribute_success"],
-                content: recommenddistributeUpdate
-            });
-        }
+        var recommenddistributeUpdate = await RecommendDistributeService.updateRecommendDistribute(req.params.id, req.body);
+        await LogInfo(req.user.email, 'EDIT_RECOMMENDDISTRIBUTE', req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ["edit_recommend_distribute_success"],
+            content: recommenddistributeUpdate
+        });
+        
     } catch (error) {
         await LogError(req.user.email, 'EDIT_RECOMMENDDISTRIBUTE', req.user.company);
         res.status(400).json({

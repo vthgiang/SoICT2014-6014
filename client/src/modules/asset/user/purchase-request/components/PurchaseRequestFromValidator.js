@@ -6,6 +6,7 @@ export const PurchaseRequestFromValidator = {
     validateRecommendNumber,
     validateDateCreate,
     validateEquipment,
+    validateEquipmentDescription,
     validateTotal,
     validateUnit,
     validateProponent,
@@ -50,6 +51,16 @@ function validateEquipment(value, translate) {
     }
     return msg;
 }
+
+// Kiểm tra "Thiết bị đề nghị mua" nhập vào
+function validateEquipmentDescription(value, translate) {
+    let msg = undefined;
+    if (value.trim() === "") {
+        msg = "Mô tả thiết bị đề nghị mua không được để trống";
+    }
+    return msg;
+}
+
 // Kiểm tra "Số lượng" nhập vào
 function validateTotal(value, translate) {
     let msg = undefined;
