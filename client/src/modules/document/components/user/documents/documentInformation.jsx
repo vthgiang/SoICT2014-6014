@@ -235,7 +235,7 @@ class DocumentInformation extends Component {
 
                             </div>
                         </div>
-                        <div className="col-xs-12 col-sm-12 col-md-5 col-lg-5" style={{ padding: "10px 0 10px 0", borderLeft: "1px solid #f4f4f4" }}>
+                        <div className="col-xs-12 col-sm-12 col-md-5 col-lg-5" style={{ borderLeft: "1px solid #f4f4f4" }}>
                             <div className="description-box without-border">
                                 <h4 className="scheduler-border">Lịch sử chỉnh sửa</h4>
                                 {documentLogs && documentLogs.map(item =>
