@@ -123,9 +123,7 @@ class SelectBox extends Component {
         const { id, multiple, options = { minimumResultsForSearch: 1 }, items } = this.props;
         const { searching, previouslySelectedOptions, searchText } = this.state;
 
-        if (!searching) {
-            window.$("#" + id).select2(options);
-        } else {
+        if (searching) {
             window.$("#" + id).find("option").remove(); // Xóa các option đã có
 
             if (multiple) {
