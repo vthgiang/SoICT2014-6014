@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import moment from 'moment';
 
-import { ContentMaker, DialogModal } from '../../../../common-components';
+import { ContentMaker, DialogModal, ApiImage } from '../../../../common-components';
 
 import { getStorage } from '../../../../config';
 
@@ -321,10 +321,19 @@ class CommentInProcess extends Component {
             this.props.deleteFileChildComment(deleteFile.fileId, deleteFile.childCommentId, deleteFile.commentId, deleteFile.taskId)
         }
     }
+    isImage = (src) => {
+        let string = src.split(".")
+        let image = ['jpg', 'jpeg', 'png', 'psd', 'pdf', 'tiff', 'gif']
+        if (image.indexOf(string[string.length - 1]) !== -1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     render() {
         var comments
         var minRows = 3, maxRows = 20
-        const { editComment, editChildComment, showChildComment, currentUser, newCommentEdited, newChildCommentEdited, showModalDelete, deleteFile, childComment } = this.state
+        const { editComment, editChildComment, showChildComment, currentUser, newCommentEdited, newChildCommentEdited, showModalDelete, deleteFile, childComment, showfile } = this.state
         const { auth, translate } = this.props
         const { task, inputAvatarCssClass } = this.props
         comments = task?.commentsInProcess
@@ -368,7 +377,7 @@ class CommentInProcess extends Component {
                                                 <React.Fragment>
                                                     <li style={{ display: "inline-table" }}>
                                                         <div><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => this.handleShowFile(item._id)}><b><i className="fa fa-paperclip" aria-hidden="true">{translate('task.task_perform.attach_file')}({item.files && item.files.length})</i></b></a> </div></li>
-                                                    {this.state.showfile.some(obj => obj === item._id) &&
+                                                    {showfile.some(obj => obj === item._id) &&
                                                         <li style={{ display: "inline-table" }}>{item.files.map(elem => {
                                                             return <div><a style={{ cursor: "pointer" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a></div>
                                                         })}</li>
@@ -402,9 +411,19 @@ class CommentInProcess extends Component {
                                             />
                                             {item.files.length > 0 &&
                                                 <div className="tool-level1" style={{ marginTop: -15 }}>
-                                                    {item.files.map(file => {
-                                                        return <div>
-                                                            <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { this.handleDeleteFile(file._id, file.name, "", item._id, task._id, "comment") }}><i className="fa fa-times"></i></a>
+                                                    {item.files.map((elem, index) => {
+                                                        return <div key={index} className="show-files-task">
+                                                            {this.isImage(elem.name) ?
+                                                                <ApiImage
+                                                                    className="attachment-img files-attach"
+                                                                    style={{ marginTop: "5px" }}
+                                                                    src={elem.url}
+                                                                    file={elem}
+                                                                    requestDownloadFile={this.requestDownloadFile}
+                                                                />
+                                                                :
+                                                                <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
+                                                            }
                                                         </div>
                                                     })}
                                                 </div>}
@@ -464,8 +483,20 @@ class CommentInProcess extends Component {
                                                                         <div><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => this.handleShowFile(child._id)}><b><i className="fa fa-paperclip" aria-hidden="true"> File đính kèm ({child.files && child.files.length})</i></b></a></div></li>
                                                                     {this.state.showfile.some(obj => obj === child._id) &&
                                                                         <li style={{ display: "inline-table" }}>
-                                                                            {child.files.map(elem => {
-                                                                                return <div><a style={{ cursor: "pointer" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a></div>
+                                                                            {child.files.map((elem, index) => {
+                                                                                return <div key={index} className="show-files-task">
+                                                                                    {this.isImage(elem.name) ?
+                                                                                        <ApiImage
+                                                                                            className="attachment-img files-attach"
+                                                                                            style={{ marginTop: "5px" }}
+                                                                                            src={elem.url}
+                                                                                            file={elem}
+                                                                                            requestDownloadFile={this.requestDownloadFile}
+                                                                                        />
+                                                                                        :
+                                                                                        <a style={{ cursor: "pointer" }} style={{ marginTop: "5px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
+                                                                                    }
+                                                                                </div>
                                                                             })}
                                                                         </li>
                                                                     }

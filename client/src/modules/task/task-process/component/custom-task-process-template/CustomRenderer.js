@@ -113,8 +113,8 @@ export default class CustomRenderer extends BaseRenderer {
             //Vẽ tên của công việc lên shape
             let foreignObject = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
             foreignObject.setAttribute('x', -50);
-            foreignObject.setAttribute('y', -45);
-            foreignObject.setAttribute('height', 35);
+            foreignObject.setAttribute('y', -35);
+            foreignObject.setAttribute('height', 45);
             foreignObject.setAttribute('width', 150);
 
 

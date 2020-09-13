@@ -990,7 +990,7 @@ class ActionTab extends Component {
                                                                 {item.files.map((elem, index) => {
                                                                     return <div key={index} className="show-files-task">
                                                                         {this.isImage(elem.name) ?
-                                                                            <ApiImage 
+                                                                            <ApiImage
                                                                                 className="attachment-img files-attach"
                                                                                 style={{ marginTop: "5px" }}
                                                                                 src={elem.url}
@@ -1093,11 +1093,11 @@ class ActionTab extends Component {
                                                                                 {child.files.map((elem, index) => {
                                                                                     return <div key={index} className="show-files-task">
                                                                                         {this.isImage(elem.name) ?
-                                                                                            <ApiImage 
-                                                                                                className="attachment-img files-attach" 
-                                                                                                style={{ marginTop: "5px"}} 
+                                                                                            <ApiImage
+                                                                                                className="attachment-img files-attach"
+                                                                                                style={{ marginTop: "5px" }}
                                                                                                 src={elem.url}
-                                                                                                file={elem} 
+                                                                                                file={elem}
                                                                                                 requestDownloadFile={this.requestDownloadFile}
                                                                                             />
                                                                                             :
@@ -1217,16 +1217,9 @@ class ActionTab extends Component {
                         <div className={selected === "taskComment" ? "active tab-pane" : "tab-pane"} id="taskComment">
                             {typeof taskComments !== 'undefined' && taskComments.length !== 0 ?
                                 taskComments.map((item, key) => {
-                                    let numberImage = 0;
-                                    item.files.forEach(x => {
-                                        if (this.isImage(x.name)) {
-                                            numberImage = numberImage + 1
-                                        }
-                                    })
                                     return (
                                         <div key={key}>
                                             <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + item.creator?.avatar)} alt="User Image" />
-
                                             {editTaskComment !== item._id && // Khi đang edit thì ẩn đi
                                                 <React.Fragment>
                                                     <div className="content-level1">
