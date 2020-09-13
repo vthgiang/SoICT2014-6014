@@ -15,10 +15,6 @@ const CourseSchema = new Schema({
         required: true,
         enum:['external','internal'] //external- đào tạo ngoài, internal-đào tại nội bộ
     },
-    company: {
-        type: Schema.Types.ObjectId,
-        ref: 'companies'
-    },
     offeredBy: { // Đơn vị tổ chức/cung cấp khóa học, có thể ở ngoài công ty
         type: String,
         required: true
@@ -52,11 +48,15 @@ const CourseSchema = new Schema({
     },
     educationProgram: {
         type: Schema.Types.ObjectId,
-        ref: 'education_programs',
+        ref: 'EducationProgram',
         required: true
     },
 }, {
     timestamps: true,
 });
 
-module.exports = Course = (db) => db.model("courses", CourseSchema);
+module.exports = (db) => {
+    if(!db.models.Course)
+        return db.model('Course', CourseSchema);
+    return db.models.Course;
+}

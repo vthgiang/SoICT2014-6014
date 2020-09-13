@@ -8,7 +8,7 @@ import { performTaskAction } from "../../../task-perform/redux/actions";
 import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil'
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
-import customModule from './../custom'
+import customModule from '../custom-task-process'
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import './../processDiagram.css'
@@ -65,7 +65,6 @@ class ViewProcess extends Component {
         //Vo hieu hoa double click edit label
         eventBus.on('element.dblclick', 10000, function (event) {
             var element = event.element;
-
             if (isAny(element, ['bpmn:Task'])) {
                 return false; // will cancel event
             }
@@ -114,7 +113,11 @@ class ViewProcess extends Component {
                 defaultUnit = user.organizationalUnitsOfUser[0]
             }
             this.props.getChildrenOfOrganizationalUnits(defaultUnit && defaultUnit._id);
-            this.modeler.importXML(nextProps.data.xmlDiagram, function (err) { });
+            var modeler = this.modeler
+            this.modeler.importXML(nextProps.data.xmlDiagram, function (err) {
+                let canvas = modeler.get('canvas');
+                canvas.zoom('fit-viewport');
+            });
             return true;
         }
         if (nextProps.data) {
@@ -122,17 +125,23 @@ class ViewProcess extends Component {
             let modeling = this.modeling;
             let state = this.state;
             this.modeler.importXML(nextProps.data.xmlDiagram, function (err) {
+                // handle zoom fit
+                // let canvas = modeler.get('canvas');
+                // canvas.zoom('fit-viewport');
 
+                // change color for task
                 let infoTask = nextProps.data.tasks
                 let info = state.info;
 
                 if (infoTask) {
                     for (let i in infoTask) {
+                        let element1 = (Object.keys(modeler.get('elementRegistry')).length > 0) && modeler.get('elementRegistry').get(infoTask[i].codeInProcess);
+                        element1 && modeling.updateProperties(element1, {
+                            progress: infoTask[i].progress,
+                        });
                         if (infoTask[i].status === "Finished") {
-                            let element1 = (Object.keys(modeler.get('elementRegistry')).length > 0) && modeler.get('elementRegistry').get(infoTask[i].codeInProcess);
-
                             element1 && modeling.setColor(element1, {
-                                fill: '#f9f9f9', // 9695AD
+                                fill: '#f9f9f9',
                                 stroke: '#c4c4c7'
                             });
 
@@ -148,10 +157,7 @@ class ViewProcess extends Component {
                                 }
                             })
                         }
-
                         if (infoTask[i].status === "Inprocess") {
-                            let element1 = (Object.keys(modeler.get('elementRegistry')).length > 0) && modeler.get('elementRegistry').get(infoTask[i].codeInProcess);
-
                             element1 && modeling.setColor(element1, {
                                 fill: '#84ffb8',
                                 stroke: '#14984c', //E02001
@@ -164,7 +170,6 @@ class ViewProcess extends Component {
                 }
 
             });
-
             return true;
         }
         return true;
@@ -184,7 +189,6 @@ class ViewProcess extends Component {
                         organizationalUnit: this.props.listOrganizationalUnit[0]?._id,
                     }
                 }
-
                 return {
                     ...state,
                     showInfo: true,
@@ -365,7 +369,7 @@ class ViewProcess extends Component {
     render() {
         const { translate, role, user } = this.props;
         const { id, info, startDate, endDate, status,
-            processDescription, processName } = this.state;
+                processDescription, processName } = this.state;
         const { isTabPane } = this.props
 
         return (
@@ -404,45 +408,44 @@ class ViewProcess extends Component {
                             </div>
                         </div>
 
-                        <div className={`${isTabPane ? 'row' : 'right-content col-md-4'}`}>
-
-                            <div className={`${isTabPane ? "col-lg-6 col-md-6 col-sm-6 col-xs-6" : "box box-solid"}`}>
-                                { // !isTabPane && style={isTabPane ? {display: "flex", flexDirection: "row"} : {}}
-                                    <div className="box-header with-border">
-                                        {translate('task_template.general_information')}
-                                    </div>
-                                }
-                                <div className="box-body">
-
-                                    {/* tên quy trình */}
-                                    <dt>{translate("task.task_process.process_name")}</dt>
-                                    <dd>{processName}</dd>
-
-                                    {/* mô tả quy trình */}
-                                    <dt>{translate("task.task_process.process_description")}</dt>
-                                    <dd>{processDescription}</dd>
-
-                                    {/* mô tả quy trình */}
-                                    <dt>{translate("task.task_process.process_status")}</dt>
-                                    <dd>{this.formatStatus(status)}</dd>
-
-                                    {/* thời gian thực hiện quy trình */}
-                                    <dt>{translate("task.task_process.time_of_process")}</dt>
-                                    <dd>{this.formatDate(startDate)} <i className="fa fa-fw fa-caret-right"></i> {this.formatDate(endDate)}</dd>
+                        <div className={`${isTabPane? "": "col-md-4"}`}>
+                            <div className='description-box without-border'>
+                                {/* tên quy trình */}
+                                <div>
+                                    <strong>{translate("task.task_process.process_name")}:</strong>
+                                    <span>{processName}</span>
                                 </div>
-                            </div>
-                            <div className={` ${isTabPane ? "col-lg-6 col-md-6 col-sm-6 col-xs-6" : "box box-solid"}`}>
-                                { // !isTabPane &&
-                                    <div className="box-header with-border">
-                                        {translate("task.task_process.notice")}
-                                    </div>
-                                }
-                                <div className="box-body">
 
-                                    {/**Các thông tin của mẫu công việc */}
-                                    <dd><i className="fa fa-square" style={{ color: "#fff", border: "1px solid #000", borderRadius: "3px", marginRight: "5px" }}></i>{translate("task.task_process.wait_for_approval")}</dd>
-                                    <dd><i className="fa fa-square" style={{ color: "#84ffb8", border: "1px solid #14984c", borderRadius: "3px", marginRight: "5px" }}></i>{translate("task.task_process.inprocess")}</dd>
-                                    <dd><i className="fa fa-square" style={{ color: "#f9f9f9", border: "1px solid #c4c4c7", borderRadius: "3px", marginRight: "5px" }}></i>{translate("task.task_process.finished")}</dd>
+                                {/* mô tả quy trình */}
+                                <div>
+                                    <strong>{translate("task.task_process.process_description")}:</strong>
+                                    <span>{processDescription}</span>
+                                </div>
+
+                                {/* mô tả quy trình */}
+                                <div>
+                                    <strong>{translate("task.task_process.process_status")}:</strong>
+                                    <span>{this.formatStatus(status)}</span>
+                                </div>
+
+                                {/* thời gian thực hiện quy trình */}
+                                <div>
+                                    <strong>{translate("task.task_process.time_of_process")}:</strong>
+                                    <span>{this.formatDate(startDate)} <i className="fa fa-fw fa-caret-right"></i> {this.formatDate(endDate)}</span>
+                                </div>
+
+                                <div>
+                                    <strong>{translate("task.task_process.notice")}:</strong>
+                                </div>
+                                
+                                <div style={{ display: "flex", alignItems: "center" }}>
+                                    <div style={{ backgroundColor: "#fff", height: "30px", width: "40px", border: "2px solid #000", borderRadius: "3px", marginRight: "5px", marginTop: 4 }}></div>{translate("task.task_process.wait_for_approval")}
+                                </div>
+                                <div style={{ display: "flex", alignItems: "center" }}>
+                                    <div style={{ backgroundColor: "#84ffb8", height: "30px", width: "40px", border: "2px solid #14984c", borderRadius: "3px", marginRight: "5px", marginTop: 4 }}></div>{translate("task.task_process.inprocess")}
+                                </div>
+                                <div style={{ display: "flex", alignItems: "center" }}>
+                                    <div style={{ backgroundColor: "#f9f9f9", height: "30px", width: "40px", border: "2px solid #c4c4c7", borderRadius: "3px", marginRight: "5px", marginTop: 4 }}></div>{translate("task.task_process.finished")}
                                 </div>
                             </div>
                         </div>

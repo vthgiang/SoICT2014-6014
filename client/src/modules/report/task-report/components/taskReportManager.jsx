@@ -10,6 +10,8 @@ import { TaskReportActions } from '../redux/actions';
 import { TaskReportCreateForm } from './taskReportCreateForm';
 import { TaskReportEditForm } from './taskReportEditForm';
 import { TaskReportDetailForm } from './taskReportDetailForm';
+import moment from 'moment';
+
 
 class TaskReportManager extends Component {
     constructor(props) {
@@ -21,6 +23,7 @@ class TaskReportManager extends Component {
             month: null,
             creator: '',
             currentRole: localStorage.getItem("userId"),
+            chartStatus: false,
         }
     }
     componentDidMount() {
@@ -34,7 +37,6 @@ class TaskReportManager extends Component {
      * @param {*} report 
      */
     handleEdit = async (idReport) => {
-        console.log('idTaskReport=>', idReport);
         await this.setState(state => {
             return {
                 ...state,
@@ -153,6 +155,7 @@ class TaskReportManager extends Component {
         })
         await window.$('#modal-detail-taskreport').modal('show');
     }
+
     /**
      * Bắt sự kiện setting số dòng hiện thị trên một trang
      * @param {*} number 
@@ -162,7 +165,6 @@ class TaskReportManager extends Component {
             limit: parseInt(number),
         });
         this.props.getTaskReports(this.state);
-
     }
 
     checkPermissonCreator = (creator) => {
@@ -220,10 +222,8 @@ class TaskReportManager extends Component {
         return (
             <div className="box">
                 <div className="box-body qlcv" >
-                    {
-                        this.state.currentEditRow !== undefined &&
-                        <TaskReportEditForm taskReportId={this.state.currentEditRow} />
-                    }
+
+                    <TaskReportEditForm taskReportId={this.state.currentEditRow} />
 
                     {/* Thêm mới bao cáo */}
                     <div style={{ height: '40px' }}>
@@ -231,7 +231,6 @@ class TaskReportManager extends Component {
                     </div>
                     <TaskReportCreateForm />
 
-                    {/* <TaskReportViewForm taskReportId={this.state.currentViewRow} /> */}
                     <TaskReportDetailForm taskReportId={this.state.currentViewRow} />
 
                     {/* search form */}
@@ -244,7 +243,6 @@ class TaskReportManager extends Component {
                             <label className="form-control-static">{translate('report_manager.creator')}</label>
                             <input className="form-control" type="text" onKeyUp={this.handleEnterLimitSetting} name="creator" onChange={this.handleChangeCreator} placeholder={translate('report_manager.search_by_creator')} />
                         </div>
-
                     </div>
 
                     <div className="form-inline" style={{ marginBottom: 10 }}>
@@ -309,7 +307,6 @@ class TaskReportManager extends Component {
                                                         <i className="material-icons">delete</i>
                                                     </a>
                                                 </React.Fragment>
-
                                             }
                                         </td>
                                     </tr>
@@ -319,7 +316,7 @@ class TaskReportManager extends Component {
                     </table>
                     {reports.isLoading ?
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                        reports.listTaskReport.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>}
+                        reports.listTaskReport && reports.listTaskReport.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>}
 
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>

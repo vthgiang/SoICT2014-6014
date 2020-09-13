@@ -66,7 +66,26 @@ class PurchaseRequestEditForm extends Component {
                 return {
                     ...state,
                     errorOnEquipment: msg,
-                    equipment: value,
+                    equipmentName: value,
+                }
+            });
+        }
+        return msg === undefined;
+    }
+
+    // Bắt sự kiện thay đổi "Mô tảThiết bị đề nghị mua"
+    handleEquipmentDescriptionChange = (e) => {
+        let value = e.target.value;
+        this.validateEquipmentDescription(value, true);
+    }
+    validateEquipmentDescription = (value, willUpdateState = true) => {
+        let msg = PurchaseRequestFromValidator.validateEquipmentDescription(value, this.props.translate)
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnEquipmentDescription: msg,
+                    equipmentDescription: value,
                 }
             });
         }
@@ -132,9 +151,10 @@ class PurchaseRequestEditForm extends Component {
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
         let result =
-            this.validateEquipment(this.state.equipment, false) &&
+            this.validateEquipment(this.state.equipmentName, false) &&
             this.validateTotal(this.state.total, false) &&
             this.validateUnit(this.state.unit, false);
+
         return result;
     }
 
@@ -152,7 +172,8 @@ class PurchaseRequestEditForm extends Component {
                 recommendNumber: nextProps.recommendNumber,
                 dateCreate: nextProps.dateCreate,
                 proponent: nextProps.proponent,
-                equipment: nextProps.equipment,
+                equipmentName: nextProps.equipmentName,
+                equipmentDescription: nextProps.equipmentDescription,
                 supplier: nextProps.supplier,
                 total: nextProps.total,
                 unit: nextProps.unit,
@@ -172,8 +193,8 @@ class PurchaseRequestEditForm extends Component {
     render() {
         const { _id } = this.props;
         const { translate, recommendProcure, user } = this.props;
-        const { recommendNumber, dateCreate, proponent, equipment, supplier, total, unit, estimatePrice,
-            errorOnEquipment, errorOnTotal, errorOnUnit } = this.state;
+        const { recommendNumber, dateCreate, proponent, equipmentName, equipmentDescription, supplier, total, unit, estimatePrice,
+            errorOnEquipment, errorOnEquipmentDescription, errorOnTotal, errorOnUnit } = this.state;
 
         var userlist = user.list;
 
@@ -193,7 +214,7 @@ class PurchaseRequestEditForm extends Component {
                             <div className="col-sm-6">
                                 {/* Mã phiếu */}
                                 <div className="form-group">
-                                    <label>{translate('asset.general_information.form_code')}<span className="text-red">*</span></label>
+                                    <label>{translate('asset.general_information.form_code')}</label>
                                     <input type="text" className="form-control" name="recommendNumber" value={recommendNumber} onChange={this.handleRecommendNumberChange} />
                                 </div>
 
@@ -231,9 +252,18 @@ class PurchaseRequestEditForm extends Component {
                                 {/* Thiết bị đề nghị mua */}
                                 <div className={`form-group ${!errorOnEquipment ? "" : "has-error"}`}>
                                     <label>{translate('asset.manage_recommend_procure.asset_recommend')}<span className="text-red">*</span></label>
-                                    <textarea className="form-control" rows="3" style={{ height: 34 }} name="equipment" value={equipment} onChange={this.handleEquipmentChange}></textarea>
+                                    <input type="text" className="form-control" name="equipmentName" value={equipmentName} onChange={this.handleEquipmentChange} autoComplete="off" placeholder="Thiết bị đề nghị mua" />
                                     <ErrorLabel content={errorOnEquipment} />
                                 </div>
+
+                                {/* Mô tả thiết bị đề nghị mua */}
+                                <div className={`form-group ${errorOnEquipmentDescription === undefined ? "" : "has-error"}`}>
+                                    <label>{translate('asset.manage_recommend_procure.equipment_description')}</label>
+                                    <textarea className="form-control" rows="3" name="equipmentDescription" value={equipmentDescription} onChange={this.handleEquipmentDescriptionChange} autoComplete="off"
+                                        placeholder="Thiết bị đề nghị mua"></textarea>
+                                    <ErrorLabel content={errorOnEquipmentDescription} />
+                                </div>
+
                             </div>
 
                             <div className="col-sm-6">

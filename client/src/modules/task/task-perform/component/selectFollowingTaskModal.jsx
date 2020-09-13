@@ -141,35 +141,34 @@ class SelectFollowingTaskModal extends Component {
                 >
                     {/* Danh sách các công việc ĐÃ kích hoạt */}
                     {checkHasActivatedFollowTask &&
-                        <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">{translate('task.task_perform.activated_task_list')}</legend>
+                        <div className="description-box">
+                            <strong>{translate('task.task_perform.activated_task_list')}</strong>
                             {task.followingTasks.map((x, key) => {
                                 if (x.activated) {
-                                    return <ul key={key} style={{ paddingLeft: 20 }}>
-                                        <li>{x.task.name} {x.link ? `- ${translate('task.task_perform.task_link_of_process')}: ${x.link}` : ''}</li>
-                                        <br />
-                                    </ul>
+                                    return <div key={key} style={{ paddingLeft: 20 }}>
+                                        {x.task.name} {x.link ? `- ${translate('task.task_perform.task_link_of_process')}: ${x.link}` : ''}
+                                    </div>
                                 }
                             })}
-                        </fieldset>
+                        </div>
                     }
 
                     {/* Danh sách công việc CHƯA kích hoạt */}
-                    <fieldset className="scheduler-border">
-                        <legend className="scheduler-border">{translate('task.task_perform.choose_following_task')}<span style={{ color: "red" }}> *</span></legend>
+                    <div className="description-box">
+                        <strong>{translate('task.task_perform.choose_following_task')}<span style={{ color: "red" }}> *</span></strong>
 
                         {task.followingTasks.length !== 0 ?
                             (checkHasNonActivatedFollowTask ?
                                 (task.followingTasks.map((x, key) => {
                                     if (x.activated === false) {
                                         return <div key={key} style={{ paddingLeft: 20 }}>
-                                            <label style={{ fontWeight: "normal", margin: "7px 0px" }}>
+                                            <label style={{ fontWeight: "normal" }}>
                                                 <input
                                                     type="checkbox"
                                                     checked={selectedFollowing[x.task._id] && selectedFollowing[x.task._id].checked === true}
                                                     value={x.task._id}
                                                     name="following" onChange={(e) => this.changeSelectedFollowingTask(e, x.task._id)}
-                                                />&nbsp;&nbsp;&nbsp;{x.task.name} {x.link ? `- ${translate('task.task_perform.task_link_of_process')}: ${x.link}` : ''}
+                                                />{x.task.name} {x.link ? `- ${translate('task.task_perform.task_link_of_process')}: ${x.link}` : ''}
                                             </label>
                                             <br />
                                         </div>
@@ -179,7 +178,7 @@ class SelectFollowingTaskModal extends Component {
                             )
                             : <div>{translate('task.task_perform.not_have_following')}</div>
                         }
-                    </fieldset>
+                    </div>
                 </DialogModal>
             </React.Fragment>
         );

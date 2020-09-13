@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DataTableSetting, PaginateBar, SelectMulti } from '../../../../../common-components';
+import { DataTableSetting, PaginateBar, SelectMulti, TreeSelect } from '../../../../../common-components';
 
 import { AssetManagerActions } from '../../../admin/asset-information/redux/actions';
 import { AssetTypeActions } from "../../../admin/asset-type/redux/actions";
@@ -132,11 +132,34 @@ class AssetAssignedManager extends Component {
             status: value
         })
     }
+    // Function lưu nhóm tài sản vào state khi thay đổi
+    handleGroupChange = (value) => {
+        if (value.length === 0) {
+            value = null
+        }
+
+        this.setState({
+            ...this.state,
+            group: value
+        })
+    }
+    // Function lưu giá trị người sử dụng vào state khi thay đổi
+    handleHandoverUserChange = (value) => {
+        if (value.length === 0) {
+            value = null
+        }
+
+        this.setState({
+            ...this.state,
+            handoverUser: value
+        })
+    }
 
     // Function bắt sự kiện tìm kiếm
     handleSubmitSearch = async () => {
         await this.setState({
             ...this.state,
+            page: 0
         })
         this.props.getAllAsset(this.state);
     }
@@ -158,6 +181,37 @@ class AssetAssignedManager extends Component {
         });
         this.props.getAllAsset(this.state);
     }
+    getAssetTypes = () => {
+        let { assetType } = this.props;
+        let assetTypeName = assetType && assetType.listAssetTypes;
+        let typeArr = [];
+        assetTypeName.map(item => {
+            typeArr.push({
+                _id: item._id,
+                id: item._id,
+                name: item.typeName,
+                parent: item.parent ? item.parent._id : null
+            })
+        })
+        return typeArr;
+    }
+
+    getUserAndDepartment = () => {
+        let { user } = this.props;
+        let listUser = user && user.list;
+        let data = {
+            userArr: [],
+        };
+
+        listUser.map(x => {
+            data.userArr.push({
+                value: x._id,
+                text: x.name
+            })
+        })
+
+        return data
+    }
 
     render() {
         const { id, translate, assetsManager, assetType, user, auth } = this.props;
@@ -166,6 +220,8 @@ class AssetAssignedManager extends Component {
         var lists = "";
         var userlist = user.list;
         var assettypelist = assetType.listAssetTypes;
+        let assetTypeName = this.state.assetType ? this.state.assetType : [];
+
         var formater = new Intl.NumberFormat();
         if (assetsManager.isLoading === false) {
             lists = assetsManager.listAssets;
@@ -176,6 +232,8 @@ class AssetAssignedManager extends Component {
             parseInt((assetsManager.totalList / limit) + 1);
 
         var currentPage = parseInt((page / limit) + 1);
+        let typeArr = this.getAssetTypes();
+        let dataSelectBox = this.getUserAndDepartment();
 
         return (
             <div id="assetassigned" className="tab-pane active">
@@ -196,17 +254,49 @@ class AssetAssignedManager extends Component {
                             <input type="text" className="form-control" name="assetName" onChange={this.handleAssetNameChange} placeholder={translate('asset.general_information.asset_name')} autoComplete="off" />
                         </div>
                     </div>
+                    <div className="form-inline">
 
-                    <div className="form-inline" style={{ marginBottom: 10 }}>
-                        {/* Phân loại */}
+                        {/* Nhóm tài sản */}
                         <div className="form-group">
-                            <label className="form-control-static">{translate('asset.general_information.type')}</label>
-                            <SelectMulti id={`multiSelectType`} multiple="multiple"
-                                options={{ nonSelectedText: translate('asset.general_information.select_asset_type'), allSelectedText: translate('asset.general_information.select_all_asset_type') }}
-                                onChange={this.handleTypeChange}
-                                items={[]}
+                            <label className="form-control-static">{translate('asset.general_information.asset_group')}</label>
+                            <SelectMulti id={`multiSelectGroupInManagement`} multiple="multiple"
+                                options={{ nonSelectedText: translate('asset.asset_info.select_group'), allSelectedText: translate('asset.general_information.select_all_group') }}
+                                onChange={this.handleGroupChange}
+                                items={[
+                                    { value: "Building", text: translate('asset.dashboard.building') },
+                                    { value: "Vehicle", text: translate('asset.dashboard.vehicle') },
+                                    { value: "Machine", text: translate('asset.dashboard.machine') },
+                                    { value: "Other", text: translate('asset.dashboard.other') },
+                                ]}
                             >
                             </SelectMulti>
+                        </div>
+
+                        {/* Loại tài sản */}
+                        <div className="form-group">
+                            <label>{translate('asset.general_information.asset_type')}</label>
+                            <TreeSelect
+                                data={typeArr}
+                                value={assetTypeName}
+                                handleChange={this.handleAssetTypeChange}
+                                mode="hierarchical"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="form-inline" style={{ marginBottom: 10 }}>
+                        {/* Người được giao sử dụng */}
+                        <div className="form-group">
+                            <label>Người sử dụng</label>
+                            <SelectMulti
+                                id={`userInManagement`}
+                                multiple="multiple"
+                                options={{ nonSelectedText: "Chọn người sử dụng", allSelectedText: "Chọn tất cả" }}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={dataSelectBox.userArr}
+                                onChange={this.handleHandoverUserChange}
+                            />
                         </div>
 
                         {/* Trạng thái */}
@@ -216,14 +306,15 @@ class AssetAssignedManager extends Component {
                                 options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('asset.general_information.select_all_status') }}
                                 onChange={this.handleStatusChange}
                                 items={[
+                                    { value: "Sẵn sàng sử dụng", text: translate('asset.general_information.ready_use') },
                                     { value: "Đang sử dụng", text: translate('asset.general_information.using') },
                                     { value: "Hỏng hóc", text: translate('asset.general_information.damaged') },
-                                    { value: "Mất", text: translate('asset.general_information.lost') }
+                                    { value: "Mất", text: translate('asset.general_information.lost') },
+                                    { value: "Thanh lý", text: translate('asset.general_information.disposal') }
                                 ]}
                             >
                             </SelectMulti>
                         </div>
-
                         {/* Button tìm kiếm */}
                         <div className="form-group">
                             <button type="button" className="btn btn-success" title={translate('asset.general_information.search')} onClick={() => this.handleSubmitSearch()}>{translate('asset.general_information.search')}</button>
@@ -240,7 +331,7 @@ class AssetAssignedManager extends Component {
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.asset_value')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.status')}</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}
-                                <DataTableSetting
+                                    <DataTableSetting
                                         tableId="assetassigned-table"
                                         columnArr={[
                                             translate('asset.general_information.asset_code'),
@@ -299,7 +390,7 @@ class AssetAssignedManager extends Component {
                         managedBy={currentRowView.managedBy}
                         assignedToUser={currentRowView.assignedToUser}
                         assignedToOrganizationalUnit={currentRowView.assignedToOrganizationalUnit}
-
+                        typeRegisterForUse = {currentRowView.typeRegisterForUse}
                         location={currentRowView.location}
                         description={currentRowView.description}
                         status={currentRowView.status}

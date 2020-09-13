@@ -10,16 +10,15 @@ class PieChart extends Component {
         super(props);
         this.state = {
             pieChart: false,
-            namePieChart: '',
         }
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.pieChartData && nextProps.pieChartData.length > 0) {
+    static getDerivedStateFromProps(props, state) {
+        if (props.pieChartData && props.pieChartData.length > 0) {
             return {
-                ...prevState,
+                ...state,
                 pieChart: true,
-                namePieChart: nextProps.namePieChart,
+                namePieChart: props.namePieChart,
             }
         }
         return null;
@@ -65,18 +64,19 @@ class PieChart extends Component {
                 type: 'pie',
             },
             legend: {
-                position: 'bottom',
-                show: (data.length > 6) ? false : true
+                position: (data.length > 6) ? 'right' : 'bottom',
+                // position: 'right',
+                show: true
             }
         })
     }
     render() {
-        const { data, namePieChart } = this.state;
+        const { namePieChart } = this.state;
         return (
             <React.Fragment>
                 <div className="box box-primary" >
                     <div className="box-header with-border">
-                        <h4 className="box-title">{namePieChart}</h4>
+                        <h4 className="box-title">{namePieChart ? namePieChart : ''}</h4>
                     </div>
                     <div className="box-body report-box">
                         <div ref="pieChart"></div>
@@ -89,3 +89,4 @@ class PieChart extends Component {
 
 const pieChart = connect(null, null)(withTranslate(PieChart));
 export { pieChart as PieChart };
+

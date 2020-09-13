@@ -260,7 +260,6 @@ class DocumentImportForm extends Component {
     }
     render() {
         const { translate } = this.props;
-        console.log('stateeeeeeee');
         let { limit, page, importData, rowError, configData, checkFileImport } = this.state;
         let dataExport = this.handleExportFile(exportDocument);
 

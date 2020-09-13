@@ -119,10 +119,4 @@ class ValuePieChart extends Component {
     }
 }
 
-function mapState(state) { }
-
-const actions = {}
-
-const ValuePieChartConnected = connect(mapState, actions)(withTranslate(ValuePieChart));
-
-export { ValuePieChartConnected as ValuePieChart }
+export default (withTranslate(ValuePieChart));

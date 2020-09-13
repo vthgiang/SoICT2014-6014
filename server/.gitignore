@@ -3,6 +3,7 @@
 .env
 
 /logs/history
+/logs/_multi-tenant/history
 /upload/avatars/*
 /upload/docs/*
 /upload/excels/*

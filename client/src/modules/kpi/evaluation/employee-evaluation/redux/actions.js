@@ -10,6 +10,7 @@ export const kpiMemberActions = {
     getTaskById,
     setPointKPI,
     setkpiImportantLevel,
+    getTaskByListKpis
 };
 /**
  * Lấy tất cả KPI cá nhân
@@ -206,6 +207,29 @@ function setkpiImportantLevel(id_kpi, date) {
             .catch(error => {
                 dispatch({
                     type: kpiMemberConstants.TASK_IMPORTANT_LEVEL_FAILURE,
+                    payload: error
+                })
+            })
+    };
+}
+
+/**
+ *Lấy danh sách công việc theo danh sách Kpis
+ */
+function getTaskByListKpis(listKpis) {
+    return dispatch => {
+        dispatch({ type: kpiMemberConstants.GET_TASK_BY_LIST_KPI_REQUEST });
+
+        kpiMemberServices.getTaskByListKpis(listKpis)
+            .then(res => {
+                dispatch({
+                    type: kpiMemberConstants.GET_TASK_BY_LIST_KPI_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: kpiMemberConstants.GET_TASK_BY_LIST_KPI_FAILURE,
                     payload: error
                 })
             })

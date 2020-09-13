@@ -139,17 +139,19 @@ class ManageHoliday extends Component {
         });
         let exportData = {
             fileName: translate('human_resource.holiday.file_name_export'),
+
             dataSheets: [
                 {
                     sheetName: "sheet1",
+                    sheetTitle: translate('human_resource.holiday.file_name_export'),
                     tables: [
                         {
                             columns: [
-                                { key: "STT", value: translate('human_resource.stt') },
-                                { key: 'type', value: translate('human_resource.holiday.table.type') },
+                                { key: "STT", value: translate('human_resource.stt'), width: 7 },
+                                { key: 'type', value: translate('human_resource.holiday.table.type'), width: 35 },
                                 { key: "startDate", value: translate('human_resource.holiday.table.start_date') },
                                 { key: "endDate", value: translate('human_resource.holiday.table.end_date') },
-                                { key: "description", value: translate('human_resource.holiday.table.describe_timeline'), },
+                                { key: "description", value: translate('human_resource.holiday.table.describe_timeline'), width: 35 },
                             ],
                             data: data
                         }
@@ -177,22 +179,21 @@ class ManageHoliday extends Component {
         let listHoliday = holidays.filter(x => x.type === 'holiday');
 
         return (
-            <div className="row qlcv">
-                <div className="col-lg-4 col-md-6 col-sm-6 col-xs-12 pull-right">
+            <div className="box">
+                <div className="box-body qlcv">
                     <div className="form-inline">
                         {/* Button thêm lịch làm việc */}
                         <div className="dropdown pull-right">
                             <button type="button" className="btn btn-success pull-right dropdown-toggle" data-toggle="dropdown" aria-expanded="true"
                                 title={translate('human_resource.holiday.add_holiday_title')} >{translate('human_resource.holiday.add_holiday')}</button>
                             <ul className="dropdown-menu pull-right" >
-                                <li><a title={translate('human_resource.holiday.add_data_by_excel')} onClick={this.handleImport}>{translate('human_resource.holiday.add_import')}</a></li>
-                                <li><a title={translate('human_resource.holiday.add_holiday_title')} onClick={this.createHoliday}>{translate('human_resource.holiday.add_by_hand')}</a></li>
+                                <li><a style={{ cursor: 'pointer' }} title={translate('human_resource.holiday.add_data_by_excel')} onClick={this.handleImport}>{translate('human_resource.holiday.add_import')}</a></li>
+                                <li><a style={{ cursor: 'pointer' }} title={translate('human_resource.holiday.add_holiday_title')} onClick={this.createHoliday}>{translate('human_resource.holiday.add_by_hand')}</a></li>
                             </ul>
                         </div>
                         <ExportExcel id="export-holiday" buttonName={translate('human_resource.name_button_export')} exportData={exportData} style={{ marginRight: 15, marginTop: 0 }} />
                     </div>
-                </div>
-                <div className="col-lg-8 col-md-6 col-sm-6 col-xs-12">
+
                     <div className="form-inline">
                         {/* Năm */}
                         <div className="form-group">
@@ -210,32 +211,19 @@ class ManageHoliday extends Component {
                             <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => this.handleSunmitSearch()} >{translate('general.search')}</button>
                         </div>
                     </div>
-                </div>
-                {/* Số ngày nghỉ phép trong một năm */}
-                <div className="col-lg-12 col-md-12 col-sm-12 col-xs-12" style={{ marginBottom: 10, marginTop: 5 }}>
-                    {/* <div className="form-inline"> */}
-                    <div className="pull-right">
-                        <label style={{ width: 'auto' }} >{translate('human_resource.holiday.number_date_leave_of_year')}&ensp;</label>
-                        <input className="form-control" style={{ width: 80, display: 'inline' }} value={numberDateLeave} onChange={this.handleNumberDateOfYearChange} type="Number" />
-                        <label style={{ width: 'auto' }} >&ensp;{translate('human_resource.holiday.date_year')}&emsp;</label>
-                        <button type="button" className="btn btn-primary pull-right" onClick={this.updateNumberDateOfYear}>Lưu lại</button>
-                    </div>
-                </div>
 
-                <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12' style={{ padding: 0 }}>
-                    {/* Danh sách kế hoạch nghỉ lễ, ghỉ tết*/}
-                    <div className='col-lg-7 col-md-7 col-sm-12 col-xs-12'>
-                        <div className="box box-primary">
-                            <div className="box-header with-border">
-                                <h3 className="box-title">{translate('human_resource.holiday.list_holiday')}</h3>
-                            </div>
-                            <div className="box-body">
+
+                    <div className="row row-equal-height">
+                        {/* Danh sách thời gian nghỉ lễ, ghỉ tết*/}
+                        <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                            <div id="holiday" className="description-box" style={{ paddingRight: 10 }}>
+                                <h4>{translate('human_resource.holiday.list_holiday')}</h4>
                                 <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
                                     <thead>
                                         <tr>
-                                            <th style={{ width: "8%" }}>{translate('human_resource.stt')}</th>
-                                            <th style={{ width: "25%" }}>{translate('human_resource.holiday.table.timeline')}</th>
-                                            <th style={{ width: "50%" }}>{translate('human_resource.holiday.table.describe_timeline')}</th>
+                                            <th style={{ width: 40 }}>{translate('human_resource.stt')}</th>
+                                            <th>{translate('human_resource.holiday.table.timeline')}</th>
+                                            <th>{translate('human_resource.holiday.table.describe_timeline')}</th>
                                             <th style={{ width: 120 }}>{translate('general.action')}</th>
                                         </tr>
                                     </thead>
@@ -268,101 +256,98 @@ class ManageHoliday extends Component {
                                 }
                             </div>
                         </div>
-                    </div>
 
-                    <div className='col-lg-5 col-md-5 col-sm-12 col-xs-12'>
-                        {/* Danh sách thười gian không được nghỉ*/}
-                        <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12' style={{ padding: 0 }}>
-                            <div className="box box-danger">
-                                <div className="box-header with-border">
-                                    <h3 className="box-title">{translate('human_resource.holiday.list_no_leave')}</h3>
-                                </div>
-                                <div className="box-body">
-                                    <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
-                                        <thead>
-                                            <tr>
-                                                <th style={{ width: 40 }}>{translate('human_resource.stt')}</th>
-                                                <th >{translate('human_resource.holiday.table.timeline')}</th>
-                                                <th>{translate('human_resource.holiday.table.describe_timeline')}</th>
-                                                <th style={{ width: 100 }}>{translate('general.action')}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {listNoLeave && listNoLeave.length !== 0 &&
-                                                listNoLeave.map((x, index) => (
-                                                    <tr key={index}>
-                                                        <td>{index + 1}</td>
-                                                        <td>{(this.formatDate(x.startDate) === this.formatDate(x.endDate)) ? this.formatDate(x.startDate) : this.formatDate(x.startDate) + " - " + this.formatDate(x.endDate)}</td>
-                                                        <td>{x.description}</td>
-                                                        <td>
-                                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa nghỉ phép"><i className="material-icons">edit</i></a>
-                                                            <DeleteNotification
-                                                                content="Xoá ngày nghỉ lễ (tết)"
-                                                                data={{
-                                                                    id: x._id,
-                                                                    info: (this.formatDate(x.startDate) === this.formatDate(x.endDate)) ? this.formatDate(x.startDate) : this.formatDate(x.startDate) + " - " + this.formatDate(x.endDate)
-                                                                }}
-                                                                func={this.props.deleteHoliday}
-                                                            />
-                                                        </td>
-                                                    </tr>)
-                                                )}
-                                        </tbody>
-                                    </table>
-                                    {
-                                        holiday.isLoading ?
-                                            <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                                            (!listNoLeave || listNoLeave.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
-                                    }
 
-                                </div>
+                        <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                            {/* Danh sách thời gian không được xin nghỉ phép*/}
+                            <div className="description-box " style={{ paddingRight: 10 }}>
+                                <h4>{translate('human_resource.holiday.list_no_leave')}</h4>
+                                <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
+                                    <thead>
+                                        <tr>
+                                            <th style={{ width: 40 }}>{translate('human_resource.stt')}</th>
+                                            <th >{translate('human_resource.holiday.table.timeline')}</th>
+                                            <th>{translate('human_resource.holiday.table.describe_timeline')}</th>
+                                            <th style={{ width: 100 }}>{translate('general.action')}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {listNoLeave && listNoLeave.length !== 0 &&
+                                            listNoLeave.map((x, index) => (
+                                                <tr key={index}>
+                                                    <td>{index + 1}</td>
+                                                    <td>{(this.formatDate(x.startDate) === this.formatDate(x.endDate)) ? this.formatDate(x.startDate) : this.formatDate(x.startDate) + " - " + this.formatDate(x.endDate)}</td>
+                                                    <td>{x.description}</td>
+                                                    <td>
+                                                        <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa nghỉ phép"><i className="material-icons">edit</i></a>
+                                                        <DeleteNotification
+                                                            content="Xoá ngày nghỉ lễ (tết)"
+                                                            data={{
+                                                                id: x._id,
+                                                                info: (this.formatDate(x.startDate) === this.formatDate(x.endDate)) ? this.formatDate(x.startDate) : this.formatDate(x.startDate) + " - " + this.formatDate(x.endDate)
+                                                            }}
+                                                            func={this.props.deleteHoliday}
+                                                        />
+                                                    </td>
+                                                </tr>)
+                                            )}
+                                    </tbody>
+                                </table>
+                                {
+                                    holiday.isLoading ?
+                                        <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                                        (!listNoLeave || listNoLeave.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                                }
                             </div>
-                        </div>
 
-                        {/* Danh sách thười gian được nghỉ*/}
-                        <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12' style={{ padding: 0 }} >
-                            <div className="box box-success">
-                                <div className="box-header with-border">
-                                    <h3 className="box-title">{translate('human_resource.holiday.list_auto_leave')}</h3>
+
+                            {/* Danh sách thời gian được nghỉ*/}
+                            <div className="box-solid description description-box" style={{ paddingRight: 10, marginTop: 25 }}>
+                                <h4>{translate('human_resource.holiday.list_auto_leave')}</h4>
+                                {/* Số ngày nghỉ phép trong một năm */}
+                                <div style={{ marginBottom: 10 }}>
+                                    <label style={{ width: 'auto' }} >{`${translate('human_resource.holiday.number_date_leave_of_year')} (${translate('human_resource.holiday.date_year')})`}&ensp;</label>
+                                    <input className="form-control" style={{ width: 80, display: 'inline' }} value={numberDateLeave} onChange={this.handleNumberDateOfYearChange} type="Number" />
+                                    &ensp;
+                                    <button type="button" style={{ marginTop: -5 }} className="btn btn-primary" onClick={this.updateNumberDateOfYear}>{translate('human_resource.holiday.save_as')}</button>
                                 </div>
-                                <div className="box-body">
-                                    <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
-                                        <thead>
-                                            <tr>
-                                                <th style={{ width: 40 }}>{translate('human_resource.stt')}</th>
-                                                <th >{translate('human_resource.holiday.table.timeline')}</th>
-                                                <th>{translate('human_resource.holiday.table.describe_timeline')}</th>
-                                                <th style={{ width: 100 }}>{translate('general.action')}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {listAutoLeave && listAutoLeave.length !== 0 &&
-                                                listAutoLeave.map((x, index) => (
-                                                    <tr key={index}>
-                                                        <td>{index + 1}</td>
-                                                        <td>{(this.formatDate(x.startDate) === this.formatDate(x.endDate)) ? this.formatDate(x.startDate) : this.formatDate(x.startDate) + " - " + this.formatDate(x.endDate)}</td>
-                                                        <td>{x.description}</td>
-                                                        <td>
-                                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.holiday.edit_holiday')}><i className="material-icons">edit</i></a>
-                                                            <DeleteNotification
-                                                                content={translate('human_resource.holiday.delete_holiday')}
-                                                                data={{
-                                                                    id: x._id,
-                                                                    info: (this.formatDate(x.startDate) === this.formatDate(x.endDate)) ? this.formatDate(x.startDate) : this.formatDate(x.startDate) + " - " + this.formatDate(x.endDate)
-                                                                }}
-                                                                func={this.props.deleteHoliday}
-                                                            />
-                                                        </td>
-                                                    </tr>)
-                                                )}
-                                        </tbody>
-                                    </table>
-                                    {
-                                        holiday.isLoading ?
-                                            <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                                            (!listAutoLeave || listAutoLeave.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
-                                    }
-                                </div>
+
+                                <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
+                                    <thead>
+                                        <tr>
+                                            <th style={{ width: 40 }}>{translate('human_resource.stt')}</th>
+                                            <th >{translate('human_resource.holiday.table.timeline')}</th>
+                                            <th>{translate('human_resource.holiday.table.describe_timeline')}</th>
+                                            <th style={{ width: 100 }}>{translate('general.action')}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {listAutoLeave && listAutoLeave.length !== 0 &&
+                                            listAutoLeave.map((x, index) => (
+                                                <tr key={index}>
+                                                    <td>{index + 1}</td>
+                                                    <td>{(this.formatDate(x.startDate) === this.formatDate(x.endDate)) ? this.formatDate(x.startDate) : this.formatDate(x.startDate) + " - " + this.formatDate(x.endDate)}</td>
+                                                    <td>{x.description}</td>
+                                                    <td>
+                                                        <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.holiday.edit_holiday')}><i className="material-icons">edit</i></a>
+                                                        <DeleteNotification
+                                                            content={translate('human_resource.holiday.delete_holiday')}
+                                                            data={{
+                                                                id: x._id,
+                                                                info: (this.formatDate(x.startDate) === this.formatDate(x.endDate)) ? this.formatDate(x.startDate) : this.formatDate(x.startDate) + " - " + this.formatDate(x.endDate)
+                                                            }}
+                                                            func={this.props.deleteHoliday}
+                                                        />
+                                                    </td>
+                                                </tr>)
+                                            )}
+                                    </tbody>
+                                </table>
+                                {
+                                    holiday.isLoading ?
+                                        <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                                        (!listAutoLeave || listAutoLeave.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                                }
                             </div>
                         </div>
                     </div>
@@ -371,11 +356,9 @@ class ManageHoliday extends Component {
                 { /* Form import lịch làm việc */
                     importHoliday && <HolidayImportForm />
                 }
-
                 { /* Form thêm lịch làm việc*/
                     createHoliday && <HolidayCreateForm />
                 }
-
                 { /* Form chỉnh sửa lịch làm việc*/
                     currentRow !== undefined &&
                     <HolidayEditForm

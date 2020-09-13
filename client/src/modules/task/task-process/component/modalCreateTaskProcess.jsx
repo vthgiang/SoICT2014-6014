@@ -15,7 +15,7 @@ import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil'
 import ElementFactory from 'bpmn-js/lib/features/modeling/ElementFactory';
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
-import customModule from './custom'
+import customModule from './custom-task-process-template'
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import './processDiagram.css'
@@ -24,7 +24,7 @@ import './processDiagram.css'
 ElementFactory.prototype._getDefaultSize = function (semantic) {
 
 	if (is(semantic, 'bpmn:Task')) {
-		return { width: 160, height: 130 };
+		return { width: 160, height: 150 };
 	}
 
 	if (is(semantic, 'bpmn:Gateway')) {
@@ -87,10 +87,17 @@ class ModalCreateTaskProcess extends Component {
 		this.state = {
 			userId: getStorage("userId"),
 			currentRole: getStorage('currentRole'),
+
 			showInfo: false,
 			selectedCreate: 'info',
 			info: {},
 			save: false,
+
+			manager: [],
+			viewer: [],
+			processName: '',
+			processDescription: '',
+
 			indexRenderer: 0,
 		}
 		this.initialDiagram = initialDiagram
@@ -520,7 +527,8 @@ class ModalCreateTaskProcess extends Component {
 		if (!hasStart || !hasEnd) {
 			check = false;
 		}
-		return check
+		return check && this.state.manager.length !== 0 && this.state.viewer.length !== 0 
+			&& this.state.processDescription.trim() !== '' && this.state.processName.trim() !== ''
 			&& this.state.errorOnManager === undefined && this.state.errorOnProcessDescription === undefined
 			&& this.state.errorOnProcessName === undefined && this.state.errorOnViewer === undefined;
 	}
@@ -661,7 +669,21 @@ class ModalCreateTaskProcess extends Component {
 													/>
 													<ErrorLabel content={this.state.errorOnProcessName} />
 												</div>
+
+												{/* Mô tả quy trình */}
+												<div className={`form-group ${this.state.errorOnProcessDescription === undefined ? "" : "has-error"}`}>
+													<label className="control-label">{translate("task.task_process.process_description")}</label>
+													<textarea type="text" rows={4}
+														value={processDescription}
+														className="form-control" placeholder={translate("task.task_process.process_description")}
+														onChange={this.handleChangeBpmnDescription}
+													/>
+													<ErrorLabel content={this.state.errorOnProcessDescription} />
+												</div>
+
+
 												<div className={`form-group ${this.state.errorOnViewer === undefined ? "" : "has-error"}`}>
+													{/* Người được xem mẫu quy trình */}
 													<label className="control-label">{translate("task.task_process.viewer")}</label>
 													{
 														<SelectBox
@@ -676,7 +698,10 @@ class ModalCreateTaskProcess extends Component {
 													}
 													<ErrorLabel content={this.state.errorOnViewer} />
 												</div>
+
+
 												<div className={`form-group ${this.state.errorOnManager === undefined ? "" : "has-error"}`}>
+													{/* Người quản lý mẫu quy trình */}
 													<label className="control-label" >{translate("task.task_process.manager")}</label>
 													{
 														<SelectBox
@@ -690,19 +715,6 @@ class ModalCreateTaskProcess extends Component {
 														/>
 													}
 													<ErrorLabel content={this.state.errorOnManager} />
-												</div>
-											</div>
-
-											{/* Mô tả quy trình */}
-											<div className='col-md-6'>
-												<div className={`form-group ${this.state.errorOnProcessDescription === undefined ? "" : "has-error"}`}>
-													<label className="control-label">{translate("task.task_process.process_description")}</label>
-													<textarea type="text" rows={8}
-														value={processDescription}
-														className="form-control" placeholder={translate("task.task_process.process_description")}
-														onChange={this.handleChangeBpmnDescription}
-													/>
-													<ErrorLabel content={this.state.errorOnProcessDescription} />
 												</div>
 											</div>
 										</div>

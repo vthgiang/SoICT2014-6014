@@ -6,8 +6,7 @@ import { EmployeeImportTab } from './combinedContent';
 import { DialogModal } from '../../../../../common-components';
 
 import {
-    configurationEmployeeInfo, configurationExperience, configurationSocialInsuranceDetails,
-    configurationDegree, configurationCertificate, configurationContract, configurationFile
+    configurationEmployee,
 } from './fileConfigurationImportEmployee';
 
 import { EmployeeManagerActions } from '../redux/actions';
@@ -575,7 +574,15 @@ class EmployeeImportForm extends Component {
 
 
     render() {
-        const { employeesManager } = this.props;
+        const { employeesManager, translate } = this.props;
+        let configurationEmployeeInfo = configurationEmployee.configurationEmployeeInfo(translate),
+            configurationExperience = configurationEmployee.configurationExperience(translate),
+            configurationSocialInsuranceDetails = configurationEmployee.configurationSocialInsuranceDetails(translate),
+            configurationDegree = configurationEmployee.configurationDegree(translate),
+            configurationCertificate = configurationEmployee.configurationCertificate(translate),
+            configurationContract = configurationEmployee.configurationContract(translate),
+            configurationFile = configurationEmployee.configurationFile(translate);
+
         return (
             <React.Fragment>
                 <DialogModal

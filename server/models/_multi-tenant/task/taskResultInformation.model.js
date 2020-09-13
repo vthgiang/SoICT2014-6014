@@ -5,12 +5,12 @@ const Schema = mongoose.Schema;
 const TaskResultInformationSchema = new Schema({
     member:{
         type: Schema.Types.ObjectId,
-        ref: 'users',
+        ref: 'User',
         required: true
     },
     taskInformation: {
         type: Schema.Types.ObjectId,
-        ref: 'task_template_informations',
+        ref: 'TaskTemplateInformation',
         required: true
     },
     value: {
@@ -20,4 +20,8 @@ const TaskResultInformationSchema = new Schema({
     timestamps: true
 });
 
-module.exports = TaskResultInformation = (db) => db.model("task_result_informations", TaskResultInformationSchema);
+module.exports = (db) => {
+    if(!db.models.TaskResultInformation)
+        return db.model('TaskResultInformation', TaskResultInformationSchema);
+    return db.models.TaskResultInformation;
+}

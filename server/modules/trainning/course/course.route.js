@@ -6,25 +6,14 @@ const {
 
 const CourseController = require("./course.controller");
 
-/**
- * Lấy danh sách khoá đào tạo
- */
-router.get('/', auth, CourseController.searchCourses);
+/** Lấy danh sách khoá đào tạo */
+router.get('/courses', auth, CourseController.searchCourses);
 
-/**
- * Thêm mới kháo đào tạo
- */
-router.post('/', auth, CourseController.createCourse);
+router.post('/courses', auth, CourseController.createCourse);
 
-/**
- * Xoá kháo đào tạo
- */
-router.delete('/:id', auth, CourseController.deleteCourse);
+router.patch('/courses/:id', auth, CourseController.updateCourse);
+router.delete('/courses/:id', auth, CourseController.deleteCourse);
 
-/**
- * Cập nhật thông tin khoá học
- */
-router.patch('/:id', auth, CourseController.updateCourse);
 
 
 module.exports = router;

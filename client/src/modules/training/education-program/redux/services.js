@@ -11,11 +11,11 @@ export const EducationService = {
 
 /**
  * Lấy danh sách các chương trình đào tạo theo key
- * @data : dữ liệu của Key
+ * @data : Dữ liệu của Key
  */
 function getListEducation(data) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/educationPrograms`,
+        url: `${ process.env.REACT_APP_SERVER }/educationProgram/educationPrograms`,
         method: 'GET',
         params: {
             organizationalUnit: data !== undefined ? data.organizationalUnit : data,
@@ -32,7 +32,7 @@ function getListEducation(data) {
  */
 function createNewEducation(data) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/educationPrograms/`,
+        url: `${ process.env.REACT_APP_SERVER }/educationProgram/educationPrograms/`,
         method: 'POST',
         data: data,
     }, true, true, 'training.education_program');
@@ -44,7 +44,7 @@ function createNewEducation(data) {
  */
 function deleteEducation(id) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/educationPrograms/${id}`,
+        url: `${ process.env.REACT_APP_SERVER }/educationProgram/educationPrograms/${id}`,
         method: 'DELETE',
     }, true, true, 'training.education_program');
 }
@@ -56,7 +56,7 @@ function deleteEducation(id) {
  */
 function updateEducation(id, data) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/educationPrograms/${id}`,
+        url: `${ process.env.REACT_APP_SERVER }/educationProgram/educationPrograms/${id}`,
         method: 'PATCH',
         data: data,
     }, true, true, 'training.education_program');

@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const TaskTemplateInformationSchema = new Schema({
     taskTemplate:{
         type: Schema.Types.ObjectId,
-        ref: 'task_templates',
+        ref: 'TaskTemplate',
         required: true
     },
     code: { // Mã dùng trong công thức
@@ -34,4 +34,8 @@ const TaskTemplateInformationSchema = new Schema({
     }
 });
 
-module.exports = TaskTemplateInformation = (db) => db.model("task_template_informations", TaskTemplateInformationSchema);
+module.exports = (db) => {
+    if(!db.models.TaskTemplateInformation)
+        return db.model('TaskTemplateInformation', TaskTemplateInformationSchema);
+    return db.models.TaskTemplateInformation;
+}

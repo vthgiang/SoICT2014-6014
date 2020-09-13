@@ -249,7 +249,6 @@ class TimesheetsManagement extends Component {
         for (let n = 1; n <= 31; n++) {
             addColumns = [...addColumns, { key: `date${n}`, value: n, width: 4 }]
         }
-
         let exportData = {
             fileName: translate('human_resource.timesheets.file_name_export'),
             dataSheets: [
@@ -266,9 +265,9 @@ class TimesheetsManagement extends Component {
                             }],
                             rowHeader: 2,
                             columns: [
-                                { key: "STT", value: translate('human_resource.stt'), width: 5 },
+                                { key: "STT", value: translate('human_resource.stt'), width: 7 },
                                 { key: "employeeNumber", value: translate('human_resource.staff_number') },
-                                { key: "fullName", value: translate('human_resource.staff_name') },
+                                { key: "fullName", value: translate('human_resource.staff_name'), width: 20 },
                                 { key: "space", value: "", width: '10' },
                                 ...addColumns,
                                 { key: "total", value: translate('human_resource.timesheets.total_timesheets') },
@@ -289,7 +288,7 @@ class TimesheetsManagement extends Component {
         const { month, limit, page, allDayOfMonth, dayNow, organizationalUnit, currentRow } = this.state;
 
         let listTimesheets = [], exportData = [];
-        if (timesheets.isLoading === false && timesheets.listTimesheets.length !== 0) {
+        if (timesheets.isLoading === false) {
             listTimesheets = timesheets.listTimesheets;
             exportData = this.convertDataToExportData(listTimesheets);
         }
@@ -307,8 +306,8 @@ class TimesheetsManagement extends Component {
                         <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
                             <button type="button" className="btn btn-success pull-right dropdown-toggle" data-toggle="dropdown" aria-expanded="true" >{translate('human_resource.timesheets.add_timesheets')}</button>
                             <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }} >
-                                <li><a title={translate('human_resource.add_data_by_excel')} onClick={this.handleImport}>{translate('human_resource.timesheets.add_import')}</a></li>
-                                <li><a title={translate('human_resource.timesheets.add_timesheets_title')} onClick={this.createTimesheets}>{translate('human_resource.timesheets.add_by_hand')}</a></li>
+                                <li><a style={{ cursor: 'pointer' }} title={translate('human_resource.add_data_by_excel')} onClick={this.handleImport}>{translate('human_resource.timesheets.add_import')}</a></li>
+                                <li><a style={{ cursor: 'pointer' }} title={translate('human_resource.timesheets.add_timesheets_title')} onClick={this.createTimesheets}>{translate('human_resource.timesheets.add_by_hand')}</a></li>
                             </ul>
                         </div>
                         <ExportExcel id="export-timesheets" buttonName={translate('human_resource.name_button_export')} exportData={exportData} style={{ marginRight: 15, marginTop: 0 }} />
@@ -329,6 +328,7 @@ class TimesheetsManagement extends Component {
                             <input type="text" className="form-control" name="employeeNumber" onChange={this.handleMSNVChange} placeholder={translate('human_resource.staff_number')} autoComplete="off" />
                         </div>
                     </div>
+
                     <div className="form-inline" style={{ marginBottom: 10 }}>
                         {/* Tháng */}
                         <div className="form-group">
@@ -346,17 +346,20 @@ class TimesheetsManagement extends Component {
                             <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => this.handleSunmitSearch()} >{translate('general.search')}</button>
                         </div>
                     </div>
+
                     <div className="form-inline">
                         <label>{translate('human_resource.timesheets.symbol')}: &emsp; &emsp; </label><i style={{ color: "#08b30e", fontSize: 19 }} className="glyphicon glyphicon-ok"></i><span> -- {translate('human_resource.timesheets.do_work')} </span>
                                             &emsp;&emsp;&emsp;<i style={{ color: "red", fontSize: 19 }} className="glyphicon glyphicon-remove"></i><span> -- {translate('human_resource.timesheets.not_work')}</span>
 
                     </div>
+
                     <DataTableSetting
                         tableId="table-timesheets"
                         limit={this.state.limit}
                         setLimit={this.setLimit}
                         hideColumnOption={false}
                     />
+
                     <div id="croll-table" className="form-inline">
                         <div className="sticky col-lg-4 col-md-4 col-sm-6 col-xs-7 " style={{ padding: 0 }}>
                             <table id="table-timesheets" className="keeping table table-bordered">

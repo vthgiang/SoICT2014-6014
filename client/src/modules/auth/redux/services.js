@@ -20,11 +20,11 @@ export const AuthService = {
     downloadFile
 };
 
-async function login(user) {
+async function login(data) {
     return sendRequest({
         url: `${ process.env.REACT_APP_SERVER }/auth/login`,
         method: 'POST',
-        data: user
+        data
     }, false, false, 'auth')
 }
 

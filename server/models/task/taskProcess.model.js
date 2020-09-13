@@ -39,6 +39,16 @@ const TaskProcessSchema = new Schema({
         required: true,
         ref: User,
     },
+    viewer: [{
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: User,
+    }],
+    manager: [{
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: User,
+    }],
     tasks: [{
         type: Schema.Types.ObjectId,
         ref: Task,

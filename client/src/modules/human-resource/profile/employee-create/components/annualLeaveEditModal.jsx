@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ErrorLabel, DatePicker } from '../../../../../common-components';
+import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../../common-components';
 
 import { AnnualLeaveFormValidator } from '../../../annual-leave/components/combinedContent';
 
@@ -128,6 +128,7 @@ class AnnualLeaveEditModal extends Component {
                 id: nextProps.id,
                 _id: nextProps._id,
                 index: nextProps.index,
+                organizationalUnit: nextProps.organizationalUnit,
                 endDate: nextProps.endDate,
                 startDate: nextProps.startDate,
                 reason: nextProps.reason,
@@ -143,11 +144,11 @@ class AnnualLeaveEditModal extends Component {
 
 
     render() {
-        const { translate } = this.props;
+        const { translate, department } = this.props;
 
         const { id } = this.props;
 
-        const { startDate, endDate, reason, status,
+        const { startDate, endDate, reason, status, organizationalUnit,
             errorOnReason, errorOnStartDate, errorOnEndDate } = this.state;
 
         return (
@@ -160,6 +161,19 @@ class AnnualLeaveEditModal extends Component {
                     disableSubmit={!this.isFormValidated()}
                 >
                     <form className="form-group" id={`form-edit-sabbatical-${id}`}>
+                        {/* Đơn vị */}
+                        <div className={`form-group`}>
+                            <label>{translate('human_resource.unit')}<span className="text-red">*</span></label>
+                            <SelectBox
+                                id={`create-salary-unit${id}`}
+                                className="form-control select2"
+                                disabled={true}
+                                style={{ width: "100%" }}
+                                value={organizationalUnit}
+                                items={department.list.map((u, i) => { return { value: u._id, text: u.name } })}
+                                onChange={this.handleOrganizationalUnitChange}
+                            />
+                        </div>
                         <div className="row">
                             {/* Ngày bắt đầu */}
                             <div className={`form-group col-sm-6 col-xs-12 ${errorOnStartDate && "has-error"}`}>
@@ -205,5 +219,11 @@ class AnnualLeaveEditModal extends Component {
         );
     }
 };
-const editModal = connect(null, null)(withTranslate(AnnualLeaveEditModal));
+
+function mapState(state) {
+    const { department } = state;
+    return { department };
+};
+
+const editModal = connect(mapState, null)(withTranslate(AnnualLeaveEditModal));
 export { editModal as AnnualLeaveEditModal };
