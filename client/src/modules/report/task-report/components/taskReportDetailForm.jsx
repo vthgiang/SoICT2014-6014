@@ -14,42 +14,35 @@ class TaskReportDetailForm extends Component {
         this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
         this.state = {
             dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
-            // chartStatus: false,
         }
     }
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.taskReportId !== prevState.taskReportId) {
+    static getDerivedStateFromProps(props, state) {
+        if (props.taskReportId !== state.taskReportId) {
+            props.getTaskReportById(props.taskReportId);
             return {
-                ...prevState,
-                taskReportId: nextProps.taskReportId,
-                dataStatus: 0
+                ...state,
+                dataStatus: 1, // 1 : QUERING
+                taskReportId: props.taskReportId,
             }
         } else {
             return null;
         }
     }
 
-    shouldComponentUpdate = async (nextProps, nextState) => {
-        if (nextProps.taskReportId !== this.state.taskReportId && this.state.dataStatus === this.DATA_STATUS.NOT_AVAILABLE) {
-            await this.props.getTaskReportById(nextProps.taskReportId);
+    shouldComponentUpdate = (nextProps, nextState) => {
+        if (this.state.dataStatus === this.DATA_STATUS.QUERYING && !nextProps.reports.isLoading) {
+            // await this.props.getTaskReportById(nextProps.taskReportId);
             this.setState({
-                dataStatus: this.DATA_STATUS.QUERYING,
+                dataStatus: this.DATA_STATUS.AVAILABLE,
             })
             return false;
         }
 
-        if (this.state.dataStatus === this.DATA_STATUS.QUERYING) {
-            this.setState({
-                dataStatus: this.DATA_STATUS.AVAILABLE,
-            });
-            return false;
-        }
-
         if (this.state.dataStatus === this.DATA_STATUS.AVAILABLE) {
-            let listTaskReport = await this.props.reports.listTaskReportById;
+            let listTaskReport = nextProps.reports.listTaskReportById;
             this.setState({
-                dataStatus: this.DATA_STATUS.FINISHED,
                 listTaskReport: listTaskReport,
+                dataStatus: this.DATA_STATUS.FINISHED,
             });
             return false;
         }
@@ -58,7 +51,7 @@ class TaskReportDetailForm extends Component {
 
 
     handleView = () => {
-        let { listTaskReport, chartStatus } = this.state;
+        let { listTaskReport } = this.state;
         if (listTaskReport) {
             let newData = {
                 organizationalUnit: listTaskReport.organizationalUnit._id,
@@ -94,7 +87,7 @@ class TaskReportDetailForm extends Component {
         let listTaskReportById = reports.listTaskReportById;
         let listTaskEvaluations = tasks.listTaskEvaluations;
         let frequency, newlistTaskEvaluations, dataForAxisXInChart = [];
-
+        console.log('listTaskReportById', listTaskReportById)
         const mystyle = {
             display: "flex",
         };
@@ -507,7 +500,7 @@ class TaskReportDetailForm extends Component {
 
                                 <div style={mystyle}>
                                     <dt style={styledt}>Mẫu công việc:</dt>
-                                    <dd>{listTaskReportById && listTaskReportById.taskTemplate && listTaskReportById.taskTemplate.name}</dd>
+                                    <dd>{listTaskReportById && listTaskReportById.taskTemplate.name}</dd>
                                 </div>
 
                                 <dt>Tên báo cáo</dt>

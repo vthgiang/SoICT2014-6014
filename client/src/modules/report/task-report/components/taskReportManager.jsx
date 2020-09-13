@@ -37,7 +37,6 @@ class TaskReportManager extends Component {
      * @param {*} report 
      */
     handleEdit = async (idReport) => {
-        console.log('idTaskReport=>', idReport);
         await this.setState(state => {
             return {
                 ...state,
@@ -223,9 +222,8 @@ class TaskReportManager extends Component {
         return (
             <div className="box">
                 <div className="box-body qlcv" >
-                    {
-                        <TaskReportEditForm taskReportId={this.state.currentEditRow} />
-                    }
+
+                    <TaskReportEditForm taskReportId={this.state.currentEditRow} />
 
                     {/* Thêm mới bao cáo */}
                     <div style={{ height: '40px' }}>
@@ -233,7 +231,6 @@ class TaskReportManager extends Component {
                     </div>
                     <TaskReportCreateForm />
 
-                    {/* <TaskReportViewForm taskReportId={this.state.currentViewRow} /> */}
                     <TaskReportDetailForm taskReportId={this.state.currentViewRow} />
 
                     {/* search form */}
@@ -310,7 +307,6 @@ class TaskReportManager extends Component {
                                                         <i className="material-icons">delete</i>
                                                     </a>
                                                 </React.Fragment>
-
                                             }
                                         </td>
                                     </tr>

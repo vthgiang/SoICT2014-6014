@@ -70,7 +70,6 @@ exports.getTaskReportById = async (id) => {
         .populate({ path: 'readByEmployees', select: '_id name company' })
         .populate({ path: 'organizationalUnit', select: 'deans viceDeans employees _id name company parent' })
         .populate({ path: 'readByEmployees' })
-
     return taskReportById;
 }
 
@@ -199,7 +198,14 @@ exports.editTaskReport = async (id, data, user) => {
             dataForAxisXInChart: dataForAxisXInChart,
         }
     }, { new: true });
-    return await TaskReport.findOne({ _id: id }).populate({ path: 'creator', select: '_id name' });
+    return await TaskReport.findOne({ _id: id })
+        .populate({ path: 'creator', select: '_id name' })
+        .populate({ path: 'taskTemplate' })
+        .populate({ path: 'responsibleEmployees', select: '_id name company' })
+        .populate({ path: 'accountableEmployees', select: '_id name company' })
+        .populate({ path: 'readByEmployees', select: '_id name company' })
+        .populate({ path: 'organizationalUnit', select: 'deans viceDeans employees _id name company parent' })
+        .populate({ path: 'readByEmployees' });
 }
 
 

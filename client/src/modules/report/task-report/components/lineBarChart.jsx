@@ -53,7 +53,6 @@ class LineBarChart extends Component {
 
     renderBarAndLineChart = (data) => {
         this.removePreviousBarChart();
-
         let newData = data.dataConvert;
 
         // set height cho biểu đồ
@@ -76,6 +75,7 @@ class LineBarChart extends Component {
                 columns: newData,
                 type: 'bar',
                 types: typeChart,
+                // groups: [['p1', 'p2']]
             },
             bar: {
                 width: {
