@@ -117,7 +117,6 @@ exports.createRootRole = async(data, companyID) => {
  * @data dữ liệu tạo
  */
 exports.createRolesForOrganizationalUnit = async(data, companyID) => {
-    console.log("Data: ", data)
     const filterValidRoleArray = async (array, companyId) => {
         let resArray= [];
         if (array.length > 0) {
