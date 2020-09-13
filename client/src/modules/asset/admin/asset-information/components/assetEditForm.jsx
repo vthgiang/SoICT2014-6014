@@ -414,10 +414,10 @@ class AssetEditForm extends Component {
                     <div className="nav-tabs-custom" style={{ marginTop: '-15px' }}>
                         <ul className="nav nav-tabs">
                             <li className="active"><a title={translate('asset.general_information.general_information')} data-toggle="tab" href={`#edit_general${_id}`}>{translate('asset.general_information.general_information')}</a></li>
+                            <li><a title={translate('asset.general_information.depreciation_information')} data-toggle="tab" href={`#edit_depreciation${_id}`}>{translate('asset.general_information.depreciation_information')}</a></li>
                             <li><a title={translate('asset.general_information.usage_information')} data-toggle="tab" href={`#edit_usage${_id}`}>{translate('asset.general_information.usage_information')}</a></li>
                             <li><a title={translate('asset.general_information.incident_information')} data-toggle="tab" href={`#edit_incident${_id}`}>{translate('asset.general_information.incident_information')}</a></li>
                             <li><a title={translate('asset.general_information.maintainance_information')} data-toggle="tab" href={`#edit_maintainance${_id}`}>{translate('asset.general_information.maintainance_information')}</a></li>
-                            <li><a title={translate('asset.general_information.depreciation_information')} data-toggle="tab" href={`#edit_depreciation${_id}`}>{translate('asset.general_information.depreciation_information')}</a></li>
                             <li><a title={translate('asset.general_information.disposal_information')} data-toggle="tab" href={`#edit_disposal${_id}`}>{translate('asset.general_information.disposal_information')}</a></li>
                             <li><a title={translate('asset.general_information.attach_infomation')} data-toggle="tab" href={`#edit_attachments${_id}`}>{translate('asset.general_information.attach_infomation')}</a></li>
                         </ul>
@@ -451,6 +451,20 @@ class AssetEditForm extends Component {
                                 readByRoles={readByRoles}
                             />
 
+                            {/* Thông tin khấu hao */}
+                            <DepreciationTab
+                                id={`edit_depreciation${_id}`}
+                                handleChange={this.handleChange}
+                                cost={cost}
+                                residualValue={residualValue}
+                                startDepreciation={moment(startDepreciation).format('DD-MM-YYYY')}
+                                endDepreciation={this.addMonth(startDepreciation, usefulLife)}
+                                usefulLife={usefulLife}
+                                depreciationType={depreciationType}
+                                estimatedTotalProduction={estimatedTotalProduction}
+                                unitsProducedDuringTheYears={unitsProducedDuringTheYears}
+                            />
+
                             {/* Thông tin sử dụng */}
                             <UsageLogTab
                                 id={`edit_usage${_id}`}
@@ -481,20 +495,6 @@ class AssetEditForm extends Component {
                                 handleAddMaintainance={this.handleCreateMaintainanceLogs}
                                 handleEditMaintainance={this.handleEditMaintainanceLogs}
                                 handleDeleteMaintainance={this.handleDeleteMaintainanceLogs}
-                            />
-
-                            {/* Thông tin khấu hao */}
-                            <DepreciationTab
-                                id={`edit_depreciation${_id}`}
-                                handleChange={this.handleChange}
-                                cost={cost}
-                                residualValue={residualValue}
-                                startDepreciation={moment(startDepreciation).format('DD-MM-YYYY')}
-                                endDepreciation={this.addMonth(startDepreciation, usefulLife)}
-                                usefulLife={usefulLife}
-                                depreciationType={depreciationType}
-                                estimatedTotalProduction={estimatedTotalProduction}
-                                unitsProducedDuringTheYears={unitsProducedDuringTheYears}
                             />
 
                             {/* Thông tin thanh lý */}

@@ -195,6 +195,7 @@ class PurchaseRequest extends Component {
                                 <th style={{ width: "15%" }}>{translate('asset.general_information.create_date')}</th>
                                 <th style={{ width: "15%" }}>{translate('asset.usage.proponent')}</th>
                                 <th style={{ width: "17%" }}>{translate('asset.manage_recommend_procure.asset_recommend')}</th>
+                                <th style={{ width: "17%" }}>{translate('asset.manage_recommend_procure.equipment_description')}</th>
                                 <th style={{ width: "15%" }}>{translate('asset.usage.accountable')}</th>
                                 <th style={{ width: "17%" }}>{translate('asset.usage.note')}</th>
                                 <th style={{ width: "11%" }}>{translate('asset.general_information.status')}</th>
@@ -206,6 +207,7 @@ class PurchaseRequest extends Component {
                                             translate('asset.general_information.create_date'),
                                             translate('asset.usage.proponent'),
                                             translate('asset.manage_recommend_procure.asset_recommend'),
+                                            translate('asset.manage_recommend_procure.equipment_description'),
                                             translate('asset.usage.accountable'),
                                             translate('asset.usage.note'),
                                             translate('asset.general_information.status'),
@@ -224,8 +226,9 @@ class PurchaseRequest extends Component {
                                         <td>{x.recommendNumber}</td>
                                         <td>{x.dateCreate}</td>
                                         <td>{x.proponent ? x.proponent.name : 'User is deleted'}</td>
-                                        <td>{x.equipment}</td>
-                                        <td>{x.approver ? x.approver.name : 'User is deleted'}</td>
+                                        <td>{x.equipmentName}</td>
+                                        <td>{x.equipmentDescription}</td>
+                                        <td>{x.approver ? x.approver.name : ''}</td>
                                         <td>{x.note}</td>
                                         <td>{x.status}</td>
                                         <td style={{ textAlign: "center" }}>
@@ -262,7 +265,8 @@ class PurchaseRequest extends Component {
                         recommendNumber={currentRowView.recommendNumber}
                         dateCreate={currentRowView.dateCreate}
                         proponent={currentRowView.proponent}
-                        equipment={currentRowView.equipment}
+                        equipmentName={currentRowView.equipmentName}
+                        equipmentDescription={currentRowView.equipmentDescription}
                         supplier={currentRowView.supplier}
                         total={currentRowView.total}
                         unit={currentRowView.unit}
@@ -281,7 +285,8 @@ class PurchaseRequest extends Component {
                         recommendNumber={currentRow.recommendNumber}
                         dateCreate={currentRow.dateCreate}
                         proponent={currentRow.proponent}
-                        equipment={currentRow.equipment}
+                        equipmentName={currentRow.equipmentName}
+                        equipmentDescription={currentRow.equipmentDescription}
                         supplier={currentRow.supplier}
                         total={currentRow.total}
                         unit={currentRow.unit}

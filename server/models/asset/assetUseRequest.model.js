@@ -12,7 +12,7 @@ const AssetUseRequestSchema = new Schema({
     },
     recommendNumber: { //mã phiếu
         type: String,
-        required: true
+        // required: true
     },
     dateCreate: { //ngày lập
         type: String,

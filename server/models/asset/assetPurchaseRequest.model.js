@@ -11,17 +11,22 @@ const AssetPurchaseRequestSchema = new Schema({
     },
     recommendNumber: { //mã phiếu
         type: String,
-        required: true
+        // required: true
     },
     dateCreate: { //ngày lập
         type: String,
-        defaut: Date.now
+        defaut: Date.now,
+        required: true
     },
     proponent: { //người đề nghị
         type: Schema.Types.ObjectId,
         ref: User
     },
-    equipment: { //Tên thiết bị đề nghị mua sắm
+    equipmentName: { //Tên thiết bị đề nghị mua sắm
+        type: String,
+        required: true
+    },
+    equipmentDescription: { // Mô tả thiết bị đề nghị mua sắm
         type: String,
     },
     supplier: { //nhà cung cấp
@@ -29,9 +34,11 @@ const AssetPurchaseRequestSchema = new Schema({
     },
     total: { //số lượng
         type: String,
+        required: true
     },
     unit: { //đơn vị tính
         type: String,
+        required: true
     },
     estimatePrice: { //Giá trị dự tính
         type: String

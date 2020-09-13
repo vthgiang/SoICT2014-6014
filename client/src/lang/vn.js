@@ -1821,6 +1821,7 @@ export default {
             // Quản lý đề nghị mua sắm thiết bị
             manage_recommend_procure: {
                 asset_recommend: 'Thiết bị đề nghị mua sắm',
+                equipment_description: 'Mô tả thiết bị',
                 add_recommend_card: 'Thêm mới phiếu đề nghị mua sắm tài sản',
                 view_recommend_card: 'Xem thông tin phiếu đề nghị mua sắm tài sản',
                 edit_recommend_card: 'Chỉnh sửa phiếu đề nghị mua sắm tài sản',
