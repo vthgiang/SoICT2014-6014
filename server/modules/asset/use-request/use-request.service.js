@@ -5,7 +5,7 @@ const { Asset, UserRole } = require('../../../models').schema;
  * Lấy danh sách phiếu đề nghị cấp thiết bị
  */
 exports.searchRecommendDistributes = async (query, company) => {
-    const { receiptsCode, createReceiptsDate, reqUseStatus, reqUseEmployee, approver, page, limit, managedBy } = query;
+    const { receiptsCode, createReceiptsDate, reqUseStatus, reqUseEmployee, approver, page, limit, managedBy,  assetId  } = query;
     var keySearch = { company: company };
 
     // Bắt sựu kiện mã phiếu tìm kiếm khác ""
@@ -28,6 +28,9 @@ exports.searchRecommendDistributes = async (query, company) => {
         keySearch = { ...keySearch, approver: { $in: approver } };
     };
 
+    if (assetId) {
+        keySearch = {...keySearch, asset: { $in: assetId}};
+    }
     // Thêm key tìm theo ngày lập phiếu vào keySearch
     if (createReceiptsDate) {
         let date = createReceiptsDate.split("-");

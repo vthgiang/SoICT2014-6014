@@ -249,7 +249,6 @@ class TimesheetsManagement extends Component {
         for (let n = 1; n <= 31; n++) {
             addColumns = [...addColumns, { key: `date${n}`, value: n, width: 4 }]
         }
-
         let exportData = {
             fileName: translate('human_resource.timesheets.file_name_export'),
             dataSheets: [

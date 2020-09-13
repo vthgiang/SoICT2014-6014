@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, DataTableSetting, ImportFileExcel, ConFigImportFile, SlimScroll, PaginateBar, DatePicker } from '../../../../common-components';
+import { DialogModal, DataTableSetting, ImportFileExcel, ConFigImportFile, SlimScroll, PaginateBar, DatePicker, ExportExcel } from '../../../../common-components';
 
 import { configurationTimesheets } from './fileConfigurationImportTimesheets';
 
@@ -13,7 +13,7 @@ class TimesheetsImportForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            configData: configurationTimesheets,
+            configData: configurationTimesheets.configurationImport(this.props.translate),
             checkFileImport: true,
             rowError: [],
             importData: [],
@@ -213,6 +213,7 @@ class TimesheetsImportForm extends Component {
                 errorAlert: x.errorAlert.map(y => translate(`human_resource.timesheets.${y}`))
             }
         })
+        let exportData = configurationTimesheets.templateImport(translate);
 
         let pageTotal = (importData.length % limit === 0) ?
             parseInt(importData.length / limit) :
@@ -261,11 +262,9 @@ class TimesheetsImportForm extends Component {
                                 />
                             </div>
                             <div className="form-group col-md-4 col-xs-12">
-                                <label></label>
-                                <a className='pull-right'
-                                    style={{ cursor: "pointer" }}
-                                    onClick={(e) => this.requestDownloadFile(e, `.${configData.file.fileUrl}`, configData.file.fileName)}>
-                                    <i className="fa fa-download"> &nbsp;{translate('human_resource.download_file')}!</i></a>
+                                {/* Dowload file import mẫu */}
+                                <ExportExcel id="download_template_salary" type='link' exportData={exportData}
+                                    buttonName={` ${translate('human_resource.download_file')}`} />
                             </div>
 
                             <div className="form-group col-md-12 col-xs-12">

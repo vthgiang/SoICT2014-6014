@@ -409,7 +409,7 @@ class ViewProcess extends Component {
                         </div>
 
                         <div className={`${isTabPane? "": "col-md-4"}`}>
-                            <div className='description-box'>
+                            <div className='description-box without-border'>
                                 {/* tên quy trình */}
                                 <div>
                                     <strong>{translate("task.task_process.process_name")}:</strong>

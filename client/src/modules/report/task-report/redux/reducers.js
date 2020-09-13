@@ -73,6 +73,7 @@ export function reports(state = initState, action) {
                 ...state,
                 listTaskReport: state.listTaskReport.map(report => ((report._id === action.payload._id) ? action.payload : report)
                 ),
+                listTaskReportById: action.payload,
                 isLoading: false,
             };
 
