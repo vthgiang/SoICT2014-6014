@@ -320,6 +320,17 @@ class AssetManagement extends Component {
         return typeArr;
     }
 
+    checkHasComponent = (name) => {
+        var { auth } = this.props;
+        var result = false;
+        if (auth) {
+            auth.components.forEach(component => {
+                if (component.name === name) result = true;
+            }); 
+        }
+        return result;
+    }
+
     render() {
         var { assetsManager, assetType, translate, user, isActive, department } = this.props;
         var { page, limit, currentRowView, currentRow, purchaseDate, managedBy } = this.state;
@@ -347,7 +358,7 @@ class AssetManagement extends Component {
 
                 <div className="box-body qlcv">
                     {/* Form thêm tài sản mới */}
-                    <AssetCreateForm />
+                    {this.checkHasComponent("create-asset") && <AssetCreateForm /> }
 
                     {/* Thanh tìm kiếm */}
                     <div className="form-inline">
@@ -606,8 +617,8 @@ class AssetManagement extends Component {
 };
 
 function mapState(state) {
-    const { assetsManager, assetType, user, role, department } = state;
-    return { assetsManager, assetType, user, role, department };
+    const { assetsManager, assetType, user, role, department, auth } = state;
+    return { assetsManager, assetType, user, role, department, auth };
 };
 
 const actionCreators = {
