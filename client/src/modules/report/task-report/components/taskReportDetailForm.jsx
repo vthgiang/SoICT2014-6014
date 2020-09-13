@@ -18,7 +18,6 @@ class TaskReportDetailForm extends Component {
         }
     }
     static getDerivedStateFromProps(nextProps, prevState) {
-        console.log('static')
         if (nextProps.taskReportId !== prevState.taskReportId) {
             return {
                 ...prevState,
@@ -93,7 +92,6 @@ class TaskReportDetailForm extends Component {
         const { reports, tasks } = this.props;
         const { chartStatus } = this.state;
         let listTaskReportById = reports.listTaskReportById;
-
         let listTaskEvaluations = tasks.listTaskEvaluations;
         let frequency, newlistTaskEvaluations, dataForAxisXInChart = [];
 
@@ -104,7 +102,6 @@ class TaskReportDetailForm extends Component {
             marginRight: '10px'
         };
 
-        console.log('listTaskReportById', listTaskReportById);
         if (listTaskEvaluations) {
             // Lấy tần suất, vì tần suất là chung cho các công việc nên chỉ cần lấy công việc đầu tiên
             let taskEvaluation = listTaskEvaluations[0];
@@ -137,7 +134,6 @@ class TaskReportDetailForm extends Component {
 
         let output, pieChartData = [], barLineChartData = [], pieDataConvert, barAndLineDataChartConvert;
         if (newlistTaskEvaluations) {
-            console.log('dataForAxisXInChart', dataForAxisXInChart)
             /**
               * Convert data, gom nhóm, tính tổng và tính trung bình cộng các trường thông tin.
               *  Nếu chọn trục hoành là thời gian dataForAxisXInChart = 1
@@ -451,7 +447,6 @@ class TaskReportDetailForm extends Component {
             if (barLineChartData && barLineChartData.length > 0) {
                 barAndLineDataChartConvert = chartFunction.convertDataBarAndLineChart(barLineChartData);
             }
-            console.log('barAndLineDataChartConvert', barAndLineDataChartConvert);
         }
 
         return (

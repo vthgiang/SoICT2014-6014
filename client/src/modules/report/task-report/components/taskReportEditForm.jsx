@@ -11,7 +11,9 @@ import './transferList.css';
 class TaskReportEditForm extends Component {
     constructor(props) {
         super(props);
+        this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
         this.state = {
+            dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
             editingReport: {
                 organizationalUnit: '',
                 taskTemplate: '',
@@ -42,7 +44,6 @@ class TaskReportEditForm extends Component {
         this.props.getAllUserInAllUnitsOfCompany();
         this.props.getTaskTemplateByUser("1", "0", "[]");
         this.props.getRoleSameDepartment(localStorage.getItem("currentRole"));
-        // this.props.getTaskReportById(this.props.taskReportId);
     }
 
     /**
@@ -196,9 +197,56 @@ class TaskReportEditForm extends Component {
      * Hàm xử lý sự kiện thay đổi mẫu công việc
      * @param {*} e 
      */
-    handleChangeTaskTemplate = async (e) => {
+    handleChangeTaskTemplate = (e) => {
         let { value } = e.target;
-        this.validateTasktemplateReport(value, true);
+        if (value === '') {
+            this.setState(state => {
+                return {
+                    ...state,
+                    editingReport: {
+                        ...state.editingReport,
+                        taskTemplate: '',
+                        status: '',
+                        startDate: '',
+                        endDate: '',
+                        responsibleEmployees: [],
+                        accountableEmployees: [],
+                        errorOnDescriptiontTaskReport: undefined,
+                        errorOnNameTaskReport: undefined,
+                    }
+                }
+            });
+        } else {
+            let taskTemplate = this.props.tasktemplates.items.find((taskTemplate) =>
+                taskTemplate._id === value
+            );
+
+            let taskInformations = [];
+            if (taskTemplate.taskInformations) {
+                for (let [index, value] of taskTemplate.taskInformations.entries()) {
+                    taskInformations[index] = {
+                        ...value,
+                        charType: '0',
+                        aggregationType: '0',
+                    }
+                }
+            }
+
+            this.setState(state => {
+                return {
+                    ...state,
+                    editingReport: {
+                        ...state.editingReport,
+                        // nameTaskReport: taskTemplate.name,
+                        // descriptionTaskReport: taskTemplate.description,
+                        taskTemplate: taskTemplate._id,
+                        responsibleEmployees: taskTemplate.responsibleEmployees,
+                        accountableEmployees: taskTemplate.accountableEmployees,
+                        taskInformations: taskInformations,
+                    }
+                }
+            })
+        }
     }
 
 
@@ -433,18 +481,19 @@ class TaskReportEditForm extends Component {
     * Hàm xử lý khi ấn lưu
     */
     save = () => {
-        const { taskReportId, editingReport } = this.state;
+        const { taskReportEditId, editingReport } = this.state;
         if (this.isFormValidated()) {
-            this.props.editTaskReport(taskReportId, editingReport);
+            this.props.editTaskReport(taskReportEditId, editingReport);
         }
     }
 
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.taskReportId !== prevState.taskReportId) {
+        if (nextProps.taskReportId !== prevState.taskReportEditId) {
+            nextProps.getTaskReportById(nextProps.taskReportId);
             return {
-                ...prevState,
-                taskReportId: nextProps.taskReportId,
+                dataStatus: 1,
+                taskReportEditId: nextProps.taskReportId,
                 errorOnDescriptiontTaskReport: undefined,
                 errorOnNameTaskReport: undefined,
             }
@@ -454,44 +503,47 @@ class TaskReportEditForm extends Component {
     }
 
 
-    shouldComponentUpdate = (nextProps, nextState) => {
-        if (nextProps.taskReportId !== this.state.taskReportId) {
-            this.props.getTaskReportById(nextProps.taskReportId);
-            return false;
-        }
-        let newDataArrived = nextProps.reports.listTaskReportById !== undefined && nextProps.reports.listTaskReportById !== null;
-        if (!newDataArrived) {
-            return false; // Đang lấy dữ liệu, không cần render
-        }
-        if (this.props.reports.listTaskReportById) {
-            newDataArrived = newDataArrived && (nextProps.reports.listTaskReportById._id !== this.props.reports.listTaskReportById._id);
-        }
-        if (newDataArrived) {
-            let listTaskReportById = nextProps.reports.listTaskReportById;
-            this.props.getChildrenOfOrganizationalUnits(listTaskReportById.organizationalUnit._id);
+    shouldComponentUpdate = async (nextProps, nextState) => {
+        if (this.state.dataStatus === this.DATA_STATUS.QUERYING && !nextProps.reports.isLoading) {
+            let listTaskReport = nextProps.reports.listTaskReportById;
 
             let editingReport = {
                 ...this.state.editingReport,
-                ...listTaskReportById,
-                organizationalUnit: listTaskReportById.organizationalUnit._id,
-                responsibleEmployees: listTaskReportById.responsibleEmployees.map(x => x._id),
-                accountableEmployees: listTaskReportById.accountableEmployees.map(x => x._id),
-                readByEmployees: listTaskReportById.readByEmployees.map(x => x._id),
-                taskTemplate: listTaskReportById.taskTemplate._id,
-                startDate: this.formatDate(listTaskReportById.startDate),
-                endDate: this.formatDate(listTaskReportById.endDate),
-                taskInformations: listTaskReportById.configurations,
+                ...listTaskReport,
+                organizationalUnit: listTaskReport && listTaskReport.organizationalUnit._id,
+                responsibleEmployees: listTaskReport && listTaskReport.responsibleEmployees.map(x => x._id),
+                accountableEmployees: listTaskReport && listTaskReport.accountableEmployees.map(x => x._id),
+                readByEmployees: listTaskReport && listTaskReport.readByEmployees.map(x => x._id),
+                taskTemplate: listTaskReport && listTaskReport.taskTemplate._id,
+                startDate: listTaskReport && this.formatDate(listTaskReport.startDate),
+                endDate: listTaskReport && this.formatDate(listTaskReport.endDate),
+                taskInformations: listTaskReport && listTaskReport.configurations,
             }
+            this.setState({
+                dataStatus: this.DATA_STATUS.AVAILABLE,
+                editingReport: editingReport,
+            });
+            return false;
+        }
+
+        if (this.state.dataStatus === this.DATA_STATUS.AVAILABLE) {
             this.setState(state => {
                 return {
                     ...state,
-                    editingReport: editingReport,
-                };
+                    dataStatus: this.DATA_STATUS.FINISHED,
+                }
             });
             return true;
         }
-        return true;
+        return false;
     }
+
+    // componentDidUpdate() {
+    //     if (this.state.dataStatus === this.DATA_STATUS.AVAILABLE) {
+    //         let { reports } = this.props;
+    //         this.props.getChildrenOfOrganizationalUnits(reports.listTaskReportById.organizationalUnit._id);
+    //     }
+    // }
 
     //format date sang string
     formatDate(date, monthYear = false) {
@@ -708,7 +760,6 @@ class TaskReportEditForm extends Component {
             })
         }
 
-        console.log('listTaskReportById', listTaskReportById)
         return (
             <React.Fragment>
                 <DialogModal
@@ -898,7 +949,6 @@ class TaskReportEditForm extends Component {
                             </div>
                         </div>
 
-
                     </div>
                     <div className="row">
                         <div className="col-md-6">
@@ -908,7 +958,7 @@ class TaskReportEditForm extends Component {
                                     <label>Thống kê từ ngày</label>
                                     <DatePicker
                                         id="start-date"
-                                        value={editingReport.startDate}
+                                        value={editingReport.startDate ? editingReport.startDate : ''}
                                         onChange={this.handleEditStartDate}
                                         disabled={false}
                                     />
@@ -923,7 +973,7 @@ class TaskReportEditForm extends Component {
                                     <label>Thống kê đến ngày </label>
                                     <DatePicker
                                         id="end-date"
-                                        value={editingReport.endDate}
+                                        value={editingReport.endDate ? editingReport.endDate : ''}
                                         onChange={this.handleEditEndDate}
                                         disabled={false}
                                     />

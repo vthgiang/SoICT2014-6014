@@ -224,7 +224,6 @@ class TaskReportManager extends Component {
             <div className="box">
                 <div className="box-body qlcv" >
                     {
-                        this.state.currentEditRow !== undefined &&
                         <TaskReportEditForm taskReportId={this.state.currentEditRow} />
                     }
 
@@ -321,7 +320,7 @@ class TaskReportManager extends Component {
                     </table>
                     {reports.isLoading ?
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                        reports.listTaskReport.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>}
+                        reports.listTaskReport && reports.listTaskReport.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>}
 
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>

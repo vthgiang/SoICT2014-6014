@@ -202,11 +202,10 @@ class TaskReportCreateForm extends Component {
 
 
     shouldComponentUpdate = (nextProps, nextState) => {
-        const { user, tasktemplates } = this.props;
+        const { user } = this.props;
         const { newReport } = this.state;
-        let listTaskTemplate;
 
-        if (newReport.organizationalUnit === "" && user.organizationalUnitsOfUser) {
+        if (newReport.organizationalUnit === '' && user.organizationalUnitsOfUser) {
             let defaultUnit = user.organizationalUnitsOfUser.find(item =>
                 item.dean === this.state.currentRole
                 || item.viceDean === this.state.currentRole
@@ -221,22 +220,14 @@ class TaskReportCreateForm extends Component {
                 this.props.getChildrenOfOrganizationalUnits(defaultUnit._id);
             }
 
-            // Lấy ra list task template theo đơn vị
-            if (tasktemplates.items && defaultUnit) {
-                listTaskTemplate = tasktemplates.items.filter(function (taskTemplate) {
-                    return taskTemplate.organizationalUnit._id === defaultUnit._id
-                })
-            }
-
             this.setState(state => {
                 return {
                     ...state,
                     newReport: {
-                        ...state.newReport,
+                        ...this.state.newReport,
                         organizationalUnit: defaultUnit && defaultUnit._id,
                     },
-                    listTaskTemplate, // list mẫu công việc
-                    units: user.organizationalUnitsOfUser, // list đơn vị
+                    units: user.organizationalUnitsOfUser
                 };
             });
             return false;
@@ -675,22 +666,21 @@ class TaskReportCreateForm extends Component {
     }
 
     render() {
-        const { translate, reports, tasktemplates, user } = this.props;// state redux
+        const { translate, reports, tasktemplates, user, tasks } = this.props;
+        const { newReport, units, errorOnNameTaskReport, errorOnDescriptiontTaskReport, errorOnStartDate } = this.state;
+        let { itemListBoxLeft, itemListBoxRight } = this.state.newReport;
+        let listTaskTemplate, taskInformations = newReport.taskInformations, listRole, listRoles = [];
 
-        const { newReport, listTaskTemplate, units, errorOnNameTaskReport, errorOnDescriptiontTaskReport, errorOnStartDate } = this.state;
-        let { itemListBoxLeft, itemListBoxRight } = newReport;
-
-        let taskInformations = newReport.taskInformations, listRole, listRoles = [];
-        let usersOfChildrenOrganizationalUnit;
-
-        if (user.usersOfChildrenOrganizationalUnit) {
-            usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
+        // Lấy ra list task template theo đơn vị
+        if (tasktemplates.items && newReport.organizationalUnit) {
+            listTaskTemplate = tasktemplates.items.filter(function (taskTemplate) {
+                return taskTemplate.organizationalUnit._id === newReport.organizationalUnit
+            })
         }
 
-        // Lấy thông tin nhân viên của đơn vị
-        let unitMembers = [];
-        if (usersOfChildrenOrganizationalUnit) {
-            unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
+        let usersOfChildrenOrganizationalUnit;
+        if (user.usersOfChildrenOrganizationalUnit) {
+            usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
         }
 
         // lấy list chức danh theo đơn vị hiện tại
@@ -703,6 +693,13 @@ class TaskReportCreateForm extends Component {
             for (let x in listRole.employees)
                 listRoles = [...listRoles, listRole.employees[x]];
         }
+
+        // Lấy thông tin nhân viên của đơn vị
+        let unitMembers = [];
+        if (usersOfChildrenOrganizationalUnit) {
+            unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
+        }
+
 
         return (
             <React.Fragment>
@@ -745,7 +742,7 @@ class TaskReportCreateForm extends Component {
                                 <label className="control-label">{translate('task_template.permission_view')}<span className="text-red">*</span></label>
                                 {listRoles &&
                                     <SelectBox
-                                        id={`read-select-box`}
+                                        id={`read-select-box-create`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         items={
@@ -890,8 +887,8 @@ class TaskReportCreateForm extends Component {
                             <div className={`form-group`}>
                                 <label className="control-label ">Thống kê từ ngày <span className="text-red">*</span></label>
                                 <DatePicker
-                                    id="start-date"
-                                    value={this.state.startDate}
+                                    id="start-date-form-create"
+                                    value={newReport.startDate}
                                     onChange={this.handleChangeStartDate}
                                     disabled={false}
                                 />
@@ -904,8 +901,8 @@ class TaskReportCreateForm extends Component {
                             <div className="form-group">
                                 <label>Thống kê đến ngày </label>
                                 <DatePicker
-                                    id="end-date"
-                                    value={this.state.endDate}
+                                    id="end-date-form-create"
+                                    value={newReport.endDate}
                                     onChange={this.handleChangeEndDate}
                                     disabled={false}
                                 />
