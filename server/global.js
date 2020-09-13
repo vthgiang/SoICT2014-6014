@@ -55,3 +55,5 @@ Configuration.findOne({database: process.env.DB_NAME}).then(res => {
     }
 }).catch(err => console.log("message: ", err));
 
+global.AUTO_SENDEMAIL_TASK = require(SERVER_MODULES_DIR+'/scheduler/scheduler.service').sendEmailTaskAutomatic ;
+AUTO_SENDEMAIL_TASK.start();
