@@ -122,6 +122,8 @@ class AssetDetailForm extends Component {
                                 {/* Thông tin sử dụng */}
                                 <UsageLogTab
                                     id={`view_usage${_id}`}
+                                    _id = {_id}
+                                    typeRegisterForUse = {typeRegisterForUse}
                                     usageLogs={usageLogs}
                                 />
 

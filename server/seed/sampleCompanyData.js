@@ -1663,12 +1663,25 @@ const sampleCompanyData = async () => {
             assignedToUser: null,
             assignedToOrganizationalUnit: null,
             status: "Thanh lý",
-            typeRegisterForUse: 1,
+            typeRegisterForUse: 2,
             description: "Laptop Sony Vaio",
             detailInfo: [],
             readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
 
-            usageLogs: [],
+            usageLogs: [
+                {
+                 usedByUser: users[4]._id,
+                 usedByOrganizationalUnit: null,
+                 startDate: "2020-9-9 7:30 AM",
+                 endDate: "2020-9-9 10:30 AM",   
+                },
+                {
+                    usedByUser: users[5]._id,
+                    usedByOrganizationalUnit: null,
+                    startDate: "2020-9-9 11:30 AM",
+                    endDate: "2020-9-9 2:30 PM",   
+                },
+            ],
             // bảo trì thiết bị
             maintainanceLogs: [{
                 maintainanceCode: "BT01",
@@ -2062,7 +2075,11 @@ const sampleCompanyData = async () => {
         description: "Phòng họp",
         detailInfo: [],
         readByRoles: [giamDoc._id, roleAdmin._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
-        usageLogs: [],
+        usageLogs: [
+            {
+
+            }
+        ],
         // bảo trì thiết bị
         maintainanceLogs: [],
         //sự cố
@@ -2336,9 +2353,9 @@ const sampleCompanyData = async () => {
                 unitsProducedDuringTheYear: 3
             }],
             estimatedTotalProduction: 100,
-            code: "VVTM02.004",
+            code: "VVTM02.005",
             company: vnist._id,
-            serial: "00004",
+            serial: "00005",
             assetType: [listAssetType[25]._id],
             purchaseDate: new Date("2020-05-20"),
             warrantyExpirationDate: new Date("2077-06-20"),
@@ -2456,12 +2473,25 @@ const sampleCompanyData = async () => {
 
             location: listAsset1[1]._id,
             status: "Sẵn sàng sử dụng",
-            typeRegisterForUse: 3,
+            typeRegisterForUse: 2,
             canRegisterForUse: true,
             description: "d3-103",
             detailInfo: [],
             readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
-            usageLogs: [],
+            usageLogs: [
+                {
+                    usedByUser: users[5]._id,
+                    usedByOrganizationalUnit: null,
+                    startDate: "2020-9-9 11:30 AM",
+                    endDate: "2020-9-9 2:30 PM",   
+                },
+                {
+                    usedByUser: users[5]._id,
+                    usedByOrganizationalUnit: null,
+                    startDate: "2020-9-9 7:30 AM",
+                    endDate: "2020-9-9 10:30 AM",   
+                },
+            ],
             // bảo trì thiết bị
             maintainanceLogs: [],
             //sự cố
@@ -2498,7 +2528,7 @@ const sampleCompanyData = async () => {
             //tài liệu đính kèm
             documents: [],
         },
-        { // 07
+        { // 08
             avatar: "/upload/asset/pictures/picture5.png",
             assetName: "D3-103",
             group: "Building",
@@ -2508,9 +2538,9 @@ const sampleCompanyData = async () => {
                 unitsProducedDuringTheYear: 80
             }],
             estimatedTotalProduction: 1000,
-            code: "VVTM02.007",
+            code: "VVTM02.008",
             company: vnist._id,
-            serial: "00007",
+            serial: "00008",
             assetType: [listAssetType[25]._id],
             purchaseDate: new Date("2000-05-20"),
             warrantyExpirationDate: new Date("2077-06-20"),
@@ -2520,7 +2550,7 @@ const sampleCompanyData = async () => {
 
             location: listAsset1[1]._id,
             status: "Sẵn sàng sử dụng",
-            typeRegisterForUse: 3,
+            typeRegisterForUse: 2,
             description: "d3-103",
             detailInfo: [],
             readByRoles: [giamDoc._id, roleAdmin._id, roleSuperAdmin._id, roleDean._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
@@ -2608,6 +2638,32 @@ const sampleCompanyData = async () => {
             reqContent: "Đăng ký sử dụng tài sản",
             dateStartUse: "20-05-2020",
             dateEndUse: "20-06-2020",
+            approver: users[5]._id,
+            note: "",
+            status: "Chờ phê duyệt",
+        },
+        {
+            asset: listAsset2[4]._id,
+            company: vnist._id,
+            recommendNumber: "CP0003",
+            dateCreate: "19-05-2020",
+            proponent: users[4]._id,
+            reqContent: "Đăng ký sử dụng tài sản",
+            dateStartUse: "8:00 AM 10-09-2020",
+            dateEndUse: "10:00 AM 10-09-2020",
+            approver: users[5]._id,
+            note: "",
+            status: "Chờ phê duyệt",
+        },
+        {
+            asset: listAsset2[4]._id,
+            company: vnist._id,
+            recommendNumber: "CP0003",
+            dateCreate: "19-05-2020",
+            proponent: users[4]._id,
+            reqContent: "Đăng ký sử dụng tài sản",
+            dateStartUse: "1:00 PM 10-09-2020",
+            dateEndUse: "5:00 PM 10-09-2020",
             approver: users[5]._id,
             note: "",
             status: "Chờ phê duyệt",

@@ -5,7 +5,7 @@ const { Asset, UserRole } = require('../../../models').schema;
  * Lấy danh sách phiếu đề nghị cấp thiết bị
  */
 exports.searchRecommendDistributes = async(query, company) => {
-    const { recommendNumber, month, status, page, limit, managedBy } = query;
+    const { recommendNumber, month, status, page, limit, managedBy, assetId } = query;
     var keySearch = { company: company };
 
     // Bắt sựu kiện mã phiếu tìm kiếm khác ""
@@ -23,6 +23,9 @@ exports.searchRecommendDistributes = async(query, company) => {
         keySearch = {...keySearch, status: { $in: status } };
     };
 
+    if (assetId) {
+        keySearch = {...keySearch, asset: { $in: assetId}};
+    }
     var totalList = await RecommendDistribute.count(keySearch);
     var listRecommendDistributes = await RecommendDistribute.find(keySearch).populate('asset proponent approver').sort({ 'createdAt': 'desc' }).skip(page ? parseInt(page) : 0).limit(limit ? parseInt(limit) : 0);
 
