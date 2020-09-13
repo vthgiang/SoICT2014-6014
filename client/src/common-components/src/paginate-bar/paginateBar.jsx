@@ -73,7 +73,7 @@ class PaginateBar extends Component {
         return (
             <React.Fragment>
                 {
-                    pageTotal !== 0 &&
+                    pageTotal && pageTotal !== 0 &&
                     <div className="row" style={{paddingRight: '15px'}}>
                         <div className="pull-right">
                             <ul className="pagination" style={{ marginTop: '20px' }}>
