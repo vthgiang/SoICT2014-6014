@@ -1351,7 +1351,7 @@ export default {
                         relation_with_emergency_contact_person: 'Quan hệ với người liên hệ khẩn cấp',
                         emergency_contact_person_address: 'Địa chỉ người liên hệ khẩn cấp',
                         emergency_contact_person_phone_number: 'Điện thoại di động người liên hệ khẩn cấp',
-                        emergency_contact_person_home_nhone: 'Điện thoại nhà riêng người liên hệ khẩn cấp',
+                        emergency_contact_person_home_phone: 'Điện thoại nhà riêng người liên hệ khẩn cấp',
                         emergency_contact_person_email: 'Email người liên hệ khẩn cấp',
                         atmNumber: 'Số tài khoản ngân hàng',
                         bank_address: 'Chi nhánh ngân hàng',
@@ -1442,8 +1442,8 @@ export default {
 
                 // Nhóm thể loại kế hoạch làm Việc
                 holiday: 'Thời gian nghỉ lễ, nghỉ tết',
-                auto_leave: 'Thời gian không được xin nghỉ phép',
-                no_leave: 'Thời gian được xin nghỉ phép',
+                auto_leave: 'Thời gian được xin nghỉ phép',
+                no_leave: 'Thời gian không được xin nghỉ phép',
 
                 // Nhóm dành cho action
                 edit_holiday: 'Chỉnh sửa kế hoạch làm việc',

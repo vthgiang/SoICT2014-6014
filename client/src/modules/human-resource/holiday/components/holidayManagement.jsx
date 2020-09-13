@@ -151,7 +151,7 @@ class ManageHoliday extends Component {
                                 { key: 'type', value: translate('human_resource.holiday.table.type'), width: 35 },
                                 { key: "startDate", value: translate('human_resource.holiday.table.start_date') },
                                 { key: "endDate", value: translate('human_resource.holiday.table.end_date') },
-                                { key: "description", value: translate('human_resource.holiday.table.describe_timeline'), },
+                                { key: "description", value: translate('human_resource.holiday.table.describe_timeline'), width: 35 },
                             ],
                             data: data
                         }
