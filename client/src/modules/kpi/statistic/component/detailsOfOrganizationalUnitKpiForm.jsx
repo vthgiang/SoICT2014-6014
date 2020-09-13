@@ -33,65 +33,61 @@ class DetailsOfOrganizationalUnitKpiForm extends Component {
         const { details } = this.props;
 
         return (
-            <div id="details-of-organizational-unit-kpi-form">
-                <fieldset className="scheduler-border qlcv">
-                    <legend className="scheduler-border">
-                        <h4 className="box-title">Thông tin chi tiết</h4>
-                    </legend>
+            <div id="details-of-organizational-unit-kpi-form" className="description-box" style={{ height: "100%" }}>
+                <h4 className="box-title">Thông tin chi tiết</h4>
 
-                    <div className="row">
-                        <div className="col-xs-6">
-                            <div className="form-group">
-                                <strong>{translate('document.administration.domains.name')}:  </strong>
-                                {details.name}
-                            </div>
-
-                            <div className="form-group">
-                                <strong>Đơn vị:  </strong>
-                                {details.organizationalUnit}
-                            </div>
-
-                            <div className="form-group">
-                                <strong>Trọng số:  </strong>
-                                {details.weight}
-                            </div>
+                <div className="row">
+                    <div className="col-xs-6">
+                        <div className="form-group">
+                            <strong>{translate('document.administration.domains.name')}:  </strong>
+                            {details.name}
                         </div>
 
-                        <div className="col-xs-6">
-                            {/** Chi tiết số lượng kpi nhân viên */}
-                            <div className="form-group">
-                                <a title="Chi tiết KPI nhân viên" data-toggle="modal" data-target="#modal-employee-kpi-detail" data-backdrop="static" data-keyboard="false" style={{ cursor: "pointer" }}>
-                                    <strong>Số lượng Kpi nhân viên:  </strong>
-                                    {details.listEmployeeKpi.length}
-                                </a>
-                                <DetailOfEmployeeKpiDialogModal listEmployeeKpi={details.listEmployeeKpi}/>
-                            </div>
+                        <div className="form-group">
+                            <strong>Đơn vị:  </strong>
+                            {details.organizationalUnit}
+                        </div>
 
-                            {/** Chi tiết số lượng công việc */}
-                            <div className="form-group">
-                                <a title="Chi tiết công việc" data-toggle="modal" data-target="#modal-task-detail" data-backdrop="static" data-keyboard="false" style={{ cursor: "pointer" }}>
-                                    <strong>Số lượng công việc:  </strong>
-                                    {details.listTask.length}
-                                </a>
-                                <DetailOfTaskDialogModal listTask={details.listTask}/>
-                            </div>
-
-                            {/** Chi tiết người tham gia */}
-                            <div className="form-group">
-                                <a title="Chi tiết người tham gia" data-toggle="modal" data-target="#modal-participant-detail" data-backdrop="static" data-keyboard="false" style={{ cursor: "pointer" }}>
-                                    <strong>Số người tham gia:  </strong>
-                                    {details.listParticipant.length}
-                                </a>
-                                <DetailOfParticipantDialogModal listParticipant={details.listParticipant}/>
-                            </div>
+                        <div className="form-group">
+                            <strong>Trọng số:  </strong>
+                            {details.weight}
                         </div>
                     </div>
-                    <div className="form-group">
-                        <button className="btn btn-danger" onClick={() => {
-                            window.$(`#details-of-organizational-unit-kpi-form`).slideUp()
-                        }}>{ translate('form.close') }</button>
+
+                    <div className="col-xs-6">
+                        {/** Chi tiết số lượng kpi nhân viên */}
+                        <div className="form-group">
+                            <a title="Chi tiết KPI nhân viên" data-toggle="modal" data-target="#modal-employee-kpi-detail" data-backdrop="static" data-keyboard="false" style={{ cursor: "pointer" }}>
+                                <strong>Số lượng Kpi nhân viên:  </strong>
+                                {details.listEmployeeKpi.length}
+                            </a>
+                            <DetailOfEmployeeKpiDialogModal listEmployeeKpi={details.listEmployeeKpi}/>
+                        </div>
+
+                        {/** Chi tiết số lượng công việc */}
+                        <div className="form-group">
+                            <a title="Chi tiết công việc" data-toggle="modal" data-target="#modal-task-detail" data-backdrop="static" data-keyboard="false" style={{ cursor: "pointer" }}>
+                                <strong>Số lượng công việc:  </strong>
+                                {details.listTask.length}
+                            </a>
+                            <DetailOfTaskDialogModal listTask={details.listTask}/>
+                        </div>
+
+                        {/** Chi tiết người tham gia */}
+                        <div className="form-group">
+                            <a title="Chi tiết người tham gia" data-toggle="modal" data-target="#modal-participant-detail" data-backdrop="static" data-keyboard="false" style={{ cursor: "pointer" }}>
+                                <strong>Số người tham gia:  </strong>
+                                {details.listParticipant.length}
+                            </a>
+                            <DetailOfParticipantDialogModal listParticipant={details.listParticipant}/>
+                        </div>
                     </div>
-                </fieldset>
+                </div>
+                <div className="form-group">
+                    <button className="btn btn-danger" onClick={() => {
+                        window.$(`#details-of-organizational-unit-kpi-form`).slideUp()
+                    }}>{ translate('form.close') }</button>
+                </div>
             </div>
         )
     }

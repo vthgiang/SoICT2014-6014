@@ -51,7 +51,7 @@ class EmployeeDetailForm extends Component {
             this.setState({
                 dataStatus: this.DATA_STATUS.AVAILABLE,
                 employees: nextProps.employeesInfo.employees,
-                salaries: nextProps.employeesInfo.salarys,
+                salaries: nextProps.employeesInfo.salaries,
                 annualLeaves: nextProps.employeesInfo.annualLeaves,
                 commendations: nextProps.employeesInfo.commendations,
                 disciplines: nextProps.employeesInfo.disciplines,

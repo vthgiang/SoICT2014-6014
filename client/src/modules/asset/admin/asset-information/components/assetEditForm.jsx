@@ -472,7 +472,7 @@ class AssetEditForm extends Component {
                                 assignedToUser={assignedToUser}
                                 assignedToOrganizationalUnit={assignedToOrganizationalUnit}
                                 usageLogs={usageLogs}
-
+                                typeRegisterForUse = {typeRegisterForUse}
                                 handleAddUsage={this.handleCreateUsageLogs}
                                 handleEditUsage={this.handleEditUsageLogs}
                                 handleDeleteUsage={this.handleDeleteUsageLogs}

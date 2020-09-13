@@ -8,14 +8,15 @@ const TaskHistorySchema = new Schema({
     },
     user: {
         type: Schema.Types.ObjectId,
-        ref: 'users'
+        ref: 'User'
     },
     role: {
         type: Schema.Types.ObjectId,
-        ref: 'roles'
+        ref: 'Role'
     },
     task: {
-        type: Schema.Types.ObjectId
+        type: Schema.Types.ObjectId,
+        ref: 'Task'
     },
     log: {
         type: String
@@ -24,4 +25,8 @@ const TaskHistorySchema = new Schema({
     }
 });
 
-module.exports = TaskHistory = (db) => db.model("task_histories", TaskHistorySchema);
+module.exports = (db) => {
+    if(!db.models.TaskHistory)
+        return db.model('TaskHistory', TaskHistorySchema);
+    return db.models.TaskHistory;
+}

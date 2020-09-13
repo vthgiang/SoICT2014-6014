@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
-// Create Schema
 const DocumentDomainSchema = new Schema({
     name: { //tên 
         type: String,
@@ -13,13 +12,8 @@ const DocumentDomainSchema = new Schema({
     },
     documents: [{ //chứa những document nào
         type: Schema.Types.ObjectId,
-        ref: 'documents'
+        ref: 'Document'
     }],
-    company: { //thuộc công ty nào
-        type: Schema.Types.ObjectId,
-        ref: 'companies',
-        required: true
-    },
     parent: {
         type: Schema.Types.ObjectId,
         replies: this
@@ -31,4 +25,8 @@ const DocumentDomainSchema = new Schema({
 
 DocumentDomainSchema.plugin(mongoosePaginate);
 
-module.exports = DocumentDomain = (db) => db.model("document_domains", DocumentDomainSchema);
+module.exports = (db) => {
+    if(!db.models.DocumentDomain)
+        return db.model('DocumentDomain', DocumentDomainSchema);
+    return db.models.DocumentDomain;
+}

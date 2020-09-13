@@ -98,7 +98,8 @@ export default {
             wrong5_block: 'Wrong password 5 time. Account blocked',
             request_forgot_password_success: 'Request change password success. System sent email for you. Please check email',
             reset_password_success: 'Reset password thành công',
-            otp_invalid: 'OTP invalid'
+            otp_invalid: 'OTP invalid',
+            portal_invalid: 'Portal invalid',
         },
 
         system_admin: {
@@ -916,6 +917,7 @@ export default {
             salary: {
                 // list_salary: 'List of staff salary',
                 file_name_export: 'Salary tracking table',
+                other_salary: 'Other salary',
 
                 // Nhóm dành cho table
                 table: {
@@ -964,7 +966,7 @@ export default {
 
             // Quản lý nghỉ phép
             annual_leave: {
-                // list_annual_leave: 'List of staff annual leave',
+                file_export_name: 'Annual leave statistics table',
 
                 // Nhóm dành cho table
                 table: {
@@ -1151,6 +1153,7 @@ export default {
                 religion: 'Religion',
                 active: 'Working',
                 leave: 'Quit job',
+                status_work: 'Labor status',
 
                 mobile_phone: 'Mobile phone',
                 mobile_phone_1: 'Mobile phone 1',
@@ -1289,25 +1292,62 @@ export default {
 
                 // Quản lý thông tin cá nhân
                 employee_info: {
+                    export_bhxh: 'The process of paying social insurance',
                     // Nhóm dành cho UI
                     note_page_personal: 'I hereby certify that all of the above statements are true and I am responsible for them.',
                     contact_other: '(Other information please contact the relevant parties to be processed)',
                     update_infor_personal: 'Update staff information',
-                    no_data_personal: 'No personal information yet',
+                    no_data_personal: 'You do not have personal information',
+                    no_data_personal_to_update: 'You do not have personal information to update',
 
                     guaranteed_infor_to_update: 'You have not guaranteed information to update',
                     no_change_data: 'No information changed',
 
                     // Thông điệp trả về từ server
                     get_infor_personal_success: 'Get information personal success',
-                    get_infor_personal_false: 'Get information personal false',
+                    get_infor_personal_faile: 'Get information personal faile',
                     edit_infor_personal_success: 'Update information personal success',
-                    edit_infor_personal_false: 'Update infor personal false',
+                    edit_infor_personal_faile: 'Update infor personal faile',
 
                 },
 
                 employee_management: {
-                    file_name_export: 'Thông tin nhân viên',
+                    // Nhóm dánh cho export excel
+                    file_export_name: 'Staffs imformation',
+                    export: {
+                        sheet1: '1.Nhân viên',
+                        sheet2: '2.HS Nhân viên - Kinh nghiệm',
+                        sheet3: '3.HS Nhân viên - Bằng cấp',
+                        sheet4: '4.HS Nhân viên - Chứng chỉ',
+                        sheet5: '5.HS Nhân viên - Hợp đồng',
+                        sheet6: '6.HS Nhân viên - Bảo hiểm XH',
+                        sheet7: '7.HS Nhân viên - Tài liệu',
+                        sheet8: '8.HS Nhân viên - Khen thưởng',
+                        sheet9: '9.HS Nhân viên - Kỷ luật',
+                        sheet10: '10.HS Nhân viên - Lương thưởng',
+                        sheet11: '11.HS Nhân viên - Nghỉ phép',
+
+                        emergency_contact_person: 'Người liên hệ khẩn cấp',
+                        relation_with_emergency_contact_person: 'Quan hệ với người liên hệ khẩn cấp',
+                        emergency_contact_person_address: 'Địa chỉ người liên hệ khẩn cấp',
+                        emergency_contact_person_phone_number: 'Điện thoại di động người liên hệ khẩn cấp',
+                        emergency_contact_person_home_nhone: 'Điện thoại nhà riêng người liên hệ khẩn cấp',
+                        emergency_contact_person_email: 'Email người liên hệ khẩn cấp',
+                        atmNumber: 'Số tài khoản ngân hàng',
+                        bank_address: 'Chi nhánh ngân hàng',
+                        health_insurance_start_date: 'Ngày BHYT có hiệu lực',
+                        health_insurance_end_date: 'Ngày BHYT hết hạn',
+                    },
+
+                    // Nhón dành cho UI
+                    have: 'Have',
+                    staff: 'staff',
+                    contract_expiration: 'contract expiration',
+                    and: 'and',
+                    have_birthday: 'have birthdays ',
+                    this_month: 'this month',
+
+                    file_name_export: 'Employee imformation',
                     staff_no_unit_title: 'Because the employee is not in any unit',
                     no_gender: 'Select gender',
                     all_gender: 'Select all gender',
@@ -1323,17 +1363,19 @@ export default {
                     delete_employee: 'Delete staff',
                     add_employee: 'Add staff',
                     add_employee_title: 'Add new staff',
-                    add_by_hand: 'Add a s',
+                    add_by_hand: 'Add a staff',
                     add_import: 'Import file excel',
                     // Thông điệp trả về từ server
                     get_list_employee_success: 'Get list employee success',
-                    get_list_employee_false: 'Get list employee false',
+                    get_list_employee_faile: 'Get list employee faile',
                     create_employee_success: 'Create employee success',
-                    create_employee_false: 'Create employee false',
+                    create_employee_faile: 'Create employee faile',
                     delete_employee_success: 'Delete employee success',
-                    delete_employee_false: 'Delete employee false',
+                    delete_employee_faile: 'Delete employee faile',
                     edit_employee_success: 'Edit employee success',
-                    edit_employee_false: 'Edit employee false',
+                    edit_employee_faile: 'Edit employee faile',
+                    import_employee_success: 'Import employee success',
+                    import_employee_faile: 'Import employee faile',
                     employee_number_required: 'Staff code required',
                     email_in_company_required: 'Email in company required',
                     employee_number_have_exist: 'Employee number have exist',
@@ -1358,13 +1400,14 @@ export default {
             // Quản lý kế hoạch làm việc (lịch nghỉ lễ tết)
             holiday: {
                 file_name_export: 'Work plan',
-                number_date_leave_of_year: 'Number of days off',
+                number_date_leave_of_year: 'Maximum number of leave days',
                 date_year: 'date/year',
                 year: 'year',
+                save_as: 'Save',
                 number_date: 'Number date',
-                list_holiday: 'Holiday plans, Tet holidays',
-                list_no_leave: 'No leave is allowed',
-                list_auto_leave: 'Leave is allowed',
+                list_holiday: 'Time off holidays, Tet holidays',
+                list_no_leave: 'Time is not allowed to take leave',
+                list_auto_leave: 'Time is allowed to take leave',
 
                 // Nhóm dành cho table
                 table: {
@@ -1376,9 +1419,9 @@ export default {
                 },
 
                 // Nhóm thể loại kế hoạch làm Việc
-                holiday: 'Holiday',
-                auto_leave: 'Auto leave',
-                no_leave: 'No leave',
+                holiday: 'Time off holidays, Tet holidays',
+                auto_leave: 'Time is not allowed to take leave',
+                no_leave: 'Time is allowed to take leave',
 
                 // Nhóm dành cho action
                 edit_holiday: 'Edit work schedule',
@@ -1478,6 +1521,60 @@ export default {
         // Modules quản lý đào tạo
         training: {
             course: {
+                // Nhóm dành cho UI
+                study_at: 'Study at',
+                from: 'from',
+                to: 'to',
+                with_lecturer: 'with lecturer',
+                offered_by: 'Training by',
+                belong_type: 'Type of training',
+                with_cost: 'with a cost of',
+                commitment_time: 'and commitment time',
+                month: 'months',
+                staff: 'staff',
+                attend: 'involved',
+
+                no_course_type: 'Select training type',
+                all_course_type: 'Select all training type',
+                start_date: 'Start time',
+                end_date: 'End time',
+                start_date_before_end_date: 'The start time must be before the end time',
+                end_date_after_start_date: 'The end time must be after the start time',
+                employee_attend: 'Staff involved',
+                select_education_program: 'Select training program',
+
+                table: {
+                    course_code: 'Course code',
+                    course_name: 'Course name',
+                    start_date: 'Starting time',
+                    end_date: 'End time',
+                    course_place: 'Course place',
+                    offered_by: 'Offered by',
+                    course_type: 'Training type',
+                    lecturer: 'Lecturers',
+                    education_program: 'Under the training program',
+                    cost: 'Training costs',
+                    employee_commitment_time: 'Commitment time (unit: Month)',
+                    result: 'Result',
+                },
+
+                // Loại đào tao
+                type: {
+                    internal: 'Internal',
+                    external: 'External',
+                },
+
+                // Kết quả đào tạo
+                result: {
+                    pass: 'Pass',
+                    falied: 'Failed',
+                },
+
+                // Nhóm action
+                add_course: 'Add training course',
+                edit_course: 'edit training course',
+                delete_course: 'delete training course',
+                view_course: 'Training course information',
 
                 // Thông điệp trả về từ server
                 name_required: 'Name of the training course required',
@@ -1505,8 +1602,25 @@ export default {
             // Quản lý chương trình đào tạo
             education_program: {
 
+                education_program_code: 'Training program code',
+                education_program_name: 'Training program name',
+
+                table: {
+                    program_code: 'Program code',
+                    program_name: 'Program name',
+                    apply_for_organizational_units: 'Apply for units',
+                    apply_for_positions: 'Apply for positions',
+                    total_courses: 'Total course',
+                },
+
+                // Nhóm dành cho action
+                add_education_program: 'Add training program',
+                edit_education_program: 'Edit training program',
+                delete_education_program: 'Delete training program',
+                view_education_program: 'Training program information',
+
                 // Thông điệp trả về từ server
-                apply_for_organizational_units_required: 'Apply for organizational units required',
+                apply_for_organizational_units_required: 'Apply for units required',
                 apply_for_positions_required: 'Apply for positions required',
                 program_id_required: 'Program id required',
                 name_required: 'Program name required',
@@ -1518,7 +1632,7 @@ export default {
                 create_education_program_faile: 'Create education program faile',
                 delete_education_program_success: 'Delete education program success',
                 delete_education_program_faile: 'Delete education program faile',
-                edit_education_program_success: 'Edit ducation program success',
+                edit_education_program_success: 'Edit education program success',
                 edit_education_program_faile: 'Edit education program faile',
             }
         },
@@ -2286,7 +2400,7 @@ export default {
 
                 is_task_process: 'This is a task of process',
                 activated_task: "Activate",
-                following_task: "the following tasks",
+                following_task: "Click here to activate the following tasks",
 
                 // TODO: code_mesage_task_perform
                 create_result_task_success: 'Evaluate task successfully',
@@ -2394,13 +2508,15 @@ export default {
                     accountable: 'Accountable role',
 
                     err_range: 'Value must be between 0 and 100',
-                    err_contribute: 'Sum of contribution should be 100',
+                    err_contribute: 'Sum of contributions should be 100',
+                    err_not_enough_contribute: 'Sum of all contributions should be 100',
                     err_empty: "Value must be required"
                 }
             },
             task_process: {
                 process_name: 'Process name',
                 process_description: 'Process description',
+                num_task: 'Number of tasks in process',
                 process_status: 'Process status',
                 creator: 'Creator',
                 manager: 'Manager',
@@ -2421,10 +2537,9 @@ export default {
                 information: 'Information',
                 document: 'Document',
                 roles: 'Roles',
-                list_of_data_and_info: 'List of data and informations',
-                not_have_doc: 'Not have documents',
-                not_have_info: 'Not have information',
-                not_export_info: 'Not export information',
+                list_of_data_and_info: 'Choose output information and documents for the following tasks in the process',
+                not_have_doc: 'The task does not have documents',
+                not_have_info: 'The task does not have information',
                 task_process: 'Task process',
 
 

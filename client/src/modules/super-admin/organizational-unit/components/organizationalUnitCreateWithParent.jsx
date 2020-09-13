@@ -65,6 +65,8 @@ class DepartmentCreateWithParent extends Component {
 
     render() {
         const { translate, department } = this.props;
+
+        const { departmentId } = this.props;
         const { departmentParent, departmentNameError, departmentDescriptionError } = this.state;
         console.log("state create organ:", this.state)
 
@@ -103,7 +105,7 @@ class DepartmentCreateWithParent extends Component {
                             <div className="form-group">
                                 <label>{translate('manage_department.parent')}</label>
                                 <SelectBox
-                                    id={`cowp-${departmentParent}`}
+                                    id={`cowp-${departmentId}`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={[

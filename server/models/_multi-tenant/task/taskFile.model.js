@@ -12,4 +12,8 @@ const TaskFileSchema = new Schema({
     }
 });
 
-module.exports = TaskFile = (db) => db.model("task_files", TaskFileSchema);
+module.exports = (db) => {
+    if(!db.models.TaskFile)
+        return db.model('TaskFile', TaskFileSchema);
+    return db.models.TaskFile;
+}

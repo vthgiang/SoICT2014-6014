@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../../common-components';
+import { DialogModal, TimePicker ,ErrorLabel, DatePicker, SelectBox } from '../../../../../common-components';
 
 import { UseRequestFromValidator } from '../../../user/use-request/components/UseRequestFromValidator';
 
@@ -165,6 +165,26 @@ class UseRequestManagerEditForm extends Component {
         return msg === undefined;
     }
 
+    handleStartTimeChange = (value) => {
+        console.log("value", value)
+        this.setState(state => {
+            return {
+                ...state,
+                startTime: value
+            }
+        });
+    }
+
+
+    handleStopTimeChange = (value) => {
+        console.log("value", value)
+        this.setState(state => {
+            return {
+                ...state,
+                stopTime: value
+            }
+        });
+    }
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
         let result = this.validateDateCreate(this.state.dateCreate, false) &&
@@ -176,6 +196,7 @@ class UseRequestManagerEditForm extends Component {
 
     save = () => {
         let {managedBy} =this.state
+        console.log("Stattttttttttte", this.state);
         let dataToSubmit = { ...this.state, approver: this.props.auth.user._id };
         if (this.isFormValidated()) {
             return this.props.updateRecommendDistribute(this.state._id, dataToSubmit,managedBy);
@@ -183,7 +204,24 @@ class UseRequestManagerEditForm extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
+        
         if (nextProps._id !== prevState._id) {
+            let startDate, endDate, startTime, stopTime;
+            if(nextProps.asset.typeRegisterForUse == 2){
+                let partStart = nextProps.dateStartUse.split(' ');
+                startTime = [partStart[0], partStart[1]].join(' ');
+                startDate = partStart[2]
+            } else {
+                startDate = nextProps.dateStartUse
+            }
+    
+            if(nextProps.asset.typeRegisterForUse == 2){
+                let partStop = nextProps.dateEndUse.split(' ');
+                stopTime = [partStop[0], partStop[1]].join(' ');
+                endDate = partStop[2]
+            } else {
+                endDate = nextProps.dateEndUse
+            }
             return {
                 ...prevState,
                 _id: nextProps._id,
@@ -192,8 +230,10 @@ class UseRequestManagerEditForm extends Component {
                 proponent: nextProps.proponent,
                 reqContent: nextProps.reqContent,
                 asset: nextProps.asset,
-                dateStartUse: nextProps.dateStartUse,
-                dateEndUse: nextProps.dateEndUse,
+                dateStartUse: startDate,
+                dateEndUse: endDate,
+                startTime: nextProps.asset.typeRegisterForUse == 2? startTime : null,
+                stopTime: nextProps.asset.typeRegisterForUse == 2? stopTime : null,
                 approver: nextProps.approver,
                 status: nextProps.status,
                 note: nextProps.note,
@@ -212,8 +252,8 @@ class UseRequestManagerEditForm extends Component {
         const { _id } = this.props;
         const { translate, recommendDistribute, user, assetsManager, auth } = this.props;
         const {
-            recommendNumber, dateCreate, proponent, reqContent, asset, dateStartUse, dateEndUse, approver, status, note,
-            errorOnRecommendNumber, errorOnDateCreate, errorOnReqContent, errorOnDateStartUse, errorOnDateEndUse
+            recommendNumber, dateCreate, proponent, reqContent, asset, dateStartUse, dateEndUse, approver, status, note, startTime, stopTime,
+            errorOnRecommendNumber, errorOnDateCreate, errorOnReqContent, errorOnDateStartUse, errorOnDateEndUse, typeRegisterForUse
         } = this.state;
 
         var assetlist = assetsManager.listAssets;
@@ -310,6 +350,14 @@ class UseRequestManagerEditForm extends Component {
                                         value={dateStartUse}
                                         onChange={this.handleDateStartUseChange}
                                     />
+                                    {   asset.typeRegisterForUse == 2 && 
+                                        < TimePicker
+                                            id={`edit_start_time_use${_id}`}
+                                            value={startTime}
+                                            onChange={this.handleStartTimeChange}
+                                        /> 
+                                    }
+
                                     <ErrorLabel content={errorOnDateStartUse} />
                                 </div>
 
@@ -321,6 +369,14 @@ class UseRequestManagerEditForm extends Component {
                                         value={dateEndUse}
                                         onChange={this.handleDateEndUseChange}
                                     />
+                                    {
+                                        asset.typeRegisterForUse == 2 && 
+                                        < TimePicker
+                                            id={`edit_stop_time_use${_id}`}
+                                            value={stopTime}
+                                            onChange={this.handleStopTimeChange}
+                                        /> 
+                                    }  
                                     <ErrorLabel content={errorOnDateEndUse} />
                                 </div>
 

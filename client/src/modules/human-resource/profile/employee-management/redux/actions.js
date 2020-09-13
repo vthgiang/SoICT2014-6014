@@ -25,7 +25,8 @@ function getAllEmployee(data) {
             .then(res => {
                 dispatch({
                     type: EmployeeConstants.GETALL_SUCCESS,
-                    payload: res.data.content
+                    payload: res.data.content,
+                    exportData: data ? data.exportData : data
                 })
             })
             .catch(err => {

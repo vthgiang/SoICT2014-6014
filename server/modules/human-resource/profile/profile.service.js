@@ -121,7 +121,7 @@ exports.getEmployeeProfile = async (email) => {
         }
     } else {
         let value = await this.getAllPositionRolesAndOrganizationalUnitsOfUser(email);
-        let salarys = await Salary.find({
+        let salaries = await Salary.find({
             employee: employees[0]._id
         })
         let annualLeaves = await AnnualLeave.find({
@@ -138,7 +138,7 @@ exports.getEmployeeProfile = async (email) => {
         })
         return {
             employees: employees,
-            salarys,
+            salaries,
             annualLeaves,
             commendations,
             disciplines,
@@ -323,7 +323,7 @@ exports.getEmployeeNumberExpiresContractInCurrentMonth = async (company, month =
     let results = await Employee.count({
         company: company,
         status: "active",
-        "contracts.endDate": {
+        contractEndDate: {
             "$gt": firstDay,
             "$lte": lastDay
         }
@@ -337,18 +337,15 @@ exports.getEmployeeNumberExpiresContractInCurrentMonth = async (company, month =
  * @param {*} month 
  */
 exports.getEmployeeNumberHaveBirthdateInCurrentMonth = async (company, month = new Date()) => {
-    let results = await Employee.find({
+    return await Employee.countDocuments({
         company: company,
         status: "active",
-    }, {
-        _id: 1,
-        birthdate: 1
+        "$expr": {
+            "$eq": [{
+                "$month": "$birthdate"
+            }, month.getMonth() + 1]
+        }
     })
-    results = results.filter(x => {
-        let date = new Date(x.birthdate);
-        return date.getMonth() === month.getMonth()
-    });
-    return results.length;
 }
 
 /**
@@ -470,20 +467,6 @@ exports.searchEmployeeProfiles = async (params, company) => {
         company: company
     };
 
-    // Thêm key tìm kiếm nhân viên theo ngày hết hạn hợp đồng vào keySearch
-    if (params.endDateOfContract) {
-        let month = new Date(params.endDateOfContract);
-        let firstDay = new Date(month.getFullYear(), month.getMonth(), 1);
-        let lastDay = new Date(month.getFullYear(), month.getMonth() + 1, 1);
-        keySearch = {
-            ...keySearch,
-            "contracts.endDate": {
-                "$gt": firstDay,
-                "$lte": lastDay
-            }
-        }
-    }
-
     // Bắt sựu kiện theo đơn vị
     if (params.organizationalUnits) {
         let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(params.organizationalUnits, undefined);
@@ -516,7 +499,7 @@ exports.searchEmployeeProfiles = async (params, company) => {
         };
     };
 
-    // Thêm key tìm kiếm nhân viên theo trạng thái hoạt động vào keySearch
+    // Bắt sự kiện tìm kiếm theo trạng thái
     if (params.status) {
         keySearch = {
             ...keySearch,
@@ -525,6 +508,45 @@ exports.searchEmployeeProfiles = async (params, company) => {
             }
         };
     };
+
+    // Thêm key tìm kiếm nhân viên theo ngày hết hạn hợp đồng vào keySearch
+    if (params.endDateOfContract) {
+        let month = new Date(params.endDateOfContract);
+        let firstDay = new Date(month.getFullYear(), month.getMonth(), 1);
+        let lastDay = new Date(month.getFullYear(), month.getMonth() + 1, 1);
+        keySearch = {
+            ...keySearch,
+            contractEndDate: {
+                "$gt": firstDay,
+                "$lte": lastDay
+            }
+        }
+    }
+
+    // Bắt sựu kiện theo Loại hợp đồng lao động
+    if (params.typeOfContract) {
+        keySearch = {
+            ...keySearch,
+            contractType: {
+                $regex: params.typeOfContract,
+                $options: "i"
+            }
+        }
+    };
+
+    // Bắt sựu kiện theo tháng sinh
+    if (params.birthdate) {
+        let month = new Date(params.birthdate).getMonth() + 1;
+        console.log(month);
+        keySearch = {
+            ...keySearch,
+            "$expr": {
+                "$eq": [{
+                    "$month": "$birthdate"
+                }, month]
+            }
+        }
+    }
 
     // Lấy danh sách nhân viên
     let listEmployees = await Employee.find(keySearch, {
@@ -535,48 +557,16 @@ exports.searchEmployeeProfiles = async (params, company) => {
             contracts: 1,
             fullName: 1,
             gender: 1,
+            contractEndDate: 1,
+            contractType: 1,
             status: 1,
         })
         .sort({
             'createdAt': 'desc'
         }).skip(params.page).limit(params.limit);
 
-    // Lọc nhân viên theo tháng sinh
-    if (params.birthdate) {
-        let birthdate = new Date(params.birthdate);
-        listEmployees = listEmployees.filter(x => {
-            let date = new Date(x.birthdate)
-            return date.getMonth() === birthdate.getMonth();
-        })
-    }
-
-    // Lọc nhân viên theo loại hợp đồng lao động
-    if (params.typeOfContract) {
-        let typeOfContract = params.typeOfContract.toLowerCase().trim();
-        listEmployees = listEmployees.filter(x => {
-            let contract;
-            if (x.contracts.length !== 0) {
-                let contracts = x.contracts;
-                contract = contracts.filter(y => {
-                    let endDate = new Date(y.endDate);
-                    let date = new Date();
-                    return endDate.getTime() > date.getTime();
-                })
-            }
-            if (contract.length !== 0) {
-                contract = contract[0];
-                if (contract.contractType.toLowerCase().includes(typeOfContract)) {
-                    return true
-                } else {
-                    return false
-                }
-            } else {
-                return false;
-            }
-        })
-    }
-
     let totalList = await Employee.countDocuments(keySearch);
+
     let expiresContract = await this.getEmployeeNumberExpiresContractInCurrentMonth(company, new Date());
     let employeesHaveBirthdateInCurrentMonth = await this.getEmployeeNumberHaveBirthdateInCurrentMonth(company, new Date())
     return {
@@ -779,6 +769,8 @@ exports.createEmployee = async (data, company, fileInfor) => {
         contracts: 1,
         fullName: 1,
         gender: 1,
+        contractEndDate: 1,
+        contractType: 1,
         status: 1,
     });
 }
@@ -1005,6 +997,8 @@ exports.updateEmployeeInformation = async (id, data, fileInfor, company) => {
         contracts: 1,
         fullName: 1,
         gender: 1,
+        contractEndDate: 1,
+        contractType: 1,
         status: 1,
     });
 }
@@ -1215,7 +1209,7 @@ exports.createNotificationEndOfContract = async () => {
         let dateCheck = new Date(dateNow.getFullYear(), dateNow.getMonth(), dateNow.getDate() + arrayTime[n]);
         dateCheck = new Date(this.formatDate(dateCheck, false));
         let employees = await Employee.find({
-            "contracts.endDate": dateCheck
+            contractEndDate: dateCheck
         }, {
             emailInCompany: 1,
             _id: 1
@@ -1564,9 +1558,26 @@ exports.importContract = async (company, data) => {
             return result;
         })
         for (let x of importData) {
+            let crurrentContract = x.contracts[0];
+            x.contracts.forEach(y => {
+                if (new Date(crurrentContract.startDate).getTime() < new Date(y.startDate).getTime()) {
+                    crurrentContract = y;
+                }
+            });
             let editEmployee = await Employee.findOne({
                 _id: x._id
             });
+
+            if (crurrentContract.endDate && editEmployee.contractEndDate &&
+                new Date(crurrentContract.endDate).getTime() > new Date(editEmployee.contractEndDate).getTime()) {
+
+                editEmployee.contractEndDate = crurrentContract.endDate;
+                editEmployee.contractType = crurrentContract.contractType;
+            } else if (crurrentContract.endDate && !editEmployee.contractEndDate) {
+                editEmployee.contractEndDate = crurrentContract.endDate;
+                editEmployee.contractType = crurrentContract.contractType;
+            }
+            
             editEmployee.contracts = editEmployee.contracts.concat(x.contracts);
             editEmployee.save();
         }

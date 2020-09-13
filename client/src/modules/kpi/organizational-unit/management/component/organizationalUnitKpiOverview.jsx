@@ -302,9 +302,7 @@ class KPIUnitManager extends Component {
                             </div>
                             
                             {exportData&&<ExportExcel id="export-unit-kpi-management-overview" exportData={exportData} style={{ marginRight: 15, marginTop:5 }} />}
-                            < a className='pull-right btn btn-primary' style={{ cursor: "pointer" , marginTop: 5}} >
-                                 <i className="fa fa-fw fa-download"></i> Xuất báo cáo chi tiết<i className="fa fa-fw fa-file-excel-o"></i>
-                            </a>
+                            
                         </div>
 
                         <div className="form-inline">

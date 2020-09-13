@@ -769,7 +769,7 @@ class EmployeeEditFrom extends Component {
                 contracts: nextProps.employeesInfo.employees[0].contracts,
                 files: nextProps.employeesInfo.employees[0].files,
                 socialInsuranceDetails: nextProps.employeesInfo.employees[0].socialInsuranceDetails,
-                salaries: nextProps.employeesInfo.salarys,
+                salaries: nextProps.employeesInfo.salaries,
                 annualLeaves: nextProps.employeesInfo.annualLeaves,
                 commendations: nextProps.employeesInfo.commendations,
                 disciplines: nextProps.employeesInfo.disciplines,
@@ -783,7 +783,6 @@ class EmployeeEditFrom extends Component {
     }
 
     render() {
-        console.log(this.state);
         const { translate, employeesInfo } = this.props;
 
         let { _id, img, employee, degrees, certificates, socialInsuranceDetails, contracts, courses,

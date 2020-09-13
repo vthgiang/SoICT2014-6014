@@ -24,7 +24,7 @@ class EmployeeDetail extends Component {
         let employees, salaries, annualLeaves, commendations, disciplines, courses, roles = [];
 
         if (employeesInfo.employees) employees = employeesInfo.employees;
-        if (employeesInfo.salarys) salaries = employeesInfo.salarys;
+        if (employeesInfo.salaries) salaries = employeesInfo.salaries;
         if (employeesInfo.annualLeaves) annualLeaves = employeesInfo.annualLeaves;
         if (employeesInfo.commendations) commendations = employeesInfo.commendations;
         if (employeesInfo.disciplines) disciplines = employeesInfo.disciplines;
@@ -34,7 +34,12 @@ class EmployeeDetail extends Component {
         return (
             <React.Fragment>
                 {
-                    employees && employees.length === 0 && employeesInfo.isLoading === false && < span className="text-red">{translate('human_resource.profile.employee_info.no_data_personal')}</span>
+                    employees && employees.length === 0 && employeesInfo.isLoading === false &&
+                    <div className="box">
+                        <div className="box-body qlcv" style={{ height: '100vh' }}>
+                            <strong>{translate('human_resource.profile.employee_info.no_data_personal')}</strong>
+                        </div>
+                    </div>
                 }
                 {(typeof employees !== 'undefined' && employees.length !== 0) &&
                     employees.map((x, index) => (

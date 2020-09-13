@@ -14,7 +14,7 @@ export const CourseService = {
  */
 function getListCourse(data) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/courses`,
+        url: `${ process.env.REACT_APP_SERVER }/course/courses`,
         method: 'GET',
         params: {
             courseId: data !== undefined ? data.courseId : data,
@@ -34,7 +34,7 @@ function getListCourse(data) {
  */
 function createNewCourse(data) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/courses/`,
+        url: `${ process.env.REACT_APP_SERVER }/course/courses`,
         method: 'POST',
         data: data,
     }, true, true, 'training.course');
@@ -44,10 +44,9 @@ function createNewCourse(data) {
  * Xoá khoá đào tạo
  * @id : Id khoá đào tạo cần xoá
  */
-// 
 function deleteCourse(id) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/courses/${id}`,
+        url: `${ process.env.REACT_APP_SERVER }/course/courses/${id}`,
         method: 'DELETE',
     }, true, true, 'training.course');
 }
@@ -59,7 +58,7 @@ function deleteCourse(id) {
  */
 function updateCourse(id, data) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/courses/${id}`,
+        url: `${ process.env.REACT_APP_SERVER }/course/courses/${id}`,
         method: 'PATCH',
         data: data,
     }, true, true, 'training.course');

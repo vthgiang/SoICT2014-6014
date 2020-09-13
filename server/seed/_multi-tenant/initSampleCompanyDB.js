@@ -12,6 +12,11 @@ const {
     Privilege,
     User,
     UserRole,
+
+    RootRole,
+    SystemLink,
+    SystemComponent,
+
     Employee,
     AnnualLeave,
     Discipline,
@@ -82,13 +87,32 @@ const initSampleCompanyDB = async() => {
         }
     );
     if(!systemDB) throw('DB vnist cannot connect');
-	console.log("DB vnist connected");
+    console.log("DB vnist connected");
+    
+    /**
+     * 1.1 Khởi tạo model cho db
+     */
+    const initModels = (db) => {
+        console.log("models", db.models);
+        if(!db.models.User) User(db);
+        if(!db.models.Role) Role(db);
+        if(!db.models.UserRole) UserRole(db);
+        if(!db.models.Link) Link(db);
+        if(!db.models.Component) Component(db);
+        if(!db.models.OrganizationalUnit) OrganizationalUnit(db);
+        if(!db.models.RootRole) RootRole(db);
+        console.log("models_list", db.models);
+    }
+    
+    initModels(vnistDB);
+    initModels(systemDB);
 
 
 	/**
 	 * 2. Xóa dữ liệu db cũ của công ty vnist
 	 */
     vnistDB.dropDatabase(); 
+
 
 
     /**
@@ -190,11 +214,19 @@ const initSampleCompanyDB = async() => {
     /**
      * 5. Tạo các role mặc định cho công ty vnist
      */
-    const roleAbstract = await RoleType(systemDB).findOne({
+    await RoleType(vnistDB).insertMany([
+        { name: Terms.ROLE_TYPES.ROOT }, 
+        { name: Terms.ROLE_TYPES.POSITION },
+        { name: Terms.ROLE_TYPES.COMPANY_DEFINED }
+    ]);
+    const roleAbstract = await RoleType(vnistDB).findOne({
         name: Terms.ROLE_TYPES.ROOT
     });
-    const roleChucDanh = await RoleType(systemDB).findOne({
+    const roleChucDanh = await RoleType(vnistDB).findOne({
         name: Terms.ROLE_TYPES.POSITION
+    });
+    const roleTuDinhNghia = await RoleType(vnistDB).findOne({
+        name: Terms.ROLE_TYPES.COMPANY_DEFINED
     });
     const roleAdmin = await Role(vnistDB).create({
         name: Terms.ROOT_ROLES.ADMIN.name,
@@ -326,11 +358,11 @@ const initSampleCompanyDB = async() => {
 
         let allLinks = await SystemLink(systemDB).find()
             .populate({
-                path: 'root_roles'
-            });;
+                path: 'roles'
+            });
         let activeLinks = await SystemLink(systemDB).find({ _id: { $in: linkArr } })
             .populate({
-                path: 'root_roles'
+                path: 'roles'
             });
 
         let dataLinks = allLinks.map(link => {
@@ -395,7 +427,7 @@ const initSampleCompanyDB = async() => {
         dataSystemComponents.filter((component, index) => dataSystemComponents.indexOf(component) === index);
         const systemComponents = await SystemComponent(systemDB)
             .find({ _id: { $in: dataSystemComponents }})
-            .populate({ path: 'root_roles' });
+            .populate({ path: 'roles' });
 
         for (let i = 0; i < systemComponents.length; i++) {
             let sysLinks = await SystemLink(systemDB)

@@ -9,7 +9,7 @@ const {
  */
 exports.searchEducationPrograms = async (req, res) => {
     try {
-        var data;
+        let data;
         if (req.query.limit !== undefined && req.query.page !== undefined) {
             let params = {
                 organizationalUnit: req.query.organizationalUnit,
@@ -81,7 +81,7 @@ exports.createEducationProgram = async (req, res) => {
                 }
             });
         } else {
-            var education = await EducationProgramService.createEducationProgram(req.body, req.user.company._id);
+            let education = await EducationProgramService.createEducationProgram(req.body, req.user.company._id);
             // Kiểm tra trùng lặp mã chương trình đào tạo
             if (education === 'have_exist') {
                 await LogError(req.user.email, 'CREATE_EDUCATIONPROGRAM', req.user.company);
@@ -119,7 +119,7 @@ exports.createEducationProgram = async (req, res) => {
  */
 exports.deleteEducationProgram = async (req, res) => {
     try {
-        var deleteEducation = await EducationProgramService.deleteEducationProgram(req.params.id);
+        let deleteEducation = await EducationProgramService.deleteEducationProgram(req.params.id);
         await LogInfo(req.user.email, 'DELETE_EDUCATIONPROGRAM', req.user.company);
         res.status(200).json({
             success: true,
@@ -173,7 +173,7 @@ exports.updateEducationProgram = async (req, res) => {
             });
         } else {
             // Cập nhật thông tin chương trình đào tạo
-            var education = await EducationProgramService.updateEducationProgram(req.params.id, req.body);
+            let education = await EducationProgramService.updateEducationProgram(req.params.id, req.body);
             await LogInfo(req.user.email, 'EDIT_EDUCATIONPROGRAM', req.user.company);
             res.status(200).json({
                 success: true,

@@ -1,6 +1,7 @@
 import {
     EducationConstants
 } from './constants';
+
 const initState = {
     isLoading: false,
     listAll: [],

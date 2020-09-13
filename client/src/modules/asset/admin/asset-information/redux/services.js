@@ -25,11 +25,26 @@ function getAll(data) {
             group: data !== undefined ? data.group : data,
             assetType: data !== undefined ? data.assetType : data,
             purchaseDate: data !== undefined ? data.purchaseDate : data,
+            disposalDate: data !== undefined ? data.disposalDate : data,
+            handoverUnit: data !== undefined ? data.handoverUnit : data,
+            handoverUser: data !== undefined ? data.handoverUser : data,
             typeRegisterForUse: data !== undefined ? data.typeRegisterForUse : data,
             page: data !== undefined ? data.page : data,
             limit: data !== undefined ? data.limit : data,
             managedBy: data !== undefined ? data.managedBy : data,
             currentRole: data !== undefined ? data.currentRole : data,
+
+            startDepreciation: data !== undefined ? data.startDepreciation : data,
+            depreciationType: data !== undefined ? data.depreciationType : data,
+
+            maintainanceCode: data !== undefined ? data.maintainanceCode : data,
+            maintainCreateDate: data !== undefined ? data.maintainCreateDate : data,
+            maintainStatus: data !== undefined ? data.maintainStatus : data,
+            maintainType: data !== undefined ? data.maintainType : data,
+
+            incidentCode: data !== undefined ? data.incidentCode : data,
+            incidentStatus: data !== undefined ? data.incidentStatus : data,
+            incidentType: data !== undefined ? data.incidentType : data,
         }
     }, false, true, 'asset.asset_info');
 }

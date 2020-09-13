@@ -9,11 +9,11 @@ const CrmLiabilitySchema = new Schema({
     },
     customer: { // Khách hàng
         type: Schema.Types.ObjectId,
-        ref: 'crm_customers'
+        ref: 'CrmCustomer'
     },
     creator: { // Người tạo
         type: Schema.Types.ObjectId,
-        ref: 'users'
+        ref: 'User'
     },
     description: { // Mô tả
         type: String
@@ -21,10 +21,6 @@ const CrmLiabilitySchema = new Schema({
     total: {
         type: Number
     },
-    company: {
-        type: Schema.Types.ObjectId,
-        ref: 'companies'
-    }
 },{
     timestamps: true,
     toJSON: { virtuals: true }
@@ -32,4 +28,8 @@ const CrmLiabilitySchema = new Schema({
 
 CrmLiabilitySchema.plugin(mongoosePaginate);
 
-module.exports = CrmLiability = (db) => db.model("crm_liabilities", CrmLiabilitySchema);
+module.exports = (db) => {
+    if(!db.models.CrmLiability)
+        return db.model('CrmLiability', CrmLiabilitySchema);
+    return db.models.CrmLiability;
+}

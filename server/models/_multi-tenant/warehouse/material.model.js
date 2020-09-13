@@ -32,4 +32,8 @@ const MaterialSchema = new Schema({
 
 });
 
-module.exports = Material = (db) => db.model("materials", MaterialSchema);
+module.exports = (db) => {
+    if(!db.models.Material)
+        return db.model('Material', MaterialSchema);
+    return db.models.Material;
+}

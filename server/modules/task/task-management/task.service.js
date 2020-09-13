@@ -281,13 +281,12 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (task) => {
     };
 
     if (JSON.parse(aPeriodOfTime)) {
-
         keySearch = {
             ...keySearch,
             $or: [
-                { 'endDate': { $lte: new Date(endDate), $gt: new Date(startDate) } },
-                { 'startDate': { $lte: new Date(endDate), $gt: new Date(startDate) } },
-                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lte: new Date(startDate) } }] }
+                { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
             ]
         }
     } else {
@@ -947,11 +946,11 @@ exports.getPaginatedTasksByUser = async (task) => {
 
     var keySearch = {
         $or: [
-           { informedEmployees: { $in: [user] } },
-           { creator: { $in: [user] } },
-           { responsibleEmployees: { $in: [user] } },
-           { consultedEmployees: { $in: [user] } },
-           { accountableEmployees: { $in: [user] } },
+            { informedEmployees: { $in: [user] } },
+            { creator: { $in: [user] } },
+            { responsibleEmployees: { $in: [user] } },
+            { consultedEmployees: { $in: [user] } },
+            { accountableEmployees: { $in: [user] } },
         ],
         isArchived: false
     };
@@ -1144,71 +1143,8 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (task) => {
         "tasks": organizationUnitTasks
     };
 }
-/**
- * Tạo công việc mới
- */
-exports.createTask = async (task) => {
-    // Lấy thông tin công việc cha
-    var level = 1;
-    if (mongoose.Types.ObjectId.isValid(task.parent)) {
-        var parent = await Task.findById(task.parent);
-        if (parent) level = parent.level + 1;
-    }
 
-    // convert thời gian từ string sang date
-    var splitter = task.startDate.split("-");
-    var startDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-    splitter = task.endDate.split("-");
-    var endDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-
-    let taskTemplate, cloneActions = [];
-    if (task.taskTemplate !== "") {
-        taskTemplate = await TaskTemplate.findById(task.taskTemplate);
-        var taskActions = taskTemplate.taskActions;
-
-        for (let i in taskActions) {
-            cloneActions[i] = {
-                mandatory: taskActions[i].mandatory,
-                name: taskActions[i].name,
-                description: taskActions[i].description,
-            }
-        }
-    }
-
-    let formula;
-    if( taskTemplate ) {
-        formula = taskTemplate.formula;
-    } else if( task.formula ){
-        // formula = "progress / (dayUsed / totalDay)"; // default
-        formula = "progress / (dayUsed / totalDay) - 0.5 * (10 - (averageActionRating)) * 10"
-    } 
-    var task = await Task.create({ //Tạo dữ liệu mẫu công việc
-        organizationalUnit: task.organizationalUnit,
-        creator: task.creator, //id của người tạo
-        name: task.name,
-        description: task.description,
-        startDate: startDate,
-        endDate: endDate,
-        priority: task.priority,
-        formula: formula,
-        taskTemplate: taskTemplate ? taskTemplate : null,
-        taskInformations: taskTemplate ? taskTemplate.taskInformations : [],
-        taskActions: taskTemplate ? cloneActions : [],
-        parent: (task.parent === "") ? null : task.parent,
-        level: level,
-        responsibleEmployees: task.responsibleEmployees,
-        accountableEmployees: task.accountableEmployees,
-        consultedEmployees: task.consultedEmployees,
-        informedEmployees: task.informedEmployees,
-        confirmedByEmployees: task.responsibleEmployees.concat(task.accountableEmployees).concat(task.consultedEmployees).includes(task.creator) ? task.creator : []
-    });
-
-    if (task.taskTemplate !== null) {
-        await TaskTemplate.findByIdAndUpdate(
-            task.taskTemplate, { $inc: { 'numberOfUse': 1 } }, { new: true }
-        );
-    }
-
+exports.sendEmailFoCreateTask = async (task) => {
     task = await task.populate("organizationalUnit creator parent").execPopulate();
 
     var transporter = nodemailer.createTransport({
@@ -1245,7 +1181,7 @@ exports.createTask = async (task) => {
     user = await User.find({
         _id: { $in: userIds }
     })
-    console.log(con);
+
     email = user.map(item => item.email); // Lấy ra tất cả email của người dùng
     email.push("trinhhong102@gmail.com");
     var html = `<p>Bạn được giao nhiệm vụ trong công việc:  <a href="${process.env.WEBSITE}/task?taskId=${task._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${task._id} </a></p> ` +
@@ -1263,18 +1199,88 @@ exports.createTask = async (task) => {
         })}
                     </ul>` +
         `${con.length > 0 ? `<p>Người hỗ trợ</p> ` +
-        `<ul>${con.map((item) => {
-            return `<li>${item.name}</li>`
-        })}
-                    </ul>` : "" }` +
+            `<ul>${con.map((item) => {
+                return `<li>${item.name}</li>`
+            })}
+                    </ul>` : ""}` +
         `${inf.length > 0 ? `<p>Người quan sát</p> ` +
-        `<ul>${inf.map((item) => {
-            return `<li>${item.name}</li>`
-        })}
-                    </ul>` : "" }`
+            `<ul>${inf.map((item) => {
+                return `<li>${item.name}</li>`
+            })}
+                    </ul>` : ""}`
         ;
 
-    return { task: task, user: userIds, email: email, html: html };
+        return { task: task, user: userIds, email: email, html: html };
+}
+
+/**
+ * Tạo công việc mới
+ */
+exports.createTask = async (task) => {
+    // Lấy thông tin công việc cha
+    var level = 1;
+    if (mongoose.Types.ObjectId.isValid(task.parent)) {
+        var parent = await Task.findById(task.parent);
+        if (parent) level = parent.level + 1;
+    }
+
+    // convert thời gian từ string sang date
+    var splitter = task.startDate.split("-");
+    var startDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+    splitter = task.endDate.split("-");
+    var endDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+
+    let taskTemplate, cloneActions = [];
+    if (task.taskTemplate !== "") {
+        taskTemplate = await TaskTemplate.findById(task.taskTemplate);
+        var taskActions = taskTemplate.taskActions;
+
+        for (let i in taskActions) {
+            cloneActions[i] = {
+                mandatory: taskActions[i].mandatory,
+                name: taskActions[i].name,
+                description: taskActions[i].description,
+            }
+        }
+    }
+
+    let formula;
+    if (taskTemplate) {
+        formula = taskTemplate.formula;
+    } else if (task.formula) {
+        // formula = "progress / (dayUsed / totalDay)"; // default
+        formula = "progress / (dayUsed / totalDay) - 0.5 * (10 - (averageActionRating)) * 10"
+    }
+    var task = await Task.create({ //Tạo dữ liệu mẫu công việc
+        organizationalUnit: task.organizationalUnit,
+        creator: task.creator, //id của người tạo
+        name: task.name,
+        description: task.description,
+        startDate: startDate,
+        endDate: endDate,
+        priority: task.priority,
+        formula: formula,
+        taskTemplate: taskTemplate ? taskTemplate : null,
+        taskInformations: taskTemplate ? taskTemplate.taskInformations : [],
+        taskActions: taskTemplate ? cloneActions : [],
+        parent: (task.parent === "") ? null : task.parent,
+        level: level,
+        responsibleEmployees: task.responsibleEmployees,
+        accountableEmployees: task.accountableEmployees,
+        consultedEmployees: task.consultedEmployees,
+        informedEmployees: task.informedEmployees,
+        confirmedByEmployees: task.responsibleEmployees.concat(task.accountableEmployees).concat(task.consultedEmployees).includes(task.creator) ? task.creator : []
+    });
+
+    if (task.taskTemplate !== null) {
+        await TaskTemplate.findByIdAndUpdate(
+            task.taskTemplate, { $inc: { 'numberOfUse': 1 } }, { new: true }
+        );
+    }
+
+    let mail = await this.sendEmailFoCreateTask(task);
+
+    return { task: task, user: mail.user, email: mail.email, html: mail.html };
 }
 
 /**
@@ -1518,14 +1524,14 @@ exports.getAllTaskOfChildrenOrganizationalUnit = async (companyId, roleId, month
             tasksOfChildrenOrganizationalUnit[i].unshift({ 'name': childrenOrganizationalUnits[i].name, 'deg': childrenOrganizationalUnits[i].deg })
         }
     }
-    
+
     return tasksOfChildrenOrganizationalUnit;
 }
 
-exports.sendEmailCheckTaskLastMonth = async () => {  
+exports.sendEmailCheckTaskLastMonth = async () => {
     let today = new Date();
     let day = today.getDate();
-    let month = today.getMonth()+1;
+    let month = today.getMonth() + 1;
     let daySend = 30;
     switch (month) {
         case 1:
@@ -1580,7 +1586,7 @@ exports.sendEmailCheckTaskLastMonth = async () => {
                 }
                 if (taskList) {
                     let inprocessTask = taskList.filter(task => task.status === "Inprocess");
-                    
+
                     let distinctTasks = [];
                     for (let k in inprocessTask) {     // lọc task trùng nhau
                         let check = false;
@@ -1593,7 +1599,7 @@ exports.sendEmailCheckTaskLastMonth = async () => {
                         }
                         if (!check) distinctTasks.push(inprocessTask[k])
                     }
-               
+
                     distinctTasks.length && distinctTasks.map(x => {
                         let evaluations;
                         let currentEvaluate = [];
@@ -1647,7 +1653,7 @@ exports.sendEmailCheckTaskLastMonth = async () => {
                 // xu ly Action not evaluated
                 var TaskHasActionsAccountable = [];
                 var TaskHasActionsResponsible = [];
-                
+
                 if (accTasks) {
                     let inprocessAccountableTask = accTasks.filter(task => task.status === "Inprocess")
                     inprocessAccountableTask.length && inprocessAccountableTask.map(x => {
@@ -1711,31 +1717,31 @@ exports.sendEmailCheckTaskLastMonth = async () => {
                 if (flag) {  // gui email
                     let userEmail = [email[j]];
                     userEmail.push("trinhhong102@gmail.com");
-                    let html = `<h1>Thông báo danh sách công việc tháng ${new Date().getMonth()+1} </h1> ` +
-                    `<h3>Thông tin công việc</h3>` +
-                    `${tasksByUser.expire.length > 0 ? `<p>Công việc quá hạn</p> ` +
-                    `<ul>${tasksByUser.expire.map((item) => {
-                        return `<li><a href="${process.env.WEBSITE}/task?taskId=${item.task._id}" target="_blank">${item.task.name}</a></li>`
-                    })}
-                                </ul>` : '' }` +
-                    `${tasksByUser.deadlineincoming.length > 0 ? `<p>Công việc sắp hết hạn</p> ` +
-                    `<ul>${tasksByUser.deadlineincoming.map((item) => {
-                        return `<li><a href="${process.env.WEBSITE}/task?taskId=${item.task._id}" target="_blank">${item.task.name}</a></li>`
-                    })}
-                                </ul>` : "" }` +
-                    `${notLinkedTasks.length > 0 ? `<p>Công việc chưa được liên kết KPI tháng</p> ` +
-                    `<ul>${notLinkedTasks.map((item) => {
-                        return `<li><a href="${process.env.WEBSITE}/task?taskId=${item._id}" target="_blank">${item.name}</a></li>`
-                    })}
-                                </ul>` : "" }` +
-                    `${taskHasActions.length > 0 ? `<p>Công việc có hoạt động chưa đánh giá</p> ` +
-                    `<ul>${taskHasActions.map((item) => {
-                        return `<li><a href="${process.env.WEBSITE}/task?taskId=${item._id}" target="_blank">${item.name}</a></li>`
-                    })}
-                                </ul>` : "" }`
-                    ;
+                    let html = `<h1>Thông báo danh sách công việc tháng ${new Date().getMonth() + 1} </h1> ` +
+                        `<h3>Thông tin công việc</h3>` +
+                        `${tasksByUser.expire.length > 0 ? `<p>Công việc quá hạn</p> ` +
+                            `<ul>${tasksByUser.expire.map((item) => {
+                                return `<li><a href="${process.env.WEBSITE}/task?taskId=${item.task._id}" target="_blank">${item.task.name}</a></li>`
+                            })}
+                                </ul>` : ''}` +
+                        `${tasksByUser.deadlineincoming.length > 0 ? `<p>Công việc sắp hết hạn</p> ` +
+                            `<ul>${tasksByUser.deadlineincoming.map((item) => {
+                                return `<li><a href="${process.env.WEBSITE}/task?taskId=${item.task._id}" target="_blank">${item.task.name}</a></li>`
+                            })}
+                                </ul>` : ""}` +
+                        `${notLinkedTasks.length > 0 ? `<p>Công việc chưa được liên kết KPI tháng</p> ` +
+                            `<ul>${notLinkedTasks.map((item) => {
+                                return `<li><a href="${process.env.WEBSITE}/task?taskId=${item._id}" target="_blank">${item.name}</a></li>`
+                            })}
+                                </ul>` : ""}` +
+                        `${taskHasActions.length > 0 ? `<p>Công việc có hoạt động chưa đánh giá</p> ` +
+                            `<ul>${taskHasActions.map((item) => {
+                                return `<li><a href="${process.env.WEBSITE}/task?taskId=${item._id}" target="_blank">${item.name}</a></li>`
+                            })}
+                                </ul>` : ""}`
+                        ;
                     sendEmail("vnist.qlcv@gmail.com", userEmail, "Thông báo danh sách công việc", '', html);
-               }
+                }
             }
         }
     }

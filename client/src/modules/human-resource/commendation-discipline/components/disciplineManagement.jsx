@@ -155,14 +155,15 @@ class DisciplineManager extends Component {
             dataSheets: [
                 {
                     sheetName: "sheet1",
+                    sheetTitle: translate('human_resource.commendation_discipline.discipline.file_name_export'),
                     tables: [
                         {
                             columns: [
-                                { key: "STT", value: translate('human_resource.stt') },
+                                { key: "STT", value: translate('human_resource.stt'), width: 7 },
                                 { key: "employeeNumber", value: translate('human_resource.staff_number') },
-                                { key: "fullName", value: translate('human_resource.staff_name') },
+                                { key: "fullName", value: translate('human_resource.staff_name'), width: 20 },
                                 { key: "decisionNumber", value: translate('human_resource.commendation_discipline.commendation.table.decision_number') },
-                                { key: "decisionUnit", value: translate('human_resource.commendation_discipline.commendation.table.decision_unit') },
+                                { key: "decisionUnit", value: translate('human_resource.commendation_discipline.commendation.table.decision_unit'), width: 25 },
                                 { key: "startDate", value: translate('human_resource.commendation_discipline.discipline.table.start_date') },
                                 { key: "endDate", value: translate('human_resource.commendation_discipline.discipline.table.end_date') },
                                 { key: "type", value: translate('human_resource.commendation_discipline.discipline.table.discipline_forms') },
@@ -231,7 +232,7 @@ class DisciplineManager extends Component {
                         {/* Hình thức kỷ luật*/}
                         <div className="form-group">
                             <label className="form-control-static">{translate('human_resource.commendation_discipline.discipline.table.discipline_forms_short')}</label>
-                            <input type="text" className="form-control" name="type" onChange={this.handleChange} placeholder={translate('human_resource.commendation_discipline.discipline.table.discipline_forms_short')} autoComplete="off" />
+                            <input type="text" className="form-control" name="type" onChange={this.handleChange} placeholder={translate('human_resource.commendation_discipline.discipline.table.discipline_forms')} autoComplete="off" />
                             <button type="button" className="btn btn-success" onClick={this.handleSubmitSearch} title={translate('page.add_search')} >{translate('page.add_search')}</button>
                         </div>
                     </div>
