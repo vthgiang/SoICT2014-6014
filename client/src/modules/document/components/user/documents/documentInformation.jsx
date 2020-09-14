@@ -90,8 +90,8 @@ class DocumentInformation extends Component {
         const roleList = role.list.map(role => { return { value: role._id, text: role.name } });
         const relationshipDocs = documents.administration.data.list.filter(doc => doc._id !== documentId).map(doc => { return { value: doc._id, text: doc.name } })
         let roles = this.findDocumentRole(roleList, documentRoles);
-        console.log('----------------', documentArchives)
-        //let logs = documentLogs.reverse();
+        console.log('----------------', documentLogs)
+        let logs = documentLogs.reverse();
         return (
             <React.Fragment>
                 <DialogModal

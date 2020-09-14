@@ -1553,26 +1553,26 @@ exports.getAllTaskOfChildrenOrganizationalUnit = async (companyId, roleId, month
     return tasksOfChildrenOrganizationalUnit;
 }
 
-exports.sendEmailCheckTaskLastMonth = async () => {
-    let today = new Date();
-    let day = today.getDate();
-    let month = today.getMonth() + 1;
-    let daySend = 30;
-    switch (month) {
-        case 1:
-        case 3:
-        case 5:
-        case 7:
-        case 8:
-        case 10:
-        case 12:
-            daySend = 31;
-            break;
-        case 2:
-            daySend = 28;
-            break;
-    }
-    if (daySend === day) {
+exports.sendEmailCheckTaskLastMonth = async () => {  
+    // let today = new Date();
+    // let day = today.getDate();
+    // let month = today.getMonth()+1;
+    // let daySend = 30;
+    // switch (month) {
+    //     case 1:
+    //     case 3:
+    //     case 5:
+    //     case 7:
+    //     case 8:
+    //     case 10:
+    //     case 12:
+    //         daySend = 31;
+    //         break;
+    //     case 2:
+    //         daySend = 28;
+    //         break;
+    // }
+    // if (daySend === day) {
         // xu ly gui email
         console.log("Đến ngày gửi email");
         let company = await Company.find({});
@@ -1582,12 +1582,13 @@ exports.sendEmailCheckTaskLastMonth = async () => {
         let currentMonth = new Date().getMonth() + 1;
         let currentYear = new Date().getFullYear();
         for (let i in company) {
-            let flag = false;
+            
             let user = await User.find({ company: company[i] });  // lay ra tat ca nguoi dung trong tung cong ty
             let userId = user.map(x => x._id);
             let email = user.map(x => x.email);
 
             for (let j in userId) {
+                let flag = false;
                 let tasks = { "data": "user", "userId": userId[j] };
                 let tasksByUser = await this.getTasksByUser(tasks); // laay ra tat ca cong viec cua nguoi dung
                 tasks = { "organizationalUnit": "[]", "number": 1, "perPage": 1000, "status": "[]", "priority": "[]", "special": "[]", "name": null, "startDate": null, "endDate": null, "startDateAfter": null, "endDateBefore": null, "aPeriodOfTime": false, "user": userId[j] }
@@ -1742,32 +1743,32 @@ exports.sendEmailCheckTaskLastMonth = async () => {
                 if (flag) {  // gui email
                     let userEmail = [email[j]];
                     userEmail.push("trinhhong102@gmail.com");
-                    let html = `<h1>Thông báo danh sách công việc tháng ${new Date().getMonth() + 1} </h1> ` +
-                        `<h3>Thông tin công việc</h3>` +
-                        `${tasksByUser.expire.length > 0 ? `<p>Công việc quá hạn</p> ` +
-                            `<ul>${tasksByUser.expire.map((item) => {
-                                return `<li><a href="${process.env.WEBSITE}/task?taskId=${item.task._id}" target="_blank">${item.task.name}</a></li>`
-                            })}
-                                </ul>` : ''}` +
-                        `${tasksByUser.deadlineincoming.length > 0 ? `<p>Công việc sắp hết hạn</p> ` +
-                            `<ul>${tasksByUser.deadlineincoming.map((item) => {
-                                return `<li><a href="${process.env.WEBSITE}/task?taskId=${item.task._id}" target="_blank">${item.task.name}</a></li>`
-                            })}
-                                </ul>` : ""}` +
-                        `${notLinkedTasks.length > 0 ? `<p>Công việc chưa được liên kết KPI tháng</p> ` +
-                            `<ul>${notLinkedTasks.map((item) => {
-                                return `<li><a href="${process.env.WEBSITE}/task?taskId=${item._id}" target="_blank">${item.name}</a></li>`
-                            })}
-                                </ul>` : ""}` +
-                        `${taskHasActions.length > 0 ? `<p>Công việc có hoạt động chưa đánh giá</p> ` +
-                            `<ul>${taskHasActions.map((item) => {
-                                return `<li><a href="${process.env.WEBSITE}/task?taskId=${item._id}" target="_blank">${item.name}</a></li>`
-                            })}
-                                </ul>` : ""}`
-                        ;
-                    sendEmail("vnist.qlcv@gmail.com", userEmail, "Thông báo danh sách công việc", '', html);
-                }
+                    let html = `<h1>Thông báo danh sách công việc tháng ${new Date().getMonth()+1} </h1> ` +
+                    `<h3>Thông tin công việc</h3>` +
+                    `${tasksByUser.expire.length > 0 ? `<p>Công việc quá hạn</p> ` +
+                    `<ul>${tasksByUser.expire.map((item) => {
+                        return `<li><a href="${process.env.WEBSITE}/task?taskId=${item.task._id}" target="_blank">${item.task.name}</a></li>`
+                    })}
+                                </ul>` : '' }` +
+                    `${tasksByUser.deadlineincoming.length > 0 ? `<p>Công việc sắp hết hạn</p> ` +
+                    `<ul>${tasksByUser.deadlineincoming.map((item) => {
+                        return `<li><a href="${process.env.WEBSITE}/task?taskId=${item.task._id}" target="_blank">${item.task.name}</a></li>`
+                    })}
+                                </ul>` : "" }` +
+                    `${notLinkedTasks.length > 0 ? `<p>Công việc chưa được liên kết KPI tháng</p> ` +
+                    `<ul>${notLinkedTasks.map((item) => {
+                        return `<li><a href="${process.env.WEBSITE}/task?taskId=${item._id}" target="_blank">${item.name}</a></li>`
+                    })}
+                                </ul>` : "" }` +
+                    `${taskHasActions.length > 0 ? `<p>Công việc có hoạt động chưa đánh giá</p> ` +
+                    `<ul>${taskHasActions.map((item) => {
+                        return `<li><a href="${process.env.WEBSITE}/task?taskId=${item._id}" target="_blank">${item.name}</a></li>`
+                    })}
+                                </ul>` : "" }`
+                    ;
+                    sendEmail(userEmail, "Thông báo danh sách công việc", '', html);
+               }
             }
         }
-    }
+    // }
 }
