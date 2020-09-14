@@ -90,8 +90,8 @@ class DocumentInformation extends Component {
         const roleList = role.list.map(role => { return { value: role._id, text: role.name } });
         const relationshipDocs = documents.administration.data.list.filter(doc => doc._id !== documentId).map(doc => { return { value: doc._id, text: doc.name } })
         let roles = this.findDocumentRole(roleList, documentRoles);
-        console.log('----------------', documentArchives)
-        //let logs = documentLogs.reverse();
+        console.log('----------------', documentLogs)
+        let logs = documentLogs.reverse();
         return (
             <React.Fragment>
                 <DialogModal
@@ -239,7 +239,7 @@ class DocumentInformation extends Component {
                                 <legend className="scheduler-border">Lịch sử chỉnh sửa</legend>
                                 <div className="form-group col-lg-12 col-md-12 col-ms-12 col-xs-12">
                                     <div className="active tab-pane">
-                                        {documentLogs && documentLogs.map(item =>
+                                        {logs && logs.map(item =>
                                             <div key={item._id} className="item-box row">
                                                 <a style={{ fontWeight: 700, cursor: "pointer" }}>{item.creator?.name} </a>
                                                 {item.title ? item.title : translate("task.task_perform.none_description")}&nbsp;
