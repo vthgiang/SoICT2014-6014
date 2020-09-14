@@ -15,7 +15,11 @@ const AssetPurchaseRequestSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User'
     },
-    equipment: { //Tên thiết bị đề nghị mua sắm
+    equipmentName: { //Tên thiết bị đề nghị mua sắm
+        type: String,
+        required: true
+    },
+    equipmentDescription: { // Mô tả thiết bị đề nghị mua sắm
         type: String,
     },
     supplier: { //nhà cung cấp
@@ -37,7 +41,7 @@ const AssetPurchaseRequestSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User'
     },
-    status: {//trạng thái, tình trạng: chờ phê duyệt || không chấp nhận || đã chấp nhận
+    status: { //trạng thái, tình trạng: chờ phê duyệt || không chấp nhận || đã chấp nhận
         type: String
     },
     createdAt: {
@@ -48,11 +52,11 @@ const AssetPurchaseRequestSchema = new Schema({
         type: Date,
         default: Date.now
     }
-    
+
 });
 
 module.exports = (db) => {
-    if(!db.models.AssetPurchaseRequest)
+    if (!db.models.AssetPurchaseRequest)
         return db.model('AssetPurchaseRequest', AssetPurchaseRequestSchema);
     return db.models.AssetPurchaseRequest;
 }
