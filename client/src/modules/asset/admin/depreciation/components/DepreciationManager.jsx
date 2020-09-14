@@ -340,8 +340,8 @@ class DepreciationManager extends Component {
         });
         window.$('#modal-edit-asset').modal('show');
 
-        // Mở tab thứ 5
-        window.$('.nav-tabs li:eq(4) a').tab('show');
+        // Mở tab thứ 2
+        window.$('.nav-tabs li:eq(1) a').tab('show');
 
     }
     // Lấy danh sách loại tài sản cho tree select

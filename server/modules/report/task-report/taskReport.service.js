@@ -70,7 +70,6 @@ exports.getTaskReportById = async (id) => {
         .populate({ path: 'readByEmployees', select: '_id name company' })
         .populate({ path: 'organizationalUnit', select: 'deans viceDeans employees _id name company parent' })
         .populate({ path: 'readByEmployees' })
-
     return taskReportById;
 }
 
@@ -98,6 +97,7 @@ exports.createTaskReport = async (data, user) => {
     let statusConvert = Number(data.status);
     let frequencyConvert = data.frequency.toString();
     let listDataInChart = data.itemListBoxRight;
+    let listDataChart = data.itemListBoxLeft;
 
     let configurations = [];
     for (let [index, value] of data.taskInformations.entries()) {
@@ -128,6 +128,7 @@ exports.createTaskReport = async (data, user) => {
         endDate: end,
         frequency: frequencyConvert,
         configurations: configurations,
+        listDataChart: listDataChart,
         dataForAxisXInChart: listDataInChart,
 
     })
@@ -147,27 +148,21 @@ exports.createTaskReport = async (data, user) => {
 exports.editTaskReport = async (id, data, user) => {
     let startTime, start = null, endTime, end = null;
 
-    if (data.startDate && data.endDate) {
+    if (data.startDate) {
         // convert startDate từ string sang Date
         startTime = data.startDate.split("-");
         start = new Date(startTime[2], startTime[1] - 1, startTime[0]);
+    }
 
+    if (data.endDate) {
         // convert endDate từ string sang Date
         endTime = data.endDate.split("-");
         end = new Date(endTime[2], endTime[1] - 1, endTime[0]);
-    } else
-        if (data.startDate && !data.endDate) {
-            // convert startDate từ string sang Date
-            startTime = data.startDate.split("-");
-            start = new Date(startTime[2], startTime[1] - 1, startTime[0]);
-        } else
-            if (!data.startDate && data.endDate) {
-                // convert endDate từ string sang Date
-                endTime = data.endDate.split("-");
-                end = new Date(endTime[2], endTime[1] - 1, endTime[0]);
-            }
+    }
 
     let frequencyConvert = data.frequency.toString();
+    let dataForAxisXInChart = data.dataForAxisXInChart;
+    let listDataChart = data.listDataChart;
 
     let configurations = [];
     for (let [index, value] of data.taskInformations.entries()) {
@@ -177,9 +172,10 @@ exports.editTaskReport = async (id, data, user) => {
             type: value.type,
             filter: value.filter,
             newName: value.newName,
-            charType: value.charType,
+            chartType: value.chartType,
             showInReport: value.showInReport,
             aggregationType: value.aggregationType,
+            coefficient: value.coefficient,
         }
     }
 
@@ -198,9 +194,18 @@ exports.editTaskReport = async (id, data, user) => {
             endDate: end,
             frequency: frequencyConvert,
             configurations: configurations,
+            listDataChart: listDataChart,
+            dataForAxisXInChart: dataForAxisXInChart,
         }
     }, { new: true });
-    return await TaskReport.findOne({ _id: id }).populate({ path: 'creator', select: '_id name' });
+    return await TaskReport.findOne({ _id: id })
+        .populate({ path: 'creator', select: '_id name' })
+        .populate({ path: 'taskTemplate' })
+        .populate({ path: 'responsibleEmployees', select: '_id name company' })
+        .populate({ path: 'accountableEmployees', select: '_id name company' })
+        .populate({ path: 'readByEmployees', select: '_id name company' })
+        .populate({ path: 'organizationalUnit', select: 'deans viceDeans employees _id name company parent' })
+        .populate({ path: 'readByEmployees' });
 }
 
 

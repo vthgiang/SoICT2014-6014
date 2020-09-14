@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ImportFileExcel, ConFigImportFile, ShowImportData } from '../../../../common-components';
+import { DialogModal, ImportFileExcel, ConFigImportFile, ShowImportData, ExportExcel } from '../../../../common-components';
 
 import { configurationHoliday } from './fileConfigurationImportHoliday';
 
@@ -14,7 +14,7 @@ class HolidayImportForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            configData: configurationHoliday,
+            configData: configurationHoliday.configurationImport(this.props.translate),
             checkFileImport: true,
             rowError: [],
             importData: [],
@@ -169,6 +169,8 @@ class HolidayImportForm extends Component {
             importData = holiday.error.data
         }
 
+        let exportData = configurationHoliday.templateImport(translate);
+
         return (
             <React.Fragment>
                 <DialogModal
@@ -189,22 +191,21 @@ class HolidayImportForm extends Component {
                             scrollTable={false}
                             handleChangeConfig={this.handleChangeConfig}
                         />
-                        <div className="row">
-                            {/* Chọn file import */}
-                            <div className="form-group col-md-4 col-xs-12">
-                                <ImportFileExcel
-                                    configData={configData}
-                                    handleImportExcel={this.handleImportExcel}
-                                />
+                        <div className="qlcv">
+                            <div className="form-inline">
+                                {/* Chọn file import */}
+                                <div className="form-group">
+                                    <ImportFileExcel
+                                        configData={configData}
+                                        handleImportExcel={this.handleImportExcel}
+                                    />
+                                </div>
                             </div>
-                            {/* File import mẫu */}
-                            <div className="form-group col-md-4 col-xs-12">
-                                <label></label>
-                                <a className='pull-right'
-                                    style={{ cursor: "pointer" }}
-                                    onClick={(e) => this.requestDownloadFile(e, `.${configData.file.fileUrl}`, configData.file.fileName)}>
-                                    <i className="fa fa-download"> &nbsp;{translate('human_resource.download_file')}</i></a>
-                            </div>
+
+                            {/* Dowload file import mẫu */}
+                            <ExportExcel id="download_template_salary" type='link' exportData={exportData}
+                                buttonName={` ${translate('human_resource.download_file')}`} />
+
                             {/* Hiện thị dữ liệu import */}
                             <div className="form-group col-md-12 col-xs-12">
                                 <ShowImportData

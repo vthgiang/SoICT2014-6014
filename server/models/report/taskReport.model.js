@@ -86,7 +86,15 @@ const TaskReportSchema = new Schema({
             type: Number
         }
     }],
-    dataForAxisXInChart: [{// Chiều dữ liệu đưa vào biểu đồ
+    listDataChart: [{ // danh sách dữ liệu trong biểu đồ
+        id: {
+            type: Number
+        },
+        name: {
+            type: String,
+        }
+    }],
+    dataForAxisXInChart: [{// Chiều dữ liệu được đưa vào biểu đồ
         id: {
             type: Number
         },

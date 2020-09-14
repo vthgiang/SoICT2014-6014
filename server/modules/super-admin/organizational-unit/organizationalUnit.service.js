@@ -293,7 +293,19 @@ exports.editOrganizationalUnit = async(id, data) => {
     //Chỉnh sửa thông tin phòng ban
     department.name = data.name;
     department.description = data.description;
-    department.parent = ObjectId.isValid(data.parent) ? data.parent : null;
+
+    // Kiểm tra phòng ban cha muốn sửa đổi
+    if(ObjectId.isValid(data.parent)){
+        const upOrg = await OrganizationalUnit.findById(data.parent);
+        if(upOrg.parent.toString() === id.toString()){
+            var oldP = department.parent;
+            upOrg.parent = oldP;
+            await upOrg.save();
+        }
+        department.parent = data.parent;
+    }else{
+        department.parent = null;
+    }
     await department.save();
 
     return department;
@@ -317,7 +329,6 @@ exports.editRolesInOrganizationalUnit = async(id, data) => {
 
     //1.Chỉnh sửa nhân viên đơn vị
     const employees = await this.getDiffRolesInOrganizationalUnit(department.employees, data.employees);
-    console.log("EMPLOYEES CHECK:", employees);
 
     for (let i = 0; i < employees.editRoles.length; i++) {
         const updateRole = await Role.findById(employees.editRoles[i]._id);
@@ -344,7 +355,6 @@ exports.editRolesInOrganizationalUnit = async(id, data) => {
 
     //2.Chỉnh sửa phó đơn vị
     const viceDeans = await this.getDiffRolesInOrganizationalUnit(department.viceDeans, data.viceDeans);
-    console.log("VICEDEANS CHECK:", viceDeans);
 
     for (let i = 0; i < viceDeans.editRoles.length; i++) {
         await Role.updateOne({_id: viceDeans.editRoles[i]._id}, {
@@ -372,7 +382,6 @@ exports.editRolesInOrganizationalUnit = async(id, data) => {
 
     //3.Chỉnh sửa trưởng đơn vị
     const deans = await this.getDiffRolesInOrganizationalUnit(department.deans, data.deans);
-    console.log("DEANS CHECK:", deans);
 
     for (let i = 0; i < deans.editRoles.length; i++) {
         await Role.updateOne({_id: deans.editRoles[i]._id}, {
@@ -441,7 +450,6 @@ exports.deleteOrganizationalUnit = async (departmentId) => {
 }
 
 exports.importOrganizationalUnits = async(data, companyId) => {
-    console.log(companyId);
     let tree;
     let organizationalUnits = [];
     for ( let i = 0; i < data.length; i++) {

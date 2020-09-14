@@ -1351,7 +1351,7 @@ export default {
                         relation_with_emergency_contact_person: 'Quan hệ với người liên hệ khẩn cấp',
                         emergency_contact_person_address: 'Địa chỉ người liên hệ khẩn cấp',
                         emergency_contact_person_phone_number: 'Điện thoại di động người liên hệ khẩn cấp',
-                        emergency_contact_person_home_nhone: 'Điện thoại nhà riêng người liên hệ khẩn cấp',
+                        emergency_contact_person_home_phone: 'Điện thoại nhà riêng người liên hệ khẩn cấp',
                         emergency_contact_person_email: 'Email người liên hệ khẩn cấp',
                         atmNumber: 'Số tài khoản ngân hàng',
                         bank_address: 'Chi nhánh ngân hàng',
@@ -1442,8 +1442,8 @@ export default {
 
                 // Nhóm thể loại kế hoạch làm Việc
                 holiday: 'Thời gian nghỉ lễ, nghỉ tết',
-                auto_leave: 'Thời gian không được xin nghỉ phép',
-                no_leave: 'Thời gian được xin nghỉ phép',
+                auto_leave: 'Thời gian được xin nghỉ phép',
+                no_leave: 'Thời gian không được xin nghỉ phép',
 
                 // Nhóm dành cho action
                 edit_holiday: 'Chỉnh sửa kế hoạch làm việc',
@@ -1937,6 +1937,7 @@ export default {
             // Quản lý đề nghị mua sắm thiết bị
             manage_recommend_procure: {
                 asset_recommend: 'Thiết bị đề nghị mua sắm',
+                equipment_description: 'Mô tả thiết bị',
                 add_recommend_card: 'Thêm mới phiếu đề nghị mua sắm tài sản',
                 view_recommend_card: 'Xem thông tin phiếu đề nghị mua sắm tài sản',
                 edit_recommend_card: 'Chỉnh sửa phiếu đề nghị mua sắm tài sản',
@@ -2430,7 +2431,7 @@ export default {
 
                 is_task_process: 'Đây là công việc theo quy trình',
                 activated_task: "Kích hoạt",
-                following_task: "các công việc phía sau",
+                following_task: "Nhấn chuột để kích hoạt các công việc phía sau",
 
 
                 // TODO: code_mesage_task_perform

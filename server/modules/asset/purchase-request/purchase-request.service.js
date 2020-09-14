@@ -51,7 +51,8 @@ exports.createRecommendProcure = async (data, company) => {
         recommendNumber: data.recommendNumber,
         dateCreate: data.dateCreate,
         proponent: data.proponent, // Người đề nghị
-        equipment: data.equipment,
+        equipmentName: data.equipmentName,
+        equipmentDescription: data.equipmentDescription,
         supplier: data.supplier,
         approver: data.approver, // Người phê duyệt
         total: data.total,
@@ -82,7 +83,8 @@ exports.updateRecommendProcure = async (id, data) => {
         recommendNumber: data.recommendNumber,
         dateCreate: data.dateCreate,
         proponent: data.proponent, // Người đề nghị
-        equipment: data.equipment,
+        equipmentName: data.equipmentName,
+        equipmentDescription: data.equipmentDescription,
         supplier: data.supplier,
         approver: data.approver, // Người phê duyệt
         total: data.total,

@@ -208,7 +208,7 @@ class AnnualLeaveManagement extends Component {
                                 { key: "startDate", value: translate('human_resource.annual_leave.table.start_date') },
                                 { key: "endDate", value: translate('human_resource.annual_leave.table.end_date') },
                                 { key: "reason", value: translate('human_resource.annual_leave.table.reason') },
-                                { key: "status", value: translate('human_resource.status') },
+                                { key: "status", value: translate('human_resource.status'), width: 25 },
                             ],
                             data: data
                         }

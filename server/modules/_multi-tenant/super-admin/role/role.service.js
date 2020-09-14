@@ -1,5 +1,5 @@
 const Terms = require(`${SERVER_SEED_DIR}/terms`);
-const {OrganizationalUnit, Company, Role, RoleType, User, UserRole, Privilege} = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
+const {OrganizationalUnit, Role, RoleType, UserRole, Privilege} = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
 const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 /**
@@ -60,10 +60,9 @@ exports.getRole = async (portal, roleId) => {
     return await Role(connect(DB_CONNECTION, portal))
         .findById(roleId)
         .populate([
-            { path: 'users', model: UserRole, populate:{ path: 'userId', model: User }},
-            { path: 'parents', model: Role },
-            { path: 'company', model: Company },
-            { path: 'type', model: RoleType }
+            { path: 'users', populate:{ path: 'userId' }},
+            { path: 'parents' },
+            { path: 'type' }
         ]);
 }
 

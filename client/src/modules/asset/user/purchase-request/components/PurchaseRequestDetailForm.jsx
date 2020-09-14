@@ -18,7 +18,8 @@ class PurchaseRequestDetailForm extends Component {
                 recommendNumber: nextProps.recommendNumber,
                 dateCreate: nextProps.dateCreate,
                 proponent: nextProps.proponent,
-                equipment: nextProps.equipment,
+                equipmentName: nextProps.equipmentName,
+                equipmentDescription: nextProps.equipmentDescription,
                 supplier: nextProps.supplier,
                 total: nextProps.total,
                 unit: nextProps.unit,
@@ -34,7 +35,7 @@ class PurchaseRequestDetailForm extends Component {
 
     render() {
         const { translate, recommendProcure } = this.props;
-        const { recommendNumber, dateCreate, proponent, equipment, supplier, total, unit, estimatePrice, approver, status, note } = this.state;
+        const { recommendNumber, dateCreate, proponent, equipmentName, equipmentDescription, supplier, total, unit, estimatePrice, approver, status, note } = this.state;
 
         var formater = new Intl.NumberFormat();
 
@@ -72,7 +73,13 @@ class PurchaseRequestDetailForm extends Component {
                                 {/* Thiết bị đề nghị mua */}
                                 <div className={`form-group`}>
                                     <strong>{translate('asset.manage_recommend_procure.asset_recommend')}&emsp; </strong>
-                                    {equipment}
+                                    {equipmentName}
+                                </div>
+
+                                {/* Mô tả thiết bị đề nghị mua */}
+                                <div className={`form-group`}>
+                                    <strong>{translate('asset.manage_recommend_procure.equipment_description')}&emsp; </strong>
+                                    {equipmentDescription}
                                 </div>
 
                                 {/* Nhà cung cấp */}
