@@ -41,13 +41,13 @@ if(process.env.MULTI_TENANT === 'true'){
 
 	app.use("/documents", require("./modules/document/document.route"));
 
-	// app.use("/annualLeave", require("./modules/_multi-tenant/human-resource/annual-leave/annualLeave.route"));
-	// app.use("/commendation", require("./modules/_multi-tenant/human-resource/commendation/commendation.route"));
-	// app.use("/discipline", require("./modules/_multi-tenant/human-resource/discipline/discipline.route"));
-	// app.use("/holiday", require("./modules/_multi-tenant/human-resource/holiday/holiday.route"));
-	// app.use("/employee", require("./modules/_multi-tenant/human-resource/profile/profile.route"));
-	// app.use("/salary", require("./modules/_multi-tenant/human-resource/salary/salary.route"));
-	// app.use("/timesheet", require("./modules/_multi-tenant/human-resource/timesheets/timesheets.route"));
+	app.use("/annualLeave", require("./modules/_multi-tenant/human-resource/annual-leave/annualLeave.route"));
+	app.use("/commendation", require("./modules/_multi-tenant/human-resource/commendation/commendation.route"));
+	app.use("/discipline", require("./modules/_multi-tenant/human-resource/discipline/discipline.route"));
+	app.use("/holiday", require("./modules/_multi-tenant/human-resource/holiday/holiday.route"));
+	app.use("/employee", require("./modules/_multi-tenant/human-resource/profile/profile.route"));
+	app.use("/salary", require("./modules/_multi-tenant/human-resource/salary/salary.route"));
+	app.use("/timesheet", require("./modules/_multi-tenant/human-resource/timesheets/timesheets.route"));
 
 	// app.use("/kpi/employee/creation", require("./modules/_multi-tenant/kpi/employee/creation/creation.route"));
 	// app.use("/kpi/employee/dashboard", require("./modules/_multi-tenant/kpi/employee/dashboard/dashboard.route"));
@@ -58,7 +58,7 @@ if(process.env.MULTI_TENANT === 'true'){
 	// app.use("/kpi/organizational-unit/dashboard", require("./modules/_multi-tenant/kpi/organizational-unit/dashboard/dashboard.route"));
 	// app.use("/kpi/organizational-unit/management", require("./modules/_multi-tenant/kpi/organizational-unit/management/management.route"));
 
-	// app.use("/notifications", require("./modules/_multi-tenant/notification/notification.route"));
+	app.use("/notifications", require("./modules/_multi-tenant/notification/notification.route"));
 
 
 
@@ -78,8 +78,8 @@ if(process.env.MULTI_TENANT === 'true'){
 	// app.use("/performtask", require("./modules/_multi-tenant/task/task-perform/taskPerform.route"));
 	// app.use("/task/task-templates", require("./modules/_multi-tenant/task/task-template/taskTemplate.route"));
 	// app.use("/process", require("./modules/_multi-tenant/task/tasks-process/taskProcess.route"));
-	// app.use("/educationProgram", require("./modules/_multi-tenant/trainning/education-program/educationProgram.route"));
-	// app.use("/course", require("./modules/_multi-tenant/trainning/course/course.route"));
+	app.use("/educationProgram", require("./modules/_multi-tenant/trainning/education-program/educationProgram.route"));
+	app.use("/course", require("./modules/_multi-tenant/trainning/course/course.route"));
 
 	// //asset
 	// app.use("/assettype", require("./modules/_multi-tenant/asset/asset-type/asset-type.route"));
