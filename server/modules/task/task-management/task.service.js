@@ -1633,9 +1633,9 @@ exports.sendEmailCheckTaskLastMonth = async () => {
                         evaluations = x.evaluations.length && x.evaluations;
                         if (evaluations) {
                             for (let i in evaluations) {
-                                let month = evaluations[i].date.slice(5, 7);
-                                let year = evaluations[i].date.slice(0, 4);
-
+                                let month = evaluations[i].date.getMonth() + 1;
+                                let year = evaluations[i].date.getFullYear();
+                                
                                 if (month == currentMonth && year == currentYear) {
                                     currentEvaluate.push(evaluations[i]);
                                 }
