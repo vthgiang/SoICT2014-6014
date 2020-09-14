@@ -99,6 +99,7 @@ class DocumentInformation extends Component {
                     formID="form-information-user-document"
                     title={translate('document.information')}
                     hasSaveButton={false}
+                    bodyStyle={{ padding: "0px" }}
                     size={100}
                 >
                     {
@@ -234,23 +235,19 @@ class DocumentInformation extends Component {
 
                             </div>
                         </div>
-                        <div className="col-xs-12 col-sm-12 col-md-5 col-lg-5" style={{ padding: "10px 0 10px 0", borderLeft: "1px solid #f4f4f4" }}>
-                            <div className="description-box">
-                                <legend className="scheduler-border">Lịch sử chỉnh sửa</legend>
-                                <div className="form-group col-lg-12 col-md-12 col-ms-12 col-xs-12">
-                                    <div className="active tab-pane">
-                                        {logs && logs.map(item =>
-                                            <div key={item._id} className="item-box row">
-                                                <a style={{ fontWeight: 700, cursor: "pointer" }}>{item.creator?.name} </a>
-                                                {item.title ? item.title : translate("task.task_perform.none_description")}&nbsp;
+                        <div className="col-xs-12 col-sm-12 col-md-5 col-lg-5" style={{ borderLeft: "1px solid #f4f4f4" }}>
+                            <div className="description-box without-border">
+                                <h4 className="scheduler-border">Lịch sử chỉnh sửa</h4>
+                                {documentLogs && documentLogs.map(item =>
+                                    <div key={item._id} className="item-box">
+                                        <a style={{ fontWeight: 700, cursor: "pointer" }}>{item.creator?.name} </a>
+                                        {item.title ? item.title : translate("task.task_perform.none_description")}&nbsp;
                                                 ({moment(item.createdAt).format("HH:mm:ss DD/MM/YYYY")})
                                                 <div>
-                                                    {item.description ? item.description : translate("task.task_perform.none_description")}
-                                                </div>
-                                            </div>
-                                        )}
+                                            {item.description ? item.description : translate("task.task_perform.none_description")}
+                                        </div>
                                     </div>
-                                </div>
+                                )}
                             </div>
                         </div>
 
