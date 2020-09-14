@@ -138,10 +138,12 @@ class ActionTab extends Component {
             this.props.getStatusTimer(nextProps.id);
             this.props.getSubTask(nextProps.id);
             this.props.getTaskLog(nextProps.id);
-
             return true;
         }
-
+        if(nextProps.auth.user.avatar !== this.props.auth.user.avatar) {
+            this.props.getTaskById(nextProps.id)
+            return true;
+        }
         return true;
     }
     setHover = async (id, value) => {
@@ -805,7 +807,6 @@ class ActionTab extends Component {
         this.setState({ src: src });
     }
     render() {
-
         let task, informations, statusTask, documents, actionComments, taskActions, taskComments, logTimer, logs;
         const { tasks, performtasks, user, auth, translate, role } = this.props;
         const subtasks = tasks.subtasks;

@@ -189,7 +189,7 @@
     overflow: hidden;
 }
 .task-process-gate-way-title {
-    margin-bottom: 2px;
+    margin-bottom: 5px;
     text-align: center;
     font-size: 12px; 
     line-height: 1em; 
@@ -202,6 +202,7 @@
     -webkit-box-orient: vertical;
     text-overflow: ellipsis; 
     overflow: hidden;
+    
 }
 
 

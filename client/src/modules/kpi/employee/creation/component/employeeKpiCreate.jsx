@@ -80,6 +80,10 @@ class CreateEmployeeKpiSet extends Component {
                 }
             }
         }
+        if(nextProps.auth.user.avatar !== this.props.auth.user.avatar) {
+            this.props.getEmployeeKpiSet()
+            return true;
+        }
         return true;
     }
     
