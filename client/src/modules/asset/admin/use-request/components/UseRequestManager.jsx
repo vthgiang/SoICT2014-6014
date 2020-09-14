@@ -437,7 +437,7 @@ class UseRequestManager extends Component {
                                                 content={translate('asset.asset_info.delete_usage_info')}
                                                 data={{
                                                     id: x._id,
-                                                    info: x.recommendNumber + " - " + x.dateCreate.replace(/-/gi, "/")
+                                                    // info: x.recommendNumber + " - " + x.dateCreate.replace(/-/gi, "/")
                                                 }}
                                                 func={this.props.deleteRecommendDistribute}
                                             />
