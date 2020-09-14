@@ -450,9 +450,8 @@ class TaskReportDetailForm extends Component {
                 hasSaveButton={false}
                 hasNote={false}
             >
-                {/* <TaskReportViewForm /> */}
                 {
-                    chartStatus && barAndLineDataChartConvert && <LineBarChart barLineChartData={barAndLineDataChartConvert} />
+                    chartStatus && barAndLineDataChartConvert && <LineBarChart barLineChartData={barAndLineDataChartConvert} dataForAxisXInChart={dataForAxisXInChart} />
                 }
 
                 {/* Biểu đồ tròn  */}
@@ -462,7 +461,7 @@ class TaskReportDetailForm extends Component {
                             Object.entries(item).map(([code, data]) => (
                                 <div key={index} className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                     <div className="pieChart">
-                                        <PieChart pieChartData={data} namePieChart={code} />
+                                        <PieChart pieChartData={data} namePieChart={code} dataForAxisXInChart={dataForAxisXInChart} />
                                     </div>
                                 </div>
                             ))

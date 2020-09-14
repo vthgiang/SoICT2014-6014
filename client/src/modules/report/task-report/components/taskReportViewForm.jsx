@@ -420,7 +420,7 @@ class TaskReportViewForm extends Component {
 
                     {/* Biểu đồ đường và cột */}
                     {
-                        barAndLineDataChartConvert && <LineBarChart barLineChartData={barAndLineDataChartConvert} />
+                        barAndLineDataChartConvert && <LineBarChart barLineChartData={barAndLineDataChartConvert} dataForAxisXInChart={dataForAxisXInChart} />
                     }
 
                     {/* Biểu đồ tròn  */}
@@ -432,7 +432,7 @@ class TaskReportViewForm extends Component {
                                         return (
                                             <div key={index} className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                                 <div className="pieChart">
-                                                    <PieChart pieChartData={data} namePieChart={code} />
+                                                    <PieChart pieChartData={data} namePieChart={code} dataForAxisXInChart={dataForAxisXInChart} />
                                                 </div>
                                             </div>
                                         )
@@ -440,7 +440,7 @@ class TaskReportViewForm extends Component {
                                         return (
                                             <div key={index} className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                                 <div className="pieChart">
-                                                    <PieChart pieChartData={data} namePieChart={code} />
+                                                    <PieChart pieChartData={data} namePieChart={code} dataForAxisXInChart={dataForAxisXInChart} />
                                                 </div>
                                             </div>
                                         )
