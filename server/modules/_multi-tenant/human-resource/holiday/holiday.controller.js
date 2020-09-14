@@ -1,8 +1,5 @@
 const HolidayService = require('./holiday.service');
-const {
-    LogInfo,
-    LogError
-} = require('../../../logs');
+const Log = require(`${SERVER_LOGS_DIR}/_multi-tenant`);
 
 
 /**
@@ -31,18 +28,18 @@ exports.getAllHolidays = async (req, res) => {
     try {
         let data;
         if (req.query.year) {
-            data = await HolidayService.getHolidaysOfYear(req.user.company._id, req.query.year);
+            data = await HolidayService.getHolidaysOfYear(req.portal, req.user.company._id, req.query.year);
         } else {
-            data = await HolidayService.getAllHolidays(req.user.company._id);
+            data = await HolidayService.getAllHolidays(req.portal, req.user.company._id);
         }
-        await LogInfo(req.user.email, 'GET_HOLIDAY', req.user.company);
+        await Log.info(req.user.email, 'GET_HOLIDAY', req.portal);
         res.status(200).json({
             success: true,
             messages: ["get_holiday_success"],
             content: data
         });
     } catch (error) {
-        await LogError(req.user.email, 'GET_HOLIDAY', req.user.company);
+        await Log.error(req.user.email, 'GET_HOLIDAY', req.portal);
         res.status(400).json({
             success: false,
             messages: ["get_holiday_faile"],
@@ -62,7 +59,7 @@ exports.createHoliday = async (req, res) => {
         };
         // Kiểm tra dữ liệu đầu vào
         if (req.body.startDate.trim() === "") {
-            await LogError(req.user.email, 'CREATE_HOLIDAY', req.user.company);
+            await Log.error(req.user.email, 'CREATE_HOLIDAY', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["start_date_required"],
@@ -71,7 +68,7 @@ exports.createHoliday = async (req, res) => {
                 }
             });
         } else if (req.body.endDate.trim() === "") {
-            await LogError(req.user.email, 'CREATE_HOLIDAY', req.user.company);
+            await Log.error(req.user.email, 'CREATE_HOLIDAY', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["end_date_required"],
@@ -80,7 +77,7 @@ exports.createHoliday = async (req, res) => {
                 }
             });
         } else if (req.body.description.trim() === "") {
-            await LogError(req.user.email, 'CREATE_HOLIDAY', req.user.company);
+            await Log.error(req.user.email, 'CREATE_HOLIDAY', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["reason_required"],
@@ -90,18 +87,18 @@ exports.createHoliday = async (req, res) => {
             });
         } else {
             // Tạo mới thông tin lịch làm việc
-            let result = await HolidayService.getAllHolidays(req.user.company._id);
+            let result = await HolidayService.getAllHolidays(req.portal, req.user.company._id);
             let checkData = this.checkForFuplicate(req.body, result.holidays);
             if (checkData) {
-                let data = await HolidayService.createHoliday(req.body, req.user.company._id);
-                await LogInfo(req.user.email, 'CREATE_HOLIDAY', req.user.company);
+                let data = await HolidayService.createHoliday(req.portal, req.body, req.user.company._id);
+                await Log.info(req.user.email, 'CREATE_HOLIDAY', req.portal);
                 res.status(200).json({
                     success: true,
                     messages: ["create_holiday_success"],
                     content: data
                 });
             } else {
-                await LogError(req.user.email, 'CREATE_HOLIDAY', req.user.company);
+                await Log.error(req.user.email, 'CREATE_HOLIDAY', req.portal);
                 res.status(400).json({
                     success: false,
                     messages: ["holiday_duplicate_required"],
@@ -112,7 +109,7 @@ exports.createHoliday = async (req, res) => {
             }
         }
     } catch (error) {
-        await LogError(req.user.email, 'CREATE_HOLIDAY', req.user.company);
+        await Log.error(req.user.email, 'CREATE_HOLIDAY', req.portal);
         res.status(400).json({
             success: false,
             messages: ["create_holiday_faile"],
@@ -126,15 +123,15 @@ exports.createHoliday = async (req, res) => {
 /** Xoá thông tin lịch làm việc */
 exports.deleteHoliday = async (req, res) => {
     try {
-        let data = await HolidayService.deleteHoliday(req.params.id, req.user.company._id);
-        await LogInfo(req.user.email, 'DELETE_HOLIDAY', req.user.company);
+        let data = await HolidayService.deleteHoliday(req.portal, req.params.id, req.user.company._id);
+        await Log.info(req.user.email, 'DELETE_HOLIDAY', req.portal);
         res.status(200).json({
             success: true,
             messages: ["delete_holiday_success"],
             content: data
         });
     } catch (error) {
-        await LogError(req.user.email, 'DELETE_HOLIDAY', req.user.company);
+        await Log.error(req.user.email, 'DELETE_HOLIDAY', req.portal);
         res.status(400).json({
             success: false,
             messages: ["delete_holiday_faile"],
@@ -149,8 +146,8 @@ exports.deleteHoliday = async (req, res) => {
 exports.updateHoliday = async (req, res) => {
     try {
         if (req.body.maximumNumberOfLeaveDays) {
-            let data = await HolidayService.updateNumberDateLeaveOfYear(req.body.maximumNumberOfLeaveDays, req.user.company._id);
-            await LogInfo(req.user.email, 'EDIT_HOLIDAY', req.user.company);
+            let data = await HolidayService.updateNumberDateLeaveOfYear(req.portal, req.body.maximumNumberOfLeaveDays, req.user.company._id);
+            await Log.info(req.user.email, 'EDIT_HOLIDAY', req.portal);
             res.status(200).json({
                 success: true,
                 messages: ["edit_number_date_leave_of_year_success"],
@@ -159,7 +156,7 @@ exports.updateHoliday = async (req, res) => {
         } else {
             // Kiểm tra thông tin truyền vào
             if (req.body.startDate.trim() === "") {
-                await LogError(req.user.email, 'CREATE_HOLIDAY', req.user.company);
+                await Log.error(req.user.email, 'CREATE_HOLIDAY', req.portal);
                 res.status(400).json({
                     success: false,
                     messages: ["start_date_required"],
@@ -168,7 +165,7 @@ exports.updateHoliday = async (req, res) => {
                     }
                 });
             } else if (req.body.endDate.trim() === "") {
-                await LogError(req.user.email, 'CREATE_HOLIDAY', req.user.company);
+                await Log.error(req.user.email, 'CREATE_HOLIDAY', req.portal);
                 res.status(400).json({
                     success: false,
                     messages: ["end_date_required"],
@@ -177,7 +174,7 @@ exports.updateHoliday = async (req, res) => {
                     }
                 });
             } else if (req.body.description.trim() === "") {
-                await LogError(req.user.email, 'CREATE_HOLIDAY', req.user.company);
+                await Log.error(req.user.email, 'CREATE_HOLIDAY', req.portal);
                 res.status(400).json({
                     success: false,
                     messages: ["reason_required"],
@@ -187,19 +184,19 @@ exports.updateHoliday = async (req, res) => {
                 });
             } else {
                 // Chỉnh sửa thông tin lịch làm việc
-                let result = await HolidayService.getAllHolidays(req.user.company._id);
+                let result = await HolidayService.getAllHolidays(req.portal, req.user.company._id);
                 result.holidays = result.holidays.filter(x => x._id.toString() !== req.params.id);
                 let checkData = this.checkForFuplicate(req.body, result.holidays);
                 if (checkData) {
-                    let data = await HolidayService.updateHoliday(req.params.id, req.body, req.user.company._id);
-                    await LogInfo(req.user.email, 'EDIT_HOLIDAY', req.user.company);
+                    let data = await HolidayService.updateHoliday(req.portal, req.params.id, req.body, req.user.company._id);
+                    await Log.info(req.user.email, 'EDIT_HOLIDAY', req.portal);
                     res.status(200).json({
                         success: true,
                         messages: ["edit_holiday_success"],
                         content: data
                     });
                 } else {
-                    await LogError(req.user.email, 'EDIT_HOLIDAY', req.user.company);
+                    await Log.error(req.user.email, 'EDIT_HOLIDAY', req.portal);
                     res.status(400).json({
                         success: false,
                         messages: ["holiday_duplicate_required"],
@@ -212,7 +209,7 @@ exports.updateHoliday = async (req, res) => {
         }
 
     } catch (error) {
-        await LogError(req.user.email, 'EDIT_HOLIDAY', req.user.company);
+        await Log.error(req.user.email, 'EDIT_HOLIDAY', req.portal);
         res.status(400).json({
             success: false,
             messages: ["edit_holiday_faile"],
@@ -226,16 +223,16 @@ exports.updateHoliday = async (req, res) => {
 /** Import dữ liệu lịch làm việc */
 exports.importHolidays = async (req, res) => {
     try {
-        let data = await HolidayService.importHolidays(req.body, req.user.company._id);
+        let data = await HolidayService.importHolidays(req.portal, req.body, req.user.company._id);
         if (data.rowError !== undefined) {
-            await LogError(req.user.email, 'IMPORT_HOLIDAY', req.user.company);
+            await Log.error(req.user.email, 'IMPORT_HOLIDAY', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["import_holiday_faile"],
                 content: data
             });
         } else {
-            await LogInfo(req.user.email, 'IMPORT_HOLIDAY', req.user.company);
+            await Log.info(req.user.email, 'IMPORT_HOLIDAY', req.portal);
             res.status(200).json({
                 success: true,
                 messages: ["import_holiday_success"],
@@ -243,7 +240,7 @@ exports.importHolidays = async (req, res) => {
             });
         }
     } catch (error) {
-        await LogError(req.user.email, 'IMPORT_HOLIDAY', req.user.company);
+        await Log.error(req.user.email, 'IMPORT_HOLIDAY', req.portal);
         res.status(400).json({
             success: false,
             messages: ["import_holiday_faile"],

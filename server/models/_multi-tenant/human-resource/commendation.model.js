@@ -8,6 +8,10 @@ const CommendationSchema = new Schema({
         ref: 'Employee',
         required: true,
     },
+    company: {
+        type: Schema.Types.ObjectId,
+        ref: 'Company',
+    },
     decisionNumber: { // mã số quyết định khen thưởng
         type: String,
         required: true,
@@ -33,7 +37,7 @@ const CommendationSchema = new Schema({
 });
 
 module.exports = (db) => {
-    if(!db.models.Commendation)
+    if (!db.models.Commendation)
         return db.model('Commendation', CommendationSchema);
     return db.models.Commendation;
 }

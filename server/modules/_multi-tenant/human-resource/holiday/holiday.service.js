@@ -1,13 +1,17 @@
 const {
     Holiday
-} = require('../../../models').schema;
+} = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
+
+const {
+    connect
+} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 /**
  * Lấy danh sách lịch làm việc
  * @company : Id công ty
  */
-exports.getAllHolidays = async (company) => {
-    let data = await Holiday.findOne({
+exports.getAllHolidays = async (portal,company) => {
+    let data = await Holiday(connect(DB_CONNECTION, portal)).findOne({
         company: company
     }).sort({
         'holidays.startDate': 'ASC'
@@ -23,10 +27,10 @@ exports.getAllHolidays = async (company) => {
  * @param {*} year : Năm
  * @param {*} company : Id công ty
  */
-exports.getHolidaysOfYear = async (company, year) => {
+exports.getHolidaysOfYear = async (portal,company, year) => {
     let firstDay = new Date(year, 0, 1);
     let lastDay = new Date(Number(year) + 1, 0, 1);
-    let data = await Holiday.findOne({
+    let data = await Holiday(connect(DB_CONNECTION, portal)).findOne({
         company: company,
         'holidays.startDate': {
             "$gt": firstDay,
@@ -46,18 +50,18 @@ exports.getHolidaysOfYear = async (company, year) => {
  * @data : dữ liệu lịch làm việc cần thêm
  * @company : id công ty cần thêm
  */
-exports.createHoliday = async (data, company) => {
+exports.createHoliday = async (portal,data, company) => {
     let newHoliday = {
         type: data.type,
         startDate: data.startDate,
         endDate: data.endDate,
         description: data.description,
     }
-    let holiday = await Holiday.findOne({
+    let holiday = await Holiday(connect(DB_CONNECTION, portal)).findOne({
         company: company,
     });
     if (holiday === null) {
-        holiday = await Holiday.create({
+        holiday = await Holiday(connect(DB_CONNECTION, portal)).create({
             company: company,
             maximumNumberOfLeaveDays: 0,
             holidays: [],
@@ -72,8 +76,8 @@ exports.createHoliday = async (data, company) => {
  * Xoá thông tin lịch làm việc
  * @id : id thông tin lịch làm việc cần xoá
  */
-exports.deleteHoliday = async (id, company) => {
-    let holiday = await Holiday.findOne({
+exports.deleteHoliday = async (portal,id, company) => {
+    let holiday = await Holiday(connect(DB_CONNECTION, portal)).findOne({
         company: company,
     });
     let deleteholiday = holiday.holidays.find(x => x._id.toString() === id);
@@ -87,8 +91,8 @@ exports.deleteHoliday = async (id, company) => {
  * @id : id thông tin lịch làm việc cần chỉnh sửa
  * @data : dữ liệu chỉnh sửa thông tin lịch làm việc
  */
-exports.updateHoliday = async (id, data, company) => {
-    let holiday = await Holiday.findOne({
+exports.updateHoliday = async (portal,id, data, company) => {
+    let holiday = await Holiday(connect(DB_CONNECTION, portal)).findOne({
         company: company
     });
     holiday.holidays = holiday.holidays.map(x => {
@@ -110,12 +114,12 @@ exports.updateHoliday = async (id, data, company) => {
  * Cập nhật tổng số ngày nghỉ phép trong năm
  * @param {*} maximumNumberOfLeaveDays : Tổng số ngày nghỉ phép trong năm 
  */
-exports.updateNumberDateLeaveOfYear = async (maximumNumberOfLeaveDays, company) => {
-    let holiday = await Holiday.findOne({
+exports.updateNumberDateLeaveOfYear = async (portal,maximumNumberOfLeaveDays, company) => {
+    let holiday = await Holiday(connect(DB_CONNECTION, portal)).findOne({
         company: company
     });
     if (holiday === null) {
-        holiday = await Holiday.create({
+        holiday = await Holiday(connect(DB_CONNECTION, portal)).create({
             company: company,
             maximumNumberOfLeaveDays: 0,
             holidays: [],
@@ -150,12 +154,12 @@ exports.formatDate = (date) => {
  * @param {*} data : Dữ liệu import
  * @param {*} company : Id công ty
  */
-exports.importHolidays = async (data, company) => {
-    let holiday = await Holiday.findOne({
+exports.importHolidays = async (portal,data, company) => {
+    let holiday = await Holiday(connect(DB_CONNECTION, portal)).findOne({
         company: company,
     });
     if (holiday === null) {
-        holiday = await Holiday.create({
+        holiday = await Holiday(connect(DB_CONNECTION, portal)).create({
             company: company,
             maximumNumberOfLeaveDays: 0,
             holidays: [],

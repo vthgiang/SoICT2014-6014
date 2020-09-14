@@ -107,19 +107,19 @@ class ManageHoliday extends Component {
     handleNumberDateOfYearChange = (e) => {
         const { value } = e.target;
         this.setState({
-            numberDateLeaveOfYear: value
+            maximumNumberOfLeaveDays: value
         })
     }
 
     updateNumberDateOfYear = async () => {
         const { holiday } = this.props;
-        let { numberDateLeaveOfYear } = this.state;
+        let { maximumNumberOfLeaveDays } = this.state;
 
-        if (!numberDateLeaveOfYear) {
-            numberDateLeaveOfYear = holiday.numberDateLeaveOfYear
+        if (!maximumNumberOfLeaveDays) {
+            maximumNumberOfLeaveDays = holiday.maximumNumberOfLeaveDays
         }
         await window.$(`#collapseNumberDateOfYear`).collapse("hide");
-        this.props.updateHoliday(null, { numberDateLeaveOfYear: numberDateLeaveOfYear })
+        this.props.updateHoliday(null, { maximumNumberOfLeaveDays: maximumNumberOfLeaveDays })
     }
 
     /**
@@ -165,12 +165,12 @@ class ManageHoliday extends Component {
     render() {
         const { translate, holiday } = this.props;
 
-        let { year, importHoliday, createHoliday, currentRow, numberDateLeaveOfYear } = this.state;
+        let { year, importHoliday, createHoliday, currentRow, maximumNumberOfLeaveDays } = this.state;
 
-        let holidays = holiday.listHoliday, numberDateLeave = holiday.numberDateLeaveOfYear;
+        let holidays = holiday.listHoliday, numberDateLeave = holiday.maximumNumberOfLeaveDays;
 
-        if (numberDateLeaveOfYear !== undefined) {
-            numberDateLeave = numberDateLeaveOfYear;
+        if (maximumNumberOfLeaveDays !== undefined) {
+            numberDateLeave = maximumNumberOfLeaveDays;
         };
 
         let exportData = this.convertDataToExportData(holidays);

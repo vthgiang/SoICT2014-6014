@@ -3,6 +3,10 @@ const Schema = mongoose.Schema;
 
 // Tạo bảng datatbale lương nhân viên
 const SalarySchema = new Schema({
+    company: {
+        type: Schema.Types.ObjectId,
+        ref: "Company"
+    },
     employee: {
         type: Schema.Types.ObjectId,
         ref: 'Employee',
@@ -36,7 +40,7 @@ const SalarySchema = new Schema({
 });
 
 module.exports = (db) => {
-    if(!db.models.Salary)
+    if (!db.models.Salary)
         return db.model('Salary', SalarySchema);
     return db.models.Salary;
 }
