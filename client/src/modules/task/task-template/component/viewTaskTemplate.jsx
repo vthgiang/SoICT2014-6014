@@ -86,7 +86,6 @@ class ViewTaskTemplate extends Component {
                                 <li><span style={{ fontWeight: 600 }}>totalDay</span> - Thời gian từ ngày bắt đầu đến ngày kết thúc công việc (ngày)</li>
                                 <li><span style={{ fontWeight: 600 }}>averageActionRating</span> -  Trung bình cộng điểm đánh giá hoạt động (1-10)</li>
                                 <li><span style={{ fontWeight: 600 }}>progress</span> - % Tiến độ công việc (0-100)</li>
-                                <li><span style={{ fontWeight: 600 }}>dayUsed</span> - Thời gian làm việc tính đến ngày đánh giá (ngày)</li>
                             </ul>
                         </div>
                     </div>

@@ -5,6 +5,7 @@ import c3 from 'c3';
 import 'c3/c3.css';
 import * as d3 from "d3";
 import './transferList.css';
+import { chartFunction } from './chart';
 
 class LineBarChart extends Component {
     constructor(props) {
@@ -13,6 +14,19 @@ class LineBarChart extends Component {
         }
     }
 
+    static getDerivedStateFromProps(props, state) {
+        if (props.dataForAxisXInChart) {
+            let { dataConvert } = props.barLineChartData;
+            dataConvert = dataConvert[0];
+            return {
+                ...state,
+                startDate: dataConvert[1].slice(0, 6),
+                endDate: dataConvert[dataConvert.length - 1].slice(0, 6),
+                dataForAxisXInChart: props.dataForAxisXInChart.length > 0 && props.dataForAxisXInChart.map((x, index) => ((index ? '-> ' : '') + chartFunction.formatDataForAxisXInChart(x))),
+            }
+        }
+        return null;
+    }
 
     shouldComponentUpdate(nextProps, nextState) {
         if (nextProps.barLineChartData) {
@@ -106,14 +120,15 @@ class LineBarChart extends Component {
         });
     }
 
-
     render() {
+        const { dataForAxisXInChart, startDate, endDate } = this.state;
         return (
             <div className="row" style={{ marginBottom: '10px' }}>
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <div className="box box-primary" >
                         <div className="box-header with-border">
-                            <h4 className="box-title">Báo cáo thống kê công việc</h4>
+                            <h4 className="box-title report-title"><span style={{ marginRight: '7px' }}>Thống kê công việc từ:</span> {`${startDate}`} đến {`${endDate}`}</h4> <br />
+                            <h4 className="box-title report-title" style={{ marginTop: '5px' }}><span style={{ marginRight: '7px' }}>Chiều dữ liệu:</span> {`${dataForAxisXInChart && dataForAxisXInChart.length > 0 ? dataForAxisXInChart.join(' ') : 'Thời gian'}`}</h4>
                         </div>
                         <div className="box-body lineBarChart ">
                             <div ref="barChart"></div>
