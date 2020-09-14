@@ -225,9 +225,9 @@ class SelectBox extends Component {
 
     render() {
         const { id, items, className, style, multiple = false, options = {}, disabled = false } = this.props;
+
         const { searching } = this.state;
-        console.log(this.props.value);
-        console.log(this.state.value);
+
         return (
             <React.Fragment>
                 <div className="select2">

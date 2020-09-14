@@ -203,7 +203,7 @@ class AssetAssignedManager extends Component {
             userArr: [],
         };
 
-        listUser.map(x => {
+        listUser && listUser.map(x => {
             data.userArr.push({
                 value: x._id,
                 text: x.name
@@ -390,7 +390,7 @@ class AssetAssignedManager extends Component {
                         managedBy={currentRowView.managedBy}
                         assignedToUser={currentRowView.assignedToUser}
                         assignedToOrganizationalUnit={currentRowView.assignedToOrganizationalUnit}
-
+                        typeRegisterForUse = {currentRowView.typeRegisterForUse}
                         location={currentRowView.location}
                         description={currentRowView.description}
                         status={currentRowView.status}

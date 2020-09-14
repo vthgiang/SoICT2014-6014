@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-// import { CalenderUsage } from './calenderUsage';
+
 import { UsageLogAddModal, UsageLogEditModal } from './combinedContent';
 import { UseRequestActions } from '../../../admin/use-request/redux/actions'
+import { CalendarUsage } from './calendarUsage';
 class UsageLogTab extends Component {
     constructor(props) {
         super(props);
@@ -278,11 +279,15 @@ class UsageLogTab extends Component {
                             </tbody>
                         </table>
                         }
-                        {/* {
+                        {
                             typeRegisterForUse == 2 &&
                         
-                        <CalenderUsage usageLogs = {usageLogs}/>
-                        } */}
+                        <CalendarUsage 
+                        id = {`edit`}
+                        assetId = {id}
+                        usageLogs = {usageLogs}
+                        />
+                        }
                         {   typeRegisterForUse !== 2 &&
                             (!usageLogs || usageLogs.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }

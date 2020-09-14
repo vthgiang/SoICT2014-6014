@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { ApiImage } from '../../../../common-components'
 import { withTranslate } from "react-redux-multilingual";
+import { AuthActions } from '../../../auth/redux/actions';
 import { performTaskAction } from '../redux/actions';
 import { CommentInProcess } from './commentInProcess';
 class OutgoingDataTab extends Component {
@@ -130,7 +132,20 @@ class OutgoingDataTab extends Component {
             this.DOCUMENT = [];
         }
     }
-
+    requestDownloadFile = (e, path, fileName) => {
+        e.preventDefault()
+        console.log("abc")
+        this.props.downloadFile(path, fileName)
+    }
+    isImage = (src) => {
+        let string = src.split(".")
+        let image = ['jpg', 'jpeg', 'png', 'psd', 'pdf', 'tiff', 'gif']
+        if (image.indexOf(string[string.length - 1]) !== -1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     render() {
         const { translate, performtasks } = this.props;
         const { task, isOutputInformation, isOutputDocument } = this.state;
@@ -164,13 +179,13 @@ class OutgoingDataTab extends Component {
                                     : <span>{translate('task.task_process.not_have_info')}</span>
                             }
 
-                            <div style={{ marginTop: 10}}></div>
+                            <div style={{ marginTop: 10 }}></div>
                             <strong>{translate('task.task_process.document')}:</strong>
                             { /** Danh sách tài liệu */
                                 task.documents
                                     && task.documents.length !== 0
-                                    ? task.documents.map(document =>
-                                        <div>
+                                    ? task.documents.map((document, index) =>
+                                        <div key={index}>
                                             <div>
                                                 <label>
                                                     <input
@@ -186,9 +201,21 @@ class OutgoingDataTab extends Component {
 
                                             {
                                                 document.files && document.files.length !== 0
-                                                && document.files.map(file =>
-                                                    <div>
-                                                        <a href={file.url}>{file.name}</a>
+                                                && document.files.map((file, index) =>
+
+                                                    <div key={index}>
+                                                        {console.log(file)}
+                                                        {this.isImage(file.name) ?
+                                                            <ApiImage
+                                                                className="attachment-img files-attach"
+                                                                style={{ marginTop: "5px" }}
+                                                                src={file.url}
+                                                                file={file}
+                                                                requestDownloadFile={this.requestDownloadFile}
+                                                            />
+                                                            :
+                                                            <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, file.url, file.name)}> {file.name} </a>
+                                                        }
                                                     </div>
                                                 )
                                             }
@@ -197,7 +224,7 @@ class OutgoingDataTab extends Component {
                                     : <span>{translate('task.task_process.not_have_doc')}</span>
                             }
                             <div style={{ marginTop: 20 }}>
-                                <button type="button" style={{ width: "100%"}} className="btn btn-block btn-default" onClick={() => this.handleSaveEdit()} disabled={this.DOCUMENT.length === 0 && this.INFORMATION.length === 0}>{translate('task.task_process.save')}</button>
+                                <button type="button" style={{ width: "100%" }} className="btn btn-block btn-default" onClick={() => this.handleSaveEdit()} disabled={this.DOCUMENT.length === 0 && this.INFORMATION.length === 0}>{translate('task.task_process.save')}</button>
                             </div>
 
 
@@ -205,7 +232,7 @@ class OutgoingDataTab extends Component {
 
                         { /** Trao đổi */}
                         <div className="description-box">
-                            <h4 style={{marginBottom: "1.3em"}}>Trao đổi với các công việc khác về dữ liệu ra</h4>
+                            <h4 style={{ marginBottom: "1.3em" }}>Trao đổi với các công việc khác về dữ liệu ra</h4>
                             <CommentInProcess
                                 task={performtasks.task}
                                 inputAvatarCssClass="user-img-outgoing-level1"
@@ -226,7 +253,8 @@ function mapState(state) {
 const actions = {
     editDocument: performTaskAction.editDocument,
     editInformationTask: performTaskAction.editInformationTask,
-    getTaskById: performTaskAction.getTaskById
+    getTaskById: performTaskAction.getTaskById,
+    downloadFile: AuthActions.downloadFile,
 }
 
 const connectOutgoingDataTab = connect(mapState, actions)(withTranslate(OutgoingDataTab));

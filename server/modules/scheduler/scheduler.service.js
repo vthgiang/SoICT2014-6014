@@ -1,6 +1,7 @@
 const exec = require('child_process').exec;
 const CronJob = require('cron').CronJob;
 const fs = require('fs');
+const TaskManagementService = require('../task/task-management/task.service');
 
 exports.backupAutomatic = new CronJob(SERVER_BACKUP_TIME, async function(){
     const option = {
@@ -81,3 +82,5 @@ exports.backupAutomatic = new CronJob(SERVER_BACKUP_TIME, async function(){
     }
 
 }, null, false, 'Asia/Ho_Chi_Minh');
+
+exports.sendEmailTaskAutomatic = new CronJob('0 0 8 * * 0', TaskManagementService.sendEmailCheckTaskLastMonth(), null, false, 'Asia/Ho_Chi_Minh');

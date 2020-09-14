@@ -3,6 +3,10 @@ const Schema = mongoose.Schema;
 
 // Tạo bảng datatable chấm công
 const TimesheetSchema = new Schema({
+    company: {
+        type: Schema.Types.ObjectId,
+        ref: "Company",
+    },
     employee: {
         type: Schema.Types.ObjectId,
         ref: 'Employee',
@@ -23,7 +27,7 @@ const TimesheetSchema = new Schema({
 });
 
 module.exports = (db) => {
-    if(!db.models.Timesheet)
+    if (!db.models.Timesheet)
         return db.model('Timesheet', TimesheetSchema);
     return db.models.Timesheet;
 }

@@ -497,7 +497,7 @@ class TaskTemplate extends Component {
                             }
                         </tbody>
                     </table>
-                    {(pageTotal>1)&&<PaginateBar pageTotal={pageTotal} currentPage={currentPage} func={this.setPage} />}
+                    <PaginateBar pageTotal={pageTotal} currentPage={currentPage} func={this.setPage} />
                 </div>
             </div>
         );

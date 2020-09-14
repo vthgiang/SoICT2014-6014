@@ -138,10 +138,12 @@ class ActionTab extends Component {
             this.props.getStatusTimer(nextProps.id);
             this.props.getSubTask(nextProps.id);
             this.props.getTaskLog(nextProps.id);
-
             return true;
         }
-
+        if(nextProps.auth.user.avatar !== this.props.auth.user.avatar) {
+            this.props.getTaskById(nextProps.id)
+            return true;
+        }
         return true;
     }
     setHover = async (id, value) => {
@@ -805,7 +807,6 @@ class ActionTab extends Component {
         this.setState({ src: src });
     }
     render() {
-
         let task, informations, statusTask, documents, actionComments, taskActions, taskComments, logTimer, logs;
         const { tasks, performtasks, user, auth, translate, role } = this.props;
         const subtasks = tasks.subtasks;
@@ -990,7 +991,7 @@ class ActionTab extends Component {
                                                                 {item.files.map((elem, index) => {
                                                                     return <div key={index} className="show-files-task">
                                                                         {this.isImage(elem.name) ?
-                                                                            <ApiImage 
+                                                                            <ApiImage
                                                                                 className="attachment-img files-attach"
                                                                                 style={{ marginTop: "5px" }}
                                                                                 src={elem.url}
@@ -1093,11 +1094,11 @@ class ActionTab extends Component {
                                                                                 {child.files.map((elem, index) => {
                                                                                     return <div key={index} className="show-files-task">
                                                                                         {this.isImage(elem.name) ?
-                                                                                            <ApiImage 
-                                                                                                className="attachment-img files-attach" 
-                                                                                                style={{ marginTop: "5px"}} 
+                                                                                            <ApiImage
+                                                                                                className="attachment-img files-attach"
+                                                                                                style={{ marginTop: "5px" }}
                                                                                                 src={elem.url}
-                                                                                                file={elem} 
+                                                                                                file={elem}
                                                                                                 requestDownloadFile={this.requestDownloadFile}
                                                                                             />
                                                                                             :
@@ -1217,16 +1218,9 @@ class ActionTab extends Component {
                         <div className={selected === "taskComment" ? "active tab-pane" : "tab-pane"} id="taskComment">
                             {typeof taskComments !== 'undefined' && taskComments.length !== 0 ?
                                 taskComments.map((item, key) => {
-                                    let numberImage = 0;
-                                    item.files.forEach(x => {
-                                        if (this.isImage(x.name)) {
-                                            numberImage = numberImage + 1
-                                        }
-                                    })
                                     return (
                                         <div key={key}>
                                             <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + item.creator?.avatar)} alt="User Image" />
-
                                             {editTaskComment !== item._id && // Khi đang edit thì ẩn đi
                                                 <React.Fragment>
                                                     <div className="content-level1">

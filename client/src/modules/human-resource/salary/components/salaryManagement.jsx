@@ -400,7 +400,7 @@ class SalaryManagement extends Component {
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
                         (!listSalarys || listSalarys.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
-                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
+                    <PaginateBar pageTotal={pageTotal} currentPage={currentPage} func={this.setPage} />
                 </div>
 
                 {/* Form thêm thông tin bảng lương bằng tay */}

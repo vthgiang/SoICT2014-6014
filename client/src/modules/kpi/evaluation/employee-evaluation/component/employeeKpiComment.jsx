@@ -295,8 +295,15 @@ class EmployeeKpiComment extends Component {
         })
     }
 
-
-
+    isImage = (src) => {
+        let string = src.split(".")
+        let image = ['jpg', 'jpeg', 'png', 'psd', 'pdf', 'tiff', 'gif']
+        if (image.indexOf(string[string.length - 1]) !== -1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     save = (setKpiId) => {
         let { deleteFile } = this.state
@@ -306,14 +313,18 @@ class EmployeeKpiComment extends Component {
             this.props.deleteFileChildComment(deleteFile.fileId, deleteFile.childCommentId, deleteFile.commentId, deleteFile.setKpiId)
         }
     }
-
+    shouldComponentUpdate = (nextProps, nextState) => {
+        if(nextProps.auth.user.avatar !== this.props.auth.user.avatar) {
+            this.props.getEmployeeKpiSet()
+            return true;
+        }
+    }
     render() {
         const { kpimembers, auth } = this.props;
         const { translate } = this.props;
         const { editComment, editChildComment, showChildComment, currentUser, newCommentEdited, newChildCommentEdited, showModalDelete, deleteFile, childComment, showfile } = this.state;
         let comments, currentKPI;
         let minRows = 3, maxRows = 20;
-
         if (kpimembers.currentKPI) {
             currentKPI = kpimembers.currentKPI;
             comments = currentKPI?.comments

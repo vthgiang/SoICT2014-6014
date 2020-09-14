@@ -14,44 +14,35 @@ class TaskReportDetailForm extends Component {
         this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
         this.state = {
             dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
-            chartStatus: false,
         }
     }
-    static getDerivedStateFromProps(nextProps, prevState) {
-        console.log('static')
-        if (nextProps.taskReportId !== prevState.taskReportId) {
+    static getDerivedStateFromProps(props, state) {
+        if (props.taskReportId !== state.taskReportId) {
+            props.getTaskReportById(props.taskReportId);
             return {
-                ...prevState,
-                taskReportId: nextProps.taskReportId,
-                dataStatus: 0
+                ...state,
+                dataStatus: 1, // 1 : QUERING
+                taskReportId: props.taskReportId,
             }
         } else {
             return null;
         }
     }
 
-    shouldComponentUpdate = async (nextProps, nextState) => {
-        console.log('stateShould', this.state.taskReportId);
-        if (nextProps.taskReportId !== this.state.taskReportId && this.state.dataStatus === this.DATA_STATUS.NOT_AVAILABLE) {
-            await this.props.getTaskReportById(nextProps.taskReportId);
+    shouldComponentUpdate = (nextProps, nextState) => {
+        if (this.state.dataStatus === this.DATA_STATUS.QUERYING && !nextProps.reports.isLoading) {
+            // await this.props.getTaskReportById(nextProps.taskReportId);
             this.setState({
-                dataStatus: this.DATA_STATUS.QUERYING,
+                dataStatus: this.DATA_STATUS.AVAILABLE,
             })
             return false;
         }
 
-        if (this.state.dataStatus === this.DATA_STATUS.QUERYING) {
-            this.setState({
-                dataStatus: this.DATA_STATUS.AVAILABLE,
-            });
-            return false;
-        }
-
         if (this.state.dataStatus === this.DATA_STATUS.AVAILABLE) {
-            let listTaskReport = await this.props.reports.listTaskReportById;
+            let listTaskReport = nextProps.reports.listTaskReportById;
             this.setState({
-                dataStatus: this.DATA_STATUS.FINISHED,
                 listTaskReport: listTaskReport,
+                dataStatus: this.DATA_STATUS.FINISHED,
             });
             return false;
         }
@@ -60,7 +51,7 @@ class TaskReportDetailForm extends Component {
 
 
     handleView = () => {
-        let { listTaskReport, chartStatus } = this.state;
+        let { listTaskReport } = this.state;
         if (listTaskReport) {
             let newData = {
                 organizationalUnit: listTaskReport.organizationalUnit._id,
@@ -93,11 +84,10 @@ class TaskReportDetailForm extends Component {
     render() {
         const { reports, tasks } = this.props;
         const { chartStatus } = this.state;
-        let listTaskReportById = reports.listTaskReportById;
 
+        let listTaskReportById = reports.listTaskReportById;
         let listTaskEvaluations = tasks.listTaskEvaluations;
         let frequency, newlistTaskEvaluations, dataForAxisXInChart = [];
-
         const mystyle = {
             display: "flex",
         };
@@ -105,7 +95,7 @@ class TaskReportDetailForm extends Component {
             marginRight: '10px'
         };
 
-        if (listTaskEvaluations) {
+        if (listTaskEvaluations && listTaskEvaluations.length > 0 && chartStatus) {
             // Lấy tần suất, vì tần suất là chung cho các công việc nên chỉ cần lấy công việc đầu tiên
             let taskEvaluation = listTaskEvaluations[0];
             frequency = taskEvaluation.frequency;
@@ -136,7 +126,7 @@ class TaskReportDetailForm extends Component {
 
 
         let output, pieChartData = [], barLineChartData = [], pieDataConvert, barAndLineDataChartConvert;
-        if (newlistTaskEvaluations) {
+        if (newlistTaskEvaluations && newlistTaskEvaluations.length > 0 && chartStatus) {
             /**
               * Convert data, gom nhóm, tính tổng và tính trung bình cộng các trường thông tin.
               *  Nếu chọn trục hoành là thời gian dataForAxisXInChart = 1
@@ -167,7 +157,6 @@ class TaskReportDetailForm extends Component {
 
                 // Tính tổng/Trung bình cộng, xử lý tên mới, và showInreport các trường thông tin theo tùy chọn của người dùng
                 output = chartFunction.dataAfterAggregate(groupDataByResponsibleEmployees);
-
             }
 
 
@@ -461,9 +450,8 @@ class TaskReportDetailForm extends Component {
                 hasSaveButton={false}
                 hasNote={false}
             >
-                {/* <TaskReportViewForm /> */}
                 {
-                    chartStatus && barAndLineDataChartConvert && <LineBarChart barLineChartData={barAndLineDataChartConvert} />
+                    chartStatus && barAndLineDataChartConvert && <LineBarChart barLineChartData={barAndLineDataChartConvert} dataForAxisXInChart={dataForAxisXInChart} />
                 }
 
                 {/* Biểu đồ tròn  */}
@@ -473,7 +461,7 @@ class TaskReportDetailForm extends Component {
                             Object.entries(item).map(([code, data]) => (
                                 <div key={index} className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                     <div className="pieChart">
-                                        <PieChart pieChartData={data} namePieChart={code} />
+                                        <PieChart pieChartData={data} namePieChart={code} dataForAxisXInChart={dataForAxisXInChart} />
                                     </div>
                                 </div>
                             ))
@@ -487,7 +475,7 @@ class TaskReportDetailForm extends Component {
                         <div className="form-inline d-flex justify-content-end">
                             {
                                 !chartStatus ?
-                                    <button id="exportButton" className="btn btn-sm btn-success " title="Xem chi tiết" style={{ marginBottom: '6px' }} onClick={() => this.handleView()} ><span className="fa fa-fw fa-line-chart" style={{ color: 'rgb(66 65 64)', fontSize: '15px' }}></span>Xem</button>
+                                    <button id="exportButton" className="btn btn-sm btn-success " title="Xem chi tiết" style={{ marginBottom: '6px' }} onClick={() => this.handleView()} ><span className="fa fa-fw fa-line-chart" style={{ color: 'rgb(66 65 64)', fontSize: '15px', marginRight: '5px' }}></span>Xem</button>
                                     :
                                     <button id="exportButton" className="btn btn-sm btn-success " title="Xem chi tiết" style={{ marginBottom: '6px' }} onClick={() => this.handleClose()} >Ẩn biểu đồ</button>
                             }
@@ -511,7 +499,7 @@ class TaskReportDetailForm extends Component {
 
                                 <div style={mystyle}>
                                     <dt style={styledt}>Mẫu công việc:</dt>
-                                    <dd>{listTaskReportById && listTaskReportById.taskTemplate && listTaskReportById.taskTemplate.name}</dd>
+                                    <dd>{listTaskReportById && listTaskReportById.taskTemplate.name}</dd>
                                 </div>
 
                                 <dt>Tên báo cáo</dt>
@@ -579,7 +567,7 @@ class TaskReportDetailForm extends Component {
                                 <dd>{listTaskReportById && listTaskReportById.endDate && listTaskReportById.endDate.slice(0, 10)}</dd>
 
                                 <dt>Chiều dữ liệu cho biểu đồ</dt>
-                                <dd>{listTaskReportById && listTaskReportById.dataForAxisXInChart.map((x, index) => `${index}. ${x.name} `)}</dd>
+                                <dd>{listTaskReportById && listTaskReportById.dataForAxisXInChart.map((x, index) => `${index + 1}. ${x.name} `)}</dd>
                             </div>
                         </div>
                     </div>
@@ -598,54 +586,46 @@ class TaskReportDetailForm extends Component {
                                             <React.Fragment key={index}>
                                                 <dt>{item.code} - {item.name} - {item.type}</dt>
                                                 {
-                                                    (item.filter) ?
-                                                        <React.Fragment>
-                                                            <div style={mystyle}>
-                                                                <dt style={styledt}> Điều kiện lọc:  </dt>
-                                                                <dd>{item.filter}</dd>
-                                                            </div>
-                                                        </React.Fragment>
-                                                        : null
-                                                }
-                                                {(item.showInReport) ?
                                                     <React.Fragment>
                                                         <div style={mystyle}>
-                                                            <dt style={styledt}> Hiển thị trong báo cáo: </dt>
-                                                            <dd>{(item.showInReport) === true ? "Có" : "Không"}</dd>
+                                                            <dt style={styledt}> Điều kiện lọc:  </dt>
+                                                            <dd>{item.filter}</dd>
                                                         </div>
-                                                    </React.Fragment> : null
+                                                    </React.Fragment>
+                                                }
+
+                                                <React.Fragment>
+                                                    <div style={mystyle}>
+                                                        <dt style={styledt}> Hiển thị trong báo cáo: </dt>
+                                                        <dd>{(item.showInReport) === true ? "Có" : "Không"}</dd>
+                                                    </div>
+                                                </React.Fragment>
+
+                                                {
+                                                    <React.Fragment>
+                                                        <div style={mystyle}>
+                                                            <dt style={styledt}> Tên mới: </dt>
+                                                            <dd>{item.newName}</dd>
+                                                        </div>
+                                                    </React.Fragment>
                                                 }
 
                                                 {
-                                                    (item.newName) ?
-                                                        <React.Fragment>
-                                                            <div style={mystyle}>
-                                                                <dt style={styledt}> Tên mới: </dt>
-                                                                <dd>{item.newName}</dd>
-                                                            </div>
-                                                        </React.Fragment>
-                                                        : null
+                                                    <React.Fragment>
+                                                        <div style={mystyle}>
+                                                            <dt style={styledt}> Cách tính: </dt>
+                                                            <dd>{(item.aggregationType === 0) ? "Trung bình cộng" : "Tổng"}</dd>
+                                                        </div>
+                                                    </React.Fragment>
                                                 }
 
                                                 {
-                                                    (typeof item.aggregationType === "number") ?
-                                                        <React.Fragment>
-                                                            <div style={mystyle}>
-                                                                <dt style={styledt}> Cách tính: </dt>
-                                                                <dd>{(item.aggregationType === 0) ? "Trung bình cộng" : "Tổng"}</dd>
-                                                            </div>
-                                                        </React.Fragment> : null
-
-                                                }
-
-                                                {
-                                                    (typeof item.chartType === "number") ?
-                                                        <React.Fragment>
-                                                            <div style={mystyle}>
-                                                                <dt style={styledt}> Dạng biểu đồ: </dt>
-                                                                <dd>{(item.chartType === 0) ? "Cột" : (item.chartType === 1 ? "Đường" : "Tròn")}</dd>
-                                                            </div>
-                                                        </React.Fragment> : null
+                                                    <React.Fragment>
+                                                        <div style={mystyle}>
+                                                            <dt style={styledt}> Dạng biểu đồ: </dt>
+                                                            <dd>{(item.chartType === 0) ? "Cột" : (item.chartType === 1 ? "Đường" : "Tròn")}</dd>
+                                                        </div>
+                                                    </React.Fragment>
                                                 }
                                                 <div style={{ marginBottom: '12px' }}></div>
                                             </React.Fragment>

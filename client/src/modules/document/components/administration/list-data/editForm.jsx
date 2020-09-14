@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import Swal from 'sweetalert2';
 import { DialogModal, ButtonModal, DateTimeConverter, SelectBox, DatePicker, TreeSelect, ErrorLabel } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
 import moment from 'moment';
@@ -683,6 +684,29 @@ class EditForm extends Component {
         return paths;
 
     }
+    deleteDocumentVersion = (documentId, versionId, info) => {
+        const { translate } = this.props;
+        Swal.fire({
+            html: `<h4 style="color: red"><div>${translate('document.delete')}</div> <div>"${info}" ?</div></h4>`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: translate('general.no'),
+            confirmButtonText: translate('general.yes'),
+        }).then((result) => {
+            if (result.value) {
+                let title = "Xóa phiên bản ";
+                let descriptions = "Xoá phiên bản " + info;
+                this.props.editDocument(documentId, {
+                    title: title,
+                    descriptions: descriptions,
+                    versionId: versionId,
+                    creator: getStorage("userId"),
+                }, 'DELETE_VERSION');
+            }
+        })
+    }
     render() {
         const {
             documentId, documentName, documentDescription, documentCategory, documentDomains,
@@ -871,6 +895,7 @@ class EditForm extends Component {
                                                                     <td><a href="#" onClick={() => this.requestDownloadDocumentFileScan(documentId, "SCAN_" + documentName, i)}><u>{version.scannedFileOfSignedDocument ? translate('document.download') : ""}</u></a></td>
                                                                     <td>
                                                                         <a className="text-yellow" title={translate('document.edit')} onClick={() => this.toggleEditVersion(version)}><i className="material-icons">edit</i></a>
+                                                                        <a className="text-red" title={translate('document.delete')} onClick={() => this.deleteDocumentVersion(documentId, version._id, version.versionName)}><i className="material-icons">delete</i></a>
                                                                     </td>
                                                                 </tr>
                                                             }) : <tr><td colSpan={7}>{translate('document.no_version')}</td></tr>

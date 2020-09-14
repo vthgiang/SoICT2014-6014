@@ -13,7 +13,7 @@ exports.getAllHolidays = async (company) => {
         'holidays.startDate': 'ASC'
     });
     return {
-        numberDateLeaveOfYear: data ? data.numberDateLeaveOfYear : 0,
+        maximumNumberOfLeaveDays: data ? data.maximumNumberOfLeaveDays : 0,
         holidays: data ? data.holidays : []
     };
 }
@@ -36,7 +36,7 @@ exports.getHolidaysOfYear = async (company, year) => {
         'holidays.startDate': 'ASC'
     });
     return {
-        numberDateLeaveOfYear: data ? data.numberDateLeaveOfYear : 0,
+        maximumNumberOfLeaveDays: data ? data.maximumNumberOfLeaveDays : 0,
         holidays: data ? data.holidays : []
     };
 }
@@ -59,7 +59,7 @@ exports.createHoliday = async (data, company) => {
     if (holiday === null) {
         holiday = await Holiday.create({
             company: company,
-            numberDateLeaveOfYear: 0,
+            maximumNumberOfLeaveDays: 0,
             holidays: [],
         });
     };
@@ -108,23 +108,23 @@ exports.updateHoliday = async (id, data, company) => {
 
 /**
  * Cập nhật tổng số ngày nghỉ phép trong năm
- * @param {*} numberDateLeaveOfYear : Tổng số ngày nghỉ phép trong năm 
+ * @param {*} maximumNumberOfLeaveDays : Tổng số ngày nghỉ phép trong năm 
  */
-exports.updateNumberDateLeaveOfYear = async (numberDateLeaveOfYear, company) => {
+exports.updateNumberDateLeaveOfYear = async (maximumNumberOfLeaveDays, company) => {
     let holiday = await Holiday.findOne({
         company: company
     });
     if (holiday === null) {
         holiday = await Holiday.create({
             company: company,
-            numberDateLeaveOfYear: 0,
+            maximumNumberOfLeaveDays: 0,
             holidays: [],
         });
     };
-    holiday.numberDateLeaveOfYear = numberDateLeaveOfYear;
+    holiday.maximumNumberOfLeaveDays = maximumNumberOfLeaveDays;
     holiday.save();
     return {
-        numberDateLeaveOfYear: holiday.numberDateLeaveOfYear
+        maximumNumberOfLeaveDays: holiday.maximumNumberOfLeaveDays
     };
 }
 
@@ -157,7 +157,7 @@ exports.importHolidays = async (data, company) => {
     if (holiday === null) {
         holiday = await Holiday.create({
             company: company,
-            numberDateLeaveOfYear: 0,
+            maximumNumberOfLeaveDays: 0,
             holidays: [],
         });
     };

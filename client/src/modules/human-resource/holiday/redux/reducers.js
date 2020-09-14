@@ -4,7 +4,7 @@ import {
 
 const initState = {
     listHoliday: [],
-    numberDateLeaveOfYear: 0,
+    maximumNumberOfLeaveDays: 0,
     isLoading: false,
     importHoliday: [],
     importStatus: false,
@@ -26,7 +26,7 @@ export function holiday(state = initState, action) {
             return {
                 ...state,
                 listHoliday: action.payload.holidays,
-                    numberDateLeaveOfYear: action.payload.numberDateLeaveOfYear,
+                maximumNumberOfLeaveDays: action.payload.maximumNumberOfLeaveDays,
                     isLoading: false,
             };
         case HolidayConstants.CREATE_HOLIDAY_SUCCESS:
@@ -57,7 +57,7 @@ export function holiday(state = initState, action) {
             } else {
                 return {
                     ...state,
-                    numberDateLeaveOfYear: action.payload.numberDateLeaveOfYear,
+                    maximumNumberOfLeaveDays: action.payload.maximumNumberOfLeaveDays,
                     isLoading: false,
                 };
             };
