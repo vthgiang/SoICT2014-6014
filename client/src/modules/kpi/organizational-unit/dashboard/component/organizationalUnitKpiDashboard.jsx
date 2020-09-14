@@ -18,17 +18,23 @@ class OrganizationalUnitKpiDashboard extends Component {
 
     constructor(props) {
         super(props);
-        this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
 
         this.today = new Date();
 
-        this.state = {
-            currentRole: null,
+        this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
+        this.DATA_SEARCH = {
             organizationalUnitId: null,
-
-            currentYear: new Date().getFullYear(),
             month: this.today.getFullYear() + '-' + (this.today.getMonth() + 1),
             date: (this.today.getMonth() + 1) + '-' + this.today.getFullYear(),
+        }
+
+        this.state = {
+            currentRole: null,
+            organizationalUnitId: this.DATA_SEARCH.organizationalUnitId,
+
+            currentYear: new Date().getFullYear(),
+            month: this.DATA_SEARCH.month,
+            date: this.DATA_SEARCH.date,
 
             dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
 
@@ -113,26 +119,27 @@ class OrganizationalUnitKpiDashboard extends Component {
     }
 
     handleSelectOrganizationalUnitId = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                organizationalUnitId: value[0]
-            }
-        })
+        this.DATA_SEARCH.organizationalUnitId = value[0];
     }
 
     handleSelectMonth = async (value) => {
         let month = value.slice(3, 7) + '-' + value.slice(0, 2);
+        this.DATA_SEARCH.month = month;
+        this.DATA_SEARCH.date = value;
+    }
+
+    handleSearchData = () => {
         this.setState(state => {
             return {
                 ...state,
-                month: month,
-                date: value
+                organizationalUnitId: this.DATA_SEARCH.organizationalUnitId,
+                month: this.DATA_SEARCH.month,
+                date: this.DATA_SEARCH.date
             }
         })
     }
 
-    handleResultsOfOrganizationalUnitKpiChartDataAvailable =(data)=>{
+    handleResultsOfOrganizationalUnitKpiChartDataAvailable = (data)=>{
         this.setState( state => {
             return {
                 ...state,
@@ -141,7 +148,7 @@ class OrganizationalUnitKpiDashboard extends Component {
         })
     }
 
-    handleResultsOfAllOrganizationalUnitsKpiChartDataAvailable =(data)=>{
+    handleResultsOfAllOrganizationalUnitsKpiChartDataAvailable = (data)=>{
         this.setState( state => {
             return {
                 ...state,
@@ -150,7 +157,7 @@ class OrganizationalUnitKpiDashboard extends Component {
         })
     }
 
-    handleStatisticsOfOrganizationalUnitKpiResultChartDataAvailable =(data)=>{
+    handleStatisticsOfOrganizationalUnitKpiResultChartDataAvailable = (data)=>{
         this.setState( state => {
             return {
                 ...state,
@@ -232,6 +239,7 @@ class OrganizationalUnitKpiDashboard extends Component {
             <React.Fragment>
                 { childrenOrganizationalUnit
                     ? <section>
+    
                         <div className="qlcv">
                             <div className="form-inline">
                                 {childOrganizationalUnit &&
@@ -244,7 +252,7 @@ class OrganizationalUnitKpiDashboard extends Component {
                                             items={organizationalUnitSelectBox}
                                             multiple={false}
                                             onChange={this.handleSelectOrganizationalUnitId}
-                                            value={organizationalUnitSelectBox[0].value}
+                                            value={this.DATA_SEARCH.organizationalUnitId}
                                         />
                                     </div>
                                 }
@@ -258,6 +266,8 @@ class OrganizationalUnitKpiDashboard extends Component {
                                         disabled={false}
                                     />
                                 </div>
+
+                                <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('kpi.evaluation.dashboard.analyze')}</button>
                             </div>
                         </div>
 
@@ -280,7 +290,7 @@ class OrganizationalUnitKpiDashboard extends Component {
                                                     items={typeChartSelectBox}
                                                     multiple={false}
                                                     onChange={this.handleSelectTypeChildUnit}
-                                                    value={typeChartSelectBox[0].value}
+                                                    value={childUnitChart}
                                                 />
                                             </div></div>
                                         {childUnitChart === 1 ?
@@ -332,7 +342,7 @@ class OrganizationalUnitKpiDashboard extends Component {
                                             <div className="box-title">{translate('kpi.organizational_unit.dashboard.statiscial')} {this.state.date}</div>
                                             {statisticsOfOrganizationalUnitKpiResultChartData && <ExportExcel type="link" id="export-statistic-organizational-unit-kpi-results-chart" exportData={statisticsOfOrganizationalUnitKpiResultChartData} style={{ marginLeft: 10 }} />}
                                         </div>
-                                        <div className="box-body qlcv">
+                                        <div className="box-body qlcv" style={{ height: "340px" }}>
                                             <StatisticsOfOrganizationalUnitKpiResultsChart
                                                 organizationalUnitId={organizationalUnitId}
                                                 month={month}
@@ -393,7 +403,9 @@ class OrganizationalUnitKpiDashboard extends Component {
                         </div>
                     </section>
                     : childrenOrganizationalUnitLoading
-                    && <h4>Bạn chưa có đơn vị</h4>
+                    && <div className="box box-body">
+                        <h4>Bạn chưa có đơn vị</h4>
+                    </div>
                 }
             </React.Fragment>
         );
