@@ -540,7 +540,6 @@ exports.searchEmployeeProfiles = async (portal, params, company) => {
     // Bắt sựu kiện theo tháng sinh
     if (params.birthdate) {
         let month = new Date(params.birthdate).getMonth() + 1;
-        console.log(month);
         keySearch = {
             ...keySearch,
             "$expr": {
@@ -570,8 +569,8 @@ exports.searchEmployeeProfiles = async (portal, params, company) => {
 
     let totalList = await Employee(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
 
-    let expiresContract = await this.getEmployeeNumberExpiresContractInCurrentMonth(company, new Date());
-    let employeesHaveBirthdateInCurrentMonth = await this.getEmployeeNumberHaveBirthdateInCurrentMonth(company, new Date())
+    let expiresContract = await this.getEmployeeNumberExpiresContractInCurrentMonth(portal, company, new Date());
+    let employeesHaveBirthdateInCurrentMonth = await this.getEmployeeNumberHaveBirthdateInCurrentMonth(portal, company, new Date())
     return {
         listEmployees,
         totalList,
@@ -585,7 +584,7 @@ exports.searchEmployeeProfiles = async (portal, params, company) => {
  * @arrayFile : Mảng chứa các file
  * @arrayObject : Mảng chứa các object
  */
-exports.mergeUrlFileToObject = (portal, arrayFile, arrayObject) => {
+exports.mergeUrlFileToObject = (arrayFile, arrayObject) => {
     if (arrayFile !== undefined) {
         arrayObject.forEach(x => {
             arrayFile.forEach(y => {
