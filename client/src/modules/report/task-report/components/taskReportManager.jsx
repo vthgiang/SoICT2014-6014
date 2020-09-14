@@ -318,7 +318,7 @@ class TaskReportManager extends Component {
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
                         reports.listTaskReport && reports.listTaskReport.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>}
 
-                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
+                    <PaginateBar pageTotal={pageTotal ? pageTotal : ""} currentPage={page} func={this.setPage} />
                 </div>
             </div>
         );

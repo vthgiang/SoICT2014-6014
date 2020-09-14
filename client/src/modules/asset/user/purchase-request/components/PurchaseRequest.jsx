@@ -238,7 +238,7 @@ class PurchaseRequest extends Component {
                                                 content={translate('asset.manage_recommend_procure.delete_recommend_card')}
                                                 data={{
                                                     id: x._id,
-                                                    info: x.recommendNumber + " - " + x.dateCreate.replace(/-/gi, "/")
+                                                    info: x.dateCreate ? x.recommendNumber + " - " + x.dateCreate.replace(/-/gi, "/") : x.recommendNumber
                                                 }}
                                                 func={this.props.deleteRecommendProcure}
                                             />

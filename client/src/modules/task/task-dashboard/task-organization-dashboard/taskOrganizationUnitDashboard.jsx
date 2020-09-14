@@ -177,12 +177,13 @@ class TaskOrganizationUnitDashboard extends Component {
         }
     }
     render() {
-        const { tasks, translate, user } = this.props;
+        const { tasks, translate, user, dashboardEvaluationEmployeeKpiSet } = this.props;
         let { idsUnit, startMonth, endMonth } = this.state;
         let { startMonthTitle, endMonthTitle } = this.INFO_SEARCH;
         let numTask, units, queue = [];
         let totalTasks = 0;
         let childrenOrganizationalUnit = [];
+        let currentOrganizationalUnit, currentOrganizationalUnitLoading;
 
         let d = new Date(),
             month = '' + (d.getMonth() + 1),
@@ -196,8 +197,11 @@ class TaskOrganizationUnitDashboard extends Component {
         let defaultEndMonth = [month, year].join('-');
         let defaultStartMonth = '0' + (month - 3) + '-' + year;
 
-        if (this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
-            let currentOrganizationalUnit = this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
+        if (dashboardEvaluationEmployeeKpiSet) {
+            currentOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
+            currentOrganizationalUnitLoading = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnitLoading; 
+        }
+        if (currentOrganizationalUnit) {
             childrenOrganizationalUnit.push(currentOrganizationalUnit);
             queue.push(currentOrganizationalUnit);
             while (queue.length > 0) {
@@ -212,185 +216,191 @@ class TaskOrganizationUnitDashboard extends Component {
             }
         }
         return (
-
             <React.Fragment>
+                { currentOrganizationalUnit
+                    ? <React.Fragment>
+                        <div className="row">
+                            <div className="qlcv" style={{ textAlign: "right", marginBottom: 15, marginRight: 10 }}>
+                                <div className="form-inline">
+                                    <div className="form-group">
+                                        <label style={{ width: "auto" }} className="form-control-static">{translate('kpi.evaluation.dashboard.organizational_unit')}</label>
+                                        {childrenOrganizationalUnit.length &&
+                                            <SelectMulti id="multiSelectOrganizationalUnitInTaskUnit"
+                                                items={childrenOrganizationalUnit.map(item => { return { value: item.id, text: item.name } })}
+                                                options={{ nonSelectedText: childrenOrganizationalUnit[0].name, allSelectedText: translate('kpi.evaluation.dashboard.all_unit') }}
+                                                onChange={this.handleChangeOrganizationUnit}
+                                                value={idsUnit}
+                                            >
+                                            </SelectMulti>
+                                        }
+                                    </div>
+                                    <div className="form-group">
+                                        <label style={{ width: "auto" }}>{translate('task.task_management.from')}</label>
+                                        <DatePicker
+                                            id="monthStartInOrganizationUnitDashboard"
+                                            dateFormat="month-year"
+                                            value={defaultStartMonth}
+                                            onChange={this.handleSelectMonthStart}
+                                            disabled={false}
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label style={{ width: "auto" }}>{translate('task.task_management.to')}</label>
+                                        <DatePicker
+                                            id="monthEndInOrganizationUnitDashboard"
+                                            dateFormat="month-year"
+                                            value={defaultEndMonth}
+                                            onChange={this.handleSelectMonthEnd}
+                                            disabled={false}
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <button className="btn btn-success" onClick={this.handleSearchData}>{translate('task.task_management.search')}</button>
+                                    </div>
 
-                <div className="row">
-                    <div className="qlcv" style={{ textAlign: "right", marginBottom: 15, marginRight: 10 }}>
-                        <div className="form-inline">
-                            <div className="form-group">
-                                <label style={{ width: "auto" }} className="form-control-static">{translate('kpi.evaluation.dashboard.organizational_unit')}</label>
-                                {childrenOrganizationalUnit.length &&
-                                    <SelectMulti id="multiSelectOrganizationalUnitInTaskUnit"
-                                        items={childrenOrganizationalUnit.map(item => { return { value: item.id, text: item.name } })}
-                                        options={{ nonSelectedText: childrenOrganizationalUnit[0].name, allSelectedText: translate('kpi.evaluation.dashboard.all_unit') }}
-                                        onChange={this.handleChangeOrganizationUnit}
-                                        value={idsUnit}
-                                    >
-                                    </SelectMulti>
-                                }
-                            </div>
-                            <div className="form-group">
-                                <label style={{ width: "auto" }}>{translate('task.task_management.from')}</label>
-                                <DatePicker
-                                    id="monthStartInOrganizationUnitDashboard"
-                                    dateFormat="month-year"
-                                    value={defaultStartMonth}
-                                    onChange={this.handleSelectMonthStart}
-                                    disabled={false}
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label style={{ width: "auto" }}>{translate('task.task_management.to')}</label>
-                                <DatePicker
-                                    id="monthEndInOrganizationUnitDashboard"
-                                    dateFormat="month-year"
-                                    value={defaultEndMonth}
-                                    onChange={this.handleSelectMonthEnd}
-                                    disabled={false}
-                                />
-                            </div>
-                            <div className="form-group">
-                                <button className="btn btn-success" onClick={this.handleSearchData}>{translate('task.task_management.search')}</button>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-xs-12">
-                        <div className="box box-primary">
-                            <div className="box-header with-border">
-                                <div className="box-title">{translate('task.task_management.tasks_calendar')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
-                            </div>
-                            <TasksSchedule
-                                callAction={!this.state.willUpdate}
-                                TaskOrganizationUnitDashboard={true}
-                                units={idsUnit}
-                                willUpdate={true}
-                            />
-                        </div>
-
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-xs-12">
-                        <div className="box box-primary">
-                            <div className="box-header with-border">
-                                <div className="box-title">{translate('task.task_management.distribution_Of_Employee')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
-                            </div>
-                            <div className="box-body qlcv">
-                                {this.state.callAction && tasks && tasks.organizationUnitTasks &&
-                                    <DistributionOfEmployee
-                                        tasks={tasks.organizationUnitTasks}
-                                        listEmployee={user.employees}
-                                        units={idsUnit}
-                                    />
-                                }
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-xs-6">
-                        <div className="box box-primary">
-                            <div className="box-header with-border">
-                                <div className="box-title">{translate('task.task_management.dashboard_area_result')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
-                            </div>
-                            <div className="box-body qlcv">
-                                {this.state.callAction &&
-                                    <DomainOfTaskResultsChart
+                        <div className="row">
+                            <div className="col-xs-12">
+                                <div className="box box-primary">
+                                    <div className="box-header with-border">
+                                        <div className="box-title">{translate('task.task_management.tasks_calendar')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
+                                    </div>
+                                    <TasksSchedule
                                         callAction={!this.state.willUpdate}
                                         TaskOrganizationUnitDashboard={true}
                                         units={idsUnit}
-                                        startMonth={startMonth}
-                                        endMonth={endMonth}
+                                        willUpdate={true}
                                     />
-                                }
+                                </div>
+
                             </div>
                         </div>
-                    </div>
-                    <div className="col-xs-6">
-                        <div className="box box-primary">
-                            <div className="box-header with-border">
-                                <div className="box-title">{translate('task.task_management.detail_status')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
-                            </div>
-                            <div className="box-body qlcv">
-                                {this.state.callAction &&
-                                    <TaskStatusChart
-                                        callAction={!this.state.willUpdate}
-                                        TaskOrganizationUnitDashboard={true}
-                                        startMonth={startMonth}
-                                        endMonth={endMonth}
-                                        units={idsUnit}
-                                    />
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="row">
-                    <div className="col-xs-6">
-                        <div className="box box-primary">
-                            <div className="box-header with-border">
-                                <div className="box-title">{translate('task.task_management.dashboard_overdue')}</div>
-                            </div>
-
-                            <div className="box-body" style={{ height: "300px", overflow: "auto"}}>
-                                {
-                                    (tasks && tasks.tasksbyuser) ?
-                                        <ul className="todo-list">
-                                            {
-                                                (tasks.tasksbyuser.expire.length !== 0) ?
-                                                    tasks.tasksbyuser.expire.map((item, key) =>
-                                                        <li key={key}>
-                                                            <span className="handle">
-                                                                <i className="fa fa-ellipsis-v" />
-                                                                <i className="fa fa-ellipsis-v" />
-                                                            </span>
-                                                            <span className="text"><a href={`/task?taskId=${item.task._id}`} target="_blank">{item.task.name}</a></span>
-                                                            <small className="label label-danger"><i className="fa fa-clock-o" /> &nbsp;{item.totalDays} {translate('task.task_management.calc_days')}</small>
-                                                        </li>
-                                                    ) : "Không có công việc quá hạn"
-                                            }
-                                        </ul> : "Đang tải dữ liệu"
-                                }
+                        <div className="row">
+                            <div className="col-xs-12">
+                                <div className="box box-primary">
+                                    <div className="box-header with-border">
+                                        <div className="box-title">{translate('task.task_management.distribution_Of_Employee')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
+                                    </div>
+                                    <div className="box-body qlcv">
+                                        {this.state.callAction && tasks && tasks.organizationUnitTasks &&
+                                            <DistributionOfEmployee
+                                                tasks={tasks.organizationUnitTasks}
+                                                listEmployee={user && user.employees}
+                                                units={idsUnit}
+                                            />
+                                        }
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="col-xs-6">
-                        <div className="box box-primary">
-                            <div className="box-header with-border">
-                                <div className="box-title">{translate('task.task_management.dashboard_about_to_overdue')}</div>
+                        <div className="row">
+                            <div className="col-xs-6">
+                                <div className="box box-primary">
+                                    <div className="box-header with-border">
+                                        <div className="box-title">{translate('task.task_management.dashboard_area_result')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
+                                    </div>
+                                    <div className="box-body qlcv">
+                                        {this.state.callAction &&
+                                            <DomainOfTaskResultsChart
+                                                callAction={!this.state.willUpdate}
+                                                TaskOrganizationUnitDashboard={true}
+                                                units={idsUnit}
+                                                startMonth={startMonth}
+                                                endMonth={endMonth}
+                                            />
+                                        }
+                                    </div>
+                                </div>
                             </div>
-                            <div className="box-body" style={{ minHeight: "300px" }}>
-                                {
-                                    (tasks && tasks.tasksbyuser) ?
-                                        <ul className="todo-list">
-                                            {
-                                                (tasks.tasksbyuser.deadlineincoming.length !== 0) ?
-                                                    tasks.tasksbyuser.deadlineincoming.map((item, key) =>
-                                                        <li key={key}>
-                                                            <span className="handle">
-                                                                <i className="fa fa-ellipsis-v" />
-                                                                <i className="fa fa-ellipsis-v" />
-                                                            </span>
-                                                            <span className="text"><a href={`/task?taskId=${item.task._id}`} target="_blank" >{item.task.name}</a></span>
-                                                            <small className="label label-warning"><i className="fa fa-clock-o" /> &nbsp;{item.totalDays} {translate('task.task_management.calc_days')}</small>
-                                                        </li>
-                                                    ) : "Không có công việc nào sắp hết hạn"
-                                            }
-                                        </ul> : "Đang tải dữ liệu"
-                                }
+                            <div className="col-xs-6">
+                                <div className="box box-primary">
+                                    <div className="box-header with-border">
+                                        <div className="box-title">{translate('task.task_management.detail_status')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
+                                    </div>
+                                    <div className="box-body qlcv">
+                                        {this.state.callAction &&
+                                            <TaskStatusChart
+                                                callAction={!this.state.willUpdate}
+                                                TaskOrganizationUnitDashboard={true}
+                                                startMonth={startMonth}
+                                                endMonth={endMonth}
+                                                units={idsUnit}
+                                            />
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="row">
+                            <div className="col-xs-6">
+                                <div className="box box-primary">
+                                    <div className="box-header with-border">
+                                        <div className="box-title">{translate('task.task_management.dashboard_overdue')}</div>
+                                    </div>
+
+                                    <div className="box-body" style={{ height: "300px", overflow: "auto"}}>
+                                        {
+                                            (tasks && tasks.tasksbyuser) ?
+                                                <ul className="todo-list">
+                                                    {
+                                                        (tasks.tasksbyuser.expire.length !== 0) ?
+                                                            tasks.tasksbyuser.expire.map((item, key) =>
+                                                                <li key={key}>
+                                                                    <span className="handle">
+                                                                        <i className="fa fa-ellipsis-v" />
+                                                                        <i className="fa fa-ellipsis-v" />
+                                                                    </span>
+                                                                    <span className="text"><a href={`/task?taskId=${item.task._id}`} target="_blank">{item.task.name}</a></span>
+                                                                    <small className="label label-danger"><i className="fa fa-clock-o" /> &nbsp;{item.totalDays} {translate('task.task_management.calc_days')}</small>
+                                                                </li>
+                                                            ) : "Không có công việc quá hạn"
+                                                    }
+                                                </ul> : "Đang tải dữ liệu"
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-xs-6">
+                                <div className="box box-primary">
+                                    <div className="box-header with-border">
+                                        <div className="box-title">{translate('task.task_management.dashboard_about_to_overdue')}</div>
+                                    </div>
+                                    <div className="box-body" style={{ minHeight: "300px" }}>
+                                        {
+                                            (tasks && tasks.tasksbyuser) ?
+                                                <ul className="todo-list">
+                                                    {
+                                                        (tasks.tasksbyuser.deadlineincoming.length !== 0) ?
+                                                            tasks.tasksbyuser.deadlineincoming.map((item, key) =>
+                                                                <li key={key}>
+                                                                    <span className="handle">
+                                                                        <i className="fa fa-ellipsis-v" />
+                                                                        <i className="fa fa-ellipsis-v" />
+                                                                    </span>
+                                                                    <span className="text"><a href={`/task?taskId=${item.task._id}`} target="_blank" >{item.task.name}</a></span>
+                                                                    <small className="label label-warning"><i className="fa fa-clock-o" /> &nbsp;{item.totalDays} {translate('task.task_management.calc_days')}</small>
+                                                                </li>
+                                                            ) : "Không có công việc nào sắp hết hạn"
+                                                    }
+                                                </ul> : "Đang tải dữ liệu"
+                                        }
+                                    </div>
+
+                                </div>
                             </div>
 
                         </div>
+                    </React.Fragment>
+                    : currentOrganizationalUnitLoading
+                    && <div className="box">
+                        <div className="box-body">
+                            <h4>Bạn chưa có đơn vị</h4>
+                        </div>
                     </div>
-
-                </div>
-
-
+                }
             </React.Fragment>
         )
     }
