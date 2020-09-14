@@ -307,7 +307,6 @@ class TaskStatusChart extends Component {
 
     render() {
         const { translate, TaskOrganizationUnitDashboard } = this.props;
-        const { role } = this.state;
 
         return (
             <React.Fragment>
