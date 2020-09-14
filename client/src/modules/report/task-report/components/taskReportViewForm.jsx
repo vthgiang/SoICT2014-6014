@@ -40,7 +40,7 @@ class TaskReportViewForm extends Component {
          * id = 3 là chiều người phê duyệt
          */
         let dataForAxisXInChart = []
-
+        console.log('listTaskEvaluations', listTaskEvaluations)
         // hiển thị trường thông tin hiện trong bảng báo cáo form preview view
         if (listTaskEvaluations && listTaskEvaluations.length > 0) {
             taskInfoName = listTaskEvaluations[0];
@@ -52,7 +52,7 @@ class TaskReportViewForm extends Component {
         }
 
 
-        if (listTaskEvaluations) {
+        if (listTaskEvaluations && listTaskEvaluations.length > 0) {
             // Lấy tần suất, Vì tần suất là chung cho các công việc nên chỉ cần lấy công việc đầu tiên
             let taskEvaluation = listTaskEvaluations[0];
             frequency = taskEvaluation.frequency;
@@ -84,7 +84,7 @@ class TaskReportViewForm extends Component {
 
         let output, pieChartData = [], barLineChartData = [], pieChartDataConvert, barAndLineDataChartConvert;
 
-        if (newlistTaskEvaluation) {
+        if (newlistTaskEvaluation && newlistTaskEvaluation.length > 0) {
 
             /**
              * Convert data, gom nhóm, tính tổng và tính trung bình cộng các trường thông tin.

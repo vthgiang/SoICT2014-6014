@@ -24,7 +24,7 @@ class TaskReportCreateForm extends Component {
                 descriptionTaskReport: '',
                 organizationalUnit: '',
                 taskTemplate: '',
-                status: '',
+                status: 0,
                 responsibleEmployees: [],
                 accountableEmployees: [],
                 startDate: '',
@@ -808,9 +808,9 @@ class TaskReportCreateForm extends Component {
                                     onChange={this.handleChangeStatus}
                                     items={
                                         [
-                                            { value: "0", text: 'Tất cả' },
-                                            { value: "1", text: 'Đã hoàn thành' },
-                                            { value: "2", text: 'Đang thực hiện' },
+                                            { value: 0, text: 'Tất cả' },
+                                            { value: 1, text: 'Đã hoàn thành' },
+                                            { value: 2, text: 'Đang thực hiện' },
                                         ]
                                     }
                                     multiple={false}

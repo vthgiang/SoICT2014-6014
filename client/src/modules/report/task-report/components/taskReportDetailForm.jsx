@@ -84,10 +84,10 @@ class TaskReportDetailForm extends Component {
     render() {
         const { reports, tasks } = this.props;
         const { chartStatus } = this.state;
+
         let listTaskReportById = reports.listTaskReportById;
         let listTaskEvaluations = tasks.listTaskEvaluations;
         let frequency, newlistTaskEvaluations, dataForAxisXInChart = [];
-        console.log('listTaskReportById', listTaskReportById)
         const mystyle = {
             display: "flex",
         };
@@ -95,7 +95,7 @@ class TaskReportDetailForm extends Component {
             marginRight: '10px'
         };
 
-        if (listTaskEvaluations) {
+        if (listTaskEvaluations && listTaskEvaluations.length > 0 && chartStatus) {
             // Lấy tần suất, vì tần suất là chung cho các công việc nên chỉ cần lấy công việc đầu tiên
             let taskEvaluation = listTaskEvaluations[0];
             frequency = taskEvaluation.frequency;
@@ -126,7 +126,7 @@ class TaskReportDetailForm extends Component {
 
 
         let output, pieChartData = [], barLineChartData = [], pieDataConvert, barAndLineDataChartConvert;
-        if (newlistTaskEvaluations) {
+        if (newlistTaskEvaluations && newlistTaskEvaluations.length > 0 && chartStatus) {
             /**
               * Convert data, gom nhóm, tính tổng và tính trung bình cộng các trường thông tin.
               *  Nếu chọn trục hoành là thời gian dataForAxisXInChart = 1
