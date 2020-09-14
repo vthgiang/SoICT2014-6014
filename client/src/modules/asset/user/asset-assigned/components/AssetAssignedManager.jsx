@@ -203,7 +203,7 @@ class AssetAssignedManager extends Component {
             userArr: [],
         };
 
-        listUser.map(x => {
+        listUser && listUser.map(x => {
             data.userArr.push({
                 value: x._id,
                 text: x.name
