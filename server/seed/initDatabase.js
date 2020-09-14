@@ -225,6 +225,7 @@ const seedDatabase = async () => {
         }
     });
     let systemComponents = await SystemComponent.insertMany(dataSystemComponents);
+    console.log(dataSystemComponents);
 
     // Tạo các system link
     let dataSystemLinks = Terms.LINKS.map( systemLink => {

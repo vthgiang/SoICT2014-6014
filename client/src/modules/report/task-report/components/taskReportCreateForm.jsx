@@ -660,13 +660,12 @@ class TaskReportCreateForm extends Component {
         // Lấy tất cả nhân viên trong công ty
         this.props.getAllUserOfCompany();
         this.props.getAllUserInAllUnitsOfCompany();
-        this.props.getAllTask();
         this.props.getRoleSameDepartment(localStorage.getItem("currentRole"));
 
     }
 
     render() {
-        const { translate, reports, tasktemplates, user, tasks } = this.props;
+        const { translate, reports, tasktemplates, user } = this.props;
         const { newReport, units, errorOnNameTaskReport, errorOnDescriptiontTaskReport, errorOnStartDate } = this.state;
         let { itemListBoxLeft, itemListBoxRight } = this.state.newReport;
         let listTaskTemplate, taskInformations = newReport.taskInformations, listRole, listRoles = [];
@@ -968,8 +967,8 @@ class TaskReportCreateForm extends Component {
                                                                     onChange={(e) => this.handleChangeAggregationType(index, e)}
                                                                     items={
                                                                         [
-                                                                            { value: '0', text: 'Trung bình cộng' },
-                                                                            { value: '1', text: 'Tổng' },
+                                                                            { value: 0, text: 'Trung bình cộng' },
+                                                                            { value: 1, text: 'Tổng' },
                                                                         ]
                                                                     }
                                                                     multiple={false}
@@ -987,9 +986,9 @@ class TaskReportCreateForm extends Component {
                                                                         onChange={(e) => this.handleChangeChart(index, e)}
                                                                         items={
                                                                             [
-                                                                                { value: '0', text: 'Cột' },
-                                                                                { value: '1', text: 'Đường' },
-                                                                                { value: '2', text: 'Tròn' },
+                                                                                { value: 0, text: 'Cột' },
+                                                                                { value: 1, text: 'Đường' },
+                                                                                { value: 2, text: 'Tròn' },
                                                                             ]
                                                                         }
                                                                         multiple={false}
@@ -1123,7 +1122,6 @@ const actionCreators = {
     getDepartment: UserActions.getDepartmentOfUser,
     getRoleSameDepartment: UserActions.getRoleSameDepartment,
 
-    getAllTask: taskManagementActions.getAll,
     getTaskEvaluations: taskManagementActions.getTaskEvaluations,
 }
 const createForm = connect(mapState, actionCreators)(withTranslate(TaskReportCreateForm));

@@ -126,9 +126,22 @@ function editDocument(id, data, option = undefined) {
                         })
                     })
                     .catch(err => {
-                        dispatch({ type: DocumentConstants.ADD_VERSION_DOCUMENT_FAILE });
+                        dispatch({ type: DocumentConstants.EDIT_VERSION_DOCUMENT_FAILE });
                     });
                 break;
+            case 'DELETE_VERSION':
+                DocumentServices.editDocument(id, data, option)
+                    .then(res => {
+                        dispatch({
+                            type: DocumentConstants.DELETE_VERSION_DOCUMENT_SUCCESS,
+                            payload: res.data.content
+                        })
+                    })
+                    .catch(err => {
+                        dispatch({ type: DocumentConstants.DELETE_VERSION_DOCUMENT_FAILE });
+                    });
+                break;
+
 
 
             default:

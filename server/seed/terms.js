@@ -126,7 +126,16 @@ const COMPONENTS = [{
     links: [
         '/task-process-template'
     ]
-},];
+},{
+    name: 'create-asset',
+    description: 'Button thêm mới tài sản',
+    roles: [
+        ROOT_ROLES.DEAN.name,
+    ],
+    links: [
+        '/employee-manage-info-asset'
+    ]
+} ];
 exports.COMPONENTS = COMPONENTS;
 
 const getComponentsInLink = (link) => {

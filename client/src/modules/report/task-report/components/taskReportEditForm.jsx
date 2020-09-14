@@ -488,12 +488,12 @@ class TaskReportEditForm extends Component {
     }
 
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.taskReportId !== prevState.taskReportEditId) {
-            nextProps.getTaskReportById(nextProps.taskReportId);
+    static getDerivedStateFromProps(props, state) {
+        if (props.taskReportId !== state.taskReportEditId) {
+            props.getTaskReportById(props.taskReportId);
             return {
                 dataStatus: 1,
-                taskReportEditId: nextProps.taskReportId,
+                taskReportEditId: props.taskReportId,
                 errorOnDescriptiontTaskReport: undefined,
                 errorOnNameTaskReport: undefined,
             }

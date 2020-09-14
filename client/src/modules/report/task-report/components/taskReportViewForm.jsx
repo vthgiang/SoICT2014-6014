@@ -387,6 +387,7 @@ class TaskReportViewForm extends Component {
 
 
         if (output) {
+            console.log('output', output)
             // tách data vẽ biểu đồ:  cột với đường ra riêng, tròn ra riêng
             let separateDataChart = chartFunction.separateDataChart(output); // gọi hàm tách data
             pieChartData = separateDataChart.pieChartData; // Dữ liệu vẽ biểu đồ tròn
@@ -426,13 +427,25 @@ class TaskReportViewForm extends Component {
                     <div className="row">
                         {
                             pieChartDataConvert && pieChartDataConvert.map((item, index) => (
-                                Object.entries(item).map(([code, data]) => (
-                                    <div key={index} className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                                        <div className="pieChart">
-                                            <PieChart pieChartData={data} namePieChart={code} />
-                                        </div>
-                                    </div>
-                                ))
+                                Object.entries(item).map(([code, data]) => {
+                                    if (data.length > 6) {
+                                        return (
+                                            <div key={index} className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <div className="pieChart">
+                                                    <PieChart pieChartData={data} namePieChart={code} />
+                                                </div>
+                                            </div>
+                                        )
+                                    } else {
+                                        return (
+                                            <div key={index} className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                                <div className="pieChart">
+                                                    <PieChart pieChartData={data} namePieChart={code} />
+                                                </div>
+                                            </div>
+                                        )
+                                    }
+                                })
                             ))
                         }
                     </div>
