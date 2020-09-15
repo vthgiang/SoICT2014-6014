@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar,ExportExcel } from '../../../../../common-components';
+import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar, ExportExcel, SelectMulti } from '../../../../../common-components';
 
 import { IncidentEditForm } from '../../../user/asset-assigned/components/incidentEditForm';
 
@@ -22,14 +22,17 @@ class IncidentManagement extends Component {
             purchaseDate: null,
             status: "",
             canRegisterForUse: "",
+            incidentCode: "",
+            incidentStatus: "",
+            incidentType: "",
             page: 0,
             limit: 5,
-            managedBy : this.props.managedBy?this.props.managedBy:''
+            managedBy: this.props.managedBy ? this.props.managedBy : ''
         }
     }
 
     componentDidMount() {
-        let { managedBy } =this.state;
+        let { managedBy } = this.state;
         this.props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
         this.props.getUser();
         this.props.getAllAsset(this.state);
@@ -58,7 +61,7 @@ class IncidentManagement extends Component {
         if (month.length < 2) {
             month = '0' + month;
         }
-            
+
         if (day.length < 2) {
             day = '0' + day;
         }
@@ -80,7 +83,7 @@ class IncidentManagement extends Component {
         if (month.length < 2) {
             month = '0' + month;
         }
-            
+
         if (day.length < 2) {
             day = '0' + day;
         }
@@ -105,20 +108,44 @@ class IncidentManagement extends Component {
         });
 
     }
+    // Function lưu giá trị mã sự cố vào state khi thay đổi
+    handleIncidentCodeChange = (event) => {
+        const { name, value } = event.target;
+        this.setState({
+            [name]: value
+        });
 
-    // Function lưu giá trị tháng vào state khi thay đổi
-    handleMonthChange = (value) => {
+    }
+
+    // Lưu loại sự cố vào state
+    handleIncidentTypeChange = (value) => {
+        if (value.length === 0) {
+            value = null
+        }
+
         this.setState({
             ...this.state,
-            month: value
-        });
+            incidentType: value
+        })
+    }
+
+    // Lưu trạng thái sự cố vào state
+    handleIncidentStatusChange = (value) => {
+        if (value.length === 0) {
+            value = null
+        }
+
+        this.setState({
+            ...this.state,
+            incidentStatus: value
+        })
     }
 
     // Function bắt sự kiện tìm kiếm
     handleSubmitSearch = async () => {
         await this.setState({
             ...this.state,
-
+            page: 0
         })
         this.props.getAllAsset(this.state);
     }
@@ -143,7 +170,7 @@ class IncidentManagement extends Component {
     }
 
     deleteIncident = (assetId, incidentId) => {
-        let {managedBy}=this.state
+        let { managedBy } = this.state
         this.props.deleteIncident(assetId, incidentId).then(({ response }) => {
             if (response.data.success) {
                 this.props.getAllAsset({
@@ -153,48 +180,47 @@ class IncidentManagement extends Component {
                     status: "",
                     page: 0,
                     limit: 5,
-                    managedBy:managedBy
+                    managedBy: managedBy
                 });
             }
         });
     }
 
     /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
-    convertDataToExportData = (data,userlist) => {
+    convertDataToExportData = (data, userlist) => {
         let fileName = "Bảng quản lý thông tin sự cố tài sản ";
-        let convertedData=[];
-        if (data) {           
-            data = data.forEach(asset => {     
-                if(asset.incidentLogs.length!==0)
-                {
-                    let assetLog= asset.incidentLogs.map((x,index)=>{
-                        let code =x.incidentCode;
-                        let assetName = asset.assetName;  
-                        let assetCode =asset.code;
-                        let type =x.type;   
-                        let reporter = (x.reportedBy && userlist.length && userlist.filter(item => item._id === x.reportedBy).pop()) ? userlist.filter(item => item._id === x.reportedBy).pop().email : '';  
+        let convertedData = [];
+        if (data) {
+            data = data.forEach(asset => {
+                if (asset.incidentLogs.length !== 0) {
+                    let assetLog = asset.incidentLogs.map((x, index) => {
+                        let code = x.incidentCode;
+                        let assetName = asset.assetName;
+                        let assetCode = asset.code;
+                        let type = x.type;
+                        let reporter = (x.reportedBy && userlist.length && userlist.filter(item => item._id === x.reportedBy).pop()) ? userlist.filter(item => item._id === x.reportedBy).pop().email : '';
                         let createDate = (x.dateOfIncident) ? this.formatDate2(x.dateOfIncident) : ''
                         let status = x.incidentCode;
                         let description = x.description;
-        
-                        return  {
-                            index : index+1,
-                            assetCode : assetCode,
+
+                        return {
+                            index: index + 1,
+                            assetCode: assetCode,
                             assetName: assetName,
-                            code :code,
-                            type: type,  
-                            reporter:reporter,
-                            createDate:createDate,
+                            code: code,
+                            type: type,
+                            reporter: reporter,
+                            createDate: createDate,
                             des: description,
-                            status:status
-        
+                            status: status
+
                         }
                     })
-                    for(let i=0;i<assetLog.length;i++){
+                    for (let i = 0; i < assetLog.length; i++) {
                         convertedData.push(assetLog[i]);
                     }
-                }              
-                
+                }
+
             })
         }
 
@@ -203,7 +229,7 @@ class IncidentManagement extends Component {
             dataSheets: [
                 {
                     sheetName: "sheet1",
-                    sheetTitle : fileName,
+                    sheetTitle: fileName,
                     tables: [
                         {
                             rowHeader: 2,
@@ -211,11 +237,11 @@ class IncidentManagement extends Component {
                                 { key: "index", value: "STT" },
                                 { key: "assetCode", value: "Mã tài sản" },
                                 { key: "assetName", value: "Tên tài sản" },
-                                { key: "code", value: "Mã sự cố" },                               
+                                { key: "code", value: "Mã sự cố" },
                                 { key: "type", value: "Loại sự cố" },
                                 { key: "reporter", value: "Người báo cáo" },
-                                { key:"des", value : "Nội dung"},
-                                { key: "createDate", value: "Ngày phát hiện" },                  
+                                { key: "des", value: "Nội dung" },
+                                { key: "createDate", value: "Ngày phát hiện" },
                                 { key: "status", value: "Trạng thái" },
                             ],
                             data: convertedData
@@ -224,8 +250,8 @@ class IncidentManagement extends Component {
                 },
             ]
         }
-        return exportData;        
-       
+        return exportData;
+
     }
 
     // Bắt sự kiện click chỉnh sửa thông tin tài sản
@@ -239,9 +265,19 @@ class IncidentManagement extends Component {
         });
         window.$('#modal-edit-asset').modal('show');
 
-        // Mở tab thứ 3
-        window.$('.nav-tabs li:eq(2) a').tab('show');
+        // Mở tab thứ 4
+        window.$('.nav-tabs li:eq(3) a').tab('show');
 
+    }
+
+    convertIncidentType = (type) => {
+        if (type == 1) {
+            return 'Mất';
+        } else if (type == 2) {
+            return 'Hỏng'
+        } else {
+            return 'Type is deleted'
+        }
     }
 
     render() {
@@ -250,8 +286,6 @@ class IncidentManagement extends Component {
 
         var lists = "", exportData;
         var userlist = user.list;
-        var assettypelist = assetType.listAssetTypes;
-        var formater = new Intl.NumberFormat();
         if (assetsManager.isLoading === false) {
             lists = assetsManager.listAssets;
         }
@@ -260,43 +294,73 @@ class IncidentManagement extends Component {
             parseInt(assetsManager.totalList / limit) :
             parseInt((assetsManager.totalList / limit) + 1);
         var currentPage = parseInt((page / limit) + 1);
-        
-        if(lists && userlist){
+
+        if (lists && userlist) {
             exportData = this.convertDataToExportData(lists, userlist);
         }
-        
+
         return (
-            <div className={isActive?isActive:"box"}>
+            <div className={isActive ? isActive : "box"}>
                 <div className="box-body qlcv">
-                    {/* <UsageCreateForm/> */}
-                   
+
                     {/* Thanh tìm kiếm */}
                     <div className="form-inline">
+
+                        {/* Mã tài sản */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('asset.general_information.asset_code')}</label>
                             <input type="text" className="form-control" name="code" onChange={this.handleCodeChange} placeholder={translate('asset.general_information.asset_code')} autoComplete="off" />
                         </div>
+                        {/* Tên tài sản */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('asset.general_information.asset_name')}</label>
                             <input type="text" className="form-control" name="assetName" onChange={this.handleAssetNameChange} placeholder={translate('asset.general_information.asset_name')} autoComplete="off" />
                         </div>
                     </div>
 
-                    <div className="form-inline" style={{ marginBottom: 10 }}>
+                    <div className="form-inline">
+
+                        {/* Mã sự cố */}
                         <div className="form-group">
-                            <label className="form-control-static">{translate('page.month')}</label>
-                            <DatePicker
-                                id="month"
-                                dateFormat="month-year"
-                                value={this.formatDate(Date.now())}
-                                onChange={this.handleMonthChange}
-                            />
+                            <label className="form-control-static">Mã sự cố</label>
+                            <input type="text" className="form-control" name="incidentCode" onChange={this.handleIncidentCodeChange} placeholder="Nhập mã sự cố" autoComplete="off" />
                         </div>
+
+                        {/* Loại sự cố */}
+                        <div className="form-group">
+                            <label className="form-control-static">Loại sự cố</label>
+                            <SelectMulti id={`multiSelectIncidentType`} multiple="multiple"
+                                options={{ nonSelectedText: "Chọn loại sự cố", allSelectedText: "Chọn tất cả" }}
+                                onChange={this.handleIncidentTypeChange}
+                                items={[
+                                    { value: 1, text: "Hỏng" },
+                                    { value: 2, text: "Mất" },
+                                ]}
+                            >
+                            </SelectMulti>
+                        </div>
+                    </div>
+
+                    <div className="form-inline" style={{ marginBottom: 10 }}>
+                        {/* Trạng thái */}
+                        <div className="form-group">
+                            <label className="form-control-static">Trạng thái</label>
+                            <SelectMulti id={`multiSelectIncidentStatus`} multiple="multiple"
+                                options={{ nonSelectedText: "Chọn trạng thái", allSelectedText: "Chọn tất cả" }}
+                                onChange={this.handleIncidentStatusChange}
+                                items={[
+                                    { value: "Chờ xử lý", text: "Chờ xử lý" },
+                                    { value: "Đã xử lý", text: "Đã xử lý" },
+                                ]}
+                            >
+                            </SelectMulti>
+                        </div>
+
                         <div className="form-group">
                             <label></label>
                             <button type="button" className="btn btn-success" title={translate('asset.general_information.search')} onClick={() => this.handleSubmitSearch()}>{translate('asset.general_information.search')}</button>
                         </div>
-                        {exportData&&<ExportExcel id="export-asset-incident-management" exportData={exportData} style={{ marginRight:10 }} />}
+                        {exportData && <ExportExcel id="export-asset-incident-management" exportData={exportData} style={{ marginRight: 10 }} />}
                     </div>
 
                     {/* Bảng danh sách sự cố tài sản */}
@@ -312,7 +376,7 @@ class IncidentManagement extends Component {
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.content')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.status')}</th>
                                 <th style={{ width: '100px', textAlign: 'center' }}>{translate('table.action')}
-                                <DataTableSetting
+                                    <DataTableSetting
                                         tableId="incident-table"
                                         columnArr={[
                                             translate('asset.general_information.asset_code'),
@@ -332,18 +396,18 @@ class IncidentManagement extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(lists && lists.length!==0) &&
+                            {(lists && lists.length !== 0) &&
                                 lists.map(asset => {
                                     return asset.incidentLogs.map((x, index) => (
                                         <tr key={index}>
                                             <td><a onClick={() => this.handleEditAsset(asset)}>{asset.code}</a></td>
                                             <td>{asset.assetName}</td>
                                             <td>{x.incidentCode}</td>
-                                            <td>{x.type}</td>
+                                            <td>{this.convertIncidentType(x.type)}</td>
                                             <td>{x.reportedBy && userlist.length && userlist.filter(item => item._id === x.reportedBy).pop() ? userlist.filter(item => item._id === x.reportedBy).pop().name : 'User is deleted'}</td>
                                             <td>{x.dateOfIncident ? this.formatDate2(x.dateOfIncident) : ''}</td>
                                             <td>{x.description}</td>
-                                            <td>{x.statusIncident}</td>
+                                            <td>{x.statusIncident ? x.statusIncident : "Status is deleted"}</td>
                                             <td style={{ textAlign: "center" }}>
                                                 <a onClick={() => this.handleEdit(x, asset)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.asset_info.edit_incident_info')}><i
                                                     className="material-icons">edit</i></a>
@@ -362,7 +426,7 @@ class IncidentManagement extends Component {
                             }
                         </tbody>
                     </table>
-                    
+
                     {assetsManager.isLoading ?
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
                         (!lists || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
@@ -388,12 +452,12 @@ class IncidentManagement extends Component {
                     />
                 }
 
-                    {/* Form chỉnh sửa thông tin tài sản */}
+                {/* Form chỉnh sửa thông tin tài sản */}
                 {
                     currentRowEditAsset &&
                     <AssetEditForm
                         _id={currentRowEditAsset._id}
-                        employeeId ={managedBy}
+                        employeeId={managedBy}
                         avatar={currentRowEditAsset.avatar}
                         code={currentRowEditAsset.code}
                         assetName={currentRowEditAsset.assetName}

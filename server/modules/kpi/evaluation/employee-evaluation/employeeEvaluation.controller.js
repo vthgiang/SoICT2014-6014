@@ -9,6 +9,9 @@ exports.getEmployeeKPISets = async (req, res) => {
     if (req.query.userId && req.query.date) {
         getKpisByMonth(req, res);
     }
+    else if(req.query.listkpis){
+        getTasksByListKpiSet(req,res)
+    }
     else {
         try {
             const kpimembers = await KPIMemberService.getEmployeeKPISets(req.query);
@@ -53,7 +56,6 @@ exports.getKpisByKpiSetId = async (req, res) => {
 /**
  * Lấy KPI cá nhân theo tháng 
  */
-
 getKpisByMonth = async (req, res) => {
     try {
         const kpimembers = await KPIMemberService.getKpisByMonth(req.query);
@@ -144,7 +146,6 @@ exports.editStatusKpi = async (req, res) => {
 /**
  * Lấy danh sách công việc theo kpiId
  */
-
 exports.getTasksByKpiId = async (req, res) => {
     try {
         const kpimembers = await KPIMemberService.getTasksByKpiId(req.query);
@@ -163,6 +164,27 @@ exports.getTasksByKpiId = async (req, res) => {
     }
 }
 
+/**
+ * Lấy danh sách công việc theo list kpi set
+ */
+getTasksByListKpiSet = async (req, res) => {
+    console.log("\n\n\n\n\n\n\n\n\n\n???",req.query)
+    try {
+        const kpimembers = await KPIMemberService.getTasksByListKpis(req.query.listkpis);
+        await LogInfo(req.user.email, `Get task by kpi set`, req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['get_task_by_list_kpi_set_success'],
+            content: kpimembers
+        });
+    } catch (error) {
+        await LogError(req.user.email, `Get task by kpi set`, req.user.company);
+        res.status(400).json({
+            messages: ['get_task_by_list_kpi_set_fail'],
+            message: error
+        });
+    }
+}
 /**
  * cập nhật điểm level
  */

@@ -377,12 +377,10 @@ class TaskTemplate extends Component {
         }
         if (user.organizationalUnitsOfUser) {
             units = user.organizationalUnitsOfUser;
-            console.log("unit",units);
             currentUnit = units.filter(item =>
                 item.deans.includes(localStorage.getItem("currentRole"))
                 || item.viceDeans.includes(localStorage.getItem("currentRole"))
                 || item.employees.includes(localStorage.getItem("currentRole")));
-            console.log("currunits", currentUnit);
         }
 
         if (tasktemplates.items) {

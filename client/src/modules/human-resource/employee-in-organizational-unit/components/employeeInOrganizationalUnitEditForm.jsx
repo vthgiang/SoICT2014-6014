@@ -21,14 +21,6 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
         this.props.getUser();
     }
 
-    /** Function bắt sự kiện tìm kiếm người dùng trong select Box */
-    changeSearch = async (value) => {
-        await this.props.getUser({ name: value })
-        await this.setState({
-            textSearch: value
-        });
-    }
-
     /** Bắt sự kiện xoá nhân viên đơn vị */
     handleDelete = (userId, roleId) => {
         let { roleEmployees } = this.state;
@@ -183,9 +175,6 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                                 style={{ width: "100%" }}
                                                 onChange={this.handleEmployeeChange}
                                                 multiple={true}
-                                                // searchItems={searchUses.map(u => { return { value: u._id, text: u.name } })}
-                                                // changeSearch={this.changeSearch}
-                                                // textSearch={textSearch}
                                                 items={user.list.map(y => { return { value: y._id, text: `${y.name} (${y.email})` } })}
                                             />
                                         </div>

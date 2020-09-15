@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ErrorLabel, DatePicker, ButtonModal } from '../../../../../common-components';
+import { DialogModal, ErrorLabel, DatePicker, ButtonModal, SelectBox } from '../../../../../common-components';
 
 import { AnnualLeaveFormValidator } from '../../../annual-leave/components/combinedContent';
 
@@ -10,6 +10,7 @@ class AnnualLeaveAddModal extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            organizationalUnit: "",
             startDate: this.formatDate(Date.now()),
             endDate: this.formatDate(Date.now()),
             status: "pass",
@@ -37,6 +38,25 @@ class AnnualLeaveAddModal extends Component {
         }
         return date;
 
+    }
+
+    /** Function bắt sự kiện thay đổi đơn vị */
+    handleOrganizationalUnitChange = (value) => {
+        this.validateOrganizationalUnit(value[0], true);
+    }
+    validateOrganizationalUnit = (value, willUpdateState = true) => {
+        let { translate } = this.props;
+        let msg = AnnualLeaveFormValidator.validateEmployeeNumber(value, translate);
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnOrganizationalUnit: msg,
+                    organizationalUnit: value,
+                }
+            });
+        }
+        return msg === undefined;
     }
 
     /**
@@ -126,7 +146,7 @@ class AnnualLeaveAddModal extends Component {
 
     /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
     isFormValidated = () => {
-        const { reason, startDate, endDate } = this.state;
+        const { organizationalUnit, reason, startDate, endDate } = this.state;
         let result = this.validateReason(reason, false)
         let partStart = startDate.split('-');
         let startDateNew = [partStart[2], partStart[1], partStart[0]].join('-');
@@ -149,12 +169,14 @@ class AnnualLeaveAddModal extends Component {
         }
     }
     render() {
-        const { translate } = this.props;
+        const { translate, employeesInfo } = this.props;
 
         const { id } = this.props;
 
-        const { startDate, endDate, reason, status,
+        const { startDate, endDate, reason, status, organizationalUnit, errorOnOrganizationalUnit,
             errorOnReason, errorOnStartDate, errorOnEndDate } = this.state;
+
+        let organizationalUnits = employeesInfo.organizationalUnits;
 
         return (
             <React.Fragment>
@@ -167,6 +189,19 @@ class AnnualLeaveAddModal extends Component {
                     disableSubmit={!this.isFormValidated()}
                 >
                     <form className="form-group" id={`form-create-sabbatical-${id}`}>
+                        {/* Đơn vị */}
+                        <div className={`form-group ${errorOnOrganizationalUnit && "has-error"}`}>
+                            <label>{translate('human_resource.unit')}<span className="text-red">*</span></label>
+                            <SelectBox
+                                id={`create-annual-leave-unit${id}`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                value={organizationalUnit}
+                                items={organizationalUnits.map(y => { return { value: y._id, text: y.name } }).concat([{ value: "", text: translate('human_resource.non_unit') }])}
+                                onChange={this.handleOrganizationalUnitChange}
+                            />
+                            <ErrorLabel content={errorOnOrganizationalUnit} />
+                        </div>
                         <div className="row">
                             {/* Ngày bắt đầu*/}
                             <div className={`form-group col-sm-6 col-xs-12 ${errorOnStartDate && "has-error"}`}>
@@ -212,6 +247,10 @@ class AnnualLeaveAddModal extends Component {
         );
     }
 };
+function mapState(state) {
+    const { employeesInfo } = state;
+    return { employeesInfo };
+};
 
-const addModal = connect(null, null)(withTranslate(AnnualLeaveAddModal));
+const addModal = connect(mapState, null)(withTranslate(AnnualLeaveAddModal));
 export { addModal as AnnualLeaveAddModal };

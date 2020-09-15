@@ -34,25 +34,16 @@ exports.searchRecommendProcures = async (req, res) => {
  */
 exports.createRecommendProcure = async (req, res) => {
     try {
-        if (req.body.recommendNumber.trim() === "") {
-            await LogError(req.user.email, 'CREATE_RECOMMENDPROCURE', req.user.company);
-            res.status(400).json({
-                success: false,
-                messages: ["type_number_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else {
-            var newRecommendProcure = await RecommendProcureService.createRecommendProcure(req.body, req.user.company._id);
-            await LogInfo(req.user.email, 'CREATE_RECOMMENDPROCURE', req.user.company);
-            res.status(200).json({
-                success: true,
-                messages: ["create_recommend_procure_success"],
-                content: newRecommendProcure
-            });
-        }
+        var newRecommendProcure = await RecommendProcureService.createRecommendProcure(req.body, req.user.company._id);
+        await LogInfo(req.user.email, 'CREATE_RECOMMENDPROCURE', req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ["create_recommend_procure_success"],
+            content: newRecommendProcure
+        });
+        
     } catch (error) {
+        console.log(error);
         await LogError(req.user.email, 'CREATE_RECOMMENDPROCURE', req.user.company);
         res.status(400).json({
             success: false,
@@ -93,24 +84,14 @@ exports.deleteRecommendProcure = async (req, res) => {
  */
 exports.updateRecommendProcure = async (req, res) => {
     try {
-        if (req.body.recommendNumber.trim() === "") {
-            await LogError(req.user.email, 'EDIT_RECOMMENDPROCURE', req.user.company);
-            res.status(400).json({
-                success: false,
-                messages: ["type_number_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else {
-            var recommendprocureUpdate = await RecommendProcureService.updateRecommendProcure(req.params.id, req.body);
-            await LogInfo(req.user.email, 'EDIT_RECOMMENDPROCURE', req.user.company);
-            res.status(200).json({
-                success: true,
-                messages: ["edit_recommend_procure_success"],
-                content: recommendprocureUpdate
-            });
-        }
+        var recommendprocureUpdate = await RecommendProcureService.updateRecommendProcure(req.params.id, req.body);
+        await LogInfo(req.user.email, 'EDIT_RECOMMENDPROCURE', req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ["edit_recommend_procure_success"],
+            content: recommendprocureUpdate
+        });
+        
     } catch (error) {
         await LogError(req.user.email, 'EDIT_RECOMMENDPROCURE', req.user.company);
         res.status(400).json({

@@ -5,12 +5,12 @@ const Schema = mongoose.Schema;
 const CommendationSchema = new Schema({
     employee: {
         type: Schema.Types.ObjectId,
-        ref: 'employees',
+        ref: 'Employee',
         required: true,
     },
     company: {
         type: Schema.Types.ObjectId,
-        ref: 'companies'
+        ref: 'Company',
     },
     decisionNumber: { // mã số quyết định khen thưởng
         type: String,
@@ -18,7 +18,7 @@ const CommendationSchema = new Schema({
     },
     organizationalUnit: { // cấp ra quyết định
         type: Schema.Types.ObjectId,
-        ref: 'organizational_units'
+        ref: 'OrganizationalUnit'
     },
     startDate: { // ngày ra quyết định
         type: Date,
@@ -36,4 +36,8 @@ const CommendationSchema = new Schema({
     timestamps: true,
 });
 
-module.exports = Commendation = (db) => db.model("commendations", CommendationSchema);
+module.exports = (db) => {
+    if (!db.models.Commendation)
+        return db.model('Commendation', CommendationSchema);
+    return db.models.Commendation;
+}

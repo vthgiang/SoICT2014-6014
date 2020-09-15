@@ -500,7 +500,7 @@ class TaskManagement extends Component {
             pageTotals = tasks.pages
         }
 
-        if (user.organizationalUnitsOfUser) units = user.organizationalUnitsOfUser;
+        if (user) units = user.organizationalUnitsOfUser;
         const items = [];
 
         // khởi tạo dữ liệu TreeTable
@@ -527,7 +527,7 @@ class TaskManagement extends Component {
                     startDate: this.formatDate(dataTemp[n].startDate),
                     endDate: this.formatDate(dataTemp[n].endDate),
                     status: this.formatStatus(dataTemp[n].status),
-                    progress: dataTemp[n].progress + "%",
+                    progress: dataTemp[n].progress ? dataTemp[n].progress + "%": "0%",
                     totalLoggedTime: this.convertTime(dataTemp[n].hoursSpentOnTask.totalHoursSpent),
                     parent: dataTemp[n].parent ? dataTemp[n].parent._id : null
                 }
@@ -586,7 +586,7 @@ class TaskManagement extends Component {
                                     defaultValue={units.map(item => { return item._id })}
                                     items={units.map(item => { return { value: item._id, text: item.name } })}
                                     onChange={this.handleSelectOrganizationalUnit}
-                                    options={{ nonSelectedText: translate('task.task_management.select_department'), allSelectedText: translate(`task.task_management.select_all_department`) }}>
+                                    options={{ nonSelectedText: units.length !== 0 ? translate('task.task_management.select_department') : "Bạn chưa có đơn vị", allSelectedText: translate(`task.task_management.select_all_department`) }}>
                                 </SelectMulti>
                             }
                         </div>

@@ -85,6 +85,10 @@ const Location = require('./common/location.model');
 // plan
 const Plan = require('./plan/plan.model');
 
+// example
+
+const Example = require('./example/example.model');
+
 exports.schema = {
     Privilege,
     Role,
@@ -165,5 +169,6 @@ exports.schema = {
     Location,
 
     Order,
-    Plan
+    Plan, 
+    Example
 }

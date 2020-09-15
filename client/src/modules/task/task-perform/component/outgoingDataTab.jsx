@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { ApiImage } from '../../../../common-components'
 import { withTranslate } from "react-redux-multilingual";
+import { AuthActions } from '../../../auth/redux/actions';
 import { performTaskAction } from '../redux/actions';
 import { CommentInProcess } from './commentInProcess';
 class OutgoingDataTab extends Component {
@@ -130,11 +132,23 @@ class OutgoingDataTab extends Component {
             this.DOCUMENT = [];
         }
     }
-
+    requestDownloadFile = (e, path, fileName) => {
+        e.preventDefault()
+        console.log("abc")
+        this.props.downloadFile(path, fileName)
+    }
+    isImage = (src) => {
+        let string = src.split(".")
+        let image = ['jpg', 'jpeg', 'png', 'psd', 'pdf', 'tiff', 'gif']
+        if (image.indexOf(string[string.length - 1]) !== -1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     render() {
         const { translate, performtasks } = this.props;
         const { task, isOutputInformation, isOutputDocument } = this.state;
-        console.log(task)
         return (
             <React.Fragment>
                 {
@@ -143,69 +157,87 @@ class OutgoingDataTab extends Component {
                         <div className="description-box outgoing-content">
                             <h4>{translate('task.task_process.list_of_data_and_info')}</h4>
 
+                            <strong>{translate('task.task_process.information')}:</strong>
                             { /** Danh sách thông tin */
                                 task.taskInformations
                                     && task.taskInformations.length !== 0
                                     ? task.taskInformations.map((info) =>
                                         <div>
-                                            <input
-                                                type="checkbox"
-                                                title={translate('task.task_process.export_info')}
-                                                style={{ margin: "0.5em 0.5em", padding: "0.6em" }}
-                                                name={info.description}
-                                                onClick={() => this.handleCheckBoxOutputInformation(info)}
-                                                checked={isOutputInformation[info._id]}
-                                            />
-                                            <strong>{info.name}</strong>
-                                            <span> - {info.description}</span>
-                                            <span> - {info.type}</span>
+                                            <label>
+                                                <input
+                                                    type="checkbox"
+                                                    title={translate('task.task_process.export_info')}
+                                                    name={info.description}
+                                                    onClick={() => this.handleCheckBoxOutputInformation(info)}
+                                                    checked={isOutputInformation[info._id]}
+                                                />
+                                                <strong>{info.name}:</strong>
+                                            </label>
+                                            <span>{info.value}</span>
                                         </div>
                                     )
-                                    : <div>{translate('task.task_process.not_have_info')}</div>
+                                    : <span>{translate('task.task_process.not_have_info')}</span>
                             }
 
-
+                            <div style={{ marginTop: 10 }}></div>
+                            <strong>{translate('task.task_process.document')}:</strong>
                             { /** Danh sách tài liệu */
                                 task.documents
                                     && task.documents.length !== 0
-                                    ? task.documents.map(document =>
-                                        <div>
+                                    ? task.documents.map((document, index) =>
+                                        <div key={index}>
                                             <div>
-                                                <input
-                                                    type="checkbox"
-                                                    title={translate('task.task_process.export_doc')}
-                                                    style={{ margin: "0.5em 0.5em", padding: "0.6em" }}
-                                                    name={document.description}
-                                                    onClick={() => this.handleCheckBoxOutputDocument(document)}
-                                                    checked={isOutputDocument[document._id]}
-                                                />
-                                                <strong>{document.description}</strong>
+                                                <label>
+                                                    <input
+                                                        type="checkbox"
+                                                        title={translate('task.task_process.export_doc')}
+                                                        name={document.description}
+                                                        onClick={() => this.handleCheckBoxOutputDocument(document)}
+                                                        checked={isOutputDocument[document._id]}
+                                                    />
+                                                    <strong>{document.description} ({document.files.length} tài liệu)</strong>
+                                                </label>
                                             </div>
 
                                             {
                                                 document.files && document.files.length !== 0
-                                                && document.files.map(file =>
-                                                    <div>
-                                                        <ul style={{ wordWrap: "break-word" }}>
-                                                            <strong>{file.name} </strong>
-                                                            <span><a>{file.url}</a></span>
-                                                        </ul>
+                                                && document.files.map((file, index) =>
+
+                                                    <div key={index}>
+                                                        {console.log(file)}
+                                                        {this.isImage(file.name) ?
+                                                            <ApiImage
+                                                                className="attachment-img files-attach"
+                                                                style={{ marginTop: "5px" }}
+                                                                src={file.url}
+                                                                file={file}
+                                                                requestDownloadFile={this.requestDownloadFile}
+                                                            />
+                                                            :
+                                                            <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, file.url, file.name)}> {file.name} </a>
+                                                        }
                                                     </div>
                                                 )
                                             }
                                         </div>
                                     )
-                                    : <div>{translate('task.task_process.not_have_doc')}</div>
+                                    : <span>{translate('task.task_process.not_have_doc')}</span>
                             }
-                            <button type="button" className="btn btn-success pull-right" style={{ margin: "2em 2em 50px 0px" }} onClick={() => this.handleSaveEdit()} disabled={this.DOCUMENT.length === 0 && this.INFORMATION.length === 0}>{translate('task.task_process.save')}</button>
+                            <div style={{ marginTop: 20 }}>
+                                <button type="button" style={{ width: "100%" }} className="btn btn-block btn-default" onClick={() => this.handleSaveEdit()} disabled={this.DOCUMENT.length === 0 && this.INFORMATION.length === 0}>{translate('task.task_process.save')}</button>
+                            </div>
 
 
                         </div>
+
                         { /** Trao đổi */}
-                        <CommentInProcess
-                            task={performtasks.task}
-                            inputAvatarCssClass="user-img-outgoing-level1"
-                        />
+                        <div className="description-box">
+                            <h4 style={{ marginBottom: "1.3em" }}>Trao đổi với các công việc khác về dữ liệu ra</h4>
+                            <CommentInProcess
+                                task={performtasks.task}
+                                inputAvatarCssClass="user-img-outgoing-level1"
+                            />
+                        </div>
                     </React.Fragment>
 
                 }
@@ -221,7 +253,8 @@ function mapState(state) {
 const actions = {
     editDocument: performTaskAction.editDocument,
     editInformationTask: performTaskAction.editInformationTask,
-    getTaskById: performTaskAction.getTaskById
+    getTaskById: performTaskAction.getTaskById,
+    downloadFile: AuthActions.downloadFile,
 }
 
 const connectOutgoingDataTab = connect(mapState, actions)(withTranslate(OutgoingDataTab));

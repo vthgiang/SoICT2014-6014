@@ -66,6 +66,7 @@ function increaseNumberView(id) {
 }
 
 function editDocument(id, data, option = undefined) {
+    console.log('data serviceeeeeeeeeeee', data, option);
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/documents/documents/${id}`,
         method: 'PATCH',

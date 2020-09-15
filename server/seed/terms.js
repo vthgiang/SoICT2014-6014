@@ -87,9 +87,13 @@ const LINK_CATEGORY = {
         name: 'crm',
         description: 'CRM'
     },
-    PLAN : {
+    PLAN: {
         name: "plans-management",
-        description : "Quản lý kế hoạch sản xuất"
+        description: "Quản lý kế hoạch sản xuất"
+    },
+    EXAMPLE: {
+        name: "examples-management",
+        description: "Quản lý ví dụ"
     }
 };
 exports.LINK_CATEGORY = LINK_CATEGORY;
@@ -122,7 +126,16 @@ const COMPONENTS = [{
     links: [
         '/task-process-template'
     ]
-}, ];
+},{
+    name: 'create-asset',
+    description: 'Button thêm mới tài sản',
+    roles: [
+        ROOT_ROLES.DEAN.name,
+    ],
+    links: [
+        '/employee-manage-info-asset'
+    ]
+} ];
 exports.COMPONENTS = COMPONENTS;
 
 const getComponentsInLink = (link) => {
@@ -131,7 +144,8 @@ const getComponentsInLink = (link) => {
         .map(component => component.name);
 }
 
-const LINKS = [{
+const LINKS = [
+    {
         url: '/',
         description: `Trang chủ công ty`,
         category: LINK_CATEGORY.COMMON.name,
@@ -839,6 +853,32 @@ const LINKS = [{
             ROOT_ROLES.EMPLOYEE.name,
         ],
         components: getComponentsInLink('/manage-plans'),
+    },
+    {
+        url: "/manage-examples-1",
+        description: "Quản lý Ví dụ 1",
+        category: LINK_CATEGORY.EXAMPLE.name,
+        roles: [
+            ROOT_ROLES.SUPER_ADMIN.name,
+            ROOT_ROLES.ADMIN.name,
+            ROOT_ROLES.DEAN.name,
+            ROOT_ROLES.VICE_DEAN.name,
+            ROOT_ROLES.EMPLOYEE.name,
+        ],
+        components: getComponentsInLink('/manage-examples-1'),
+    },
+    {
+        url: "/manage-examples-2",
+        description: "Quản lý Ví dụ 2",
+        category: LINK_CATEGORY.EXAMPLE.name,
+        roles: [
+            ROOT_ROLES.SUPER_ADMIN.name,
+            ROOT_ROLES.ADMIN.name,
+            ROOT_ROLES.DEAN.name,
+            ROOT_ROLES.VICE_DEAN.name,
+            ROOT_ROLES.EMPLOYEE.name,
+        ],
+        components: getComponentsInLink('/manage-examples-2'),
     },
 ];
 

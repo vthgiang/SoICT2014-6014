@@ -13,16 +13,16 @@ const ProcessTemplateSchema = new Schema({
     },
     viewer: [{
         type: Schema.Types.ObjectId,
-        ref: 'roles',
+        ref: 'Role',
     }],
     manager: [{
         type: Schema.Types.ObjectId,
-        ref: 'roles',
+        ref: 'Role',
     }],
     creator: {
         type: Schema.Types.ObjectId,
         required: true,
-        ref: 'users',
+        ref: 'User',
     },
     tasks: [{
         code: {
@@ -30,7 +30,7 @@ const ProcessTemplateSchema = new Schema({
         },
         organizationalUnit: {
             type: Schema.Types.ObjectId,
-            ref: OrganizationalUnit,
+            ref: 'OrganizationalUnit',
             required: true
         },
         name: {
@@ -39,7 +39,7 @@ const ProcessTemplateSchema = new Schema({
         },
         creator: {
             type: Schema.Types.ObjectId,
-            ref: 'users',
+            ref: 'User',
             required: true
         },
         priority: { // 1: Thấp, 2: Trung Bình, 3: Cao
@@ -96,24 +96,24 @@ const ProcessTemplateSchema = new Schema({
         }],
         readByEmployees: [{
             type: Schema.Types.ObjectId,
-            ref: 'roles',
+            ref: 'Role',
             required: true
         }],
         responsibleEmployees: [{
             type: Schema.Types.ObjectId,
-            ref: 'users'
+            ref: 'User'
         }],
         accountableEmployees: [{
             type: Schema.Types.ObjectId,
-            ref: 'users'
+            ref: 'User'
         }],
         consultedEmployees: [{
             type: Schema.Types.ObjectId,
-            ref: 'users'
+            ref: 'User'
         }],
         informedEmployees: [{
             type: Schema.Types.ObjectId,
-            ref: 'users'
+            ref: 'User'
         }],
         description: {
             type: String,
@@ -158,4 +158,8 @@ const ProcessTemplateSchema = new Schema({
     },
 });
 
-module.exports = ProcessTemplate = (db) => db.model("process_templates", ProcessTemplateSchema);
+module.exports = (db) => {
+    if(!db.models.ProcessTemplate)
+        return db.model('ProcessTemplate', ProcessTemplateSchema);
+    return db.models.ProcessTemplate;
+}

@@ -5,51 +5,31 @@ import c3 from 'c3';
 import 'c3/c3.css';
 import * as d3 from "d3";
 import './transferList.css';
+import { chartFunction } from './chart';
 
 class LineBarChart extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            barAndLineChart: false,
-            pieChart: false,
         }
     }
 
-
-    setDataMultiChart = (data) => {
-        let dataConvert = [['x']], typeChart = {};
-        let indices = { time: 0 }; // chỉ số time = 0 ứng với mảng x trong dataConvert 
-        if (data) {
-
-            data.forEach(x => {
-                dataConvert[indices.time].push(x.time);
-                x.tasks.forEach(({ code, value, chartType }) => {
-                    if (!(code in indices))
-                        indices[code] = dataConvert.push([code]) - 1;
-                    dataConvert[indices[code]].push(value);
-
-                    typeChart = { ...typeChart, [code]: chartType }; // lấy dạng biểu dồ cho từng trường thông tin để vẽ biểu đồ tương ứng( bar, line)
-                })
-            })
-        }
-
-        return { dataConvert, typeChart };
-    }
-
-
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.barLineChartData && nextProps.barLineChartData.length > 0) {
+    static getDerivedStateFromProps(props, state) {
+        if (props.dataForAxisXInChart) {
+            let { dataConvert } = props.barLineChartData;
+            dataConvert = dataConvert[0];
             return {
-                ...prevState,
-                barAndLineChart: true,
+                ...state,
+                startDate: dataConvert[1].slice(0, 6),
+                endDate: dataConvert[dataConvert.length - 1].slice(0, 6),
+                dataForAxisXInChart: props.dataForAxisXInChart.length > 0 && props.dataForAxisXInChart.map((x, index) => ((index ? '-> ' : '') + chartFunction.formatDataForAxisXInChart(x))),
             }
         }
         return null;
     }
 
-
     shouldComponentUpdate(nextProps, nextState) {
-        if (nextProps.barLineChartData && nextProps.barLineChartData.length > 0) {
+        if (nextProps.barLineChartData) {
             this.renderBarAndLineChart(nextProps.barLineChartData);
         }
         return true;
@@ -57,13 +37,13 @@ class LineBarChart extends Component {
 
 
     componentDidMount() {
-        if (this.props.barLineChartData && this.props.barLineChartData.length > 0) {
+        if (this.props.barLineChartData) {
             this.renderBarAndLineChart(this.props.barLineChartData);
         }
     }
 
 
-    // Xóa các  barchart đã render khi chưa đủ dữ liệu
+    // Xóa các barchart đã render khi chưa đủ dữ liệu
     removePreviousBarChart() {
         const chart = this.refs.barChart;
         if (chart) {
@@ -74,7 +54,7 @@ class LineBarChart extends Component {
     }
 
 
-    // Xóa các  Piechart đã render khi chưa đủ dữ liệu
+    // Xóa các Piechart đã render khi chưa đủ dữ liệu
     removePrceviousPieChart() {
         const chart = this.refs.pieChart;
         if (chart) {
@@ -87,13 +67,11 @@ class LineBarChart extends Component {
 
     renderBarAndLineChart = (data) => {
         this.removePreviousBarChart();
-        data = this.setDataMultiChart(data);
-
         let newData = data.dataConvert;
 
         // set height cho biểu đồ
         let getLenghtData = newData[0].length;
-        let setHeightChart = (getLenghtData * 30) < 320 ? 320 : (getLenghtData * 60);
+        let setHeightChart = (getLenghtData * 40) < 320 ? 320 : (getLenghtData * 60);
         let typeChart = data.typeChart;
 
         this.chart = c3.generate({
@@ -111,6 +89,7 @@ class LineBarChart extends Component {
                 columns: newData,
                 type: 'bar',
                 types: typeChart,
+                // groups: [['p1', 'p2']]
             },
             bar: {
                 width: {
@@ -121,7 +100,9 @@ class LineBarChart extends Component {
                 rotated: true,
                 x: {
                     type: 'category',
-
+                    tick: {
+                        multiline: true
+                    },
                 },
                 y: {
                     label: {
@@ -139,14 +120,15 @@ class LineBarChart extends Component {
         });
     }
 
-
     render() {
+        const { dataForAxisXInChart, startDate, endDate } = this.state;
         return (
             <div className="row" style={{ marginBottom: '10px' }}>
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <div className="box box-primary" >
                         <div className="box-header with-border">
-                            <h4 className="box-title">Báo cáo thống kê công việc</h4>
+                            <h4 className="box-title report-title"><span style={{ marginRight: '7px' }}>Thống kê công việc từ:</span> {`${startDate}`} đến {`${endDate}`}</h4> <br />
+                            <h4 className="box-title report-title" style={{ marginTop: '5px' }}><span style={{ marginRight: '7px' }}>Chiều dữ liệu:</span> {`${dataForAxisXInChart && dataForAxisXInChart.length > 0 ? dataForAxisXInChart.join(' ') : 'Thời gian'}`}</h4>
                         </div>
                         <div className="box-body lineBarChart ">
                             <div ref="barChart"></div>

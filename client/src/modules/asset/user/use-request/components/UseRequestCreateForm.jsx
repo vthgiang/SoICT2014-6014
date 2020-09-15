@@ -190,11 +190,9 @@ class UseRequestCreateForm extends Component {
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let result = this.validateRecommendNumber(this.state.recommendNumber, false) &&
-            this.validateDateCreate(this.state.dateCreate, false) &&
+        let result = this.validateDateCreate(this.state.dateCreate, false) &&
             this.validateReqContent(this.state.reqContent, false) &&
-            this.validateDateStartUse(this.state.dateCreate, false) &&
-            this.validateDateEndUse(this.state.dateCreate, false)
+            this.validateDateStartUse(this.state.dateCreate, false)
 
         return result;
     }
@@ -246,7 +244,7 @@ class UseRequestCreateForm extends Component {
                             <div className="col-sm-6">
                                 {/* Mã phiếu */}
                                 <div className={`form-group ${!errorOnRecommendNumber ? "" : "has-error"}`}>
-                                    <label>{translate('asset.general_information.form_code')}<span className="text-red">*</span></label>
+                                    <label>{translate('asset.general_information.form_code')}</label>
                                     <input type="text" className="form-control" name="recommendNumber" value={recommendNumber} onChange={this.handleRecommendNumberChange} autoComplete="off" placeholder="Mã phiếu" />
                                     <ErrorLabel content={errorOnRecommendNumber} />
                                     <ErrorLabel content={this.validateExitsRecommendNumber(recommendNumber) ? <span className="text-red">Mã phiếu đã tồn tại</span> : ''} />
@@ -287,7 +285,7 @@ class UseRequestCreateForm extends Component {
                                 {/* Nội dung đề nghị */}
                                 <div className={`form-group ${!errorOnReqContent ? "" : "has-error"}`}>
                                     <label>{translate('asset.general_information.content')}<span className="text-red">*</span></label>
-                                    <textarea className="form-control" rows="3" style={{ height: 34 }} name="reqContent" value={reqContent} onChange={this.handleReqContentChange} autoComplete="off" placeholder="Nội dung đề nghị"></textarea>
+                                    <textarea className="form-control" rows="3" name="reqContent" value={reqContent} onChange={this.handleReqContentChange} autoComplete="off" placeholder="Nội dung đề nghị"></textarea>
                                     <ErrorLabel content={errorOnReqContent} />
                                 </div>
                             </div>
@@ -335,7 +333,7 @@ class UseRequestCreateForm extends Component {
 
                                 {/* Thời gian đăng ký sử dụng đến ngày */}
                                 <div className={`form-group ${errorOnDateEndUse === undefined ? "" : "has-error"}`}>
-                                    <label>{translate('asset.general_information.handover_to_date')}<span className="text-red">*</span></label>
+                                    <label>{translate('asset.general_information.handover_to_date')}</label>
                                     <DatePicker
                                         id="create_end_use"
                                         value={dateEndUse}

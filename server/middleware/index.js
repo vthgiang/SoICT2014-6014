@@ -157,10 +157,10 @@ exports.auth = this.authFunc();
 exports.uploadFile = (arrData, type) => {
     var name, arrFile;
     // Tạo folder chứa file khi chưa có folder
-    const checkExistUploads = async(company) => {
-        if(company !== undefined)
+    const checkExistUploads = async (company) => {
+        if (company !== undefined)
             return await arrData.forEach(x => {
-                let dir = `./upload/private/${company.shortName+company._id}${x.path}`;
+                let dir = `./upload/private/${company.shortName + company._id}${x.path}`;
                 if (!fs.existsSync(dir)) {
                     fs.mkdirSync(dir, {
                         recursive: true
@@ -180,18 +180,18 @@ exports.uploadFile = (arrData, type) => {
             destination: (req, file, cb) => {
                 checkExistUploads(req.user.company);
                 if (type === 'single' || type === 'array') {
-                    if(staticPath.indexOf(arrData[0].path) !== -1) {
+                    if (staticPath.indexOf(arrData[0].path) !== -1) {
                         cb(null, `./upload${arrData[0].path}`);
-                    }else{
-                        cb(null, `./upload/private/${req.user.company.shortName+req.user.company._id}${arrData[0].path}`);
+                    } else {
+                        cb(null, `./upload/private/${req.user.company.shortName + req.user.company._id}${arrData[0].path}`);
                     }
                 } else if (type === 'fields') {
                     for (let n in arrData) {
                         if (file.fieldname === arrData[n].name) {
-                            if(staticPath.indexOf(arrData[n].path) !== -1) {
+                            if (staticPath.indexOf(arrData[n].path) !== -1) {
                                 cb(null, `./upload${arrData[n].path}`);
-                            }else{
-                                cb(null, `./upload/private/${req.user.company.shortName+req.user.company._id}${arrData[n].path}`);
+                            } else {
+                                cb(null, `./upload/private/${req.user.company.shortName + req.user.company._id}${arrData[n].path}`);
                             }
                             break;
                         }

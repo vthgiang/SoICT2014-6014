@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti,ExportExcel } from '../../../../../common-components';
+import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti, ExportExcel } from '../../../../../common-components';
 
 import { UseRequestEditForm } from './UseRequestManagerEditForm';
 
@@ -20,12 +20,12 @@ class UseRequestManager extends Component {
             status: null,
             page: 0,
             limit: 5,
-            managedBy : this.props.managedBy?this.props.managedBy:''
+            managedBy: this.props.managedBy ? this.props.managedBy : ''
         }
     }
 
     componentDidMount() {
-        let { managedBy } =this.state;
+        let { managedBy } = this.state;
         this.props.searchRecommendDistributes(this.state);
         this.props.getUser();
         this.props.getAllAsset({
@@ -35,7 +35,7 @@ class UseRequestManager extends Component {
             status: null,
             page: 0,
             limit: 5,
-            managedBy:managedBy
+            managedBy: managedBy
         });
     }
 
@@ -60,7 +60,7 @@ class UseRequestManager extends Component {
         if (month.length < 2) {
             month = '0' + month;
         }
-            
+
         if (day.length < 2) {
             day = '0' + day;
         }
@@ -82,7 +82,7 @@ class UseRequestManager extends Component {
         if (month.length < 2) {
             month = '0' + month;
         }
-            
+
         if (day.length < 2) {
             day = '0' + day;
         }
@@ -90,8 +90,24 @@ class UseRequestManager extends Component {
         return [month, year].join('-');
     }
 
-    // Function lưu giá trị mã nhân viên vào state khi thay đổi
+    // Function lưu giá trị mã phiếu vào state khi thay đổi
     handleRecommendNumberChange = (event) => {
+        const { name, value } = event.target;
+        this.setState({
+            [name]: value
+        });
+    }
+
+    // Function lưu giá trị mã  vào state khi thay đổi
+    handleCodeChange = (event) => {
+        const { name, value } = event.target;
+        this.setState({
+            [name]: value
+        });
+    }
+
+    // Function lưu giá trị tên tài sản vào state khi thay đổi
+    handleAssetNameChange = (event) => {
         const { name, value } = event.target;
         this.setState({
             [name]: value
@@ -102,10 +118,33 @@ class UseRequestManager extends Component {
     handleMonthChange = (value) => {
         this.setState({
             ...this.state,
-            month: value
+            createReceiptsDate: value
         });
     }
 
+    // Function lưu giá trị status vào state khi thay đổi
+    handleReqForUsingEmployeeChange = (value) => {
+        if (value.length === 0) {
+            value = null
+        };
+
+        this.setState({
+            ...this.state,
+            reqUseEmployee: value
+        })
+    }
+
+    // Function lưu giá trị status vào state khi thay đổi
+    handleAppoverChange = (value) => {
+        if (value.length === 0) {
+            value = null
+        };
+
+        this.setState({
+            ...this.state,
+            approver: value
+        })
+    }
     // Function lưu giá trị status vào state khi thay đổi
     handleStatusChange = (value) => {
         if (value.length === 0) {
@@ -114,7 +153,7 @@ class UseRequestManager extends Component {
 
         this.setState({
             ...this.state,
-            status: value
+            reqUseStatus: value
         })
     }
 
@@ -122,7 +161,8 @@ class UseRequestManager extends Component {
     handleSubmitSearch = async () => {
         if (this.state.month === "") {
             await this.setState({
-                month: this.formatDate(Date.now())
+                month: this.formatDate(Date.now()),
+                page: 0
             })
         }
         this.props.searchRecommendDistributes(this.state);
@@ -149,33 +189,33 @@ class UseRequestManager extends Component {
     /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
     convertDataToExportData = (data) => {
         let fileName = "Bảng quản lý thông tin đăng kí sử dụng tài sản ";
-        if (data) {           
-            data = data.map((x, index) => {     
+        if (data) {
+            data = data.map((x, index) => {
 
-                let code =x.recommendNumber;
-                let assetName =(x.asset)?x.asset.assetName:"";               
-                let approver =(x.approver)?x.approver.email:'';
-                let assigner =(x.proponent)?x.proponent.email:"";
+                let code = x.recommendNumber;
+                let assetName = (x.asset) ? x.asset.assetName : "";
+                let approver = (x.approver) ? x.approver.email : '';
+                let assigner = (x.proponent) ? x.proponent.email : "";
                 let createDate = x.dateCreate
-                let dateStartUse =x.dateStartUse;
-                let dateEndUse =x.dateEndUse;
+                let dateStartUse = x.dateStartUse;
+                let dateEndUse = x.dateEndUse;
                 let assetCode = (x.asset) ? x.asset.code : ''
-                let status = x.status; 
+                let status = x.status;
 
-                return  {
-                    index : index+1,
-                    code : code,
-                    createDate:createDate,                    
-                    assigner:assigner,
+                return {
+                    index: index + 1,
+                    code: code,
+                    createDate: createDate,
+                    assigner: assigner,
                     assetName: assetName,
-                    assetCode:assetCode,
-                    dateStartUse:dateStartUse,
-                    dateEndUse:dateEndUse,
-                    approver:approver,
-                    status:status
+                    assetCode: assetCode,
+                    dateStartUse: dateStartUse,
+                    dateEndUse: dateEndUse,
+                    approver: approver,
+                    status: status
 
                 }
-                
+
             })
         }
 
@@ -184,20 +224,20 @@ class UseRequestManager extends Component {
             dataSheets: [
                 {
                     sheetName: "sheet1",
-                    sheetTitle : fileName,
+                    sheetTitle: fileName,
                     tables: [
                         {
                             rowHeader: 2,
                             columns: [
                                 { key: "index", value: "STT" },
                                 { key: "code", value: "Mã phiếu" },
-                                { key: "createDate", value: "Ngày tạo" },                                
+                                { key: "createDate", value: "Ngày tạo" },
                                 { key: "assigner", value: "Người đăng kí" },
                                 { key: "assetName", value: "Tên tài sản" },
                                 { key: "assetCode", value: "Mã tài sản" },
                                 { key: "dateStartUse", value: "Ngày bắt đầu sử dụng" },
                                 { key: "dateEndUse", value: "Ngày kết thúc sử dụng" },
-                                { key: "appprover", value: "Người phê duyệt" },                               
+                                { key: "appprover", value: "Người phê duyệt" },
                                 { key: "status", value: "Trạng thái" },
                             ],
                             data: data
@@ -206,8 +246,8 @@ class UseRequestManager extends Component {
                 },
             ]
         }
-        return exportData;        
-       
+        return exportData;
+
     }
 
     // Bắt sự kiện click chỉnh sửa thông tin tài sản
@@ -221,49 +261,105 @@ class UseRequestManager extends Component {
         });
         window.$('#modal-edit-asset').modal('show');
 
-        // Mở tab thứ 2
-        window.$('.nav-tabs li:eq(1) a').tab('show');
+        // Mở tab thứ 3
+        window.$('.nav-tabs li:eq(2) a').tab('show');
 
     }
 
+    getUserId = () => {
+        let { user } = this.props;
+        let listUser = user && user.list;
+        let userArr = [];
+        listUser.map(x => {
+            userArr.push({
+                value: x._id,
+                text: x.name
+            })
+        })
+
+        return userArr;
+    }
+
     render() {
-        const { translate, recommendDistribute, isActive} = this.props;
+        const { translate, recommendDistribute, isActive } = this.props;
         const { page, limit, currentRow, currentRowEditAsset, managedBy } = this.state;
 
         var listRecommendDistributes = "", exportData;
         if (recommendDistribute.isLoading === false) {
             listRecommendDistributes = recommendDistribute.listRecommendDistributes;
-            exportData =this.convertDataToExportData(listRecommendDistributes);
+            exportData = this.convertDataToExportData(listRecommendDistributes);
         }
-        
+
         var pageTotal = ((recommendDistribute.totalList % limit) === 0) ?
             parseInt(recommendDistribute.totalList / limit) :
             parseInt((recommendDistribute.totalList / limit) + 1);
         var currentPage = parseInt((page / limit) + 1);
-
+        let userIdArr = this.getUserId();
         return (
             //Khi id !== undefined thi component nay duoc goi tu module user
-            <div className={isActive?isActive:"box"} >
+            <div className={isActive ? isActive : "box"} >
                 <div className="box-body qlcv">
                     {/* Thanh tìm kiếm */}
                     <div className="form-inline">
                         {/* Mã phiếu */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('asset.general_information.form_code')}</label>
-                            <input type="text" className="form-control" name="recommendNumber" onChange={this.handleRecommendNumberChange} placeholder={translate('asset.general_information.form_code')} autoComplete="off" />
+                            <input type="text" className="form-control" name="receiptsCode" onChange={this.handleRecommendNumberChange} placeholder={translate('asset.general_information.form_code')} autoComplete="off" />
                         </div>
 
-                        {/* Tháng */}
+                        {/* Tháng  lập phiếu*/}
                         <div className="form-group">
-                            <label className="form-control-static">{translate('page.month')}</label>
+                            <label className="form-control-static">Ngày lập phiếu</label>
                             <DatePicker
                                 id="month"
                                 dateFormat="month-year"
-                                value={this.formatDate(Date.now())}
+                                // value={this.formatDate(Date.now())}
                                 onChange={this.handleMonthChange}
                             />
                         </div>
+                        {/* Mã tài sản */}
+                        {/* <div className="form-group">
+                            <label className="form-control-static">Mã tài sản</label>
+                            <input type="text" className="form-control" name="code" onChange={this.handleCodeChange} placeholder="Mã tài sản" autoComplete="off" />
+                        </div> */}
+
+                        {/* tên tài sản */}
+                        {/* <div className="form-group">
+                            <label className="form-control-static">Tên tài sản</label>
+                            <input type="text" className="form-control" name="assetName" onChange={this.handleAssetNameChange} placeholder="Tên tài sản" autoComplete="off" />
+                        </div> */}
                     </div>
+
+                    <div className="form-inline">
+                        {/* Người được đăng ký sử dụng */}
+                        <div className="form-group">
+                            <label>Người đăng ký</label>
+                            <SelectMulti
+                                id={`userInRequestForUsing`}
+                                multiple="multiple"
+                                options={{ nonSelectedText: "Chọn người sử dụng", allSelectedText: "Chọn tất cả" }}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={userIdArr}
+                                onChange={this.handleReqForUsingEmployeeChange}
+                            />
+                        </div>
+
+                        {/* Người phê duyệt đăng ký sử dụng */}
+                        <div className="form-group">
+                            <label>Người phê duyệt</label>
+                            <SelectMulti
+                                id={`handleAppoverChange`}
+                                multiple="multiple"
+                                options={{ nonSelectedText: "Chọn người phê duyệt", allSelectedText: "Chọn tất cả" }}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={userIdArr}
+                                onChange={this.handleAppoverChange}
+                            />
+                        </div>
+                    </div>
+
                     <div className="form-inline" style={{ marginBottom: 10 }}>
                         {/* Trạng thái */}
                         <div className="form-group">
@@ -279,13 +375,13 @@ class UseRequestManager extends Component {
                             >
                             </SelectMulti>
                         </div>
-                        
+
                         {/* Button tìm kiếm */}
                         <div className="form-group">
                             <label></label>
                             <button type="button" className="btn btn-success" title={translate('page.add_search')} onClick={() => this.handleSubmitSearch()} >{translate('page.add_search')}</button>
                         </div>
-                        {exportData&&<ExportExcel id="export-asset-recommened-distribute-management" exportData={exportData} style={{ marginRight:10 }} />}
+                        {exportData && <ExportExcel id="export-asset-recommened-distribute-management" exportData={exportData} style={{ marginRight: 10 }} />}
                     </div>
 
                     {/* Bảng thông tin đăng kí sử dụng tài sản */}
@@ -328,11 +424,11 @@ class UseRequestManager extends Component {
                                     return (<tr key={index}>
                                         <td><a onClick={() => this.handleEditAsset(x.asset)}>{x.asset ? x.asset.code : 'Asset is deleted'}</a></td>
                                         <td>{x.recommendNumber}</td>
-                                        <td>{x.dateCreate}</td>
+                                        <td>{this.formatDate2(x.dateCreate)}</td>
                                         <td>{x.proponent ? x.proponent.name : 'User is deleted'}</td>
                                         <td>{x.asset ? x.asset.assetName : 'Asset is deleted'}</td>
-                                        <td>{x.dateStartUse}</td>
-                                        <td>{x.dateEndUse}</td>
+                                        <td>{this.formatDate2(x.dateStartUse)}</td>
+                                        <td>{this.formatDate2(x.dateEndUse)}</td>
                                         <td>{x.approver ? x.approver.name : 'User is deleted'}</td>
                                         <td>{x.status}</td>
                                         <td style={{ textAlign: "center" }}>
@@ -341,7 +437,7 @@ class UseRequestManager extends Component {
                                                 content={translate('asset.asset_info.delete_usage_info')}
                                                 data={{
                                                     id: x._id,
-                                                    info: x.recommendNumber + " - " + x.dateCreate.replace(/-/gi, "/")
+                                                    // info: x.recommendNumber + " - " + x.dateCreate.replace(/-/gi, "/")
                                                 }}
                                                 func={this.props.deleteRecommendDistribute}
                                             />
@@ -365,7 +461,7 @@ class UseRequestManager extends Component {
                     currentRow &&
                     <UseRequestEditForm
                         _id={currentRow._id}
-                        employeeId = {managedBy}
+                        employeeId={managedBy}
                         recommendNumber={currentRow.recommendNumber}
                         dateCreate={currentRow.dateCreate}
                         proponent={currentRow.proponent}
@@ -384,7 +480,7 @@ class UseRequestManager extends Component {
                     currentRowEditAsset &&
                     <AssetEditForm
                         _id={currentRowEditAsset._id}
-                        employeeId ={managedBy}
+                        employeeId={managedBy}
                         avatar={currentRowEditAsset.avatar}
                         code={currentRowEditAsset.code}
                         assetName={currentRowEditAsset.assetName}
@@ -428,7 +524,7 @@ class UseRequestManager extends Component {
                         files={currentRowEditAsset.documents}
                     />
                 }
-                
+
             </div >
         );
     }

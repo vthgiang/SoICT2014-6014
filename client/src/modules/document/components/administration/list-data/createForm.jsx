@@ -31,6 +31,7 @@ class CreateForm extends Component {
     }
 
     handleDomains = value => {
+        console.log('valueeeee', value)
         this.setState({ documentDomains: value });
     }
     handleArchives = value => {
@@ -152,6 +153,7 @@ class CreateForm extends Component {
 
     handleUploadFile = (e) => {
         const value = e.target.files[0];
+        console.log('fileeeeeeeee', value);
         // this.validateDocumentFile(value, true);
         this.setState(state => {
             return {
@@ -469,8 +471,12 @@ class CreateForm extends Component {
         this.props.createDocument(formData);
     }
     findPath = (archives, select) => {
-        let archive = archives.filter(arch => arch._id === select);
-        return archive[0] ? archive[0].path : "";
+        let paths = select.map(s => {
+            let archive = archives.filter(arch => arch._id === s);
+            return archive[0] ? archive[0].path : "";
+        })
+        return paths;
+
     }
     handleAddDocument = (event) => {
         event.preventDefault();
@@ -484,14 +490,12 @@ class CreateForm extends Component {
     render() {
         const { translate, role, documents, department } = this.props;
         const { list } = documents.administration.domains;
-        const { errorName, errorIssuingBody, errorOfficialNumber, errorSigner, errorVersionName,
-            errorDocumentFile, errorDocumentFileScan, errorIssuingDate, errorEffectiveDate,
-            errorExpiredDate, errorCategory, documentArchives } = this.state;
+        const { errorName, errorCategory, errorVersionName,documentArchives, documentDomains } = this.state;
         const archives = documents.administration.archives.list;
         const categories = documents.administration.categories.list.map(category => { return { value: category._id, text: category.name } });
         const documentRoles = role.list.map(role => { return { value: role._id, text: role.name } });
         const relationshipDocs = documents.administration.data.list.map(doc => { return { value: doc._id, text: doc.name } });
-        let path = documentArchives ? this.findPath(archives, documentArchives[0]) : "";
+        let path = documentArchives ? this.findPath(archives, documentArchives) : "";
         return (
             <React.Fragment>
 
@@ -530,20 +534,20 @@ class CreateForm extends Component {
                                                 <input type="text" className="form-control" onChange={this.handleName} />
                                                 <ErrorLabel content={errorName} />
                                             </div>
-                                            <div className={`form-group ${!errorIssuingBody ? "" : "has-error"}`}>
+                                            <div className="form-group">
                                                 <label>{translate('document.doc_version.issuing_body')}</label>
                                                 <input type="text" className="form-control" onChange={this.handleIssuingBody} placeholder={translate('document.doc_version.exp_issuing_body')} />
-                                                <ErrorLabel content={errorIssuingBody} />
+                                                
                                             </div>
-                                            <div className={`form-group ${!errorOfficialNumber ? "" : "has-error"}`}>
+                                            <div className="form-group">
                                                 <label>{translate('document.doc_version.official_number')}</label>
                                                 <input type="text" className="form-control" onChange={this.handleOfficialNumber} placeholder={translate('document.doc_version.exp_official_number')} />
-                                                <ErrorLabel content={errorOfficialNumber} />
+                                             
                                             </div>
-                                            <div className={`form-group ${!errorSigner ? "" : "has-error"}`}>
+                                            <div className="form-group">
                                                 <label>{translate('document.doc_version.signer')}</label>
                                                 <input type="text" className="form-control" onChange={this.handleSigner} placeholder={translate('document.doc_version.exp_signer')} />
-                                                <ErrorLabel content={errorSigner} />
+                                                
                                             </div>
                                         </div>
                                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
@@ -562,12 +566,9 @@ class CreateForm extends Component {
                                             </div>
                                             <div className="form-group">
                                                 <label>{translate('document.domain')}</label>
-                                                <TreeSelect data={list} handleChange={this.handleDomains} mode="hierarchical" />
+                                                <TreeSelect data={list} handleChange={this.handleDomains} value={documentDomains} mode="hierarchical" />
                                             </div>
-                                            {/* <div className="form-group">
-                                                <label>Lưu trữ</label>
-                                                <TreeSelect data={archives} handleChange={this.handleArchives} value={path} mode="hierarchical" />
-                                            </div> */}
+
                                             <div className="form-group">
                                                 <label>{translate('document.description')}</label>
                                                 <textarea style={{ height: '100px' }} type="text" className="form-control" onChange={this.handleDescription} />
@@ -581,17 +582,17 @@ class CreateForm extends Component {
                                                 <input type="text" className="form-control" onChange={this.handleVersionName} placeholder={translate('document.doc_version.exp_version')} />
                                                 <ErrorLabel content={errorVersionName} />
                                             </div>
-                                            <div className={`form-group ${!errorDocumentFile ? "" : "has-error"}`}>
+                                            <div className="form-group">
                                                 <label>{translate('document.upload_file')}</label>
                                                 <br />
                                                 <div className="upload btn btn-primary">
                                                     <i className="fa fa-folder"></i>
                                                     {" " + translate('document.choose_file')}
-                                                    <input className="upload" type="file" name="file" onChange={this.handleUploadFile} />
+                                                    <input className="form-control" type="file" name="file" onChange={this.handleUploadFile} />
+                                                    {/* <input type="file" style={{ height: 34, paddingTop: 2 }} className="form-control" name="file" onChange={this.handleChangeFile} /> */}
                                                 </div>
-                                                <ErrorLabel content={errorDocumentFile} />
                                             </div>
-                                            <div className={`form-group ${!errorDocumentFileScan ? "" : "has-error"}`}>
+                                            <div className="form-group">
                                                 <label>{translate('document.upload_file_scan')}</label>
                                                 <br />
                                                 <div className="upload btn btn-primary">
@@ -599,34 +600,30 @@ class CreateForm extends Component {
                                                     {" " + translate('document.choose_file')}
                                                     <input className="upload" type="file" name="file" onChange={this.handleUploadFileScan} />
                                                 </div>
-                                                <ErrorLabel content={errorDocumentFileScan} />
                                             </div>
-                                            <div className={`form-group ${!errorIssuingDate ? "" : "has-error"}`}>
+                                            <div className="form-group">
                                                 <label>{translate('document.doc_version.issuing_date')}</label>
                                                 <DatePicker
                                                     id="create-document-version-issuing-date"
                                                     value={this.state.documentIssuingDate}
                                                     onChange={this.handleIssuingDate}
                                                 />
-                                                <ErrorLabel content={errorIssuingDate} />
                                             </div>
-                                            <div className={`form-group ${!errorEffectiveDate ? "" : "has-error"}`}>
+                                            <div className="form-group">
                                                 <label>{translate('document.doc_version.effective_date')}</label>
                                                 <DatePicker
                                                     id="create-document-version-effective-date"
                                                     value={this.state.documentEffectiveDate}
                                                     onChange={this.handleEffectiveDate}
                                                 />
-                                                <ErrorLabel content={errorEffectiveDate} />
                                             </div>
-                                            <div className={`form-group ${!errorExpiredDate ? "" : "has-error"}`}>
+                                            <div className="form-group">
                                                 <label>{translate('document.doc_version.expired_date')}</label>
                                                 <DatePicker
                                                     id="create-document-version-expired-date"
                                                     value={this.state.documentExpiredDate}
                                                     onChange={this.handleExpiredDate}
                                                 />
-                                                <ErrorLabel content={errorExpiredDate} />
                                             </div>
                                         </div>
                                     </div>
@@ -667,14 +664,6 @@ class CreateForm extends Component {
                                                 <input type="text" className="form-control" onChange={this.handleArchivedRecordPlaceInfo} placeholder="VD: Tủ 301" />
                                             </div> */}
                                             <div className="form-group">
-                                                <label>{translate('document.store.information')}</label>
-                                                <TreeSelect data={archives} handleChange={this.handleArchives} value={documentArchives} mode="hierarchical" />
-                                            </div>
-                                            <div className="form-group">
-                                                <label>{translate('document.administration.domains.path_detail')}</label>
-                                                <textarea style={{ height: '30px' }} type="text" className="form-control" value={path ? path : ""} disable />
-                                            </div>
-                                            <div className="form-group">
                                                 <label>{translate('document.store.organizational_unit_manage')}</label>
                                                 <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
                                                     id="select-documents-organizational-unit-manage"
@@ -686,6 +675,16 @@ class CreateForm extends Component {
                                                     multiple={false}
                                                 />
                                             </div>
+                                            <div className="form-group">
+                                                <label>{translate('document.store.information')}</label>
+                                                <TreeSelect data={archives} handleChange={this.handleArchives} value={documentArchives} mode="hierarchical" />
+                                            </div>
+                                            <div className="form-group">
+                                                {path && path.length ? path.map(y =>
+                                                    <div>{y}</div>
+                                                ) : null}
+                                            </div>
+
                                         </div>
                                     </div>
                                 </div>

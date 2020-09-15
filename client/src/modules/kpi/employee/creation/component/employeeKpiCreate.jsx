@@ -80,6 +80,10 @@ class CreateEmployeeKpiSet extends Component {
                 }
             }
         }
+        if(nextProps.auth.user.avatar !== this.props.auth.user.avatar) {
+            this.props.getEmployeeKpiSet()
+            return true;
+        }
         return true;
     }
     
@@ -436,15 +440,15 @@ class CreateEmployeeKpiSet extends Component {
         const { editing, id, employeeKpi } = this.state;
         const { createEmployeeKpiSet, user, translate, createKpiUnit } = this.props;
 
-        if (user.organizationalUnitsOfUser) {
+        if (user) {
             unitList = user.organizationalUnitsOfUser;
-            currentUnit = unitList.filter(item => (
+            currentUnit = unitList && unitList.filter(item => (
                 item.deans.includes(this.state.currentRole)
                 || item.employees.includes(this.state.currentRole)
                 || item.viceDeans.includes(this.state.currentRole)));
         }
 
-        if (createEmployeeKpiSet.currentKPI) {
+        if (createEmployeeKpiSet) {
             currentKPI = createEmployeeKpiSet.currentKPI;
         }
         if (createKpiUnit) {
@@ -452,7 +456,7 @@ class CreateEmployeeKpiSet extends Component {
         }
 
         let deans;
-        if (user.userdepartments) {
+        if (user) {
             userdepartments = user.userdepartments;
             deans = getEmployeeSelectBoxItems([user.userdepartments], true, false, false);
         }
@@ -689,11 +693,8 @@ const actionCreators = {
     editEmployeeKpiSet: createKpiSetActions.editEmployeeKpiSet,
     deleteEmployeeKpiSet: createKpiSetActions.deleteEmployeeKpiSet,
     updateEmployeeKpiSetStatus: createKpiSetActions.updateEmployeeKpiSetStatus,
-    createComment: createKpiSetActions.createComment,
-    createCommentOfComment: createKpiSetActions.createCommentOfComment,
     getCurrentKPIUnit: createUnitKpiActions.getCurrentKPIUnit,
-    editComment: createKpiSetActions.editComment,
-    deleteComment: createKpiSetActions.deleteComment,
+
 
 };
 

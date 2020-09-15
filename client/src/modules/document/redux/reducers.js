@@ -136,6 +136,8 @@ export function documents(state = initState, action) {
         case DocumentConstants.IMPORT_DOCUMENT_ARCHIVE_FAILE:
         case DocumentConstants.IMPORT_DOCUMENT_CATEGORY_FAILE:
         case DocumentConstants.IMPORT_DOCUMENT_FAILE:
+        case DocumentConstants.EDIT_VERSION_DOCUMENT_FAILE:
+        case DocumentConstants.DELETE_VERSION_DOCUMENT_FAILE:
             return {
                 ...state,
                 isLoading: false,
@@ -308,6 +310,8 @@ export function documents(state = initState, action) {
 
         case DocumentConstants.EDIT_DOCUMENT_SUCCESS:
         case DocumentConstants.ADD_VERSION_DOCUMENT_SUCCESS:
+        case DocumentConstants.EDIT_VERSION_DOCUMENT_SUCCESS:
+        case DocumentConstants.DELETE_VERSION_DOCUMENT_SUCCESS:
             index = findIndex(state.administration.data.list, action.payload._id);
             if (index !== -1) state.administration.data.list[index] = action.payload;
             indexPaginate = findIndex(state.administration.data.paginate, action.payload._id);

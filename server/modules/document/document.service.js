@@ -189,9 +189,25 @@ exports.editDocument = async (id, data, query = undefined) => {
                 return doc;
 
             case 'EDIT_VERSION':
+                let index = doc.versions.findIndex(obj => obj._id == data.versionId);
+                console.log('verrsionnn', index)
+                doc.versions[index].versionName = data.versionName ? data.versionName : doc.versions[index].versionName;
+                doc.versions[index].issuingDate = data.issuingDate ? data.issuingDate : doc.versions[index].issuingDate;
+                doc.versions[index].effectiveDate = data.effectiveDate ? data.effectiveDate : doc.versions[index].effectiveDate;
+                doc.versions[index].expiredDate = data.expiredDate ? data.expiredDate : doc.versions[index].expiredDate;
+                doc.versions[index].file = data.file ? data.file : doc.versions[index].file;
+                doc.versions[index].scannedFileOfSignedDocument = data.scannedFileOfSignedDocument ? data.scannedFileOfSignedDocument : doc.versions[index].scannedFileOfSignedDocument;
+                await doc.save();
+
                 return doc;
 
             case 'DELETE_VERSION':
+                //let index = doc.versions.findIndex(obj => obj._id == data.versionId);
+                // console.log('verrsionnn', index)
+                const version = doc.versions.filter(v => v._id != data.versionId);
+                doc.versions = version;
+                //  console.log('docveriosns', doc.versions[1]._id, typeof (data.versionId), doc.versions[1]._id !== data.versionId);
+                await doc.save();
                 return doc;
 
             default:
@@ -245,7 +261,7 @@ exports.editDocument = async (id, data, query = undefined) => {
             doc.archivedRecordPlaceManager = data.archivedRecordPlaceManager
 
         await doc.save();
-        let docs = doc.logs.reverse();
+        //let docs = doc.logs;
         return doc;
     }
 }

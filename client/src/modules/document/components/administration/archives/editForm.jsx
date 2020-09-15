@@ -133,8 +133,8 @@ class EditForm extends Component {
                     <TreeSelect data={list} value={[archiveParent]} handleChange={this.handleParent} mode="radioSelect" />
                 </div>
                 <div className="form-group">
-                    <label>{translate('document.administration.domains.path')}</label>
-                    <textarea style={{ minHeight: '30px' }} type="text" className="form-control" value={archivePath} disable />
+                    <strong>{translate('document.administration.domains.path')}&emsp; </strong>
+                    {archivePath}
                 </div>
                 <div className="form-group">
                     <label>{translate('document.administration.domains.description')}</label>

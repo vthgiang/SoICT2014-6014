@@ -41,6 +41,10 @@ const OrganizationalUnitKpiSchema = new Schema({
     }
 });
 
-module.exports = OrganizationalUnitKpi = (db) => db.model("organizational_unit_kpis", OrganizationalUnitKpiSchema);
+module.exports = (db) => {
+    if(!db.models.OrganizationalUnitKpi)
+        return db.model('OrganizationalUnitKpi', OrganizationalUnitKpiSchema);
+    return db.models.OrganizationalUnitKpi;
+}
 
 // Thuộc tính không đổi

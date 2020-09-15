@@ -24,10 +24,25 @@ exports.searchAssetProfiles = async (req, res) => {
                 typeRegisterForUse: req.query.typeRegisterForUse,
                 assetType: req.query.assetType,
                 purchaseDate: req.query.purchaseDate,
+                disposalDate: req.query.disposalDate,
+                handoverUnit: req.query.handoverUnit,
+                handoverUser: req.query.handoverUser,
                 page: Number(req.query.page),
                 limit: Number(req.query.limit),
                 managedBy: req.query.managedBy,
                 currentRole: req.query.currentRole,
+
+                startDepreciation: req.query.startDepreciation,
+                depreciationType: req.query.depreciationType,
+
+                maintainanceCode: req.query.maintainanceCode,
+                maintainCreateDate: req.query.maintainCreateDate,
+                maintainStatus: req.query.maintainStatus,
+                maintainType: req.query.maintainType,
+
+                incidentCode: req.query.incidentCode,
+                incidentStatus: req.query.incidentStatus,
+                incidentType: req.query.incidentType,
             }
             data = await AssetService.searchAssetProfiles(params, req.user.company._id);
 
@@ -42,7 +57,6 @@ exports.searchAssetProfiles = async (req, res) => {
             content: data
         });
     } catch (error) {
-        console.log(error);
         await LogError(req.user.email, 'GET_ASSETS', req.user.company);
         res.status(400).json({
             success: false,
@@ -106,7 +120,6 @@ exports.updateAssetInformation = async (req, res) => {
             content: data
         });
     } catch (error) {
-        console.log(error);
         await LogError(req.user.email, 'EDIT_ASSET', req.user.company);
         res.status(400).json({
             success: false,
@@ -268,7 +281,6 @@ exports.deleteUsage = async (req, res) => {
  * Thêm mới thông tin bảo trì tài sản
  */
 exports.createMaintainance = async (req, res) => {
-    console.log(req.query.incident_id);
     try {
         let data = await AssetService.createMaintainance(req.params.id, req.body, req.query.incident_id);
         res.status(200).json({

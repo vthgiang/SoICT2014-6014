@@ -8,7 +8,7 @@ const EducationProgramSchema = new Schema({ // Chương trình đào tạo
     },
     company: {
         type: Schema.Types.ObjectId,
-        ref: 'companies'
+        ref: "Company"
     },
     programId: { // Mã chương trình đào tạo
         type: String,
@@ -16,13 +16,18 @@ const EducationProgramSchema = new Schema({ // Chương trình đào tạo
     },
     applyForOrganizationalUnits: [{ // Những đơn vị mà nhân viên bắt buộc phải tham gia chương trình này
         type: Schema.Types.ObjectId,
-        ref: 'organizational_units'
+        ref: 'OrganizationalUnit'
     }],
     applyForPositions: [{ // Những chức vụ bắt buộc phải tham gia chương trình đào tạo
         type: Schema.Types.ObjectId,
-        ref: 'roles'
+        ref: 'Role'
     }]
 }, {
     timestamps: true,
 });
-module.exports = EducationProgram = (db) => db.model("education_programs", EducationProgramSchema);
+
+module.exports = (db) => {
+    if(!db.models.EducationProgram)
+        return db.model('EducationProgram', EducationProgramSchema);
+    return db.models.EducationProgram;
+}

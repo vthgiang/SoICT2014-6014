@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
     "dev": "nodemon index.js",
-
+    "start-mt": "set MULTI_TENANT=true&& nodemon index.js",
     "init-db": "node seed/_multi-tenant/initDB.js",
     "init-sample-company": "node seed/_multi-tenant/initSampleCompanyDB.js"
   },

@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { TaskReportActions } from '../redux/actions';
-import moment from 'moment';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal } from '../../../../common-components';
 import { taskManagementActions } from '../../../task/task-management/redux/actions';
 import { LineBarChart } from './lineBarChart';
 import { PieChart } from './pieChart';
+import { chartFunction } from './chart';
+
 class TaskReportViewForm extends Component {
     constructor(props) {
         super(props);
@@ -23,294 +24,26 @@ class TaskReportViewForm extends Component {
         if (data === 3) return "Cao";
     }
 
-    formatChartType = (chartType) => {
-        if (chartType === '0') return "bar";
-        if (chartType === '1') return "line";
-        if (chartType === '2') return "pie";
-    }
-
-
-    /**
-     * @param {*} data:time
-     * 
-     * Hàm convert thời gian ra tháng
-     */
-    convertMonthYear = (data) => {
-        const time = new Date(data);
-        const month = time.getMonth();
-        const year = time.getFullYear();
-        return `${month + 1}-${year}`;
-    }
-
-
-    // 
-    /**
-     * @param {*} data : Time
-     * 
-     * Hàm convert thời gian ra năm
-     */
-    convertYear = (data) => {
-        const time = new Date(data);
-        const year = time.getFullYear();
-        return `${year}`;
-    }
-
-
-    /**
-     * @param {*} data Time
-     * 
-     * Hàm convert thời gian ra quý
-     */
-    getQuarter = (data) => {
-        const time = new Date(data);
-        let quarter = Math.floor((time.getMonth() + 3) / 3);
-        let year = (`Quý${quarter}-`) + time.getFullYear();
-        return `${year}`;
-    }
-
-
-    /**
-     * @param {*} tasks Danh sách công việc
-     * 
-     * Hàm gom nhóm các công việc theo thời gian
-     */
-    groupByDate = (tasks, dataAxisX) => {
-        if (dataAxisX && dataAxisX.indexOf(1) === 0 || dataAxisX.length === 0) {
-            return tasks.reduce((groups, item) => {
-                groups[item.time] = [...groups[item.time] || [], item];
-                return groups;
-            }, {});
-        } else {
-            return Object.entries(tasks).map(([o, datapoints]) => {
-                return datapoints.reduce((groups, item) => {
-                    const getTime = item.time;
-                    groups[[o] + ` | ${getTime}`] = [...groups[[o] + ` | ${getTime}`] || [], item]
-                    return groups;
-                }, [])
-            })
-        }
-    }
-
-
-    /**
-     * @param {*} tasks Danh sách các công việc
-     * 
-     * Hàm gom nhóm các công việc theo người thực hiện
-     */
-    groupByResponsibleEmployees = (tasks, dataAxisX) => {
-        if (dataAxisX && dataAxisX.indexOf(2) === 0) {
-            return tasks.reduce((groups, item) => {
-                groups[item.responsibleEmployees.toString()] = [...groups[item.responsibleEmployees.toString()] || [], item];
-                return groups;
-            }, {});
-        } else {
-            return Object.entries(tasks).map(([o, datapoints]) => {
-                return datapoints.reduce((groups, item) => {
-                    const getRes = item.responsibleEmployees.toString();
-                    groups[[o] + ` | ${getRes}`] = [...groups[[o] + ` | ${getRes}`] || [], item];
-                    return groups;
-                }, []);
-            })
-        }
-    }
-
-
-    /**
-     * @param {*} tasks Danh sách các công việc
-     * 
-     * Hàm gom nhóm các công việc theo người phê duyệt
-     */
-    groupByAccountableEmployees = (tasks, dataAxisX) => {
-        if (dataAxisX && dataAxisX.indexOf(3) === 0) {
-            return tasks.reduce((groups, item) => {
-                groups[item.accountableEmployees.toString()] = [...groups[item.accountableEmployees.toString()] || [], item];
-                return groups;
-            }, {});
-        }
-        else if (dataAxisX && dataAxisX.indexOf(3) === 1) {
-            return Object.entries(tasks).map(([o, datapoints]) => {
-                return datapoints.reduce((groups, item) => {
-                    const getAcc = item.accountableEmployees.toString();
-                    groups[[o] + ` | ${getAcc}`] = [...groups[[o] + ` | ${getAcc}`] || [], item];
-                    return groups;
-                }, []);
-            })
-        }
-        else {
-            return tasks.map(o => {
-                return Object.entries(o).map(([obj, item]) => {
-                    return item.reduce((groups, item) => {
-                        const getAcc = item.accountableEmployees;
-                        groups[[obj] + ` | ${getAcc}`] = [...groups[[obj] + ` | ${getAcc}`] || [], item];
-                        return groups;
-                    }, [])
-
-                })
-            })
-        }
-    }
-
-
-    /**
-     * @param {*} tasks Danh sách các công việc đã convert đúng định dạng đầu vào
-     * 
-     * Hàm tính tổng và trung bình cộng các công việc
-     */
-    aggregate = (tasks) => {
-        let map = new Map;
-        for (let { aggregationType, coefficient, code, value, chartType, showInReport } of tasks) {
-            if (showInReport === true) {
-                let entry = map.get(code);
-                if (!entry) map.set(code, entry = { aggregationType, chartType, showInReport, coefficient, sum: 0, count: 0 });
-                entry.sum += value;
-                entry.count++;
-            }
-        }
-        return Array.from(map, ([code, { aggregationType, chartType, showInReport, coefficient, sum, count }]) =>
-            [code, (+aggregationType ? sum : sum / count) * coefficient, this.formatChartType(chartType), showInReport]
-        );
-    }
-
-
-    /**
-     * @param {*} input Đầu vào là một mảng gồm Mangr các giá kị có cặp key, value
-     * 
-     * Hàm Convert data sau khi tính toán
-     */
-    dataAfterAggregate = (input) => {
-        return input.map(([time, datapoints]) => {
-            let allTasks = datapoints.flatMap(point => point.task.map(x => ({ ...x, responsibleEmployees: point.responsibleEmployees, accountableEmployees: point.accountableEmployees })))
-            // Tên mới cho trường thông tin
-            allTasks.map(item => {
-                if (item.newName) {
-                    item.code = item.newName;
-                } else {
-                    item.code = item.code;
-                }
-                return item;
-            })
-
-            let result = this.aggregate(allTasks); // gọi hàm tính trung bình cộng và tổng. 
-
-            return {
-                time,
-                tasks: result.map(([code, value, chartType, showInReport]) => ({ code, value, chartType, showInReport })),
-            }
-        });
-    }
-
-    /**
-     * @param {*} input 
-     * 
-     * Tách data vẽ chart:
-     *  - Tách riêng data vẽ biểu đồ cột, đường và tròn
-     */
-    separateDataChart = (input) => {
-        let pieChartData = [], barLineChartData = [];
-        input.forEach(x => {
-            let tasks = x.tasks.filter(y =>
-                y.chartType === "pie" ? (pieChartData.push({ tasks: [y], time: x.time }), false) : true)
-            if (tasks.length > 0) {
-                barLineChartData.push({
-                    time: x.time,
-                    tasks: tasks,
-                })
-            }
-        })
-        return { pieChartData, barLineChartData };
-    }
-
-
-    /**
-     * @param {*} input Dữ liệu bên server trả ra, mặc định người thực hiện trả ra là mảng
-     *  - Nếu một công việc có 3 người thực hiện thì tách ra mỗi công việc 1 người thực hiện
-     */
-    separateResponsibleEmployees = (input) => {
-        let results = [];
-        input.forEach(x => {
-            x.responsibleEmployees.forEach(y => {
-                results.push({
-                    time: x.time,
-                    task: x.task,
-                    accountableEmployees: x.accountableEmployees,
-                    responsibleEmployees: y,
-                })
-            })
-        });
-        return results;
-    }
-
-
-
-    /**
-     * @param {*} input Dữ liệu bên server trả ra, mặc định người phê duyệt trả ra là mảng
-     *  - Nếu một công việc có 3 người phê duyệt thì tách ra mỗi công việc 1 người phê duyệt
-     */
-    separateAccountableEmployees = (input) => {
-        let results = [];
-        input.forEach(x => {
-            x.accountableEmployees.forEach(y => {
-                results.push({
-                    time: x.time,
-                    task: x.task,
-                    accountableEmployees: y,
-                })
-            })
-        });
-        return results;
-    }
-
-    separateResponsibleEmployeesAndAccountableEmployees = (input) => {
-        let results = [];
-        input.forEach(x => {
-            x.responsibleEmployees.forEach(y => {
-                x.accountableEmployees.forEach(z => {
-                    results.push({
-                        time: x.time,
-                        task: x.task,
-                        responsibleEmployees: y,
-                        accountableEmployees: z,
-                    })
-                })
-            })
-        })
-        return results;
-    }
-
-    /**
-     * @param {*} input 
-     * 
-     * Hàm convert data qua dạng của c3js với biểu đồ tròn khi chọn 1 chiều dữ liệu
-     */
-    convertDataPieChartOneWay = (input) => {
-        let groupByCode = {}, pieDataConvert;
-
-        input.flatMap(item => item.tasks.map(task => ({ ...task, time: item.time })) //add time vào mảng task
-        ).forEach(childTask => {
-            if (groupByCode[childTask.code]) {
-                groupByCode[childTask.code].push(childTask)
-            } else {
-                groupByCode[childTask.code] = [childTask];
-            }
-        })
-
-        pieDataConvert = Object.entries(groupByCode).map(([code, tasks]) => ({
-            [code]: tasks.map((task) => [task.time, task.value])
-        }))
-        return pieDataConvert;
-    }
-
 
     render() {
         const { tasks, reports, translate } = this.props;
         let formater = new Intl.NumberFormat();
-        let listTaskEvaluation = tasks.listTaskEvaluations;
-
-        let taskInfoName, headTable = [], frequency, newlistTaskEvaluation, dataForAxisXInChart = [];
-
+        let listTaskEvaluations = tasks.listTaskEvaluations;
+        let taskInfoName, headTable = [], frequency, newlistTaskEvaluation;
+        /**
+         * dataForAxisXInChart là mảng chứa chiều dữ liệu cho biểu đồ
+         * 
+         * id = 1 là chiều thời gian
+         * 
+         * id = 2 là chiều người thực hiện
+         * 
+         * id = 3 là chiều người phê duyệt
+         */
+        let dataForAxisXInChart = []
+        console.log('listTaskEvaluations', listTaskEvaluations)
         // hiển thị trường thông tin hiện trong bảng báo cáo form preview view
-        if (listTaskEvaluation && listTaskEvaluation.length !== 0) {
-            taskInfoName = listTaskEvaluation[0];
+        if (listTaskEvaluations && listTaskEvaluations.length > 0) {
+            taskInfoName = listTaskEvaluations[0];
             taskInfoName.taskInformations.forEach(x => {
                 if (x.type === "Number") {
                     headTable = [...headTable, x.name];
@@ -319,9 +52,9 @@ class TaskReportViewForm extends Component {
         }
 
 
-        if (listTaskEvaluation) {
+        if (listTaskEvaluations && listTaskEvaluations.length > 0) {
             // Lấy tần suất, Vì tần suất là chung cho các công việc nên chỉ cần lấy công việc đầu tiên
-            let taskEvaluation = listTaskEvaluation[0];
+            let taskEvaluation = listTaskEvaluations[0];
             frequency = taskEvaluation.frequency;
 
             // Lấy giá trị chọn chiều dữ liệu đưa vào biểu đồ
@@ -329,16 +62,15 @@ class TaskReportViewForm extends Component {
             if (dataForAxisXInChart.length > 0) {
                 dataForAxisXInChart = dataForAxisXInChart.map(x => x.id);
             } else {
-
                 // Trường hợp người dùng không chọn chiều dữ liệu, thì mặc định láy chiều thời gian
                 dataForAxisXInChart = dataForAxisXInChart;
             }
 
             // Lọc lấy các trường cần thiết cho việc config dữ liệu biểu đồ.
-            newlistTaskEvaluation = listTaskEvaluation.map(item => {
+            newlistTaskEvaluation = listTaskEvaluations.map(item => {
                 return {
-                    time: (frequency && frequency === 'month') ? this.convertMonthYear(item.date)
-                        : (frequency === 'quarter' ? this.getQuarter(item.date) : this.convertYear(item.date)),
+                    time: (frequency && frequency === 'month') ? chartFunction.convertMonthYear(item.date)
+                        : (frequency === 'quarter' ? chartFunction.getQuarter(item.date) : chartFunction.convertYear(item.date)),
                     task: item.taskInformations.filter(task => {
                         if (task.type === 'Number')
                             return task;
@@ -350,198 +82,325 @@ class TaskReportViewForm extends Component {
 
         }
 
-        let output, pieChartData = [], barLineChartData = [], pieDataConvert;
+        let output, pieChartData = [], barLineChartData = [], pieChartDataConvert, barAndLineDataChartConvert;
 
-        /**
-       * Convert data, gom nhóm, tính tổng và tính trung bình cộng các trường thông tin.
-       *  Nếu chọn trục hoành là thời gian dataForAxisXInChart = 1
-       */
+        if (newlistTaskEvaluation && newlistTaskEvaluation.length > 0) {
 
-        if (dataForAxisXInChart.toString() === "1" || dataForAxisXInChart.length === 0) {
-            let groupDataByDate;
+            /**
+             * Convert data, gom nhóm, tính tổng và tính trung bình cộng các trường thông tin.
+             *  Nếu chọn trục hoành là thời gian dataForAxisXInChart = 1
+             */
+            if (dataForAxisXInChart.toString() === "1" && dataForAxisXInChart.length === 1 || dataForAxisXInChart.length === 0) {
+                let groupDataByDate;
 
-            if (newlistTaskEvaluation) {
                 // Gọi hàm groupByDate gom nhóm theo thời gian
-                groupDataByDate = Object.entries(this.groupByDate(newlistTaskEvaluation, dataForAxisXInChart));
+                groupDataByDate = Object.entries(chartFunction.groupByDate(newlistTaskEvaluation, dataForAxisXInChart));
 
                 // Tính tổng/Trung bình cộng, xử lý tên mới, và showInreport các trường thông tin theo tùy chọn của người dùng
-                output = this.dataAfterAggregate(groupDataByDate);
+                output = chartFunction.dataAfterAggregate(groupDataByDate);
             }
-        }
 
-        /**
+
+            /**
              * Convert data, gom nhóm theo người thực hiện, tính trung bình cộng các trường thông tin.
              * Nếu trục hoành là người thực hiện dataForAxisXInChart = '2'
-        */
-
-        else if (dataForAxisXInChart.toString() === "2") {
-            let groupDataByResponsibleEmployees;
-            if (newlistTaskEvaluation) {
+             */
+            else if (dataForAxisXInChart.toString() === "2" && dataForAxisXInChart.length === 1) {
+                let groupDataByResponsibleEmployees;
 
                 // Gọi hàm separateResponsibleEmployees tách người thực hiện
-                let results = this.separateResponsibleEmployees(newlistTaskEvaluation);
+                let results = chartFunction.separateResponsibleEmployees(newlistTaskEvaluation);
 
                 // Gọi hàm groupByResponsibleEmployees nhóm công việc theo người thực hiện
-                groupDataByResponsibleEmployees = Object.entries(this.groupByResponsibleEmployees(results, dataForAxisXInChart)); // Dùng Object.entries convert thành mảng các phần tử có cặp key,value
+                groupDataByResponsibleEmployees = Object.entries(chartFunction.groupByResponsibleEmployees(results, dataForAxisXInChart)); // Dùng Object.entries convert thành mảng các phần tử có cặp key,value
 
                 // Tính tổng/Trung bình cộng, xử lý tên mới, và showInreport các trường thông tin theo tùy chọn của người dùng
-                output = this.dataAfterAggregate(groupDataByResponsibleEmployees);
+                output = chartFunction.dataAfterAggregate(groupDataByResponsibleEmployees);
 
             }
-        }
-        /**
-            * Convert data, gom nhóm theo người phê duyệt, tính trung bình cộng các trường thông tin.
-            * Nếu trục hoành là người phê duyệt dataForAxisXInChart = '3'
-        */
-        else if (dataForAxisXInChart.toString() === "3") {
 
-            let groupDataByAccountableEmployees;
-            if (newlistTaskEvaluation) {
+
+            /**
+             * Convert data, gom nhóm theo người phê duyệt, tính trung bình cộng các trường thông tin.
+             * Nếu trục hoành là người phê duyệt dataForAxisXInChart = '3'
+             */
+            else if (dataForAxisXInChart.toString() === "3" && dataForAxisXInChart.length === 1) {
+                let groupDataByAccountableEmployees;
 
                 // Gọi hàm separateAccountableEmployees tách người phê duyệt
-                let results = this.separateAccountableEmployees(newlistTaskEvaluation);
+                let results = chartFunction.separateAccountableEmployees(newlistTaskEvaluation);
 
                 // Gọi hàm groupByAccountableEmployees nhóm công việc theo người phê duyệt
-                groupDataByAccountableEmployees = Object.entries(this.groupByAccountableEmployees(results, dataForAxisXInChart));
+                groupDataByAccountableEmployees = Object.entries(chartFunction.groupByAccountableEmployees(results, dataForAxisXInChart));
 
                 // Tính tổng/Trung bình cộng, xử lý tên mới, và showInreport các trường thông tin theo tùy chọn của người dùng
-                output = this.dataAfterAggregate(groupDataByAccountableEmployees);
+                output = chartFunction.dataAfterAggregate(groupDataByAccountableEmployees);
             }
-        }
 
-        /**
-         * Convert data, gom nhóm theo thời gian và người thực hiện, tính trung bình cộng các trường thông tin.
-         * dataForAxisXInChart là mảng chứa id chiều dữ liệu, kiểm tra id của chiều thời gian và người thực hiện có ở trong mảng dataForAxisXInChart hay không. 
-         * nếu id = 1 chiều thời gian, id = 2 là chiều người thực hiện
-         */
-        else if (dataForAxisXInChart.indexOf(1) === 0 && dataForAxisXInChart.indexOf(2) === 1 && dataForAxisXInChart.length === 2) {
-            if (newlistTaskEvaluation) {
+            /**
+             * Convert data, gom nhóm theo thời gian và người thực hiện, tính trung bình cộng các trường thông tin.
+             * dataForAxisXInChart là mảng chứa id chiều dữ liệu, kiểm tra id của chiều thời gian và người thực hiện có ở trong mảng dataForAxisXInChart hay không. 
+             * nếu id = 1 chiều thời gian, id = 2 là chiều người thực hiện
+             */
+            else if (dataForAxisXInChart.indexOf(1) === 0 && dataForAxisXInChart.indexOf(2) === 1 && dataForAxisXInChart.length === 2) {
                 // Gọi hàm separateResponsibleEmployees tách người thực hiện
-                let results = this.separateResponsibleEmployees(newlistTaskEvaluation);
+                let results = chartFunction.separateResponsibleEmployees(newlistTaskEvaluation);
 
                 // Gọi hàm groupByDate nhóm công việc theo thời gian
-                let groupDataByDate = this.groupByDate(results, dataForAxisXInChart);
+                let groupDataByDate = chartFunction.groupByDate(results, dataForAxisXInChart);
 
                 // Tiếp tục gom nhóm theo người thực hiện: thực hiện đính kèm ngày với tên người thực hiện
-                let groupDataByResponsibleEmployees = this.groupByResponsibleEmployees(groupDataByDate, dataForAxisXInChart)
+                let groupDataByResponsibleEmployees = chartFunction.groupByResponsibleEmployees(groupDataByDate, dataForAxisXInChart)
 
                 // Convert đầu ra các phân tử trong mảng cùng cấp và có cặp key, value
                 groupDataByResponsibleEmployees = groupDataByResponsibleEmployees.flatMap(x => Object.entries(x));
-                console.log('groupDataByResponsibleEmployees', groupDataByResponsibleEmployees)
+
                 // Tính tổng/Trung bình cộng, xử lý tên mới, và showInreport các trường thông tin theo tùy chọn của người dùng
-                output = this.dataAfterAggregate(groupDataByResponsibleEmployees);
-
+                output = chartFunction.dataAfterAggregate(groupDataByResponsibleEmployees);
             }
-        }
 
-        /**
-         * Convert data, gom nhóm theo người thực hiện và thời gian, tính tổng/ trung bình cộng các trường thông tin.
-         * dataForAxisXInChart là mảng chứa id chiều dữ liệu, kiểm tra id của chiều người thực hiện và thời gian có ở trong mảng dataForAxisXInChart hay không.
-         *  id = 2 là chiều người thực hiện, nếu id = 1 chiều thời gian
-        */
-        else if (dataForAxisXInChart.indexOf(1) === 1 && dataForAxisXInChart.indexOf(2) === 0 && dataForAxisXInChart.length === 2) {
-
-            if (newlistTaskEvaluation) {
+            /**
+             * Convert data, gom nhóm theo người thực hiện và thời gian, tính tổng/ trung bình cộng các trường thông tin.
+             * dataForAxisXInChart là mảng chứa id chiều dữ liệu, kiểm tra id của chiều người thực hiện và thời gian có ở trong mảng dataForAxisXInChart hay không.
+             * id = 2 là chiều người thực hiện, nếu id = 1 chiều thời gian
+             */
+            else if (dataForAxisXInChart.indexOf(1) === 1 && dataForAxisXInChart.indexOf(2) === 0 && dataForAxisXInChart.length === 2) {
                 // Gọi hàm separateResponsibleEmployees tách người thực hiện
-                let results = this.separateResponsibleEmployees(newlistTaskEvaluation);
+                let results = chartFunction.separateResponsibleEmployees(newlistTaskEvaluation);
 
                 // Gọi hàm groupByResponsibleEmployees nhóm công việc theo người thực hiện
-                let groupDataByResponsibleEmployees = this.groupByResponsibleEmployees(results, dataForAxisXInChart);
+                let groupDataByResponsibleEmployees = chartFunction.groupByResponsibleEmployees(results, dataForAxisXInChart);
 
                 // Sau khi gom nhóm theo người thực hiện thì gom nhóm theo thời gian 
-                let groupDataByDate = this.groupByDate(groupDataByResponsibleEmployees, dataForAxisXInChart)
+                let groupDataByDate = chartFunction.groupByDate(groupDataByResponsibleEmployees, dataForAxisXInChart)
 
                 // Convert đầu ra các phân tử trong mảng cùng cấp và có cặp key, value
                 groupDataByDate = groupDataByDate.flatMap(x => Object.entries(x));
 
                 // Tính tổng/Trung bình cộng, xử lý tên mới, và showInreport các trường thông tin theo tùy chọn của người dùng
-                output = this.dataAfterAggregate(groupDataByDate);
+                output = chartFunction.dataAfterAggregate(groupDataByDate);
             }
-        }
 
-        /**
-           * Convert data, gom nhóm theo thời gian và người phê duyệt, tính tổng/ trung bình cộng các trường thông tin.
-           * dataForAxisXInChart là mảng chứa id chiều dữ liệu, kiểm tra id của thời gian và người phê duyệt có ở trong mảng dataForAxisXInChart hay không.
-           * nếu id = 1 chiều thời gian, id = 3 là chiều người phê duyệt,
-        */
-        else if (dataForAxisXInChart.indexOf(1) === 0 && dataForAxisXInChart.indexOf(3) === 1 && dataForAxisXInChart.length === 2) {
-            if (newlistTaskEvaluation) {
+
+            /**
+             * Convert data, gom nhóm theo thời gian và người phê duyệt, tính tổng/ trung bình cộng các trường thông tin.
+             * dataForAxisXInChart là mảng chứa id chiều dữ liệu, kiểm tra id của thời gian và người phê duyệt có ở trong mảng dataForAxisXInChart hay không.
+             * nếu id = 1 chiều thời gian, id = 3 là chiều người phê duyệt,
+             */
+            else if (dataForAxisXInChart.indexOf(1) === 0 && dataForAxisXInChart.indexOf(3) === 1 && dataForAxisXInChart.length === 2) {
                 // Gọi hàm separateAccountableEmployees tách người phê duyệt
-                let results = this.separateAccountableEmployees(newlistTaskEvaluation);
+                let results = chartFunction.separateAccountableEmployees(newlistTaskEvaluation);
 
                 // Gọi hàm groupByDate nhóm công việc theo thời gian
-                let groupDataByDate = this.groupByDate(results, dataForAxisXInChart);
+                let groupDataByDate = chartFunction.groupByDate(results, dataForAxisXInChart);
 
                 // Sau khi gom nhóm theo thời gian thì gom nhóm theo người phê duyệt
-                let groupDataByAccountableEmployees = this.groupByAccountableEmployees(groupDataByDate, dataForAxisXInChart);
+                let groupDataByAccountableEmployees = chartFunction.groupByAccountableEmployees(groupDataByDate, dataForAxisXInChart);
 
                 // Convert đầu ra các phân tử trong mảng cùng cấp và có cặp key, value
                 groupDataByAccountableEmployees = groupDataByAccountableEmployees.flatMap(x => Object.entries(x));
 
                 // Tính tổng/Trung bình cộng, xử lý tên mới, và showInreport các trường thông tin theo tùy chọn của người dùng
-                output = this.dataAfterAggregate(groupDataByAccountableEmployees);
-
+                output = chartFunction.dataAfterAggregate(groupDataByAccountableEmployees);
             }
-        }
 
-        /**
-          * Convert data, gom nhóm theo người phê duyệt và thời gian, tính tổng/ trung bình cộng các trường thông tin.
-          * dataForAxisXInChart là mảng chứa id chiều dữ liệu, kiểm tra id của người phê duyệt và thời gian có ở trong mảng dataForAxisXInChart hay không.
-          * nếu id = 1 chiều thời gian, id = 3 là chiều người phê duyệt, id=3 nằm ở vị trí 0 trong mảng dataForAxisXInChart thì gom nhóm trước
-       */
-        else if (dataForAxisXInChart.indexOf(1) === 1 && dataForAxisXInChart.indexOf(3) === 0 && dataForAxisXInChart.length === 2) {
-            if (newlistTaskEvaluation) {
+
+            /**
+             * Convert data, gom nhóm theo người phê duyệt và thời gian, tính tổng/ trung bình cộng các trường thông tin.
+             * dataForAxisXInChart là mảng chứa id chiều dữ liệu, kiểm tra id của người phê duyệt và thời gian có ở trong mảng dataForAxisXInChart hay không.
+             * nếu id = 1 chiều thời gian, id = 3 là chiều người phê duyệt, id=3 nằm ở vị trí 0 trong mảng dataForAxisXInChart thì gom nhóm trước
+             */
+            else if (dataForAxisXInChart.indexOf(1) === 1 && dataForAxisXInChart.indexOf(3) === 0 && dataForAxisXInChart.length === 2) {
                 // Gọi hàm separateAccountableEmployees tách người phê duyệt
-                let results = this.separateAccountableEmployees(newlistTaskEvaluation);
+                let results = chartFunction.separateAccountableEmployees(newlistTaskEvaluation);
 
                 // Gọi hàm groupByAccountableEmployees nhóm công việc theo người phê duyệt
-                let groupDataByAccountableEmployees = this.groupByAccountableEmployees(results, dataForAxisXInChart);
+                let groupDataByAccountableEmployees = chartFunction.groupByAccountableEmployees(results, dataForAxisXInChart);
 
                 // Sau khi gom nhóm theo người phê duyệt thì tiếp tục gom nhóm theo thời gian
-                let groupDataByDate = this.groupByDate(groupDataByAccountableEmployees, dataForAxisXInChart)
+                let groupDataByDate = chartFunction.groupByDate(groupDataByAccountableEmployees, dataForAxisXInChart)
 
                 // Convert đầu ra các phân tử trong mảng cùng cấp và có cặp key, value
                 groupDataByDate = groupDataByDate.flatMap(x => Object.entries(x));
 
                 // Tính tổng/Trung bình cộng, xử lý tên mới, và showInreport các trường thông tin theo tùy chọn của người dùng
-                output = this.dataAfterAggregate(groupDataByDate);
-
+                output = chartFunction.dataAfterAggregate(groupDataByDate);
             }
-        }
 
-        else if (dataForAxisXInChart.indexOf(1) === 0 && dataForAxisXInChart.indexOf(2) === 1 && dataForAxisXInChart.indexOf(3) === 2 && dataForAxisXInChart.length === 3) {
-            if (newlistTaskEvaluation) {
+            // Người thực hiện -> Người phê duyệt
+            else if (dataForAxisXInChart.indexOf(2) === 0 && dataForAxisXInChart.indexOf(3) === 1 && dataForAxisXInChart.length === 2) {
+                // Danh sách người thực hiện và người phê duyệt từ server trả về là mảng nên tách ra 
+                let results = chartFunction.separateResponsibleEmployeesAndAccountableEmployees(newlistTaskEvaluation);
 
-                let results = this.separateResponsibleEmployeesAndAccountableEmployees(newlistTaskEvaluation);
+                // Nhóm công việc theo người thực hiện
+                let groupDataByResponsibleEmployees = chartFunction.groupByResponsibleEmployees(results, dataForAxisXInChart);
+
+                // Nhóm công việc theo người phê duyệt
+                let groupDataByAccountableEmployees = chartFunction.groupByAccountableEmployees(groupDataByResponsibleEmployees, dataForAxisXInChart);
+
+                groupDataByAccountableEmployees = groupDataByAccountableEmployees.flatMap(x => Object.entries(x));
+
+                // Tính tổng/Trung bình cộng, xử lý tên mới, và showInreport các trường thông tin theo tùy chọn của người dùng
+                output = chartFunction.dataAfterAggregate(groupDataByAccountableEmployees);
+            }
+
+            // Người phê duyệt -> Người thực hiện
+            else if (dataForAxisXInChart.indexOf(3) === 0 && dataForAxisXInChart.indexOf(2) === 1 && dataForAxisXInChart.length === 2) {
+                // Danh sách người thực hiện và người phê duyệt từ server trả về là mảng nên tách ra 
+                let results = chartFunction.separateResponsibleEmployeesAndAccountableEmployees(newlistTaskEvaluation);
+
+                // Nhóm công việc theo người phê duyệt
+                let groupDataByAccountableEmployees = chartFunction.groupByAccountableEmployees(results, dataForAxisXInChart);
+
+                // Nhóm công việc theo Người thực hiện
+                let groupDataByResponsibleEmployees = chartFunction.groupByResponsibleEmployees(groupDataByAccountableEmployees, dataForAxisXInChart);
+
+                groupDataByResponsibleEmployees = groupDataByResponsibleEmployees.flatMap(x => Object.entries(x));
+
+                // Tính tổng/Trung bình cộng, xử lý tên mới, và showInreport các trường thông tin theo tùy chọn của người dùng
+                output = chartFunction.dataAfterAggregate(groupDataByResponsibleEmployees);
+            }
+
+            // Time -> Người thực hiện -> người phê duyệt
+            else if (dataForAxisXInChart.indexOf(1) === 0 && dataForAxisXInChart.indexOf(2) === 1 && dataForAxisXInChart.indexOf(3) === 2 && dataForAxisXInChart.length === 3) {
+                // Danh sách người thực hiện và người thực hiện từ server trả về là mảng nên tách ra 
+                let results = chartFunction.separateResponsibleEmployeesAndAccountableEmployees(newlistTaskEvaluation);
 
                 // Gom nhóm công việc theo thời gian
-                let groupDataByDate = this.groupByDate(results, dataForAxisXInChart);
+                let groupDataByDate = chartFunction.groupByDate(results, dataForAxisXInChart);
 
                 // Sau đó gom nhóm theo người thực hiện
-                let groupDataByResponsibleEmployees = this.groupByResponsibleEmployees(groupDataByDate, dataForAxisXInChart);
+                let groupDataByResponsibleEmployees = chartFunction.groupByResponsibleEmployees(groupDataByDate, dataForAxisXInChart);
 
                 // Sau đó gom nhóm theo người phê duyệt
-                let groupByAccountableEmployees = this.groupByAccountableEmployees(groupDataByResponsibleEmployees, dataForAxisXInChart);
+                let groupByAccountableEmployees = chartFunction.groupByAccountableEmployees(groupDataByResponsibleEmployees, dataForAxisXInChart);
 
-                // groupByAccountableEmployees đang là mảng 3 cấp 
-                groupByAccountableEmployees = groupByAccountableEmployees.flatMap(x => x.map(y => y));
-                console.log('groupByAccountableEmployees', groupByAccountableEmployees)
-                groupByAccountableEmployees = groupByAccountableEmployees.flatMap(z => Object.entries(z))
+                // groupByAccountableEmployees đang là mảng 3 cấp-> convert 1 array câp
+                groupByAccountableEmployees = chartFunction.convertArray3dTo1d(groupByAccountableEmployees);
 
-                output = this.dataAfterAggregate(groupByAccountableEmployees);
+                // Tính tổng/Trung bình cộng, xử lý tên mới, và showInreport các trường thông tin theo tùy chọn của người dùng
+                output = chartFunction.dataAfterAggregate(groupByAccountableEmployees);
+            }
+
+            // Time -> Người phê duyệt -> người thực hiện
+            else if (dataForAxisXInChart.indexOf(1) === 0 && dataForAxisXInChart.indexOf(3) === 1 && dataForAxisXInChart.indexOf(2) === 2 && dataForAxisXInChart.length === 3) {
+                // Danh sách người thực hiện và người phê duyệt từ server trả về là mảng nên tách ra 
+                let results = chartFunction.separateResponsibleEmployeesAndAccountableEmployees(newlistTaskEvaluation);
+
+                // Gom nhóm công việc theo thời gian
+                let groupDataByDate = chartFunction.groupByDate(results, dataForAxisXInChart);
+
+                // Sau đó gom nhóm theo người phê duyệt
+                let groupDataByAccountableEmployees = chartFunction.groupByAccountableEmployees(groupDataByDate, dataForAxisXInChart);
+
+                // Sau đó gom nhóm theo người thực hiện
+                let groupDataByResponsibleEmployees = chartFunction.groupByResponsibleEmployees(groupDataByAccountableEmployees, dataForAxisXInChart);
+
+                groupDataByResponsibleEmployees = chartFunction.convertArray3dTo1d(groupDataByResponsibleEmployees);
+
+                // Tính tổng/Trung bình cộng, xử lý tên mới, và showInreport các trường thông tin theo tùy chọn của người dùng
+                output = chartFunction.dataAfterAggregate(groupDataByResponsibleEmployees);
+            }
+
+            // Người thực hiện -> time -> người phê duyệt
+            else if (dataForAxisXInChart.indexOf(2) === 0 && dataForAxisXInChart.indexOf(1) === 1 && dataForAxisXInChart.indexOf(3) === 2 && dataForAxisXInChart.length === 3) {
+                // Danh sách người thực hiện và người phê duyệt từ server trả về là mảng nên tách ra 
+                let results = chartFunction.separateResponsibleEmployeesAndAccountableEmployees(newlistTaskEvaluation);
+
+                // Nhóm công việc theo người thực hiện
+                let groupDataByResponsibleEmployees = chartFunction.groupByResponsibleEmployees(results, dataForAxisXInChart);
+
+                // Sau đó gom nhóm công việc theo thời gian
+                let groupDataByDate = chartFunction.groupByDate(groupDataByResponsibleEmployees, dataForAxisXInChart);
+
+                // Sau đó gom nhóm công việc theo người phê duyệt
+                let groupDataByAccountableEmployees = chartFunction.groupByAccountableEmployees(groupDataByDate, dataForAxisXInChart);
+
+                groupDataByAccountableEmployees = chartFunction.convertArray3dTo1d(groupDataByAccountableEmployees);
+
+                // Tính tổng/Trung bình cộng, xử lý tên mới, và showInreport các trường thông tin theo tùy chọn của người dùng
+                output = chartFunction.dataAfterAggregate(groupDataByAccountableEmployees);
+            }
+
+            // người thực hiện -> Người phê duyệt -> time
+            else if (dataForAxisXInChart.indexOf(2) === 0 && dataForAxisXInChart.indexOf(3) === 1 && dataForAxisXInChart.indexOf(1) === 2 && dataForAxisXInChart.length === 3) {
+                // Danh sách người thực hiện và người phê duyệt từ server trả về là mảng nên tách ra 
+                let results = chartFunction.separateResponsibleEmployeesAndAccountableEmployees(newlistTaskEvaluation);
+
+                // Nhóm công việc theo người thực hiện
+                let groupDataByResponsibleEmployees = chartFunction.groupByResponsibleEmployees(results, dataForAxisXInChart);
+
+                // Sau đó gom nhóm công việc theo người phê duyệt
+                let groupDataByAccountableEmployees = chartFunction.groupByAccountableEmployees(groupDataByResponsibleEmployees, dataForAxisXInChart);
+
+                // Sau đó gom nhóm công việc theo thời gian
+                let groupDataByDate = chartFunction.groupByDate(groupDataByAccountableEmployees, dataForAxisXInChart);
+
+                // Convert thành mảng 1 cấp
+                groupDataByDate = chartFunction.convertArray3dTo1d(groupDataByDate);
+
+                // Tính tổng/Trung bình cộng, xử lý tên mới, và showInreport các trường thông tin theo tùy chọn của người dùng
+                output = chartFunction.dataAfterAggregate(groupDataByDate);
+            }
+
+
+            // Người phê duyệt -> time -> người thực hiện
+            else if (dataForAxisXInChart.indexOf(3) === 0 && dataForAxisXInChart.indexOf(1) === 1 && dataForAxisXInChart.indexOf(2) === 2 && dataForAxisXInChart.length === 3) {
+                // Danh sách người thực hiện và người phê duyệt từ server trả về là mảng nên tách ra 
+                let results = chartFunction.separateResponsibleEmployeesAndAccountableEmployees(newlistTaskEvaluation);
+
+                // Gom nhóm công việc theo người phê duyệt
+                let groupDataByAccountableEmployees = chartFunction.groupByAccountableEmployees(results, dataForAxisXInChart);
+
+                // Sau đó gom nhóm công việc theo thời gian
+                let groupDataByDate = chartFunction.groupByDate(groupDataByAccountableEmployees, dataForAxisXInChart);
+
+                // Nhóm công việc theo người thực hiện
+                let groupDataByResponsibleEmployees = chartFunction.groupByResponsibleEmployees(groupDataByDate, dataForAxisXInChart);
+
+                groupDataByResponsibleEmployees = chartFunction.convertArray3dTo1d(groupDataByResponsibleEmployees);
+
+                // Tính tổng/Trung bình cộng, xử lý tên mới, và showInreport các trường thông tin theo tùy chọn của người dùng
+                output = chartFunction.dataAfterAggregate(groupDataByResponsibleEmployees);
+            }
+
+            // Người phê duyệt -> Người thực hiện -> time 
+            else if (dataForAxisXInChart.indexOf(3) === 0 && dataForAxisXInChart.indexOf(2) === 1 && dataForAxisXInChart.indexOf(1) === 2 && dataForAxisXInChart.length === 3) {
+                // Danh sách người thực hiện và người phê duyệt từ server trả về là mảng nên tách ra 
+                let results = chartFunction.separateResponsibleEmployeesAndAccountableEmployees(newlistTaskEvaluation);
+
+                // Gom nhóm công việc theo người phê duyệt
+                let groupDataByAccountableEmployees = chartFunction.groupByAccountableEmployees(results, dataForAxisXInChart);
+
+                // Nhóm công việc theo người thực hiện
+                let groupDataByResponsibleEmployees = chartFunction.groupByResponsibleEmployees(groupDataByAccountableEmployees, dataForAxisXInChart);
+
+                // Sau đó gom nhóm công việc theo thời gian
+                let groupDataByDate = chartFunction.groupByDate(groupDataByResponsibleEmployees, dataForAxisXInChart);
+
+                groupDataByDate = chartFunction.convertArray3dTo1d(groupDataByDate);
+
+                // Tính tổng/Trung bình cộng, xử lý tên mới, và showInreport các trường thông tin theo tùy chọn của người dùng
+                output = chartFunction.dataAfterAggregate(groupDataByDate);
             }
         }
 
+
         if (output) {
+            console.log('output', output)
             // tách data vẽ biểu đồ:  cột với đường ra riêng, tròn ra riêng
-            let separateDataChart = this.separateDataChart(output); // gọi hàm tách data
+            let separateDataChart = chartFunction.separateDataChart(output); // gọi hàm tách data
             pieChartData = separateDataChart.pieChartData; // Dữ liệu vẽ biểu đồ tròn
             barLineChartData = separateDataChart.barLineChartData; // Dữ liệu vẽ biểu đồ cột và đường
 
-
             // convert Data pieChart sang dạng C3js
             if (pieChartData && pieChartData.length > 0) {
-                pieDataConvert = this.convertDataPieChartOneWay(pieChartData);
+                pieChartDataConvert = chartFunction.convertDataPieChart(pieChartData);
+            }
+
+            // Convert Data vẽ biểu đồ cột và đường dạng c3js
+            if (barLineChartData && barLineChartData.length > 0) {
+                barAndLineDataChartConvert = chartFunction.convertDataBarAndLineChart(barLineChartData);
             }
         }
 
@@ -561,20 +420,32 @@ class TaskReportViewForm extends Component {
 
                     {/* Biểu đồ đường và cột */}
                     {
-                        barLineChartData.length > 0 && <LineBarChart barLineChartData={barLineChartData} />
+                        barAndLineDataChartConvert && <LineBarChart barLineChartData={barAndLineDataChartConvert} dataForAxisXInChart={dataForAxisXInChart} />
                     }
 
                     {/* Biểu đồ tròn  */}
                     <div className="row">
                         {
-                            pieDataConvert && pieDataConvert.map((item, index) => (
-                                Object.entries(item).map(([code, data]) => (
-                                    <div key={index} className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                                        <div className="pieChart">
-                                            <PieChart pieChartData={data} namePieChart={code} />
-                                        </div>
-                                    </div>
-                                ))
+                            pieChartDataConvert && pieChartDataConvert.map((item, index) => (
+                                Object.entries(item).map(([code, data]) => {
+                                    if (data.length > 6) {
+                                        return (
+                                            <div key={index} className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <div className="pieChart">
+                                                    <PieChart pieChartData={data} namePieChart={code} dataForAxisXInChart={dataForAxisXInChart} />
+                                                </div>
+                                            </div>
+                                        )
+                                    } else {
+                                        return (
+                                            <div key={index} className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                                <div className="pieChart">
+                                                    <PieChart pieChartData={data} namePieChart={code} dataForAxisXInChart={dataForAxisXInChart} />
+                                                </div>
+                                            </div>
+                                        )
+                                    }
+                                })
                             ))
                         }
                     </div>
@@ -626,7 +497,7 @@ class TaskReportViewForm extends Component {
                                         </thead>
                                         <tbody>
                                             {
-                                                tasks.listTaskEvaluations && tasks.listTaskEvaluations.map((item, key) => {
+                                                listTaskEvaluations && listTaskEvaluations.map((item, key) => {
                                                     //Lấy tên người thực hiện 
                                                     let getNameResponsibleEmployees = item.responsibleEmployees.map(x1 => x1.name);
 
@@ -687,7 +558,7 @@ class TaskReportViewForm extends Component {
                                 </div>
                                 {reports.isLoading ?
                                     <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                                    tasks.listTaskEvaluations && tasks.listTaskEvaluations.length === 0 && <div className="table-info-panel" style={{ width: '100%' }}>{translate('confirm.no_data')}</div>}
+                                    listTaskEvaluations && listTaskEvaluations.length === 0 && <div className="table-info-panel" style={{ width: '100%' }}>{translate('confirm.no_data')}</div>}
                             </div>
                         </div>
                     </div>

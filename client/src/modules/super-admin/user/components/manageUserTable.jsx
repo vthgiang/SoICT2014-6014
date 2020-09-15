@@ -121,7 +121,7 @@ class ManageUserTable extends Component {
 
                 {user.isLoading ?
                     <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                    user.listPaginate.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                    user.listPaginate && user.listPaginate.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                 }
 
                 {/* PaginateBar */}

@@ -21,11 +21,11 @@ exports.getAllEducationPrograms = async (company) => {
  * @company : Id công ty
  */
 exports.searchEducationPrograms = async (params, company) => {
-    var keySearch = {
+    let keySearch = {
         company: company
     }
-    // Bắt sựu kiện đơn vị tìm kiếm khác null
-    if (params.organizationalUnit !== undefined) {
+    // Bắt sựu kiện tìm kiếm theo đơn vị áp dụng
+    if (params.organizationalUnit) {
         keySearch = {
             ...keySearch,
             applyForOrganizationalUnits: {
@@ -33,7 +33,8 @@ exports.searchEducationPrograms = async (params, company) => {
             }
         }
     }
-    if (params.position !== undefined) {
+    // Bắt sựu kiện tìm kiếm theo chức vụ áp dụng
+    if (params.position) {
         keySearch = {
             ...keySearch,
             applyForPositions: {
@@ -41,8 +42,9 @@ exports.searchEducationPrograms = async (params, company) => {
             }
         }
     }
-    var totalList = await EducationProgram.count(keySearch);
-    var educations = await EducationProgram.find(keySearch)
+
+    let totalList = await EducationProgram.countDocuments(keySearch);
+    let educations = await EducationProgram.find(keySearch)
         .skip(params.page).limit(params.limit)
         .populate([{
             path: 'applyForOrganizationalUnits',
@@ -51,20 +53,24 @@ exports.searchEducationPrograms = async (params, company) => {
             path: 'applyForPositions',
             model: Role
         }]);
-    var listEducations = []
+    let listEducations = []
+
     for (let n in educations) {
-        let total = await Course.count({
+        let total = await Course.countDocuments({
             educationProgram: educations[n]._id
         });
+
         let listCourses = await Course.find({
             educationProgram: educations[n]._id
         }).skip(0).limit(5)
+
         listEducations[n] = {
             ...educations[n]._doc,
             listCourses: listCourses,
             totalList: total
         }
     }
+
     return {
         totalList,
         listEducations
@@ -77,7 +83,7 @@ exports.searchEducationPrograms = async (params, company) => {
  * @company : Id công ty
  */
 exports.createEducationProgram = async (data, company) => {
-    var isEducationProgram = await EducationProgram.findOne({
+    let isEducationProgram = await EducationProgram.findOne({
         programId: data.programId,
         company: company
     }, {
@@ -86,7 +92,7 @@ exports.createEducationProgram = async (data, company) => {
     if (isEducationProgram !== null) {
         return 'have_exist'
     } else {
-        var createEducation = await EducationProgram.create({
+        let createEducation = await EducationProgram.create({
             company: company,
             name: data.name,
             programId: data.programId,
@@ -117,7 +123,7 @@ exports.createEducationProgram = async (data, company) => {
  * @id : Id chương trình đào tạo cần xoá
  */
 exports.deleteEducationProgram = async (id) => {
-    var educationDelete = await EducationProgram.findOneAndDelete({
+    let educationDelete = await EducationProgram.findOneAndDelete({
         _id: id
     });
     return educationDelete;
@@ -129,7 +135,7 @@ exports.deleteEducationProgram = async (id) => {
  * @data : Dữ liệu chỉnh sửa chương trình đào tạo
  */
 exports.updateEducationProgram = async (id, data) => {
-    var eduacationChange = {
+    let eduacationChange = {
         name: data.name,
         programId: data.programId,
         applyForOrganizationalUnits: data.organizationalUnit,
@@ -151,7 +157,7 @@ exports.updateEducationProgram = async (id, data) => {
         model: Role
     }]);
 
-    let totalList = await Course.count({
+    let totalList = await Course.countDocuments({
         educationProgram: updateEducation._id
     });
     return {

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { taskManagementActions } from '../../task-management/redux/actions';
 
-import { SelectBox } from '../../../../common-components/index';
+import { SelectMulti } from '../../../../common-components/index';
 
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -43,15 +43,7 @@ class TaskStatusChart extends Component {
             }
         ]
 
-        // Sao lưu dữ liệu để sử dụng khi dữ liêu thay đổi
-        this.TASK_PROPS = {
-            responsibleTasks: null,
-            accountableTasks: null,
-            consultedTasks: null,
-            informedTasks: null,
-            creatorTasks: null,
-            organizationUnitTasks: null,
-        }
+        this.DATA_SEARCH = [this.ROLE.RESPONSIBLE]
 
         this.state = {
             aPeriodOfTime: true,
@@ -59,7 +51,7 @@ class TaskStatusChart extends Component {
 
             dataStatus: this.DATA_STATUS.QUERYING,
 
-            role: this.ROLE.RESPONSIBLE,
+            role: this.DATA_SEARCH,
 
             willUpdate: false,       // Khi true sẽ cập nhật dữ liệu vào props từ redux
             callAction: false
@@ -168,21 +160,6 @@ class TaskStatusChart extends Component {
                 return false;           // Đang lấy dữ liệu, ko cần render lại
             };
 
-            /** Sao lưu để sử dụng khi dữ liệu bị thay đổi
-             *  (Lý do: khi đổi role task, muốn sử dụng dữ liệu cũ nhưng trước đó dữ liệu trong kho redux đã bị thay đổi vì service được gọi ở 1 nơi khác)
-             */
-            if (nextState.willUpdate) {
-                this.TASK_PROPS = {
-                    responsibleTasks: nextProps.tasks.responsibleTasks,
-                    accountableTasks: nextProps.tasks.accountableTasks,
-                    consultedTasks: nextProps.tasks.consultedTasks,
-                    informedTasks: nextProps.tasks.informedTasks,
-                    creatorTasks: nextProps.tasks.creatorTasks,
-                    organizationUnitTasks: nextProps.tasks.organizationUnitTasks,
-
-                }
-            }
-
             this.setState(state => {
                 return {
                     ...state,
@@ -221,34 +198,39 @@ class TaskStatusChart extends Component {
     }
 
     handleSelectRole = (value) => {
+        let role = value.map(item => Number(item));
+        this.DATA_SEARCH = role
+    }
+
+    handleSearchData = () => {
         this.setState(state => {
             return {
                 ...state,
-                role: Number(value[0])
+                role: this.DATA_SEARCH
             }
         })
     }
 
     // Thiết lập dữ liệu biểu đồ
     setDataPieChart = () => {
-        const { translate } = this.props;
+        const { translate, tasks } = this.props;
 
         let dataPieChart, numberOfInprocess = 0, numberOfWaitForApproval = 0, numberOfFinished = 0, numberOfDelayed = 0, numberOfCanceled = 0;
-        let listTask;
+        let listTask = [], listTaskByRole = [];
         if (this.props.TaskOrganizationUnitDashboard) {
-            listTask = this.TASK_PROPS.organizationUnitTasks;
+            listTask = tasks.organizationUnitTasks;
         }
-        else if (this.TASK_PROPS.responsibleTasks && this.TASK_PROPS.accountableTasks && this.TASK_PROPS.consultedTasks && this.TASK_PROPS.informedTasks && this.TASK_PROPS.creatorTasks) {
-            if (this.state.role === this.ROLE.RESPONSIBLE) {
-                listTask = this.TASK_PROPS.responsibleTasks;
-            } else if (this.state.role === this.ROLE.ACCOUNTABLE) {
-                listTask = this.TASK_PROPS.accountableTasks;
-            } else if (this.state.role === this.ROLE.CONSULTED) {
-                listTask = this.TASK_PROPS.consultedTasks;
-            } else if (this.state.role === this.ROLE.INFORMED) {
-                listTask = this.TASK_PROPS.informedTasks;
-            } else if (this.state.role === this.ROLE.CREATOR) {
-                listTask = this.TASK_PROPS.creatorTasks;
+        else if (tasks.responsibleTasks && tasks.accountableTasks && tasks.consultedTasks && tasks.informedTasks && tasks.creatorTasks) {
+            listTaskByRole[this.ROLE.RESPONSIBLE] = tasks.responsibleTasks;
+            listTaskByRole[this.ROLE.ACCOUNTABLE] = tasks.accountableTasks;
+            listTaskByRole[this.ROLE.CONSULTED] = tasks.consultedTasks;
+            listTaskByRole[this.ROLE.INFORMED] = tasks.informedTasks;
+            listTaskByRole[this.ROLE.CREATOR] = tasks.creatorTasks;
+
+            if (this.state.role.length !== 0) {
+                this.state.role.map(role => {
+                    listTask = listTask.concat(listTaskByRole[role]);
+                })
             }
         };
 
@@ -329,19 +311,20 @@ class TaskStatusChart extends Component {
         return (
             <React.Fragment>
                 {!TaskOrganizationUnitDashboard &&
-                    <section className="form-inline" style={{ textAlign: "right" }}>
+                    <section className="form-inline">
                         <div className="form-group">
                             <label>{translate('task.task_management.role')}</label>
-                            <SelectBox
+                            <SelectMulti
                                 id={`roleOfStatusTaskSelectBox`}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
                                 items={this.ROLE_SELECTBOX}
-                                multiple={false}
+                                multiple={true}
                                 onChange={this.handleSelectRole}
-                                value={this.ROLE_SELECTBOX[0].value}
+                                options={{ allSelectedText: translate('task.task_management.select_all_status') }}
+                                value={this.DATA_SEARCH}
                             />
                         </div>
+                    
+                        <button   button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
                     </section>
                 }
 

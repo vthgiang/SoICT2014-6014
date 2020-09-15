@@ -2,15 +2,14 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 // Tạo bảng datatable chấm công
-const TimesheetsSchema = new Schema({
-    employee: {
-        type: Schema.Types.ObjectId,
-        ref: 'employees',
-        required: true,
-    },
+const TimesheetSchema = new Schema({
     company: {
         type: Schema.Types.ObjectId,
-        ref: 'companies',
+        ref: "Company",
+    },
+    employee: {
+        type: Schema.Types.ObjectId,
+        ref: 'Employee',
         required: true,
     },
     month: {
@@ -27,4 +26,8 @@ const TimesheetsSchema = new Schema({
     timestamps: true,
 });
 
-module.exports = Timesheets = (db) => db.model("timesheets", TimesheetsSchema);
+module.exports = (db) => {
+    if (!db.models.Timesheet)
+        return db.model('Timesheet', TimesheetSchema);
+    return db.models.Timesheet;
+}

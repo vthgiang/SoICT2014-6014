@@ -23,7 +23,7 @@ class PaginateBar extends Component {
     }
 
     setPaginate = async () => {
-        const {id ="search-page"} = this.props;
+        const { id = "search-page" } = this.props;
         await window.$(`#paginate-${id}`).collapse("hide");
         await this.props.func(this.state.page);
     }
@@ -39,7 +39,7 @@ class PaginateBar extends Component {
     }
 
     render() {
-        const { pageTotal, currentPage, translate, func, id="search-page" } = this.props;
+        const { pageTotal, currentPage, translate, func, id = "search-page" } = this.props;
         var items = [];
 
         if (typeof pageTotal !== "undefined" && pageTotal > 5) {
@@ -73,24 +73,24 @@ class PaginateBar extends Component {
         return (
             <React.Fragment>
                 {
-                    pageTotal !== 0 &&
-                    <div className="row" style={{paddingRight: '15px'}}>
-                        <div className="pull-right">
-                            <ul className="pagination" style={{ marginTop: '20px' }}>
-                                {currentPage !== 1 && <li><a href="#abc" onClick={() => func(currentPage - 1)}>{"<"}</a></li>}
-                                {items}
-                                {currentPage !== pageTotal && <li><a href="#abc" onClick={() => func(currentPage + 1)}>{">"}</a></li>}
-                            </ul>
-                            <div id={`paginate-${id}`} className="form-group collapse search-page">
-                                <input className="form-control" type="number" min="1" max={pageTotal} name='page' onChange={this.inputChange} onKeyUp={this.handleEnterSetting}/>
-                                <button
-                                    type="button"
-                                    className="pull-right btn btn-success"
-                                    onClick={this.setPaginate}
-                                >{translate('form.search')}</button>
+                    (pageTotal && pageTotal !== 0) ?
+                        <div className="row" style={{ paddingRight: '15px' }}>
+                            <div className="pull-right">
+                                <ul className="pagination" style={{ marginTop: '20px' }}>
+                                    {currentPage !== 1 && <li><a href="#abc" onClick={() => func(currentPage - 1)}>{"<"}</a></li>}
+                                    {items}
+                                    {currentPage !== pageTotal && <li><a href="#abc" onClick={() => func(currentPage + 1)}>{">"}</a></li>}
+                                </ul>
+                                <div id={`paginate-${id}`} className="form-group collapse search-page">
+                                    <input className="form-control" type="number" min="1" max={pageTotal} name='page' onChange={this.inputChange} onKeyUp={this.handleEnterSetting} />
+                                    <button
+                                        type="button"
+                                        className="pull-right btn btn-success"
+                                        onClick={this.setPaginate}
+                                    >{translate('form.search')}</button>
+                                </div>
                             </div>
-                        </div>
-                    </div>
+                        </div> : null
                 }
             </React.Fragment>
         );

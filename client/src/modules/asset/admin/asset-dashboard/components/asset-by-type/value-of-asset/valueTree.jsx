@@ -41,8 +41,10 @@ class ValueTree extends Component {
         let chart = [];
         if (listAssets) {
             listAssets.map(asset => {
-                let idx = idAssetType.indexOf(asset.assetType);
-                countAssetValue[idx] += asset.cost;
+                for (let k in asset.assetType) {
+                    let idx = idAssetType.indexOf(asset.assetType[k]._id);
+                    countAssetValue[idx] += asset.cost;
+                }
             })
             for (let i in assetType) {
 
