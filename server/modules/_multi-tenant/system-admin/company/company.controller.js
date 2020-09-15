@@ -1,6 +1,5 @@
 const CompanyServices = require('./company.service');
-const { LogInfo, LogError } = require(SERVER_LOGS_DIR);
-const { ROOT_ROLES: PREDEFINED_ROLES, CATEGORY_LINKS } = require(SERVER_SEED_DIR+'/terms');
+const Logger = require(`${SERVER_LOGS_DIR}/_multi-tenant`);
 
 /**
  * Lấy danh sách tất cả các công ty
@@ -9,14 +8,15 @@ exports.getAllCompanies = async (req, res) => {
     try {
         const companies = await CompanyServices.getAllCompanies(req.query);
         
-        LogInfo(req.user.email, 'GET_COMPANIES');
+        Logger.info(req.user.email, 'get_companies_success');
         res.status(200).json({
             success: true,
             messages: ['get_companies_success'],
             content: companies
         });
     } catch (error) {
-        LogInfo(req.user.email, 'GET_COMPANIES');
+        
+        Logger.error(req.user.email, 'get_companies_faile');
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['get_companies_faile'],
@@ -33,14 +33,14 @@ exports.getCompany = async (req, res) => {
     try {
         const company = await CompanyServices.getCompany(req.params.companyId);
         
-        LogInfo(req.user.email, 'SHOW_COMPANY_INFORMATION');
+        Logger.info(req.user.email, 'SHOW_COMPANY_INFORMATION');
         res.status(200).json({
             success: true,
             messages: ['show_company_success'],
             content: company
         });
     } catch (error) {
-        LogError(req.user.email, 'SHOW_COMPANY_INFORMATION');
+        Logger.error(req.user.email, 'SHOW_COMPANY_INFORMATION');
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['show_company_faile'],
@@ -64,7 +64,7 @@ exports.createCompany = async (req, res) => {
         
         const resCompany = await CompanyServices.getCompany(company._id);
         
-        LogInfo(req.user.email, 'CREATE_COMPANY');
+        Logger.info(req.user.email, 'CREATE_COMPANY');
         res.status(200).json({
             success: true,
             messages: ['create_company_success'],
@@ -72,7 +72,7 @@ exports.createCompany = async (req, res) => {
         });
     } catch (error) {
 
-        LogError(req.user.email, 'CREATE_COMPANY');
+        Logger.error(req.user.email, 'CREATE_COMPANY');
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['create_company_faile'],
@@ -93,14 +93,14 @@ exports.editCompany = async (req, res) => {
 
         const resCompany = await CompanyServices.getCompany(company._id);
 
-        LogInfo(req.user.email, 'EDIT_COMPANY');
+        Logger.info(req.user.email, 'EDIT_COMPANY');
         res.status(200).json({
             success: true,
             messages: ['edit_company_success'],
             content: resCompany
         });
     } catch (error) {
-        LogError(req.user.email, 'EDIT_COMPANY');
+        Logger.error(req.user.email, 'EDIT_COMPANY');
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['edit_company_faile'],
@@ -118,14 +118,14 @@ exports.getImportConfiguraion =  async (req, res) => {
     try {
         const data = await CompanyServices.getImportConfiguraion(req.query.type, req.user.company._id);
 
-        await LogInfo(req.user.email, 'GET_IMPORT_CONFIGURATION', req.user.company);
+        await Logger.info(req.user.email, 'GET_IMPORT_CONFIGURATION', req.user.company);
         res.status(200).json({ 
             success: true, 
             messages: ['get_import_configuration_success'], 
             content: data
         });
     } catch (error) {
-        await LogError(req.user.email, 'GET_IMPORT_CONFIGURATION', req.user.company);
+        await Logger.error(req.user.email, 'GET_IMPORT_CONFIGURATION', req.user.company);
         res.status(400).json({
             success: false, 
             messages: ['get_import_configuration_faile'], 
@@ -143,14 +143,14 @@ exports.createImportConfiguraion = async (req, res) => {
     try {
         const data = await CompanyServices.createImportConfiguraion(req.body, req.user.company._id);
 
-        await LogInfo(req.user.email, 'CREATE_IMPORT_CONFIGURATION', req.user.company);
+        await Logger.info(req.user.email, 'CREATE_IMPORT_CONFIGURATION', req.user.company);
         res.status(200).json({ 
             success: true, 
             messages: ['create_import_configuration_success'], 
             content: data
         });
     } catch (error) {
-        await LogError(req.user.email, 'CRETATE_IMPORT_CONFIGURATION', req.user.company);
+        await Logger.error(req.user.email, 'CRETATE_IMPORT_CONFIGURATION', req.user.company);
         res.status(400).json({
             success: false, 
             messages: ['create_import_configuration_faile'], 
@@ -168,14 +168,14 @@ exports.editImportConfiguraion =  async (req, res) => {
     try {
         const data = await CompanyServices.editImportConfiguraion(req.params.id, req.body);
 
-        await LogInfo(req.user.email, 'EDIT_IMPORT_CONFIGURATION', req.user.company);
+        await Logger.info(req.user.email, 'EDIT_IMPORT_CONFIGURATION', req.user.company);
         res.status(200).json({ 
             success: true, 
             messages: ['edit_import_configuration_success'], 
             content: data
         });
     } catch (error) {
-        await LogError(req.user.email, 'EDIT_IMPORT_CONFIGURATION', req.user.company);
+        await Logger.error(req.user.email, 'EDIT_IMPORT_CONFIGURATION', req.user.company);
         res.status(400).json({
             success: false, 
             messages: ['edit_import_configuration_faile'], 

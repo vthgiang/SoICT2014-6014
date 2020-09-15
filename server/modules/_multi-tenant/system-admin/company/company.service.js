@@ -2,12 +2,13 @@ const {
     Company, Link, SystemLink, Component,
     SystemComponent, Privilege, Role, RootRole, 
     RoleType, User, UserRole, ImportConfiguraion 
-} = require(SERVER_MODELS_DIR).schema;
+} = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
 
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const generator = require("generate-password");
-const Terms = require(SERVER_SEED_DIR+"/terms");
+const Terms = require(`${SERVER_SEED_DIR}/terms`);
+const {connect} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 /**
  * Lấy danh sách tất cả các công ty
@@ -18,26 +19,19 @@ exports.getAllCompanies = async (query) => {
     let limit = query.limit;
     
     if (!page && !limit) {
-        return await Company
-            .find()
-            .populate([
-                { path: "links", model: Link },
-                { path: "superAdmin", model: User, select: '_id name email' }
-            ]);
+        return await Company(connect(DB_CONNECTION, process.env.DB_NAME))
+            .find();
     } else {
         let option = (query.key && query.value)
                         ? { [`${query.key}`] : new RegExp(query.value, "i") }
                         : {};
 
-        return await Company.paginate(
+        return await Company(connect(DB_CONNECTION, process.env.DB_NAME))
+        .paginate(
             option, 
             {   
                 page, 
-                limit, 
-                populate: [
-                    { path: 'links', model: Link },
-                    { path: "superAdmin", model: User, select: '_id name email' }
-                ]
+                limit
             }
         );
     }
@@ -49,12 +43,8 @@ exports.getAllCompanies = async (query) => {
  */
 exports.getCompany = async (id) => {
 
-    return await Company
-        .findById(id)
-        .populate([
-            { path: "links", model: Link },
-            { path: "superAdmin", model: User, select: '_id name email' }
-        ]);
+    return await Company(connect(DB_CONNECTION, process.env.DB_NAME))
+        .findById(id);
 }
 
 /**
@@ -63,11 +53,12 @@ exports.getCompany = async (id) => {
  */
 exports.createCompany = async (data) => {
     
-    return await Company.create({
-        name: data.name,
-        description: data.description,
-        shortName: data.shortName
-    });
+    return await Company(connect(DB_CONNECTION, process.env.DB_NAME))
+        .create({
+            name: data.name,
+            description: data.description,
+            shortName: data.shortName
+        });
 }
 
 /**
@@ -77,7 +68,7 @@ exports.createCompany = async (data) => {
  */
 exports.editCompany = async (id, data) => {
     
-    let company = await Company.findById(id);
+    let company = await Company(connect(DB_CONNECTION, process.env.DB_NAME)).findById(id);
     if (!company) throw ['company_not_found'];
 
     company.name = data.name;
@@ -100,19 +91,22 @@ exports.editCompany = async (id, data) => {
  * @ViceDean phó đơn vị
  * @Employee nhân viên đơn vị
  */
-exports.createCompanyRootRoles = async (companyId) => {
+exports.createCompanyRootRoles = async (portal) => {
+    //Tạo các role root theo mẫu từ systemadmin và roleType
+    let dataRoleType = await RoleType(connect(DB_CONNECTION, process.env.DB_NAME)).find()
+    await RoleType(connect(DB_CONNECTION, portal)).insertMany(dataRoleType.map(role=>{
+        return { name: role.name }
+    }));
+    let rootType = await RoleType(connect(DB_CONNECTION, portal)).findOne({name: Terms.ROLE_TYPES.ROOT });
 
-    let data = await RootRole.find();
-    let rootType = await RoleType.findOne({ name: Terms.ROLE_TYPES.ROOT });
-    let roles = await data.map(role => {
-        return {
-            name: role.name,
-            company: companyId,
-            type: rootType._id
-        };
-    })
+    let admin = await Role(connect(DB_CONNECTION, portal)).create({ type: rootType._id, name:  Terms.ROOT_ROLES.ADMIN.name });
+    let superAdmin = await Role(connect(DB_CONNECTION, portal)).create({ type: rootType._id, name: Terms.ROOT_ROLES.SUPER_ADMIN.name, parents: [roleAdmin._id] });
 
-    return await Role.insertMany(roles);
+    let dean = await Role(connect(DB_CONNECTION, portal)).create({ type: rootType._id, name:  Terms.ROOT_ROLES.DEAN.name });
+    let viceDean = await Role(connect(DB_CONNECTION, portal)).create({ type: rootType._id, name: Terms.ROOT_ROLES.VICE_DEAN.name, parents: [roleAdmin._id] });
+    let employee = await Role(connect(DB_CONNECTION, portal)).create({ type: rootType._id, name:  Terms.ROOT_ROLES.EMPLOYEE.name });
+
+    return [admin, superAdmin, dean, viceDean, employee];
 }
 
 /**
