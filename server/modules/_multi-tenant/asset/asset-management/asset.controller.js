@@ -1,9 +1,6 @@
 const AssetService = require('./asset.service');
-const { LogInfo, LogError } = require('../../../logs');
-const { Console } = require('winston/lib/winston/transports');
-const {
-    Asset,
-} = require('../../../models').schema;
+const Logger = require(`${SERVER_LOGS_DIR}/_multi-tenant`);
+
 
 /**
  * Lấy danh sách tài sản
@@ -12,9 +9,9 @@ exports.searchAssetProfiles = async (req, res) => {
     try {
         let data;
         if (req.query.type === "get-building-as-tree") {
-            data = await AssetService.getListBuildingAsTree(req.user.company._id);
+            data = await AssetService.getListBuildingAsTree(req.portal);
         } else if (!req.query.page && !req.query.limit) {
-            data = await AssetService.getAssets(req.user.company._id, false);
+            data = await AssetService.getAssets(req.portal, false);
         } else {
             let params = {
                 code: req.query.code,
@@ -44,20 +41,20 @@ exports.searchAssetProfiles = async (req, res) => {
                 incidentStatus: req.query.incidentStatus,
                 incidentType: req.query.incidentType,
             }
-            data = await AssetService.searchAssetProfiles(params, req.user.company._id);
+            data = await AssetService.searchAssetProfiles(params, req.portal);
 
         }
 
-        // data = await AssetService.searchAssetProfiles(params, req.user.company._id);
+        // data = await AssetService.searchAssetProfiles(params, req.portal);
 
-        await LogInfo(req.user.email, 'GET_ASSETS', req.user.company);
+        await Logger.info(req.user.email, 'GET_ASSETS', req.portal);
         res.status(200).json({
             success: true,
             messages: ["get_list_asset_success"],
             content: data
         });
     } catch (error) {
-        await LogError(req.user.email, 'GET_ASSETS', req.user.company);
+        await Logger.error(req.user.email, 'GET_ASSETS', req.portal);
         res.status(400).json({
             success: false,
             messages: ["get_list_asset_false"],
@@ -81,15 +78,15 @@ exports.createAsset = async (req, res) => {
         let file = req.files.file;
         let fileInfo = { file, avatar };
 
-        let data = await AssetService.createAsset(req.body, req.user.company._id, fileInfo);
-        await LogInfo(req.user.email, 'CREATE_ASSET', req.user.company);
+        let data = await AssetService.createAsset(req.body, req.portal, fileInfo);
+        await Logger.info(req.user.email, 'CREATE_ASSET', req.portal);
         res.status(200).json({
             success: true,
             messages: ["create_asset_success"],
             content: data
         });
     } catch (error) {
-        await LogError(req.user.email, 'CREATE_ASSET', req.user.company);
+        await Logger.error(req.user.email, 'CREATE_ASSET', req.portal);
         res.status(400).json({
             success: false,
             messages: ["create_asset_faile"],
@@ -111,16 +108,16 @@ exports.updateAssetInformation = async (req, res) => {
         let file = req.files.file;
         let fileInfo = { file, avatar };
 
-        let data = await AssetService.updateAssetInformation(req.params.id, req.body, fileInfo, req.user.company._id);
+        let data = await AssetService.updateAssetInformation(req.params.id, req.body, fileInfo, req.portal);
 
-        await LogInfo(req.user.email, 'EDIT_ASSET', req.user.company);
+        await Logger.info(req.user.email, 'EDIT_ASSET', req.portal);
         res.status(200).json({
             success: true,
             messages: ["edit_asset_success"],
             content: data
         });
     } catch (error) {
-        await LogError(req.user.email, 'EDIT_ASSET', req.user.company);
+        await Logger.error(req.user.email, 'EDIT_ASSET', req.portal);
         res.status(400).json({
             success: false,
             messages: ["edit_asset_false"],
@@ -350,10 +347,10 @@ exports.getIncidents = async (req, res) => {
             content: data
         });
     } catch (error) {
-        res.status(400).json({ 
-            success: false, 
-            messages: ["get_incidents_false"], 
-            content: { error: error } 
+        res.status(400).json({
+            success: false,
+            messages: ["get_incidents_false"],
+            content: { error: error }
         });
     }
 }
