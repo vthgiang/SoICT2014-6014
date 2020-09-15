@@ -63,6 +63,14 @@ const TaskReport = require('./report/taskReport.model');
 
 //material
 const Material = require('./warehouse/material.model');
+const Bill = require('./warehouse/bill.model');
+const BinLocation = require('./warehouse/binLocation.model');
+const Category = require('./warehouse/category.model');
+const Consignment = require('./warehouse/consignment.model');
+const Good = require('./warehouse/good.model');
+const Partner = require('./warehouse/partner.model');
+const Proposal = require('./warehouse/proposal.model');
+const Stock = require('./warehouse/stock.model');
 // Customer Management
 const CrmCustomer = require('./crm/crmCustomer.model');
 const CrmCare = require('./crm/crmCare.model');
@@ -144,6 +152,15 @@ exports.schema = {
     TaskReport,
 
     Material,
+    Bill,
+    BinLocation,
+    Category,
+    Consignment,
+    Good,
+    Partner,
+    Proposal,
+    Stock,
+
     CrmCustomer,
     CrmCare,
     CrmGroup,

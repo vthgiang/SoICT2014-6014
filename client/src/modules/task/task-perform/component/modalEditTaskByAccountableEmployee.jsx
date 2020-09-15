@@ -948,6 +948,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
             startDate, endDate, formula, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees, inactiveEmployees, parent, parentTask
         } = this.state;
 
+        console.log(priorityOptions);
+
         const { tasks, perform, id, role, title, hasAccountable } = this.props;
 
         let departmentUsers, usercompanys;
@@ -1062,7 +1064,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                                 style={{ width: "100%" }}
                                                 items={statusArr}
                                                 multiple={false}
-                                                value={statusOptions}
+                                                value={statusOptions[0]}
                                                 onChange={this.handleSelectedStatus}
                                             />
                                         }
@@ -1078,7 +1080,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                                 style={{ width: "100%" }}
                                                 items={priorityArr}
                                                 multiple={false}
-                                                value={priorityOptions}
+                                                value={priorityOptions[0]}
                                                 onChange={this.handleSelectedPriority}
                                             />
                                         }
