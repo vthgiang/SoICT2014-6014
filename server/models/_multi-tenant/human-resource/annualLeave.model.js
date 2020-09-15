@@ -7,6 +7,10 @@ const AnnualLeaveSchema = new Schema({
         ref: 'Employee',
         required: true,
     },
+    company: {
+        type: Schema.Types.ObjectId,
+        ref: 'Company',
+    },
     organizationalUnit: {
         type: Schema.Types.ObjectId,
         ref: 'OrganizationalUnit',
@@ -33,7 +37,7 @@ const AnnualLeaveSchema = new Schema({
 });
 
 module.exports = (db) => {
-    if(!db.models.AnnualLeave)
+    if (!db.models.AnnualLeave)
         return db.model('AnnualLeave', AnnualLeaveSchema);
     return db.models.AnnualLeave;
 }

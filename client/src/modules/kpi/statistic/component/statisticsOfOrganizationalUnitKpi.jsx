@@ -185,8 +185,8 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
         let listOrganizationalUnitKpi, listTask, arrayListTaskSameOrganizationUnitKpi;
         let arrayListChildTargetSameParent = this.getArrayListChildTargetOrganizationUnitKpi();
 
-        if (createKpiUnit.currentKPI && createKpiUnit.currentKPI.kpis) {
-            listOrganizationalUnitKpi = createKpiUnit.currentKPI.kpis;
+        if (createKpiUnit) {
+            listOrganizationalUnitKpi = createKpiUnit.currentKPI && createKpiUnit.currentKPI.kpis;
         }
         if (dashboardOrganizationalUnitKpi.tasksOfChildrenOrganizationalUnit !== []) {
             listTask = dashboardOrganizationalUnitKpi.tasksOfChildrenOrganizationalUnit;
@@ -435,7 +435,7 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
 
         let childOrganizationalUnit, childrenOrganizationalUnit, organizationalUnitSelectBox;
 
-        if (dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
+        if (dashboardEvaluationEmployeeKpiSet) {
             childrenOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
         }
 
@@ -512,11 +512,16 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
     }
 
     render() {
-        const { translate } = this.props;
+        const { translate, dashboardEvaluationEmployeeKpiSet } = this.props;
         const { details } = this.state;
-
-        let dataTree = this.setTreeData();;
+        let childrenOrganizationalUnit, childrenOrganizationalUnitLoading;
+        let dataTree = this.setTreeData();
         let organizationalUnitSelectBox = this.setSelectBox();
+
+        if (dashboardEvaluationEmployeeKpiSet) {
+            childrenOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
+            childrenOrganizationalUnitLoading = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnitLoading;
+        }
 
         // Config select time
         let d = new Date(),
@@ -533,68 +538,74 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
         return (
             <React.Fragment>
                 <div className="box">
-                    <div className="box-body qlcv">
-                        {organizationalUnitSelectBox &&
-                            <div className="form-inline">
-                                <div className="form-group">
-                                    <label>{translate('kpi.organizational_unit.dashboard.organizational_unit')}</label>
-                                    <SelectBox
-                                        id={`organizationalUnitSelectBoxInOrganizationalUnitKpiDashboard`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        items={organizationalUnitSelectBox}
-                                        multiple={false}
-                                        onChange={this.handleSelectOrganizationalUnitId}
-                                        value={organizationalUnitSelectBox[0].value}
-                                    />
-                                </div>
-                            </div>
-                        }
-
-                        <div className="form-inline">
-                            <div className="form-group">
-                                <label>{translate('kpi.organizational_unit.dashboard.month')}</label>
-                                <DatePicker
-                                    id="monthInOrganizationalUnitKpiDashboard"
-                                    dateFormat="month-year"             
-                                    value={defaultDate}                     
-                                    onChange={this.handleSelectMonth}
-                                    disabled={false}                   
-                                />
-                            </div>
-                            <div className="form-group">
-                                <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
-                            </div>
-                        </div>
-
-
-                        <div className="row row-equal-height">
-                            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{padding: 10}}>
-                                <div className="description-box" style={{height: "100%"}}>
-                                    <h4 className="box-title">Cây KPI đơn vị</h4>
-                                    <div className="details-tree" id="details-tree">
-                                        <Tree 
-                                            id="tree-qlcv-document"
-                                            onChanged={this.onChanged} 
-                                            data={dataTree}
-                                            plugins={false}
+                    {childrenOrganizationalUnit
+                        ? <div className="box-body qlcv">
+                            {organizationalUnitSelectBox &&
+                                <div className="form-inline">
+                                    <div className="form-group">
+                                        <label>{translate('kpi.organizational_unit.dashboard.organizational_unit')}</label>
+                                        <SelectBox
+                                            id={`organizationalUnitSelectBoxInOrganizationalUnitKpiDashboard`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            items={organizationalUnitSelectBox}
+                                            multiple={false}
+                                            onChange={this.handleSelectOrganizationalUnitId}
+                                            value={organizationalUnitSelectBox[0].value}
                                         />
                                     </div>
-                                    <SlimScroll outerComponentId="details-tree" innerComponentId="tree-qlcv-document" innerComponentWidth={"100%"} activate={true} />
+                                </div>
+                            }
+
+                            <div className="form-inline">
+                                <div className="form-group">
+                                    <label>{translate('kpi.organizational_unit.dashboard.month')}</label>
+                                    <DatePicker
+                                        id="monthInOrganizationalUnitKpiDashboard"
+                                        dateFormat="month-year"             
+                                        value={defaultDate}                     
+                                        onChange={this.handleSelectMonth}
+                                        disabled={false}                   
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
                                 </div>
                             </div>
 
-                            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ padding: 10 }}>
-                                {
-                                    details &&
-                                    <DetailsOfOrganizationalUnitKpiForm
-                                        details={details}
-                                    />
-                                }
+
+                            <div className="row row-equal-height">
+                                <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{padding: 10}}>
+                                    <div className="description-box" style={{height: "100%"}}>
+                                        <h4 className="box-title">Cây KPI đơn vị</h4>
+                                        <div className="details-tree" id="details-tree">
+                                            <Tree 
+                                                id="tree-qlcv-document"
+                                                onChanged={this.onChanged} 
+                                                data={dataTree}
+                                                plugins={false}
+                                            />
+                                        </div>
+                                        <SlimScroll outerComponentId="details-tree" innerComponentId="tree-qlcv-document" innerComponentWidth={"100%"} activate={true} />
+                                    </div>
+                                </div>
+
+                                <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ padding: 10 }}>
+                                    {
+                                        details &&
+                                        <DetailsOfOrganizationalUnitKpiForm
+                                            details={details}
+                                        />
+                                    }
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
+                        : childrenOrganizationalUnitLoading
+                        && <div className="box-body">
+                            <h4>Bạn chưa có đơn vị</h4>
+                        </div>
+                    }
+                </div>  
             </React.Fragment>
         )
     }

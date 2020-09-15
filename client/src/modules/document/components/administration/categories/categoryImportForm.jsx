@@ -94,14 +94,14 @@ class CategoryImportForm extends Component {
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID={`modal_import_file_category`} isLoading={false}
-                    formID={`form_import_file_category`}
-                    title="Thêm danh mục bằng import file excel"
+                    modalID="modal-import-file-category" isLoading={false}
+                    formID="form-import-file-category"
+                    title="Thêm loại tài liệu bằng import file excel"
                     func={this.save}
                     disableSubmit={false}
                     size={75}
                 >
-                    <form className="form-group" id={`form_import_file`}>
+                    <form className="form-group" id="form-import-file-category">
                         <ConFigImportFile
                             id="import_taskTemplate_config"
                             configData={configData}

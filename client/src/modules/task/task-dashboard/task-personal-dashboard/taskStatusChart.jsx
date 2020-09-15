@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { taskManagementActions } from '../../task-management/redux/actions';
 
-import { SelectBox } from '../../../../common-components/index';
+import { SelectMulti } from '../../../../common-components/index';
 
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -314,14 +314,13 @@ class TaskStatusChart extends Component {
                     <section className="form-inline">
                         <div className="form-group">
                             <label>{translate('task.task_management.role')}</label>
-                            <SelectBox
+                            <SelectMulti
                                 id={`roleOfStatusTaskSelectBox`}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
                                 items={this.ROLE_SELECTBOX}
                                 multiple={true}
                                 onChange={this.handleSelectRole}
-                                value={[this.ROLE_SELECTBOX[0].value]}
+                                options={{ allSelectedText: translate('task.task_management.select_all_status') }}
+                                value={this.DATA_SEARCH}
                             />
                         </div>
                     
