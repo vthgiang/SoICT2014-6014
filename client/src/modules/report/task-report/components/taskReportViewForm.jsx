@@ -40,7 +40,6 @@ class TaskReportViewForm extends Component {
          * id = 3 là chiều người phê duyệt
          */
         let dataForAxisXInChart = []
-        console.log('listTaskEvaluations', listTaskEvaluations)
         // hiển thị trường thông tin hiện trong bảng báo cáo form preview view
         if (listTaskEvaluations && listTaskEvaluations.length > 0) {
             taskInfoName = listTaskEvaluations[0];

@@ -21,6 +21,33 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
         this.props.getUser();
     }
 
+    handleDeansChange = (value, id) => {
+        let { roleDeans } = this.state;
+        roleDeans = roleDeans.map(x => {
+            if (x.id === id) {
+                x.users = value
+            }
+            return x;
+        });
+        this.setState({
+            roleDeans: roleDeans
+        });
+    }
+
+    handleViceDeansChange = (value, id) => {
+        let { roleViceDeans } = this.state;
+        roleViceDeans = roleViceDeans.map(x => {
+            if (x.id === id) {
+                x.users = value
+            }
+            return x;
+        });
+        this.setState({
+            roleViceDeans: roleViceDeans
+        });
+    }
+
+
     /** Bắt sự kiện xoá nhân viên đơn vị */
     handleDelete = (userId, roleId) => {
         let { roleEmployees } = this.state;
@@ -55,19 +82,14 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
     save = () => {
         let { roleDeans, roleViceDeans, roleEmployees } = this.state;
         roleDeans.forEach(x => {
-            let users = this.refs[`deans${x.id}`].getValue();
-            x = { ...x, users: users, showAlert: false }
+            x = { ...x, showAlert: false }
             this.props.edit(x);
         });
         roleViceDeans.forEach(x => {
-            let users = this.refs[`viceDeans${x.id}`].getValue();
-            x = { ...x, users: users, showAlert: false }
+            x = { ...x, showAlert: false }
             this.props.edit(x);
         });
         roleEmployees.forEach((x, index) => {
-            console.log(roleEmployees.length);
-            console.log(index);
-
             let users = this.refs[`employees${x.id}`].getValue();
             if (roleEmployees.length - 1 === index) {
                 x = { ...x, users: x.users.concat(users) }
@@ -109,7 +131,9 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
 
         const { _id, roleEmployees, roleDeans, roleViceDeans, textSearch } = this.state;
 
-        let userlist = user.list, searchUses = user.searchUses;
+        let userlist = user.list;
+        console.log(roleDeans);
+
         return (
             <React.Fragment>
                 <DialogModal
@@ -123,17 +147,17 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                         {/* Trưởng đơn vị */}
                         <fieldset className="scheduler-border" style={{ marginBottom: 10, paddingBottom: 10 }}>
                             <legend className="scheduler-border" style={{ marginBottom: 0 }}><h4 className="box-title">{translate('human_resource.manage_department.dean_unit')}</h4></legend>
-                            {roleDeans !== undefined && roleDeans.map((x, index) => (
+                            {roleDeans && roleDeans.map((x, index) => (
                                 < div className="form-group" key={index} style={{ marginBottom: 0 }}>
                                     <label>{x.name}</label>
                                     <SelectBox
                                         id={`dean-unit-${x.id}`}
-                                        ref={`deans${x.id}`}
                                         multiple={true}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         value={x.users}
                                         items={user.list.map(y => { return { value: y._id, text: `${y.name} (${y.email})` } })}
+                                        onChange={(e) => this.handleDeansChange(e, x.id)}
                                     />
                                 </div>
                             ))}
@@ -141,24 +165,24 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                         {/* Phó đơn vị */}
                         <fieldset className="scheduler-border" style={{ marginBottom: 10, paddingBottom: 10 }}>
                             <legend className="scheduler-border" style={{ marginBottom: 0 }}><h4 className="box-title">{translate('human_resource.manage_department.vice_dean_unit')}</h4></legend>
-                            {roleViceDeans !== undefined && roleViceDeans.map((x, index) => (
+                            {roleViceDeans && roleViceDeans.map((x, index) => (
                                 < div className="form-group" key={index} style={{ marginBottom: 0 }}>
                                     <label>{x.name}</label>
                                     <SelectBox
                                         id={`vice_dean-unit-${x.id}`}
-                                        ref={`viceDeans${x.id}`}
                                         className="form-control select2"
                                         multiple={true}
                                         style={{ width: "100%" }}
                                         value={x.users}
                                         items={user.list.map(y => { return { value: y._id, text: `${y.name} (${y.email})` } })}
+                                        onChange={(e) => this.handleViceDeansChange(e, x.id)}
                                     />
                                 </div>
                             ))}
                         </fieldset>
                         {/* Nhân viên đơn vị */}
                         <h4 style={{ marginBottom: 0, marginTop: 40 }}>{translate('human_resource.manage_department.employee_unit')}</h4>
-                        {roleEmployees !== undefined && roleEmployees.map((x, index) => {
+                        {roleEmployees && roleEmployees.map((x, index) => {
                             let infoEmployee = [], users = x.users;
                             for (let n in users) {
                                 infoEmployee = userlist.filter(y => y._id === users[n]).concat(infoEmployee)

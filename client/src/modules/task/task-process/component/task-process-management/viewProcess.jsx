@@ -113,11 +113,11 @@ class ViewProcess extends Component {
                 defaultUnit = user.organizationalUnitsOfUser[0]
             }
             this.props.getChildrenOfOrganizationalUnits(defaultUnit && defaultUnit._id);
-            var modeler = this.modeler
-            this.modeler.importXML(nextProps.data.xmlDiagram, function (err) {
-                let canvas = modeler.get('canvas');
-                canvas.zoom('fit-viewport');
-            });
+            // var modeler = this.modeler
+            // this.modeler.importXML(nextProps.data.xmlDiagram, function (err) {
+            //     let canvas = modeler.get('canvas');
+            //     canvas.zoom('fit-viewport');
+            // });
             return true;
         }
         if (nextProps.data) {
@@ -126,8 +126,8 @@ class ViewProcess extends Component {
             let state = this.state;
             this.modeler.importXML(nextProps.data.xmlDiagram, function (err) {
                 // handle zoom fit
-                // let canvas = modeler.get('canvas');
-                // canvas.zoom('fit-viewport');
+                let canvas = modeler.get('canvas');
+                canvas.zoom('fit-viewport');
 
                 // change color for task
                 let infoTask = nextProps.data.tasks
