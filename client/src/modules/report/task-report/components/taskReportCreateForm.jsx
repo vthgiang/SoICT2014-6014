@@ -59,17 +59,15 @@ class TaskReportCreateForm extends Component {
      * @param {*} willUpdateState 
      */
     validateNameTaskReport = (value, willUpdateState = true) => {
+        let { newReport } = this.state;
         let msg = taskReportFormValidator.validateNameTaskReport(value)
         if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    newReport: {
-                        ...state.newReport,
-                        nameTaskReport: value,
-                    },
-                    errorOnNameTaskReport: msg,
-                }
+            this.setState({
+                newReport: {
+                    ...newReport,
+                    nameTaskReport: value,
+                },
+                errorOnNameTaskReport: msg,
             });
         }
         return msg === undefined;
@@ -81,17 +79,15 @@ class TaskReportCreateForm extends Component {
      * @param {*} willUpdateState 
      */
     validateDescriptionTaskReport = (value, willUpdateState = true) => {
+        let { newReport } = this.state;
         let msg = taskReportFormValidator.validateDescriptionTaskReport(value)
         if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    newReport: {
-                        ...state.newReport,
-                        descriptionTaskReport: value,
-                    },
-                    errorOnDescriptiontTaskReport: msg,
-                }
+            this.setState({
+                newReport: {
+                    ...newReport,
+                    descriptionTaskReport: value,
+                },
+                errorOnDescriptiontTaskReport: msg,
             });
         }
         return msg === undefined;
@@ -113,27 +109,25 @@ class TaskReportCreateForm extends Component {
      * @param {*} e 
      */
     handleChangeReportOrganizationalUnit = e => {
+        let { newReport } = this.state;
         e.preventDefault();
         let value = e.target.value;
         if (value) {
             this.props.getAllUserOfDepartment(value);
             this.props.getChildrenOfOrganizationalUnits(value);
-            this.setState(state => {
-                return {
-                    ...state,
-                    newReport: {
-                        ...state.newReport,
-                        nameTaskReport: '',
-                        descriptionTaskReport: '',
-                        organizationalUnit: value,
-                        responsibleEmployees: [],
-                        accountableEmployees: [],
-                        taskTemplate: '',
-                    },
-                    errorOnDescriptiontTaskReport: undefined,
-                    errorOnNameTaskReport: undefined,
-                    errorOnStartDate: undefined,
-                }
+            this.setState({
+                newReport: {
+                    ...newReport,
+                    nameTaskReport: '',
+                    descriptionTaskReport: '',
+                    organizationalUnit: value,
+                    responsibleEmployees: [],
+                    accountableEmployees: [],
+                    taskTemplate: '',
+                },
+                errorOnDescriptiontTaskReport: undefined,
+                errorOnNameTaskReport: undefined,
+                errorOnStartDate: undefined,
             });
         }
     }
@@ -144,25 +138,23 @@ class TaskReportCreateForm extends Component {
      * @param {*} e 
      */
     handleChangeTaskTemplate = (e) => {
+        let { newReport } = this.state;
         let { value } = e.target;
 
         if (value === '') { // Reset các input nhận giá trị tự động khi mẫu công việc trống
-            this.setState(state => {
-                return {
-                    ...state,
-                    newReport: {
-                        ...state.newReport,
-                        nameTaskReport: '',
-                        descriptionTaskReport: '',
-                        taskTemplate: '',
-                        status: '',
-                        responsibleEmployees: [],
-                        accountableEmployees: [],
-                    },
-                    errorOnDescriptiontTaskReport: undefined,
-                    errorOnNameTaskReport: undefined,
-                    errorOnStartDate: undefined,
-                }
+            this.setState({
+                newReport: {
+                    ...newReport,
+                    nameTaskReport: '',
+                    descriptionTaskReport: '',
+                    taskTemplate: '',
+                    status: '',
+                    responsibleEmployees: [],
+                    accountableEmployees: [],
+                },
+                errorOnDescriptiontTaskReport: undefined,
+                errorOnNameTaskReport: undefined,
+                errorOnStartDate: undefined,
             });
         } else {
             let taskTemplate = this.props.tasktemplates.items.find((taskTemplate) =>
@@ -183,18 +175,15 @@ class TaskReportCreateForm extends Component {
                 }
             }
 
-            this.setState(state => {
-                return {
-                    ...state,
-                    newReport: {
-                        ...state.newReport,
-                        nameTaskReport: taskTemplate.name,
-                        descriptionTaskReport: taskTemplate.description,
-                        taskTemplate: taskTemplate._id,
-                        responsibleEmployees: taskTemplate.responsibleEmployees.map(item => item._id),
-                        accountableEmployees: taskTemplate.accountableEmployees.map(item => item._id),
-                        taskInformations: taskInformations,
-                    }
+            this.setState({
+                newReport: {
+                    ...newReport,
+                    nameTaskReport: taskTemplate.name,
+                    descriptionTaskReport: taskTemplate.description,
+                    taskTemplate: taskTemplate._id,
+                    responsibleEmployees: taskTemplate.responsibleEmployees.map(item => item._id),
+                    accountableEmployees: taskTemplate.accountableEmployees.map(item => item._id),
+                    taskInformations: taskInformations,
                 }
             })
         }
@@ -246,17 +235,15 @@ class TaskReportCreateForm extends Component {
     }
 
     validateTaskStartDate = (value, willUpdateState = true) => {
+        let { newReport } = this.state;
         let msg = taskReportFormValidator.validateTaskStartDate(value);
         if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    newReport: {
-                        ...state.newReport,
-                        startDate: value,
-                    },
-                    errorOnStartDate: msg,
-                }
+            this.setState({
+                newReport: {
+                    ...newReport,
+                    startDate: value,
+                },
+                errorOnStartDate: msg,
             })
         }
         return msg === undefined;
@@ -268,13 +255,11 @@ class TaskReportCreateForm extends Component {
      * @param {*} value 
      */
     handleChangeEndDate = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                newReport: {
-                    ...state.newReport,
-                    endDate: value,
-                }
+        let { newReport } = this.state;
+        this.setState({
+            newReport: {
+                ...newReport,
+                endDate: value,
             }
         })
     }
@@ -284,13 +269,11 @@ class TaskReportCreateForm extends Component {
      * @param {*} value 
      */
     handleChangeStatus = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                newReport: {
-                    ...state.newReport,
-                    status: value,
-                }
+        let { newReport } = this.state;
+        this.setState({
+            newReport: {
+                ...newReport,
+                status: value,
             }
         })
     }
@@ -301,13 +284,11 @@ class TaskReportCreateForm extends Component {
      * @param {*} value 
      */
     handleChangeFrequency = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                newReport: {
-                    ...state.newReport,
-                    frequency: value,
-                }
+        let { newReport } = this.state;
+        this.setState({
+            newReport: {
+                ...newReport,
+                frequency: value,
             }
         })
     }
@@ -414,13 +395,11 @@ class TaskReportCreateForm extends Component {
      * @param {*} value : tên người thực hiện
      */
     handleChangeReportResponsibleEmployees = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                newReport: {
-                    ...state.newReport,
-                    responsibleEmployees: value,
-                }
+        let { newReport } = this.state;
+        this.setState({
+            newReport: {
+                ...newReport,
+                responsibleEmployees: value,
             }
         })
     }
@@ -431,13 +410,11 @@ class TaskReportCreateForm extends Component {
      * @param {*} value 
      */
     handleChangeReportAccountableEmployees = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                newReport: {
-                    ...state.newReport,
-                    accountableEmployees: value,
-                }
+        let { newReport } = this.state;
+        this.setState({
+            newReport: {
+                ...newReport,
+                accountableEmployees: value,
             }
         })
     }
@@ -698,7 +675,6 @@ class TaskReportCreateForm extends Component {
         if (usersOfChildrenOrganizationalUnit) {
             unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
         }
-
 
         return (
             <React.Fragment>

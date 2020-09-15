@@ -1,6 +1,4 @@
-const mongoose = require("mongoose");
-const moment = require("moment");
-const { TaskReport, Task, TaskTemplate, Role, OrganizationalUnit, User } = require('../../../models').schema;
+const { TaskReport } = require('../../../models').schema;
 
 
 /**
@@ -81,7 +79,7 @@ exports.getTaskReportById = async (id) => {
  * @param {*} user id người tạo
  */
 exports.createTaskReport = async (data, user) => {
-    const { organizationalUnit, taskTemplate, nameTaskReport, descriptionTaskReport,
+    let { organizationalUnit, taskTemplate, nameTaskReport, descriptionTaskReport,
         readByEmployees, responsibleEmployees, accountableEmployees, startDate, endDate, status, frequency, itemListBoxLeft, itemListBoxRight,
         taskInformations } = data;
     let startTime, start = null, endTime, end = null, configurations = [];
