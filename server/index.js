@@ -68,11 +68,11 @@ if(process.env.MULTI_TENANT === 'true'){
     router.use('/link', require("./modules/_multi-tenant/super-admin/link/link.route"));
     router.use('/organizational-units', require("./modules/_multi-tenant/super-admin/organizational-unit/organizationalUnit.route"));
     
-    // router.use('/system-admin/company', require("./modules/_multi-tenant/system-admin/company/company.route"));
-    // router.use('/system-admin/system-component', require("./modules/_multi-tenant/system-admin/system-component/systemComponent.route"));
-    // router.use('/system-admin/system-link', require("./modules/_multi-tenant/system-admin/system-link/systemLink.route"));
-    // router.use('/system-admin/root-role', require("./modules/_multi-tenant/system-admin/root-role/rootRole.route"));
-	// router.use('/system-admin/system-setting', require("./modules/_multi-tenant/system-admin/system-setting/systemSetting.route"));
+    router.use('/system-admin/company', require("./modules/_multi-tenant/system-admin/company/company.route"));
+    router.use('/system-admin/system-component', require("./modules/_multi-tenant/system-admin/system-component/systemComponent.route"));
+    router.use('/system-admin/system-link', require("./modules/_multi-tenant/system-admin/system-link/systemLink.route"));
+    router.use('/system-admin/root-role', require("./modules/_multi-tenant/system-admin/root-role/rootRole.route"));
+	router.use('/system-admin/system-setting', require("./modules/_multi-tenant/system-admin/system-setting/systemSetting.route"));
 	
 	app.use("/task", require("./modules/_multi-tenant/task/task-management/task.route"));
 	app.use("/performtask", require("./modules/_multi-tenant/task/task-perform/taskPerform.route"));

@@ -358,6 +358,10 @@ export function documents(state = initState, action) {
                         list: [
                             action.payload,
                             ...state.administration.categories.list
+                        ],
+                        paginate: [
+                            action.payload,
+                            ...state.administration.categories.paginate
                         ]
                     }
                 }
