@@ -905,13 +905,18 @@ export default {
             note_file_import: 'Import file is not in the correct format',
             error_row: 'An error occurred in the lines',
 
+            rowHeader: 'Number of table header rows',
+            sheets_name: 'Sheet names',
+            title_correspond: 'Title corresponds to',
+
             // Validator dung chung cho module quản lý nhân sự
             employee_number_required: 'Staff code required',
             staff_code_not_special: 'Staff code does not contain special characters',
             staff_code_not_find: 'Staff code does not exist',
             start_date_before_end_date: 'The start date must be before the end date',
             end_date_after_start_date: 'The end date must be after the start date',
-
+            cannot_be_empty: 'cannot be empty',
+            value_duplicate: 'be duplicated',
 
             // Quản lý lương nhân viên
             salary: {
@@ -1190,7 +1195,7 @@ export default {
 
                 diploma: 'Degrees',
                 certificate: 'Certificate',
-                name_diploma: 'Name of degrees',
+                name_diploma: 'Name of degree',
                 name_certificate: 'Name of certificate',
                 diploma_issued_by: 'Issued by',
                 graduation_year: 'Graduation year',
@@ -1198,9 +1203,9 @@ export default {
                 attached_files: 'Attached files',
                 end_date_certificate: 'Expiration date',
                 edit_certificate: 'Edit certificate',
-                edit_diploma: 'Edit degrees',
+                edit_diploma: 'Edit degree',
                 add_certificate: 'Add certificate',
-                add_diploma: 'Add degrees',
+                add_diploma: 'Add degree',
                 excellent: 'Excellent',
                 very_good: 'Very good',
                 good: 'Good',
@@ -1251,7 +1256,7 @@ export default {
                 submitted: 'Submitted',
                 returned: 'Returned',
                 no_files: 'No files yet',
-                disc_diploma: 'Highest degree degrees',
+                disc_diploma: 'Highest degree',
                 curriculum_vitae: 'Curriculum vitae',
                 disc_curriculum_vitae: 'Notarized resume',
                 img: 'Image',
@@ -1339,6 +1344,25 @@ export default {
                         health_insurance_end_date: ' Health insurance expiration date',
                     },
 
+                    import: {
+                        import_general_infor: 'Staff basic information',
+                        import_experience: 'Work experiences',
+                        import_degree: 'Degree',
+                        import_certificate: 'Certificate',
+                        import_contract: 'Labor contracts',
+                        import_socialInsurance_details: 'Social insurances',
+                        import_file: 'Attachments',
+
+                        import_general_infor_title: 'Import staff basic information',
+                        import_experience_title: 'Import work experience',
+                        import_degree_title: 'Import Degree',
+                        import_certificate_title: 'Import certificate',
+                        import_contract_title: 'Import labor contract',
+                        import_socialInsurance_details_title: 'Import social insurance',
+                        import_file_title: 'Import attachments'
+                    },
+
+
                     // Nhón dành cho UI
                     have: 'Have',
                     staff: 'staff',
@@ -1381,6 +1405,7 @@ export default {
                     employee_number_have_exist: 'Employee number have exist',
                     email_in_company_have_exist: 'Email in company have exist',
                     employee_timesheet_id_required: 'Employee timesheet id required',
+                    employee_timesheet_id_have_exist: 'Employee timesheet have exist',
                     full_name_required: 'Full name required',
                     birthdate_required: 'Birthdate required',
                     starting_date_required: 'Starting date required',
@@ -1392,8 +1417,6 @@ export default {
                     tax_number_required: 'Tax number required',
                     tax_representative_required: 'Tax representative required',
                     tax_authority_required: 'Tax authority required',
-
-
                 }
             },
 

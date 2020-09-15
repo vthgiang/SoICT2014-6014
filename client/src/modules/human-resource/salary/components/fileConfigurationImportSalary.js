@@ -5,38 +5,34 @@ export const configurationSalary = {
 
 function configurationImport(translate) {
     let config = {
-        rowHeader: {
-            description: "Số dòng tiêu đề của bảng",
+        rowHeader: { // Số dòng tiêu đề của bảng
+            description: translate('human_resource.rowHeader'),
             value: 2
         },
-        sheets: {
-            description: "Tên các sheet",
+        sheets: { // Tên các sheet
+            description: translate('human_resource.sheets_name'),
             value: ["Sheet1"]
         },
-        employeeNumber: {
-            columnName: "Mã số nhân viên",
-            description: "Tên tiêu đề ứng với mã số nhân viên",
-            value: "Mã số nhân viên"
+        employeeNumber: { // Mã nhân viên
+            columnName: translate('human_resource.staff_number'),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.staff_number').toLowerCase()}`,
+            value: translate('human_resource.staff_number')
         },
-        employeeName: {
-            columnName: "Họ và tên",
-            description: "Tên tiêu để ứng với họ và tên",
-            value: "Họ và tên"
+        employeeName: { // Họ và tên
+            columnName: translate('human_resource.staff_name'),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.staff_name').toLowerCase()}`,
+            value: translate('human_resource.staff_name')
         },
-        mainSalary: {
-            columnName: "Tiền lương chính",
-            description: "Tên tiêu để ứng với tiền lương chính",
-            value: "Tiền lương chính"
+        mainSalary: { // Tiền lương chính
+            columnName: translate('human_resource.salary.table.main_salary'),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.salary.table.main_salary').toLowerCase()}`,
+            value: translate('human_resource.salary.table.main_salary')
         },
-        bonus: {
-            columnName: "Lương thưởng khác",
-            description: "Tên tiêu để ứng với lương thưởng khác",
+        bonus: { // Lương thưởng khác
+            columnName: translate('human_resource.salary.other_salary'),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.salary.other_salary').toLowerCase()}`,
             value: ["Thưởng đầu hộp SanFoVet", "Thưởng đầu hộp ViaVet"],
         },
-        file: {
-            fileName: 'templateImportSalary',
-            fileUrl: '/upload/human-resource/templateImport/templateImportSalary.xlsx'
-        }
     };
 
     return config;
@@ -56,20 +52,63 @@ function templateImport(translate) {
                     keyMerge: 'bonus0',
                     colspan: 2
                 }],
-                columns: [
-                    { key: "STT", value: translate('human_resource.stt'), width: 7 },
-                    { key: "month", value: translate('human_resource.month'), width: 10 },
-                    { key: "year", value: translate('human_resource.holiday.year'), width: 10 },
-                    { key: "employeeNumber", value: translate('human_resource.staff_number') },
-                    { key: "fullName", value: translate('human_resource.staff_name'), width: 20 },
-                    { key: "organizationalUnit", value: translate('human_resource.unit'), width: 25 },
-                    { key: "gender", value: translate('human_resource.profile.gender') },
-                    { key: "birthdate", value: translate('human_resource.profile.date_birth') },
-                    { key: "status", value: translate('human_resource.profile.status_work') },
-                    { key: "mainSalary", value: translate('human_resource.salary.table.main_salary'), },
-                    {key: 'bonus0',value: 'Thưởng đầu hộp SanFoVet'},
-                    {key: 'bonus1',value: 'Thưởng đầu hộp ViaVet'},
-                    { key: "total", value: translate('human_resource.salary.table.total_salary'), },
+                columns: [{
+                        key: "STT",
+                        value: translate('human_resource.stt'),
+                        width: 7
+                    },
+                    {
+                        key: "month",
+                        value: translate('human_resource.month'),
+                        width: 10
+                    },
+                    {
+                        key: "year",
+                        value: translate('human_resource.holiday.year'),
+                        width: 10
+                    },
+                    {
+                        key: "employeeNumber",
+                        value: translate('human_resource.staff_number')
+                    },
+                    {
+                        key: "fullName",
+                        value: translate('human_resource.staff_name'),
+                        width: 20
+                    },
+                    {
+                        key: "organizationalUnit",
+                        value: translate('human_resource.unit'),
+                        width: 25
+                    },
+                    {
+                        key: "gender",
+                        value: translate('human_resource.profile.gender')
+                    },
+                    {
+                        key: "birthdate",
+                        value: translate('human_resource.profile.date_birth')
+                    },
+                    {
+                        key: "status",
+                        value: translate('human_resource.profile.status_work')
+                    },
+                    {
+                        key: "mainSalary",
+                        value: translate('human_resource.salary.table.main_salary'),
+                    },
+                    {
+                        key: 'bonus0',
+                        value: 'Thưởng đầu hộp SanFoVet'
+                    },
+                    {
+                        key: 'bonus1',
+                        value: 'Thưởng đầu hộp ViaVet'
+                    },
+                    {
+                        key: "total",
+                        value: translate('human_resource.salary.table.total_salary'),
+                    },
                 ],
                 data: [{
                     STT: 1,

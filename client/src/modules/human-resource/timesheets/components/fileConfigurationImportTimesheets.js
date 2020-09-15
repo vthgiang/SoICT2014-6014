@@ -5,34 +5,30 @@ export const configurationTimesheets = {
 
 function configurationImport(translate) {
     let config = {
-        rowHeader: {
-            description: "Số dòng tiêu đề của bảng",
+        rowHeader: { // Số dòng tiêu đề của bảng
+            description: translate('human_resource.rowHeader'),
             value: 2
         },
-        sheets: {
-            description: "Tên các sheet",
+        sheets: { // Tên các sheet
+            description: translate('human_resource.sheets_name'),
             value: ["Sheet1"]
         },
-        employeeNumber: {
-            columnName: "Mã nhân viên",
-            description: "Tên tiêu đề ứng với mã số nhân viên",
-            value: "Mã nhân viên"
+        employeeNumber: { // Mã nhân viên
+            columnName: translate('human_resource.staff_number'),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.staff_number').toLowerCase()}`,
+            value: translate('human_resource.staff_number')
         },
-        employeeName: {
-            columnName: "Họ và tên",
-            description: "Tên tiêu để ứng với họ và tên",
-            value: "Họ và tên"
+        employeeName: { // Họ và tên
+            columnName: translate('human_resource.staff_name'),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.staff_name').toLowerCase()}`,
+            value: translate('human_resource.staff_name')
         },
-        dateOfMonth: {
-            columnName: "Các ngày trong tháng",
-            description: "Tên tiêu để ứng với các ngày trong tháng",
-            value: "Các ngày trong tháng",
+        dateOfMonth: { // Các ngày trong tháng
+            columnName: translate('human_resource.timesheets.date_of_month'),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.timesheets.date_of_month').toLowerCase()}`,
+            value: translate('human_resource.timesheets.date_of_month'),
             colspan: 31
         },
-        file: {
-            fileName: 'templateImportTimesheets',
-            fileUrl: '/upload/human-resource/templateImport/templateImportTimesheets.xlsx'
-        }
     };
     return config;
 };

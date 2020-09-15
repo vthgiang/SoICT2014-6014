@@ -27,10 +27,34 @@ class ExportExcel extends Component {
                     currentRow = currentRow + 2;
                 };
 
+
                 x.tables.forEach(y => {
                     let rowHeader = y.rowHeader,
                         columns = y.columns,
-                        merges = y.merges;
+                        merges = y.merges,
+                        styleColumn = y.styleColumn,
+                        moreInform = y.moreInform;
+
+                    if (moreInform) { // Thêm thông tin thêm của bảng
+                        moreInform.forEach(info => {
+                            if (info.title) {
+                                worksheet.getCell(`B${currentRow}`).value = info.title;
+                                worksheet.getCell(`B${currentRow}`).alignment = { vertical: 'middle' };
+                                worksheet.getCell(`B${currentRow}`).font = { name: 'Arial', size: 10, bold: true, color: { argb: 'FF2D1075' } };
+                                currentRow = currentRow + 1;
+                            }
+                            if (info.value) {
+                                info.value.forEach(row => {
+                                    worksheet.getCell(`B${currentRow}`).value = row;
+                                    worksheet.getCell(`B${currentRow}`).alignment = { vertical: 'middle' };
+                                    worksheet.getCell(`B${currentRow}`).font = { name: 'Arial' };
+                                    currentRow = currentRow + 1;
+                                })
+                            }
+                            currentRow = currentRow + 2;
+                        })
+                    }
+
 
                     if (y.tableName) { // Thêm tên bảng
                         worksheet.getCell(`A${currentRow}`).value = y.tableName;
@@ -41,6 +65,9 @@ class ExportExcel extends Component {
                         worksheet.mergeCells(`A${currentRow}:${endMergeTablename}`);
                         currentRow = currentRow + 1;
                     };
+
+
+                    // Thêm chú ý cho bảng
                     if (y.note) {
                         worksheet.getCell(`A${currentRow}`).value = y.note;
                         worksheet.getCell(`A${currentRow}`).font = { name: 'Arial', size: 10, color: { argb: "FFFF0000" } };
@@ -51,6 +78,8 @@ class ExportExcel extends Component {
                         currentRow = currentRow + 1;
                     }
 
+
+                    // Thêm header cho bảng
                     let arrHeader = [];
                     if (rowHeader && merges && Number(rowHeader) > 1) {
                         for (let i = 0; i < Number(rowHeader); i++) {
@@ -91,7 +120,11 @@ class ExportExcel extends Component {
                             for (let n = 1; n <= columns.length; n++) { // Thêm style cho header
                                 let cell = worksheet.getRow(currentRow + index).getCell(n).address;
                                 worksheet.getCell(cell).font = { name: 'Arial', size: 10, bold: true, color: { argb: "FFFFFFFF" } };
-                                worksheet.getCell(cell).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+                                worksheet.getCell(cell).alignment = {
+                                    vertical: columns[n - 1].vertical ? columns[n - 1].vertical : 'middle',
+                                    horizontal: columns[n - 1].horizontal ? columns[n - 1].horizontal : 'center',
+                                    wrapText: true
+                                };
                                 worksheet.getCell(cell).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: "FF2D1075" } };
                                 worksheet.getCell(cell).border = { left: { style: "thin", color: { argb: "FFFFFFFF" } }, top: { style: "thin", color: { argb: "FFFFFFFF" } } };
                             }
@@ -118,15 +151,34 @@ class ExportExcel extends Component {
                         for (let n = 1; n <= columns.length; n++) { // Thêm style cho header
                             let cell = worksheet.getRow(currentRow).getCell(n).address;
                             worksheet.getCell(cell).font = { name: 'Arial', size: 10, bold: true, color: { argb: "FFFFFFFF" } };
-                            worksheet.getCell(cell).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+                            worksheet.getCell(cell).alignment = {
+                                vertical: columns[n - 1].vertical ? columns[n - 1].vertical : 'middle',
+                                horizontal: columns[n - 1].horizontal ? columns[n - 1].horizontal : 'center',
+                                wrapText: true
+                            };
                             worksheet.getCell(cell).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: "FF2D1075" } };
                             worksheet.getCell(cell).border = { left: { style: "thin", color: { argb: "FFFFFFFF" } } };
                         }
                         currentRow += 1;
                     };
+
                     worksheet.columns = columns.map(col => {
-                        return { key: col.key, width: col.width ? Number(col.width) : 15 }
+                        if (styleColumn) {
+                            let vertical = "", horizontal = "";
+                            for (let n in styleColumn) {
+                                if (n === col.key) {
+                                    vertical = styleColumn[n].vertical;
+                                    horizontal = styleColumn[n].horizontal;
+                                    break;
+                                }
+                            };
+                            return { key: col.key, width: col.width ? Number(col.width) : 15, style: { alignment: { vertical: vertical, horizontal: horizontal, wrapText: true } } }
+                        } else {
+                            return { key: col.key, width: col.width ? Number(col.width) : 15, style: { alignment: { wrapText: true } } }
+                        }
                     });
+
+
 
                     // Thêm dữ liệu vào body table
                     worksheet.addRows(y.data);
@@ -144,12 +196,12 @@ class ExportExcel extends Component {
                             }
                         }
                         worksheet.getRow(currentRow + index).font = { name: 'Arial' };
-                        worksheet.getRow(currentRow + index).alignment = { wrapText: true };
                     })
                     currentRow = currentRow + y.data.length + 3;
                 })
             }
         });
+
         workbook.xlsx.writeBuffer().then(data => {
             const blob = new Blob([data], { type: this.blobType });
             FileSaver.saveAs(blob, `${exportData.fileName}.xlsx`);
