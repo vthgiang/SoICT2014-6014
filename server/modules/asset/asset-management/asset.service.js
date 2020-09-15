@@ -585,6 +585,17 @@ exports.deleteUsage = async (assetId, usageId) => {
 }
 
 
+exports.getIncidents = async (id, data) => {
+    let { page, limit } = data;
+
+    return await Asset.aggregate([
+        { $unwind: "$maintainanceLogs" },
+        { $replaceRoot: { newRoot: "$maintainanceLogs" } },
+        { $limit: limit },
+        { $skip: (page - 1) * limit }
+    ])
+}
+
 /**
  * Thêm mới thông tin sự cố tài sản
  */
