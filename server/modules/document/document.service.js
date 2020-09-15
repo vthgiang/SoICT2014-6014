@@ -538,6 +538,7 @@ exports.createDocumentDomain = async (company, data) => {
         company,
         name: data.name,
         description: data.description,
+        parent: data.parent
     }
     await DocumentDomain.create(query);
 
