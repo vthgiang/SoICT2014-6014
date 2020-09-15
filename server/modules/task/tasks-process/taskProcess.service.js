@@ -373,10 +373,20 @@ exports.createTaskByProcess = async (processId, body) => {
             let item = await Task.findOne({ process: taskProcessId, codeInProcess: data[x].followingTasks[i].task });
 
             if (item) {
-                listFollowingTask.push({
-                    task: item._id,
-                    link: data[x].followingTasks[i].link,
-                })
+                if (item.status === "Inprocess") {
+                    listFollowingTask.push({
+                        task: item._id,
+                        link: data[x].followingTasks[i].link,
+                        activated: true,
+                    })
+                }
+                else {
+                    listFollowingTask.push({
+                        task: item._id,
+                        link: data[x].followingTasks[i].link,
+                    })
+                }
+
             }
         }
         for (let i in data[x].preceedingTasks) {
@@ -412,7 +422,7 @@ exports.createTaskByProcess = async (processId, body) => {
         { path: 'manager', model: Role, select: 'name' },
     ]);;
 
-    return { process: myProcess, mailInfo: mailInfoArr}
+    return { process: myProcess, mailInfo: mailInfoArr }
 }
 
 /**

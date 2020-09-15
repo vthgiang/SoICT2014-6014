@@ -69,9 +69,10 @@ class TaskInformationForm extends Component {
                                 if (info.type === 'Text') {
                                     return <div className={`form-group ${value.errorInfo && value.errorInfo[info.code] === undefined ? "" : "has-error"}`} key={index}>
                                         <label>{info.name}</label>
-                                        <input
+                                        <textarea
                                             className="form-control"
-                                            type="text"
+                                            row={3}
+                                            // type="text"
                                             name={info.code}
                                             placeholder={translate('task.task_management.edit_enter_value')}
                                             onChange={this.props.handleChangeTextInfo}
@@ -158,7 +159,7 @@ class TaskInformationForm extends Component {
                                                 onChange={(value) => this.props.handleSetOfValueChange(value, info.code)}
                                                 multiple={false}
                                                 disabled={disabled || (info.filledByAccountableEmployeesOnly && role !== "accountable")}
-                                                value={(value.info[`${info.code}`] && this.checkNullUndefined(value.info[`${info.code}`].value)) && value.info[`${info.code}`].value}
+                                                value={(value.info[`${info.code}`] && this.checkNullUndefined(value.info[`${info.code}`].value[0])) && value.info[`${info.code}`].value[0]}
                                             />
                                         </div>
                                     }
