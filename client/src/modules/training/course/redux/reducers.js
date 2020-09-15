@@ -1,6 +1,7 @@
 import {
     CourseConstants
 } from './constants';
+
 const initState = {
     isLoading: false,
     listCourses: [],
@@ -8,6 +9,7 @@ const initState = {
     totalList: "",
     error: "",
 }
+
 export function course(state = initState, action) {
     switch (action.type) {
         case CourseConstants.GET_LIST_COURSE_REQUEST:
@@ -22,8 +24,8 @@ export function course(state = initState, action) {
             return {
                 ...state,
                 listCourses: action.payload.listCourses,
-                totalList: action.payload.totalList !== undefined ? action.payload.totalList : [],
-                isLoading: false,
+                    totalList: action.payload.totalList !== undefined ? action.payload.totalList : [],
+                    isLoading: false,
             };
         case CourseConstants.CREATE_COURSE_SUCCESS:
             console.log(action.payload._id);
@@ -60,7 +62,7 @@ export function course(state = initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                error: action.error
+                    error: action.error
             };
         default:
             return state

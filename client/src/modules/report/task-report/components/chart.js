@@ -1,5 +1,6 @@
 export const chartFunction = {
     formatChartType,
+    formatDataForAxisXInChart,
     convertMonthYear,
     convertYear,
     getQuarter,
@@ -28,6 +29,16 @@ function formatChartType(chartType) {
     if (chartType === 2) return "pie";
 }
 
+/**
+ * Hàm format chiều dữ liệu
+ * @param {*} data 
+ */
+function formatDataForAxisXInChart(data) {
+    let dataFormat = parseInt(data);
+    if (dataFormat === 1) return "Thời gian";
+    if (dataFormat === 2) return "Người thực hiện";
+    if (dataFormat === 3) return "Người phê duyệt";
+}
 
 /**
  * Hàm convert thời gian ra tháng
@@ -202,7 +213,6 @@ function dataAfterAggregate(input) {
             }
             return item;
         })
-
         const result = aggregate(allTasks); // gọi hàm tính trung bình cộng và tổng. 
         return {
             time,

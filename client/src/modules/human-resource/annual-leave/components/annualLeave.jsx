@@ -91,11 +91,11 @@ class AnnualLeave extends Component {
 
         const { year } = this.state;
 
-        let holidays = [], numberDateLeaveOfYear = 0;
+        let holidays = [], maximumNumberOfLeaveDays = 0;
         let listAnnualLeavesOfOneYear = annualLeave.listAnnualLeavesOfOneYear;
         if (holiday.listHoliday && holiday.listHoliday.length !== 0) {
             holidays = holiday.listHoliday;
-            numberDateLeaveOfYear = holiday.numberDateLeaveOfYear;
+            maximumNumberOfLeaveDays = holiday.maximumNumberOfLeaveDays;
         };
 
         return (
@@ -128,7 +128,7 @@ class AnnualLeave extends Component {
                                     {translate('human_resource.annual_leave_personal.total_number_leave_of_year')}:
                                 </strong>
                                 &nbsp;&nbsp;
-                                <span>{`${numberDateLeaveOfYear} ngày`}</span>
+                                <span>{`${maximumNumberOfLeaveDays} ngày`}</span>
                             </div>
                             <div>
                                 <strong>

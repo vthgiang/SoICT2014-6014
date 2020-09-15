@@ -3,6 +3,10 @@ const Schema = mongoose.Schema;
 
 // Tạo bảng datatable thông tin nhân viên
 const EmployeeSchema = new Schema({
+    company: {
+        type: Schema.Types.ObjectId,
+        ref: 'Company',
+    },
     avatar: {
         type: String
     },
@@ -24,10 +28,6 @@ const EmployeeSchema = new Schema({
     },
     leavingDate: { // Ngày nghỉ việc
         type: Date,
-    },
-    company: {
-        type: Schema.Types.ObjectId,
-        ref: 'companies'
     },
     employeeTimesheetId: { // mã số chấm công của nhân viên
         type: String,
@@ -222,6 +222,12 @@ const EmployeeSchema = new Schema({
         company: String,
         position: String
     }],
+    contractEndDate: {
+        type: Date
+    },
+    contractType: {
+        type: String
+    },
     contracts: [{
         name: String,
         contractType: String,
@@ -248,4 +254,8 @@ const EmployeeSchema = new Schema({
     timestamps: true,
 });
 
-module.exports = Employee = (db) => db.model("employees", EmployeeSchema);
+module.exports = (db) => {
+    if (!db.models.Employee)
+        return db.model('Employee', EmployeeSchema);
+    return db.models.Employee;
+}

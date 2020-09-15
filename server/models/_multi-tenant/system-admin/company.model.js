@@ -29,4 +29,8 @@ const CompanySchema = new Schema({
 
 CompanySchema.plugin(mongoosePaginate);
 
-module.exports = Company = (db) => db.model("companies", CompanySchema);
+module.exports = (db) => {
+    if(!db.models.Company)
+        return db.model('Company', CompanySchema);
+    return db.models.Company;
+}

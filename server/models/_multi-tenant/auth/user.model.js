@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
-// Create Schema
 const UserSchema = new Schema({
     name: {
         type: String,
@@ -19,7 +18,7 @@ const UserSchema = new Schema({
     },
     company: {
         type: Schema.Types.ObjectId,
-        ref: 'companies'
+        ref: 'Company'
     },
     active: {
         type: Boolean,
@@ -53,11 +52,15 @@ const UserSchema = new Schema({
 });
 
 UserSchema.virtual('roles', {
-    ref: 'user_roles',
+    ref: 'UserRole',
     localField: '_id',
     foreignField: 'userId'
 });
 
 UserSchema.plugin(mongoosePaginate);
 
-module.exports = User = (db) => db.model("users", UserSchema);
+module.exports = (db) => {
+    if(!db.models.User)
+        return db.model('User', UserSchema);
+    return db.models.User;
+}

@@ -471,8 +471,12 @@ class CreateForm extends Component {
         this.props.createDocument(formData);
     }
     findPath = (archives, select) => {
-        let archive = archives.filter(arch => arch._id === select);
-        return archive[0] ? archive[0].path : "";
+        let paths = select.map(s => {
+            let archive = archives.filter(arch => arch._id === s);
+            return archive[0] ? archive[0].path : "";
+        })
+        return paths;
+
     }
     handleAddDocument = (event) => {
         event.preventDefault();
@@ -486,14 +490,12 @@ class CreateForm extends Component {
     render() {
         const { translate, role, documents, department } = this.props;
         const { list } = documents.administration.domains;
-        const { errorName, errorIssuingBody, errorOfficialNumber, errorSigner, errorVersionName,
-            errorDocumentFile, errorDocumentFileScan, errorIssuingDate, errorEffectiveDate,
-            errorExpiredDate, errorCategory, documentArchives } = this.state;
+        const { errorName, errorCategory, errorVersionName,documentArchives, documentDomains } = this.state;
         const archives = documents.administration.archives.list;
         const categories = documents.administration.categories.list.map(category => { return { value: category._id, text: category.name } });
         const documentRoles = role.list.map(role => { return { value: role._id, text: role.name } });
         const relationshipDocs = documents.administration.data.list.map(doc => { return { value: doc._id, text: doc.name } });
-        let path = documentArchives ? this.findPath(archives, documentArchives[0]) : "";
+        let path = documentArchives ? this.findPath(archives, documentArchives) : "";
         return (
             <React.Fragment>
 
@@ -535,17 +537,17 @@ class CreateForm extends Component {
                                             <div className="form-group">
                                                 <label>{translate('document.doc_version.issuing_body')}</label>
                                                 <input type="text" className="form-control" onChange={this.handleIssuingBody} placeholder={translate('document.doc_version.exp_issuing_body')} />
-                                                <ErrorLabel content={errorIssuingBody} />
+                                                
                                             </div>
                                             <div className="form-group">
                                                 <label>{translate('document.doc_version.official_number')}</label>
                                                 <input type="text" className="form-control" onChange={this.handleOfficialNumber} placeholder={translate('document.doc_version.exp_official_number')} />
-                                                <ErrorLabel content={errorOfficialNumber} />
+                                             
                                             </div>
                                             <div className="form-group">
                                                 <label>{translate('document.doc_version.signer')}</label>
                                                 <input type="text" className="form-control" onChange={this.handleSigner} placeholder={translate('document.doc_version.exp_signer')} />
-                                                <ErrorLabel content={errorSigner} />
+                                                
                                             </div>
                                         </div>
                                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
@@ -564,7 +566,7 @@ class CreateForm extends Component {
                                             </div>
                                             <div className="form-group">
                                                 <label>{translate('document.domain')}</label>
-                                                <TreeSelect data={list} handleChange={this.handleDomains} mode="hierarchical" />
+                                                <TreeSelect data={list} handleChange={this.handleDomains} value={documentDomains} mode="hierarchical" />
                                             </div>
 
                                             <div className="form-group">
@@ -606,7 +608,6 @@ class CreateForm extends Component {
                                                     value={this.state.documentIssuingDate}
                                                     onChange={this.handleIssuingDate}
                                                 />
-                                                <ErrorLabel content={errorIssuingDate} />
                                             </div>
                                             <div className="form-group">
                                                 <label>{translate('document.doc_version.effective_date')}</label>
@@ -615,7 +616,6 @@ class CreateForm extends Component {
                                                     value={this.state.documentEffectiveDate}
                                                     onChange={this.handleEffectiveDate}
                                                 />
-                                                <ErrorLabel content={errorEffectiveDate} />
                                             </div>
                                             <div className="form-group">
                                                 <label>{translate('document.doc_version.expired_date')}</label>
@@ -624,7 +624,6 @@ class CreateForm extends Component {
                                                     value={this.state.documentExpiredDate}
                                                     onChange={this.handleExpiredDate}
                                                 />
-                                                <ErrorLabel content={errorExpiredDate} />
                                             </div>
                                         </div>
                                     </div>
@@ -665,14 +664,6 @@ class CreateForm extends Component {
                                                 <input type="text" className="form-control" onChange={this.handleArchivedRecordPlaceInfo} placeholder="VD: Tủ 301" />
                                             </div> */}
                                             <div className="form-group">
-                                                <label>{translate('document.store.information')}</label>
-                                                <TreeSelect data={archives} handleChange={this.handleArchives} mode="hierarchical" />
-                                            </div>
-                                            <div className="form-group">
-                                                <label>{translate('document.administration.domains.path_detail')}</label>
-                                                <label >{path ? path : ""}</label>
-                                            </div>
-                                            <div className="form-group">
                                                 <label>{translate('document.store.organizational_unit_manage')}</label>
                                                 <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
                                                     id="select-documents-organizational-unit-manage"
@@ -684,6 +675,16 @@ class CreateForm extends Component {
                                                     multiple={false}
                                                 />
                                             </div>
+                                            <div className="form-group">
+                                                <label>{translate('document.store.information')}</label>
+                                                <TreeSelect data={archives} handleChange={this.handleArchives} value={documentArchives} mode="hierarchical" />
+                                            </div>
+                                            <div className="form-group">
+                                                {path && path.length ? path.map(y =>
+                                                    <div>{y}</div>
+                                                ) : null}
+                                            </div>
+
                                         </div>
                                     </div>
                                 </div>

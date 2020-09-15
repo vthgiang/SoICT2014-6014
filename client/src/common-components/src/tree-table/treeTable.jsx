@@ -19,17 +19,18 @@ class TreeTable extends Component {
 
     /**
      * Function thêm script cho tree table
-     * showChildren = true : hiện thị nút con
-     * showChildren = false : Ẩn nút con
+     * @showChildren = true : hiện thị nút con
+     * @showChildren = false : Ẩn nút con
      */
     addScriptTreeTable = (showChildren = true) => {
+        const { tableId = 'tree-table' } = this.props;
         window.$(function () {
-            var
-                $table = window.$('#tree-table'),
+            let
+                $table = window.$(`#${tableId}`),
                 rows = $table.find('tr');
 
             rows.each(function (index, row) {
-                var
+                let
                     $row = window.$(row),
                     level = $row.data('level'),
                     id = $row.data('id'),
@@ -38,16 +39,16 @@ class TreeTable extends Component {
                 //  var tagSpan = $columnName.find("span").length;
 
 
-                var div = window.$("<div/>").attr({
+                let div = window.$("<div/>").attr({
                     "style": "display: inline-block; margin-left: " + (15 + 30 * (level - 1)) + "px"
                 }).html($columnName.text());
                 if (children.length) {
-                    var expander = window.$('<span />').attr('class', `treegrid-expander glyphicon ${showChildren ? "glyphicon-chevron-down" : "glyphicon-chevron-right"}`).html('');
+                    let expander = window.$('<span />').attr('class', `treegrid-expander glyphicon ${showChildren ? "glyphicon-chevron-down" : "glyphicon-chevron-right"}`).html('');
                     div.prepend(expander);
 
                     { showChildren ? children.show() : children.hide() }
                     expander.on('click', function (e) {
-                        var $target = window.$(e.target);
+                        let $target = window.$(e.target);
                         if ($target.hasClass('glyphicon-chevron-right')) {
                             $target
                                 .removeClass('glyphicon-chevron-right')
@@ -70,7 +71,7 @@ class TreeTable extends Component {
 
             // Reverse hide all elements
             const reverseHide = (table, element) => {
-                var
+                let
                     $element = window.$(element),
                     id = $element.data('id'),
                     children = table.find('tr[data-parent="' + id + '"]');
@@ -91,7 +92,7 @@ class TreeTable extends Component {
 
             // Reverse show all elements
             const reverseShow = (table, element) => {
-                var
+                let
                     $element = window.$(element),
                     id = $element.data('id'),
                     children = table.find('tr[data-parent="' + id + '"]');
@@ -112,22 +113,26 @@ class TreeTable extends Component {
         });
     }
 
-    // Function thực hiện format dữ liệu truyền vào
+    /**
+     * Function thực hiện format dữ liệu truyền vào
+     * @param {*} column : Dữ liệu cột của bảng
+     * @param {*} data : Dữ liệu hiện thị trong bảng
+     */
     dataTreetable = (column, data) => {
-        var keyColumn = column.map(col => col.key);
-        var newarr = [];
-        // function chuyển đổi list thành tree 
+        let keyColumn = column.map(col => col.key);
+        let newarr = [];
+        // Function chuyển đổi list thành tree 
         let listToTree = (items, parent_id = null, link = 'parent') =>
             items.filter(item => item[link] === parent_id).map(item => ({ ...item, children: listToTree(items, item._id) }));
 
         // Chuyển đổi dữ liệu truyền vào thành dạng tree trước khi gọi đệ quy
-        var list1 = data;
+        let list1 = data;
         data = listToTree(data);
 
-        //Thêm các công việc không tìm được cha vào mảng data
-        var concatArray = [];
+        // Thêm các công việc không tìm được cha vào mảng data
+        let concatArray = [];
         for (let i in list1) {
-            var flag = true;
+            let flag = true;
             for (let j in data) {
                 if (list1[i]._id === data[j]._id) {
                     flag = false;
@@ -146,8 +151,8 @@ class TreeTable extends Component {
         }
         data = data.concat(concatArray);
 
-        // function đệ quy để thêm level tương ứng cho dữ liệu truyền vào đã được chuyển thành dạnh tree
-        // trả vể mảng là dữ liệu trước khi thực hiện function listToTree và dữ liệu này đã được sắp xếp
+        // Function đệ quy để thêm level tương ứng cho dữ liệu truyền vào đã được chuyển thành dạnh tree
+        // Trả vể mảng là dữ liệu trước khi thực hiện function listToTree và dữ liệu này đã được sắp xếp
         let convertData = (arr, level = 1) => {
             if (arr !== undefined) {
                 arr.map(item => {
@@ -182,9 +187,13 @@ class TreeTable extends Component {
         return data;
     }
 
-    // Function hiện thị các action tương ứng cho các dòng 
+    /**
+     * Function hiện thị các action tương ứng cho các dòng
+     * @param {*} data : Array tên các action của từng dòng
+     * @param {*} id : Id dữ liệu tương ứng từng dòng, dùng để gọi server lấy dữ liệu
+     */
     showActionColumn = (data, id) => {
-        var { titleAction, performtasks } = this.props;
+        let { titleAction, performtasks } = this.props;
         switch (data) {
             case "edit":
                 return <a href="#abc" onClick={() => this.props.funcEdit(id)} className="edit" data-toggle="modal" title={titleAction.edit}>
@@ -220,10 +229,10 @@ class TreeTable extends Component {
     }
 
     render() {
-        const { translate, column, data, actions=true, tableId } = this.props;
+        const { translate, column, data, actions = true, tableId = 'tree-table' } = this.props;
 
         return (
-            <table id={tableId ? tableId : "tree-table"} className="table table-striped table-hover table-bordered">
+            <table id={tableId} className="table table-striped table-hover table-bordered">
                 <thead>
                     <tr id="task">
                         {column.length !== 0 && column.map((col, index) => <th key={index}>{col.name}</th>)}
@@ -269,14 +278,12 @@ class TreeTable extends Component {
         );
     }
 }
+
 function mapState(state) {
     const { performtasks } = state;
     return { performtasks };
 }
 
-const actionCreators = {
-
-};
-const treeTable = connect(mapState, actionCreators)(withTranslate(TreeTable));
+const treeTable = connect(mapState, null)(withTranslate(TreeTable));
 
 export { treeTable as TreeTable }

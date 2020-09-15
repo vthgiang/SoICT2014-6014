@@ -8,6 +8,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import c3 from 'c3';
 import 'c3/c3.css';
 import * as d3 from "d3";
+import { ToolTip } from '../../../../../common-components';
 
 class DistributionOfOrganizationalUnitKpiChart extends Component {
     constructor(props) {
@@ -150,20 +151,18 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
 
         this.chart = c3.generate({
             bindto: this.refs.chart,
-            padding: {
-                top: 20,
-                bottom: 20,
-                right: 20,
-                left: 20
-            },
 
             data: {
                 columns: dataPieChart,
                 type: 'pie',
             },
 
-            legend: {
-                show: true
+            tooltip: {
+                format: {
+                    value: function (value) {
+                        return value;
+                    }
+                }
             }
         });
     }

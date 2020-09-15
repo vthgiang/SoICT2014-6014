@@ -7,6 +7,7 @@ export const kpiMemberServices = {
     editKpi,
     editStatusKpi,
     getTaskById,
+    getTaskByListKpis,
     setPointKPI,
 };
 /**
@@ -91,6 +92,18 @@ function getTaskById(id, employeeId, date, kpiType) {
             employeeId: employeeId,
             date: date,
             kpiType: kpiType
+        }
+    }, false, true, 'kpi.evaluation')
+}
+/**
+ *  Lấy danh sách công việc theo list kpi con
+*/
+function getTaskByListKpis(listkpis) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/kpi/evaluation/employee-evaluation/employee-kpi-sets`,
+        method: 'GET',
+        params :{
+            listkpis:listkpis
         }
     }, false, true, 'kpi.evaluation')
 }

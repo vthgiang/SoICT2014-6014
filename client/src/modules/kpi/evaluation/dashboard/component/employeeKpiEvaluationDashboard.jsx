@@ -64,6 +64,7 @@ class EmployeeKpiEvaluationDashboard extends Component {
             startDate: this.formatDate(Date.now()),
             endDate: this.formatDate(new Date(currentYear, currentMonth - 11, 1))
         }
+
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
         this.props.getEmployeeKPISets(infosearch);
         this.props.getAllEmployeeKpiSetOfUnitByRole(localStorage.getItem("currentRole"));
@@ -289,14 +290,18 @@ class EmployeeKpiEvaluationDashboard extends Component {
         let queue = [], childrenOrganizationalUnit = [],userName;
         let kpimember;
         let listkpi, kpiApproved;
-        let currentUnit = dashboardEvaluationEmployeeKpiSet && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
+        let currentUnit, currentUnitLoading;
 
         let currentDate = new Date();
         let currentYear = currentDate.getFullYear();
         let currentMonth = currentDate.getMonth();
 
-        if(unitMembers&&infosearch)
-        {
+        if (dashboardEvaluationEmployeeKpiSet) {
+            currentUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
+            currentUnitLoading = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnitLoading
+        }
+        
+        if (unitMembers && infosearch) {
             for(let i=0;i<unitMembers[0].value.length;i++)
             {
                 let arr = unitMembers[0].value
@@ -306,12 +311,13 @@ class EmployeeKpiEvaluationDashboard extends Component {
             }
         }
 
-        if (this.props.dashboardEvaluationEmployeeKpiSet.employeeKpiSets) {
-            employeeKpiSets = this.props.dashboardEvaluationEmployeeKpiSet.employeeKpiSets;
-            lastMonthEmployeeKpiSets = employeeKpiSets.filter(item => this.formatDate(item.date) == dateOfExcellentEmployees);
-            lastMonthEmployeeKpiSets.sort((a, b) => b.approvedPoint - a.approvedPoint);
-            lastMonthEmployeeKpiSets = lastMonthEmployeeKpiSets.slice(0, numberOfExcellentEmployees);
+        if (dashboardEvaluationEmployeeKpiSet) {
+            employeeKpiSets = dashboardEvaluationEmployeeKpiSet.employeeKpiSets;
+            lastMonthEmployeeKpiSets = employeeKpiSets && employeeKpiSets.filter(item => this.formatDate(item.date) == dateOfExcellentEmployees);
+            lastMonthEmployeeKpiSets && lastMonthEmployeeKpiSets.sort((a, b) => b.approvedPoint - a.approvedPoint);
+            lastMonthEmployeeKpiSets = lastMonthEmployeeKpiSets && lastMonthEmployeeKpiSets.slice(0, numberOfExcellentEmployees);
         }
+
         if (employeeKpiSets) {
             currentMonthEmployeeKpiSets = employeeKpiSets.filter(item => this.formatDate(item.date) == this.formatDate(new Date(currentYear, currentMonth, 1)));
             totalKpi = currentMonthEmployeeKpiSets.length;
@@ -322,12 +328,16 @@ class EmployeeKpiEvaluationDashboard extends Component {
             activatedKpi = currentMonthEmployeeKpiSets.filter(item => item.status == 2);
             activatedKpi = activatedKpi.length;
         }
-        if (user.employees) {
+
+        if (user) {
+            // organizationalUnitsOfUser = user.organizationalUnitsOfUser;
+            // organizationalUnitsOfUserLoading = user.organizationalUnitsOfUserLoading;
+
             let allEmployeesUnit = [], idOfEmployees = [];
             let set;
 
             allEmployeesUnit = user.employees;
-            allEmployeesUnit.map(employee => {
+            allEmployeesUnit && allEmployeesUnit.map(employee => {
                 idOfEmployees.push(employee.userId.id)
             })
 
@@ -336,14 +346,12 @@ class EmployeeKpiEvaluationDashboard extends Component {
             numberOfEmployee = allEmployeesUnit.length;
         }
 
-        if (this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
-            let currentOrganizationalUnit = this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
-
-            childrenOrganizationalUnit.push(currentOrganizationalUnit);
-            queue.push(currentOrganizationalUnit);
+        if (currentUnit) {
+            childrenOrganizationalUnit.push(currentUnit);
+            queue.push(currentUnit);
             while (queue.length > 0) {
                 let v = queue.shift();
-                if (v.children) {
+                if (v && v.children) {
                     for (let i = 0; i < v.children.length; i++) {
                         let u = v.children[i];
                         queue.push(u);
@@ -358,13 +366,16 @@ class EmployeeKpiEvaluationDashboard extends Component {
         }
         if (kpimembers.kpimembers) {
             listkpi = kpimembers.kpimembers;
-            kpiApproved = listkpi.filter(item => item.status === 3);
-            let automaticPoint = kpiApproved.map(item => {
+            kpiApproved = listkpi && listkpi.filter(item => item.status === 3);
+
+            let automaticPoint = kpiApproved && kpiApproved.map(item => {
                 return { label: this.formatDate(item.date), y: item.automaticPoint }
             }).reverse();
+
             let employeePoint = kpiApproved.map(item => {
                 return { label: this.formatDate(item.date), y: item.employeePoint }
             }).reverse();
+
             let approvedPoint = kpiApproved.map(item => {
                 return { label: this.formatDate(item.date), y: item.approvedPoint }
             }).reverse();
@@ -384,211 +395,221 @@ class EmployeeKpiEvaluationDashboard extends Component {
 
         return (
             <React.Fragment>
-                <div className="qlcv" style={{ textAlign: "right", marginBottom: 15 }}>
-                    <div className="form-inline">
-                        <div className="form-group">
-                            <label className="form-control-static">{translate('kpi.evaluation.dashboard.organizational_unit')}</label>
-                            {ids &&
-                                <SelectMulti id="multiSelectOrganizationalUnit"
-                                    items={childrenOrganizationalUnit.map(item => { return { value: item.id, text: item.name } })}
-                                    options={{ nonSelectedText: translate('kpi.evaluation.dashboard.select_units'), allSelectedText: translate('kpi.evaluation.dashboard.all_unit') }}
-                                    onChange={this.handleSelectOrganizationalUnit}
-                                    value={ids}
-                                >
-                                </SelectMulti>
-                            }
-                            <button type="button" className="btn btn-success" onClick={this.handleUpdateData}>{translate('kpi.evaluation.dashboard.analyze')}</button>
-                        </div>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-md-3 col-sm-6 form-inline">
-                        <div className="info-box">
-                            <span className="info-box-icon bg-aqua"><i className="fa fa-cogs" /></span>
-                            <div className="info-box-content">
-                                <span className="info-box-text">{`KPI ${translate('kpi.evaluation.dashboard.setting_up')}`}</span>
-                                <span className="info-box-number">{`${settingUpKpi}/${totalKpi}`}</span>
+                { currentUnit 
+                    ? <React.Fragment>
+                        <div className="qlcv" style={{ textAlign: "right", marginBottom: 15 }}>
+                            <div className="form-inline">
+                                <div className="form-group">
+                                    <label className="form-control-static">{translate('kpi.evaluation.dashboard.organizational_unit')}</label>
+                                    {ids &&
+                                        <SelectMulti id="multiSelectOrganizationalUnit"
+                                            items={childrenOrganizationalUnit.map(item => { return { value: item.id, text: item.name } })}
+                                            options={{ nonSelectedText: translate('kpi.evaluation.dashboard.select_units'), allSelectedText: translate('kpi.evaluation.dashboard.all_unit') }}
+                                            onChange={this.handleSelectOrganizationalUnit}
+                                            value={ids}
+                                        >
+                                        </SelectMulti>
+                                    }
+                                    <button type="button" className="btn btn-success" onClick={this.handleUpdateData}>{translate('kpi.evaluation.dashboard.analyze')}</button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="col-md-3 col-sm-6 form-inline">
-                        <div className="info-box">
-                            <span className="info-box-icon bg-green"><i className="fa fa-comments-o" /></span>
-                            <div className="info-box-content">
-                                <span className="info-box-text">{`KPI ${translate('kpi.evaluation.dashboard.awaiting_approval')}`}</span>
-                                <span className="info-box-number">{`${awaitingApprovalKpi}/${totalKpi}`}</span>
+                        <div className="row">
+                            <div className="col-md-3 col-sm-6 form-inline">
+                                <div className="info-box">
+                                    <span className="info-box-icon bg-aqua"><i className="fa fa-cogs" /></span>
+                                    <div className="info-box-content">
+                                        <span className="info-box-text">{`KPI ${translate('kpi.evaluation.dashboard.setting_up')}`}</span>
+                                        <span className="info-box-number">{`${settingUpKpi}/${totalKpi}`}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-md-3 col-sm-6 form-inline">
+                                <div className="info-box">
+                                    <span className="info-box-icon bg-green"><i className="fa fa-comments-o" /></span>
+                                    <div className="info-box-content">
+                                        <span className="info-box-text">{`KPI ${translate('kpi.evaluation.dashboard.awaiting_approval')}`}</span>
+                                        <span className="info-box-number">{`${awaitingApprovalKpi}/${totalKpi}`}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="clearfix visible-sm-block" />
+                            <div className="col-md-3 col-sm-6 form-inline">
+                                <div className="info-box">
+                                    <span className="info-box-icon bg-red"><i className="fa fa-thumbs-o-up" /></span>
+                                    <div className="info-box-content">
+                                        <span className="info-box-text">{`KPI ${translate('kpi.evaluation.dashboard.activated')}`}</span>
+                                        <span className="info-box-number">{`${activatedKpi}/${totalKpi}`}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-md-3 col-sm-6 form-inline">
+                                <div className="info-box">
+                                    <span className="info-box-icon bg-yellow"><i className="fa fa-users" /></span>
+                                    <div className="info-box-content">
+                                        <span className="info-box-text">{translate('kpi.evaluation.dashboard.number_of_employee')}</span>
+                                        <span className="info-box-number">{numberOfEmployee}</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="clearfix visible-sm-block" />
-                    <div className="col-md-3 col-sm-6 form-inline">
-                        <div className="info-box">
-                            <span className="info-box-icon bg-red"><i className="fa fa-thumbs-o-up" /></span>
-                            <div className="info-box-content">
-                                <span className="info-box-text">{`KPI ${translate('kpi.evaluation.dashboard.activated')}`}</span>
-                                <span className="info-box-number">{`${activatedKpi}/${totalKpi}`}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-md-3 col-sm-6 form-inline">
-                        <div className="info-box">
-                            <span className="info-box-icon bg-yellow"><i className="fa fa-users" /></span>
-                            <div className="info-box-content">
-                                <span className="info-box-text">{translate('kpi.evaluation.dashboard.number_of_employee')}</span>
-                                <span className="info-box-number">{numberOfEmployee}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-md-12">
-                        <div className="box">
-                            <div className="box-header with-border">
-                                <h3 className="box-title">{`${numberOfExcellentEmployees} ${translate('kpi.evaluation.dashboard.best_employee')}`}</h3>
-                                <div className="box-tools pull-right">
-                                    <button type="button" data-toggle="collapse" data-target="#setting-excellent-employee" className="pull-right" style={{ border: "none", background: "none", padding: "0px" }}>
-                                        <i className="fa fa-gear" style={{ fontSize: "19px" }}></i>
-                                    </button>
-                                    <div className="box box-primary box-solid collapse setting-table" id={"setting-excellent-employee"}>
-                                        <div className="box-header with-border">
-                                            <h3 className="box-title">{translate('kpi.evaluation.dashboard.option')}</h3>
-                                            <div className="box-tools pull-right">
-                                                <button type="button" className="btn btn-box-tool" data-toggle="collapse" data-target="#setting-excellent-employee" ><i className="fa fa-times"></i></button>
+                        <div className="row">
+                            <div className="col-md-12">
+                                <div className="box">
+                                    <div className="box-header with-border">
+                                        <h3 className="box-title">{`${numberOfExcellentEmployees} ${translate('kpi.evaluation.dashboard.best_employee')}`}</h3>
+                                        <div className="box-tools pull-right">
+                                            <button type="button" data-toggle="collapse" data-target="#setting-excellent-employee" className="pull-right" style={{ border: "none", background: "none", padding: "0px" }}>
+                                                <i className="fa fa-gear" style={{ fontSize: "19px" }}></i>
+                                            </button>
+                                            <div className="box box-primary box-solid collapse setting-table" id={"setting-excellent-employee"}>
+                                                <div className="box-header with-border">
+                                                    <h3 className="box-title">{translate('kpi.evaluation.dashboard.option')}</h3>
+                                                    <div className="box-tools pull-right">
+                                                        <button type="button" className="btn btn-box-tool" data-toggle="collapse" data-target="#setting-excellent-employee" ><i className="fa fa-times"></i></button>
+                                                    </div>
+                                                </div>
+                                                <div className="box-body">
+                                                    <div className="form-group">
+                                                        <label className="form-control-static">{translate('kpi.evaluation.dashboard.month')}</label>
+                                                        <DatePicker
+                                                            id="kpi_month"
+                                                            dateFormat="month-year"
+                                                            value={dateOfExcellentEmployees}
+                                                            onChange={this.handleChangeDate}
+                                                            disabled={false}
+                                                        />
+                                                    </div>
+                                                    <div className="form-group">
+                                                        <label className="form-control-static">{translate('kpi.evaluation.dashboard.number_of_employee')}</label>
+                                                        <input name="numberOfExcellentEmployees" className="form-control" type="Number" onChange={(event) => this.handleNumberOfEmployeesChange(event)} defaultValue={numberOfExcellentEmployees} />
+                                                    </div>
+                                                </div>
                                             </div>
+
                                         </div>
-                                        <div className="box-body">
-                                            <div className="form-group">
-                                                <label className="form-control-static">{translate('kpi.evaluation.dashboard.month')}</label>
+                                    </div>
+                                    <div className="box-body no-parding">
+                                        <ul className="users-list clearfix">
+                                            {
+                                                (typeof lastMonthEmployeeKpiSets !== 'undefined' && lastMonthEmployeeKpiSets.length !== 0) ?
+                                                    lastMonthEmployeeKpiSets.map((item, index) =>
+                                                        <li key={index} style={{ maxWidth: 200 }}>
+                                                            <img src={(process.env.REACT_APP_SERVER + item.creator.avatar)} />
+                                                            <a className="users-list-name" href="#detailKpiMember2" data-toggle="modal" data-target="#memberKPIApprove2">{item.creator.name}</a>
+                                                            <span className="users-list-date">{item.approvedPoint}</span>
+                                                        </li>
+                                                    )
+                                                    : <li>{translate('kpi.evaluation.employee_evaluation.data_not_found')}</li>
+                                            }
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        {/* Thống kê kết quả KPI của nhân viên */}
+                        <div className="row">
+                            <div className="col-md-12">
+                                <div className="box">
+                                    <div className="box-header with-border">
+                                        <h3 className="box-title">{translate('kpi.evaluation.dashboard.statistics_chart_title')}</h3>
+                                        {statisticsOfEmployeeKpiSetChartData && <ExportExcel type="link" id="export-statistic-employee-kpi-set-chart" exportData={statisticsOfEmployeeKpiSetChartData} />}
+                                    </div>
+                                    {/* /.box-header */}
+
+                                    <div className="box-body qlcv" id="statisticsOfEmployeeKpiSetChart">
+                                        <div className="form-inline">
+                                            <div className="col-sm-6 col-xs-12 form-group" >
+                                                <label>{translate('kpi.evaluation.employee_evaluation.from')}</label>
                                                 <DatePicker
-                                                    id="kpi_month"
+                                                    id="monthStartInEmployeeKpiEvaluation"
                                                     dateFormat="month-year"
-                                                    value={dateOfExcellentEmployees}
-                                                    onChange={this.handleChangeDate}
+                                                    value={defaultStartMonth}
+                                                    onChange={this.handleSelectMonthStart}
                                                     disabled={false}
                                                 />
                                             </div>
-                                            <div className="form-group">
-                                                <label className="form-control-static">{translate('kpi.evaluation.dashboard.number_of_employee')}</label>
-                                                <input name="numberOfExcellentEmployees" className="form-control" type="Number" onChange={(event) => this.handleNumberOfEmployeesChange(event)} defaultValue={numberOfExcellentEmployees} />
+                                            <div className="col-sm-6 col-xs-12 form-group" >
+                                                <label>{translate('kpi.evaluation.employee_evaluation.to')}</label>
+                                                <DatePicker
+                                                    id="monthEndInEmployeeKpiEvaluation"
+                                                    dateFormat="month-year"
+                                                    value={defaultEndMonth}
+                                                    onChange={this.handleSelectMonthEnd}
+                                                    disabled={false}
+                                                />
                                             </div>
                                         </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                            <div className="box-body no-parding">
-                                <ul className="users-list clearfix">
-                                    {
-                                        (typeof lastMonthEmployeeKpiSets !== 'undefined' && lastMonthEmployeeKpiSets.length !== 0) ?
-                                            lastMonthEmployeeKpiSets.map((item, index) =>
-                                                <li key={index} style={{ maxWidth: 200 }}>
-                                                    <img src={(process.env.REACT_APP_SERVER + item.creator.avatar)} />
-                                                    <a className="users-list-name" href="#detailKpiMember2" data-toggle="modal" data-target="#memberKPIApprove2">{item.creator.name}</a>
-                                                    <span className="users-list-date">{item.approvedPoint}</span>
-                                                </li>
-                                            )
-                                            : <li>{translate('kpi.evaluation.employee_evaluation.data_not_found')}</li>
-                                    }
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-                {/* Thống kê kết quả KPI của nhân viên */}
-                <div className="row">
-                    <div className="col-md-12">
-                        <div className="box">
-                            <div className="box-header with-border">
-                                <h3 className="box-title">{translate('kpi.evaluation.dashboard.statistics_chart_title')}</h3>
-                                {statisticsOfEmployeeKpiSetChartData && <ExportExcel type="link" id="export-statistic-employee-kpi-set-chart" exportData={statisticsOfEmployeeKpiSetChartData} />}
-                            </div>
-                            {/* /.box-header */}
-
-                            <div className="box-body qlcv" id="statisticsOfEmployeeKpiSetChart">
-                                <div className="form-inline">
-                                    <div className="col-sm-6 col-xs-12 form-group" >
-                                        <label>{translate('kpi.evaluation.employee_evaluation.from')}</label>
-                                        <DatePicker
-                                            id="monthStartInEmployeeKpiEvaluation"
-                                            dateFormat="month-year"
-                                            value={defaultStartMonth}
-                                            onChange={this.handleSelectMonthStart}
-                                            disabled={false}
-                                        />
-                                    </div>
-                                    <div className="col-sm-6 col-xs-12 form-group" >
-                                        <label>{translate('kpi.evaluation.employee_evaluation.to')}</label>
-                                        <DatePicker
-                                            id="monthEndInEmployeeKpiEvaluation"
-                                            dateFormat="month-year"
-                                            value={defaultEndMonth}
-                                            onChange={this.handleSelectMonthEnd}
-                                            disabled={false}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="form-inline">
-                                    {unitMembers &&
-                                        <div className="col-sm-6 col-xs-12 form-group">
-                                            <label>{translate('kpi.evaluation.employee_evaluation.employee')}</label>
-                                            <SelectBox
-                                                id={`createEmployeeKpiSet`}
-                                                className="form-control select2"
-                                                style={{ width: "100%" }}
-                                                items={unitMembers}
-                                                multiple={false}
-                                                onChange={this.handleSelectEmployee}
-                                                value={unitMembers[0].value[2] ? unitMembers[0].value[2].value : (unitMembers[0].value[0] ? unitMembers[0].value[0].value : null)}
-                                            />
+                                        <div className="form-inline">
+                                            {unitMembers &&
+                                                <div className="col-sm-6 col-xs-12 form-group">
+                                                    <label>{translate('kpi.evaluation.employee_evaluation.employee')}</label>
+                                                    <SelectBox
+                                                        id={`createEmployeeKpiSet`}
+                                                        className="form-control select2"
+                                                        style={{ width: "100%" }}
+                                                        items={unitMembers}
+                                                        multiple={false}
+                                                        onChange={this.handleSelectEmployee}
+                                                        value={unitMembers[0].value[2] ? unitMembers[0].value[2].value : (unitMembers[0].value[0] ? unitMembers[0].value[0].value : null)}
+                                                    />
+                                                </div>
+                                            }
+                                            <div className="col-sm-6 col-xs-12 form-group">
+                                                <label></label>
+                                                <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
+                                            </div>
                                         </div>
-                                    }
-                                    <div className="col-sm-6 col-xs-12 form-group">
-                                        <label></label>
-                                        <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
+
+                                        <div className="col-sm-12 col-xs-12">
+                                            {unitMembers &&
+                                                <StatisticsOfEmployeeKpiSetChart
+                                                    userId={infosearch.userId}
+                                                    startMonth={infosearch.startMonth}
+                                                    endMonth={infosearch.endMonth}
+                                                    info={infosearch}
+                                                    unitId={currentUnit}
+                                                    userName={userName}
+                                                    organizationalUnitIds={ids}
+                                                    onDataAvailable = {this.handleStatisticsOfEmployeeKpiSetChartDataAvailable}
+                                                />
+                                            }
+                                        </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
 
-                                <div className="col-sm-12 col-xs-12">
-                                    {unitMembers &&
-                                        <StatisticsOfEmployeeKpiSetChart
-                                            userId={infosearch.userId}
-                                            startMonth={infosearch.startMonth}
-                                            endMonth={infosearch.endMonth}
-                                            info={infosearch}
-                                            unitId={currentUnit}
-                                            userName={userName}
-                                            organizationalUnitIds={ids}
-                                            onDataAvailable = {this.handleStatisticsOfEmployeeKpiSetChartDataAvailable}
+                        
+                        {/* Kết quả Kpi tất cả nhân viên */}
+                        <div className="row">
+                            <div className="col-md-12">
+                                <div className="box">
+                                    <div className="box-header with-border">
+                                        <h3 className="box-title">{translate('kpi.evaluation.dashboard.result_kpi_titile')}</h3>
+                                        {resultsOfAllEmployeeKpiSetChartData&&<ExportExcel  type="link" id="export-all-employee-kpi-evaluate-result-dashboard" exportData={resultsOfAllEmployeeKpiSetChartData} style={{ marginTop:5 }} />}
+                                    </div>
+                                    {/* /.box-header */}
+
+                                    <div className="box-body qlcv">
+                                        <ResultsOfAllEmployeeKpiSetChart
+                                            organizationalUnitIds={organizationalUnitIds}
+                                            onDataAvailable={this.handleResultsOfAllEmployeeKpiSetChartDataAvailable}
                                         />
-                                    }
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                
-                {/* Kết quả Kpi tất cả nhân viên */}
-                <div className="row">
-                    <div className="col-md-12">
-                        <div className="box">
-                            <div className="box-header with-border">
-                                <h3 className="box-title">{translate('kpi.evaluation.dashboard.result_kpi_titile')}</h3>
-                                {resultsOfAllEmployeeKpiSetChartData&&<ExportExcel  type="link" id="export-all-employee-kpi-evaluate-result-dashboard" exportData={resultsOfAllEmployeeKpiSetChartData} style={{ marginTop:5 }} />}
-                            </div>
-                            {/* /.box-header */}
-
-                            <div className="box-body qlcv">
-                                <ResultsOfAllEmployeeKpiSetChart
-                                    organizationalUnitIds={organizationalUnitIds}
-                                    onDataAvailable={this.handleResultsOfAllEmployeeKpiSetChartDataAvailable}
-                                />
-                            </div>
+                    </React.Fragment>
+                    : currentUnitLoading
+                    && <div className="box">
+                        <div className="box-body">
+                            <h4>Bạn chưa có đơn vị</h4>
                         </div>
-                    </div>
-                </div>
+                    </div>   
+                }
             </React.Fragment>
         );
     }
@@ -602,7 +623,6 @@ function mapState(state) {
 const actionCreators = {
     getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
-    getDepartment: UserActions.getDepartmentOfUser,
     getEmployeeKPISets: kpiMemberActions.getEmployeeKPISets,
     getAllEmployeeKpiSetOfUnitByRole: DashboardEvaluationEmployeeKpiSetAction.getAllEmployeeKpiSetOfUnitByRole,
     getAllEmployeeOfUnitByRole: UserActions.getAllEmployeeOfUnitByRole,

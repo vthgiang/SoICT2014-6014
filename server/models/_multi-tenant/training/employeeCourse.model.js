@@ -4,12 +4,12 @@ const Schema = mongoose.Schema;
 const EmployeeCourseSchema = new Schema({
     course: {
         type: Schema.Types.ObjectId,
-        ref: 'courses',
+        ref: 'Course',
         required: true
     },
     employee: {
         type: Schema.Types.ObjectId,
-        ref: 'employees',
+        ref: 'Employee',
         required: true
     },
     result: { //pass: Đạt, failed: Không đạt
@@ -18,4 +18,9 @@ const EmployeeCourseSchema = new Schema({
     }
 
 })
-module.exports = EmployeeCourse = (db) => db.model("employee_courses", EmployeeCourseSchema);
+
+module.exports = (db) => {
+    if(!db.models.EmployeeCourse)
+        return db.model('EmployeeCourse', EmployeeCourseSchema);
+    return db.models.EmployeeCourse;
+}

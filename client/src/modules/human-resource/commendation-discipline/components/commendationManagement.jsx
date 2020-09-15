@@ -157,14 +157,15 @@ class CommendationManagement extends Component {
             dataSheets: [
                 {
                     sheetName: "sheet1",
+                    sheetTitle: translate('human_resource.commendation_discipline.commendation.file_name_export'),
                     tables: [
                         {
                             columns: [
-                                { key: "STT", value: translate('human_resource.stt') },
+                                { key: "STT", value: translate('human_resource.stt'), width: 7 },
                                 { key: "employeeNumber", value: translate('human_resource.staff_number') },
-                                { key: "fullName", value: translate('human_resource.staff_name') },
+                                { key: "fullName", value: translate('human_resource.staff_name'), width: 20 },
                                 { key: "decisionNumber", value: translate('human_resource.commendation_discipline.commendation.table.decision_number') },
-                                { key: "decisionUnit", value: translate('human_resource.commendation_discipline.commendation.table.decision_unit') },
+                                { key: "decisionUnit", value: translate('human_resource.commendation_discipline.commendation.table.decision_unit'), width: 25 },
                                 { key: "startDate", value: translate('human_resource.commendation_discipline.commendation.table.decision_date') },
                                 { key: "type", value: translate('human_resource.commendation_discipline.commendation.table.reward_forms') },
                                 { key: "reason", value: translate('human_resource.commendation_discipline.commendation.table.reason_praise') },

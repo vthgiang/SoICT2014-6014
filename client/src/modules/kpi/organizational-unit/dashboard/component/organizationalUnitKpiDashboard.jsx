@@ -18,17 +18,23 @@ class OrganizationalUnitKpiDashboard extends Component {
 
     constructor(props) {
         super(props);
-        this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
 
         this.today = new Date();
 
-        this.state = {
-            currentRole: null,
+        this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
+        this.DATA_SEARCH = {
             organizationalUnitId: null,
-
-            currentYear: new Date().getFullYear(),
             month: this.today.getFullYear() + '-' + (this.today.getMonth() + 1),
             date: (this.today.getMonth() + 1) + '-' + this.today.getFullYear(),
+        }
+
+        this.state = {
+            currentRole: null,
+            organizationalUnitId: this.DATA_SEARCH.organizationalUnitId,
+
+            currentYear: new Date().getFullYear(),
+            month: this.DATA_SEARCH.month,
+            date: this.DATA_SEARCH.date,
 
             dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
 
@@ -113,26 +119,27 @@ class OrganizationalUnitKpiDashboard extends Component {
     }
 
     handleSelectOrganizationalUnitId = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                organizationalUnitId: value[0]
-            }
-        })
+        this.DATA_SEARCH.organizationalUnitId = value[0];
     }
 
     handleSelectMonth = async (value) => {
         let month = value.slice(3, 7) + '-' + value.slice(0, 2);
+        this.DATA_SEARCH.month = month;
+        this.DATA_SEARCH.date = value;
+    }
+
+    handleSearchData = () => {
         this.setState(state => {
             return {
                 ...state,
-                month: month,
-                date: value
+                organizationalUnitId: this.DATA_SEARCH.organizationalUnitId,
+                month: this.DATA_SEARCH.month,
+                date: this.DATA_SEARCH.date
             }
         })
     }
 
-    handleResultsOfOrganizationalUnitKpiChartDataAvailable =(data)=>{
+    handleResultsOfOrganizationalUnitKpiChartDataAvailable = (data)=>{
         this.setState( state => {
             return {
                 ...state,
@@ -141,7 +148,7 @@ class OrganizationalUnitKpiDashboard extends Component {
         })
     }
 
-    handleResultsOfAllOrganizationalUnitsKpiChartDataAvailable =(data)=>{
+    handleResultsOfAllOrganizationalUnitsKpiChartDataAvailable = (data)=>{
         this.setState( state => {
             return {
                 ...state,
@@ -150,7 +157,7 @@ class OrganizationalUnitKpiDashboard extends Component {
         })
     }
 
-    handleStatisticsOfOrganizationalUnitKpiResultChartDataAvailable =(data)=>{
+    handleStatisticsOfOrganizationalUnitKpiResultChartDataAvailable = (data)=>{
         this.setState( state => {
             return {
                 ...state,
@@ -244,7 +251,7 @@ class OrganizationalUnitKpiDashboard extends Component {
                                             items={organizationalUnitSelectBox}
                                             multiple={false}
                                             onChange={this.handleSelectOrganizationalUnitId}
-                                            value={organizationalUnitSelectBox[0].value}
+                                            value={this.DATA_SEARCH.organizationalUnitId}
                                         />
                                     </div>
                                 }
@@ -258,12 +265,14 @@ class OrganizationalUnitKpiDashboard extends Component {
                                         disabled={false}
                                     />
                                 </div>
+
+                                <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('kpi.evaluation.dashboard.analyze')}</button>
                             </div>
                         </div>
 
                         {/* Xu hướng thực hiện mục tiêu */}
                         <div className="row">
-                            <div className="col-xs-12" >
+                            <div className="col-xs-12">
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
                                         <div className="box-title">{translate('kpi.organizational_unit.dashboard.trend')} {this.state.date}</div>
@@ -280,7 +289,7 @@ class OrganizationalUnitKpiDashboard extends Component {
                                                     items={typeChartSelectBox}
                                                     multiple={false}
                                                     onChange={this.handleSelectTypeChildUnit}
-                                                    value={typeChartSelectBox[0].value}
+                                                    value={childUnitChart}
                                                 />
                                             </div></div>
                                         {childUnitChart === 1 ?
@@ -298,59 +307,54 @@ class OrganizationalUnitKpiDashboard extends Component {
                             </div>
                         </div>
 
-                        <div className="row">
-                            {/* Phân bố KPI đơn vị */}
-                            <LazyLoadComponent
-                                key="distributionOfOrganizationalUnitKpiChart"
-                            >
-                                <div className="col-xs-6">
-                                    {childOrganizationalUnit &&
-                                        <div className="box box-primary">
-                                            <div className="box-header with-border">
-                                                <div className="box-title">{translate('kpi.organizational_unit.dashboard.distributive')}{this.state.date}</div>
-                                            </div>
-                                            <div className="box-body qlcv">
-                                                {(this.state.dataStatus === this.DATA_STATUS.AVAILABLE) &&
-                                                    <DistributionOfOrganizationalUnitKpiChart
-                                                        organizationalUnitId={organizationalUnitId}
-                                                        month={month}
-                                                    />
-                                                }
-                                            </div>
-                                        </div>
-                                    }
-                                </div>
-                            </LazyLoadComponent>
 
-                            {/* Thống kê kết quả KPI */}
-                            <LazyLoadComponent
-                                key="statisticsOfOrganizationalUnitKpiResultsChart"
-                            >
-                                <div className="col-xs-6">
+                        <LazyLoadComponent
+                            key="distributionOfOrganizationalUnitKpiChart"
+                        >
+                            <div className="row">
+                                <div className="col-xs-12">
                                     <div className="box box-primary">
-                                        <div className="box-header with-border">
-                                            <div className="box-title">{translate('kpi.organizational_unit.dashboard.statiscial')} {this.state.date}</div>
-                                            {statisticsOfOrganizationalUnitKpiResultChartData && <ExportExcel type="link" id="export-statistic-organizational-unit-kpi-results-chart" exportData={statisticsOfOrganizationalUnitKpiResultChartData} style={{ marginLeft: 10 }} />}
-                                        </div>
-                                        <div className="box-body qlcv">
-                                            <StatisticsOfOrganizationalUnitKpiResultsChart
-                                                organizationalUnitId={organizationalUnitId}
-                                                month={month}
-                                                organizationalUnit={childOrganizationalUnit}
-                                                onDataAvailable={this.handleStatisticsOfOrganizationalUnitKpiResultChartDataAvailable}
-                                            />
+                                        {/* Phân bố KPI đơn vị */}
+                                        <div className="box-body">
+                                            <div className="col-xs-6">
+                                                <div className="box-header with-border">
+                                                    <div className="box-title">{translate('kpi.organizational_unit.dashboard.distributive')}{this.state.date}</div>
+                                                </div>
+                                                { childOrganizationalUnit && (this.state.dataStatus === this.DATA_STATUS.AVAILABLE)
+                                                    && 
+                                                        <DistributionOfOrganizationalUnitKpiChart
+                                                            organizationalUnitId={organizationalUnitId}
+                                                            month={month}
+                                                        />
+                                                }
+                                            </div>  
+                                            
+                                            {/* Thống kê kết quả KPI */}
+                                            <div className="col-xs-6">
+                                                <div className="box-header with-border">
+                                                    <div className="box-title">{translate('kpi.organizational_unit.dashboard.statiscial')} {this.state.date}</div>
+                                                    {statisticsOfOrganizationalUnitKpiResultChartData && <ExportExcel type="link" id="export-statistic-organizational-unit-kpi-results-chart" exportData={statisticsOfOrganizationalUnitKpiResultChartData} style={{ marginLeft: 10 }} />}
+                                                </div>
+                                                <StatisticsOfOrganizationalUnitKpiResultsChart
+                                                    organizationalUnitId={organizationalUnitId}
+                                                    month={month}
+                                                    organizationalUnit={childOrganizationalUnit}
+                                                    onDataAvailable={this.handleStatisticsOfOrganizationalUnitKpiResultChartDataAvailable}
+                                                />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </LazyLoadComponent>
-                        </div>
+                            </div>
+                        </LazyLoadComponent>
 
-                        <div className="row">
-                            {/* Kết quả KPI đơn vị */}
-                            <LazyLoadComponent
-                                key="resultsOfOrganizationalUnitKpiChart"
-                            >
-                                {childOrganizationalUnit &&
+                        
+                        {/* Kết quả KPI đơn vị */}
+                        <LazyLoadComponent
+                            key="resultsOfOrganizationalUnitKpiChart"
+                        >
+                            {childOrganizationalUnit
+                                && <div className="row">
                                     <div className="col-xs-12">
                                         <div className="box box-primary">
                                             <div className="box-header with-border">
@@ -368,15 +372,18 @@ class OrganizationalUnitKpiDashboard extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                }
-                            </LazyLoadComponent>
+                                </div>
+                            }
+                        </LazyLoadComponent>
 
-                            {/* Kết quả KPI các đơn vị */}
-                            <LazyLoadComponent
-                                key="resultsOfAllOrganizationalUnitKpiChart"
-                            >
-                                {childOrganizationalUnit &&
-                                    <div className="col-xs-12 container">
+                        
+                        {/* Kết quả KPI các đơn vị */}
+                        <LazyLoadComponent
+                            key="resultsOfAllOrganizationalUnitKpiChart"
+                        >
+                            {childOrganizationalUnit &&
+                                <div className="row">
+                                    <div className="col-xs-12">
                                         <div className="box box-primary">
                                             <div className="box-header with-border">
                                                 <div className="box-title">{translate('kpi.organizational_unit.dashboard.result_kpi_units')}</div>
@@ -388,12 +395,14 @@ class OrganizationalUnitKpiDashboard extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                }
-                            </LazyLoadComponent>
-                        </div>
+                                </div>
+                            }
+                        </LazyLoadComponent>
                     </section>
                     : childrenOrganizationalUnitLoading
-                    && <h4>Bạn chưa có đơn vị</h4>
+                    && <div className="box box-body">
+                        <h4>Bạn chưa có đơn vị</h4>
+                    </div>
                 }
             </React.Fragment>
         );

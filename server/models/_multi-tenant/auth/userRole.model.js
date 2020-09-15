@@ -4,14 +4,18 @@ const Schema = mongoose.Schema;
 const UserRoleSchema = new Schema({ // Liên kết nhiều nhiều giữa User và Role
     userId: {
         type: Schema.Types.ObjectId,
-        ref: 'users',
+        ref: 'User',
         required: true
     },
     roleId: {
         type: Schema.Types.ObjectId,
-        ref: 'roles',
+        ref: 'Role',
         required: true
     },
 });
 
-module.exports = UserRole = (db) => db.model('user_roles', UserRoleSchema);
+module.exports = (db) => {
+    if(!db.models.UserRole)
+        return db.model('UserRole', UserRoleSchema);
+    return db.models.UserRole;
+}

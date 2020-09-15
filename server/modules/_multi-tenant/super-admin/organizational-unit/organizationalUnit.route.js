@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const OrganizationalUnitController = require('./organizationalUnit.controller');
-const { auth } = require('../../../../middleware');
+const { auth } = require(`${SERVER_MIDDLEWARE_DIR}/_multi-tenant`);
 
 
 router.get("/organizational-units", auth, OrganizationalUnitController.getOrganizationalUnits);

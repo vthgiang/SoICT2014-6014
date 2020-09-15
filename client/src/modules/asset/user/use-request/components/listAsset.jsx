@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { PaginateBar, DataTableSetting, SelectMulti } from '../../../../../common-components';
+import { PaginateBar, DataTableSetting, SelectMulti, TreeSelect } from '../../../../../common-components';
 
 import { AssetManagerActions } from "../../../admin/asset-information/redux/actions";
 import { AssetTypeActions } from "../../../admin/asset-type/redux/actions";
@@ -133,6 +133,18 @@ class ListAsset extends Component {
         })
     }
 
+    // Bắt sự kiện thay đổi nhóm tài sản
+    handleGroupChange = (value) => {
+        if (value.length === 0) {
+            value = null
+        }
+
+        this.setState({
+            ...this.state,
+            group: value
+        })
+    }
+
     // Function lưu giá trị status vào state khi thay đổi
     handleStatusChange = (value) => {
         if (value.length === 0) {
@@ -145,8 +157,24 @@ class ListAsset extends Component {
         })
     }
 
+    // Function lưu giá trị status vào state khi thay đổi
+    handleTypeRegisterForUseChange = (value) => {
+        if (value.length === 0) {
+            value = null
+        }
+
+        this.setState({
+            ...this.state,
+            typeRegisterForUse: value
+        })
+    }
     // Function bắt sự kiện tìm kiếm
     handleSubmitSearch = async () => {
+        this.setState({
+            ...this.state,
+            page: 0
+        })
+
         this.props.getAllAsset(this.state);
     }
 
@@ -168,6 +196,33 @@ class ListAsset extends Component {
         this.props.getAllAsset(this.state);
     }
 
+    getAssetTypes = () => {
+        let { assetType } = this.props;
+        let assetTypeName = assetType && assetType.listAssetTypes;
+        let typeArr = [];
+        assetTypeName.map(item => {
+            typeArr.push({
+                _id: item._id,
+                id: item._id,
+                name: item.typeName,
+                parent: item.parent ? item.parent._id : null
+            })
+        })
+        return typeArr;
+    }
+
+    convertGroupAsset = (group) => {
+        if (group === 'Building') {
+            return 'Mặt bằng';
+        } else if (group === 'Vehicle') {
+            return 'Xe cộ'
+        } else if (group === 'Machine') {
+            return 'Máy móc'
+        } else {
+            return 'Khác'
+        }
+    }
+
     render() {
         const { translate, assetsManager, assetType, user, auth } = this.props;
         const { page, limit, currentRowView, currentRow } = this.state;
@@ -175,6 +230,7 @@ class ListAsset extends Component {
         var lists = "";
         var userlist = user.list;
         var assettypelist = assetType.listAssetTypes;
+        let assetTypeName = this.state.assetType ? this.state.assetType : [];
 
         if (assetsManager.isLoading === false) {
             lists = assetsManager.listAssets;
@@ -185,6 +241,7 @@ class ListAsset extends Component {
             parseInt((assetsManager.totalList / limit) + 1);
 
         var currentPage = parseInt((page / limit) + 1);
+        let typeArr = this.getAssetTypes();
 
         return (
             <div id="listasset" className="tab-pane active" >
@@ -205,16 +262,52 @@ class ListAsset extends Component {
                         </div>
                     </div>
 
-                    <div className="form-inline" style={{ marginBottom: 10 }}>
-                        {/* Phân loại */}
+                    <div className="form-inline">
+                        {/* Nhóm tài sản */}
                         <div className="form-group">
-                            <label className="form-control-static">{translate('asset.general_information.type')}</label>
-                            <SelectMulti id={`multiSelectType`} multiple="multiple"
-                                options={{ nonSelectedText: translate('asset.general_information.select_asset_type'), allSelectedText: translate('asset.general_information.select_all_asset_type') }}
-                                onChange={this.handleTypeChange}
-                                items={[]}
+                            <label className="form-control-static">{translate('asset.general_information.asset_group')}</label>
+                            <SelectMulti id={`multiSelectGroupInManagement`} multiple="multiple"
+                                options={{ nonSelectedText: translate('asset.asset_info.select_group'), allSelectedText: translate('asset.general_information.select_all_group') }}
+                                onChange={this.handleGroupChange}
+                                items={[
+                                    { value: "Building", text: translate('asset.dashboard.building') },
+                                    { value: "Vehicle", text: translate('asset.dashboard.vehicle') },
+                                    { value: "Machine", text: translate('asset.dashboard.machine') },
+                                    { value: "Other", text: translate('asset.dashboard.other') },
+                                ]}
                             >
                             </SelectMulti>
+                        </div>
+
+                        {/* Loại tài sản */}
+                        <div className="form-group">
+                            <label>{translate('asset.general_information.asset_type')}</label>
+                            <TreeSelect
+                                data={typeArr}
+                                value={assetTypeName}
+                                handleChange={this.handleAssetTypeChange}
+                                mode="hierarchical"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="form-inline" style={{ marginBottom: 10 }}>
+                        {/* Quyền đăng ký sử dụng */}
+                        <div className="form-group">
+                            <label>Quyền đăng ký</label>
+                            <SelectMulti
+                                id={`typeRegisterForUseInManagement`}
+                                className="form-control select2"
+                                multiple="multiple"
+                                options={{ nonSelectedText: "Chọn quyền sử dụng", allSelectedText: "Chọn tất cả" }}
+                                style={{ width: "100%" }}
+                                items={[
+                                    { value: 1, text: 'Không được đăng ký sử dụng' },
+                                    { value: 2, text: 'Đăng ký sử dụng theo giờ' },
+                                    { value: 3, text: 'Đăng ký sử dụng lâu dài' },
+                                ]}
+                                onChange={this.handleTypeRegisterForUseChange}
+                            />
                         </div>
 
                         {/* Trạng thái */}
@@ -246,6 +339,7 @@ class ListAsset extends Component {
                             <tr>
                                 <th style={{ width: "8%" }}>{translate('asset.general_information.asset_code')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.asset_name')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.asset_group')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.asset_type')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.user')}</th>
                                 <th style={{ width: "20%" }}>{translate('asset.general_information.handover_from_date')}</th>
@@ -257,6 +351,7 @@ class ListAsset extends Component {
                                         columnArr={[
                                             translate('asset.general_information.asset_code'),
                                             translate('asset.general_information.asset_name'),
+                                            translate('asset.general_information.asset_group'),
                                             translate('asset.general_information.asset_type'),
                                             translate('asset.general_information.user'),
                                             translate('asset.general_information.handover_from_date'),
@@ -276,7 +371,8 @@ class ListAsset extends Component {
                                     <tr key={index}>
                                         <td>{x.code}</td>
                                         <td>{x.assetName}</td>
-                                        <td>{x.assetType && assettypelist.length && assettypelist.filter(item => item._id === x.assetType).pop() ? assettypelist.filter(item => item._id === x.assetType).pop().typeName : 'Asset type is deleted'}</td>
+                                        <td>{this.convertGroupAsset(x.group)}</td>
+                                        <td>{x.assetType && x.assetType.length ? x.assetType.map((item, index) => { let suffix = index < x.assetType.length - 1 ? ", " : ""; return item.typeName + suffix }) : 'Asset is deleted'}</td>
                                         <td>{x.assignedToUser ? (userlist.length && userlist.filter(item => item._id === x.assignedToUser).pop() ? userlist.filter(item => item._id === x.assignedToUser).pop().name : 'User is deleted') : ''}</td>
                                         <td>{x.handoverFromDate ? this.formatDate2(x.handoverFromDate) : ''}</td>
                                         <td>{x.handoverToDate ? this.formatDate2(x.handoverToDate) : ''}</td>
@@ -348,7 +444,7 @@ class ListAsset extends Component {
                     <UseRequestCreateForm
                         _id={currentRow._id}
                         asset={currentRow._id}
-                        typeRegisterForUse = { currentRow.typeRegisterForUse}
+                        typeRegisterForUse={currentRow.typeRegisterForUse}
                     />
                 }
             </div >

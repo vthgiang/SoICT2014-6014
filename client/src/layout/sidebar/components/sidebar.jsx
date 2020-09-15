@@ -54,6 +54,18 @@ class SideBar extends Component {
                             {/* Trang chủ */}
                             <Item item={{ name: 'menu.home', path: '/', icon: 'fa fa-home' }} />
 
+                            {/* Tài khoản cá nhân */}
+                            <GroupItem groupItem={{
+                                name: 'menu.account',
+                                icon: 'fa fa-user-circle',
+                                list: [
+                                    { name: 'menu.detail_employee', icon: 'fa fa-user-o', path: '/hr-detail-employee' },
+                                    { name: 'menu.annual_leave_personal', icon: 'fa fa-calendar', path: '/hr-annual-leave-personal' },
+                                    { name: 'menu.update_employee', icon: 'fa fa-pencil-square-o', path: '/hr-update-employee' },
+
+                                ]
+                            }} />
+
                             {/* Quản trị của system admin */}
                             <GroupItem groupItem={{
                                 name: 'menu.system_administration',
@@ -131,10 +143,10 @@ class SideBar extends Component {
                                 ]
                             }} />
 
-                            {/* Quan ly nhan su */}
-
+                            {/* Quản lý đơn xin nghỉ phép */}
                             <Item item={{ name: 'menu.leave_application', icon: 'fa fa-envelope', path: '/hr-manage-leave-application' }} />
 
+                            {/* Quản lý nhân sự */}
                             <GroupItem groupItem={{
                                 name: 'menu.manage_employee',
                                 icon: 'fa fa-address-book',
@@ -151,17 +163,7 @@ class SideBar extends Component {
                                 ]
                             }} />
 
-                            <GroupItem groupItem={{
-                                name: 'menu.account',
-                                icon: 'fa fa-user-circle',
-                                list: [
-                                    { name: 'menu.detail_employee', icon: 'fa fa-user-o', path: '/hr-detail-employee' },
-                                    { name: 'menu.annual_leave_personal', icon: 'fa fa-calendar', path: '/hr-annual-leave-personal' },
-                                    { name: 'menu.update_employee', icon: 'fa fa-pencil-square-o', path: '/hr-update-employee' },
-
-                                ]
-                            }} />
-
+                            {/* Quản lý đào tạo */}
                             <GroupItem groupItem={{
                                 name: 'menu.manage_training',
                                 icon: 'fa fa-graduation-cap',

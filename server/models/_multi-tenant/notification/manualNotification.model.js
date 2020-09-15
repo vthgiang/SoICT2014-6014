@@ -10,7 +10,7 @@ const mongoosePaginate = require('mongoose-paginate-v2');
 const ManualNotificationSchema = new Schema({ 
     creator: { // người tạo
         type: Schema.Types.ObjectId,
-        ref: 'users',
+        ref: 'User',
         required: true
     },
     sender: { // VD: gửi từ Ban giám đốc, từ Bộ phận bảo vệ, Nhóm X, ...
@@ -29,15 +29,21 @@ const ManualNotificationSchema = new Schema({
     },
     users: [{ // gửi đến cho những người nào
         type: Schema.Types.ObjectId,
-        ref: 'users',
+        ref: 'User',
     }],
     organizationalUnits: [{ //gửi đến cho những đơn vị nào
         type: Schema.Types.ObjectId,
-        ref: 'organizational_units',
+        ref: 'OrganizationalUnit',
     }]
 },{
     timestamps: true,
     toJSON: { virtuals: true }
 });
+
 ManualNotificationSchema.plugin(mongoosePaginate);
-module.exports = ManualNotification = (db) => db.model("manual_notifications", ManualNotificationSchema);
+
+module.exports = (db) => {
+    if(!db.models.ManualNotification)
+        return db.model('ManualNotification', ManualNotificationSchema);
+    return db.models.ManualNotification;
+}

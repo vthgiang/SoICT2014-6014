@@ -5,9 +5,9 @@ const Schema = mongoose.Schema;
 const HolidaySchema = new Schema({
     company: {
         type: Schema.Types.ObjectId,
-        ref: 'companies'
+        ref: "Company"
     },
-    numberDateLeaveOfYear: {
+    maximumNumberOfLeaveDays: {
         type: Number,
         default: 0,
         required: true,
@@ -35,4 +35,8 @@ const HolidaySchema = new Schema({
     timestamps: true,
 });
 
-module.exports = Holiday = (db) => db.model("holidays", HolidaySchema);
+module.exports = (db) => {
+    if (!db.models.Holiday)
+        return db.model('Holiday', HolidaySchema);
+    return db.models.Holiday;
+}

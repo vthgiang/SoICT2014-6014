@@ -9,19 +9,15 @@ const CrmCareSchema = new Schema({
     },
     customer: { // khách hàng được chăm sóc
         type: Schema.Types.ObjectId,
-        ref: 'crm_customers'
+        ref: 'CrmCustomer'
     },
     caregiver: { //nhân viên chăm sóc khách hàng
         type: Schema.Types.ObjectId,
-        ref: 'users'
+        ref: 'User'
     },
     status: { //trạng thái công việc
         type: Boolean,
         default: false
-    },
-    company: {
-        type: Schema.Types.ObjectId,
-        ref: 'companies'
     }
 },{
     timestamps: true,
@@ -30,4 +26,8 @@ const CrmCareSchema = new Schema({
 
 CrmCareSchema.plugin(mongoosePaginate);
 
-module.exports = CrmCare = (db) => db.model("crm_cares", CrmCareSchema);
+module.exports = (db) => {
+    if(!db.models.CrmCare)
+        return db.model('CrmCare', CrmCareSchema);
+    return db.models.CrmCare;
+}

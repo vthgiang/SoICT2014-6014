@@ -157,9 +157,7 @@ class MaintainanceEditForm extends Component {
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let result = this.validateCreateDate(this.state.createDate, false) &&
-            this.validateDescription(this.state.description, false) &&
-            this.validateStartDate(this.state.startDate, false)
+        let result = this.validateCreateDate(this.state.createDate, false) 
         
         return result;
     }
@@ -289,7 +287,7 @@ class MaintainanceEditForm extends Component {
                                 
                                 {/* Nội dung */}
                                 <div className={`form-group ${!errorOnDescription ? "" : "has-error"}`}>
-                                    <label>{translate('asset.general_information.content')}<span className="text-red">*</span></label>
+                                    <label>{translate('asset.general_information.content')}</label>
                                     <textarea className="form-control" rows="3" name="description" value={description} onChange={this.handleDescriptionChange} autoComplete="off" placeholder={translate('asset.general_information.content')}></textarea>
                                     <ErrorLabel content={errorOnDescription} />
                                 </div>
@@ -298,7 +296,7 @@ class MaintainanceEditForm extends Component {
                             <div className="col-sm-6">
                                 {/* Ngày thực hiện */}
                                 <div className={`form-group ${!errorOnStartDate ? "" : "has-error"}`}>
-                                    <label>{translate('asset.general_information.start_date')}<span className="text-red">*</span></label>
+                                    <label>{translate('asset.general_information.start_date')}</label>
                                     <DatePicker
                                         id={`edit-start-date${_id}`}
                                         value={startDate}

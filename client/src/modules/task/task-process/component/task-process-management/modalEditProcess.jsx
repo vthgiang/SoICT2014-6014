@@ -11,7 +11,7 @@ import { ModalDetailTask } from "../../../task-dashboard/task-personal-dashboard
 import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil'
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
-import customModule from './../custom'
+import customModule from '../custom-task-process'
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import './../processDiagram.css'

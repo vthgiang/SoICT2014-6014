@@ -17,7 +17,7 @@ const CourseSchema = new Schema({
     },
     company: {
         type: Schema.Types.ObjectId,
-        ref: 'companies'
+        ref: "Company"
     },
     offeredBy: { // Đơn vị tổ chức/cung cấp khóa học, có thể ở ngoài công ty
         type: String,
@@ -52,11 +52,15 @@ const CourseSchema = new Schema({
     },
     educationProgram: {
         type: Schema.Types.ObjectId,
-        ref: 'education_programs',
+        ref: 'EducationProgram',
         required: true
     },
 }, {
     timestamps: true,
 });
 
-module.exports = Course = (db) => db.model("courses", CourseSchema);
+module.exports = (db) => {
+    if(!db.models.Course)
+        return db.model('Course', CourseSchema);
+    return db.models.Course;
+}

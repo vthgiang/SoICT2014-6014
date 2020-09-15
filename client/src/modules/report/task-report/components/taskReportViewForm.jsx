@@ -40,7 +40,7 @@ class TaskReportViewForm extends Component {
          * id = 3 là chiều người phê duyệt
          */
         let dataForAxisXInChart = []
-
+        console.log('listTaskEvaluations', listTaskEvaluations)
         // hiển thị trường thông tin hiện trong bảng báo cáo form preview view
         if (listTaskEvaluations && listTaskEvaluations.length > 0) {
             taskInfoName = listTaskEvaluations[0];
@@ -52,7 +52,7 @@ class TaskReportViewForm extends Component {
         }
 
 
-        if (listTaskEvaluations) {
+        if (listTaskEvaluations && listTaskEvaluations.length > 0) {
             // Lấy tần suất, Vì tần suất là chung cho các công việc nên chỉ cần lấy công việc đầu tiên
             let taskEvaluation = listTaskEvaluations[0];
             frequency = taskEvaluation.frequency;
@@ -84,7 +84,7 @@ class TaskReportViewForm extends Component {
 
         let output, pieChartData = [], barLineChartData = [], pieChartDataConvert, barAndLineDataChartConvert;
 
-        if (newlistTaskEvaluation) {
+        if (newlistTaskEvaluation && newlistTaskEvaluation.length > 0) {
 
             /**
              * Convert data, gom nhóm, tính tổng và tính trung bình cộng các trường thông tin.
@@ -387,6 +387,7 @@ class TaskReportViewForm extends Component {
 
 
         if (output) {
+            console.log('output', output)
             // tách data vẽ biểu đồ:  cột với đường ra riêng, tròn ra riêng
             let separateDataChart = chartFunction.separateDataChart(output); // gọi hàm tách data
             pieChartData = separateDataChart.pieChartData; // Dữ liệu vẽ biểu đồ tròn
@@ -419,20 +420,32 @@ class TaskReportViewForm extends Component {
 
                     {/* Biểu đồ đường và cột */}
                     {
-                        barAndLineDataChartConvert && <LineBarChart barLineChartData={barAndLineDataChartConvert} />
+                        barAndLineDataChartConvert && <LineBarChart barLineChartData={barAndLineDataChartConvert} dataForAxisXInChart={dataForAxisXInChart} />
                     }
 
                     {/* Biểu đồ tròn  */}
                     <div className="row">
                         {
                             pieChartDataConvert && pieChartDataConvert.map((item, index) => (
-                                Object.entries(item).map(([code, data]) => (
-                                    <div key={index} className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                                        <div className="pieChart">
-                                            <PieChart pieChartData={data} namePieChart={code} />
-                                        </div>
-                                    </div>
-                                ))
+                                Object.entries(item).map(([code, data]) => {
+                                    if (data.length > 6) {
+                                        return (
+                                            <div key={index} className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <div className="pieChart">
+                                                    <PieChart pieChartData={data} namePieChart={code} dataForAxisXInChart={dataForAxisXInChart} />
+                                                </div>
+                                            </div>
+                                        )
+                                    } else {
+                                        return (
+                                            <div key={index} className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                                <div className="pieChart">
+                                                    <PieChart pieChartData={data} namePieChart={code} dataForAxisXInChart={dataForAxisXInChart} />
+                                                </div>
+                                            </div>
+                                        )
+                                    }
+                                })
                             ))
                         }
                     </div>

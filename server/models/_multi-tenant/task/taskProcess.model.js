@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const TaskProcessSchema = new Schema({
     processTemplate: {
         type: Schema.Types.ObjectId,
-        ref: 'process_templates',
+        ref: 'ProcessTemplate',
     },
     xmlDiagram: {
         type: String,
@@ -27,13 +27,17 @@ const TaskProcessSchema = new Schema({
     creator: {
         type: Schema.Types.ObjectId,
         required: true,
-        ref: 'users',
+        ref: 'User',
     },
     tasks: [{
         type: Schema.Types.ObjectId,
-        ref: 'tasks',
+        ref: 'Task',
     }],
     
 });
 
-module.exports = TaskProcess = (db) => db.model("task_processes", TaskProcessSchema);
+module.exports = (db) => {
+    if(!db.models.TaskProcess)
+        return db.model('TaskProcess', TaskProcessSchema);
+    return db.models.TaskProcess;
+}

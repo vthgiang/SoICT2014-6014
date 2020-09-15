@@ -179,14 +179,13 @@ class SalaryManagement extends Component {
                 }
 
                 return {
-                    // merges:{ employeeNumber: 2, fullName: 2 } ,
                     STT: index + 1,
                     employeeNumber: x.employee.employeeNumber,
                     fullName: x.employee.fullName,
                     mainSalary: parseInt(x.mainSalary),
                     birthdate: new Date(x.employee.birthdate),
-                    status: x.employee.status === 'active' ? "Đang làm việc" : "Đã nghỉ làm",
-                    gender: x.employee.gender === 'male' ? "Nam" : "Nữ",
+                    status: x.employee.status === 'active' ? translate('human_resource.profile.active') : translate('human_resource.profile.leave'),
+                    gender: x.employee.gender === 'male' ? translate('human_resource.profile.male') : translate('human_resource.profile.female'),
                     organizationalUnit: organizationalUnit ? organizationalUnit.name : 'Deleted',
                     total: total + parseInt(x.mainSalary),
                     month: month,
@@ -203,7 +202,7 @@ class SalaryManagement extends Component {
         }
         let merges = [{
             key: "other",
-            columnName: "Lương thưởng khác",
+            columnName: translate('human_resource.salary.other_salary'),
             keyMerge: 'bonus0',
             colspan: columns.length
         }]
@@ -237,18 +236,18 @@ class SalaryManagement extends Component {
                             rowHeader: 2,
                             merges: merges,
                             columns: [
-                                { key: "STT", value: "STT" },
-                                { key: "month", value: "Tháng" },
-                                { key: "year", value: "Năm" },
-                                { key: "employeeNumber", value: "Mã số nhân viên" },
-                                { key: "fullName", value: "Họ và tên" },
-                                { key: "organizationalUnit", value: "Đơn vị" },
-                                { key: "gender", value: "Giới tính" },
-                                { key: "birthdate", value: "Ngày sinh" },
-                                { key: "status", value: "Tình trạng lao động" },
-                                { key: "mainSalary", value: "Tiền lương chính", },
+                                { key: "STT", value: translate('human_resource.stt'), width: 7 },
+                                { key: "month", value: translate('human_resource.month'), width: 10 },
+                                { key: "year", value: translate('human_resource.holiday.year'), width: 10 },
+                                { key: "employeeNumber", value: translate('human_resource.staff_number') },
+                                { key: "fullName", value: translate('human_resource.staff_name'), width: 20 },
+                                { key: "organizationalUnit", value: translate('human_resource.unit'), width: 25 },
+                                { key: "gender", value: translate('human_resource.profile.gender') },
+                                { key: "birthdate", value: translate('human_resource.profile.date_birth') },
+                                { key: "status", value: translate('human_resource.profile.status_work') },
+                                { key: "mainSalary", value: translate('human_resource.salary.table.main_salary'), },
                                 ...columns,
-                                { key: "total", value: "Tổng lương", },
+                                { key: "total", value: translate('human_resource.salary.table.total_salary'), },
                             ],
                             data: data
                         },
@@ -286,15 +285,16 @@ class SalaryManagement extends Component {
                         <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
                             <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('human_resource.salary.add_salary_title')} >{translate('human_resource.salary.add_salary')}</button>
                             <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
-                                <li><a title={translate('human_resource.salary.add_import_title')} onClick={this.importSalary}>
+                                <li><a style={{ cursor: 'pointer' }} title={translate('human_resource.salary.add_import_title')} onClick={this.importSalary}>
                                     {translate('human_resource.salary.add_import')}</a></li>
-                                <li><a title={translate('human_resource.salary.add_by_hand_title')} onClick={this.createSalary}>
+                                <li><a style={{ cursor: 'pointer' }} title={translate('human_resource.salary.add_by_hand_title')} onClick={this.createSalary}>
                                     {translate('human_resource.salary.add_by_hand')}</a></li>
                             </ul>
                         </div>
                         {/* Nút xuất báo cáo */}
                         <ExportExcel id="export-salary" buttonName={translate('human_resource.name_button_export')} exportData={exportData} style={{ marginRight: 15, marginTop: 0 }} />
                     </div>
+
                     <div className="form-inline">
                         {/* Đơn vị */}
                         <div className="form-group">
@@ -311,6 +311,7 @@ class SalaryManagement extends Component {
                             <input type="text" className="form-control" name="employeeNumber" onChange={this.handleMSNVChange} placeholder={translate('human_resource.staff_number')} autoComplete="off" />
                         </div>
                     </div>
+
                     <div className="form-inline" style={{ marginBottom: 10 }}>
                         {/* Tháng */}
                         <div className="form-group">
@@ -329,6 +330,7 @@ class SalaryManagement extends Component {
                             <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => this.handleSunmitSearch()} >{translate('general.search')}</button>
                         </div>
                     </div>
+
                     <table id="salary-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
@@ -398,7 +400,7 @@ class SalaryManagement extends Component {
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
                         (!listSalarys || listSalarys.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
-                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
+                    <PaginateBar pageTotal={pageTotal} currentPage={currentPage} func={this.setPage} />
                 </div>
 
                 {/* Form thêm thông tin bảng lương bằng tay */}

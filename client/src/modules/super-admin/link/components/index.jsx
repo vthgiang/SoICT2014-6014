@@ -110,10 +110,8 @@ class ManageLink extends Component {
 
     searchWithOption = () => {
         let {page, option, value, limit} = this.state;
-        let company = getStorage('companyId');
         const params = {
             type: "active",
-            company,
             limit,
             page,
             key: option,
@@ -125,10 +123,8 @@ class ManageLink extends Component {
     setPage = (page) => {
         this.setState({ page });
         let {limit, option, value} = this.state;
-        let company = getStorage('companyId');
         const params = {
             type: "active",
-            company,
             limit,
             page,
             key: option,
@@ -140,10 +136,8 @@ class ManageLink extends Component {
     setLimit = (number) => {
         this.setState({ limit: number });
         let {page, option, value} = this.state;
-        let company = getStorage('companyId');
         const params = {
             type: "active",
-            company,
             limit: number,
             page,
             key: option,
@@ -154,9 +148,8 @@ class ManageLink extends Component {
 
     componentDidMount() {
         let {page, limit} = this.state;
-        let company = getStorage('companyId');
-        this.props.getLinks({company, type: "active"});
-        this.props.getLinks({company, type: "active", page, limit});
+        this.props.getLinks({type: "active"});
+        this.props.getLinks({type: "active", page, limit});
     }
 
     // Cac ham xu ly du lieu voi modal

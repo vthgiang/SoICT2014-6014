@@ -10,7 +10,7 @@ var getEmployeeSelectBoxItems = (usersOfChildrenOrganizationalUnit, includeDean=
         for (let  i=0;i< usersOfChildrenOrganizationalUnit.length;i++){
             var unit = usersOfChildrenOrganizationalUnit[i];
 
-            if (includeDean){
+            if (includeDean && unit){
                 for (let key in unit.deans){ // Xử lý deans
                     let value = unit.deans[key];
                     for (let j=0; j<value.members.length; j++){
@@ -83,7 +83,7 @@ var getEmployeeSelectBoxItems = (usersOfChildrenOrganizationalUnit, includeDean=
                 }
             }
             var unit ={
-                text : unitMember.department,
+                text : unitMember && unitMember.department,
                 value : temp
             };
 

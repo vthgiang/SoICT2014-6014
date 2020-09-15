@@ -42,6 +42,10 @@ class EmployeeKpiApproveModal extends Component {
             }
             return false;
         }
+        if(nextProps.auth.user.avatar !== this.props.auth.user.avatar) {
+            this.props.getKpisByKpiSetId(nextProps.id);
+            return true;
+        }
         return true;
     }
 
@@ -343,8 +347,8 @@ class EmployeeKpiApproveModal extends Component {
 }
 
 function mapState(state) {
-    const { kpimembers } = state;
-    return { kpimembers };
+    const { kpimembers, auth } = state;
+    return { kpimembers, auth };
 }
 
 const actionCreators = {

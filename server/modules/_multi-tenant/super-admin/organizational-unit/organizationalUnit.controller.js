@@ -1,6 +1,6 @@
 const OrganizationalUnitService = require('./organizationalUnit.service');
-const RoleService = require('../role/role.service');
-const { LogInfo, LogError } = require('../../../logs');
+const RoleService = require(`${SERVER_MODULES_DIR}/_multi-tenant/super-admin/role/role.service`);
+const Logger = require(`${SERVER_LOGS_DIR}/_multi-tenant`);
 
 /**
  * Chú ý: tất cả các phương thức đều xét trong ngữ cảnh một công ty
@@ -15,10 +15,10 @@ exports.getOrganizationalUnits = async (req, res) => {
         getChildrenOfOrganizationalUnitsAsTree(req, res);
     } else {
         try {
-            var list = await OrganizationalUnitService.getOrganizationalUnits(req.user.company._id); 
-            var tree = await OrganizationalUnitService.getOrganizationalUnitsAsTree(req.user.company._id);
+            var list = await OrganizationalUnitService.getOrganizationalUnits(req.portal); 
+            var tree = await OrganizationalUnitService.getOrganizationalUnitsAsTree(req.portal);
             
-            await LogInfo(req.user.email, 'GET_DEPARTMENTS', req.user.company);
+            await Logger.info(req.user.email, 'get_departments_success', req.portal);
             res.status(200).json({
                 success: true,
                 messages: ['get_departments_success'],
@@ -26,7 +26,7 @@ exports.getOrganizationalUnits = async (req, res) => {
             });
         } catch (error) {
             
-            await LogError(req.user.email, 'GET_DEPARTMENTS', req.user.company);
+            await Logger.error(req.user.email, 'get_departments_faile', req.portal);
             res.status(400).json({
                 success: false,
                 messages: Array.isArray(error) ? error : ['get_departments_faile'],
@@ -40,12 +40,12 @@ getOrganizationalUnitsOfUser = async (req, res) =>{
     try {
         let department=[];
         if (req.query.email) {
-            department = await OrganizationalUnitService.getOrganizationalUnitsOfUserByEmail(req.query.email);
+            department = await OrganizationalUnitService.getOrganizationalUnitsOfUserByEmail(req.portal, req.query.email);
         } else {
-            department = await OrganizationalUnitService.getOrganizationalUnitsOfUser(req.query.userId);
+            department = await OrganizationalUnitService.getOrganizationalUnitsOfUser(req.portal, req.query.userId);
         }
         
-        await LogInfo(req.user.email, 'GET_DEPARTMENT_THAT_USER_IS_DEAN', req.user.company);
+        await Logger.info(req.user.email, 'get_departments_success', req.portal);
         res.status(200).json({
             success: true,
             messages: ['get_departments_success'],
@@ -53,7 +53,7 @@ getOrganizationalUnitsOfUser = async (req, res) =>{
         });
     }
     catch (error) {
-        await LogError(req.user.email, 'GET_DEPARTMENT_THAT_USER_IS_DEAN', req.user.company);
+        await Logger.error(req.user.email, 'get_departments_faile', req.portal);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['get_departments_faile'],
@@ -64,9 +64,9 @@ getOrganizationalUnitsOfUser = async (req, res) =>{
 
 getOrganizationalUnitsThatUserIsDean = async (req, res) =>{
     try {
-        const department = await OrganizationalUnitService.getOrganizationalUnitsThatUserIsDean(req.query.deanOfOrganizationalUnit);
+        const department = await OrganizationalUnitService.getOrganizationalUnitsThatUserIsDean(req.portal, req.query.deanOfOrganizationalUnit);
         
-        await LogInfo(req.user.email, 'GET_DEPARTMENT_THAT_USER_IS_DEAN', req.user.company);
+        await Logger.info(req.user.email, 'get_department_that_user_is_dean_success', req.portal);
         res.status(200).json({
             success: true,
             messages: ['get_department_that_user_is_dean_success'],
@@ -74,7 +74,8 @@ getOrganizationalUnitsThatUserIsDean = async (req, res) =>{
         });
     }
     catch (error) {
-        await LogError(req.user.email, 'GET_DEPARTMENT_THAT_USER_IS_DEAN', req.user.company);
+
+        await Logger.error(req.user.email, 'get_department_that_user_is_dean_faile', req.portal);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['get_department_that_user_is_dean_faile'],
@@ -90,16 +91,17 @@ getOrganizationalUnitsThatUserIsDean = async (req, res) =>{
  */
 getChildrenOfOrganizationalUnitsAsTree = async (req, res) => {
     try {
-        var tree = await OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree(req.user.company._id, req.query.roleId, req.query.organizationalUnitId);
+        var tree = await OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree(req.portal, req.query.roleId, req.query.organizationalUnitId);
         
-        await LogInfo(req.user.email, 'GET_CHILDREN_DEPARTMENTS', req.user.company);
+        await Logger.info(req.user.email, 'get_children_departments_success', req.portal);
         res.status(200).json({
             success: true,
             messages: ['get_children_departments_success'],
             content: tree
         });
     } catch (error) {
-        await LogError(req.user.email, 'GET_CHILDREN_DEPARTMENTS', req.user.company);
+
+        await Logger.error(req.user.email, 'get_children_departments_faile', req.portal);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['get_children_departments_faile'],
@@ -110,9 +112,9 @@ getChildrenOfOrganizationalUnitsAsTree = async (req, res) => {
 
 exports.getOrganizationalUnit = async (req, res) => {
     try {
-        var department = await OrganizationalUnitService.getOrganizationalUnit(req.params.id);
+        var department = await OrganizationalUnitService.getOrganizationalUnit(req.portal, req.params.id);
         
-        await LogInfo(req.user.email, 'SHOW_DEPARTMENT', req.user.company);
+        await Logger.info(req.user.email, 'show_department_success', req.portal);
         res.status(200).json({
             success: true,
             messages: ['show_department_success'],
@@ -120,7 +122,7 @@ exports.getOrganizationalUnit = async (req, res) => {
         });
     } catch (error) {
         
-        await LogError(req.user.email, 'SHOW_DEPARTMENT', req.user.company);
+        await Logger.error(req.user.email, 'show_department_faile', req.portal);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['show_department_faile'],
@@ -131,31 +133,26 @@ exports.getOrganizationalUnit = async (req, res) => {
 
 exports.createOrganizationalUnit = async (req, res) => {
     try {
-        let roles = await RoleService
-            .createRolesForOrganizationalUnit(
+        let roles = await RoleService.createRolesForOrganizationalUnit(req.portal, req.body);
+        let organizationalUnit = await OrganizationalUnitService.createOrganizationalUnit( 
+                req.portal,
                 req.body, 
-                req.user.company._id
-            );
-        let organizationalUnit = await OrganizationalUnitService
-            .createOrganizationalUnit( 
-                req.body, req.user.company._id,
                 roles.deans.map(dean=>dean._id), 
                 roles.viceDeans.map(vice=>vice._id), 
                 roles.employees.map(em=>em._id)
             );
         
-        let tree = await OrganizationalUnitService
-            .getOrganizationalUnitsAsTree(req.user.company._id);
+        let tree = await OrganizationalUnitService.getOrganizationalUnitsAsTree(req.portal);
 
-        await LogInfo(req.user.email, 'CREATE_DEPARTMENT', req.user.company);
+        await Logger.info(req.user.email, 'create_department_success', req.portal);
         res.status(200).json({
             success: true,
             messages: ['create_department_success'],
             content: { department: organizationalUnit, tree }
         });
     } catch (error) {
-        console.log('eerrror:', error)
-        await LogError(req.user.email, 'CREATE_DEPARTMENT', req.user.company);
+
+        await Logger.error(req.user.email, 'create_department_faile', req.portal);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['create_department_faile'],
@@ -166,12 +163,11 @@ exports.createOrganizationalUnit = async (req, res) => {
 
 exports.editOrganizationalUnit = async (req, res) => {
     try {
-        var department = await OrganizationalUnitService.editOrganizationalUnit(req.params.id, req.body);
-        await OrganizationalUnitService.editRolesInOrganizationalUnit(department._id, req.body);
-        
-        var tree = await OrganizationalUnitService.getOrganizationalUnitsAsTree(req.user.company._id);
+        var department = await OrganizationalUnitService.editOrganizationalUnit(req.portal, req.params.id, req.body);
+        await OrganizationalUnitService.editRolesInOrganizationalUnit(req.portal, department._id, req.body);
+        var tree = await OrganizationalUnitService.getOrganizationalUnitsAsTree(req.portal);
 
-        await LogInfo(req.user.email, 'EDIT_DEPARTMENT', req.user.company);
+        await Logger.info(req.user.email, 'edit_department_success', req.portal);
         res.status(200).json({
             success: true,
             messages: ['edit_department_success'],
@@ -179,8 +175,7 @@ exports.editOrganizationalUnit = async (req, res) => {
         });
     } catch (error) {
         
-        console.log('eerrror:', error)
-        await LogError(req.user.email, 'EDIT_DEPARTMENT', req.user.company);
+        await Logger.error(req.user.email, 'edit_department_faile', req.portal);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['edit_department_faile'],
@@ -191,18 +186,18 @@ exports.editOrganizationalUnit = async (req, res) => {
 
 exports.deleteOrganizationalUnit = async (req, res) => {
     try {
-        var role = await OrganizationalUnitService.deleteOrganizationalUnit(req.params.id);
-        var tree = await OrganizationalUnitService.getOrganizationalUnitsAsTree(req.user.company._id);
+        var org = await OrganizationalUnitService.deleteOrganizationalUnit(req.portal, req.params.id);
+        var tree = await OrganizationalUnitService.getOrganizationalUnitsAsTree(req.portal);
 
-        await LogInfo(req.user.email, 'DELETE_DEPARTMENT', req.user.company);
+        await Logger.info(req.user.email, 'delete_department_success', req.portal);
         res.status(200).json({
             success: true,
             messages: ['delete_department_success'],
-            content: { role, tree }
+            content: { org, tree }
         });
     } catch (error) {
         
-        await LogError(req.user.email, 'DELETE_DEPARTMENT', req.user.company);
+        await Logger.error(req.user.email, 'delete_department_faile', req.portal);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['delete_department_faile'],
@@ -213,15 +208,17 @@ exports.deleteOrganizationalUnit = async (req, res) => {
 
 exports.importOrganizationalUnits = async (req, res) => {
     try {
-        var data = await OrganizationalUnitService.importOrganizationalUnits(req.body, req.user.company._id);
-        await LogInfo(req.user.email, 'IMPORT_DEPARTMENT', req.user.company);
+        var data = await OrganizationalUnitService.importOrganizationalUnits(req.portal, req.body);
+
+        await Logger.info(req.user.email, 'import_department_success', req.portal);
         res.status(200).json({
             success: true,
             messages: ["import_department_success"],
             content: data
         });
     } catch (error) {
-        await LogError(req.user.email, 'IMPORT_DEPARTMENT', req.user.company);
+
+        await Logger.error(req.user.email, 'import_department_faile', req.portal);
         res.status(400).json({
             success: false,
             messages: ["import_department_faile"],

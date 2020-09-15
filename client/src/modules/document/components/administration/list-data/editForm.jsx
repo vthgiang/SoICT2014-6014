@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import Swal from 'sweetalert2';
 import { DialogModal, ButtonModal, DateTimeConverter, SelectBox, DatePicker, TreeSelect, ErrorLabel } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
 import moment from 'moment';
@@ -676,11 +677,35 @@ class EditForm extends Component {
         this.props.downloadDocumentFileScan(id, fileName, numberVersion);
     }
     findPath = (archives, select) => {
-        if (select) {
-            let archive = archives.filter(arch => arch._id === select);
-            return archive.length ? [archive[0].path] : "";
-        }
-        else return null;
+        let paths = select.map(s => {
+            let archive = archives.filter(arch => arch._id === s);
+            return archive[0] ? archive[0].path : "";
+        })
+        return paths;
+
+    }
+    deleteDocumentVersion = (documentId, versionId, info) => {
+        const { translate } = this.props;
+        Swal.fire({
+            html: `<h4 style="color: red"><div>${translate('document.delete')}</div> <div>"${info}" ?</div></h4>`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: translate('general.no'),
+            confirmButtonText: translate('general.yes'),
+        }).then((result) => {
+            if (result.value) {
+                let title = "Xóa phiên bản ";
+                let descriptions = "Xoá phiên bản " + info;
+                this.props.editDocument(documentId, {
+                    title: title,
+                    descriptions: descriptions,
+                    versionId: versionId,
+                    creator: getStorage("userId"),
+                }, 'DELETE_VERSION');
+            }
+        })
     }
     render() {
         const {
@@ -697,7 +722,7 @@ class EditForm extends Component {
         const roleList = role.list.map(role => { return { value: role._id, text: role.name } });
         const relationshipDocs = documents.administration.data.list.filter(doc => doc._id !== documentId).map(doc => { return { value: doc._id, text: doc.name } })
         const archives = documents.administration.archives.list;
-        let path = documentArchives ? this.findPath(archives, documentArchives[0]) : "";
+        let path = documentArchives ? this.findPath(archives, documentArchives) : "";
 
         //  console.log('rrrrrrrr', !this.isValidateForm());
         return (
@@ -870,6 +895,7 @@ class EditForm extends Component {
                                                                     <td><a href="#" onClick={() => this.requestDownloadDocumentFileScan(documentId, "SCAN_" + documentName, i)}><u>{version.scannedFileOfSignedDocument ? translate('document.download') : ""}</u></a></td>
                                                                     <td>
                                                                         <a className="text-yellow" title={translate('document.edit')} onClick={() => this.toggleEditVersion(version)}><i className="material-icons">edit</i></a>
+                                                                        <a className="text-red" title={translate('document.delete')} onClick={() => this.deleteDocumentVersion(documentId, version._id, version.versionName)}><i className="material-icons">delete</i></a>
                                                                     </td>
                                                                 </tr>
                                                             }) : <tr><td colSpan={7}>{translate('document.no_version')}</td></tr>
@@ -913,19 +939,6 @@ class EditForm extends Component {
                                         </div>
                                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                             <div className="form-group">
-                                                <label>{translate('document.store.information')}</label>
-                                                <TreeSelect
-                                                    data={archives}
-                                                    value={documentArchives}
-                                                    handleChange={this.handleArchives}
-                                                    mode="hierarchical"
-                                                />
-                                            </div>
-                                            <div className="form-group">
-                                                <label>{translate('document.administration.domains.path_detail')}</label>
-                                                <textarea style={{ height: '30px' }} type="text" className="form-control" value={path} disable />
-                                            </div>
-                                            <div className="form-group">
                                                 <label>{translate('document.store.organizational_unit_manage')}</label>
                                                 <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
                                                     id={`select-edit-documents-organizational-unit-manage${documentId}`}
@@ -937,6 +950,21 @@ class EditForm extends Component {
                                                     multiple={false}
                                                 />
                                             </div>
+                                            <div className="form-group">
+                                                <label>{translate('document.store.information')}</label>
+                                                <TreeSelect
+                                                    data={archives}
+                                                    value={documentArchives}
+                                                    handleChange={this.handleArchives}
+                                                    mode="hierarchical"
+                                                />
+                                            </div>
+                                            <div className="form-group">
+                                                {path && path.length ? path.map(y =>
+                                                    <div>{y}</div>
+                                                ) : null}
+                                            </div>
+
                                         </div>
                                     </div>
                                 </div>

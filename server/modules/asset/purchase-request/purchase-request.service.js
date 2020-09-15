@@ -4,9 +4,9 @@ const RecommendProcure = require('../../../models/asset/assetPurchaseRequest.mod
  * Lấy danh sách phiếu đề nghị mua sắm thiết bị
  */
 exports.searchRecommendProcures = async (query, company) => {
-    const { recommendNumber, month, status, page, limit } = query;
+    const { recommendNumber, approver, proponent, proposalDate, status, page, limit } = query;
 
-    var keySearch = { company: company};
+    var keySearch = { company: company };
 
     // Bắt sựu kiện mã phiếu tìm kiếm khác ""
     if (recommendNumber) {
@@ -14,18 +14,28 @@ exports.searchRecommendProcures = async (query, company) => {
     }
 
     //Bắt sựu kiện tháng tìm kiếm khác ""
-    if (month) {
+    if (proposalDate) {
         keySearch = { ...keySearch, dateCreate: { $regex: month, $options: "i" } }
+    }
+
+    // Thêm người đề nghị vào trường tìm kiếm
+    if (proponent) {
+        keySearch = { ...keySearch, proponent: { $in: proponent } }
+    }
+
+    // Thêm người phê duyệt vào trường tìm kiếm
+    if (approver) {
+        keySearch = { ...keySearch, approver: { $in: approver } }
     }
 
     // Thêm key tìm kiếm phiếu theo trạng thái vào keySearch
     if (status) {
         keySearch = { ...keySearch, status: { $in: status } };
     };
-
+    console.log(keySearch)
     var totalList = await RecommendProcure.count(keySearch);
-    var listRecommendProcures = await RecommendProcure.find(keySearch).populate('proponent approver').sort({'createdAt': 'desc'}).skip(page ? parseInt(page) : 0).limit(limit ? parseInt(limit) : 0);
-    
+    var listRecommendProcures = await RecommendProcure.find(keySearch).populate('proponent approver').sort({ 'createdAt': 'desc' }).skip(page ? parseInt(page) : 0).limit(limit ? parseInt(limit) : 0);
+
     return { totalList, listRecommendProcures };
 }
 
@@ -41,7 +51,8 @@ exports.createRecommendProcure = async (data, company) => {
         recommendNumber: data.recommendNumber,
         dateCreate: data.dateCreate,
         proponent: data.proponent, // Người đề nghị
-        equipment: data.equipment,
+        equipmentName: data.equipmentName,
+        equipmentDescription: data.equipmentDescription,
         supplier: data.supplier,
         approver: data.approver, // Người phê duyệt
         total: data.total,
@@ -72,7 +83,8 @@ exports.updateRecommendProcure = async (id, data) => {
         recommendNumber: data.recommendNumber,
         dateCreate: data.dateCreate,
         proponent: data.proponent, // Người đề nghị
-        equipment: data.equipment,
+        equipmentName: data.equipmentName,
+        equipmentDescription: data.equipmentDescription,
         supplier: data.supplier,
         approver: data.approver, // Người phê duyệt
         total: data.total,
