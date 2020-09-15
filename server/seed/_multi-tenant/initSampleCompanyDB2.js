@@ -48,7 +48,7 @@ const initSampleCompanyDB = async() => {
     console.log("Init sample company database, ...");
 
     /**
-     * 1. Tạo kết nối đến csdl của hệ thống và công ty VNIST
+     * 1. Tạo kết nối đến csdl của hệ thống và công ty penguin
      */
     const systemDB = mongoose.createConnection(
         process.env.DATABASE || `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/${process.env.DB_NAME}`,
@@ -70,8 +70,8 @@ const initSampleCompanyDB = async() => {
     if(!systemDB) throw('DB system cannot connect');
     console.log("DB system connected");
     
-    const vnistDB = mongoose.createConnection(
-        `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/vnist`,
+    const penguinDB = mongoose.createConnection(
+        `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/penguin`,
         process.env.DB_AUTHENTICATION === 'true' ?
         {
             useNewUrlParser: true,
@@ -87,8 +87,8 @@ const initSampleCompanyDB = async() => {
             useFindAndModify: false,
         }
     );
-    if(!systemDB) throw('DB vnist cannot connect');
-    console.log("DB vnist connected");
+    if(!systemDB) throw('DB penguin cannot connect');
+    console.log("DB penguin connected");
     
     /**
      * 1.1 Khởi tạo model cho db
@@ -105,193 +105,193 @@ const initSampleCompanyDB = async() => {
         console.log("models_list", db.models);
     }
     
-    initModels(vnistDB);
+    initModels(penguinDB);
     initModels(systemDB);
 
 
 	/**
-	 * 2. Xóa dữ liệu db cũ của công ty vnist
+	 * 2. Xóa dữ liệu db cũ của công ty penguin
 	 */
-    vnistDB.dropDatabase(); 
+    penguinDB.dropDatabase(); 
 
 
 
     /**
-     * 3. Khởi tạo dữ liệu về công ty VNIST trong database của hệ thống
+     * 3. Khởi tạo dữ liệu về công ty penguin trong database của hệ thống
      */
-    const vnist = await Company(systemDB).create({
+    const penguin = await Company(systemDB).create({
         name: 'Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam',
-        shortName: 'vnist',
+        shortName: 'penguin',
         description: 'Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam'
     });
-    console.log(`Xong! Công ty [${vnist.name}] đã được tạo.`);
+    console.log(`Xong! Công ty [${penguin.name}] đã được tạo.`);
 
 
     /**
-     * 4. Tạo các tài khoản người dùng trong csdl của công ty VNIST
+     * 4. Tạo các tài khoản người dùng trong csdl của công ty penguin
      */
     const salt = await bcrypt.genSaltSync(10);
     const hash = await bcrypt.hashSync('123456', salt);
 
-    const users = await User(vnistDB).insertMany([{
-        name: 'Super Admin VNIST',
-        email: 'super.admin.vnist@gmail.com',
+    const users = await User(penguinDB).insertMany([{
+        name: 'Super Admin penguin',
+        email: 'super.admin.penguin@gmail.com',
         password: hash,
-        company: vnist._id
+        company: penguin._id
     },{
-        name: 'Admin VNIST',
-        email: 'admin.vnist@gmail.com',
+        name: 'Admin penguin',
+        email: 'admin.penguin@gmail.com',
         password: hash,
-        company: vnist._id
+        company: penguin._id
     },{
         name: 'Nguyễn Văn An',
-        email: 'nva.vnist@gmail.com',
+        email: 'nva.penguin@gmail.com',
         password: hash,
-        company: vnist._id
+        company: penguin._id
     },{
         name: 'Trần Văn Bình',
-        email: 'tvb.vnist@gmail.com',
+        email: 'tvb.penguin@gmail.com',
         password: hash,
-        company: vnist._id
+        company: penguin._id
     },{
         name: 'Vũ Thị Cúc',
-        email: 'vtc.vnist@gmail.com',
+        email: 'vtc.penguin@gmail.com',
         password: hash,
-        company: vnist._id
+        company: penguin._id
     },{
         name: 'Nguyễn Văn Danh',
-        email: 'nvd.vnist@gmail.com',
+        email: 'nvd.penguin@gmail.com',
         password: hash,
-        company: vnist._id
+        company: penguin._id
     },{
         name: 'Trần Thị Én',
-        email: 'tte.vnist@gmail.com',
+        email: 'tte.penguin@gmail.com',
         password: hash,
-        company: vnist._id
+        company: penguin._id
     },{
         name: 'Phạm Đình Phúc',
-        email: 'pdp.vnist@gmail.com',
+        email: 'pdp.penguin@gmail.com',
         password: hash,
-        company: vnist._id
+        company: penguin._id
     },{
         name: 'Trần Minh Đức',
-        email: 'tmd.vnist@gmail.com',
+        email: 'tmd.penguin@gmail.com',
         password: hash,
-        company: vnist._id
+        company: penguin._id
     },{
         name: 'Nguyễn Việt Anh',
-        email: 'nguyenvietanh.vnist@gmail.com',
+        email: 'nguyenvietanh.penguin@gmail.com',
         password: hash,
-        company: vnist._id
+        company: penguin._id
     },{
         name: 'Nguyễn Viết Thái',
-        email: 'nguyenvietthai.vnist@gmail.com',
+        email: 'nguyenvietthai.penguin@gmail.com',
         password: hash,
-        company: vnist._id
+        company: penguin._id
     },{
         name: 'Trần Mỹ Hạnh',
-        email: 'tranmyhanh.vnist@gmail.com',
+        email: 'tranmyhanh.penguin@gmail.com',
         password: hash,
-        company: vnist._id
+        company: penguin._id
     },{
         name: 'Nguyễn Minh Thành',
-        email: 'nguyenminhthanh.vnist@gmail.com',
+        email: 'nguyenminhthanh.penguin@gmail.com',
         password: hash,
-        company: vnist._id
+        company: penguin._id
     },{
         name: 'Nguyễn Gia Huy',
-        email: 'nguyengiahuy.vnist@gmail.com',
+        email: 'nguyengiahuy.penguin@gmail.com',
         password: hash,
-        company: vnist._id
+        company: penguin._id
     },{
         name: 'Trần Minh Anh',
-        email: 'tranminhanh.vnist@gmail.com',
+        email: 'tranminhanh.penguin@gmail.com',
         password: hash,
-        company: vnist._id
+        company: penguin._id
     }]);
-    console.log("Dữ liệu tài khoản người dùng cho công ty VNIST", users);
+    console.log("Dữ liệu tài khoản người dùng cho công ty penguin", users);
 
 
     /**
-     * 5. Tạo các role mặc định cho công ty vnist
+     * 5. Tạo các role mặc định cho công ty penguin
      */
-    await RoleType(vnistDB).insertMany([
+    await RoleType(penguinDB).insertMany([
         { name: Terms.ROLE_TYPES.ROOT }, 
         { name: Terms.ROLE_TYPES.POSITION },
         { name: Terms.ROLE_TYPES.COMPANY_DEFINED }
     ]);
-    const roleAbstract = await RoleType(vnistDB).findOne({
+    const roleAbstract = await RoleType(penguinDB).findOne({
         name: Terms.ROLE_TYPES.ROOT
     });
-    const roleChucDanh = await RoleType(vnistDB).findOne({
+    const roleChucDanh = await RoleType(penguinDB).findOne({
         name: Terms.ROLE_TYPES.POSITION
     });
-    const roleTuDinhNghia = await RoleType(vnistDB).findOne({
+    const roleTuDinhNghia = await RoleType(penguinDB).findOne({
         name: Terms.ROLE_TYPES.COMPANY_DEFINED
     });
-    const roleAdmin = await Role(vnistDB).create({
+    const roleAdmin = await Role(penguinDB).create({
         name: Terms.ROOT_ROLES.ADMIN.name,
         type: roleAbstract._id,
     });
-    const roleSuperAdmin = await Role(vnistDB).create({
+    const roleSuperAdmin = await Role(penguinDB).create({
         name: Terms.ROOT_ROLES.SUPER_ADMIN.name,
         type: roleAbstract._id,
         parents: [roleAdmin._id]
     });
-    const roleDean = await Role(vnistDB).create({
+    const roleDean = await Role(penguinDB).create({
         name: Terms.ROOT_ROLES.DEAN.name,
         type: roleAbstract._id,
     });
-    const roleViceDean = await Role(vnistDB).create({
+    const roleViceDean = await Role(penguinDB).create({
         name: Terms.ROOT_ROLES.VICE_DEAN.name,
         type: roleAbstract._id,
     });
-    const roleEmployee = await Role(vnistDB).create({
+    const roleEmployee = await Role(penguinDB).create({
         name: Terms.ROOT_ROLES.EMPLOYEE.name,
         type: roleAbstract._id,
     });
 
-    const thanhVienBGĐ = await Role(vnistDB).create({
+    const thanhVienBGĐ = await Role(penguinDB).create({
         parents: [roleEmployee._id],
         name: "Thành viên ban giám đốc",
         type: roleChucDanh._id
     });
-    const phoGiamDoc = await Role(vnistDB).create({
+    const phoGiamDoc = await Role(penguinDB).create({
         parents: [roleViceDean._id, thanhVienBGĐ._id],
         name: "Phó giám đốc",
         type: roleChucDanh._id
     });
-    const giamDoc = await Role(vnistDB).create({
+    const giamDoc = await Role(penguinDB).create({
         parents: [roleDean._id, thanhVienBGĐ._id, phoGiamDoc._id],
         name: "Giám đốc",
         type: roleChucDanh._id
     });
-    const nvPhongHC = await Role(vnistDB).create({
+    const nvPhongHC = await Role(penguinDB).create({
         parents: [roleEmployee._id],
         name: "Nhân viên phòng kinh doanh",
         type: roleChucDanh._id
     });
-    const phoPhongHC = await Role(vnistDB).create({
+    const phoPhongHC = await Role(penguinDB).create({
         parents: [roleViceDean._id, nvPhongHC._id],
         name: "Phó phòng kinh doanh",
         type: roleChucDanh._id
     });
-    const truongPhongHC = await Role(vnistDB).create({
+    const truongPhongHC = await Role(penguinDB).create({
         parents: [roleDean._id, nvPhongHC._id, phoPhongHC._id],
         name: "Trưởng phòng kinh doanh",
         type: roleChucDanh._id
     });
-    console.log("Dữ liệu các phân quyền cho công ty VNIST");
+    console.log("Dữ liệu các phân quyền cho công ty penguin");
 
 
     /**
      * 6. Gán phân quyền cho các vị trí trong công ty
      */
-    await UserRole(vnistDB).insertMany([{ // Gán tài khoản super.admin.vnist có role là Super Admin của công ty VNIST
+    await UserRole(penguinDB).insertMany([{ // Gán tài khoản super.admin.penguin có role là Super Admin của công ty penguin
         userId: users[0]._id,
         roleId: roleSuperAdmin._id
     },{
-        userId: users[1]._id, // Gán tài khoản admin.vnist có role là admin
+        userId: users[1]._id, // Gán tài khoản admin.penguin có role là admin
         roleId: roleAdmin._id
     },
     // Tiếp tục gán chức danh vai trò của phòng ban cho nhân viên:
@@ -322,9 +322,9 @@ const initSampleCompanyDB = async() => {
     }]);
 
     /**
-     * 7. Tạo dữ liệu các phòng ban cho công ty VNIST
+     * 7. Tạo dữ liệu các phòng ban cho công ty penguin
      */
-    const Directorate = await OrganizationalUnit(vnistDB).create({ // Khởi tạo ban giám đốc công ty
+    const Directorate = await OrganizationalUnit(penguinDB).create({ // Khởi tạo ban giám đốc công ty
         name: "Ban giám đốc",
         description: "Ban giám đốc Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
         deans: [giamDoc._id],
@@ -332,7 +332,7 @@ const initSampleCompanyDB = async() => {
         employees: [thanhVienBGĐ._id],
         parent: null
     });
-    const departments = await OrganizationalUnit(vnistDB).insertMany([{
+    const departments = await OrganizationalUnit(penguinDB).insertMany([{
         name: "Phòng kinh doanh",
         description: "Phòng kinh doanh Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
         deans: [truongPhongHC._id],
@@ -343,7 +343,7 @@ const initSampleCompanyDB = async() => {
     console.log("Đã tạo dữ liệu phòng ban: ", Directorate, departments);
 
     /**
-     * 8. Tạo link cho các trang web của công ty VNIST
+     * 8. Tạo link cho các trang web của công ty penguin
      */
     const createCompanyLinks = async (linkArr, roleArr) => {
         let checkIndex = (link, arr) => {
@@ -381,7 +381,7 @@ const initSampleCompanyDB = async() => {
             }
         })
 
-        let links = await Link(vnistDB).insertMany(dataLinks);
+        let links = await Link(penguinDB).insertMany(dataLinks);
 
         //Thêm phân quyền cho link
         let dataPrivilege = [];
@@ -410,9 +410,9 @@ const initSampleCompanyDB = async() => {
                 }
             }
         }
-        await Privilege(vnistDB).insertMany(dataPrivilege);
+        await Privilege(penguinDB).insertMany(dataPrivilege);
 
-        return await Link(vnistDB).find()
+        return await Link(penguinDB).find()
             .populate({
                 path: 'roles',
                 populate: {path: 'roleId'}
@@ -433,23 +433,23 @@ const initSampleCompanyDB = async() => {
         for (let i = 0; i < systemComponents.length; i++) {
             let sysLinks = await SystemLink(systemDB)
             .find({ _id: { $in: systemComponents[i].links }});
-            let links = await Link(vnistDB).find({
+            let links = await Link(penguinDB).find({
                 url: sysLinks.map(link => link.url)
             });
             // Tạo component
-            let component = await Component(vnistDB).create({
+            let component = await Component(penguinDB).create({
                 name: systemComponents[i].name,
                 description: systemComponents[i].description,
                 links: links.map(link => link._id),
                 deleteSoft: false
             })
             for (let j = 0; j < links.length; j++) {
-                let updateLink = await Link(vnistDB).findById(links[j]._id);
+                let updateLink = await Link(penguinDB).findById(links[j]._id);
                 updateLink.components.push(component._id);
                 await updateLink.save();
             }
             // Tạo phân quyền cho components
-            let roles = await Role(vnistDB).find({
+            let roles = await Role(penguinDB).find({
                 name: {
                     $in: systemComponents[i].roles.map(role => role.name)
                 }
@@ -461,10 +461,10 @@ const initSampleCompanyDB = async() => {
                     roleId: role._id
                 }
             });
-            await Privilege(vnistDB).insertMany(dataPrivileges);
+            await Privilege(penguinDB).insertMany(dataPrivileges);
         }
 
-        return await Component(vnistDB).find();
+        return await Component(penguinDB).find();
     }
     let linkArrData = await SystemLink(systemDB).find();
     let linkArr = linkArrData.map(link => link._id);
@@ -478,12 +478,12 @@ const initSampleCompanyDB = async() => {
         TẠO DỮ LIỆU NHÂN VIÊN
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
-    await Employee(vnistDB).insertMany([{
+    await Employee(penguinDB).insertMany([{
         avatar: "/upload/human-resource/avatars/avatar5.png",
         fullName: "Vũ Thị Cúc",
         employeeNumber: "MS2015122",
         status: "active",
-        company: vnist._id,
+        company: penguin._id,
         employeeTimesheetId: "123456",
         gender: "female",
         birthdate: new Date("1998-02-17"),
@@ -491,7 +491,7 @@ const initSampleCompanyDB = async() => {
         identityCardNumber: 163414569,
         identityCardDate: new Date("2015-10-20"),
         identityCardAddress: "Nam Định",
-        emailInCompany: "vtc.vnist@gmail.com",
+        emailInCompany: "vtc.penguin@gmail.com",
         nationality: "Việt Nam",
         atmNumber: "102298653",
         bankName: "ViettinBank",
@@ -528,7 +528,7 @@ const initSampleCompanyDB = async() => {
         healthInsuranceEndDate: new Date("2020-02-16"),
         socialInsuranceNumber: "XH1569874",
         socialInsuranceDetails: [{
-            company: "Vnist",
+            company: "penguin",
             position: "Nhân viên",
             startDate: new Date("2020-01"),
             endDate: new Date("2020-05")
@@ -554,7 +554,7 @@ const initSampleCompanyDB = async() => {
         experiences: [{
             startDate: new Date("2019-06"),
             endDate: new Date("2020-02"),
-            company: "Vnist",
+            company: "penguin",
             position: "Nhân viên"
         }],
         contractType: 'Phụ thuộc',
@@ -573,7 +573,7 @@ const initSampleCompanyDB = async() => {
         fullName: "Trần Văn Bình",
         employeeNumber: "MS2015124",
         status: "active",
-        company: vnist._id,
+        company: penguin._id,
         employeeTimesheetId: "123456",
         gender: "male",
         birthdate: new Date("1998-02-17"),
@@ -581,7 +581,7 @@ const initSampleCompanyDB = async() => {
         identityCardNumber: 163414569,
         identityCardDate: new Date("2015-10-20"),
         identityCardAddress: "Nam Định",
-        emailInCompany: "tvb.vnist@gmail.com",
+        emailInCompany: "tvb.penguin@gmail.com",
         nationality: "Việt Nam",
         atmNumber: "102298653",
         bankName: "ViettinBank",
@@ -618,7 +618,7 @@ const initSampleCompanyDB = async() => {
         healthInsuranceEndDate: new Date("2020-02-16"),
         socialInsuranceNumber: "XH1569874",
         socialInsuranceDetails: [{
-            company: "Vnist",
+            company: "penguin",
             position: "Nhân viên",
             startDate: new Date("2020-01"),
             endDate: new Date("2020-05")
@@ -644,7 +644,7 @@ const initSampleCompanyDB = async() => {
         experiences: [{
             startDate: new Date("2019-06"),
             endDate: new Date("2020-02"),
-            company: "Vnist",
+            company: "penguin",
             position: "Nhân viên"
         }],
         contractType: 'Phụ thuộc',
@@ -660,12 +660,12 @@ const initSampleCompanyDB = async() => {
         files: [],
     }])
     console.log("Khởi tạo dữ liệu nhân viên!");
-    var employee = await Employee(vnistDB).create({
+    var employee = await Employee(penguinDB).create({
         avatar: "/upload/human-resource/avatars/avatar5.png",
         fullName: "Nguyễn Văn An",
         employeeNumber: "MS2015123",
         status: "active",
-        company: vnist._id,
+        company: penguin._id,
         employeeTimesheetId: "123456",
         gender: "male",
         birthdate: new Date("1988-05-20"),
@@ -673,7 +673,7 @@ const initSampleCompanyDB = async() => {
         identityCardNumber: 163414569,
         identityCardDate: new Date("2015-10-20"),
         identityCardAddress: "Nam Định",
-        emailInCompany: "nva.vnist@gmail.com",
+        emailInCompany: "nva.penguin@gmail.com",
         nationality: "Việt Nam",
         atmNumber: "102298653",
         bankName: "ViettinBank",
@@ -710,7 +710,7 @@ const initSampleCompanyDB = async() => {
         healthInsuranceEndDate: new Date("2020-02-16"),
         socialInsuranceNumber: "XH1569874",
         socialInsuranceDetails: [{
-            company: "Vnist",
+            company: "penguin",
             position: "Nhân viên",
             startDate: new Date("2020-01"),
             endDate: new Date("2020-05")
@@ -736,7 +736,7 @@ const initSampleCompanyDB = async() => {
         experiences: [{
             startDate: new Date("2019-06"),
             endDate: new Date("2020-02"),
-            company: "Vnist",
+            company: "penguin",
             position: "Nhân viên"
         }],
         contractType: 'Phụ thuộc',
@@ -766,9 +766,9 @@ const initSampleCompanyDB = async() => {
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu nghỉ phép!");
-    await AnnualLeave(vnistDB).insertMany([{
+    await AnnualLeave(penguinDB).insertMany([{
         employee: employee._id,
-        company: vnist._id,
+        company: penguin._id,
         organizationalUnit: Directorate._id,
         startDate: "2020-02-06",
         endDate: "2020-02-08",
@@ -776,7 +776,7 @@ const initSampleCompanyDB = async() => {
         reason: "Về quê",
     }, {
         employee: employee._id,
-        company: vnist._id,
+        company: penguin._id,
         organizationalUnit: Directorate._id,
         startDate: "2020-02-05",
         endDate: "2020-02-10",
@@ -791,9 +791,9 @@ const initSampleCompanyDB = async() => {
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu lương nhân viên!");
-    await Salary(vnistDB).insertMany([{
+    await Salary(penguinDB).insertMany([{
         employee: employee._id,
-        company: vnist._id,
+        company: penguin._id,
         month: "2020-02",
         organizationalUnit: Directorate._id,
         mainSalary: "10000000",
@@ -804,7 +804,7 @@ const initSampleCompanyDB = async() => {
         }],
     }, {
         employee: employee._id,
-        company: vnist._id,
+        company: penguin._id,
         organizationalUnit: Directorate._id,
         month: "2020-01",
         mainSalary: "10000000",
@@ -822,9 +822,9 @@ const initSampleCompanyDB = async() => {
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu khen thưởng!");
-    await Commendation(vnistDB).insertMany([{
+    await Commendation(penguinDB).insertMany([{
         employee: employee._id,
-        company: vnist._id,
+        company: penguin._id,
         decisionNumber: "123",
         organizationalUnit: departments[0]._id,
         startDate: "2020-02-02",
@@ -833,7 +833,7 @@ const initSampleCompanyDB = async() => {
     },
     {
         employee: employee._id,
-        company: vnist._id,
+        company: penguin._id,
         decisionNumber: "1234",
         organizationalUnit: departments[0]._id,
         startDate: "2020-02-02",
@@ -849,9 +849,9 @@ const initSampleCompanyDB = async() => {
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu kỷ luật!");
-    await Discipline(vnistDB).insertMany([{
+    await Discipline(penguinDB).insertMany([{
         employee: employee._id,
-        company: vnist._id,
+        company: penguin._id,
         decisionNumber: "1456",
         organizationalUnit: departments[0]._id,
         startDate: "2020-02-07",
@@ -860,7 +860,7 @@ const initSampleCompanyDB = async() => {
         reason: "Không làm đủ công",
     }, {
         employee: employee._id,
-        company: vnist._id,
+        company: penguin._id,
         decisionNumber: "1457",
         organizationalUnit: departments[0]._id,
         startDate: "2020-02-07",
@@ -877,8 +877,8 @@ const initSampleCompanyDB = async() => {
     ----------------------------------------------------------------------------------------------- */
 
     console.log("Khởi tạo dữ liệu chương trình đào tạo bắt buộc!");
-    var educationProgram = await EducationProgram(vnistDB).insertMany([{
-        company: vnist._id,
+    var educationProgram = await EducationProgram(penguinDB).insertMany([{
+        company: penguin._id,
         applyForOrganizationalUnits: [
             departments[0]._id
         ],
@@ -888,7 +888,7 @@ const initSampleCompanyDB = async() => {
         name: "An toan lao dong",
         programId: "M123",
     }, {
-        company: vnist._id,
+        company: penguin._id,
         applyForOrganizationalUnits: [
             departments[0]._id
         ],
@@ -907,11 +907,11 @@ const initSampleCompanyDB = async() => {
     ----------------------------------------------------------------------------------------------- */
 
     console.log("Khởi tạo dữ liệu khoá đào tạo bắt buộc!");
-    await Course(vnistDB).insertMany([{
-        company: vnist._id,
+    await Course(penguinDB).insertMany([{
+        company: penguin._id,
         name: "An toàn lao động 1",
         courseId: "LD1233",
-        offeredBy: "Vnists",
+        offeredBy: "penguins",
         coursePlace: "P9.01",
         startDate: "2020-02-16",
         endDate: "2020-03-21",
@@ -924,10 +924,10 @@ const initSampleCompanyDB = async() => {
         educationProgram: educationProgram[0]._id,
         employeeCommitmentTime: "6",
     }, {
-        company: vnist._id,
+        company: penguin._id,
         name: "An toàn lao động 2",
         courseId: "LD123",
-        offeredBy: "Vnists",
+        offeredBy: "penguins",
         coursePlace: "P9.01",
         startDate: "2020-02-16",
         endDate: "2020-03-21",
@@ -948,7 +948,7 @@ const initSampleCompanyDB = async() => {
      * Ngắt kết nối db
      */
     systemDB.close();
-    vnistDB.close();
+    penguinDB.close();
 
     console.log("End init sample company database!");
 }
