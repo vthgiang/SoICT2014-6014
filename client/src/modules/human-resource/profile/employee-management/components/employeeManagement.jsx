@@ -507,6 +507,7 @@ class EmployeeManagement extends Component {
             fileName: translate(`human_resource.profile.employee_management.file_export_name`),
             dataSheets: [
                 {
+                    // 1.Nhân viên
                     sheetName: translate(`human_resource.profile.employee_management.export.sheet1`),
                     tables: [
                         {
@@ -565,6 +566,7 @@ class EmployeeManagement extends Component {
                     ]
                 },
                 {
+                    // 2.HS Nhân viên - Kinh nghiệm
                     sheetName: translate(`human_resource.profile.employee_management.export.sheet2`),
                     tables: [
                         {
@@ -582,6 +584,7 @@ class EmployeeManagement extends Component {
                     ]
                 },
                 {
+                    // 3.HS Nhân viên - Bằng cấp
                     sheetName: translate(`human_resource.profile.employee_management.export.sheet3`),
                     tables: [
                         {
@@ -599,6 +602,7 @@ class EmployeeManagement extends Component {
                     ]
                 },
                 {
+                    // 4.HS Nhân viên - Chứng chỉ
                     sheetName: translate(`human_resource.profile.employee_management.export.sheet4`),
                     tables: [
                         {
@@ -616,6 +620,7 @@ class EmployeeManagement extends Component {
                     ]
                 },
                 {
+                    // 5.HS Nhân viên - Hợp đồng
                     sheetName: translate(`human_resource.profile.employee_management.export.sheet5`),
                     tables: [
                         {
@@ -633,6 +638,7 @@ class EmployeeManagement extends Component {
                     ]
                 },
                 {
+                    // 6.HS Nhân viên - Bảo hiểm XH
                     sheetName: translate(`human_resource.profile.employee_management.export.sheet6`),
                     tables: [
                         {
@@ -650,6 +656,7 @@ class EmployeeManagement extends Component {
                     ]
                 },
                 {
+                    // 7.HS Nhân viên - Tài liệu
                     sheetName: translate(`human_resource.profile.employee_management.export.sheet7`),
                     tables: [
                         {
@@ -667,6 +674,7 @@ class EmployeeManagement extends Component {
                     ]
                 },
                 {
+                    // 8.HS Nhân viên - Khen thưởng
                     sheetName: translate(`human_resource.profile.employee_management.export.sheet8`),
                     tables: [
                         {
@@ -685,6 +693,7 @@ class EmployeeManagement extends Component {
                     ]
                 },
                 {
+                    // 9.HS Nhân viên - Kỷ luật
                     sheetName: translate(`human_resource.profile.employee_management.export.sheet9`),
                     tables: [
                         {
@@ -704,6 +713,7 @@ class EmployeeManagement extends Component {
                     ]
                 },
                 {
+                    // 10.HS Nhân viên - Lương thưởng
                     sheetName: translate(`human_resource.profile.employee_management.export.sheet10`),
                     tables: [
                         {
@@ -731,6 +741,7 @@ class EmployeeManagement extends Component {
                     ]
                 },
                 {
+                    // 11.HS Nhân viên - Nghỉ phép
                     sheetName: translate(`human_resource.profile.employee_management.export.sheet11`),
                     tables: [
                         {

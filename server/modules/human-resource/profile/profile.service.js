@@ -1308,7 +1308,7 @@ exports.importEmployeeInfor = async (company, data) => {
         if (checkEmailInCompany) {
             x = {
                 ...x,
-                errorAlert: [...x.errorAlert, "email_in_company_required"],
+                errorAlert: [...x.errorAlert, "email_in_company_have_exist"],
                 error: true
             };
         }
@@ -1577,7 +1577,7 @@ exports.importContract = async (company, data) => {
                 editEmployee.contractEndDate = crurrentContract.endDate;
                 editEmployee.contractType = crurrentContract.contractType;
             }
-            
+
             editEmployee.contracts = editEmployee.contracts.concat(x.contracts);
             editEmployee.save();
         }

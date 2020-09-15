@@ -3,40 +3,36 @@ export const configurationHoliday = {
     templateImport,
 };
 
-function configurationImport() {
+function configurationImport(translate) {
     let config = {
-        rowHeader: {
-            description: "Số dòng tiêu đề của bảng",
+        rowHeader: { // Số dòng tiêu đề của bảng
+            description: translate('human_resource.rowHeader'),
             value: 1
         },
-        sheets: {
-            description: "Tên các sheet",
+        sheets: { // Tên các sheet
+            description: translate('human_resource.sheets_name'),
             value: ["Sheet1"]
         },
-        type: {
-            columnName: "Thể loại",
-            description: "Tên tiêu đề ứng với thể loại",
-            value: "Thể loại"
+        type: { // Thể loại
+            columnName: translate('human_resource.holiday.table.type'),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.holiday.table.type').toLowerCase()}`,
+            value: translate('human_resource.holiday.table.type')
         },
-        startDate: {
-            columnName: "Ngày bắt đầu",
-            description: "Tên tiêu đề ứng với ngày bắt đầu",
-            value: "Ngày bắt đầu"
+        startDate: { // Ngày bắt đầu
+            columnName: translate('human_resource.holiday.table.start_date'),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.holiday.table.start_date').toLowerCase()}`,
+            value: translate('human_resource.holiday.table.start_date')
         },
-        endDate: {
-            columnName: "Ngày kết thúc",
-            description: "Tên tiêu để ứng với ngày kết thúc",
-            value: "Ngày kết thúc"
+        endDate: { // Ngày kết thúc
+            columnName: translate('human_resource.holiday.table.end_date'),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.holiday.table.end_date').toLowerCase()}`,
+            value: translate('human_resource.holiday.table.end_date')
         },
-        description: {
-            columnName: "Mô tả lịch nghỉ",
-            description: "Tên tiêu để ứng với mô tả lịch nghỉ",
-            value: "Mô tả "
+        description: { // Mô tả lịch nghỉ
+            columnName: translate('human_resource.holiday.table.describe_timeline'),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.holiday.table.describe_timeline').toLowerCase()}`,
+            value: translate('human_resource.holiday.table.describe_timeline')
         },
-        file: {
-            fileName: 'templateImportHoliday',
-            fileUrl: '/upload/human-resource/templateImport/templateImportHoliday.xlsx'
-        }
     };
 
     return config;
