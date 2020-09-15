@@ -74,10 +74,10 @@ if(process.env.MULTI_TENANT === 'true'){
     // router.use('/system-admin/root-role', require("./modules/_multi-tenant/system-admin/root-role/rootRole.route"));
 	// router.use('/system-admin/system-setting', require("./modules/_multi-tenant/system-admin/system-setting/systemSetting.route"));
 	
-	// app.use("/task", require("./modules/_multi-tenant/task/task-management/task.route"));
-	// app.use("/performtask", require("./modules/_multi-tenant/task/task-perform/taskPerform.route"));
-	// app.use("/task/task-templates", require("./modules/_multi-tenant/task/task-template/taskTemplate.route"));
-	// app.use("/process", require("./modules/_multi-tenant/task/tasks-process/taskProcess.route"));
+	app.use("/task", require("./modules/_multi-tenant/task/task-management/task.route"));
+	app.use("/performtask", require("./modules/_multi-tenant/task/task-perform/taskPerform.route"));
+	app.use("/task/task-templates", require("./modules/_multi-tenant/task/task-template/taskTemplate.route"));
+	app.use("/process", require("./modules/_multi-tenant/task/tasks-process/taskProcess.route"));
 	app.use("/educationProgram", require("./modules/_multi-tenant/trainning/education-program/educationProgram.route"));
 	app.use("/course", require("./modules/_multi-tenant/trainning/course/course.route"));
 
