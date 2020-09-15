@@ -101,7 +101,7 @@ if (process.env.MULTI_TENANT === 'true') {
 
 	// // example
 	// app.use("/examples", require("./modules/_multi-tenant/example/example.route"));
-
+	 app.use("/documents", require("./modules/_multi-tenant/document/document.route"));
 	// // Customer Management
 	// const crm = express.Router();
 	// crm.use(require("./modules/_multi-tenant/crm/customer/customer.route"));
