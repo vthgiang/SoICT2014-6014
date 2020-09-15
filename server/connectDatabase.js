@@ -16,7 +16,6 @@ const optionConnectDB =
         useCreateIndex: true,
         useFindAndModify: false,
       };
-
 mongoose // Connect to MongoDB
   .connect(db, optionConnectDB)
   .then(() => console.log("MongoDB successfully connected"))
