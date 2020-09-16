@@ -66,8 +66,29 @@ class EmployeeImportTab extends Component {
                     errorAlert: x.errorAlert.map(y => translate(`human_resource.profile.employee_management.${y}`))
                 }
             })
-
         };
+        if (importData && id === "import_employee_general_infor") {
+            importData = importData.map(x => {
+                let gender = translate(`human_resource.profile.${x.gender}`);
+                let maritalStatus = translate(`human_resource.profile.${x.maritalStatus}`);
+                let status = translate(`human_resource.profile.${x.status}`);
+                let professionalSkill = translate(`human_resource.profile.${x.professionalSkill}`);
+                return { ...x, gender: gender, maritalStatus: maritalStatus, status: status, professionalSkill: professionalSkill }
+            });
+        };
+        if (importData && id === "import_employee_degree") {
+            importData = importData.map(x => {
+                let degreeType = x.degreeType ? translate(`human_resource.profile.${x.degreeType}`) : x.degreeType;
+                return { ...x, degreeType: degreeType }
+            });
+        };
+        if (importData && id === "import_employee_file") {
+            importData = importData.map(x => {
+                let status = x.status ? translate(`human_resource.profile.${x.status}`) : x.status;
+                return { ...x, status: status }
+            });
+        }
+
         configData = configData ? configData : configuration;
 
         return (
