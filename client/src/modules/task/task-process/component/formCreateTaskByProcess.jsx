@@ -450,7 +450,7 @@ class FormCreateTaskByProcess extends Component {
                     <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
                         {/**Đơn vị của mẫu công việc */}
                         <div className={`form-group ${taskItem.errorOnUnit === undefined ? "" : "has-error"}`} >
-                            <label className="control-label">{translate('task_template.unit')}*:</label>
+                            <label className="control-label">{translate('task_template.unit')} <span style={{color: "red"}}>*</span></label>
                             {departmentsThatUserIsDean !== undefined && taskItem.organizationalUnit !== "" &&
                                 <SelectBox
                                     id={`edit-unit-select-box-${taskItem._id}`}
@@ -478,7 +478,7 @@ class FormCreateTaskByProcess extends Component {
 
                         {/**Tên mẫu công việc này */}
                         <div className={`form-group ${this.state.taskItem.errorOnName === undefined ? "" : "has-error"}`} >
-                            <label className="control-label">{translate('task_template.tasktemplate_name')}*</label>
+                            <label className="control-label">{translate('task_template.tasktemplate_name')} <span style={{color: "red"}}>*</span></label>
                             <input type="Name" className="form-control" placeholder={translate('task_template.tasktemplate_name')} value={taskItem.name} onChange={this.handleTaskTemplateName} />
                             <ErrorLabel content={this.state.taskItem.errorOnName} />
                         </div>
@@ -488,7 +488,7 @@ class FormCreateTaskByProcess extends Component {
 
                         {/**Mô tả mẫu công việc này */}
                         <div className={`form-group ${this.state.taskItem.errorOnDescription === undefined ? "" : "has-error"}`} >
-                            <label className="control-label" htmlFor="inputDescriptionTaskTemplate">{translate('task_template.description')}*</label>
+                            <label className="control-label" htmlFor="inputDescriptionTaskTemplate">{translate('task_template.description')} <span style={{color: "red"}}>*</span></label>
                             <textarea rows={4} type="Description" className="form-control" id="inputDescriptionTaskTemplate" name="description" placeholder={translate('task_template.description')} value={taskItem.description} onChange={this.handleTaskTemplateDesc} />
                             <ErrorLabel content={this.state.taskItem.errorOnDescription} />
                         </div>
@@ -505,7 +505,7 @@ class FormCreateTaskByProcess extends Component {
                 </div>
                 {/**Số ngày hoàn thành công việc dự kiến */}
                 <div className={`form-group ${this.state.taskItem.errorOnNumberOfDaysTaken === undefined ? "" : "has-error"}`} >
-                    <label className="control-label" htmlFor="inputNumberOfDaysTaken">{translate('task_template.numberOfDaysTaken')}*</label>
+                    <label className="control-label" htmlFor="inputNumberOfDaysTaken">{translate('task_template.numberOfDaysTaken')} <span style={{color: "red"}}>*</span></label>
                     <input type="number" className="form-control" id="inputNumberOfDaysTaken" value={taskItem.numberOfDaysTaken}
                         placeholder={'Nhập số ngày hoàn thành dự kiến'}
                         onChange={this.handleTaskTemplateNumberOfDaysTaken} />
@@ -514,7 +514,7 @@ class FormCreateTaskByProcess extends Component {
                 {/* Ngay bat dau - ngay ket thuc */}
                 <div className=" row form-group">
                     <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${this.state.taskItem.errorOnStartDate === undefined ? "" : "has-error"}`}>
-                        <label className="control-label">{translate('task.task_management.start_date')}*</label>
+                        <label className="control-label">{translate('task.task_management.start_date')} <span style={{color: "red"}}>*</span></label>
                         <DatePicker
                             id={`datepicker1-${id}`}
                             dateFormat="day-month-year"
@@ -524,7 +524,7 @@ class FormCreateTaskByProcess extends Component {
                         <ErrorLabel content={this.state.taskItem.errorOnStartDate} />
                     </div>
                     <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${this.state.taskItem.errorOnEndDate === undefined ? "" : "has-error"}`}>
-                        <label className="control-label">{translate('task.task_management.end_date')}*</label>
+                        <label className="control-label">{translate('task.task_management.end_date')} <span style={{color: "red"}}>*</span></label>
                         <DatePicker
                             id={`datepicker2-${id}`}
                             value={taskItem.endDate}
@@ -539,7 +539,7 @@ class FormCreateTaskByProcess extends Component {
                         <div className='form-group' >
 
                             {/**Người thực hiện mẫu công việc này */}
-                            <label className="control-label" >{translate('task_template.performer')}</label>
+                            <label className="control-label" >{translate('task_template.performer')} <span style={{color: "red"}}>*</span></label>
                             {unitMembers && taskItem.responsibleEmployees &&
                                 <SelectBox
                                     id={isProcess ? `create-task-responsible-select-box-${taskItem._id}-${id}` : "edit-responsible-select-box"}
@@ -556,7 +556,7 @@ class FormCreateTaskByProcess extends Component {
                         <div className='form-group' >
 
                             {/**Người phê duyệt mẫu công việc này */}
-                            <label className="control-label">{translate('task_template.approver')}</label>
+                            <label className="control-label">{translate('task_template.approver')} <span style={{color: "red"}}>*</span></label>
                             {unitMembers && taskItem.accountableEmployees &&
                                 <SelectBox
                                     id={isProcess ? `create-task-accountable-select-box-${taskItem._id}-${id}` : "edit-accountable-select-box"}

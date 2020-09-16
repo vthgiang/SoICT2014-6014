@@ -10,9 +10,63 @@ const TaskSchema = new Schema({
     codeInProcess: {
         type: String,
     },
+    commentsInProcess:  [{ // Bình luận trong quy trình
+        creator: {
+            type: Schema.Types.ObjectId,
+            ref: 'User',
+            required: true
+        },
+        description: {
+            type: String,
+        },
+        createdAt: {
+            type: Date,
+            default: Date.now
+        },
+        updatedAt: {
+            type: Date,
+            default: Date.now
+        },
+        files: [{ // Các file đi kèm comments
+            name: {
+                type: String,
+            },
+            url: {
+                type: String,
+                required: true
+            }
+        }],
+        comments: [{  // Comments của comment
+            creator: {
+                type: Schema.Types.ObjectId,
+                ref: 'User',
+                required: true
+            },
+            description: {
+                type: String,
+            },
+            createdAt: {
+                type: Date,
+                default: Date.now
+            },
+            updatedAt: {
+                type: Date,
+                default: Date.now
+            },
+            files: [{ // Các file đi kèm comments
+                name: {
+                    type: String,
+                },
+                url: {
+                    type: String,
+                    required: true
+                }
+            }],
+        }],
+    }],
     numberOfDaysTaken: {
         type: Number,
-        default: 0,
+        default: 1,
     },
     followingTasks: [{
         task: {

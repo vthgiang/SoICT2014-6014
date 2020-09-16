@@ -205,6 +205,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
     handleChangeTextInfo = async (e) => {
         let value = e.target.value;
         let name = e.target.name;
+        console.log('name-val', name, value);
         await this.setState(state => {
             state.info[`${name}`] = {
                 value: value,
@@ -234,7 +235,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
     }
 
     handleSetOfValueChange = async (value, code) => {
-        console.log('value', value);
+        console.log('set', value);
 
         this.setState(state => {
             state.info[`${code}`] = {
@@ -966,7 +967,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
 
                 //không có parent trong arr
                 !hasParentItem && listParentTask.unshift({ value: parentTask._id, text: parentTask.name })
-                console.log('arr',arr);
+                console.log('arr', arr);
                 for (let i in arr) {
                     if (arr[i].value === parentTask._id) {
                         listParentTask.unshift({ value: parentTask._id, text: parentTask.name })
@@ -1062,7 +1063,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                                 style={{ width: "100%" }}
                                                 items={statusArr}
                                                 multiple={false}
-                                                value={statusOptions}
+                                                value={statusOptions[0]}
                                                 onChange={this.handleSelectedStatus}
                                             />
                                         }
@@ -1078,7 +1079,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                                 style={{ width: "100%" }}
                                                 items={priorityArr}
                                                 multiple={false}
-                                                value={priorityOptions}
+                                                value={priorityOptions[0]}
                                                 onChange={this.handleSelectedPriority}
                                             />
                                         }

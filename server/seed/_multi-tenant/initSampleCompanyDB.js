@@ -449,21 +449,19 @@ const initSampleCompanyDB = async() => {
                 await updateLink.save();
             }
             // Tạo phân quyền cho components
-            for (let k = 0; k < systemComponents.length; k++) {
-                let roles = await Role(vnistDB).find({
-                    name: {
-                        $in: systemComponents[i].roles.map(role => role.name)
-                    }
-                });
-                let dataPrivileges = roles.map(role => {
-                    return {
-                        resourceId: component._id,
-                        resourceType: 'Component',
-                        roleId: role._id
-                    }
-                });
-                await Privilege(vnistDB).insertMany(dataPrivileges);
-            }
+            let roles = await Role(vnistDB).find({
+                name: {
+                    $in: systemComponents[i].roles.map(role => role.name)
+                }
+            });
+            let dataPrivileges = roles.map(role => {
+                return {
+                    resourceId: component._id,
+                    resourceType: 'Component',
+                    roleId: role._id
+                }
+            });
+            await Privilege(vnistDB).insertMany(dataPrivileges);
         }
 
         return await Component(vnistDB).find();

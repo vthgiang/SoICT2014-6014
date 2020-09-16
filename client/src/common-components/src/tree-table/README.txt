@@ -1,6 +1,6 @@
 Component này dùng để hiện thị table có dạng cây (tree), các dòng có thể thu lại hoặc mở rộng
-Để sử dụng Componett này ta thực hiện các bước sau:
-(Xem ví dụ minh hoạ trong Componett DepartmentManage.jsx trong modules/employees-manager/department-manager/component)
+Để sử dụng Component này ta thực hiện các bước sau:
+(Xem ví dụ minh hoạ trong Component DepartmentManage.jsx trong modules/employees-manager/department-manager/component)
 
 BƯỚC 1: Import component
 ...
@@ -8,7 +8,7 @@ import { TreeTable } from '../../../../common-components';
 
 BƯỚC 2: Sử dụng component
 <TreeTable
-    behaviour="show-children"      // khi render bảng, tự động expand hết các dòng con. Nếu muốn hiệu ứng ngược lại, sử dụng behaviour="hide-children" 
+    behaviour="show-children"      // Khi render bảng, tự động expand hết các dòng con. Nếu muốn hiệu ứng ngược lại, sử dụng behaviour="hide-children" 
     column={column}                // khai báo các cột của bảng, định dạng dữ liệu mô tả trong LƯU Ý 1
     data={data}                    // khai báo dữ liệu hiển thị trong bảng, định dạng dữ liệu mô tả trong LƯU Ý 2
     

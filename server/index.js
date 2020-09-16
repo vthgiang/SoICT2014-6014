@@ -8,7 +8,7 @@ require("dotenv").config();
 require('./connectDatabase');
 require('./global');
 
-if(process.env.MULTI_TENANT) console.log(`Running app Multi-Tenant [${process.env.MULTI_TENANT}]`);
+if (process.env.MULTI_TENANT) console.log(`Running app Multi-Tenant [${process.env.MULTI_TENANT}]`);
 
 // Application Modules
 const schedulerController = require("./modules/scheduler/scheduler.controller");
@@ -34,7 +34,7 @@ app.use("/upload/asset/pictures", express.static("upload/asset/pictures"));
 // Function gọi Api vào thời gian xác định
 schedulerController.chedulesCallApi();
 
-if(process.env.MULTI_TENANT === 'true'){
+if (process.env.MULTI_TENANT === 'true') {
 	const router = express.Router();
 
 	router.use('/auth', require('./modules/_multi-tenant/auth/auth.route'));
@@ -62,30 +62,29 @@ if(process.env.MULTI_TENANT === 'true'){
 
 
 
-    router.use('/user', require('./modules/_multi-tenant/super-admin/user/user.route'));
-    router.use('/role', require('./modules/_multi-tenant/super-admin/role/role.route'));
-    router.use('/component', require("./modules/_multi-tenant/super-admin/component/component.route"));
-    router.use('/link', require("./modules/_multi-tenant/super-admin/link/link.route"));
-    router.use('/organizational-units', require("./modules/_multi-tenant/super-admin/organizational-unit/organizationalUnit.route"));
-    
-    // router.use('/system-admin/company', require("./modules/_multi-tenant/system-admin/company/company.route"));
-    // router.use('/system-admin/system-component', require("./modules/_multi-tenant/system-admin/system-component/systemComponent.route"));
-    // router.use('/system-admin/system-link', require("./modules/_multi-tenant/system-admin/system-link/systemLink.route"));
-    // router.use('/system-admin/root-role', require("./modules/_multi-tenant/system-admin/root-role/rootRole.route"));
-	// router.use('/system-admin/system-setting', require("./modules/_multi-tenant/system-admin/system-setting/systemSetting.route"));
-	
-	// app.use("/task", require("./modules/_multi-tenant/task/task-management/task.route"));
-	// app.use("/performtask", require("./modules/_multi-tenant/task/task-perform/taskPerform.route"));
-	// app.use("/task/task-templates", require("./modules/_multi-tenant/task/task-template/taskTemplate.route"));
-	// app.use("/process", require("./modules/_multi-tenant/task/tasks-process/taskProcess.route"));
+	router.use('/user', require('./modules/_multi-tenant/super-admin/user/user.route'));
+	router.use('/role', require('./modules/_multi-tenant/super-admin/role/role.route'));
+	router.use('/component', require("./modules/_multi-tenant/super-admin/component/component.route"));
+	router.use('/link', require("./modules/_multi-tenant/super-admin/link/link.route"));
+	router.use('/organizational-units', require("./modules/_multi-tenant/super-admin/organizational-unit/organizationalUnit.route"));
+
+	router.use('/system-admin/company', require("./modules/_multi-tenant/system-admin/company/company.route"));
+	router.use('/system-admin/system-component', require("./modules/_multi-tenant/system-admin/system-component/systemComponent.route"));
+	router.use('/system-admin/system-link', require("./modules/_multi-tenant/system-admin/system-link/systemLink.route"));
+	router.use('/system-admin/root-role', require("./modules/_multi-tenant/system-admin/root-role/rootRole.route"));
+	router.use('/system-admin/system-setting', require("./modules/_multi-tenant/system-admin/system-setting/systemSetting.route"));
+
+	app.use("/task", require("./modules/_multi-tenant/task/task-management/task.route"));
+	app.use("/performtask", require("./modules/_multi-tenant/task/task-perform/taskPerform.route"));
+	app.use("/task/task-templates", require("./modules/_multi-tenant/task/task-template/taskTemplate.route"));
+	app.use("/process", require("./modules/_multi-tenant/task/tasks-process/taskProcess.route"));
 	app.use("/educationProgram", require("./modules/_multi-tenant/trainning/education-program/educationProgram.route"));
 	app.use("/course", require("./modules/_multi-tenant/trainning/course/course.route"));
 
-	// //asset
-	// app.use("/assettype", require("./modules/_multi-tenant/asset/asset-type/asset-type.route"));
-	// app.use("/asset", require("./modules/_multi-tenant/asset/asset-management/asset.route"));
-	// app.use("/purchase-request", require("./modules/_multi-tenant/asset/purchase-request/purchase-request.route"));
-	// app.use("/use-request", require("./modules/_multi-tenant/asset/use-request/use-request.route"));
+	app.use("/assettype", require("./modules/_multi-tenant/asset/asset-type/asset-type.route"));
+	app.use("/asset", require("./modules/_multi-tenant/asset/asset-management/asset.route"));
+	app.use("/purchase-request", require("./modules/_multi-tenant/asset/purchase-request/purchase-request.route"));
+	app.use("/use-request", require("./modules/_multi-tenant/asset/use-request/use-request.route"));
 
 	// // Task report
 	// app.use("/taskreports", require("./modules/_multi-tenant/report/task-report/taskReport.route"));
@@ -101,7 +100,7 @@ if(process.env.MULTI_TENANT === 'true'){
 
 	// // example
 	// app.use("/examples", require("./modules/_multi-tenant/example/example.route"));
-
+	 app.use("/documents", require("./modules/_multi-tenant/document/document.route"));
 	// // Customer Management
 	// const crm = express.Router();
 	// crm.use(require("./modules/_multi-tenant/crm/customer/customer.route"));
@@ -112,7 +111,7 @@ if(process.env.MULTI_TENANT === 'true'){
 	// app.use("/crm", crm);
 
 	app.use(router);
-}else{
+} else {
 	app.use("/auth", require("./modules/auth/auth.route"));
 
 	app.use("/documents", require("./modules/document/document.route"));

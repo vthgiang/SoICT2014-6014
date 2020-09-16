@@ -219,48 +219,47 @@ class TaskOrganizationUnitDashboard extends Component {
             <React.Fragment>
                 { currentOrganizationalUnit
                     ? <React.Fragment>
-                        <div className="row">
-                            <div className="qlcv" style={{ textAlign: "right", marginBottom: 15, marginRight: 10 }}>
-                                <div className="form-inline">
-                                    <div className="form-group">
-                                        <label style={{ width: "auto" }} className="form-control-static">{translate('kpi.evaluation.dashboard.organizational_unit')}</label>
-                                        {childrenOrganizationalUnit.length &&
-                                            <SelectMulti id="multiSelectOrganizationalUnitInTaskUnit"
-                                                items={childrenOrganizationalUnit.map(item => { return { value: item.id, text: item.name } })}
-                                                options={{ nonSelectedText: childrenOrganizationalUnit[0].name, allSelectedText: translate('kpi.evaluation.dashboard.all_unit') }}
-                                                onChange={this.handleChangeOrganizationUnit}
-                                                value={idsUnit}
-                                            >
-                                            </SelectMulti>
-                                        }
-                                    </div>
-                                    <div className="form-group">
-                                        <label style={{ width: "auto" }}>{translate('task.task_management.from')}</label>
-                                        <DatePicker
-                                            id="monthStartInOrganizationUnitDashboard"
-                                            dateFormat="month-year"
-                                            value={defaultStartMonth}
-                                            onChange={this.handleSelectMonthStart}
-                                            disabled={false}
-                                        />
-                                    </div>
-                                    <div className="form-group">
-                                        <label style={{ width: "auto" }}>{translate('task.task_management.to')}</label>
-                                        <DatePicker
-                                            id="monthEndInOrganizationUnitDashboard"
-                                            dateFormat="month-year"
-                                            value={defaultEndMonth}
-                                            onChange={this.handleSelectMonthEnd}
-                                            disabled={false}
-                                        />
-                                    </div>
-                                    <div className="form-group">
-                                        <button className="btn btn-success" onClick={this.handleSearchData}>{translate('task.task_management.search')}</button>
-                                    </div>
-
+                        <div className="qlcv" style={{ textAlign: "right" }}>
+                            <div className="form-inline">
+                                <div className="form-group">
+                                    <label style={{ width: "auto" }} className="form-control-static">{translate('kpi.evaluation.dashboard.organizational_unit')}</label>
+                                    {childrenOrganizationalUnit.length &&
+                                        <SelectMulti id="multiSelectOrganizationalUnitInTaskUnit"
+                                            items={childrenOrganizationalUnit.map(item => { return { value: item.id, text: item.name } })}
+                                            options={{ nonSelectedText: childrenOrganizationalUnit[0].name, allSelectedText: translate('kpi.evaluation.dashboard.all_unit') }}
+                                            onChange={this.handleChangeOrganizationUnit}
+                                            value={idsUnit}
+                                        >
+                                        </SelectMulti>
+                                    }
                                 </div>
+                                <div className="form-group">
+                                    <label style={{ width: "auto" }}>{translate('task.task_management.from')}</label>
+                                    <DatePicker
+                                        id="monthStartInOrganizationUnitDashboard"
+                                        dateFormat="month-year"
+                                        value={defaultStartMonth}
+                                        onChange={this.handleSelectMonthStart}
+                                        disabled={false}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label style={{ width: "auto" }}>{translate('task.task_management.to')}</label>
+                                    <DatePicker
+                                        id="monthEndInOrganizationUnitDashboard"
+                                        dateFormat="month-year"
+                                        value={defaultEndMonth}
+                                        onChange={this.handleSelectMonthEnd}
+                                        disabled={false}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <button className="btn btn-success" onClick={this.handleSearchData}>{translate('task.task_management.search')}</button>
+                                </div>
+
                             </div>
                         </div>
+                        
                         <div className="row">
                             <div className="col-xs-12">
                                 <div className="box box-primary">

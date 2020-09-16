@@ -113,11 +113,11 @@ class ViewProcess extends Component {
                 defaultUnit = user.organizationalUnitsOfUser[0]
             }
             this.props.getChildrenOfOrganizationalUnits(defaultUnit && defaultUnit._id);
-            var modeler = this.modeler
-            this.modeler.importXML(nextProps.data.xmlDiagram, function (err) {
-                let canvas = modeler.get('canvas');
-                canvas.zoom('fit-viewport');
-            });
+            // var modeler = this.modeler
+            // this.modeler.importXML(nextProps.data.xmlDiagram, function (err) {
+            //     let canvas = modeler.get('canvas');
+            //     canvas.zoom('fit-viewport');
+            // });
             return true;
         }
         if (nextProps.data) {

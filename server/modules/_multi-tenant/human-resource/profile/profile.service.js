@@ -1389,7 +1389,7 @@ exports.checkImportData = async (portal, company, data) => {
  * @param {*} data : Dữ liệu kinh nghiệm làm việc cần import
  */
 exports.importExperience = async (portal, company, data) => {
-    let result = await this.checkImportData(company, data);
+    let result = await this.checkImportData(portal, company, data);
     data = result.data;
     let rowError = result.rowError;
 
@@ -1437,7 +1437,7 @@ exports.importExperience = async (portal, company, data) => {
  * @param {*} data : Dữ liệu thông tin bằng cấp cần import
  */
 exports.importDegree = async (portal, company, data) => {
-    let result = await this.checkImportData(company, data);
+    let result = await this.checkImportData(portal, company, data);
     data = result.data;
     let rowError = result.rowError;
 
@@ -1484,7 +1484,7 @@ exports.importDegree = async (portal, company, data) => {
  * @param {*} data : Dữ liệu thông tin chứng chỉ cần import
  */
 exports.importCertificate = async (portal, company, data) => {
-    let result = await this.checkImportData(company, data);
+    let result = await this.checkImportData(portal, company, data);
     data = result.data;
     let rowError = result.rowError;
 
@@ -1530,7 +1530,7 @@ exports.importCertificate = async (portal, company, data) => {
  * @param {*} data : Dữ liệu hợp đồng lao động cần import
  */
 exports.importContract = async (portal, company, data) => {
-    let result = await this.checkImportData(company, data);
+    let result = await this.checkImportData(portal, company, data);
     data = result.data;
     let rowError = result.rowError;
 
@@ -1593,7 +1593,7 @@ exports.importContract = async (portal, company, data) => {
  * @param {*} data : Dữ liệu quá trình đóng bảo hiểm xã hội cần import
  */
 exports.importSocialInsuranceDetails = async (portal, company, data) => {
-    let result = await this.checkImportData(company, data);
+    let result = await this.checkImportData(portal, company, data);
     data = result.data;
     let rowError = result.rowError;
 
@@ -1642,7 +1642,7 @@ exports.importSocialInsuranceDetails = async (portal, company, data) => {
  * @param {*} data : Dữ liệu tài liệu đính kèm cần import
  */
 exports.importFile = async (portal, company, data) => {
-    let result = await this.checkImportData(company, data);
+    let result = await this.checkImportData(portal, company, data);
     data = result.data;
     let rowError = result.rowError;
 

@@ -16,20 +16,22 @@ class CreateForm extends Component {
     handleName = (e) => {
         const value = e.target.value;
         this.setState({
-            documentName: value
+            domainName: value
         })
     }
 
     handleDescription = (e) => {
         const value = e.target.value;
         this.setState({
-            documentDescription: value
+            domainDesription: value
         })
     }
 
     handleParent = (value) => {
+        console.log("domain parent: ", value[0])
         this.setState({ domainParent: value[0] });
-    };
+    }; 
+
     validateName = (value, willUpdateState)=>{
         let msg = undefined;
         const {translate} = this.props;
@@ -40,7 +42,7 @@ class CreateForm extends Component {
             this.setState(state=>{
                 return{
                     ...state,
-                    documentName: value,
+                    domainName: value,
                     errorName: msg,
                 }
             })
@@ -53,15 +55,16 @@ class CreateForm extends Component {
     }
     
     isValidateForm = ()=>{
-        return this.validateName(this.state.documentName, false);
+        return this.validateName(this.state.domainName, false);
     }
 
     save = () => {
-        const {documentName, documentDescription, domainParent} = this.state;
+        const {domainName, domainDesription, domainParent} = this.state;
+        console.log("domains", domainName, domainDesription, domainParent)
         this.props.createDocumentDomain({
-            name: documentName,
-            description: documentDescription,
-            parent: domainParent ? domainParent : ""
+            name: domainName,
+            description: domainDesription,
+            parent: domainParent
         });
     }
 
