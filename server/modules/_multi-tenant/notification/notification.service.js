@@ -175,9 +175,12 @@ exports.getAllNotifications = async (portal, user) => {
  * Phân trang danh sách các thông báo của người dùng nhận được
  */
 exports.paginateNotifications = async (portal, user, data) => {
-    var info = Object.assign({
-        user
-    }, data.content);
+    if (typeof data.readed === "boolean") {
+        var info = Object.assign({user}, data.content, {readed: false});
+    }
+    else {
+        var info = Object.assign({user}, data.content);
+    }
 
     return await Notification
         .paginate(info, {
@@ -192,11 +195,21 @@ exports.paginateNotifications = async (portal, user, data) => {
 /**
  * Đánh dấu thông báo nhận đã được đọc
  */
-exports.changeNotificationStateToReaded = async (portal, notificationId) => {
-    const notification = await Notification(connect(DB_CONNECTION, portal)).findById(notificationId);
-    notification.readed = true;
-    await notification.save();
-
+exports.changeNotificationStateToReaded = async (portal, user, id, readAll) => {
+    let notification;
+    if (!readAll) {
+        notification = await Notification(connect(DB_CONNECTION, portal)).findById(id);
+        notification.readed = true;
+        await notification.save();
+    } else {
+        notification = await Notification(connect(DB_CONNECTION, portal)).find({ readed: false, user: user});
+        let listId = notification.map(x => x._id);
+        for (let i in notification){
+            notification[i].readed = true;
+        }
+        await Notification(connect(DB_CONNECTION, portal)).updateMany({ _id: listId }, { $set: { readed: true } });
+    }
+    console.log(notification);
     return notification;
 }
 
