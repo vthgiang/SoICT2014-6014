@@ -3,7 +3,7 @@ const router = express.Router();
 const {
     auth,
     uploadFile
-} = require('../../../middleware');
+} = require(`${SERVER_MIDDLEWARE_DIR}/_multi-tenant`);
 const AssetController = require("./asset.controller");
 const data = [{
     name: 'fileAvatar',

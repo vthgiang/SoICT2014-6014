@@ -5,8 +5,8 @@ import { DialogModal } from '../../../../common-components';
 import { TaskReportActions } from '../redux/actions';
 import { taskManagementActions } from '../../../task/task-management/redux/actions';
 import { chartFunction } from './chart';
-import { LineBarChart } from './lineBarChart';
-import { PieChart } from './pieChart';
+import { LineBarChartDetailForm } from './lineBarChartDetailForm';
+import { PieChartDetailForm } from './pieChartDetailForm';
 
 class TaskReportDetailForm extends Component {
     constructor(props) {
@@ -16,6 +16,7 @@ class TaskReportDetailForm extends Component {
             dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
         }
     }
+
     static getDerivedStateFromProps(props, state) {
         if (props.taskReportId !== state.taskReportId) {
             props.getTaskReportById(props.taskReportId);
@@ -31,7 +32,6 @@ class TaskReportDetailForm extends Component {
 
     shouldComponentUpdate = (nextProps, nextState) => {
         if (this.state.dataStatus === this.DATA_STATUS.QUERYING && !nextProps.reports.isLoading) {
-            // await this.props.getTaskReportById(nextProps.taskReportId);
             this.setState({
                 dataStatus: this.DATA_STATUS.AVAILABLE,
             })
@@ -50,8 +50,9 @@ class TaskReportDetailForm extends Component {
     }
 
 
-    handleView = () => {
+    handleViewChart = async () => {
         let { listTaskReport } = this.state;
+        let { taskReportId } = this.props;
         if (listTaskReport) {
             let newData = {
                 organizationalUnit: listTaskReport.organizationalUnit._id,
@@ -68,26 +69,26 @@ class TaskReportDetailForm extends Component {
                 itemListBoxRight: listTaskReport.dataForAxisXInChart,
             }
 
-            this.props.getTaskEvaluations(newData);
+            await this.props.getTaskEvaluations(newData);
             this.setState({
-                chartStatus: true,
+                idLineBarChart: `detail-lineBarChart-${taskReportId}`,
+                idPieChart: `detail-pieChart-${taskReportId}`,
             })
         }
     }
 
     handleClose = () => {
         this.setState({
-            chartStatus: false,
         })
     }
 
     render() {
         const { reports, tasks } = this.props;
-        const { chartStatus } = this.state;
-
+        const { idLineBarChart, idPieChart, taskReportId } = this.state;
         let listTaskReportById = reports.listTaskReportById;
         let listTaskEvaluations = tasks.listTaskEvaluations;
         let frequency, newlistTaskEvaluations, dataForAxisXInChart = [];
+
         const mystyle = {
             display: "flex",
         };
@@ -95,7 +96,7 @@ class TaskReportDetailForm extends Component {
             marginRight: '10px'
         };
 
-        if (listTaskEvaluations && listTaskEvaluations.length > 0 && chartStatus) {
+        if (listTaskEvaluations && listTaskEvaluations.length > 0) {
             // Lấy tần suất, vì tần suất là chung cho các công việc nên chỉ cần lấy công việc đầu tiên
             let taskEvaluation = listTaskEvaluations[0];
             frequency = taskEvaluation.frequency;
@@ -126,7 +127,7 @@ class TaskReportDetailForm extends Component {
 
 
         let output, pieChartData = [], barLineChartData = [], pieDataConvert, barAndLineDataChartConvert;
-        if (newlistTaskEvaluations && newlistTaskEvaluations.length > 0 && chartStatus) {
+        if (newlistTaskEvaluations && newlistTaskEvaluations.length > 0) {
             /**
               * Convert data, gom nhóm, tính tổng và tính trung bình cộng các trường thông tin.
               *  Nếu chọn trục hoành là thời gian dataForAxisXInChart = 1
@@ -451,20 +452,32 @@ class TaskReportDetailForm extends Component {
                 hasNote={false}
             >
                 {
-                    chartStatus && barAndLineDataChartConvert && <LineBarChart barLineChartData={barAndLineDataChartConvert} dataForAxisXInChart={dataForAxisXInChart} />
+                    idLineBarChart && idLineBarChart === `detail-lineBarChart-${taskReportId}` && barAndLineDataChartConvert && <LineBarChartDetailForm id={idLineBarChart} barLineChartData={barAndLineDataChartConvert} dataForAxisXInChart={dataForAxisXInChart} />
                 }
 
                 {/* Biểu đồ tròn  */}
                 <div className="row">
                     {
-                        chartStatus && pieDataConvert && pieDataConvert.map((item, index) => (
-                            Object.entries(item).map(([code, data]) => (
-                                <div key={index} className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                                    <div className="pieChart">
-                                        <PieChart pieChartData={data} namePieChart={code} dataForAxisXInChart={dataForAxisXInChart} />
-                                    </div>
-                                </div>
-                            ))
+                        idPieChart && idPieChart === `detail-pieChart-${taskReportId}` && pieDataConvert && pieDataConvert.map((item, index) => (
+                            Object.entries(item).map(([code, data]) => {
+                                if (data.length > 9) {
+                                    return (
+                                        <div key={index} className="col-xs-12 col-sm-12 col-md-12 col-ld-12">
+                                            <div className="pieChart">
+                                                <PieChartDetailForm id={`${idPieChart}-${index}`} pieChartData={data} namePieChart={code} dataForAxisXInChart={dataForAxisXInChart} />
+                                            </div>
+                                        </div>
+                                    )
+                                } else {
+                                    return (
+                                        <div key={index} className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                            <div className="pieChart">
+                                                <PieChartDetailForm id={`${idPieChart}-${index}`} pieChartData={data} namePieChart={code} dataForAxisXInChart={dataForAxisXInChart} />
+                                            </div>
+                                        </div>
+                                    )
+                                }
+                            })
                         ))
                     }
                 </div>
@@ -473,12 +486,7 @@ class TaskReportDetailForm extends Component {
                 <div className="row">
                     <div className="col-md-12 col-lg-12" style={{ display: 'flex', justifyContent: 'flex-end' }}>
                         <div className="form-inline d-flex justify-content-end">
-                            {
-                                !chartStatus ?
-                                    <button id="exportButton" className="btn btn-sm btn-success " title="Xem chi tiết" style={{ marginBottom: '6px' }} onClick={() => this.handleView()} ><span className="fa fa-fw fa-line-chart" style={{ color: 'rgb(66 65 64)', fontSize: '15px', marginRight: '5px' }}></span>Xem</button>
-                                    :
-                                    <button id="exportButton" className="btn btn-sm btn-success " title="Xem chi tiết" style={{ marginBottom: '6px' }} onClick={() => this.handleClose()} >Ẩn biểu đồ</button>
-                            }
+                            <button id="exportButton" className="btn btn-sm btn-success " title="Xem biểu đồ" style={{ marginBottom: '6px' }} onClick={() => this.handleViewChart()} ><span className="fa fa-fw fa-line-chart" style={{ color: 'rgb(66 65 64)', fontSize: '15px', marginRight: '5px' }}></span></button>
                         </div>
                     </div>
                 </div>

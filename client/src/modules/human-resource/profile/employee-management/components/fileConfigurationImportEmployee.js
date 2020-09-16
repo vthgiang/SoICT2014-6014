@@ -881,7 +881,7 @@ function templateImport(translate) {
                                 fullName: "Nguyễn Văn An",
                                 name: "Ảnh",
                                 number: "1",
-                                status: translate(`human_resource.submitted`),
+                                status: translate(`human_resource.profile.submitted`),
                             },{
                                 STT: 2,
                                 description: "Ảnh 3x4",
@@ -889,7 +889,7 @@ function templateImport(translate) {
                                 fullName: "Trần Văn Bình",
                                 name: "Ảnh",
                                 number: "1",
-                                status: translate(`human_resource.submitted`),
+                                status: translate(`human_resource.profile.submitted`),
                             }]
                         }
                     ]
@@ -931,140 +931,140 @@ function templateImport(translate) {
                         }
                     ]
                 },
-                {
-                    // 9.HS Nhân viên - Kỷ luật
-                    sheetName: translate(`human_resource.profile.employee_management.export.sheet9`),
-                    tables: [
-                        {
-                            columns: [
-                                { key: "STT", value: translate(`human_resource.stt`), width: 7 },
-                                { key: "employeeNumber", value: translate(`human_resource.profile.staff_number`) },
-                                { key: "fullName", value: translate(`human_resource.profile.full_name`), width: 20 },
-                                { key: "decisionNumber", value: translate('human_resource.commendation_discipline.commendation.table.decision_number') },
-                                { key: "decisionUnit", value: translate('human_resource.commendation_discipline.commendation.table.decision_unit'), width: 25 },
-                                { key: "startDate", value: translate('human_resource.commendation_discipline.discipline.table.start_date') },
-                                { key: "endDate", value: translate('human_resource.commendation_discipline.discipline.table.end_date') },
-                                { key: "type", value: translate('human_resource.commendation_discipline.discipline.table.discipline_forms') },
-                                { key: "reason", value: translate('human_resource.commendation_discipline.discipline.table.reason_discipline'), width: 35 },
-                            ],
-                            data: [{
-                                STT: 1,
-                                decisionNumber: "1456",
-                                decisionUnit: "Phòng kinh doanh",
-                                employeeNumber: "MS2015123",
-                                endDate: "09-02-2020",
-                                fullName: "Nguyễn Văn An",
-                                reason: "Không làm đủ công",
-                                startDate: "07-02-2020",
-                                type: "Phạt tiền",
-                            },{
-                                STT: 2,
-                                decisionNumber: "1457",
-                                decisionUnit: "Phòng kinh doanh",
-                                employeeNumber: "MS2015123",
-                                endDate: "09-02-2020",
-                                fullName: "Nguyễn Văn An",
-                                reason: "Không đủ doanh số",
-                                startDate: "07-02-2020",
-                                type: "Phạt tiền"
-                            }]
-                        }
-                    ]
-                },
-                {
-                    // 10.HS Nhân viên - Lương thưởng
-                    sheetName: translate(`human_resource.profile.employee_management.export.sheet10`),
-                    tables: [{
-                        rowHeader: 2,
-                        merges: [{
-                            key: "other",
-                            columnName: translate('human_resource.salary.other_salary'),
-                            keyMerge: 'bonus0',
-                            colspan: 2
-                        }],
-                        columns: [
-                            { key: "STT", value: translate('human_resource.stt'), width: 7 },
-                            { key: "month", value: translate('human_resource.month'), width: 10 },
-                            { key: "year", value: translate('human_resource.holiday.year'), width: 10 },
-                            { key: "employeeNumber", value: translate('human_resource.staff_number') },
-                            { key: "fullName", value: translate('human_resource.staff_name'), width: 20 },
-                            { key: "organizationalUnit", value: translate('human_resource.unit'), width: 25 },
-                            { key: "gender", value: translate('human_resource.profile.gender') },
-                            { key: "birthdate", value: translate('human_resource.profile.date_birth') },
-                            { key: "status", value: translate('human_resource.profile.status_work') },
-                            { key: "mainSalary", value: translate('human_resource.salary.table.main_salary'), },
-                            { key: 'bonus0',value: 'Thưởng đầu hộp SanFoVet'},
-                            { key: 'bonus1',value: 'Thưởng đầu hộp ViaVet'},
-                            { key: "total", value: translate('human_resource.salary.table.total_salary'), },
-                        ],
-                        data: [{
-                            STT: 1,
-                            employeeNumber: 'MS1256398',
-                            fullName: "Nguyễn Văn A",
-                            mainSalary: 15000000,
-                            birthdate: new Date("1995-12-10"),
-                            status: translate('human_resource.profile.active'),
-                            gender: translate('human_resource.profile.male'),
-                            organizationalUnit: 'Ban giám đốc',
-                            total: 30000000,
-                            month: 5,
-                            year: 2020,
-                            bonus0: 10000000,
-                            bonus1: 5000000
-                        }, {
-                            STT: 2,
-                            employeeNumber: 'MS1256596',
-                            fullName: "Nguyễn Thị C",
-                            mainSalary: 15000000,
-                            birthdate: new Date("1989-5-25"),
-                            status: translate('human_resource.profile.active'),
-                            gender: translate('human_resource.profile.male'),
-                            organizationalUnit: 'Phòng kinh doanh',
-                            total: 30000000,
-                            month: 5,
-                            year: 2020,
-                            bonus0: 10000000,
-                            bonus1: 5000000
-                        }]
-                    }, ]
-                },
-                {
-                    // 11.HS Nhân viên - Nghỉ phép
-                    sheetName: translate(`human_resource.profile.employee_management.export.sheet11`),
-                    tables: [
-                        {
-                            columns: [
-                                { key: "STT", value: translate(`human_resource.stt`), width: 7 },
-                                { key: "employeeNumber", value: translate(`human_resource.profile.staff_number`) },
-                                { key: "fullName", value: translate(`human_resource.profile.full_name`), width: 20 },
-                                { key: "organizationalUnit", value: translate('human_resource.unit'), width: 25 },
-                                { key: "startDate", value: translate('human_resource.annual_leave.table.start_date') },
-                                { key: "endDate", value: translate('human_resource.annual_leave.table.end_date') },
-                                { key: "reason", value: translate('human_resource.annual_leave.table.reason'), width: 35 },
-                                { key: "status", value: translate('human_resource.status'), width: 25 },
-                            ],
-                            data: [{
-                                STT: 1,
-                                employeeNumber: "MS2015123",
-                                endDate: "08-02-2020",
-                                fullName: "Nguyễn Văn An",
-                                organizationalUnit: "Ban giám đốc",
-                                reason: "Về quê",
-                                startDate: "06-02-2020",
-                                status: translate(`human_resource.annual_leave.status.pass`)
-                            },{
-                                STT: 2,
-                                employeeNumber: "MS2015123",
-                                endDate: "10-02-2020",
-                                fullName: "Nguyễn Văn An",
-                                organizationalUnit: "Ban giám đốc",
-                                reason: "Nghỉ du lịch",
-                                startDate: "05-02-2020",
-                                status: translate(`human_resource.annual_leave.status.process`)
-                            }]
-                        }
-                    ]
-                },
+                // {
+                //     // 9.HS Nhân viên - Kỷ luật
+                //     sheetName: translate(`human_resource.profile.employee_management.export.sheet9`),
+                //     tables: [
+                //         {
+                //             columns: [
+                //                 { key: "STT", value: translate(`human_resource.stt`), width: 7 },
+                //                 { key: "employeeNumber", value: translate(`human_resource.profile.staff_number`) },
+                //                 { key: "fullName", value: translate(`human_resource.profile.full_name`), width: 20 },
+                //                 { key: "decisionNumber", value: translate('human_resource.commendation_discipline.commendation.table.decision_number') },
+                //                 { key: "decisionUnit", value: translate('human_resource.commendation_discipline.commendation.table.decision_unit'), width: 25 },
+                //                 { key: "startDate", value: translate('human_resource.commendation_discipline.discipline.table.start_date') },
+                //                 { key: "endDate", value: translate('human_resource.commendation_discipline.discipline.table.end_date') },
+                //                 { key: "type", value: translate('human_resource.commendation_discipline.discipline.table.discipline_forms') },
+                //                 { key: "reason", value: translate('human_resource.commendation_discipline.discipline.table.reason_discipline'), width: 35 },
+                //             ],
+                //             data: [{
+                //                 STT: 1,
+                //                 decisionNumber: "1456",
+                //                 decisionUnit: "Phòng kinh doanh",
+                //                 employeeNumber: "MS2015123",
+                //                 endDate: "09-02-2020",
+                //                 fullName: "Nguyễn Văn An",
+                //                 reason: "Không làm đủ công",
+                //                 startDate: "07-02-2020",
+                //                 type: "Phạt tiền",
+                //             },{
+                //                 STT: 2,
+                //                 decisionNumber: "1457",
+                //                 decisionUnit: "Phòng kinh doanh",
+                //                 employeeNumber: "MS2015123",
+                //                 endDate: "09-02-2020",
+                //                 fullName: "Nguyễn Văn An",
+                //                 reason: "Không đủ doanh số",
+                //                 startDate: "07-02-2020",
+                //                 type: "Phạt tiền"
+                //             }]
+                //         }
+                //     ]
+                // },
+                // {
+                //     // 10.HS Nhân viên - Lương thưởng
+                //     sheetName: translate(`human_resource.profile.employee_management.export.sheet10`),
+                //     tables: [{
+                //         rowHeader: 2,
+                //         merges: [{
+                //             key: "other",
+                //             columnName: translate('human_resource.salary.other_salary'),
+                //             keyMerge: 'bonus0',
+                //             colspan: 2
+                //         }],
+                //         columns: [
+                //             { key: "STT", value: translate('human_resource.stt'), width: 7 },
+                //             { key: "month", value: translate('human_resource.month'), width: 10 },
+                //             { key: "year", value: translate('human_resource.holiday.year'), width: 10 },
+                //             { key: "employeeNumber", value: translate('human_resource.staff_number') },
+                //             { key: "fullName", value: translate('human_resource.staff_name'), width: 20 },
+                //             { key: "organizationalUnit", value: translate('human_resource.unit'), width: 25 },
+                //             { key: "gender", value: translate('human_resource.profile.gender') },
+                //             { key: "birthdate", value: translate('human_resource.profile.date_birth') },
+                //             { key: "status", value: translate('human_resource.profile.status_work') },
+                //             { key: "mainSalary", value: translate('human_resource.salary.table.main_salary'), },
+                //             { key: 'bonus0',value: 'Thưởng đầu hộp SanFoVet'},
+                //             { key: 'bonus1',value: 'Thưởng đầu hộp ViaVet'},
+                //             { key: "total", value: translate('human_resource.salary.table.total_salary'), },
+                //         ],
+                //         data: [{
+                //             STT: 1,
+                //             employeeNumber: 'MS1256398',
+                //             fullName: "Nguyễn Văn A",
+                //             mainSalary: 15000000,
+                //             birthdate: new Date("1995-12-10"),
+                //             status: translate('human_resource.profile.active'),
+                //             gender: translate('human_resource.profile.male'),
+                //             organizationalUnit: 'Ban giám đốc',
+                //             total: 30000000,
+                //             month: 5,
+                //             year: 2020,
+                //             bonus0: 10000000,
+                //             bonus1: 5000000
+                //         }, {
+                //             STT: 2,
+                //             employeeNumber: 'MS1256596',
+                //             fullName: "Nguyễn Thị C",
+                //             mainSalary: 15000000,
+                //             birthdate: new Date("1989-5-25"),
+                //             status: translate('human_resource.profile.active'),
+                //             gender: translate('human_resource.profile.male'),
+                //             organizationalUnit: 'Phòng kinh doanh',
+                //             total: 30000000,
+                //             month: 5,
+                //             year: 2020,
+                //             bonus0: 10000000,
+                //             bonus1: 5000000
+                //         }]
+                //     }, ]
+                // },
+                // {
+                //     // 11.HS Nhân viên - Nghỉ phép
+                //     sheetName: translate(`human_resource.profile.employee_management.export.sheet11`),
+                //     tables: [
+                //         {
+                //             columns: [
+                //                 { key: "STT", value: translate(`human_resource.stt`), width: 7 },
+                //                 { key: "employeeNumber", value: translate(`human_resource.profile.staff_number`) },
+                //                 { key: "fullName", value: translate(`human_resource.profile.full_name`), width: 20 },
+                //                 { key: "organizationalUnit", value: translate('human_resource.unit'), width: 25 },
+                //                 { key: "startDate", value: translate('human_resource.annual_leave.table.start_date') },
+                //                 { key: "endDate", value: translate('human_resource.annual_leave.table.end_date') },
+                //                 { key: "reason", value: translate('human_resource.annual_leave.table.reason'), width: 35 },
+                //                 { key: "status", value: translate('human_resource.status'), width: 25 },
+                //             ],
+                //             data: [{
+                //                 STT: 1,
+                //                 employeeNumber: "MS2015123",
+                //                 endDate: "08-02-2020",
+                //                 fullName: "Nguyễn Văn An",
+                //                 organizationalUnit: "Ban giám đốc",
+                //                 reason: "Về quê",
+                //                 startDate: "06-02-2020",
+                //                 status: translate(`human_resource.annual_leave.status.pass`)
+                //             },{
+                //                 STT: 2,
+                //                 employeeNumber: "MS2015123",
+                //                 endDate: "10-02-2020",
+                //                 fullName: "Nguyễn Văn An",
+                //                 organizationalUnit: "Ban giám đốc",
+                //                 reason: "Nghỉ du lịch",
+                //                 startDate: "05-02-2020",
+                //                 status: translate(`human_resource.annual_leave.status.process`)
+                //             }]
+                //         }
+                //     ]
+                // },
             ]
     };
 
