@@ -146,7 +146,7 @@ class AddTaskTemplate extends Component {
 
         if (willUpdateState) {
             this.state.newTemplate.formula = value;
-            this.state.newTemplate.errorOnFormula = msg;
+            // this.state.newTemplate.errorOnFormula = msg;
             this.setState(state => {
                 return {
                     ...state,
@@ -167,7 +167,7 @@ class AddTaskTemplate extends Component {
 
         if (willUpdateState) {
             this.state.newTemplate.numberOfDaysTaken = value;
-            this.state.newTemplate.errorOnNumberOfDaysTaken = msg;
+            // this.state.newTemplate.errorOnNumberOfDaysTaken = msg;
             this.setState(state => {
                 return {
                     ...state,
@@ -453,7 +453,7 @@ class AddTaskTemplate extends Component {
 
                         {/**Đơn vị(phòng ban) của Task template*/}
                         <div className={`form-group ${this.state.newTemplate.errorOnUnit === undefined ? "" : "has-error"}`} style={{ marginLeft: 0, marginRight: 0 }}>
-                            <label className="control-label">{translate('task_template.unit')}*:</label>
+                            <label className="control-label">{translate('task_template.unit')} <span style={{color: "red"}}> <span style={{color: "red"}}>*</span></span></label>
                             {usersInUnitsOfCompany !== undefined && newTemplate.organizationalUnit !== "" &&
                                 <SelectBox
                                     id={`unit-select-box`}
@@ -478,7 +478,7 @@ class AddTaskTemplate extends Component {
                     {!isProcess &&
                         <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
                             <div className={`form-group ${this.state.newTemplate.errorOnRead === undefined ? "" : "has-error"}`} >
-                                <label className="control-label">{translate('task_template.permission_view')}*</label>
+                                <label className="control-label">{translate('task_template.permission_view')} <span style={{color: "red"}}>*</span></label>
                                 {listRoles &&
                                     <SelectBox
                                         id={`read-select-box`}
@@ -506,7 +506,7 @@ class AddTaskTemplate extends Component {
                     {/**Tên mẫu công việc */}
                     <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
                         <div className={`form-group ${this.state.newTemplate.errorOnName === undefined ? "" : "has-error"}`} >
-                            <label className="control-label">{translate('task_template.name')}*</label>
+                            <label className="control-label">{translate('task_template.name')} <span style={{color: "red"}}>*</span></label>
                             <input type="Name" className="form-control" placeholder={translate('task_template.name')} value={newTemplate.name} onChange={this.handleTaskTemplateName} />
                             <ErrorLabel content={this.state.newTemplate.errorOnName} />
                         </div>
@@ -523,7 +523,7 @@ class AddTaskTemplate extends Component {
                     {/**Mô tả mẫu công việc */}
                     <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
                         <div className={`form-group ${this.state.newTemplate.errorOnDescription === undefined ? "" : "has-error"}`} >
-                            <label className="control-label" htmlFor="inputDescriptionTaskTemplate" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.description')}*</label>
+                            <label className="control-label" htmlFor="inputDescriptionTaskTemplate" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.description')} <span style={{color: "red"}}>*</span></label>
                             <textarea rows={5} type="Description" className="form-control" id="inputDescriptionTaskTemplate" name="description" placeholder={translate('task_template.description')} value={newTemplate.description} onChange={this.handleTaskTemplateDesc} />
                             <ErrorLabel content={this.state.newTemplate.errorOnDescription} />
                         </div>
@@ -610,7 +610,7 @@ class AddTaskTemplate extends Component {
                                 <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
                                     {/**Số ngày hoàn thành công việc dự kiến */}
                                     <div className={`form-group ${this.state.newTemplate.errorOnNumberOfDaysTaken === undefined ? "" : "has-error"}`} >
-                                        <label className="control-label" htmlFor="inputNumberOfDaysTaken">{translate('task_template.numberOfDaysTaken')}*</label>
+                                        <label className="control-label" htmlFor="inputNumberOfDaysTaken">{translate('task_template.numberOfDaysTaken')}</label>
                                         <input type="number" className="form-control" id="inputNumberOfDaysTaken" value={newTemplate.numberOfDaysTaken}
                                             placeholder={'Nhập số ngày hoàn thành dự kiến'}
                                             onChange={this.handleTaskTemplateNumberOfDaysTaken} />
@@ -621,7 +621,7 @@ class AddTaskTemplate extends Component {
                             <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
                                 {/**Công thức tính của mẫu công việc */}
                                 <div className={`form-group ${this.state.newTemplate.errorOnFormula === undefined ? "" : "has-error"}`} >
-                                    <label className="control-label" htmlFor="inputFormula">{translate('task_template.formula')}*</label>
+                                    <label className="control-label" htmlFor="inputFormula">{translate('task_template.formula')}</label>
                                     <input type="text" className="form-control" id="inputFormula" placeholder="progress/(dayUsed/totalDay) - (10-averageActionRating)*10 - 100*(1-p1/p2)" value={newTemplate.formula} onChange={this.handleTaskTemplateFormula} />
                                     <ErrorLabel content={this.state.newTemplate.errorOnFormula} />
 

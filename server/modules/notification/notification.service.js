@@ -129,8 +129,12 @@ exports.getAllNotifications = async (user) => {
  * Phân trang danh sách các thông báo của người dùng nhận được
  */
 exports.paginateNotifications = async (user, data) => {
-    var info = Object.assign({user}, data.content);
-    
+    if (typeof data.readed === "boolean") {
+        var info = Object.assign({user}, data.content,{readed: false});
+    }
+    else {
+        var info = Object.assign({user}, data.content);
+    }
     return await Notification
         .paginate( info , { 
             page: data.page, 
@@ -142,11 +146,21 @@ exports.paginateNotifications = async (user, data) => {
 /**
  * Đánh dấu thông báo nhận đã được đọc
  */
-exports.changeNotificationStateToReaded = async (notificationId) => {
-    const notification = await Notification.findById(notificationId);
-    notification.readed = true;
-    await notification.save();
-
+exports.changeNotificationStateToReaded = async (user, id, readAll) => {
+    let notification;
+    if (!readAll) {
+        notification = await Notification.findById(id);
+        notification.readed = true;
+        await notification.save();
+    } else {
+        notification = await Notification.find({ readed: false, user: user});
+        let listId = notification.map(x => x._id);
+        for (let i in notification){
+            notification[i].readed = true;
+        }
+        await Notification.updateMany({ _id: listId }, { $set: { readed: true } });
+    }
+    console.log(notification);
     return notification;
 }
 

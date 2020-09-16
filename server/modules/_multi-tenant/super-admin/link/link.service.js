@@ -44,7 +44,7 @@ exports.getLink = async (portal, id) => {
 }
 
 /**
- * Tạo link mới
+ * Tạo link mới 
  * @data dữ liệu về link
  * @portal portal tương ứng với database cần sửa
  */
@@ -75,6 +75,7 @@ exports.createLink = async(portal, data) => {
  * @data dữ liệu về link
  */
 exports.editLink = async(portal, id, data) => {
+    console.log("EDIT link")
     let link = await Link(connect(DB_CONNECTION, portal))
         .findById(id);
 

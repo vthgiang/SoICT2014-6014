@@ -936,6 +936,7 @@ class EvaluateByAccountableEmployee extends Component {
 
     // hàm cập nhật thông tin tập giá trị
     handleSetOfValueChange = async (value, code) => {
+        console.log('valSet', value);
         this.setState(state => {
             state.info[`${code}`] = {
                 value: value,
@@ -961,6 +962,7 @@ class EvaluateByAccountableEmployee extends Component {
 
     // hàm cập nhật trạng thái
     handleStatusChange = (value) => {
+        console.log('valStatus', value);
         this.setState(state => {
             return {
                 ...state,
@@ -1407,7 +1409,7 @@ class EvaluateByAccountableEmployee extends Component {
                                                 items={statusArr}
                                                 onChange={this.handleStatusChange}
                                                 multiple={false}
-                                                value={status}
+                                                value={status[0]}
                                                 disabled={disabled}
                                             />
                                         }

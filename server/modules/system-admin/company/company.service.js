@@ -1,13 +1,13 @@
-const { 
+const {
     Company, Link, SystemLink, Component,
-    SystemComponent, Privilege, Role, RootRole, 
-    RoleType, User, UserRole, ImportConfiguraion 
+    SystemComponent, Privilege, Role, RootRole,
+    RoleType, User, UserRole, ImportConfiguraion
 } = require(SERVER_MODELS_DIR).schema;
 
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const generator = require("generate-password");
-const Terms = require(SERVER_SEED_DIR+"/terms");
+const Terms = require(SERVER_SEED_DIR + "/terms");
 
 /**
  * Lấy danh sách tất cả các công ty
@@ -16,7 +16,7 @@ exports.getAllCompanies = async (query) => {
 
     let page = query.page;
     let limit = query.limit;
-    
+
     if (!page && !limit) {
         return await Company
             .find()
@@ -26,14 +26,14 @@ exports.getAllCompanies = async (query) => {
             ]);
     } else {
         let option = (query.key && query.value)
-                        ? { [`${query.key}`] : new RegExp(query.value, "i") }
-                        : {};
+            ? { [`${query.key}`]: new RegExp(query.value, "i") }
+            : {};
 
         return await Company.paginate(
-            option, 
-            {   
-                page, 
-                limit, 
+            option,
+            {
+                page,
+                limit,
                 populate: [
                     { path: 'links', model: Link },
                     { path: "superAdmin", model: User, select: '_id name email' }
@@ -62,7 +62,7 @@ exports.getCompany = async (id) => {
  * @data dữ liệu để tạo thông tin về công ty (tên, mô tả, tên ngắn)
  */
 exports.createCompany = async (data) => {
-    
+
     return await Company.create({
         name: data.name,
         description: data.description,
@@ -76,7 +76,7 @@ exports.createCompany = async (data) => {
  * @data dữ liệu muốn chỉnh sửa (tên, mô tả, tên ngắn, log, active)
  */
 exports.editCompany = async (id, data) => {
-    
+
     let company = await Company.findById(id);
     if (!company) throw ['company_not_found'];
 
@@ -123,10 +123,10 @@ exports.createCompanyRootRoles = async (companyId) => {
  * @roleSuperAdminId Id của role SuperAdmin của công ty dùng để phân quyền cho tài khoản có email ở trên
  */
 exports.createCompanySuperAdminAccount = async (companyId, companyName, userEmail) => {
-    
+
     let checkEmail = await User.findOne({ email: userEmail });
     if (checkEmail) throw ['email_exist'];
-    
+
     let roleSuperAdmin = await Role.findOne({ company: companyId, name: Terms.ROOT_ROLES.SUPER_ADMIN.name });
     let salt = await bcrypt.genSaltSync(10);
     let password = await generator.generate({ length: 10, numbers: true });
@@ -136,31 +136,89 @@ exports.createCompanySuperAdminAccount = async (companyId, companyName, userEmai
         service: 'Gmail',
         auth: { user: 'vnist.qlcv@gmail.com', pass: 'qlcv123@' }
     });
-    
+
     let mainOptions = {
         from: 'vnist.qlcv@gmail.com',
         to: userEmail,
         subject: `Tạo tài khoản SUPER ADMIN cho doanh nghiệp/công ty ${companyName}`,
         text: `Email thông báo đăng kí thành công sử dụng dịch vụ Quản lý công việc và thông tin về tài khoản SUPER ADMIN của doanh nghiệp/công ty ${companyName}.`,
-        html:   
-        `
-        <div>
-            <p>Tài khoản dùng để đăng nhập của SUPER ADMIN: </p>
-            <ul>
-                <li>Tài khoản : ${userEmail}</li>
-                <li>Mật khẩu : ${password}</li>
-            </ul>
-            <p>Đăng nhập ngay tại : <a href="${process.env.WEBSITE}/login">${process.env.WEBSITE}/login</a></p><br/>
-            <p>SUPER ADMIN account information: </p>
-            <ul>
-                <li>Account : ${userEmail}</li>
-                <li>Password : ${password}</li>
-            </ul>
-            <p>Login in: <a href="${process.env.WEBSITE}/login">${process.env.WEBSITE}/login</a></p>
-        </div>tr45
-        `
+        html:
+            `<html>
+            <head>
+                <style>
+                    .wrapper {
+                        width: 100%;
+                        min-width: 580px;
+                        background-color: #FAFAFA;
+                        padding: 10px 0;
+                    }
+            
+                    .info {
+                        list-style-type: none;
+                    }
+            
+                    @media screen and (max-width: 600px) {
+                        .form {
+                            border: solid 1px #dddddd;
+                            padding: 50px 30px;
+                            border-radius: 3px;
+                            margin: 0px 5%;
+                            background-color: #FFFFFF;
+                        }
+                    }
+            
+                    .form {
+                        border: solid 1px #dddddd;
+                        padding: 50px 30px;
+                        border-radius: 3px;
+                        margin: 0px 25%;
+                        background-color: #FFFFFF;
+                    }
+            
+                    .title {
+                        text-align: center;
+                    }
+            
+                    .footer {
+                        margin: 0px 25%;
+                        text-align: center;
+            
+                    }
+                </style>
+            </head>
+            
+            <body>
+                <div class="wrapper">
+                    <div class="title">
+                        <h1>VNIST-QLCV</h1>
+                    </div>
+                    <div class="form">
+                        <p><b>Tài khoản đăng nhập của SUPER ADMIN: </b></p>
+                        <div class="info">
+                            <li>Tài khoản: ${userEmail}</li>
+                            <li>Mật khẩu: <b>${password}</b></li>
+                        </div>
+                        <p>Đăng nhập ngay tại: <a href="${process.env.WEBSITE}/login">${process.env.WEBSITE}/login</a></p><br />
+            
+                        <p><b>SUPER ADMIN account information: </b></p>
+                        <div class="info">
+                            <li>Tài khoản: ${userEmail}</li>
+                            <li>Mật khẩu: <b>${password}</b></li>
+                        </div>
+                        <p>Login in: <a href="${process.env.WEBSITE}/login">${process.env.WEBSITE}/login</a></p>
+                    </div>
+                    <div class="footer">
+                        <p>Bản quyền thuộc về
+                            <i>Công ty Cổ phần Công nghệ
+                                <br />
+                                An toàn thông tin và Truyền thông Việt Nam</i>
+                        </p>
+                    </div>
+                </div>
+            </body>
+        </html>`
     }
-    
+
     let user = await User.create({
         name: `Super Admin`,
         email: userEmail,
@@ -176,9 +234,9 @@ exports.createCompanySuperAdminAccount = async (companyId, companyName, userEmai
         userId: user._id,
         roleId: roleSuperAdmin._id
     });
-    
+
     await transporter.sendMail(mainOptions);
-    
+
     return user;
 }
 
@@ -190,23 +248,23 @@ exports.createCompanySuperAdminAccount = async (companyId, companyName, userEmai
  */
 exports.createCompanyLinks = async (companyId, linkArr, roleArr) => {
     let checkIndex = (link, arr) => {
-        let resIndex =-1;
+        let resIndex = -1;
         arr.forEach((node, i) => {
-            if(node.url === link.url){
+            if (node.url === link.url) {
                 resIndex = i;
             }
         });
 
         return resIndex;
     }
-    
+
     let allLinks = await SystemLink.find()
         .populate({ path: 'roles', model: RootRole });;
     let activeLinks = await SystemLink.find({ _id: { $in: linkArr } })
         .populate({ path: 'roles', model: RootRole });
-    
-    let dataLinks = allLinks.map( link => {
-        if(checkIndex(link, activeLinks) === -1)
+
+    let dataLinks = allLinks.map(link => {
+        if (checkIndex(link, activeLinks) === -1)
             return {
                 url: link.url,
                 category: link.category,
@@ -235,10 +293,10 @@ exports.createCompanyLinks = async (companyId, linkArr, roleArr) => {
             if (link.url === systemLink.url) {
                 for (let x = 0; x < systemLink.roles.length; x++) {
                     let rootRole = systemLink.roles[x];
-                    
+
                     for (let y = 0; y < roleArr.length; y++) {
                         let role = roleArr[y];
-                        
+
                         if (role.name === rootRole.name) {
                             dataPrivilege.push({
                                 resourceId: link._id,
@@ -255,7 +313,7 @@ exports.createCompanyLinks = async (companyId, linkArr, roleArr) => {
 
     return await Link.find({ company: companyId })
         .populate({ path: 'roles', model: Privilege, populate: { path: 'roleId', model: Role } });
-} 
+}
 
 /**
  * Tạo các component cho công ty
@@ -266,21 +324,21 @@ exports.createCompanyComponents = async (companyId, linkArr) => {
 
     let systemLinks = await SystemLink.find({ _id: { $in: linkArr } });
 
-    let dataSystemComponents = systemLinks.map(link=>link.components);
-    dataSystemComponents = dataSystemComponents.reduce((arr1, arr2)=>[...arr1, ...arr2]);
+    let dataSystemComponents = systemLinks.map(link => link.components);
+    dataSystemComponents = dataSystemComponents.reduce((arr1, arr2) => [...arr1, ...arr2]);
     dataSystemComponents.filter((component, index) => dataSystemComponents.indexOf(component) === index);
     const systemComponents = await SystemComponent
-        .find({_id: {$in: dataSystemComponents}})
+        .find({ _id: { $in: dataSystemComponents } })
         .populate({ path: 'roles', model: RootRole });
 
     for (let i = 0; i < systemComponents.length; i++) {
-        let sysLinks = await SystemLink.find({_id: {$in: systemComponents[i].links}});
-        let links = await Link.find({company: companyId, url: sysLinks.map(link=>link.url)});
+        let sysLinks = await SystemLink.find({ _id: { $in: systemComponents[i].links } });
+        let links = await Link.find({ company: companyId, url: sysLinks.map(link => link.url) });
         // Tạo component
         let component = await Component.create({
             name: systemComponents[i].name,
             description: systemComponents[i].description,
-            links: links.map(link=>link._id),
+            links: links.map(link => link._id),
             company: companyId,
             deleteSoft: false
         })
@@ -292,10 +350,10 @@ exports.createCompanyComponents = async (companyId, linkArr) => {
         // Tạo phân quyền cho components
         for (let k = 0; k < systemComponents.length; k++) {
             let roles = await Role.find({
-                company: companyId, 
-                name: {$in: systemComponents[i].roles.map(role=>role.name)}
+                company: companyId,
+                name: { $in: systemComponents[i].roles.map(role => role.name) }
             });
-            let dataPrivileges = roles.map(role=>{
+            let dataPrivileges = roles.map(role => {
                 return {
                     resourceId: component._id,
                     resourceType: 'Component',
@@ -315,11 +373,11 @@ exports.createCompanyComponents = async (companyId, linkArr) => {
  * @superAdminEmail email dùng để thay thế làm email mới của super admin
  */
 exports.editCompanySuperAdmin = async (companyId, superAdminEmail) => {
-    
+
     let com = await Company.findById(companyId)
         .populate({ path: 'superAdmin', model: User });
     let roleSuperAdmin = await Role.findOne({ company: com._id, name: Terms.ROOT_ROLES.SUPER_ADMIN.name });
-    
+
     let oldSuperAdmin = await User.findById(com.superAdmin._id);
     if (oldSuperAdmin.email === superAdminEmail) {
         return oldSuperAdmin;
@@ -329,13 +387,13 @@ exports.editCompanySuperAdmin = async (companyId, superAdminEmail) => {
         let user = await User.findOne({ company: com._id, email: superAdminEmail });
         if (user === null) {
             let newUser = await this.createCompanySuperAdminAccount(com._id, com.name, superAdminEmail);
-    
+
             return newUser;
         } else {
             com.superAdmin = user._id;
             await com.save();
             await UserRole.create({ userId: user._id, roleId: roleSuperAdmin._id })
-    
+
             return user;
         }
     }
