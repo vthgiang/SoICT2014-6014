@@ -10,6 +10,6 @@ router.delete("/delete-manual-notification/:id", auth, NotificationController.de
 router.get("/get-notifications", auth, NotificationController.getAllNotifications);
 router.post("/paginate-notifications", auth, NotificationController.paginateNotifications);
 router.delete("/delete-notification/:id", auth, NotificationController.deleteNotification);
-router.patch("/readed/:id", auth, NotificationController.changeNotificationStateToReaded);
+router.patch("/readed", auth, NotificationController.changeNotificationStateToReaded);
 
 module.exports = router;

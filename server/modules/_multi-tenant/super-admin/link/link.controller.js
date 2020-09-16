@@ -75,9 +75,9 @@ exports.createLink = async (req, res) => {
 
 exports.editLink = async (req, res) => {
     try {
-        await LinkService.relationshipLinkRole(req.params.id, req.body.roles);
-        let link = await LinkService.editLink(req.params.id, req.body);
-        let data = await LinkService.getLink(link._id);
+        await LinkService.relationshipLinkRole(req.portal, req.params.id, req.body.roles);
+        let link = await LinkService.editLink(req.portal, req.params.id, req.body);
+        let data = await LinkService.getLink(req.portal, link._id);
         
         await Logger.info(req.user.email, 'edit_link_success', req.portal);
         res.status(200).json({

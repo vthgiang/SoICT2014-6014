@@ -661,7 +661,7 @@ class ModalCreateTaskProcess extends Component {
 											<div className='col-md-6'>
 												{/* tên quy trình */}
 												<div className={`form-group ${this.state.errorOnProcessName === undefined ? "" : "has-error"}`}>
-													<label className={`control-label`}>{translate("task.task_process.process_name")}</label>
+													<label className={`control-label`}>{translate("task.task_process.process_name")} <span style={{color: "red"}}>*</span></label>
 													<input type="text"
 														value={processName}
 														className="form-control" placeholder={translate("task.task_process.process_name")}
@@ -672,7 +672,7 @@ class ModalCreateTaskProcess extends Component {
 
 												{/* Mô tả quy trình */}
 												<div className={`form-group ${this.state.errorOnProcessDescription === undefined ? "" : "has-error"}`}>
-													<label className="control-label">{translate("task.task_process.process_description")}</label>
+													<label className="control-label">{translate("task.task_process.process_description")} <span style={{color: "red"}}>*</span></label>
 													<textarea type="text" rows={4}
 														value={processDescription}
 														className="form-control" placeholder={translate("task.task_process.process_description")}
@@ -684,7 +684,7 @@ class ModalCreateTaskProcess extends Component {
 
 												<div className={`form-group ${this.state.errorOnViewer === undefined ? "" : "has-error"}`}>
 													{/* Người được xem mẫu quy trình */}
-													<label className="control-label">{translate("task.task_process.viewer")}</label>
+													<label className="control-label">{translate("task.task_process.viewer")} <span style={{color: "red"}}>*</span></label>
 													{
 														<SelectBox
 															id={`select-viewer-employee-create-${indexRenderer}`}
@@ -702,7 +702,7 @@ class ModalCreateTaskProcess extends Component {
 
 												<div className={`form-group ${this.state.errorOnManager === undefined ? "" : "has-error"}`}>
 													{/* Người quản lý mẫu quy trình */}
-													<label className="control-label" >{translate("task.task_process.manager")}</label>
+													<label className="control-label" >{translate("task.task_process.manager")} <span style={{color: "red"}}>*</span></label>
 													{
 														<SelectBox
 															id={`select-manager-employee-create-${indexRenderer}`}

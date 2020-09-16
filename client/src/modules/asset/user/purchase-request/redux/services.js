@@ -15,7 +15,7 @@ function searchRecommendProcures(data) {
         params: {
             recommendNumber: data.recommendNumber,
             proposalDate: data.proposalDate,
-            proponet: data.proponet,
+            proponent: data.proponent,
             approver: data.approver,
             status: data.status,
             page: data.page,

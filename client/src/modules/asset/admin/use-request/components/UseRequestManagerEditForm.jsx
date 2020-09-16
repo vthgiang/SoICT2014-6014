@@ -19,6 +19,28 @@ class UseRequestManagerEditForm extends Component {
         };
     }
 
+
+    formatDate(date, monthYear = false) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2) {
+            month = '0' + month;
+        }
+
+        if (day.length < 2) {
+            day = '0' + day;
+        }
+
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else {
+            return [day, month, year].join('-');
+        }
+    }
+
     // Bắt sự kiện thay đổi mã phiếu
     handleRecommendNumberChange = (e) => {
         let value = e.target.value;
@@ -44,12 +66,14 @@ class UseRequestManagerEditForm extends Component {
     }
     validateDateCreate = (value, willUpdateState = true) => {
         let msg = UseRequestFromValidator.validateDateCreate(value, this.props.translate)
+        let partCreate = value.split('-');
+        let dateCreate = [partCreate[2], partCreate[1], partCreate[0]].join('-'); 
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
                     errorOnDateCreate: msg,
-                    dateCreate: value,
+                    dateCreate: dateCreate,
                 }
             });
         }
@@ -166,7 +190,6 @@ class UseRequestManagerEditForm extends Component {
     }
 
     handleStartTimeChange = (value) => {
-        console.log("value", value)
         this.setState(state => {
             return {
                 ...state,
@@ -177,7 +200,6 @@ class UseRequestManagerEditForm extends Component {
 
 
     handleStopTimeChange = (value) => {
-        console.log("value", value)
         this.setState(state => {
             return {
                 ...state,
@@ -196,7 +218,7 @@ class UseRequestManagerEditForm extends Component {
 
     save = () => {
         let {managedBy} =this.state
-        console.log("Stattttttttttte", this.state);
+        
         let dataToSubmit = { ...this.state, approver: this.props.auth.user._id };
         if (this.isFormValidated()) {
             return this.props.updateRecommendDistribute(this.state._id, dataToSubmit,managedBy);
@@ -206,21 +228,20 @@ class UseRequestManagerEditForm extends Component {
     static getDerivedStateFromProps(nextProps, prevState) {
         
         if (nextProps._id !== prevState._id) {
-            let startDate, endDate, startTime, stopTime;
+            let startDate, endDate, startTime, stopTime, month, day, year;
+            let partStart = new Date(nextProps.dateStartUse);
             if(nextProps.asset.typeRegisterForUse == 2){
-                let partStart = nextProps.dateStartUse.split(' ');
-                startTime = [partStart[0], partStart[1]].join(' ');
-                startDate = partStart[2]
+                startTime = [partStart.getHours(), partStart.getMinutes()].join(':');
+                startDate = [partStart.getDate(), (partStart.getMonth() + 1), partStart.getFullYear()].join('-');
             } else {
-                startDate = nextProps.dateStartUse
+                startDate = [partStart.getDate(), (partStart.getMonth() + 1), partStart.getFullYear()].join('-');
             }
-    
+            let partStop = new Date(nextProps.dateEndUse);
             if(nextProps.asset.typeRegisterForUse == 2){
-                let partStop = nextProps.dateEndUse.split(' ');
-                stopTime = [partStop[0], partStop[1]].join(' ');
-                endDate = partStop[2]
+                stopTime = [partStop.getHours(), partStop.getMinutes()].join(':');
+                endDate = [partStop.getDate(), (partStop.getMonth() + 1), partStop.getFullYear()].join('-');
             } else {
-                endDate = nextProps.dateEndUse
+                endDate = [partStop.getDate(), (partStop.getMonth() + 1), partStop.getFullYear()].join('-');
             }
             return {
                 ...prevState,
@@ -285,7 +306,7 @@ class UseRequestManagerEditForm extends Component {
                                     <label>{translate('asset.general_information.create_date')}<span className="text-red">*</span></label>
                                     <DatePicker
                                         id={`edit_start_date${_id}`}
-                                        value={dateCreate}
+                                        value={this.formatDate(dateCreate)}
                                         onChange={this.handleDateCreateChange}
                                     />
                                     <ErrorLabel content={errorOnDateCreate} />

@@ -341,6 +341,7 @@ export default {
             title: 'Notification',
             news: 'News',
             see_all: 'See all',
+            mark_all_readed: 'Mark all readed',
             total: 'Total',
             level: 'Level',
             type: {
@@ -360,6 +361,7 @@ export default {
             add: 'Add new nofitication',
             receivered: 'Receivered',
             sent: 'Sent',
+            unread: 'Unread',
             note: 'Not',
             info: 'Information',
             delete: 'Delete',

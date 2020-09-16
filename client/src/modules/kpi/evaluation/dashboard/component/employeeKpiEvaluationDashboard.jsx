@@ -553,7 +553,7 @@ class EmployeeKpiEvaluationDashboard extends Component {
                                                         items={unitMembers}
                                                         multiple={false}
                                                         onChange={this.handleSelectEmployee}
-                                                        value={unitMembers[0].value[2] ? unitMembers[0].value[2].value : (unitMembers[0].value[0] ? unitMembers[0].value[0].value : null)}
+                                                        value={this.INFO_SEARCH.userId}
                                                     />
                                                 </div>
                                             }

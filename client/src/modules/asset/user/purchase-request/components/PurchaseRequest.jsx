@@ -66,7 +66,27 @@ class PurchaseRequest extends Component {
 
         return [month, year].join('-');
     }
+    // Function format dữ liệu Date thành string
+    formatDate2(date, monthYear = false) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
 
+        if (month.length < 2) {
+            month = '0' + month;
+        }
+
+        if (day.length < 2) {
+            day = '0' + day;
+        }
+
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else {
+            return [day, month, year].join('-');
+        }
+    }
     // Function lưu giá trị mã nhân viên vào state khi thay đổi
     handleRecommendNumberChange = (event) => {
         const { name, value } = event.target;
@@ -224,7 +244,7 @@ class PurchaseRequest extends Component {
                                 listRecommendProcures.filter(item => item.proponent && item.proponent._id === auth.user._id).map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.recommendNumber}</td>
-                                        <td>{x.dateCreate}</td>
+                                        <td>{this.formatDate2(x.dateCreate)}</td>
                                         <td>{x.proponent ? x.proponent.name : 'User is deleted'}</td>
                                         <td>{x.equipmentName}</td>
                                         <td>{x.equipmentDescription}</td>

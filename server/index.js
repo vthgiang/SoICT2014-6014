@@ -81,7 +81,6 @@ if (process.env.MULTI_TENANT === 'true') {
 	app.use("/educationProgram", require("./modules/_multi-tenant/trainning/education-program/educationProgram.route"));
 	app.use("/course", require("./modules/_multi-tenant/trainning/course/course.route"));
 
-	// //asset
 	// app.use("/assettype", require("./modules/_multi-tenant/asset/asset-type/asset-type.route"));
 	// app.use("/asset", require("./modules/_multi-tenant/asset/asset-management/asset.route"));
 	// app.use("/purchase-request", require("./modules/_multi-tenant/asset/purchase-request/purchase-request.route"));
@@ -101,7 +100,7 @@ if (process.env.MULTI_TENANT === 'true') {
 
 	// // example
 	// app.use("/examples", require("./modules/_multi-tenant/example/example.route"));
-
+	 app.use("/documents", require("./modules/_multi-tenant/document/document.route"));
 	// // Customer Management
 	// const crm = express.Router();
 	// crm.use(require("./modules/_multi-tenant/crm/customer/customer.route"));

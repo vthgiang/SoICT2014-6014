@@ -490,7 +490,7 @@ class CreateForm extends Component {
     render() {
         const { translate, role, documents, department } = this.props;
         const { list } = documents.administration.domains;
-        const { errorName, errorCategory, errorVersionName,documentArchives, documentDomains } = this.state;
+        const { errorName, errorCategory, errorVersionName, documentArchives, documentDomains } = this.state;
         const archives = documents.administration.archives.list;
         const categories = documents.administration.categories.list.map(category => { return { value: category._id, text: category.name } });
         const documentRoles = role.list.map(role => { return { value: role._id, text: role.name } });
@@ -537,17 +537,17 @@ class CreateForm extends Component {
                                             <div className="form-group">
                                                 <label>{translate('document.doc_version.issuing_body')}</label>
                                                 <input type="text" className="form-control" onChange={this.handleIssuingBody} placeholder={translate('document.doc_version.exp_issuing_body')} />
-                                                
+
                                             </div>
                                             <div className="form-group">
                                                 <label>{translate('document.doc_version.official_number')}</label>
                                                 <input type="text" className="form-control" onChange={this.handleOfficialNumber} placeholder={translate('document.doc_version.exp_official_number')} />
-                                             
+
                                             </div>
                                             <div className="form-group">
                                                 <label>{translate('document.doc_version.signer')}</label>
                                                 <input type="text" className="form-control" onChange={this.handleSigner} placeholder={translate('document.doc_version.exp_signer')} />
-                                                
+
                                             </div>
                                         </div>
                                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
@@ -588,7 +588,7 @@ class CreateForm extends Component {
                                                 <div className="upload btn btn-primary">
                                                     <i className="fa fa-folder"></i>
                                                     {" " + translate('document.choose_file')}
-                                                    <input className="form-control" type="file" name="file" onChange={this.handleUploadFile} />
+                                                    <input className="upload" type="file" name="file" onChange={this.handleUploadFile} />
                                                     {/* <input type="file" style={{ height: 34, paddingTop: 2 }} className="form-control" name="file" onChange={this.handleChangeFile} /> */}
                                                 </div>
                                             </div>
