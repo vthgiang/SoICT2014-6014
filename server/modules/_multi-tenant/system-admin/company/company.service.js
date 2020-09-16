@@ -45,14 +45,12 @@ exports.getAllCompanies = async (query) => {
  * @id id của công ty
  */
 exports.getCompany = async (id) => {
-    const company = await Company(connect(DB_CONNECTION, process.env.DB_NAME)).findById(id);
+    let company = await Company(connect(DB_CONNECTION, process.env.DB_NAME)).findById(id);
     if (!company) throw ['company_not_found'];
-    const superAdmin = await User(connect(DB_CONNECTION, company.shortName));
+    let superAdmin = await User(connect(DB_CONNECTION, company.shortName)).findById(company.superAdmin);
+    company.superAdmin = superAdmin;
 
-    return {
-        ...company,
-        superAdmin
-    };
+    return company;
 }
 
 /**
@@ -142,8 +140,8 @@ exports.createCompanySuperAdminAccount = async (companyShortName, userEmail) => 
     let mainOptions = {
         from: 'vnist.qlcv@gmail.com',
         to: userEmail,
-        subject: `Tạo tài khoản SUPER ADMIN cho doanh nghiệp/công ty ${companyName}`,
-        text: `Email thông báo đăng kí thành công sử dụng dịch vụ Quản lý công việc và thông tin về tài khoản SUPER ADMIN của doanh nghiệp/công ty ${companyName}.`,
+        subject: `Tạo tài khoản SUPER ADMIN cho doanh nghiệp/công ty ${companyShortName}`,
+        text: `Email thông báo đăng kí thành công sử dụng dịch vụ Quản lý công việc và thông tin về tài khoản SUPER ADMIN của doanh nghiệp/công ty ${companyShortName}.`,
         html:
             `<html>
         <head>

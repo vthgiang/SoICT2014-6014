@@ -1,7 +1,8 @@
 const { Log } = require('../../../logs');
 const arrayToTree = require('array-to-tree');
+const { populate } = require('../../../models/auth/user.model');
 const {
-    Asset,
+    Asset, User
 } = require('../../../models').schema;
 
 
@@ -56,19 +57,24 @@ exports.searchAssetProfiles = async (params, company) => {
         keySearch = { ...keySearch, group: { $in: params.group } };
     }
 
-    // Thêm key tìm kiếm tài sản theo người sử dụng
-    if (params.handoverUser) {
-        keySearch = { ...keySearch, assignedToUser: { $in: params.handoverUser } };
-    }
-
     // Thêm key tìm kiếm tài sản theo đơn vị
     if (params.handoverUnit) {
         keySearch = { ...keySearch, assignedToOrganizationalUnit: { $in: params.handoverUnit } };
     }
 
-    // Thêm key tìm kiếm tài sản theo id người quản lý
+    // // Thêm key tìm kiếm tài sản theo id người quản lý
     if (params.managedBy) {
         keySearch = { ...keySearch, managedBy: { $in: params.managedBy } };
+    }
+
+    // Thêm key tìm kiếm tài sản theo id người dùng
+    if (params.handoverUser) {
+        let user = await User.find({ name: { $regex: params.handoverUser, $options: "i" } }).select('_id');
+        let userIds = [];
+        user.map(x => {
+            userIds.push(x._id)
+        })
+        keySearch = { ...keySearch, handoverUser: { $in: userIds } };
     }
 
     // Thêm key tìm kiếm tài sản theo loại khấu hao
@@ -175,9 +181,13 @@ exports.searchAssetProfiles = async (params, company) => {
     }
 
     // Lấy danh sách tài sản
+
     let totalList = await Asset.count(keySearch);
-    let listAssets = await Asset.find(keySearch).populate('assetType')
+    let listAssets = await Asset.find(keySearch)
+        .populate({ path: 'assetType' })
         .sort({ 'createdAt': 'desc' }).skip(params.page).limit(params.limit);
+
+    // console.log(listAssets)
     return { data: listAssets, totalList }
 }
 

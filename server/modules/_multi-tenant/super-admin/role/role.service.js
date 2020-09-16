@@ -10,6 +10,8 @@ exports.getRoles = async (portal, query) => {
     var page = query.page;
     var limit = query.limit;
     var roleId = query.roleId;
+    var type = query.type;
+
     
     if (!page && !limit && !roleId) {
         return await Role(connect(DB_CONNECTION, portal))
@@ -46,7 +48,26 @@ exports.getRoles = async (portal, query) => {
                 { path: 'viceDeans' }, 
                 { path: 'employees' },
             ]);
-    
+        
+        if(type === 'same'){
+            let roleOrg = [...roles.deans, ...roles.viceDeans, ...roles.employees]; //mảng các role cùng phòng bạn với role truyền vào
+
+            let roleParents = await Role(connect(DB_CONNECTION, portal)).find({
+                parents: roleId
+            });
+
+            let roleParentInOrg = [];
+            for (let i = 0; i < roleOrg.length; i++) {
+                for (let j = 0; j < roleParents.length; j++) {
+                    if(roleOrg[i]._id.toString() === roleParents[j]._id.toString()){
+                        roleParentInOrg.push(roleOrg[i])
+                    }
+                }
+            }
+
+            return roleParentInOrg;
+        }
+
         return roles;
     }
 }
