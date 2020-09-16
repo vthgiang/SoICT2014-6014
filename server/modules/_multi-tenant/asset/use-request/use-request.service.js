@@ -1,5 +1,4 @@
-const RecommendDistribute = require('../../../models/asset/assetUseRequest.model');
-const { Asset, UserRole } = require('../../../models').schema;
+const { RecommendDistribute, User } = require(`${SERVER_MODELS_DIR}/_multi-tenant`)
 
 /**
  * Lấy danh sách phiếu đề nghị cấp thiết bị
@@ -18,14 +17,24 @@ exports.searchRecommendDistributes = async (query, portal) => {
         keySearch = { ...keySearch, status: { $in: reqUseStatus } };
     };
 
-    // Thêm key tìm kiếm theo đăng ký vào keySearch
+    // Thêm key tìm kiếm theo người đăng ký vào keySearch
     if (reqUseEmployee) {
-        keySearch = { ...keySearch, proponent: { $in: reqUseEmployee } };
+        let user = await User(connect(DB_CONNECTION, portal)).find({ name: { $regex: reqUseEmployee, $options: "i" } }).select('_id');
+        let userIds = [];
+        user.map(x => {
+            userIds.push(x._id)
+        })
+        keySearch = { ...keySearch, proponent: { $in: userIds } };
     };
 
     // Thêm key tìm kiếm theo người phê duyệt vào keySearch
     if (approver) {
-        keySearch = { ...keySearch, approver: { $in: approver } };
+        let user = await User(connect(DB_CONNECTION, portal)).find({ name: { $regex: approver, $options: "i" } }).select('_id');
+        let userIds = [];
+        user.map(x => {
+            userIds.push(x._id)
+        })
+        keySearch = { ...keySearch, approver: { $in: userIds } };
     };
 
     if (assetId) {

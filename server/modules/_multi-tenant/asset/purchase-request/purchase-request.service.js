@@ -1,4 +1,4 @@
-const RecommendProcure = require('../../../models/asset/assetPurchaseRequest.model');
+const { RecommendProcure, User } = require(`${SERVER_MODELS_DIR}/_multi-tenant`)
 
 /**
  * Lấy danh sách phiếu đề nghị mua sắm thiết bị
@@ -20,19 +20,28 @@ exports.searchRecommendProcures = async (query, portal) => {
 
     // Thêm người đề nghị vào trường tìm kiếm
     if (proponent) {
-        keySearch = { ...keySearch, proponent: { $in: proponent } }
+        let user = await User(connect(DB_CONNECTION, portal)).find({ name: { $regex: proponent, $options: "i" } }).select('_id');
+        let userIds = [];
+        user.map(x => {
+            userIds.push(x._id)
+        })
+        keySearch = { ...keySearch, proponent: { $in: userIds } }
     }
 
     // Thêm người phê duyệt vào trường tìm kiếm
     if (approver) {
-        keySearch = { ...keySearch, approver: { $in: approver } }
+        let user = await User(connect(DB_CONNECTION, portal)).find({ name: { $regex: approver, $options: "i" } }).select('_id');
+        let userIds = [];
+        user.map(x => {
+            userIds.push(x._id)
+        })
+        keySearch = { ...keySearch, approver: { $in: userIds } }
     }
 
     // Thêm key tìm kiếm phiếu theo trạng thái vào keySearch
     if (status) {
         keySearch = { ...keySearch, status: { $in: status } };
     };
-    console.log(keySearch)
     var totalList = await RecommendProcure(connect(DB_CONNECTION, portal)).count(keySearch);
     var listRecommendProcures = await RecommendProcure(connect(DB_CONNECTION, portal)).find(keySearch).populate({ path: 'proponent approver' }).sort({ 'createdAt': 'desc' }).skip(page ? parseInt(page) : 0).limit(limit ? parseInt(limit) : 0);
 
@@ -44,7 +53,6 @@ exports.searchRecommendProcures = async (query, portal) => {
  * @data: dữ liệu phiếu đề nghị mua sắm thiết bị
  */
 exports.createRecommendProcure = async (data, portal) => {
-    console.log(data);
     var createRecommendProcure = await RecommendProcure(connect(DB_CONNECTION, portal)).create({
         recommendNumber: data.recommendNumber,
         dateCreate: data.dateCreate,
