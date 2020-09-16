@@ -334,6 +334,7 @@ class Table extends Component {
             dataSheets: [
                 {
                     sheetName: "sheet1",
+                    sheetTitle: "Danh sách tài liệu",
                     tables: [
                         {
                             tableName: "Bảng thống kê tài liệu",
