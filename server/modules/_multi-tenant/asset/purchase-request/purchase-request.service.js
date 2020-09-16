@@ -1,4 +1,4 @@
-const RecommendProcure = require('../../../models/asset/assetPurchaseRequest.model');
+const {RecommendProcure} = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
 
 /**
  * Lấy danh sách phiếu đề nghị mua sắm thiết bị
