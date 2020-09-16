@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const { Log } = require('../../../logs');
 const arrayToTree = require('array-to-tree');
 const {
@@ -585,15 +586,64 @@ exports.deleteUsage = async (assetId, usageId) => {
 }
 
 
-exports.getIncidents = async (id, data) => {
-    let { page, limit } = data;
+exports.getIncidents = async (params) => {
+    let incidents;
+    let { code, assetName, incidentCode, incidentType, incidentStatus } = params;
+    let page = parseInt(params.page);
+    let limit = parseInt(params.limit);
 
-    return await Asset.aggregate([
-        { $unwind: "$maintainanceLogs" },
-        { $replaceRoot: { newRoot: "$maintainanceLogs" } },
-        { $limit: limit },
-        { $skip: (page - 1) * limit }
-    ])
+    let assetSearch = [];
+    if (code) {
+        assetSearch = [...assetSearch, { code: { "$regex": code, "$options": "i" } }]
+    }
+    if (assetName) {
+        assetSearch = [...assetSearch, { assetName: { "$regex": assetName, "$options": "i" } }]
+    }
+
+    let incidentSearch = [];
+    if (incidentCode) {
+        incidentSearch = [...incidentSearch, { incidentCode: { "$regex": incidentCode, "$options": "i" } }]
+    }
+    if (incidentType) {
+        incidentSearch = [...incidentSearch, { type: { $in: incidentType } }]
+    }
+
+    if (incidentStatus) {
+        incidentSearch = [...incidentSearch,  { statusIncident: { $in: incidentStatus } }]
+    }
+
+    let aggregateQuery = [ ];
+    if (assetSearch && assetSearch.length !== 0){
+        aggregateQuery = [...aggregateQuery, { $match: { $and: assetSearch } }]
+    }
+    aggregateQuery = [...aggregateQuery, { $unwind: "$incidentLogs" }, { $replaceRoot: { newRoot: "$incidentLogs" } }]
+
+    if (incidentSearch && incidentSearch.length !== 0){
+        aggregateQuery = [...aggregateQuery, { $match: { $and: incidentSearch } }]
+    }
+    aggregateQuery = [...aggregateQuery, { $skip: (page - 1) * limit }, { $limit: limit }]
+
+    incidents = await Asset.aggregate(aggregateQuery);
+
+    let incidentLength = 0;
+    let assetList = await Asset.find({});
+    for (let i in assetList) {
+        let asset = assetList[i];
+        incidentLength += asset.incidentLogs ? asset.incidentLogs.length : 0;
+    }
+    // Tìm tài sản ứng với sự cố tài sản
+    for (let i = 0; i < incidents.length; i++) {
+        let item = incidents[i];
+
+        let asset = await Asset.findOne({ "incidentLogs": { $elemMatch: { "_id": mongoose.Types.ObjectId(item._id) } } });
+        incidents[i].asset = asset;
+    }
+
+    console.log('\n\n\n\\n\n******', (page - 1) * limit, incidents);
+    return {
+        incidentList: incidents,
+        incidentLength: incidentLength,
+    };
 }
 
 /**
