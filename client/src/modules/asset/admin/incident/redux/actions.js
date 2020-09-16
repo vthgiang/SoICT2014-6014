@@ -2,11 +2,36 @@ import {IncidentService} from './services';
 import {IncidentConstants} from './constants';
 import {AssetManagerActions} from '../../asset-information/redux/actions';
 
-export const IncidentActions = {
+export const ManageIncidentActions = {
+    getIncidents,
     createIncident,
     createMaintainanceForIncident,
     updateIncident,
     deleteIncident,
+}
+
+function getIncidents(data) {
+    return async dispatch => {
+        try {
+            dispatch({
+                type: IncidentConstants.GET_INCIDENT_REQUEST
+            });
+            const response = await IncidentService.getIncidents(data);
+            dispatch({
+                type: IncidentConstants.GET_INCIDENT_SUCCESS,
+                payload: response.data.content
+            });
+            return {
+                response
+            }
+        } catch (err) {
+            dispatch({
+                type: IncidentConstants.GET_INCIDENT_FAILURE,
+                error: err
+            });
+        }
+
+    };
 }
 
 function createIncident(id, data) {
