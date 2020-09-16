@@ -211,6 +211,9 @@ const initSampleCompanyDB = async() => {
     }]);
     console.log("Dữ liệu tài khoản người dùng cho công ty VNIST", users);
 
+    let vnistCom = await Company(systemDB).findById(vnist._id);
+    vnistCom.superAdmin = users[0]._id;
+    await vnistCom.save();
 
     /**
      * 5. Tạo các role mặc định cho công ty vnist
