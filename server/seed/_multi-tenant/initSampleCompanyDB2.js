@@ -283,6 +283,9 @@ const initSampleCompanyDB = async() => {
     });
     console.log("Dữ liệu các phân quyền cho công ty penguin");
 
+    let penguinCom = await Company(systemDB).findById(penguin._id);
+    penguinCom.superAdmin = users[0]._id;
+    await penguinCom.save();
 
     /**
      * 6. Gán phân quyền cho các vị trí trong công ty

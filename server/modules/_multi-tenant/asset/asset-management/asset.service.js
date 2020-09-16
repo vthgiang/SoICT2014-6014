@@ -1,4 +1,4 @@
-const { Asset } = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
+const { Asset, User } = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
 const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 const arrayToTree = require('array-to-tree');
 
@@ -53,11 +53,6 @@ exports.searchAssetProfiles = async (portal, params) => {
         keySearch = { ...keySearch, group: { $in: params.group } };
     }
 
-    // Thêm key tìm kiếm tài sản theo người sử dụng
-    if (params.handoverUser) {
-        keySearch = { ...keySearch, assignedToUser: { $in: params.handoverUser } };
-    }
-
     // Thêm key tìm kiếm tài sản theo đơn vị
     if (params.handoverUnit) {
         keySearch = { ...keySearch, assignedToOrganizationalUnit: { $in: params.handoverUnit } };
@@ -66,6 +61,16 @@ exports.searchAssetProfiles = async (portal, params) => {
     // Thêm key tìm kiếm tài sản theo id người quản lý
     if (params.managedBy) {
         keySearch = { ...keySearch, managedBy: { $in: params.managedBy } };
+    }
+
+    // Thêm key tìm kiếm tài sản theo id người dùng
+    if (params.handoverUser) {
+        let user = await User(connect(DB_CONNECTION, portal)).find({ name: { $regex: params.handoverUser, $options: "i" } }).select('_id');
+        let userIds = [];
+        user.map(x => {
+            userIds.push(x._id)
+        })
+        keySearch = { ...keySearch, handoverUser: { $in: userIds } };
     }
 
     // Thêm key tìm kiếm tài sản theo loại khấu hao

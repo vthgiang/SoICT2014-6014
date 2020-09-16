@@ -19,21 +19,24 @@ exports.getAllCompanies = async (query) => {
     let limit = query.limit;
 
     if (!page && !limit) {
-        return await Company(connect(DB_CONNECTION, process.env.DB_NAME))
-            .find();
-    } else {
-        let option = (query.key && query.value)
-            ? { [`${query.key}`]: new RegExp(query.value, "i") }
-            : {};
+        let companies = await Company(connect(DB_CONNECTION, process.env.DB_NAME)).find();
 
-        return await Company(connect(DB_CONNECTION, process.env.DB_NAME))
-            .paginate(
-                option,
-                {
-                    page,
-                    limit
-                }
-            );
+        for (let i = 0; i < companies.length; i++) {
+            let superAdmin = await User(connect(DB_CONNECTION, companies[i].shortName)).findById(companies[i].superAdmin);
+            console.log("company", companies[i])
+            companies[i] = { ...companies[i], superAdmin }
+        }
+
+        return companies;
+    } else {
+        let option = (query.key && query.value) ? { [`${query.key}`] : new RegExp(query.value, "i") } : {};
+        let companies = await Company(connect(DB_CONNECTION, process.env.DB_NAME)).paginate(option, { page, limit });
+        for (let i = 0; i < companies.docs.length; i++) {
+            let superAdmin = await User(connect(DB_CONNECTION, companies.docs[i].shortName)).findById(companies.docs[i].superAdmin);
+            companies.docs[i].superAdmin = superAdmin;
+        }
+        
+        return companies;
     }
 }
 
@@ -42,14 +45,12 @@ exports.getAllCompanies = async (query) => {
  * @id id của công ty
  */
 exports.getCompany = async (id) => {
-    const company = await Company(connect(DB_CONNECTION, process.env.DB_NAME)).findById(id);
+    let company = await Company(connect(DB_CONNECTION, process.env.DB_NAME)).findById(id);
     if (!company) throw ['company_not_found'];
-    const superAdmin = await User(connect(DB_CONNECTION, company.shortName));
+    let superAdmin = await User(connect(DB_CONNECTION, company.shortName)).findById(company.superAdmin);
+    company.superAdmin = superAdmin;
 
-    return {
-        ...company,
-        superAdmin
-    };
+    return company;
 }
 
 /**
@@ -139,8 +140,8 @@ exports.createCompanySuperAdminAccount = async (companyShortName, userEmail) => 
     let mainOptions = {
         from: 'vnist.qlcv@gmail.com',
         to: userEmail,
-        subject: `Tạo tài khoản SUPER ADMIN cho doanh nghiệp/công ty ${companyName}`,
-        text: `Email thông báo đăng kí thành công sử dụng dịch vụ Quản lý công việc và thông tin về tài khoản SUPER ADMIN của doanh nghiệp/công ty ${companyName}.`,
+        subject: `Tạo tài khoản SUPER ADMIN cho doanh nghiệp/công ty ${companyShortName}`,
+        text: `Email thông báo đăng kí thành công sử dụng dịch vụ Quản lý công việc và thông tin về tài khoản SUPER ADMIN của doanh nghiệp/công ty ${companyShortName}.`,
         html:
             `<html>
         <head>
@@ -257,16 +258,6 @@ exports.createCompanyLinks = async (company, linkArr, roleArr) => {
 
         return resIndex;
     }
-<<<<<<< HEAD
-
-    let allLinks = await SystemLink.find()
-        .populate({ path: 'roles', model: RootRole });;
-    let activeLinks = await SystemLink.find({ _id: { $in: linkArr } })
-        .populate({ path: 'roles', model: RootRole });
-
-    let dataLinks = allLinks.map(link => {
-        if (checkIndex(link, activeLinks) === -1)
-=======
 
     let allLinks = await SystemLink(connect(DB_CONNECTION, process.env.DB_NAME))
         .find()
@@ -277,7 +268,6 @@ exports.createCompanyLinks = async (company, linkArr, roleArr) => {
 
     let dataLinks = allLinks.map( link => {
         if(checkIndex(link, activeLinks) === -1)
->>>>>>> 924fb3ac1daaaa68fc368db73419a5e32284cbd9
             return {
                 url: link.url,
                 category: link.category,
@@ -320,13 +310,6 @@ exports.createCompanyLinks = async (company, linkArr, roleArr) => {
             }
         }
     }
-<<<<<<< HEAD
-    await Privilege.insertMany(dataPrivilege);
-
-    return await Link.find({ company: companyId })
-        .populate({ path: 'roles', model: Privilege, populate: { path: 'roleId', model: Role } });
-}
-=======
     console.log("privileges");
     await Privilege(connect(DB_CONNECTION, company))
         .insertMany(dataPrivilege);
@@ -335,7 +318,6 @@ exports.createCompanyLinks = async (company, linkArr, roleArr) => {
         .find()
         .populate({ path: 'roles', populate: { path: 'roleId' } });
 }
->>>>>>> 924fb3ac1daaaa68fc368db73419a5e32284cbd9
 
 /**
  * Tạo các component cho công ty
@@ -350,15 +332,6 @@ exports.createCompanyComponents = async (company, linkArr) => {
     let dataSystemComponents = systemLinks.map(link => link.components);
     dataSystemComponents = dataSystemComponents.reduce((arr1, arr2) => [...arr1, ...arr2]);
     dataSystemComponents.filter((component, index) => dataSystemComponents.indexOf(component) === index);
-<<<<<<< HEAD
-    const systemComponents = await SystemComponent
-        .find({ _id: { $in: dataSystemComponents } })
-        .populate({ path: 'roles', model: RootRole });
-
-    for (let i = 0; i < systemComponents.length; i++) {
-        let sysLinks = await SystemLink.find({ _id: { $in: systemComponents[i].links } });
-        let links = await Link.find({ company: companyId, url: sysLinks.map(link => link.url) });
-=======
     const systemComponents = await SystemComponent(connect(DB_CONNECTION, process.env.DB_NAME))
         .find({_id: {$in: dataSystemComponents}})
         .populate({ path: 'roles' });
@@ -366,17 +339,11 @@ exports.createCompanyComponents = async (company, linkArr) => {
     for (let i = 0; i < systemComponents.length; i++) {
         let sysLinks = await SystemLink(connect(DB_CONNECTION, process.env.DB_NAME)).find({_id: {$in: systemComponents[i].links}});
         let links = await Link(connect(DB_CONNECTION, company)).find({url: sysLinks.map(link=>link.url)});
->>>>>>> 924fb3ac1daaaa68fc368db73419a5e32284cbd9
         // Tạo component
         let component = await Component(connect(DB_CONNECTION, company)).create({
             name: systemComponents[i].name,
             description: systemComponents[i].description,
-<<<<<<< HEAD
-            links: links.map(link => link._id),
-            company: companyId,
-=======
             links: links.map(link=>link._id),
->>>>>>> 924fb3ac1daaaa68fc368db73419a5e32284cbd9
             deleteSoft: false
         })
         for (let j = 0; j < links.length; j++) {
@@ -386,14 +353,8 @@ exports.createCompanyComponents = async (company, linkArr) => {
         }
         // Tạo phân quyền cho components
         for (let k = 0; k < systemComponents.length; k++) {
-<<<<<<< HEAD
-            let roles = await Role.find({
-                company: companyId,
-                name: { $in: systemComponents[i].roles.map(role => role.name) }
-=======
             let roles = await Role(connect(DB_CONNECTION, company)).find({
                 name: {$in: systemComponents[i].roles.map(role=>role.name)}
->>>>>>> 924fb3ac1daaaa68fc368db73419a5e32284cbd9
             });
             let dataPrivileges = roles.map(role => {
                 return {
@@ -414,15 +375,6 @@ exports.createCompanyComponents = async (company, linkArr) => {
  * @companyId id của công ty
  * @superAdminEmail email dùng để thay thế làm email mới của super admin
  */
-<<<<<<< HEAD
-exports.editCompanySuperAdmin = async (companyId, superAdminEmail) => {
-
-    let com = await Company.findById(companyId)
-        .populate({ path: 'superAdmin', model: User });
-    let roleSuperAdmin = await Role.findOne({ company: com._id, name: Terms.ROOT_ROLES.SUPER_ADMIN.name });
-
-    let oldSuperAdmin = await User.findById(com.superAdmin._id);
-=======
 exports.editCompanySuperAdmin = async (company, superAdminEmail) => {
 
     let com = await Company(connect(DB_CONNECTION, process.env.DB_NAME)).findOne({shortName: company})
@@ -430,7 +382,6 @@ exports.editCompanySuperAdmin = async (company, superAdminEmail) => {
     let roleSuperAdmin = await Role(connect(DB_CONNECTION, company)).findOne({ name: Terms.ROOT_ROLES.SUPER_ADMIN.name });
 
     let oldSuperAdmin = await User(connect(DB_CONNECTION, company)).findById(com.superAdmin._id);
->>>>>>> 924fb3ac1daaaa68fc368db73419a5e32284cbd9
     if (oldSuperAdmin.email === superAdminEmail) {
         return oldSuperAdmin;
     } else {
@@ -438,24 +389,14 @@ exports.editCompanySuperAdmin = async (company, superAdminEmail) => {
 
         let user = await User(connect(DB_CONNECTION, company)).findOne({ email: superAdminEmail });
         if (user === null) {
-<<<<<<< HEAD
-            let newUser = await this.createCompanySuperAdminAccount(com._id, com.name, superAdminEmail);
-
-=======
             let newUser = await this.createCompanySuperAdminAccount(com.shortName, com.name, superAdminEmail);
 
->>>>>>> 924fb3ac1daaaa68fc368db73419a5e32284cbd9
             return newUser;
         } else {
             com.superAdmin = user._id;
             await com.save();
-<<<<<<< HEAD
-            await UserRole.create({ userId: user._id, roleId: roleSuperAdmin._id })
-
-=======
             await UserRole(connect(DB_CONNECTION, company)).create({ userId: user._id, roleId: roleSuperAdmin._id })
 
->>>>>>> 924fb3ac1daaaa68fc368db73419a5e32284cbd9
             return user;
         }
     }

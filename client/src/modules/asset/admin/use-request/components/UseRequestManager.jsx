@@ -123,27 +123,19 @@ class UseRequestManager extends Component {
     }
 
     // Function lưu giá trị status vào state khi thay đổi
-    handleReqForUsingEmployeeChange = (value) => {
-        if (value.length === 0) {
-            value = null
-        };
-
+    handleReqForUsingEmployeeChange = (event) => {
+        const { name, value } = event.target;
         this.setState({
-            ...this.state,
-            reqUseEmployee: value
-        })
+            [name]: value
+        });
     }
 
     // Function lưu giá trị status vào state khi thay đổi
-    handleAppoverChange = (value) => {
-        if (value.length === 0) {
-            value = null
-        };
-
+    handleAppoverChange = (event) => {
+        const { name, value } = event.target;
         this.setState({
-            ...this.state,
-            approver: value
-        })
+            [name]: value
+        });
     }
     // Function lưu giá trị status vào state khi thay đổi
     handleStatusChange = (value) => {
@@ -266,20 +258,6 @@ class UseRequestManager extends Component {
 
     }
 
-    getUserId = () => {
-        let { user } = this.props;
-        let listUser = user && user.list;
-        let userArr = [];
-        listUser.map(x => {
-            userArr.push({
-                value: x._id,
-                text: x.name
-            })
-        })
-
-        return userArr;
-    }
-
     render() {
         const { translate, recommendDistribute, isActive } = this.props;
         const { page, limit, currentRow, currentRowEditAsset, managedBy } = this.state;
@@ -294,7 +272,6 @@ class UseRequestManager extends Component {
             parseInt(recommendDistribute.totalList / limit) :
             parseInt((recommendDistribute.totalList / limit) + 1);
         var currentPage = parseInt((page / limit) + 1);
-        let userIdArr = this.getUserId();
         return (
             //Khi id !== undefined thi component nay duoc goi tu module user
             <div className={isActive ? isActive : "box"} >
@@ -317,46 +294,19 @@ class UseRequestManager extends Component {
                                 onChange={this.handleMonthChange}
                             />
                         </div>
-                        {/* Mã tài sản */}
-                        {/* <div className="form-group">
-                            <label className="form-control-static">Mã tài sản</label>
-                            <input type="text" className="form-control" name="code" onChange={this.handleCodeChange} placeholder="Mã tài sản" autoComplete="off" />
-                        </div> */}
-
-                        {/* tên tài sản */}
-                        {/* <div className="form-group">
-                            <label className="form-control-static">Tên tài sản</label>
-                            <input type="text" className="form-control" name="assetName" onChange={this.handleAssetNameChange} placeholder="Tên tài sản" autoComplete="off" />
-                        </div> */}
                     </div>
 
                     <div className="form-inline">
                         {/* Người được đăng ký sử dụng */}
                         <div className="form-group">
-                            <label>Người đăng ký</label>
-                            <SelectMulti
-                                id={`userInRequestForUsing`}
-                                multiple="multiple"
-                                options={{ nonSelectedText: "Chọn người sử dụng", allSelectedText: "Chọn tất cả" }}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={userIdArr}
-                                onChange={this.handleReqForUsingEmployeeChange}
-                            />
+                            <label className="form-control-static">Người đăng ký</label>
+                            <input type="text" className="form-control" name="reqUseEmployee" onChange={this.handleReqForUsingEmployeeChange} placeholder="Người đăng ký" autoComplete="off" />
                         </div>
 
                         {/* Người phê duyệt đăng ký sử dụng */}
                         <div className="form-group">
-                            <label>Người phê duyệt</label>
-                            <SelectMulti
-                                id={`handleAppoverChange`}
-                                multiple="multiple"
-                                options={{ nonSelectedText: "Chọn người phê duyệt", allSelectedText: "Chọn tất cả" }}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={userIdArr}
-                                onChange={this.handleAppoverChange}
-                            />
+                            <label className="form-control-static">Người phê duyệt</label>
+                            <input type="text" className="form-control" name="approver" onChange={this.handleAppoverChange} placeholder="Người phê duyệt" autoComplete="off" />
                         </div>
                     </div>
 

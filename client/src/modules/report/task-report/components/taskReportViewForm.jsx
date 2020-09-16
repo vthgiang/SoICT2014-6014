@@ -5,8 +5,8 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal } from '../../../../common-components';
 import { taskManagementActions } from '../../../task/task-management/redux/actions';
-import { LineBarChart } from './lineBarChart';
-import { PieChart } from './pieChart';
+import { LineBarChartViewForm } from './lineBarChartViewForm';
+import { PieChartViewForm } from './pieChartViewForm';
 import { chartFunction } from './chart';
 
 class TaskReportViewForm extends Component {
@@ -15,6 +15,7 @@ class TaskReportViewForm extends Component {
         this.state = {
             chartType: '',
             aggregationType: '',
+            collapseChart: false,
         }
     }
 
@@ -27,6 +28,7 @@ class TaskReportViewForm extends Component {
 
     render() {
         const { tasks, reports, translate } = this.props;
+        let { modal } = this.props;
         let formater = new Intl.NumberFormat();
         let listTaskEvaluations = tasks.listTaskEvaluations;
         let taskInfoName, headTable = [], frequency, newlistTaskEvaluation;
@@ -386,7 +388,6 @@ class TaskReportViewForm extends Component {
 
 
         if (output) {
-            console.log('output', output)
             // tách data vẽ biểu đồ:  cột với đường ra riêng, tròn ra riêng
             let separateDataChart = chartFunction.separateDataChart(output); // gọi hàm tách data
             pieChartData = separateDataChart.pieChartData; // Dữ liệu vẽ biểu đồ tròn
@@ -419,19 +420,19 @@ class TaskReportViewForm extends Component {
 
                     {/* Biểu đồ đường và cột */}
                     {
-                        barAndLineDataChartConvert && <LineBarChart barLineChartData={barAndLineDataChartConvert} dataForAxisXInChart={dataForAxisXInChart} />
+                        modal && modal === 'view' && barAndLineDataChartConvert && <LineBarChartViewForm id="viewLineBarChart" barLineChartData={barAndLineDataChartConvert} dataForAxisXInChart={dataForAxisXInChart} />
                     }
 
                     {/* Biểu đồ tròn  */}
                     <div className="row">
                         {
-                            pieChartDataConvert && pieChartDataConvert.map((item, index) => (
+                            modal && modal === 'view' && pieChartDataConvert && pieChartDataConvert.map((item, index) => (
                                 Object.entries(item).map(([code, data]) => {
-                                    if (data.length > 6) {
+                                    if (data.length > 9) {
                                         return (
                                             <div key={index} className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                                 <div className="pieChart">
-                                                    <PieChart pieChartData={data} namePieChart={code} dataForAxisXInChart={dataForAxisXInChart} />
+                                                    <PieChartViewForm id={`viewPieChart-${index}`} pieChartData={data} namePieChart={code} dataForAxisXInChart={dataForAxisXInChart} />
                                                 </div>
                                             </div>
                                         )
@@ -439,7 +440,7 @@ class TaskReportViewForm extends Component {
                                         return (
                                             <div key={index} className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                                 <div className="pieChart">
-                                                    <PieChart pieChartData={data} namePieChart={code} dataForAxisXInChart={dataForAxisXInChart} />
+                                                    <PieChartViewForm id={`viewPieChart-${index}`} pieChartData={data} namePieChart={code} dataForAxisXInChart={dataForAxisXInChart} />
                                                 </div>
                                             </div>
                                         )
@@ -460,11 +461,11 @@ class TaskReportViewForm extends Component {
                             <div className="box">
                                 <div className="box-header">
                                     <div className="box-tools pull-right">
-                                        <button className="btn btn-box-tool" data-widget="collapse"><i className="fa fa-minus"></i></button>
+                                        <button className="btn btn-box-tool" onClick={this.collapseChart} data-toggle="collapse" data-target="#showInfoTask"><i className="fa fa-minus"></i></button>
                                     </div>
                                 </div>
 
-                                <div className=" box-body">
+                                <div className=" box-body in" data-toggle="collapse" aria-expanded="true" id="showInfoTask">
                                     <table className="table table-hover table-striped table-bordered" id="report_manager" style={{ marginBottom: '0px !important' }}>
                                         <thead>
                                             <tr>
