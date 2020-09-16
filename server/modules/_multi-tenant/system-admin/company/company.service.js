@@ -31,12 +31,11 @@ exports.getAllCompanies = async (query) => {
     } else {
         let option = (query.key && query.value) ? { [`${query.key}`] : new RegExp(query.value, "i") } : {};
         let companies = await Company(connect(DB_CONNECTION, process.env.DB_NAME)).paginate(option, { page, limit });
-
-        // for (let i = 0; i < companies.docs.length; i++) {
-        //     let superAdmin = await User(connect(DB_CONNECTION, companies.docs[i].shortName)).findById(companies.docs[i].superAdmin);
-        //     companies.docs[i] = { ...companies.docs[i], superAdmin }
-        // }
-
+        for (let i = 0; i < companies.docs.length; i++) {
+            let superAdmin = await User(connect(DB_CONNECTION, companies.docs[i].shortName)).findById(companies.docs[i].superAdmin);
+            companies.docs[i].superAdmin = superAdmin;
+        }
+        
         return companies;
     }
 }
