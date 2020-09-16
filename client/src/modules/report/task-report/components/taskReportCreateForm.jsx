@@ -568,6 +568,7 @@ class TaskReportCreateForm extends Component {
         })
     }
 
+
     // Hàm bắt sự kiện click nút chuyển data sang listBox chiều dữ liệu trong biểu đồ 
     handleClickTransferLeftList = () => {
         const { newReport } = this.state;
@@ -605,7 +606,11 @@ class TaskReportCreateForm extends Component {
         const { newReport } = this.state;
 
         await this.props.getTaskEvaluations(newReport);
+        this.setState({
+            modal: 'view'
+        })
         window.$('#modal-view-taskreport').modal('show');
+
     }
 
     /**
@@ -643,7 +648,7 @@ class TaskReportCreateForm extends Component {
 
     render() {
         const { translate, reports, tasktemplates, user } = this.props;
-        const { newReport, units, errorOnNameTaskReport, errorOnDescriptiontTaskReport, errorOnStartDate } = this.state;
+        const { newReport, modal, units, errorOnNameTaskReport, errorOnDescriptiontTaskReport, errorOnStartDate } = this.state;
         let { itemListBoxLeft, itemListBoxRight } = this.state.newReport;
         let listTaskTemplate, taskInformations = newReport.taskInformations, listRole, listRoles = [];
 
@@ -686,12 +691,12 @@ class TaskReportCreateForm extends Component {
                     size={100}
                     disableSubmit={!this.isFormValidated()}
                 >
-                    <TaskReportViewForm />
+                    <TaskReportViewForm modal={modal} />
 
                     <div className="row" >
                         <div className="col-md-12 col-lg-12" style={{ display: 'flex', justifyContent: 'flex-end' }}>
                             <div className="form-inline d-flex justify-content-end">
-                                <button id="exportButton" className="btn btn-sm btn-success " title="Xem chi tiết" style={{ marginBottom: '6px' }} onClick={() => this.handleView()} ><span className="fa fa-fw fa-line-chart" style={{ color: 'rgb(66 65 64)', fontSize: '15px', marginRight: '5px' }}></span> Xem</button>
+                                <button id="exportButton" className="btn btn-sm btn-success " title="Xem biểu đồ" style={{ marginBottom: '6px' }} onClick={() => this.handleView()} ><span className="fa fa-fw fa-line-chart" style={{ color: 'rgb(66 65 64)', fontSize: '15px', marginRight: '5px' }}></span></button>
                             </div>
                         </div>
                     </div>
@@ -1101,5 +1106,4 @@ const actionCreators = {
     getTaskEvaluations: taskManagementActions.getTaskEvaluations,
 }
 const createForm = connect(mapState, actionCreators)(withTranslate(TaskReportCreateForm));
-
 export { createForm as TaskReportCreateForm };

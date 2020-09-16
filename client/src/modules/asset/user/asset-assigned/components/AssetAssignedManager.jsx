@@ -285,19 +285,6 @@ class AssetAssignedManager extends Component {
                     </div>
 
                     <div className="form-inline" style={{ marginBottom: 10 }}>
-                        {/* Người được giao sử dụng */}
-                        <div className="form-group">
-                            <label>Người sử dụng</label>
-                            <SelectMulti
-                                id={`userInManagement`}
-                                multiple="multiple"
-                                options={{ nonSelectedText: "Chọn người sử dụng", allSelectedText: "Chọn tất cả" }}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={dataSelectBox.userArr}
-                                onChange={this.handleHandoverUserChange}
-                            />
-                        </div>
 
                         {/* Trạng thái */}
                         <div className="form-group">
@@ -317,6 +304,7 @@ class AssetAssignedManager extends Component {
                         </div>
                         {/* Button tìm kiếm */}
                         <div className="form-group">
+                            <label htmlFor=""></label>
                             <button type="button" className="btn btn-success" title={translate('asset.general_information.search')} onClick={() => this.handleSubmitSearch()}>{translate('asset.general_information.search')}</button>
                         </div>
                     </div>
@@ -353,7 +341,7 @@ class AssetAssignedManager extends Component {
                                     <tr key={index}>
                                         <td>{x.code}</td>
                                         <td>{x.assetName}</td>
-                                        <td>{x.assetType && assettypelist.length && assettypelist.filter(item => item._id === x.assetType).pop() ? assettypelist.filter(item => item._id === x.assetType).pop().typeName : 'Asset is deleted'}</td>
+                                        <td>{x.assetType && x.assetType.length ? x.assetType.map((item, index) => { let suffix = index < x.assetType.length - 1 ? ", " : ""; return item.typeName + suffix }) : 'Asset is deleted'}</td>
                                         <td>{formater.format(parseInt(x.cost))} VNĐ</td>
                                         <td>{x.status}</td>
                                         <td style={{ textAlign: "center" }}>
@@ -390,7 +378,7 @@ class AssetAssignedManager extends Component {
                         managedBy={currentRowView.managedBy}
                         assignedToUser={currentRowView.assignedToUser}
                         assignedToOrganizationalUnit={currentRowView.assignedToOrganizationalUnit}
-                        typeRegisterForUse = {currentRowView.typeRegisterForUse}
+                        typeRegisterForUse={currentRowView.typeRegisterForUse}
                         location={currentRowView.location}
                         description={currentRowView.description}
                         status={currentRowView.status}

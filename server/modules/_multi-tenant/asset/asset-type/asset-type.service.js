@@ -54,7 +54,6 @@ exports.createAssetTypes = async (portal, data) => {
     } else {
         dataArray = data;
     }
-    console.log("55", dataArray)
     for (let i = 0; i < dataArray.length; i++) {
         let query = {
             typeNumber: dataArray[i].typeNumber,
@@ -66,7 +65,6 @@ exports.createAssetTypes = async (portal, data) => {
         if (dataArray[i].parent && dataArray[i].parent.length) {
             query.parent = dataArray[i].parent
         }
-        console.log(query)
         await AssetType(connect(DB_CONNECTION, portal)).create(query);
     }
 
