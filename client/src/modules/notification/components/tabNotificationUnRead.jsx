@@ -6,7 +6,7 @@ import { NotificationActions } from '../redux/actions';
 import NotificationReceiveredInfo from './notificationReiceiveredInfo';
 import parse from 'html-react-parser';
 import innerText from 'react-innertext';
-class TabNotificationReceivered extends Component {
+class TabNotificationUnRead extends Component {
     constructor(props) {
         super(props);
         this.state = { 
@@ -41,6 +41,7 @@ class TabNotificationReceivered extends Component {
                 return innerText(parse(y));
             });
         }
+        
         return ( 
             <React.Fragment>
                 {
@@ -55,7 +56,7 @@ class TabNotificationReceivered extends Component {
                         notificationCreatedAt={currentRow.createdAt}
                     />
                 }
-                <div id="tab-notification-receivered" style={{display: 'none'}}>
+                <div id="tab-notification-un-read" style={{display: 'block'}}>
                     <ul className="todo-list">
                     {
                         notifications.receivered.paginate.length > 0 ? 
@@ -91,7 +92,8 @@ class TabNotificationReceivered extends Component {
                         <div className="table-info-panel" style={{textAlign: "left"}}>{translate('general.no_data')}</div>
                     }
                     </ul>
-                    <PaginateBar id="receivered" pageTotal={notifications.receivered.totalPages} currentPage={notifications.receivered.page} func={this.setPage}/>
+                    <div style={{marginTop: 10}}><a style={{cursor: "pointer"}} onClick={() => this.handleClick()}>{translate('notification.mark_all_readed')}</a></div>
+                    <PaginateBar id="un-read" pageTotal={notifications.receivered.totalPages} currentPage={notifications.receivered.page} func={this.setPage}/>
                 </div>
             </React.Fragment>
          );
@@ -99,7 +101,7 @@ class TabNotificationReceivered extends Component {
 
     setPage = (pageNumber) => {
         this.setState({ page: pageNumber });
-        const data = { limit: this.state.limit, page: pageNumber, content: {level: this.props.notifications.receivered.level} };
+        const data = { limit: this.state.limit, page: pageNumber, content: {level: this.props.notifications.receivered.level}, readed: false };
         this.props.paginateNotifications(data);
     }
 
@@ -110,7 +112,7 @@ class TabNotificationReceivered extends Component {
                 currentRow: notification
             }
         });
-        !notification.readed && await this.props.readedNotification(notification._id)
+        !notification.readed && await this.props.readedNotification({ id: notification._id, readAll: false })
         window.$('#modal-notification-receivered').modal('show');
     }
 
@@ -123,8 +125,12 @@ class TabNotificationReceivered extends Component {
         this.props.getAllNotifications();
         this.props.paginateNotifications({
             limit: this.state.limit, page: this.state.page,
-            content: {level: this.props.notifications.receivered.level}
+            content: {level: this.props.notifications.receivered.level, readed: false}
         });
+    }
+
+    handleClick = async() =>{
+        await this.props.readedNotification({ id: null, readAll: true })
     }
 }
  
@@ -138,4 +144,4 @@ const actions = {
     deleteNotification: NotificationActions.deleteNotification,
     readedNotification: NotificationActions.readedNotification,
 }
-export default connect(mapState, actions)(withTranslate(TabNotificationReceivered));
+export default connect(mapState, actions)(withTranslate(TabNotificationUnRead));

@@ -341,6 +341,7 @@ export default {
             title: 'Thông báo',
             news: 'Thông báo mới',
             see_all: 'Xem tất cả',
+            mark_all_readed: 'Đánh dấu tất cả là đã đọc',
             total: 'Tổng số',
             level: 'loại thông báo',
             type: {
@@ -360,6 +361,7 @@ export default {
             add: 'Tạo thông báo',
             receivered: 'Thông báo đã nhận',
             sent: 'Thông báo đã tạo',
+            unread: 'Thông báo chưa đọc',
             note: 'Chú thích',
             info: 'Thông tin thông báo',
             delete: 'Xóa thông báo',

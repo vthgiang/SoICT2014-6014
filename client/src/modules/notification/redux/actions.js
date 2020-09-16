@@ -11,7 +11,7 @@ export const NotificationActions = {
     deleteManualNotification,
     deleteNotification,
     setLevelNotificationReceivered,
-    setLevelNotificationSent
+    setLevelNotificationSent,
 }
 
 function getAllManualNotifications(){
@@ -99,11 +99,11 @@ function create(data){
     }
 }
 
-function readedNotification(id){
+function readedNotification(data){
     return dispatch => {
         dispatch({ type: NotificationConstants.READED_NOTIFICATION_REQUEST});
         NotificationServices
-            .readedNotification(id)
+            .readedNotification(data)
             .then(res => {
                 dispatch({
                     type: NotificationConstants.READED_NOTIFICATION_SUCCESS,
@@ -157,3 +157,4 @@ function setLevelNotificationReceivered(level=undefined){
 function setLevelNotificationSent(level=undefined){
     return dispatch => dispatch({ type: NotificationConstants.SET_LEVEL_TO_QUERY_NOTIFICATION_SENT, level});
 }
+
