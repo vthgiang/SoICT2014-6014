@@ -9,7 +9,8 @@
     "dev": "nodemon index.js",
     "start-mt": "set MULTI_TENANT=true&& nodemon index.js",
     "init-db": "node seed/_multi-tenant/initDB.js",
-    "init-sample-company": "node seed/_multi-tenant/initSampleCompanyDB.js"
+    "init-sample-company": "node seed/_multi-tenant/initSampleCompanyDB.js",
+    "init-sample-company2": "node seed/_multi-tenant/initSampleCompanyDB2.js"
   },
   "keywords": [],
   "author": "",

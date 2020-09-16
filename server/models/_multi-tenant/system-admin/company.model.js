@@ -22,6 +22,10 @@ const CompanySchema = new Schema({
         type: Boolean,
         required: true,
         default: true
+    },
+    superAdmin: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
     }
 },{
     timestamps: true

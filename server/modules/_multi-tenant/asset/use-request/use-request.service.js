@@ -1,5 +1,4 @@
-const RecommendDistribute = require('../../../models/asset/assetUseRequest.model');
-const { Asset, UserRole } = require('../../../models').schema;
+const { Asset, UserRole, RecommendDistribute } = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
 
 /**
  * Lấy danh sách phiếu đề nghị cấp thiết bị
