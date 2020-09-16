@@ -19,21 +19,25 @@ exports.getAllCompanies = async (query) => {
     let limit = query.limit;
     
     if (!page && !limit) {
-        return await Company(connect(DB_CONNECTION, process.env.DB_NAME))
-            .find();
-    } else {
-        let option = (query.key && query.value)
-                        ? { [`${query.key}`] : new RegExp(query.value, "i") }
-                        : {};
+        let companies = await Company(connect(DB_CONNECTION, process.env.DB_NAME)).find();
 
-        return await Company(connect(DB_CONNECTION, process.env.DB_NAME))
-        .paginate(
-            option, 
-            {   
-                page, 
-                limit
-            }
-        );
+        for (let i = 0; i < companies.length; i++) {
+            let superAdmin = await User(connect(DB_CONNECTION, companies[i].shortName)).findById(companies[i].superAdmin);
+            console.log("company", companies[i])
+            companies[i] = { ...companies[i], superAdmin }
+        }
+
+        return companies;
+    } else {
+        let option = (query.key && query.value) ? { [`${query.key}`] : new RegExp(query.value, "i") } : {};
+        let companies = await Company(connect(DB_CONNECTION, process.env.DB_NAME)).paginate(option, { page, limit });
+
+        // for (let i = 0; i < companies.docs.length; i++) {
+        //     let superAdmin = await User(connect(DB_CONNECTION, companies.docs[i].shortName)).findById(companies.docs[i].superAdmin);
+        //     companies.docs[i] = { ...companies.docs[i], superAdmin }
+        // }
+
+        return companies;
     }
 }
 
@@ -156,7 +160,7 @@ exports.createCompanySuperAdminAccount = async (companyShortName, userEmail) => 
                 <li>Password : ${password}</li>
             </ul>
             <p>Login in: <a href="${process.env.WEBSITE}/login">${process.env.WEBSITE}/login</a></p>
-        </div>tr45
+        </div>
         `
     }
     

@@ -2,7 +2,7 @@ const arrayToTree = require('array-to-tree');
 const ObjectId = require('mongoose').Types.ObjectId;
 const RoleService = require(`${SERVER_MODULES_DIR}/_multi-tenant/super-admin/role/role.service`);
 const Terms = require(`${SERVER_SEED_DIR}/terms`);
-const { OrganizationalUnit, UserRole, Role } = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
+const { OrganizationalUnit, UserRole, Role, RoleType } = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
 const {connect} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 /**
