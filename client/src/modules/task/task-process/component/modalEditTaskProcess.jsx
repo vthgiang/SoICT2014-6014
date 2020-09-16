@@ -689,7 +689,7 @@ class ModalEditTaskProcess extends Component {
                                         <div className='col-md-6'>
                                             {/* Tên quy trình */}
                                             <div className={`form-group ${this.state.errorOnProcessName === undefined ? "" : "has-error"}`}>
-                                                <label className={`control-label`}>{translate("task.task_process.process_name")}</label>
+                                                <label className={`control-label`}>{translate("task.task_process.process_name")} <span style={{color: "red"}}>*</span></label>
                                                 <input type="text"
                                                     value={processName}
                                                     className="form-control" placeholder={translate("task.task_process.process_name")}
@@ -700,7 +700,7 @@ class ModalEditTaskProcess extends Component {
 
                                             {/* Mô tả quy trình */}
                                             <div className={`form-group ${this.state.errorOnProcessDescription === undefined ? "" : "has-error"}`}>
-                                                <label className="control-label">{translate("task.task_process.process_description")}</label>
+                                                <label className="control-label">{translate("task.task_process.process_description")} <span style={{color: "red"}}>*</span></label>
                                                 <textarea type="text" rows={4}
                                                     value={processDescription}
                                                     className="form-control" placeholder="Mô tả công việc"
@@ -711,7 +711,7 @@ class ModalEditTaskProcess extends Component {
 
                                             {/* Người xem quy trình */}
                                             <div className={`form-group ${this.state.errorOnViewer === undefined ? "" : "has-error"}`}>
-                                                <label className="control-label">{translate("task.task_process.viewer")}</label>
+                                                <label className="control-label">{translate("task.task_process.viewer")} <span style={{color: "red"}}>*</span></label>
                                                 {
                                                     <SelectBox
                                                         id={`select-viewer-employee-edit-${idProcess}`}
@@ -728,7 +728,7 @@ class ModalEditTaskProcess extends Component {
 
                                             {/* Người quản lý quy trình */}
                                             <div className={`form-group ${this.state.errorOnManager === undefined ? "" : "has-error"}`}>
-                                                <label className="control-label" >{translate("task.task_process.manager")}</label>
+                                                <label className="control-label" >{translate("task.task_process.manager")} <span style={{color: "red"}}>*</span></label>
                                                 {
                                                     <SelectBox
                                                         id={`select-manager-employee-edit-${idProcess}`}
