@@ -105,18 +105,18 @@ class PurchaseRequestManager extends Component {
     }
 
     // Function lưu người đề nghị vào state khi thay đổi
-    handleProposalEmployeeChange = (value) => {
+    handleProposalEmployeeChange = (event) => {
+        const { name, value } = event.target;
         this.setState({
-            ...this.state,
-            proponent: value
+            [name]: value
         });
     }
 
     // Function lưu giá trị tháng vào state khi thay đổi
-    handleApproverChange = (value) => {
+    handleApproverChange = (event) => {
+        const { name, value } = event.target;
         this.setState({
-            ...this.state,
-            approver: value
+            [name]: value
         });
     }
 
@@ -138,7 +138,7 @@ class PurchaseRequestManager extends Component {
             ...this.state,
             page: 0
         })
-
+        console.log('thí', this.state);
         this.props.searchRecommendProcures(this.state);
     }
 
@@ -285,30 +285,14 @@ class PurchaseRequestManager extends Component {
 
                         {/* Người đề nghị */}
                         <div className="form-group">
-                            <label>Người đề nghị</label>
-                            <SelectMulti
-                                id={`handleProposalEmployeeChange`}
-                                multiple="multiple"
-                                options={{ nonSelectedText: "Chọn người đề nghị", allSelectedText: "Chọn tất cả" }}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={userIdArr}
-                                onChange={this.handleProposalEmployeeChange}
-                            />
+                            <label className="form-control-static">Người đề nghị</label>
+                            <input type="text" className="form-control" name="proponent" onChange={this.handleProposalEmployeeChange} placeholder="Người đề nghị" autoComplete="off" />
                         </div>
 
                         {/* Người phê duyệt */}
                         <div className="form-group">
-                            <label>Người phê duyệt</label>
-                            <SelectMulti
-                                id={`handleApproverChange`}
-                                multiple="multiple"
-                                options={{ nonSelectedText: "Chọn người phê duyệt", allSelectedText: "Chọn tất cả" }}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={userIdArr}
-                                onChange={this.handleApproverChange}
-                            />
+                            <label className="form-control-static">Người phê duyệt</label>
+                            <input type="text" className="form-control" name="approver" onChange={this.handleApproverChange} placeholder="Người phê duyệt" autoComplete="off" />
                         </div>
                     </div>
                     <div className="form-inline" style={{ marginBottom: 10 }}>

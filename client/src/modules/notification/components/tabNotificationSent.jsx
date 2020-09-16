@@ -20,7 +20,6 @@ class TabNotificationSent extends Component {
         let content = [];
         if (notifications.isLoading === false) {
             content = notifications.receivered.paginate.map( x => x.content);
-            console.log(content);
             content = content.map(x => {
                 let y = x.split('');
                 let i = 0;

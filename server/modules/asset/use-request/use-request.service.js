@@ -1,11 +1,11 @@
 const RecommendDistribute = require('../../../models/asset/assetUseRequest.model');
-const { Asset, UserRole } = require('../../../models').schema;
+const { Asset, UserRole, User } = require('../../../models').schema;
 
 /**
  * Lấy danh sách phiếu đề nghị cấp thiết bị
  */
 exports.searchRecommendDistributes = async (query, company) => {
-    const { receiptsCode, createReceiptsDate, reqUseStatus, reqUseEmployee, approver, page, limit, managedBy,  assetId  } = query;
+    const { receiptsCode, createReceiptsDate, reqUseStatus, reqUseEmployee, approver, page, limit, managedBy, assetId } = query;
     var keySearch = { company: company };
 
     // Bắt sựu kiện mã phiếu tìm kiếm khác ""
@@ -18,18 +18,28 @@ exports.searchRecommendDistributes = async (query, company) => {
         keySearch = { ...keySearch, status: { $in: reqUseStatus } };
     };
 
-    // Thêm key tìm kiếm theo đăng ký vào keySearch
+    // Thêm key tìm kiếm theo người đăng ký vào keySearch
     if (reqUseEmployee) {
-        keySearch = { ...keySearch, proponent: { $in: reqUseEmployee } };
+        let user = await User.find({ name: { $regex: reqUseEmployee, $options: "i" } }).select('_id');
+        let userIds = [];
+        user.map(x => {
+            userIds.push(x._id)
+        })
+        keySearch = { ...keySearch, proponent: { $in: userIds } };
     };
 
     // Thêm key tìm kiếm theo người phê duyệt vào keySearch
     if (approver) {
-        keySearch = { ...keySearch, approver: { $in: approver } };
+        let user = await User.find({ name: { $regex: approver, $options: "i" } }).select('_id');
+        let userIds = [];
+        user.map(x => {
+            userIds.push(x._id)
+        })
+        keySearch = { ...keySearch, approver: { $in: userIds } };
     };
 
     if (assetId) {
-        keySearch = {...keySearch, asset: { $in: assetId}};
+        keySearch = { ...keySearch, asset: { $in: assetId } };
     }
     // Thêm key tìm theo ngày lập phiếu vào keySearch
     if (createReceiptsDate) {
