@@ -12,7 +12,7 @@ exports.getRoles = async (req, res) => {
             content: roles
         });
     } catch (error) {
-        
+ 
         Logger.error(req.user.email, 'get_roles_faile', req.portal);
         res.status(400).json({
             success: false,

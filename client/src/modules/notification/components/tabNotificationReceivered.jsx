@@ -110,7 +110,7 @@ class TabNotificationReceivered extends Component {
                 currentRow: notification
             }
         });
-        !notification.readed && await this.props.readedNotification(notification._id)
+        !notification.readed && await this.props.readedNotification({ id: notification._id, readAll: false})
         window.$('#modal-notification-receivered').modal('show');
     }
 

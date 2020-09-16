@@ -55,13 +55,12 @@ exports.getCompany = async (req, res) => {
  */
 exports.createCompany = async (req, res) => {
     try {
-        console.log("Create company");
         const company = await CompanyServices.createCompany(req.body);
         const abstractRoles = await CompanyServices.createCompanyRootRoles(company.shortName);
 
         await CompanyServices.createCompanySuperAdminAccount(company.shortName, req.body.email);
-        await CompanyServices.createCompanyLinks(company._id, req.body.links, abstractRoles);
-        await CompanyServices.createCompanyComponents(company._id, req.body.links);
+        await CompanyServices.createCompanyLinks(company.shortName, req.body.links, abstractRoles);
+        await CompanyServices.createCompanyComponents(company.shortName, req.body.links);
         
         const resCompany = await CompanyServices.getCompany(company._id);
         
@@ -90,7 +89,7 @@ exports.createCompany = async (req, res) => {
 exports.editCompany = async (req, res) => {
     try {
         const company = await CompanyServices.editCompany(req.params.companyId, req.body);
-        await CompanyServices.editCompanySuperAdmin(company._id, req.body.email);
+        await CompanyServices.editCompanySuperAdmin(company.shortName, req.body.email);
 
         const resCompany = await CompanyServices.getCompany(company._id);
 

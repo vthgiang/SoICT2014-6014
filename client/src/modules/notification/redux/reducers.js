@@ -162,10 +162,10 @@ export function notifications(state = initState, action) {
 
         case NotificationConstants.READED_NOTIFICATION_SUCCESS:
             if (!action.payload.readAll) {
-                index = findIndex(state.receivered.list, action.payload._id);
-                if(index !== -1) state.receivered.list[index] = action.payload;
-                indexP = findIndex(state.receivered.paginate, action.payload._id);
-                if(indexP !== -1) state.receivered.paginate[indexP] = action.payload;
+                index = findIndex(state.receivered.list, action.payload.notification._id);
+                if(index !== -1) state.receivered.list[index] = action.payload.notification;
+                indexP = findIndex(state.receivered.paginate, action.payload.notification._id);
+                if(indexP !== -1) state.receivered.paginate[indexP] = action.payload.notification;
                 return {
                     ...state,
                     isLoading: false
