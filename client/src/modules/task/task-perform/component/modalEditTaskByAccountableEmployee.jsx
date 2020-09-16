@@ -205,6 +205,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
     handleChangeTextInfo = async (e) => {
         let value = e.target.value;
         let name = e.target.name;
+        console.log('name-val', name, value);
         await this.setState(state => {
             state.info[`${name}`] = {
                 value: value,
@@ -234,7 +235,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
     }
 
     handleSetOfValueChange = async (value, code) => {
-        console.log('value', value);
+        console.log('set', value);
 
         this.setState(state => {
             state.info[`${code}`] = {
@@ -948,8 +949,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
             startDate, endDate, formula, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees, inactiveEmployees, parent, parentTask
         } = this.state;
 
-        console.log(priorityOptions);
-
         const { tasks, perform, id, role, title, hasAccountable } = this.props;
 
         let departmentUsers, usercompanys;
@@ -968,7 +967,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
 
                 //không có parent trong arr
                 !hasParentItem && listParentTask.unshift({ value: parentTask._id, text: parentTask.name })
-                console.log('arr',arr);
+                console.log('arr', arr);
                 for (let i in arr) {
                     if (arr[i].value === parentTask._id) {
                         listParentTask.unshift({ value: parentTask._id, text: parentTask.name })

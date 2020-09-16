@@ -60,41 +60,59 @@ class EmployeeImportForm extends Component {
      * @param {*} value : dữ liệu cần import
      */
     handleCheckImportDataOfEmployeeInfor = (value) => {
+        const { translate } = this.props;
+
         value = value.map(x => {
-            let birthdate = typeof x.birthdate === 'string' ? x.birthdate : this.convertExcelDateToJSDate(x.birthdate);
-            let identityCardDate = typeof x.identityCardDate === 'string' ? x.identityCardDate : this.convertExcelDateToJSDate(x.identityCardDate);
-            let startingDate = typeof x.startingDate === 'string' ? x.startingDate : this.convertExcelDateToJSDate(x.startingDate);
-            let leavingDate = typeof x.leavingDate === 'string' ? x.leavingDate : this.convertExcelDateToJSDate(x.leavingDate);
-            let taxDateOfIssue = typeof x.taxDateOfIssue === 'string' ? x.taxDateOfIssue : this.convertExcelDateToJSDate(x.taxDateOfIssue);
-            let healthInsuranceStartDate = typeof x.healthInsuranceStartDate === 'string' ? x.healthInsuranceStartDate : this.convertExcelDateToJSDate(x.healthInsuranceStartDate);
-            let healthInsuranceEndDate = typeof x.healthInsuranceEndDate === 'string' ? x.healthInsuranceEndDate : this.convertExcelDateToJSDate(x.healthInsuranceEndDate);
-            let gender = (x.gender === "Nam" || x.gender.toLowerCase() === "male") ? "male" : "female";
-            console.log(x.status);
-            let maritalStatus = (x.maritalStatus === "Độc thân" || x.maritalStatus.toLowerCase() === "single") ? "single" : "married";
-            let professionalSkill;
-            let status = (x.status === "Đang làm việc" || x.status.toLowerCase() === "active") ? "active" : "leave";
+            let birthdate = (!x.birthdate || typeof x.birthdate === 'string') ? x.birthdate : this.convertExcelDateToJSDate(x.birthdate);
+            let identityCardDate = (!x.identityCardDate || typeof x.identityCardDate === 'string') ? x.identityCardDate : this.convertExcelDateToJSDate(x.identityCardDate);
+            let startingDate = (!x.startingDate || typeof x.startingDate === 'string') ? x.startingDate : this.convertExcelDateToJSDate(x.startingDate);
+            let leavingDate = (!x.leavingDate || typeof x.leavingDate === 'string') ? x.leavingDate : this.convertExcelDateToJSDate(x.leavingDate);
+            let taxDateOfIssue = (!x.taxDateOfIssue || typeof x.taxDateOfIssue === 'string') ? x.taxDateOfIssue : this.convertExcelDateToJSDate(x.taxDateOfIssue);
+            let healthInsuranceStartDate = (!x.healthInsuranceStartDate || typeof x.healthInsuranceStartDate === 'string') ? x.healthInsuranceStartDate : this.convertExcelDateToJSDate(x.healthInsuranceStartDate);
+            let healthInsuranceEndDate = (!x.healthInsuranceEndDate || typeof x.healthInsuranceEndDate === 'string') ? x.healthInsuranceEndDate : this.convertExcelDateToJSDate(x.healthInsuranceEndDate);
+            let gender = translate('human_resource.profile.male') ? "male" : "female";
+            let maritalStatus = translate('human_resource.profile.single') ? "single" : "married";
+            let professionalSkill, educationalLevel;
+            let status = translate('human_resource.profile.active') ? "active" : "leave";
             switch (x.professionalSkill) {
-                case "Trung cấp":
+                case translate('human_resource.profile.intermediate_degree'):
                     professionalSkill = "intermediate_degree";
                     break;
-                case "Cao đẳng":
+                case translate('human_resource.profile.colleges'):
                     professionalSkill = "colleges";
                     break;
-                case "Đại học":
+                case translate('human_resource.profile.university'):
                     professionalSkill = "university";
                     break;
-                case "Thạc sĩ":
+                case translate('human_resource.profile.master_degree'):
                     professionalSkill = "master_degree";
                     break;
-                case "Tiến sĩ":
+                case translate('human_resource.profile.phd'):
                     professionalSkill = "phd";
                     break;
-                case "Không có":
+                case translate('human_resource.profile.unavailable'):
                     professionalSkill = "unavailable";
                     break;
                 default:
                     professionalSkill = "unavailable";
-            }
+            };
+
+            switch (x.educationalLevel) {
+                case '12/12':
+                    educationalLevel = '12/12';
+                    break;
+                case '11/12':
+                    educationalLevel = '11/12';
+                    break;
+                case '10/12':
+                    educationalLevel = '10/12';
+                    break;
+                case '9/12':
+                    educationalLevel = '9/12';
+                    break;
+                default:
+                    educationalLevel = "12/12";
+            };
             return {
                 ...x,
                 birthdate: this.convertStringToDate(birthdate, false),
@@ -106,6 +124,7 @@ class EmployeeImportForm extends Component {
                 healthInsuranceEndDate: this.convertStringToDate(healthInsuranceEndDate, false),
                 gender: gender,
                 maritalStatus: maritalStatus,
+                educationalLevel: educationalLevel,
                 professionalSkill: professionalSkill,
                 status: status
             };
@@ -125,55 +144,43 @@ class EmployeeImportForm extends Component {
                 x = { ...x, error: true }
             }
             if (x.employeeNumber === null) {
-                errorAlert = [...errorAlert, 'employee_number_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.staff_number')} ${translate('human_resource.cannot_be_empty')}`];
             } else {
                 if (checkImportData.filter(y => y.employeeNumber === x.employeeNumber).length > 1)
-                    errorAlert = [...errorAlert, 'employee_number_have_exist'];
+                    errorAlert = [...errorAlert, `${translate('human_resource.profile.staff_number')} ${translate('human_resource.value_duplicate')}`];
             };
             if (x.fullName === null) {
-                errorAlert = [...errorAlert, 'full_name_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.full_name')} ${translate('human_resource.cannot_be_empty')}`];
             }
             if (x.emailInCompany === null) {
-                errorAlert = [...errorAlert, 'email_in_company_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.email_company')} ${translate('human_resource.cannot_be_empty')}`];
             } else {
                 if (checkImportData.filter(y => y.emailInCompany === x.emailInCompany).length > 1)
-                    errorAlert = [...errorAlert, 'email_in_company_have_exist'];
+                    errorAlert = [...errorAlert, `${translate('human_resource.profile.email_company')} ${translate('human_resource.value_duplicate')}`];
             };
             if (x.employeeTimesheetId === null) {
-                errorAlert = [...errorAlert, 'employee_timesheet_id_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.attendance_code')} ${translate('human_resource.cannot_be_empty')}`];
             } else {
                 if (checkImportData.filter(y => y.employeeTimesheetId === x.employeeTimesheetId).length > 1)
-                    errorAlert = [...errorAlert, 'employee_timesheet_id_have_exist'];
+                    errorAlert = [...errorAlert, `${translate('human_resource.profile.attendance_code')} ${translate('human_resource.value_duplicate')}`];
             };
             if (x.birthdate === null) {
-                errorAlert = [...errorAlert, 'birthdate_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.date_birth')} ${translate('human_resource.cannot_be_empty')}`];
             }
             if (x.identityCardNumber === null) {
-                errorAlert = [...errorAlert, 'identity_card_number_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.id_card')} ${translate('human_resource.cannot_be_empty')}`];
             }
             if (x.identityCardDate === null) {
-                errorAlert = [...errorAlert, 'identity_card_date_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.date_issued')} ${translate('human_resource.cannot_be_empty')}`];
             }
             if (x.identityCardAddress === null) {
-                errorAlert = [...errorAlert, 'identity_card_address_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.issued_by')} ${translate('human_resource.cannot_be_empty')}`];
             }
             if (x.phoneNumber === null) {
-                errorAlert = [...errorAlert, 'phone_number_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.mobile_phone_1')} ${translate('human_resource.cannot_be_empty')}`];
             }
             if (x.temporaryResidence === null) {
-                errorAlert = [...errorAlert, 'temporary_residence_required'];
-            }
-            if (x.taxDateOfIssue === null) {
-                errorAlert = [...errorAlert, 'tax_date_of_issue_required'];
-            }
-            if (x.taxNumber === null) {
-                errorAlert = [...errorAlert, 'tax_number_required'];
-            }
-            if (x.taxRepresentative === null) {
-                errorAlert = [...errorAlert, 'tax_representative_required'];
-            }
-            if (x.taxAuthority === null) {
-                errorAlert = [...errorAlert, 'tax_authority_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.current_residence')} ${translate('human_resource.cannot_be_empty')}`];
             }
             x = { ...x, errorAlert: errorAlert }
             return x;
@@ -189,9 +196,11 @@ class EmployeeImportForm extends Component {
      * @param {*} value : dữ liệu cần import
      */
     handleCheckImportDataOfExperience = (value) => {
+        const { translate } = this.props;
+
         value = value.map(x => {
-            let startDate = typeof x.startDate === 'string' ? x.startDate : this.convertExcelDateToJSDate(x.startDate);
-            let endDate = typeof x.endDate === 'string' ? x.endDate : this.convertExcelDateToJSDate(x.endDate);
+            let startDate = (!x.startDate || typeof x.startDate === 'string') ? x.startDate : this.convertExcelDateToJSDate(x.startDate);
+            let endDate = (!x.endDate || typeof x.endDate === 'string') ? x.endDate : this.convertExcelDateToJSDate(x.endDate);
             return {
                 ...x,
                 startDate: this.convertStringToDate(startDate, true),
@@ -209,22 +218,22 @@ class EmployeeImportForm extends Component {
                 x = { ...x, error: true }
             }
             if (x.employeeNumber === null) {
-                errorAlert = [...errorAlert, 'employee_number_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.staff_number')} ${translate('human_resource.cannot_be_empty')}`];
             };
             if (x.fullName === null) {
-                errorAlert = [...errorAlert, 'full_name_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.full_name')} ${translate('human_resource.cannot_be_empty')}`];
             };
             if (x.startDate === null) {
-                errorAlert = [...errorAlert, 'start_date_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.from_month_year')} ${translate('human_resource.cannot_be_empty')}`];
             };
             if (x.endDate === null) {
-                errorAlert = [...errorAlert, 'end_date_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.to_month_year')} ${translate('human_resource.cannot_be_empty')}`];
             };
             if (x.company === null) {
-                errorAlert = [...errorAlert, 'company_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.unit')} ${translate('human_resource.cannot_be_empty')}`];
             };
             if (x.position === null) {
-                errorAlert = [...errorAlert, 'position_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.position')} ${translate('human_resource.cannot_be_empty')}`];
             };
             x = { ...x, errorAlert: errorAlert }
             return x;
@@ -240,22 +249,23 @@ class EmployeeImportForm extends Component {
      * @param {*} value : dữ liệu cần import
      */
     handleCheckImportDataOfDegree = (value) => {
+        const { translate } = this.props;
         value = value.map(x => {
             let degreeType;
             switch (x.degreeType) {
-                case "Xuất sắc":
+                case translate('human_resource.profile.excellent'):
                     degreeType = "excellent";
                     break;
-                case "Giỏi":
+                case translate('human_resource.profile.very_good'):
                     degreeType = "very_good";
                     break;
-                case "Khá":
+                case translate('human_resource.profile.good'):
                     degreeType = "good";
                     break;
-                case "Trung bình khá":
+                case translate('human_resource.profile.average_good'):
                     degreeType = "average_good";
                     break;
-                case "Trung bình":
+                case translate('human_resource.profile.ordinary'):
                     degreeType = "ordinary";
                     break;
                 default:
@@ -275,22 +285,22 @@ class EmployeeImportForm extends Component {
                 x = { ...x, error: true }
             }
             if (x.employeeNumber === null) {
-                errorAlert = [...errorAlert, 'employee_number_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.staff_number')} ${translate('human_resource.cannot_be_empty')}`];
             };
             if (x.fullName === null) {
-                errorAlert = [...errorAlert, 'full_name_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.full_name')} ${translate('human_resource.cannot_be_empty')}`];
             };
             if (x.name === null) {
-                errorAlert = [...errorAlert, 'name_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.name_diploma')} ${translate('human_resource.cannot_be_empty')}`];
             };
             if (x.issuedBy === null) {
-                errorAlert = [...errorAlert, 'issuedBy_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.diploma_issued_by')} ${translate('human_resource.cannot_be_empty')}`];
             };
             if (x.year === null) {
-                errorAlert = [...errorAlert, 'year_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.graduation_year')} ${translate('human_resource.cannot_be_empty')}`];
             };
             if (x.degreeType === null) {
-                errorAlert = [...errorAlert, 'degreeType_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.ranking_learning')} ${translate('human_resource.cannot_be_empty')}`];
             };
             x = { ...x, errorAlert: errorAlert }
             return x;
@@ -307,9 +317,11 @@ class EmployeeImportForm extends Component {
      * @param {*} value : dữ liệu cần import
      */
     handleCheckImportDataOfCertificate = (value) => {
+        const { translate } = this.props;
+
         value = value.map(x => {
-            let startDate = typeof x.startDate === 'string' ? x.startDate : this.convertExcelDateToJSDate(x.startDate);
-            let endDate = typeof x.endDate === 'string' ? x.endDate : this.convertExcelDateToJSDate(x.endDate);
+            let startDate = (!x.startDate || typeof x.startDate === 'string') ? x.startDate : this.convertExcelDateToJSDate(x.startDate);
+            let endDate = (!x.endDate || typeof x.endDate === 'string') ? x.endDate : this.convertExcelDateToJSDate(x.endDate);
             return {
                 ...x,
                 startDate: this.convertStringToDate(startDate, false),
@@ -327,22 +339,19 @@ class EmployeeImportForm extends Component {
                 x = { ...x, error: true }
             }
             if (x.employeeNumber === null) {
-                errorAlert = [...errorAlert, 'employee_number_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.staff_number')} ${translate('human_resource.cannot_be_empty')}`];
             };
             if (x.fullName === null) {
-                errorAlert = [...errorAlert, 'full_name_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.full_name')} ${translate('human_resource.cannot_be_empty')}`];
             };
             if (x.name === null) {
-                errorAlert = [...errorAlert, 'name_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.name_certificate')} ${translate('human_resource.cannot_be_empty')}`];
             };
             if (x.issuedBy === null) {
-                errorAlert = [...errorAlert, 'issued_by_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.issued_by')} ${translate('human_resource.cannot_be_empty')}`];
             };
             if (x.startDate === null) {
-                errorAlert = [...errorAlert, 'start_date_required'];
-            };
-            if (x.endDate === null) {
-                errorAlert = [...errorAlert, 'end_date_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.date_issued')} ${translate('human_resource.cannot_be_empty')}`];
             };
             x = { ...x, errorAlert: errorAlert }
             return x;
@@ -359,9 +368,11 @@ class EmployeeImportForm extends Component {
      * @param {*} value : dữ liệu cần import
      */
     handleCheckImportDataOfContract = (value) => {
+        const { translate } = this.props;
+
         value = value.map(x => {
-            let startDate = typeof x.startDate === 'string' ? x.startDate : this.convertExcelDateToJSDate(x.startDate);
-            let endDate = typeof x.endDate === 'string' ? x.endDate : this.convertExcelDateToJSDate(x.endDate);
+            let startDate = (!x.startDate || typeof x.startDate === 'string') ? x.startDate : this.convertExcelDateToJSDate(x.startDate);
+            let endDate = (!x.endDate || typeof x.endDate === 'string') ? x.endDate : this.convertExcelDateToJSDate(x.endDate);
             return {
                 ...x,
                 startDate: this.convertStringToDate(startDate, false),
@@ -379,22 +390,19 @@ class EmployeeImportForm extends Component {
                 x = { ...x, error: true }
             }
             if (x.employeeNumber === null) {
-                errorAlert = [...errorAlert, 'employee_number_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.staff_number')} ${translate('human_resource.cannot_be_empty')}`];
             };
             if (x.fullName === null) {
-                errorAlert = [...errorAlert, 'full_name_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.full_name')} ${translate('human_resource.cannot_be_empty')}`];
             };
             if (x.name === null) {
-                errorAlert = [...errorAlert, 'name_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.name_contract')} ${translate('human_resource.cannot_be_empty')}`];
             };
             if (x.contractType === null) {
-                errorAlert = [...errorAlert, 'contract_type_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.type_contract')} ${translate('human_resource.cannot_be_empty')}`];
             };
             if (x.startDate === null) {
-                errorAlert = [...errorAlert, 'start_date_required'];
-            };
-            if (x.endDate === null) {
-                errorAlert = [...errorAlert, 'end_date_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.start_date')} ${translate('human_resource.cannot_be_empty')}`];
             };
             x = { ...x, errorAlert: errorAlert }
             return x;
@@ -406,13 +414,15 @@ class EmployeeImportForm extends Component {
     }
 
     /**
-     * Function kiểm dữ liệu import kinh nghiệm làm việc
+     * Function kiểm dữ liệu import quá trình đóng bảo hiểm
      * @param {*} value : dữ liệu cần import
      */
     handleCheckImportDataOfSocialInsuranceDetails = (value) => {
+        const { translate } = this.props;
+
         value = value.map(x => {
-            let startDate = typeof x.startDate === 'string' ? x.startDate : this.convertExcelDateToJSDate(x.startDate);
-            let endDate = typeof x.endDate === 'string' ? x.endDate : this.convertExcelDateToJSDate(x.endDate);
+            let startDate = (!x.startDate || typeof x.startDate === 'string') ? x.startDate : this.convertExcelDateToJSDate(x.startDate);
+            let endDate = (!x.endDate || typeof x.endDate === 'string') ? x.endDate : this.convertExcelDateToJSDate(x.endDate);
             return {
                 ...x,
                 startDate: this.convertStringToDate(startDate, true),
@@ -430,22 +440,22 @@ class EmployeeImportForm extends Component {
                 x = { ...x, error: true }
             }
             if (x.employeeNumber === null) {
-                errorAlert = [...errorAlert, 'employee_number_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.staff_number')} ${translate('human_resource.cannot_be_empty')}`];
             };
             if (x.fullName === null) {
-                errorAlert = [...errorAlert, 'full_name_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.full_name')} ${translate('human_resource.cannot_be_empty')}`];
             };
             if (x.startDate === null) {
-                errorAlert = [...errorAlert, 'start_date_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.from_month_year')} ${translate('human_resource.cannot_be_empty')}`];
             };
             if (x.endDate === null) {
-                errorAlert = [...errorAlert, 'end_date_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.to_month_year')} ${translate('human_resource.cannot_be_empty')}`];
             };
             if (x.company === null) {
-                errorAlert = [...errorAlert, 'company_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.unit')} ${translate('human_resource.cannot_be_empty')}`];
             };
             if (x.position === null) {
-                errorAlert = [...errorAlert, 'position_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.position')} ${translate('human_resource.cannot_be_empty')}`];
             };
             x = { ...x, errorAlert: errorAlert }
             return x;
@@ -461,16 +471,18 @@ class EmployeeImportForm extends Component {
      * @param {*} value : dữ liệu cần import
      */
     handleCheckImportDataOfFile = (value) => {
+        const { translate } = this.props;
+
         value = value.map(x => {
             let status;
             switch (x.status) {
-                case "Đã nộp":
+                case translate('human_resource.profile.submitted'):
                     status = 'submitted';
                     break;
-                case "Chưa nộp":
+                case translate('human_resource.profile.no_submitted'):
                     status = 'no_submitted';
                     break;
-                case "Đã trả lại":
+                case translate('human_resource.profile.returned'):
                     status = 'returned';
                     break;
                 default:
@@ -488,22 +500,22 @@ class EmployeeImportForm extends Component {
                 x = { ...x, error: true }
             }
             if (x.employeeNumber === null) {
-                errorAlert = [...errorAlert, 'employee_number_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.staff_number')} ${translate('human_resource.cannot_be_empty')}`];
             };
             if (x.fullName === null) {
-                errorAlert = [...errorAlert, 'full_name_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.full_name')} ${translate('human_resource.cannot_be_empty')}`];
             };
             if (x.name === null) {
-                errorAlert = [...errorAlert, 'name_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.file_name')} ${translate('human_resource.cannot_be_empty')}`];
             };
             if (x.description === null) {
-                errorAlert = [...errorAlert, 'description_required'];
+                errorAlert = [...errorAlert, `${translate('general.description')} ${translate('human_resource.cannot_be_empty')}`];
             };
             if (x.number === null) {
-                errorAlert = [...errorAlert, 'number_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.number')} ${translate('human_resource.cannot_be_empty')}`];
             };
             if (x.status === null) {
-                errorAlert = [...errorAlert, 'status_required'];
+                errorAlert = [...errorAlert, `${translate('human_resource.status')} ${translate('human_resource.cannot_be_empty')}`];
             };
             x = { ...x, errorAlert: errorAlert }
             return x;
@@ -557,7 +569,7 @@ class EmployeeImportForm extends Component {
     }
 
     /**
-   * Function bắt sự kiện import kinh nghiệm làm việc
+   * Function bắt sự kiện import quá trình đóng bảo hiểm
    */
     handleImportSocialInsuranceDetails = () => {
         let { importDataOfSocialInsuranceDetails } = this.state;
@@ -581,14 +593,15 @@ class EmployeeImportForm extends Component {
             configurationDegree = configurationEmployee.configurationDegree(translate),
             configurationCertificate = configurationEmployee.configurationCertificate(translate),
             configurationContract = configurationEmployee.configurationContract(translate),
-            configurationFile = configurationEmployee.configurationFile(translate);
+            configurationFile = configurationEmployee.configurationFile(translate),
+            teamplateImport = configurationEmployee.templateImport(translate);
 
         return (
             <React.Fragment>
                 <DialogModal
                     modalID={`modal_import_file`} isLoading={false}
                     formID={`form_import_file`}
-                    title='Thêm dữ liệu bằng việc Import file excel'
+                    title={translate('human_resource.add_data_by_excel')}
                     hasSaveButton={false}
                     hasNote={false}
                     size={75}
@@ -596,13 +609,13 @@ class EmployeeImportForm extends Component {
                     <form className="form-group" id={`form_import_file`}>
                         <div className="nav-tabs-custom row" style={{ marginTop: '-15px' }} >
                             <ul className="nav nav-tabs">
-                                <li className="active"><a title="Import thông tin nhân viên" data-toggle="tab" href="#import_employee_general_infor">Thông tin cơ bản</a></li>
-                                <li><a title="Import kinh nghiệm làm việc" data-toggle="tab" href="#import_employee_experience">Kinh nghiệm làm việc</a></li>
-                                <li><a title="Import thông tin bằng cấp" data-toggle="tab" href="#import_employee_degree">Bằng cấp</a></li>
-                                <li><a title="Import thông tin chứng chỉ" data-toggle="tab" href="#import_employee_certificate">Chứng chỉ</a></li>
-                                <li><a title="Import hợp đồng lao động" data-toggle="tab" href="#import_employee_contract">Hợp đồng lao động</a></li>
-                                <li><a title="Import quá trình đóng bảo hiểm xã hội" data-toggle="tab" href="#import_employee_socialInsurance_details">Bảo hiểm xã hội</a></li>
-                                <li><a title="Import tài liệu đính kèm" data-toggle="tab" href="#import_employee_file">Tài liệu đính kèm</a></li>
+                                <li className="active"><a title={translate(`human_resource.profile.employee_management.import.import_general_infor_title`)} data-toggle="tab" href="#import_employee_general_infor">{translate(`human_resource.profile.employee_management.import.import_general_infor`)}</a></li>
+                                <li><a title={translate(`human_resource.profile.employee_management.import.import_experience_title`)} data-toggle="tab" href="#import_employee_experience">{translate(`human_resource.profile.employee_management.import.import_experience`)}</a></li>
+                                <li><a title={translate(`human_resource.profile.employee_management.import.import_degree_title`)} data-toggle="tab" href="#import_employee_degree">{translate(`human_resource.profile.employee_management.import.import_degree`)}</a></li>
+                                <li><a title={translate(`human_resource.profile.employee_management.import.import_certificate_title`)} data-toggle="tab" href="#import_employee_certificate">{translate(`human_resource.profile.employee_management.import.import_certificate`)}</a></li>
+                                <li><a title={translate(`human_resource.profile.employee_management.import.import_contract_title`)} data-toggle="tab" href="#import_employee_contract">{translate(`human_resource.profile.employee_management.import.import_contract`)}</a></li>
+                                <li><a title={translate(`human_resource.profile.employee_management.import.import_socialInsurance_details_title`)} data-toggle="tab" href="#import_employee_socialInsurance_details">{translate(`human_resource.profile.employee_management.import.import_socialInsurance_details`)}</a></li>
+                                <li><a title={translate(`human_resource.profile.employee_management.import.import_file_title`)} data-toggle="tab" href="#import_employee_file">{translate(`human_resource.profile.employee_management.import.import_file`)}</a></li>
 
                             </ul>
                             < div className="tab-content">
@@ -615,6 +628,7 @@ class EmployeeImportForm extends Component {
                                     rowErrorOfReducer={employeesManager.error.rowErrorOfEmployeeInfor}
                                     dataOfReducer={employeesManager.error.employeesInfor}
                                     configuration={configurationEmployeeInfo}
+                                    teamplateImport={teamplateImport}
                                     handleCheckImportData={this.handleCheckImportDataOfEmployeeInfor}
                                     handleImport={this.handleImportEmployeeInfor}
                                 />
@@ -626,6 +640,7 @@ class EmployeeImportForm extends Component {
                                     rowErrorOfReducer={employeesManager.error.rowErrorOfExperience}
                                     dataOfReducer={employeesManager.error.experiences}
                                     configuration={configurationExperience}
+                                    teamplateImport={teamplateImport}
                                     handleCheckImportData={this.handleCheckImportDataOfExperience}
                                     handleImport={this.handleImportExperience}
                                 />
@@ -637,6 +652,7 @@ class EmployeeImportForm extends Component {
                                     rowErrorOfReducer={employeesManager.error.rowErrorOfDegree}
                                     dataOfReducer={employeesManager.error.degrees}
                                     configuration={configurationDegree}
+                                    teamplateImport={teamplateImport}
                                     handleCheckImportData={this.handleCheckImportDataOfDegree}
                                     handleImport={this.handleImportDegree}
                                 />
@@ -648,6 +664,7 @@ class EmployeeImportForm extends Component {
                                     rowErrorOfReducer={employeesManager.error.rowErrorOfCertificate}
                                     dataOfReducer={employeesManager.error.certificates}
                                     configuration={configurationCertificate}
+                                    teamplateImport={teamplateImport}
                                     handleCheckImportData={this.handleCheckImportDataOfCertificate}
                                     handleImport={this.handleImportCertificate}
                                 />
@@ -659,6 +676,7 @@ class EmployeeImportForm extends Component {
                                     rowErrorOfReducer={employeesManager.error.rowErrorOfContract}
                                     dataOfReducer={employeesManager.error.contracts}
                                     configuration={configurationContract}
+                                    teamplateImport={teamplateImport}
                                     handleCheckImportData={this.handleCheckImportDataOfContract}
                                     handleImport={this.handleImportConstract}
                                 />
@@ -670,6 +688,7 @@ class EmployeeImportForm extends Component {
                                     rowErrorOfReducer={employeesManager.error.rowErrorOfSocialInsuranceDetails}
                                     dataOfReducer={employeesManager.error.SocialInsuranceDetails}
                                     configuration={configurationSocialInsuranceDetails}
+                                    teamplateImport={teamplateImport}
                                     handleCheckImportData={this.handleCheckImportDataOfSocialInsuranceDetails}
                                     handleImport={this.handleImportSocialInsuranceDetails}
                                 />
@@ -682,6 +701,7 @@ class EmployeeImportForm extends Component {
                                     rowErrorOfReducer={employeesManager.error.rowErrorOfFile}
                                     dataOfReducer={employeesManager.error.files}
                                     configuration={configurationFile}
+                                    teamplateImport={teamplateImport}
                                     handleCheckImportData={this.handleCheckImportDataOfFile}
                                     handleImport={this.handleImportFile}
                                 />

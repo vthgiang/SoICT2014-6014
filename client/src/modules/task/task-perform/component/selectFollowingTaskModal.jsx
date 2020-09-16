@@ -36,7 +36,6 @@ class SelectFollowingTaskModal extends Component {
      */
     changeSelectedFollowingTask = async (e, id) => {
         let { value, checked } = e.target;
-
         await this.setState(state => {
             state.selectedFollowing[id] = {
                 checked: checked,
@@ -46,6 +45,7 @@ class SelectFollowingTaskModal extends Component {
                 ...state,
             }
         });
+console.log('state', this.state);
     }
 
     /**

@@ -215,9 +215,9 @@ class SalaryManagement extends Component {
                     sheetTitle: translate('human_resource.salary.file_name_export'),
                     tables: [
                         {
-                            //note: "Chú ý: nội dung chú ý",
+                            // note: "Chú ý: nội dung chú ý",
                             // tableName: "Bảng lương 1",
-                            // merges: [{
+                            // merges: [
                             //     key: "other",
                             //     columnName: "Lương thưởng 123",
                             //     keyMerge: 'gender',
@@ -233,10 +233,20 @@ class SalaryManagement extends Component {
                             //     keyMerge: 'other1',
                             //     colspan: 4
                             // }],
+                            // styleColumn: {
+                            //     STT: {
+                            //         vertical: 'top', horizontal: 'center'
+                            //     }
+                            // },
+                            // moreInform: [{
+                            //     title: 'Tiêu đề thông tin thêm',
+                            //     value: ["dòng1", "dòng2"]
+                            // }],
+
                             rowHeader: 2,
                             merges: merges,
                             columns: [
-                                { key: "STT", value: translate('human_resource.stt'), width: 7 },
+                                { key: "STT", value: translate('human_resource.stt'), width: 7, vertical: 'bottom', horizontal: 'left' },
                                 { key: "month", value: translate('human_resource.month'), width: 10 },
                                 { key: "year", value: translate('human_resource.holiday.year'), width: 10 },
                                 { key: "employeeNumber", value: translate('human_resource.staff_number') },

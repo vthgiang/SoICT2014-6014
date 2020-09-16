@@ -295,11 +295,12 @@ class SalaryImportForm extends Component {
                                     />
                                 </div>
                             </div>
+
                             {/* Dowload file import mẫu */}
                             <ExportExcel id="download_template_salary" type='link' exportData={exportData}
                                 buttonName={` ${translate('human_resource.download_file')}`} />
 
-                            <div className="form-group col-md-12 col-xs-12">
+                            <div className="col-md-12 col-xs-12" style={{ padding: 0 }}>
                                 {/* Form hiện thì dữ liệu sẽ import */}
                                 <ShowImportData
                                     id="import_salary_show_data"
