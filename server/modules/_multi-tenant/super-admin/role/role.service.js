@@ -1,5 +1,5 @@
 const Terms = require(`${SERVER_SEED_DIR}/terms`);
-const {OrganizationalUnit, Role, RoleType, UserRole, Privilege} = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
+const { OrganizationalUnit, Role, RoleType, UserRole, Privilege } = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
 const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 /**
@@ -72,16 +72,17 @@ exports.getRole = async (portal, roleId) => {
  * @companyId id công ty
  */
 exports.createRole = async(portal, data) => {
+    console.log("create-role")
     const checkRoleCreated = await Role(connect(DB_CONNECTION, portal))
         .findOne({name: data.name});
-
+        console.log("create-role",checkRoleCreated)
     if (checkRoleCreated) {
         throw ['role_name_exist'];
     }
 
     const roleTuTao = await RoleType(connect(DB_CONNECTION, portal))
         .findOne({ name: Terms.ROLE_TYPES.COMPANY_DEFINED });
-    const role = await Role.create({
+    const role = await Role(connect(DB_CONNECTION, portal)).create({
         name: data.name,
         parents: data.parents,
         type: roleTuTao._id
