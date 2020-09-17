@@ -39,8 +39,6 @@ if (process.env.MULTI_TENANT === 'true') {
 
 	router.use('/auth', require('./modules/_multi-tenant/auth/auth.route'));
 
-	app.use("/documents", require("./modules/document/document.route"));
-
 	app.use("/annualLeave", require("./modules/_multi-tenant/human-resource/annual-leave/annualLeave.route"));
 	app.use("/commendation", require("./modules/_multi-tenant/human-resource/commendation/commendation.route"));
 	app.use("/discipline", require("./modules/_multi-tenant/human-resource/discipline/discipline.route"));
@@ -100,7 +98,9 @@ if (process.env.MULTI_TENANT === 'true') {
 
 	// // example
 	// app.use("/examples", require("./modules/_multi-tenant/example/example.route"));
-	 app.use("/documents", require("./modules/_multi-tenant/document/document.route"));
+	
+	app.use("/documents", require("./modules/_multi-tenant/document/document.route"));
+
 	// // Customer Management
 	// const crm = express.Router();
 	// crm.use(require("./modules/_multi-tenant/crm/customer/customer.route"));
