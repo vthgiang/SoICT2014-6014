@@ -41,7 +41,7 @@ exports.searchAssetProfiles = async (req, res) => {
                 incidentStatus: req.query.incidentStatus,
                 incidentType: req.query.incidentType,
             }
-            data = await AssetService.searchAssetProfiles(params, req.portal);
+            data = await AssetService.searchAssetProfiles(req.portal, params);
 
         }
 
@@ -339,7 +339,7 @@ exports.deleteMaintainance = async (req, res) => {
 
 exports.getIncidents = async (req, res) => {
     try {
-        let data = await AssetService.getIncidents(req.body);
+        let data = await AssetService.getIncidents(req.portal, req.body);
         console.log(data);
         res.status(200).json({
             success: true,

@@ -1,4 +1,5 @@
-const { RecommendProcure, User } = require(`${SERVER_MODELS_DIR}/_multi-tenant`)
+const Models = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
+const { RecommendProcure, User } = Models;
 
 /**
  * Lấy danh sách phiếu đề nghị mua sắm thiết bị

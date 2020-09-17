@@ -6,7 +6,7 @@ const Logger = require(`${SERVER_LOGS_DIR}/_multi-tenant`);
  */
 exports.searchRecommendProcures = async (req, res) => {
     try {
-        var listRecommendProcures = await RecommendProcureService.searchRecommendProcures(req.query, req.portal);
+        var listRecommendProcures = await RecommendProcureService.searchRecommendProcures(req.portal, req.query);
         await Logger.info(req.user.email, 'GET_RECOMMENDPROCURE', req.portal);
         res.status(200).json({
             success: true,
@@ -31,7 +31,7 @@ exports.searchRecommendProcures = async (req, res) => {
  */
 exports.createRecommendProcure = async (req, res) => {
     try {
-        var newRecommendProcure = await RecommendProcureService.createRecommendProcure(req.body, req.portal);
+        var newRecommendProcure = await RecommendProcureService.createRecommendProcure(req.portal, req.body);
         await Logger.info(req.user.email, 'CREATE_RECOMMENDPROCURE', req.portal);
         res.status(200).json({
             success: true,
