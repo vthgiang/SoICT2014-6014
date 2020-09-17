@@ -107,13 +107,13 @@ exports.paginateNotifications = async (req, res) => {
 
 exports.changeNotificationStateToReaded = async (req, res) => {
     try {
-        const notification = await NotificationServices.changeNotificationStateToReaded(req.portal, req.params.id);
+        const notification = await NotificationServices.changeNotificationStateToReaded(req.portal, req.user._id, req.body.id, req.body.readAll);
 
         await Log.info(req.user.email, 'CHANGE_NOTIFICATION_STATE_TO_READED', req.portal);
         res.status(200).json({
             success: true,
             messages: ['change_notification_state_to_readed_success'],
-            content: notification
+            content: {notification : notification, readAll: req.body.readAll}
         });
     } catch (error) {
 
