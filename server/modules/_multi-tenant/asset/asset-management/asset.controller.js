@@ -339,8 +339,7 @@ exports.deleteMaintainance = async (req, res) => {
 
 exports.getIncidents = async (req, res) => {
     try {
-        let data = await AssetService.getIncidents(req.portal, req.body);
-        console.log(data);
+        let data = await AssetService.getIncidents(req.portal, req.query);
         res.status(200).json({
             success: true,
             messages: ["get_incidents_success"],
@@ -360,7 +359,7 @@ exports.getIncidents = async (req, res) => {
  */
 exports.createIncident = async (req, res) => {
     try {
-        let data = await AssetService.createIncident(req.params.id, req.body);
+        let data = await AssetService.createIncident(req.portal, req.params.id, req.body);
         res.status(200).json({
             success: true,
             messages: ["create_incident_success"],
@@ -376,7 +375,7 @@ exports.createIncident = async (req, res) => {
  */
 exports.updateIncident = async (req, res) => {
     try {
-        let data = await AssetService.updateIncident(req.params.id, req.body);
+        let data = await AssetService.updateIncident(req.portal, req.params.id, req.body);
         res.status(200).json({
             success: true,
             messages: ["edit_incident_success"],
@@ -395,8 +394,9 @@ exports.updateIncident = async (req, res) => {
  * Xóa thông tin sự cố tài sản
  */
 exports.deleteIncident = async (req, res) => {
+    console.log('req.params.id, req.body.incidentId', req.params.id, req.body);
     try {
-        let data = await AssetService.deleteIncident(req.params.id, req.body.incidentId);
+        let data = await AssetService.deleteIncident(req.portal, req.params.id, req.body.incidentId);
         res.status(200).json({
             success: true,
             messages: ["delete_incident_success"],

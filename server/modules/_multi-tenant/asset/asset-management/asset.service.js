@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const Models = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
 const { Asset, User } = Models;
 const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
@@ -682,5 +683,6 @@ exports.updateIncident = async (portal, incidentId, data) => {
  * Xóa thông tin sự cố tài sản
  */
 exports.deleteIncident = async (portal, assetId, incidentId) => {
+    console.log(assetId, incidentId);
     return await Asset(connect(DB_CONNECTION, portal)).update({ _id: assetId }, { "$pull": { "incidentLogs": { "_id": incidentId } } });
 }
