@@ -61,7 +61,6 @@ exports.getOrganizationalUnitsAsTree = async (portal) => {
  * @organizationalUnit id của đơn vị 
  */
 exports.getChildrenOfOrganizationalUnitsAsTree = async (portal, role, organizationalUnitId = undefined) => {
-    
     let organizationalUnit;
 
     if (!organizationalUnitId) {

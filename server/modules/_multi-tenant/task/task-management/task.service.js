@@ -1307,7 +1307,7 @@ exports.createTask = async (portal, task) => {
         );
     }
 
-    let mail = await this.sendEmailFoCreateTask(task);
+    let mail = await this.sendEmailFoCreateTask(portal, task);
 
     return { task: task, user: mail.user, email: mail.email, html: mail.html };
 }

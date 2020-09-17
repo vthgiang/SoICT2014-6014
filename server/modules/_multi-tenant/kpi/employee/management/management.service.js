@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 const Models = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
 const { EmployeeKpiSet, EmployeeKpi, OrganizationalUnit, OrganizationalUnitKpiSet, OrganizationalUnitKpi,  } = Models;
-const OrganizationalUnitService = require('../../../super-admin/organizational-unit/organizationalUnit.service');
+// const OrganizationalUnitService = require('../../../super-admin/organizational-unit/organizationalUnit.service');
+const OrganizationalUnitService = require(`${SERVER_MODULES_DIR}/_multi-tenant/super-admin/organizational-unit/organizationalUnit.service`);
 
 /**
  * get all kpi set in Organizational Unit by month
@@ -300,9 +301,9 @@ exports.getAllEmployeeKpiSetInOrganizationalUnit = async (portal, query) => {
 /** 
  * Lấy tất cả các đơn vị con của 1 đơn vị xếp vào 1 mảng 
  */
-exports.getAllChildrenOrganizational = async (portal, companyId, roleId, organizationalUnitId) => {
+exports.getAllChildrenOrganizational = async (portal, roleId, organizationalUnitId) => {  // portal, companyId, roleId, organizationalUnitId //
     
-    let arrayTreeOranizationalUnit = await OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree(portal, companyId, roleId, organizationalUnitId);
+    let arrayTreeOranizationalUnit = await OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree(portal, roleId, organizationalUnitId); // portal, companyId, roleId, organizationalUnitId
     let childrenOrganizationalUnits, temporaryChild, deg = 0;
 
     if (arrayTreeOranizationalUnit) {
