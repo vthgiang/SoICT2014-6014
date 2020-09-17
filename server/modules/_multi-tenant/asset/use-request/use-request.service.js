@@ -1,9 +1,10 @@
-const { RecommendDistribute, User } = require(`${SERVER_MODELS_DIR}/_multi-tenant`)
+const Models = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
+const { RecommendDistribute, User } = Models;
 
 /**
  * Lấy danh sách phiếu đề nghị cấp thiết bị
  */
-exports.searchRecommendDistributes = async (query, portal) => {
+exports.searchRecommendDistributes = async (portal, query) => {
     const { receiptsCode, createReceiptsDate, reqUseStatus, reqUseEmployee, approver, page, limit, managedBy, assetId } = query;
     var keySearch = {};
 

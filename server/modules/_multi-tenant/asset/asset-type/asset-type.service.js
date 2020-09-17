@@ -1,4 +1,5 @@
-const AssetType = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
+const Models = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
+const { AssetType } = Models;
 const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 const arrayToTree = require('array-to-tree');
 const fs = require('fs');

@@ -203,7 +203,7 @@ function aggregate(tasks) {
 
 /**
  * Hàm Convert data sau khi tính toán
- * @param {*} input Đầu vào là một mảng gồm mảng các giá kị có cặp key, value
+ * @param {*} input Đầu vào là một mảng gồm mảng các giá trị có cặp key, value
  */
 function dataAfterAggregate(input) {
     return input.map(([time, datapoints]) => {
@@ -285,6 +285,7 @@ function separateAccountableEmployees(input) {
     return results;
 }
 
+
 /**
  * Hàm tách cả người thực hiện và người phê duyệt ( Dùng cho 3 chiều dữ liệu)
  * @param {*} input 
@@ -353,6 +354,7 @@ function convertDataBarAndLineChart(data) {
     return { dataConvert, typeChart };
 }
 
+
 /**
  * Hàm convert đầu vào cho hàm tính toán trung bình cộng, tổng (Dùng cho dạng 3 chiều dữ liệu)
  * @param {*} input 
@@ -368,6 +370,7 @@ function convertArray3dTo1d(input) {
 /**
  * Hàm lọc lấy các trường cần thiết cho việc config dữ liệu biểu đồ.
  * @param {*} tasks danh sách công việc ban đầu
+ * 
  * Đầu ra sẽ là danh sách các công việc được rút gọn và chiều dữ liệu
  */
 function filterFieldInListTask(tasks) {
@@ -404,7 +407,8 @@ function filterFieldInListTask(tasks) {
 /**
  * Hàm tính toán, xử lý các trường hợp có thể của dữ liệu 3 chiều: thời gian, người thực hiện, người phê duyệt
  * @param {*} tasks danh sách công việc
- * @param {*} dataForAxisXInChart mảng chiều dữ liệu
+ * @param {*} dataForAxisXInChart mảngchiều dữ liệu cho biểu đồ
+ * 
  * Đầu ra của hàm là dữ liệu cho biểu đồ cột+đường và tròn
  */
 function exportDataChart(tasks, dataForAxisXInChart) {

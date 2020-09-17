@@ -1,4 +1,6 @@
-const { Asset, User } = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
+const mongoose = require("mongoose");
+const Models = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
+const { Asset, User } = Models;
 const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 const arrayToTree = require('array-to-tree');
 
@@ -584,16 +586,70 @@ exports.deleteUsage = async (portal, assetId, usageId) => {
     return await Asset(connect(DB_CONNECTION, portal)).update({ _id: assetId }, { "$pull": { "usageLogs": { "_id": usageId } } });
 }
 
+exports.getIncidents = async (portal, params) => {
+    let incidents;
+    let { code, assetName, incidentCode, incidentType, incidentStatus } = params;
+    let page = parseInt(params.page);
+    let limit = parseInt(params.limit);
 
-exports.getIncidents = async (portal, id, data) => {
-    let { page, limit } = data;
+    let assetSearch = [];
+    if (code) {
+        assetSearch = [...assetSearch, { code: { "$regex": code, "$options": "i" } }]
+    }
+    if (assetName) {
+        assetSearch = [...assetSearch, { assetName: { "$regex": assetName, "$options": "i" } }]
+    }
 
-    return await Asset(connect(DB_CONNECTION, portal)).aggregate([
-        { $unwind: "$maintainanceLogs" },
-        { $replaceRoot: { newRoot: "$maintainanceLogs" } },
-        { $limit: limit },
-        { $skip: (page - 1) * limit }
-    ])
+    let incidentSearch = [];
+    if (incidentCode) {
+        incidentSearch = [...incidentSearch, { incidentCode: { "$regex": incidentCode, "$options": "i" } }]
+    }
+    if (incidentType) {
+        incidentSearch = [...incidentSearch, { type: { $in: incidentType } }]
+    }
+
+    if (incidentStatus) {
+        incidentSearch = [...incidentSearch, { statusIncident: { $in: incidentStatus } }]
+    }
+
+    let aggregateQuery = [];
+    if (assetSearch && assetSearch.length !== 0) {
+        aggregateQuery = [...aggregateQuery, { $match: { $and: assetSearch } }]
+    }
+    aggregateQuery = [...aggregateQuery, { $unwind: "$incidentLogs" }, { $replaceRoot: { newRoot: "$incidentLogs" } }]
+
+    if (incidentSearch && incidentSearch.length !== 0) {
+        aggregateQuery = [...aggregateQuery, { $match: { $and: incidentSearch } }]
+    }
+    aggregateQuery = [...aggregateQuery, { $sort: { 'createdAt': 1 } }, { $skip: (page - 1) * limit }, { $limit: limit }]
+
+    // Tìm kiếm câc danh sách sự cố
+    incidents = await Asset(connect(DB_CONNECTION, portal)).aggregate(aggregateQuery);
+
+    // Đếm số sự cố
+    let incidentLength = 0;
+    let count = await Asset(connect(DB_CONNECTION, portal)).aggregate([
+        { $unwind: "$incidentLogs" },
+        { $replaceRoot: { newRoot: "$incidentLogs" } },
+        { $count: "incident_length" }
+    ]);
+    incidentLength = count[0].incident_length;
+
+    // Tìm tài sản ứng với sự cố tài sản
+    for (let i = 0; i < incidents.length; i++) {
+        let item = incidents[i];
+
+        let asset = await Asset(connect(DB_CONNECTION, portal)).findOne(
+            { "incidentLogs": { $elemMatch: { "_id": mongoose.Types.ObjectId(item._id) } } }
+        );
+
+        incidents[i].asset = asset;
+    }
+
+    return {
+        incidentList: incidents,
+        incidentLength: incidentLength,
+    };
 }
 
 /**
@@ -627,5 +683,6 @@ exports.updateIncident = async (portal, incidentId, data) => {
  * Xóa thông tin sự cố tài sản
  */
 exports.deleteIncident = async (portal, assetId, incidentId) => {
+    console.log(assetId, incidentId);
     return await Asset(connect(DB_CONNECTION, portal)).update({ _id: assetId }, { "$pull": { "incidentLogs": { "_id": incidentId } } });
 }

@@ -39,8 +39,6 @@ if (process.env.MULTI_TENANT === 'true') {
 
 	router.use('/auth', require('./modules/_multi-tenant/auth/auth.route'));
 
-	app.use("/documents", require("./modules/document/document.route"));
-
 	app.use("/annualLeave", require("./modules/_multi-tenant/human-resource/annual-leave/annualLeave.route"));
 	app.use("/commendation", require("./modules/_multi-tenant/human-resource/commendation/commendation.route"));
 	app.use("/discipline", require("./modules/_multi-tenant/human-resource/discipline/discipline.route"));
@@ -81,10 +79,10 @@ if (process.env.MULTI_TENANT === 'true') {
 	app.use("/educationProgram", require("./modules/_multi-tenant/trainning/education-program/educationProgram.route"));
 	app.use("/course", require("./modules/_multi-tenant/trainning/course/course.route"));
 
-	// app.use("/assettype", require("./modules/_multi-tenant/asset/asset-type/asset-type.route"));
-	// app.use("/asset", require("./modules/_multi-tenant/asset/asset-management/asset.route"));
-	// app.use("/purchase-request", require("./modules/_multi-tenant/asset/purchase-request/purchase-request.route"));
-	// app.use("/use-request", require("./modules/_multi-tenant/asset/use-request/use-request.route"));
+	app.use("/assettype", require("./modules/_multi-tenant/asset/asset-type/asset-type.route"));
+	app.use("/asset", require("./modules/_multi-tenant/asset/asset-management/asset.route"));
+	app.use("/purchase-request", require("./modules/_multi-tenant/asset/purchase-request/purchase-request.route"));
+	app.use("/use-request", require("./modules/_multi-tenant/asset/use-request/use-request.route"));
 
 	// // Task report
 	// app.use("/taskreports", require("./modules/_multi-tenant/report/task-report/taskReport.route"));
@@ -100,7 +98,9 @@ if (process.env.MULTI_TENANT === 'true') {
 
 	// // example
 	// app.use("/examples", require("./modules/_multi-tenant/example/example.route"));
-	 app.use("/documents", require("./modules/_multi-tenant/document/document.route"));
+	
+	app.use("/documents", require("./modules/_multi-tenant/document/document.route"));
+
 	// // Customer Management
 	// const crm = express.Router();
 	// crm.use(require("./modules/_multi-tenant/crm/customer/customer.route"));
