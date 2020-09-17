@@ -233,7 +233,7 @@ exports.mergeUrlFileToObject = (arrayFile, arrayObject) => {
  * @data : Dữ liệu thông tin tài sản
  * @fileInfo : Thông tin file đính kèm
  */
-exports.createAsset = async (data, portal, fileInfo) => {
+exports.createAsset = async (portal, data, fileInfo) => {
 
     let avatar = fileInfo.avatar === "" ? data.avatar : fileInfo.avatar,
         file = fileInfo.file;
@@ -298,7 +298,7 @@ exports.createAsset = async (data, portal, fileInfo) => {
 /**
  * Cập nhât thông tin tài sản theo id
  */
-exports.updateAssetInformation = async (id, data, fileInfo, portal) => {
+exports.updateAssetInformation = async (portal, id, data, fileInfo) => {
     let {
         createMaintainanceLogs,
         deleteMaintainanceLogs,
@@ -391,7 +391,7 @@ exports.updateAssetInformation = async (id, data, fileInfo, portal) => {
     oldAsset.save();
 
     // Function edit, create, Delete Document of collection
-    queryEditCreateDeleteDocumentInCollection = async (assetId, portal, collection, arrDelete, arrEdit, arrCreate) => {
+    queryEditCreateDeleteDocumentInCollection = async (portal, assetId, collection, arrDelete, arrEdit, arrCreate) => {
         let queryDelete = arrDelete ? arrDelete.map(x => {
             return { deleteOne: { "filter": { "_id": x._id } } }
         }) : [];
@@ -417,7 +417,7 @@ exports.updateAssetInformation = async (id, data, fileInfo, portal) => {
  * Xoá thông tin tài sản
  * @id : Id tài sản cần xoá
  */
-exports.deleteAsset = async (id, portal) => {
+exports.deleteAsset = async (portal, id) => {
     let asset = await Asset(connect(DB_CONNECTION, portal)).findOneAndDelete({ _id: id });
 
     return asset;
@@ -426,7 +426,7 @@ exports.deleteAsset = async (id, portal) => {
 /**
  * Chỉnh sửa thông tin khấu hao tài sản
  */
-exports.updateDepreciation = async (id, portal, data) => {
+exports.updateDepreciation = async (portal, id, data) => {
     return await Asset(connect(DB_CONNECTION, portal)).update({ _id: id }, {
         cost: data.cost,
         residualValue: data.residualValue,
@@ -450,7 +450,7 @@ exports.updateDepreciation = async (id, portal, data) => {
 /*
  * Thêm mới phiếu bảo trì cho sự cố
  */
-exports.createMaintainanceForIncident = async (id, portal, incidentId, data) => {
+exports.createMaintainanceForIncident = async (portal, incidentId, data) => {
     return await Asset(connect(DB_CONNECTION, portal)).update({ _id: data.assetId, "incidentLogs._id": incidentId }, {
         $addToSet: { maintainanceLogs: data },
         $set: {
@@ -465,7 +465,7 @@ exports.createMaintainanceForIncident = async (id, portal, incidentId, data) => 
 /*
  * Lấy danh sách tất cả các phiếu bảo trì của tất cả tài sản hoặc có thể lấy ra danh sách các phiếu bảo trì gần nhất của tất cả tài sản
  */
-exports.searchMaintainances = async (id, data, portal) => {
+exports.searchMaintainances = async (portal, id, data) => {
 
 }
 
@@ -514,7 +514,7 @@ exports.deleteMaintainance = async (portal, assetId, maintainanceId) => {
 /*
  * Lấy danh sách tất cả lịch sử sử dụng của tất cả tài sản hoặc có thể lấy ra danh sách các lịch sử sử dụng gần nhất của tất cả tài sản
  */
-exports.searchUsages = async (id, data, portal) => {
+exports.searchUsages = async (portal, id, data) => {
 
 }
 

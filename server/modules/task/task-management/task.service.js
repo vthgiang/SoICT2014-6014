@@ -1211,7 +1211,7 @@ exports.sendEmailFoCreateTask = async (task) => {
     email.push("trinhhong102@gmail.com");
     var html = `<p>Bạn được giao nhiệm vụ trong công việc:  <a href="${process.env.WEBSITE}/task?taskId=${task._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${task._id} </a></p> ` +
         `<h3>Thông tin công việc</h3>` +
-        `<p>Tên công việc : ${task.name}</p>` +
+        `<p>Tên công việc : <strong> ${task.name}</strong></p>` +
         `<p>Mô tả : ${task.description}</p>` +
         `<p>Người thực hiện</p> ` +
         `<ul>${res.map((item) => {
