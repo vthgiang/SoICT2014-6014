@@ -350,7 +350,7 @@ exports.getAllEmployeeKpiInChildrenOrganizationalUnit = async (portal, companyId
 
     let employeeKpisInChildrenOrganizationalUnit = [], childrenOrganizationalUnits;
 
-    childrenOrganizationalUnits = await this.getAllChildrenOrganizational(portal, companyId, roleId, organizationalUnitId);
+    childrenOrganizationalUnits = await this.getAllChildrenOrganizational(portal, roleId, organizationalUnitId);
 
     if (childrenOrganizationalUnits) {
         for (let i = 0; i < childrenOrganizationalUnits.length; i++) {
