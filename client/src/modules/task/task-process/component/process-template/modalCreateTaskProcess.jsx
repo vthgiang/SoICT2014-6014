@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import { connect } from 'react-redux';
-import { getStorage } from '../../../../config';
+import { getStorage } from '../../../../../config';
 import { withTranslate } from "react-redux-multilingual";
-import { DialogModal, SelectBox, ErrorLabel } from "../../../../common-components";
-import { TaskProcessActions } from "../redux/actions";
-import { DepartmentActions } from "../../../super-admin/organizational-unit/redux/actions";
-import { UserActions } from "../../../super-admin/user/redux/actions";
-import { AddTaskTemplate } from "../../task-template/component/addTaskTemplate";
+import { DialogModal, SelectBox, ErrorLabel } from "../../../../../common-components";
+import { TaskProcessActions } from "../../redux/actions";
+import { DepartmentActions } from "../../../../super-admin/organizational-unit/redux/actions";
+import { UserActions } from "../../../../super-admin/user/redux/actions";
+import { AddTaskTemplate } from "../../../task-template/component/addTaskTemplate";
 import { TaskProcessValidator } from './taskProcessValidator';
 
 import { is } from 'bpmn-js/lib/util/ModelUtil';
@@ -15,7 +15,7 @@ import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil'
 import ElementFactory from 'bpmn-js/lib/features/modeling/ElementFactory';
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
-import customModule from './custom-task-process-template'
+import customModule from '../custom-task-process-template'
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import './processDiagram.css'

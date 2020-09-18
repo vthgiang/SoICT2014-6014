@@ -159,7 +159,7 @@ class EmployeeKpiEvaluateModal extends Component {
                 taskId: id,
             }
         });
-        window.$(`#modal-detail-task`).modal('show');
+        window.$(`#modal-detail-task-kpi-evaluation`).modal('show');
     }
 
     /**Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
@@ -382,7 +382,7 @@ class EmployeeKpiEvaluateModal extends Component {
                                 />
 
                             }
-                            {<ModalDetailTask id={taskId} />}
+                            {<ModalDetailTask action={'kpi-evaluation'} id={taskId} />}
                         </React.Fragment>;
                         return true;
                     })}

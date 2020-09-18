@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { configProcessTempalte, templateImportProcessTemplate } from './fileConfigurationImportProcessTemplate';
-import { DialogModal, ImportFileExcel, ShowImportData, ConFigImportFile, ExportExcel } from '../../../../common-components';
-import { TaskProcessActions } from '../redux/actions';
+import { DialogModal, ImportFileExcel, ShowImportData, ConFigImportFile, ExportExcel } from '../../../../../common-components';
+import { TaskProcessActions } from '../../redux/actions';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { AuthActions } from '../../../auth/redux/actions';
+import { AuthActions } from '../../../../auth/redux/actions';
 
 class FormImportProcessTemplate extends Component {
     constructor(props) {

@@ -449,6 +449,7 @@ class TasksSchedule extends Component {
 
   handleItemClick = async (itemId) => {
     let { tasks } = this.props;
+    console.log('quangld');
     var taskList, tasksByStatus;
 
     if (tasks) {
@@ -509,7 +510,7 @@ class TasksSchedule extends Component {
       }
     })
     await this.props.getTaskById(id);
-    window.$(`#modal-detail-task`).modal('show')
+    window.$(`#modal-detail-task-schedule`).modal('show')
   }
 
   animateScroll = invert => {
@@ -619,7 +620,7 @@ class TasksSchedule extends Component {
               <button className="btn btn-success" onClick={this.handleSearchData}>{translate('task.task_management.filter')}</button>
             </div>
           </section>
-          {<ModalDetailTask task={task} />}
+          {<ModalDetailTask action={'schedule'} task={task} />}
           <Timeline
             scrollRef={el => (this.scrollRef = el)}
             groups={this.getTaskGroups()}

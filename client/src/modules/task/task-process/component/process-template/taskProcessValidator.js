@@ -1,4 +1,4 @@
-import { VALIDATOR } from '../../../../helpers/validator';
+import { VALIDATOR } from '../../../../../helpers/validator';
 
 export const TaskProcessValidator = {
     validateManager,

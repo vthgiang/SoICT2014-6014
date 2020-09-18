@@ -14,9 +14,9 @@ import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
 import customModule from '../custom-task-process'
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
-import './../processDiagram.css'
+import './../process-template/processDiagram.css';
 import { TaskFormValidator } from "../../../task-management/component/taskFormValidator";
-import { TaskProcessValidator } from "../taskProcessValidator";
+import { TaskProcessValidator } from "../process-template/taskProcessValidator";
 import { TaskProcessActions } from "../../redux/actions";
 import getEmployeeSelectBoxItems from "../../../organizationalUnitHelper";
 
@@ -145,8 +145,8 @@ class ModalEditProcess extends Component {
             let state = this.state;
             this.modeler.importXML(nextProps.data.xmlDiagram, function (err) {
                 // handle zoom fit
-                let canvas = modeler.get('canvas');
-                canvas.zoom('fit-viewport');
+                // let canvas = modeler.get('canvas');
+                // canvas.zoom('fit-viewport');
 
                 // chỉnh màu sắc task
                 let infoTask = nextProps.data.tasks
@@ -225,7 +225,7 @@ class ModalEditProcess extends Component {
         })
         if (element.type === 'bpmn:Task' || element.type === 'bpmn:ExclusiveGateway') {
             console.log('0000', this.state.info[this.state.id]);
-            window.$(`#modal-detail-task`).modal("show");
+            window.$(`#modal-detail-task-edit-process`).modal("show");
         }
     }
 
@@ -506,7 +506,7 @@ class ModalEditProcess extends Component {
         const { translate, role, user } = this.props;
         const { idProcess } = this.props;
         const { id, info, viewer, startDate, endDate, status, processDescription, processName, errorOnViewer, errorOnProcessName, errorOnEndDate, errorOnStartDate, errorOnProcessDescription } = this.state;
-        
+
         // lấy danh sách các nhân viên trong cả công ty
         let listUserCompany = user?.usercompanys;
         let listItem = [];
@@ -542,7 +542,7 @@ class ModalEditProcess extends Component {
                 >
                     <div>
                         {id !== undefined &&
-                            <ModalDetailTask task={(info && info[`${id}`]) && info[`${id}`]} isProcess={true} />
+                            <ModalDetailTask action={"edit-process"} task={(info && info[`${id}`]) && info[`${id}`]} isProcess={true} />
                         }
 
                         <div className={'row'}>
