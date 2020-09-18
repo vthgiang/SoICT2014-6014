@@ -80,7 +80,7 @@ class ManageMaterialTable extends Component {
             parseInt(materials.totalList / this.state.limit) :
             parseInt((materials.totalList / this.state.limit) + 1);
         var page = parseInt((this.state.page / this.state.limit) + 1);
-        console.log(page, this.state.limit)
+        console.log(materials.isLoading)
         
         return (
             <React.Fragment>
