@@ -1,5 +1,5 @@
 Component dùng để nhập dữ liệu Date
-Để sử dụng Componett này ta thực hiện các bước sau:
+Để sử dụng Component này ta thực hiện các bước sau:
 ( Xem ví dụ minh hoạ trong Component SalaryEmpoyee.jsx trong modules/employees-manager/salary-employee/component)
 
 BƯỚC 1: Import component

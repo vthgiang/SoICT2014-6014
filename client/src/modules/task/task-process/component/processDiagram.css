@@ -86,7 +86,8 @@
 }
 #viewtaskprocesstab > div > div > div.djs-palette.two-column.open > div.djs-palette-entries, #viewtaskprocesstab > div > div > div.djs-palette.two-column.open,
 #edittaskprocess > div > div > div.djs-palette.two-column.open > div.djs-palette-entries, #edittaskprocess > div > div > div.djs-palette.two-column.open,
-#viewprocess > div > div > div.djs-palette.two-column.open > div.djs-palette-entries, #viewprocess > div > div > div.djs-palette.two-column.open {
+#viewprocess > div > div > div.djs-palette.two-column.open > div.djs-palette-entries, #viewprocess > div > div > div.djs-palette.two-column.open,
+#viewtaskprocesstab > div > div > div.djs-palette.open {
     display: none;
 }
 #viewtaskprocesstab > div > div > div.djs-overlay-container > div > div > div, 

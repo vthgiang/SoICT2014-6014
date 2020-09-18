@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const generator = require("generate-password");
 const OrganizationalUnitService = require(`${SERVER_MODULES_DIR}/_multi-tenant/super-admin/organizational-unit/organizationalUnit.service`);
-const {connect} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 /**
  * Lấy danh sách tất cả user trong 1 công ty
  * @company id của công ty
@@ -33,11 +33,11 @@ exports.getUsers = async (portal, query) => {
                 .find(keySearch)
                 .select('-password -status -deleteSoft -tokens')
                 .populate([{
-                        path: 'roles',
-                        populate: {
-                            path: 'roleId'
-                        }
+                    path: 'roles',
+                    populate: {
+                        path: 'roleId'
                     }
+                }
                 ]);
 
             return {
@@ -48,11 +48,11 @@ exports.getUsers = async (portal, query) => {
                 .find()
                 .select('-password -status -deleteSoft -tokens')
                 .populate([{
-                        path: 'roles',
-                        populate: {
-                            path: 'roleId'
-                        }
+                    path: 'roles',
+                    populate: {
+                        path: 'roleId'
                     }
+                }
                 ]);
         }
     } else if (page && limit && !userRole && !departmentIds && !unitId) {
@@ -67,11 +67,11 @@ exports.getUsers = async (portal, query) => {
                 limit,
                 select: '-tokens -status -password -deleteSoft',
                 populate: [{
-                        path: 'roles',
-                        populate: {
-                            path: 'roleId'
-                        }
+                    path: 'roles',
+                    populate: {
+                        path: 'roleId'
                     }
+                }
                 ]
             });
     } else if (!page && !limit && (userRole || departmentIds) && !unitId) {
@@ -79,14 +79,14 @@ exports.getUsers = async (portal, query) => {
             let department = await OrganizationalUnit(connect(DB_CONNECTION, portal))
                 .findOne({
                     $or: [{
-                            'deans': userRole
-                        },
-                        {
-                            'viceDeans': userRole
-                        },
-                        {
-                            'employees': userRole
-                        }
+                        'deans': userRole
+                    },
+                    {
+                        'viceDeans': userRole
+                    },
+                    {
+                        'employees': userRole
+                    }
                     ]
                 });
 
@@ -101,12 +101,12 @@ exports.getUsers = async (portal, query) => {
                     }
                 });
 
-            let users = await _getAllUsersInOrganizationalUnits(departments);
+            let users = await _getAllUsersInOrganizationalUnits(portal, departments);
 
             return users;
         }
     } else if (unitId) {
-        return getAllUserInUnitAndItsSubUnits(company, unitId);
+        return getAllUserInUnitAndItsSubUnits(portal, unitId);
     }
 }
 
@@ -114,20 +114,20 @@ exports.getAllEmployeeOfUnitByRole = async (portal, role) => {
     let organizationalUnit = await OrganizationalUnit(connect(DB_CONNECTION, portal))
         .findOne({
             $or: [{
-                    'deans': {
-                        $in: role
-                    }
-                },
-                {
-                    'viceDeans': {
-                        $in: role
-                    }
-                },
-                {
-                    'employees': {
-                        $in: role
-                    }
+                'deans': {
+                    $in: role
                 }
+            },
+            {
+                'viceDeans': {
+                    $in: role
+                }
+            },
+            {
+                'employees': {
+                    $in: role
+                }
+            }
             ]
         });
 
@@ -140,7 +140,7 @@ exports.getAllEmployeeOfUnitByRole = async (portal, role) => {
                 }
             }).populate('userId roleId');
     }
-    
+
     return employees;
 }
 
@@ -185,16 +185,15 @@ exports.getAllEmployeeOfUnitByIds = async (portal, id) => {
  * @id Id công ty
  * @unitID Id của của đơn vị cần lấy đơn vị con
  */
-getAllUserInUnitAndItsSubUnits = async (portal, id, unitId) => {
+getAllUserInUnitAndItsSubUnits = async (portal, unitId) => {
     //Lấy tất cả các đơn vị con của 1 đơn vị
     var data;
 
     if (unitId !== '-1') {
-
         var organizationalUnit = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findById(unitId);
         // TODO: tối ưu hóa OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree
 
-        data = await OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree(portal, id, organizationalUnit.deans[0]);
+        data = await OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree(portal, organizationalUnit.deans[0]);
 
         var queue = [];
         var departments = [];
@@ -215,13 +214,11 @@ getAllUserInUnitAndItsSubUnits = async (portal, id, unitId) => {
         }
         //Lấy tất cả user của từng đơn vị
         var userArray = [];
-        userArray = await _getAllUsersInOrganizationalUnits(departments);
+        userArray = await _getAllUsersInOrganizationalUnits(portal, departments);
         return userArray;
 
     } else { //Lấy tất nhan vien trong moi đơn vị trong công ty
-
-        const allUnits = await OrganizationalUnit(connect(DB_CONNECTION, portal))
-            .find({ company: id });
+        const allUnits = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({});
         const newData = allUnits.map(department => {
             return {
                 id: department._id.toString(),
@@ -234,7 +231,7 @@ getAllUserInUnitAndItsSubUnits = async (portal, id, unitId) => {
             }
         });
 
-        let tmp = await _getAllUsersInOrganizationalUnits(newData);
+        let tmp = await _getAllUsersInOrganizationalUnits(portal, newData);
         return tmp;
     }
 }
@@ -248,14 +245,14 @@ exports.getUser = async (portal, id) => {
         .findById(id)
         .select('-password -status -deleteSoft -tokens')
         .populate([{
-                path: 'roles',
-                populate: {
-                    path: 'roleId'
-                }
-            },
-            {
-                path: 'company'
+            path: 'roles',
+            populate: {
+                path: 'roleId'
             }
+        },
+        {
+            path: 'company'
+        }
         ]);
 
     if (!user) {
@@ -276,20 +273,20 @@ exports.getOrganizationalUnitsOfUser = async (portal, userId) => {
     const newRoles = roles.map(role => role.roleId.toString());
     const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({
         $or: [{
-                'deans': {
-                    $in: newRoles
-                }
-            },
-            {
-                'viceDeans': {
-                    $in: newRoles
-                }
-            },
-            {
-                'employees': {
-                    $in: newRoles
-                }
+            'deans': {
+                $in: newRoles
             }
+        },
+        {
+            'viceDeans': {
+                $in: newRoles
+            }
+        },
+        {
+            'employees': {
+                $in: newRoles
+            }
+        }
         ]
     });
 
@@ -348,18 +345,81 @@ exports.sendMailAboutCreatedAccount = async (email, password) => {
         to: email,
         subject: 'Xác thực tạo tài khoản trên hệ thống quản lý công việc',
         text: 'Yêu cầu xác thực tài khoản đã đăng kí trên hệ thống với email là : ' + email,
-        html: '<p>Tài khoản dùng để đăng nhập của bạn là : </p' +
-            '<ul>' +
-            '<li>Tài khoản :' + email + '</li>' +
-            '<li>Mật khẩu :' + password + '</li>' +
-            '</ul>' +
-            `<p>Đăng nhập ngay tại : <a href="${process.env.WEBSITE}/login">${process.env.WEBSITE}/login</a></p>` + '<br>' +
-            '<p>Your account use to login in system : </p' +
-            '<ul>' +
-            '<li>Account :' + email + '</li>' +
-            '<li>Password :' + password + '</li>' +
-            '</ul>' +
-            `<p>Login in: <a href="${process.env.WEBSITE}/login">${process.env.WEBSITE}/login</a></p>`
+        html:
+            `<html>
+                <head>
+                    <style>
+                        .wrapper {
+                            width: 100%;
+                            min-width: 580px;
+                            background-color: #FAFAFA;
+                            padding: 10px 0;
+                        }
+                
+                        .info {
+                            list-style-type: none;
+                        }
+                
+                        @media screen and (max-width: 600px) {
+                            .form {
+                                border: solid 1px #dddddd;
+                                padding: 50px 30px;
+                                border-radius: 3px;
+                                margin: 0px 5%;
+                                background-color: #FFFFFF;
+                            }
+                        }
+                
+                        .form {
+                            border: solid 1px #dddddd;
+                            padding: 50px 30px;
+                            border-radius: 3px;
+                            margin: 0px 25%;
+                            background-color: #FFFFFF;
+                        }
+                
+                        .title {
+                            text-align: center;
+                        }
+                
+                        .footer {
+                            margin: 0px 25%;
+                            text-align: center;
+                
+                        }
+                    </style>
+                </head>
+                
+                <body>
+                    <div class="wrapper">
+                        <div class="title">
+                            <h1>VNIST-QLCV</h1>
+                        </div>
+                        <div class="form">
+                            <p><b>Tài khoản đăng nhập của SUPER ADMIN: </b></p>
+                            <div class="info">
+                                <li>Tài khoản: ${email}</li>
+                                <li>Mật khẩu: <b>${password}</b></li>
+                            </div>
+                            <p>Đăng nhập ngay tại: <a href="${process.env.WEBSITE}/login">${process.env.WEBSITE}/login</a></p><br />
+                
+                            <p><b>SUPER ADMIN account information: </b></p>
+                            <div class="info">
+                                <li>Tài khoản: ${email}</li>
+                                <li>Mật khẩu: <b>${password}</b></li>
+                            </div>
+                            <p>Login in: <a href="${process.env.WEBSITE}/login">${process.env.WEBSITE}/login</a></p>
+                        </div>
+                        <div class="footer">
+                            <p>Bản quyền thuộc về
+                                <i>Công ty Cổ phần Công nghệ
+                                    <br />
+                                    An toàn thông tin và Truyền thông Việt Nam</i>
+                            </p>
+                        </div>
+                    </div>
+                </body>
+        </html>`
     }
 
     return await transporter.sendMail(mainOptions);
@@ -426,14 +486,14 @@ exports.editUser = async (portal, id, data) => {
         .findById(id)
         .select('-password -status -deleteSoft')
         .populate([{
-                path: 'roles',
-                populate: {
-                    path: 'roleId'
-                }
-            },
-            {
-                path: 'company'
+            path: 'roles',
+            populate: {
+                path: 'roleId'
             }
+        },
+        {
+            path: 'company'
+        }
         ]);
 
     if (!user) {
@@ -442,9 +502,9 @@ exports.editUser = async (portal, id, data) => {
 
     if (user.email !== data.email) {
         const checkEmail = await User(connect(DB_CONNECTION, portal))
-        .findOne({
-            email: data.email
-        });
+            .findOne({
+                email: data.email
+            });
         if (checkEmail !== null) throw ['email_exist'];
         await this.sendMailAboutChangeEmailOfUserAccount(user.email, data.email);
     }
@@ -693,6 +753,6 @@ exports.getUserIsDeanOfOrganizationalUnit = async (portal, id) => {
             path: 'userId',
             select: 'email _id'
         });
-    userIsDean  = userIsDean.map(x=>x.userId);
+    userIsDean = userIsDean.map(x => x.userId);
     return userIsDean;
 }

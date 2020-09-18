@@ -94,16 +94,16 @@ class HolidayImportForm extends Component {
                     x = { ...x, error: true }
                 };
                 if (x.type === null) {
-                    errorAlert = [...errorAlert, translate('human_resource.holiday.type_required')];
+                    errorAlert = [...errorAlert, 'type_required'];
                 };
                 if (x.startDate === null) {
-                    errorAlert = [...errorAlert, translate('human_resource.holiday.start_date_required')];
+                    errorAlert = [...errorAlert, 'start_date_required'];
                 };
                 if (x.endDate === null) {
-                    errorAlert = [...errorAlert, translate('human_resource.holiday.end_date_required')];
+                    errorAlert = [...errorAlert, 'end_date_required'];
                 };
                 if (x.reason === null) {
-                    errorAlert = [...errorAlert, translate('human_resource.holiday.reason_required')];
+                    errorAlert = [...errorAlert, 'reason_required'];
                 };
                 x = { ...x, errorAlert: errorAlert }
                 return x;
@@ -167,7 +167,12 @@ class HolidayImportForm extends Component {
         if (holiday.error.rowError !== undefined) {
             rowError = holiday.error.rowError;
             importData = holiday.error.data
-        }
+        };
+
+        importData = importData.map(x => {
+            x = { ...x, type: translate(`human_resource.holiday.${x.type}`) }
+            return x;
+        })
 
         let exportData = configurationHoliday.templateImport(translate);
 
@@ -207,7 +212,7 @@ class HolidayImportForm extends Component {
                                 buttonName={` ${translate('human_resource.download_file')}`} />
 
                             {/* Hiện thị dữ liệu import */}
-                            <div className="form-group col-md-12 col-xs-12">
+                            <div className="col-lg-12 col-md-12 col-sm-12 col-xs-12" style={{ padding: 0 }}>
                                 <ShowImportData
                                     id="import_salary_show_data"
                                     configData={configData}

@@ -339,6 +339,24 @@ exports.deleteMaintainance = async (req, res) => {
 
 
 //*****************Thông tin sự cố**************/
+
+exports.getIncidents = async (req, res) => {
+    try {
+        let data = await AssetService.getIncidents(req.query);
+        res.status(200).json({
+            success: true,
+            messages: ["get_incidents_success"],
+            content: data
+        });
+    } catch (error) {
+        res.status(400).json({ 
+            success: false, 
+            messages: ["get_incidents_false"], 
+            content: { error: error } 
+        });
+    }
+}
+
 /**
  * Thêm mới thông tin sự cố tài sản
  */

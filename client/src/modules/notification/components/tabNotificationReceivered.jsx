@@ -19,7 +19,6 @@ class TabNotificationReceivered extends Component {
         let content = [];
         if (notifications.isLoading === false) {
             content = notifications.receivered.paginate.map( x => x.content);
-            console.log(content);
             content = content.map(x => {
                 let y = x.split('');
                 let i = 0;
@@ -56,7 +55,7 @@ class TabNotificationReceivered extends Component {
                         notificationCreatedAt={currentRow.createdAt}
                     />
                 }
-                <div id="tab-notification-receivered" style={{display: 'block'}}>
+                <div id="tab-notification-receivered" style={{display: 'none'}}>
                     <ul className="todo-list">
                     {
                         notifications.receivered.paginate.length > 0 ? 
@@ -111,7 +110,7 @@ class TabNotificationReceivered extends Component {
                 currentRow: notification
             }
         });
-        !notification.readed && await this.props.readedNotification(notification._id)
+        !notification.readed && await this.props.readedNotification({ id: notification._id, readAll: false})
         window.$('#modal-notification-receivered').modal('show');
     }
 

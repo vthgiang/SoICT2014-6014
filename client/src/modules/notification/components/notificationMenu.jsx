@@ -6,7 +6,11 @@ import { NotificationActions } from '../redux/actions';
 class NotificationMenu extends Component {
     constructor(props) {
         super(props);
-        this.state = { showReceived: true }
+        this.state = { 
+            showReceived: false, 
+            showSent: false,
+            showUnRead: true,
+        }
     }
     
     getManualNotifications = async() => {
@@ -17,63 +21,99 @@ class NotificationMenu extends Component {
         })
     }
 
-    getNotifications = async() => {
-        await this.props.setLevelNotificationReceivered();
-        await this.props.paginateNotifications({
-            limit: 5,
-            page: 1
-        })
+    getNotifications = async(unRead) => {
+        console.log(unRead);
+        if (unRead) {
+            await this.props.setLevelNotificationReceivered();
+            await this.props.paginateNotifications({
+                limit: 5,
+                page: 1,
+                readed: false,
+            })
+        } else {
+            await this.props.setLevelNotificationReceivered();
+            await this.props.paginateNotifications({
+                limit: 5,
+                page: 1
+            })
+        }
     }
 
     showTabReceivered = async() => {
         window.$('#tab-notification-sent').hide();
+        window.$('#tab-notification-un-read').hide();
         window.$('#tab-notification-receivered').show();
-        this.setState({showReceived: true});
-        await this.getNotifications();
+        this.setState({
+            showReceived: true,
+            showSent: false,
+            showUnRead: false,
+        });
+        await this.getNotifications(false);
     }
 
     showTabSent = async() => {
         window.$('#tab-notification-receivered').hide();
+        window.$('#tab-notification-un-read').hide();
         window.$('#tab-notification-sent').show();
-        this.setState({showReceived: false});
+        this.setState({
+            showReceived: false,
+            showSent: true,
+            showUnRead: false,
+        });
         await this.getManualNotifications();
     }
 
     setLevel = async(level) => {
-        if(this.state.showReceived){
+        const {showReceived, showUnRead} = this.state;
+        if(showReceived){
             const {limit} = this.props.notifications.receivered;
             await this.props.setLevelNotificationReceivered(level);
             await this.props.paginateNotifications({ limit, page:1, content: {level} })
         }else{
-            const {limit} = this.props.notifications.sent;
-            await this.props.setLevelNotificationSent(level);
-            await this.props.paginateManualNotifications({ limit, page:1, content: {level} })
+            if (showUnRead) {
+                const {limit} = this.props.notifications.receivered;
+                await this.props.setLevelNotificationReceivered(level);
+                await this.props.paginateNotifications({ limit, page:1, content: {level}, readed: false })
+            } else {
+                const {limit} = this.props.notifications.sent;
+                await this.props.setLevelNotificationSent(level);
+                await this.props.paginateManualNotifications({ limit, page:1, content: {level} })
+            }
         }
+    }
+    showTabUnRead = async() => {
+        window.$('#tab-notification-receivered').hide();
+        window.$('#tab-notification-sent').hide();
+        window.$('#tab-notification-un-read').show();
+        this.setState({
+            showReceived: false,
+            showSent: false,
+            showUnRead: true,
+        });
+        await this.getNotifications(true);
     }
 
     render() { 
-        const { translate } = this.props;
-        const { showReceived } = this.state;
+        const { translate, notifications } = this.props;
+        const { showReceived, showSent, showUnRead } = this.state;
         const sentLevel = this.props.notifications.sent.level;
         const receiveredLevel = this.props.notifications.receivered.level;
 
         return ( 
             <React.Fragment>
-
-                {this.checkHasComponent('create-notification') &&
                 <div className="box box-solid"><div className="box-body no-padding">
                         <ul className="nav nav-pills nav-stacked">
+                            <li onClick={this.showTabUnRead} className={this.state.showUnRead ? "active-notification-button" : null} ><a href="#abc"><i className="material-icons" style={{marginRight: 3, fontSize: 17, paddingRight: 2}}>notifications_active</i>{translate('notification.unread')}</a></li>
                             <li onClick={this.showTabReceivered} className={this.state.showReceived ? "active-notification-button" : null}><a href="#abc"><i className="fa fa-fw fa-inbox"/>{translate('notification.receivered')}</a></li>
-                            <li onClick={this.showTabSent} className={!this.state.showReceived ? "active-notification-button" : null}><a href="#abc"><i className="fa fa-fw fa-envelope-o"/>{translate('notification.sent')}</a></li>
+                            {this.checkHasComponent('create-notification') &&
+                            <li onClick={this.showTabSent} className={this.state.showSent ? "active-notification-button" : null}><a href="#abc"><i className="fa fa-fw fa-envelope-o"/>{translate('notification.sent')}</a></li> }
                         </ul>
                     </div>
                 </div> 
-                }
-
                 <div className="box box-solid">
                     <ul className="nav nav-pills nav-stacked">
                         <li onClick={()=>this.setLevel("info")} className={
-                            !showReceived ?
+                            showSent ?
                             (sentLevel === 'info' ? "active-notification-button" : null ):
                             (receiveredLevel === 'info' ? "active-notification-button" : null )
                         }>
@@ -83,7 +123,7 @@ class NotificationMenu extends Component {
                             </a>
                         </li>
                         <li onClick={()=>this.setLevel("general")} className={
-                            !showReceived ?
+                            showSent ?
                             (sentLevel === 'general' ? "active-notification-button" : null ):
                             (receiveredLevel === 'general' ? "active-notification-button" : null )
                         }>
@@ -93,7 +133,7 @@ class NotificationMenu extends Component {
                             </a>
                         </li>
                         <li onClick={()=>this.setLevel("important")} className={
-                            !showReceived ?
+                            showSent ?
                             (sentLevel === 'important' ? "active-notification-button" : null ):
                             (receiveredLevel === 'important' ? "active-notification-button" : null )
                         }>
@@ -103,7 +143,7 @@ class NotificationMenu extends Component {
                             </a>
                         </li>
                         <li onClick={()=>this.setLevel("emergency")} className={
-                            !showReceived ?
+                            showSent ?
                             (sentLevel === 'emergency' ? "active-notification-button" : null ):
                             (receiveredLevel === 'emergency' ? "active-notification-button" : null )
                         }>

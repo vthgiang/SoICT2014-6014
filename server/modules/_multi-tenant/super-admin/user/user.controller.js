@@ -13,7 +13,6 @@ exports.getUsers = async (req, res) => {
     else {
         try {
             var users = await UserService.getUsers(req.portal, req.query);
-
             Logger.info(req.user.email, 'get_users_success', req.portal);
 
             res.status(200).json({

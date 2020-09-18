@@ -949,7 +949,7 @@ formatDate = (date) => {
 /**
  * hàm check điều kiện evaluate tồn tại
  */
-async function checkEvaluations(date, taskId, storeDate) {
+async function checkEvaluations(portal, date, taskId, storeDate) {
     let evaluateId;
     let splitterStoreDate = storeDate.split("-");
     let storeDateISO = new Date(splitterStoreDate[2], splitterStoreDate[1] - 1, splitterStoreDate[0]);
@@ -1339,7 +1339,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
 exports.evaluateTaskByConsultedEmployees = async (portal, data, taskId) => {
     let user = data.user;
     let { automaticPoint, employeePoint, kpi, unit, role, date } = data;
-    let evaluateId = await checkEvaluations(date, taskId, date);
+    let evaluateId = await checkEvaluations(portal, date, taskId, date);
 
     let resultItem = {
         employee: user,
@@ -1466,7 +1466,7 @@ exports.evaluateTaskByResponsibleEmployees = async (portal, data, taskId) => {
         role: role
     }
 
-    let evaluateId = await checkEvaluations(date, taskId, date);
+    let evaluateId = await checkEvaluations(portal, date, taskId, date);
 
     // chuẩn hóa dữ liệu info
     for (let i in info) {
@@ -1699,7 +1699,7 @@ exports.evaluateTaskByAccountableEmployees = async (portal, data, taskId) => {
     let evaluateDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
     let dateFormat = evaluateDate;
 
-    let evaluateId = await checkEvaluations(date, taskId, date);
+    let evaluateId = await checkEvaluations(portal, date, taskId, date);
 
     // lấy info có value khác undefined
     let filterInfo = [];
@@ -2368,17 +2368,24 @@ exports.editActivateOfTask = async (portal, taskID, body) => {
 
     // Cập nhật trạng thái hoạt động của các task sau
     for (let i = 0; i < body.listSelected.length; i++) {
-        await Task(connect(DB_CONNECTION, portal)).findOneAndUpdate(
-            {
-                _id: taskID,
-                "followingTasks.task": body.listSelected[i],
-            },
-            {
-                $set: {
-                    "followingTasks.$.activated": true,
-                }
-            },
-        )
+        console.log('body', body.listSelected[i]);
+
+        let listTask = await Task(connect(DB_CONNECTION, portal)).find({ "followingTasks.task": body.listSelected[i] });
+        // console.log('list', listTask, listTask.length);
+
+        for (let x in listTask) {
+            await Task(connect(DB_CONNECTION, portal)).update(
+                {
+                    _id: listTask[x]._id,
+                    "followingTasks.task": body.listSelected[i],
+                },
+                {
+                    $set: {
+                        "followingTasks.$.activated": true,
+                    }
+                },
+            )
+        }
 
         let followStartDate = endDate;
 

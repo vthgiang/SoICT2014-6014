@@ -75,8 +75,19 @@ const TaskReportSchema = new Schema({
         aggregationType: { // 0: tính theo kiểu trung bình cộng, 1: tính theo kiểu tổng
             type: Number
         },
-        charType: { // 0: Barchart, 1: Line Chart, 2: Pie chart,....
+        chartType: { // 0: Barchart, 1: Line Chart, 2: Pie chart,....
             type: Number
+        },
+        coefficient: {
+            type: Number
+        }
+    }],
+    listDataChart: [{ // danh sách dữ liệu trong biểu đồ
+        id: {
+            type: Number
+        },
+        name: {
+            type: String,
         }
     }],
     dataForAxisXInChart: [{// Chiều dữ liệu đưa vào biểu đồ
@@ -92,7 +103,7 @@ const TaskReportSchema = new Schema({
 });
 
 module.exports = (db) => {
-    if(!db.models.TaskReport)
+    if (!db.models.TaskReport)
         return db.model('TaskReport', TaskReportSchema);
     return db.models.TaskReport;
 }
