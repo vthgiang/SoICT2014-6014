@@ -393,7 +393,7 @@ exports.sendMailAboutCreatedAccount = async (email, password) => {
                 <body>
                     <div class="wrapper">
                         <div class="title">
-                            <h1>VNIST-QLCV</h1>
+                            <h1>VNIMA</h1>
                         </div>
                         <div class="form">
                             <p><b>Tài khoản đăng nhập của SUPER ADMIN: </b></p>

@@ -31,7 +31,7 @@ class SideBar extends Component {
 
         return (
             <React.Fragment>
-                <aside className="main-sidebar">
+                <aside className="main-sidebar" style={{minHeight: '100vh'}}>
                     <section className="sidebar">
                         <div className="user-panel">
                             <div className="pull-left image">
