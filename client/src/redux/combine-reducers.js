@@ -54,8 +54,9 @@ import { assetsManager } from "../modules/asset/admin/asset-information/redux/re
 //report 
 import { reports } from "../modules/report/task-report/redux/reducers";
 
-//material
-import { materials } from "../modules/warehouse-manager/material-manager/redux/reducers";
+//warehouse
+import { materials } from "../modules/warehouse/material-manager/redux/reducers";
+import { categories } from "../modules/warehouse/category-management/redux/reducers";
 
 //crm
 import { customer } from "../modules/crm/customer/redux/reducers";
@@ -139,8 +140,9 @@ const appReducer = combineReducers({
     //report
     reports,
 
-    //material
+    //warehouse
     materials,
+    categories,
 
     // customer management
     crm: combineReducers({

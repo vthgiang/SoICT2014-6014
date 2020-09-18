@@ -52,6 +52,7 @@ export function materials(state = initState, action) {
                 isLoading: false
             };
         case materialManagerConstants.CREATE_MATERIAL_SUCCESS:
+            console.log(action.payload);
             return {
                 ...state,
                 listMaterials: [...state.listAllMaterials, ...action.payload.materials],

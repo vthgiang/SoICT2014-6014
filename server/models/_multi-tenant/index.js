@@ -89,4 +89,12 @@ module.exports = {
 
     // warehouse
     Material: require('./warehouse/material.model'),
+    Stock: require('./warehouse/stock.model'),
+    BinLocation: require('./warehouse/binLocation.model'),
+    Proposal: require('./warehouse/proposal.model'),
+    Partner: require('./warehouse/partner.model'),
+    Good: require('./warehouse/good.model'),
+    Consignment: require('./warehouse/consignment.model'),
+    Category: require('./warehouse/category.model'),
+    Bill: require('./warehouse/bill.model'),
 }
