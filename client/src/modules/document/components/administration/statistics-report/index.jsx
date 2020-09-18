@@ -508,7 +508,6 @@ class AdministrationStatisticsReport extends Component {
     setDataArchiveBarchart = () => {
         const archives = this.props.documents.administration.archives.list;
         const docs = this.props.documents.administration.data.list;
-        //console.log('iiiiii', docs, archives);
         let typeName = [], shortName = [], countArchive = [], idArchive = [];
         for (let i in archives) {
             countArchive[i] = 0;
@@ -546,7 +545,6 @@ class AdministrationStatisticsReport extends Component {
         const { list } = this.props.documents.administration.domains;
         const listArchives = this.props.documents.administration.archives.list;
         const docs = this.props.documents.administration.data.list;
-        console.log('ppppppppppp', this.props.documents)
         let dataExport = [];
         let data2 = [];
         if (documents.isLoading === false) {
@@ -573,6 +571,7 @@ class AdministrationStatisticsReport extends Component {
                 ]
             });
         }
+        console.log('iiiiiiii', this.props.documents)
         let exportData = this.convertDataToExportData(dataExport, data2);
         // this.countDocumentInDomain(list, docs)
         // this.countDocumentInArchive(listArchives, docs);

@@ -9,7 +9,7 @@ const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
  * @company id của công ty
  */
 exports.getDocuments = async (portal, query) => {
-    console.log('ttt', query);
+    console.log("query", query);
     let page = query.page;
     let limit = query.limit;
 
@@ -19,32 +19,16 @@ exports.getDocuments = async (portal, query) => {
             .find()
             .populate([
                 {
-                    path: 'category',
-                    populate: {
-                        path: 'category'
-                    },
-                    select: 'name id'
+                    path: 'category', select: 'name id'
                 },
                 {
-                    path: 'domains',
-                    populate: {
-                        path: 'domains'
-                    },
-                    select: 'name id'
+                    path: 'domains', select: 'name id'
                 },
                 {
-                    path: 'archives',
-                    populate: {
-                        path: 'archives'
-                    },
-                    select: 'name id path'
+                    path: 'archives', select: 'name id path'
                 },
                 {
-                    path: 'views.viewer',
-                    populate: {
-                        path: 'archives'
-                    },
-                    select: 'name id'
+                    path: 'views.viewer', select: 'name id'
                 },
                 { path: "downloads.downloader", select: 'name id' },
                 { path: "archivedRecordPlaceOrganizationalUnit", select: "name id" },
@@ -63,7 +47,12 @@ exports.getDocuments = async (portal, query) => {
             option.domains = query.domains;
         }
         if (query.archives) {
-            option.archives = query.archives
+            const allArchives = await DocumentArchive(connect(DB_CONNECTION, portal))
+                .find({ path: new RegExp('^' + query.archives) })
+            const arrId = allArchives.map(archive => {
+                return archive.id;
+            })
+            option.archives = { $in: arrId }
         }
         if (query.name) {
             option.name = new RegExp(query.name, "i")
@@ -481,7 +470,7 @@ exports.getDocumentCategories = async (portal, query) => {
 
     if (page === undefined && limit === undefined) {
 
-        return await DocumentCategory(connect(DB_CONNECTION, portal)).find({ portal });
+        return await DocumentCategory(connect(DB_CONNECTION, portal)).find();
     } else {
         const option = (query.key !== undefined && query.value !== undefined)
             ? Object.assign({ [`${query.key}`]: new RegExp(query.value, "i") })
@@ -739,7 +728,6 @@ exports.getDocumentArchives = async (portal) => {
 }
 
 exports.createDocumentArchive = async (portal, data) => {
-    console.log('dataaa', data);
     let query = {
         name: data.name,
         description: data.description,
@@ -769,7 +757,6 @@ exports.deleteManyDocumentArchive = async (array, portal) => {
 }
 
 exports.editDocumentArchive = async (id, data, portal) => {
-    console.log('dataaa', data);
     const archive = await DocumentArchive(connect(DB_CONNECTION, portal)).findById(id);
     let array = data.array;
     archive.name = data.name;
