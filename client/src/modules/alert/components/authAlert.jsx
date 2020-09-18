@@ -38,7 +38,7 @@ class AuthAlert extends Component {
                                         translate('general.auth_alert.content').map(content => <li key={content}>{content}</li>)
                                     }
                                 </ul>
-                                <button className="btn btn-default pull-right" onClick={this.reset}>{translate('general.accept')}</button>
+                                <button className="btn btn-default pull-right" data-dismiss="modal" onClick={this.reset}>{translate('general.accept')}</button>
                             </div>
                         </div>
                     </div>
