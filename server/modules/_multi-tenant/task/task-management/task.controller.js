@@ -377,7 +377,7 @@ getTasksThatUserHasResponsibleRoleByDate = async (req, res) => {
  * Tạo một công việc mới
  */
 exports.createTask = async (req, res) => {
-    try {
+    // try {
         var tasks = await TaskManagementService.createTask(req.portal, req.body);
         var task = tasks.task;
         var user = tasks.user;
@@ -392,14 +392,14 @@ exports.createTask = async (req, res) => {
             messages: ['create_task_success'],
             content: task
         });
-    } catch (error) {
-        await Logger.error(req.user.email, ` create task  `, req.portal)
-        res.status(400).json({
-            success: false,
-            messages: ['create_task_fail'],
-            content: error
-        })
-    }
+    // } catch (error) {
+    //     await Logger.error(req.user.email, ` create task  `, req.portal)
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: ['create_task_fail'],
+    //         content: error
+    //     })
+    // }
 }
 
 /**

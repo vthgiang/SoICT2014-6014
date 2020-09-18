@@ -21,7 +21,7 @@ exports.get = async (req, res) => {
  * Lấy tất cả diagram
  */
 exports.getAllXmlDiagrams = async (req, res) => {
-	try {
+	// try {
 		var data = await TaskProcessService.getAllXmlDiagram(req.portal, req.query);
 		await Logger.info(req.user.email, `get all xml diagram `, req.portal);
 		res.status(200).json({
@@ -29,14 +29,14 @@ exports.getAllXmlDiagrams = async (req, res) => {
 			messages: ['get_all_success'],
 			content: data
 		});
-	} catch (error) {
-		await Logger.error(req.user.email, `get all xml diagram `, req.portal);
-		res.status(400).json({
-			success: false,
-			messages: ['get_all_err'],
-			content: error
-		});
-	}
+	// } catch (error) {
+	// 	await Logger.error(req.user.email, `get all xml diagram `, req.portal);
+	// 	res.status(400).json({
+	// 		success: false,
+	// 		messages: ['get_all_err'],
+	// 		content: error
+	// 	});
+	// }
 }
 /**
  * Lấy  diagram theo id
