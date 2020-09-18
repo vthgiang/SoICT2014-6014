@@ -49,6 +49,7 @@ import { recommendProcure } from "../modules/asset/user/purchase-request/redux/r
 import { recommendDistribute } from "../modules/asset/user/use-request/redux/reducers";
 import { assetType } from "../modules/asset/admin/asset-type/redux/reducers";
 import { assetsManager } from "../modules/asset/admin/asset-information/redux/reducers";
+import { incidentManager } from "../modules/asset/admin/incident/redux/reducers";
 
 
 //report 
@@ -134,6 +135,7 @@ const appReducer = combineReducers({
     recommendDistribute,
     assetType,
     assetsManager,
+    incidentManager,
 
     dashboardEvaluationEmployeeKpiSet,
 

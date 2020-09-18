@@ -63,7 +63,7 @@ class NotificationReiceiverdInfo extends Component {
                             notificationLevel === 'important' === 3 ? <i className="fa fa-fw fa-warning text-orange"></i> :
                             <i className="fa fa-fw fa-bomb text-orange"></i> 
                             }
-                            <div className="inline">{translate('notification.from')}</div>
+                            <div className="inline">{translate('notification.from')}&nbsp;</div>
                             <div className="inline"><b> {notificationSender}, <DateTimeConverter dateTime={notificationCreatedAt}/></b></div>
                         </div>
                     </div>

@@ -115,10 +115,10 @@ class CompanyTable extends Component {
             }
         });
         await window.$('#modal-edit-services-company').modal('show');
-        await this.props.getCompanyLinks({company: company._id});
-        await this.props.getCompanyLinks({company: company._id, page: 1, limit: 5 });
-        await this.props.getCompanyComponents({company: company._id});
-        await this.props.getCompanyComponents({company: company._id, page: 1, limit: 5 });
+        await this.props.getCompanyLinks({company: company._id, portal: company.shortName});
+        await this.props.getCompanyLinks({company: company._id, portal: company.shortName, page: 1, limit: 5 });
+        await this.props.getCompanyComponents({company: company._id, portal: company.shortName});
+        await this.props.getCompanyComponents({company: company._id, portal: company.shortName, page: 1, limit: 5 });
     }
 
     render() { 

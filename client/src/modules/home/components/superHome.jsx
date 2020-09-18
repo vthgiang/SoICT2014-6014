@@ -63,34 +63,6 @@ class SuperHome extends Component {
         });
     }
 
-    // shouldComponentUpdate = async (nextProps, nextState) => {
-    //     if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
-    //         if (!nextProps.tasks.responsibleTasks || !nextProps.tasks.accountableTasks || !nextProps.tasks.consultedTasks || !nextProps.tasks.informedTasks || !nextProps.tasks.creatorTasks || !nextProps.tasks.tasksbyuser) {
-    //             return false;
-    //         }
-
-    //         this.setState(state => {
-    //             return {
-    //                 ...state,
-    //                 dataStatus: this.DATA_STATUS.AVAILABLE,
-    //                 callAction: true
-    //             }
-    //         });
-    //     } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE && nextState.willUpdate) {
-    //         this.setState(state => {
-    //             return {
-    //                 ...state,
-    //                 dataStatus: this.DATA_STATUS.FINISHED,
-    //                 willUpdate: false       // Khi true sẽ cập nhật dữ liệu vào props từ redux
-    //             }
-    //         });
-
-    //         return true;
-    //     }
-
-    //     return false;
-    // }
-
     generateDataPoints(noOfDps) {
         let xVal = 1, yVal = 100;
         let dps = [];
@@ -111,14 +83,19 @@ class SuperHome extends Component {
     }
 
     handleSelectMonthEnd = (value) => {
-        let month;
-        let monthtitle;
+        let month, monthtitle;
 
         if (value.slice(0, 2) < 12) {
-            month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)) + 1);
+            if (value.slice(0, 2) < 9) {
+                month = value.slice(3, 7) + '-0' + (new Number(value.slice(0, 2)) + 1);
+            } else {
+                month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)) + 1);
+            }
+
             monthtitle = value.slice(0, 2) + '-' + value.slice(3, 7);
         } else {
-            month = (new Number(value.slice(3, 7)) + 1) + '-' + '1';
+            month = (new Number(value.slice(3, 7)) + 1) + '-' + '01';
+            monthtitle = '12' + '-' + (new Number(value.slice(3, 7)));
         }
 
         this.INFO_SEARCH.endMonth = month;
@@ -152,12 +129,15 @@ class SuperHome extends Component {
             this.props.getAccountableTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, startMonth, endMonth, null, null, true);
             this.props.getConsultedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, startMonth, endMonth, null, null, true);
             this.props.getInformedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, startMonth, endMonth, null, null, true);
+
+            let data = { type: "user" };
+            this.props.getTaskByUser(data);
         }
     }
 
     render() {
         const { tasks, translate } = this.props;
-        const { startMonth, endMonth, willUpdate, callAction } = this.state;
+        const { startMonth, endMonth } = this.state;
 
         let d = new Date(),
             month = '' + (d.getMonth() + 1),
@@ -175,7 +155,7 @@ class SuperHome extends Component {
 
         return (
             <React.Fragment>
-                <div className="qlcv" style={{ textAlign: "right", marginBottom: 15 }}>
+                <div className="qlcv" style={{ textAlign: "right" }}>
                     {/**Chọn ngày bắt đầu */}
                     <div className="form-inline">
                         <div className="form-group">

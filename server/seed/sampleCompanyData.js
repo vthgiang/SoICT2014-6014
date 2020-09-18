@@ -184,7 +184,7 @@ const sampleCompanyData = async () => {
         company: vnist._id
     }
     ]);
-    console.log("Xong! Đã thêm tài khoản:", users);
+    console.log("Xong! Đã thêm tài khoản:");
 
     vnist_info.superAdmin = users[0]._id;
     await vnist_info.save();
@@ -343,7 +343,7 @@ const sampleCompanyData = async () => {
         employees: [nvPhongHC._id],
         parent: Directorate._id
     },]);
-    console.log('Xong! Đã tạo các phòng ban cho công ty', Directorate, departments);
+    console.log('Xong! Đã tạo các phòng ban cho công ty');
 
 
 
@@ -490,22 +490,22 @@ const sampleCompanyData = async () => {
                 await updateLink.save();
             }
             // Tạo phân quyền cho components
-            for (let k = 0; k < systemComponents.length; k++) {
-                let roles = await Role.find({
-                    company: companyId,
-                    name: {
-                        $in: systemComponents[i].roles.map(role => role.name)
-                    }
-                });
-                let dataPrivileges = roles.map(role => {
-                    return {
-                        resourceId: component._id,
-                        resourceType: 'Component',
-                        roleId: role._id
-                    }
-                });
-                await Privilege.insertMany(dataPrivileges);
-            }
+            let roles = await Role.find({
+                company: companyId,
+                name: {
+                    $in: systemComponents[i].roles.map(role => role.name)
+                }
+            });
+            let dataPrivileges = roles.map(role => {
+                return {
+                    resourceId: component._id,
+                    resourceType: 'Component',
+                    roleId: role._id
+                }
+            });
+            console.log("component privileges", dataPrivileges);
+
+            await Privilege.insertMany(dataPrivileges);
         }
 
         return await Component.find({

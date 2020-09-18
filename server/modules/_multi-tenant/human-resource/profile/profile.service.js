@@ -1154,7 +1154,7 @@ exports.createNotificationForEmployeesHaveBrithdayCurrent = async (portal) => {
             title: "Thông báo sinh nhật",
             level: "info",
             content: "Chúc bạn có một ngày sinh nhật vui vẻ",
-            sender: "VNIST-Việc",
+            sender: "VNIMA",
             user: user._id,
             manualNotification: undefined
         }
@@ -1190,7 +1190,7 @@ exports.createNotificationForEmployeesHaveBrithdayCurrent = async (portal) => {
                 title: "Thông báo sinh nhật",
                 level: "info",
                 content: `Hôm nay là sinh nhật của ${users[n].name}. Hãy gửi những lời chúc đến ${users[n].name}`,
-                sender: "VNIST-Việc",
+                sender: "VNIMA",
                 user: x,
                 manualNotification: undefined
             }
@@ -1269,7 +1269,7 @@ exports.createNotificationEndOfContract = async (portal) => {
                 content: `Hợp đồng lao động của bạn sẽ hết hiệu lực sau ${arrayTime[n]} ngày.` +
                     `${employees[index].endDateCommitmentTime? " Tuy nhiên bạn phải làm thêm đến ngày "+
                         this.formatDate(employees[index].endDateCommitmentTime, false) + " do bạn tham gia các khoá học có thời gian cam kết làm việc sau khi học xong khoá đào tạo.": ""}`,
-                sender: "VNIST-Việc",
+                sender: "VNIMA",
                 user: user._id,
                 manualNotification: undefined
             }
@@ -1389,7 +1389,7 @@ exports.checkImportData = async (portal, company, data) => {
  * @param {*} data : Dữ liệu kinh nghiệm làm việc cần import
  */
 exports.importExperience = async (portal, company, data) => {
-    let result = await this.checkImportData(company, data);
+    let result = await this.checkImportData(portal, company, data);
     data = result.data;
     let rowError = result.rowError;
 
@@ -1437,7 +1437,7 @@ exports.importExperience = async (portal, company, data) => {
  * @param {*} data : Dữ liệu thông tin bằng cấp cần import
  */
 exports.importDegree = async (portal, company, data) => {
-    let result = await this.checkImportData(company, data);
+    let result = await this.checkImportData(portal, company, data);
     data = result.data;
     let rowError = result.rowError;
 
@@ -1484,7 +1484,7 @@ exports.importDegree = async (portal, company, data) => {
  * @param {*} data : Dữ liệu thông tin chứng chỉ cần import
  */
 exports.importCertificate = async (portal, company, data) => {
-    let result = await this.checkImportData(company, data);
+    let result = await this.checkImportData(portal, company, data);
     data = result.data;
     let rowError = result.rowError;
 
@@ -1530,7 +1530,7 @@ exports.importCertificate = async (portal, company, data) => {
  * @param {*} data : Dữ liệu hợp đồng lao động cần import
  */
 exports.importContract = async (portal, company, data) => {
-    let result = await this.checkImportData(company, data);
+    let result = await this.checkImportData(portal, company, data);
     data = result.data;
     let rowError = result.rowError;
 
@@ -1593,7 +1593,7 @@ exports.importContract = async (portal, company, data) => {
  * @param {*} data : Dữ liệu quá trình đóng bảo hiểm xã hội cần import
  */
 exports.importSocialInsuranceDetails = async (portal, company, data) => {
-    let result = await this.checkImportData(company, data);
+    let result = await this.checkImportData(portal, company, data);
     data = result.data;
     let rowError = result.rowError;
 
@@ -1642,7 +1642,7 @@ exports.importSocialInsuranceDetails = async (portal, company, data) => {
  * @param {*} data : Dữ liệu tài liệu đính kèm cần import
  */
 exports.importFile = async (portal, company, data) => {
-    let result = await this.checkImportData(company, data);
+    let result = await this.checkImportData(portal, company, data);
     data = result.data;
     let rowError = result.rowError;
 

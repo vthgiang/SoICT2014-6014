@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { ShowImportData, ImportFileExcel, ConFigImportFile } from '../../../../../common-components';
-
-import { AuthActions } from '../../../../auth/redux/actions';
+import { ShowImportData, ImportFileExcel, ConFigImportFile, ExportExcel } from '../../../../../common-components';
 
 class EmployeeImportTab extends Component {
     constructor(props) {
@@ -52,26 +50,52 @@ class EmployeeImportTab extends Component {
         } return false
     }
 
-    requestDownloadFile = (e, path, fileName) => {
-        e.preventDefault()
-        this.props.downloadFile(path, fileName)
-    }
-
     render() {
-        const { id, className = "tab-pane", configuration, rowErrorOfReducer, dataOfReducer, configTableWidth, showTableWidth, handleImport, textareaRow } = this.props;
+        const { translate } = this.props;
+
+        const { id, className = "tab-pane", teamplateImport, configuration, rowErrorOfReducer, dataOfReducer, configTableWidth, showTableWidth, handleImport, textareaRow } = this.props;
 
         let { limit, page, importData, rowError, configData, checkFileImport } = this.state;
 
         if (rowErrorOfReducer !== undefined) {
             rowError = rowErrorOfReducer;
-            importData = dataOfReducer
+            importData = dataOfReducer;
+            importData = importData.map(x => {
+                return {
+                    ...x,
+                    errorAlert: x.errorAlert.map(y => translate(`human_resource.profile.employee_management.${y}`))
+                }
+            })
         };
+        if (importData && id === "import_employee_general_infor") {
+            importData = importData.map(x => {
+                let gender = translate(`human_resource.profile.${x.gender}`);
+                let maritalStatus = translate(`human_resource.profile.${x.maritalStatus}`);
+                let status = translate(`human_resource.profile.${x.status}`);
+                let professionalSkill = translate(`human_resource.profile.${x.professionalSkill}`);
+                return { ...x, gender: gender, maritalStatus: maritalStatus, status: status, professionalSkill: professionalSkill }
+            });
+        };
+        if (importData && id === "import_employee_degree") {
+            importData = importData.map(x => {
+                let degreeType = x.degreeType ? translate(`human_resource.profile.${x.degreeType}`) : x.degreeType;
+                return { ...x, degreeType: degreeType }
+            });
+        };
+        if (importData && id === "import_employee_file") {
+            importData = importData.map(x => {
+                let status = x.status ? translate(`human_resource.profile.${x.status}`) : x.status;
+                return { ...x, status: status }
+            });
+        }
+
         configData = configData ? configData : configuration;
 
         return (
             <React.Fragment>
                 <div id={id} className={className}>
                     <div className="box-body row">
+                        {/* Cấu hình file import */}
                         <div className="form-group col-md-12" style={{ marginBottom: 0 }}>
                             <ConFigImportFile
                                 id={`import_employees_config${id}`}
@@ -82,24 +106,24 @@ class EmployeeImportTab extends Component {
                             />
                         </div>
                         <div className="form-group row col-md-12" style={{ marginBottom: 0 }}>
+                            {/* File import */}
                             <div className="form-group col-md-4 col-xs-12">
                                 <ImportFileExcel
                                     configData={configData}
                                     handleImportExcel={this.handleImportExcel}
                                 />
                             </div>
-                            <div className="form-group col-md-4 col-xs-12 pull-right">
-                                <a className='pull-right'
-                                    style={{ cursor: "pointer" }}
-                                    onClick={(e) => this.requestDownloadFile(e, `.${configData.file.fileUrl}`, configData.file.fileName)}>
-                                    <i className="fa fa-download"> &nbsp;Download file import mẫu!</i></a>
-                            </div>
+                            {/* Dowload file import mẫu */}
+                            <ExportExcel id="download_template_salary" type='link' exportData={teamplateImport}
+                                buttonName={` ${translate('human_resource.download_file')}`} />
                         </div>
                         {importData && importData.length !== 0 &&
                             <div className="col-md-12">
                                 <button type="button" className="btn btn-primary" onClick={handleImport} disabled={!this.isFormValidated()}>Import excel</button>
                             </div>
                         }
+
+                        {/* Hiện thị data import */}
                         <div className="col-md-12">
                             <ShowImportData
                                 id={`import_employee_infor_show_data${id}`}
@@ -119,9 +143,5 @@ class EmployeeImportTab extends Component {
     }
 }
 
-const actionCreators = {
-    downloadFile: AuthActions.downloadFile,
-};
-
-const importExcel = connect(null, actionCreators)(withTranslate(EmployeeImportTab));
+const importExcel = connect(null, null)(withTranslate(EmployeeImportTab));
 export { importExcel as EmployeeImportTab };

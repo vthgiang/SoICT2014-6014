@@ -31,6 +31,9 @@ exports.getDocuments = async (company, query) => {
         // const option = (query.key !== undefined && query.value !== undefined)
         //     ? Object.assign({ company }, { [`${query.key}`]: new RegExp(query.value, "i") })
         //     : { company };
+        if(query.path){
+            const domain = DocumentDomain.find({path: new Regex(/^/)})
+        }
         if (query.category) {
             option.category = query.category;
         }
@@ -538,6 +541,7 @@ exports.createDocumentDomain = async (company, data) => {
         company,
         name: data.name,
         description: data.description,
+        parent: data.parent
     }
     await DocumentDomain.create(query);
 

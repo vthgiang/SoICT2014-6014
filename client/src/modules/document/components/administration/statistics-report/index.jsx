@@ -74,6 +74,7 @@ class AdministrationStatisticsReport extends Component {
     pieChart = () => {
         this.removePreviousPieChart();
         let dataChart = this.getDataDocumentAnalys();
+        console.log('oooooooooo', dataChart)
         this.chart = c3.generate({
             bindto: this.refs.piechart,
 
@@ -275,9 +276,7 @@ class AdministrationStatisticsReport extends Component {
         }
         return false;
     }
-    checkChildrenNode = (array, element) => {
-
-    }
+   
     removeDuplicateInArrayObject = (array) => {
         let idArray = [];
         let newArray = [];
@@ -509,7 +508,6 @@ class AdministrationStatisticsReport extends Component {
     setDataArchiveBarchart = () => {
         const archives = this.props.documents.administration.archives.list;
         const docs = this.props.documents.administration.data.list;
-        //console.log('iiiiii', docs, archives);
         let typeName = [], shortName = [], countArchive = [], idArchive = [];
         for (let i in archives) {
             countArchive[i] = 0;
@@ -573,6 +571,7 @@ class AdministrationStatisticsReport extends Component {
                 ]
             });
         }
+        console.log('iiiiiiii', this.props.documents)
         let exportData = this.convertDataToExportData(dataExport, data2);
         // this.countDocumentInDomain(list, docs)
         // this.countDocumentInArchive(listArchives, docs);
@@ -600,8 +599,10 @@ class AdministrationStatisticsReport extends Component {
             {<ExportExcel id="export-document-archive" exportData={exportData} style={{ marginRight: 5, marginTop: 2 }} />}
             <div className="row">
                 <div className="col-xs-12" >
-                    <div className="box box-primary">
-                        <h4>{translate('document.statistical_document')}</h4>
+                    <div className="box box-solid">
+                        <div className="box-header">
+                            <div className="box-title">{translate('document.statistical_document')}</div>
+                        </div>
                         <div className="box-body qlcv" style={{ minHeight: "400px" }}>
                             <div ref="piechart"></div>
                         </div>
@@ -610,8 +611,10 @@ class AdministrationStatisticsReport extends Component {
             </div>
             <div className="row">
                 <div className="col-xs-12" >
-                    <div className="box box-primary">
-                        <h4>{translate('document.statistical_view_down')}</h4>
+                    <div className="box box-solid">
+                        <div className="box-header">
+                            <div className="box-title">{translate('document.statistical_view_down')}</div>
+                        </div>
                         <div className="box-body qlcv" style={{ minHeight: "400px" }}>
                             <div ref="barchart"></div>
                         </div>
@@ -620,8 +623,10 @@ class AdministrationStatisticsReport extends Component {
             </div>
             <div className="row">
                 <div className="col-xs-6" >
-                    <div className="box box-primary">
-                        <h4>{translate('document.statistical_document_by_domain')}</h4>
+                    <div className="box box-solid">
+                        <div className="box-header">
+                            <div className="box-title">{translate('document.statistical_document_by_domain')}</div>
+                        </div>
                         <div className="box-body qlcv" style={{ minHeight: "400px" }}>
                             <TreeDomain
                                 domains={list}
@@ -632,8 +637,10 @@ class AdministrationStatisticsReport extends Component {
                     </div>
                 </div>
                 <div className="col-xs-6" >
-                    <div className="box box-primary">
-                        <h4>{translate('document.statistical_document_by_archive')}</h4>
+                    <div className="box box-solid">
+                        <div className="box-header">
+                            <div className="box-title">{translate('document.statistical_document_by_archive')}</div>
+                        </div>
                         <div className="box-body qlcv" style={{ minHeight: "400px" }}>
                             <TreeArchive
                                 archives={listArchives}

@@ -133,7 +133,8 @@ const COMPONENTS = [{
         ROOT_ROLES.DEAN.name,
     ],
     links: [
-        '/employee-manage-info-asset'
+        '/employee-manage-info-asset', 
+        '/manage-info-asset'
     ]
 } ];
 exports.COMPONENTS = COMPONENTS;

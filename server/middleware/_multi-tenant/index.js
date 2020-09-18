@@ -40,9 +40,8 @@ exports.authFunc = (checkPage = true) => {
             /**
              * Xác định db truy vấn cho request
              */
-            req.portal = !req.user.company ? process.env.DB_NAME : req.user.company.shortName; 
+            req.portal = !req.user.company ? process.env.DB_NAME : req.user.company.shortName;
             initModels(connect(DB_CONNECTION, req.portal), Models);
-            console.log("Called by portal:", req.portal)
 
             if (process.env.DEVELOPMENT !== 'true') {
 

@@ -49,10 +49,12 @@ function create(data) {
     }, true, true, 'notification');
 }
 
-function readedNotification(id) {
+function readedNotification(data) {
+    console.log(data);
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/notifications/readed/${id}`,
+        url: `${ process.env.REACT_APP_SERVER }/notifications/readed`,
         method: 'PATCH',
+        data
     }, false, false, 'notification');
 }
 

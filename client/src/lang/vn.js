@@ -341,6 +341,7 @@ export default {
             title: 'Thông báo',
             news: 'Thông báo mới',
             see_all: 'Xem tất cả',
+            mark_all_readed: 'Đánh dấu tất cả là đã đọc',
             total: 'Tổng số',
             level: 'loại thông báo',
             type: {
@@ -360,6 +361,7 @@ export default {
             add: 'Tạo thông báo',
             receivered: 'Thông báo đã nhận',
             sent: 'Thông báo đã tạo',
+            unread: 'Thông báo chưa đọc',
             note: 'Chú thích',
             info: 'Thông tin thông báo',
             delete: 'Xóa thông báo',
@@ -932,9 +934,11 @@ export default {
             choose_file: 'Chọn file',
             name_button_export: 'Xuất báo cáo',
             choose_decision_unit: 'Chọn cấp ra quyết định',
-
             note_file_import: 'File import không đúng định dạng',
             error_row: 'Có lỗi xảy ra ở các dòng',
+            rowHeader: 'Số dòng tiêu đề của bảng',
+            sheets_name: 'Tên các sheet',
+            title_correspond: 'Tên tiêu đề ứng với',
 
             // Validator dung chung cho module quản lý nhân sự
             employee_number_required: 'Mã nhân viên không được để trống',
@@ -942,6 +946,8 @@ export default {
             staff_code_not_find: 'Mã nhân viên không tồn tại',
             start_date_before_end_date: 'Ngày bắt đầu phải trước ngày kết thúc',
             end_date_after_start_date: 'Ngày kết thúc phải sau ngày bắt đầu',
+            cannot_be_empty: 'không được để trống',
+            value_duplicate: 'bị trùng lặp',
 
             // Quản lý lương nhân viên
             salary: {
@@ -1368,6 +1374,24 @@ export default {
 
                     },
 
+                    import: {
+                        import_general_infor: 'Thông tin cơ bản',
+                        import_experience: 'Kinh nghiệm làm việc',
+                        import_degree: 'Bằng cấp',
+                        import_certificate: 'Chứng chỉ',
+                        import_contract: 'Hợp đồng lao động',
+                        import_socialInsurance_details: 'Bảo hiểm xã hội',
+                        import_file: 'Tài liệu đính kèm',
+
+                        import_general_infor_title: 'Import thông tin nhân viên',
+                        import_experience_title: 'Import kinh nghiệm làm việc',
+                        import_degree_title: 'Import bằng cấp',
+                        import_certificate_title: 'Import chứng chỉ',
+                        import_contract_title: 'Import hợp đồng lao động',
+                        import_socialInsurance_details_title: 'Import bảo hiểm xã hội',
+                        import_file_title: 'Import tài liệu đính kèm'
+                    },
+
                     // Nhón dành cho UI
                     have: 'Có',
                     staff: 'nhân viên',
@@ -1412,6 +1436,7 @@ export default {
                     employee_number_have_exist: 'Mã nhân viên đã tồn tại',
                     email_in_company_have_exist: 'Email công ty đã tồn tại',
                     employee_timesheet_id_required: 'Mã số chấm công không được để trống',
+                    employee_timesheet_id_have_exist: 'Mã số chấm công đã tồn tại',
                     full_name_required: 'Họ và tên không được để trống',
                     birthdate_required: 'Ngày sinh không được để trống',
                     starting_date_required: 'Ngày bắt đầu làm việc không được để trống',
@@ -1423,7 +1448,7 @@ export default {
                     tax_number_required: 'Mã số thuế không được để trống',
                     tax_representative_required: 'Người đại diện không được để trống',
                     tax_authority_required: 'Cơ quan quản lý thuế không được để trống',
-                    temporary_residence_required: 'Địa chỉ Chỗ ở hiện tại không được để trống',
+                    temporary_residence_required: 'Nơi ở hiện tại không được để trống',
                 }
             },
 

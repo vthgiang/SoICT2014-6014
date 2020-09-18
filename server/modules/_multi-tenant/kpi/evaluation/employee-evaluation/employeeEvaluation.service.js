@@ -132,7 +132,7 @@ exports.approveAllKpis = async (portal, id) => {
             return defaultT;
         }))
     }
-    employee_kpi_set = await employee_kpi_set
+    employee_kpi_set = employee_kpi_set && await employee_kpi_set
         .populate("organizationalUnit creator approver")
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .execPopulate();
@@ -166,6 +166,8 @@ exports.editStatusKpi = async (portal, data, query) => {
     })
     employee_kpi_set = await EmployeeKPISet(connect(DB_CONNECTION, portal))
         .findByIdAndUpdate(employee_kpi_set._id, { $set: { status: checkFullApprove } }, { new: true })
+        
+    employee_kpi_set = employee_kpi_set && await employee_kpi_set
         .populate("organizationalUnit creator approver")
         .populate({ path: "kpis", populate: { path: 'parent' } });
     return employee_kpi_set;
@@ -186,7 +188,8 @@ exports.editKpi = async (portal, id, data) => {
     }
     let target = await EmployeeKPI(connect(DB_CONNECTION, portal))
         .findByIdAndUpdate(id, { $set: objUpdate }, { new: true })
-        .populate("parent");
+
+    target = target && await target.populate("parent");
     return target;
 }
 

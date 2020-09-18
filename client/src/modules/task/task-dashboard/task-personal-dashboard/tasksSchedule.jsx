@@ -39,9 +39,8 @@ class TasksSchedule extends Component {
       endDate: null,
       taskId: null,
       add: true,
-      taskStatus: this.infoSearch.taskStatus
+      taskStatus: this.infoSearch.taskStatus,
     };
-
   }
 
   handleSelectStatus = async (taskStatus) => {
@@ -53,13 +52,41 @@ class TasksSchedule extends Component {
   }
 
   handleSearchData = async () => {
+    const { tasks, TaskOrganizationUnitDashboard } = this.props;
     let status = this.infoSearch.taskStatus;
+
     await this.setState(state => {
       return {
         ...state,
         taskStatus: status
       }
     })
+
+    if (tasks) {
+      let taskList, tasksByStatus;
+
+      // Đếm số công việc đơn vị
+      if (TaskOrganizationUnitDashboard) {
+        taskList = tasks.organizationUnitTasks && tasks.organizationUnitTasks.tasks;
+        tasksByStatus = taskList && taskList.filter(task => this.filterByStatus(task));
+
+        if (tasksByStatus) {
+          await this.countTasks(tasksByStatus);
+        }
+      }
+      // Đếm số công việc cá nhân
+      else {
+        let res = tasks.responsibleTasks && tasks.responsibleTasks.filter(task => this.filterByStatus(task));
+        let acc = tasks.accountableTasks && tasks.accountableTasks.filter(task => this.filterByStatus(task));
+        let con = tasks.consultedTasks && tasks.consultedTasks.filter(task => this.filterByStatus(task));
+        let inf = tasks.informedTasks && tasks.informedTasks.filter(task => this.filterByStatus(task));
+
+        await this.countTasks(res);
+        await this.countTasks(acc);
+        await this.countTasks(con);
+        await this.countTasks(inf);
+      }
+    }
 
     await this.getTaskDurations();
     await this.getTaskGroups();
@@ -159,7 +186,9 @@ class TasksSchedule extends Component {
                   workingDayMin = (endTime - startTime) * tasksByStatus[i].progress / 100;
                   let dayFromStartDate = currentTime - startTime;
                   let timeOver = workingDayMin - dayFromStartDate;
-                  if (timeOver >= 0) color = "#00A65A"; // In time or on time
+                  if (timeOver >= 0) {
+                    color = "#00A65A"; // In time or on time
+                  }
                   else {
                     color = "#F0D83A"; // delay
                   }
@@ -282,7 +311,9 @@ class TasksSchedule extends Component {
                   workingDayMin = (endTime - startTime) * tasksByStatus2[i].progress / 100;
                   let dayFromStartDate = currentTime - startTime;
                   let timeOver = workingDayMin - dayFromStartDate;
-                  if (timeOver >= 0) color = "#00A65A"; // In time or on time
+                  if (timeOver >= 0) {
+                    color = "#00A65A"; // In time or on time
+                  }
                   else {
                     color = "#F0D83A"; // delay
                   }
@@ -301,11 +332,11 @@ class TasksSchedule extends Component {
 
   getTaskGroups() {
     const { tasks, translate } = this.props;
-    console.log('tasks', tasks);
     let { taskStatus } = this.state;
     var taskList1, tasksByStatus1;
     let groupName = [], distinctGroupName = [], id = [], distinctId = [];
     let multiResponsibleEmployee = false;
+    // this.INFO_CALENDAR.delay = 0, this.INFO_CALENDAR.intime = 0, this.INFO_CALENDAR.overDue = 0;
 
     if (tasks) {
 
@@ -314,6 +345,7 @@ class TasksSchedule extends Component {
         taskList1 = tasks.organizationUnitTasks && tasks.organizationUnitTasks.tasks;
         tasksByStatus1 = taskList1 && taskList1.filter(task => this.filterByStatus(task));
         if (tasksByStatus1) {
+
           for (let i = 1; i <= tasksByStatus1.length; i++) {
             let responsibleName = [];
             let responsibleEmployeeIds = [];
@@ -416,7 +448,6 @@ class TasksSchedule extends Component {
 
 
   handleItemClick = async (itemId) => {
-    let { taskStatus } = this.state;
     let { tasks } = this.props;
     var taskList, tasksByStatus;
 
@@ -509,17 +540,51 @@ class TasksSchedule extends Component {
     this.animateScroll(false);
   };
 
+  // Đếm số lượng công việc đúng hạn, trễ hạn, quá hạn
+  countTasks = async (taskList) => {
+    let delay = 0;
+    let intime = 0;
+    let overDue = 0;
+    let currentTime = new Date();
+    for (let i in taskList) {
+      let startTime = new Date(taskList[i].startDate);
+      let endTime = new Date(taskList[i].endDate);
+      let workingDayMin;
+      if (currentTime > endTime && taskList[i].progress < 100) {
+        overDue++;
+      }
+      else {
+        workingDayMin = (endTime - startTime) * taskList[i].progress / 100; // Số ngày làm việc tối thiểu để đúng hạn
+        let dayFromStartDate = currentTime - startTime;
+        let timeOver = workingDayMin - dayFromStartDate;
+        if (timeOver >= 0) {
+          intime++;
+        }
+        else {
+          delay++;
+        }
+      }
+    }
+    await this.setState(state => {
+      return {
+        ...state,
+        overDue: overDue,
+        delay: delay,
+        intime: intime
+      }
+    })
+  }
+
   render() {
     const { tasks, translate } = this.props;
     const { TaskOrganizationUnitDashboard } = this.props;
     const { defaultTimeStart, defaultTimeEnd, taskStatus } = this.state;
-    console.log('render');
+    let { overDue, delay, intime } = this.state;
     let task = tasks && tasks.task;
     let today = new Date();
 
     let rctHeadText = TaskOrganizationUnitDashboard ? translate('task.task_management.responsible') : translate('task.task_management.role');
     let rctHead = document.getElementsByClassName("rct-header-root");
-
     if (rctHead[0]) {
       let first = rctHead[0].children;
       if (first[0]) {
@@ -587,15 +652,15 @@ class TasksSchedule extends Component {
           <div className="form-inline" style={{ textAlign: "center", margin: "10px" }}>
             <div className="form-group">
               <div id="in-time"></div>
-              <label id="label-for-calendar">{translate('task.task_management.in_time')}</label>
+              <label id="label-for-calendar">{translate('task.task_management.in_time')}({intime ? intime : 0})</label>
             </div>
             <div className="form-group">
               <div id="delay"></div>
-              <label id="label-for-calendar">{translate('task.task_management.delayed_time')}</label>
+              <label id="label-for-calendar">{translate('task.task_management.delayed_time')}({delay ? delay : 0})</label>
             </div>
             <div className="form-group">
               <div id="not-achieved"></div>
-              <label id="label-for-calendar">{translate('task.task_management.not_achieved')}</label>
+              <label id="label-for-calendar">{translate('task.task_management.not_achieved')}({overDue ? overDue : 0})</label>
             </div>
 
           </div>

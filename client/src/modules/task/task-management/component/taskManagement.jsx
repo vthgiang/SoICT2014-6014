@@ -20,7 +20,7 @@ class TaskManagement extends Component {
 
             currentTab: "responsible",
             organizationalUnit: '[]',
-            status: '[]',
+            status: ["Inprocess", "WaitForApproval"],
             priority: '[]',
             special: '[]',
             name: "",
@@ -40,7 +40,7 @@ class TaskManagement extends Component {
 
     componentDidMount() {
         this.props.getDepartment();
-        this.props.getResponsibleTaskByUser("[]", "1", "20", "[]", "[]", "[]", null, null, null, null, null);
+        this.props.getResponsibleTaskByUser("[]", "1", "20", this.state.status, "[]", "[]", null, null, null, null, null);
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -416,6 +416,7 @@ class TaskManagement extends Component {
         }
 
         this.setState(state => {
+            console.log('val-status', value);
             return {
                 ...state,
                 status: value
@@ -491,7 +492,7 @@ class TaskManagement extends Component {
 
     render() {
         const { tasks, user, translate } = this.props;
-        const { currentTaskId, currentPage, currentTab, parentTask, startDate, endDate, perPage } = this.state;
+        const { currentTaskId, currentPage, currentTab, parentTask, startDate, endDate, perPage, status } = this.state;
         let currentTasks, units = [];
         let pageTotals;
 
@@ -593,9 +594,10 @@ class TaskManagement extends Component {
                         <div className="form-group">
                             <label>{translate('task.task_management.status')}</label>
                             <SelectMulti id="multiSelectStatus"
-                                defaultValue={[
-                                    translate('task.task_management.inprocess')
-                                ]}
+                                // defaultValue={[
+                                //     translate('task.task_management.inprocess')
+                                // ]}
+                                value={status}
                                 items={[
                                     { value: "Inprocess", text: translate('task.task_management.inprocess') },
                                     { value: "WaitForApproval", text: translate('task.task_management.wait_for_approval') },

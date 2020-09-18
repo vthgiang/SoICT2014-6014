@@ -621,7 +621,7 @@ class ModalCreateTaskByProcess extends Component {
                                         <div className='col-md-6'>
                                             {/* Tên quy trình */}
                                             <div className={`form-group ${errorOnProcessName === undefined ? "" : "has-error"}`}>
-                                                <label>{translate("task.task_process.process_name")}</label>
+                                                <label>{translate("task.task_process.process_name")} <span style={{color: "red"}}>*</span></label>
                                                 <input type="text"
                                                     value={processName}
                                                     className="form-control" placeholder={translate("task.task_process.process_name")}
@@ -632,7 +632,7 @@ class ModalCreateTaskByProcess extends Component {
 
                                             {/* Mô tả quy trình */}
                                             <div className={`form-group ${errorOnProcessDescription === undefined ? "" : "has-error"}`}>
-                                                <label>{translate("task.task_process.process_description")}</label>
+                                                <label>{translate("task.task_process.process_description")} <span style={{color: "red"}}>*</span></label>
                                                 <textarea type="text" rows={4} style={{ minHeight: '103.5px' }}
                                                     value={processDescription}
                                                     className="form-control" placeholder={translate("task.task_process.process_description")}
@@ -646,7 +646,7 @@ class ModalCreateTaskByProcess extends Component {
                                             {/* Ngày bắt đầu - kết thúc quy trình */}
                                             <div className="row form-group">
                                                 <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnStartDate === undefined ? "" : "has-error"}`}>
-                                                    <label className="control-label">{translate('task.task_management.start_date')}*</label>
+                                                    <label className="control-label">{translate('task.task_management.start_date')} <span style={{color: "red"}}>*</span></label>
                                                     <DatePicker
                                                         id={`datepicker1-process-${idProcess}`}
                                                         dateFormat="day-month-year"
@@ -656,7 +656,7 @@ class ModalCreateTaskByProcess extends Component {
                                                     <ErrorLabel content={errorOnStartDate} />
                                                 </div>
                                                 <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnEndDate === undefined ? "" : "has-error"}`}>
-                                                    <label className="control-label">{translate('task.task_management.end_date')}*</label>
+                                                    <label className="control-label">{translate('task.task_management.end_date')} <span style={{color: "red"}}>*</span></label>
                                                     <DatePicker
                                                         id={`datepicker2-process-${idProcess}`}
                                                         value={endDate}
@@ -668,7 +668,7 @@ class ModalCreateTaskByProcess extends Component {
 
                                             <div className={`form-group ${errorOnViewer === undefined ? "" : "has-error"}`}>
                                                 {/* Người được xem quy trình */}
-                                                <label className="control-label">{translate("task.task_process.viewer")}</label>
+                                                <label className="control-label">{translate("task.task_process.viewer")} <span style={{color: "red"}}>*</span></label>
                                                 {allUnitsMember &&
                                                     <SelectBox
                                                         id={`select-viewer-employee-create-task-by-process-${indexRenderer}-${idProcess}`}
@@ -684,7 +684,7 @@ class ModalCreateTaskByProcess extends Component {
                                             </div>
                                             <div className={`form-group ${errorOnManager === undefined ? "" : "has-error"}`}>
                                                 {/* Người quản lý quy trình */}
-                                                <label className="control-label" >{translate("task.task_process.manager")}</label>
+                                                <label className="control-label" >{translate("task.task_process.manager")} <span style={{color: "red"}}>*</span></label>
                                                 {allUnitsMember &&
                                                     <SelectBox
                                                         id={`select-manager-employee-create-task-by-process-${indexRenderer}-${idProcess}`}
