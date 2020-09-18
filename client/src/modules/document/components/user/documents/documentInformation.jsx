@@ -84,13 +84,12 @@ class DocumentInformation extends Component {
             documentIssuingBody, documentOfficialNumber, documentSigner, documentVersions,
             documentRelationshipDescription, documentRelationshipDocuments,
             documentRoles, documentArchives,
-            documentArchivedRecordPlaceInfo, documentArchivedRecordPlaceOrganizationalUnit, currentVersion,
+            documentArchivedRecordPlaceOrganizationalUnit, currentVersion,
         } = this.state;
         const { translate, role, documents, department, user, documentLogs } = this.props;
         const roleList = role.list.map(role => { return { value: role._id, text: role.name } });
         const relationshipDocs = documents.administration.data.list.filter(doc => doc._id !== documentId).map(doc => { return { value: doc._id, text: doc.name } })
         let roles = this.findDocumentRole(roleList, documentRoles);
-        console.log('----------------', this.props)
         let logs = documentLogs.reverse();
         return (
             <React.Fragment>
@@ -119,7 +118,7 @@ class DocumentInformation extends Component {
                         <div className="col-xs-12 col-sm-12 col-md-7 col-lg-7" style={{ paddingTop: "10px" }}>
                             <div className="collapse in">
                                 <div className="description-box">
-                                    <legend className="scheduler-border">{translate('document.infomation_docs')}</legend>
+                                    <h4 className="scheduler-border">{translate('document.infomation_docs')}</h4>
                                     <div className="row">
                                         <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                             <strong>{translate('document.name')}&emsp; </strong>
@@ -127,45 +126,45 @@ class DocumentInformation extends Component {
                                         </div>
                                         <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                             <strong>{translate('document.doc_version.issuing_body')}&emsp; </strong>
-                                            {documentIssuingBody}
+                                            {documentIssuingBody ? documentIssuingBody : translate('general.no_data')}
                                         </div>
                                     </div>
                                     <div className="row">
                                         <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                             <strong>{translate('document.doc_version.official_number')}&emsp; </strong>
-                                            {documentOfficialNumber}
+                                            {documentOfficialNumber ? documentOfficialNumber : translate('general.no_data')}
                                         </div>
                                         <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                             <strong>{translate('document.doc_version.signer')}&emsp; </strong>
-                                            {documentSigner}
+                                            {documentSigner ? documentSigner : translate('general.no_data')}
                                         </div>
                                     </div>
                                     <div className="row">
                                         <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                             <strong>{translate('document.category')}&emsp; </strong>
-                                            {documentCategory ? documentCategory : null}
+                                            {documentCategory ? documentCategory : translate('general.no_data')}
                                         </div>
                                         <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                             <strong>{translate('document.domain')}&emsp; </strong>
                                             {documentDomains ? documentDomains.map(y =>
                                                 <div>{y}</div>
-                                            ) : null}
+                                            ) : translate('general.no_data')}
                                         </div>
                                         <div className="for{ translate('document.description') }m-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                             <strong>{translate('document.description')}&emsp; </strong>
-                                            {documentDescription}
+                                            {documentDescription ? documentDescription : translate('general.no_data')}
                                         </div>
                                         <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                             <strong>Lưu trữ&emsp; </strong>
                                             {documentArchives ? documentArchives.map(y =>
                                                 <div>{y}</div>
-                                            ) : null}
+                                            ) : translate('general.no_data')}
                                         </div>
                                     </div>
                                 </div>
 
                                 <div className="description-box">
-                                    <legend className="scheduler-border">{translate('document.doc_version.title')}</legend>
+                                    <h4 className="scheduler-border">{translate('document.doc_version.title')}</h4>
                                     <div className="row">
                                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                             <table className="table table-hover table-striped table-bordered" id="table-document-version">
@@ -202,32 +201,32 @@ class DocumentInformation extends Component {
                                 </div>
 
                                 <div className="description-box">
-                                    <legend className="scheduler-border">{translate('document.relationship.title')}</legend>
+                                    <h4 className="scheduler-border">{translate('document.relationship.title')}</h4>
                                     <div className="row">
                                         <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                             <strong>{translate('document.relationship.description')}&emsp; </strong>
-                                            {documentRelationshipDescription}
+                                            {documentRelationshipDescription ? documentRelationshipDescription : translate('general.no_data')}
                                         </div>
 
                                         <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                             <strong>{translate('document.relationship.list')}&emsp; </strong>
-                                            {documentRelationshipDocuments ? documentRelationshipDocuments.map(y =>
+                                            {documentRelationshipDocuments && documentRelationshipDocuments.length ? documentRelationshipDocuments.map(y =>
                                                 <div>{y}</div>
-                                            ) : null}
+                                            ) : translate('general.no_data')}
                                         </div>
                                     </div>
                                     <div className="row">
                                         <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                             <strong>{translate('document.roles')}&emsp; </strong>
-                                            {roles ? roles.map(y =>
+                                            {roles && roles.length ? roles.map(y =>
                                                 <div>{y[0]}</div>
-                                            ) : null}
+                                            ) : translate('general.no_data')}
                                         </div>
 
 
                                         <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                             <strong>{translate('document.store.organizational_unit_manage')}&emsp; </strong>
-                                            {documentArchivedRecordPlaceOrganizationalUnit ? documentArchivedRecordPlaceOrganizationalUnit.name : ""}
+                                            {documentArchivedRecordPlaceOrganizationalUnit ? documentArchivedRecordPlaceOrganizationalUnit.name : translate('general.no_data')}
                                         </div>
                                     </div>
                                 </div>
