@@ -152,7 +152,7 @@ class MaterialCreateForm extends Component {
                         </div>
                         <div className="form-group">
                             <label>{translate('manage_warehouse.material_manager.description')}</label>
-                            <input type="text" className="form-control" value={description} onChange={this.handleMaterialDescriptionChange} />
+                            <textarea type="text" className="form-control" value={description} onChange={this.handleMaterialDescriptionChange} />
                             <ErrorLabel/>
                         </div>
                     </form>

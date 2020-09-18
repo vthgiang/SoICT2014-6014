@@ -164,8 +164,9 @@ if (process.env.MULTI_TENANT === 'true') {
 	// Task report
 	app.use("/taskreports", require("./modules/report/task-report/taskReport.route"));
 
-	// material
-	app.use("/materials", require("./modules/warehouse/material/material.router"));
+	// warehouse
+	app.use("/materials", require("./modules/warehouse/material/material.route"));
+	app.use("/categories", require('./modules/warehouse/category/category.route'))
 
 	//order
 	app.use("/orders", require("./modules/order/order.route"));

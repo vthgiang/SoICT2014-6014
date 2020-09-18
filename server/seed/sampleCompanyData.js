@@ -25,7 +25,9 @@ const {
     DocumentArchive,
     DocumentDomain,
     DocumentCategory,
+
     Material,
+    Category,
 
     CrmCustomer,
     CrmLocation,
@@ -2678,6 +2680,29 @@ const sampleCompanyData = async () => {
     }
     ]);
     console.log("Khởi tạo xong danh sách vật tư");
+
+    /*---------------------------------------------------------------------------------------------
+    -----------------------------------------------------------------------------------------------
+        TẠO DỮ LIỆU DANH MỤC HÀNG HÓA
+    -----------------------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------------------- */
+    console.log("Khởi tạo dữ liệu danh mục hàng hóa");
+    var list = await Category.insertMany([{
+        company: vnist._id,
+        name: "Dạng bột",
+        code: "CT001",
+        type: "product",
+        description: "Dạng bột"
+    },
+    {
+        company: vnist._id,
+        name: "Dạng viên",
+        code: "CT002",
+        type: "product",
+        description: "Dạng viên viên"
+    }
+    ]);
+    console.log("Khởi tạo xong danh sách danh mục hàng hóa");
 
 
     /*---------------------------------------------------------------------------------------------

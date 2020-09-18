@@ -6,17 +6,17 @@ const BillSchema = new Schema ({
 
     company: {
         type: Schema.Types.ObjectId,
-        ref: "companies"
+        ref: 'Company'
     },
 
     fromStock: {
         type: Schema.Types.ObjectId,
-        ref: "stocks"
+        ref: 'Stock'
     },
 
     toStock: {
         type: Schema.Types.ObjectId,
-        ref: "stocks"
+        ref: 'Stock'
     },
 
     code: {
@@ -26,17 +26,17 @@ const BillSchema = new Schema ({
 
     users: [{
         type: Schema.Types.ObjectId,
-        ref: "users"
+        ref: 'User'
     }],
 
     partner: {
         type: Schema.Types.ObjectId,
-        ref: "psrtners"
+        ref: 'Partner'
     },
 
     proposal: {
         type: Schema.Types.ObjectId,
-        ref: "proposals"
+        ref: 'Proposal'
     },
 
     timestamp: {
@@ -52,12 +52,12 @@ const BillSchema = new Schema ({
 
         good: {
             type: Schema.Types.ObjectId,
-            ref: "goods"
+            ref: 'Good'
         },
 
         consignment: {
             type: Schema.Types.ObjectId,
-            ref: "consignments"
+            ref: 'Consignment'
         },
 
         type: {
@@ -74,12 +74,12 @@ const BillSchema = new Schema ({
 
         good: {
             type: Schema.Types.ObjectId,
-            ref: "goods"
+            ref: 'Good'
         },
 
         consignment: {
             type: Schema.Types.ObjectId,
-            ref: "consignments"
+            ref: 'Consignment'
         },
 
         type: {
@@ -96,12 +96,12 @@ const BillSchema = new Schema ({
 
         good: {
             type: Schema.Types.ObjectId,
-            ref: "goods"
+            ref: 'Good'
         },
 
         consignment: {
             type: Schema.Types.ObjectId,
-            ref: "consignments"
+            ref: 'Consignment'
         },
 
         type: {
@@ -128,12 +128,12 @@ const BillSchema = new Schema ({
 
         good: {
             type: Schema.Types.ObjectId,
-            ref: "goods"
+            ref: 'Good'
         },
 
         consignment: {
             type: Schema.Types.ObjectId,
-            ref: "consignments"
+            ref: 'Consignment'
         },
 
         type: {
@@ -158,4 +158,8 @@ const BillSchema = new Schema ({
 
 BillSchema.plugin(mongoosePaginate);
 
-module.exports = Bill = mongoose.model("bills", BillSchema);
+module.exports = (db) => {
+    if(!db.models.Bill)
+        return db.model('Bill', BillSchema);
+    return db.models.Bill;
+}

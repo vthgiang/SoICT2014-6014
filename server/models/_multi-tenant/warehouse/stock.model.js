@@ -6,7 +6,7 @@ const StockSchema = new Schema ({
 
     company: {
         type: Schema.Types.ObjectId,
-        ref: "companies"
+        ref: 'Company'
     },
 
     code: {
@@ -35,7 +35,7 @@ const StockSchema = new Schema ({
 
     users: [{
         type: Schema.Types.ObjectId,
-        ref: "users"
+        ref: 'User'
     }],
 
     goods: [{
@@ -58,4 +58,9 @@ const StockSchema = new Schema ({
 
 StockSchema.plugin(mongoosePaginate);
 
-module.exports = Stock = mongoose.model("stocks", StockSchema);
+module.exports = (db) => {
+    if(!db.models.Stock){
+        return db.model('Stock', StockSchema);
+    }
+    return db.models.Stock;
+}

@@ -6,7 +6,7 @@ const BinLocationSchema = new Schema ({
 
     company: {
         type: Schema.Types.ObjectId,
-        ref: "companies"
+        ref: 'Company'
     },
 
     parent: {
@@ -35,7 +35,7 @@ const BinLocationSchema = new Schema ({
 
     stock: {
         type: Schema.Types.ObjectId,
-        ref: "stocks"
+        ref: 'Stock'
     },
 
     status: {
@@ -45,17 +45,17 @@ const BinLocationSchema = new Schema ({
 
     users: [{
         type: Schema.Types.ObjectId,
-        ref: "users"
+        ref: 'User'
     }],
 
     goods: [{
         type: Schema.Types.ObjectId,
-        ref: "goods"
+        ref: 'Good'
     }],
 
     enableGoods: [{
         type: Schema.Types.ObjectId,
-        ref: "goods"
+        ref: 'Good'
     }],
 
     capacity: {
@@ -73,4 +73,8 @@ const BinLocationSchema = new Schema ({
 
 BinLocationSchema.plugin(mongoosePaginate);
 
-module.exports = BinLocation = mongoose.model("binLocations", BinLocationSchema);
+module.exports = (db) =>{
+    if(!db.models.BinLocation)
+        return db.model('BinLocation', BinLocationSchema);
+    return db.models.BinLocation;
+}

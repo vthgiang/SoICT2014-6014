@@ -6,7 +6,7 @@ const ProposalSchema = new Schema ({
 
     company: {
         type: Schema.Types.ObjectId,
-        ref: "companies"
+        ref: 'Company'
     },
 
     code: {
@@ -21,7 +21,7 @@ const ProposalSchema = new Schema ({
 
     stock: {
         type: Schema.Types.ObjectId,
-        ref: "stocks"
+        ref: 'Stock'
     },
 
     description: {
@@ -31,7 +31,7 @@ const ProposalSchema = new Schema ({
     goods: [{
         good: {
             type: Schema.Types.ObjectId,
-            ref: "goods"
+            ref: 'Good'
         },
 
         quantity: {
@@ -48,17 +48,17 @@ const ProposalSchema = new Schema ({
 
     partner: {
         type: Schema.Types.ObjectId,
-        ref: "partners"
+        ref: 'Partner'
     },
 
     moveStock: {
         type: Schema.Types.ObjectId,
-        ref: "stocks"
+        ref: 'Stock'
     },
 
     users: [{
         type: Schema.Types.ObjectId,
-        ref: "users"
+        ref: 'User'
     }],
 
     timestamp: {
@@ -73,4 +73,8 @@ const ProposalSchema = new Schema ({
 
 ProposalSchema.plugin(mongoosePaginate);
 
-module.exports = Proposal = mongoose.model("proposals", ProposalSchema)
+module.exports = (db) => {
+    if(!db.models.Proposal)
+        return db.model('Proposal', ProposalSchema);
+    return db.models.Proposal;
+}
