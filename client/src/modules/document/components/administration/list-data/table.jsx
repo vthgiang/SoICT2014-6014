@@ -156,7 +156,6 @@ class Table extends Component {
         })
     }
     handleArchiveChange = (value) => {
-        console.log('valeeeeeeee', value);
         this.setState(state => {
             return {
                 ...state,
@@ -201,7 +200,6 @@ class Table extends Component {
     }
     convertDataToExportData = (data) => {
 
-        console.log("dataaaaaaa", data);
         let newData = [];
         for (let i = 0; i < data.length; i++) {
             let element = {};
@@ -286,7 +284,7 @@ class Table extends Component {
             element.organizationUnitManager = x.organizationUnitManager ? x.organizationUnitManager.name : "";
             element.officialNumber = x.officialNumber ? x.officialNumber : "";
             let max_length = Math.max(length_domains, length_archives, length_relationship, length_roles, length_versions, length_logs, length_views, length_downloads);
-            //console.log('eleeeeeeeeeee', element);
+
             newData = [...newData, element];
             if (max_length > 1) {
                 for (let i = 1; i < max_length; i++) {
@@ -315,14 +313,12 @@ class Table extends Component {
                         descriptionLogs: i < length_logs ? x.logs[i].description : "",
 
                     }
-                    // console.log('exxxx', object);
                     newData = [...newData, object];
                 }
             }
 
 
         }
-        console.log('exxxx', newData);
         let exportData = {
             fileName: "Bảng thống kê tài liệu",
             dataSheets: [
@@ -401,9 +397,9 @@ class Table extends Component {
         if (isLoading === false) {
             list = docs.list;
         }
+        console.log('uuuuuuuuuuuuu', currentRow);
 
         let exportData = list ? this.convertDataToExportData(list) : "";
-        console.log('exportDataaaaaaaaaaaaaaaa', this.props.role)
         return (
             <div className="qlcv">
                 <CreateForm />
@@ -641,7 +637,6 @@ class Table extends Component {
             domains: this.state.domain ? this.state.domain : "",
             archives: path && path.length ? path[0] : "",
         };
-        console.log('dataaaaaa', data);
         await this.props.getAllDocuments(data);
     }
 }

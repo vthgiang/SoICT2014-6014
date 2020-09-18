@@ -6,12 +6,12 @@ const GoodSchema = new Schema ({
 
     conpany: {
         type: Schema.Types.ObjectId,
-        ref: "companies"
+        ref: 'Company'
     },
 
     category: {
         type: Schema.Types.ObjectId,
-        ref: "categories"
+        ref: 'Category'
     },
 
     code: {
@@ -73,4 +73,8 @@ const GoodSchema = new Schema ({
 
 GoodSchema.plugin(mongoosePaginate);
 
-module.exports = Good = mongoose.model("goods", GoodSchema);
+module.exports = (db) => {
+    if(!db.models.Good)
+        return db.model('Good', GoodSchema);
+    return db.models.Good;
+}

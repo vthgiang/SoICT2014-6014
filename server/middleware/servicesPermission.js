@@ -449,12 +449,18 @@ exports.data = [
     { path: '/taskreports/:id', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/taskreports/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
 
-    //material
+    //warehouse
     { path: '/materials', method: 'GET', roles: ['Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/materials', method: 'POST', roles: ['Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/materials/:id', method: 'DELETE', roles: ['Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/materials/:id', method: 'PATCH', roles: ['Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
 
+    { path: '/categories', method: 'GET', roles: ['Super Admin', 'Admin'] },
+    { path: '/categories', method: 'POST', roles: ['Super Admin', 'Admin'] },
+    { path: '/categories/:id', method: 'GET', roles: ['Super Admin', 'Admin'] },
+    { path: '/categories/:id', method: 'PATCH', roles: ['Super Admin', 'Admin'] },
+    { path: '/categories/:id', method: 'DELETE', roles: ['Super Admin', 'Admin'] },
+    
     //order
     { path: "/orders", method: "GET", roles: ["Super Admin", "Admin", "Dean", "Vice Dean", "Employee"] },
     { path: "/orders", method: "POST", roles: ["Super Admin", "Admin", "Dean", "Vice Dean", "Employee"] },

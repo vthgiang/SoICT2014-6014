@@ -101,10 +101,18 @@ class SideBar extends Component {
                             {/* Quản lý kho */}
                             <GroupItem groupItem={{
                                 name: 'menu.manage_warehouse',
-                                icon: 'fa fa-bank',
+                                icon: 'fa fa-safari',
                                 list: [
                                     { name: 'menu.dashboard_material', icon: 'fa fa-dashboard', path: '/dashboad-material' },
                                     { name: 'menu.material_manager', icon: 'fa fa-address-card', path: '/material-manager' },
+                                    { name: 'menu.stock_management', icon: 'fa fa-bank', path: '/stock-management' },
+                                    { name: 'menu.bin_location_management', icon: 'fa fa-sitemap', path: '/bin-location-management' },
+                                    { name: 'menu.category_management', icon: 'fa fa-cubes', path: '/category-management' },
+                                    { name: 'menu.good_management', icon: 'fa fa-gift', path: '/good-management' },
+                                    { name: 'menu.partner_management', icon: 'fa fa-users', path: '/partner-management'},
+                                    { name: 'menu.proposal_management', icon: 'fa fa-envelope-o', path: '/proposal-management'},
+                                    { name: 'menu.bill_management', icon: 'fa fa-reorder', path: '/bill-management' },
+                                    { name: 'menu.inventory_management', icon: 'fa fa-times-circle-o', path: '/inventory-management'}
                                 ]
                             }} />
 

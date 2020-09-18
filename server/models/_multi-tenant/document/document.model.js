@@ -115,7 +115,7 @@ const DocumentSchema = new Schema({
     /**Hồ sơ lưu trữ bản cứng */
     archives: [{
         type: Schema.Types.ObjectId,
-        ref: 'DocumentDomain'
+        ref: 'DocumentArchive'
     }],
     // archivedRecordPlaceInfo: {
     //     type: String
