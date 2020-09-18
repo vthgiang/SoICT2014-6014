@@ -1,6 +1,7 @@
 const { TaskProcess, ProcessTemplate, Privilege, Role, Task } = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
 
 const TaskService = require(`${SERVER_MODULES_DIR}/_multi-tenant/task/task-management/task.service`);
+const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 const nodemailer = require("nodemailer");
 const mongoose = require('mongoose');
 
@@ -360,7 +361,7 @@ exports.createTaskByProcess = async (portal, processId, body) => {
             confirmedByEmployees: data[i].responsibleEmployees.concat(data[i].accountableEmployees).concat(data[i].consultedEmployees).includes(data[i].creator) ? data[i].creator : []
         });
 
-        let x = await TaskService.sendEmailFoCreateTask(newTaskItem);
+        let x = await TaskService.sendEmailFoCreateTask(portal, newTaskItem);
 
         mailInfoArr.push(x);
         listTask.push(newTaskItem._id);

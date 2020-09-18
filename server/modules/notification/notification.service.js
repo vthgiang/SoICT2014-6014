@@ -130,7 +130,7 @@ exports.getAllNotifications = async (user) => {
  */
 exports.paginateNotifications = async (user, data) => {
     if (typeof data.readed === "boolean") {
-        var info = Object.assign({user}, data.content,{readed: false});
+        var info = Object.assign({user}, data.content, {readed: false});
     }
     else {
         var info = Object.assign({user}, data.content);

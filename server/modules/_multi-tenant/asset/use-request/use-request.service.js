@@ -1,4 +1,5 @@
 const Models = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
+const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 const { RecommendDistribute, User } = Models;
 
 /**
@@ -72,7 +73,7 @@ exports.searchRecommendDistributes = async (portal, query) => {
  * Thêm mới thông tin phiếu đề nghị cap phat thiết bị
  * @data: dữ liệu phiếu đề nghị cap phat thiết bị
  */
-exports.createRecommendDistribute = async (data, portal) => {
+exports.createRecommendDistribute = async (portal, data) => {
 
     let dateStartUse, dateEndUse, dateCreate, date, partStart, partEnd, partCreate;
     partStart = data.dateStartUse.split('-');

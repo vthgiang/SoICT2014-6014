@@ -163,7 +163,6 @@ class IncidentManagement extends Component {
 
     // Bắt sự kiện chuyển trang
     setPage = async (pageNumber) => {
-        console.log('\\n**', pageNumber);
         await this.setState({
             page: parseInt(pageNumber),
         });
@@ -171,6 +170,7 @@ class IncidentManagement extends Component {
     }
 
     deleteIncident = (assetId, incidentId) => {
+        console.log('\n\n***\n', assetId, incidentId);
         let { managedBy } = this.state
         this.props.deleteIncident(assetId, incidentId).then(({ response }) => {
             if (response.data.success) {

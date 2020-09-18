@@ -145,14 +145,7 @@ class Table extends Component {
             }
         })
     }
-    handleDomains = value => {
-        this.setState(state => {
-            return {
-                ...state,
-                documentDomains: value,
-            }
-        })
-    }
+
     handleNameChange = (e) => {
         const value = e.target.value;
         this.setState(state => {
@@ -163,6 +156,7 @@ class Table extends Component {
         })
     }
     handleArchiveChange = (value) => {
+        console.log('valeeeeeeee', value);
         this.setState(state => {
             return {
                 ...state,
@@ -191,7 +185,7 @@ class Table extends Component {
     convertData = (data) => {
         let array = data.map(item => {
             return {
-                value: item.id,
+                value: item.path,
                 text: item.name,
             }
         })
@@ -612,6 +606,15 @@ class Table extends Component {
         await this.props.getAllDocuments(data);
     }
 
+    findPath = (select) => {
+        const archives = this.props.documents.administration.archives.list;
+        let paths = select.map(s => {
+            let archive = archives.filter(arch => arch._id === s);
+            return archive[0] ? archive[0].path : "";
+        })
+        return paths;
+
+    }
     setLimit = (number) => {
         if (this.state.limit !== number) {
             this.setState({ limit: number });
@@ -627,6 +630,7 @@ class Table extends Component {
     }
 
     searchWithOption = async () => {
+        let path = this.state.archive ? this.findPath(this.state.archive) : "";
         const data = {
             limit: this.state.limit,
             page: 1,
@@ -635,8 +639,9 @@ class Table extends Component {
             name: this.state.name,
             category: this.state.category[0],
             domains: this.state.domain ? this.state.domain : "",
-            archives: this.state.archive[0],
+            archives: path && path.length ? path[0] : "",
         };
+        console.log('dataaaaaa', data);
         await this.props.getAllDocuments(data);
     }
 }

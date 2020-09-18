@@ -57,7 +57,7 @@ exports.createRecommendProcure = async (req, res) => {
  */
 exports.deleteRecommendProcure = async (req, res) => {
     try {
-        var recommendprocureDelete = await RecommendProcureService.deleteRecommendProcure(req.params.id);
+        var recommendprocureDelete = await RecommendProcureService.deleteRecommendProcure(req.portal, req.params.id);
         await Logger.info(req.user.email, 'DELETE_RECOMMENDPROCURE', req.portal);
         res.status(200).json({
             success: true,
@@ -81,7 +81,7 @@ exports.deleteRecommendProcure = async (req, res) => {
  */
 exports.updateRecommendProcure = async (req, res) => {
     try {
-        var recommendprocureUpdate = await RecommendProcureService.updateRecommendProcure(req.params.id, req.body);
+        var recommendprocureUpdate = await RecommendProcureService.updateRecommendProcure(req.portal, req.params.id, req.body);
         await Logger.info(req.user.email, 'EDIT_RECOMMENDPROCURE', req.portal);
         res.status(200).json({
             success: true,
