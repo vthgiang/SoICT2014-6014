@@ -469,6 +469,82 @@ exports.searchMaintainances = async (portal, id, data) => {
 
 }
 
+/**
+ * Lấy danh sách thông tin bảo trì tài sản
+ */
+exports.getMaintainances = async (portal, params) => {
+    let maintainances;
+    let { code, maintainanceCode, maintainCreateDate, type, status } = params;
+    let page = parseInt(params.page);
+    let limit = parseInt(params.limit);
+console.log('\nAAAAAA', typeof type, ' | ', type);
+    console.log(code, maintainanceCode, maintainCreateDate, type, status, page, limit);
+    let assetSearch = [];
+    if (code) {
+        assetSearch = [...assetSearch, { code: { "$regex": code, "$options": "i" } }]
+    }
+
+    let maintainanceSearch = [];
+    if (maintainanceCode) {
+        maintainanceSearch = [...maintainanceSearch, { maintainanceCode: { "$regex": maintainanceCode, "$options": "i" } }]
+    }
+
+    if (maintainCreateDate) {
+        let date = maintainCreateDate.split("-");
+        let start = new Date(date[1], date[0] - 1, 1);
+        let end = new Date(date[1], date[0], 1);
+
+        maintainanceSearch = [...maintainanceSearch, { createDate: { $gt: start, $lte: end } }]
+    }
+
+    if (type) {
+        maintainanceSearch = [...maintainanceSearch, { type: { $in: type } }]
+    }
+
+    if (status) {
+        maintainanceSearch = [...maintainanceSearch, { status: { $in: status } }]
+    }
+
+    let aggregateQuery = [];
+    if (assetSearch && assetSearch.length !== 0) {
+        aggregateQuery = [...aggregateQuery, { $match: { $and: assetSearch } }]
+    }
+    aggregateQuery = [...aggregateQuery, { $unwind: "$maintainanceLogs" }, { $replaceRoot: { newRoot: "$maintainanceLogs" } }]
+
+    if (maintainanceSearch && maintainanceSearch.length !== 0) {
+        aggregateQuery = [...aggregateQuery, { $match: { $and: maintainanceSearch } }]
+    }
+    aggregateQuery = [...aggregateQuery, { $sort: { 'createdAt': 1 } }, { $skip: (page - 1) * limit }, { $limit: limit }]
+
+    // Tìm kiếm câc danh sách sự cố
+    maintainances = await Asset(connect(DB_CONNECTION, portal)).aggregate(aggregateQuery);
+
+    // Đếm số sự cố
+    let mintainanceLength = 0;
+    let count = await Asset(connect(DB_CONNECTION, portal)).aggregate([
+        { $unwind: "$maintainanceLogs" },
+        { $replaceRoot: { newRoot: "$maintainanceLogs" } },
+        { $count: "mintainance_Length" }
+    ]);
+    mintainanceLength = count[0].mintainance_Length;
+
+    // Tìm tài sản ứng với sự cố tài sản
+    for (let i = 0; i < maintainances.length; i++) {
+        let item = maintainances[i];
+
+        let asset = await Asset(connect(DB_CONNECTION, portal)).findOne(
+            { "maintainanceLogs": { $elemMatch: { "_id": mongoose.Types.ObjectId(item._id) } } }
+        );
+
+        maintainances[i].asset = asset;
+    }
+
+    return {
+        mintainanceList: maintainances,
+        mintainanceLength: mintainanceLength,
+    };
+}
+
 /*
  * Thêm mới phiếu bảo trì
  */
@@ -586,6 +662,9 @@ exports.deleteUsage = async (portal, assetId, usageId) => {
     return await Asset(connect(DB_CONNECTION, portal)).update({ _id: assetId }, { "$pull": { "usageLogs": { "_id": usageId } } });
 }
 
+/**
+ * Lấy danh sách thông tin sự cố
+ */
 exports.getIncidents = async (portal, params) => {
     let incidents;
     let { code, assetName, incidentCode, incidentType, incidentStatus } = params;

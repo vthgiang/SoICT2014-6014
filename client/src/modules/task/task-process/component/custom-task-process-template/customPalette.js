@@ -56,3 +56,4 @@ CustomPalette.$inject = [
   'palette',
   'translate'
 ];
+
