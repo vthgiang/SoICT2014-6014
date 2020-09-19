@@ -50,7 +50,7 @@ import { recommendDistribute } from "../modules/asset/user/use-request/redux/red
 import { assetType } from "../modules/asset/admin/asset-type/redux/reducers";
 import { assetsManager } from "../modules/asset/admin/asset-information/redux/reducers";
 import { incidentManager } from "../modules/asset/admin/incident/redux/reducers";
-
+import { mintainanceManager } from "../modules/asset/admin/maintainance/redux/reducers";
 
 //report 
 import { reports } from "../modules/report/task-report/redux/reducers";
@@ -136,6 +136,7 @@ const appReducer = combineReducers({
     assetType,
     assetsManager,
     incidentManager,
+    mintainanceManager,
 
     dashboardEvaluationEmployeeKpiSet,
 

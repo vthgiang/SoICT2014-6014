@@ -474,10 +474,11 @@ exports.searchMaintainances = async (portal, id, data) => {
  */
 exports.getMaintainances = async (portal, params) => {
     let maintainances;
-    let { code, maintainanceCode, maintainCreateDate, type, status } = JSON.parse(params);
+    let { code, maintainanceCode, maintainCreateDate, type, status } = params;
     let page = parseInt(params.page);
     let limit = parseInt(params.limit);
-
+console.log('\nAAAAAA', typeof type, ' | ', type);
+    console.log(code, maintainanceCode, maintainCreateDate, type, status, page, limit);
     let assetSearch = [];
     if (code) {
         assetSearch = [...assetSearch, { code: { "$regex": code, "$options": "i" } }]

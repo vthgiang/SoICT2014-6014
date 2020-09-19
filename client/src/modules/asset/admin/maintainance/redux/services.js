@@ -9,18 +9,19 @@ export const MaintainanceService = {
 
 // Lấy thông tin bảo trì tài sản
 function getMaintainances(data) {
+    console.log('\n\n\n\n\\n\n***', data);
     let params = {
         code: data ? data.code : data,
         maintainanceCode: data ? data.maintainanceCode : data,
         maintainCreateDate: data ? data.maintainCreateDate : data,
-        type : data ? data.type : data,
-        status : data ? data.status : data,
+        type: data ? data.type : data,
+        status: data ? data.status : data,
         page: data ? data.page : data,
         limit: data ? data.limit : data,
     };
 
     return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/asset/assets/incident-logs`,
+        url: `${process.env.REACT_APP_SERVER}/asset/assets/maintainance-logs`,
         method: 'GET',
         params,
     }, false, true, 'asset.maintainance');

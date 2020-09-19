@@ -287,6 +287,7 @@ exports.getMaintainances = async (req, res) => {
             content: data
         });
     } catch (error) {
+        console.log("get_maintainance_false", error);
         res.status(400).json({
             success: false,
             messages: ["get_maintainance_false"],

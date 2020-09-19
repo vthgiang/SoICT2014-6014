@@ -18,9 +18,9 @@ class MaintainanceManagement extends Component {
             code: "",
             maintainanceCode: "",
             maintainCreateDate: "",
-            type: null,
-            status: null,
-            page: 0,
+            type: '',
+            status: '',
+            page: 1,
             limit: 5,
             managedBy: this.props.managedBy ? this.props.managedBy : ''
         }
@@ -109,24 +109,24 @@ class MaintainanceManagement extends Component {
     // Function lưu giá trị loại phiếu vào state khi thay đổi
     handleTypeChange = (value) => {
         if (value.length === 0) {
-            value = null
+            value = ''
         }
 
         this.setState({
             ...this.state,
-            maintainType: value
+            type: value
         })
     }
 
     // Function lưu giá trị status vào state khi thay đổi
     handleStatusChange = (value) => {
         if (value.length === 0) {
-            value = null
+            value = ''
         }
 
         this.setState({
             ...this.state,
-            maintainStatus: value
+            status: value
         })
     }
 
@@ -134,7 +134,7 @@ class MaintainanceManagement extends Component {
     handleSubmitSearch = async () => {
         await this.setState({
             ...this.state,
-            page: 0
+            page: 1
         })
         this.props.getMaintainances(this.state);
     }
@@ -149,9 +149,8 @@ class MaintainanceManagement extends Component {
 
     // Bắt sự kiện chuyển trang
     setPage = async (pageNumber) => {
-        var page = (pageNumber - 1) * this.state.limit;
         await this.setState({
-            page: parseInt(page),
+            page: parseInt(pageNumber),
 
         });
         this.props.getMaintainances(this.state);
@@ -170,40 +169,35 @@ class MaintainanceManagement extends Component {
         let fileName = "Bảng quản lý thông tin bảo trì tài sản ";
         let convertedData = [];
         if (data) {
-            data = data.forEach(asset => {
-                if (asset.maintainanceLogs.length !== 0) {
-                    let assetLog = asset.maintainanceLogs.map((x, index) => {
-                        let code = x.maintainanceCode;
-                        let assetName = asset.assetName;
-                        let type = x.type;
-                        let description = x.description;
-                        let createDate = this.formatDate2(x.createDate)
-                        let startDate = this.formatDate2(x.startDate);
-                        let endDate = this.formatDate2(x.endDate);
-                        let cost = parseInt(x.expense);
-                        let assetCode = asset.code;
-                        let status = x.status;
+            data = data.forEach((x, index) => {
+                let code = x.maintainanceCode;
+                let assetName = x.asset.assetName;
+                let type = x.type;
+                let description = x.description;
+                let createDate = this.formatDate2(x.createDate)
+                let startDate = this.formatDate2(x.startDate);
+                let endDate = this.formatDate2(x.endDate);
+                let cost = parseInt(x.expense);
+                let assetCode = x.asset.code;
+                let status = x.status;
 
-                        return {
-                            index: index + 1,
-                            code: code,
-                            createDate: createDate,
-                            type: type,
-                            assetName: assetName,
-                            assetCode: assetCode,
-                            des: description,
-                            createDate: createDate,
-                            startDate: startDate,
-                            endDate: endDate,
-                            cost: cost,
-                            status: status
+                let item = {
+                    index: index + 1,
+                    code: code,
+                    createDate: createDate,
+                    type: type,
+                    assetName: assetName,
+                    assetCode: assetCode,
+                    des: description,
+                    createDate: createDate,
+                    startDate: startDate,
+                    endDate: endDate,
+                    cost: cost,
+                    status: status
 
-                        }
-                    })
-                    for (let i = 0; i < assetLog.length; i++) {
-                        convertedData.push(assetLog[i]);
-                    }
                 }
+
+                convertedData.push(item);
 
             })
         }
@@ -279,20 +273,19 @@ class MaintainanceManagement extends Component {
     }
 
     render() {
-        const { translate, assetsManager } = this.props;
+        const { translate, mintainanceManager } = this.props;
         const { page, limit, currentRow, currentRowEditAsset, managedBy } = this.state;
 
         var lists = "", exportData;
         var formater = new Intl.NumberFormat();
-        if (assetsManager.isLoading === false) {
-            lists = assetsManager.listAssets;
+        if (mintainanceManager.isLoading === false) {
+            lists = mintainanceManager.mintainanceList;
             exportData = this.convertDataToExportData(lists);
         }
 
-        var pageTotal = ((assetsManager.totalList % limit) === 0) ?
-            parseInt(assetsManager.totalList / limit) :
-            parseInt((assetsManager.totalList / limit) + 1);
-        var currentPage = parseInt((page / limit) + 1);
+        var pageTotal = ((mintainanceManager.mintainanceLength % limit) === 0) ?
+            parseInt(mintainanceManager.mintainanceLength / limit) :
+            parseInt((mintainanceManager.mintainanceLength / limit) + 1);
 
         return (
             <div className="box">
@@ -404,21 +397,20 @@ class MaintainanceManagement extends Component {
                         </thead>
                         <tbody>
                             {(lists && lists.length !== 0) &&
-                                lists.map(asset => {
-                                    return asset.maintainanceLogs.map((x, index) => (
+                                lists.map((x, index) => (
                                         <tr key={index}>
-                                            <td><a onClick={() => this.handleEditAsset(asset)}>{asset.code}</a></td>
+                                            <td><a onClick={() => this.handleEditAsset(x.asset)}>{x.asset.code}</a></td>
                                             <td>{x.maintainanceCode}</td>
                                             <td>{x.createDate ? this.formatDate2(x.createDate) : ''}</td>
                                             <td>{this.convertMaintainType(x.type)}</td>
-                                            <td>{asset.assetName}</td>
+                                            <td>{x.asset.assetName}</td>
                                             <td>{x.description}</td>
                                             <td>{x.startDate ? this.formatDate2(x.startDate) : ''}</td>
                                             <td>{x.endDate ? this.formatDate2(x.endDate) : ''}</td>
                                             <td>{x.expense ? formater.format(parseInt(x.expense)) : ''} VNĐ</td>
                                             <td>{this.convertMaintainStatus(x.status)}</td>
                                             <td style={{ textAlign: "center" }}>
-                                                <a onClick={() => this.handleEdit(x, asset)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.asset_info.edit_maintenance_card')}><i
+                                                <a onClick={() => this.handleEdit(x, x.asset)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.asset_info.edit_maintenance_card')}><i
                                                     className="material-icons">edit</i></a>
                                                 <DeleteNotification
                                                     content={translate('asset.asset_info.delete_maintenance_card')}
@@ -426,22 +418,21 @@ class MaintainanceManagement extends Component {
                                                         id: x._id,
                                                         info: x.maintainanceCode ? x.maintainanceCode : '' + " - "
                                                     }}
-                                                    func={() => this.deleteMaintainance(asset._id, x._id)}
+                                                    func={() => this.deleteMaintainance(x.asset._id, x._id)}
                                                 />
                                             </td>
                                         </tr>
                                     ))
-                                })
-                            }
+                                }
                         </tbody>
                     </table>
-                    {assetsManager.isLoading ?
+                    {mintainanceManager.isLoading ?
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
                         (!lists || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
 
                     {/* PaginateBar */}
-                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
+                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
 
                 {/* Form chỉnh sửa phiếu bảo trì */}
@@ -515,8 +506,8 @@ class MaintainanceManagement extends Component {
 };
 
 function mapState(state) {
-    const { assetsManager } = state;
-    return { assetsManager };
+    const { mintainanceManager } = state;
+    return { mintainanceManager };
 };
 
 const actionCreators = {
