@@ -82,3 +82,4 @@ CustomContextPad.$inject = [
   'injector',
   'translate'
 ];
+

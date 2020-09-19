@@ -1,24 +1,24 @@
 import React, { Component } from "react";
-import { withTranslate } from "react-redux-multilingual";
 import { connect } from 'react-redux';
-import { getStorage } from '../../../../config';
-import { DialogModal, SelectBox, ErrorLabel } from "../../../../common-components";
+import { getStorage } from '../../../../../config';
+import { withTranslate } from "react-redux-multilingual";
+import { DialogModal, DatePicker, ErrorLabel, SelectBox } from "../../../../../common-components";
+import { FormCreateTaskByProcess } from "./formCreateTaskByProcess";
 
-import { UserActions } from "../../../super-admin/user/redux/actions";
-import { TaskProcessActions } from "../redux/actions";
-import { EditTaskTemplate } from "../../task-template/component/editTaskTemplate";
+import { UserActions } from "../../../../super-admin/user/redux/actions";
+import { TaskProcessActions } from "../../redux/actions";
+import { TaskFormValidator } from "../../../task-management/component/taskFormValidator";
 import { TaskProcessValidator } from './taskProcessValidator';
-import { is } from 'bpmn-js/lib/util/ModelUtil';
-import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil'
 
-import ElementFactory from 'bpmn-js/lib/features/modeling/ElementFactory';
-import customModule from './custom-task-process'
+import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil'
 import BpmnModeler from 'bpmn-js/lib/Modeler';
+import customModule from '../custom-task-process-template';
 import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
+
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import './processDiagram.css'
-
+import getEmployeeSelectBoxItems from "../../../organizationalUnitHelper";
 
 //Xóa element khỏi pallette theo data-action
 var _getPaletteEntries = PaletteProvider.prototype.getPaletteEntries;
@@ -32,31 +32,8 @@ PaletteProvider.prototype.getPaletteEntries = function (element) {
     return entries;
 }
 
-// custom element
-ElementFactory.prototype._getDefaultSize = function (semantic) {
-
-	if (is(semantic, 'bpmn:Task')) {
-		return { width: 160, height: 150 };
-	}
-
-	if (is(semantic, 'bpmn:Gateway')) {
-		return { width: 50, height: 50 };
-	}
-
-	if (is(semantic, 'bpmn:Event')) {
-		return { width: 36, height: 36 };
-	}
-
-	if (is(semantic, 'bpmn:TextAnnotation')) {
-		return { width: 100, height: 30 };
-	}
-	return { width: 100, height: 80 };
-
-};
-
-// zoom level mặc định dùng cho zoomin zoomout
 var zlevel = 1;
-class ModalEditTaskProcess extends Component {
+class ModalCreateTaskByProcess extends Component {
 
     constructor(props) {
         super(props);
@@ -67,22 +44,32 @@ class ModalEditTaskProcess extends Component {
             showInfo: false,
             info: data.tasks,
             xmlDiagram: data.xmlDiagram,
-            selectedEdit: 'info',
+            selected: 'info',
             zlevel: 1,
+            startDate: "",
+            endDate: "",
+            manager: [],
+            viewer: [],
+
+            indexRenderer: 0,
         }
         this.modeler = new BpmnModeler({
             additionalModules: [
                 customModule,
-                { zoomScroll: ['value', ''] }
+                { zoomScroll: ['value', ''] },
+                { bendpoints: ['value', ""] }
             ],
         });
-        this.modeling = this.modeler.get('modeling')
-        this.generateId = 'editprocess';
+        this.generateId = 'createtaskbyprocess';
         this.initialDiagram = data.xmlDiagram;
     }
 
     componentDidMount() {
+        // Lấy tất cả nhân viên trong công ty
+        // this.props.getAllUserOfCompany();
+        this.props.getAllUserInAllUnitsOfCompany()
         this.props.getDepartment();
+        this.props.getAllUsersWithRole();
         let { user } = this.props;
         let defaultUnit = user && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.find(item =>
             item.dean === this.state.currentRole
@@ -96,7 +83,6 @@ class ModalEditTaskProcess extends Component {
 
         this.modeler.attachTo('#' + this.generateId);
 
-
         var eventBus = this.modeler.get('eventBus');
 
         //Vo hieu hoa double click edit label
@@ -104,39 +90,24 @@ class ModalEditTaskProcess extends Component {
             var element = event.element;
 
             if (isAny(element, ['bpmn:Task'])) {
-                return false;
+                return false; // will cancel event
             }
         });
 
-        //Vo hieu hoa chinh sua label khi tao moi 
-        eventBus.on([
-            'create.end',
-            'autoPlace.end'
-        ], 250, (e) => {
-            this.modeler.get('directEditing').cancel()
-        });
-
+        eventBus.on('shape.move.start', 100000, () => { return false })
         this.modeler.on('element.click', 1000, (e) => this.interactPopup(e));
-
-        this.modeler.on('shape.remove', 1000, (e) => this.deleteElements(e));
-
-        this.modeler.on('commandStack.shape.delete.revert', (e) => this.handleUndoDeleteElement(e));
-
-        this.modeler.on('shape.changed', 1000, (e) => this.changeNameElement(e));
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.idProcess !== prevState.idProcess) {
             let info = {};
-            let infoTask = nextProps.data.tasks; // TODO TaskList
-
+            let infoTask = nextProps.data.tasks;
             for (let i in infoTask) {
                 if (!infoTask[i].organizationalUnit) {
                     infoTask[i].organizationalUnit = nextProps.listOrganizationalUnit[0]?._id;
                 }
                 info[`${infoTask[i].code}`] = infoTask[i];
             }
-
             return {
                 ...prevState,
                 idProcess: nextProps.idProcess,
@@ -144,13 +115,7 @@ class ModalEditTaskProcess extends Component {
                 info: info,
                 processDescription: nextProps.data.processDescription ? nextProps.data.processDescription : '',
                 processName: nextProps.data.processName ? nextProps.data.processName : '',
-                viewer: nextProps.data.viewer ? nextProps.data.viewer.map(x=>x._id) : [],
-                manager: nextProps.data.manager ? nextProps.data.manager.map(x=>x._id) : [],
                 xmlDiagram: nextProps.data.xmlDiagram,
-                errorOnProcessName: undefined,
-                errorOnProcessDescription: undefined,
-                errorOnManager: undefined,
-                errorOnViewer: undefined,
             }
         } else {
             return null;
@@ -159,50 +124,177 @@ class ModalEditTaskProcess extends Component {
 
     shouldComponentUpdate(nextProps, nextState) {
         if (nextProps.idProcess !== this.state.idProcess) {
-            let { infoTask } = this.props
-            for (const x in infoTask) {
-                if (x !== undefined) {
-                    const modeling = this.modeler.get('modeling');
-                    let element1 = this.modeler.get('elementRegistry').get(x);
-                    if (element1) {
-                        modeling.updateProperties(element1, {
-                            info: infoTask[x],
-                        });
-                    }
-                }
+            this.props.getDepartment();
+            let { user } = this.props;
+            let defaultUnit;
+            if (user && user.organizationalUnitsOfUser) defaultUnit = user.organizationalUnitsOfUser.find(item =>
+                item.dean === this.state.currentRole
+                || item.viceDean === this.state.currentRole
+                || item.employee === this.state.currentRole);
+            if (!defaultUnit && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0) {
+                // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
+                defaultUnit = user.organizationalUnitsOfUser[0]
             }
+            this.props.getChildrenOfOrganizationalUnits(defaultUnit && defaultUnit._id);
             this.modeler.importXML(nextProps.data.xmlDiagram, function (err) { });
             return true;
         }
         return true;
     }
 
-    // Các hàm thay đổi thông tin của quy trình
-    // Cập nhật tên quy trình
+    // Các hàm xử lý sự kiện của form 
+    handleChangeContent = async (content) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                selected: content
+            }
+        })
+    }
+
+    // hàm cập nhật Tên Quy trình
     handleChangeBpmnName = async (e) => {
         let { value } = e.target;
+        let msg = TaskProcessValidator.validateProcessName(value, this.props.translate);
         await this.setState(state => {
             return {
                 ...state,
                 processName: value,
-                errorOnProcessName: TaskProcessValidator.validateProcessName(value, this.props.translate),
+                errorOnProcessName: msg,
             }
         });
     }
 
-    // cập nhật mô tả quy trình
+    // hàm cập nhật mô tả quy trình
     handleChangeBpmnDescription = async (e) => {
         let { value } = e.target;
+        let msg = TaskProcessValidator.validateProcessDescription(value, this.props.translate);
         await this.setState(state => {
             return {
                 ...state,
                 processDescription: value,
-                errorOnProcessDescription: TaskProcessValidator.validateProcessDescription(value, this.props.translate),
+                errorOnProcessDescription: msg,
             }
         });
     }
 
-    // Cập nhật người được xem
+    // hàm cập nhật tên Công việc trong quy trình
+    handleChangeName = async (value) => {
+        const modeling = this.modeler.get('modeling');
+        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
+        modeling.updateProperties(element1, {
+            shapeName: value,
+        });
+    }
+
+    // hàm cập nhật mô tả công việc trong quy trình
+    handleChangeDescription = async (value) => {
+        await this.setState(state => {
+            state.info[`${state.id}`] = {
+                ...state.info[`${state.id}`],
+                code: state.id,
+                description: value,
+            }
+            return {
+                ...state,
+            }
+        })
+    }
+
+    // hàm cập nhật thông tin người thực hiện
+    handleChangeResponsible = async (value) => {
+        let { user } = this.props
+        let responsible = []
+        user.usercompanys.forEach(x => {
+            if (value.some(y => y === x._id)) {
+                responsible.push(x.name)
+            }
+        })
+        const modeling = this.modeler.get('modeling');
+        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
+        modeling.updateProperties(element1, {
+            responsibleName: responsible
+        });
+    }
+
+    // cập nhật thông tin người phê duyệt
+    handleChangeAccountable = async (value) => {
+        let { user } = this.props
+        let accountable = []
+        user.usercompanys.forEach(x => {
+            if (value.some(y => y === x._id)) {
+                accountable.push(x.name)
+            }
+        })
+        const modeling = this.modeler.get('modeling');
+        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
+        modeling.updateProperties(element1, {
+            accountableName: accountable
+        });
+    }
+
+    // hàm cập nhật thông tin đơn vị công việc
+    handleChangeOrganizationalUnit = async (value) => {
+        await this.setState(state => {
+            state.info[`${state.id}`] = {
+                ...state.info[`${state.id}`],
+                code: state.id,
+                organizationalUnit: value,
+            }
+            return {
+                ...state,
+            }
+        })
+    }
+
+    // hàm cập nhật ngày bắt đầu công việc
+    handleChangeTaskStartDate = (value) => {
+        this.validateTaskStartDate(value, true);
+    }
+    validateTaskStartDate = (value, willUpdateState = true) => {
+        let { translate } = this.props;
+        let msgStart = TaskFormValidator.validateTaskStartDate(value, this.state.endDate ? this.state.endDate : "", translate);
+        let msgEnd = TaskFormValidator.validateTaskEndDate(value, this.state.endDate ? this.state.endDate : "", translate);
+
+        if (willUpdateState) {
+            this.state.startDate = value;
+            this.state.errorOnStartDate = msgStart;
+            // this.state.errorOnEndDate = msgEnd;
+
+            this.setState(state => {
+                return {
+                    ...state,
+                };
+            });
+        }
+        return msgStart === undefined;
+    }
+
+    // hàm cập nhật ngày kết thúc công việc
+    handleChangeTaskEndDate = (value) => {
+        this.validateTaskEndDate(value, true);
+    }
+    validateTaskEndDate = (value, willUpdateState = true) => {
+        let { translate } = this.props;
+        let msgEnd = TaskFormValidator.validateTaskEndDate(this.state.startDate ? this.state.startDate : "", value, translate);
+        let msgStart = TaskFormValidator.validateTaskStartDate(this.state.startDate ? this.state.startDate : "", value, translate);
+
+        if (willUpdateState) {
+            this.state.endDate = value;
+            this.state.errorOnEndDate = msgEnd;
+            // this.state.errorOnStartDate = msgStart;
+
+            this.setState(state => {
+                return {
+                    ...state,
+                };
+            });
+        }
+        return msgEnd === undefined;
+    }
+
+
+    // Hàm cập nhật người được xem quy trình
     handleChangeViewer = async (value) => {
         await this.setState(state => {
 
@@ -212,10 +304,9 @@ class ModalEditTaskProcess extends Component {
                 errorOnViewer: TaskProcessValidator.validateViewer(value, this.props.translate),
             }
         })
-
     }
 
-    // Cập nhật người quản lý
+    // Hàm cập nhật người quản lý quy trình
     handleChangeManager = async (value) => {
         await this.setState(state => {
 
@@ -227,98 +318,24 @@ class ModalEditTaskProcess extends Component {
         })
     }
 
-    // cập nhật thông tin của task element
-    handleUpdateElement = (abc) => {
-        const modeling = this.modeler.get('modeling');
-        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
-        modeling.updateProperties(element1, {
-            info: this.state.info,
-        });
-    }
-
-    // Các hàm xử lý sự kiện của form 
-    handleChangeContent = async (content) => {
-        await this.setState(state => {
+    // hàm cập nhật độ ưu tiên
+    handleChangeTaskPriority = (value) => {
+        this.state.info[`${this.state.id}`].priority = value;
+        this.setState(state => {
             return {
                 ...state,
-                selectedEdit: content
-            }
-        })
-    }
-
-    // cập nhật tên công việc trong quy trình
-    handleChangeName = async (value) => {
-        const modeling = this.modeler.get('modeling');
-        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
-        modeling.updateProperties(element1, {
-            shapeName: value,
+            };
         });
-    }
-
-    // Cập nhật người thực hiện công việc trong quy trình
-    handleChangeResponsible = async (value) => {
-        const modeling = this.modeler.get('modeling');
-        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
-        let { user } = this.props
-        let responsibleName
-        let responsible = []
-        user.usercompanys.forEach(x => {
-            if (value.some(y => y === x._id)) {
-                responsible.push(x.name)
-            }
-        })
-        if (responsible.length > 2) {
-
-            responsibleName = responsible[0] + ", " + responsible[1] + "..."
-            modeling.updateProperties(element1, {
-                responsibleName: responsibleName
-            });
-
-        } else {
-
-            modeling.updateProperties(element1, {
-                responsibleName: responsible
-            });
-
-        }
-    }
-
-    // Cập nhật người phê duyệt công việc trong quy trình
-    handleChangeAccountable = async (value) => {
-        const modeling = this.modeler.get('modeling');
-        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
-        let { user } = this.props
-        let accountableName
-        let accountable = []
-
-        user.usercompanys.forEach(x => {
-            if (value.some(y => y === x._id)) {
-                accountable.push(x.name)
-            }
-        })
-
-        if (accountable.length > 2) {
-            accountableName = accountable[0] + ", " + accountable[1] + "..."
-            modeling.updateProperties(element1, {
-                accountableName: accountableName
-            });
-
-        } else {
-            modeling.updateProperties(element1, {
-                accountableName: accountable
-            });
-        }
     }
 
     // Các hàm  xử lý sự kiện của bpmn
-
     interactPopup = (event) => {
         var element = event.element;
+        console.log(element, this.state)
         let nameStr = element.type.split(':');
         this.setState(state => {
-            if (element.type === 'bpmn:Task' || element.type === 'bpmn:ExclusiveGateway'
-                // || element.type === "bpmn:SequenceFlow" || element.type === "bpmn:IntermediateThrowEvent"
-                // || element.type === 'bpmn:EndEvent' || element.type === "bpmn:StartEvent" 
+            if (element.type === 'bpmn:Task' || element.type === 'bpmn:ExclusiveGateway' ||
+                element.type === "bpmn:SequenceFlow" || element.type === "bpmn:ServiceTask"
             ) {
                 if (!state.info[`${element.businessObject.id}`] ||
                     (state.info[`${element.businessObject.id}`] && !state.info[`${element.businessObject.id}`].organizationalUnit)) {
@@ -358,50 +375,6 @@ class ModalEditTaskProcess extends Component {
         var element = event.context.shape;
     }
 
-    changeNameElement = (event) => {
-        var element = event.element;
-    }
-
-    // hàm cập nhật màu sắc
-    done = (e) => {
-        e.preventDefault()
-        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
-        this.modeling.setColor(element1, {
-            fill: '#dde6ca',
-            stroke: '#6b7060'
-        });
-        let target = [];
-        element1.outgoing.forEach(x => {
-            target.push(x.target.id)
-        })
-        target.forEach(x => {
-            this.modeling.setColor(this.modeler.get('elementRegistry').get(x), {
-                // fill: '#7236ff',
-                stroke: '#7236ff'
-            });
-        })
-
-        var outgoing = element1.outgoing;
-        outgoing.forEach(x => {
-            var outgoingEdge = this.modeler.get('elementRegistry').get(x.id);
-
-            this.modeling.setColor(outgoingEdge, {
-                stroke: '#7236ff',
-                width: '5px'
-            })
-        })
-        var incoming = element1.incoming;
-        incoming.forEach(x => {
-            var incomingEdge = this.modeler.get('elementRegistry').get(x.id);
-
-            this.modeling.setColor(incomingEdge, {
-                stroke: '#dde6ca',
-                width: '5px'
-            })
-        })
-    }
-
-    // Các hàm cho nút export, import, download BPMN
     downloadAsSVG = () => {
         this.modeler.saveSVG({ format: true }, function (error, svg) {
             if (error) {
@@ -483,10 +456,8 @@ class ModalEditTaskProcess extends Component {
         let xmlStr;
         this.modeler.saveXML({ format: true }, function (err, xml) {
             if (err) {
-                console.log(err);
             }
             else {
-                console.log(xml);
                 xmlStr = xml;
             }
         });
@@ -498,7 +469,7 @@ class ModalEditTaskProcess extends Component {
         })
     }
 
-    // Hàm xử lý sự kiện zoomin, zoomout, zoomfit 
+    // xử lý zoomin zoomout
     handleZoomOut = async () => {
         let zstep = 0.2;
         let canvas = this.modeler.get('canvas');
@@ -506,7 +477,6 @@ class ModalEditTaskProcess extends Component {
 
         // set initial zoom level
         canvas.zoom(zlevel, 'auto');
-        // zlevel = canvas?._cachedViewbox?.scale;
 
         // update our zoom level on viewbox change
         await eventBus.on('canvas.viewbox.changed', function (evt) {
@@ -517,7 +487,6 @@ class ModalEditTaskProcess extends Component {
     }
 
     handleZoomReset = () => {
-        console.log('click zoom reset');
 
         let canvas = this.modeler.get('canvas');
         canvas.zoom('fit-viewport');
@@ -530,17 +499,16 @@ class ModalEditTaskProcess extends Component {
 
         // set initial zoom level
         canvas.zoom(zlevel, 'auto');
-        // zlevel = canvas?._cachedViewbox?.scale;
         // update our zoom level on viewbox change
         await eventBus.on('canvas.viewbox.changed', function (evt) {
             zlevel = evt.viewbox.scale;
         });
-
         zlevel = Math.min(zlevel + zstep, 7);
         canvas.zoom(zlevel, 'auto');
     }
 
-    // hàm cập nhật thông tin task trong quy trình
+
+    // cập nhật thông tin công viêc mỗi lần thay đổi thông tin
     handleChangeInfo = (value) => {
         let info = {
             ...value,
@@ -553,122 +521,85 @@ class ModalEditTaskProcess extends Component {
             })
     }
 
-    // validate quy trình
-    isFormValidate = () => {
-        let elementList = this.modeler.get('elementRegistry')._elements;
-        let check = true; // valid
-        let hasStart = false, hasEnd = false;
-        for (let i in elementList) {
-            let e = elementList[i].element;
-            if (e.type === "bpmn:StartEvent") {
-                hasStart = true;
-            }
-            else if (e.type === "bpmn:EndEvent") {
-                hasEnd = true;
-            }
-            else if (e.type === "bpmn:Task" || e.type === "bpmn:ExclusiveGateway") {
-                if (!e.businessObject.incoming) {
-                    check = false;
-                }
-                else if (e.businessObject.incoming.length === 0) {
-                    check = false;
-                }
+    // hàm validate form tạo quy trình công việc
+    isTaskFormValidated = () => {
+        let { errorOnEndDate, errorOnProcessDescription, errorOnProcessName, errorOnStartDate, startDate, endDate, viewer, manager, errorOnManager, errorOnViewer } = this.state;
 
-                if (!e.businessObject.outgoing) {
-                    check = false;
-                }
-                else if (e.businessObject.outgoing.length === 0) {
-                    check = false;
-                }
-            }
-        }
-        if (!hasStart || !hasEnd) {
-            check = false;
-        }
-        return check
-            && this.state.errorOnManager === undefined && this.state.errorOnProcessDescription === undefined
-            && this.state.errorOnProcessName === undefined && this.state.errorOnViewer === undefined;
+        return errorOnEndDate === undefined && errorOnProcessDescription === undefined && errorOnProcessName === undefined && errorOnStartDate === undefined
+            && errorOnViewer === undefined && errorOnManager === undefined && manager.length !== 0 && viewer.length !== 0
+            && startDate.trim() !== "" && endDate.trim() !== "";
     }
 
-    // hàm lưu
+    // Hàm lưu thông tin 
     save = async () => {
-        let elementList = this.modeler.get('elementRegistry')._elements;
-        let { info } = this.state;
+        let { info, startDate, endDate, userId, processName, processDescription, xmlDiagram, viewer, manager } = this.state;
+
         let xmlStr;
         this.modeler.saveXML({ format: true }, function (err, xml) {
             xmlStr = xml;
         });
-        await this.setState(state => {
-            for (let j in info) {
-                if (Object.keys(info[j]).length !== 0) {
-                    info[j].followingTasks = [];
-                    info[j].preceedingTasks = [];
 
-                    for (let i in elementList) {
-                        let elem = elementList[i].element;
-                        if (info[j].code === elem.id) {
-                            if (elem.businessObject.incoming) {
-                                let incoming = elem.businessObject.incoming;
-                                for (let x in incoming) {
-                                    info[j].preceedingTasks.push({ // các công việc trc công việc hiện tại
-                                        task: incoming[x].sourceRef.id,
-                                        link: incoming[x].name,
-                                    })
-                                }
-                            }
-                            if (elem.businessObject.outgoing) {
-                                let outgoing = elem.businessObject.outgoing;
-                                for (let y in outgoing) {
-                                    info[j].followingTasks.push({ // các công việc sau công việc hiện tại
-                                        task: outgoing[y].targetRef.id,
-                                        link: outgoing[y].name,
-                                    })
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+        await this.setState(state => {
             return {
                 ...state,
                 xmlDiagram: xmlStr,
             }
-        })
+        });
 
-        console.log('info-edit', info);
-        let data = {
-            info: this.state.info,
-            xmlDiagram: this.state.xmlDiagram,
-            processName: this.state.processName,
-            processDescription: this.state.processDescription,
-            manager: this.state.manager,
-            viewer: this.state.viewer,
-            creator: getStorage("userId"),
-
-            userId: getStorage("userId"),
-            pageNumber: this.props.pageNumber,
-            noResultsPerPage: this.props.noResultsPerPage,
-            name: this.props.name,
+        for (let i in info) {
+            info[i].startDate = info[i].startDate ? info[i].startDate : startDate;
+            info[i].endDate = info[i].endDate ? info[i].endDate : endDate;
         }
-        this.props.editXmlDiagram(this.state.idProcess, data)
+
+        let data = {
+            processName: processName,
+            processDescription: processDescription,
+            viewer: viewer,
+            manager: manager,
+            xmlDiagram: this.state.xmlDiagram,
+            creator: userId,
+            taskList: info,
+            startDate: startDate,
+            endDate: endDate,
+
+        }
+        console.log('000', data);
+        this.props.createTaskByProcess(data, this.state.idProcess);
     }
 
     render() {
-        const { translate, role } = this.props;
-        const { name, id, idProcess, info, showInfo, processDescription, processName, viewer, manager, selectedEdit } = this.state;
+        const { translate, role, user } = this.props;
+        const { id, idProcess, info, taskName, showInfo, startDate, endDate, errorOnEndDate, errorOnStartDate, errorOnManager, errorOnViewer,
+            processDescription, processName, selected, viewer, manager, errorOnProcessName, errorOnProcessDescription, indexRenderer } = this.state;
         const { listOrganizationalUnit } = this.props
 
+        let listUserCompany = user?.usercompanys;
+        let listItem = [];
+        if (listUserCompany && listUserCompany.length !== 0) {
+            listItem = listUserCompany.map(item => { return { text: item.name, value: item._id } });
+        }
         let listRole = [];
         if (role && role.list.length !== 0) listRole = role.list;
-        let listItem = listRole.filter(e => ['Admin', 'Super Admin', 'Dean', 'Vice Dean', 'Employee'].indexOf(e.name) === -1)
-            .map(item => { return { text: item.name, value: item._id } });
+
+
+        let usersOfChildrenOrganizationalUnit;
+        if (user.usersOfChildrenOrganizationalUnit) {
+            usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
+        }
+        let usersInUnitsOfCompany;
+        if (user && user.usersInUnitsOfCompany) {
+            usersInUnitsOfCompany = user.usersInUnitsOfCompany;
+        }
+
+        let allUnitsMember = getEmployeeSelectBoxItems(usersInUnitsOfCompany);
+        let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
 
         return (
             <React.Fragment>
                 <DialogModal
-                    size='100' modalID={`modal-edit-process`} isLoading={false}
-                    formID="form-task-process"
-                    disableSubmit={!this.isFormValidate()}
+                    size='100' modalID={`modal-create-task-by-process`} isLoading={false}
+                    formID="form-create-task-by-process"
+                    disableSubmit={!this.isTaskFormValidated()}
                     title={this.props.title}
                     func={this.save}
                     bodyStyle={{ paddingTop: 0, paddingBottom: 0 }}
@@ -677,70 +608,95 @@ class ModalEditTaskProcess extends Component {
 
                         <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none", marginBottom: 0 }}>
                             <ul className="nav nav-tabs">
-                                 {/* Nút tab Thông tin quy trình */}
-                                <li className="active"><a href="#info-edit" onClick={() => this.handleChangeContent("info")} data-toggle="tab">{translate("task.task_process.process_information")}</a></li>
+                                {/* Nút tab thông tin quy trình */}
+                                <li className="active"><a href="#info-create-task" onClick={() => this.handleChangeContent("info")} data-toggle="tab">{translate("task.task_process.process_information")}</a></li>
                                 {/* Nút tab quy trình - công việc */}
-                                <li><a href="#process-edit" onClick={() => this.handleChangeContent("process")} data-toggle="tab">{translate("task.task_process.task_process")}</a></li>
+                                <li><a href="#process-create-task" onClick={() => this.handleChangeContent("process")} data-toggle="tab">{translate("task.task_process.task_process")}</a></li>
                             </ul>
+
+                            {/* Tab Thông tin quy trình */}
                             <div className="tab-content">
-                                {/* Tab thôn tin quy trình */}
-                                <div className={selectedEdit === "info" ? "active tab-pane" : "tab-pane"} id="info-edit">
+                                <div className={selected === "info" ? "active tab-pane" : "tab-pane"} id="info-create-task">
                                     <div className='row'>
                                         <div className='col-md-6'>
                                             {/* Tên quy trình */}
-                                            <div className={`form-group ${this.state.errorOnProcessName === undefined ? "" : "has-error"}`}>
-                                                <label className={`control-label`}>{translate("task.task_process.process_name")} <span style={{color: "red"}}>*</span></label>
+                                            <div className={`form-group ${errorOnProcessName === undefined ? "" : "has-error"}`}>
+                                                <label>{translate("task.task_process.process_name")} <span style={{color: "red"}}>*</span></label>
                                                 <input type="text"
                                                     value={processName}
                                                     className="form-control" placeholder={translate("task.task_process.process_name")}
                                                     onChange={this.handleChangeBpmnName}
                                                 />
-                                                <ErrorLabel content={this.state.errorOnProcessName} />
+                                                <ErrorLabel content={errorOnProcessName} />
                                             </div>
 
                                             {/* Mô tả quy trình */}
-                                            <div className={`form-group ${this.state.errorOnProcessDescription === undefined ? "" : "has-error"}`}>
-                                                <label className="control-label">{translate("task.task_process.process_description")} <span style={{color: "red"}}>*</span></label>
-                                                <textarea type="text" rows={4}
+                                            <div className={`form-group ${errorOnProcessDescription === undefined ? "" : "has-error"}`}>
+                                                <label>{translate("task.task_process.process_description")} <span style={{color: "red"}}>*</span></label>
+                                                <textarea type="text" rows={4} style={{ minHeight: '103.5px' }}
                                                     value={processDescription}
-                                                    className="form-control" placeholder="Mô tả công việc"
+                                                    className="form-control" placeholder={translate("task.task_process.process_description")}
                                                     onChange={this.handleChangeBpmnDescription}
                                                 />
-                                                <ErrorLabel content={this.state.errorOnProcessDescription} />
+                                                <ErrorLabel content={errorOnProcessDescription} />
+                                            </div>
+                                        </div>
+
+                                        <div className='col-md-6'>
+                                            {/* Ngày bắt đầu - kết thúc quy trình */}
+                                            <div className="row form-group">
+                                                <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnStartDate === undefined ? "" : "has-error"}`}>
+                                                    <label className="control-label">{translate('task.task_management.start_date')} <span style={{color: "red"}}>*</span></label>
+                                                    <DatePicker
+                                                        id={`datepicker1-process-${idProcess}`}
+                                                        dateFormat="day-month-year"
+                                                        value={startDate}
+                                                        onChange={this.handleChangeTaskStartDate}
+                                                    />
+                                                    <ErrorLabel content={errorOnStartDate} />
+                                                </div>
+                                                <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnEndDate === undefined ? "" : "has-error"}`}>
+                                                    <label className="control-label">{translate('task.task_management.end_date')} <span style={{color: "red"}}>*</span></label>
+                                                    <DatePicker
+                                                        id={`datepicker2-process-${idProcess}`}
+                                                        value={endDate}
+                                                        onChange={this.handleChangeTaskEndDate}
+                                                    />
+                                                    <ErrorLabel content={errorOnEndDate} />
+                                                </div>
                                             </div>
 
-                                            {/* Người xem quy trình */}
-                                            <div className={`form-group ${this.state.errorOnViewer === undefined ? "" : "has-error"}`}>
+                                            <div className={`form-group ${errorOnViewer === undefined ? "" : "has-error"}`}>
+                                                {/* Người được xem quy trình */}
                                                 <label className="control-label">{translate("task.task_process.viewer")} <span style={{color: "red"}}>*</span></label>
-                                                {
+                                                {allUnitsMember &&
                                                     <SelectBox
-                                                        id={`select-viewer-employee-edit-${idProcess}`}
+                                                        id={`select-viewer-employee-create-task-by-process-${indexRenderer}-${idProcess}`}
                                                         className="form-control select2"
                                                         style={{ width: "100%" }}
-                                                        items={listItem}
+                                                        items={allUnitsMember}
                                                         onChange={this.handleChangeViewer}
                                                         multiple={true}
                                                         value={viewer}
                                                     />
                                                 }
-                                                <ErrorLabel content={this.state.errorOnViewer} />
+                                                <ErrorLabel content={errorOnViewer} />
                                             </div>
-
-                                            {/* Người quản lý quy trình */}
-                                            <div className={`form-group ${this.state.errorOnManager === undefined ? "" : "has-error"}`}>
+                                            <div className={`form-group ${errorOnManager === undefined ? "" : "has-error"}`}>
+                                                {/* Người quản lý quy trình */}
                                                 <label className="control-label" >{translate("task.task_process.manager")} <span style={{color: "red"}}>*</span></label>
-                                                {
+                                                {allUnitsMember &&
                                                     <SelectBox
-                                                        id={`select-manager-employee-edit-${idProcess}`}
+                                                        id={`select-manager-employee-create-task-by-process-${indexRenderer}-${idProcess}`}
                                                         className="form-control select2"
                                                         style={{ width: "100%" }}
-                                                        items={listItem}
+                                                        items={allUnitsMember}
                                                         onChange={this.handleChangeManager}
                                                         multiple={true}
                                                         value={manager}
                                                     />
                                                 }
-                                                <ErrorLabel content={this.state.errorOnManager} />
+                                                <ErrorLabel content={errorOnManager} />
                                             </div>
                                         </div>
                                     </div>
@@ -749,11 +705,11 @@ class ModalEditTaskProcess extends Component {
 
                             {/* Tab quy trình - công việc */}
                             <div className="tab-content" style={{ padding: 0, marginTop: -15 }}>
-                                <div className={selectedEdit === "process" ? "active tab-pane" : "tab-pane"} id="process-edit">
+                                <div className={selected === "process" ? "active tab-pane" : "tab-pane"} id="process-create-task">
                                     <div className="row">
                                         {/* Quy trình công việc */}
                                         <div className={`contain-border ${showInfo ? 'col-md-8' : 'col-md-12'}`}>
-                                            {/* nút export, import, download diagram,... */}
+                                            {/* Nút tùy chọn export, import diagram,... */}
                                             <div className="tool-bar-xml" style={{ /*position: "absolute", right: 5, top: 5*/ }}>
                                                 <button onClick={this.exportDiagram}>Export XML</button>
                                                 <button onClick={this.downloadAsSVG}>Save SVG</button>
@@ -761,10 +717,10 @@ class ModalEditTaskProcess extends Component {
                                                 <button onClick={this.downloadAsBpmn}>Download BPMN</button>
                                             </div>
 
-                                            {/* vẽ Diagram */}
+                                            {/* biểu đồ */}
                                             <div id={this.generateId}></div>
 
-                                            {/* nút Zoom in zoom out */}
+                                            {/* Nút zoomin, zoomout */}
                                             <div className="row">
                                                 <div className="io-zoom-controls">
                                                     <ul className="io-zoom-reset io-control io-control-list">
@@ -788,18 +744,21 @@ class ModalEditTaskProcess extends Component {
                                             </div>
                                         </div>
 
-                                        {/* Thông tin công việc trong quy trình */}
+                                        {/* form thông tin công việc */}
                                         <div className={`right-content ${showInfo ? 'col-md-4' : undefined}`}>
+                                            {/* style={{ display: "flex", flexDirection: "column" }} */}
                                             {
                                                 (showInfo) &&
                                                 <div>
-                                                    {/* <div>
-                                                        <h2>Option {name}</h2>
-                                                    </div> */}
+                                                    <div>
+                                                        <h3>{translate("task.task_process.create_task_with_template")} {taskName}</h3>
+                                                    </div>
 
-                                                    <EditTaskTemplate
+                                                    <FormCreateTaskByProcess
                                                         isProcess={true}
                                                         id={id}
+                                                        startDate={startDate}
+                                                        endDate={endDate}
                                                         info={(info && info[`${id}`]) && info[`${id}`]}
                                                         onChangeTemplateData={this.handleChangeInfo}
                                                         handleChangeName={this.handleChangeName} // cập nhật tên vào diagram
@@ -809,11 +768,14 @@ class ModalEditTaskProcess extends Component {
                                                 </div>
                                             }
                                         </div>
+
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+
                 </DialogModal>
             </React.Fragment>
         )
@@ -827,11 +789,14 @@ function mapState(state) {
 }
 
 const actionCreators = {
+    getAllUserOfCompany: UserActions.getAllUserOfCompany,
     getDepartment: UserActions.getDepartmentOfUser,
     getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
+    getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
     createXmlDiagram: TaskProcessActions.createXmlDiagram,
     getXmlDiagramById: TaskProcessActions.getXmlDiagramById,
-    editXmlDiagram: TaskProcessActions.editXmlDiagram,
+    createTaskByProcess: TaskProcessActions.createTaskByProcess,
+    getAllUsersWithRole: UserActions.getAllUsersWithRole
 };
-const connectedModalAddProcess = connect(mapState, actionCreators)(withTranslate(ModalEditTaskProcess));
-export { connectedModalAddProcess as ModalEditTaskProcess };
+const connectedModalCreateProcess = connect(mapState, actionCreators)(withTranslate(ModalCreateTaskByProcess));
+export { connectedModalCreateProcess as ModalCreateTaskByProcess };

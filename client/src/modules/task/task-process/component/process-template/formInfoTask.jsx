@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { SelectBox,  } from './../../../../common-components/index';
+import { SelectBox,  } from '../../../../../common-components/index';
 import { withTranslate } from "react-redux-multilingual";
-import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
-import { UserActions } from '../../../super-admin/user/redux/actions';
-import { taskTemplateActions } from '../../task-template/redux/actions';
+import getEmployeeSelectBoxItems from '../../../organizationalUnitHelper';
+import { UserActions } from '../../../../super-admin/user/redux/actions';
+import { taskTemplateActions } from '../../../task-template/redux/actions';
 class FormInfoTask extends Component {
 
     constructor(props) {

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from "react-redux-multilingual";
 
 
-import { PaginateBar, SelectMulti, DataTableSetting, ConfirmNotification } from '../../../../common-components';
+import { PaginateBar, SelectMulti, DataTableSetting, ConfirmNotification } from '../../../../../common-components';
 
 
 import { ModalEditTaskProcess } from './modalEditTaskProcess'
@@ -11,9 +11,9 @@ import { ModalCreateTaskProcess } from './modalCreateTaskProcess'
 import { ModalViewTaskProcess } from './modalViewTaskProcess';
 import { ModalCreateTaskByProcess } from './modalCreateTaskByProcess';
 
-import { TaskProcessActions } from '../redux/actions';
-import { RoleActions } from '../../../super-admin/role/redux/actions';
-import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
+import { TaskProcessActions } from '../../redux/actions';
+import { RoleActions } from '../../../../super-admin/role/redux/actions';
+import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import Swal from 'sweetalert2';
 // import { FormImportProcessTemplate } from './formImportProcessTemplate';
 class ProcessTemplate extends Component {

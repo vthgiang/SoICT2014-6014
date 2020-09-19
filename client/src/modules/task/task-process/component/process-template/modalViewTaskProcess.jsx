@@ -1,16 +1,16 @@
 import React, { Component } from "react";
 import { connect } from 'react-redux';
-import { getStorage } from '../../../../config';
+import { getStorage } from '../../../../../config';
 import { withTranslate } from "react-redux-multilingual";
 
-import { DialogModal, SelectBox } from "../../../../common-components";
-import { UserActions } from "../../../super-admin/user/redux/actions";
-import { TaskProcessActions } from "../redux/actions";
-import { ViewTaskTemplate } from "../../task-template/component/viewTaskTemplate";
+import { DialogModal, SelectBox } from "../../../../../common-components";
+import { UserActions } from "../../../../super-admin/user/redux/actions";
+import { TaskProcessActions } from "../../redux/actions";
+import { ViewTaskTemplate } from "../../../task-template/component/viewTaskTemplate";
 
 import BpmnViewer from 'bpmn-js';
 import BpmnModeler from 'bpmn-js/lib/Modeler';
-import customModule from './custom-task-process-template';
+import customModule from '../custom-task-process-template';
 
 var zlevel = 1;
 class ModalViewTaskProcess extends Component {

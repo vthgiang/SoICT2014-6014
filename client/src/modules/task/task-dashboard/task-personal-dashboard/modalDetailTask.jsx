@@ -55,7 +55,7 @@ class ModalDetailTask extends Component {
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID={`modal-detail-task`}
+                    modalID={`modal-detail-task-${this.props.action}`}
                     title={translate('task.task_management.model_detail_task_title')}
                     hasSaveButton={false}
                     size={75}>
