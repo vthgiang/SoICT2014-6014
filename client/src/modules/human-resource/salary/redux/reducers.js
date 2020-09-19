@@ -4,6 +4,7 @@ import {
 
 const initState = {
     isLoading: false,
+    listAllSalary: [],
     listSalarys: [],
     totalList: 0,
 
@@ -21,16 +22,24 @@ export function salary(state = initState, action) {
         case SalaryConstants.IMPORT_SALARY_REQUEST:
             return {
                 ...state,
-                isLoading: true
+                isLoading: true,
+                    listAllSalary: [],
             };
         case SalaryConstants.GET_SALARY_SUCCESS:
-            return {
-                ...state,
-                isLoading: false,
+            if (action.callApiDashboard) {
+                return {
+                    ...state,
+                    isLoading: false,
+                    listAllSalary: action.payload,
+                };
+            } else {
+                return {
+                    ...state,
+                    isLoading: false,
                     listSalarys: action.payload.listSalarys,
                     totalList: action.payload.totalList,
+                };
             };
-
         case SalaryConstants.CREATE_SALARY_SUCCESS:
             return {
                 ...state,

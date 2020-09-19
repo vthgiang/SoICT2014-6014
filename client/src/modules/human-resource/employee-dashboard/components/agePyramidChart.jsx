@@ -39,7 +39,8 @@ class AgePyramidChart extends Component {
             }
         }
         return max;
-    }
+    };
+
     renderChart = (data) => {
         let maxData1 = this.findMaxOfArray(data.data1), maxData2 = this.findMaxOfArray(data.data2);
         let qty_max = maxData1 >= maxData2 ? maxData1 : maxData2;
@@ -116,7 +117,7 @@ class AgePyramidChart extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (!AgePyramidChart.isEqual(nextProps.employeesManager.listAllEmployees, prevState.listAllEmployees) ||
+        if (nextProps.organizationalUnits !== prevState.organizationalUnits || !AgePyramidChart.isEqual(nextProps.employeesManager.listAllEmployees, prevState.listAllEmployees) ||
             !AgePyramidChart.isEqual(nextProps.employeesManager.listEmployeesOfOrganizationalUnits, prevState.listEmployeesOfOrganizationalUnits)) {
             return {
                 actionSearch: nextProps.actionSearch,
@@ -128,11 +129,11 @@ class AgePyramidChart extends Component {
         return null;
     }
     shouldComponentUpdate(nextProps, nextState) {
-        if (nextProps.actionSearch !== this.state.actionSearch || !AgePyramidChart.isEqual(nextProps.employeesManager.listAllEmployees, this.state.listAllEmployees) ||
+        if (nextProps.organizationalUnits !== this.state.organizationalUnits || nextProps.actionSearch !== this.state.actionSearch || !AgePyramidChart.isEqual(nextProps.employeesManager.listAllEmployees, this.state.listAllEmployees) ||
             !AgePyramidChart.isEqual(nextProps.employeesManager.listEmployeesOfOrganizationalUnits, this.state.listEmployeesOfOrganizationalUnits)) {
             return true;
         };
-        return false;
+        return true;
     }
 
     render() {

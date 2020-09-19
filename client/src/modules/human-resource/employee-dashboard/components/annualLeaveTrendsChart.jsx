@@ -8,7 +8,7 @@ import { SelectMulti, SelectBox } from '../../../../common-components';
 import c3 from 'c3';
 import 'c3/c3.css';
 
-class BarChart extends Component {
+class AnnualLeaveTrendsChart extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -66,7 +66,7 @@ class BarChart extends Component {
 
     static getDerivedStateFromProps(nextProps, prevState) {
         if (!prevState.arrMonth || nextProps.annualLeave.arrMonth.length !== prevState.arrMonth.length ||
-            !BarChart.isEqual(nextProps.annualLeave.listAnnualLeaveOfNumberMonth, prevState.listAnnualLeaveOfNumberMonth)) {
+            !AnnualLeaveTrendsChart.isEqual(nextProps.annualLeave.listAnnualLeaveOfNumberMonth, prevState.listAnnualLeaveOfNumberMonth)) {
             return {
                 ...prevState,
                 nameChart: nextProps.nameChart,
@@ -81,7 +81,7 @@ class BarChart extends Component {
     shouldComponentUpdate(nextProps, nextState) {
         if (nextProps.annualLeave.arrMonth.length !== this.state.arrMonth.length ||
             nextState.lineChart !== this.state.lineChart ||
-            !BarChart.isEqual(nextProps.annualLeave.listAnnualLeaveOfNumberMonth, this.state.listAnnualLeaveOfNumberMonth) ||
+            !AnnualLeaveTrendsChart.isEqual(nextProps.annualLeave.listAnnualLeaveOfNumberMonth, this.state.listAnnualLeaveOfNumberMonth) ||
             JSON.stringify(nextState.organizationalUnitsSearch) !== JSON.stringify(this.state.organizationalUnitsSearch)) {
             return true;
         }
@@ -241,5 +241,5 @@ const actionCreators = {
     getAnnualLeave: AnnualLeaveActions.searchAnnualLeaves,
 };
 
-const barChart = connect(mapState, actionCreators)(withTranslate(BarChart));
-export { barChart as BarChart };
+const barChart = connect(mapState, actionCreators)(withTranslate(AnnualLeaveTrendsChart));
+export { barChart as AnnualLeaveTrendsChart };

@@ -23,6 +23,7 @@ export function annualLeave(state = initState, action) {
             return {
                 ...state,
                 isLoading: true,
+                    arrMonth: [],
             };
         case AnnualLeaveConstants.GET_ANNUAL_LEAVE_SUCCESS:
             if (action.payload.numberAnnulLeave !== undefined) {

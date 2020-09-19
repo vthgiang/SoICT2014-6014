@@ -49,12 +49,11 @@ class EmployeeDashBoardHeader extends Component {
     }
 
     // Function bắt sự kiện thay đổi unit
-    handleSelectOrganizationalUnit = (value) => {
+    handleSelectOrganizationalUnit = async (value) => {
         if (value.length === 0) {
             value = null
         };
-        this.setState({
-            ...this.state,
+        await this.setState({
             organizationalUnits: value
         })
     };
@@ -73,7 +72,7 @@ class EmployeeDashBoardHeader extends Component {
 
     // Bắt sự kiện tìm kiếm 
     handleSunmitSearch = async () => {
-        const { organizationalUnits, month } = this.state;
+        let { organizationalUnits, month } = this.state;
         this.setState({
             arrUnitShow: organizationalUnits
         })
