@@ -27,7 +27,7 @@ class MaintainanceManagement extends Component {
     }
 
     componentDidMount() {
-        this.props.getAllAsset(this.state);
+        this.props.getMaintainances(this.state);
     }
 
     // Bắt sự kiện click chỉnh sửa thông tin phiếu đề nghị
@@ -136,7 +136,7 @@ class MaintainanceManagement extends Component {
             ...this.state,
             page: 0
         })
-        this.props.getAllAsset(this.state);
+        this.props.getMaintainances(this.state);
     }
 
     // Bắt sự kiện setting số dòng hiện thị trên một trang
@@ -144,7 +144,7 @@ class MaintainanceManagement extends Component {
         await this.setState({
             limit: parseInt(number),
         });
-        this.props.getAllAsset(this.state);
+        this.props.getMaintainances(this.state);
     }
 
     // Bắt sự kiện chuyển trang
@@ -154,13 +154,13 @@ class MaintainanceManagement extends Component {
             page: parseInt(page),
 
         });
-        this.props.getAllAsset(this.state);
+        this.props.getMaintainances(this.state);
     }
 
     deleteMaintainance = (assetId, maintainanceId) => {
         this.props.deleteMaintainance(assetId, maintainanceId).then(({ response }) => {
             if (response.data.success) {
-                this.props.getAllAsset(this.state);
+                this.props.getMaintainances(this.state);
             }
         });
     }
@@ -520,8 +520,8 @@ function mapState(state) {
 };
 
 const actionCreators = {
+    getMaintainances: MaintainanceActions.getMaintainances,
     deleteMaintainance: MaintainanceActions.deleteMaintainance,
-    getAllAsset: AssetManagerActions.getAllAsset,
 };
 
 const connectedListMaintainance = connect(mapState, actionCreators)(withTranslate(MaintainanceManagement));

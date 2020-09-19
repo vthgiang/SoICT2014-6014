@@ -35,6 +35,7 @@ router.delete('/assets/:id/usage-logs', auth, AssetController.deleteUsage);
 
 
 /* Tab bảo trì */
+router.get('/assets/maintainance-logs', auth, AssetController.getMaintainances);
 router.post('/assets/:id/maintainance-logs', auth, AssetController.createMaintainance);
 router.patch('/assets/:id/maintainance-logs', auth, AssetController.updateMaintainance);
 router.delete('/assets/:id/maintainance-logs', auth, AssetController.deleteMaintainance);
@@ -43,7 +44,6 @@ router.delete('/assets/:id/maintainance-logs', auth, AssetController.deleteMaint
 
 /* Tab sự cố */
 router.get('/assets/incident-logs', auth, AssetController.getIncidents);
-
 router.post('/assets/:id/incident-logs', auth, AssetController.createIncident);
 router.patch('/assets/:id/incident-logs', auth, AssetController.updateIncident);
 router.delete('/assets/:id/incident-logs', auth, AssetController.deleteIncident);

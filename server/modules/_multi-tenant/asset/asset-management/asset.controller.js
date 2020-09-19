@@ -274,6 +274,27 @@ exports.deleteUsage = async (req, res) => {
 
 
 //*****************Thông tin bảo trì**************/
+
+/**
+ * Lấy danh sách thông tin bảo trì tài sản
+ */
+exports.getMaintainances = async (req, res) => {
+    try {
+        let data = await AssetService.getMaintainances(req.portal, req.query);
+        res.status(200).json({
+            success: true,
+            messages: ["get_maintainance_success"],
+            content: data
+        });
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            messages: ["get_maintainance_false"],
+            content: { error: error }
+        });
+    }
+}
+
 /**
  * Thêm mới thông tin bảo trì tài sản
  */
