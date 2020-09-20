@@ -81,14 +81,14 @@ getAllTasks = async (req, res) => {
 exports.getTaskEvaluations = async (req, res) => {
     try {
         let taskEvaluation = await TaskManagementService.getTaskEvaluations(req.portal, req.query);
-        await Logger.info(req.user.email, ` get Task Evaluations `, req.portal);
+        await Logger.info(req.user.email, `get_task_evaluation_success `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['get_task_evaluation_success'],
             content: taskEvaluation,
         });
     } catch (error) {
-        await Logger.error(req.user.email, ` get Task Evaluations `, req.portal);
+        await Logger.error(req.user.email, ` get_task_evaluation_fail `, req.portal);
         res.status(400).json({
             success: false,
             messages: ['get_task_evaluation_fail'],
@@ -377,7 +377,7 @@ getTasksThatUserHasResponsibleRoleByDate = async (req, res) => {
  * Tạo một công việc mới
  */
 exports.createTask = async (req, res) => {
-    try {
+    // try {
         var tasks = await TaskManagementService.createTask(req.portal, req.body);
         var task = tasks.task;
         var user = tasks.user;
@@ -392,14 +392,14 @@ exports.createTask = async (req, res) => {
             messages: ['create_task_success'],
             content: task
         });
-    } catch (error) {
-        await Logger.error(req.user.email, ` create task  `, req.portal)
-        res.status(400).json({
-            success: false,
-            messages: ['create_task_fail'],
-            content: error
-        })
-    }
+    // } catch (error) {
+    //     await Logger.error(req.user.email, ` create task  `, req.portal)
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: ['create_task_fail'],
+    //         content: error
+    //     })
+    // }
 }
 
 /**

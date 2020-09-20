@@ -7,10 +7,9 @@ const Logger = require(`${SERVER_LOGS_DIR}/_multi-tenant`);
 
 exports.getLinks = async (req, res) => {
     try {
-        console.log('getlink')
         let portal = !req.query.portal ? req.portal : req.query.portal;
         let links = await LinkService.getLinks(portal, req.query);
- 
+
         await Logger.info(req.user.email, 'get_links_success', req.portal);
         res.status(200).json({
             success: true,
@@ -18,7 +17,7 @@ exports.getLinks = async (req, res) => {
             content: links
         });
     } catch (error) {
-        console.log(error)
+        
         await Logger.error(req.user.email, 'get_links_faile', req.portal);
         res.status(400).json({
             success: false,

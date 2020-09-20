@@ -342,8 +342,7 @@ exports.deleteMaintainance = async (req, res) => {
 
 exports.getIncidents = async (req, res) => {
     try {
-        let data = await AssetService.getIncidents(req.body);
-        console.log(data);
+        let data = await AssetService.getIncidents(req.query);
         res.status(200).json({
             success: true,
             messages: ["get_incidents_success"],

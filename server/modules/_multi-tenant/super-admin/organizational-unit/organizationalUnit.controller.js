@@ -174,7 +174,7 @@ exports.editOrganizationalUnit = async (req, res) => {
             content: { department, tree }
         });
     } catch (error) {
-        
+        console.log(error);
         await Logger.error(req.user.email, 'edit_department_faile', req.portal);
         res.status(400).json({
             success: false,

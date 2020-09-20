@@ -1,7 +1,9 @@
+const mongoose = require("mongoose");
 const { Log } = require('../../../logs');
 const arrayToTree = require('array-to-tree');
+const { populate } = require('../../../models/auth/user.model');
 const {
-    Asset,
+    Asset, User
 } = require('../../../models').schema;
 
 
@@ -56,19 +58,24 @@ exports.searchAssetProfiles = async (params, company) => {
         keySearch = { ...keySearch, group: { $in: params.group } };
     }
 
-    // Thêm key tìm kiếm tài sản theo người sử dụng
-    if (params.handoverUser) {
-        keySearch = { ...keySearch, assignedToUser: { $in: params.handoverUser } };
-    }
-
     // Thêm key tìm kiếm tài sản theo đơn vị
     if (params.handoverUnit) {
         keySearch = { ...keySearch, assignedToOrganizationalUnit: { $in: params.handoverUnit } };
     }
 
-    // Thêm key tìm kiếm tài sản theo id người quản lý
+    // // Thêm key tìm kiếm tài sản theo id người quản lý
     if (params.managedBy) {
         keySearch = { ...keySearch, managedBy: { $in: params.managedBy } };
+    }
+
+    // Thêm key tìm kiếm tài sản theo id người dùng
+    if (params.handoverUser) {
+        let user = await User.find({ name: { $regex: params.handoverUser, $options: "i" } }).select('_id');
+        let userIds = [];
+        user.map(x => {
+            userIds.push(x._id)
+        })
+        keySearch = { ...keySearch, handoverUser: { $in: userIds } };
     }
 
     // Thêm key tìm kiếm tài sản theo loại khấu hao
@@ -175,9 +182,13 @@ exports.searchAssetProfiles = async (params, company) => {
     }
 
     // Lấy danh sách tài sản
+
     let totalList = await Asset.count(keySearch);
-    let listAssets = await Asset.find(keySearch).populate('assetType')
+    let listAssets = await Asset.find(keySearch)
+        .populate({ path: 'assetType' })
         .sort({ 'createdAt': 'desc' }).skip(params.page).limit(params.limit);
+
+    // console.log(listAssets)
     return { data: listAssets, totalList }
 }
 
@@ -585,15 +596,70 @@ exports.deleteUsage = async (assetId, usageId) => {
 }
 
 
-exports.getIncidents = async (id, data) => {
-    let { page, limit } = data;
+exports.getIncidents = async (params) => {
+    let incidents;
+    let { code, assetName, incidentCode, incidentType, incidentStatus } = params;
+    let page = parseInt(params.page);
+    let limit = parseInt(params.limit);
 
-    return await Asset.aggregate([
-        { $unwind: "$maintainanceLogs" },
-        { $replaceRoot: { newRoot: "$maintainanceLogs" } },
-        { $limit: limit },
-        { $skip: (page - 1) * limit }
-    ])
+    let assetSearch = [];
+    if (code) {
+        assetSearch = [...assetSearch, { code: { "$regex": code, "$options": "i" } }]
+    }
+    if (assetName) {
+        assetSearch = [...assetSearch, { assetName: { "$regex": assetName, "$options": "i" } }]
+    }
+
+    let incidentSearch = [];
+    if (incidentCode) {
+        incidentSearch = [...incidentSearch, { incidentCode: { "$regex": incidentCode, "$options": "i" } }]
+    }
+    if (incidentType) {
+        incidentSearch = [...incidentSearch, { type: { $in: incidentType } }]
+    }
+
+    if (incidentStatus) {
+        incidentSearch = [...incidentSearch,  { statusIncident: { $in: incidentStatus } }]
+    }
+
+    let aggregateQuery = [ ];
+    if (assetSearch && assetSearch.length !== 0){
+        aggregateQuery = [...aggregateQuery, { $match: { $and: assetSearch } }]
+    }
+    aggregateQuery = [...aggregateQuery, { $unwind: "$incidentLogs" }, { $replaceRoot: { newRoot: "$incidentLogs" } }]
+
+    if (incidentSearch && incidentSearch.length !== 0){
+        aggregateQuery = [...aggregateQuery, { $match: { $and: incidentSearch } }]
+    }
+    aggregateQuery = [...aggregateQuery, { $sort: { 'createdAt': 1 } }, { $skip: (page - 1) * limit }, { $limit: limit }]
+
+    // Tìm kiếm câc danh sách sự cố
+    incidents = await Asset.aggregate(aggregateQuery);
+
+    // Đếm số sự cố
+    let incidentLength = 0;
+    let count = await Asset.aggregate([
+        { $unwind: "$incidentLogs" }, 
+        { $replaceRoot: { newRoot: "$incidentLogs" } }, 
+        {  $count :  "incident_length"  }
+    ]);
+    incidentLength = count[0].incident_length;
+
+    // Tìm tài sản ứng với sự cố tài sản
+    for (let i = 0; i < incidents.length; i++) {
+        let item = incidents[i];
+
+        let asset = await Asset.findOne(
+            { "incidentLogs": { $elemMatch: { "_id": mongoose.Types.ObjectId(item._id) } } }
+        );
+
+        incidents[i].asset = asset;
+    }
+
+    return {
+        incidentList: incidents,
+        incidentLength: incidentLength,
+    };
 }
 
 /**

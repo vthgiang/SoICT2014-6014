@@ -1,18 +1,7 @@
-.makeStyles-appointment-54,
-.makeStyles-appointment-507,
-.makeStyles-appointment,
-.Label-text-45,
-.MuiTableCell-root {
-    font-size: 1.25rem !important;
-}
-.Cell-dayOfMonth-34 {
-    font-size: 1.8rem !important;
+.timekeeping th, td{
+    width: auto !important;
 }
 
-.MuiButton-root{
-    font-size: 1.25rem !important;
-}
-.makeStyles-dayScaleEmptyCell-28{
-    width: 118px !important;
-    min-width: 118px !important;
+.fc-col-header {
+    width: 100% !important;
 }

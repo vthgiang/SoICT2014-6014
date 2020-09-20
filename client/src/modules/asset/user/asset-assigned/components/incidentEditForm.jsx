@@ -6,7 +6,7 @@ import { DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../../c
 
 import { AssetCreateValidator } from '../../../base/create-tab/components/assetCreateValidator';
 
-import { IncidentActions } from '../../../admin/incident/redux/actions';
+import { ManageIncidentActions } from '../../../admin/incident/redux/actions';
 
 class IncidentEditForm extends Component {
     constructor(props) {
@@ -277,7 +277,7 @@ function mapState(state) {
 };
 
 const actionCreators = {
-    updateIncident: IncidentActions.updateIncident,
+    updateIncident: ManageIncidentActions.updateIncident,
 };
 
 const editForm = connect(mapState, actionCreators)(withTranslate(IncidentEditForm));

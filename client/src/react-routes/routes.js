@@ -68,7 +68,7 @@ import { TaskComponent } from '../modules/task/task-perform/component/taskCompon
 import { TaskDashboard } from "../modules/task/task-dashboard/task-personal-dashboard/taskDashboard";
 import { TaskTemplate } from '../modules/task/task-template/component/taskTemplate';
 import { TaskProcessManagement } from '../modules/task/task-process/component/task-process-management/taskProcessManagement';
-import { ProcessTemplate } from '../modules/task/task-process/component/processTemplate';
+import { ProcessTemplate } from '../modules/task/task-process/component/process-template/processTemplate';
 import { TaskOrganizationUnitDashboard } from '../modules/task/task-dashboard/task-organization-dashboard/taskOrganizationUnitDashboard';
 
 //asset
@@ -92,7 +92,9 @@ import EmployeeAssetManagement from '../modules/asset/user/asser-managed/compone
 import TaskReportManager from '../modules/report/task-report/components/taskReportManager';
 
 //warehouse
-import MaterialManager from '../modules/warehouse-manager/material-manager/component';
+import MaterialManager from '../modules/warehouse/material-manager/component';
+import CategoryManagement from '../modules/warehouse/category-management/component';
+
 // Customer Management
 import CrmCustomer from '../modules/crm/customer/components';
 import CrmGroup from '../modules/crm/group/components';
@@ -1066,6 +1068,22 @@ class Routes extends Component {
                         pageName={'material_manager'}
                         layout={Layout}
                         component={MaterialManager}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={'category-management'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/category-management', name: 'category_management', icon: 'fa fa-cubes' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/category-management'}
+                        path={'/category-management'}
+                        pageName={'category_management'}
+                        layout={Layout}
+                        component={CategoryManagement}
                     />
 
                     <PrivateRoute

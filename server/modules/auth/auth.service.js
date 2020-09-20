@@ -122,7 +122,7 @@ exports.forgetPassword = async (email) => {
     var mainOptions = {
         from: 'vnist.qlcv@gmail.com',
         to: email,
-        subject: 'VNIST-QLCV : Thay đổi mật khẩu - Change password',
+        subject: 'VNIMA : Thay đổi mật khẩu - Change password',
         html: `
         <div style="
             background-color:azure;

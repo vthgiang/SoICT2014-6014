@@ -7,7 +7,9 @@ import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar, ExportEx
 import { IncidentEditForm } from '../../../user/asset-assigned/components/incidentEditForm';
 
 import { IncidentActions } from '../../../user/asset-assigned/redux/actions';
+import { ManageIncidentActions } from '../redux/actions';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
+
 import { AssetManagerActions } from '../../asset-information/redux/actions';
 import { AssetTypeActions } from "../../asset-type/redux/actions";
 import { AssetEditForm } from '../../asset-information/components/assetEditForm';
@@ -25,7 +27,7 @@ class IncidentManagement extends Component {
             incidentCode: "",
             incidentStatus: "",
             incidentType: "",
-            page: 0,
+            page: 1,
             limit: 5,
             managedBy: this.props.managedBy ? this.props.managedBy : ''
         }
@@ -35,7 +37,7 @@ class IncidentManagement extends Component {
         let { managedBy } = this.state;
         this.props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
         this.props.getUser();
-        this.props.getAllAsset(this.state);
+        this.props.getIncidents(this.state);
     }
 
 
@@ -120,7 +122,7 @@ class IncidentManagement extends Component {
     // Lưu loại sự cố vào state
     handleIncidentTypeChange = (value) => {
         if (value.length === 0) {
-            value = null
+            value = ''
         }
 
         this.setState({
@@ -132,7 +134,7 @@ class IncidentManagement extends Component {
     // Lưu trạng thái sự cố vào state
     handleIncidentStatusChange = (value) => {
         if (value.length === 0) {
-            value = null
+            value = ''
         }
 
         this.setState({
@@ -145,9 +147,9 @@ class IncidentManagement extends Component {
     handleSubmitSearch = async () => {
         await this.setState({
             ...this.state,
-            page: 0
+            page: 1
         })
-        this.props.getAllAsset(this.state);
+        this.props.getIncidents(this.state);
     }
 
     // Bắt sự kiện setting số dòng hiện thị trên một trang
@@ -156,32 +158,23 @@ class IncidentManagement extends Component {
             limit: parseInt(number),
         });
 
-        this.props.getAllAsset(this.state);
+        this.props.getIncidents(this.state);
     }
 
     // Bắt sự kiện chuyển trang
     setPage = async (pageNumber) => {
-        var page = (pageNumber - 1) * this.state.limit;
         await this.setState({
-            page: parseInt(page),
-
+            page: parseInt(pageNumber),
         });
-        this.props.getAllAsset(this.state);
+        this.props.getIncidents(this.state);
     }
 
     deleteIncident = (assetId, incidentId) => {
+        console.log('\n\n***\n', assetId, incidentId);
         let { managedBy } = this.state
         this.props.deleteIncident(assetId, incidentId).then(({ response }) => {
             if (response.data.success) {
-                this.props.getAllAsset({
-                    code: "",
-                    assetName: "",
-                    month: null,
-                    status: "",
-                    page: 0,
-                    limit: 5,
-                    managedBy: managedBy
-                });
+                this.props.getIncidents(this.state);
             }
         });
     }
@@ -192,11 +185,13 @@ class IncidentManagement extends Component {
         let convertedData = [];
         if (data) {
             data = data.forEach(asset => {
-                if (asset.incidentLogs.length !== 0) {
-                    let assetLog = asset.incidentLogs.map((x, index) => {
+                let item = asset.asset;
+
+                if (item.incidentLogs.length !== 0) {
+                    let assetLog = item.incidentLogs.map((x, index) => {
                         let code = x.incidentCode;
-                        let assetName = asset.assetName;
-                        let assetCode = asset.code;
+                        let assetName = item.assetName;
+                        let assetCode = item.code;
                         let type = x.type;
                         let reporter = (x.reportedBy && userlist.length && userlist.filter(item => item._id === x.reportedBy).pop()) ? userlist.filter(item => item._id === x.reportedBy).pop().email : '';
                         let createDate = (x.dateOfIncident) ? this.formatDate2(x.dateOfIncident) : ''
@@ -281,19 +276,18 @@ class IncidentManagement extends Component {
     }
 
     render() {
-        const { translate, assetsManager, assetType, user, isActive } = this.props;
+        const { translate, assetsManager, assetType, user, isActive, incidentManager } = this.props;
         const { page, limit, currentRow, currentRowEditAsset, managedBy } = this.state;
 
         var lists = "", exportData;
         var userlist = user.list;
-        if (assetsManager.isLoading === false) {
-            lists = assetsManager.listAssets;
+        if (incidentManager.isLoading === false) {
+            lists = incidentManager.incidentList;
         }
 
-        var pageTotal = ((assetsManager.totalList % limit) === 0) ?
-            parseInt(assetsManager.totalList / limit) :
-            parseInt((assetsManager.totalList / limit) + 1);
-        var currentPage = parseInt((page / limit) + 1);
+        var pageTotal = ((incidentManager.incidentLength % limit) === 0) ?
+            parseInt(incidentManager.incidentLength / limit) :
+            parseInt((incidentManager.incidentLength / limit) + 1);
 
         if (lists && userlist) {
             exportData = this.convertDataToExportData(lists, userlist);
@@ -397,31 +391,31 @@ class IncidentManagement extends Component {
                         </thead>
                         <tbody>
                             {(lists && lists.length !== 0) &&
-                                lists.map(asset => {
-                                    return asset.incidentLogs.map((x, index) => (
+                                lists.map((x, index) => {
+                                    return (
                                         <tr key={index}>
-                                            <td><a onClick={() => this.handleEditAsset(asset)}>{asset.code}</a></td>
-                                            <td>{asset.assetName}</td>
+                                            <td><a onClick={() => this.handleEditAsset(x.asset)}>{x.asset.code}</a></td>
+                                            <td>{x.asset.assetName}</td>
                                             <td>{x.incidentCode}</td>
                                             <td>{this.convertIncidentType(x.type)}</td>
                                             <td>{x.reportedBy && userlist.length && userlist.filter(item => item._id === x.reportedBy).pop() ? userlist.filter(item => item._id === x.reportedBy).pop().name : 'User is deleted'}</td>
                                             <td>{x.dateOfIncident ? this.formatDate2(x.dateOfIncident) : ''}</td>
                                             <td>{x.description}</td>
-                                            <td>{x.statusIncident ? x.statusIncident : "Status is deleted"}</td>
+                                            <td>{x.statusIncident ? x.statusIncident : ""}</td>
                                             <td style={{ textAlign: "center" }}>
-                                                <a onClick={() => this.handleEdit(x, asset)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.asset_info.edit_incident_info')}><i
+                                                <a onClick={() => this.handleEdit(x, x.asset)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.asset_info.edit_incident_info')}><i
                                                     className="material-icons">edit</i></a>
                                                 <DeleteNotification
                                                     content={translate('asset.asset_info.delete_incident_info')}
                                                     data={{
                                                         id: x._id,
-                                                        info: asset.code + " - " + x.incidentCode
+                                                        info: x.asset.code + " - " + x.incidentCode
                                                     }}
-                                                    func={() => this.deleteIncident(asset._id, x._id)}
+                                                    func={() => this.deleteIncident(x.asset._id, x._id)}
                                                 />
                                             </td>
                                         </tr>
-                                    ))
+                                    )
                                 })
                             }
                         </tbody>
@@ -433,7 +427,7 @@ class IncidentManagement extends Component {
                     }
 
                     {/* PaginateBar */}
-                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
+                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
 
                 {/* Form chỉnh sửa thông tin sự cố */}
@@ -507,11 +501,12 @@ class IncidentManagement extends Component {
 };
 
 function mapState(state) {
-    const { assetsManager, assetType, user, auth } = state;
-    return { assetsManager, assetType, user, auth };
+    const { assetsManager, assetType, user, auth, incidentManager } = state;
+    return { assetsManager, assetType, user, auth, incidentManager };
 };
 
 const actionCreators = {
+    getIncidents: ManageIncidentActions.getIncidents,
     deleteIncident: IncidentActions.deleteIncident,
     searchAssetTypes: AssetTypeActions.searchAssetTypes,
     getUser: UserActions.get,

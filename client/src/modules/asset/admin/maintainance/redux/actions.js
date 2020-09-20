@@ -3,9 +3,34 @@ import {MaintainanceConstants} from './constants';
 import {AssetManagerActions} from '../../asset-information/redux/actions';
 
 export const MaintainanceActions = {
+    getMaintainances,
     createMaintainance,
     updateMaintainance,
     deleteMaintainance
+}
+
+function getMaintainances(data) {
+    return async dispatch => {
+        try {
+            dispatch({
+                type: MaintainanceConstants.GET_MAINTAINANCE_REQUEST
+            });
+            const response = await MaintainanceService.getMaintainances(data);
+            dispatch({
+                type: MaintainanceConstants.GET_MAINTAINANCE_SUCCESS,
+                payload: response.data.content
+            });
+            return {
+                response
+            }
+        } catch (err) {
+            dispatch({
+                type: MaintainanceConstants.GET_MAINTAINANCE_FAILURE,
+                error: err
+            });
+        }
+
+    };
 }
 
 function createMaintainance(id, data, incident_id) {

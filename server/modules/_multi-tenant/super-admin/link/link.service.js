@@ -1,5 +1,6 @@
-const {Link, Privilege} = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
-const {LINK_CATEGORY} = require(`${SERVER_SEED_DIR}/terms.js`);
+const Models = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
+const { Link, Privilege, Role } = Models;
+const { LINK_CATEGORY } = require(`${SERVER_SEED_DIR}/terms.js`);
 const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 /**
@@ -14,7 +15,10 @@ exports.getLinks = async (portal, query) => {
     if (!page && !limit) {
         let links = await Link(connect(DB_CONNECTION, portal))
             .find(options)
-            .populate({ path: 'roles' });
+            .populate({ 
+                path: 'roles', 
+                model: Privilege(connect(DB_CONNECTION, portal)) 
+            });
 
         return links;
     } else {
@@ -27,7 +31,14 @@ exports.getLinks = async (portal, query) => {
             page, 
             limit,
             populate: [
-                { path: 'roles', populate: { path: 'roleId' }}
+                { 
+                    path: 'roles', 
+                    model: Privilege(connect(DB_CONNECTION, portal)), 
+                    populate: { 
+                        path: 'roleId', 
+                        model: Role(connect(DB_CONNECTION, portal)) 
+                    }
+                }
             ]
         });
     }

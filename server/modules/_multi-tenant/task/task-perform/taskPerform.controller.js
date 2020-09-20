@@ -808,7 +808,7 @@ evaluateTaskByConsultedEmployees = async (req, res) => {
  * evaluate task by responsible employee
  */
 evaluateTaskByResponsibleEmployees = async (req, res) => {
-    try {
+    // try {
         let task = await PerformTaskService.evaluateTaskByResponsibleEmployees(req.portal, req.body.data, req.params.taskId);
         await Logger.info(req.user.email, ` edit task  `, req.portal);
         res.status(200).json({
@@ -816,14 +816,14 @@ evaluateTaskByResponsibleEmployees = async (req, res) => {
             messages: ['evaluate_task_success'],
             content: task
         })
-    } catch (error) {
-        await Logger.error(req.user.email, ` edit task `, req.portal);
-        res.status(400).json({
-            success: false,
-            messages: ['evaluate_task_fail'],
-            content: error
-        });
-    }
+    // } catch (error) {
+    //     await Logger.error(req.user.email, ` edit task `, req.portal);
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: ['evaluate_task_fail'],
+    //         content: error
+    //     });
+    // }
 }
 
 /**

@@ -75,7 +75,7 @@ exports.importDocument = async (req, res) => {
 };
 exports.increaseNumberView = async (req, res) => {
     try {
-        const doc = await DocumentServices.increaseNumberView(req.params.id, req.user._id);
+        const doc = await DocumentServices.increaseNumberView(req.params.id, req.user._id, req.portal);
 
         await Logger.info(req.user.email, 'INCREASE_NUMBER_VIEW_OF_DOCUMENT', req.portal);
         res.status(200).json({
@@ -126,7 +126,7 @@ exports.editDocument = async (req, res) => {
         let pathFileScan = req.files.fileScan[0].destination + '/' + req.files.fileScan[0].filename;
         req.body.scannedFileOfSignedDocument = pathFileScan;
     }
-    const document = await DocumentServices.editDocument(req.params.id, req.body, req.query);
+    const document = await DocumentServices.editDocument(req.params.id, req.body, req.query, req.portal);
 
     await Logger.info(req.user.email, 'EDIT_DOCUMENT', req.portal);
     res.status(200).json({
@@ -161,7 +161,7 @@ exports.addDocumentLog = async (req, res) => {
 
 exports.deleteDocument = async (req, res) => {
     try {
-        const doc = await DocumentServices.deleteDocument(req.params.id);
+        const doc = await DocumentServices.deleteDocument(req.params.id, req.portal);
 
         await Logger.info(req.user.email, 'DELETE_DOCUMENT', req.portal);
         res.status(200).json({
@@ -181,7 +181,7 @@ exports.deleteDocument = async (req, res) => {
 
 exports.downloadDocumentFile = async (req, res) => {
     try {
-        const file = await DocumentServices.downloadDocumentFile({ id: req.params.id, numberVersion: req.query.numberVersion, downloaderId: req.user._id });
+        const file = await DocumentServices.downloadDocumentFile({ id: req.params.id, numberVersion: req.query.numberVersion, downloaderId: req.user._id }, req.portal);
         await Logger.info(req.user.email, 'DOWNLOAD_DOCUMENT_FILE', req.portal);
         if (file.path) {
             res.download(file.path, file.name);
@@ -199,7 +199,7 @@ exports.downloadDocumentFile = async (req, res) => {
 
 exports.downloadDocumentFileScan = async (req, res) => {
     try {
-        const file = await DocumentServices.downloadDocumentFileScan({ id: req.params.id, numberVersion: req.query.numberVersion, downloaderId: req.user._id });
+        const file = await DocumentServices.downloadDocumentFileScan({ id: req.params.id, numberVersion: req.query.numberVersion, downloaderId: req.user._id }, req.portal);
         await Logger.info(req.user.email, 'DOWNLOAD_DOCUMENT_FILE_SCAN', req.portal);
         if (file.path) {
             res.download(file.path, file.name);
@@ -265,7 +265,7 @@ exports.showDocumentCategory = (req, res) => {
 
 exports.editDocumentCategory = async (req, res) => {
     try {
-        const category = await DocumentServices.editDocumentCategory(req.params.id, req.body);
+        const category = await DocumentServices.editDocumentCategory(req.params.id, req.body, req.portal);
 
         await Logger.info(req.user.email, 'EDIT_DOCUMENT_CATEGORY', req.portal);
         res.status(200).json({
@@ -377,7 +377,7 @@ exports.showDocumentDomain = (req, res) => {
 
 exports.editDocumentDomain = async (req, res) => {
     try {
-        const domain = await DocumentServices.editDocumentDomain(req.params.id, req.body);
+        const domain = await DocumentServices.editDocumentDomain(req.params.id, req.body, req.portal);
 
         await Logger.info(req.user.email, 'EDIT_DOCUMENT_DOMAIN', req.portal);
         res.status(200).json({
@@ -398,7 +398,7 @@ exports.editDocumentDomain = async (req, res) => {
 
 exports.deleteDocumentDomain = async (req, res) => {
     try {
-        const domain = await DocumentServices.deleteDocumentDomain(req.params.id);
+        const domain = await DocumentServices.deleteDocumentDomain(req.portal, req.params.id);
 
         await Logger.info(req.user.email, 'DELETE_DOCUMENT_DOMAIN', req.portal);
         res.status(200).json({
@@ -480,23 +480,23 @@ exports.getDocumentsThatRoleCanView = async (req, res) => {
 }
 
 exports.getDocumentsUserStatistical = async (req, res) => {
-    try {
-        const docs = await DocumentServices.getDocumentsUserStatistical(req.user._id, req.query);
+    // try {
+    const docs = await DocumentServices.getDocumentsUserStatistical(req.user._id, req.query, req.portal);
 
-        await Logger.info(req.user.email, 'GET_DOCUMENTS_USER_STATISTICAL', req.portal);
-        res.status(200).json({
-            success: true,
-            messages: ['get_documents_success'],
-            content: docs
-        });
-    } catch (error) {
-        await Logger.error(req.user.email, 'GET_DOCUMENTS_USER_STATISTICAL', req.portal);
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['get_documents_faile'],
-            content: error
-        });
-    }
+    await Logger.info(req.user.email, 'GET_DOCUMENTS_USER_STATISTICAL', req.portal);
+    res.status(200).json({
+        success: true,
+        messages: ['get_documents_success'],
+        content: docs
+    });
+    // } catch (error) {
+    //     await Logger.error(req.user.email, 'GET_DOCUMENTS_USER_STATISTICAL', req.portal);
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: Array.isArray(error) ? error : ['get_documents_faile'],
+    //         content: error
+    //     });
+    // }
 }
 /**
  * Kho lưu trữ vật lí
@@ -546,7 +546,7 @@ exports.createDocumentArchive = async (req, res) => {
 
 exports.editDocumentArchive = async (req, res) => {
     try {
-        const archive = await DocumentServices.editDocumentArchive(req.params.id, req.body);
+        const archive = await DocumentServices.editDocumentArchive(req.params.id, req.body, req.portal);
 
         await Logger.info(req.user.email, 'EDIT_DOCUMENT_ARCHIVE', req.portal);
         res.status(200).json({
@@ -567,7 +567,7 @@ exports.editDocumentArchive = async (req, res) => {
 
 exports.deleteDocumentArchive = async (req, res) => {
     try {
-        const archive = await DocumentServices.deleteDocumentArchive(req.params.id);
+        const archive = await DocumentServices.deleteDocumentArchive(req.portal, req.params.id);
         await Logger.info(req.user.email, 'DELETE_DOCUMENT_ARCHIVE', req.portal);
         res.status(200).json({
             success: true,

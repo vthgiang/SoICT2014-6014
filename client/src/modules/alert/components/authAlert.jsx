@@ -23,22 +23,22 @@ class AuthAlert extends Component {
         return ( 
             <React.Fragment>
                 <div className="modal fade" id="alert-error-auth">
-                    <div className="modal-dialog">
-                        <div className="modal-content" style={{borderRadius: '10px', border: 'gray solid 5px'}}>
-                            <div className="modal-header">
-                                <h4 className="modal-title text-center text-red">{translate('alert.title')}</h4>
-                            </div>
+                    <div className="modal-dialog" style={{marginTop: '100px'}}>
+                        <div className="alert alert-danger alert-dismissible">
+                            <i className="icon fa fa-bullhorn" />
+                            {translate('general.auth_alert.title')}
+                        </div>
+
+                        <div className="modal-content">
                             <div className="modal-body">
-                                <p><b>{translate('general.auth_alert.title')}</b></p>
+                                <p><b></b></p>
                                 <p>{translate('general.auth_alert.reason')}</p>
                                 <ul>
                                     {
                                         translate('general.auth_alert.content').map(content => <li key={content}>{content}</li>)
                                     }
                                 </ul>
-                            </div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-default" data-dismiss="modal" onClick={this.reset}>{translate('general.accept')}</button>
+                                <button className="btn btn-default pull-right" data-dismiss="modal" onClick={this.reset}>{translate('general.accept')}</button>
                             </div>
                         </div>
                     </div>

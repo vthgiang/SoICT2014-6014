@@ -10,6 +10,16 @@ import { getStorage } from '../../../../../config';
 import ListDownload from '../../administration/list-data/listDownload';
 import ListView from '../../administration/list-data/listView';
 
+const getIndex = (array, id) => {
+    let index = -1;
+    for (let i = 0; i < array.length; i++) {
+        if (array[i]._id === id) {
+            index = i;
+            break;
+        }
+    }
+    return index;
+}
 class UserDocumentsData extends Component {
     constructor(props) {
         super(props);
@@ -66,48 +76,232 @@ class UserDocumentsData extends Component {
         window.$('#modal-list-download').modal('show');
     }
 
-    convertDataToExportData = (data) => {
-        data = data.map((x, index) => {
-            return {
-                STT: index + 1,
-                name: x.name,
-                description: x.description,
-                issuingDate: new Date(x.versions[0].issuingDate),
-                effectiveDate: new Date(x.versions[0].effectiveDate),
-                expiredDate: new Date(x.versions[0].expiredDate),
-                numberOfView: x.numberOfView,
-                numberOfDownload: x.numberOfDownload,
-                issuingBody: x.issuingBody,
-                signer: x.signer,
-                officialNumber: x.officialNumber,
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        const { data } = nextProps.documents.user;
+        if (prevState.currentRow) {
+            const index = getIndex(data.list, prevState.currentRow._id);
+            if (data.list[index].versions.length !== prevState.currentRow.versions.length) {
+                return {
+                    ...prevState,
+                    currentRow: data.list[index]
+                }
             }
-        });
+            else return null;
+        } else {
+            return null;
+        }
+    }
+
+    formatDate(date, monthYear = false) {
+        if (date) {
+            let d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
+            if (monthYear === true) {
+                return [month, year].join('-');
+            } else return [day, month, year].join('-');
+        } else {
+            return date
+        }
+    }
+
+
+    findRole = (id) => {
+        const listRole = this.props.role.list;
+        let role = listRole.filter((role) => role._id === id);
+        if (role && role.length)
+            return role[0].name;
+        else return "";
+    }
+    convertDataToExportData = (data) => {
+
+        let newData = [];
+        for (let i = 0; i < data.length; i++) {
+            let element = {};
+            let x = data[i];
+            let length = 0;
+            let domain = "";
+            let length_domains, length_archives, length_relationship, length_roles, length_versions, length_logs, length_views, length_downloads;
+            if (x.domains && x.domains.length) {
+                element.domains = x.domains[0].name;
+                length_domains = x.domains.length;
+            } else {
+                element.domains = "";
+                length_domains = 0;
+            }
+            if (x.archives && x.archives.length) {
+                element.archives = x.archives[0].path;
+                length_archives = x.archives.length;
+            } else {
+                element.archives = "";
+                length_archives = 0;
+            }
+            if (x.roles && x.roles.length) {
+                element.roles = this.findRole(x.roles[0]);
+                length_roles = x.roles.length;
+            } else {
+                element.roles = 0;
+                length_roles = 0;
+            }
+            if (x.relationshipDocuments && x.relationshipDocuments.length) {
+                element.relationshipDocuments = x.relationshipDocuments[0].name;
+                length_relationship = x.relationshipDocuments.length;
+            } else {
+                element.relationshipDocuments = "";
+                length_relationship = 0;
+            }
+            if (x.versions && x.versions.length) {
+                element.versionName = x.versions[0].versionName;
+                element.issuingDate = this.formatDate(x.versions[0].issuingDate);
+                element.effectiveDate = this.formatDate(x.versions[0].effectiveDate);
+                element.expiredDate = this.formatDate(x.versions[0].expiredDate);
+                length_versions = x.versions.length;
+            } else {
+                element.versionName = "";
+                element.issuingDate = "";
+                element.effectiveDate = "";
+                element.expiredDate = "";
+                length_versions = 0;
+            }
+            if (x.views && x.views.length) {
+                element.viewer = x.views[0].viewer.name;
+                element.timeView = this.formatDate(x.views[0].time);
+                length_views = x.views.length;
+            } else {
+                element.viewer = "";
+                element.timeView = "";
+                length_views = 0;
+            }
+            if (x.downloads && x.downloads.length) {
+                element.downloader = x.downloads[0].downloader.name;
+                element.timeDownload = this.formatDate(x.downloads[0].time);
+                length_downloads = x.downloads.length;
+            } else {
+                element.downloader = "";
+                element.timeDownload = "";
+                length_downloads = 0;
+            }
+            if (x.logs && x.logs.length) {
+                element.title = x.logs[0].title;
+                element.description = x.logs[0].description;
+                length_logs = x.logs.length;
+            } else {
+                element.title = "";
+                element.descriptionLogs = "";
+                length_logs = 0;
+            }
+            element.name = x.name;
+            element.description = x.description ? x.description : "";
+            element.issuingBody = x.issuingBody ? x.issuingBody : "";
+            element.signer = x.signer ? x.signer : "";
+            element.category = x.category ? x.category.name : "";
+            element.relationshipDescription = x.relationshipDescription ? x.relationshipDescription : "";
+            element.organizationUnitManager = x.organizationUnitManager ? x.organizationUnitManager.name : "";
+            element.officialNumber = x.officialNumber ? x.officialNumber : "";
+            let max_length = Math.max(length_domains, length_archives, length_relationship, length_roles, length_versions, length_logs, length_views, length_downloads);
+
+            newData = [...newData, element];
+            if (max_length > 1) {
+                for (let i = 1; i < max_length; i++) {
+                    let object = {
+                        name: "",
+                        description: "",
+                        issuingBody: "",
+                        signer: "",
+                        category: "",
+                        relationshipDescription: "",
+                        organizationUnitManager: "",
+                        officialNumber: "",
+                        domains: i < length_domains ? x.domains[i].name : "",
+                        archives: i < length_archives ? x.archives[i].path : "",
+                        roles: i < length_roles ? this.findRole(x.roles[i]) : "",
+                        relationshipDocuments: i < length_relationship ? x.relationshipDocuments[i].name : "",
+                        versionName: i < length_versions ? x.versions[i].versionName : "",
+                        issuingDate: i < length_versions ? this.formatDate(x.versions[i].issuingDate) : "",
+                        effectiveDate: i < length_versions ? this.formatDate(x.versions[i].effectiveDate) : "",
+                        expiredDate: i < length_versions ? this.formatDate(x.versions[i].expiredDate) : "",
+                        viewer: i < length_views ? x.views[i].viewer.name : "",
+                        timeView: i < length_views ? this.formatDate(x.views[i].time) : "",
+                        downloader: i < length_downloads ? x.downloads[i].downloader.name : "",
+                        timeDownload: i < length_downloads ? this.formatDate(x.downloads[i].time) : "",
+                        title: i < length_logs ? x.logs[i].title : "",
+                        descriptionLogs: i < length_logs ? x.logs[i].description : "",
+
+                    }
+                    newData = [...newData, object];
+                }
+            }
+
+
+        }
         let exportData = {
-            fileName: "Bang thong ke tai lieu",
+            fileName: "Bảng thống kê tài liệu",
             dataSheets: [
                 {
                     sheetName: "sheet1",
+                    sheetTitle: "Danh sách tài liệu",
                     tables: [
                         {
+                            tableName: "Bảng thống kê tài liệu",
+                            merges: [{
+                                key: "Versions",
+                                columnName: "Phiên bản",
+                                keyMerge: 'versionName',
+                                colspan: 3
+                            }, {
+                                key: "Views",
+                                columnName: "Người đã xem",
+                                keyMerge: 'viewer',
+                                colspan: 2
+                            }, {
+                                key: "Downloads",
+                                columnName: "Người đã tải",
+                                keyMerge: 'downloader',
+                                colspan: 2,
+                            }, {
+                                key: "Logs",
+                                columnName: "Lịch sử chỉnh sửa",
+                                keyMerge: 'title',
+                                colspan: 2,
+                            },
+                            ],
+                            rowHeader: 2,
                             columns: [
                                 { key: "STT", value: "STT" },
                                 { key: "name", value: "Tên" },
                                 { key: "description", value: "Mô tả" },
-                                { key: "signer", value: "Người ký" },
-                                { key: "officialNumber", value: "Số hiệu" },
+                                { key: "category", value: "Loai tài liệu" },
                                 { key: "issuingBody", value: "Cơ quan ban hành" },
+                                { key: "signer", value: "Người ký" },
+                                { key: "relationshipDescription", value: "Mô tả liên kết" },
+                                { key: "organizationUnitManager", value: "Cơ quan quản lí" },
+                                { key: "domains", value: "Danh mục" },
+                                { key: "archives", value: "Địa chỉ lưu trữ" },
+                                { key: "roles", value: "Các chức danh được xem" },
+                                { key: "versionName", value: "Tên phiên bản" },
                                 { key: "issuingDate", value: "Ngày ban hành" },
-                                { key: "effectiveDate", value: "Ngày áp dụng" },
-                                { key: "expiredDate", value: "Ngày hết hạn" },
-                                { key: "numberOfView", value: "Số lần xem" },
-                                { key: "numberOfDownload", value: "Số lần download" },
+                                { key: "effectiveDate", value: "Ngày hiệu lực" },
+                                { key: "viewer", value: "Người đã xem" },
+                                { key: "timeView", value: "Thời gian xem" },
+                                { key: "downloader", value: "Người đã tải" },
+                                { key: "timeDownload", value: "Người đã tải" },
+                                { key: "title", value: "Tiêu đề chỉnh sửa" },
+                                { key: "descriptionLogs", value: "Chỉnh sửa chi tiết" },
+
                             ],
-                            data: data
+                            data: newData
                         }
                     ]
                 },
             ]
         }
+
         return exportData
     }
     convertData = (data) => {
@@ -166,6 +360,7 @@ class UserDocumentsData extends Component {
         if (isLoading === false) {
             list = docs.list;
         }
+        console.log('==================', this.props.documents);
         let exportData = this.convertDataToExportData(list);
         return (
             <div className="qlcv">

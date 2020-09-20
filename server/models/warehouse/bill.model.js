@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const BillSchema = new Schema ({
 
@@ -8,7 +9,12 @@ const BillSchema = new Schema ({
         ref: "companies"
     },
 
-    stock: {
+    fromStock: {
+        type: Schema.Types.ObjectId,
+        ref: "stocks"
+    },
+
+    toStock: {
         type: Schema.Types.ObjectId,
         ref: "stocks"
     },
@@ -28,11 +34,6 @@ const BillSchema = new Schema ({
         ref: "psrtners"
     },
 
-    moveStock: {
-        type: Schema.Types.ObjectId,
-        ref: "stocks"
-    },
-
     proposal: {
         type: Schema.Types.ObjectId,
         ref: "proposals"
@@ -47,7 +48,12 @@ const BillSchema = new Schema ({
         type: String
     },
 
-    consignmentReceipts: [{
+    goodReceipts: [{
+
+        good: {
+            type: Schema.Types.ObjectId,
+            ref: "goods"
+        },
 
         consignment: {
             type: Schema.Types.ObjectId,
@@ -64,7 +70,12 @@ const BillSchema = new Schema ({
         }
     }],
 
-    consignmentIssues: [{
+    goodIssues: [{
+
+        good: {
+            type: Schema.Types.ObjectId,
+            ref: "goods"
+        },
 
         consignment: {
             type: Schema.Types.ObjectId,
@@ -81,7 +92,12 @@ const BillSchema = new Schema ({
         }
     }],
 
-    consignmentReturns: [{
+    goodReturns: [{
+
+        good: {
+            type: Schema.Types.ObjectId,
+            ref: "goods"
+        },
 
         consignment: {
             type: Schema.Types.ObjectId,
@@ -108,7 +124,12 @@ const BillSchema = new Schema ({
         }
     }],
 
-    consignmentStockTakes: [{
+    StockTakes: [{
+
+        good: {
+            type: Schema.Types.ObjectId,
+            ref: "goods"
+        },
 
         consignment: {
             type: Schema.Types.ObjectId,
@@ -134,4 +155,7 @@ const BillSchema = new Schema ({
         }
     }]
 });
+
+BillSchema.plugin(mongoosePaginate);
+
 module.exports = Bill = mongoose.model("bills", BillSchema);

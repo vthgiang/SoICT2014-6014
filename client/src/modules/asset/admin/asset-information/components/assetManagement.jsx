@@ -191,15 +191,12 @@ class AssetManagement extends Component {
     }
 
     // Function lưu giá trị người sử dụng vào state khi thay đổi
-    handleHandoverUserChange = (value) => {
-        if (value.length === 0) {
-            value = null
-        }
-
+    handleHandoverUserChange = (event) => {
+        const { name, value } = event.target;
         this.setState({
-            ...this.state,
-            handoverUser: value
-        })
+            [name]: value
+        });
+
     }
 
     // Function lưu giá trị đơn vị sử dụng vào state khi thay đổi
@@ -373,34 +370,24 @@ class AssetManagement extends Component {
         if (auth) {
             auth.components.forEach(component => {
                 if (component.name === name) result = true;
-            }); 
+            });
         }
         return result;
     }
-    
-    getUserAndDepartment = () => {
-        let { user, department } = this.props;
-        let listUser = user && user.list;
-        let listUnit = department && department.list
-        let data = {
-            userArr: [],
-            unitArr: []
-        };
 
-        listUser.map(x => {
-            data.userArr.push({
-                value: x._id,
-                text: x.name
-            })
-        })
+    getDepartment = () => {
+        let { department } = this.props;
+        let listUnit = department && department.list
+        let unitArr = [];
+
         listUnit.map(item => {
-            data.unitArr.push({
+            unitArr.push({
                 value: item._id,
                 text: item.name
             })
         })
 
-        return data
+        return unitArr;
     }
 
     convertGroupAsset = (group) => {
@@ -418,11 +405,11 @@ class AssetManagement extends Component {
     render() {
         var { assetsManager, assetType, translate, user, isActive, department } = this.props;
         var { page, limit, currentRowView, currentRow, purchaseDate, disposalDate, managedBy, typeRegisterForUse, handoverUnit, handoverUser } = this.state;
-        let dataSelectBox = this.getUserAndDepartment();
         var lists = "", exportData;
         var userlist = user.list, departmentlist = department.list;
         var assettypelist = assetType.listAssetTypes;
         let typeArr = this.getAssetTypes();
+        let dataSelectBox = this.getDepartment();
         let assetTypeName = this.state.assetType ? this.state.assetType : [];
 
         if (assetsManager.isLoading === false) {
@@ -442,7 +429,7 @@ class AssetManagement extends Component {
 
                 <div className="box-body qlcv">
                     {/* Form thêm tài sản mới */}
-                    {this.checkHasComponent("create-asset") && <AssetCreateForm /> }
+                    {this.checkHasComponent("create-asset") && <AssetCreateForm />}
 
                     {/* Thanh tìm kiếm */}
                     <div className="form-inline">
@@ -539,23 +526,15 @@ class AssetManagement extends Component {
                                 options={{ nonSelectedText: "Chọn đơn vị sử dụng", allSelectedText: "Chọn tất cả" }}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
-                                items={dataSelectBox.unitArr}
+                                items={dataSelectBox}
                                 onChange={this.handleHandoverUnitChange}
                             />
                         </div>
 
                         {/* Người được giao sử dụng */}
                         <div className="form-group">
-                            <label>Người sử dụng</label>
-                            <SelectMulti
-                                id={`userInManagement`}
-                                multiple="multiple"
-                                options={{ nonSelectedText: "Chọn người sử dụng", allSelectedText: "Chọn tất cả" }}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={dataSelectBox.userArr}
-                                onChange={this.handleHandoverUserChange}
-                            />
+                            <label className="form-control-static">Người sử dụng</label>
+                            <input type="text" className="form-control" name="handoverUser" onChange={this.handleHandoverUserChange} placeholder={"Người sử dụng"} autoComplete="off" />
                         </div>
                     </div>
 
