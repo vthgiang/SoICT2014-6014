@@ -6,7 +6,10 @@ import { DocumentActions } from '../../../redux/actions';
 import { RoleActions } from '../../../../super-admin/role/redux/actions';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import { getStorage } from '../../../../../config';
-import DocumentInformation from './documentInformation';
+import DocumentInformation from '../documents/documentInformation';
+import ListDownload from '../../administration/list-data/listDownload';
+import ListView from '../../administration/list-data/listView';
+
 
 class DocumentCommon extends Component {
     constructor(props) {
@@ -19,9 +22,8 @@ class DocumentCommon extends Component {
         this.props.getAllDepartments();
         this.props.getAllDocuments(getStorage('currentRole'));
         this.props.getAllDocuments(getStorage('currentRole'), { page: this.state.page, limit: this.state.limit });
-        this.props.getUserDocumentStatistics('downloaded');
         this.props.getUserDocumentStatistics('common');
-        this.props.getUserDocumentStatistics('latest');
+
     }
 
     toggleDocumentInformation = async (data) => {
@@ -79,8 +81,8 @@ class DocumentCommon extends Component {
                 officialNumber: x.officialNumber,
                 category: x.category.description,
             }
-            datas = [...datas, out] ;
-            for ( let  j = 1; j < leng; j++) {
+            datas = [...datas, out];
+            for (let j = 1; j < leng; j++) {
                 let versionName = "", issuingDate = "", effectiveDate = "", expiredDate = "", domain = "";
                 if (x.versions[j]) {
                     versionName = x.versions[j].versionName;
@@ -92,22 +94,22 @@ class DocumentCommon extends Component {
                     domain = x.domains[j].name;
                 }
                 out = {
-                STT: "",
-                name: "",
-                description: "",
-                domain: domain,
-                versionName: versionName,
-                issuingDate: issuingDate,
-                effectiveDate: effectiveDate,
-                expiredDate: expiredDate,
-                numberOfView: "",
-                numberOfDownload: "",
-                issuingBody: "",
-                signer: "",
-                officialNumber: "",
-                categor: "",
+                    STT: "",
+                    name: "",
+                    description: "",
+                    domain: domain,
+                    versionName: versionName,
+                    issuingDate: issuingDate,
+                    effectiveDate: effectiveDate,
+                    expiredDate: expiredDate,
+                    numberOfView: "",
+                    numberOfDownload: "",
+                    issuingBody: "",
+                    signer: "",
+                    officialNumber: "",
+                    categor: "",
                 }
-                datas = [...datas, out] ;
+                datas = [...datas, out];
             }
         }
         let exportData = {
@@ -133,13 +135,13 @@ class DocumentCommon extends Component {
                             columns: [
                                 { key: "STT", value: "STT" },
                                 { key: "name", value: "Tên" },
-                                { key: "officialNumber", value: "Số hiệu"},
-                                { key: "category", value: "Loai tài liệu"},
+                                { key: "officialNumber", value: "Số hiệu" },
+                                { key: "category", value: "Loai tài liệu" },
                                 { key: "description", value: "Mô tả" },
-                                { key: "signer", value: "Người ký"},
-                                { key: "domain", value: "Danh mục"},
-                                { key: "issuingBody", value: "Cơ quan ban hành"},
-                                { key: "versionName", value: "Tên phiên bản"},
+                                { key: "signer", value: "Người ký" },
+                                { key: "domain", value: "Danh mục" },
+                                { key: "issuingBody", value: "Cơ quan ban hành" },
+                                { key: "versionName", value: "Tên phiên bản" },
                                 { key: "issuingDate", value: "Ngày ban hành" },
                                 { key: "effectiveDate", value: "Ngày áp dụng" },
                                 { key: "expiredDate", value: "Ngày hết hạn" },
@@ -154,6 +156,18 @@ class DocumentCommon extends Component {
         }
         console.log(exportData);
         return exportData
+    }
+    showDetailListView = async (data) => {
+        await this.setState({
+            currentRow: data,
+        });
+        window.$('#modal-list-view').modal('show');
+    }
+    showDetailListDownload = async (data) => {
+        await this.setState({
+            currentRow: data,
+        })
+        window.$('#modal-list-download').modal('show');
     }
     render() {
         const { translate } = this.props;
@@ -170,26 +184,40 @@ class DocumentCommon extends Component {
         return (
             <React.Fragment>
                 {
+                    currentRow &&
+                    <ListView
+                        docs={currentRow}
+                    />
+                }
+                {
+                    currentRow &&
+                    <ListDownload
+                        docs={currentRow}
+                    />
+                }
+                {
                     currentRow !== undefined &&
                     <DocumentInformation
                         documentId={currentRow._id}
                         documentName={currentRow.name}
                         documentDescription={currentRow.description}
-                        documentCategory={currentRow.category._id}
-                        documentDomains={currentRow.domains.map(domain => domain._id)}
+                        documentCategory={currentRow.category ? currentRow.category.name : ""}
+                        documentDomains={currentRow.domains ? currentRow.domains.map(domain => domain.name) : []}
+                        documentArchives={currentRow.archives ? currentRow.archives.map(archive => archive.path) : []}
                         documentIssuingBody={currentRow.issuingBody}
                         documentOfficialNumber={currentRow.officialNumber}
                         documentSigner={currentRow.signer}
                         documentVersions={currentRow.versions}
 
                         documentRelationshipDescription={currentRow.relationshipDescription}
-                        documentRelationshipDocuments={currentRow.relationshipDocuments}
+                        documentRelationshipDocuments={currentRow.relationshipDocuments ? currentRow.relationshipDocuments.map(document => document.name) : []}
 
                         documentRoles={currentRow.roles}
 
                         documentArchivedRecordPlaceInfo={currentRow.archivedRecordPlaceInfo}
                         documentArchivedRecordPlaceOrganizationalUnit={currentRow.archivedRecordPlaceOrganizationalUnit}
                         documentArchivedRecordPlaceManager={currentRow.archivedRecordPlaceManager}
+                        documentLogs={currentRow.logs}
                     />
                 }
                 {<ExportExcel id="export-document-downloaded" exportData={exportData} style={{ marginLeft: 5 }} />}
@@ -248,20 +276,12 @@ class DocumentCommon extends Component {
                                         <td><DateTimeConverter dateTime={doc.versions[doc.versions.length - 1].expiredDate} type="DD-MM-YYYY" /></td>
                                         <td><a href="#" onClick={() => this.requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}><u>{translate('document.download')}</u></a></td>
                                         <td><a href="#" onClick={() => this.requestDownloadDocumentFileScan(doc._id, "SCAN_" + doc.name, doc.versions.length - 1)}><u>{translate('document.download')}</u></a></td>
-                                        <td>{doc.numberOfView}<ToolTip type="latest_history" dataTooltip={doc.views.map(view => {
-                                            return (
-                                                <React.Fragment>
-                                                    {view.viewer + ", "} <DateTimeConverter dateTime={view.time} />
-                                                </React.Fragment>
-                                            )
-                                        })} /></td>
-                                        <td>{doc.numberOfDownload}<ToolTip type="latest_history" dataTooltip={doc.downloads.map(download => {
-                                            return (
-                                                <React.Fragment>
-                                                    {download.downloader + ", "} <DateTimeConverter dateTime={download.time} />
-                                                </React.Fragment>
-                                            )
-                                        })} /></td>
+                                        <td>
+                                            <a href="#modal-list-view" onClick={() => this.showDetailListView(doc)}>{doc.numberOfView}</a>
+                                        </td>
+                                        <td>
+                                            <a href="#modal-list-download" onClick={() => this.showDetailListDownload(doc)}>{doc.numberOfDownload}</a>
+                                        </td>
                                         <td style={{ width: '10px' }}>
                                             <a className="text-green" title={translate('document.edit')} onClick={() => this.toggleDocumentInformation(doc)}><i className="material-icons">visibility</i></a>
                                         </td>

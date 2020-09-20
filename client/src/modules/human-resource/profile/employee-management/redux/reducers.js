@@ -30,6 +30,7 @@ export function employeesManager(state = initState, action) {
                 ...state,
                 isLoading: true,
                     exportData: [],
+                    arrMonth: [],
             };
         case EmployeeConstants.GETALL_SUCCESS:
             if (action.exportData) {

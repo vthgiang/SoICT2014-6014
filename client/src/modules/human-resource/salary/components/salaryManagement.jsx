@@ -370,8 +370,8 @@ class SalaryManagement extends Component {
                         <tbody>
                             {(listSalarys && listSalarys.length !== 0) &&
                                 listSalarys.map((x, index) => {
-                                    let total = 0;
-                                    if (x.bonus.length !== 0) {
+                                    let total = parseInt(x.mainSalary);
+                                    if (x.bonus && x.bonus.length !== 0) {
                                         for (let count in x.bonus) {
                                             total = total + parseInt(x.bonus[count].number)
                                         }
@@ -382,13 +382,7 @@ class SalaryManagement extends Component {
                                             <td>{x.employee ? x.employee.employeeNumber : null}</td>
                                             <td>{x.employee ? x.employee.fullName : null}</td>
                                             <td>{this.formatDate(x.month, true)}</td>
-                                            <td>
-                                                {
-                                                    (!x.bonus || x.bonus.length === 0) ?
-                                                        formater.format(parseInt(x.mainSalary)) :
-                                                        formater.format(total + parseInt(x.mainSalary))
-                                                } {x.unit}
-                                            </td>
+                                            <td>{formater.format(total)} {x.unit}</td>
                                             <td>{organizationalUnit ? organizationalUnit.name : 'Deleted'}</td>
                                             <td style={{ textAlign: 'center' }}>
                                                 <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.salary.edit_salary')}><i className="material-icons">edit</i></a>

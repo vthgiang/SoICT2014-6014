@@ -79,6 +79,15 @@ exports.searchSalaries = async (portal, params, company) => {
     }
 }
 
+exports.getAllSalaryByMonth = async (portal, month) => {
+    return await Salary(connect(DB_CONNECTION, portal)).find({
+        month: new Date(month)
+    }).populate({
+        path: 'employee',
+        select: 'emailInCompany fullName employeeNumber'
+    })
+}
+
 
 /**
  *  Thêm mới bảng lương mới 

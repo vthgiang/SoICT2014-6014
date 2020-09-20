@@ -480,23 +480,23 @@ exports.getDocumentsThatRoleCanView = async (req, res) => {
 }
 
 exports.getDocumentsUserStatistical = async (req, res) => {
-    try {
-        const docs = await DocumentServices.getDocumentsUserStatistical(req.user._id, req.query, req.portal);
+    // try {
+    const docs = await DocumentServices.getDocumentsUserStatistical(req.user._id, req.query, req.portal);
 
-        await Logger.info(req.user.email, 'GET_DOCUMENTS_USER_STATISTICAL', req.portal);
-        res.status(200).json({
-            success: true,
-            messages: ['get_documents_success'],
-            content: docs
-        });
-    } catch (error) {
-        await Logger.error(req.user.email, 'GET_DOCUMENTS_USER_STATISTICAL', req.portal);
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['get_documents_faile'],
-            content: error
-        });
-    }
+    await Logger.info(req.user.email, 'GET_DOCUMENTS_USER_STATISTICAL', req.portal);
+    res.status(200).json({
+        success: true,
+        messages: ['get_documents_success'],
+        content: docs
+    });
+    // } catch (error) {
+    //     await Logger.error(req.user.email, 'GET_DOCUMENTS_USER_STATISTICAL', req.portal);
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: Array.isArray(error) ? error : ['get_documents_faile'],
+    //         content: error
+    //     });
+    // }
 }
 /**
  * Kho lưu trữ vật lí

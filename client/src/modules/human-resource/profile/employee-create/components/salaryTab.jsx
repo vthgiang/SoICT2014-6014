@@ -210,8 +210,8 @@ class SalaryTab extends Component {
                                 <tbody>
                                     {salaries && salaries.length !== 0 &&
                                         salaries.map((x, index) => {
-                                            let total = 0;
-                                            if (x.bonus.length !== 0) {
+                                            let total = parseInt(x.mainSalary);
+                                            if (x.bonus && x.bonus.length !== 0) {
                                                 for (let count in x.bonus) {
                                                     total = total + parseInt(x.bonus[count].number)
                                                 }
@@ -221,13 +221,7 @@ class SalaryTab extends Component {
                                                 <tr key={index}>
                                                     <td>{this.formatDate(x.month, true)}</td>
                                                     <td>{formater.format(parseInt(x.mainSalary))} {x.unit}</td>
-                                                    <td>
-                                                        {
-                                                            (!x.bonus || x.bonus.length === 0) ?
-                                                                formater.format(parseInt(x.mainSalary)) :
-                                                                formater.format(total + parseInt(x.mainSalary))
-                                                        } {x.unit}
-                                                    </td>
+                                                    <td>{formater.format(total)} {x.unit}</td>
                                                     <td>{organizationalUnit.name}</td>
                                                     <td>
                                                         <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.salary.edit_salary')}><i className="material-icons">edit</i></a>
