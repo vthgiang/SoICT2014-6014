@@ -184,24 +184,22 @@ class AssetCreateForm extends Component {
                 files
             }
         })
-
+        
         let formData = convertJsonObjectToFormData(this.state.asset);
         files.forEach(x => {
             formData.append("file", x.fileUpload);
         })
         formData.append("fileAvatar", this.state.avatar);
-
         this.props.addNewAsset(formData);
     }
 
     render() {
         const { translate, assetsManager } = this.props;
         const { img, asset, maintainanceLogs, usageLogs, incidentLogs, files } = this.state;
-        // console.log(this.state, 'this.state-create')
 
         return (
             <React.Fragment>
-                <ButtonModal modalID="modal-add-asset" button_name={translate('menu.add_asset')} title={translate('menu.add_asset')} />
+                {/* <ButtonModal modalID="modal-add-asset" button_name={translate('menu.add_asset')} title={translate('menu.add_asset')} /> */}
                 <DialogModal
                     size='75' modalID="modal-add-asset" isLoading={assetsManager.isLoading}
                     formID="form-add-asset"

@@ -175,13 +175,13 @@ class GeneralTab extends Component {
                                     {/* Thời gian bắt đầu sử dụng */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.handover_from_date')}&emsp; </strong>
-                                        {status == "Đang sử dụng" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1].startDate) : ''}
+                                        {status == "Đang sử dụng" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1] && usageLogs[usageLogs.length - 1].startDate) : ''}
                                     </div>
 
                                     {/* Thời gian kết thúc sử dụng */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.handover_to_date')}&emsp; </strong>
-                                        {status == "Đang sử dụng" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1].endDate) : ''}
+                                        {status == "Đang sử dụng" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1] && usageLogs[usageLogs.length - 1].endDate) : ''}
                                     </div>
 
                                     {/* Vị trí */}
