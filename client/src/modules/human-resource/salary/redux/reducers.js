@@ -4,7 +4,8 @@ import {
 
 const initState = {
     isLoading: false,
-    listAllSalary: [],
+    listSalaryByMonthAndOrganizationalUnits: [],
+    listSalaryByMonth: [],
     listSalarys: [],
     totalList: 0,
 
@@ -23,15 +24,22 @@ export function salary(state = initState, action) {
             return {
                 ...state,
                 isLoading: true,
-                    listAllSalary: [],
             };
         case SalaryConstants.GET_SALARY_SUCCESS:
             if (action.callApiDashboard) {
-                return {
-                    ...state,
-                    isLoading: false,
-                    listAllSalary: action.payload,
-                };
+                if (action.organizationalUnits !== undefined) {
+                    return {
+                        ...state,
+                        isLoading: false,
+                        listSalaryByMonthAndOrganizationalUnits: action.payload,
+                    };
+                } else {
+                    return {
+                        ...state,
+                        isLoading: false,
+                        listSalaryByMonth: action.payload,
+                    };
+                }
             } else {
                 return {
                     ...state,

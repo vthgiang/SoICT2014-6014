@@ -29,6 +29,7 @@ function searchSalary(data) {
                     type: SalaryConstants.GET_SALARY_SUCCESS,
                     payload: res.data.content,
                     callApiDashboard: data.callApiDashboard,
+                    organizationalUnits: data.organizationalUnits,
                 })
             })
             .catch(err => {

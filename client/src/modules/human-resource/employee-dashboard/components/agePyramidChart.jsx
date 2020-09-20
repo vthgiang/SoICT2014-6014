@@ -15,22 +15,28 @@ class AgePyramidChart extends Component {
         }
     }
 
-    // Function tính tuổi nhân viên theo năm sinh nhập vào
+    /**
+     * Function tính tuổi nhân viên theo ngày sinh nhập vào
+     * @param {*} date : Ngày sinh
+     */
     getYear = (date) => {
         let dateNow = new Date(Date.now()), birthDate = new Date(date);
         let age = dateNow.getFullYear() - birthDate.getFullYear();
         return age;
     }
 
-
-    // Xóa các chart đã render khi chưa đủ dữ liệu
+    /** Xóa các chart đã render khi chưa đủ dữ liệu */
     removePreviousChart() {
         const chart = this.refs.chart;
-        while (chart.hasChildNodes()) {
+        while (chart && chart.hasChildNodes()) {
             chart.removeChild(chart.lastChild);
         }
     }
 
+    /**
+     * Hàm tiện ích tìm giá trị lớn nhất của mảng
+     * @param {*} data : Array dữ liệu truyền vào
+     */
     findMaxOfArray = (data) => {
         let max = data[1];
         for (let i = 2; i < data.length - 1; i++) {
@@ -41,6 +47,10 @@ class AgePyramidChart extends Component {
         return max;
     };
 
+    /**
+     * Render chart
+     * @param {*} data : Dữ liệu của Chart
+     */
     renderChart = (data) => {
         let maxData1 = this.findMaxOfArray(data.data1), maxData2 = this.findMaxOfArray(data.data2);
         let qty_max = maxData1 >= maxData2 ? maxData1 : maxData2;
@@ -48,6 +58,7 @@ class AgePyramidChart extends Component {
         let bigData1 = data.data1.map(x => x / 1.5);
         let bigData2 = data.data2.map(x => x / 2);
 
+        this.removePreviousChart();
         let chart = c3.generate({
             bindto: this.refs.chart,
             data: {
@@ -98,7 +109,7 @@ class AgePyramidChart extends Component {
             chart.load({
                 columns: [[data.nameData1, ...data.data1], [data.nameData2, ...data.data2]],
             });
-        }, 500);
+        }, 300);
     }
 
     static isEqual = (items1, items2) => {
@@ -178,7 +189,8 @@ class AgePyramidChart extends Component {
             data1: data1AgePyramid,
             data2: data2AgePyramid,
         }
-        listAllEmployees.length !== 0 && this.renderChart(data);
+        this.renderChart(data);
+
         return (
             <React.Fragment>
                 <div ref="chart"></div>
@@ -217,9 +229,5 @@ function mapState(state) {
     return { employeesManager, department };
 }
 
-const actionCreators = {
-    getAllEmployee: EmployeeManagerActions.getAllEmployee,
-};
-
-const agePyramidChart = connect(mapState, actionCreators)(withTranslate(AgePyramidChart));
+const agePyramidChart = connect(mapState, null)(withTranslate(AgePyramidChart));
 export { agePyramidChart as AgePyramidChart };

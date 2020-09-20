@@ -235,10 +235,43 @@ exports.mergeUrlFileToObject = (arrayFile, arrayObject) => {
  */
 exports.createAsset = async (portal, data, fileInfo) => {
 
-    let avatar = fileInfo.avatar === "" ? data.avatar : fileInfo.avatar,
-        file = fileInfo.file;
+    let avatar = fileInfo && fileInfo.avatar === "" ? data.avatar : fileInfo.avatar,
+        file = fileInfo && fileInfo.file;
     let { maintainanceLogs, usageLogs, incidentLogs, locationLogs, files } = data;
-    files = this.mergeUrlFileToObject(file, files);
+    files = files && this.mergeUrlFileToObject(file, files);
+    
+    data.purchaseDate = new Date(data.purchaseDate);
+    
+    data.warrantyExpirationDate = new Date(data.warrantyExpirationDate);
+
+    data.startDepreciation = new Date(data.startDepreciation);
+
+    data.disposalDate = new Date(data.disposalDate);
+
+    usageLogs = usageLogs.map(item => {
+        return {
+            ...item,
+            startDate: new Date(item.startDate),
+            endDate: new Date(item.endDate)
+        }
+    })
+    
+    incidentLogs = incidentLogs.map(item => {
+        return {
+            ...item,
+            dateOfIncident: new Date(item.dateOfIncident)
+        }
+    })
+    
+    maintainanceLogs = maintainanceLogs.map(item => {
+        return {
+            ...item,
+            createDate: new Date(item.createDate),
+            startDate: new Date(item.startDate),
+            endDate: new Date(item.endDate)
+        }
+    })
+
     let createAsset = await Asset(connect(DB_CONNECTION, portal)).create({
         avatar: avatar,
         assetName: data.assetName,
