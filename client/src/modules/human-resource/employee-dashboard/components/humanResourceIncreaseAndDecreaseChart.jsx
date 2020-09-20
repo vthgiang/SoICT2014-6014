@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { SelectMulti, SelectBox } from '../../../../common-components';
+import { SelectMulti, ErrorLabel, DatePicker } from '../../../../common-components';
 
 import { EmployeeManagerActions } from '../../profile/employee-management/redux/actions';
 
@@ -12,20 +12,56 @@ import 'c3/c3.css';
 class HumanResourceIncreaseAndDecreaseChart extends Component {
     constructor(props) {
         super(props);
+        let startDate = ['01', new Date().getFullYear()].join('-');
         this.state = {
             lineChart: false,
-            numberMonth: 12,
-            numberMonthShow: 12,
+            startDate: startDate,
+            startDateShow: startDate,
+            endDate: this.formatDate(Date.now(), true),
+            endDateShow: this.formatDate(Date.now(), true),
             organizationalUnitsSearch: []
         }
     }
 
-    componentDidMount() {
-        const { organizationalUnits, numberMonth } = this.state;
-        this.props.getAllEmployee({ organizationalUnits: organizationalUnits, numberMonth: numberMonth });
+    /**
+     * Function format dữ liệu Date thành string
+     * @param {*} date : Ngày muốn format
+     * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
+     */
+    formatDate(date, monthYear = false) {
+        if (date) {
+            let d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
+
+            if (monthYear === true) {
+                return [month, year].join('-');
+            } else return [day, month, year].join('-');
+        }
+        return date;
     }
 
-    // Function bắt sự kiện thay đổi unit
+    componentDidMount() {
+        const { organizationalUnits, startDate, endDate } = this.state;
+        let arrStart = startDate.split('-');
+        let startDateNew = [arrStart[1], arrStart[0]].join('-');
+
+        let arrEnd = endDate.split('-');
+        let endDateNew = [arrEnd[1], arrEnd[0]].join('-');
+
+        this.props.getAllEmployee({ organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew });
+    }
+
+    /**
+     * Function bắt sự kiện thay đổi unit
+     * @param {*} value : Array id đơn vị
+     */
     handleSelectOrganizationalUnit = (value) => {
         if (value.length === 0) {
             value = null
@@ -35,14 +71,30 @@ class HumanResourceIncreaseAndDecreaseChart extends Component {
         })
     };
 
-    // Function bắt sự kiện thay đổi số lượng tháng hiện thị
-    handleNumberMonthChange = (value) => {
+    /**
+     * Bắt sự kiện thay đổi ngày bắt đầu
+     * @param {*} value : Giá trị ngày bắt đầu
+     */
+    handleStartMonthChange = (value) => {
         this.setState({
-            numberMonth: value
+            startDate: value
         })
     }
 
-    // Bắt sự kiện thay đổi chế đọ xem biểu đồ
+    /**
+     * Bắt sự kiện thay đổi ngày kết thúc
+     * @param {*} value : Giá trị ngày kết thúc
+     */
+    handleEndMonthChange = (value) => {
+        this.setState({
+            endDate: value,
+        })
+    }
+
+    /**
+     * Bắt sự kiện thay đổi chế đọ xem biểu đồ
+     * @param {*} value : chế độ xem biểu đồ (true or false)
+     */
     handleChangeViewChart = (value) => {
         this.setState({
             ...this.state,
@@ -93,16 +145,20 @@ class HumanResourceIncreaseAndDecreaseChart extends Component {
         return false;
     }
 
-    // Xóa các chart đã render khi chưa đủ dữ liệu
+    /** Xóa các chart đã render khi chưa đủ dữ liệu */
     removePreviousChart() {
         const chart = this.refs.chart;
         if (chart) {
-            while (chart.hasChildNodes()) {
+            while (chart && chart.hasChildNodes()) {
                 chart.removeChild(chart.lastChild);
             }
         }
     }
 
+    /**
+     * Render chart
+     * @param {*} data : Dữ liệu biểu đồ
+     */
     renderChart = (data) => {
         data.data1.shift();
         data.data2.shift();
@@ -160,19 +216,35 @@ class HumanResourceIncreaseAndDecreaseChart extends Component {
         }, 300);
     };
 
-    // Bắt sự kiện tìm kiếm 
+    /** Bắt sự kiện tìm kiếm */
     handleSunmitSearch = async () => {
-        const { organizationalUnits, numberMonth } = this.state;
-        this.setState({
-            numberMonthShow: numberMonth,
+        const { organizationalUnits, startDate, endDate } = this.state;
+        await this.setState({
+            startDateShow: startDate,
+            endDateShow: endDate,
             organizationalUnitsSearch: organizationalUnits,
-        })
-        this.props.getAllEmployee({ organizationalUnits: organizationalUnits, numberMonth: numberMonth })
+        });
+
+        let arrStart = startDate.split('-');
+        let startDateNew = [arrStart[1], arrStart[0]].join('-');
+
+        let arrEnd = endDate.split('-');
+        let endDateNew = [arrEnd[1], arrEnd[0]].join('-');
+
+        this.props.getAllEmployee({ organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew });
     }
 
     render() {
         const { department, employeesManager, translate } = this.props;
-        const { lineChart, nameChart, nameData1, nameData2, numberMonth, numberMonthShow } = this.state;
+
+        const { lineChart, nameChart, nameData1, nameData2, startDate, endDate, startDateShow, endDateShow, organizationalUnitsSearch } = this.state;
+
+        let organizationalUnitsName;
+        if (organizationalUnitsSearch) {
+            organizationalUnitsName = department.list.filter(x => organizationalUnitsSearch.includes(x._id));
+            organizationalUnitsName = organizationalUnitsName.map(x => x.name);
+        }
+
         if (employeesManager.arrMonth.length !== 0) {
             let ratioX = ['x', ...employeesManager.arrMonth];
             let listEmployeesHaveStartingDateOfNumberMonth = employeesManager.listEmployeesHaveStartingDateOfNumberMonth;
@@ -201,9 +273,31 @@ class HumanResourceIncreaseAndDecreaseChart extends Component {
         return (
             <div className="box" >
                 <div className="box-header with-border" >
-                    <h3 className="box-title" > {`${nameChart} trong ${numberMonthShow} tháng gần nhất`} </h3> </div>
+                    <h3 className="box-title" > {`${nameChart} của ${(!organizationalUnitsName || organizationalUnitsName.length === department.list.length) ? "công ty" : organizationalUnitsName.join(', ')} ${startDateShow} => ${endDateShow}`} </h3> </div>
                 <div className="box-body" >
                     <div className="qlcv" style={{ marginBottom: 15 }} >
+                        <div className="form-inline" >
+                            <div className="form-group">
+                                <label className="form-control-static" >Từ tháng</label>
+                                <DatePicker
+                                    id="form-month-hr"
+                                    dateFormat="month-year"
+                                    deleteValue={false}
+                                    value={startDate}
+                                    onChange={this.handleStartMonthChange}
+                                />
+                            </div>
+                            <div className='form-group'>
+                                <label className="form-control-static" >Đến tháng</label>
+                                <DatePicker
+                                    id="to-month-hr"
+                                    dateFormat="month-year"
+                                    deleteValue={false}
+                                    value={endDate}
+                                    onChange={this.handleEndMonthChange}
+                                />
+                            </div>
+                        </div>
                         <div className="form-inline" >
                             <div className="form-group" >
                                 <label className="form-control-static" > {translate('kpi.evaluation.dashboard.organizational_unit')} </label>
@@ -214,16 +308,7 @@ class HumanResourceIncreaseAndDecreaseChart extends Component {
                                 </SelectMulti>
                             </div>
                             <div className="form-group" >
-                                <label className="form-control-static" > Số tháng </label>
-                                <SelectBox id={`numberMonth-towBarChart`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    value={numberMonth}
-                                    items={[{ value: 6, text: '6 tháng' }, { value: 12, text: '12 tháng' }]}
-                                    onChange={this.handleNumberMonthChange}
-                                />
-                            </div>
-                            <div className="form-group" >
+                                <label></label>
                                 <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => this.handleSunmitSearch()} > {translate('general.search')} </button>
                             </div>
                         </div>
