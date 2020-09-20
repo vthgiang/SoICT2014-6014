@@ -18,7 +18,6 @@ exports.getUsers = async (portal, query) => {
     var unitId = query.unitId;
 
     var keySearch = {};
-
     if (!page && !limit && !userRole && !departmentIds && !unitId) {
         if (name) {
             keySearch = {
@@ -89,9 +88,8 @@ exports.getUsers = async (portal, query) => {
                     }
                     ]
                 });
-
             if (department) {
-                return _getAllUsersInOrganizationalUnit(department);
+                return _getAllUsersInOrganizationalUnit(portal, department);
             }
         } else {
             let departments = await OrganizationalUnit(connect(DB_CONNECTION, portal))
@@ -130,7 +128,7 @@ exports.getAllEmployeeOfUnitByRole = async (portal, role) => {
             }
             ]
         });
-
+    
     let employees;
     if (organizationalUnit) {
         employee = await UserRole(connect(DB_CONNECTION, portal))
@@ -616,6 +614,7 @@ _getAllUsersInOrganizationalUnit = async (portal, department) => {
         employees: {},
         department: department.name
     };
+
     tmp.forEach(item => {
         let obj = {};
         obj._id = item.id;
@@ -640,7 +639,7 @@ _getAllUsersInOrganizationalUnit = async (portal, department) => {
             users.employees[item.roleId.toString()].members.push(item.userId);
         }
     });
-
+    
     return users;
 }
 
@@ -715,7 +714,7 @@ exports.getAllUsersWithRole = async (portal) => {
             path: "userId",
             select: 'name email avatar'
         })
-
+    
     return users
 }
 

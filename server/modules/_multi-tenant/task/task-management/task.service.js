@@ -1457,7 +1457,7 @@ exports.getAllTaskOfOrganizationalUnit = async (portal, roleId, organizationalUn
 
             {
                 $lookup: {
-                    from: "organizational_units",
+                    from: "organizationalunits",
                     localField: "organizationalUnit",
                     foreignField: "_id",
                     as: "detailOrganizationalUnit"
