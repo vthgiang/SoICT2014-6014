@@ -94,7 +94,7 @@ exports.getAllEmployeeKpiSetOfAllEmployeeInOrganizationalUnitByMonth = async (po
 
         {
             $lookup: {
-                from: "organizational_units",
+                from: "organizationalunits",
                 localField: "organizationalUnit",
                 foreignField: "_id",
                 as: "organizationalUnit"
