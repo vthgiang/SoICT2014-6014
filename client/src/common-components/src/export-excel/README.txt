@@ -48,6 +48,7 @@ LƯU Ý 1: Kiểu dữ liệu truyền vào component để export
                 {
                     sheetName: "Sheet1",
                     sheetTitle: 'Báo cáo thống kê lương thưởnng',
+                    sheetTitleWidth: 12,                                // Số cột merge cho ô tiêu đề         
                     tables: [
                         {
                             note: `Chú ý:`                              // Thêm "chú ý" cho bảng (có thể có hoặc không)
