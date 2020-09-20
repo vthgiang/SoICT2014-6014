@@ -343,9 +343,9 @@ class MaintainanceManagement extends Component {
                                 options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('page.all_status') }}
                                 onChange={this.handleStatusChange}
                                 items={[
-                                    { value: 1, text: translate('asset.asset_info.made') },
+                                    { value: 1, text: translate('asset.asset_info.unfulfilled') },
                                     { value: 2, text: translate('asset.asset_info.processing') },
-                                    { value: 3, text: translate('asset.asset_info.unfulfilled') }
+                                    { value: 3, text: translate('asset.asset_info.made') },
                                 ]}
                             >
                             </SelectMulti>
