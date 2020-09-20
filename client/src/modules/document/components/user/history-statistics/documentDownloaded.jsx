@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DateTimeConverter, DataTableSetting, ToolTip, SearchBar, ExportExcel } from '../../../../../common-components';
+import { DateTimeConverter, DataTableSetting, TreeSelect, SelectBox, ExportExcel } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
 import { RoleActions } from '../../../../super-admin/role/redux/actions';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
@@ -32,7 +32,7 @@ class DocumentDownloaded extends Component {
         this.props.getAllDepartments();
         this.props.getAllDocuments(getStorage('currentRole'));
         this.props.getAllDocuments(getStorage('currentRole'), { page: this.state.page, limit: this.state.limit });
-        this.props.getUserDocumentStatistics('downloaded');
+        this.props.getUserDocumentStatistics('downloaded', { page: this.state.page, limit: this.state.limit });
     }
 
     toggleDocumentInformation = async (data) => {
@@ -67,15 +67,47 @@ class DocumentDownloaded extends Component {
         })
         window.$('#modal-list-download').modal('show');
     }
+    findPath = (select) => {
+        const archives = this.props.documents.administration.archives.list;
+        let paths = select.map(s => {
+            let archive = archives.filter(arch => arch._id === s);
+            return archive[0] ? archive[0].path : "";
+        })
+        return paths;
+
+    }
+
     searchWithOption = async () => {
+        let path = this.state.archive ? this.findPath(this.state.archive) : "";
         const data = {
             limit: this.state.limit,
             page: 1,
+            name: this.state.name,
+            category: this.state.category ? this.state.category[0] : "",
+            domains: this.state.domain ? this.state.domain : "",
+            archives: path && path.length ? path[0] : "",
+        };
+        await this.props.getUserDocumentStatistics('downloaded', data);
+    }
+    setPage = async (page) => {
+        this.setState({ page });
+        const data = {
+            limit: this.state.limit,
+            page: page,
             key: this.state.option,
             value: this.state.value
         };
         await this.props.getAllDocuments(getStorage('currentRole'), data);
     }
+
+    setLimit = (number) => {
+        if (this.state.limit !== number) {
+            this.setState({ limit: number });
+            const data = { limit: number, page: this.state.page };
+            this.props.getAllDocuments(getStorage('currentRole'), data);
+        }
+    }
+
     static getDerivedStateFromProps(nextProps, prevState) {
         const { data } = nextProps.documents.user;
         if (prevState.currentRow) {
@@ -116,6 +148,37 @@ class DocumentDownloaded extends Component {
         if (role && role.length)
             return role[0].name;
         else return "";
+    }
+    handleCategoryChange = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                category: value,
+            }
+        })
+    }
+    handleDomainChange = (value) => {
+        this.setState({ domain: value });
+    }
+    handleDomains = value => {
+        this.setState({ documentDomains: value });
+    }
+    handleNameChange = (e) => {
+        const value = e.target.value;
+        this.setState(state => {
+            return {
+                ...state,
+                name: value.trim(),
+            }
+        })
+    }
+    handleArchiveChange = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                archive: value,
+            }
+        })
     }
     convertDataToExportData = (data) => {
 
@@ -302,134 +365,195 @@ class DocumentDownloaded extends Component {
 
         return exportData
     }
+    convertData = (data) => {
+        let array = data.map(item => {
+            return {
+                value: item.id,
+                text: item.name,
+            }
+        })
+        array.unshift({ value: "", text: "Tất cả các loại" });
+        return array;
+    }
     render() {
+
         const { translate } = this.props;
         const { user } = this.props.documents;
-        const { list, paginate } = user.data;
-        const { downloaded, common, latest } = user;
+        const { downloaded } = user;
         const { isLoading } = this.props.documents;
-        const { currentRow } = this.state;
-        console.log(downloaded);
         let dataExport = [];
         if (isLoading === false) {
             dataExport = downloaded;
         }
-        console.log('currrr', currentRow);
-        let exportData = this.convertDataToExportData(dataExport);
+        const { domains, categories, archives } = this.props.documents.administration;
+        const docs = this.props.documents.user.data;
+        const { currentRow, archive, category, domain } = this.state;
+        const listDomain = domains.list
+        const listCategory = this.convertData(categories.list)
+        const listArchive = archives.list;
+        let list = [];
+        if (isLoading === false) {
+            list = docs.list;
+        }
+        let exportData = dataExport ? this.convertDataToExportData(dataExport) : "";
         return (
-            <React.Fragment>
-                {
-                    currentRow &&
-                    <ListView
-                        docs={currentRow}
-                    />
-                }
-                {
-                    currentRow &&
-                    <ListDownload
-                        docs={currentRow}
-                    />
-                }
-                {
-                    currentRow !== undefined &&
-                    <DocumentInformation
-                        documentId={currentRow._id}
-                        documentName={currentRow.name}
-                        documentDescription={currentRow.description}
-                        documentCategory={currentRow.category ? currentRow.category.name : ""}
-                        documentDomains={currentRow.domains ? currentRow.domains.map(domain => domain.name) : []}
-                        documentArchives={currentRow.archives ? currentRow.archives.map(archive => archive.path) : []}
-                        documentIssuingBody={currentRow.issuingBody}
-                        documentOfficialNumber={currentRow.officialNumber}
-                        documentSigner={currentRow.signer}
-                        documentVersions={currentRow.versions}
+            <div className="qlcv">
+                <React.Fragment>
+                    {
+                        currentRow &&
+                        <ListView
+                            docs={currentRow}
+                        />
+                    }
+                    {
+                        currentRow &&
+                        <ListDownload
+                            docs={currentRow}
+                        />
+                    }
+                    {
+                        currentRow !== undefined &&
+                        <DocumentInformation
+                            documentId={currentRow._id}
+                            documentName={currentRow.name}
+                            documentDescription={currentRow.description}
+                            documentCategory={currentRow.category ? currentRow.category.name : ""}
+                            documentDomains={currentRow.domains ? currentRow.domains.map(domain => domain.name) : []}
+                            documentArchives={currentRow.archives ? currentRow.archives.map(archive => archive.path) : []}
+                            documentIssuingBody={currentRow.issuingBody}
+                            documentOfficialNumber={currentRow.officialNumber}
+                            documentSigner={currentRow.signer}
+                            documentVersions={currentRow.versions}
 
-                        documentRelationshipDescription={currentRow.relationshipDescription}
-                        documentRelationshipDocuments={currentRow.relationshipDocuments ? currentRow.relationshipDocuments.map(document => document.name) : []}
+                            documentRelationshipDescription={currentRow.relationshipDescription}
+                            documentRelationshipDocuments={currentRow.relationshipDocuments ? currentRow.relationshipDocuments.map(document => document.name) : []}
 
-                        documentRoles={currentRow.roles}
+                            documentRoles={currentRow.roles}
 
-                        documentArchivedRecordPlaceInfo={currentRow.archivedRecordPlaceInfo}
-                        documentArchivedRecordPlaceOrganizationalUnit={currentRow.archivedRecordPlaceOrganizationalUnit}
-                        documentArchivedRecordPlaceManager={currentRow.archivedRecordPlaceManager}
-                        documentLogs={currentRow.logs}
-                    />
-                }
-                {<ExportExcel id="export-document-downloaded" exportData={exportData} style={{ marginLeft: 5 }} />}
-                <SearchBar
-                    columns={[
-                        { title: translate('document.name'), value: 'name' },
-                        { title: translate('document.description'), value: 'description' }
-                    ]}
-                    option={this.state.option}
-                    setOption={this.setOption}
-                    search={this.searchWithOption}
-                />
+                            documentArchivedRecordPlaceInfo={currentRow.archivedRecordPlaceInfo}
+                            documentArchivedRecordPlaceOrganizationalUnit={currentRow.archivedRecordPlaceOrganizationalUnit}
+                            documentArchivedRecordPlaceManager={currentRow.archivedRecordPlaceManager}
+                            documentLogs={currentRow.logs}
+                        />
+                    }
+                    {<ExportExcel id="export-document-downloaded" exportData={exportData} style={{ marginLeft: 5 }} />}
+                    <div className="form-inline">
+                        <div className="form-group">
+                            <label>{translate('document.category')}</label>
+                            <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                id={`stattus-category-download`}
+                                style={{ width: "100%" }}
+                                items={listCategory}
+                                onChange={this.handleCategoryChange}
+                                value={category}
+                            />
+                        </div>
+                        <div className="form-group" >
+                            <label>{translate('document.store.information')}</label>
+                            <TreeSelect
+                                id="tree-select-search-archive"
+                                data={listArchive}
+                                className="form-control"
+                                handleChange={this.handleArchiveChange}
+                                value={archive}
+                                mode="hierarchical"
+                                style={{ width: " 100%" }}
+                            />
+                        </div>
 
-                <table className="table table-hover table-striped table-bordered" id="table-manage-user-document-downloaded">
-                    <thead>
-                        <tr>
-                            <th>{translate('document.name')}</th>
-                            <th>{translate('document.description')}</th>
-                            <th>{translate('document.issuing_date')}</th>
-                            <th>{translate('document.effective_date')}</th>
-                            <th>{translate('document.expired_date')}</th>
-                            <th>{translate('document.upload_file')}</th>
-                            <th>{translate('document.upload_file_scan')}</th>
-                            <th>{translate('document.views')}</th>
-                            <th>{translate('document.downloads')}</th>
-                            <th style={{ width: '120px', textAlign: 'center' }}>
-                                {translate('general.action')}
-                                <DataTableSetting
-                                    columnArr={[
-                                        translate('document.name'),
-                                        translate('document.description'),
-                                        translate('document.issuing_date'),
-                                        translate('document.effective_date'),
-                                        translate('document.expired_date'),
-                                        translate('document.upload_file'),
-                                        translate('document.upload_file_scan'),
-                                        translate('document.views'),
-                                        translate('document.downloads')
-                                    ]}
-                                    limit={this.state.limit}
-                                    setLimit={this.setLimit}
-                                    hideColumnOption={true}
-                                    tableId="table-manage-user-document"
-                                />
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            downloaded.length > 0 ?
-                                downloaded.map(doc =>
-                                    <tr key={doc._id}>
-                                        <td>{doc.name}</td>
-                                        <td>{doc.description}</td>
-                                        <td><DateTimeConverter dateTime={doc.versions[doc.versions.length - 1].issuingDate} type="DD-MM-YYYY" /></td>
-                                        <td><DateTimeConverter dateTime={doc.versions[doc.versions.length - 1].effectiveDate} type="DD-MM-YYYY" /></td>
-                                        <td><DateTimeConverter dateTime={doc.versions[doc.versions.length - 1].expiredDate} type="DD-MM-YYYY" /></td>
-                                        <td><a href="#" onClick={() => this.requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}><u>{translate('document.download')}</u></a></td>
-                                        <td><a href="#" onClick={() => this.requestDownloadDocumentFileScan(doc._id, "SCAN_" + doc.name, doc.versions.length - 1)}><u>{translate('document.download')}</u></a></td>
-                                        <td>
-                                            <a href="#modal-list-view" onClick={() => this.showDetailListView(doc)}>{doc.numberOfView}</a>
-                                        </td>
-                                        <td>
-                                            <a href="#modal-list-download" onClick={() => this.showDetailListDownload(doc)}>{doc.numberOfDownload}</a>
-                                        </td>
-                                        <td style={{ width: '10px' }}>
-                                            <a className="text-green" title={translate('document.edit')} onClick={() => this.toggleDocumentInformation(doc)}><i className="material-icons">visibility</i></a>
-                                        </td>
-                                    </tr>) :
-                                isLoading ?
-                                    <tr><td colSpan={10}>{translate('general.loading')}</td></tr> : <tr><td colSpan={10}>{translate('general.no_data')}</td></tr>
-                        }
+                    </div>
+                    <div className="form-inline">
+                        <div className="form-group">
+                            <label>{translate('document.domain')}</label>
+                            <TreeSelect
+                                id="tree-select-search-domain"
+                                data={listDomain}
+                                className="form-control"
+                                handleChange={this.handleDomainChange}
+                                value={domain}
+                                mode="hierarchical"
+                                style={{ width: "100%" }}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>{translate('document.name')}</label>
+                            <input type="text" className="form-control" onChange={this.handleNameChange} />
+                        </div>
 
-                    </tbody>
-                </table>
+                    </div>
+                    <div className="form-inline">
+                        <div className="form-group">
+                            <label></label>
+                            <button type="button" className="btn btn-success" onClick={() => this.searchWithOption()}>{
+                                translate('kpi.organizational_unit.management.over_view.search')}</button>
+                        </div>
+                    </div>
 
-            </React.Fragment>
+                    <table className="table table-hover table-striped table-bordered" id="table-manage-user-document-downloaded">
+                        <thead>
+                            <tr>
+                                <th>{translate('document.name')}</th>
+                                <th>{translate('document.description')}</th>
+                                <th>{translate('document.issuing_date')}</th>
+                                <th>{translate('document.effective_date')}</th>
+                                <th>{translate('document.expired_date')}</th>
+                                <th>{translate('document.upload_file')}</th>
+                                <th>{translate('document.upload_file_scan')}</th>
+                                <th>{translate('document.views')}</th>
+                                <th>{translate('document.downloads')}</th>
+                                <th style={{ width: '120px', textAlign: 'center' }}>
+                                    {translate('general.action')}
+                                    <DataTableSetting
+                                        columnArr={[
+                                            translate('document.name'),
+                                            translate('document.description'),
+                                            translate('document.issuing_date'),
+                                            translate('document.effective_date'),
+                                            translate('document.expired_date'),
+                                            translate('document.upload_file'),
+                                            translate('document.upload_file_scan'),
+                                            translate('document.views'),
+                                            translate('document.downloads')
+                                        ]}
+                                        limit={this.state.limit}
+                                        setLimit={this.setLimit}
+                                        hideColumnOption={true}
+                                        tableId="table-manage-user-document"
+                                    />
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                downloaded && downloaded.length > 0 ?
+                                    downloaded.map(doc =>
+                                        <tr key={doc._id}>
+                                            <td>{doc.name}</td>
+                                            <td>{doc.description}</td>
+                                            <td><DateTimeConverter dateTime={doc.versions[doc.versions.length - 1].issuingDate} type="DD-MM-YYYY" /></td>
+                                            <td><DateTimeConverter dateTime={doc.versions[doc.versions.length - 1].effectiveDate} type="DD-MM-YYYY" /></td>
+                                            <td><DateTimeConverter dateTime={doc.versions[doc.versions.length - 1].expiredDate} type="DD-MM-YYYY" /></td>
+                                            <td><a href="#" onClick={() => this.requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}><u>{translate('document.download')}</u></a></td>
+                                            <td><a href="#" onClick={() => this.requestDownloadDocumentFileScan(doc._id, "SCAN_" + doc.name, doc.versions.length - 1)}><u>{translate('document.download')}</u></a></td>
+                                            <td>
+                                                <a href="#modal-list-view" onClick={() => this.showDetailListView(doc)}>{doc.numberOfView}</a>
+                                            </td>
+                                            <td>
+                                                <a href="#modal-list-download" onClick={() => this.showDetailListDownload(doc)}>{doc.numberOfDownload}</a>
+                                            </td>
+                                            <td style={{ width: '10px' }}>
+                                                <a className="text-green" title={translate('document.edit')} onClick={() => this.toggleDocumentInformation(doc)}><i className="material-icons">visibility</i></a>
+                                            </td>
+                                        </tr>) :
+                                    isLoading ?
+                                        <tr><td colSpan={10}>{translate('general.loading')}</td></tr> : <tr><td colSpan={10}>{translate('general.no_data')}</td></tr>
+                            }
+
+                        </tbody>
+                    </table>
+
+                </React.Fragment>
+            </div>
         );
     }
 }

@@ -28,7 +28,7 @@ class DocumentNew extends Component {
         await this.setState({
             currentRow: data
         });
-        window.$('#modal-document-information-statistics').modal('show');
+        window.$('#modal-information-user-document').modal('show');
         this.props.increaseNumberView(data._id)
     }
 
@@ -44,17 +44,29 @@ class DocumentNew extends Component {
             [title]: option
         });
     }
+    findPath = (select) => {
+        const archives = this.props.documents.administration.archives.list;
+        let paths = select.map(s => {
+            let archive = archives.filter(arch => arch._id === s);
+            return archive[0] ? archive[0].path : "";
+        })
+        return paths;
+
+    }
+
     searchWithOption = async () => {
+        let path = this.state.archive ? this.findPath(this.state.archive) : "";
         const data = {
             limit: this.state.limit,
             page: 1,
-            key: this.state.option,
-            value: this.state.value
+            name: this.state.name,
+            category: this.state.category ? this.state.category[0] : "",
+            domains: this.state.domain ? this.state.domain : "",
+            archives: path && path.length ? path[0] : "",
         };
         await this.props.getAllDocuments(getStorage('currentRole'), data);
     }
     convertDataToExportData = (data) => {
-        console.log(data);
         let datas = [];
         for (let i = 0; i < data.length; i++) {
             let x = data[i];
@@ -152,7 +164,6 @@ class DocumentNew extends Component {
                 },
             ]
         }
-        console.log(exportData);
         return exportData
     }
     showDetailListView = async (data) => {
@@ -178,7 +189,7 @@ class DocumentNew extends Component {
         if (isLoading === false) {
             dataExport = latest;
         }
-        let exportData = this.convertDataToExportData(dataExport);
+        let exportData = dataExport ? this.convertDataToExportData(dataExport) : "";
         return (
             <React.Fragment>
                 {
@@ -264,7 +275,7 @@ class DocumentNew extends Component {
                     </thead>
                     <tbody>
                         {
-                            latest.length > 0 ?
+                            latest && latest.length > 0 ?
                                 latest.map(doc =>
                                     <tr key={doc._id}>
                                         <td>{doc.name}</td>
