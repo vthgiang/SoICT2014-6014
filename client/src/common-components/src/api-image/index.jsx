@@ -66,8 +66,8 @@ class ApiImage extends Component {
         let { image } = this.state;
 
         Swal.fire({
-            html: `<img src=${image} alt=${alt} style="max-width: 100%; max-height: 100%" />`,
-            width: 'auto',
+            html: `<img src=${image} alt=${alt} style="max-width: 70%; max-height: 70%" />`,
+            width: '70%',
             showCloseButton: true,
             showConfirmButton: false,
         })
