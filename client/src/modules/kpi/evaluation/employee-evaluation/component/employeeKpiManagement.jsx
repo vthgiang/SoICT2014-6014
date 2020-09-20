@@ -461,7 +461,7 @@ class EmployeeKpiManagement extends Component {
                 }
                 convertedData.push(temp);
             }       
-            
+            console.log("\n\n\n\n\n\n\n1111111111",convertedData)
             //Convert xong, push data theo form data của component ExportExcel
             let dataSheets =[],sheetInfo =[];
             for(let i=0;i<listKpiUnit.length;i++)
@@ -473,7 +473,7 @@ class EmployeeKpiManagement extends Component {
                 let automaticPoint = (listKpiUnit[i].automaticPoint === null) ? "Chưa đánh giá" : parseInt(listKpiUnit[i].automaticPoint);
                 let employeePoint = (listKpiUnit[i].employeePoint === null) ? "Chưa đánh giá" : parseInt(listKpiUnit[i].employeePoint);
                 let approverPoint = (listKpiUnit[i].approvedPoint === null) ? "Chưa đánh giá" : parseInt(listKpiUnit[i].approvedPoint);
-                if(time === convertedData[i].time)
+                if(time === (convertedData[i].time))
                 {
                     let info = {
                         employeeNumber,
