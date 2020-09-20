@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { SelectMulti, ErrorLabel, DatePicker } from '../../../../common-components';
+import { SelectMulti, DatePicker } from '../../../../common-components';
 
 import { EmployeeManagerActions } from '../../profile/employee-management/redux/actions';
 
@@ -239,7 +239,7 @@ class HumanResourceIncreaseAndDecreaseChart extends Component {
 
         const { lineChart, nameChart, nameData1, nameData2, startDate, endDate, startDateShow, endDateShow, organizationalUnitsSearch } = this.state;
 
-        let organizationalUnitsName;
+        let organizationalUnitsName = [];
         if (organizationalUnitsSearch) {
             organizationalUnitsName = department.list.filter(x => organizationalUnitsSearch.includes(x._id));
             organizationalUnitsName = organizationalUnitsName.map(x => x.name);
@@ -270,10 +270,11 @@ class HumanResourceIncreaseAndDecreaseChart extends Component {
             })
             this.renderChart({ nameData1, nameData2, ratioX, data1, data2, lineChart });
         }
+
         return (
             <div className="box" >
                 <div className="box-header with-border" >
-                    <h3 className="box-title" > {`${nameChart} của ${(!organizationalUnitsName || organizationalUnitsName.length === department.list.length) ? "công ty" : organizationalUnitsName.join(', ')} ${startDateShow} => ${endDateShow}`} </h3> </div>
+                    <h3 className="box-title" > {`${nameChart} của ${(organizationalUnitsName.length === 0 || organizationalUnitsName.length === department.list.length) ? "công ty" : organizationalUnitsName.join(', ')} ${startDateShow}`}<i className="fa fa-fw fa-caret-right"></i>{endDateShow}</h3> </div>
                 <div className="box-body" >
                     <div className="qlcv" style={{ marginBottom: 15 }} >
                         <div className="form-inline" >

@@ -267,7 +267,7 @@ class AnnualLeaveManagement extends Component {
                             <DatePicker
                                 id="month"
                                 dateFormat="month-year"
-                                value={this.formatDate(month, true)}
+                                value={this.formatDate(month ? month : '', true)}
                                 onChange={this.handleMonthChange}
                             />
                         </div>
