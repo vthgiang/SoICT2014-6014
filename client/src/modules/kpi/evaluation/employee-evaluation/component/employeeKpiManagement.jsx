@@ -107,6 +107,9 @@ class EmployeeKpiManagement extends Component {
             return {
                 ...state,
                 startDate: value,
+                infosearch: {
+                    ...state.infosearch,  
+                },
             }
         });
 
@@ -138,6 +141,71 @@ class EmployeeKpiManagement extends Component {
         });
     }
 
+    handleSearchData = async () => {
+        const { startDate, endDate, user, status, infosearch } = this.state;
+        if (startDate === "") startDate = null;
+        if (endDate === "") endDate = null;
+        await this.setState(state => {
+            return {
+                ...state,
+                infosearch: {
+                    ...state.infosearch,
+                    user: user,
+                    status: status,
+                    startDate: startDate,
+                    endDate: endDate
+                },
+                kpiId: null,
+                employeeKpiSet: { _id: null },
+            }
+        })
+
+        let start_Date, end_Date;
+        let startdate = null, enddate = null;
+
+        if (infosearch.startDate !== null) {
+            start_Date = infosearch.startDate.split("-");
+            startdate = new Date(start_Date[1], start_Date[0], 0);
+        }
+        if (infosearch.endDate !== null) {
+            end_Date = infosearch.endDate.split("-");
+            enddate = new Date(end_Date[1], end_Date[0], 28);
+        }
+        const { translate } = this.props;
+
+        if (startdate && enddate && Date.parse(startdate) > Date.parse(enddate)) {
+            Swal.fire({
+                title: translate('kpi.evaluation.employee_evaluation.wrong_time'),
+                type: 'warning',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
+            })
+        }
+        else {
+            console.log("\n\n\n\n\n\n\n",infosearch)
+            this.props.getEmployeeKPISets(infosearch);
+        }
+    }
+    handleShowApproveModal = async (id) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                kpiId: id
+            }
+        })
+        window.$(`modal-approve-KPI-member`).modal('show');
+    }
+    showEvaluateModal = async (item) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                employeeKpiSet: item
+            }
+        })
+        window.$(`employee-kpi-evaluation-modal`).modal('show');
+    }
+
+    
     handleExportTotalData = ()=>{
         let kpimember;
         const { kpimembers } =this.props;
@@ -157,63 +225,132 @@ class EmployeeKpiManagement extends Component {
         });
     }
 
-    pushDataIntoTable =(dataOfOneSheet, time)=>{
-        let table =[];
+    pushDataIntoTable =(dataOfOneSheet)=>{
+        let tables =[],table=[],names=[],row;
+
         for(let i=0;i<dataOfOneSheet.data.length;i++)
         {
-            let name =dataOfOneSheet.data[i].name
-            let kpisTable ={
-                tableName: "-" + name+" " +"Danh sách KPI con trong tập KPI tháng ",
-                columns: [
-                    { key: "STT", value: "STT" },
-                    { key: "name", value: "Tên KPI con" }, 
-                    { key: "criteria", value : "Mô tả"},                               
-                    { key: "status", value: "Trạng thái mục tiêu" },
-                    { key: "automaticPoint", value: "Điểm KPI tự động" },
-                    { key: "employeePoint", value: "Điểm KPI tự đánh giá" },
-                    { key: "approverPoint", value: "Điểm KPI được phê duyệt" },
-                    { key: "weight", value: "Trọng số" }
-                ],
-                data: dataOfOneSheet.data[i].kpis
-            };
-            table.push(kpisTable);
-            for(let j=0;j<(dataOfOneSheet.data[i].oneKpiSetTasks.length);j++)
+            names.push(dataOfOneSheet.data[i].name);
+            table=[];
+            let kpis = dataOfOneSheet.data[i].kpis;
+            let tasks= dataOfOneSheet.data[i].oneKpiSetTasks;
+            console.log("\n\n\n\n\n\n\n\n\n\ndataaaaaaaaaaaaaaaaaaaaa",dataOfOneSheet)
+            for(let k =0;k<kpis.length;k++)
             {
-                let oneTaskTable ={
-                    tableName: dataOfOneSheet.data[i].oneKpiSetTasks[j].tableTitle,
-                    columns: [
-                        { key: "STT", value: "STT" },
-                        { key: "name", value: "Tên hoạt động" },
-                        { key: "startTaskDate", value: "Ngày bắt đầu công việc" },
-                        { key: "endTaskDate", value: "Ngày kết thúc công việc" },
-                        { key: "startApproveDate", value: "Ngày bắt đầu đánh giá" },
-                        { key: "endApproveDate", value: "Ngày kết thúc đánh giá" },
-                        { key: "status", value: "Trạng thái" },
-                        { key: "contributionPoint", value: "Đóng góp (%)" },
-                        { key: "automaticPoint", value: "Điểm KPI tự động" },
-                        { key: "employeePoint", value: "Điểm KPI tự đánh giá" },
-                        { key: "approverPoint", value: "Điểm KPI được phê duyệt" },
-                        { key: "importantLevel", value: "Độ quan trọng" }
-                    ],
-                    data: dataOfOneSheet.data[i].oneKpiSetTasks[j].oneKpiTasks
+                let numberRowToMerge =parseInt(tasks[k].length);
+                let task = tasks[k];              
+                //khi 1 Kpis chưa có công việc nào hoặc chỉ có 1 công việc
+                if(numberRowToMerge < 2)
+                {
+                    row = {
+                        STT : k+1,
+                        kpiName : kpis[k].name,
+                        kpiWeight : kpis[k].weight,
+                        kpiAutomaticPoint : kpis[k].automaticPoint,
+                        kpiEmployeePoint: kpis[k].employeePoint,
+                        kpiApprovedPoint :kpis[k].approverPoint,
+                        kpiStatus : kpis[k].status,
+                        taskName : task[0] ? (task[0].name):"",
+                        unit: task[0] ?task[0].unit:"",
+                        importantLevel: task[0] ?task[0].importantLevel:"",
+                        contributionPoint: task[0] ?task[0].contributionPoint:"",
+                        automaticPoint: task[0] ?task[0].automaticPoint:"",
+                        employeePoint: task[0] ?task[0].employeePoint:"",
+                        approverPoint: task[0] ?task[0].approverPoint:"",
+                        startTaskDate: task[0] ?task[0].startTaskDate:"",
+                        endTaskDate:(task[0] )? task[0].endTaskDate:"",
+                        startApproveDate:task[0] ?task[0].startApproveDate:"",
+                        endApproveDate:task[0] ?task[0].endApproveDate:"",
+                        taskStatus: task[0] ?task[0].status:"",
+                        progess:task[0] ?task[0].progess:"",
+
+                    }
+                    table.push(row);
                 }
-                table.push(oneTaskTable);
+                else 
+                {
+                    row = {
+                        merges: { 
+                            STT: numberRowToMerge,
+                            kpiName: numberRowToMerge,
+                            kpiWeight: numberRowToMerge, 
+                            kpiAutomaticPoint: numberRowToMerge, 
+                            kpiEmployeePoint: numberRowToMerge,
+                            kpiApprovedPoint: numberRowToMerge,
+                            kpiStatus :numberRowToMerge
+                        },
+                        STT : k+1,
+                        kpiName : kpis[k].name,
+                        kpiWeight : kpis[k].weight,
+                        kpiAutomaticPoint : kpis[k].automaticPoint,
+                        kpiEmployeePoint: kpis[k].employeePoint,
+                        kpiApprovedPoint :kpis[k].approverPoint,
+                        kpiStatus : kpis[k].status,
+                        taskName : task[0].name,
+                        unit: "",
+                        importantLevel: task[0].importantLevel,
+                        contributionPoint: task[0].contributionPoint,
+                        automaticPoint: task[0].automaticPoint,
+                        employeePoint: task[0].employeePoint,
+                        approverPoint: task[0].approverPoint,
+                        startTaskDate: task[0].startTaskDate,
+                        endTaskDate:task[0].endTaskDate,
+                        startApproveDate:task[0].startApproveDate,
+                        endApproveDate:task[0].endApproveDate,
+                        taskStatus: task[0].status,
+                        progress:task[0].progress
+                    }
+                    table.push(row);
+                    for(let j =1; j < (numberRowToMerge); j++)
+                    {
+                        let row = {
+                            STT : "",
+                            kpiName : "",
+                            kpiWeight : "",
+                            kpiAutomaticPoint : "",
+                            kpiEmployeePoint: "",
+                            kpiApprovedPoint : "",
+                            kpiStatus : "",
+                            taskName : task[j].name,
+                            unit: "",
+                            importantLevel: task[j].importantLevel,
+                            contributionPoint: task[j].contributionPoint,
+                            automaticPoint: task[j].automaticPoint,
+                            employeePoint: task[j].employeePoint,
+                            approverPoint: task[j].approverPoint,
+                            startTaskDate: task[j].startTaskDate,
+                            endTaskDate:task[j].endTaskDate,
+                            startApproveDate:task[j].startApproveDate,
+                            endApproveDate:task[j].endApproveDate,
+                            taskStatus: task[j].status,
+                            progess:task[j].progess
+                        }
+                        table.push(row);
+                    }
+                }   
             }
+            tables.push(table);
         }
         
-        return table;
+        return {
+            tables : tables,
+            names : names
+        }
     }
 
     convertDataToExportTotalData =()=>{
         const { kpimembers } =this.props;
         let listTasks,listKpis,data={},convertedData=[];
+        
         if(kpimembers.tasksList)
         {
+            console.log("\n\n\n\n\n\n\n\n\n\n",kpimembers.tasksList)
             listTasks =kpimembers.tasksList;
             listKpis =kpimembers.kpimembers
         }
         if(listTasks&&listKpis)
         {
+            //Convert dữ liệu RAW
             for(let i=0;i<listKpis.length;i++){
                 let d = new Date(listKpis[i].date),
                     month = (d.getMonth()+1),
@@ -258,6 +395,7 @@ class EmployeeKpiManagement extends Component {
                         let status = x.status;
                         let contributionPoint = parseInt(x.results.contribution);
                         let importantLevel = parseInt(x.results.taskImportanceLevel);
+                        let progress = parseInt(x.progress);
 
                         return {
                             STT: idx + 1,
@@ -271,17 +409,15 @@ class EmployeeKpiManagement extends Component {
                             startApproveDate: startApproveD,
                             endApproveDate: endApproveD,
                             contributionPoint: contributionPoint,
-                            importantLevel: importantLevel
+                            importantLevel: importantLevel,
+                            progress : progress
                         };
                     })
-                    return {
-                        oneKpiTasks:oneKpiTasks,
-                        tableTitle: "Danh sách các hoạt động ứng với KPI con "+ kpis[index].name
-                    }
+                    return oneKpiTasks;
                 })
                 let oneSet = {
                     name:listKpis[i].creator.name,
-                    oneKpiSetTasks,
+                    oneKpiSetTasks : oneKpiSetTasks,
                     kpis:kpis
                 }
                 let keys= Object.keys(data);
@@ -295,89 +431,85 @@ class EmployeeKpiManagement extends Component {
                     data:data[keys[i]]
                 }
                 convertedData.push(temp);
-            }        
-        
+            }       
+            
+            //Convert xong, push data theo form data của component ExportExcel
             let dataSheets =[];
             for(let i=0;i<convertedData.length;i++)
             {
-                let table = this.pushDataIntoTable(convertedData[i], convertedData[i].time);
+                let tablesData = this.pushDataIntoTable(convertedData[i]);
                 let temp={
                     sheetName : convertedData[i].time,
-                    sheetTitle:"Bảng theo dõi các hoạt động ứng với tập KPI nhân viên theo tháng "+ convertedData[i].time,
-                    tables:table
+                    sheetTitle:"Báo cáo tổng hợp tháng "+ convertedData[i].time,
+                    tables:tablesData.tables,
+                    names : tablesData.names
                 }
                 dataSheets.push(temp);
             }
             let exportData = {
                 fileName: "Bảng theo dõi các hoạt động ứng với tập KPI nhân viên theo từng tháng ",
-                dataSheets: dataSheets
+                dataSheets: dataSheets.map(item=>{
+                    return {
+                        sheetName : item.sheetName,
+                        sheetTitle : item.sheetTitle,
+                        tables: item.tables.map((x,index)=>{
+                            return {
+                                tableName :"Báo cáo "+ (item.names[index]? item.names[index]:"") +" "+ item.sheetName,
+                                merges: [{
+                                    key: "kpiPoint",
+                                    columnName: "Kết quả KPI",
+                                    keyMerge: 'kpiAutomaticPoint',
+                                    colspan: 3
+                                }, {
+                                    key: "taskInfomations",
+                                    columnName: "Điểm công việc",
+                                    keyMerge: 'automaticPoint',
+                                    colspan: 3
+                                },
+                                {
+                                    key: "taskTime",
+                                    columnName: "Thời gian thực hiện công việc",
+                                    keyMerge: 'startTaskDate',
+                                    colspan: 2
+                                }, {
+                                    key: "taskApprovedTime",
+                                    columnName: "Thời gian đánh giá công việc",
+                                    keyMerge: 'startApproveDate',
+                                    colspan: 2
+                                }],
+                                rowHeader: 2,
+                                columns: [
+                                    { key: "STT", value: "STT" },
+                                    { key: "kpiName", value: "KPI" }, 
+                                    { key: "kpiWeight", value : "Trọng số"},                               
+                                    { key: "kpiStatus", value: "Trạng thái KPI" },
+                                    { key: "kpiAutomaticPoint", value: "Tự động" },
+                                    { key: "kpiEmployeePoint", value: "Tự đánh giá" },
+                                    { key: "kpiApprovedPoint", value: "Được phê duyệt" },
+                                    { key: "taskName", value: "Tên hoạt động" },
+                                    { key: "unit", value: "Đơn vị quản lý công việc" },
+                                    { key: "importantLevel", value: "Độ quan trọng" },
+                                    { key: "contributionPoint", value: "% Đóng góp công việc" },
+                                    { key: "automaticPoint", value: "Tự động" },
+                                    { key: "employeePoint", value: "Tự đánh giá" },
+                                    { key: "approverPoint", value: "Được phê duyệt" },
+                                    { key: "startTaskDate", value: "Bắt đầu" },
+                                    { key: "endTaskDate", value: "Kết thúc" },
+                                    { key: "startApproveDate", value: "Bắt đầu" },
+                                    { key: "endApproveDate", value: "Kết thúc" },
+                                    { key: "taskStatus", value: "Trạng thái" },
+                                    { key: "progress", value: "% Hoàn thành công việc" }                                    
+                                    ],
+                                data: x
+                            }
+                        })
+                    }
+                })
             }
+            console.log("\n\n\n\n\n\n\n\n\n\n\n\ntotal",exportData)
             return exportData;
         }
         
-    }
-
-    handleSearchData = async () => {
-        const { startDate, endDate, user, status, infosearch } = this.state;
-        if (startDate === "") startDate = null;
-        if (endDate === "") endDate = null;
-        await this.setState(state => {
-            return {
-                ...state,
-                infosearch: {
-                    ...state.infosearch,
-                    user: user,
-                    status: status,
-                    startDate: startDate,
-                    endDate: endDate
-                },
-                kpiId: null,
-                employeeKpiSet: { _id: null },
-            }
-        })
-
-        let start_Date, end_Date;
-        let startdate = null, enddate = null;
-
-        if (infosearch.startDate !== null) {
-            start_Date = infosearch.startDate.split("-");
-            startdate = new Date(start_Date[1], start_Date[0], 0);
-        }
-        if (infosearch.endDate !== null) {
-            end_Date = infosearch.endDate.split("-");
-            enddate = new Date(end_Date[1], end_Date[0], 28);
-        }
-        const { translate } = this.props;
-
-        if (startdate && enddate && Date.parse(startdate) > Date.parse(enddate)) {
-            Swal.fire({
-                title: translate('kpi.evaluation.employee_evaluation.wrong_time'),
-                type: 'warning',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
-            })
-        }
-        else {
-            this.props.getEmployeeKPISets(infosearch);
-        }
-    }
-    handleShowApproveModal = async (id) => {
-        await this.setState(state => {
-            return {
-                ...state,
-                kpiId: id
-            }
-        })
-        window.$(`modal-approve-KPI-member`).modal('show');
-    }
-    showEvaluateModal = async (item) => {
-        await this.setState(state => {
-            return {
-                ...state,
-                employeeKpiSet: item
-            }
-        })
-        window.$(`employee-kpi-evaluation-modal`).modal('show');
     }
 
     /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
@@ -434,6 +566,7 @@ class EmployeeKpiManagement extends Component {
                 },
             ]
         }
+
         return exportData;        
        
     }

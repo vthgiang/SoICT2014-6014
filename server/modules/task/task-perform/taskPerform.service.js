@@ -1298,7 +1298,7 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
         accountableEmployees, consultedEmployees, responsibleEmployees, informedEmployees, inactiveEmployees } = data;
 
     // Chuẩn hóa parent 
-    if(parent === '') {
+    if (parent === '') {
         parent = null;
     }
 
@@ -2172,7 +2172,7 @@ exports.editHoursSpentInEvaluate = async (data, taskId) => {
                 }
             }
         }
-        
+
         if (check) {
             let employeeHoursSpent = {
                 employee: employee,
@@ -2194,7 +2194,7 @@ exports.editHoursSpentInEvaluate = async (data, taskId) => {
             }
         }
     )
-    
+
     newTask = await Task.findById(taskId)
         .populate([
             { path: "parent", select: "name" },
@@ -2434,18 +2434,26 @@ exports.editActivateOfTask = async (taskID, body) => {
 
     // Cập nhật trạng thái hoạt động của các task sau
     for (let i = 0; i < body.listSelected.length; i++) {
-        await Task.findOneAndUpdate(
-            {
-                _id: taskID,
-                "followingTasks.task": body.listSelected[i],
-            },
-            {
-                $set: {
-                    "followingTasks.$.activated": true,
-                }
-            },
-        )
+        console.log('body', body.listSelected[i]);
 
+        let listTask = await Task.find({ "followingTasks.task": body.listSelected[i] });
+        // console.log('list', listTask, listTask.length);
+
+        for (let x in listTask) {
+            await Task.update(
+                {
+                    _id: listTask[x]._id,
+                    "followingTasks.task": body.listSelected[i],
+                },
+                {
+                    $set: {
+                        "followingTasks.$.activated": true,
+                    }
+                },
+            )
+        }
+
+        
         let followStartDate = endDate;
 
         let followItem = await Task.findById(body.listSelected[i]);

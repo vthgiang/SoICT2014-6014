@@ -27,6 +27,7 @@ class CompanyManageLinks extends Component {
                 ...prevState,
                 checkedAll: false,
                 companyId: nextProps.companyId,
+                companyShortName: nextProps.companyShortName,
                 linkPaginate: nextProps.company.item.links.listPaginate,
                 linkPage: nextProps.company.item.links.page,
                 linkLimit: nextProps.company.item.links.limit,
@@ -77,6 +78,7 @@ class CompanyManageLinks extends Component {
         const{companyId} = this.state;
         const params = {
             company: companyId,
+            portal: this.state.companyShortName,
             limit: this.state.limit,
             page: 1,
             key: this.state.option,
@@ -91,6 +93,7 @@ class CompanyManageLinks extends Component {
         const {companyId} = this.state;
         const params = {
             company: companyId,
+            portal: this.state.companyShortName,
             limit: this.state.limit,
             page: page,
             key: this.state.option,
@@ -105,6 +108,7 @@ class CompanyManageLinks extends Component {
         const {companyId} = this.state;
         const params = { 
             company: companyId,
+            portal: this.state.companyShortName,
             limit: number, 
             page: this.state.page,
             key: this.state.option,

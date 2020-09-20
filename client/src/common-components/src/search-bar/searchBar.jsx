@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { SelectBox } from '../../index';
+import { SelectBox, SelectMulti } from '../../index';
 
 class SearchBar extends Component {
     constructor(props) {
@@ -43,12 +43,25 @@ class SearchBar extends Component {
         await this.props.setOption("value", this.state.value); //set giá trị của nội dung muốn tìm kiếm
     }
 
+    handleChange = async (value) => {
+        if (value.length === 0) {
+            value = null
+        };
+        await this.setState(state => {
+            return {
+                ...state,
+                value
+            }
+        })
+        await this.props.setOption("value", this.state.value);
+    }
+
     search = () => {
         this.props.search();
     } 
 
     render() { 
-        const { columns, translate, option, id='search-bar' } = this.props;
+        const { columns, translate, option, id='search-bar', typeColumns, valueOption } = this.props;
         
         return ( 
             <React.Fragment>
@@ -71,7 +84,19 @@ class SearchBar extends Component {
                     <div className="form-inline">
                         <div className="form-group">
                             <label>{translate('form.value')}</label>
-                            <input className="form-control" type="text" onKeyUp={this.handleEnterLimitSetting} placeholder={translate('searchByValue')} onChange={this.handleChangeInput}/>
+
+                            { option === 'type' ? 
+                                <SelectMulti 
+                                    id={`multiSelectType`} 
+                                    multiple="multiple"
+                                    options={valueOption}
+                                    onChange={this.handleChange}
+                                    items= {
+                                        typeColumns !== undefined ? typeColumns.map( column => { return { value: column.value, text: column.title} }) : []
+                                    }>
+                                </SelectMulti>:
+                                <input className="form-control" type="text" onKeyUp={this.handleEnterLimitSetting} placeholder={translate('searchByValue')} onChange={this.handleChangeInput}/>
+                            }
                             <button type="button" className="btn btn-success" onClick={this.search} title={translate('form.search')}>{translate('form.search')}</button>
                         </div>
                     </div>

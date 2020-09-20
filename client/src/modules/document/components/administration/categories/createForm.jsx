@@ -89,13 +89,11 @@ class CreateForm extends Component {
 
         return cons;
     }
-    handleAddCategory = (event) => {
-        event.preventDefault();
-        window.$('#"form-create-document-type"').modal('show');
+    handleAddCategory = () => {
+        window.$('#modal-create-document-type').modal('show');
     }
-    handImportFile = (event) => {
-        event.preventDefault();
-        window.$('#modal_import_file_category').modal('show');
+    handImportFile = () => {
+        window.$('#modal-import-file-category').modal('show');
     }
     save = () => {
         const { documentTypeName, documentTypeDescription } = this.state;

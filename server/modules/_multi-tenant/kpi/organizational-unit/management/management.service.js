@@ -2,6 +2,7 @@ const Models = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
 const { OrganizationalUnitKpiSet, OrganizationalUnitKpi } = Models;
 
 const mongoose = require("mongoose");
+const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 
 

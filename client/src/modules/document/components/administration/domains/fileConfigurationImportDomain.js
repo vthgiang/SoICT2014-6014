@@ -33,7 +33,7 @@ export const exportDomain = {
             columns: [
                 { key: "name", value: "Tên danh mục" },
                 { key: "description", value: "Mô tả danh mục" },
-                { key: "parent", value: "Danh mục cha" },
+                { key: "parent", value: "Tên danh mục cha" },
             ],
             data: [
                 {

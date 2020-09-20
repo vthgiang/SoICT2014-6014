@@ -25,7 +25,9 @@ const {
     DocumentArchive,
     DocumentDomain,
     DocumentCategory,
+
     Material,
+    Category,
 
     CrmCustomer,
     CrmLocation,
@@ -182,7 +184,7 @@ const sampleCompanyData = async () => {
         company: vnist._id
     }
     ]);
-    console.log("Xong! Đã thêm tài khoản:", users);
+    console.log("Xong! Đã thêm tài khoản:");
 
     vnist_info.superAdmin = users[0]._id;
     await vnist_info.save();
@@ -341,7 +343,7 @@ const sampleCompanyData = async () => {
         employees: [nvPhongHC._id],
         parent: Directorate._id
     },]);
-    console.log('Xong! Đã tạo các phòng ban cho công ty', Directorate, departments);
+    console.log('Xong! Đã tạo các phòng ban cho công ty');
 
 
 
@@ -488,22 +490,22 @@ const sampleCompanyData = async () => {
                 await updateLink.save();
             }
             // Tạo phân quyền cho components
-            for (let k = 0; k < systemComponents.length; k++) {
-                let roles = await Role.find({
-                    company: companyId,
-                    name: {
-                        $in: systemComponents[i].roles.map(role => role.name)
-                    }
-                });
-                let dataPrivileges = roles.map(role => {
-                    return {
-                        resourceId: component._id,
-                        resourceType: 'Component',
-                        roleId: role._id
-                    }
-                });
-                await Privilege.insertMany(dataPrivileges);
-            }
+            let roles = await Role.find({
+                company: companyId,
+                name: {
+                    $in: systemComponents[i].roles.map(role => role.name)
+                }
+            });
+            let dataPrivileges = roles.map(role => {
+                return {
+                    resourceId: component._id,
+                    resourceType: 'Component',
+                    roleId: role._id
+                }
+            });
+            console.log("component privileges", dataPrivileges);
+
+            await Privilege.insertMany(dataPrivileges);
         }
 
         return await Component.find({
@@ -2678,6 +2680,29 @@ const sampleCompanyData = async () => {
     }
     ]);
     console.log("Khởi tạo xong danh sách vật tư");
+
+    /*---------------------------------------------------------------------------------------------
+    -----------------------------------------------------------------------------------------------
+        TẠO DỮ LIỆU DANH MỤC HÀNG HÓA
+    -----------------------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------------------- */
+    console.log("Khởi tạo dữ liệu danh mục hàng hóa");
+    var list = await Category.insertMany([{
+        company: vnist._id,
+        name: "Dạng bột",
+        code: "CT001",
+        type: "product",
+        description: "Dạng bột"
+    },
+    {
+        company: vnist._id,
+        name: "Dạng viên",
+        code: "CT002",
+        type: "product",
+        description: "Dạng viên viên"
+    }
+    ]);
+    console.log("Khởi tạo xong danh sách danh mục hàng hóa");
 
 
     /*---------------------------------------------------------------------------------------------

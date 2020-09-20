@@ -16,7 +16,8 @@ class CompanyServicesForm extends Component {
         if (nextProps.companyId !== prevState.companyId) {
             return {
                 ...prevState,
-                companyId: nextProps.companyId
+                companyId: nextProps.companyId,
+                companyShortName: nextProps.companyShortName
             }
         } else {
             return null;
@@ -25,7 +26,7 @@ class CompanyServicesForm extends Component {
 
     render() { 
         const { translate, systemLinks, systemComponents, company } = this.props;
-        const {companyId} = this.state;
+        const {companyId, companyShortName} = this.state;
 
         return ( 
             <React.Fragment>
@@ -49,10 +50,10 @@ class CompanyServicesForm extends Component {
                         {/* Tab panes */}
                         <div className="tab-content">
                             <div role="tabpanel" className="tab-pane active" id="company_manage_link">
-                                <CompanyManageLinks companyId={companyId}/>
+                                <CompanyManageLinks companyId={companyId} companyShortName={companyShortName}/>
                             </div>
                             <div role="tabpanel" className="tab-pane" id="company_manage_component">
-                                <CompanyManageComponent companyId={companyId}/>
+                                <CompanyManageComponent companyId={companyId} companyShortName={companyShortName}/>
                             </div>
                         </div>
                     </div>

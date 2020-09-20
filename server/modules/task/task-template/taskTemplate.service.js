@@ -86,10 +86,9 @@ exports.searchTaskTemplates = async (id, pageNumber, noResultsPerPage, organizat
                     as: "creator organizationalUnit"
                 }
             },
-            { $unwind: "$creator organizationalUnit" },
             {
                 $facet: {
-                    tasks: [{ $sort: { 'createdAt': 1 } },
+                    tasks: [ { $sort: { 'createdAt': 1 } },
                     ...noResultsPerPage === 0 ? [] : [{ $limit: noResultsPerPage * pageNumber }],
                     ...noResultsPerPage === 0 ? [] : [{ $skip: noResultsPerPage * (pageNumber - 1) }]],
                     totalCount: [
@@ -130,7 +129,6 @@ exports.searchTaskTemplates = async (id, pageNumber, noResultsPerPage, organizat
                     as: "creator organizationalUnit"
                 }
             },
-            { $unwind: "$creator organizationalUnit" },
             {
                 $facet: {
                     tasks: [{ $sort: { 'createdAt': 1 } },

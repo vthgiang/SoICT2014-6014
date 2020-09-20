@@ -13,243 +13,239 @@ export const configurationEmployee = {
 // Cấu hình file import thông tin cơ bản của nhân viên
 function configurationEmployeeInfo(translate) {
     let config = {
-        rowHeader: {
-            description: "Số dòng tiêu đề của bảng",
+        rowHeader: { // Số dòng tiêu đề của bảng
+            description: translate('human_resource.rowHeader'),
             value: 1
         },
-        sheets: {
-            description: "Tên các sheet",
-            value: ["1.Nhân viên"]
+        sheets: { // Tên các sheet
+            description: translate('human_resource.sheets_name'),
+            value: [translate(`human_resource.profile.employee_management.export.sheet1`)]
         },
-        employeeNumber: {
-            columnName: "Mã số nhân viên",
-            description: "Tên tiêu đề ứng với 'Mã số nhân viên' ",
-            value: "Mã số nhân viên"
+        employeeNumber: { // Mã số nhân viên
+            columnName: translate(`human_resource.profile.staff_number`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.staff_number`).toLowerCase()}`,
+            value: translate(`human_resource.profile.staff_number`)
         },
-        fullName: {
-            columnName: "Họ và tên",
-            description: "Tên tiêu để ứng với họ và tên",
-            value: "Họ và tên"
+        fullName: { // Họ và tên
+            columnName: translate(`human_resource.profile.full_name`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.full_name').toLowerCase()}`,
+            value: translate(`human_resource.profile.full_name`)
         },
-        birthdate: {
-            columnName: "Ngày sinh",
-            description: "Tên tiêu để ứng với Ngày sinh",
-            value: "Ngày sinh"
+        birthdate: { // Ngày sinh
+            columnName: translate(`human_resource.profile.date_birth`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.date_birth').toLowerCase()}`,
+            value: translate(`human_resource.profile.date_birth`)
         },
-        gender: {
-            columnName: "Giới tính",
-            description: "Tên tiêu để ứng với giới tính",
-            value: "Giới tính"
+        gender: { // Giới tính
+            columnName: translate(`human_resource.profile.gender`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.gender').toLowerCase()}`,
+            value: translate(`human_resource.profile.gender`)
         },
-        employeeTimesheetId: {
-            columnName: "Mã số chấm công",
-            description: "Tên tiêu để ứng với mã số chấm công",
-            value: "Mã số chấm công"
+        employeeTimesheetId: { // Mã số chấm công
+            columnName: translate(`human_resource.profile.attendance_code`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.attendance_code').toLowerCase()}`,
+            value: translate(`human_resource.profile.attendance_code`)
         },
-        identityCardNumber: {
-            columnName: "Số chứng minh thư",
-            description: "Tên tiêu để ứng với số chứng minh thư",
-            value: "Số chứng minh thư"
+        identityCardNumber: { // Số chứng minh thư
+            columnName: translate(`human_resource.profile.id_card`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.id_card').toLowerCase()}`,
+            value: translate(`human_resource.profile.id_card`)
         },
-        identityCardDate: {
-            columnName: "Ngày cấp chứng minh thư",
-            description: "Tên tiêu để ứng với ngày cấp chứng minh thư",
-            value: "Ngày cấp chứng minh thư"
+        identityCardDate: { // Ngày cấp chứng minh thư
+            columnName: translate(`human_resource.profile.date_issued`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.date_issued').toLowerCase()}`,
+            value: translate(`human_resource.profile.date_issued`)
         },
-        identityCardAddress: {
-            columnName: "Nơi cấp chứng minh thư",
-            description: "Tên tiêu để ứng với nơi cấp chứng minh thư",
-            value: "Nơi cấp chứng minh thư"
+        identityCardAddress: { // Nơi cấp chứng minh thư
+            columnName: translate(`human_resource.profile.issued_by`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.issued_by').toLowerCase()}`,
+            value: translate(`human_resource.profile.issued_by`)
         },
-        birthplace: {
-            columnName: "Nơi sinh",
-            description: "Tên tiêu để ứng với nơi sinh",
-            value: "Nơi sinh"
+        birthplace: { // Nơi sinh
+            columnName: translate(`human_resource.profile.place_birth`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.place_birth').toLowerCase()}`,
+            value: translate(`human_resource.profile.place_birth`)
         },
-        permanentResidence: {
-            columnName: "Hộ khẩu thưởng trú",
-            description: "Tên tiêu để ứng với hộ khẩu thưởng trú",
-            value: "Hộ khẩu thưởng trú"
+        permanentResidence: { // Hộ khẩu thưởng trú
+            columnName: translate(`human_resource.profile.permanent_address`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.permanent_address').toLowerCase()}`,
+            value: translate(`human_resource.profile.permanent_address`)
         },
-        temporaryResidence: {
-            columnName: "Nơi ở hiện tại",
-            description: "Tên tiêu để ứng với nơi ở hiện tại",
-            value: "Nơi ở hiện tại"
+        temporaryResidence: { // Nơi ở hiện tại
+            columnName: translate(`human_resource.profile.current_residence`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.current_residence').toLowerCase()}`,
+            value: translate(`human_resource.profile.current_residence`)
         },
-        maritalStatus: {
-            columnName: "Tình trạng hôn nhân",
-            description: "Tên tiêu để ứng với tình trạng hôn nhân",
-            value: "Tình trạng hôn nhân"
+        maritalStatus: { // Tình trạng hôn nhân
+            columnName: translate(`human_resource.profile.relationship`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.relationship').toLowerCase()}`,
+            value: translate(`human_resource.profile.relationship`)
         },
-        status: {
-            columnName: "Tình trạng lao động",
-            description: "Tên tiêu để ứng với tình trạng lao động",
-            value: "Tình trạng lao động"
+        status: { // Tình trạng lao động
+            columnName: translate(`human_resource.profile.status_work`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.status_work').toLowerCase()}`,
+            value: translate(`human_resource.profile.status_work`)
         },
-        startingDate: {
-            columnName: "Ngày bắt đầu làm việc",
-            description: "Tên tiêu để ứng với ngày bắt đầu làm việc",
-            value: "Ngày bắt đầu làm việc"
+        startingDate: { // Ngày bắt đầu làm việc
+            columnName: translate(`human_resource.profile.starting_date`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.starting_date').toLowerCase()}`,
+            value: translate(`human_resource.profile.starting_date`)
         },
-        leavingDate: {
-            columnName: "Ngày nghỉ việc",
-            description: "Tên tiêu để ứng với ngày nghỉ việc",
-            value: "Ngày nghỉ việc"
+        leavingDate: { // Ngày nghỉ việc
+            columnName: translate(`human_resource.profile.leaving_date`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.leaving_date').toLowerCase()}`,
+            value: translate(`human_resource.profile.leaving_date`)
         },
-        emailInCompany: {
-            columnName: "Email công ty",
-            description: "Tên tiêu để ứng với email công ty",
-            value: "Email công ty"
+        emailInCompany: { // Email công ty
+            columnName: translate(`human_resource.profile.email_company`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.email_company').toLowerCase()}`,
+            value: translate(`human_resource.profile.email_company`)
         },
-        taxNumber: {
-            columnName: "Mã số thuế thu nhập cá nhân",
-            description: "Tên tiêu để ứng với mã số thuế thu nhập cá nhân",
-            value: "Mã số thuế thu nhập cá nhân"
+        taxNumber: { // Mã số thuế thu nhập cá nhân
+            columnName: translate(`human_resource.profile.personal_income_tax`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.personal_income_tax').toLowerCase()}`,
+            value: translate(`human_resource.profile.personal_income_tax`)
         },
-        taxRepresentative: {
-            columnName: "Đại diện của người nộp thuế",
-            description: "Tên tiêu để ứng với đại diện của người nộp thuế",
-            value: "Đại diện của người nộp thuế"
+        taxRepresentative: { // Đại diện của người nộp thuế
+            columnName: translate(`human_resource.profile.representative`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.representative').toLowerCase()}`,
+            value: translate(`human_resource.profile.representative`)
         },
-        taxDateOfIssue: {
-            columnName: "Ngày cấp mã số thuế",
-            description: "Tên tiêu để ứng với ngày cấp mã số thuế",
-            value: "Ngày cấp mã số thuế"
+        taxDateOfIssue: { // Ngày cấp mã số thuế
+            columnName: translate(`human_resource.profile.day_active`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.day_active').toLowerCase()}`,
+            value: translate(`human_resource.profile.day_active`)
         },
-        taxAuthority: {
-            columnName: "Cơ quan quản lý thuế",
-            description: "Tên tiêu để ứng với cơ quan quản lý thuế",
-            value: "Cơ quan quản lý thuế"
+        taxAuthority: { // Cơ quan quản lý thuế
+            columnName: translate(`human_resource.profile.managed_by`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.managed_by').toLowerCase()}`,
+            value: translate(`human_resource.profile.managed_by`)
         },
-        ethnic: {
-            columnName: "Dân tộc",
-            description: "Tên tiêu để ứng với dân tộc",
-            value: "Dân tộc"
+        ethnic: { // Dân tộc
+            columnName: translate(`human_resource.profile.ethnic`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.ethnic').toLowerCase()}`,
+            value: translate(`human_resource.profile.ethnic`)
         },
-        religion: {
-            columnName: "Tôn giáo",
-            description: "Tên tiêu để ứng với tôn giáo",
-            value: "Tôn giáo"
+        religion: { // Tôn giáo
+            columnName: translate(`human_resource.profile.religion`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.religion').toLowerCase()}`,
+            value: translate(`human_resource.profile.religion`)
         },
-        nationality: {
-            columnName: "Quốc tịch",
-            description: "Tên tiêu để ứng với quốc tịch",
-            value: "Quốc tịch"
+        nationality: { // Quốc tịch
+            columnName: translate(`human_resource.profile.nationality`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.nationality').toLowerCase()}`,
+            value: translate(`human_resource.profile.nationality`)
         },
-        educationalLevel: {
-            columnName: "Trình độ văn hoá",
-            description: "Tên tiêu để ứng với trình độ văn hoá",
-            value: "Trình độ văn hoá"
+        educationalLevel: { // Trình độ văn hoá
+            columnName: translate(`human_resource.profile.educational_level`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.educational_level').toLowerCase()}`,
+            value: translate(`human_resource.profile.educational_level`)
         },
-        foreignLanguage: {
-            columnName: "Trình độ ngoại ngữ",
-            description: "Tên tiêu để ứng với trình độ ngoại ngữ",
-            value: "Trình độ ngoại ngữ"
+        foreignLanguage: { // Trình độ ngoại ngữ
+            columnName: translate(`human_resource.profile.language_level`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.language_level').toLowerCase()}`,
+            value: translate(`human_resource.profile.language_level`)
         },
-        professionalSkill: {
-            columnName: "Trình độ chuyên môn",
-            description: "Tên tiêu để ứng với trình độ chuyên môn",
-            value: "Trình độ chuyên môn"
+        professionalSkill: { // Trình độ chuyên môn
+            columnName: translate(`human_resource.profile.qualification`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.qualification').toLowerCase()}`,
+            value: translate(`human_resource.profile.qualification`)
         },
-        phoneNumber: {
-            columnName: "Điện thoại di động 1",
-            description: "Tên tiêu để ứng với điện thoại di động 1",
-            value: "Điện thoại di động 1"
+        phoneNumber: { // Điện thoại di động 1
+            columnName: translate(`human_resource.profile.mobile_phone_1`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.mobile_phone_1').toLowerCase()}`,
+            value: translate(`human_resource.profile.mobile_phone_1`)
         },
-        phoneNumber2: {
-            columnName: "Điện thoại di động 2",
-            description: "Tên tiêu để ứng với điện thoại di động 2",
-            value: "Điện thoại di động 2"
+        phoneNumber2: { // Điện thoại di động 2
+            columnName: translate(`human_resource.profile.mobile_phone_2`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.mobile_phone_2').toLowerCase()}`,
+            value: translate(`human_resource.profile.mobile_phone_2`)
         },
-        personalEmail: {
-            columnName: "Email cá nhân 1",
-            description: "Tên tiêu để ứng với email cá nhân 1",
-            value: "Email cá nhân 1"
+        personalEmail: { // Email cá nhân 1
+            columnName: translate(`human_resource.profile.personal_email_1`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.personal_email_1').toLowerCase()}`,
+            value: translate(`human_resource.profile.personal_email_1`)
         },
-        personalEmail2: {
-            columnName: "Email cá nhân 2",
-            description: "Tên tiêu để ứng với email cá nhân 2",
-            value: "Email cá nhân 2"
+        personalEmail2: { // Email cá nhân 2
+            columnName: translate(`human_resource.profile.personal_email_2`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.personal_email_2').toLowerCase()}`,
+            value: translate(`human_resource.profile.personal_email_2`)
         },
-        homePhone: {
-            columnName: "Điện thoại nhà riêng",
-            description: "Tên tiêu để ứng với điện thoại nhà riêng",
-            value: "Điện thoại nhà riêng"
+        homePhone: { // Điện thoại nhà riêng
+            columnName: translate(`human_resource.profile.home_phone`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.home_phone').toLowerCase()}`,
+            value: translate(`human_resource.profile.home_phone`)
         },
-        emergencyContactPerson: {
-            columnName: "Người liên hệ khẩn cấp",
-            description: "Tên tiêu để ứng với người liên hệ khẩn cấp",
-            value: "Người liên hệ khẩn cấp"
+        emergencyContactPerson: { // Người liên hệ khẩn cấp
+            columnName: translate(`human_resource.profile.employee_management.export.emergency_contact_person`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.employee_management.export.emergency_contact_person').toLowerCase()}`,
+            value: translate(`human_resource.profile.employee_management.export.emergency_contact_person`)
         },
-        relationWithEmergencyContactPerson: {
-            columnName: "Quan hệ với người liên hệ khẩn cấp",
-            description: "Tên tiêu để ứng với quan hệ với người liên hệ khẩn cấp",
-            value: "Quan hệ với người liên hệ khẩn cấp"
+        relationWithEmergencyContactPerson: { // Quan hệ với người liên hệ khẩn cấp
+            columnName: translate(`human_resource.profile.employee_management.export.relation_with_emergency_contact_person`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.employee_management.export.relation_with_emergency_contact_person').toLowerCase()}`,
+            value: translate(`human_resource.profile.employee_management.export.relation_with_emergency_contact_person`)
         },
-        emergencyContactPersonAddress: {
-            columnName: "Địa chỉ người liên hệ khẩn cấp",
-            description: "Tên tiêu để ứng với địa chỉ người liên hệ khẩn cấp",
-            value: "Địa chỉ người liên hệ khẩn cấp"
+        emergencyContactPersonAddress: { // Địa chỉ người liên hệ khẩn cấp
+            columnName: translate(`human_resource.profile.employee_management.export.emergency_contact_person_address`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.employee_management.export.emergency_contact_person_address').toLowerCase()}`,
+            value: translate(`human_resource.profile.employee_management.export.emergency_contact_person_address`)
         },
-        emergencyContactPersonPhoneNumber: {
-            columnName: "Điện thoại di động người liên hệ khẩn cấp",
-            description: "Tên tiêu để ứng với điện thoại di động người liên hệ khẩn cấp",
-            value: "Điện thoại di động người liên hệ khẩn cấp"
+        emergencyContactPersonPhoneNumber: { // Điện thoại di động người liên hệ khẩn cấp
+            columnName: translate(`human_resource.profile.employee_management.export.emergency_contact_person_phone_number`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.employee_management.export.emergency_contact_person_phone_number').toLowerCase()}`,
+            value: translate(`human_resource.profile.employee_management.export.emergency_contact_person_phone_number`)
         },
-        emergencyContactPersonHomePhone: {
-            columnName: "Điện thoại nhà riêng người liên hệ khẩn cấp",
-            description: "Tên tiêu để ứng với điện thoại nhà riêng người liên hệ khẩn cấp",
-            value: "Điện thoại nhà riêng người liên hệ khẩn cấp"
+        emergencyContactPersonHomePhone: { // Điện thoại nhà riêng người liên hệ khẩn cấp
+            columnName: translate(`human_resource.profile.employee_management.export.emergency_contact_person_home_phone`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.employee_management.export.emergency_contact_person_home_phone').toLowerCase()}`,
+            value: translate(`human_resource.profile.employee_management.export.emergency_contact_person_home_phone`)
         },
-        emergencyContactPersonEmail: {
-            columnName: "Email người liên hệ khẩn cấp",
-            description: "Tên tiêu để ứng với email người liên hệ khẩn cấp",
-            value: "Email người liên hệ khẩn cấp"
+        emergencyContactPersonEmail: { // Email người liên hệ khẩn cấp
+            columnName: translate(`human_resource.profile.employee_management.export.emergency_contact_person_email`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.employee_management.export.emergency_contact_person_email').toLowerCase()}`,
+            value: translate(`human_resource.profile.employee_management.export.emergency_contact_person_email`)
         },
-        atmNumber: {
-            columnName: "Số tài khoản ngân hàng",
-            description: "Tên tiêu để ứng với số tài khoản ngân hàng",
-            value: "Số tài khoản ngân hàng"
+        atmNumber: { // Số tài khoản ngân hàng
+            columnName: translate(`human_resource.profile.employee_management.export.atmNumber`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.employee_management.export.atmNumber').toLowerCase()}`,
+            value: translate(`human_resource.profile.employee_management.export.atmNumber`)
         },
-        bankName: {
-            columnName: "Tên ngân hàng",
-            description: "Tên tiêu để ứng với tên ngân hàng",
-            value: "Tên ngân hàng"
+        bankName: { // Tên ngân hàng
+            columnName: translate(`human_resource.profile.bank_name`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.bank_name').toLowerCase()}`,
+            value: translate(`human_resource.profile.bank_name`)
         },
-        bankAddress: {
-            columnName: "Chi nhánh ngân hàng",
-            description: "Tên tiêu để ứng với chi nhánh ngân hàng",
-            value: "Chi nhánh ngân hàng"
+        bankAddress: { // Chi nhánh ngân hàng
+            columnName: translate(`human_resource.profile.employee_management.export.bank_address`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.employee_management.export.bank_address').toLowerCase()}`,
+            value: translate(`human_resource.profile.employee_management.export.bank_address`)
         },
-        healthInsuranceNumber: {
-            columnName: "Mã số BHYT",
-            description: "Tên tiêu để ứng với mã số BHYT",
-            value: "Mã số BHYT"
+        healthInsuranceNumber: { // Mã số BHYT
+            columnName: translate(`human_resource.profile.number_BHYT`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.number_BHYT').toLowerCase()}`,
+            value: translate(`human_resource.profile.number_BHYT`)
         },
-        healthInsuranceStartDate: {
-            columnName: "Ngày BHYT có hiệu lực",
-            description: "Tên tiêu để ứng với ngày BHYT có hiệu lực",
-            value: "Ngày BHYT có hiệu lực"
+        healthInsuranceStartDate: { // Ngày BHYT có hiệu lực
+            columnName: translate(`human_resource.profile.employee_management.export.health_insurance_start_date`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.employee_management.export.health_insurance_start_date').toLowerCase()}`,
+            value: translate(`human_resource.profile.employee_management.export.health_insurance_start_date`)
         },
-        healthInsuranceEndDate: {
-            columnName: "Ngày BHYT hết hạn",
-            description: "Tên tiêu để ứng với ngày BHYT hết hạn",
-            value: "Ngày BHYT hết hạn"
+        healthInsuranceEndDate: { // Ngày BHYT hết hạn
+            columnName: translate(`human_resource.profile.employee_management.export.health_insurance_end_date`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.employee_management.export.health_insurance_end_date').toLowerCase()}`,
+            value: translate(`human_resource.profile.employee_management.export.health_insurance_end_date`)
         },
-        socialInsuranceNumber: {
-            columnName: "Mã số BHXH",
-            description: "Tên tiêu để ứng với mã số BHXH",
-            value: "Mã số BHXH"
+        socialInsuranceNumber: { // Mã số BHXH
+            columnName: translate(`human_resource.profile.number_BHXH`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.number_BHXH').toLowerCase()}`,
+            value: translate(`human_resource.profile.number_BHXH`)
         },
-        archivedRecordNumber: {
-            columnName: "Nơi lưu trữ hồ sơ",
-            description: "Tên tiêu để ứng với nơi lưu trữ hồ sơ",
-            value: "Nơi lưu trữ hồ sơ"
+        archivedRecordNumber: { // Nơi lưu trữ hồ sơ
+            columnName: translate(`human_resource.profile.attachments_code`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.attachments_code').toLowerCase()}`,
+            value: translate(`human_resource.profile.attachments_code`)
         },
-        file: {
-            fileName: 'templateImportEmployeeInfor',
-            fileUrl: '/upload/human-resource/templateImport/templateImportEmployee.xlsx'
-        }
     };
     return config;
 }
@@ -258,47 +254,43 @@ function configurationEmployeeInfo(translate) {
 function configurationExperience(translate) {
     let config = {
         rowHeader: {
-            description: "Số dòng tiêu đề của bảng",
+            description: translate('human_resource.rowHeader'),
             value: 1
         },
         sheets: {
-            description: "Tên các sheet",
-            value: ["2.HS Nhân viên - Kinh nghiệm"]
+            description: translate('human_resource.sheets_name'),
+            value: [translate(`human_resource.profile.employee_management.export.sheet2`)]
         },
         employeeNumber: {
-            columnName: "Mã số nhân viên",
-            description: "Tên tiêu đề ứng với 'Mã số nhân viên' ",
-            value: "Mã số nhân viên"
+            columnName: translate(`human_resource.profile.staff_number`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.staff_number`).toLowerCase()}`,
+            value: translate(`human_resource.profile.staff_number`)
         },
         fullName: {
-            columnName: "Họ và tên",
-            description: "Tên tiêu để ứng với họ và tên",
-            value: "Họ và tên"
+            columnName: translate(`human_resource.profile.full_name`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.full_name').toLowerCase()}`,
+            value: translate(`human_resource.profile.full_name`)
         },
-        startDate: {
-            columnName: "Từ tháng/năm",
-            description: "Tên tiêu để ứng với từ tháng/năm",
-            value: "Từ tháng/năm"
+        startDate: { // Từ tháng/năm
+            columnName: translate(`human_resource.profile.from_month_year`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.from_month_year`).toLowerCase()}`,
+            value: translate(`human_resource.profile.from_month_year`)
         },
-        endDate: {
-            columnName: "Đến tháng/năm",
-            description: "Tên tiêu để ứng với đến tháng/năm",
-            value: "Đến tháng/năm"
+        endDate: { // Đến tháng/năm
+            columnName: translate(`human_resource.profile.to_month_year`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.to_month_year`).toLowerCase()}`,
+            value: translate(`human_resource.profile.to_month_year`)
         },
-        company: {
-            columnName: "Đơn vị công tác",
-            description: "Tên tiêu để ứng với đơn vị công tác",
-            value: "Đơn vị công tác"
+        company: { // Đơn vị công tác
+            columnName: translate(`human_resource.profile.unit`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.unit`).toLowerCase()}`,
+            value: translate(`human_resource.profile.unit`)
         },
-        position: {
-            columnName: "Chức vụ",
-            description: "Tên tiêu để ứng với chức vụ",
-            value: "Chức vụ"
+        position: { // Chức vụ
+            columnName: translate(`human_resource.position`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.position`).toLowerCase()}`,
+            value: translate(`human_resource.position`)
         },
-        file: {
-            fileName: 'templateImportEmployeeInfor',
-            fileUrl: '/upload/human-resource/templateImport/templateImportEmployee.xlsx'
-        }
     };
     return config;
 }
@@ -307,47 +299,43 @@ function configurationExperience(translate) {
 function configurationDegree(translate) {
     let config = {
         rowHeader: {
-            description: "Số dòng tiêu đề của bảng",
+            description: translate('human_resource.rowHeader'),
             value: 1
         },
         sheets: {
-            description: "Tên các sheet",
-            value: ["3.HS Nhân viên - Bằng cấp"]
+            description: translate('human_resource.sheets_name'),
+            value: [translate(`human_resource.profile.employee_management.export.sheet3`)]
         },
         employeeNumber: {
-            columnName: "Mã số nhân viên",
-            description: "Tên tiêu đề ứng với 'Mã số nhân viên' ",
-            value: "Mã số nhân viên"
+            columnName: translate(`human_resource.profile.staff_number`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.staff_number`).toLowerCase()}`,
+            value: translate(`human_resource.profile.staff_number`)
         },
         fullName: {
-            columnName: "Họ và tên",
-            description: "Tên tiêu để ứng với họ và tên",
-            value: "Họ và tên"
+            columnName: translate(`human_resource.profile.full_name`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.full_name').toLowerCase()}`,
+            value: translate(`human_resource.profile.full_name`)
         },
-        name: {
-            columnName: "Tên bằng cấp",
-            description: "Tên tiêu để ứng với tên bằng cấp",
-            value: "Tên bằng cấp"
+        name: { // Tên bằng cấp
+            columnName: translate(`human_resource.profile.name_diploma`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.name_diploma`).toLowerCase()}`,
+            value: translate(`human_resource.profile.name_diploma`)
         },
-        issuedBy: {
-            columnName: "Nơi đào tạo",
-            description: "Tên tiêu để ứng với nơi đào tạo",
-            value: "Nơi đào tạo"
+        issuedBy: { // Nơi đào tạo
+            columnName: translate(`human_resource.profile.diploma_issued_by`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.diploma_issued_by`).toLowerCase()}`,
+            value: translate(`human_resource.profile.diploma_issued_by`)
         },
-        year: {
-            columnName: "Năm tốt nghiệp",
-            description: "Tên tiêu để ứng với năm tốt nghiệp",
-            value: "Năm tốt nghiệp"
+        year: { // Năm tốt nghiệp
+            columnName: translate(`human_resource.profile.graduation_year`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.graduation_year`).toLowerCase()}`,
+            value: translate(`human_resource.profile.graduation_year`)
         },
-        degreeType: {
-            columnName: "Xếp loại",
-            description: "Tên tiêu để ứng với xếp loại",
-            value: "Xếp loại"
+        degreeType: { // Xếp loại
+            columnName: translate(`human_resource.profile.ranking_learning`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.ranking_learning`).toLowerCase()}`,
+            value: translate(`human_resource.profile.ranking_learning`)
         },
-        file: {
-            fileName: 'templateImportEmployeeInfor',
-            fileUrl: '/upload/human-resource/templateImport/templateImportEmployee.xlsx'
-        }
     };
     return config;
 
@@ -357,47 +345,43 @@ function configurationDegree(translate) {
 function configurationCertificate(translate) {
     let config = {
         rowHeader: {
-            description: "Số dòng tiêu đề của bảng",
+            description: translate('human_resource.rowHeader'),
             value: 1
         },
         sheets: {
-            description: "Tên các sheet",
-            value: ["4.HS Nhân viên - Chứng chỉ"]
+            description: translate('human_resource.sheets_name'),
+            value: [translate(`human_resource.profile.employee_management.export.sheet4`)]
         },
         employeeNumber: {
-            columnName: "Mã số nhân viên",
-            description: "Tên tiêu đề ứng với 'Mã số nhân viên' ",
-            value: "Mã số nhân viên"
+            columnName: translate(`human_resource.profile.staff_number`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.staff_number`).toLowerCase()}`,
+            value: translate(`human_resource.profile.staff_number`)
         },
         fullName: {
-            columnName: "Họ và tên",
-            description: "Tên tiêu để ứng với họ và tên",
-            value: "Họ và tên"
+            columnName: translate(`human_resource.profile.full_name`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.full_name').toLowerCase()}`,
+            value: translate(`human_resource.profile.full_name`)
         },
-        name: {
-            columnName: "Tên chứng chỉ",
-            description: "Tên tiêu để ứng với tên chứng chỉ",
-            value: "Tên chứng chỉ"
+        name: { // Tên chứng chỉ
+            columnName: translate(`human_resource.profile.name_certificate`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.name_certificate`).toLowerCase()}`,
+            value: translate(`human_resource.profile.name_certificate`)
         },
-        issuedBy: {
-            columnName: "Nơi cấp",
-            description: "Tên tiêu để ứng với nơi cấp",
-            value: "Nơi cấp"
+        issuedBy: { // Nơi cấp
+            columnName: translate(`human_resource.profile.issued_by`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.issued_by`).toLowerCase()}`,
+            value: translate(`human_resource.profile.issued_by`)
         },
-        startDate: {
-            columnName: "Ngày cấp",
-            description: "Tên tiêu để ứng với ngày cấp",
-            value: "Ngày cấp"
+        startDate: { // Ngày cấp
+            columnName: translate(`human_resource.profile.date_issued`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.date_issued`).toLowerCase()}`,
+            value: translate(`human_resource.profile.date_issued`)
         },
-        endDate: {
-            columnName: "Ngày hết hạn",
-            description: "Tên tiêu để ứng với ngày hết hạn",
-            value: "Ngày hết hạn"
+        endDate: { // Ngày hết hạn
+            columnName: translate(`human_resource.profile.end_date_certificate`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.end_date_certificate`).toLowerCase()}`,
+            value: translate(`human_resource.profile.end_date_certificate`)
         },
-        file: {
-            fileName: 'templateImportEmployeeInfor',
-            fileUrl: '/upload/human-resource/templateImport/templateImportEmployee.xlsx'
-        }
     }
     return config;
 }
@@ -406,47 +390,43 @@ function configurationCertificate(translate) {
 function configurationContract(translate) {
     let config = {
         rowHeader: {
-            description: "Số dòng tiêu đề của bảng",
+            description: translate('human_resource.rowHeader'),
             value: 1
         },
         sheets: {
-            description: "Tên các sheet",
-            value: ["5.HS Nhân viên - Hợp đồng"]
+            description: translate('human_resource.sheets_name'),
+            value: [translate(`human_resource.profile.employee_management.export.sheet5`)]
         },
         employeeNumber: {
-            columnName: "Mã số nhân viên",
-            description: "Tên tiêu đề ứng với 'Mã số nhân viên' ",
-            value: "Mã số nhân viên"
+            columnName: translate(`human_resource.profile.staff_number`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.staff_number`).toLowerCase()}`,
+            value: translate(`human_resource.profile.staff_number`)
         },
         fullName: {
-            columnName: "Họ và tên",
-            description: "Tên tiêu để ứng với họ và tên",
-            value: "Họ và tên"
+            columnName: translate(`human_resource.profile.full_name`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.full_name').toLowerCase()}`,
+            value: translate(`human_resource.profile.full_name`)
         },
-        name: {
-            columnName: "Tên hợp đồng",
-            description: "Tên tiêu để ứng với tên hợp đồng",
-            value: "Tên hợp đồng"
+        name: { // Tên hợp đồng
+            columnName: translate(`human_resource.profile.name_contract`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.name_contract`).toLowerCase()}`,
+            value: translate(`human_resource.profile.name_contract`)
         },
-        contractType: {
-            columnName: "Loại hợp đồng",
-            description: "Tên tiêu để ứng với loại hợp đồng",
-            value: "Loại hợp đồng"
+        contractType: { // Loại hợp đồng
+            columnName: translate(`human_resource.profile.type_contract`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.type_contract`).toLowerCase()}`,
+            value: translate(`human_resource.profile.type_contract`)
         },
-        startDate: {
-            columnName: "Ngày có hiệu lực",
-            description: "Tên tiêu để ứng với ngày có hiệu lực",
-            value: "Ngày có hiệu lực"
+        startDate: { // Ngày có hiệu lực
+            columnName: translate(`human_resource.profile.start_date`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.start_date`).toLowerCase()}`,
+            value: translate(`human_resource.profile.start_date`)
         },
-        endDate: {
-            columnName: "Ngày hết hạn",
-            description: "Tên tiêu để ứng với ngày hết hạn",
-            value: "Ngày hết hạn"
+        endDate: { // Ngày hết hạn
+            columnName: translate(`human_resource.profile.end_date_certificate`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.end_date_certificate`).toLowerCase()}`,
+            value: translate(`human_resource.profile.end_date_certificate`)
         },
-        file: {
-            fileName: 'templateImportEmployeeInfor',
-            fileUrl: '/upload/human-resource/templateImport/templateImportEmployee.xlsx'
-        }
     }
     return config;
 }
@@ -455,47 +435,43 @@ function configurationContract(translate) {
 function configurationSocialInsuranceDetails(translate) {
     let config = {
         rowHeader: {
-            description: "Số dòng tiêu đề của bảng",
+            description: translate('human_resource.rowHeader'),
             value: 1
         },
         sheets: {
-            description: "Tên các sheet",
-            value: ["6.HS Nhân viên - Bảo hiểm XH"]
+            description: translate('human_resource.sheets_name'),
+            value: [translate(`human_resource.profile.employee_management.export.sheet6`),]
         },
         employeeNumber: {
-            columnName: "Mã số nhân viên",
-            description: "Tên tiêu đề ứng với 'Mã số nhân viên' ",
-            value: "Mã số nhân viên"
+            columnName: translate(`human_resource.profile.staff_number`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.staff_number`).toLowerCase()}`,
+            value: translate(`human_resource.profile.staff_number`)
         },
         fullName: {
-            columnName: "Họ và tên",
-            description: "Tên tiêu để ứng với họ và tên",
-            value: "Họ và tên"
+            columnName: translate(`human_resource.profile.full_name`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.full_name').toLowerCase()}`,
+            value: translate(`human_resource.profile.full_name`)
         },
-        startDate: {
-            columnName: "Từ tháng/năm",
-            description: "Tên tiêu để ứng với từ tháng/năm",
-            value: "Từ tháng/năm"
+        startDate: { // Từ tháng/năm
+            columnName: translate(`human_resource.profile.from_month_year`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.from_month_year`).toLowerCase()}`,
+            value: translate(`human_resource.profile.from_month_year`)
         },
-        endDate: {
-            columnName: "Đến tháng/năm",
-            description: "Tên tiêu để ứng với đến tháng/năm",
-            value: "Đến tháng/năm"
+        endDate: { // Đến tháng/năm
+            columnName: translate(`human_resource.profile.to_month_year`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.to_month_year`).toLowerCase()}`,
+            value: translate(`human_resource.profile.to_month_year`)
         },
-        company: {
-            columnName: "Đơn vị công tác",
-            description: "Tên tiêu để ứng với đơn vị công tác",
-            value: "Đơn vị công tác"
+        company: { // Đơn vị công tác
+            columnName: translate(`human_resource.profile.unit`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.unit`).toLowerCase()}`,
+            value: translate(`human_resource.profile.unit`)
         },
-        position: {
-            columnName: "Chức vụ",
-            description: "Tên tiêu để ứng với chức vụ",
-            value: "Chức vụ"
+        position: { // Chức vụ
+            columnName: translate(`human_resource.position`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.position`).toLowerCase()}`,
+            value: translate(`human_resource.position`)
         },
-        file: {
-            fileName: 'templateImportEmployeeInfor',
-            fileUrl: '/upload/human-resource/templateImport/templateImportEmployee.xlsx'
-        }
     };
     return config;
 }
@@ -504,47 +480,43 @@ function configurationSocialInsuranceDetails(translate) {
 function configurationFile(translate) {
     let config = {
         rowHeader: {
-            description: "Số dòng tiêu đề của bảng",
+            description: translate('human_resource.rowHeader'),
             value: 1
         },
         sheets: {
-            description: "Tên các sheet",
-            value: ["7.HS Nhân viên - Tài liệu"]
+            description: translate('human_resource.sheets_name'),
+            value: [translate(`human_resource.profile.employee_management.export.sheet7`)]
         },
         employeeNumber: {
-            columnName: "Mã số nhân viên",
-            description: "Tên tiêu đề ứng với 'Mã số nhân viên' ",
-            value: "Mã số nhân viên"
+            columnName: translate(`human_resource.profile.staff_number`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.staff_number`).toLowerCase()}`,
+            value: translate(`human_resource.profile.staff_number`)
         },
         fullName: {
-            columnName: "Họ và tên",
-            description: "Tên tiêu để ứng với họ và tên",
-            value: "Họ và tên"
+            columnName: translate(`human_resource.profile.full_name`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.full_name').toLowerCase()}`,
+            value: translate(`human_resource.profile.full_name`)
         },
-        name: {
-            columnName: "Tên tài liệu",
-            description: "Tên tiêu để ứng với tên tài liệu",
-            value: "Tên tài liệu"
+        name: { // Tên tài liệu
+            columnName: translate(`human_resource.profile.file_name`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.file_name`).toLowerCase()}`,
+            value: translate(`human_resource.profile.file_name`)
         },
-        description: {
-            columnName: "Mô tả",
-            description: "Tên tiêu để ứng với mô tả",
-            value: "Mô tả"
+        description: { // Mô tả
+            columnName: translate(`general.description`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`general.description`).toLowerCase()}`,
+            value: translate(`general.description`)
         },
-        number: {
-            columnName: "Số lượng",
-            description: "Tên tiêu để ứng với số lượng",
-            value: "Số lượng"
+        number: { // Số lượng
+            columnName: translate(`human_resource.profile.number`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.number`).toLowerCase()}`,
+            value: translate(`human_resource.profile.number`)
         },
-        status: {
-            columnName: "Trạng thái",
-            description: "Tên tiêu để ứng với trạng thái",
-            value: "Trạng thái"
+        status: { // Trạng thái
+            columnName: translate('human_resource.status'),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.status').toLowerCase()}`,
+            value: translate('human_resource.status')
         },
-        file: {
-            fileName: 'templateImportEmployeeInfor',
-            fileUrl: '/upload/human-resource/templateImport/templateImportEmployee.xlsx'
-        }
     };
     return config;
 }
@@ -628,7 +600,7 @@ function templateImport(translate) {
                                     emergencyContactPersonHomePhone: 962586789,
                                     emergencyContactPersonPhoneNumber: 962586278,
                                     employeeNumber: "MS2015123",
-                                    employeeTimesheetId: "123456",
+                                    employeeTimesheetId: "123455",
                                     ethnic: "Kinh",
                                     foreignLanguage: "500 Toeic",
                                     fullName: "Nguyễn Văn An",
@@ -909,7 +881,7 @@ function templateImport(translate) {
                                 fullName: "Nguyễn Văn An",
                                 name: "Ảnh",
                                 number: "1",
-                                status: translate(`human_resource.submitted`),
+                                status: translate(`human_resource.profile.submitted`),
                             },{
                                 STT: 2,
                                 description: "Ảnh 3x4",
@@ -917,7 +889,7 @@ function templateImport(translate) {
                                 fullName: "Trần Văn Bình",
                                 name: "Ảnh",
                                 number: "1",
-                                status: translate(`human_resource.submitted`),
+                                status: translate(`human_resource.profile.submitted`),
                             }]
                         }
                     ]
@@ -959,140 +931,140 @@ function templateImport(translate) {
                         }
                     ]
                 },
-                {
-                    // 9.HS Nhân viên - Kỷ luật
-                    sheetName: translate(`human_resource.profile.employee_management.export.sheet9`),
-                    tables: [
-                        {
-                            columns: [
-                                { key: "STT", value: translate(`human_resource.stt`), width: 7 },
-                                { key: "employeeNumber", value: translate(`human_resource.profile.staff_number`) },
-                                { key: "fullName", value: translate(`human_resource.profile.full_name`), width: 20 },
-                                { key: "decisionNumber", value: translate('human_resource.commendation_discipline.commendation.table.decision_number') },
-                                { key: "decisionUnit", value: translate('human_resource.commendation_discipline.commendation.table.decision_unit'), width: 25 },
-                                { key: "startDate", value: translate('human_resource.commendation_discipline.discipline.table.start_date') },
-                                { key: "endDate", value: translate('human_resource.commendation_discipline.discipline.table.end_date') },
-                                { key: "type", value: translate('human_resource.commendation_discipline.discipline.table.discipline_forms') },
-                                { key: "reason", value: translate('human_resource.commendation_discipline.discipline.table.reason_discipline'), width: 35 },
-                            ],
-                            data: [{
-                                STT: 1,
-                                decisionNumber: "1456",
-                                decisionUnit: "Phòng kinh doanh",
-                                employeeNumber: "MS2015123",
-                                endDate: "09-02-2020",
-                                fullName: "Nguyễn Văn An",
-                                reason: "Không làm đủ công",
-                                startDate: "07-02-2020",
-                                type: "Phạt tiền",
-                            },{
-                                STT: 2,
-                                decisionNumber: "1457",
-                                decisionUnit: "Phòng kinh doanh",
-                                employeeNumber: "MS2015123",
-                                endDate: "09-02-2020",
-                                fullName: "Nguyễn Văn An",
-                                reason: "Không đủ doanh số",
-                                startDate: "07-02-2020",
-                                type: "Phạt tiền"
-                            }]
-                        }
-                    ]
-                },
-                {
-                    // 10.HS Nhân viên - Lương thưởng
-                    sheetName: translate(`human_resource.profile.employee_management.export.sheet10`),
-                    tables: [{
-                        rowHeader: 2,
-                        merges: [{
-                            key: "other",
-                            columnName: translate('human_resource.salary.other_salary'),
-                            keyMerge: 'bonus0',
-                            colspan: 2
-                        }],
-                        columns: [
-                            { key: "STT", value: translate('human_resource.stt'), width: 7 },
-                            { key: "month", value: translate('human_resource.month'), width: 10 },
-                            { key: "year", value: translate('human_resource.holiday.year'), width: 10 },
-                            { key: "employeeNumber", value: translate('human_resource.staff_number') },
-                            { key: "fullName", value: translate('human_resource.staff_name'), width: 20 },
-                            { key: "organizationalUnit", value: translate('human_resource.unit'), width: 25 },
-                            { key: "gender", value: translate('human_resource.profile.gender') },
-                            { key: "birthdate", value: translate('human_resource.profile.date_birth') },
-                            { key: "status", value: translate('human_resource.profile.status_work') },
-                            { key: "mainSalary", value: translate('human_resource.salary.table.main_salary'), },
-                            { key: 'bonus0',value: 'Thưởng đầu hộp SanFoVet'},
-                            { key: 'bonus1',value: 'Thưởng đầu hộp ViaVet'},
-                            { key: "total", value: translate('human_resource.salary.table.total_salary'), },
-                        ],
-                        data: [{
-                            STT: 1,
-                            employeeNumber: 'MS1256398',
-                            fullName: "Nguyễn Văn A",
-                            mainSalary: 15000000,
-                            birthdate: new Date("1995-12-10"),
-                            status: translate('human_resource.profile.active'),
-                            gender: translate('human_resource.profile.male'),
-                            organizationalUnit: 'Ban giám đốc',
-                            total: 30000000,
-                            month: 5,
-                            year: 2020,
-                            bonus0: 10000000,
-                            bonus1: 5000000
-                        }, {
-                            STT: 2,
-                            employeeNumber: 'MS1256596',
-                            fullName: "Nguyễn Thị C",
-                            mainSalary: 15000000,
-                            birthdate: new Date("1989-5-25"),
-                            status: translate('human_resource.profile.active'),
-                            gender: translate('human_resource.profile.male'),
-                            organizationalUnit: 'Phòng kinh doanh',
-                            total: 30000000,
-                            month: 5,
-                            year: 2020,
-                            bonus0: 10000000,
-                            bonus1: 5000000
-                        }]
-                    }, ]
-                },
-                {
-                    // 11.HS Nhân viên - Nghỉ phép
-                    sheetName: translate(`human_resource.profile.employee_management.export.sheet11`),
-                    tables: [
-                        {
-                            columns: [
-                                { key: "STT", value: translate(`human_resource.stt`), width: 7 },
-                                { key: "employeeNumber", value: translate(`human_resource.profile.staff_number`) },
-                                { key: "fullName", value: translate(`human_resource.profile.full_name`), width: 20 },
-                                { key: "organizationalUnit", value: translate('human_resource.unit'), width: 25 },
-                                { key: "startDate", value: translate('human_resource.annual_leave.table.start_date') },
-                                { key: "endDate", value: translate('human_resource.annual_leave.table.end_date') },
-                                { key: "reason", value: translate('human_resource.annual_leave.table.reason'), width: 35 },
-                                { key: "status", value: translate('human_resource.status'), width: 25 },
-                            ],
-                            data: [{
-                                STT: 1,
-                                employeeNumber: "MS2015123",
-                                endDate: "08-02-2020",
-                                fullName: "Nguyễn Văn An",
-                                organizationalUnit: "Ban giám đốc",
-                                reason: "Về quê",
-                                startDate: "06-02-2020",
-                                status: translate(`human_resource.annual_leave.status.pass`)
-                            },{
-                                STT: 2,
-                                employeeNumber: "MS2015123",
-                                endDate: "10-02-2020",
-                                fullName: "Nguyễn Văn An",
-                                organizationalUnit: "Ban giám đốc",
-                                reason: "Nghỉ du lịch",
-                                startDate: "05-02-2020",
-                                status: translate(`human_resource.annual_leave.status.process`)
-                            }]
-                        }
-                    ]
-                },
+                // {
+                //     // 9.HS Nhân viên - Kỷ luật
+                //     sheetName: translate(`human_resource.profile.employee_management.export.sheet9`),
+                //     tables: [
+                //         {
+                //             columns: [
+                //                 { key: "STT", value: translate(`human_resource.stt`), width: 7 },
+                //                 { key: "employeeNumber", value: translate(`human_resource.profile.staff_number`) },
+                //                 { key: "fullName", value: translate(`human_resource.profile.full_name`), width: 20 },
+                //                 { key: "decisionNumber", value: translate('human_resource.commendation_discipline.commendation.table.decision_number') },
+                //                 { key: "decisionUnit", value: translate('human_resource.commendation_discipline.commendation.table.decision_unit'), width: 25 },
+                //                 { key: "startDate", value: translate('human_resource.commendation_discipline.discipline.table.start_date') },
+                //                 { key: "endDate", value: translate('human_resource.commendation_discipline.discipline.table.end_date') },
+                //                 { key: "type", value: translate('human_resource.commendation_discipline.discipline.table.discipline_forms') },
+                //                 { key: "reason", value: translate('human_resource.commendation_discipline.discipline.table.reason_discipline'), width: 35 },
+                //             ],
+                //             data: [{
+                //                 STT: 1,
+                //                 decisionNumber: "1456",
+                //                 decisionUnit: "Phòng kinh doanh",
+                //                 employeeNumber: "MS2015123",
+                //                 endDate: "09-02-2020",
+                //                 fullName: "Nguyễn Văn An",
+                //                 reason: "Không làm đủ công",
+                //                 startDate: "07-02-2020",
+                //                 type: "Phạt tiền",
+                //             },{
+                //                 STT: 2,
+                //                 decisionNumber: "1457",
+                //                 decisionUnit: "Phòng kinh doanh",
+                //                 employeeNumber: "MS2015123",
+                //                 endDate: "09-02-2020",
+                //                 fullName: "Nguyễn Văn An",
+                //                 reason: "Không đủ doanh số",
+                //                 startDate: "07-02-2020",
+                //                 type: "Phạt tiền"
+                //             }]
+                //         }
+                //     ]
+                // },
+                // {
+                //     // 10.HS Nhân viên - Lương thưởng
+                //     sheetName: translate(`human_resource.profile.employee_management.export.sheet10`),
+                //     tables: [{
+                //         rowHeader: 2,
+                //         merges: [{
+                //             key: "other",
+                //             columnName: translate('human_resource.salary.other_salary'),
+                //             keyMerge: 'bonus0',
+                //             colspan: 2
+                //         }],
+                //         columns: [
+                //             { key: "STT", value: translate('human_resource.stt'), width: 7 },
+                //             { key: "month", value: translate('human_resource.month'), width: 10 },
+                //             { key: "year", value: translate('human_resource.holiday.year'), width: 10 },
+                //             { key: "employeeNumber", value: translate('human_resource.staff_number') },
+                //             { key: "fullName", value: translate('human_resource.staff_name'), width: 20 },
+                //             { key: "organizationalUnit", value: translate('human_resource.unit'), width: 25 },
+                //             { key: "gender", value: translate('human_resource.profile.gender') },
+                //             { key: "birthdate", value: translate('human_resource.profile.date_birth') },
+                //             { key: "status", value: translate('human_resource.profile.status_work') },
+                //             { key: "mainSalary", value: translate('human_resource.salary.table.main_salary'), },
+                //             { key: 'bonus0',value: 'Thưởng đầu hộp SanFoVet'},
+                //             { key: 'bonus1',value: 'Thưởng đầu hộp ViaVet'},
+                //             { key: "total", value: translate('human_resource.salary.table.total_salary'), },
+                //         ],
+                //         data: [{
+                //             STT: 1,
+                //             employeeNumber: 'MS1256398',
+                //             fullName: "Nguyễn Văn A",
+                //             mainSalary: 15000000,
+                //             birthdate: new Date("1995-12-10"),
+                //             status: translate('human_resource.profile.active'),
+                //             gender: translate('human_resource.profile.male'),
+                //             organizationalUnit: 'Ban giám đốc',
+                //             total: 30000000,
+                //             month: 5,
+                //             year: 2020,
+                //             bonus0: 10000000,
+                //             bonus1: 5000000
+                //         }, {
+                //             STT: 2,
+                //             employeeNumber: 'MS1256596',
+                //             fullName: "Nguyễn Thị C",
+                //             mainSalary: 15000000,
+                //             birthdate: new Date("1989-5-25"),
+                //             status: translate('human_resource.profile.active'),
+                //             gender: translate('human_resource.profile.male'),
+                //             organizationalUnit: 'Phòng kinh doanh',
+                //             total: 30000000,
+                //             month: 5,
+                //             year: 2020,
+                //             bonus0: 10000000,
+                //             bonus1: 5000000
+                //         }]
+                //     }, ]
+                // },
+                // {
+                //     // 11.HS Nhân viên - Nghỉ phép
+                //     sheetName: translate(`human_resource.profile.employee_management.export.sheet11`),
+                //     tables: [
+                //         {
+                //             columns: [
+                //                 { key: "STT", value: translate(`human_resource.stt`), width: 7 },
+                //                 { key: "employeeNumber", value: translate(`human_resource.profile.staff_number`) },
+                //                 { key: "fullName", value: translate(`human_resource.profile.full_name`), width: 20 },
+                //                 { key: "organizationalUnit", value: translate('human_resource.unit'), width: 25 },
+                //                 { key: "startDate", value: translate('human_resource.annual_leave.table.start_date') },
+                //                 { key: "endDate", value: translate('human_resource.annual_leave.table.end_date') },
+                //                 { key: "reason", value: translate('human_resource.annual_leave.table.reason'), width: 35 },
+                //                 { key: "status", value: translate('human_resource.status'), width: 25 },
+                //             ],
+                //             data: [{
+                //                 STT: 1,
+                //                 employeeNumber: "MS2015123",
+                //                 endDate: "08-02-2020",
+                //                 fullName: "Nguyễn Văn An",
+                //                 organizationalUnit: "Ban giám đốc",
+                //                 reason: "Về quê",
+                //                 startDate: "06-02-2020",
+                //                 status: translate(`human_resource.annual_leave.status.pass`)
+                //             },{
+                //                 STT: 2,
+                //                 employeeNumber: "MS2015123",
+                //                 endDate: "10-02-2020",
+                //                 fullName: "Nguyễn Văn An",
+                //                 organizationalUnit: "Ban giám đốc",
+                //                 reason: "Nghỉ du lịch",
+                //                 startDate: "05-02-2020",
+                //                 status: translate(`human_resource.annual_leave.status.process`)
+                //             }]
+                //         }
+                //     ]
+                // },
             ]
     };
 

@@ -7,6 +7,7 @@ import { TaskReportActions } from '../redux/actions';
 import { taskReportFormValidator } from './taskReportFormValidator';
 import { DialogModal, ErrorLabel, SelectBox, DatePicker } from '../../../../common-components';
 import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
+import ValidationHelper from '../../../../helpers/validationHelper';
 import './transferList.css';
 class TaskReportEditForm extends Component {
     constructor(props) {
@@ -15,23 +16,11 @@ class TaskReportEditForm extends Component {
         this.state = {
             dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
             editingReport: {
-                organizationalUnit: '',
-                taskTemplate: '',
-                name: '',
-                description: '',
-                status: '',
-                responsibleEmployees: [],
-                accountableEmployees: [],
-                readByEmployees: [],
-                startDate: '',
-                endDate: '',
-                frequency: '',
+                status: 0,
                 coefficient: 1,
-                taskInformations: [],
                 itemListTempLeft: [],
                 itemListTempRight: [],
             },
-
         }
     }
 
@@ -53,19 +42,17 @@ class TaskReportEditForm extends Component {
     handleChangeReportOrganizationalUnit = (e) => {
         e.preventDefault();
         let value = e.target.value;
+        let { editingReport } = this.state;
         if (value) {
             this.props.getAllUserOfDepartment(value);
             this.props.getChildrenOfOrganizationalUnits(value);
-            this.setState(state => {
-                return {
-                    ...state,
-                    editingReport: {
-                        ...state.editingReport,
-                        organizationalUnit: value,
-                        responsibleEmployees: [],
-                        accountableEmployees: [],
-                        taskTemplate: '',
-                    }
+            this.setState({
+                editingReport: {
+                    ...editingReport,
+                    organizationalUnit: value,
+                    responsibleEmployees: [],
+                    accountableEmployees: [],
+                    taskTemplate: '',
                 }
             });
         }
@@ -77,26 +64,19 @@ class TaskReportEditForm extends Component {
      * @param {*} value 
      * @param {*} willUpdateState 
      */
-    validateNameTaskReport = (value, willUpdateState = true) => {
-        let msg = taskReportFormValidator.validateNameTaskReport(value)
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    editingReport: {
-                        ...state.editingReport,
-                        errorOnNameTaskReport: msg,
-                        name: value,
-                    }
-                }
-            });
-        }
-        return msg === undefined;
-    }
-
-
     handleNameTaskReportChange = (e) => {
-        let value = e.target.value;
-        this.validateNameTaskReport(value, true);
+        let { editingReport } = this.state;
+        let { translate } = this.props;
+        let { value } = e.target;
+
+        this.setState({
+            editingReport: {
+                ...editingReport,
+                name: value,
+            }
+        })
+        let { message } = ValidationHelper.validateName(translate, value, 4, 255);
+        this.setState({ nameError: message });
     }
 
 
@@ -105,115 +85,38 @@ class TaskReportEditForm extends Component {
     * @param {*} e 
     */
     handleDesTaskReportChange = (e) => {
+        let { editingReport } = this.state;
+        let { translate } = this.props;
         let value = e.target.value;
-        this.validateDescriptionTaskReport(value, true);
-    }
 
-    /**
-     * Hàm kiểm tra validate cho input mô tả báo cáo
-     * @param {*} value 
-     * @param {*} willUpdateState 
-     */
-    validateDescriptionTaskReport = (value, willUpdateState = true) => {
-        let msg = taskReportFormValidator.validateDescriptionTaskReport(value)
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    editingReport: {
-                        ...state.editingReport,
-                        errorOnDescriptiontTaskReport: msg,
-                        description: value,
-                    }
-                }
-            });
-        }
-        return msg === undefined;
-    }
-
-
-    /**
-     * Hàm xử lý validate chọn mãu công việc
-     * @param {*} value 
-     * @param {*} willUpdateState 
-     */
-    validateTasktemplateReport = (value, willUpdateState = true) => {
-        let msg = taskReportFormValidator.validateTasktemplateReport(value);
-        if (willUpdateState) {
-            if (value === '') {
-                this.setState(state => {
-                    return {
-                        ...state,
-                        editingReport: {
-                            ...state.editingReport,
-                            taskTemplate: '',
-                            status: '',
-                            startDate: '',
-                            endDate: '',
-                            responsibleEmployees: [],
-                            accountableEmployees: [],
-                            errorOnDescriptiontTaskReport: undefined,
-                            errorOnNameTaskReport: undefined,
-                            errorOnTaskTemplateReport: msg,
-                        }
-                    }
-                });
-            } else {
-                let taskTemplate = this.props.tasktemplates.items.find((taskTemplate) =>
-                    taskTemplate._id === value
-                );
-
-                let taskInformations = [];
-                if (taskTemplate.taskInformations) {
-                    for (let [index, value] of taskTemplate.taskInformations.entries()) {
-                        taskInformations[index] = {
-                            ...value,
-                            charType: '0',
-                            aggregationType: '0',
-                        }
-                    }
-                }
-
-                this.setState(state => {
-                    return {
-                        ...state,
-                        editingReport: {
-                            ...state.editingReport,
-                            // nameTaskReport: taskTemplate.name,
-                            // descriptionTaskReport: taskTemplate.description,
-                            taskTemplate: taskTemplate._id,
-                            responsibleEmployees: taskTemplate.responsibleEmployees,
-                            accountableEmployees: taskTemplate.accountableEmployees,
-                            taskInformations: taskInformations,
-                        }
-                    }
-                })
+        this.setState({
+            editingReport: {
+                ...editingReport,
+                description: value,
             }
-        }
-        return msg === undefined;
+        });
+        let { message } = ValidationHelper.validateDescription(translate, value);
+        this.setState({ descriptionError: message });
     }
+
 
     /**
      * Hàm xử lý sự kiện thay đổi mẫu công việc
      * @param {*} e 
      */
     handleChangeTaskTemplate = (e) => {
+        let { editingReport } = this.state;
         let { value } = e.target;
         if (value === '') {
-            this.setState(state => {
-                return {
-                    ...state,
-                    editingReport: {
-                        ...state.editingReport,
-                        taskTemplate: '',
-                        status: '',
-                        startDate: '',
-                        endDate: '',
-                        responsibleEmployees: [],
-                        accountableEmployees: [],
-                        errorOnDescriptiontTaskReport: undefined,
-                        errorOnNameTaskReport: undefined,
-                    }
+            this.setState({
+                editingReport: {
+                    ...editingReport,
+                    taskTemplate: '',
+                    status: '',
+                    startDate: '',
+                    endDate: '',
+                    responsibleEmployees: [],
+                    accountableEmployees: [],
                 }
             });
         } else {
@@ -232,18 +135,13 @@ class TaskReportEditForm extends Component {
                 }
             }
 
-            this.setState(state => {
-                return {
-                    ...state,
-                    editingReport: {
-                        ...state.editingReport,
-                        // nameTaskReport: taskTemplate.name,
-                        // descriptionTaskReport: taskTemplate.description,
-                        taskTemplate: taskTemplate._id,
-                        responsibleEmployees: taskTemplate.responsibleEmployees,
-                        accountableEmployees: taskTemplate.accountableEmployees,
-                        taskInformations: taskInformations,
-                    }
+            this.setState({
+                editingReport: {
+                    ...editingReport,
+                    taskTemplate: taskTemplate._id,
+                    responsibleEmployees: taskTemplate.responsibleEmployees,
+                    accountableEmployees: taskTemplate.accountableEmployees,
+                    taskInformations: taskInformations,
                 }
             })
         }
@@ -255,13 +153,11 @@ class TaskReportEditForm extends Component {
      * @param {*} value 
      */
     handleChangeEditStatus = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                editingReport: {
-                    ...state.editingReport,
-                    status: value,
-                }
+        let { editingReport } = this.state;
+        this.setState({
+            editingReport: {
+                ...editingReport,
+                status: value,
             }
         })
     }
@@ -271,13 +167,11 @@ class TaskReportEditForm extends Component {
      * @param {*} value 
      */
     handleChangeEditFrequency = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                editingReport: {
-                    ...state.editingReport,
-                    frequency: value,
-                }
+        let { editingReport } = this.state;
+        this.setState({
+            editingReport: {
+                ...editingReport,
+                frequency: value,
             }
         })
     }
@@ -287,13 +181,11 @@ class TaskReportEditForm extends Component {
      * @param {*} value 
      */
     handleEditResponsibleEmployees = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                editingReport: {
-                    ...state.editingReport,
-                    responsibleEmployees: value,
-                }
+        let { editingReport } = this.state;
+        this.setState({
+            editingReport: {
+                ...editingReport,
+                responsibleEmployees: value,
             }
         })
     }
@@ -303,13 +195,11 @@ class TaskReportEditForm extends Component {
      * @param {*} value 
      */
     handleEditAccountableEmployees = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                editingReport: {
-                    ...state.editingReport,
-                    accountableEmployees: value,
-                }
+        let { editingReport } = this.state;
+        this.setState({
+            editingReport: {
+                ...editingReport,
+                accountableEmployees: value,
             }
         })
     }
@@ -319,24 +209,19 @@ class TaskReportEditForm extends Component {
      * @param {*} value 
      */
     handleEditStartDate = (value) => {
+        let { editingReport } = this.state;
         if (typeof value === 'undefined') {
-            this.setState(state => {
-                return {
-                    ...state,
-                    editingReport: {
-                        ...state.editingReport,
-                        startDate: '',
-                    }
+            this.setState({
+                editingReport: {
+                    ...editingReport,
+                    startDate: '',
                 }
             });
         } else {
-            this.setState(state => {
-                return {
-                    ...state,
-                    editingReport: {
-                        ...state.editingReport,
-                        startDate: value,
-                    }
+            this.setState({
+                editingReport: {
+                    ...editingReport,
+                    startDate: value,
                 }
             })
         }
@@ -348,24 +233,19 @@ class TaskReportEditForm extends Component {
      * @param {*} value 
      */
     handleEditEndDate = (value) => {
+        let { editingReport } = this.state
         if (typeof value === 'undefined') {
-            this.setState(state => {
-                return {
-                    ...state,
-                    editingReport: {
-                        ...state.editingReport,
-                        endDate: '',
-                    }
+            this.setState({
+                editingReport: {
+                    ...editingReport,
+                    endDate: '',
                 }
             });
         } else {
-            this.setState(state => {
-                return {
-                    ...state,
-                    editingReport: {
-                        ...state.editingReport,
-                        endDate: value,
-                    }
+            this.setState({
+                editingReport: {
+                    ...editingReport,
+                    endDate: value,
                 }
             })
         }
@@ -381,6 +261,7 @@ class TaskReportEditForm extends Component {
         let { value } = e.target;
         let { editingReport } = this.state;
         let taskInformations = editingReport.taskInformations;
+
         taskInformations[index] = { ...taskInformations[index], filter: value };
 
         this.setState({
@@ -420,6 +301,7 @@ class TaskReportEditForm extends Component {
         let { value } = e.target;
         let { editingReport } = this.state;
         let taskInformations = editingReport.taskInformations;
+
         taskInformations[index] = { ...taskInformations[index], newName: value }
 
         this.setState({
@@ -438,6 +320,7 @@ class TaskReportEditForm extends Component {
     handleEditAggregationType = (index, value) => {
         let { editingReport } = this.state;
         let taskInformations = editingReport.taskInformations;
+
         taskInformations[index] = { ...taskInformations[index], aggregationType: value.toString() }
 
         this.setState({
@@ -457,6 +340,7 @@ class TaskReportEditForm extends Component {
     handleEditChartType = (index, value) => {
         let { editingReport } = this.state;
         let taskInformations = editingReport.taskInformations;
+
         taskInformations[index] = { ...taskInformations[index], charType: value.toString() };
         this.setState({
             editingReport: {
@@ -465,15 +349,18 @@ class TaskReportEditForm extends Component {
             }
         })
     }
+
+
     /**
      * Hàm kiểm tra đã validate chưa
      */
     isFormValidated = () => {
-        const { editingReport } = this.state;
-        let result =
-            this.validateNameTaskReport(editingReport.name, false) &&
-            this.validateDescriptionTaskReport(editingReport.description, false);
-        return result;
+        let { editingReport } = this.state;
+        let { name, description } = editingReport;
+        let { translate } = this.props;
+        if (!ValidationHelper.validateName(translate, name).status || !ValidationHelper.validateDescription(translate, description).status)
+            return false;
+        return true;
     }
 
 
@@ -494,8 +381,6 @@ class TaskReportEditForm extends Component {
             return {
                 dataStatus: 1,
                 taskReportEditId: props.taskReportId,
-                errorOnDescriptiontTaskReport: undefined,
-                errorOnNameTaskReport: undefined,
             }
         } else {
             return null;
@@ -504,11 +389,12 @@ class TaskReportEditForm extends Component {
 
 
     shouldComponentUpdate = async (nextProps, nextState) => {
+        let { editingReport } = this.state;
         if (this.state.dataStatus === this.DATA_STATUS.QUERYING && !nextProps.reports.isLoading) {
             let listTaskReport = nextProps.reports.listTaskReportById;
 
-            let editingReport = {
-                ...this.state.editingReport,
+            editingReport = {
+                ...editingReport,
                 ...listTaskReport,
                 organizationalUnit: listTaskReport && listTaskReport.organizationalUnit._id,
                 responsibleEmployees: listTaskReport && listTaskReport.responsibleEmployees.map(x => x._id),
@@ -521,17 +407,14 @@ class TaskReportEditForm extends Component {
             }
             this.setState({
                 dataStatus: this.DATA_STATUS.AVAILABLE,
-                editingReport: editingReport,
+                editingReport,
             });
             return false;
         }
 
         if (this.state.dataStatus === this.DATA_STATUS.AVAILABLE) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    dataStatus: this.DATA_STATUS.FINISHED,
-                }
+            this.setState({
+                dataStatus: this.DATA_STATUS.FINISHED,
             });
             return true;
         }
@@ -725,8 +608,9 @@ class TaskReportEditForm extends Component {
 
     render() {
         const { translate, reports, tasktemplates, user } = this.props;
-        const { editingReport } = this.state;
-        const { errorOnNameTaskReport, errorOnDescriptiontTaskReport, errorOnTaskTemplateReport } = this.state.editingReport;
+        const { editingReport, nameError, descriptionError } = this.state;
+        const { name } = this.state.editingReport;
+
         let listTaskTemplate, units, listRole, listRoles = [];
         let listTaskReportById = reports.listTaskReportById;
 
@@ -753,7 +637,7 @@ class TaskReportEditForm extends Component {
                 listRoles = [...listRoles, listRole.employees[x]];
         }
 
-        // Lấy danh sách mẫu công việc theo đơn vị 
+        // Lấy danh sách mẫu công việc theo đơn vị
         if (tasktemplates.items && editingReport.organizationalUnit) {
             listTaskTemplate = tasktemplates.items.filter(function (taskTemplate) {
                 return taskTemplate.organizationalUnit._id === editingReport.organizationalUnit
@@ -802,7 +686,7 @@ class TaskReportEditForm extends Component {
                                         }
 
                                         value={editingReport.readByEmployees}
-                                        onChange={this.handleCh}
+                                        onChange={this.handleChangeReportReadByEmployees}
                                         multiple={true}
                                         options={{ placeholder: "Người được xem" }}
                                     />
@@ -829,19 +713,19 @@ class TaskReportEditForm extends Component {
                                                 })
                                             }
                                         </select>
-                                        <ErrorLabel content={errorOnTaskTemplateReport} />
+                                        {/* <ErrorLabel content={} /> */}
                                     </React.Fragment>
                                 }
                             </div>
 
                             {/* Tên báo cáo */}
                             {
-                                listTaskReportById && <div className={`form-group ${!errorOnNameTaskReport ? "" : "has-error"}`}>
+                                listTaskReportById && <div className={`form-group ${!nameError ? "" : "has-error"}`}>
                                     <label>{translate('report_manager.name')}
                                         <span className="text-red">*</span>
                                     </label>
-                                    <input type="text" className="form-control" value={editingReport.name} onChange={this.handleNameTaskReportChange} />
-                                    <ErrorLabel content={errorOnNameTaskReport} />
+                                    <input type="text" className="form-control" value={name ? name : ''} onChange={this.handleNameTaskReportChange} />
+                                    <ErrorLabel content={nameError} />
                                 </div>
                             }
                         </div>
@@ -849,12 +733,12 @@ class TaskReportEditForm extends Component {
                         <div className="col-md-6">
                             {/* Mô tả báo cáo */}
                             {
-                                listTaskReportById && <div className={`form-group ${!errorOnDescriptiontTaskReport ? "" : "has-error"}`}>
+                                listTaskReportById && <div className={`form-group ${!descriptionError ? "" : "has-error"}`}>
                                     <label htmlFor="Descriptionreport">{translate('report_manager.description')}
                                         <span className="text-red">*</span>
                                     </label>
                                     <textarea rows={5} type="text" className="form-control" id="Descriptionreport" name="description" value={editingReport.description} onChange={this.handleDesTaskReportChange} />
-                                    <ErrorLabel content={errorOnDescriptiontTaskReport} />
+                                    <ErrorLabel content={descriptionError} />
                                 </div>
                             }
                         </div>
