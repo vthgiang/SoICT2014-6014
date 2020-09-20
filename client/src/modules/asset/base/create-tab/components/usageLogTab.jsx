@@ -207,7 +207,7 @@ class UsageLogTab extends Component {
 
 
     render() {
-        const { id } = this.props;
+        const { id, assetId } = this.props;
         const { translate, user, department } = this.props;
         const { assignedToOrganizationalUnit, assignedToUser, usageLogs, currentRow, typeRegisterForUse } = this.state;
         var userlist = user.list, departmentlist = department.list;
@@ -283,9 +283,12 @@ class UsageLogTab extends Component {
                             typeRegisterForUse == 2 &&
                         
                         <CalendarUsage 
-                        id = {`edit`}
-                        assetId = {id}
-                        usageLogs = {usageLogs}
+                            id = {`edit`}
+                            assetId = {assetId}
+                            usageLogs = {usageLogs}
+                            assignedToUser = {assignedToUser}
+                            assignedToOrganizationalUnit = {assignedToOrganizationalUnit}
+                            typeRegisterForUse = {typeRegisterForUse}
                         />
                         }
                         {   typeRegisterForUse !== 2 &&
