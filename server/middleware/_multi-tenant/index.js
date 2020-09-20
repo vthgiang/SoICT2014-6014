@@ -152,7 +152,7 @@ exports.uploadFile = (arrData, type) => {
     var name, arrFile;
     // Tạo folder chứa file khi chưa có folder
     const checkExistUploads = async(portal) => {
-        if(company !== undefined)
+        if(portal !== undefined)
             return await arrData.forEach(x => {
                 let dir = `./upload/private/${portal}${x.path}`;
                 if (!fs.existsSync(dir)) {

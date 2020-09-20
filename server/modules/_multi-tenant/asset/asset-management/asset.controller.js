@@ -75,7 +75,7 @@ exports.createAsset = async (req, res) => {
         if (req.files.fileAvatar) {
             avatar = `/${req.files.fileAvatar[0].path}`;
         }
-        let file = req.files.file;
+        let file = req.files && req.files.file;
         let fileInfo = { file, avatar };
 
         let data = await AssetService.createAsset(req.portal, req.body, fileInfo);
@@ -274,6 +274,28 @@ exports.deleteUsage = async (req, res) => {
 
 
 //*****************Thông tin bảo trì**************/
+
+/**
+ * Lấy danh sách thông tin bảo trì tài sản
+ */
+exports.getMaintainances = async (req, res) => {
+    try {
+        let data = await AssetService.getMaintainances(req.portal, req.query);
+        res.status(200).json({
+            success: true,
+            messages: ["get_maintainance_success"],
+            content: data
+        });
+    } catch (error) {
+        console.log("get_maintainance_false", error);
+        res.status(400).json({
+            success: false,
+            messages: ["get_maintainance_false"],
+            content: { error: error }
+        });
+    }
+}
+
 /**
  * Thêm mới thông tin bảo trì tài sản
  */

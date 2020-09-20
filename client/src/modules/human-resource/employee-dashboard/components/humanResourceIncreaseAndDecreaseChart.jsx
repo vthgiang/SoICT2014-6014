@@ -9,7 +9,7 @@ import { EmployeeManagerActions } from '../../profile/employee-management/redux/
 import c3 from 'c3';
 import 'c3/c3.css';
 
-class TwoBarChart extends Component {
+class HumanResourceIncreaseAndDecreaseChart extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -67,8 +67,8 @@ class TwoBarChart extends Component {
 
     static getDerivedStateFromProps(nextProps, prevState) {
         if (!prevState.arrMonth || nextProps.employeesManager.arrMonth.length !== prevState.arrMonth.length ||
-            !TwoBarChart.isEqual(nextProps.employeesManager.listEmployeesHaveStartingDateOfNumberMonth, prevState.listEmployeesHaveStartingDateOfNumberMonth) ||
-            !TwoBarChart.isEqual(nextProps.employeesManager.listEmployeesHaveLeavingDateOfNumberMonth, prevState.listEmployeesHaveLeavingDateOfNumberMonth)) {
+            !HumanResourceIncreaseAndDecreaseChart.isEqual(nextProps.employeesManager.listEmployeesHaveStartingDateOfNumberMonth, prevState.listEmployeesHaveStartingDateOfNumberMonth) ||
+            !HumanResourceIncreaseAndDecreaseChart.isEqual(nextProps.employeesManager.listEmployeesHaveLeavingDateOfNumberMonth, prevState.listEmployeesHaveLeavingDateOfNumberMonth)) {
             return {
                 ...prevState,
                 nameChart: nextProps.nameChart,
@@ -85,8 +85,8 @@ class TwoBarChart extends Component {
     shouldComponentUpdate(nextProps, nextState) {
         if (nextProps.employeesManager.arrMonth.length !== this.state.arrMonth.length ||
             nextState.lineChart !== this.state.lineChart ||
-            !TwoBarChart.isEqual(nextProps.employeesManager.listEmployeesHaveStartingDateOfNumberMonth, this.state.listEmployeesHaveStartingDateOfNumberMonth) ||
-            !TwoBarChart.isEqual(nextProps.employeesManager.listEmployeesHaveLeavingDateOfNumberMonth, this.state.listEmployeesHaveLeavingDateOfNumberMonth) ||
+            !HumanResourceIncreaseAndDecreaseChart.isEqual(nextProps.employeesManager.listEmployeesHaveStartingDateOfNumberMonth, this.state.listEmployeesHaveStartingDateOfNumberMonth) ||
+            !HumanResourceIncreaseAndDecreaseChart.isEqual(nextProps.employeesManager.listEmployeesHaveLeavingDateOfNumberMonth, this.state.listEmployeesHaveLeavingDateOfNumberMonth) ||
             JSON.stringify(nextState.organizationalUnitsSearch) !== JSON.stringify(this.state.organizationalUnitsSearch)) {
             return true;
         }
@@ -253,5 +253,5 @@ const actionCreators = {
     getAllEmployee: EmployeeManagerActions.getAllEmployee,
 };
 
-const twoBarChart = connect(mapState, actionCreators)(withTranslate(TwoBarChart));
-export { twoBarChart as TwoBarChart };
+const increaseAndDecreaseChart = connect(mapState, actionCreators)(withTranslate(HumanResourceIncreaseAndDecreaseChart));
+export { increaseAndDecreaseChart as HumanResourceIncreaseAndDecreaseChart };

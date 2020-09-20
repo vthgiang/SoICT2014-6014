@@ -38,6 +38,7 @@ class IncidentManagement extends Component {
         this.props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
         this.props.getUser();
         this.props.getIncidents(this.state);
+        this.props.getAllAsset(this.state);
     }
 
 
@@ -170,7 +171,6 @@ class IncidentManagement extends Component {
     }
 
     deleteIncident = (assetId, incidentId) => {
-        console.log('\n\n***\n', assetId, incidentId);
         let { managedBy } = this.state
         this.props.deleteIncident(assetId, incidentId).then(({ response }) => {
             if (response.data.success) {
@@ -251,7 +251,6 @@ class IncidentManagement extends Component {
 
     // Bắt sự kiện click chỉnh sửa thông tin tài sản
     handleEditAsset = async (value) => {
-        console.log(value);
         await this.setState(state => {
             return {
                 ...state,
@@ -267,9 +266,9 @@ class IncidentManagement extends Component {
 
     convertIncidentType = (type) => {
         if (type == 1) {
-            return 'Mất';
+            return 'Hỏng';
         } else if (type == 2) {
-            return 'Hỏng'
+            return 'Mất'
         } else {
             return 'Type is deleted'
         }

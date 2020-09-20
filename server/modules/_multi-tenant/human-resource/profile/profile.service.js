@@ -290,7 +290,9 @@ exports.getEmployees = async (portal, company, organizationalUnits, positions, a
                 gender: 1,
                 birthdate: 1,
                 startingDate: 1,
-                leavingDate: 1
+                leavingDate: 1,
+                professionalSkill: 1,
+
             });
             let totalEmployee = listEmployeesOfOrganizationalUnits.length;
             return {
@@ -307,7 +309,8 @@ exports.getEmployees = async (portal, company, organizationalUnits, positions, a
             gender: 1,
             birthdate: 1,
             startingDate: 1,
-            leavingDate: 1
+            leavingDate: 1,
+            professionalSkill: 1
         });
         return {
             totalAllEmployee,

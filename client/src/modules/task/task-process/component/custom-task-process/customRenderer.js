@@ -100,6 +100,29 @@ export default class CustomRenderer extends BaseRenderer {
             div2.innerHTML = accountableName ? accountableName : "";
             foreignObject1.appendChild(div2);
             svgAppend(parentNode, foreignObject1);
+
+
+            let progress = element.businessObject.$attrs.progress
+           
+                //Vẽ người thực hiện công việc
+            let foreignObject2 = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
+            foreignObject2.setAttribute('x', 120);
+            foreignObject2.setAttribute('y', 125);
+            foreignObject2.setAttribute('height', 30);
+            foreignObject2.setAttribute('width', 40);
+
+            let div3 = document.createElement('div');
+            let att3 = document.createAttribute("class");        // Create a "href" attribute
+            att3.value = "progress-task-process";            // Set the value of the href attribute
+            div3.setAttributeNode(att3);
+
+            att3 = document.createAttribute("style");        // Create a "href" attribute
+            div3.setAttributeNode(att3);
+            
+            div3.innerHTML = progress ? progress + "%" : "0%";
+            foreignObject2.appendChild(div3);
+            svgAppend(parentNode, foreignObject2);
+
         }
 
 
@@ -108,13 +131,12 @@ export default class CustomRenderer extends BaseRenderer {
 
 
         if (element.type == 'bpmn:ExclusiveGateway') {
-            let b = element.businessObject.$attrs.shapeName
-
             //Vẽ tên của công việc lên shape
+            let b = element.businessObject.$attrs.shapeName
             let foreignObject = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
             foreignObject.setAttribute('x', -50);
-            foreignObject.setAttribute('y', -55);
-            foreignObject.setAttribute('height', 48);
+            foreignObject.setAttribute('y', -45);
+            foreignObject.setAttribute('height', 35);
             foreignObject.setAttribute('width', 150);
 
 
@@ -153,31 +175,34 @@ export default class CustomRenderer extends BaseRenderer {
             let att1 = document.createAttribute("class");        // Create a "href" attribute
             att1.value = "list-task-process-gate-way-responsible";            // Set the value of the href attribute
             div1.setAttributeNode(att1);
-
             att1 = document.createAttribute("style");        // Create a "href" attribute
             div1.setAttributeNode(att1);
             let responsibleName = element.businessObject.$attrs.responsibleName
             div1.innerHTML = responsibleName ? responsibleName : "";
             foreignObject1.appendChild(div1);
 
+
             let div2 = document.createElement('div');
             let att2 = document.createAttribute("class");        // Create a "href" attribute
             att2.value = "list-task-process-gate-way-accountable";            // Set the value of the href attribute
             div2.setAttributeNode(att2);
-
             att2 = document.createAttribute("style");        // Create a "href" attribute
             div2.setAttributeNode(att2);
             let accountableName = element.businessObject.$attrs.accountableName
             div2.innerHTML = accountableName ? accountableName : "";
             foreignObject1.appendChild(div2);
+
+
+            let div3 = document.createElement('div');
+            let att3 = document.createAttribute("class");        // Create a "href" attribute
+            att3.value = "gate-way-progress";            // Set the value of the href attribute
+            div3.setAttributeNode(att3);
+            att3 = document.createAttribute("style");        // Create a "href" attribute
+            div3.setAttributeNode(att3);
+            let progress = element.businessObject.$attrs.progress
+            div3.innerHTML = progress ? progress + "%" : "0%";
+            foreignObject1.appendChild(div3);
             svgAppend(parentNode, foreignObject1);
-
-
-
-
-
-
-
         }
         return shape;
     }
@@ -249,3 +274,7 @@ function drawLine(parentNode, x1, y1, x2, y2, color) {
 
     return line;
 }
+
+
+
+

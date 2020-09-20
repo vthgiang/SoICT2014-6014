@@ -87,7 +87,7 @@ exports.searchTaskTemplates = async (portal, id, pageNumber, noResultsPerPage, o
                     as: "creator organizationalUnit"
                 }
             },
-            { $unwind: "$creator organizationalUnit" },
+            // { $unwind: "$creator organizationalUnit" },
             {
                 $facet: {
                     tasks: [{ $sort: { 'createdAt': 1 } },
@@ -131,7 +131,7 @@ exports.searchTaskTemplates = async (portal, id, pageNumber, noResultsPerPage, o
                     as: "creator organizationalUnit"
                 }
             },
-            { $unwind: "$creator organizationalUnit" },
+            // { $unwind: "$creator organizationalUnit" },
             {
                 $facet: {
                     tasks: [{ $sort: { 'createdAt': 1 } },

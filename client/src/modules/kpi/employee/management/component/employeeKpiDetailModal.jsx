@@ -207,7 +207,7 @@ class ModalDetailKPIPersonal extends Component {
                 taskId: id,
             }
         });
-        window.$(`#modal-detail-task`).modal('show');
+        window.$(`#modal-detail-task-kpi-detail`).modal('show');
     }
     showDetailTaskImportanceCal = async (item) => {
         await this.setState(state => {
@@ -378,7 +378,7 @@ class ModalDetailKPIPersonal extends Component {
                         })}
                     </div>
                 </DialogModal>
-                {<ModalDetailTask id={taskId} />}
+                {<ModalDetailTask action={'kpi-detail'} id={taskId} />}
             </React.Fragment>
         );
     }
