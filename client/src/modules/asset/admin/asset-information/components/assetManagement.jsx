@@ -366,16 +366,16 @@ class AssetManagement extends Component {
         return typeArr;
     }
 
-    checkHasComponent = (name) => {
-        var { auth } = this.props;
-        var result = false;
-        if (auth) {
-            auth.components.forEach(component => {
-                if (component.name === name) result = true;
-            });
-        }
-        return result;
-    }
+    // checkHasComponent = (name) => {
+    //     var { auth } = this.props;
+    //     var result = false;
+    //     if (auth) {
+    //         auth.components.forEach(component => {
+    //             if (component.name === name) result = true;
+    //         });
+    //     }
+    //     return result;
+    // }
 
     getDepartment = () => {
         let { department } = this.props;
@@ -429,20 +429,17 @@ class AssetManagement extends Component {
 
         return (
             <div className={isActive ? isActive : "box"}>
-
                 <div className="box-body qlcv">
                     {/* Form thêm tài sản mới */}
-                    {this.checkHasComponent("create-asset") &&
-                        <div className="dropdown pull-right">
-                            <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('human_resource.profile.employee_management.add_employee_title')} >{translate('menu.add_asset')}</button>
-                            <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
-                                <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-asset').modal('show')}>{translate('human_resource.profile.employee_management.add_import')}</a></li>
-                                <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-add-asset').modal('show')}>Thêm tài sản</a></li>
-                            </ul>
-                        </div>
-                    }
-                    {this.checkHasComponent("create-asset") && <AssetCreateForm/>}
-                    {this.checkHasComponent("create-asset") && <AssetImportForm/>}
+                    <div className="dropdown pull-right">
+                        <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('human_resource.profile.employee_management.add_employee_title')} >{translate('menu.add_asset')}</button>
+                        <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
+                            <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-asset').modal('show')}>{translate('human_resource.profile.employee_management.add_import')}</a></li>
+                            <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-add-asset').modal('show')}>Thêm tài sản</a></li>
+                        </ul>
+                    </div>
+                    <AssetCreateForm/>
+                    <AssetImportForm/>
                     
                     {/* Thanh tìm kiếm */}
                     <div className="form-inline">
