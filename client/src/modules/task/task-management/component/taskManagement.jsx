@@ -20,7 +20,7 @@ class TaskManagement extends Component {
 
             currentTab: "responsible",
             organizationalUnit: '[]',
-            status: '[]',
+            status: ["Inprocess", "WaitForApproval"],
             priority: '[]',
             special: '[]',
             name: "",
@@ -40,7 +40,7 @@ class TaskManagement extends Component {
 
     componentDidMount() {
         this.props.getDepartment();
-        this.props.getResponsibleTaskByUser("[]", "1", "20", "[]", "[]", "[]", null, null, null, null, null);
+        this.props.getResponsibleTaskByUser("[]", "1", "20", this.state.status, "[]", "[]", null, null, null, null, null);
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -416,6 +416,7 @@ class TaskManagement extends Component {
         }
 
         this.setState(state => {
+            console.log('val-status', value);
             return {
                 ...state,
                 status: value
@@ -491,7 +492,7 @@ class TaskManagement extends Component {
 
     render() {
         const { tasks, user, translate } = this.props;
-        const { currentTaskId, currentPage, currentTab, parentTask, startDate, endDate, perPage } = this.state;
+        const { currentTaskId, currentPage, currentTab, parentTask, startDate, endDate, perPage, status } = this.state;
         let currentTasks, units = [];
         let pageTotals;
 
@@ -500,7 +501,7 @@ class TaskManagement extends Component {
             pageTotals = tasks.pages
         }
 
-        if (user.organizationalUnitsOfUser) units = user.organizationalUnitsOfUser;
+        if (user) units = user.organizationalUnitsOfUser;
         const items = [];
 
         // khởi tạo dữ liệu TreeTable
@@ -586,16 +587,17 @@ class TaskManagement extends Component {
                                     defaultValue={units.map(item => { return item._id })}
                                     items={units.map(item => { return { value: item._id, text: item.name } })}
                                     onChange={this.handleSelectOrganizationalUnit}
-                                    options={{ nonSelectedText: translate('task.task_management.select_department'), allSelectedText: translate(`task.task_management.select_all_department`) }}>
+                                    options={{ nonSelectedText: units.length !== 0 ? translate('task.task_management.select_department') : "Bạn chưa có đơn vị", allSelectedText: translate(`task.task_management.select_all_department`) }}>
                                 </SelectMulti>
                             }
                         </div>
                         <div className="form-group">
                             <label>{translate('task.task_management.status')}</label>
                             <SelectMulti id="multiSelectStatus"
-                                defaultValue={[
-                                    translate('task.task_management.inprocess')
-                                ]}
+                                // defaultValue={[
+                                //     translate('task.task_management.inprocess')
+                                // ]}
+                                value={status}
                                 items={[
                                     { value: "Inprocess", text: translate('task.task_management.inprocess') },
                                     { value: "WaitForApproval", text: translate('task.task_management.wait_for_approval') },

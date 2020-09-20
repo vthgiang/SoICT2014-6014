@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import TabNotificationSent from './tabNotificationSent';
 import TabNotificationReceivered from './tabNotificationReceivered';
+import TabNotificationUnRead from './tabNotificationUnRead';
 
 class NotificationTable extends Component {
     constructor(props) {
@@ -20,6 +21,7 @@ class NotificationTable extends Component {
                         { 
                             this.checkHasComponent('create-notification') && <TabNotificationSent/>
                         }
+                        <TabNotificationUnRead/>
                     </div>
                 </div>
             </React.Fragment>

@@ -65,11 +65,14 @@ class MaintainanceEditForm extends Component {
     }
 
     // Bắt sự kiện thay đổi loại phiếu
-    handleTypeChange = (e) => {
-        let { value } = e.target;
+    handleTypeChange = (value) => {
+        if (value.length === 0) {
+            value = ''
+        }
+
         this.setState({
             ...this.state,
-            type: value
+            type: value[0]
         })
     }
 
@@ -147,19 +150,20 @@ class MaintainanceEditForm extends Component {
     }
 
     // Bắt sự kiện thay đổi "Trạng thái phiếu"
-    handleStatusChange = (e) => {
-        let { value } = e.target;
+    handleStatusChange = (value) => {
+        if (value.length === 0) {
+            value = ''
+        }
+
         this.setState({
             ...this.state,
-            status: value
+            status: value[0]
         })
     }
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let result = this.validateCreateDate(this.state.createDate, false) &&
-            this.validateDescription(this.state.description, false) &&
-            this.validateStartDate(this.state.startDate, false)
+        let result = this.validateCreateDate(this.state.createDate, false) 
         
         return result;
     }
@@ -261,11 +265,18 @@ class MaintainanceEditForm extends Component {
                                 {/* Phân loại */}
                                 <div className="form-group">
                                     <label>{translate('asset.general_information.type')}</label>
-                                    <select className="form-control" value={type} name="type" onChange={this.handleTypeChange}>
-                                        <option value="Sửa chữa">{translate('asset.asset_info.repair')}</option>
-                                        <option value="Thay thế">{translate('asset.asset_info.replace')}</option>
-                                        <option value="Nâng cấp">{translate('asset.asset_info.upgrade')}</option>
-                                    </select>
+                                    <SelectBox
+                                        id={`edit-type-maintainance-asset${_id}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={[
+                                            { value: 1, text: translate('asset.asset_info.repair') },
+                                            { value: 2, text: translate('asset.asset_info.replace') },
+                                            { value: 3, text: translate('asset.asset_info.upgrade') }
+                                        ]}
+                                        onChange={this.handleTypeChange}
+                                        multiple={false}
+                                    />
                                 </div>
 
                                 {/* Tài sản */}
@@ -289,7 +300,7 @@ class MaintainanceEditForm extends Component {
                                 
                                 {/* Nội dung */}
                                 <div className={`form-group ${!errorOnDescription ? "" : "has-error"}`}>
-                                    <label>{translate('asset.general_information.content')}<span className="text-red">*</span></label>
+                                    <label>{translate('asset.general_information.content')}</label>
                                     <textarea className="form-control" rows="3" name="description" value={description} onChange={this.handleDescriptionChange} autoComplete="off" placeholder={translate('asset.general_information.content')}></textarea>
                                     <ErrorLabel content={errorOnDescription} />
                                 </div>
@@ -298,7 +309,7 @@ class MaintainanceEditForm extends Component {
                             <div className="col-sm-6">
                                 {/* Ngày thực hiện */}
                                 <div className={`form-group ${!errorOnStartDate ? "" : "has-error"}`}>
-                                    <label>{translate('asset.general_information.start_date')}<span className="text-red">*</span></label>
+                                    <label>{translate('asset.general_information.start_date')}</label>
                                     <DatePicker
                                         id={`edit-start-date${_id}`}
                                         value={startDate}
@@ -327,11 +338,18 @@ class MaintainanceEditForm extends Component {
                                 {/* Trạng thái */}
                                 <div className="form-group">
                                     <label>{translate('asset.general_information.status')}</label>
-                                    <select className="form-control" value={status} name="status" onChange={this.handleStatusChange}>
-                                        <option value="Đã thực hiện">{translate('asset.asset_info.made')}</option>
-                                        <option value="Đang thực hiện">{translate('asset.asset_info.processing')}</option>
-                                        <option value="Chưa thực hiện">{translate('asset.asset_info.unfulfilled')}</option>
-                                    </select>
+                                    <SelectBox
+                                        id={`edit-status-maintainance-asset${_id}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={[
+                                            { value: 1, text: translate('asset.asset_info.unfulfilled') },
+                                            { value: 2, text: translate('asset.asset_info.processing') },
+                                            { value: 3, text: translate('asset.asset_info.made') },
+                                        ]}
+                                        onChange={this.handleStatusChange}
+                                        multiple={false}
+                                    />
                                 </div>
                             </div>
                         </div>

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import moment from 'moment';
 
-import { DialogModal, ButtonModal, SelectBox, DatePicker, TreeSelect, ErrorLabel } from '../../../../../common-components';
+import { DialogModal, ButtonModal, SelectBox, DatePicker, TreeSelect, ErrorLabel, UploadFile } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
 import { DocumentImportForm } from './documentImportForm';
 
@@ -490,15 +490,12 @@ class CreateForm extends Component {
     render() {
         const { translate, role, documents, department } = this.props;
         const { list } = documents.administration.domains;
-        const { errorName, errorIssuingBody, errorOfficialNumber, errorSigner, errorVersionName,
-            errorDocumentFile, errorDocumentFileScan, errorIssuingDate, errorEffectiveDate,
-            errorExpiredDate, errorCategory, documentArchives, documentDomains } = this.state;
+        const { errorName, errorCategory, errorVersionName, documentArchives, documentDomains } = this.state;
         const archives = documents.administration.archives.list;
         const categories = documents.administration.categories.list.map(category => { return { value: category._id, text: category.name } });
         const documentRoles = role.list.map(role => { return { value: role._id, text: role.name } });
         const relationshipDocs = documents.administration.data.list.map(doc => { return { value: doc._id, text: doc.name } });
         let path = documentArchives ? this.findPath(archives, documentArchives) : "";
-        console.log('pathhhhh', path);
         return (
             <React.Fragment>
 
@@ -540,17 +537,17 @@ class CreateForm extends Component {
                                             <div className="form-group">
                                                 <label>{translate('document.doc_version.issuing_body')}</label>
                                                 <input type="text" className="form-control" onChange={this.handleIssuingBody} placeholder={translate('document.doc_version.exp_issuing_body')} />
-                                                <ErrorLabel content={errorIssuingBody} />
+
                                             </div>
                                             <div className="form-group">
                                                 <label>{translate('document.doc_version.official_number')}</label>
                                                 <input type="text" className="form-control" onChange={this.handleOfficialNumber} placeholder={translate('document.doc_version.exp_official_number')} />
-                                                <ErrorLabel content={errorOfficialNumber} />
+
                                             </div>
                                             <div className="form-group">
                                                 <label>{translate('document.doc_version.signer')}</label>
                                                 <input type="text" className="form-control" onChange={this.handleSigner} placeholder={translate('document.doc_version.exp_signer')} />
-                                                <ErrorLabel content={errorSigner} />
+
                                             </div>
                                         </div>
                                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
@@ -587,11 +584,12 @@ class CreateForm extends Component {
                                             </div>
                                             <div className="form-group">
                                                 <label>{translate('document.upload_file')}</label>
+                                                {/* <UploadFile /> */}
                                                 <br />
                                                 <div className="upload btn btn-primary">
                                                     <i className="fa fa-folder"></i>
                                                     {" " + translate('document.choose_file')}
-                                                    <input className="form-control" type="file" name="file" onChange={this.handleUploadFile} />
+                                                    <input className="upload" type="file" name="file" onChange={this.handleUploadFile} />
                                                     {/* <input type="file" style={{ height: 34, paddingTop: 2 }} className="form-control" name="file" onChange={this.handleChangeFile} /> */}
                                                 </div>
                                             </div>
@@ -611,7 +609,6 @@ class CreateForm extends Component {
                                                     value={this.state.documentIssuingDate}
                                                     onChange={this.handleIssuingDate}
                                                 />
-                                                <ErrorLabel content={errorIssuingDate} />
                                             </div>
                                             <div className="form-group">
                                                 <label>{translate('document.doc_version.effective_date')}</label>
@@ -620,7 +617,6 @@ class CreateForm extends Component {
                                                     value={this.state.documentEffectiveDate}
                                                     onChange={this.handleEffectiveDate}
                                                 />
-                                                <ErrorLabel content={errorEffectiveDate} />
                                             </div>
                                             <div className="form-group">
                                                 <label>{translate('document.doc_version.expired_date')}</label>
@@ -629,7 +625,6 @@ class CreateForm extends Component {
                                                     value={this.state.documentExpiredDate}
                                                     onChange={this.handleExpiredDate}
                                                 />
-                                                <ErrorLabel content={errorExpiredDate} />
                                             </div>
                                         </div>
                                     </div>

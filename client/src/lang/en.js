@@ -341,6 +341,7 @@ export default {
             title: 'Notification',
             news: 'News',
             see_all: 'See all',
+            mark_all_readed: 'Mark all readed',
             total: 'Total',
             level: 'Level',
             type: {
@@ -360,6 +361,7 @@ export default {
             add: 'Add new nofitication',
             receivered: 'Receivered',
             sent: 'Sent',
+            unread: 'Unread',
             note: 'Not',
             info: 'Information',
             delete: 'Delete',
@@ -905,13 +907,18 @@ export default {
             note_file_import: 'Import file is not in the correct format',
             error_row: 'An error occurred in the lines',
 
+            rowHeader: 'Number of table header rows',
+            sheets_name: 'Sheet names',
+            title_correspond: 'Title corresponds to',
+
             // Validator dung chung cho module quản lý nhân sự
             employee_number_required: 'Staff code required',
             staff_code_not_special: 'Staff code does not contain special characters',
             staff_code_not_find: 'Staff code does not exist',
             start_date_before_end_date: 'The start date must be before the end date',
             end_date_after_start_date: 'The end date must be after the start date',
-
+            cannot_be_empty: 'cannot be empty',
+            value_duplicate: 'be duplicated',
 
             // Quản lý lương nhân viên
             salary: {
@@ -1109,22 +1116,22 @@ export default {
                     menu_general_infor: 'General information',
                     menu_contact_infor: 'Contact information',
                     menu_education_experience: 'Education - Experience',
-                    menu_diploma_certificate: 'Diploma - Certificate',
+                    menu_diploma_certificate: 'Degrees - Certificate',
                     menu_account_tax: 'Account - Tax',
                     menu_insurrance_infor: 'Insurrance information',
                     menu_contract_training: 'Contract - Training',
-                    menu_reward_discipline: 'Reward - Discipline',
+                    menu_reward_discipline: 'Commendation - Discipline',
                     menu_salary_sabbatical: 'Salary - Annual leave',
                     menu_attachments: 'Attachments',
 
                     menu_general_infor_title: 'General information',
                     menu_contact_infor_title: 'Contact information',
                     menu_education_experience_title: 'Education - Experience',
-                    menu_diploma_certificate_title: 'Diploma - Certificate',
+                    menu_diploma_certificate_title: 'Degrees - Certificate',
                     menu_account_tax_title: 'Account - Tax',
                     menu_insurrance_infor_title: 'Insurrance information',
                     menu_contract_training_title: 'Contract - Training',
-                    menu_reward_discipline_title: 'Reward - Discipline',
+                    menu_reward_discipline_title: 'Commendation - Discipline',
                     menu_salary_sabbatical_title: 'Salary - Annual leave',
                     menu_attachments_title: 'Attachments',
                 },
@@ -1188,9 +1195,9 @@ export default {
                 edit_experience: 'Edit work experience',
                 add_experience: 'Add work experience',
 
-                diploma: 'Diploma',
+                diploma: 'Degrees',
                 certificate: 'Certificate',
-                name_diploma: 'Name of diploma',
+                name_diploma: 'Name of degree',
                 name_certificate: 'Name of certificate',
                 diploma_issued_by: 'Issued by',
                 graduation_year: 'Graduation year',
@@ -1198,9 +1205,9 @@ export default {
                 attached_files: 'Attached files',
                 end_date_certificate: 'Expiration date',
                 edit_certificate: 'Edit certificate',
-                edit_diploma: 'Edit diploma',
+                edit_diploma: 'Edit degree',
                 add_certificate: 'Add certificate',
-                add_diploma: 'Add diploma',
+                add_diploma: 'Add degree',
                 excellent: 'Excellent',
                 very_good: 'Very good',
                 good: 'Good',
@@ -1251,7 +1258,7 @@ export default {
                 submitted: 'Submitted',
                 returned: 'Returned',
                 no_files: 'No files yet',
-                disc_diploma: 'Highest degree diploma',
+                disc_diploma: 'Highest degree',
                 curriculum_vitae: 'Curriculum vitae',
                 disc_curriculum_vitae: 'Notarized resume',
                 img: 'Image',
@@ -1272,7 +1279,7 @@ export default {
 
 
 
-                reward: 'Reward',
+                reward: 'Commendation',
                 discipline: 'Discipline',
                 historySalary: 'History of salary',
                 sabbatical: 'Annual leave information',
@@ -1315,29 +1322,48 @@ export default {
                     // Nhóm dánh cho export excel
                     file_export_name: 'Staffs imformation',
                     export: {
-                        sheet1: '1.Nhân viên',
-                        sheet2: '2.HS Nhân viên - Kinh nghiệm',
-                        sheet3: '3.HS Nhân viên - Bằng cấp',
-                        sheet4: '4.HS Nhân viên - Chứng chỉ',
-                        sheet5: '5.HS Nhân viên - Hợp đồng',
-                        sheet6: '6.HS Nhân viên - Bảo hiểm XH',
-                        sheet7: '7.HS Nhân viên - Tài liệu',
-                        sheet8: '8.HS Nhân viên - Khen thưởng',
-                        sheet9: '9.HS Nhân viên - Kỷ luật',
-                        sheet10: '10.HS Nhân viên - Lương thưởng',
-                        sheet11: '11.HS Nhân viên - Nghỉ phép',
+                        sheet1: '1.Staffs',
+                        sheet2: '2.Staffs - Experiences',
+                        sheet3: '3.Staffs - Degrees',
+                        sheet4: '4.Staffs - Certificates',
+                        sheet5: '5.Staffs - Labor contracts',
+                        sheet6: '6.Staffs - Social insurances',
+                        sheet7: '7.Staffs - Attachments',
+                        sheet8: '8.Staffs - Commendations',
+                        sheet9: '9.Staffs - Disciplines',
+                        sheet10: '10.Staffs - Salaries',
+                        sheet11: '11.Staffs - Annual Leave',
 
-                        emergency_contact_person: 'Người liên hệ khẩn cấp',
-                        relation_with_emergency_contact_person: 'Quan hệ với người liên hệ khẩn cấp',
-                        emergency_contact_person_address: 'Địa chỉ người liên hệ khẩn cấp',
-                        emergency_contact_person_phone_number: 'Điện thoại di động người liên hệ khẩn cấp',
-                        emergency_contact_person_home_nhone: 'Điện thoại nhà riêng người liên hệ khẩn cấp',
-                        emergency_contact_person_email: 'Email người liên hệ khẩn cấp',
-                        atmNumber: 'Số tài khoản ngân hàng',
-                        bank_address: 'Chi nhánh ngân hàng',
-                        health_insurance_start_date: 'Ngày BHYT có hiệu lực',
-                        health_insurance_end_date: 'Ngày BHYT hết hạn',
+                        emergency_contact_person: 'Emergency contact person',
+                        relation_with_emergency_contact_person: 'Relation with emergency contact person',
+                        emergency_contact_person_address: 'Emergency contact person address',
+                        emergency_contact_person_phone_number: 'Emergency contact_person phone number',
+                        emergency_contact_person_home_phone: 'Emergency contact person home phone',
+                        emergency_contact_person_email: 'Emergency contact person email',
+                        atmNumber: 'Bank account number',
+                        bank_address: 'Bank branch',
+                        health_insurance_start_date: 'Health insurance effect date',
+                        health_insurance_end_date: ' Health insurance expiration date',
                     },
+
+                    import: {
+                        import_general_infor: 'Staff basic information',
+                        import_experience: 'Work experiences',
+                        import_degree: 'Degree',
+                        import_certificate: 'Certificate',
+                        import_contract: 'Labor contracts',
+                        import_socialInsurance_details: 'Social insurances',
+                        import_file: 'Attachments',
+
+                        import_general_infor_title: 'Import staff basic information',
+                        import_experience_title: 'Import work experience',
+                        import_degree_title: 'Import Degree',
+                        import_certificate_title: 'Import certificate',
+                        import_contract_title: 'Import labor contract',
+                        import_socialInsurance_details_title: 'Import social insurance',
+                        import_file_title: 'Import attachments'
+                    },
+
 
                     // Nhón dành cho UI
                     have: 'Have',
@@ -1381,6 +1407,7 @@ export default {
                     employee_number_have_exist: 'Employee number have exist',
                     email_in_company_have_exist: 'Email in company have exist',
                     employee_timesheet_id_required: 'Employee timesheet id required',
+                    employee_timesheet_id_have_exist: 'Employee timesheet have exist',
                     full_name_required: 'Full name required',
                     birthdate_required: 'Birthdate required',
                     starting_date_required: 'Starting date required',
@@ -1392,8 +1419,6 @@ export default {
                     tax_number_required: 'Tax number required',
                     tax_representative_required: 'Tax representative required',
                     tax_authority_required: 'Tax authority required',
-
-
                 }
             },
 
@@ -1420,8 +1445,8 @@ export default {
 
                 // Nhóm thể loại kế hoạch làm Việc
                 holiday: 'Time off holidays, Tet holidays',
-                auto_leave: 'Time is not allowed to take leave',
-                no_leave: 'Time is allowed to take leave',
+                auto_leave: 'Time is allowed to take leave',
+                no_leave: 'Time is not allowed to take leave',
 
                 // Nhóm dành cho action
                 edit_holiday: 'Edit work schedule',
@@ -1909,6 +1934,7 @@ export default {
             // Quản lý đề nghị mua sắm thiết bị
             manage_recommend_procure: {
                 asset_recommend: 'Asset recommend procure',
+                equipment_description: 'Equipment description',
                 add_recommend_card: 'Add new form recommend procure asset',
                 view_recommend_card: 'View form recommend procure asset',
                 edit_recommend_card: 'Edit form recommend procure asset',
@@ -2399,7 +2425,7 @@ export default {
 
                 is_task_process: 'This is a task of process',
                 activated_task: "Activate",
-                following_task: "the following tasks",
+                following_task: "Click here to activate the following tasks",
 
                 // TODO: code_mesage_task_perform
                 create_result_task_success: 'Evaluate task successfully',

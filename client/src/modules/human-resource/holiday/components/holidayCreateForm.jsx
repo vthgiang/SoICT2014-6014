@@ -182,6 +182,7 @@ class HolidayCreateForm extends Component {
                                 onChange={this.handleTypetChange}
                             />
                         </div>
+
                         <div className="row">
                             {/* Ngày bắt đầu */}
                             <div className={`form-group col-sm-6 col-xs-12 ${errorOnStartDate && "has-error"}`}>
@@ -206,6 +207,7 @@ class HolidayCreateForm extends Component {
                                 <ErrorLabel content={errorOnEndDate} />
                             </div>
                         </div>
+
                         {/* Mô tả */}
                         <div className={`form-group ${errorOnDescription && "has-error"}`}>
                             <label htmlFor="description">{translate('human_resource.holiday.table.describe_timeline')}<span className="text-red">&#42;</span></label>

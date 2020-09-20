@@ -306,8 +306,6 @@ class Comment extends Component {
         }
     }
 
-
-
     save = (setKpiId) => {
         let { deleteFile } = this.state
         if (deleteFile.type === "comment") {
@@ -322,7 +320,6 @@ class Comment extends Component {
         const { editComment, editChildComment, showChildComment, currentUser, newCommentEdited, newChildCommentEdited, showModalDelete, deleteFile, childComment, showfile } = this.state
         const { auth, translate } = this.props
         const { currentKPI } = this.props
-        console.log(currentKPI)
         comments = currentKPI?.comments
         return (
             <React.Fragment>

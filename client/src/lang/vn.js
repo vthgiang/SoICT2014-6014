@@ -341,6 +341,7 @@ export default {
             title: 'Thông báo',
             news: 'Thông báo mới',
             see_all: 'Xem tất cả',
+            mark_all_readed: 'Đánh dấu tất cả là đã đọc',
             total: 'Tổng số',
             level: 'loại thông báo',
             type: {
@@ -360,6 +361,7 @@ export default {
             add: 'Tạo thông báo',
             receivered: 'Thông báo đã nhận',
             sent: 'Thông báo đã tạo',
+            unread: 'Thông báo chưa đọc',
             note: 'Chú thích',
             info: 'Thông tin thông báo',
             delete: 'Xóa thông báo',
@@ -707,6 +709,14 @@ export default {
             manage_warehouse: 'Quản lý kho',
             material_manager: 'Quản lý thông tin vật tư',
             dashboard_material: "Bảng tin quản lý vật tư",
+            stock_management: 'Quản lý thông tin kho',
+            bin_location_management: 'Quản lý thông tin lưu kho',
+            category_management: 'Quản lý danh mục hàng hóa',
+            good_management: 'Quản lý hàng hóa',
+            partner_management: 'Quản lý đối tác',
+            proposal_management: 'Quản lý phiếu đề nghị',
+            bill_management: 'Quản lý thông tin phiếu',
+            inventory_management: 'Quản lý hàng tồn kho',
 
             manage_kpi: 'Quản lý KPI',
             kpi_unit_create: 'Khởi tạo KPI đơn vị',
@@ -924,9 +934,11 @@ export default {
             choose_file: 'Chọn file',
             name_button_export: 'Xuất báo cáo',
             choose_decision_unit: 'Chọn cấp ra quyết định',
-
             note_file_import: 'File import không đúng định dạng',
             error_row: 'Có lỗi xảy ra ở các dòng',
+            rowHeader: 'Số dòng tiêu đề của bảng',
+            sheets_name: 'Tên các sheet',
+            title_correspond: 'Tên tiêu đề ứng với',
 
             // Validator dung chung cho module quản lý nhân sự
             employee_number_required: 'Mã nhân viên không được để trống',
@@ -934,6 +946,8 @@ export default {
             staff_code_not_find: 'Mã nhân viên không tồn tại',
             start_date_before_end_date: 'Ngày bắt đầu phải trước ngày kết thúc',
             end_date_after_start_date: 'Ngày kết thúc phải sau ngày bắt đầu',
+            cannot_be_empty: 'không được để trống',
+            value_duplicate: 'bị trùng lặp',
 
             // Quản lý lương nhân viên
             salary: {
@@ -1351,13 +1365,31 @@ export default {
                         relation_with_emergency_contact_person: 'Quan hệ với người liên hệ khẩn cấp',
                         emergency_contact_person_address: 'Địa chỉ người liên hệ khẩn cấp',
                         emergency_contact_person_phone_number: 'Điện thoại di động người liên hệ khẩn cấp',
-                        emergency_contact_person_home_nhone: 'Điện thoại nhà riêng người liên hệ khẩn cấp',
+                        emergency_contact_person_home_phone: 'Điện thoại nhà riêng người liên hệ khẩn cấp',
                         emergency_contact_person_email: 'Email người liên hệ khẩn cấp',
                         atmNumber: 'Số tài khoản ngân hàng',
                         bank_address: 'Chi nhánh ngân hàng',
                         health_insurance_start_date: 'Ngày BHYT có hiệu lực',
                         health_insurance_end_date: 'Ngày BHYT hết hạn',
 
+                    },
+
+                    import: {
+                        import_general_infor: 'Thông tin cơ bản',
+                        import_experience: 'Kinh nghiệm làm việc',
+                        import_degree: 'Bằng cấp',
+                        import_certificate: 'Chứng chỉ',
+                        import_contract: 'Hợp đồng lao động',
+                        import_socialInsurance_details: 'Bảo hiểm xã hội',
+                        import_file: 'Tài liệu đính kèm',
+
+                        import_general_infor_title: 'Import thông tin nhân viên',
+                        import_experience_title: 'Import kinh nghiệm làm việc',
+                        import_degree_title: 'Import bằng cấp',
+                        import_certificate_title: 'Import chứng chỉ',
+                        import_contract_title: 'Import hợp đồng lao động',
+                        import_socialInsurance_details_title: 'Import bảo hiểm xã hội',
+                        import_file_title: 'Import tài liệu đính kèm'
                     },
 
                     // Nhón dành cho UI
@@ -1404,6 +1436,7 @@ export default {
                     employee_number_have_exist: 'Mã nhân viên đã tồn tại',
                     email_in_company_have_exist: 'Email công ty đã tồn tại',
                     employee_timesheet_id_required: 'Mã số chấm công không được để trống',
+                    employee_timesheet_id_have_exist: 'Mã số chấm công đã tồn tại',
                     full_name_required: 'Họ và tên không được để trống',
                     birthdate_required: 'Ngày sinh không được để trống',
                     starting_date_required: 'Ngày bắt đầu làm việc không được để trống',
@@ -1415,7 +1448,7 @@ export default {
                     tax_number_required: 'Mã số thuế không được để trống',
                     tax_representative_required: 'Người đại diện không được để trống',
                     tax_authority_required: 'Cơ quan quản lý thuế không được để trống',
-                    temporary_residence_required: 'Địa chỉ Chỗ ở hiện tại không được để trống',
+                    temporary_residence_required: 'Nơi ở hiện tại không được để trống',
                 }
             },
 
@@ -1442,8 +1475,8 @@ export default {
 
                 // Nhóm thể loại kế hoạch làm Việc
                 holiday: 'Thời gian nghỉ lễ, nghỉ tết',
-                auto_leave: 'Thời gian không được xin nghỉ phép',
-                no_leave: 'Thời gian được xin nghỉ phép',
+                auto_leave: 'Thời gian được xin nghỉ phép',
+                no_leave: 'Thời gian không được xin nghỉ phép',
 
                 // Nhóm dành cho action
                 edit_holiday: 'Chỉnh sửa kế hoạch làm việc',
@@ -1937,6 +1970,7 @@ export default {
             // Quản lý đề nghị mua sắm thiết bị
             manage_recommend_procure: {
                 asset_recommend: 'Thiết bị đề nghị mua sắm',
+                equipment_description: 'Mô tả thiết bị',
                 add_recommend_card: 'Thêm mới phiếu đề nghị mua sắm tài sản',
                 view_recommend_card: 'Xem thông tin phiếu đề nghị mua sắm tài sản',
                 edit_recommend_card: 'Chỉnh sửa phiếu đề nghị mua sắm tài sản',
@@ -2430,7 +2464,7 @@ export default {
 
                 is_task_process: 'Đây là công việc theo quy trình',
                 activated_task: "Kích hoạt",
-                following_task: "các công việc phía sau",
+                following_task: "Nhấn chuột để kích hoạt các công việc phía sau",
 
 
                 // TODO: code_mesage_task_perform
@@ -3212,6 +3246,37 @@ export default {
             },
             dashboard_material: {
 
+            },
+            category_management: {
+                index: 'STT',
+                add: 'Thêm mới',
+                add_title: 'Thêm danh mục mới',
+                info: 'Thông tin về danh mục hàng hóa',
+                edit: 'Chỉnh sửa thông tin danh mục',
+                delete: 'Xóa danh mục',
+                add_success: 'Thêm mới danh mục thành công',
+                delete_success: 'Xóa danh mục thành công',
+                delete_faile: 'Xóa danh mục thất bại',
+                add_faile: 'Thêm mới danh mục thất bại',
+                edit_success: 'Chỉnh sửa thành công',
+                edit_faile: 'Chỉnh sửa thất bại',
+                name: 'Tên danh mục',
+                code: 'Mã danh mục',
+                type: 'Kiểu danh mục',
+                good: 'Hàng hóa',
+                address: 'Địa chỉ',
+                description: 'Mô tả',
+                choose_type: 'Chọn kiểu hàng hóa',
+                all_type: 'Chọn tất cả các kiểu hàng hóa',
+                product: 'Sản phẩm',
+                material: 'Nguyên vật liệu',
+                equipment: 'Công cụ dụng cụ',
+                asset: 'Tài sản',
+                search: 'Tìm kiếm',
+                validate_code: 'Mã danh mục không được để trống',
+                validate_name: 'Tên danh mục không được để trống',
+                validate_type: 'Bạn cần chọn kiểu danh mục',
+                delete_info: 'Bạn có muốn xóa danh mục'
             }
         },
 

@@ -42,6 +42,8 @@ router.delete('/assets/:id/maintainance-logs', auth, AssetController.deleteMaint
 
 
 /* Tab sự cố */
+router.get('/assets/incident-logs', auth, AssetController.getIncidents);
+
 router.post('/assets/:id/incident-logs', auth, AssetController.createIncident);
 router.patch('/assets/:id/incident-logs', auth, AssetController.updateIncident);
 router.delete('/assets/:id/incident-logs', auth, AssetController.deleteIncident);

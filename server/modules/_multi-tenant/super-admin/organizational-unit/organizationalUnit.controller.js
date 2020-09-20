@@ -1,5 +1,5 @@
 const OrganizationalUnitService = require('./organizationalUnit.service');
-const RoleService = require(`${SERVER_MODULES_DIR}/_multi-tenant`);
+const RoleService = require(`${SERVER_MODULES_DIR}/_multi-tenant/super-admin/role/role.service`);
 const Logger = require(`${SERVER_LOGS_DIR}/_multi-tenant`);
 
 /**
@@ -133,7 +133,7 @@ exports.getOrganizationalUnit = async (req, res) => {
 
 exports.createOrganizationalUnit = async (req, res) => {
     try {
-        let roles = await RoleService.createRolesForOrganizationalUnit(req.poral, req.body);
+        let roles = await RoleService.createRolesForOrganizationalUnit(req.portal, req.body);
         let organizationalUnit = await OrganizationalUnitService.createOrganizationalUnit( 
                 req.portal,
                 req.body, 
@@ -174,7 +174,7 @@ exports.editOrganizationalUnit = async (req, res) => {
             content: { department, tree }
         });
     } catch (error) {
-        
+        console.log(error);
         await Logger.error(req.user.email, 'edit_department_faile', req.portal);
         res.status(400).json({
             success: false,

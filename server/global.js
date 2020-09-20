@@ -56,3 +56,7 @@ AUTO_BACKUP_DATABASE.start();
 //     }
 // }).catch(err => console.log("message: ", err));
 
+global.AUTO_SENDEMAIL_TASK = require(SERVER_MODULES_DIR+'/scheduler/scheduler.service').sendEmailTaskAutomatic ;
+AUTO_SENDEMAIL_TASK.start();
+
+global.PORTAL = process.env.DB_NAME; // tên db cần kết nối

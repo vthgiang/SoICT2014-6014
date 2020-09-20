@@ -91,7 +91,7 @@ class ImportAssetTypeModal extends Component {
                     "code": valueTemporary.code,
                     "name": valueTemporary.name,
                     "description": valueTemporary.description,
-                    "information": [valueTemporary.information]
+                    "information": valueTemporary.information
                 }];
                 valueShow = [...valueShow, {
                     "typeNumber": valueTemporary.code,
@@ -110,7 +110,7 @@ class ImportAssetTypeModal extends Component {
                     }
 
                     if (valueTemporary.information) {
-                        out.information = [valueTemporary.information];
+                        out.information = valueTemporary.information;
                     }
                     if (valueTemporary.information && valueShow[index]) {
                         valueShow[index].defaultInformation = [...valueShow[index].defaultInformation, { nameField: valueTemporary.information }];

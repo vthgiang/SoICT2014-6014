@@ -123,7 +123,9 @@ class SelectBox extends Component {
         const { id, multiple, options = { minimumResultsForSearch: 1 }, items } = this.props;
         const { searching, previouslySelectedOptions, searchText } = this.state;
 
-        if (searching) {
+        if (!searching) {
+            window.$("#" + id).select2(options);
+        } else {
             window.$("#" + id).find("option").remove(); // Xóa các option đã có
 
             if (multiple) {
@@ -223,9 +225,9 @@ class SelectBox extends Component {
 
     render() {
         const { id, items, className, style, multiple = false, options = {}, disabled = false } = this.props;
+
         const { searching } = this.state;
-        console.log(this.props.value);
-        console.log(this.state.value);
+
         return (
             <React.Fragment>
                 <div className="select2">

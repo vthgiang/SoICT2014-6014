@@ -393,7 +393,7 @@ class EmployeeManagement extends Component {
                 let organizationalUnit = department.list.find(u => u._id === y.organizationalUnit);
                 return {
                     ...y,
-                    status: translate(`human_resource.profile.${y.status}`),
+                    status: translate(`human_resource.annual_leave.status.${y.status}`),
                     organizationalUnit: organizationalUnit.name,
                     employeeNumber: employee.employeeNumber,
                     fullName: employee.fullName,
@@ -507,6 +507,7 @@ class EmployeeManagement extends Component {
             fileName: translate(`human_resource.profile.employee_management.file_export_name`),
             dataSheets: [
                 {
+                    // 1.Nhân viên
                     sheetName: translate(`human_resource.profile.employee_management.export.sheet1`),
                     tables: [
                         {
@@ -546,17 +547,17 @@ class EmployeeManagement extends Component {
                                 { key: "personalEmail2", value: translate(`human_resource.profile.personal_email_2`), width: 35 },
                                 { key: "homePhone", value: translate(`human_resource.profile.home_phone`) },
                                 { key: "emergencyContactPerson", value: translate(`human_resource.profile.employee_management.export.emergency_contact_person`), width: 20 },
-                                { key: "relationWithEmergencyContactPerson", value: translate(`human_resource.profile.employee_management.export.relation_with_emergency_contact_person`) },
+                                { key: "relationWithEmergencyContactPerson", value: translate(`human_resource.profile.employee_management.export.relation_with_emergency_contact_person`), width: 25 },
                                 { key: "emergencyContactPersonAddress", value: translate(`human_resource.profile.employee_management.export.emergency_contact_person_address`), width: 35 },
-                                { key: "emergencyContactPersonPhoneNumber", value: translate(`human_resource.profile.employee_management.export.emergency_contact_person_phone_number`) },
-                                { key: "emergencyContactPersonHomePhone", value: translate(`human_resource.profile.employee_management.export.emergency_contact_person_home_nhone`) },
+                                { key: "emergencyContactPersonPhoneNumber", value: translate(`human_resource.profile.employee_management.export.emergency_contact_person_phone_number`), width: 25 },
+                                { key: "emergencyContactPersonHomePhone", value: translate(`human_resource.profile.employee_management.export.emergency_contact_person_home_phone`), width: 25 },
                                 { key: "emergencyContactPersonEmail", value: translate(`human_resource.profile.employee_management.export.emergency_contact_person_email`), width: 35 },
                                 { key: "atmNumber", value: translate(`human_resource.profile.employee_management.export.atmNumber`) },
                                 { key: "bankName", value: translate(`human_resource.profile.bank_name`) },
                                 { key: "bankAddress", value: translate(`human_resource.profile.employee_management.export.bank_address`) },
                                 { key: "healthInsuranceNumber", value: translate(`human_resource.profile.number_BHYT`) },
-                                { key: "healthInsuranceStartDate", value: translate(`human_resource.profile.employee_management.export.health_insurance_start_date`) },
-                                { key: "healthInsuranceEndDate", value: translate(`human_resource.profile.employee_management.export.health_insurance_end_date`) },
+                                { key: "healthInsuranceStartDate", value: translate(`human_resource.profile.employee_management.export.health_insurance_start_date`), width: 20 },
+                                { key: "healthInsuranceEndDate", value: translate(`human_resource.profile.employee_management.export.health_insurance_end_date`), width: 20 },
                                 { key: "socialInsuranceNumber", value: translate(`human_resource.profile.number_BHXH`) },
                                 { key: "archivedRecordNumber", value: translate(`human_resource.profile.attachments_code`) },
                             ],
@@ -565,6 +566,7 @@ class EmployeeManagement extends Component {
                     ]
                 },
                 {
+                    // 2.HS Nhân viên - Kinh nghiệm
                     sheetName: translate(`human_resource.profile.employee_management.export.sheet2`),
                     tables: [
                         {
@@ -582,6 +584,7 @@ class EmployeeManagement extends Component {
                     ]
                 },
                 {
+                    // 3.HS Nhân viên - Bằng cấp
                     sheetName: translate(`human_resource.profile.employee_management.export.sheet3`),
                     tables: [
                         {
@@ -599,6 +602,7 @@ class EmployeeManagement extends Component {
                     ]
                 },
                 {
+                    // 4.HS Nhân viên - Chứng chỉ
                     sheetName: translate(`human_resource.profile.employee_management.export.sheet4`),
                     tables: [
                         {
@@ -616,6 +620,7 @@ class EmployeeManagement extends Component {
                     ]
                 },
                 {
+                    // 5.HS Nhân viên - Hợp đồng
                     sheetName: translate(`human_resource.profile.employee_management.export.sheet5`),
                     tables: [
                         {
@@ -633,6 +638,7 @@ class EmployeeManagement extends Component {
                     ]
                 },
                 {
+                    // 6.HS Nhân viên - Bảo hiểm XH
                     sheetName: translate(`human_resource.profile.employee_management.export.sheet6`),
                     tables: [
                         {
@@ -650,6 +656,7 @@ class EmployeeManagement extends Component {
                     ]
                 },
                 {
+                    // 7.HS Nhân viên - Tài liệu
                     sheetName: translate(`human_resource.profile.employee_management.export.sheet7`),
                     tables: [
                         {
@@ -667,6 +674,7 @@ class EmployeeManagement extends Component {
                     ]
                 },
                 {
+                    // 8.HS Nhân viên - Khen thưởng
                     sheetName: translate(`human_resource.profile.employee_management.export.sheet8`),
                     tables: [
                         {
@@ -685,6 +693,7 @@ class EmployeeManagement extends Component {
                     ]
                 },
                 {
+                    // 9.HS Nhân viên - Kỷ luật
                     sheetName: translate(`human_resource.profile.employee_management.export.sheet9`),
                     tables: [
                         {
@@ -704,6 +713,7 @@ class EmployeeManagement extends Component {
                     ]
                 },
                 {
+                    // 10.HS Nhân viên - Lương thưởng
                     sheetName: translate(`human_resource.profile.employee_management.export.sheet10`),
                     tables: [
                         {
@@ -731,6 +741,7 @@ class EmployeeManagement extends Component {
                     ]
                 },
                 {
+                    // 11.HS Nhân viên - Nghỉ phép
                     sheetName: translate(`human_resource.profile.employee_management.export.sheet11`),
                     tables: [
                         {
@@ -742,7 +753,7 @@ class EmployeeManagement extends Component {
                                 { key: "startDate", value: translate('human_resource.annual_leave.table.start_date') },
                                 { key: "endDate", value: translate('human_resource.annual_leave.table.end_date') },
                                 { key: "reason", value: translate('human_resource.annual_leave.table.reason'), width: 35 },
-                                { key: "status", value: translate('human_resource.status') },
+                                { key: "status", value: translate('human_resource.status'), width: 25 },
                             ],
                             data: annualLeavesSheet
                         }

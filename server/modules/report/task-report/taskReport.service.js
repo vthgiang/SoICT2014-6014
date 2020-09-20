@@ -1,6 +1,4 @@
-const mongoose = require("mongoose");
-const moment = require("moment");
-const { TaskReport, Task, TaskTemplate, Role, OrganizationalUnit, User } = require('../../../models').schema;
+const { TaskReport } = require('../../../models').schema;
 
 
 /**
@@ -8,42 +6,43 @@ const { TaskReport, Task, TaskTemplate, Role, OrganizationalUnit, User } = requi
  * @param  params 
  */
 exports.getTaskReports = async (params) => {
-    const nameSearch = params.name;
-    const creatorSearch = params.creator;
-    let dateSearch, month, year, startDate, endDate;
-    if (params.month) {
+    const { name, creator, month } = params;
+    let dateSearch, getMonth, year, startDate, endDate, keySearch = {};
+
+    if (month) {
         dateSearch = params.month.split('-');
-        month = dateSearch[1], year = dateSearch[0];
-        startDate = new Date(year, month - 1, 2);
-        endDate = new Date(year, month - 1, 32);
+        getMonth = dateSearch[1], year = dateSearch[0];
+        startDate = new Date(year, getMonth - 1, 2);
+        endDate = new Date(year, getMonth - 1, 32);
     }
 
-    let keySearch = {};
-
-    if (nameSearch !== undefined && nameSearch.length !== 0) {
+    // Tìm kiếm theo tên báo cáo
+    if (name && name.length !== 0) {
         keySearch = {
             ...keySearch,
-            nameSearch: { $regex: params.name, $options: "i" },
+            name: { $regex: name, $options: "i" },
         }
     }
 
     // Tìm kiếm theo người tạo
-    if (creatorSearch !== undefined && creatorSearch.length !== 0) {
+    if (creator && creator.length !== 0) {
         keySearch = {
             ...keySearch,
-            creatorSearch: { $regex: params.creator, $options: "i" },
+            creator: { $regex: params.creator, $options: "i" },
         }
     }
 
     // Tìm kiếm theo tháng
-    if (params.month !== undefined && params.month.length !== 0) {
+    if (month && month.length !== 0) {
         keySearch = {
             ...keySearch,
             createdAt: { $gte: startDate, $lte: endDate }
         }
     };
 
+    // get tổng số record của bảng Task report
     let totalList = await TaskReport.countDocuments();
+
     let listTaskReport = await TaskReport.find(keySearch).sort({ 'createdAt': 'desc' })
         .skip(parseInt(params.page)).limit(parseInt(params.limit))
         .populate({ path: 'creator ', select: "_id name" })
@@ -70,7 +69,6 @@ exports.getTaskReportById = async (id) => {
         .populate({ path: 'readByEmployees', select: '_id name company' })
         .populate({ path: 'organizationalUnit', select: 'deans viceDeans employees _id name company parent' })
         .populate({ path: 'readByEmployees' })
-
     return taskReportById;
 }
 
@@ -81,26 +79,28 @@ exports.getTaskReportById = async (id) => {
  * @param {*} user id người tạo
  */
 exports.createTaskReport = async (data, user) => {
-    // convert startDate từ string sang Date
-    let startTime, start = null, endTime, end = null;
+    let { organizationalUnit, taskTemplate, nameTaskReport, descriptionTaskReport,
+        readByEmployees, responsibleEmployees, accountableEmployees, startDate, endDate, status, frequency, itemListBoxLeft, itemListBoxRight,
+        taskInformations } = data;
+    let startTime, start = null, endTime, end = null, configurations = [];
 
+    if (status) {
+        status = Number(status);
+    }
+
+    // convert startDate từ string qua Date
     if (data.startDate) {
-        startTime = data.startDate.split("-");
+        startTime = startDate.split("-");
         start = new Date(startTime[2], startTime[1] - 1, startTime[0]);
     }
 
     // convert endDate từ string sang Date
-    if (data.endDate) {
-        endTime = data.endDate.split("-");
+    if (endDate) {
+        endTime = endDate.split("-");
         end = new Date(endTime[2], endTime[1] - 1, endTime[0]);
     }
 
-    let statusConvert = Number(data.status);
-    let frequencyConvert = data.frequency.toString();
-    let listDataInChart = data.itemListBoxRight;
-
-    let configurations = [];
-    for (let [index, value] of data.taskInformations.entries()) {
+    for (let [index, value] of taskInformations.entries()) {
         configurations[index] = {
             code: value.code,
             name: value.name,
@@ -115,23 +115,23 @@ exports.createTaskReport = async (data, user) => {
     }
 
     let newTaskReport = await TaskReport.create({
-        organizationalUnit: data.organizationalUnit,
-        taskTemplate: data.taskTemplate,
-        name: data.nameTaskReport,
-        description: data.descriptionTaskReport,
-        readByEmployees: data.readByEmployees,
-        responsibleEmployees: data.responsibleEmployees,
-        accountableEmployees: data.accountableEmployees,
-        status: statusConvert,
+        organizationalUnit: organizationalUnit,
+        taskTemplate: taskTemplate,
+        name: nameTaskReport,
+        description: descriptionTaskReport,
+        readByEmployees: readByEmployees,
+        responsibleEmployees: responsibleEmployees,
+        accountableEmployees: accountableEmployees,
+        status: status,
         creator: user,
         startDate: start,
         endDate: end,
-        frequency: frequencyConvert,
+        frequency: frequency,
         configurations: configurations,
-        dataForAxisXInChart: listDataInChart,
+        listDataChart: itemListBoxLeft,
+        dataForAxisXInChart: itemListBoxRight,
 
     })
-
 
     let getNewTaskReport = await TaskReport.findById(newTaskReport._id).populate({ path: 'creator', select: "_id name" });
     return getNewTaskReport;
@@ -145,62 +145,67 @@ exports.createTaskReport = async (data, user) => {
  * @param {*} người sửa 
  */
 exports.editTaskReport = async (id, data, user) => {
-    let startTime, start = null, endTime, end = null;
+    let { organizationalUnit, taskTemplate, name, description, readByEmployees, responsibleEmployees,
+        accountableEmployees, status, startDate, endDate, dataForAxisXInChart, frequency, listDataChart, taskInformations } = data;
+    let startTime, start = null, endTime, end = null, configurations = [];
 
-    if (data.startDate && data.endDate) {
+    if (status && status.length > 0) {
+        status = parseInt(status.toString());
+    }
+
+    if (startDate) {
         // convert startDate từ string sang Date
-        startTime = data.startDate.split("-");
+        startTime = startDate.split("-");
         start = new Date(startTime[2], startTime[1] - 1, startTime[0]);
+    }
 
+    if (endDate) {
         // convert endDate từ string sang Date
-        endTime = data.endDate.split("-");
+        endTime = endDate.split("-");
         end = new Date(endTime[2], endTime[1] - 1, endTime[0]);
-    } else
-        if (data.startDate && !data.endDate) {
-            // convert startDate từ string sang Date
-            startTime = data.startDate.split("-");
-            start = new Date(startTime[2], startTime[1] - 1, startTime[0]);
-        } else
-            if (!data.startDate && data.endDate) {
-                // convert endDate từ string sang Date
-                endTime = data.endDate.split("-");
-                end = new Date(endTime[2], endTime[1] - 1, endTime[0]);
-            }
+    }
 
-    let frequencyConvert = data.frequency.toString();
-
-    let configurations = [];
-    for (let [index, value] of data.taskInformations.entries()) {
+    for (let [index, value] of taskInformations.entries()) {
         configurations[index] = {
             code: value.code,
             name: value.name,
             type: value.type,
             filter: value.filter,
             newName: value.newName,
-            charType: value.charType,
+            chartType: value.chartType,
             showInReport: value.showInReport,
             aggregationType: value.aggregationType,
+            coefficient: value.coefficient,
         }
     }
 
     await TaskReport.findByIdAndUpdate(id, {
         $set: {
-            organizationalUnit: data.organizationalUnit,
-            taskTemplate: data.taskTemplate,
-            name: data.name,
-            description: data.description,
-            readByEmployees: data.readByEmployees,
-            responsibleEmployees: data.responsibleEmployees,
-            accountableEmployees: data.accountableEmployees,
-            status: data.status,
+            organizationalUnit: organizationalUnit,
+            taskTemplate: taskTemplate,
+            name: name,
+            description: description,
+            readByEmployees: readByEmployees,
+            responsibleEmployees: responsibleEmployees,
+            accountableEmployees: accountableEmployees,
+            status: status,
             creator: user,
             startDate: start,
             endDate: end,
-            frequency: frequencyConvert,
+            frequency: frequency,
             configurations: configurations,
+            listDataChart: listDataChart,
+            dataForAxisXInChart: dataForAxisXInChart,
         }
     }, { new: true });
-    return await TaskReport.findOne({ _id: id }).populate({ path: 'creator', select: '_id name' });
+    return await TaskReport.findOne({ _id: id })
+        .populate({ path: 'creator', select: '_id name' })
+        .populate({ path: 'taskTemplate' })
+        .populate({ path: 'responsibleEmployees', select: '_id name company' })
+        .populate({ path: 'accountableEmployees', select: '_id name company' })
+        .populate({ path: 'readByEmployees', select: '_id name company' })
+        .populate({ path: 'organizationalUnit', select: 'deans viceDeans employees _id name company parent' })
+        .populate({ path: 'readByEmployees' });
 }
 
 

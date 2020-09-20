@@ -230,12 +230,6 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
         this.chart = c3.generate({
             bindto: this.refs.chart,
 
-            padding: {
-                top: 20,
-                bottom: 20,
-                right: 20
-            },
-
             data: {
                 x: 'x',
                 columns: dataChart,
@@ -366,7 +360,7 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
         return (            
             <React.Fragment>           
                 {listEmployeeKpiSet && (listEmployeeKpiSet.length !== 0) ?
-                    <section className="box-body " style={{ textAlign: "right" }}> 
+                    <section className="box-body" style={{ textAlign: "right" }}> 
                         <section className="btn-group">
                             <button type="button" className={`btn btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.AUTOMATIC ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.AUTOMATIC)}>Automatic Point</button>
                             <button type="button" className={`btn btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.EMPLOYEE ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.EMPLOYEE)}>Employee Point</button>

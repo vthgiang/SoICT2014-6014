@@ -95,16 +95,22 @@ class EditVersion extends Component {
             descriptions += "Tên phiên bản mới: " + versionName + ". "
         }
         if (issuingDate !== this.props.issuingDate) {
-            formData.append('issuingDate', issuingDate);
+            let date = issuingDate.split('-');
+            let issuing_date = new Date(date[2], date[1], date[0]);
+            formData.append('issuingDate', issuing_date);
             descriptions += "Ngày ban hành " + issuingDate + ". ";
         }
         if (effectiveDate !== this.props.effectiveDate) {
-            formData.append('effectiveDate', effectiveDate);
+            let date = effectiveDate.split('-');
+            let effective_date = new Date(date[2], date[1], date[0]);
+            formData.append('effectiveDate', effective_date);
             descriptions += "Ngày hiệu lực " + effectiveDate + ". ";
         }
         if (expiredDate !== this.props.expiredDate) {
-            formData.append('expiredDate', expiredDate);
-            descriptions += "Ngày hết hạn" + expiredDate + ". ";
+            let date = expiredDate.split('-');
+            let expired_date = new Date(date[2], date[1], date[0]);
+            formData.append('expiredDate', expired_date);
+            descriptions += "Ngày hết hạn " + expiredDate + ". ";
         }
         if (documentFile) {
             formData.append('file', documentFile);

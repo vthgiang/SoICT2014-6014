@@ -31,6 +31,9 @@ exports.getDocuments = async (company, query) => {
         // const option = (query.key !== undefined && query.value !== undefined)
         //     ? Object.assign({ company }, { [`${query.key}`]: new RegExp(query.value, "i") })
         //     : { company };
+        if(query.path){
+            const domain = DocumentDomain.find({path: new Regex(/^/)})
+        }
         if (query.category) {
             option.category = query.category;
         }
@@ -202,6 +205,12 @@ exports.editDocument = async (id, data, query = undefined) => {
                 return doc;
 
             case 'DELETE_VERSION':
+                //let index = doc.versions.findIndex(obj => obj._id == data.versionId);
+                // console.log('verrsionnn', index)
+                const version = doc.versions.filter(v => v._id != data.versionId);
+                doc.versions = version;
+                //  console.log('docveriosns', doc.versions[1]._id, typeof (data.versionId), doc.versions[1]._id !== data.versionId);
+                await doc.save();
                 return doc;
 
             default:
@@ -255,7 +264,7 @@ exports.editDocument = async (id, data, query = undefined) => {
             doc.archivedRecordPlaceManager = data.archivedRecordPlaceManager
 
         await doc.save();
-        let docs = doc.logs.reverse();
+        //let docs = doc.logs;
         return doc;
     }
 }
@@ -532,6 +541,7 @@ exports.createDocumentDomain = async (company, data) => {
         company,
         name: data.name,
         description: data.description,
+        parent: data.parent
     }
     await DocumentDomain.create(query);
 

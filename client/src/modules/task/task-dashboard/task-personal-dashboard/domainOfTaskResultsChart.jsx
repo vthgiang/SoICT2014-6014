@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { taskManagementActions } from '../../task-management/redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 
-import { SelectBox } from '../../../../common-components/index';
+import { SelectBox, SelectMulti } from '../../../../common-components/index';
 
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -217,11 +217,11 @@ class DomainOfTaskResultsChart extends Component {
     }
 
     handleSelectTypePoint = (value) => {
-        this.DATA_SEARCH.typePoint = Number(value);
+        this.DATA_SEARCH.typePoint = Number(value[0]);
     }
 
-    handleSearchData = () => {
-        this.setState(state => {
+    handleSearchData = async () => {
+        await this.setState(state => {
             return {
                 ...state,
                 role: this.DATA_SEARCH.role,
@@ -382,43 +382,39 @@ class DomainOfTaskResultsChart extends Component {
 
     render() {
         const { translate, TaskOrganizationUnitDashboard } = this.props;
-
+        
         return (
             <React.Fragment>
-                {!TaskOrganizationUnitDashboard &&
-                     <React.Fragment>
-                        <section className="form-inline">
-                            <div className="form-group">
-                                <label>{translate('task.task_management.role')}</label>
-                                <SelectBox
-                                    id={`roleOfResultsTaskSelectBox`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    items={this.ROLE_SELECTBOX}
-                                    multiple={true}
-                                    onChange={this.handleSelectRole}
-                                    value={[this.ROLE_SELECTBOX[0].value]}
-                                />
-                            </div>
-                        </section>
-                        <section className="form-inline">
-                            <div className="form-group">
-                                <label>Loại điểm</label>
-                                <SelectBox
-                                    id={`typePointOfResultsTaskSelectBox`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    items={this.TYPEPOINT_SELECTBOX}
-                                    multiple={false}
-                                    onChange={this.handleSelectRole}
-                                    value={this.TYPEPOINT_SELECTBOX[0].value}
-                                />
-                            </div>
-                        
-                            <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
-                        </section>
-                    </React.Fragment>
+                {!TaskOrganizationUnitDashboard
+                    && <section className="form-inline">
+                        <div className="form-group">
+                            <label>{translate('task.task_management.role')}</label>
+                            <SelectMulti
+                                id="multiSelectDomainOfTaskResults"
+                                items={this.ROLE_SELECTBOX}
+                                onChange={this.handleSelectRole}
+                                options={{ allSelectedText: translate('task.task_management.select_all_status') }}
+                                value={this.DATA_SEARCH.role}
+                            />
+                        </div>
+                    </section>
                 }
+                <section className="form-inline">
+                    <div className="form-group">
+                        <label>Loại điểm</label>
+                        <SelectBox
+                            id={`typePointOfResultsTaskSelectBox`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            items={this.TYPEPOINT_SELECTBOX}
+                            multiple={false}
+                            onChange={this.handleSelectTypePoint}
+                            value={this.DATA_SEARCH.typePoint}
+                        />
+                    </div>
+                
+                    <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
+                </section>
 
                 <div ref="chart"></div>
             </React.Fragment>

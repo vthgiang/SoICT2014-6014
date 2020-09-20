@@ -2,7 +2,7 @@ const arrayToTree = require('array-to-tree');
 const ObjectId = require('mongoose').Types.ObjectId;
 const RoleService = require(`${SERVER_MODULES_DIR}/_multi-tenant/super-admin/role/role.service`);
 const Terms = require(`${SERVER_SEED_DIR}/terms`);
-const { OrganizationalUnit, UserRole, Role } = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
+const { OrganizationalUnit, UserRole, Role, RoleType, User } = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
 const {connect} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 /**
@@ -61,7 +61,6 @@ exports.getOrganizationalUnitsAsTree = async (portal) => {
  * @organizationalUnit id của đơn vị 
  */
 exports.getChildrenOfOrganizationalUnitsAsTree = async (portal, role, organizationalUnitId = undefined) => {
-    
     let organizationalUnit;
 
     if (!organizationalUnitId) {
@@ -296,7 +295,19 @@ exports.editOrganizationalUnit = async(portal, id, data) => {
     //Chỉnh sửa thông tin phòng ban
     department.name = data.name;
     department.description = data.description;
-    department.parent = ObjectId.isValid(data.parent) ? data.parent : null;
+
+    // Kiểm tra phòng ban cha muốn sửa đổi
+    if(ObjectId.isValid(data.parent)){
+        const upOrg = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findById(data.parent);
+        if(upOrg.parent.toString() === id.toString()){
+            var oldP = department.parent;
+            upOrg.parent = oldP;
+            await upOrg.save();
+        }
+        department.parent = data.parent;
+    }else{
+        department.parent = null;
+    }
     await department.save();
 
     return department;

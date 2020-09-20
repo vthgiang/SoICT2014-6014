@@ -133,7 +133,7 @@ class TaskDashboard extends Component {
             } else {
                 month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)) + 1);
             }
-            
+
             monthtitle = value.slice(0, 2) + '-' + value.slice(3, 7);
         } else {
             month = (new Number(value.slice(3, 7)) + 1) + '-' + '01';
@@ -252,7 +252,7 @@ class TaskDashboard extends Component {
         let { startMonthTitle, endMonthTitle } = this.INFO_SEARCH;
         return (
             <React.Fragment>
-                <div className="qlcv" style={{ textAlign: "right", marginBottom: 15 }}>
+                <div className="qlcv" style={{ textAlign: "right" }}>
                     {/**Chọn ngày bắt đầu */}
                     <div className="form-inline">
                         <div className="form-group">
@@ -331,7 +331,9 @@ class TaskDashboard extends Component {
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.tasks_calendar')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
                             </div>
-                            <TasksSchedule />
+                            <TasksSchedule
+                                tasks={tasks}
+                            />
                         </div>
 
                     </div>

@@ -1,5 +1,5 @@
 const Terms = require(`${SERVER_SEED_DIR}/terms`);
-const {OrganizationalUnit, Company, Role, RoleType, User, UserRole, Privilege} = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
+const { OrganizationalUnit, Role, RoleType, UserRole, Privilege } = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
 const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 /**
@@ -10,6 +10,8 @@ exports.getRoles = async (portal, query) => {
     var page = query.page;
     var limit = query.limit;
     var roleId = query.roleId;
+    var type = query.type;
+
     
     if (!page && !limit && !roleId) {
         return await Role(connect(DB_CONNECTION, portal))
@@ -46,7 +48,26 @@ exports.getRoles = async (portal, query) => {
                 { path: 'viceDeans' }, 
                 { path: 'employees' },
             ]);
-    
+        
+        if(type === 'same'){
+            let roleOrg = [...roles.deans, ...roles.viceDeans, ...roles.employees]; //mảng các role cùng phòng bạn với role truyền vào
+
+            let roleParents = await Role(connect(DB_CONNECTION, portal)).find({
+                parents: roleId
+            });
+
+            let roleParentInOrg = [];
+            for (let i = 0; i < roleOrg.length; i++) {
+                for (let j = 0; j < roleParents.length; j++) {
+                    if(roleOrg[i]._id.toString() === roleParents[j]._id.toString()){
+                        roleParentInOrg.push(roleOrg[i])
+                    }
+                }
+            }
+
+            return roleParentInOrg;
+        }
+
         return roles;
     }
 }
@@ -60,10 +81,9 @@ exports.getRole = async (portal, roleId) => {
     return await Role(connect(DB_CONNECTION, portal))
         .findById(roleId)
         .populate([
-            { path: 'users', model: UserRole, populate:{ path: 'userId', model: User }},
-            { path: 'parents', model: Role },
-            { path: 'company', model: Company },
-            { path: 'type', model: RoleType }
+            { path: 'users', populate:{ path: 'userId' }},
+            { path: 'parents' },
+            { path: 'type' }
         ]);
 }
 
@@ -73,16 +93,17 @@ exports.getRole = async (portal, roleId) => {
  * @companyId id công ty
  */
 exports.createRole = async(portal, data) => {
+    console.log("create-role")
     const checkRoleCreated = await Role(connect(DB_CONNECTION, portal))
         .findOne({name: data.name});
-
+        console.log("create-role",checkRoleCreated)
     if (checkRoleCreated) {
         throw ['role_name_exist'];
     }
 
     const roleTuTao = await RoleType(connect(DB_CONNECTION, portal))
         .findOne({ name: Terms.ROLE_TYPES.COMPANY_DEFINED });
-    const role = await Role.create({
+    const role = await Role(connect(DB_CONNECTION, portal)).create({
         name: data.name,
         parents: data.parents,
         type: roleTuTao._id

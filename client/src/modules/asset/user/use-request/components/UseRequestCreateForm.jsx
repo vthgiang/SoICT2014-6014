@@ -192,8 +192,7 @@ class UseRequestCreateForm extends Component {
     isFormValidated = () => {
         let result = this.validateDateCreate(this.state.dateCreate, false) &&
             this.validateReqContent(this.state.reqContent, false) &&
-            this.validateDateStartUse(this.state.dateCreate, false) &&
-            this.validateDateEndUse(this.state.dateCreate, false)
+            this.validateDateStartUse(this.state.dateCreate, false)
 
         return result;
     }
@@ -334,7 +333,7 @@ class UseRequestCreateForm extends Component {
 
                                 {/* Thời gian đăng ký sử dụng đến ngày */}
                                 <div className={`form-group ${errorOnDateEndUse === undefined ? "" : "has-error"}`}>
-                                    <label>{translate('asset.general_information.handover_to_date')}<span className="text-red">*</span></label>
+                                    <label>{translate('asset.general_information.handover_to_date')}</label>
                                     <DatePicker
                                         id="create_end_use"
                                         value={dateEndUse}

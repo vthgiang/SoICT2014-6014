@@ -3,7 +3,11 @@ const Schema = mongoose.Schema;
 
 // Tạo bảng datatable nghỉ lễ tết
 const HolidaySchema = new Schema({
-    numberDateLeaveOfYear: {
+    company: {
+        type: Schema.Types.ObjectId,
+        ref: "Company"
+    },
+    maximumNumberOfLeaveDays: {
         type: Number,
         default: 0,
         required: true,
@@ -32,7 +36,7 @@ const HolidaySchema = new Schema({
 });
 
 module.exports = (db) => {
-    if(!db.models.Holiday)
+    if (!db.models.Holiday)
         return db.model('Holiday', HolidaySchema);
     return db.models.Holiday;
 }

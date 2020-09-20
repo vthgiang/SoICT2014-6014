@@ -105,18 +105,18 @@ class PurchaseRequestManager extends Component {
     }
 
     // Function lưu người đề nghị vào state khi thay đổi
-    handleProposalEmployeeChange = (value) => {
+    handleProposalEmployeeChange = (event) => {
+        const { name, value } = event.target;
         this.setState({
-            ...this.state,
-            proponent: value
+            [name]: value
         });
     }
 
     // Function lưu giá trị tháng vào state khi thay đổi
-    handleApproverChange = (value) => {
+    handleApproverChange = (event) => {
+        const { name, value } = event.target;
         this.setState({
-            ...this.state,
-            approver: value
+            [name]: value
         });
     }
 
@@ -138,7 +138,7 @@ class PurchaseRequestManager extends Component {
             ...this.state,
             page: 0
         })
-
+        console.log('thí', this.state);
         this.props.searchRecommendProcures(this.state);
     }
 
@@ -285,30 +285,14 @@ class PurchaseRequestManager extends Component {
 
                         {/* Người đề nghị */}
                         <div className="form-group">
-                            <label>Người đề nghị</label>
-                            <SelectMulti
-                                id={`handleProposalEmployeeChange`}
-                                multiple="multiple"
-                                options={{ nonSelectedText: "Chọn người đề nghị", allSelectedText: "Chọn tất cả" }}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={userIdArr}
-                                onChange={this.handleProposalEmployeeChange}
-                            />
+                            <label className="form-control-static">Người đề nghị</label>
+                            <input type="text" className="form-control" name="proponent" onChange={this.handleProposalEmployeeChange} placeholder="Người đề nghị" autoComplete="off" />
                         </div>
 
                         {/* Người phê duyệt */}
                         <div className="form-group">
-                            <label>Người phê duyệt</label>
-                            <SelectMulti
-                                id={`handleApproverChange`}
-                                multiple="multiple"
-                                options={{ nonSelectedText: "Chọn người phê duyệt", allSelectedText: "Chọn tất cả" }}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={userIdArr}
-                                onChange={this.handleApproverChange}
-                            />
+                            <label className="form-control-static">Người phê duyệt</label>
+                            <input type="text" className="form-control" name="approver" onChange={this.handleApproverChange} placeholder="Người phê duyệt" autoComplete="off" />
                         </div>
                     </div>
                     <div className="form-inline" style={{ marginBottom: 10 }}>
@@ -343,6 +327,7 @@ class PurchaseRequestManager extends Component {
                                 <th style={{ width: "15%" }}>{translate('asset.general_information.create_date')}</th>
                                 <th style={{ width: "15%" }}>{translate('asset.usage.proponent')}</th>
                                 <th style={{ width: "17%" }}>{translate('asset.manage_recommend_procure.asset_recommend')}</th>
+                                <th style={{ width: "17%" }}>{translate('asset.manage_recommend_procure.equipment_description')}</th>
                                 <th style={{ width: "15%" }}>{translate('asset.usage.accountable')}</th>
                                 <th style={{ width: "17%" }}>{translate('asset.usage.note')}</th>
                                 <th style={{ width: "11%" }}>{translate('asset.general_information.status')}</th>
@@ -354,6 +339,7 @@ class PurchaseRequestManager extends Component {
                                             translate('asset.general_information.create_date'),
                                             translate('asset.usage.proponent'),
                                             translate('asset.manage_recommend_procure.asset_recommend'),
+                                            translate('asset.manage_recommend_procure.equipment_description'),
                                             translate('asset.usage.accountable'),
                                             translate('asset.usage.note'),
                                             translate('asset.general_information.status'),
@@ -372,8 +358,9 @@ class PurchaseRequestManager extends Component {
                                         <td>{x.recommendNumber}</td>
                                         <td>{this.formatDate2(x.dateCreate)}</td>
                                         <td>{x.proponent ? x.proponent.name : 'User is deleted'}</td>
-                                        <td>{x.equipment}</td>
-                                        <td>{x.approver ? x.approver.name : 'User is deleted'}</td>
+                                        <td>{x.equipmentName}</td>
+                                        <td>{x.equipmentDescription}</td>
+                                        <td>{x.approver ? x.approver.name : ''}</td>
                                         <td>{x.note}</td>
                                         <td>{x.status}</td>
                                         <td style={{ textAlign: "center" }}>
@@ -383,7 +370,7 @@ class PurchaseRequestManager extends Component {
                                                 content={translate('asset.manage_recommend_procure.delete_recommend_card')}
                                                 data={{
                                                     id: x._id,
-                                                    info: x.recommendNumber + " - " + x.dateCreate.replace(/-/gi, "/")
+                                                    // info: x.recommendNumber + " - " + x.dateCreate.replace(/-/gi, "/")
                                                 }}
                                                 func={this.props.deleteRecommendProcure}
                                             />
@@ -410,7 +397,8 @@ class PurchaseRequestManager extends Component {
                         recommendNumber={currentRowView.recommendNumber}
                         dateCreate={currentRowView.dateCreate}
                         proponent={currentRowView.proponent}
-                        equipment={currentRowView.equipment}
+                        equipmentName={currentRowView.equipmentName}
+                        equipmentDescription={currentRowView.equipmentDescription}
                         supplier={currentRowView.supplier}
                         total={currentRowView.total}
                         unit={currentRowView.unit}
@@ -429,7 +417,8 @@ class PurchaseRequestManager extends Component {
                         recommendNumber={currentRow.recommendNumber}
                         dateCreate={currentRow.dateCreate}
                         proponent={currentRow.proponent}
-                        equipment={currentRow.equipment}
+                        equipmentName={currentRow.equipmentName}
+                        equipmentDescription={currentRow.equipmentDescription}
                         supplier={currentRow.supplier}
                         total={currentRow.total}
                         unit={currentRow.unit}

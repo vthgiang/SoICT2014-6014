@@ -8,11 +8,15 @@ const DisciplineSchema = new Schema({
         ref: 'Employee',
         required: true,
     },
-    decisionNumber: { // số hiệu quyết định kỷ luật
+    company: {
+        type: Schema.Types.ObjectId,
+        ref: 'Company',
+    },
+    decisionNumber: { // Số hiệu quyết định kỷ luật
         type: String,
         required: true,
     },
-    organizationalUnit: { // cấp ra quyết định
+    organizationalUnit: { // Cấp ra quyết định
         type: Schema.Types.ObjectId,
         ref: 'OrganizationalUnit'
     },
@@ -23,7 +27,7 @@ const DisciplineSchema = new Schema({
     endDate: {
         type: Date,
     },
-    type: { // hình thức kỷ luật
+    type: { // Hình thức kỷ luật
         type: String,
         required: true,
     },
@@ -36,7 +40,7 @@ const DisciplineSchema = new Schema({
 });
 
 module.exports = (db) => {
-    if(!db.models.Discipline)
+    if (!db.models.Discipline)
         return db.model('Discipline', DisciplineSchema);
     return db.models.Discipline;
 }

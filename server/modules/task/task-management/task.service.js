@@ -20,37 +20,40 @@ exports.getAllTasks = async () => {
  * @param {*} data 
  */
 exports.getTaskEvaluations = async (data) => {
-    // Lấy keySearch tu client gui trong body
-    let organizationalUnit = data.organizationalUnit;
-    let idTemplate = data.taskTemplate;
-    let taskStatus = Number(data.status);
-    let responsible, accountable;
-    let startDate = data.startDate;
-    let endDate = data.endDate;
-    let frequency = data.frequency.toString();
+    // Lấy data tu client gui trong body
+    let { organizationalUnit, taskTemplate, status, startDate, endDate, frequency, responsibleEmployees, accountableEmployees } = data;
+    let startTime, start, endTime, end, filterDate = {};
+    status = Number(data.status);
 
-    let startTime = startDate.split("-");
-    let start = new Date(startTime[2], startTime[1] - 1, startTime[0]);
+    // Convert startDate từ string sang date
+    startTime = startDate.split("-");
+    start = new Date(startTime[2], startTime[1] - 1, startTime[0]);
 
-    let endTime = endDate.split("-");
-    let end = new Date(endTime[2], endTime[1] - 1, endTime[0]);
-    let filterDate = {};
+    // Convert endDate từ string sang date
+    endTime = endDate.split("-");
+    end = new Date(endTime[2], endTime[1] - 1, endTime[0]);
 
-    if (data.responsibleEmployees) {
-        responsible = data.responsibleEmployees;
+    if (responsibleEmployees) {
+        responsibleEmployees = data.responsibleEmployees;
     }
 
-    if (data.accountableEmployees) {
-        accountable = data.accountableEmployees;
+    if (accountableEmployees) {
+        accountableEmployees = data.accountableEmployees;
     }
 
-    (taskStatus === 1) ? taskStatus = "Finished" : (taskStatus === 2 ? taskStatus = "Inprocess" : "");
+    if (status === 0) {
+        status = '';
+    } else if (status === 1) {
+        status = "Finished";
+    } else if (status === 2) {
+        status = "Inprocess";
+    }
 
     // Lọc nếu ngày bắt đầu và kết thức có giá trị
     if (startDate && endDate) {
         filterDate = {
             $match: {
-                date: { $gte: start, $lt: end }
+                date: { $gte: start, $lte: end }
             }
         }
     }
@@ -64,20 +67,10 @@ exports.getTaskEvaluations = async (data) => {
         }
     }
 
-    //  Lọc nếu có ngày bắt đầu, không có ngày kết thúc 
-    if (!startDate && endDate) {
-        filterDate = {
-            $match: {
-                date: { $lte: end }
-            }
-        }
-    }
-
+    // Mặc định điều kiện lọc là : Đơn vị, mẫu công việc, thống kê đánh giá từ ngày
     let condition = [
         { $match: { organizationalUnit: mongoose.Types.ObjectId(organizationalUnit) } },
-        { $match: { taskTemplate: mongoose.Types.ObjectId(idTemplate) } },
-        // { $unwind: "$responsibleEmployees" },
-        // { $unwind: "$accountableEmployees" },
+        { $match: { taskTemplate: mongoose.Types.ObjectId(taskTemplate) } },
         { $unwind: "$evaluations" },
         {
             $lookup: {
@@ -104,59 +97,92 @@ exports.getTaskEvaluations = async (data) => {
                 }
             }
         },
+        filterDate,
 
     ];
 
-    if (!startDate && !endDate) {
+    // Lọc theo trạng thái công việc 'Tất cả', không có người phê duyệt và người thực hiện
+    if (status === '' && !responsibleEmployees && !accountableEmployees) { // Lọc tất cả các coong việc không theo đặc thù
         condition = [
             ...condition,
-            { $match: { status: taskStatus } },
-            { $sort: { date: -1 } },
         ]
-    } else {
-        if (taskStatus === 0) { // Lọc tất cả các coong việc không theo đặc thù
-            condition = [
-                ...condition,
-                filterDate
-            ]
+    }
 
-        } else
-            // nếu không lọc theo người thực hiện và người phê duyệt
-            if (typeof responsible === 'undefined' && typeof accountable === 'undefined') {
-                condition = [
-                    { $match: { status: taskStatus } },
-                    ...condition,
-                    filterDate
-                ]
+    // Lọc theo trạng thái công việc 'Tất cả', có người phê duyệt và người thực hiện
+    else if (status === '' && responsibleEmployees && accountableEmployees) {
+        condition = [
+            ...condition,
+            { $match: { responsibleEmployees: { $elemMatch: { _id: { $in: [...responsibleEmployees.map(x => mongoose.Types.ObjectId(x.toString()))] } } } } },
+            { $match: { accountableEmployees: { $elemMatch: { _id: { $in: [...accountableEmployees.map(y => mongoose.Types.ObjectId(y.toString()))] } } } } },
+        ]
 
-            } else {
-                condition = [
-                    { $match: { status: taskStatus } },
-                    { $match: { responsibleEmployees: { $elemMatch: { _id: { $in: [...responsible.map(x => mongoose.Types.ObjectId(x.toString()))] } } } } },
-                    { $match: { accountableEmployees: { $elemMatch: { _id: { $in: [...accountable.map(y => mongoose.Types.ObjectId(y.toString()))] } } } } },
-                    ...condition,
-                    filterDate,
+    }
 
-                ]
-            }
+    // Lọc theo trạng thái công việc 'Tất cả', có người thực hiện
+    else if (status === '' && responsibleEmployees) {
+        condition = [
+            ...condition,
+            { $match: { responsibleEmployees: { $elemMatch: { _id: { $in: [...responsibleEmployees.map(x => mongoose.Types.ObjectId(x.toString()))] } } } } },
+        ]
+    }
+
+    // Lọc theo trạng thái công việc 'Tất cả', có người phê duyệt
+    else if (status === '' && accountableEmployees) {
+        condition = [
+            ...condition,
+            { $match: { accountableEmployees: { $elemMatch: { _id: { $in: [...accountableEmployees.map(y => mongoose.Types.ObjectId(y.toString()))] } } } } },
+        ]
+    }
+
+    // Lọc theo trạng thái công việc 'Hoàn thành hoặc đang thực hiện', không có người phê duyệt và người thực hiện
+    else if (status !== '' && !responsibleEmployees && !accountableEmployees) {
+        condition = [
+            ...condition,
+            { $match: { status: status } },
+        ]
+    }
+
+    // Lọc theo trạng thái công việc 'Hoàn thành hoặc đang thực hiện', có người phê duyệt và người thực hiện
+    else if (status !== '' && responsibleEmployees && accountableEmployees) {
+        condition = [
+            ...condition,
+            { $match: { status: status } },
+            { $match: { responsibleEmployees: { $elemMatch: { _id: { $in: [...responsibleEmployees.map(x => mongoose.Types.ObjectId(x.toString()))] } } } } },
+            { $match: { accountableEmployees: { $elemMatch: { _id: { $in: [...accountableEmployees.map(y => mongoose.Types.ObjectId(y.toString()))] } } } } },
+        ]
+    }
+
+    // Lọc theo trạng thái công việc 'Hoàn thành hoặc đang thực hiện', có người thực hiện.
+    else if (status !== '' && responsibleEmployees) {
+        condition = [
+            ...condition,
+            { $match: { status: status } },
+            { $match: { responsibleEmployees: { $elemMatch: { _id: { $in: [...responsibleEmployees.map(x => mongoose.Types.ObjectId(x.toString()))] } } } } },
+        ]
+    }
+
+    // Lọc theo trạng thái công việc 'Hoàn thành hoặc đang thực hiện', có người phê duyệt.
+    else if (status !== '' && accountableEmployees) {
+        condition = [
+            ...condition,
+            { $match: { status: status } },
+            { $match: { accountableEmployees: { $elemMatch: { _id: { $in: [...accountableEmployees.map(y => mongoose.Types.ObjectId(y.toString()))] } } } } },
+        ]
     }
 
     let result = await Task.aggregate(condition); // kết quả sau khi truy vấn mongodb
 
-    // lấy danh sachs điều kiện lọc của trường thông tin của công việc
-    let taskInfo = data.taskInformations;
-    let listDataChart = [];
+    // lấy danh sachs điều kiện lọc của trường thông tin của công việc, vì dữ liệu gửi trong query là dạng string nên phải parse sang đối tượng
+    let taskInformations = data.taskInformations, listDataChart = [], configurations = [];
     if (data.itemListBoxRight) {
         listDataChart = data.itemListBoxRight;
         listDataChart = listDataChart.map(item => JSON.parse(item));
     }
-    // let listDataChart = data.itemListBoxRight;
 
-    taskInfo = taskInfo.map(item => JSON.parse(item));
+    taskInformations = taskInformations.map(item => JSON.parse(item));
 
-    let configurations = [];
     // Lấy các điều kiện lọc của các trường thông tin từ client gửi về.
-    for (let [index, value] of taskInfo.entries()) { // tương tự for in. (for of sử dụng Array entries function get index)
+    for (let [index, value] of taskInformations.entries()) { // tương tự for in. (for of sử dụng Array entries function get index)
         configurations[index] = {
             filter: value.filter,
             newName: value.newName,
@@ -175,7 +201,6 @@ exports.getTaskEvaluations = async (data) => {
          * Gộp trường taskInfomation của task vào array configurations
          * Mục đích để đính kèm các điều kiện lọc của các trường thông tin vào taskInfomation để tính toán
          */
-
         let taskMerge = taskInformations.map((item, index) => Object.assign({}, item, configurations[index]))
         return { // Lấy các trường cần thiết
             _id: item._id,
@@ -1186,7 +1211,7 @@ exports.sendEmailFoCreateTask = async (task) => {
     email.push("trinhhong102@gmail.com");
     var html = `<p>Bạn được giao nhiệm vụ trong công việc:  <a href="${process.env.WEBSITE}/task?taskId=${task._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${task._id} </a></p> ` +
         `<h3>Thông tin công việc</h3>` +
-        `<p>Tên công việc : ${task.name}</p>` +
+        `<p>Tên công việc : <strong> ${task.name}</strong></p>` +
         `<p>Mô tả : ${task.description}</p>` +
         `<p>Người thực hiện</p> ` +
         `<ul>${res.map((item) => {
@@ -1210,7 +1235,7 @@ exports.sendEmailFoCreateTask = async (task) => {
                     </ul>` : ""}`
         ;
 
-        return { task: task, user: userIds, email: email, html: html };
+    return { task: task, user: userIds, email: email, html: html };
 }
 
 /**
@@ -1528,26 +1553,26 @@ exports.getAllTaskOfChildrenOrganizationalUnit = async (companyId, roleId, month
     return tasksOfChildrenOrganizationalUnit;
 }
 
-exports.sendEmailCheckTaskLastMonth = async () => {
-    let today = new Date();
-    let day = today.getDate();
-    let month = today.getMonth() + 1;
-    let daySend = 30;
-    switch (month) {
-        case 1:
-        case 3:
-        case 5:
-        case 7:
-        case 8:
-        case 10:
-        case 12:
-            daySend = 31;
-            break;
-        case 2:
-            daySend = 28;
-            break;
-    }
-    if (daySend === day) {
+exports.sendEmailCheckTaskLastMonth = async () => {  
+    // let today = new Date();
+    // let day = today.getDate();
+    // let month = today.getMonth()+1;
+    // let daySend = 30;
+    // switch (month) {
+    //     case 1:
+    //     case 3:
+    //     case 5:
+    //     case 7:
+    //     case 8:
+    //     case 10:
+    //     case 12:
+    //         daySend = 31;
+    //         break;
+    //     case 2:
+    //         daySend = 28;
+    //         break;
+    // }
+    // if (daySend === day) {
         // xu ly gui email
         console.log("Đến ngày gửi email");
         let company = await Company.find({});
@@ -1557,12 +1582,13 @@ exports.sendEmailCheckTaskLastMonth = async () => {
         let currentMonth = new Date().getMonth() + 1;
         let currentYear = new Date().getFullYear();
         for (let i in company) {
-            let flag = false;
+            
             let user = await User.find({ company: company[i] });  // lay ra tat ca nguoi dung trong tung cong ty
             let userId = user.map(x => x._id);
             let email = user.map(x => x.email);
 
             for (let j in userId) {
+                let flag = false;
                 let tasks = { "data": "user", "userId": userId[j] };
                 let tasksByUser = await this.getTasksByUser(tasks); // laay ra tat ca cong viec cua nguoi dung
                 tasks = { "organizationalUnit": "[]", "number": 1, "perPage": 1000, "status": "[]", "priority": "[]", "special": "[]", "name": null, "startDate": null, "endDate": null, "startDateAfter": null, "endDateBefore": null, "aPeriodOfTime": false, "user": userId[j] }
@@ -1607,9 +1633,9 @@ exports.sendEmailCheckTaskLastMonth = async () => {
                         evaluations = x.evaluations.length && x.evaluations;
                         if (evaluations) {
                             for (let i in evaluations) {
-                                let month = evaluations[i].date.slice(5, 7);
-                                let year = evaluations[i].date.slice(0, 4);
-
+                                let month = evaluations[i].date.getMonth() + 1;
+                                let year = evaluations[i].date.getFullYear();
+                                
                                 if (month == currentMonth && year == currentYear) {
                                     currentEvaluate.push(evaluations[i]);
                                 }
@@ -1717,32 +1743,32 @@ exports.sendEmailCheckTaskLastMonth = async () => {
                 if (flag) {  // gui email
                     let userEmail = [email[j]];
                     userEmail.push("trinhhong102@gmail.com");
-                    let html = `<h1>Thông báo danh sách công việc tháng ${new Date().getMonth() + 1} </h1> ` +
-                        `<h3>Thông tin công việc</h3>` +
-                        `${tasksByUser.expire.length > 0 ? `<p>Công việc quá hạn</p> ` +
-                            `<ul>${tasksByUser.expire.map((item) => {
-                                return `<li><a href="${process.env.WEBSITE}/task?taskId=${item.task._id}" target="_blank">${item.task.name}</a></li>`
-                            })}
-                                </ul>` : ''}` +
-                        `${tasksByUser.deadlineincoming.length > 0 ? `<p>Công việc sắp hết hạn</p> ` +
-                            `<ul>${tasksByUser.deadlineincoming.map((item) => {
-                                return `<li><a href="${process.env.WEBSITE}/task?taskId=${item.task._id}" target="_blank">${item.task.name}</a></li>`
-                            })}
-                                </ul>` : ""}` +
-                        `${notLinkedTasks.length > 0 ? `<p>Công việc chưa được liên kết KPI tháng</p> ` +
-                            `<ul>${notLinkedTasks.map((item) => {
-                                return `<li><a href="${process.env.WEBSITE}/task?taskId=${item._id}" target="_blank">${item.name}</a></li>`
-                            })}
-                                </ul>` : ""}` +
-                        `${taskHasActions.length > 0 ? `<p>Công việc có hoạt động chưa đánh giá</p> ` +
-                            `<ul>${taskHasActions.map((item) => {
-                                return `<li><a href="${process.env.WEBSITE}/task?taskId=${item._id}" target="_blank">${item.name}</a></li>`
-                            })}
-                                </ul>` : ""}`
-                        ;
-                    sendEmail("vnist.qlcv@gmail.com", userEmail, "Thông báo danh sách công việc", '', html);
-                }
+                    let html = `<h1>Thông báo danh sách công việc tháng ${new Date().getMonth()+1} </h1> ` +
+                    `<h3>Thông tin công việc</h3>` +
+                    `${tasksByUser.expire.length > 0 ? `<p>Công việc quá hạn</p> ` +
+                    `<ul>${tasksByUser.expire.map((item) => {
+                        return `<li><a href="${process.env.WEBSITE}/task?taskId=${item.task._id}" target="_blank">${item.task.name}</a></li>`
+                    })}
+                                </ul>` : '' }` +
+                    `${tasksByUser.deadlineincoming.length > 0 ? `<p>Công việc sắp hết hạn</p> ` +
+                    `<ul>${tasksByUser.deadlineincoming.map((item) => {
+                        return `<li><a href="${process.env.WEBSITE}/task?taskId=${item.task._id}" target="_blank">${item.task.name}</a></li>`
+                    })}
+                                </ul>` : "" }` +
+                    `${notLinkedTasks.length > 0 ? `<p>Công việc chưa được liên kết KPI tháng</p> ` +
+                    `<ul>${notLinkedTasks.map((item) => {
+                        return `<li><a href="${process.env.WEBSITE}/task?taskId=${item._id}" target="_blank">${item.name}</a></li>`
+                    })}
+                                </ul>` : "" }` +
+                    `${taskHasActions.length > 0 ? `<p>Công việc có hoạt động chưa đánh giá</p> ` +
+                    `<ul>${taskHasActions.map((item) => {
+                        return `<li><a href="${process.env.WEBSITE}/task?taskId=${item._id}" target="_blank">${item.name}</a></li>`
+                    })}
+                                </ul>` : "" }`
+                    ;
+                    sendEmail(userEmail, "Thông báo danh sách công việc", '', html);
+               }
             }
         }
-    }
+    // }
 }

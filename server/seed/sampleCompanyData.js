@@ -25,7 +25,9 @@ const {
     DocumentArchive,
     DocumentDomain,
     DocumentCategory,
+
     Material,
+    Category,
 
     CrmCustomer,
     CrmLocation,
@@ -182,7 +184,7 @@ const sampleCompanyData = async () => {
         company: vnist._id
     }
     ]);
-    console.log("Xong! Đã thêm tài khoản:", users);
+    console.log("Xong! Đã thêm tài khoản:");
 
     vnist_info.superAdmin = users[0]._id;
     await vnist_info.save();
@@ -341,7 +343,7 @@ const sampleCompanyData = async () => {
         employees: [nvPhongHC._id],
         parent: Directorate._id
     },]);
-    console.log('Xong! Đã tạo các phòng ban cho công ty', Directorate, departments);
+    console.log('Xong! Đã tạo các phòng ban cho công ty');
 
 
 
@@ -488,22 +490,22 @@ const sampleCompanyData = async () => {
                 await updateLink.save();
             }
             // Tạo phân quyền cho components
-            for (let k = 0; k < systemComponents.length; k++) {
-                let roles = await Role.find({
-                    company: companyId,
-                    name: {
-                        $in: systemComponents[i].roles.map(role => role.name)
-                    }
-                });
-                let dataPrivileges = roles.map(role => {
-                    return {
-                        resourceId: component._id,
-                        resourceType: 'Component',
-                        roleId: role._id
-                    }
-                });
-                await Privilege.insertMany(dataPrivileges);
-            }
+            let roles = await Role.find({
+                company: companyId,
+                name: {
+                    $in: systemComponents[i].roles.map(role => role.name)
+                }
+            });
+            let dataPrivileges = roles.map(role => {
+                return {
+                    resourceId: component._id,
+                    resourceType: 'Component',
+                    roleId: role._id
+                }
+            });
+            console.log("component privileges", dataPrivileges);
+
+            await Privilege.insertMany(dataPrivileges);
         }
 
         return await Component.find({
@@ -1587,7 +1589,8 @@ const sampleCompanyData = async () => {
         recommendNumber: "MS0001",
         dateCreate: new Date("2020-05-19"),
         proponent: users[4]._id,
-        equipment: "đề nghị mua Laptop DELL 5559",
+        equipmentName: "Laptop DELL 5559",
+        equipmentDescription: 'Laptop màu đen',
         supplier: "HanoiComputer",
         total: "1",
         unit: "cái",
@@ -1600,7 +1603,8 @@ const sampleCompanyData = async () => {
         recommendNumber: "MS0002",
         dateCreate: new Date("2020-06-19"),
         proponent: users[5]._id,
-        equipment: "đề nghị mua Laptop DELL XPS",
+        equipmentName: "Laptop DELL XPS",
+        equipmentDescription: 'Laptop màu trắng',
         supplier: "Phong Vũ",
         total: "1",
         unit: "cái",
@@ -1613,7 +1617,8 @@ const sampleCompanyData = async () => {
         recommendNumber: "MS0003",
         dateCreate: new Date("2020-04-19"),
         proponent: users[7]._id,
-        equipment: "đề nghị mua máy photocopy",
+        equipmentName: "Máy photocopy",
+        equipmentDescription: 'Hãng HanoiComputer',
         supplier: "HanoiComputer",
         total: "1",
         unit: "cái",
@@ -1626,7 +1631,8 @@ const sampleCompanyData = async () => {
         recommendNumber: "MS0004",
         dateCreate: new Date("2020-05-19"),
         proponent: users[4]._id,
-        equipment: "đề nghị mua ô tô",
+        equipmentName: "Ô tô",
+        equipmentDescription: 'Của hãng Toyota',
         supplier: "Toyota Thanh Xuân",
         total: "1",
         unit: "cái",
@@ -2062,7 +2068,11 @@ const sampleCompanyData = async () => {
         description: "Phòng họp",
         detailInfo: [],
         readByRoles: [giamDoc._id, roleAdmin._id, thanhVienBGĐ._id, nvPhongHC._id, truongPhongHC._id, phoPhongHC._id],
-        usageLogs: [],
+        usageLogs: [
+            {
+
+            }
+        ],
         // bảo trì thiết bị
         maintainanceLogs: [],
         //sự cố
@@ -2456,7 +2466,7 @@ const sampleCompanyData = async () => {
 
         location: listAsset1[1]._id,
         status: "Sẵn sàng sử dụng",
-        typeRegisterForUse: 3,
+        typeRegisterForUse: 2,
         canRegisterForUse: true,
         description: "d3-103",
         detailInfo: [],
@@ -2508,9 +2518,9 @@ const sampleCompanyData = async () => {
             unitsProducedDuringTheYear: 80
         }],
         estimatedTotalProduction: 1000,
-        code: "VVTM02.007",
+        code: "VVTM02.008",
         company: vnist._id,
-        serial: "00007",
+        serial: "00008",
         assetType: [listAssetType[25]._id],
         purchaseDate: new Date("2000-05-20"),
         warrantyExpirationDate: new Date("2077-06-20"),
@@ -2612,6 +2622,32 @@ const sampleCompanyData = async () => {
         note: "",
         status: "Chờ phê duyệt",
     },
+    {
+        asset: listAsset2[4]._id,
+        company: vnist._id,
+        recommendNumber: "CP0003",
+        dateCreate: new Date("2020-05-19"),
+        proponent: users[4]._id,
+        reqContent: "Đăng ký sử dụng tài sản",
+        dateStartUse: "8:00 AM 10-09-2020",
+        dateEndUse: "10:00 AM 10-09-2020",
+        approver: users[5]._id,
+        note: "",
+        status: "Chờ phê duyệt",
+    },
+    {
+        asset: listAsset2[4]._id,
+        company: vnist._id,
+        recommendNumber: "CP0003",
+        dateCreate: new Date("2020-05-19"),
+        proponent: users[4]._id,
+        reqContent: "Đăng ký sử dụng tài sản",
+        dateStartUse: "1:00 PM 10-09-2020",
+        dateEndUse: "5:00 PM 10-09-2020",
+        approver: users[5]._id,
+        note: "",
+        status: "Chờ phê duyệt",
+    },
     ])
     console.log(`Xong! Thông tin đăng ký sử dụng tài sản đã được tạo`);
 
@@ -2644,6 +2680,29 @@ const sampleCompanyData = async () => {
     }
     ]);
     console.log("Khởi tạo xong danh sách vật tư");
+
+    /*---------------------------------------------------------------------------------------------
+    -----------------------------------------------------------------------------------------------
+        TẠO DỮ LIỆU DANH MỤC HÀNG HÓA
+    -----------------------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------------------- */
+    console.log("Khởi tạo dữ liệu danh mục hàng hóa");
+    var list = await Category.insertMany([{
+        company: vnist._id,
+        name: "Dạng bột",
+        code: "CT001",
+        type: "product",
+        description: "Dạng bột"
+    },
+    {
+        company: vnist._id,
+        name: "Dạng viên",
+        code: "CT002",
+        type: "product",
+        description: "Dạng viên viên"
+    }
+    ]);
+    console.log("Khởi tạo xong danh sách danh mục hàng hóa");
 
 
     /*---------------------------------------------------------------------------------------------

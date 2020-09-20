@@ -40,9 +40,8 @@ exports.authFunc = (checkPage = true) => {
             /**
              * Xác định db truy vấn cho request
              */
-            req.portal = !req.user.company ? process.env.DB_NAME : req.user.company.shortName; 
+            req.portal = !req.user.company ? process.env.DB_NAME : req.user.company.shortName;
             initModels(connect(DB_CONNECTION, req.portal), Models);
-            console.log("Called by portal:", req.portal)
 
             if (process.env.DEVELOPMENT !== 'true') {
 
@@ -153,7 +152,7 @@ exports.uploadFile = (arrData, type) => {
     var name, arrFile;
     // Tạo folder chứa file khi chưa có folder
     const checkExistUploads = async(portal) => {
-        if(company !== undefined)
+        if(portal !== undefined)
             return await arrData.forEach(x => {
                 let dir = `./upload/private/${portal}${x.path}`;
                 if (!fs.existsSync(dir)) {

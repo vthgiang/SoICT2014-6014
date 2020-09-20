@@ -1,9 +1,30 @@
 import {sendRequest} from '../../../../../helpers/requestHelper';
 
 export const MaintainanceService = {
+    getMaintainances,
     createMaintainance,
     updateMaintainance,
     deleteMaintainance,
+}
+
+// Lấy thông tin bảo trì tài sản
+function getMaintainances(data) {
+    console.log('\n\n\n\n\\n\n***', data);
+    let params = {
+        code: data ? data.code : data,
+        maintainanceCode: data ? data.maintainanceCode : data,
+        maintainCreateDate: data ? data.maintainCreateDate : data,
+        type: data ? data.type : data,
+        status: data ? data.status : data,
+        page: data ? data.page : data,
+        limit: data ? data.limit : data,
+    };
+
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/asset/assets/maintainance-logs`,
+        method: 'GET',
+        params,
+    }, false, true, 'asset.maintainance');
 }
 
 // tạo mới thông tin bảo trì tài sản

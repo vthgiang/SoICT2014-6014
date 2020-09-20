@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ImportFileExcel, ConFigImportFile, ShowImportData } from '../../../../common-components';
+import { DialogModal, ImportFileExcel, ConFigImportFile, ShowImportData, ExportExcel } from '../../../../common-components';
 
 import { configurationHoliday } from './fileConfigurationImportHoliday';
 
@@ -14,7 +14,7 @@ class HolidayImportForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            configData: configurationHoliday,
+            configData: configurationHoliday.configurationImport(this.props.translate),
             checkFileImport: true,
             rowError: [],
             importData: [],
@@ -94,16 +94,16 @@ class HolidayImportForm extends Component {
                     x = { ...x, error: true }
                 };
                 if (x.type === null) {
-                    errorAlert = [...errorAlert, translate('human_resource.holiday.type_required')];
+                    errorAlert = [...errorAlert, 'type_required'];
                 };
                 if (x.startDate === null) {
-                    errorAlert = [...errorAlert, translate('human_resource.holiday.start_date_required')];
+                    errorAlert = [...errorAlert, 'start_date_required'];
                 };
                 if (x.endDate === null) {
-                    errorAlert = [...errorAlert, translate('human_resource.holiday.end_date_required')];
+                    errorAlert = [...errorAlert, 'end_date_required'];
                 };
                 if (x.reason === null) {
-                    errorAlert = [...errorAlert, translate('human_resource.holiday.reason_required')];
+                    errorAlert = [...errorAlert, 'reason_required'];
                 };
                 x = { ...x, errorAlert: errorAlert }
                 return x;
@@ -167,7 +167,14 @@ class HolidayImportForm extends Component {
         if (holiday.error.rowError !== undefined) {
             rowError = holiday.error.rowError;
             importData = holiday.error.data
-        }
+        };
+
+        importData = importData.map(x => {
+            x = { ...x, type: translate(`human_resource.holiday.${x.type}`) }
+            return x;
+        })
+
+        let exportData = configurationHoliday.templateImport(translate);
 
         return (
             <React.Fragment>
@@ -189,24 +196,23 @@ class HolidayImportForm extends Component {
                             scrollTable={false}
                             handleChangeConfig={this.handleChangeConfig}
                         />
-                        <div className="row">
-                            {/* Chọn file import */}
-                            <div className="form-group col-md-4 col-xs-12">
-                                <ImportFileExcel
-                                    configData={configData}
-                                    handleImportExcel={this.handleImportExcel}
-                                />
+                        <div className="qlcv">
+                            <div className="form-inline">
+                                {/* Chọn file import */}
+                                <div className="form-group">
+                                    <ImportFileExcel
+                                        configData={configData}
+                                        handleImportExcel={this.handleImportExcel}
+                                    />
+                                </div>
                             </div>
-                            {/* File import mẫu */}
-                            <div className="form-group col-md-4 col-xs-12">
-                                <label></label>
-                                <a className='pull-right'
-                                    style={{ cursor: "pointer" }}
-                                    onClick={(e) => this.requestDownloadFile(e, `.${configData.file.fileUrl}`, configData.file.fileName)}>
-                                    <i className="fa fa-download"> &nbsp;{translate('human_resource.download_file')}</i></a>
-                            </div>
+
+                            {/* Dowload file import mẫu */}
+                            <ExportExcel id="download_template_salary" type='link' exportData={exportData}
+                                buttonName={` ${translate('human_resource.download_file')}`} />
+
                             {/* Hiện thị dữ liệu import */}
-                            <div className="form-group col-md-12 col-xs-12">
+                            <div className="col-lg-12 col-md-12 col-sm-12 col-xs-12" style={{ padding: 0 }}>
                                 <ShowImportData
                                     id="import_salary_show_data"
                                     configData={configData}

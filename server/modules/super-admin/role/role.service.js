@@ -117,7 +117,6 @@ exports.createRootRole = async(data, companyID) => {
  * @data dữ liệu tạo
  */
 exports.createRolesForOrganizationalUnit = async(data, companyID) => {
-    console.log("Data: ", data)
     const filterValidRoleArray = async (array, companyId) => {
         let resArray= [];
         if (array.length > 0) {
@@ -138,12 +137,12 @@ exports.createRolesForOrganizationalUnit = async(data, companyID) => {
     }
 
     const roleChucDanh = await RoleType.findOne({ name: Terms.ROLE_TYPES.POSITION });
-    const deanAb = await Role.findOne({ name: Terms.ROOT_ROLES.DEAN.name });
-    const viceDeanAb = await Role.findOne({ name: Terms.ROOT_ROLES.VICE_DEAN.name });
-    const employeeAb = await Role.findOne({ name: Terms.ROOT_ROLES.EMPLOYEE.name });
+    const deanAb = await Role.findOne({ name: Terms.ROOT_ROLES.DEAN.name, company: companyID });
+    const viceDeanAb = await Role.findOne({ name: Terms.ROOT_ROLES.VICE_DEAN.name, company: companyID  });
+    const employeeAb = await Role.findOne({ name: Terms.ROOT_ROLES.EMPLOYEE.name, company: companyID  });
 
     const employeeArr = await filterValidRoleArray(data.employees, companyID);
-    console.log('employeeArr:', employeeArr)
+
     const dataEmployee = employeeArr.map(em=>{
         return {
             name: em,
@@ -155,7 +154,7 @@ exports.createRolesForOrganizationalUnit = async(data, companyID) => {
     const employees = dataEmployee.length > 0? await Role.insertMany(dataEmployee): [];
 
     const viceDeanArr = await filterValidRoleArray(data.viceDeans, companyID);
-    console.log('viceDeanArr:', viceDeanArr)
+
     const dataViceDean = viceDeanArr.map(vice=>{
         return {
             name: vice,
@@ -167,7 +166,7 @@ exports.createRolesForOrganizationalUnit = async(data, companyID) => {
     const viceDeans = dataViceDean.length > 0 ? await Role.insertMany(dataViceDean) : [];
 
     const deanArr = await filterValidRoleArray(data.deans, companyID);
-    console.log('deanArr:', deanArr)
+
     const dataDean = deanArr.map(dean=>{
         return {
             name: dean,

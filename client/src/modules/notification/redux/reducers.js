@@ -161,15 +161,24 @@ export function notifications(state = initState, action) {
             };
 
         case NotificationConstants.READED_NOTIFICATION_SUCCESS:
-            index = findIndex(state.receivered.list, action.payload._id);
-            if(index !== -1) state.receivered.list[index] = action.payload;
-            indexP = findIndex(state.receivered.paginate, action.payload._id);
-            if(indexP !== -1) state.receivered.paginate[indexP] = action.payload;
-            return {
-                ...state,
-                isLoading: false
-            };
-
+            if (!action.payload.readAll) {
+                index = findIndex(state.receivered.list, action.payload.notification._id);
+                if(index !== -1) state.receivered.list[index] = action.payload.notification;
+                indexP = findIndex(state.receivered.paginate, action.payload.notification._id);
+                if(indexP !== -1) state.receivered.paginate[indexP] = action.payload.notification;
+                return {
+                    ...state,
+                    isLoading: false
+                };
+            } else {
+                state.receivered.list = action.payload.notification;
+                state.receivered.paginate = [];
+                return {
+                    ...state,
+                    isLoading: false
+                };
+            }
+            
         case NotificationConstants.DELETE_MANUAL_NOTIFICATION_SUCCESS:
             index = findIndex(state.sent.list, action.payload);
             if(index !== -1) state.sent.list.splice(index, 1);

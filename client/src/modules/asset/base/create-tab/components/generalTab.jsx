@@ -179,10 +179,12 @@ class GeneralTab extends Component {
             return {
                 ...state,
                 assetTypes: value,
+                detailInfo: arr,
                 isObj: false
             }
         });
         this.props.handleChange("assetType", value);
+        this.props.handleChange("detailInfo", this.state.detailInfo);
     }
 
     /**

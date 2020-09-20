@@ -184,24 +184,22 @@ class AssetCreateForm extends Component {
                 files
             }
         })
-
+        
         let formData = convertJsonObjectToFormData(this.state.asset);
         files.forEach(x => {
             formData.append("file", x.fileUpload);
         })
         formData.append("fileAvatar", this.state.avatar);
-
         this.props.addNewAsset(formData);
     }
 
     render() {
         const { translate, assetsManager } = this.props;
         const { img, asset, maintainanceLogs, usageLogs, incidentLogs, files } = this.state;
-        // console.log(this.state, 'this.state-create')
 
         return (
             <React.Fragment>
-                <ButtonModal modalID="modal-add-asset" button_name={translate('menu.add_asset')} title={translate('menu.add_asset')} />
+                {/* <ButtonModal modalID="modal-add-asset" button_name={translate('menu.add_asset')} title={translate('menu.add_asset')} /> */}
                 <DialogModal
                     size='75' modalID="modal-add-asset" isLoading={assetsManager.isLoading}
                     formID="form-add-asset"
@@ -213,10 +211,10 @@ class AssetCreateForm extends Component {
                         {/* Nav-tabs */}
                         <ul className="nav nav-tabs">
                             <li className="active"><a title={translate('asset.general_information.general_information')} data-toggle="tab" href={`#create_general`}>{translate('asset.general_information.general_information')}</a></li>
+                            <li><a title={translate('asset.general_information.depreciation_information')} data-toggle="tab" href={`#depreciation`}>{translate('asset.general_information.depreciation_information')}</a></li>
                             <li><a title={translate('asset.general_information.usage_information')} data-toggle="tab" href={`#usage`}>{translate('asset.general_information.usage_information')}</a></li>
                             <li><a title={translate('asset.general_information.incident_information')} data-toggle="tab" href={`#incident`}>{translate('asset.general_information.incident_information')}</a></li>
                             <li><a title={translate('asset.general_information.maintainance_information')} data-toggle="tab" href={`#maintainance`}>{translate('asset.general_information.maintainance_information')}</a></li>
-                            <li><a title={translate('asset.general_information.depreciation_information')} data-toggle="tab" href={`#depreciation`}>{translate('asset.general_information.depreciation_information')}</a></li>
                             <li><a title={translate('asset.general_information.disposal_information')} data-toggle="tab" href={`#disposal`}>{translate('asset.general_information.disposal_information')}</a></li>
                             <li><a title={translate('asset.general_information.attach_infomation')} data-toggle="tab" href={`#attachments`}>{translate('asset.general_information.attach_infomation')}</a></li>
                         </ul>
@@ -232,6 +230,13 @@ class AssetCreateForm extends Component {
                                 detailInfo={asset.detailInfo}
                             />
 
+                            {/* Thông tin khấu hao */}
+                            <DepreciationTab
+                                id="depreciation"
+                                asset={asset}
+                                handleChange={this.handleChange}
+                            />
+                            
                             {/* Thông tin bảo trì */}
                             <MaintainanceLogTab
                                 id="maintainance"
@@ -257,13 +262,6 @@ class AssetCreateForm extends Component {
                                 handleAddIncident={this.handleChangeIncidentLog}
                                 handleEditIncident={this.handleChangeIncidentLog}
                                 handleDeleteIncident={this.handleChangeIncidentLog}
-                            />
-
-                            {/* Thông tin khấu hao */}
-                            <DepreciationTab
-                                id="depreciation"
-                                asset={asset}
-                                handleChange={this.handleChange}
                             />
 
                             {/* Thông tin thanh lý */}

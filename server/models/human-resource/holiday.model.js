@@ -9,7 +9,7 @@ const HolidaySchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: Company
     },
-    numberDateLeaveOfYear: {
+    maximumNumberOfLeaveDays: {
         type: Number,
         default: 0,
         required: true,

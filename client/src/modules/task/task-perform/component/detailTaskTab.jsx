@@ -681,19 +681,15 @@ class DetailTaskTab extends Component {
                         {
                             task && warning &&
                             <div className="description-box" style={{ border: "3px double #e8cbcb" }}>
-
-                                {statusTask === "Inprocess" && checkInactive && codeInProcess && (currentRole === "accountable" || (currentRole === "responsible" && checkHasAccountable === false)) &&
-                                    <h4 style={{ cursor: "pointer", marginRight: "5px", color: "green" }} className={'pull-right'} onClick={() => this.handleEndTask(id, "Inprocess", codeInProcess, typeOfTask)} title={`${translate('task.task_perform.activated_task')} ${translate('task.task_perform.following_task')}`} >
-                                        <i className="fa fa-rocket"></i>
-                                    </h4>
-                                }
                                 <h4>{translate('task.task_management.warning')}</h4>
-
 
                                 {/* Kích hoạt công việc phía sau trong quy trình */}
                                 {statusTask === "Inprocess" && checkInactive && codeInProcess && (currentRole === "accountable" || (currentRole === "responsible" && checkHasAccountable === false)) &&
                                     <div>
-                                        <strong>{translate('task.task_perform.is_task_process')}.</strong>
+                                        <strong>{translate('task.task_perform.is_task_process')}:</strong>
+                                        <a style={{ cursor: "pointer" }} onClick={() => this.handleEndTask(id, "Inprocess", codeInProcess, typeOfTask)}>
+                                            {translate('task.task_perform.following_task')}
+                                        </a>
                                     </div>
                                 }
 

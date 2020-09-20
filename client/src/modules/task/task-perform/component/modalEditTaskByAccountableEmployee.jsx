@@ -205,6 +205,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
     handleChangeTextInfo = async (e) => {
         let value = e.target.value;
         let name = e.target.name;
+        console.log('name-val', name, value);
         await this.setState(state => {
             state.info[`${name}`] = {
                 value: value,
@@ -234,7 +235,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
     }
 
     handleSetOfValueChange = async (value, code) => {
-        console.log('value', value);
+        console.log('set', value);
 
         this.setState(state => {
             state.info[`${code}`] = {
@@ -966,7 +967,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
 
                 //không có parent trong arr
                 !hasParentItem && listParentTask.unshift({ value: parentTask._id, text: parentTask.name })
-                console.log('arr',arr);
+                console.log('arr', arr);
                 for (let i in arr) {
                     if (arr[i].value === parentTask._id) {
                         listParentTask.unshift({ value: parentTask._id, text: parentTask.name })
@@ -1062,7 +1063,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                                 style={{ width: "100%" }}
                                                 items={statusArr}
                                                 multiple={false}
-                                                value={statusOptions}
+                                                value={statusOptions[0]}
                                                 onChange={this.handleSelectedStatus}
                                             />
                                         }
@@ -1078,7 +1079,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                                 style={{ width: "100%" }}
                                                 items={priorityArr}
                                                 multiple={false}
-                                                value={priorityOptions}
+                                                value={priorityOptions[0]}
                                                 onChange={this.handleSelectedPriority}
                                             />
                                         }
@@ -1121,7 +1122,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                     <div><span style={{ fontWeight: 600 }}>totalDay</span> - Thời gian từ ngày bắt đầu đến ngày kết thúc công việc (ngày)</div>
                                     <div><span style={{ fontWeight: 600 }}>averageActionRating</span> -  Trung bình cộng điểm đánh giá hoạt động (1-10)</div>
                                     <div><span style={{ fontWeight: 600 }}>progress</span> - % Tiến độ công việc (0-100)</div>
-                                    <div><span style={{ fontWeight: 600 }}>dayUsed</span> - Thời gian làm việc tính đến ngày đánh giá (ngày)</div>
                                     <div><span style={{ fontWeight: 600 }}>p1, p2,...</span> - Thông tin công việc kiểu số (Chỉ có với các công việc theo mẫu)</div>
                                 </div>
                             </fieldset>

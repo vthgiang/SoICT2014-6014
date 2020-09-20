@@ -11,7 +11,7 @@ import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
 import customModule from '../custom-task-process'
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
-import './../processDiagram.css'
+import './../process-template/processDiagram.css';
 
 //Xóa element khỏi pallette theo data-action
 var _getPaletteEntries = PaletteProvider.prototype.getPaletteEntries;
@@ -113,11 +113,11 @@ class ViewProcess extends Component {
                 defaultUnit = user.organizationalUnitsOfUser[0]
             }
             this.props.getChildrenOfOrganizationalUnits(defaultUnit && defaultUnit._id);
-            var modeler = this.modeler
-            this.modeler.importXML(nextProps.data.xmlDiagram, function (err) {
-                let canvas = modeler.get('canvas');
-                canvas.zoom('fit-viewport');
-            });
+            // var modeler = this.modeler
+            // this.modeler.importXML(nextProps.data.xmlDiagram, function (err) {
+            //     let canvas = modeler.get('canvas');
+            //     canvas.zoom('fit-viewport');
+            // });
             return true;
         }
         if (nextProps.data) {
@@ -206,7 +206,7 @@ class ViewProcess extends Component {
         })
         if (element.type === 'bpmn:Task' || element.type === 'bpmn:ExclusiveGateway') {
             console.log('0000', this.state.info[this.state.id]);
-            window.$(`#modal-detail-task`).modal("show");
+            window.$(`#modal-detail-task-view-process`).modal("show");
         }
     }
 
@@ -376,7 +376,7 @@ class ViewProcess extends Component {
             <React.Fragment>
                 <div>
                     {id !== undefined &&
-                        <ModalDetailTask task={(info && info[`${id}`]) && info[`${id}`]} isProcess={true} />
+                        <ModalDetailTask action={"view-process"} task={(info && info[`${id}`]) && info[`${id}`]} isProcess={true} />
                     }
 
                     <div className={`${isTabPane ? 'is-tabbed-pane' : 'row'}`}>
@@ -409,7 +409,7 @@ class ViewProcess extends Component {
                         </div>
 
                         <div className={`${isTabPane? "": "col-md-4"}`}>
-                            <div className='description-box'>
+                            <div className='description-box without-border'>
                                 {/* tên quy trình */}
                                 <div>
                                     <strong>{translate("task.task_process.process_name")}:</strong>

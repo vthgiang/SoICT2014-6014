@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const SystemComponentControllers = require('./systemComponent.controller');
-const { auth } = require('../../../../middleware');
+const { auth } = require(`${SERVER_MIDDLEWARE_DIR}/_multi-tenant`);
 
 router.get("/system-components", auth, SystemComponentControllers.getAllSystemComponents);
 router.post("/system-components", auth, SystemComponentControllers.createSystemComponent);

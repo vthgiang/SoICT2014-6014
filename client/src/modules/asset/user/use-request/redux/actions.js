@@ -26,7 +26,7 @@ function searchRecommendDistributes(data) {
         } catch (error) {
             dispatch({
                 type: RecommendDistributeConstants.GET_RECOMMEND_DISTRIBUTE_FAILURE,
-                error: error.response.data
+                error: error.response && error.response.data
             });
         }
     };

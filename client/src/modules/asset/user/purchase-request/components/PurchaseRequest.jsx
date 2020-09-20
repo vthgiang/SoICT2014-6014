@@ -66,7 +66,27 @@ class PurchaseRequest extends Component {
 
         return [month, year].join('-');
     }
+    // Function format dữ liệu Date thành string
+    formatDate2(date, monthYear = false) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
 
+        if (month.length < 2) {
+            month = '0' + month;
+        }
+
+        if (day.length < 2) {
+            day = '0' + day;
+        }
+
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else {
+            return [day, month, year].join('-');
+        }
+    }
     // Function lưu giá trị mã nhân viên vào state khi thay đổi
     handleRecommendNumberChange = (event) => {
         const { name, value } = event.target;
@@ -195,6 +215,7 @@ class PurchaseRequest extends Component {
                                 <th style={{ width: "15%" }}>{translate('asset.general_information.create_date')}</th>
                                 <th style={{ width: "15%" }}>{translate('asset.usage.proponent')}</th>
                                 <th style={{ width: "17%" }}>{translate('asset.manage_recommend_procure.asset_recommend')}</th>
+                                <th style={{ width: "17%" }}>{translate('asset.manage_recommend_procure.equipment_description')}</th>
                                 <th style={{ width: "15%" }}>{translate('asset.usage.accountable')}</th>
                                 <th style={{ width: "17%" }}>{translate('asset.usage.note')}</th>
                                 <th style={{ width: "11%" }}>{translate('asset.general_information.status')}</th>
@@ -206,6 +227,7 @@ class PurchaseRequest extends Component {
                                             translate('asset.general_information.create_date'),
                                             translate('asset.usage.proponent'),
                                             translate('asset.manage_recommend_procure.asset_recommend'),
+                                            translate('asset.manage_recommend_procure.equipment_description'),
                                             translate('asset.usage.accountable'),
                                             translate('asset.usage.note'),
                                             translate('asset.general_information.status'),
@@ -222,10 +244,11 @@ class PurchaseRequest extends Component {
                                 listRecommendProcures.filter(item => item.proponent && item.proponent._id === auth.user._id).map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.recommendNumber}</td>
-                                        <td>{x.dateCreate}</td>
+                                        <td>{this.formatDate2(x.dateCreate)}</td>
                                         <td>{x.proponent ? x.proponent.name : 'User is deleted'}</td>
-                                        <td>{x.equipment}</td>
-                                        <td>{x.approver ? x.approver.name : 'User is deleted'}</td>
+                                        <td>{x.equipmentName}</td>
+                                        <td>{x.equipmentDescription}</td>
+                                        <td>{x.approver ? x.approver.name : ''}</td>
                                         <td>{x.note}</td>
                                         <td>{x.status}</td>
                                         <td style={{ textAlign: "center" }}>
@@ -235,7 +258,7 @@ class PurchaseRequest extends Component {
                                                 content={translate('asset.manage_recommend_procure.delete_recommend_card')}
                                                 data={{
                                                     id: x._id,
-                                                    info: x.recommendNumber + " - " + x.dateCreate.replace(/-/gi, "/")
+                                                    info: x.dateCreate ? x.recommendNumber + " - " + x.dateCreate.replace(/-/gi, "/") : x.recommendNumber
                                                 }}
                                                 func={this.props.deleteRecommendProcure}
                                             />
@@ -262,7 +285,8 @@ class PurchaseRequest extends Component {
                         recommendNumber={currentRowView.recommendNumber}
                         dateCreate={currentRowView.dateCreate}
                         proponent={currentRowView.proponent}
-                        equipment={currentRowView.equipment}
+                        equipmentName={currentRowView.equipmentName}
+                        equipmentDescription={currentRowView.equipmentDescription}
                         supplier={currentRowView.supplier}
                         total={currentRowView.total}
                         unit={currentRowView.unit}
@@ -281,7 +305,8 @@ class PurchaseRequest extends Component {
                         recommendNumber={currentRow.recommendNumber}
                         dateCreate={currentRow.dateCreate}
                         proponent={currentRow.proponent}
-                        equipment={currentRow.equipment}
+                        equipmentName={currentRow.equipmentName}
+                        equipmentDescription={currentRow.equipmentDescription}
                         supplier={currentRow.supplier}
                         total={currentRow.total}
                         unit={currentRow.unit}

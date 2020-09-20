@@ -6,6 +6,10 @@ const EducationProgramSchema = new Schema({ // Chương trình đào tạo
         type: String,
         required: true
     },
+    company: {
+        type: Schema.Types.ObjectId,
+        ref: "Company"
+    },
     programId: { // Mã chương trình đào tạo
         type: String,
         required: true

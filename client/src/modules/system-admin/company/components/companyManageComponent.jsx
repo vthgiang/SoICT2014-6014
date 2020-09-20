@@ -29,6 +29,7 @@ class CompanyManageComponent extends Component {
                 ...prevState,
                 checkedAll: false,
                 companyId: nextProps.companyId,
+                companyShortName: nextProps.companyShortName,
                 componentPaginate: nextProps.company.item.components.listPaginate,
                 componentPage: nextProps.company.item.components.page,
                 componentLimit: nextProps.company.item.components.limit,
@@ -112,6 +113,7 @@ class CompanyManageComponent extends Component {
         const {companyId} = this.state;
         const params = {
             company: companyId,
+            portal: this.state.companyShortName,
             limit: this.state.limit,
             page: 1,
             key: this.state.option,
@@ -126,6 +128,7 @@ class CompanyManageComponent extends Component {
         const {companyId} = this.state;
         const params = {
             company: companyId,
+            portal: this.state.companyShortName,
             limit: this.state.limit,
             page: page,
             key: this.state.option,
@@ -140,6 +143,7 @@ class CompanyManageComponent extends Component {
         const {companyId} = this.state;
         const params = { 
             company: companyId,
+            portal: this.state.companyShortName,
             limit: number, 
             page: this.state.page,
             key: this.state.option,

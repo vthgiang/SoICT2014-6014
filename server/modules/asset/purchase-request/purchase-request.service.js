@@ -1,4 +1,5 @@
 const RecommendProcure = require('../../../models/asset/assetPurchaseRequest.model');
+const { User } = require('../../../models').schema;
 
 /**
  * Lấy danh sách phiếu đề nghị mua sắm thiết bị
@@ -20,19 +21,29 @@ exports.searchRecommendProcures = async (query, company) => {
 
     // Thêm người đề nghị vào trường tìm kiếm
     if (proponent) {
-        keySearch = { ...keySearch, proponent: { $in: proponent } }
+        let user = await User.find({ name: { $regex: proponent, $options: "i" } }).select('_id');
+        let userIds = [];
+        user.map(x => {
+            userIds.push(x._id)
+        })
+        keySearch = { ...keySearch, proponent: { $in: userIds } }
     }
 
     // Thêm người phê duyệt vào trường tìm kiếm
     if (approver) {
-        keySearch = { ...keySearch, approver: { $in: approver } }
+        let user = await User.find({ name: { $regex: approver, $options: "i" } }).select('_id');
+        let userIds = [];
+        user.map(x => {
+            userIds.push(x._id)
+        })
+        keySearch = { ...keySearch, approver: { $in: userIds } }
     }
 
     // Thêm key tìm kiếm phiếu theo trạng thái vào keySearch
     if (status) {
         keySearch = { ...keySearch, status: { $in: status } };
     };
-    console.log(keySearch)
+
     var totalList = await RecommendProcure.count(keySearch);
     var listRecommendProcures = await RecommendProcure.find(keySearch).populate('proponent approver').sort({ 'createdAt': 'desc' }).skip(page ? parseInt(page) : 0).limit(limit ? parseInt(limit) : 0);
 
@@ -51,7 +62,8 @@ exports.createRecommendProcure = async (data, company) => {
         recommendNumber: data.recommendNumber,
         dateCreate: data.dateCreate,
         proponent: data.proponent, // Người đề nghị
-        equipment: data.equipment,
+        equipmentName: data.equipmentName,
+        equipmentDescription: data.equipmentDescription,
         supplier: data.supplier,
         approver: data.approver, // Người phê duyệt
         total: data.total,
@@ -82,7 +94,8 @@ exports.updateRecommendProcure = async (id, data) => {
         recommendNumber: data.recommendNumber,
         dateCreate: data.dateCreate,
         proponent: data.proponent, // Người đề nghị
-        equipment: data.equipment,
+        equipmentName: data.equipmentName,
+        equipmentDescription: data.equipmentDescription,
         supplier: data.supplier,
         approver: data.approver, // Người phê duyệt
         total: data.total,

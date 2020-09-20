@@ -84,14 +84,13 @@ class DocumentInformation extends Component {
             documentIssuingBody, documentOfficialNumber, documentSigner, documentVersions,
             documentRelationshipDescription, documentRelationshipDocuments,
             documentRoles, documentArchives,
-            documentArchivedRecordPlaceInfo, documentArchivedRecordPlaceOrganizationalUnit, currentVersion,
+            documentArchivedRecordPlaceOrganizationalUnit, currentVersion,
         } = this.state;
         const { translate, role, documents, department, user, documentLogs } = this.props;
         const roleList = role.list.map(role => { return { value: role._id, text: role.name } });
         const relationshipDocs = documents.administration.data.list.filter(doc => doc._id !== documentId).map(doc => { return { value: doc._id, text: doc.name } })
         let roles = this.findDocumentRole(roleList, documentRoles);
-        console.log('----------------', documentArchives)
-        //let logs = documentLogs.reverse();
+        let logs = documentLogs.reverse();
         return (
             <React.Fragment>
                 <DialogModal
@@ -99,6 +98,7 @@ class DocumentInformation extends Component {
                     formID="form-information-user-document"
                     title={translate('document.information')}
                     hasSaveButton={false}
+                    bodyStyle={{ padding: "0px" }}
                     size={100}
                 >
                     {
@@ -118,7 +118,7 @@ class DocumentInformation extends Component {
                         <div className="col-xs-12 col-sm-12 col-md-7 col-lg-7" style={{ paddingTop: "10px" }}>
                             <div className="collapse in">
                                 <div className="description-box">
-                                    <legend className="scheduler-border">{translate('document.infomation_docs')}</legend>
+                                    <h4 className="scheduler-border">{translate('document.infomation_docs')}</h4>
                                     <div className="row">
                                         <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                             <strong>{translate('document.name')}&emsp; </strong>
@@ -126,45 +126,45 @@ class DocumentInformation extends Component {
                                         </div>
                                         <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                             <strong>{translate('document.doc_version.issuing_body')}&emsp; </strong>
-                                            {documentIssuingBody}
+                                            {documentIssuingBody ? documentIssuingBody : translate('general.no_data')}
                                         </div>
                                     </div>
                                     <div className="row">
                                         <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                             <strong>{translate('document.doc_version.official_number')}&emsp; </strong>
-                                            {documentOfficialNumber}
+                                            {documentOfficialNumber ? documentOfficialNumber : translate('general.no_data')}
                                         </div>
                                         <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                             <strong>{translate('document.doc_version.signer')}&emsp; </strong>
-                                            {documentSigner}
+                                            {documentSigner ? documentSigner : translate('general.no_data')}
                                         </div>
                                     </div>
                                     <div className="row">
                                         <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                             <strong>{translate('document.category')}&emsp; </strong>
-                                            {documentCategory ? documentCategory : null}
+                                            {documentCategory ? documentCategory : translate('general.no_data')}
                                         </div>
                                         <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                             <strong>{translate('document.domain')}&emsp; </strong>
                                             {documentDomains ? documentDomains.map(y =>
                                                 <div>{y}</div>
-                                            ) : null}
+                                            ) : translate('general.no_data')}
                                         </div>
                                         <div className="for{ translate('document.description') }m-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                             <strong>{translate('document.description')}&emsp; </strong>
-                                            {documentDescription}
+                                            {documentDescription ? documentDescription : translate('general.no_data')}
                                         </div>
                                         <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                             <strong>Lưu trữ&emsp; </strong>
                                             {documentArchives ? documentArchives.map(y =>
                                                 <div>{y}</div>
-                                            ) : null}
+                                            ) : translate('general.no_data')}
                                         </div>
                                     </div>
                                 </div>
 
                                 <div className="description-box">
-                                    <legend className="scheduler-border">{translate('document.doc_version.title')}</legend>
+                                    <h4 className="scheduler-border">{translate('document.doc_version.title')}</h4>
                                     <div className="row">
                                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                             <table className="table table-hover table-striped table-bordered" id="table-document-version">
@@ -201,32 +201,32 @@ class DocumentInformation extends Component {
                                 </div>
 
                                 <div className="description-box">
-                                    <legend className="scheduler-border">{translate('document.relationship.title')}</legend>
+                                    <h4 className="scheduler-border">{translate('document.relationship.title')}</h4>
                                     <div className="row">
                                         <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                             <strong>{translate('document.relationship.description')}&emsp; </strong>
-                                            {documentRelationshipDescription}
+                                            {documentRelationshipDescription ? documentRelationshipDescription : translate('general.no_data')}
                                         </div>
 
                                         <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                             <strong>{translate('document.relationship.list')}&emsp; </strong>
-                                            {documentRelationshipDocuments ? documentRelationshipDocuments.map(y =>
+                                            {documentRelationshipDocuments && documentRelationshipDocuments.length ? documentRelationshipDocuments.map(y =>
                                                 <div>{y}</div>
-                                            ) : null}
+                                            ) : translate('general.no_data')}
                                         </div>
                                     </div>
                                     <div className="row">
                                         <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                             <strong>{translate('document.roles')}&emsp; </strong>
-                                            {roles ? roles.map(y =>
+                                            {roles && roles.length ? roles.map(y =>
                                                 <div>{y[0]}</div>
-                                            ) : null}
+                                            ) : translate('general.no_data')}
                                         </div>
 
 
                                         <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                             <strong>{translate('document.store.organizational_unit_manage')}&emsp; </strong>
-                                            {documentArchivedRecordPlaceOrganizationalUnit ? documentArchivedRecordPlaceOrganizationalUnit.name : ""}
+                                            {documentArchivedRecordPlaceOrganizationalUnit ? documentArchivedRecordPlaceOrganizationalUnit.name : translate('general.no_data')}
                                         </div>
                                     </div>
                                 </div>
@@ -234,23 +234,19 @@ class DocumentInformation extends Component {
 
                             </div>
                         </div>
-                        <div className="col-xs-12 col-sm-12 col-md-5 col-lg-5" style={{ padding: "10px 0 10px 0", borderLeft: "1px solid #f4f4f4" }}>
-                            <div className="description-box">
-                                <legend className="scheduler-border">Lịch sử chỉnh sửa</legend>
-                                <div className="form-group col-lg-12 col-md-12 col-ms-12 col-xs-12">
-                                    <div className="active tab-pane">
-                                        {documentLogs && documentLogs.map(item =>
-                                            <div key={item._id} className="item-box row">
-                                                <a style={{ fontWeight: 700, cursor: "pointer" }}>{item.creator?.name} </a>
-                                                {item.title ? item.title : translate("task.task_perform.none_description")}&nbsp;
+                        <div className="col-xs-12 col-sm-12 col-md-5 col-lg-5" style={{ borderLeft: "1px solid #f4f4f4" }}>
+                            <div className="description-box without-border">
+                                <h4 className="scheduler-border">Lịch sử chỉnh sửa</h4>
+                                {documentLogs && documentLogs.map(item =>
+                                    <div key={item._id} className="item-box">
+                                        <a style={{ fontWeight: 700, cursor: "pointer" }}>{item.creator?.name} </a>
+                                        {item.title ? item.title : translate("task.task_perform.none_description")}&nbsp;
                                                 ({moment(item.createdAt).format("HH:mm:ss DD/MM/YYYY")})
                                                 <div>
-                                                    {item.description ? item.description : translate("task.task_perform.none_description")}
-                                                </div>
-                                            </div>
-                                        )}
+                                            {item.description ? item.description : translate("task.task_perform.none_description")}
+                                        </div>
                                     </div>
-                                </div>
+                                )}
                             </div>
                         </div>
 
