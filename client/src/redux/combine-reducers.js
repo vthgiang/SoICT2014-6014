@@ -50,13 +50,14 @@ import { recommendDistribute } from "../modules/asset/user/use-request/redux/red
 import { assetType } from "../modules/asset/admin/asset-type/redux/reducers";
 import { assetsManager } from "../modules/asset/admin/asset-information/redux/reducers";
 import { incidentManager } from "../modules/asset/admin/incident/redux/reducers";
-
+import { mintainanceManager } from "../modules/asset/admin/maintainance/redux/reducers";
 
 //report 
 import { reports } from "../modules/report/task-report/redux/reducers";
 
-//material
-import { materials } from "../modules/warehouse-manager/material-manager/redux/reducers";
+//warehouse
+import { materials } from "../modules/warehouse/material-manager/redux/reducers";
+import { categories } from "../modules/warehouse/category-management/redux/reducers";
 
 //crm
 import { customer } from "../modules/crm/customer/redux/reducers";
@@ -135,14 +136,16 @@ const appReducer = combineReducers({
     assetType,
     assetsManager,
     incidentManager,
+    mintainanceManager,
 
     dashboardEvaluationEmployeeKpiSet,
 
     //report
     reports,
 
-    //material
+    //warehouse
     materials,
+    categories,
 
     // customer management
     crm: combineReducers({

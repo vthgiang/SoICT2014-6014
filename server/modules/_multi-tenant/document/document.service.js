@@ -2,48 +2,32 @@ const { DocumentCategory, DocumentDomain, DocumentArchive, Role, User, UserRole,
 const arrayToTree = require('array-to-tree');
 const fs = require('fs');
 const ObjectId = require('mongoose').Types.ObjectId;
+const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 /**
  * Lấy danh sách tất cả các tài liệu văn bản
  * @company id của công ty
  */
-exports.getDocuments = async (portal, query) => {
-    console.log('ttt', query);
+exports.getDocuments = async (portal, query, company) => {
     let page = query.page;
     let limit = query.limit;
 
     if (!(page || limit)) {
-        
+
         return await Document(connect(DB_CONNECTION, portal))
-            .find({ portal })
+            .find({ company })
             .populate([
                 {
-                    path: 'category',
-                    populate: {
-                        path: 'category'
-                    },
-                    select: 'name id'
+                    path: 'category', select: 'name id'
                 },
                 {
-                    path: 'domains',
-                    populate: {
-                        path: 'domains'
-                    },
-                    select: 'name id'
+                    path: 'domains', select: 'name id'
                 },
                 {
-                    path: 'archives',
-                    populate: {
-                        path: 'archives'
-                    },
-                    select: 'name id path'
+                    path: 'archives', select: 'name id path'
                 },
                 {
-                    path: 'views.viewer',
-                    populate: {
-                        path: 'archives'
-                    },
-                    select: 'name id'
+                    path: 'views.viewer', select: 'name id'
                 },
                 { path: "downloads.downloader", select: 'name id' },
                 { path: "archivedRecordPlaceOrganizationalUnit", select: "name id" },
@@ -52,7 +36,7 @@ exports.getDocuments = async (portal, query) => {
             ]);
     } else {
         let option = {
-            company: portal,
+            company: company,
         };
         // const option = (query.key !== undefined && query.value !== undefined)
         //     ? Object.assign({ company }, { [`${query.key}`]: new RegExp(query.value, "i") })
@@ -64,12 +48,16 @@ exports.getDocuments = async (portal, query) => {
             option.domains = query.domains;
         }
         if (query.archives) {
-            option.archives = query.archives
+            const allArchives = await DocumentArchive(connect(DB_CONNECTION, portal))
+                .find({ path: new RegExp('^' + query.archives) })
+            const arrId = allArchives.map(archive => {
+                return archive.id;
+            })
+            option.archives = { $in: arrId }
         }
         if (query.name) {
             option.name = new RegExp(query.name, "i")
         }
-        console.log("option: ", option);
         return await Document(connect(DB_CONNECTION, portal))
             .paginate(option, {
                 page,
@@ -121,7 +109,7 @@ exports.showDocument = async (id, viewer) => {
     return doc;
 }
 
-exports.increaseNumberView = async (id, viewer) => {
+exports.increaseNumberView = async (id, viewer, portal) => {
     const doc = await Document(connect(DB_CONNECTION, portal))
         .findById(id);
     doc.numberOfView += 1;
@@ -148,8 +136,7 @@ exports.increaseNumberView = async (id, viewer) => {
 /**
  * Tạo một tài liệu văn bản mới
  */
-exports.createDocument = async (company, data) => {
-    console.log('create', data)
+exports.createDocument = async (portal, data, company) => {
     const newDoc = {
         company,
         name: data.name,
@@ -189,9 +176,8 @@ exports.createDocument = async (company, data) => {
 /**
  * Chỉnh sửa thông tin tài liệu văn bản
  */
-exports.editDocument = async (id, data, query = undefined) => {
+exports.editDocument = async (id, data, query = undefined, portal) => {
     // thêm lịch sử chỉnh sửa
-    console.log('querry', query, data);
     let { creator, title, descriptions } = data;
     let createdAt = Date.now();
     let log = {
@@ -223,7 +209,6 @@ exports.editDocument = async (id, data, query = undefined) => {
 
             case 'EDIT_VERSION':
                 let index = doc.versions.findIndex(obj => obj._id == data.versionId);
-                console.log('verrsionnn', index)
                 doc.versions[index].versionName = data.versionName ? data.versionName : doc.versions[index].versionName;
                 doc.versions[index].issuingDate = data.issuingDate ? data.issuingDate : doc.versions[index].issuingDate;
                 doc.versions[index].effectiveDate = data.effectiveDate ? data.effectiveDate : doc.versions[index].effectiveDate;
@@ -236,10 +221,8 @@ exports.editDocument = async (id, data, query = undefined) => {
 
             case 'DELETE_VERSION':
                 //let index = doc.versions.findIndex(obj => obj._id == data.versionId);
-                // console.log('verrsionnn', index)
                 const version = doc.versions.filter(v => v._id != data.versionId);
                 doc.versions = version;
-                //  console.log('docveriosns', doc.versions[1]._id, typeof (data.versionId), doc.versions[1]._id !== data.versionId);
                 await doc.save();
                 return doc;
 
@@ -288,7 +271,6 @@ exports.editDocument = async (id, data, query = undefined) => {
         // if (data.archivedRecordPlaceInfo !== 'undefined' && data.archivedRecordPlaceInfo !== undefined)
         //     doc.archivedRecordPlaceInfo = data.archivedRecordPlaceInfo
         if (data.archivedRecordPlaceOrganizationalUnit && data.archivedRecordPlaceOrganizationalUnit !== "[object Object]") {
-            //  console.log(data.archivedRecordPlaceOrganizationalUnit)
             doc.archivedRecordPlaceOrganizationalUnit = data.archivedRecordPlaceOrganizationalUnit
         }
         if (data.archivedRecordPlaceManagerd)
@@ -300,7 +282,7 @@ exports.editDocument = async (id, data, query = undefined) => {
     }
 }
 
-exports.deleteDocument = async (id) => {
+exports.deleteDocument = async (id, portal) => {
     const doc = await Document(connect(DB_CONNECTION, portal))
         .findById(id);
 
@@ -338,8 +320,7 @@ exports.deleteDocument = async (id) => {
  * @param {} data: id(document), numberofVersion, downloaderId (id of user, who downloaded this document)
  *  
  */
-exports.downloadDocumentFile = async (data) => {
-    console.log("dataaa", data);
+exports.downloadDocumentFile = async (data, portal) => {
     const doc = await Document(connect(DB_CONNECTION, portal)).findById(data.id);
     if (doc.versions.length < data.numberVersion) throw ['cannot_download_doc_file', 'version_not_found'];
     await downloadFile(doc, data.downloaderId)
@@ -349,11 +330,10 @@ exports.downloadDocumentFile = async (data) => {
     };
 }
 
-exports.downloadDocumentFileScan = async (data) => {
+exports.downloadDocumentFileScan = async (data, portal) => {
     const doc = await Document(connect(DB_CONNECTION, portal)).findById(data.id);
     if (doc.versions.length < data.numberVersion) throw ['cannot_download_doc_file_scan', 'version_scan_not_found'];
     await downloadFile(doc, data.downloaderId)
-    console.log('eeeeee', doc.versions[data.numberVersion].scannedFileOfSignedDocument)
     return {
         path: doc.versions[data.numberVersion].scannedFileOfSignedDocument ? doc.versions[data.numberVersion].scannedFileOfSignedDocument : "",
         name: doc.name
@@ -379,8 +359,7 @@ async function downloadFile(doc, downloaderId) {
     await doc.save();
 }
 
-exports.importDocument = async (company, data) => {
-    console.log('uuuu', data)
+exports.importDocument = async (portal, data, company) => {
 
     for (let i in data) {
         let document = {
@@ -435,7 +414,6 @@ exports.importDocument = async (company, data) => {
             let archives = [];
             for (let j in data[i].archives) {
                 let path = data[i].archives[j].split('-').map(x => { return x.trim() }).join(" - ");
-                console.log('pathhh', path);
                 const Archive = await DocumentArchive(connect(DB_CONNECTION, portal)).findOne({ path: path });
                 if (Archive) {
                     archives.push(Archive.id);
@@ -470,12 +448,12 @@ exports.importDocument = async (company, data) => {
             document.relationshipDocuments = relationshipDocuments;
         }
 
-        let res = await this.createDocument(company, document);
+        let res = await this.createDocument(portal, document, company);
 
 
     }
     let query = { page: null, limit: null }
-    let documents = await this.getDocuments(company, query);
+    let documents = await this.getDocuments(portal, query, company);
     return documents;
 }
 
@@ -483,7 +461,7 @@ exports.importDocument = async (company, data) => {
 /**
  * Lấy tất cả các loại văn bản
  */
-exports.getDocumentCategories = async (company, query) => {
+exports.getDocumentCategories = async (portal, query, company) => {
 
     let page = query.page;
     let limit = query.limit;
@@ -499,7 +477,7 @@ exports.getDocumentCategories = async (company, query) => {
     }
 }
 
-exports.createDocumentCategory = async (company, data) => {
+exports.createDocumentCategory = async (portal, data, company) => {
     return await DocumentCategory(connect(DB_CONNECTION, portal)).create({
         company,
         name: data.name,
@@ -507,7 +485,7 @@ exports.createDocumentCategory = async (company, data) => {
     });
 }
 
-exports.editDocumentCategory = async (id, data) => {
+exports.editDocumentCategory = async (id, data, portal) => {
 
     const category = await DocumentCategory(connect(DB_CONNECTION, portal)).findById(id);
     category.name = data.name;
@@ -517,7 +495,7 @@ exports.editDocumentCategory = async (id, data) => {
     return category;
 }
 
-exports.deleteDocumentCategory = async (id) => {
+exports.deleteDocumentCategory = async (id, portal) => {
     const category = await DocumentCategory(connect(DB_CONNECTION, portal)).findById(id);
     const docs = await Document.find({ category: id });
     if (docs.length > 0) throw ['category_used_to_document', 'cannot_delete_category'];
@@ -532,7 +510,7 @@ exports.deleteDocumentCategory = async (id) => {
  * data: mảng dữ liệu được import từ file excel
  */
 
-exports.importDocumentCategory = async (company, data) => {
+exports.importDocumentCategory = async (portal, data, company) => {
     for (let i in data) {
         description = data[i].description;
         let category = {
@@ -540,19 +518,21 @@ exports.importDocumentCategory = async (company, data) => {
             description: data[i].description,
         }
 
-        console.log(category);
-        let res = await this.createDocumentCategory(company, category);
+        let res = await this.createDocumentCategory(portal, category, company);
 
     }
-    return await this.getDocumentDomains(company);
+    let query = {
+        limit: 5,
+        page: 1,
+    }
+    return await this.getDocumentCategories(portal, query, company);
 }
 
 /**
  * Danh mục văn bản
  */
-exports.getDocumentDomains = async (company) => {
+exports.getDocumentDomains = async (portal, company) => {
     const list = await DocumentDomain(connect(DB_CONNECTION, portal)).find({ company });
-    //console.log(list, 'list')
     const dataConverted = list.map(domain => {
         return {
             id: domain._id.toString(),
@@ -568,23 +548,23 @@ exports.getDocumentDomains = async (company) => {
     return { list, tree };
 }
 
-exports.createDocumentDomain = async (company, data) => {
+exports.createDocumentDomain = async (portal, data, company) => {
     let query = {
         company,
         name: data.name,
         description: data.description,
+        parent: data.parent
     }
     await DocumentDomain(connect(DB_CONNECTION, portal)).create(query);
 
-    return await this.getDocumentDomains(company);
+    return await this.getDocumentDomains(portal, company);
 }
 
-exports.getDocumentsThatRoleCanView = async (company, query) => {
+exports.getDocumentsThatRoleCanView = async (portal, query, company) => {
+
     let page = query.page;
     let limit = query.limit;
-    // console.log(query);
     let role = await Role(connect(DB_CONNECTION, portal)).findById(query.roleId);
-    // console.log(role);
     let roleArr = [role._id].concat(role.parents);
 
     if (page === undefined && limit === undefined) {
@@ -619,12 +599,16 @@ exports.getDocumentsThatRoleCanView = async (company, query) => {
             option.domains = query.domains;
         }
         if (query.archives) {
-            option.archives = query.archives
+            const allArchives = await DocumentArchive(connect(DB_CONNECTION, portal))
+                .find({ path: new RegExp('^' + query.archives) })
+            const arrId = allArchives.map(archive => {
+                return archive.id;
+            })
+            option.archives = { $in: arrId }
         }
         if (query.name) {
             option.name = new RegExp(query.name, "i")
         }
-        console.log("option: ", option);
 
         return await Document(connect(DB_CONNECTION, portal)).paginate(option, {
             page,
@@ -644,34 +628,81 @@ exports.getDocumentsThatRoleCanView = async (company, query) => {
     }
 }
 
-exports.getDocumentsUserStatistical = async (userId, query) => {
-    const user = await User(connect(DB_CONNECTION, portal)).findById(userId).populate({
-        path: 'roles',
+exports.getDocumentsUserStatistical = async (userId, query, portal) => {
+    console.log('queryyyyyy', query);
+    const roles = await UserRole(connect(DB_CONNECTION, portal)).find({ userId: userId }).populate({
+        path: 'roleId',
     });
+    let userRole = [];
+    let condition = {};
+    for (let i in roles) {
+        userRole.push(roles[i].roleId._id);
+        userRole = userRole.concat(roles[i].roleId.parents);
+
+    }
+    if (query.category) {
+        condition.category = query.category;
+    }
+    if (query.domains) {
+        condition.domains = query.domains;
+    }
+    if (query.archives) {
+        const allArchives = await DocumentArchive(connect(DB_CONNECTION, portal))
+            .find({ path: new RegExp('^' + query.archives) })
+        const arrId = allArchives.map(archive => {
+            return archive.id;
+        })
+        condition.archives = { $in: arrId }
+    }
+    if (query.name) {
+        condition.name = new RegExp(query.name, "i")
+    }
     let { option } = query;
     switch (option) {
         case 'downloaded': //những tài liệu văn bản mà người dùng đã tải xuống
-            return await Document(connect(DB_CONNECTION, portal)).find({ "downloads.downloader": userId }).populate([
+            condition = { ...condition, "downloads.downloader": userId };
+            console.log('condd', condition)
+            return await Document(connect(DB_CONNECTION, portal)).find(condition).populate([
                 { path: 'category', select: 'name id' },
                 { path: 'domains', select: 'name id' },
                 { path: 'archives', select: 'name id path' },
+                { path: 'relationshipDocuments', select: 'name id' },
+                { path: 'views.viewer', select: 'name id' },
+                { path: "downloads.downloader", select: 'name id' },
+                { path: "archivedRecordPlaceOrganizationalUnit", select: "name id" },
+                { path: "logs.creator", select: 'name id' },
+                { path: "relationshipDocuments", select: "name id" },
             ]).limit(10);
         case 'common': //những tài liệu phổ biến - được xem và tải nhiều nhất gần đây
-            return await Document(connect(DB_CONNECTION, portal)).find({
-                roles: { $in: user.roles.map(res => res.roleId) }
+
+            const list = await Document(connect(DB_CONNECTION, portal)).find({
+                roles: { $in: userRole }
             }).populate([
                 { path: 'category', select: 'name id' },
                 { path: 'domains', select: 'name id' },
                 { path: 'archives', select: 'name id path' },
+                { path: 'relationshipDocuments', select: 'name id' },
+                { path: 'views.viewer', select: 'name id' },
+                { path: "downloads.downloader", select: 'name id' },
+                { path: "archivedRecordPlaceOrganizationalUnit", select: "name id" },
+                { path: "logs.creator", select: 'name id' },
+                { path: "relationshipDocuments", select: "name id" },
             ]).sort({ numberOfView: -1 }).limit(10);
+            return list;
         case 'latest': //những tài liệu văn bản mà người dùng chưa xem qua lần nào
             return await Document(connect(DB_CONNECTION, portal)).find({
-                roles: { $in: user.roles.map(res => res.roleId) },
+                roles: { $in: userRole },
                 "views.viewer": { "$ne": userId }
             }).populate([
                 { path: 'category', select: 'name id' },
                 { path: 'domains', select: 'name id' },
                 { path: 'archives', select: 'name id path' },
+                { path: 'relationshipDocuments', select: 'name id' },
+                { path: 'views.viewer', select: 'name id' },
+                { path: "downloads.downloader", select: 'name id' },
+                { path: "archivedRecordPlaceOrganizationalUnit", select: "name id" },
+                { path: "logs.creator", select: 'name id' },
+                { path: "relationshipDocuments", select: "name id" },
             ]);
         default:
             return null;
@@ -679,7 +710,7 @@ exports.getDocumentsUserStatistical = async (userId, query) => {
 
 }
 
-exports.editDocumentDomain = async (id, data) => {
+exports.editDocumentDomain = async (id, data, portal) => {
     const domain = await DocumentDomain(connect(DB_CONNECTION, portal)).findById(id);
     domain.name = data.name,
         domain.description = data.description,
@@ -689,19 +720,19 @@ exports.editDocumentDomain = async (id, data) => {
     return domain;
 }
 
-exports.deleteDocumentDomain = async (id) => {
+exports.deleteDocumentDomain = async (portal, id) => {
     const domain = await DocumentDomain(connect(DB_CONNECTION, portal)).findById(id);
     if (domain === null) throw ['document_domain_not_found']
     await DocumentDomain(connect(DB_CONNECTION, portal)).deleteOne({ _id: id });
 
-    return await this.getDocumentDomains(domain.company);
+    return await this.getDocumentDomains(portal);
 }
 
 
-exports.deleteManyDocumentDomain = async (array, company) => {
+exports.deleteManyDocumentDomain = async (array, portal, company) => {
     await DocumentDomain(connect(DB_CONNECTION, portal)).deleteMany({ _id: { $in: array } });
 
-    return await this.getDocumentDomains(company);
+    return await this.getDocumentDomains(portal, company);
 }
 /**
  * import các danh mục từ file excel
@@ -709,7 +740,7 @@ exports.deleteManyDocumentDomain = async (array, company) => {
  * data: mảng dữ liệu được import từ file excel
  */
 
-exports.importDocumentDomain = async (company, data) => {
+exports.importDocumentDomain = async (portal, data, company) => {
     let results = [];
     for (let i in data) {
         description = data[i].description;
@@ -723,18 +754,17 @@ exports.importDocumentDomain = async (company, data) => {
                 domain.parent = parentDomain.id;
             }
         }
-        console.log(domain);
-        let res = await this.createDocumentDomain(company, domain);
+        let res = await this.createDocumentDomain(portal, domain, company);
 
     }
-    return await this.getDocumentDomains(company);
+    return await this.getDocumentDomains(portal, company);
 }
 
 /**
  * Kho lưu trữ vật lí 
  */
 
-exports.getDocumentArchives = async (company) => {
+exports.getDocumentArchives = async (portal, company) => {
     const list = await DocumentArchive(connect(DB_CONNECTION, portal)).find({ company });
 
     const dataConverted = list.map(archive => {
@@ -751,8 +781,7 @@ exports.getDocumentArchives = async (company) => {
     return { list, tree };
 }
 
-exports.createDocumentArchive = async (company, data) => {
-    console.log('dataaa', data);
+exports.createDocumentArchive = async (portal, data, company) => {
     let query = {
         company,
         name: data.name,
@@ -763,27 +792,24 @@ exports.createDocumentArchive = async (company, data) => {
     }
     query.path = await findPath(data);
     await DocumentArchive(connect(DB_CONNECTION, portal)).create(query);
-    return await this.getDocumentArchives(company);
+    return await this.getDocumentArchives(portal, company);
 }
 
-exports.deleteDocumentArchive = async (id) => {
+exports.deleteDocumentArchive = async (portal, id) => {
     const archive = await DocumentArchive(connect(DB_CONNECTION, portal)).findById(id);
     await deleteNode(id);
-    return await this.getDocumentArchives(archive.company);
+    return await this.getDocumentArchives(portal, archive.company);
 }
 
-exports.deleteManyDocumentArchive = async (array, company) => {
-    // console.log
-    // await DocumentArchive.deleteMany({ _id: { $in: array } });
+exports.deleteManyDocumentArchive = async (array, portal, company) => {
     for (let i = 0; i < array.length; i++) {
         deleteNode(array[i]);
     }
 
-    return await this.getDocumentArchives(company);
+    return await this.getDocumentArchives(portal, company);
 }
 
-exports.editDocumentArchive = async (id, data) => {
-    console.log('dataaa', data);
+exports.editDocumentArchive = async (id, data, portal) => {
     const archive = await DocumentArchive(connect(DB_CONNECTION, portal)).findById(id);
     let array = data.array;
     archive.name = data.name;
@@ -797,7 +823,7 @@ exports.editDocumentArchive = async (id, data) => {
         archive.path = await findPath(archive);
         await archive.save();
     }
-    const document = await this.getDocumentArchives(archive.company)
+    const document = await this.getDocumentArchives(portal)
     return document;
 }
 async function findPath(data) {
@@ -840,7 +866,7 @@ async function deleteNode(id) {
  * data: mảng dữ liệu được import từ file excel
  */
 
-exports.importDocumentArchive = async (company, data) => {
+exports.importDocumentArchive = async (portal, data, company) => {
 
     for (let i in data) {
         description = data[i].description;
@@ -855,8 +881,8 @@ exports.importDocumentArchive = async (company, data) => {
                 archive.parent = parentArchive.id;
             }
         }
-        let res = await this.createDocumentArchive(company, archive);
+        let res = await this.createDocumentArchive(portal, archive, company);
 
     }
-    return await this.getDocumentArchives(company);
+    return await this.getDocumentArchives(portal, company);
 }

@@ -75,10 +75,10 @@ exports.searchAssetProfiles = async (req, res) => {
 exports.createAsset = async (req, res) => {
     try {
         let avatar = "";
-        if (req.files.fileAvatar) {
+        if (req.files && req.files.fileAvatar) {
             avatar = `/${req.files.fileAvatar[0].path}`;
         }
-        let file = req.files.file;
+        let file = req.files && req.files.file;
         let fileInfo = { file, avatar };
 
         let data = await AssetService.createAsset(req.body, req.user.company._id, fileInfo);
@@ -343,14 +343,12 @@ exports.deleteMaintainance = async (req, res) => {
 exports.getIncidents = async (req, res) => {
     try {
         let data = await AssetService.getIncidents(req.query);
-        console.log(data);
         res.status(200).json({
             success: true,
             messages: ["get_incidents_success"],
             content: data
         });
     } catch (error) {
-        console.log(error);
         res.status(400).json({ 
             success: false, 
             messages: ["get_incidents_false"], 

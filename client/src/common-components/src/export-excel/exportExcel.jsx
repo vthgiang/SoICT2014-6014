@@ -23,7 +23,12 @@ class ExportExcel extends Component {
                     worksheet.getCell('A1').value = x.sheetTitle;
                     worksheet.getCell('A1').alignment = { vertical: 'middle', horizontal: 'center' };
                     worksheet.getCell('A1').font = { name: 'Arial', family: 4, size: 18, bold: true, color: { argb: 'FF2D1075' } };
-                    worksheet.mergeCells('A1:M1');
+                    if (x.sheetTitleWidth) {
+                        let endMergeSheetTitle = worksheet.getRow(currentRow).getCell(x.sheetTitleWidth).address;
+                        worksheet.mergeCells(`A1:${endMergeSheetTitle}`);
+                    } else {
+                        worksheet.mergeCells('A1:M1');
+                    }
                     currentRow = currentRow + 2;
                 };
 

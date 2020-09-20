@@ -14,6 +14,8 @@ exports.searchSalaries = async (req, res) => {
                 limit: Number(req.query.limit),
             }
             data = await SalaryService.searchSalaries(req.portal, params, req.user.company._id);
+        } else {
+            data = await SalaryService.getAllSalaryByMonthAndOrganizationalUnits(req.portal, req.query.organizationalUnits, req.query.month);
         }
         await Log.info(req.user.email, 'GET_SARALY', req.portal);
         res.status(200).json({

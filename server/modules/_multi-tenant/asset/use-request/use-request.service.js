@@ -1,9 +1,11 @@
-const { RecommendDistribute, User } = require(`${SERVER_MODELS_DIR}/_multi-tenant`)
+const Models = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
+const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const { RecommendDistribute, User } = Models;
 
 /**
  * Lấy danh sách phiếu đề nghị cấp thiết bị
  */
-exports.searchRecommendDistributes = async (query, portal) => {
+exports.searchRecommendDistributes = async (portal, query) => {
     const { receiptsCode, createReceiptsDate, reqUseStatus, reqUseEmployee, approver, page, limit, managedBy, assetId } = query;
     var keySearch = {};
 
@@ -71,7 +73,7 @@ exports.searchRecommendDistributes = async (query, portal) => {
  * Thêm mới thông tin phiếu đề nghị cap phat thiết bị
  * @data: dữ liệu phiếu đề nghị cap phat thiết bị
  */
-exports.createRecommendDistribute = async (data, portal) => {
+exports.createRecommendDistribute = async (portal, data) => {
 
     let dateStartUse, dateEndUse, dateCreate, date, partStart, partEnd, partCreate;
     partStart = data.dateStartUse.split('-');

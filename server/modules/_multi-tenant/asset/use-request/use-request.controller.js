@@ -7,7 +7,7 @@ const { read } = require('fs');
  */
 exports.searchRecommendDistributes = async (req, res) => {
     try {
-        var listRecommendDistributes = await RecommendDistributeService.searchRecommendDistributes(req.query, req.portal);
+        var listRecommendDistributes = await RecommendDistributeService.searchRecommendDistributes(req.portal, req.query);
         await Logger.info(req.user.email, 'GET_RECOMMENDDISTRIBUTE', req.portal);
         res.status(200).json({
             success: true,
@@ -32,7 +32,7 @@ exports.searchRecommendDistributes = async (req, res) => {
  */
 exports.createRecommendDistribute = async (req, res) => {
     try {
-        var newRecommendDistribute = await RecommendDistributeService.createRecommendDistribute(req.body, req.portal);
+        var newRecommendDistribute = await RecommendDistributeService.createRecommendDistribute(req.portal, req.body);
         await Logger.info(req.user.email, 'CREATE_RECOMMENDDISTRIBUTE', req.portal);
         res.status(200).json({
             success: true,

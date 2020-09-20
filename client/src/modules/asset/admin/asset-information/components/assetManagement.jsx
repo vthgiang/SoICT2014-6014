@@ -3,13 +3,16 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar, SelectMulti, ExportExcel, TreeSelect } from '../../../../../common-components';
+
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import { AssetManagerActions } from '../redux/actions';
 import { AssetTypeActions } from "../../asset-type/redux/actions";
 import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { RoleActions } from '../../../../super-admin/role/redux/actions';
-import { AssetCreateForm, AssetDetailForm, AssetEditForm } from './combinedContent';
+
+import { AssetCreateForm, AssetDetailForm, AssetEditForm, AssetImportForm } from './combinedContent';
 import { configTaskTempalte } from '../../../../task/task-template/component/fileConfigurationImportTaskTemplate';
+import { translate } from 'react-redux-multilingual/lib/utils';
 
 class AssetManagement extends Component {
     constructor(props) {
@@ -364,16 +367,16 @@ class AssetManagement extends Component {
         return typeArr;
     }
 
-    checkHasComponent = (name) => {
-        var { auth } = this.props;
-        var result = false;
-        if (auth) {
-            auth.components.forEach(component => {
-                if (component.name === name) result = true;
-            });
-        }
-        return result;
-    }
+    // checkHasComponent = (name) => {
+    //     var { auth } = this.props;
+    //     var result = false;
+    //     if (auth) {
+    //         auth.components.forEach(component => {
+    //             if (component.name === name) result = true;
+    //         });
+    //     }
+    //     return result;
+    // }
 
     getDepartment = () => {
         let { department } = this.props;
@@ -391,14 +394,18 @@ class AssetManagement extends Component {
     }
 
     convertGroupAsset = (group) => {
+        const { translate } = this.props;
         if (group === 'Building') {
-            return 'Mặt bằng';
-        } else if (group === 'Vehicle') {
-            return 'Xe cộ'
-        } else if (group === 'Machine') {
-            return 'Máy móc'
-        } else {
-            return 'Khác'
+            return translate('asset.dashboard.building')
+        }
+        else if (group === 'Vehicle') {
+            return translate('asset.dashboard.vehicle')
+        }
+        else if (group === 'Machine') {
+            return translate('asset.dashboard.machine')
+        }
+        else {
+            return translate('asset.dashboard.other')
         }
     }
 
@@ -424,13 +431,21 @@ class AssetManagement extends Component {
         if (userlist && lists && assettypelist) {
             exportData = this.convertDataToExportData(lists, assettypelist, userlist);
         }
+
         return (
             <div className={isActive ? isActive : "box"}>
-
                 <div className="box-body qlcv">
                     {/* Form thêm tài sản mới */}
-                    {this.checkHasComponent("create-asset") && <AssetCreateForm />}
-
+                    <div className="dropdown pull-right">
+                        <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('human_resource.profile.employee_management.add_employee_title')} >{translate('menu.add_asset')}</button>
+                        <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
+                            <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-asset').modal('show')}>{translate('human_resource.profile.employee_management.add_import')}</a></li>
+                            <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-add-asset').modal('show')}>Thêm tài sản</a></li>
+                        </ul>
+                    </div>
+                    <AssetCreateForm/>
+                    <AssetImportForm/>
+                    
                     {/* Thanh tìm kiếm */}
                     <div className="form-inline">
 
@@ -498,12 +513,12 @@ class AssetManagement extends Component {
 
                         {/* Quyền đăng ký sử dụng */}
                         <div className="form-group">
-                            <label>Quyền đăng ký</label>
+                            <label>{translate('asset.general_information.can_register')}</label>
                             <SelectMulti
                                 id={`typeRegisterForUseInManagement`}
                                 className="form-control select2"
                                 multiple="multiple"
-                                options={{ nonSelectedText: "Chọn quyền sử dụng", allSelectedText: "Chọn tất cả" }}
+                                options={{ nonSelectedText: translate('asset.general_information.select_register'), allSelectedText: translate('asset.general_information.select_all_register') }}
                                 style={{ width: "100%" }}
                                 items={[
                                     { value: 1, text: 'Không được đăng ký sử dụng' },

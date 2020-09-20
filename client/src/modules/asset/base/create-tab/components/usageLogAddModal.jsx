@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { ButtonModal, DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../../common-components';
+import { ButtonModal, DatePicker, DialogModal, ErrorLabel, SelectBox, TimePicker } from '../../../../../common-components';
 
 import { AssetCreateValidator } from './combinedContent';
 
@@ -14,9 +14,11 @@ class UsageLogAddModal extends Component {
         this.state = {
             usedByUser: "",
             usedByOrganizationalUnit: "",
-            startDate: this.formatDate(Date.now()),
-            endDate: this.formatDate(Date.now()),
+            startDate: this.props.startDate ? this.formatDate(this.props.startDate) : this.formatDate(Date.now()),
+            endDate: this.props.endDate ? this.formatDate(this.props.endDate) : this.formatDate(Date.now()),
             description: "",
+            startTime: this.props.startTime ? this.props.startTime : "" ,
+            stopTime: this.props.stopTime ? this.props.stopTime: "",
         };
     }
 
@@ -30,7 +32,7 @@ class UsageLogAddModal extends Component {
         if (month.length < 2) {
             month = '0' + month;
         }
-            
+
         if (day.length < 2) {
             day = '0' + day;
         }
@@ -78,6 +80,15 @@ class UsageLogAddModal extends Component {
         return msg === undefined;
     }
 
+    handleStartTimeChange = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                startTime: value
+            }
+        });
+
+    }
     // Bắt sự kiện thay đổi "Thời gian kết thúc sử dụng"
     handleEndDateChange = (value) => {
         this.validateEndDate(value, true);
@@ -96,6 +107,15 @@ class UsageLogAddModal extends Component {
         return msg === undefined;
     }
 
+    handleStopTimeChange = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                stopTime: value
+            }
+        });
+
+    }
     // Bắt sự kiện thay đổi "Nội dung"
     handleDescriptionChange = (e) => {
         let value = e.target.value;
@@ -118,22 +138,22 @@ class UsageLogAddModal extends Component {
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let checkUsed ;
+        let checkUsed;
         let checkUsedByUser = true, checkUsedByOrganizationalUnit = true;
-        if(this.state.usedByUser == "" || !this.state.usedByUser){
+        if (this.state.usedByUser == "" || !this.state.usedByUser) {
             checkUsedByUser = false
         }
-        if(this.state.usedByOrganizationalUnit == "" || !this.state.usedByOrganizationalUnit){
+        if (this.state.usedByOrganizationalUnit == "" || !this.state.usedByOrganizationalUnit) {
             checkUsedByOrganizationalUnit = false
         }
-        
-        if(!checkUsedByUser && !checkUsedByOrganizationalUnit){
+
+        if (!checkUsedByUser && !checkUsedByOrganizationalUnit) {
             checkUsed = false;
         } else {
             checkUsed = true;
         }
 
-        let result =  checkUsed && this.validateStartDate(this.state.startDate, false)
+        let result = checkUsed && this.validateStartDate(this.state.startDate, false)
 
         return result;
     }
@@ -142,12 +162,23 @@ class UsageLogAddModal extends Component {
     save = async () => {
         const { user } = this.props;
         let userlist = user.list;
+        let partStart, startDate, partEnd, endDate;
+        partStart = this.state.startDate.split('-');
+        if( this.state.startTime != ""){
+            let date = [partStart[2], partStart[1], partStart[0]].join('-');
+            startDate = [date, this.state.startTime].join(' ');
+        } else {
+            startDate = [partStart[2], partStart[1], partStart[0]].join('-');
+        }
 
-        var partStart = this.state.startDate.split('-');
-        var startDate = [partStart[2], partStart[1], partStart[0]].join('-');
-        var partEnd = this.state.endDate.split('-');
-        var endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
-
+        partEnd = this.state.endDate.split('-');
+        if( this.state.stopTime != ""){
+            let date = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+            endDate = [date, this.state.stopTime].join(' ')
+        } else {
+            endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+        }
+        
         if (this.state.usedByUser === '') {
             await this.setState({
                 ...this.state,
@@ -155,7 +186,7 @@ class UsageLogAddModal extends Component {
             });
         }
 
-        if (this.state.usedByOrganizationalUnit === ''){
+        if (this.state.usedByOrganizationalUnit === '') {
             await this.setState({
                 ...this.state,
                 usedByOrganizationalUnit: null,
@@ -168,15 +199,19 @@ class UsageLogAddModal extends Component {
     }
 
     render() {
-        const { id } = this.props;
-        const { translate, user, department } = this.props;
-        const { usedByUser, usedByOrganizationalUnit, startDate, endDate, description, errorOnDescription } = this.state;
 
-        var userlist = user.list, departmentlist= department.list;
+        const { id } = this.props;
+        console.log("Chạy đến modal", `modal-create-usage-${id}`)
+        const { translate, user, department } = this.props;
+        const { usedByUser, usedByOrganizationalUnit, startDate, endDate, description, errorOnDescription, startTime, stopTime } = this.state;
+
+        var userlist = user.list, departmentlist = department.list;
 
         return (
             <React.Fragment>
-                <ButtonModal modalID={`modal-create-usage-${id}`} button_name={translate('asset.general_information.add')} title={translate('asset.asset_info.add_usage_info')} />
+                { !this.props.calendarUsage &&
+                    <ButtonModal modalID={`modal-create-usage-${id}`} button_name={translate('asset.general_information.add')} title={translate('asset.asset_info.add_usage_info')} />
+                }
                 <DialogModal
                     size='50' modalID={`modal-create-usage-${id}`} isLoading={false}
                     formID={`form-create-usage-${id}`}
@@ -197,7 +232,7 @@ class UsageLogAddModal extends Component {
                                             id={`usedByUser${id}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            items={[{value: 'null', text: 'Chọn người sử dụng'}, ...userlist.map(x => { return { value: x._id, text: x.name + " - " + x.email } })]}
+                                            items={[{ value: 'null', text: 'Chọn người sử dụng' }, ...userlist.map(x => { return { value: x._id, text: x.name + " - " + x.email } })]}
                                             onChange={this.handleUsedByUserChange}
                                             value={usedByUser}
                                             multiple={false}
@@ -214,7 +249,7 @@ class UsageLogAddModal extends Component {
                                             id={`usedByOrganizationalUnit${id}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            items={[{value: 'null', text: 'Chọn đơn vị sử dụng'}, ...departmentlist.map(x => { return { value: x._id, text: x.name} })]}
+                                            items={[{ value: 'null', text: 'Chọn đơn vị sử dụng' }, ...departmentlist.map(x => { return { value: x._id, text: x.name } })]}
                                             onChange={this.handleUsedByOrganizationalUnitChange}
                                             value={usedByOrganizationalUnit}
                                             multiple={false}
@@ -232,6 +267,14 @@ class UsageLogAddModal extends Component {
                                     onChange={this.handleStartDateChange}
                                 />
                             </div>
+                            {this.props.typeRegisterForUse == 2 &&
+                                <TimePicker
+                                    id={`time-picker-start`}
+                                    onChange={this.handleStartTimeChange}
+                                    value={startTime}
+                                // getDefaultValue = {this.getDefaultStartValue}
+                                />
+                            }
 
                             {/* Thời gian kết thúc sử dụng */}
                             <div className={`form-group`}>
@@ -242,6 +285,15 @@ class UsageLogAddModal extends Component {
                                     onChange={this.handleEndDateChange}
                                 />
                             </div>
+                            {this.props.typeRegisterForUse == 2 &&
+                                <TimePicker
+                                    id={`time-picker-end`}
+                                    onChange={this.handleStopTimeChange}
+                                    value={stopTime}
+                                // getDefaultValue = {this.getDefaultEndValue}
+                                />
+                            }
+
 
                             {/* Nội dung */}
                             <div className={`form-group ${!errorOnDescription ? "" : "has-error"}`}>

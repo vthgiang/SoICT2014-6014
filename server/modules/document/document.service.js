@@ -31,6 +31,9 @@ exports.getDocuments = async (company, query) => {
         // const option = (query.key !== undefined && query.value !== undefined)
         //     ? Object.assign({ company }, { [`${query.key}`]: new RegExp(query.value, "i") })
         //     : { company };
+        if (query.path) {
+            const domain = DocumentDomain.find({ path: new Regex(/^/) })
+        }
         if (query.category) {
             option.category = query.category;
         }
@@ -611,6 +614,7 @@ exports.getDocumentsThatRoleCanView = async (company, query) => {
 }
 
 exports.getDocumentsUserStatistical = async (userId, query) => {
+    console.log('queryyyyyy', query);
     const user = await User.findById(userId).populate({
         path: 'roles', model: UserRole
     });

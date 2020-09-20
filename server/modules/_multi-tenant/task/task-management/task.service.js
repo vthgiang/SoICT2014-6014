@@ -1223,7 +1223,7 @@ exports.sendEmailFoCreateTask = async (portal, task) => {
     email.push("trinhhong102@gmail.com");
     var html = `<p>Bạn được giao nhiệm vụ trong công việc:  <a href="${process.env.WEBSITE}/task?taskId=${task._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${task._id} </a></p> ` +
         `<h3>Thông tin công việc</h3>` +
-        `<p>Tên công việc : ${task.name}</p>` +
+        `<p>Tên công việc : <strong>${task.name}</strong></p>` +
         `<p>Mô tả : ${task.description}</p>` +
         `<p>Người thực hiện</p> ` +
         `<ul>${res.map((item) => {
@@ -1315,7 +1315,7 @@ exports.createTask = async (portal, task) => {
         );
     }
 
-    let mail = await this.sendEmailFoCreateTask(task);
+    let mail = await this.sendEmailFoCreateTask(portal, task);
 
     return { task: task, user: mail.user, email: mail.email, html: mail.html };
 }
@@ -1465,7 +1465,7 @@ exports.getAllTaskOfOrganizationalUnit = async (portal, roleId, organizationalUn
 
             {
                 $lookup: {
-                    from: "organizational_units",
+                    from: "organizationalunits",
                     localField: "organizationalUnit",
                     foreignField: "_id",
                     as: "detailOrganizationalUnit"
@@ -1566,27 +1566,6 @@ exports.getAllTaskOfChildrenOrganizationalUnit = async (portal, roleId, month, o
 }
 
 exports.sendEmailCheckTaskLastMonth = async () => {
-    // let today = new Date();
-    // let day = today.getDate();
-    // let month = today.getMonth()+1;
-    // let daySend = 30;
-    // switch (month) {
-    //     case 1:
-    //     case 3:
-    //     case 5:
-    //     case 7:
-    //     case 8:
-    //     case 10:
-    //     case 12:
-    //         daySend = 31;
-    //         break;
-    //     case 2:
-    //         daySend = 28;
-    //         break;
-    // }
-    // if (daySend === day) {
-    // xu ly gui email
-    console.log("Đến ngày gửi email");
     let company = await Company(connect(DB_CONNECTION, portal)).find({});
     company = company.map(x => x._id);
     let consultedTasks = [], informedTasks = [], responsibleTasks = [], accountedTasks = [];

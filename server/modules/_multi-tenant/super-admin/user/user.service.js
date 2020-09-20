@@ -18,7 +18,6 @@ exports.getUsers = async (portal, query) => {
     var unitId = query.unitId;
 
     var keySearch = {};
-
     if (!page && !limit && !userRole && !departmentIds && !unitId) {
         if (name) {
             keySearch = {
@@ -89,9 +88,8 @@ exports.getUsers = async (portal, query) => {
                     }
                     ]
                 });
-
             if (department) {
-                return _getAllUsersInOrganizationalUnit(department);
+                return _getAllUsersInOrganizationalUnit(portal, department);
             }
         } else {
             let departments = await OrganizationalUnit(connect(DB_CONNECTION, portal))
@@ -101,12 +99,12 @@ exports.getUsers = async (portal, query) => {
                     }
                 });
 
-            let users = await _getAllUsersInOrganizationalUnits(departments);
+            let users = await _getAllUsersInOrganizationalUnits(portal, departments);
 
             return users;
         }
     } else if (unitId) {
-        return getAllUserInUnitAndItsSubUnits(company, unitId);
+        return getAllUserInUnitAndItsSubUnits(portal, unitId);
     }
 }
 
@@ -130,7 +128,7 @@ exports.getAllEmployeeOfUnitByRole = async (portal, role) => {
             }
             ]
         });
-
+    
     let employees;
     if (organizationalUnit) {
         employee = await UserRole(connect(DB_CONNECTION, portal))
@@ -185,16 +183,15 @@ exports.getAllEmployeeOfUnitByIds = async (portal, id) => {
  * @id Id công ty
  * @unitID Id của của đơn vị cần lấy đơn vị con
  */
-getAllUserInUnitAndItsSubUnits = async (portal, id, unitId) => {
+getAllUserInUnitAndItsSubUnits = async (portal, unitId) => {
     //Lấy tất cả các đơn vị con của 1 đơn vị
     var data;
 
     if (unitId !== '-1') {
-
         var organizationalUnit = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findById(unitId);
         // TODO: tối ưu hóa OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree
 
-        data = await OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree(portal, id, organizationalUnit.deans[0]);
+        data = await OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree(portal, organizationalUnit.deans[0]);
 
         var queue = [];
         var departments = [];
@@ -215,13 +212,11 @@ getAllUserInUnitAndItsSubUnits = async (portal, id, unitId) => {
         }
         //Lấy tất cả user của từng đơn vị
         var userArray = [];
-        userArray = await _getAllUsersInOrganizationalUnits(departments);
+        userArray = await _getAllUsersInOrganizationalUnits(portal, departments);
         return userArray;
 
     } else { //Lấy tất nhan vien trong moi đơn vị trong công ty
-
-        const allUnits = await OrganizationalUnit(connect(DB_CONNECTION, portal))
-            .find({ company: id });
+        const allUnits = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({});
         const newData = allUnits.map(department => {
             return {
                 id: department._id.toString(),
@@ -234,7 +229,7 @@ getAllUserInUnitAndItsSubUnits = async (portal, id, unitId) => {
             }
         });
 
-        let tmp = await _getAllUsersInOrganizationalUnits(newData);
+        let tmp = await _getAllUsersInOrganizationalUnits(portal, newData);
         return tmp;
     }
 }
@@ -396,7 +391,7 @@ exports.sendMailAboutCreatedAccount = async (email, password) => {
                 <body>
                     <div class="wrapper">
                         <div class="title">
-                            <h1>VNIST-QLCV</h1>
+                            <h1>VNIMA</h1>
                         </div>
                         <div class="form">
                             <p><b>Tài khoản đăng nhập của SUPER ADMIN: </b></p>
@@ -619,6 +614,7 @@ _getAllUsersInOrganizationalUnit = async (portal, department) => {
         employees: {},
         department: department.name
     };
+
     tmp.forEach(item => {
         let obj = {};
         obj._id = item.id;
@@ -643,7 +639,7 @@ _getAllUsersInOrganizationalUnit = async (portal, department) => {
             users.employees[item.roleId.toString()].members.push(item.userId);
         }
     });
-
+    
     return users;
 }
 
@@ -718,7 +714,7 @@ exports.getAllUsersWithRole = async (portal) => {
             path: "userId",
             select: 'name email avatar'
         })
-
+    
     return users
 }
 

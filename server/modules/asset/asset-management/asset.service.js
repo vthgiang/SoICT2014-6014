@@ -243,62 +243,97 @@ exports.mergeUrlFileToObject = (arrayFile, arrayObject) => {
  */
 exports.createAsset = async (data, company, fileInfo) => {
 
-    let avatar = fileInfo.avatar === "" ? data.avatar : fileInfo.avatar,
-        file = fileInfo.file;
+    let avatar = fileInfo && fileInfo.avatar === "" ? data.avatar : fileInfo.avatar,
+        file = fileInfo && fileInfo.file;
     let { maintainanceLogs, usageLogs, incidentLogs, locationLogs, files } = data;
-    files = this.mergeUrlFileToObject(file, files);
-    let createAsset = await Asset.create({
-        company: company,
-        avatar: avatar,
-        assetName: data.assetName,
-        code: data.code,
-        serial: data.serial,
-        group: data.group,
-        assetType: data.assetType,
-        readByRoles: data.readByRoles,
-        purchaseDate: data.purchaseDate,
-        warrantyExpirationDate: data.warrantyExpirationDate,
-        managedBy: data.managedBy,
-        assignedToUser: data.assignedToUser ? data.assignedToUser : null,
-        assignedToOrganizationalUnit: data.assignedToOrganizationalUnit ? data.assignedToOrganizationalUnit : null,
+    files = files && this.mergeUrlFileToObject(file, files);
+    
+    data.purchaseDate = new Date(data.purchaseDate);
+    
+    data.warrantyExpirationDate = new Date(data.warrantyExpirationDate);
 
-        location: data.location,
-        status: data.status,
-        typeRegisterForUse: data.typeRegisterForUse,
-        description: data.description,
-        detailInfo: data.detailInfo,
+    data.startDepreciation = new Date(data.startDepreciation);
 
-        // Khấu hao
-        cost: data.cost,
-        usefulLife: data.usefulLife,
-        residualValue: data.residualValue,
-        startDepreciation: data.startDepreciation,
-        depreciationType: data.depreciationType,
+    data.disposalDate = new Date(data.disposalDate);
 
-        // Sửa chữa - bảo trì
-        maintainanceLogs: maintainanceLogs,
+    usageLogs = usageLogs.map(item => {
+        return {
+            ...item,
+            startDate: new Date(item.startDate),
+            endDate: new Date(item.endDate)
+        }
+    })
+    
+    incidentLogs = incidentLogs.map(item => {
+        return {
+            ...item,
+            dateOfIncident: new Date(item.dateOfIncident)
+        }
+    })
+    
+    maintainanceLogs = maintainanceLogs.map(item => {
+        return {
+            ...item,
+            createDate: new Date(item.createDate),
+            startDate: new Date(item.startDate),
+            endDate: new Date(item.endDate)
+        }
+    })
 
-        // Cấp phát - sử dụng
-        usageLogs: usageLogs,
+    let asset = await Asset.create(
+        {
+            company: company,
+            avatar: avatar,
+            assetName: data.assetName,
+            code: data.code,
+            serial: data.serial,
+            group: data.group,
+            assetType: data.assetType,
+            readByRoles: data.readByRoles,
+            purchaseDate: data.purchaseDate,
+            warrantyExpirationDate: data.warrantyExpirationDate,
+            managedBy: data.managedBy,
+            assignedToUser: data.assignedToUser ? data.assignedToUser : null,
+            assignedToOrganizationalUnit: data.assignedToOrganizationalUnit ? data.assignedToOrganizationalUnit : null,
 
-        // Sự cố tài sản
-        incidentLogs: incidentLogs,
+            location: data.location,
+            status: data.status,
+            typeRegisterForUse: data.typeRegisterForUse,
+            description: data.description,
+            detailInfo: data.detailInfo,
 
-        // Lịch sử vị trí tài sản
-        locationLogs: locationLogs,
+            // Khấu hao
+            cost: data.cost,
+            usefulLife: data.usefulLife,
+            residualValue: data.residualValue,
+            startDepreciation: data.startDepreciation,
+            depreciationType: data.depreciationType,
 
-        // Thông tin thanh lý
-        disposalDate: data.disposalDate,
-        disposalType: data.disposalType,
-        disposalCost: data.disposalCost,
-        disposalDesc: data.disposalDesc,
+            // Sửa chữa - bảo trì
+            maintainanceLogs: maintainanceLogs,
 
-        // Tài liệu đính kèm
-        files: files,
-    });
+            // Cấp phát - sử dụng
+            usageLogs: usageLogs,
 
+            // Sự cố tài sản
+            incidentLogs: incidentLogs,
+
+            // Lịch sử vị trí tài sản
+            locationLogs: locationLogs,
+
+            // Thông tin thanh lý
+            disposalDate: data.disposalDate,
+            disposalType: data.disposalType,
+            disposalCost: data.disposalCost,
+            disposalDesc: data.disposalDesc,
+
+            // Tài liệu đính kèm
+            files: files,
+        }
+    );
+    
     // Lấy thông tin nhân viên vừa thêm vào
-    let assets = await Asset.find({ _id: createAsset._id });
+    let assets = await Asset.find({ _id: asset._id });
 
     return { assets };
 }
@@ -631,25 +666,31 @@ exports.getIncidents = async (params) => {
     if (incidentSearch && incidentSearch.length !== 0){
         aggregateQuery = [...aggregateQuery, { $match: { $and: incidentSearch } }]
     }
-    aggregateQuery = [...aggregateQuery, { $skip: (page - 1) * limit }, { $limit: limit }]
+    aggregateQuery = [...aggregateQuery, { $sort: { 'createdAt': 1 } }, { $skip: (page - 1) * limit }, { $limit: limit }]
 
+    // Tìm kiếm câc danh sách sự cố
     incidents = await Asset.aggregate(aggregateQuery);
 
+    // Đếm số sự cố
     let incidentLength = 0;
-    let assetList = await Asset.find({});
-    for (let i in assetList) {
-        let asset = assetList[i];
-        incidentLength += asset.incidentLogs ? asset.incidentLogs.length : 0;
-    }
+    let count = await Asset.aggregate([
+        { $unwind: "$incidentLogs" }, 
+        { $replaceRoot: { newRoot: "$incidentLogs" } }, 
+        {  $count :  "incident_length"  }
+    ]);
+    incidentLength = count[0].incident_length;
+
     // Tìm tài sản ứng với sự cố tài sản
     for (let i = 0; i < incidents.length; i++) {
         let item = incidents[i];
 
-        let asset = await Asset.findOne({ "incidentLogs": { $elemMatch: { "_id": mongoose.Types.ObjectId(item._id) } } });
+        let asset = await Asset.findOne(
+            { "incidentLogs": { $elemMatch: { "_id": mongoose.Types.ObjectId(item._id) } } }
+        );
+
         incidents[i].asset = asset;
     }
 
-    console.log('\n\n\n\\n\n******', (page - 1) * limit, incidents);
     return {
         incidentList: incidents,
         incidentLength: incidentLength,

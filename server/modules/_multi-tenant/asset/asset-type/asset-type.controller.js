@@ -6,7 +6,7 @@ const Logger = require(`${SERVER_LOGS_DIR}/_multi-tenant`);
  */
 exports.getAssetTypes = async (req, res) => {
     try {
-        const types = await AssetTypeService.getAssetTypes(req.query, req.portal);
+        const types = await AssetTypeService.getAssetTypes(req.portal, req.query);
 
         await Logger.info(req.user.email, 'GET_ASSET_TYPES', req.portal);
         res.status(200).json({
@@ -47,7 +47,7 @@ exports.createAssetTypes = async (req, res) => {
 
 exports.editAssetType = async (req, res) => {
     try {
-        const type = await AssetTypeService.editAssetType(req.params.id, req.body);
+        const type = await AssetTypeService.editAssetType(req.portal, req.params.id, req.body);
 
         await Logger.info(req.user.email, 'EDIT_ASSET_TYPE', req.portal);
         res.status(200).json({
@@ -67,7 +67,7 @@ exports.editAssetType = async (req, res) => {
 
 exports.deleteAssetTypes = async (req, res) => {
     try {
-        const type = await AssetTypeService.deleteAssetTypes(req.params.id);
+        const type = await AssetTypeService.deleteAssetTypes(req.portal, req.params.id);
 
         await Logger.info(req.user.email, 'DELETE_ASSET_TYPE', req.portal);
         res.status(200).json({
@@ -87,7 +87,7 @@ exports.deleteAssetTypes = async (req, res) => {
 
 exports.deleteManyAssetType = async (req, res) => {
     try {
-        const type = await AssetTypeService.deleteManyAssetType(req.body.array, req.portal);
+        const type = await AssetTypeService.deleteManyAssetType(req.portal, req.body.array);
 
         await Logger.info(req.user.email, 'DELETE_MANY_ASSET_TYPE', req.portal);
         res.status(200).json({

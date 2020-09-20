@@ -414,7 +414,7 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
 
         if (arrayListChildTargetSameOrganizationUnitKpi && arrayListChildTargetSameOrganizationUnitKpi.length !== 0 && organizationalUnit && arrayListTaskSameOrganizationUnitKpi) {
             for (let i = (arrayListChildTargetSameOrganizationUnitKpi.length - 1); i >= 0; i--) {
-                let listTaskSameParent = arrayListTaskSameOrganizationUnitKpi.filter(item => item[0].name === arrayListChildTargetSameOrganizationUnitKpi[i][0][0][0]._id);
+                let listTaskSameParent = arrayListTaskSameOrganizationUnitKpi.filter(item => arrayListChildTargetSameOrganizationUnitKpi[i][0][0][0] && item[0].name === arrayListChildTargetSameOrganizationUnitKpi[i][0][0][0]._id);
                 let treeData = [];
 
                 if (arrayListChildTargetSameOrganizationUnitKpi[i]) {

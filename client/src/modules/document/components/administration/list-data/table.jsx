@@ -145,14 +145,7 @@ class Table extends Component {
             }
         })
     }
-    handleDomains = value => {
-        this.setState(state => {
-            return {
-                ...state,
-                documentDomains: value,
-            }
-        })
-    }
+
     handleNameChange = (e) => {
         const value = e.target.value;
         this.setState(state => {
@@ -191,7 +184,7 @@ class Table extends Component {
     convertData = (data) => {
         let array = data.map(item => {
             return {
-                value: item.id,
+                value: item.path,
                 text: item.name,
             }
         })
@@ -207,7 +200,6 @@ class Table extends Component {
     }
     convertDataToExportData = (data) => {
 
-        console.log("dataaaaaaa", data);
         let newData = [];
         for (let i = 0; i < data.length; i++) {
             let element = {};
@@ -292,7 +284,7 @@ class Table extends Component {
             element.organizationUnitManager = x.organizationUnitManager ? x.organizationUnitManager.name : "";
             element.officialNumber = x.officialNumber ? x.officialNumber : "";
             let max_length = Math.max(length_domains, length_archives, length_relationship, length_roles, length_versions, length_logs, length_views, length_downloads);
-            //console.log('eleeeeeeeeeee', element);
+
             newData = [...newData, element];
             if (max_length > 1) {
                 for (let i = 1; i < max_length; i++) {
@@ -321,14 +313,12 @@ class Table extends Component {
                         descriptionLogs: i < length_logs ? x.logs[i].description : "",
 
                     }
-                    // console.log('exxxx', object);
                     newData = [...newData, object];
                 }
             }
 
 
         }
-        console.log('exxxx', newData);
         let exportData = {
             fileName: "Bảng thống kê tài liệu",
             dataSheets: [
@@ -407,9 +397,9 @@ class Table extends Component {
         if (isLoading === false) {
             list = docs.list;
         }
+        console.log('uuuuuuuuuuuuu', currentRow);
 
         let exportData = list ? this.convertDataToExportData(list) : "";
-        console.log('exportDataaaaaaaaaaaaaaaa', this.props.role)
         return (
             <div className="qlcv">
                 <CreateForm />
@@ -612,6 +602,15 @@ class Table extends Component {
         await this.props.getAllDocuments(data);
     }
 
+    findPath = (select) => {
+        const archives = this.props.documents.administration.archives.list;
+        let paths = select.map(s => {
+            let archive = archives.filter(arch => arch._id === s);
+            return archive[0] ? archive[0].path : "";
+        })
+        return paths;
+
+    }
     setLimit = (number) => {
         if (this.state.limit !== number) {
             this.setState({ limit: number });
@@ -627,15 +626,14 @@ class Table extends Component {
     }
 
     searchWithOption = async () => {
+        let path = this.state.archive ? this.findPath(this.state.archive) : "";
         const data = {
             limit: this.state.limit,
             page: 1,
-            // key: this.state.option,
-            // value: this.state.value,
             name: this.state.name,
-            category: this.state.category[0],
+            category: this.state.category ? this.state.category[0] : "",
             domains: this.state.domain ? this.state.domain : "",
-            archives: this.state.archive[0],
+            archives: path && path.length ? path[0] : "",
         };
         await this.props.getAllDocuments(data);
     }
