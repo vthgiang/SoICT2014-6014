@@ -47,14 +47,14 @@ if (process.env.MULTI_TENANT === 'true') {
 	app.use("/salary", require("./modules/_multi-tenant/human-resource/salary/salary.route"));
 	app.use("/timesheet", require("./modules/_multi-tenant/human-resource/timesheets/timesheets.route"));
 
-	// app.use("/kpi/employee/creation", require("./modules/_multi-tenant/kpi/employee/creation/creation.route"));
-	// app.use("/kpi/employee/dashboard", require("./modules/_multi-tenant/kpi/employee/dashboard/dashboard.route"));
-	// app.use("/kpi/employee/management", require("./modules/_multi-tenant/kpi/employee/management/management.route"));
-	// app.use("/kpi/evaluation/dashboard", require("./modules/_multi-tenant/kpi/evaluation/dashboard/dashboard.route"));
-	// app.use("/kpi/evaluation/employee-evaluation", require("./modules/_multi-tenant/kpi/evaluation/employee-evaluation/employeeEvaluation.route"));
-	// app.use("/kpi/organizational-unit/creation", require("./modules/_multi-tenant/kpi/organizational-unit/creation/creation.route"));
-	// app.use("/kpi/organizational-unit/dashboard", require("./modules/_multi-tenant/kpi/organizational-unit/dashboard/dashboard.route"));
-	// app.use("/kpi/organizational-unit/management", require("./modules/_multi-tenant/kpi/organizational-unit/management/management.route"));
+	app.use("/kpi/employee/creation", require("./modules/_multi-tenant/kpi/employee/creation/creation.route"));
+	app.use("/kpi/employee/dashboard", require("./modules/_multi-tenant/kpi/employee/dashboard/dashboard.route"));
+	app.use("/kpi/employee/management", require("./modules/_multi-tenant/kpi/employee/management/management.route"));
+	app.use("/kpi/evaluation/dashboard", require("./modules/_multi-tenant/kpi/evaluation/dashboard/dashboard.route"));
+	app.use("/kpi/evaluation/employee-evaluation", require("./modules/_multi-tenant/kpi/evaluation/employee-evaluation/employeeEvaluation.route"));
+	app.use("/kpi/organizational-unit/creation", require("./modules/_multi-tenant/kpi/organizational-unit/creation/creation.route"));
+	app.use("/kpi/organizational-unit/dashboard", require("./modules/_multi-tenant/kpi/organizational-unit/dashboard/dashboard.route"));
+	app.use("/kpi/organizational-unit/management", require("./modules/_multi-tenant/kpi/organizational-unit/management/management.route"));
 
 	app.use("/notifications", require("./modules/_multi-tenant/notification/notification.route"));
 

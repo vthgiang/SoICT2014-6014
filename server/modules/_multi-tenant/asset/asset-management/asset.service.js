@@ -235,10 +235,43 @@ exports.mergeUrlFileToObject = (arrayFile, arrayObject) => {
  */
 exports.createAsset = async (portal, data, fileInfo) => {
 
-    let avatar = fileInfo.avatar === "" ? data.avatar : fileInfo.avatar,
-        file = fileInfo.file;
+    let avatar = fileInfo && fileInfo.avatar === "" ? data.avatar : fileInfo.avatar,
+        file = fileInfo && fileInfo.file;
     let { maintainanceLogs, usageLogs, incidentLogs, locationLogs, files } = data;
-    files = this.mergeUrlFileToObject(file, files);
+    files = files && this.mergeUrlFileToObject(file, files);
+    
+    data.purchaseDate = new Date(data.purchaseDate);
+    
+    data.warrantyExpirationDate = new Date(data.warrantyExpirationDate);
+
+    data.startDepreciation = new Date(data.startDepreciation);
+
+    data.disposalDate = new Date(data.disposalDate);
+
+    usageLogs = usageLogs.map(item => {
+        return {
+            ...item,
+            startDate: new Date(item.startDate),
+            endDate: new Date(item.endDate)
+        }
+    })
+    
+    incidentLogs = incidentLogs.map(item => {
+        return {
+            ...item,
+            dateOfIncident: new Date(item.dateOfIncident)
+        }
+    })
+    
+    maintainanceLogs = maintainanceLogs.map(item => {
+        return {
+            ...item,
+            createDate: new Date(item.createDate),
+            startDate: new Date(item.startDate),
+            endDate: new Date(item.endDate)
+        }
+    })
+
     let createAsset = await Asset(connect(DB_CONNECTION, portal)).create({
         avatar: avatar,
         assetName: data.assetName,
@@ -477,7 +510,7 @@ exports.getMaintainances = async (portal, params) => {
     let { code, maintainanceCode, maintainCreateDate, type, status } = params;
     let page = parseInt(params.page);
     let limit = parseInt(params.limit);
-console.log('\nAAAAAA', typeof type, ' | ', type);
+
     console.log(code, maintainanceCode, maintainCreateDate, type, status, page, limit);
     let assetSearch = [];
     if (code) {
@@ -514,19 +547,17 @@ console.log('\nAAAAAA', typeof type, ' | ', type);
     if (maintainanceSearch && maintainanceSearch.length !== 0) {
         aggregateQuery = [...aggregateQuery, { $match: { $and: maintainanceSearch } }]
     }
-    aggregateQuery = [...aggregateQuery, { $sort: { 'createdAt': 1 } }, { $skip: (page - 1) * limit }, { $limit: limit }]
-
-    // Tìm kiếm câc danh sách sự cố
-    maintainances = await Asset(connect(DB_CONNECTION, portal)).aggregate(aggregateQuery);
 
     // Đếm số sự cố
     let mintainanceLength = 0;
-    let count = await Asset(connect(DB_CONNECTION, portal)).aggregate([
-        { $unwind: "$maintainanceLogs" },
-        { $replaceRoot: { newRoot: "$maintainanceLogs" } },
-        { $count: "mintainance_Length" }
-    ]);
+    let aggregateLengthQuery = [...aggregateQuery, { $count: "mintainance_Length" }]
+    let count = await Asset(connect(DB_CONNECTION, portal)).aggregate(aggregateLengthQuery);
     mintainanceLength = count[0].mintainance_Length;
+
+    // Tìm kiếm câc danh sách sự cố
+    aggregateListQuery = [...aggregateQuery, { $sort: { 'createdAt': 1 } }, { $skip: (page - 1) * limit }, { $limit: limit }]
+    maintainances = await Asset(connect(DB_CONNECTION, portal)).aggregate(aggregateListQuery);
+
 
     // Tìm tài sản ứng với sự cố tài sản
     for (let i = 0; i < maintainances.length; i++) {
@@ -700,19 +731,16 @@ exports.getIncidents = async (portal, params) => {
     if (incidentSearch && incidentSearch.length !== 0) {
         aggregateQuery = [...aggregateQuery, { $match: { $and: incidentSearch } }]
     }
-    aggregateQuery = [...aggregateQuery, { $sort: { 'createdAt': 1 } }, { $skip: (page - 1) * limit }, { $limit: limit }]
-
-    // Tìm kiếm câc danh sách sự cố
-    incidents = await Asset(connect(DB_CONNECTION, portal)).aggregate(aggregateQuery);
 
     // Đếm số sự cố
     let incidentLength = 0;
-    let count = await Asset(connect(DB_CONNECTION, portal)).aggregate([
-        { $unwind: "$incidentLogs" },
-        { $replaceRoot: { newRoot: "$incidentLogs" } },
-        { $count: "incident_length" }
-    ]);
+    let aggregateLengthQuery = [...aggregateQuery, { $count: "incident_length" }]
+    let count = await Asset(connect(DB_CONNECTION, portal)).aggregate(aggregateLengthQuery);
     incidentLength = count[0].incident_length;
+
+    // Tìm kiếm câc danh sách sự cố
+    let aggregateListQuery = [...aggregateQuery, { $sort: { 'createdAt': 1 } }, { $skip: (page - 1) * limit }, { $limit: limit }]
+    incidents = await Asset(connect(DB_CONNECTION, portal)).aggregate(aggregateListQuery);
 
     // Tìm tài sản ứng với sự cố tài sản
     for (let i = 0; i < incidents.length; i++) {

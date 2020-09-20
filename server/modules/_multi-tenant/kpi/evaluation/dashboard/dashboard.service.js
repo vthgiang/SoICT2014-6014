@@ -1,5 +1,6 @@
 const Models = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
 const { OrganizationalUnit, EmployeeKpiSet } = Models;
+const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 
 /**
