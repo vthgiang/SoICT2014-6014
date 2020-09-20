@@ -2,46 +2,13 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DatePicker } from '../../../../common-components';
-
-import { SalaryActions } from '../../salary/redux/actions';
-
 import c3 from 'c3';
 import 'c3/c3.css';
 
 class HumanResourceChartBySalary extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            nameData: 'Nhân viên',
-            ratioX: [">100tr", "90tr-100tr", "80tr-90tr", "70tr-80tr", "60tr-70tr", "50tr-60tr", "40tr-50tr", "30tr-40tr", "20tr-30tr", "10tr-20tr", "<10tr"],
-            data1: ['data1', 2, 3, 0, 5, 5, 9, 15, 26, 40, 46, 52],
-        }
-    }
-
-    /**
-     * Function format dữ liệu Date thành string
-     * @param {*} date : Ngày muốn format
-     * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
-     */
-    formatDate = (date, monthYear = false) => {
-        if (date) {
-            let d = new Date(date),
-                month = '' + (d.getMonth() + 1),
-                day = '' + d.getDate(),
-                year = d.getFullYear();
-
-            if (month.length < 2)
-                month = '0' + month;
-            if (day.length < 2)
-                day = '0' + day;
-
-            if (monthYear === true) {
-                return [month, year].join('-');
-            } else return [day, month, year].join('-');
-        }
-        return date;
-
+        this.state = {}
     }
 
     /** Xóa các chart đã render khi chưa đủ dữ liệu */
@@ -100,37 +67,15 @@ class HumanResourceChartBySalary extends Component {
     };
 
     /**
-     * Function lưu giá trị tháng vào state khi thay đổi
-     * @param {*} value : Tháng tìm kiếm
-     */
-    handleMonthChange = (value) => {
-        if (value) {
-            let partMonth = value.split('-');
-            value = [partMonth[1], partMonth[0]].join('-');
-        };
-        this.setState({
-            ...this.state,
-            month: value
-        });
-    }
-
-    /** Bắt sự kiện tìm kiếm */
-    handleSunmitSearch = async () => {
-        const { month } = this.state;
-        await this.props.handleMonthChange(this.formatDate(month, true));
-        await this.props.searchSalary({ callApiDashboard: true, month: month });
-    }
-
-    /**
      * Function chyển dữ liệu thành dữ liệu chart
-     * @param {*} result 
+     * @param {*} dataCovert 
      */
-    convertData = (result) => {
-        if (result.length !== 0) {
-            if (result[0].unit && result[0].unit === 'VND') {
+    convertData = (dataCovert) => {
+        if (dataCovert.length !== 0) {
+            if (dataCovert[0].unit && dataCovert[0].unit === 'VND') {
                 let ratioX = [">100tr", "90tr-100tr", "80tr-90tr", "70tr-80tr", "60tr-70tr", "50tr-60tr", "40tr-50tr", "30tr-40tr", "20tr-30tr", "10tr-20tr", "<10tr"];
                 let data1 = ['data1', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-                result.forEach(x => {
+                dataCovert.forEach(x => {
                     let check = x.total / 1000000;
                     if (check > 100) {
                         data1[1] = data1[1] + 1;
@@ -162,10 +107,10 @@ class HumanResourceChartBySalary extends Component {
                     nameData: 'Nhân viên',
                 }
             };
-            if (result[0].unit && result[0].unit === 'USD') {
+            if (dataCovert[0].unit && dataCovert[0].unit === 'USD') {
                 let ratioX = [">5000", "4500-5000", "4000-4500", "3500-4000tr", "3000-3500", "2500-3000", "2000-2500", "1500-2000", "1000-1500", "500-1000", "<500"];
                 let data1 = ['data1', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-                result.forEach(x => {
+                dataCovert.forEach(x => {
                     if (x.total > 5000) {
                         data1[1] = data1[1] + 1;
                     } else if (4500 < x.total && x.total <= 5000) {
@@ -204,19 +149,18 @@ class HumanResourceChartBySalary extends Component {
         }
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        if (nextState.month !== this.state.month) {
-            return false;
-        };
-        return true;
-    }
-
     render() {
-        const { translate, salary } = this.props;
+        const { translate, salary, department } = this.props;
 
-        const { monthShow } = this.props;
+        const { monthShow, organizationalUnits } = this.props;
 
-        let data = salary.listAllSalary;
+        let data = salary.listSalaryByMonthAndOrganizationalUnits;
+        let organizationalUnitsName;
+        if (organizationalUnits) {
+            organizationalUnitsName = department.list.filter(x => organizationalUnits.includes(x._id));
+            organizationalUnitsName = organizationalUnitsName.map(x => x.name);
+        }
+
         if (data.length !== 0) {
             data = data.map(x => {
                 let total = parseInt(x.mainSalary);
@@ -251,28 +195,11 @@ class HumanResourceChartBySalary extends Component {
             <React.Fragment>
                 <div className="box">
                     <div className="box-header with-border">
-                        <h3 className="box-title">Biểu đồ nhân sự phân theo dải lương {monthShow}</h3>
+                        <h3 className="box-title">{`Biểu đồ nhân sự của ${(!organizationalUnits || organizationalUnits.length === department.list.length) ? "công ty" : organizationalUnitsName.join(', ')} phân theo dải lương ${monthShow}`}</h3>
                     </div>
                     <div className="box-body">
-                        <div className="qlcv" style={{ marginBottom: 15 }} >
-                            <div className="form-inline" >
-                                <div className="form-group">
-                                    <label className="form-control-static"  >{translate('human_resource.month')}</label>
-                                    <DatePicker
-                                        id="month-by-salary"
-                                        deleteValue={false}
-                                        dateFormat="month-year"
-                                        value={this.formatDate(Date.now(), true)}
-                                        onChange={this.handleMonthChange}
-                                    />
-                                </div>
-                                <div className="form-group" >
-                                    <button type="button" className="btn btn-success" title={translate('general.search')} onClick={this.handleSunmitSearch} > {translate('general.search')} </button>
-                                </div>
-                            </div>
-                        </div>
                         <div className="dashboard_box_body">
-                            <p className="pull-left" style={{ marginBottom: 0 }} > < b > ĐV tính: Người</b></p >
+                            <p className="pull-right" style={{ marginBottom: 0 }} > < b > ĐV tính: Người</b></p >
                             <div ref="rotateChart"></div>
                         </div>
                     </div>
@@ -283,13 +210,9 @@ class HumanResourceChartBySalary extends Component {
 }
 
 function mapState(state) {
-    const { salary } = state;
-    return { salary };
+    const { salary, department } = state;
+    return { salary, department };
 };
 
-const actionCreators = {
-    searchSalary: SalaryActions.searchSalary,
-};
-
-const humanResourceChartBySalary = connect(mapState, actionCreators)(withTranslate(HumanResourceChartBySalary));
+const humanResourceChartBySalary = connect(mapState, null)(withTranslate(HumanResourceChartBySalary));
 export { humanResourceChartBySalary as HumanResourceChartBySalary };

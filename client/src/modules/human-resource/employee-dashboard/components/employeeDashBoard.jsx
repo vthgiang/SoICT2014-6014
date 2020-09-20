@@ -3,11 +3,9 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import {
-    AgePyramidChart, HumanResourceChartBySalary, BarAndLineChart, MultipleBarChart, HighestSalaryChart,
-    EmployeeDashBoardHeader, AnnualLeaveTrendsChart, HumanResourceIncreaseAndDecreaseChart
+    AgePyramidChart, HumanResourceChartBySalary, BarAndLineChart, MultipleBarChart, HighestSalaryChart, SalaryOfOrganizationalUnitsChart,
+    EmployeeDashBoardHeader, AnnualLeaveTrendsChart, HumanResourceIncreaseAndDecreaseChart, QualificationChart
 } from './combinedContent';
-
-import { SalaryActions } from '../../salary/redux/actions';
 
 import './employeeDashBoard.css';
 
@@ -20,13 +18,6 @@ class DashBoardEmployees extends Component {
             month: this.formatDate(Date.now(), true),
         }
     };
-
-    componentDidMount() {
-        let { month } = this.state;
-        let partMonth = month.split('-');
-        month = [partMonth[1], partMonth[0]].join('-');
-        this.props.searchSalary({ callApiDashboard: true, month: month });
-    }
 
     /**
      * Function format dữ liệu Date thành string
@@ -78,21 +69,30 @@ class DashBoardEmployees extends Component {
 
         return (
             <div className="qlcv">
-                <EmployeeDashBoardHeader handleSelectOrganizationalUnit={this.handleSelectOrganizationalUnit} />
+                <EmployeeDashBoardHeader handleSelectOrganizationalUnit={this.handleSelectOrganizationalUnit} handleMonthChange={this.handleMonthChange} />
                 <div className="row">
                     <div className=" col-lg-12 col-md-12 col-md-sm-12 col-xs-12">
                         <AgePyramidChart organizationalUnits={organizationalUnits} actionSearch={actionSearch} />
                     </div>
+
                     <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
-                        <HumanResourceChartBySalary monthShow={month} handleMonthChange={this.handleMonthChange} />
+                        <HumanResourceChartBySalary organizationalUnits={organizationalUnits} monthShow={month} handleMonthChange={this.handleMonthChange} />
                     </div>
                     <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
-                        <HighestSalaryChart monthShow={month} handleMonthChange={this.handleMonthChange} />
+                        <HighestSalaryChart organizationalUnits={organizationalUnits} monthShow={month} handleMonthChange={this.handleMonthChange} />
                     </div>
+
+                    <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
+                        <SalaryOfOrganizationalUnitsChart organizationalUnits={organizationalUnits} monthShow={month} handleMonthChange={this.handleMonthChange} />
+                    </div>
+                    <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
+                        <QualificationChart organizationalUnits={organizationalUnits} actionSearch={actionSearch} />
+                    </div>
+
                     <div className=" col-lg-12 col-md-12 col-md-sm-12 col-xs-12">
                         <HumanResourceIncreaseAndDecreaseChart nameData1='Tuyển mới' nameData2='Nghỉ làm' nameChart={'Tình hình tăng giảm nhân sự'} />
                     </div>
-                    <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
+                    <div className=" col-lg-12 col-md-12 col-md-sm-12 col-xs-12">
                         <AnnualLeaveTrendsChart nameData1='Số lượt nghỉ' nameChart={'Xu hướng nghỉ phép của nhân viên'} />
                     </div>
 
@@ -121,13 +121,9 @@ class DashBoardEmployees extends Component {
     }
 };
 function mapState(state) {
-    const { employeesManager, salary } = state;
-    return { employeesManager, salary };
+    const { employeesManager } = state;
+    return { employeesManager };
 }
 
-const actionCreators = {
-    searchSalary: SalaryActions.searchSalary,
-};
-
-const DashBoard = connect(mapState, actionCreators)(withTranslate(DashBoardEmployees));
+const DashBoard = connect(mapState, null)(withTranslate(DashBoardEmployees));
 export { DashBoard as DashBoardEmployees };

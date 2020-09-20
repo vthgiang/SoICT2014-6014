@@ -500,6 +500,7 @@ const initSampleCompanyDB = async() => {
         fullName: "Vũ Thị Cúc",
         employeeNumber: "MS2015122",
         status: "active",
+        company:vnist._id,
         employeeTimesheetId: "123456",
         gender: "female",
         birthdate: new Date("1998-02-17"),
@@ -589,6 +590,7 @@ const initSampleCompanyDB = async() => {
         fullName: "Trần Văn Bình",
         employeeNumber: "MS2015124",
         status: "active",
+        company:vnist._id,
         employeeTimesheetId: "123456",
         gender: "male",
         birthdate: new Date("1998-02-17"),
@@ -680,6 +682,7 @@ const initSampleCompanyDB = async() => {
         fullName: "Nguyễn Văn An",
         employeeNumber: "MS2015123",
         status: "active",
+        company:vnist._id,
         employeeTimesheetId: "123456",
         gender: "male",
         birthdate: new Date("1988-05-20"),
@@ -781,6 +784,7 @@ const initSampleCompanyDB = async() => {
     ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu nghỉ phép!");
     await AnnualLeave(vnistDB).insertMany([{
+        company:vnist._id,
         employee: employee._id,
         organizationalUnit: Directorate._id,
         startDate: "2020-02-06",
@@ -788,6 +792,7 @@ const initSampleCompanyDB = async() => {
         status: "pass",
         reason: "Về quê",
     }, {
+        company:vnist._id,
         employee: employee._id,
         organizationalUnit: Directorate._id,
         startDate: "2020-02-05",
@@ -804,6 +809,7 @@ const initSampleCompanyDB = async() => {
     ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu lương nhân viên!");
     await Salary(vnistDB).insertMany([{
+        company:vnist._id,
         employee: employee._id,
         month: "2020-02",
         organizationalUnit: Directorate._id,
@@ -814,6 +820,7 @@ const initSampleCompanyDB = async() => {
             number: "1000000"
         }],
     }, {
+        company:vnist._id,
         employee: employee._id,
         organizationalUnit: Directorate._id,
         month: "2020-01",
@@ -833,6 +840,7 @@ const initSampleCompanyDB = async() => {
     ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu khen thưởng!");
     await Commendation(vnistDB).insertMany([{
+        company:vnist._id,
         employee: employee._id,
         decisionNumber: "123",
         organizationalUnit: departments[0]._id,
@@ -841,6 +849,7 @@ const initSampleCompanyDB = async() => {
         reason: "Vượt doanh số",
     },
     {
+        company:vnist._id,
         employee: employee._id,
         decisionNumber: "1234",
         organizationalUnit: departments[0]._id,
@@ -858,6 +867,7 @@ const initSampleCompanyDB = async() => {
     ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu kỷ luật!");
     await Discipline(vnistDB).insertMany([{
+        company:vnist._id,
         employee: employee._id,
         decisionNumber: "1456",
         organizationalUnit: departments[0]._id,
@@ -866,6 +876,7 @@ const initSampleCompanyDB = async() => {
         type: "Phạt tiền",
         reason: "Không làm đủ công",
     }, {
+        company:vnist._id,
         employee: employee._id,
         decisionNumber: "1457",
         organizationalUnit: departments[0]._id,
@@ -912,6 +923,7 @@ const initSampleCompanyDB = async() => {
 
     console.log("Khởi tạo dữ liệu khoá đào tạo bắt buộc!");
     await Course(vnistDB).insertMany([{
+        company:vnist._id,
         name: "An toàn lao động 1",
         courseId: "LD1233",
         offeredBy: "Vnists",
@@ -927,6 +939,7 @@ const initSampleCompanyDB = async() => {
         educationProgram: educationProgram[0]._id,
         employeeCommitmentTime: "6",
     }, {
+        company:vnist._id,
         name: "An toàn lao động 2",
         courseId: "LD123",
         offeredBy: "Vnists",
