@@ -7,3 +7,5 @@ export * from './annualLeaveTrendsChart';
 export * from './humanResourceChartBySalary';
 export * from './humanResourceIncreaseAndDecreaseChart';
 export * from './highestSalaryChart';
+export * from './qualificationChart';
+export * from './salaryOfOrganizationalUnitsChart';
