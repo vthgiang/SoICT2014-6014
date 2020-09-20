@@ -75,7 +75,7 @@ exports.createAsset = async (req, res) => {
         if (req.files.fileAvatar) {
             avatar = `/${req.files.fileAvatar[0].path}`;
         }
-        let file = req.files.file;
+        let file = req.files && req.files.file;
         let fileInfo = { file, avatar };
 
         let data = await AssetService.createAsset(req.portal, req.body, fileInfo);
