@@ -24,6 +24,7 @@ function login(user){
             .then(res => {
                 setStorage('jwt', res.data.content.token);
                 setStorage('userId', res.data.content.user._id);
+                setStorage('portal', res.data.content.user.portal);
                 if(res.data.content.user.company!== undefined){
                     setStorage('companyId', res.data.content.user.company._id);
                 }

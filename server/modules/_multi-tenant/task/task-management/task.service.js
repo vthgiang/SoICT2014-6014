@@ -24,7 +24,15 @@ exports.getAllTasks = async (portal) => {
  */
 exports.getTaskEvaluations = async (portal, data) => {
     // Lấy data tu client gui trong body
-    let { organizationalUnit, taskTemplate, status, startDate, endDate, frequency, responsibleEmployees, accountableEmployees } = data;
+    let {
+        organizationalUnit,
+        taskTemplate,
+        status, startDate,
+        endDate, frequency,
+        responsibleEmployees,
+        accountableEmployees
+    } = data;
+
     let startTime, start, endTime, end, filterDate = {};
     status = Number(data.status);
 
@@ -206,6 +214,15 @@ exports.getTaskEvaluations = async (portal, data) => {
          * Mục đích để đính kèm các điều kiện lọc của các trường thông tin vào taskInfomation để tính toán
          */
         let taskMerge = taskInformations.map((item, index) => Object.assign({}, item, configurations[index]))
+        taskMerge.map(item => {
+            if (item.filter) {
+                let replacer = new RegExp(item.code, 'g')
+                item.filter = eval(item.filter.replace(replacer, item.value));
+            } else {
+                item.filter = true;
+            }
+            return item;
+        })
         return { // Lấy các trường cần thiết
             _id: item._id,
             name: item.name,
@@ -221,6 +238,15 @@ exports.getTaskEvaluations = async (portal, data) => {
             results: item.results,
             dataForAxisXInChart: listDataChart,
         };
+    });
+
+
+    newResult.map(o => {
+        if (o.taskInformations.some(item => (item.filter === true))) {
+            return o;
+        } else {
+            newResult = [];
+        }
     })
     return newResult;
 }
@@ -1457,7 +1483,7 @@ exports.getAllTaskOfOrganizationalUnit = async (portal, roleId, organizationalUn
 
             {
                 $lookup: {
-                    from: "organizational_units",
+                    from: "organizationalunits",
                     localField: "organizationalUnit",
                     foreignField: "_id",
                     as: "detailOrganizationalUnit"

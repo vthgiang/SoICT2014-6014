@@ -360,105 +360,124 @@ exports.getEmployeeNumberHaveBirthdateInCurrentMonth = async (portal, company, m
  * @param {*} numberMonth : số tháng gần nhất
  * @param {*} company : Id công ty
  */
-exports.getEmployeesOfNumberMonth = async (portal, organizationalUnits, numberMonth, company) => {
-    let currentMonth = new Date().getMonth();
-    let currentYear = new Date().getFullYear();
-    currentMonth = currentMonth + 1;
-    let arrMonth = [];
-    for (let i = 0; i < Number(numberMonth); i++) {
-        let month = currentMonth - i;
-        if (month > 0) {
-            if (month.toString().length === 1) {
-                month = `${currentYear}-0${month}-01`;
-                arrMonth = [...arrMonth, month];
-            } else {
-                month = `${currentYear}-${month}-01`;
-                arrMonth = [...arrMonth, month];
-            }
-        } else {
-            month = month + 12;
-            if (month.toString().length === 1) {
-                month = `${currentYear-1}-0${month}-01`;
-                arrMonth = [...arrMonth, month];
-            } else {
-                month = `${currentYear-1}-${month}-01`;
-                arrMonth = [...arrMonth, month];
-            }
-        }
-    }
-
-    let querysStartingDate = [],
-        querysLeavingDate = [];
-    arrMonth.forEach(x => {
-        let date = new Date(x);
-        let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-        let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
-        querysStartingDate = [...querysStartingDate, {
-                startingDate: {
-                    "$gt": firstDay,
-                    "$lte": lastDay
-                }
-            }],
-            querysLeavingDate = [...querysLeavingDate, {
-                leavingDate: {
-                    "$gt": firstDay,
-                    "$lte": lastDay
-                }
-            }]
-    })
-
-    if (organizationalUnits) {
-        let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(portal, organizationalUnits, undefined);
-        let listEmployeesHaveStartingDateOfNumberMonth = await Employee(connect(DB_CONNECTION, portal)).find({
-            company: company,
-            emailInCompany: {
-                $in: emailInCompany
-            },
-            "$or": querysStartingDate,
-        }, {
-            _id: 1,
-            startingDate: 1,
-            leavingDate: 1
-        });
-        let listEmployeesHaveLeavingDateOfNumberMonth = await Employee(connect(DB_CONNECTION, portal)).find({
-            company: company,
-            emailInCompany: {
-                $in: emailInCompany
-            },
-            "$or": querysLeavingDate,
-        }, {
-            _id: 1,
-            startingDate: 1,
-            leavingDate: 1
-        });
-
+exports.getEmployeesByStartingAndLeaving = async (portal, organizationalUnits, startDate, endDate, company) => {
+    if (new Date(startDate).getTime() > new Date(endDate).getTime()) {
         return {
-            arrMonth,
-            listEmployeesHaveStartingDateOfNumberMonth,
-            listEmployeesHaveLeavingDateOfNumberMonth
+            arrMonth: [],
+            listEmployeesHaveStartingDateOfNumberMonth: [],
+            listEmployeesHaveLeavingDateOfNumberMonth: [],
         }
     } else {
-        let listEmployeesHaveStartingDateOfNumberMonth = await Employee(connect(DB_CONNECTION, portal)).find({
-            company: company,
-            "$or": querysStartingDate
-        }, {
-            _id: 1,
-            startingDate: 1,
-            leavingDate: 1
-        });
-        let listEmployeesHaveLeavingDateOfNumberMonth = await Employee(connect(DB_CONNECTION, portal)).find({
-            company: company,
-            "$or": querysLeavingDate
-        }, {
-            _id: 1,
-            startingDate: 1,
-            leavingDate: 1
-        });
+        let endMonth = new Date(endDate).getMonth();
+        let endYear = new Date(endDate).getFullYear();
+        endMonth = endMonth + 1;
+        let arrMonth = [];
+        for (let i = 0;; i++) {
+            let month = endMonth - i;
+            if (month > 0) {
+                if (month.toString().length === 1) {
+                    month = `${endYear}-0${month}-01`;
+                    arrMonth = [...arrMonth, month];
+                } else {
+                    month = `${endYear}-${month}-01`;
+                    arrMonth = [...arrMonth, month];
+                }
+                if (`${startDate}-01` === month) {
+                    break;
+                }
+            } else {
+                let j = 1;
+                for (j;; j++) {
+                    month = month + 12;
+                    if (month > 0) {
+                        break;
+                    }
+                }
+                if (month.toString().length === 1) {
+                    month = `${endYear-j}-0${month}-01`;
+                    arrMonth = [...arrMonth, month];
+                } else {
+                    month = `${endYear-j}-${month}-01`;
+                    arrMonth = [...arrMonth, month];
+                }
+                if (`${startDate}-01` === month) {
+                    break;
+                }
+            }
+        }
+        let querysStartingDate = [],
+            querysLeavingDate = [];
+        arrMonth.forEach(x => {
+            let date = new Date(x);
+            let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+            let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
+            querysStartingDate = [...querysStartingDate, {
+                    startingDate: {
+                        "$gt": firstDay,
+                        "$lte": lastDay
+                    }
+                }],
+                querysLeavingDate = [...querysLeavingDate, {
+                    leavingDate: {
+                        "$gt": firstDay,
+                        "$lte": lastDay
+                    }
+                }]
+        })
 
-        return {
-            arrMonth,
-            listEmployeesHaveStartingDateOfNumberMonth,
-            listEmployeesHaveLeavingDateOfNumberMonth
+        if (organizationalUnits) {
+            let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(portal, organizationalUnits, undefined);
+            let listEmployeesHaveStartingDateOfNumberMonth = await Employee(connect(DB_CONNECTION, portal)).find({
+                company: company,
+                emailInCompany: {
+                    $in: emailInCompany
+                },
+                "$or": querysStartingDate,
+            }, {
+                _id: 1,
+                startingDate: 1,
+                leavingDate: 1
+            });
+            let listEmployeesHaveLeavingDateOfNumberMonth = await Employee(connect(DB_CONNECTION, portal)).find({
+                company: company,
+                emailInCompany: {
+                    $in: emailInCompany
+                },
+                "$or": querysLeavingDate,
+            }, {
+                _id: 1,
+                startingDate: 1,
+                leavingDate: 1
+            });
+
+            return {
+                arrMonth,
+                listEmployeesHaveStartingDateOfNumberMonth,
+                listEmployeesHaveLeavingDateOfNumberMonth
+            }
+        } else {
+            let listEmployeesHaveStartingDateOfNumberMonth = await Employee(connect(DB_CONNECTION, portal)).find({
+                company: company,
+                "$or": querysStartingDate
+            }, {
+                _id: 1,
+                startingDate: 1,
+                leavingDate: 1
+            });
+            let listEmployeesHaveLeavingDateOfNumberMonth = await Employee(connect(DB_CONNECTION, portal)).find({
+                company: company,
+                "$or": querysLeavingDate
+            }, {
+                _id: 1,
+                startingDate: 1,
+                leavingDate: 1
+            });
+
+            return {
+                arrMonth,
+                listEmployeesHaveStartingDateOfNumberMonth,
+                listEmployeesHaveLeavingDateOfNumberMonth
+            }
         }
     }
 }

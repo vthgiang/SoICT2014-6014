@@ -75,8 +75,8 @@ exports.searchEmployeeProfiles = async (req, res) => {
                 let employee = await EmployeeService.getEmployeeProfile(req.portal, arrEmail[i]);
                 data = [...data, employee]
             }
-        } else if (req.query.numberMonth) {
-            data = await EmployeeService.getEmployeesOfNumberMonth(req.portal, req.query.organizationalUnits, req.query.numberMonth, req.user.company._id);
+        } else if (req.query.startDate && req.query.endDate) {
+            data = await EmployeeService.getEmployeesByStartingAndLeaving(req.portal, req.query.organizationalUnits, req.query.startDate, req.query.endDate, req.user.company._id);
         } else if (req.query.page === undefined && req.query.limit === undefined) {
             data = await EmployeeService.getEmployees(req.portal, req.user.company._id, req.query.organizationalUnits, req.query.position, false, req.query.status);
         } else {

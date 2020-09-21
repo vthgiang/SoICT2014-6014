@@ -12,6 +12,7 @@ import { RoleActions } from '../../../../super-admin/role/redux/actions';
 
 import { AssetCreateForm, AssetDetailForm, AssetEditForm, AssetImportForm } from './combinedContent';
 import { configTaskTempalte } from '../../../../task/task-template/component/fileConfigurationImportTaskTemplate';
+import { translate } from 'react-redux-multilingual/lib/utils';
 
 class AssetManagement extends Component {
     constructor(props) {
@@ -393,14 +394,18 @@ class AssetManagement extends Component {
     }
 
     convertGroupAsset = (group) => {
+        const { translate } = this.props;
         if (group === 'Building') {
-            return 'Mặt bằng';
-        } else if (group === 'Vehicle') {
-            return 'Xe cộ'
-        } else if (group === 'Machine') {
-            return 'Máy móc'
-        } else {
-            return 'Khác'
+            return translate('asset.dashboard.building')
+        }
+        else if (group === 'Vehicle') {
+            return translate('asset.dashboard.vehicle')
+        }
+        else if (group === 'Machine') {
+            return translate('asset.dashboard.machine')
+        }
+        else {
+            return translate('asset.dashboard.other')
         }
     }
 
@@ -508,12 +513,12 @@ class AssetManagement extends Component {
 
                         {/* Quyền đăng ký sử dụng */}
                         <div className="form-group">
-                            <label>Quyền đăng ký</label>
+                            <label>{translate('asset.general_information.can_register')}</label>
                             <SelectMulti
                                 id={`typeRegisterForUseInManagement`}
                                 className="form-control select2"
                                 multiple="multiple"
-                                options={{ nonSelectedText: "Chọn quyền sử dụng", allSelectedText: "Chọn tất cả" }}
+                                options={{ nonSelectedText: translate('asset.general_information.select_register'), allSelectedText: translate('asset.general_information.select_all_register') }}
                                 style={{ width: "100%" }}
                                 items={[
                                     { value: 1, text: 'Không được đăng ký sử dụng' },
