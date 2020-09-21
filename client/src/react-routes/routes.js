@@ -25,6 +25,7 @@ import { ManageLinkSystem } from '../modules/system-admin/system-link/components
 import ManageRoleDefault from '../modules/system-admin/root-role/components';
 import ComponentsDefaultManagement from '../modules/system-admin/system-component/components';
 
+import ManageSystem from '../modules/super-admin/system/components';
 import ManageUser from '../modules/super-admin/user/components';
 import ManageRole from '../modules/super-admin/role/components';
 import ManageLink from '../modules/super-admin/link/components';
@@ -203,6 +204,21 @@ class Routes extends Component {
                         pageName={'manage_company'}
                         layout={Layout}
                         component={Company}
+                    />
+                    <PrivateRoute
+                        isLoading={this.props.user.isLoading}
+                        key={'system-management'}
+                        arrPage={[
+                            { link: '/', name: 'system_administration', icon: 'fa fa-key' },
+                            { link: '/system-management', name: 'manage_system', icon: 'fa fa-database' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/system-management'}
+                        path={'/system-management'}
+                        pageName={'manage_system'}
+                        layout={Layout}
+                        component={ManageSystem}
                     />
                     <PrivateRoute
                         isLoading={this.props.user.isLoading}
