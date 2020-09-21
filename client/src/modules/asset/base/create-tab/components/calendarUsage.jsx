@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import FullCalendar, { formatDate } from '@fullcalendar/react'
-import dayGridPlugin from '@fullcalendar/daygrid'
-import timeGridPlugin from '@fullcalendar/timegrid'
-import interactionPlugin from '@fullcalendar/interaction'
 import { RecommendDistributeActions } from '../../../user/use-request/redux/actions';
 import { UseRequestActions } from '../../../admin/use-request/redux/actions'
 import { UsageLogAddModal } from './combinedContent';
+import { Scheduler, formatDate } from '../../../../../common-components';
 
 import './calendarUsage.css';
 import { clearStorage } from '../../../../../config';
@@ -21,17 +18,6 @@ class CalendarUsage extends Component {
       currentEvents: [],
       nowDate: new Date(),
     }
-
-    this.calendarComponentRef = React.createRef();
-  }
-
-  updateCalendarSize = () => {
-    if (this.calendarComponentRef.current && this.calendarComponentRef.current.getApi()) {
-      let api = this.calendarComponentRef.current.getApi();
-      if (api) {
-        api.updateSize();
-      }
-    };
   }
 
   componentDidMount() {
@@ -45,15 +31,6 @@ class CalendarUsage extends Component {
       assetId: this.props.id
     }
     this.props.searchRecommendDistributes(data); // Lấy phiếu đăng ký sử dụng theo tài sản
-    
-    // Áp dụng khi mở lại modal (trước đó modal đã mở và tab usage được chọn)
-    window.$('#modal-view-asset').on('shown.bs.modal', (e) => {
-      this.updateCalendarSize();
-    })
-    // Áp dụng khi mở modal, rồi chọn tab usage (trước đó đang ở tab khác)
-    window.$("#asset-calendar-usage").on("onActive", (e) => {
-      this.updateCalendarSize();
-    })
   }
 
   shouldComponentUpdate = async (nextProps, nextState)=>{
@@ -322,18 +299,20 @@ class CalendarUsage extends Component {
 
     return (
       <div className='demo-app'>
-        <div className='demo-app-main' id="asset-calendar-usage">
+        <div className='demo-app-main'>
           {((listRecommendDistributes && data.length > usageLogs.length) ||
             (!listRecommendDistributes && data.length == usageLogs.length))
             &&
-            <FullCalendar
-              ref={this.calendarComponentRef}
-              plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+            <Scheduler
+              id= "asset-usage-scheduler"
               headerToolbar={{
                 left: 'prev,next today',
                 center: 'title',
                 right: 'timeGridWeek'
               }}
+              updateSizeEventRegistrations = {[
+                { selector: "#modal-view-asset", eventName: "shown.bs.modal" }, // Áp dụng khi mở lại modal (trước đó modal đã mở và tab usage được chọn)
+              ]}
               initialView='timeGridWeek'
               editable={true}
               selectable={true}
@@ -346,7 +325,6 @@ class CalendarUsage extends Component {
               // eventsSet={this.handleEvents} // called after events are initialized/added/changed/removed
               eventContent={this.renderEventContent}
               eventClick={this.handleEventClick}
-              height="auto"
             />
           }
         </div>
