@@ -10,6 +10,7 @@ import { UseRequestActions } from '../../../admin/use-request/redux/actions'
 import { UsageLogAddModal } from './combinedContent';
 
 import './calendarUsage.css';
+import { clearStorage } from '../../../../../config';
 
 
 class CalendarUsage extends Component {
@@ -34,6 +35,17 @@ class CalendarUsage extends Component {
     this.props.searchRecommendDistributes(data); // Lấy phiếu đăng ký sử dụng theo tài sản
   }
 
+  shouldComponentUpdate = async (nextProps, nextState)=>{
+    if(nextState.clickInfo !== this.state.clickInfo || nextState.currentEvent !== this.state.currentEvent) {
+      await this.setState({
+        clickInfo: nextState.clickInfo,
+        currentEvent: nextState.currentEvent,
+      });
+      this.handleClick();
+      return false;
+    }
+    return true;
+  }
 
   handleWeekendsToggle = () => {
     this.setState({
@@ -42,7 +54,6 @@ class CalendarUsage extends Component {
   }
 
   handleDateSelect = async (selectInfo) => {
-    console.log("Chạy đến hàm handle date select", selectInfo)
     // Reset lại dữ liệu của currentRow
     await this.setState(state => {
       return {
@@ -52,7 +63,6 @@ class CalendarUsage extends Component {
     });
     let startTime = [selectInfo.start.getHours(), selectInfo.start.getMinutes()].join(':');
     let stopTime = [selectInfo.end.getHours(), selectInfo.end.getMinutes()].join(':');
-    console.log("----", `modal-create-usage-calendar-${this.props.assetId}`)
     await this.setState(state => {
       return {
         ...state,
@@ -66,14 +76,41 @@ class CalendarUsage extends Component {
     window.$(`#modal-create-usage-calendar-${this.props.assetId}`).modal('show');
   }
 
-  handleEventClick = (clickInfo) => {
-    alert("Hii")
+  handleEventClick = async (clickInfo) => {
+    await this.setState({
+      clickInfo: clickInfo
+    })
   }
 
+  handleClick = () => {
+    if(this.state.currentEvent == 'delete'){
+      this.handleDeleteEvent(this.state.clickInfo);
+    } 
+    if(this.state.currentEvent == 'approve'){
+      this.handleApprove(this.state.clickInfo);
+    }
+  }
   handleEvents = (events) => {
     this.setState({
       currentEvents: events
     })
+  }
+
+
+  handleDeleteEvent = async (clickInfo) => {
+    let count, data;
+    var { usageLogs } = this.state;
+    // var data = usageLogs[index];
+    count = usageLogs.findIndex(item => item._id == clickInfo.event.id)
+    data = usageLogs[count]
+    usageLogs.splice(count, 1);
+    await this.setState({
+      ...this.state,
+      usageLogs: [...usageLogs],
+      currentEvent: undefined,
+    })
+    clickInfo.event.remove()
+    await this.props.deleteUsage(this.props.assetId, data._id)
   }
 
   handleAddUsage = async (data) => {
@@ -85,20 +122,19 @@ class CalendarUsage extends Component {
       startDate: new Date(data.startDate),
       endDate: new Date(data.endDate)
     }
+  
     usageLogs.push(newUsage);
 
     let calendarApi = currentRow.view.calendar;
     if (data) {
-      console.log("currr", currentRow)
       calendarApi.unselect() // clear date selection
       calendarApi.addEvent({
         // id: createEventId(),
         id: 1,
         title: userlist.filter(item => item._id === data.usedByUser).pop() ? userlist.filter(item => item._id === data.usedByUser).pop().name : "Chưa có đối tượng sử dụng",
-        color: '337ab7',
+        color: '#337ab7',
         start: newUsage.startDate,
         end: newUsage.endDate,
-        url: newUsage.description,
       })
 
     }
@@ -122,15 +158,91 @@ class CalendarUsage extends Component {
     // await this.props.handleAddUsage(createUsage);
   }
 
-  renderEventContent(eventInfo) {
+  handleApprove = async (clickInfo) => {
+    // event.preventDefault();
+    const { recommendDistribute } = this.props;
+    var { usageLogs } = this.state;
+    let list, dataRecommendDistribute, value = clickInfo.event.id;
+    if (recommendDistribute && recommendDistribute.listRecommendDistributes) {
+      list = recommendDistribute.listRecommendDistributes;
+      dataRecommendDistribute = list.filter(item => item._id == value);
+    }
+    if (dataRecommendDistribute) {
+      await this.props.updateRecommendDistribute(
+        dataRecommendDistribute[0]._id,
+        {
+          recommendNumber: dataRecommendDistribute[0].recommendNumber,
+          dateCreate: dataRecommendDistribute[0].dateCreate,
+          proponent: dataRecommendDistribute[0].proponent, // Người đề nghị
+          reqContent: dataRecommendDistribute[0].reqContent,
+          asset: dataRecommendDistribute[0].asset,
+          dateStartUse: dataRecommendDistribute[0].dateStartUse,
+          dateEndUse: dataRecommendDistribute[0].dateEndUse,
+          approver: dataRecommendDistribute[0].approver, // Người phê duyệt
+          note: dataRecommendDistribute[0].note,
+          status: "Đã phê duyệt",
+        })
+      
+      let data = {
+        receiptsCode: "",
+        month: "",
+        reqUseStatus: null,
+        page: 0,
+        limit: 5,
+        managedBy: this.props.managedBy ? this.props.managedBy : '',
+        assetId: this.props.assetId
+      }
+      let newUsage = {
+        usedByUser: dataRecommendDistribute[0].proponent,
+        usedByOrganizationalUnit: null,
+        startDate: dataRecommendDistribute[0].dateStartUse,
+        endDate: dataRecommendDistribute[0].dateEndUse,
+      }
+      usageLogs.push(newUsage)
+
+      let createUsage = {
+        usageLogs: usageLogs,
+        status: "Đang sử dụng",
+        assignedToUser: dataRecommendDistribute[0].proponent,
+        assignedToOrganizationalUnit: undefined,
+      }
+  
+      await this.props.createUsage(this.props.assetId, createUsage)
+      await this.props.searchRecommendDistributes(data);
+    }
+  }
+
+
+  renderEventContent = (eventInfo) => {
     return (
       <>
+        { eventInfo.event.borderColor != "#337ab7" &&
+          <a className="edit" title="Approve" style={{color: "whitesmoke", cursor: "pointer"}} data-toggle="tooltip" onClick={async () => {
+            await this.setState({
+              currentEvent: 'approve',
+            }, () => {
+              return this.handleEventClick
+            })
+  
+          }}><i className="material-icons" id="approve-event">post_add</i></a>
+        }
+        { eventInfo.event.borderColor == "#337ab7" &&
+          <a className="delete" title="Delete" style={{}} data-toggle="tooltip" onClick={async () => {
+            await this.setState({
+              currentEvent: 'delete',
+            }, () => {
+              return this.handleEventClick
+            })
+  
+          }}><i className="material-icons" id="delete-event"></i></a>
+        }
+        <br/>
         <i>{eventInfo.event.title}</i><br />
-        <b>{eventInfo.event.url}</b><br />
         <b>{eventInfo.timeText}</b><br />
       </>
     )
   }
+
   renderSidebarEvent(event) {
     return (
       <li key={event.id}>
@@ -158,41 +270,41 @@ class CalendarUsage extends Component {
   render() {
     const { recommendDistribute, user, assetId } = this.props;
     var { currentRow, typeRegisterForUse, usageLogs } = this.state;
-    // const { defaultCurrentDate, resources } = this.state;
     let listRecommendDistributes, data = [], userlist = user.list;
-    console.log("Dòng 170 render")
     if (recommendDistribute && recommendDistribute.listRecommendDistributes) {
       listRecommendDistributes = recommendDistribute.listRecommendDistributes
       for (let i in listRecommendDistributes) {
         let recommendDistribute;
-        recommendDistribute = {
-          id: 1,
-          color: listRecommendDistributes[i].status == "Chờ phê duyệt" ? '#00a65a' : (listRecommendDistributes[i].status == "Đã phê duyệt" ? 'blue' : 'yellow'),
-          title: listRecommendDistributes[i].proponent.name,
-          start: listRecommendDistributes[i].dateStartUse,
-          end: listRecommendDistributes[i].dateEndUse,
+        if(listRecommendDistributes[i].status == "Chờ phê duyệt" ){
+          recommendDistribute = {
+            id: listRecommendDistributes[i]._id,
+            color: listRecommendDistributes[i].status == "Chờ phê duyệt" ? '#00a65a' : (listRecommendDistributes[i].status == "Đã phê duyệt" ? '#337ab7' : 'yellow'),
+            title: listRecommendDistributes[i].proponent.name,
+            start: listRecommendDistributes[i].dateStartUse,
+            end: listRecommendDistributes[i].dateEndUse,
+          }
+          data.push(recommendDistribute);
         }
-        data.push(recommendDistribute);
       }
 
       for (let i in usageLogs) {
         data.push({
-          id: 1,
+          id: usageLogs[i]._id,
           title: userlist.filter(item => item._id === usageLogs[i].usedByUser).pop() ? userlist.filter(item => item._id === usageLogs[i].usedByUser).pop().name : "Chưa có đối tượng sử dụng",
           color: '#337ab7',
           start: usageLogs[i].startDate,
           end: usageLogs[i].endDate,
-          url: usageLogs[i].description,
+          // url: usageLogs[i].description,
         })
       }
     }
 
-    
-    console.log("-----", data);
     return (
       <div className='demo-app'>
         <div className='demo-app-main'>
-          {
+          {((listRecommendDistributes && data.length > usageLogs.length) ||
+            (!listRecommendDistributes && data.length == usageLogs.length))
+            &&
             <FullCalendar
               plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
               headerToolbar={{
@@ -209,12 +321,13 @@ class CalendarUsage extends Component {
               weekends={this.state.weekendsVisible}
               initialEvents={data} // alternatively, use the `events` setting to fetch from a feed
               select={this.handleDateSelect}
-              eventsSet={this.handleEvents} // called after events are initialized/added/changed/removed
+              // eventsSet={this.handleEvents} // called after events are initialized/added/changed/removed
               eventContent={this.renderEventContent}
               eventClick={this.handleEventClick}
             />
           }
         </div>
+
         { currentRow &&
           <UsageLogAddModal
             calendarUsage={`calendar`}
@@ -244,6 +357,7 @@ const actionCreators = {
   searchRecommendDistributes: RecommendDistributeActions.searchRecommendDistributes,
   updateRecommendDistribute: RecommendDistributeActions.updateRecommendDistribute,
   createUsage: UseRequestActions.createUsage,
+  deleteUsage: UseRequestActions.deleteUsage,
 };
 
 const calendarUsage = connect(mapState, actionCreators)(withTranslate(CalendarUsage));
