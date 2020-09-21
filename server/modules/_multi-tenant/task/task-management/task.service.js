@@ -24,7 +24,15 @@ exports.getAllTasks = async (portal) => {
  */
 exports.getTaskEvaluations = async (portal, data) => {
     // Lấy data tu client gui trong body
-    let { organizationalUnit, taskTemplate, status, startDate, endDate, frequency, responsibleEmployees, accountableEmployees } = data;
+    let {
+        organizationalUnit,
+        taskTemplate,
+        status, startDate,
+        endDate, frequency,
+        responsibleEmployees,
+        accountableEmployees
+    } = data;
+
     let startTime, start, endTime, end, filterDate = {};
     status = Number(data.status);
 
