@@ -304,14 +304,15 @@ class CalendarUsage extends Component {
             (!listRecommendDistributes && data.length == usageLogs.length))
             &&
             <Scheduler
-              id= "asset-usage-scheduler"
+              className= "asset-usage-scheduler"
               headerToolbar={{
                 left: 'prev,next today',
                 center: 'title',
                 right: 'timeGridWeek'
               }}
-              updateSizeEventRegistrations = {[
-                { selector: "#modal-view-asset", eventName: "shown.bs.modal" }, // Áp dụng khi mở lại modal (trước đó modal đã mở và tab usage được chọn)
+              updateSizeEventRegistrations={[ // Áp dụng khi mở lại modal (trước đó modal đã mở và tab usage được chọn)
+                { selector: "#modal-view-asset", eventName: "shown.bs.modal" }, 
+                { selector: "#modal-edit-asset", eventName: "shown.bs.modal" },
               ]}
               initialView='timeGridWeek'
               editable={true}
