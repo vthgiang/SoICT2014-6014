@@ -21,7 +21,19 @@ class CalendarUsage extends Component {
       currentEvents: [],
       nowDate: new Date(),
     }
+
+    this.calendarComponentRef = React.createRef();
   }
+
+  updateCalendarSize = () => {
+    if (this.calendarComponentRef.current && this.calendarComponentRef.current.getApi()) {
+      let api = this.calendarComponentRef.current.getApi();
+      if (api) {
+        api.updateSize();
+      }
+    };
+  }
+
   componentDidMount() {
     let data = {
       receiptsCode: "",
@@ -33,6 +45,15 @@ class CalendarUsage extends Component {
       assetId: this.props.id
     }
     this.props.searchRecommendDistributes(data); // Lấy phiếu đăng ký sử dụng theo tài sản
+    
+    // Áp dụng khi mở lại modal (trước đó modal đã mở và tab usage được chọn)
+    window.$('#modal-view-asset').on('shown.bs.modal', (e) => {
+      this.updateCalendarSize();
+    })
+    // Áp dụng khi mở modal, rồi chọn tab usage (trước đó đang ở tab khác)
+    window.$("#asset-calendar-usage").on("onActive", (e) => {
+      this.updateCalendarSize();
+    })
   }
 
   shouldComponentUpdate = async (nextProps, nextState)=>{
@@ -301,11 +322,12 @@ class CalendarUsage extends Component {
 
     return (
       <div className='demo-app'>
-        <div className='demo-app-main'>
+        <div className='demo-app-main' id="asset-calendar-usage">
           {((listRecommendDistributes && data.length > usageLogs.length) ||
             (!listRecommendDistributes && data.length == usageLogs.length))
             &&
             <FullCalendar
+              ref={this.calendarComponentRef}
               plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
               headerToolbar={{
                 left: 'prev,next today',
@@ -324,6 +346,7 @@ class CalendarUsage extends Component {
               // eventsSet={this.handleEvents} // called after events are initialized/added/changed/removed
               eventContent={this.renderEventContent}
               eventClick={this.handleEventClick}
+              height="auto"
             />
           }
         </div>
