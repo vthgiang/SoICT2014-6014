@@ -75,7 +75,7 @@ function calcAutoPoint(data) {
 
             // thay mã code bằng giá trị(chỉ dùng cho kiểu số)
             for (let i in taskInformations) {
-                if (taskInformations[i].type === 'Number') {
+                if (taskInformations[i].type === 'number') {
                     let stringToGoIntoTheRegex = `${taskInformations[i].code}`;
                     let regex = new RegExp(stringToGoIntoTheRegex, "g");
                     formula = formula.replace(regex, `(${taskInformations[i].value})`);
@@ -119,7 +119,7 @@ function calcAutoPoint(data) {
 
             // thay mã code bằng giá trị(chỉ dùng cho kiểu số)
             for (let i in taskInformations) {
-                if (taskInformations[i].type === 'Number') {
+                if (taskInformations[i].type === 'number') {
                     let stringToGoIntoTheRegex = `${taskInformations[i].code}`;
                     let regex = new RegExp(stringToGoIntoTheRegex, "g");
                     formula = formula.replace(regex, `(${taskInformations[i].value})`);

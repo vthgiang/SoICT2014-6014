@@ -4,13 +4,7 @@
 
 /logs/history
 /logs/_multi-tenant/history
-/upload/avatars/*
-/upload/docs/*
-/upload/excels/*
-/upload/files/*
-/upload/task/*
-/upload/files/*
-/upload/files./*
-/upload/private/*
+
+/upload/private
 
 package-lock.json

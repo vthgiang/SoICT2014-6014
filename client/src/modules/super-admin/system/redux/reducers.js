@@ -1,9 +1,9 @@
-import { LinkConstants } from "./constants";
+import { SystemConstants } from "./constants";
 
-var findIndex = (array, id) => {
+var findVersion = (arrayVersion, version) => {
     var result = -1;
-    array.forEach((value, index) => {
-        if(value._id === id){
+    arrayVersion.forEach((value, index) => {
+        if(value.version === version){
             result = index;
         }
     });
@@ -11,119 +11,67 @@ var findIndex = (array, id) => {
 }
 
 const initState = {
-    list: [],
-    listPaginate: [],
-    totalDocs: 0,
-    limit: 0,
-    totalPages: 0,
-    page: 0,
-    pagingCounter: 0,
-    hasPrevPage: false,
-    hasNextPage: false,
-    prevPage: 0,
-    nextPage: 0,
-    error: null,
-    isLoading: true,
-    item: null
+    backup: {
+        list: [],
+    },
+    isLoading: false
 }
 
-export function link (state = initState, action) {
+export function system(state = initState, action) {
     var index = -1;
-    var indexPaginate = -1;
     switch (action.type) {
-
-        case LinkConstants.GET_LINKS_REQUEST:
-        case LinkConstants.GET_LINKS_PAGINATE_REQUEST:
-        case LinkConstants.SHOW_LINK_REQUEST:
-        case LinkConstants.CREATE_LINK_REQUEST:
-        case LinkConstants.EDIT_LINK_REQUEST:
-        case LinkConstants.DELETE_LINK_REQUEST:
+        case SystemConstants.GET_BACKUPS_REQUEST:
+        case SystemConstants.CREATE_BACKUP_REQUEST:
+        case SystemConstants.DELETE_BACKUP_REQUEST:
+        case SystemConstants.RESTORE_REQUEST:
             return {
                 ...state,
                 isLoading: true
-            };
-
-        case LinkConstants.GET_LINKS_SUCCESS:
+            }
+        
+        case SystemConstants.GET_BACKUPS_FAILE:
+        case SystemConstants.CREATE_BACKUP_FAILE:
+        case SystemConstants.DELETE_BACKUP_FAILE:
+        case SystemConstants.RESTORE_SUCCESS:
+        case SystemConstants.RESTORE_FAILE:
             return {
                 ...state,
-                list: action.payload,
                 isLoading: false
-            };
-
-        case LinkConstants.GET_LINKS_PAGINATE_SUCCESS:
-            return {
-                ...state,
-                listPaginate: action.payload.docs,
-                totalDocs: action.payload.totalDocs,
-                limit: action.payload.limit,
-                totalPages: action.payload.totalPages,
-                page: action.payload.page,
-                pagingCounter: action.payload.pagingCounter,
-                hasPrevPage: action.payload.hasPrevPage,
-                hasNextPage: action.payload.hasNextPage,
-                prevPage: action.payload.prevPage,
-                nextPage: action.payload.nextPage,
-                isLoading: false
-            };
-
-        case LinkConstants.SHOW_LINK_SUCCESS:
-            return {
-                ...state,
-                item: action.payload,
-                isLoading: false
-            };
-
-        case LinkConstants.CREATE_LINK_SUCCESS:
-            return {
-                ...state,
-                list: [
-                    ...state.list,
-                    action.payload
-                ],
-                listPaginate: [
-                    ...state.listPaginate,
-                    action.payload
-                ],
-                isLoading: false
-            };
-
-        case LinkConstants.EDIT_LINK_SUCCESS:
-            console.log("Linkmoi: ",action.payload)
-            index = findIndex(state.list, action.payload._id);
-            indexPaginate = findIndex(state.listPaginate, action.payload._id);
-
-            if (index !== -1) {
-                state.list[index]= action.payload;
             }
 
-            if( indexPaginate !== -1) {
-                state.listPaginate[indexPaginate] = action.payload;
-            }
-
+        case SystemConstants.GET_BACKUPS_SUCCESS:
             return {
                 ...state,
+                backup: {
+                    list: action.payload
+                },
                 isLoading: false
-            };
-
-        case LinkConstants.DELETE_LINK_SUCCESS:
-            index = findIndex(state.list, action.payload);
-            indexPaginate = findIndex(state.listPaginate, action.payload);
-
-            if (index !== -1) {
-                state.list.splice(index,1);
             }
 
-            if (indexPaginate !== -1) {
-                state.listPaginate.splice(indexPaginate,1);
-            }
-
+        case SystemConstants.CREATE_BACKUP_SUCCESS:
             return {
                 ...state,
+                backup: {
+                    list: [
+                        action.payload,
+                        ...state.backup.list
+                    ]
+                },
                 isLoading: false
-            };
+            }
 
-        case 'LOGOUT':
-            return initState;
+        case SystemConstants.DELETE_BACKUP_SUCCESS:
+            index = findVersion(state.backup.list, action.payload);
+            if(index !== -1){
+                state.backup.list.splice(index, 1);
+            }
+            return {
+                ...state,
+                backup: {
+                    ...state.backup
+                },
+                isLoading: false
+            }
 
         default:
             return state;

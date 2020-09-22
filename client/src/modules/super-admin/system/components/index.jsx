@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { ToolTip, SearchBar, DataTableSetting, PaginateBar } from '../../../../common-components';
+import { DateTimeConverter, ConfirmNotification } from '../../../../common-components';
+import { SystemActions } from '../redux/actions';
 
 class SystemManagement extends Component {
     constructor(props) {
@@ -12,82 +13,74 @@ class SystemManagement extends Component {
     }
 
     render() {
-        const { translate } = this.props;
+        const { translate, system } = this.props;
 
         return (
             <div className="box" style={{ minHeight: '450px' }}>
+                <div className="box-header">
+                    <button className="btn btn-success pull-right" title={translate("general.add")} onClick={this.props.createBackup}>{translate('general.add')}</button>
+                </div>
                 <div className="box-body">
-                   
+                    <table className="table table-hover table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>{translate('system_admin.system_setting.backup.version')}</th>
+                                <th>{translate('system_admin.system_setting.backup.description')}</th>
+                                <th>{translate('system_admin.system_setting.backup.backup_time')}</th>
+                                <th style={{width: '100px'}}>{translate('system_admin.system_setting.backup.action')}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                system.backup.list.map( (data, i) => 
+                                    <tr key={ `backup-version-${i}` }>
+                                        <td> { data.version } </td>
+                                        <td> { data.description } </td>
+                                        <td><DateTimeConverter dateTime={data.createdAt}/></td>
+                                        <td>
+                                            <ConfirmNotification
+                                                icon="question"
+                                                title="Restore this backup data"
+                                                content="<h3>Restore this backup data</h3>"
+                                                name="restore"
+                                                className="text-green"
+                                                func={()=>this.props.restore(data.version)}
+                                            />
+                                            <ConfirmNotification
+                                                icon="warning"
+                                                title="Delete this backup data"
+                                                content="<h3>Delete this backup data</h3>"
+                                                name="delete_outline"
+                                                className="text-red"
+                                                func={()=>this.props.deleteBackup(data.version)}
+                                            />
+                                        </td>
+                                    </tr>       
+                                )
+                            }
+                        </tbody>
+                    </table>
                 </div>
             </div>
         );
     }
 
-    setOption = (title, option) => {
-        this.setState({
-            [title]: option
-        });
-    }
-
-    searchWithOption = () => {
-        let {page, option, value, limit} = this.state;
-        const params = {
-            type: "active",
-            limit,
-            page,
-            key: option,
-            value
-        };
-        this.props.getLinks(params);
-    }
-
-    setPage = (page) => {
-        this.setState({ page });
-        let {limit, option, value} = this.state;
-        const params = {
-            type: "active",
-            limit,
-            page,
-            key: option,
-            value
-        };
-        this.props.getLinks(params);
-    }
-
-    setLimit = (number) => {
-        this.setState({ limit: number });
-        let {page, option, value} = this.state;
-        const params = {
-            type: "active",
-            limit: number,
-            page,
-            key: option,
-            value
-        };
-        this.props.getLinks(params);
-    }
-
     componentDidMount() {
-    }
-
-    // Cac ham xu ly du lieu voi modal
-    handleEdit = async (link) => {
-        await this.setState(state => {
-            return {
-                ...state,
-                currentRow: link
-            }
-        });
-
-        window.$('#modal-edit-link').modal('show');
+        this.props.getBackups();
     }
 }
 
 function mapState(state) {
-    return state;
+    return {
+        system: state.system
+    };
 }
 
-const getState = {
+const dispatchStateToProps = {
+    getBackups: SystemActions.getBackups,
+    createBackup: SystemActions.createBackup,
+    deleteBackup: SystemActions.deleteBackup,
+    restore: SystemActions.restore
 }
 
-export default connect(mapState, getState)(withTranslate(SystemManagement));
+export default connect(mapState, dispatchStateToProps)(withTranslate(SystemManagement));

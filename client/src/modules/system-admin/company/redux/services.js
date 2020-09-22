@@ -59,20 +59,22 @@ function editCompany(companyId, data) {
     * @linkUrl đường dẫn cho link muốn tạo
     * @linkDescription mô tả về link
  */
-function updateCompanyLinks(data) {
+function updateCompanyLinks(data, params={}) {
 
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/link/links/company/update`,
         method: 'PATCH',
+        params,
         data
     }, true, true, 'system_admin.company');
 }
 
-function updateCompanyComponents(data) {
+function updateCompanyComponents(data, params={}) {
 
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/component/components/company/update`,
         method: 'PATCH',
+        params,
         data
     }, true, true, 'system_admin.company');
 }

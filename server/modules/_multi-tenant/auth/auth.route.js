@@ -12,6 +12,6 @@ router.get("/get-profile/:id", authFunc(false), AuthController.getProfile);
 router.patch("/profile/:id/change-information", auth, uploadFile([{name:'avatar', path:'/avatars'}], 'single'), AuthController.changeInformation);
 router.patch("/profile/:id/change-password", auth, AuthController.changePassword);
 router.get("/get-links-that-role-can-access/:id", authFunc(false), AuthController.getLinksThatRoleCanAccess);
-router.get("/download-file",auth, AuthController.downloadFile);
+router.get("/download-file", auth, AuthController.downloadFile);
 
 module.exports = router;

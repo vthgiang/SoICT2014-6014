@@ -1,5 +1,6 @@
 const EmployeeService = require('./profile.service');
 const UserService = require(`${SERVER_MODULES_DIR}/_multi-tenant/super-admin/user/user.service`);
+const CompanyServices = require(`${SERVER_MODULES_DIR}/_multi-tenant/system-admin/company/company.service`);
 
 const Log = require(`${SERVER_LOGS_DIR}/_multi-tenant`);
 
@@ -540,5 +541,29 @@ exports.importEmployees = async (req, res) => {
                 error: error
             }
         });
+    }
+}
+
+
+exports.createNotificationEndOfContract = async () => {
+    let companys = await CompanyServices.getAllCompanies({
+        page: undefined,
+        limit: undefined
+    });
+    companys = companys.map(x => x.shortName);
+    for (let n in companys) {
+        await EmployeeService.createNotificationEndOfContract(companys[n]);
+    }
+};
+
+exports.createNotificationForEmployeesHaveBrithdayCurrent = async () => {
+    let companys = await CompanyServices.getAllCompanies({
+        page: undefined,
+        limit: undefined
+    });
+    companys = companys.map(x => x.shortName);
+    console.log(companys);
+    for (let n in companys) {
+        await EmployeeService.createNotificationForEmployeesHaveBrithdayCurrent(companys[n]);
     }
 }
