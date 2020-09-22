@@ -151,26 +151,71 @@ export function documents(state = initState, action) {
             };
 
         case DocumentConstants.GET_DOCUMENT_STATISTICS_DOWNLOADED_SUCCESS:
-            state.user.downloaded = action.payload;
+            console.log('reducerDownloadddd', action.payload)
             return {
                 ...state,
-                isLoading: false
+                isLoading: false,
+                user: {
+                    ...state.user,
+                    downloaded: {
+                        ...state.user.data,
+                        paginate: action.payload.docs,
+                        totalDocs: action.payload.totalDocs,
+                        limit: action.payload.limit,
+                        totalPages: action.payload.totalPages,
+                        page: action.payload.page,
+                        pagingCounter: action.payload.pagingCounter,
+                        hasPrevPage: action.payload.hasPrevPage,
+                        hasNextPage: action.payload.hasNextPage,
+                        prevPage: action.payload.prevPage,
+                        nextPage: action.payload.nextPage,
+                    }
+                }
             };
 
         case DocumentConstants.GET_DOCUMENT_STATISTICS_COMMON_SUCCESS:
-            state.user.common = action.payload;
+
             return {
                 ...state,
-                isLoading: false
+                isLoading: false,
+                user: {
+                    ...state.user,
+                    common: {
+                        ...state.user.data,
+                        paginate: action.payload.docs,
+                        totalDocs: action.payload.totalDocs,
+                        limit: action.payload.limit,
+                        totalPages: action.payload.totalPages,
+                        page: action.payload.page,
+                        pagingCounter: action.payload.pagingCounter,
+                        hasPrevPage: action.payload.hasPrevPage,
+                        hasNextPage: action.payload.hasNextPage,
+                        prevPage: action.payload.prevPage,
+                        nextPage: action.payload.nextPage,
+                    }
+                }
             };
-
         case DocumentConstants.GET_DOCUMENT_STATISTICS_LATEST_SUCCESS:
-            state.user.latest = action.payload;
             return {
                 ...state,
-                isLoading: false
+                isLoading: false,
+                user: {
+                    ...state.user,
+                    latest: {
+                        ...state.user.data,
+                        paginate: action.payload.docs,
+                        totalDocs: action.payload.totalDocs,
+                        limit: action.payload.limit,
+                        totalPages: action.payload.totalPages,
+                        page: action.payload.page,
+                        pagingCounter: action.payload.pagingCounter,
+                        hasPrevPage: action.payload.hasPrevPage,
+                        hasNextPage: action.payload.hasNextPage,
+                        prevPage: action.payload.prevPage,
+                        nextPage: action.payload.nextPage,
+                    }
+                }
             };
-
         case DocumentConstants.INCREASE_NUMBER_VIEW_DOCUMENT_SUCCESS:
             indexPaginate = findIndex(state.administration.data.paginate, action.payload);
             if (indexPaginate !== -1) state.administration.data.paginate[indexPaginate].numberOfView += 1;
@@ -180,7 +225,6 @@ export function documents(state = initState, action) {
             };
 
         case DocumentConstants.GET_DOCUMENTS_SUCCESS:
-            console.log('--------------------', action.payload);
             return {
                 ...state,
                 isLoading: false,
@@ -193,7 +237,6 @@ export function documents(state = initState, action) {
                 }
             };
         case DocumentConstants.IMPORT_DOCUMENT_SUCCESS:
-            console.log('+++++++++++++++++++++++++++++', action.payload);
             return {
                 ...state,
                 isLoading: false,
@@ -220,6 +263,7 @@ export function documents(state = initState, action) {
             };
 
         case DocumentConstants.PAGINATE_DOCUMENTS_USER_CAN_VIEW_SUCCESS:
+            console.log('reducerIndexxxxxx', action.payload)
             return {
                 ...state,
                 isLoading: false,

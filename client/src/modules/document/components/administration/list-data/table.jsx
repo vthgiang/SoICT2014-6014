@@ -397,7 +397,6 @@ class Table extends Component {
         if (isLoading === false) {
             list = docs.list;
         }
-        console.log('uuuuuuuuuuuuu', currentRow);
 
         let exportData = list ? this.convertDataToExportData(list) : "";
         return (

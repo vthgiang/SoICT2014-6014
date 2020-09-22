@@ -916,10 +916,10 @@ class TaskReportCreateForm extends Component {
                                                     <tr key={index}>
                                                         <td>{item2.code}</td>
                                                         <td>{item2.name}</td>
-                                                        <td>{(item2.type === 'SetOfValues' ? 'Tập dữ liệu' : (item2.type))}</td>
-                                                        <td><input className="form-control" style={{ width: '100%' }} type="text" onChange={(e) => this.handleChangeFilter(index, e)} placeholder={(item2.type === 'Number' ? `p${index + 1} > 3000` : (item2.type === 'SetOfValues' ? `p${index + 1} = 3000` : ''))} /></td>
+                                                        <td>{(item2.type === 'set_of_values' ? 'Tập dữ liệu' : (item2.type))}</td>
+                                                        <td><input className="form-control" style={{ width: '100%' }} type="text" onChange={(e) => this.handleChangeFilter(index, e)} placeholder={(item2.type === 'number' ? `p${index + 1} > 3000` : (item2.type === 'set_of_values' ? `p${index + 1} = 3000` : ''))} /></td>
                                                         <td>
-                                                            {(item2.type === 'Number') ?
+                                                            {(item2.type === 'number') ?
                                                                 <div className="checkbox" style={{ paddingLeft: "20%" }}>
                                                                     <label>
                                                                         <input name="showInReport" type="checkbox" value={item2.name} onChange={(e) => this.handleChangeShowInReport(index, e)} />
@@ -929,18 +929,18 @@ class TaskReportCreateForm extends Component {
                                                             }
                                                         </td>
                                                         <td>
-                                                            {(item2.type === 'Number') ?
+                                                            {(item2.type === 'number') ?
                                                                 <input className="form-control" style={{ width: '100%' }} type="text" onChange={(e) => this.handleChangeNewName(index, e)} /> : ''
                                                             }
 
                                                         </td>
                                                         <td>
-                                                            {(item2.type === 'Number') ?
+                                                            {(item2.type === 'number') ?
                                                                 <input type="text" className="form-control" style={{ width: '100%' }} onChange={(e) => this.handleChangeCoefficient(index, e)} /> : ''
                                                             }
                                                         </td>
                                                         <td>
-                                                            {(item2.type === 'Number') ?
+                                                            {(item2.type === 'number') ?
                                                                 <SelectBox
                                                                     id={`select-box-calulator-${item2.code}`}
                                                                     className="form-control select2"
@@ -959,7 +959,7 @@ class TaskReportCreateForm extends Component {
                                                         </td>
                                                         <td data-select2-id="1111">
                                                             {
-                                                                (item2.type === 'Number') ?
+                                                                (item2.type === 'number') ?
                                                                     <SelectBox
                                                                         id={`select-box-chart-${item2.code}`}
                                                                         className="form-control select2"

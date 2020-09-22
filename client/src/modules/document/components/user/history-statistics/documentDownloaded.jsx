@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DateTimeConverter, DataTableSetting, TreeSelect, SelectBox, ExportExcel } from '../../../../../common-components';
+import { DateTimeConverter, DataTableSetting, TreeSelect, PaginateBar, SelectBox, ExportExcel } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
 import { RoleActions } from '../../../../super-admin/role/redux/actions';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
@@ -91,20 +91,24 @@ class DocumentDownloaded extends Component {
     }
     setPage = async (page) => {
         this.setState({ page });
+        let path = this.state.archive ? this.findPath(this.state.archive) : "";
+        this.setState({ page });
         const data = {
             limit: this.state.limit,
             page: page,
-            key: this.state.option,
-            value: this.state.value
+            name: this.state.name,
+            category: this.state.category ? this.state.category[0] : "",
+            domains: this.state.domain ? this.state.domain : "",
+            archives: path && path.length ? path[0] : "",
         };
-        await this.props.getAllDocuments(getStorage('currentRole'), data);
+        await this.props.getUserDocumentStatistics('downloaded', data);
     }
 
     setLimit = (number) => {
         if (this.state.limit !== number) {
             this.setState({ limit: number });
             const data = { limit: number, page: this.state.page };
-            this.props.getAllDocuments(getStorage('currentRole'), data);
+            this.props.getUserDocumentStatistics('downloaded', data);
         }
     }
 
@@ -383,7 +387,7 @@ class DocumentDownloaded extends Component {
         const { isLoading } = this.props.documents;
         let dataExport = [];
         if (isLoading === false) {
-            dataExport = downloaded;
+            dataExport = downloaded.list;
         }
         const { domains, categories, archives } = this.props.documents.administration;
         const docs = this.props.documents.user.data;
@@ -391,10 +395,12 @@ class DocumentDownloaded extends Component {
         const listDomain = domains.list
         const listCategory = this.convertData(categories.list)
         const listArchive = archives.list;
+        let paginate = downloaded.paginate;
         let list = [];
         if (isLoading === false) {
-            list = docs.list;
+            list = downloaded.list;
         }
+      
         let exportData = dataExport ? this.convertDataToExportData(dataExport) : "";
         return (
             <div className="qlcv">
@@ -518,15 +524,15 @@ class DocumentDownloaded extends Component {
                                         limit={this.state.limit}
                                         setLimit={this.setLimit}
                                         hideColumnOption={true}
-                                        tableId="table-manage-user-document"
+                                        tableId="table-manage-user-document-downloaded"
                                     />
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
                             {
-                                downloaded && downloaded.length > 0 ?
-                                    downloaded.map(doc =>
+                                paginate && paginate.length > 0 ?
+                                    paginate.map(doc =>
                                         <tr key={doc._id}>
                                             <td>{doc.name}</td>
                                             <td>{doc.description}</td>
@@ -551,7 +557,7 @@ class DocumentDownloaded extends Component {
 
                         </tbody>
                     </table>
-
+                    <PaginateBar pageTotal={downloaded.totalPages} currentPage={downloaded.page} func={this.setPage} />
                 </React.Fragment>
             </div>
         );

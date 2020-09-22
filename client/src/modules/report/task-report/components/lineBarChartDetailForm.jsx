@@ -87,11 +87,10 @@ class LineBarChartDetailForm extends Component {
                 columns: newData,
                 type: 'bar',
                 types: typeChart,
-                // groups: [['p1', 'p2']]
             },
             bar: {
                 width: {
-                    ratio: 0.7
+                    ratio: (getLenghtData < 5) ? 0.4 : 0.7
                 }
             },
             axis: {
@@ -135,7 +134,7 @@ class LineBarChartDetailForm extends Component {
             <div className="row" style={{ marginBottom: '10px' }}>
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <div className="box" >
-                        <div className="box-header with-border">
+                        <div className="box-header with-border" style={{ display: 'flex' }}>
                             <h4 className="box-title report-title"><span style={{ marginRight: '7px' }}>{checkType != '' && checkType} {`${startDate}`} đến {`${endDate}`}</span></h4>
                             <div className="box-tools pull-right">
                                 <button onClick={this.collapseChart} className="btn btn-box-tool" data-toggle="collapse" data-target="#showBarLineChart"><i className={collapseChart ? `fa fa-plus` : `fa fa-minus`}></i></button>
