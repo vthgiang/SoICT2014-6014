@@ -34,7 +34,6 @@ exports.getAllCompanies = async (query) => {
                 updatedAt: companies[i].updatedAt
             }
         }
-
         return companies;
     } else {
         let option = (query.key && query.value) ? { [`${query.key}`] : new RegExp(query.value, "i") } : {};

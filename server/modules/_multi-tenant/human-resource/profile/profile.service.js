@@ -1150,8 +1150,10 @@ exports.formatDate = (date, monthDay = true) => {
 
 /**
  * Tạo thông báo cho các nhân viên có ngày sinh trùng với ngày hiện tại
+ * @param {*} portal : Tên ngắn công ty
  */
 exports.createNotificationForEmployeesHaveBrithdayCurrent = async (portal) => {
+    
     let employees = await Employee(connect(DB_CONNECTION, portal)).find({}, {
         birthdate: 1,
         emailInCompany: 1
@@ -1184,14 +1186,14 @@ exports.createNotificationForEmployeesHaveBrithdayCurrent = async (portal) => {
 
     // Tạo thông báo cho nhân viên cùng phòng ban với người có sinh nhật là ngày hiện tại
     for (let n in users) {
-        // lấy id phòng ban của nhân viên có sinh nhật là hôm nay
+        // Lấy id phòng ban của nhân viên có sinh nhật là hôm nay
         let value = await this.getAllPositionRolesAndOrganizationalUnitsOfUser(portal, users[n].email);
         let unitId = value.organizationalUnits;
         let roles = [];
         unitId.forEach(x => {
             roles = roles.concat(x.deans).concat(x.viceDeans).concat(x.employees);
         })
-        // lấy danh sách nhân viên cùng phòng ban với người
+        // Lấy danh sách nhân viên cùng phòng ban với người
         let usersArr = await UserRole(connect(DB_CONNECTION, portal)).find({
             roleId: {
                 $in: roles
@@ -1219,11 +1221,13 @@ exports.createNotificationForEmployeesHaveBrithdayCurrent = async (portal) => {
         })
         notifications = notifications.concat(notificationsArr)
     }
-    await Notification(connect(DB_CONNECTION, portal)).insertMany(notifications);
+    let result = await Notification(connect(DB_CONNECTION, portal)).insertMany(notifications);
+    console.log(result);
 }
 
 /**
  * Tạo thông báo cho nhân viên khi hết hạn ký hợp đồng làm việc
+ * @param {*} portal : Tên ngắn công ty
  */
 exports.createNotificationEndOfContract = async (portal) => {
     let arrayTime = [30, 15];
