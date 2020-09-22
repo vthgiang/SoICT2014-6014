@@ -191,7 +191,7 @@ class EvaluateByAccountableEmployee extends Component {
         let infoEval = task.taskInformations;
         for (let i in infoEval) {
 
-            if (infoEval[i].type === "SetOfValues") {
+            if (infoEval[i].type === "set_of_values") {
                 let splitSetOfValues = infoEval[i].extra.split('\n');
                 info[`${infoEval[i].code}`] = {
                     value: [splitSetOfValues[0]],
@@ -210,13 +210,13 @@ class EvaluateByAccountableEmployee extends Component {
                 results[`approvedPointResponsible${task.responsibleEmployees[i]._id}`] = {
                     value: undefined,
                     employee: task.responsibleEmployees[i]._id,
-                    role: "Responsible",
+                    role: "responsible",
                     target: "Point"
                 }
                 results[`contributeResponsible${task.responsibleEmployees[i]._id}`] = {
                     value: undefined,
                     employee: task.responsibleEmployees[i]._id,
-                    role: "Responsible",
+                    role: "responsible",
                     target: "Contribution"
                 }
             }
@@ -226,13 +226,13 @@ class EvaluateByAccountableEmployee extends Component {
                 results[`approvedPointConsulted${task.consultedEmployees[i]._id}`] = {
                     value: undefined,
                     employee: task.consultedEmployees[i]._id,
-                    role: "Consulted",
+                    role: "consulted",
                     target: "Point"
                 }
                 results[`contributeConsulted${task.consultedEmployees[i]._id}`] = {
                     value: undefined,
                     employee: task.consultedEmployees[i]._id,
-                    role: "Consulted",
+                    role: "consulted",
                     target: "Contribution"
                 }
             }
@@ -242,13 +242,13 @@ class EvaluateByAccountableEmployee extends Component {
                 results[`approvedPoint${task.accountableEmployees[i]._id}`] = {
                     value: undefined,
                     employee: task.accountableEmployees[i]._id,
-                    role: "Accountable",
+                    role: "accountable",
                     target: "Point"
                 }
                 results[`contributeAccountable${task.accountableEmployees[i]._id}`] = {
                     value: undefined,
                     employee: task.accountableEmployees[i]._id,
-                    role: "Accountable",
+                    role: "accountable",
                     target: "Contribution"
                 }
             }
@@ -256,9 +256,9 @@ class EvaluateByAccountableEmployee extends Component {
 
         if (evaluations) {
             if (evaluations.results.length !== 0) {
-                let role = "Accountable";
+                let role = "accountable";
                 if (!hasAccountable) {
-                    role = "Responsible";
+                    role = "responsible";
                 }
 
                 let tmp = evaluations.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === role));
@@ -276,48 +276,48 @@ class EvaluateByAccountableEmployee extends Component {
 
                 let listResult = evaluations.results;
                 for (let i in listResult) {
-                    if (listResult[i].role === "Responsible") {
+                    if (listResult[i].role === "responsible") {
                         empPoint[`responsible${listResult[i].employee._id}`] = listResult[i].employeePoint ? listResult[i].employeePoint : undefined;
                         results[`approvedPointResponsible${listResult[i].employee._id}`] = {
                             value: listResult[i].approvedPoint ? listResult[i].approvedPoint : undefined,
                             employee: listResult[i].employee._id,
-                            role: "Responsible",
+                            role: "responsible",
                             target: "Point"
                         }
                         results[`contributeResponsible${listResult[i].employee._id}`] = {
                             value: listResult[i].contribution ? listResult[i].contribution : undefined,
                             employee: listResult[i].employee._id,
-                            role: "Responsible",
+                            role: "responsible",
                             target: "Contribution"
                         }
                     }
-                    else if (listResult[i].role === "Consulted") {
+                    else if (listResult[i].role === "consulted") {
                         empPoint[`consulted${listResult[i].employee._id}`] = listResult[i].employeePoint ? listResult[i].employeePoint : undefined;
                         results[`approvedPointConsulted${listResult[i].employee._id}`] = {
                             value: listResult[i].approvedPoint ? listResult[i].approvedPoint : undefined,
                             employee: listResult[i].employee._id,
-                            role: "Consulted",
+                            role: "consulted",
                             target: "Point"
                         }
                         results[`contributeConsulted${listResult[i].employee._id}`] = {
                             value: listResult[i].contribution ? listResult[i].contribution : undefined,
                             employee: listResult[i].employee._id,
-                            role: "Consulted",
+                            role: "consulted",
                             target: "Contribution"
                         }
                     }
-                    else if (listResult[i].role === "Accountable") {
+                    else if (listResult[i].role === "accountable") {
                         empPoint[`accountable${listResult[i].employee._id}`] = listResult[i].employeePoint ? listResult[i].employeePoint : undefined;
                         results[`approvedPoint${listResult[i].employee._id}`] = {
                             value: listResult[i].approvedPoint ? listResult[i].approvedPoint : undefined,
                             employee: listResult[i].employee._id,
-                            role: "Accountable",
+                            role: "accountable",
                             target: "Point"
                         }
                         results[`contributeAccountable${listResult[i].employee._id}`] = {
                             value: listResult[i].contribution ? listResult[i].contribution : undefined,
                             employee: listResult[i].employee._id,
-                            role: "Accountable",
+                            role: "accountable",
                             target: "Contribution"
                         }
                     }
@@ -337,7 +337,7 @@ class EvaluateByAccountableEmployee extends Component {
             if (chkHasInfo) {
                 for (let i in infoEval) {
 
-                    if (infoEval[i].type === "Date") {
+                    if (infoEval[i].type === "date") {
                         if (infoEval[i].value) {
                             info[`${infoEval[i].code}`] = {
                                 value: this.formatDate(infoEval[i].value),
@@ -353,7 +353,7 @@ class EvaluateByAccountableEmployee extends Component {
                             }
                         }
                     }
-                    else if (infoEval[i].type === "SetOfValues") {
+                    else if (infoEval[i].type === "set_of_values") {
                         let splitSetOfValues = infoEval[i].extra.split('\n');
                         if (infoEval[i].value) {
                             info[`${infoEval[i].code}`] = {
@@ -447,7 +447,7 @@ class EvaluateByAccountableEmployee extends Component {
         let infoTask = task.taskInformations;
 
         for (let i in infoTask) {
-            if (infoTask[i].type === "Date") {
+            if (infoTask[i].type === "date") {
                 if (infoTask[i].value) {
                     info[`${infoTask[i].code}`] = {
                         value: this.formatDate(infoTask[i].value),
@@ -463,7 +463,7 @@ class EvaluateByAccountableEmployee extends Component {
                     }
                 }
             }
-            else if (infoTask[i].type === "SetOfValues") {
+            else if (infoTask[i].type === "set_of_values") {
                 let splitSetOfValues = infoTask[i].extra.split('\n');
                 if (infoTask[i].value) {
                     info[`${infoTask[i].code}`] = {
@@ -673,7 +673,7 @@ class EvaluateByAccountableEmployee extends Component {
             state.results[`${name}`] = {
                 value: value,
                 employee: id,
-                role: "Accountable",
+                role: "accountable",
                 target: "Point"
             }
             if (id === state.userId) state.empPoint[`accountable${id}`] = value;
@@ -691,7 +691,7 @@ class EvaluateByAccountableEmployee extends Component {
             state.results[`${name}`] = {
                 value: value,
                 employee: id,
-                role: "Accountable",
+                role: "accountable",
                 target: "Contribution"
             }
             state.errorContribute[`accountable${id}`] = this.validateEvaluateContribute(value);
@@ -709,7 +709,7 @@ class EvaluateByAccountableEmployee extends Component {
             state.results[`${name}`] = {
                 value: isNaN(value) ? undefined : value,
                 employee: id,
-                role: "Responsible",
+                role: "responsible",
                 target: "Point"
             }
             if (this.props.hasAccountable === false && id === state.userId) state.empPoint[`responsible${id}`] = value;
@@ -727,7 +727,7 @@ class EvaluateByAccountableEmployee extends Component {
             state.results[`${name}`] = {
                 value: isNaN(value) ? undefined : value,
                 employee: id,
-                role: "Responsible",
+                role: "responsible",
                 target: "Contribution"
             }
             state.errorContribute[`responsible${id}`] = this.validateEvaluateContribute(value);
@@ -745,7 +745,7 @@ class EvaluateByAccountableEmployee extends Component {
             state.results[`${name}`] = {
                 value: value,
                 employee: id,
-                role: "Consulted",
+                role: "consulted",
                 target: "Point"
             }
             state.errorApprovedPoint[`consulted${id}`] = this.validateEvaluateResult(value);
@@ -762,7 +762,7 @@ class EvaluateByAccountableEmployee extends Component {
             state.results[`${name}`] = {
                 value: value,
                 employee: id,
-                role: "Consulted",
+                role: "consulted",
                 target: "Contribution"
             }
             state.errorContribute[`consulted${id}`] = this.validateEvaluateContribute(value);
@@ -819,7 +819,7 @@ class EvaluateByAccountableEmployee extends Component {
             state.info[`${name}`] = {
                 value: value,
                 code: name,
-                type: 'Number'
+                type: 'number'
             }
             state.errorInfo[name] = this.validateNumberInfo(value);
             return {
@@ -837,7 +837,7 @@ class EvaluateByAccountableEmployee extends Component {
             state.info[`${name}`] = {
                 value: value,
                 code: name,
-                type: 'Text'
+                type: 'text'
             }
             state.errorInfo[name] = this.validateTextInfo(value);
             return {
@@ -853,7 +853,7 @@ class EvaluateByAccountableEmployee extends Component {
             state.info[`${code}`] = {
                 value: value,
                 code: code,
-                type: 'Date'
+                type: 'date'
             }
             state.errorInfo[code] = this.validateDate(value);
             return {
@@ -869,7 +869,7 @@ class EvaluateByAccountableEmployee extends Component {
             state.info[`${name}`] = {
                 value: value,
                 code: name,
-                type: 'Boolean'
+                type: 'boolean'
             }
             return {
                 ...state,
@@ -941,7 +941,7 @@ class EvaluateByAccountableEmployee extends Component {
             state.info[`${code}`] = {
                 value: value,
                 code: code,
-                type: 'SetOfValues'
+                type: 'set_of_values'
             }
             return {
                 ...state,
@@ -1042,19 +1042,10 @@ class EvaluateByAccountableEmployee extends Component {
             return {
                 ...state,
                 errorOnDate: err,
-                // errorInfo: {},
-                // errorApprovedPoint: {},
-                // errorContribute: {},
-                // errorOnProgress: undefined,
                 date: value,
-                // info: data.info,
-                // results: data.results,
-                // status: data.statusOptions,
                 empPoint: data.empPoint,
                 autoPoint: automaticPoint,
-                // progress: data.progress,
                 oldAutoPoint: data.automaticPoint,
-                // checkSave: data.checkSave,
                 indexReRender: state.indexReRender + 1,
             }
         });
@@ -1117,9 +1108,9 @@ class EvaluateByAccountableEmployee extends Component {
     // format vai trò multi language
     formatRole = (data) => {
         const { translate } = this.props;
-        if (data === "Consulted") return translate('task.task_management.consulted');
-        if (data === "Accountable") return translate('task.task_management.accountable');
-        if (data === "Responsible") return translate('task.task_management.responsible');
+        if (data === "consulted") return translate('task.task_management.consulted');
+        if (data === "accountable") return translate('task.task_management.accountable');
+        if (data === "responsible") return translate('task.task_management.responsible');
     }
 
     // hàm ghi lại lich sử đánh giá
@@ -1258,7 +1249,7 @@ class EvaluateByAccountableEmployee extends Component {
             user: getStorage("userId"),
             progress: this.state.progress,
             automaticPoint: this.state.autoPoint,
-            role: "Accountable",
+            role: "accountable",
             status: this.state.status,
             hasAccountable: this.state.hasAccountable,
 
@@ -1331,11 +1322,11 @@ class EvaluateByAccountableEmployee extends Component {
         ))
 
         let statusArr = [
-            { value: "Inprocess", text: translate('task.task_management.inprocess') },
-            { value: "WaitForApproval", text: translate('task.task_management.wait_for_approval') },
-            { value: "Finished", text: translate('task.task_management.finished') },
-            { value: "Delayed", text: translate('task.task_management.delayed') },
-            { value: "Canceled", text: translate('task.task_management.canceled') }
+            { value: "inprocess", text: translate('task.task_management.inprocess') },
+            { value: "wait_for_approval", text: translate('task.task_management.wait_for_approval') },
+            { value: "finished", text: translate('task.task_management.finished') },
+            { value: "delayed", text: translate('task.task_management.delayed') },
+            { value: "canceled", text: translate('task.task_management.canceled') }
         ];
 
         let checkNoteMonth;
@@ -1550,7 +1541,7 @@ class EvaluateByAccountableEmployee extends Component {
                                                     (task.inactiveEmployees.indexOf(item._id) === -1 &&
                                                         <tr key={index} style={{ verticalAlign: "top" }}>
                                                             <td><div style={{ marginTop: 10 }}>{item.name}</div></td>
-                                                            <td><div style={{ marginTop: 10 }}>{this.formatRole('Responsible')}</div></td>
+                                                            <td><div style={{ marginTop: 10 }}>{this.formatRole('responsible')}</div></td>
                                                             <td><div style={{ marginTop: 10 }}>{this.checkNullUndefined(empPoint[`responsible${item._id}`]) ? empPoint[`responsible${item._id}`] : translate('task.task_management.not_eval')}</div></td>
                                                             <td style={{ padding: 5 }}>
                                                                 <div className={errorContribute[`responsible${item._id}`] === undefined ? "form-group" : "form-group has-error"}>
@@ -1585,7 +1576,7 @@ class EvaluateByAccountableEmployee extends Component {
                                                     (task.inactiveEmployees.indexOf(item._id) === -1 &&
                                                         <tr key={index} style={{ verticalAlign: "top" }}>
                                                             <td><div style={{ marginTop: 10 }}>{item.name}</div></td>
-                                                            <td><div style={{ marginTop: 10 }}>{this.formatRole('Consulted')}</div></td>
+                                                            <td><div style={{ marginTop: 10 }}>{this.formatRole('consulted')}</div></td>
                                                             <td><div style={{ marginTop: 10 }}>{this.checkNullUndefined(empPoint[`consulted${item._id}`]) ? empPoint[`consulted${item._id}`] : translate('task.task_management.not_eval')}</div></td>
                                                             <td style={{ padding: 5 }}>
                                                                 <div className={errorContribute[`consulted${item._id}`] === undefined ? "form-group" : "form-group has-error"}>
@@ -1621,7 +1612,7 @@ class EvaluateByAccountableEmployee extends Component {
                                                     (task.inactiveEmployees.indexOf(item._id) === -1 &&
                                                         <tr key={index} style={{ verticalAlign: "top" }}>
                                                             <td><div style={{ marginTop: 10 }}>{item.name}</div></td>
-                                                            <td><div style={{ marginTop: 10 }}>{this.formatRole('Accountable')}</div></td>
+                                                            <td><div style={{ marginTop: 10 }}>{this.formatRole('accountable')}</div></td>
                                                             <td><div style={{ marginTop: 10 }}><p id={`accountablePoint${item._id}`}>{this.checkNullUndefined(empPoint[`accountable${item._id}`]) ? empPoint[`accountable${item._id}`] : translate('task.task_management.not_eval')}</p></div></td>
                                                             <td style={{ padding: 5 }}>
                                                                 <div className={errorContribute[`accountable${item._id}`] === undefined ? "form-group" : "form-group has-error"}>

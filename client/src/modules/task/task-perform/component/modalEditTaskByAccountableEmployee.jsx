@@ -32,7 +32,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
 
         let info = {}, taskInfo = task && task.taskInformations;
         for (let i in taskInfo) {
-            if (taskInfo[i].type === "Date") {
+            if (taskInfo[i].type === "date") {
                 if (taskInfo[i].value) {
                     info[`${taskInfo[i].code}`] = {
                         value: this.formatDate(taskInfo[i].value),
@@ -48,7 +48,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                     }
                 }
             }
-            else if (taskInfo[i].type === "SetOfValues") {
+            else if (taskInfo[i].type === "set_of_values") {
                 let splitter = taskInfo[i].extra.split('\n');
                 if (taskInfo[i].value) {
                     info[`${taskInfo[i].code}`] = {
@@ -85,21 +85,21 @@ class ModalEditTaskByAccountableEmployee extends Component {
             if (accountableEmployees.indexOf(inactiveEmployees[i]) !== -1) {
                 listInactive[`${inactiveEmployees[i]}`] = {
                     value: inactiveEmployees[i],
-                    role: 'Accountable',
+                    role: 'accountable',
                     checked: true
                 }
             }
             else if (responsibleEmployees.indexOf(inactiveEmployees[i]) !== -1) {
                 listInactive[`${inactiveEmployees[i]}`] = {
                     value: inactiveEmployees[i],
-                    role: 'Responsible',
+                    role: 'responsible',
                     checked: true
                 }
             }
             else if (consultedEmployees.indexOf(inactiveEmployees[i]) !== -1) {
                 listInactive[`${inactiveEmployees[i]}`] = {
                     value: inactiveEmployees[i],
-                    role: 'Consulted',
+                    role: 'consulted',
                     checked: true
                 }
             }
@@ -193,7 +193,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
             state.info[`${name}`] = {
                 value: value,
                 code: name,
-                type: 'Number'
+                type: 'number'
             }
             state.errorInfo[name] = this.validateNumberInfo(value);
             return {
@@ -210,7 +210,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
             state.info[`${name}`] = {
                 value: value,
                 code: name,
-                type: 'Text'
+                type: 'text'
             }
             state.errorInfo[name] = this.validateTextInfo(value);
             return {
@@ -225,7 +225,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
             state.info[`${code}`] = {
                 value: value,
                 code: code,
-                type: 'Date'
+                type: 'date'
             }
             state.errorInfo[code] = this.validateDate(value);
             return {
@@ -241,7 +241,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
             state.info[`${code}`] = {
                 value: value,
                 code: code,
-                type: 'SetOfValues'
+                type: 'set_of_values'
             }
             return {
                 ...state,
@@ -255,7 +255,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
             state.info[`${name}`] = {
                 value: value,
                 code: name,
-                type: 'Boolean'
+                type: 'boolean'
             }
             return {
                 ...state,
@@ -342,7 +342,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
             state.listInactive[`${id}`] = {
                 value: value,
                 checked: checked,
-                role: 'Accountable'
+                role: 'accountable'
             }
             return {
                 ...state,
@@ -372,7 +372,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                     state.listInactive[`${id}`] = {
                         value: value,
                         checked: false,
-                        role: 'Accountable'
+                        role: 'accountable'
                     }
                     return {
                         ...state,
@@ -394,7 +394,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                     state.listInactive[`${id}`] = {
                         value: value,
                         checked: false,
-                        role: 'Accountable'
+                        role: 'accountable'
                     }
                     return {
                         ...state,
@@ -416,7 +416,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
             state.listInactive[`${id}`] = {
                 value: value,
                 checked: checked,
-                role: 'Responsible'
+                role: 'responsible'
             }
             return {
                 ...state,
@@ -446,7 +446,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                     state.listInactive[`${id}`] = {
                         value: value,
                         checked: false,
-                        role: 'Responsible'
+                        role: 'responsible'
                     }
                     return {
                         ...state,
@@ -468,7 +468,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                     state.listInactive[`${id}`] = {
                         value: value,
                         checked: false,
-                        role: 'Responsible'
+                        role: 'responsible'
                     }
                     return {
                         ...state,
@@ -490,7 +490,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
             state.listInactive[`${id}`] = {
                 value: value,
                 checked: checked,
-                role: 'Consulted'
+                role: 'consulted'
             }
             return {
                 ...state,
@@ -522,7 +522,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                     state.listInactive[`${id}`] = {
                         value: value,
                         checked: false,
-                        role: 'Consulted'
+                        role: 'consulted'
                     }
                     return {
                         ...state,
@@ -546,7 +546,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                     state.listInactive[`${id}`] = {
                         value: value,
                         checked: false,
-                        role: 'Consulted'
+                        role: 'consulted'
                     }
                     return {
                         ...state,
@@ -928,18 +928,18 @@ class ModalEditTaskByAccountableEmployee extends Component {
 
     formatRole = (data) => {
         const { translate } = this.props;
-        if (data === "Consulted") return translate('task.task_management.consulted');
-        if (data === "Accountable") return translate('task.task_management.accountable');
-        if (data === "Responsible") return translate('task.task_management.responsible');
+        if (data === "consulted") return translate('task.task_management.consulted');
+        if (data === "accountable") return translate('task.task_management.accountable');
+        if (data === "responsible") return translate('task.task_management.responsible');
     }
 
     formatStatus = (data) => {
         const { translate } = this.props;
-        if (data === "Inprocess") return translate('task.task_management.inprocess');
-        else if (data === "WaitForApproval") return translate('task.task_management.wait_for_approval');
-        else if (data === "Finished") return translate('task.task_management.finished');
-        else if (data === "Delayed") return translate('task.task_management.delayed');
-        else if (data === "Canceled") return translate('task.task_management.canceled');
+        if (data === "inprocess") return translate('task.task_management.inprocess');
+        else if (data === "wait_for_approval") return translate('task.task_management.wait_for_approval');
+        else if (data === "finished") return translate('task.task_management.finished');
+        else if (data === "delayed") return translate('task.task_management.delayed');
+        else if (data === "canceled") return translate('task.task_management.canceled');
     }
 
     render() {
@@ -987,11 +987,11 @@ class ModalEditTaskByAccountableEmployee extends Component {
             { value: 3, text: translate('task.task_management.high') }
         ];
         let statusArr = [
-            { value: "Inprocess", text: translate('task.task_management.inprocess') },
-            { value: "WaitForApproval", text: translate('task.task_management.wait_for_approval') },
-            { value: "Finished", text: translate('task.task_management.finished') },
-            { value: "Delayed", text: translate('task.task_management.delayed') },
-            { value: "Canceled", text: translate('task.task_management.canceled') }
+            { value: "inprocess", text: translate('task.task_management.inprocess') },
+            { value: "wait_for_approval", text: translate('task.task_management.wait_for_approval') },
+            { value: "finished", text: translate('task.task_management.finished') },
+            { value: "delayed", text: translate('task.task_management.delayed') },
+            { value: "canceled", text: translate('task.task_management.canceled') }
         ];
 
         let usersOfChildrenOrganizationalUnit;

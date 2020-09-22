@@ -154,7 +154,7 @@ class ModalEditProcess extends Component {
 
                 if (infoTask) {
                     for (let i in infoTask) {
-                        if (infoTask[i].status === "Finished") {
+                        if (infoTask[i].status === "finished") {
                             let element1 = (Object.keys(modeler.get('elementRegistry')).length > 0) && modeler.get('elementRegistry').get(infoTask[i].codeInProcess);
 
                             element1 && modeling.setColor(element1, {
@@ -165,7 +165,7 @@ class ModalEditProcess extends Component {
                             var outgoing = element1.outgoing;
                             outgoing.forEach(x => {
                                 console.log('x', x);
-                                if (info[x.businessObject.targetRef.id].status === "Inprocess") {
+                                if (info[x.businessObject.targetRef.id].status === "inprocess") {
                                     var outgoingEdge = modeler.get('elementRegistry').get(x.id);
 
                                     modeling.setColor(outgoingEdge, {
@@ -176,7 +176,7 @@ class ModalEditProcess extends Component {
                             })
                         }
 
-                        if (infoTask[i].status === "Inprocess") {
+                        if (infoTask[i].status === "inprocess") {
                             let element1 = (Object.keys(modeler.get('elementRegistry')).length > 0) && modeler.get('elementRegistry').get(infoTask[i].codeInProcess);
 
                             element1 && modeling.setColor(element1, {
@@ -523,11 +523,11 @@ class ModalEditProcess extends Component {
 
         // Mảng cấu hình trạng thái công việc
         let statusArr = [
-            { value: "Inprocess", text: translate('task.task_management.inprocess') },
-            { value: "WaitForApproval", text: translate('task.task_management.wait_for_approval') },
-            { value: "Finished", text: translate('task.task_management.finished') },
-            { value: "Delayed", text: translate('task.task_management.delayed') },
-            { value: "Canceled", text: translate('task.task_management.canceled') }
+            { value: "inprocess", text: translate('task.task_management.inprocess') },
+            { value: "wait_for_approval", text: translate('task.task_management.wait_for_approval') },
+            { value: "finished", text: translate('task.task_management.finished') },
+            { value: "delayed", text: translate('task.task_management.delayed') },
+            { value: "canceled", text: translate('task.task_management.canceled') }
         ];
 
         return (

@@ -66,7 +66,7 @@ const TaskSchema = new Schema({
     }],
     numberOfDaysTaken: {
         type: Number,
-        default: 1,
+        default: 7,
     },
     followingTasks: [{
         task: {
@@ -128,9 +128,9 @@ const TaskSchema = new Schema({
     },
     status: { // có 5 trạng thái công việc: Đang thực hiện, Chờ phê duyệt, Đã hoàn thành, Tạm hoãn, Bị hủy
         type: String,
-        default: "Inprocess",
+        default: "inprocess",
         required: true,
-        enum: ["Inprocess", "WaitForApproval", "Finished", "Delayed", "Canceled"]
+        enum: ["inprocess", "wait_for_approval", "finished", "delayed", "canceled"]
     },
     taskTemplate: {
         type: Schema.Types.ObjectId,
@@ -192,7 +192,7 @@ const TaskSchema = new Schema({
             role: { // người thực hiện: responsible, người hỗ trợ: consulted, người phê duyệt: accountable
                 type: String,
                 required: true,
-                enum: ["Responsible", "Consulted", "Accountable"]
+                enum: ["responsible", "consulted", "accountable"]
             },
             kpis: [{ // Các kpis của người thực hiện A đó. Phải chọn kpis lúc tạo công việc, và sang đầu tháng mới, nếu công việc chưa kết thúc thì phải chọn lại.
                 type: Schema.Types.ObjectId,
@@ -241,7 +241,7 @@ const TaskSchema = new Schema({
             type: {
                 type: String,
                 required: true,
-                enum: ['Text', 'Boolean', 'Date', 'Number', 'SetOfValues'],
+                enum: ['text', 'boolean', 'date', 'number', 'set_of_values'],
             },
             value: { // Giá trị tương ứng của các thuộc tính (tại thời điểm đánh giá)
                 type: Schema.Types.Mixed,
@@ -345,7 +345,7 @@ const TaskSchema = new Schema({
         type: {
             type: String,
             required: true,
-            enum: ['Text', 'Boolean', 'Date', 'Number', 'SetOfValues'],
+            enum: ['text', 'boolean', 'date', 'number', 'set_of_values'],
         },
         value: {
             type: Schema.Types.Mixed,

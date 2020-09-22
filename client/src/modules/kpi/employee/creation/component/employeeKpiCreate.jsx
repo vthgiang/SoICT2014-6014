@@ -14,7 +14,7 @@ import { ModalCreateEmployeeKpiSet } from './employeeKpiCreateModal';
 import { ModalEditEmployeeKpi } from './employeeKpiEditTargetModal';
 
 import { getStorage } from '../../../../../config'
-import { DatePicker, SelectBox, SlimScroll } from '../../../../../../src/common-components';
+import { DatePicker, SelectBox, SlimScroll, ToolTip } from '../../../../../../src/common-components';
 import getEmployeeSelectBoxItems from '../../../../task/organizationalUnitHelper';
 
 
@@ -80,13 +80,13 @@ class CreateEmployeeKpiSet extends Component {
                 }
             }
         }
-        if(nextProps.auth.user.avatar !== this.props.auth.user.avatar) {
+        if (nextProps.auth.user.avatar !== this.props.auth.user.avatar) {
             this.props.getEmployeeKpiSet()
             return true;
         }
         return true;
     }
-    
+
     /**
      * Xử lí các thông điệp 
      */
@@ -481,7 +481,7 @@ class CreateEmployeeKpiSet extends Component {
                             id={id}
                             employeeKpi={employeeKpi}
                         />
-                    
+
                         {/**Khi đã khởi tạo tập KPI */}
                         {currentKPI ?
                             <div className="col-xs-12 col-sm-12">
@@ -629,9 +629,13 @@ class CreateEmployeeKpiSet extends Component {
                                                                         onClick={this.checkOrganizationalUnitKpi(currentKPIUnit) ? () => this.handleEditEmployeeKpi(currentKPI.status, item._id, item) : () => this.handleStartOrganizationalUnitKpi(currentKPIUnit)}>
                                                                         <i className="fa fa-edit"></i>
                                                                     </a>
-                                                                    
+
                                                                     {item.type !== 0 ?
-                                                                        <a className="copy" title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.action_title.content')}><i className="material-icons">notification_important</i></a>
+                                                                        // <a className="copy" title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.action_title.content')}><i className="material-icons">notification_important</i></a>
+                                                                        <ToolTip
+                                                                            type={"icon_tooltip"} materialIcon={"notification_important"}
+                                                                            dataTooltip={[translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.action_title.content')]}
+                                                                        />
                                                                         : <a
                                                                             style={{ color: "#E34724", fontSize: "16px" }}
                                                                             title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.action_title.delete')}

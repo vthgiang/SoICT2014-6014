@@ -179,7 +179,7 @@ exports.createXmlDiagram = async (portal, body) => {
         });
     }
 
-    data = await ProcessTemplate(connect(DB_CONNECTION, portal)).findById(data._id).populate({ path: 'creator', select: 'name' });
+    data = await ProcessTemplate(connect(DB_CONNECTION, portal)).findById(data._id).populate([{ path: 'creator', select: 'name' }, { path: 'manager', select: 'name' } ]);
     return data;
 }
 
@@ -324,9 +324,9 @@ exports.createTaskByProcess = async (portal, processId, body) => {
         }
         // }
 
-        let status = "WaitForApproval";
+        let status = "wait_for_approval";
         if (isStartTask(data[i])) {
-            status = "Inprocess";
+            status = "inprocess";
         }
 
         let formula = data[i].formula;
