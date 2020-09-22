@@ -23,10 +23,8 @@ exports.getAllCompanies = async (query) => {
 
         for (let i = 0; i < companies.length; i++) {
             let superAdmin = await User(connect(DB_CONNECTION, companies[i].shortName)).findById(companies[i].superAdmin);
-            console.log("company", companies[i])
-            companies[i] = { ...companies[i], superAdmin }
+            companies[i] = { ...companies[i]._doc, superAdmin }
         }
-
         return companies;
     } else {
         let option = (query.key && query.value) ? { [`${query.key}`] : new RegExp(query.value, "i") } : {};
