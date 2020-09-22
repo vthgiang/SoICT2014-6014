@@ -154,7 +154,7 @@ exports.uploadFile = (arrData, type) => {
     const checkExistUploads = async(portal) => {
         if(portal !== undefined)
             return await arrData.forEach(x => {
-                let dir = `./upload/${portal}${x.path}`;
+                let dir = `./upload/private/${portal}${x.path}`;
                 if (!fs.existsSync(dir)) {
                     fs.mkdirSync(dir, {
                         recursive: true
@@ -168,11 +168,11 @@ exports.uploadFile = (arrData, type) => {
             destination: (req, file, cb) => {
                 checkExistUploads(req.portal);
                 if (type === 'single' || type === 'array') {
-                    cb(null, `./upload/${req.portal}${arrData[0].path}`);
+                    cb(null, `./upload/private/${req.portal}${arrData[0].path}`);
                 } else if (type === 'fields') {
                     for (let n in arrData) {
                         if (file.fieldname === arrData[n].name) {
-                            cb(null, `./upload/${req.portal}${arrData[n].path}`);
+                            cb(null, `./upload/private/${req.portal}${arrData[n].path}`);
                             break;
                         }
                     }

@@ -11,14 +11,14 @@ function getBackups() {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/system/backup`,
         method: 'GET'
-    }, true, true, 'super_admin.system');
+    }, false, true, 'super_admin.system');
 }
 
 function createBackup() {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/system/backup`,
         method: 'POST'
-    }, false, true, 'super_admin.system');
+    }, true, true, 'super_admin.system');
 }
 
 function deleteBackup(version) {

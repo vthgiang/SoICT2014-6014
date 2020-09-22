@@ -21,7 +21,7 @@ class SystemManagement extends Component {
                     <button className="btn btn-success pull-right" title={translate("general.add")} onClick={this.props.createBackup}>{translate('general.add')}</button>
                 </div>
                 <div className="box-body">
-                    <table className="table table-hover table-striped">
+                    <table className="table table-hover table-striped table-bordered">
                         <thead>
                             <tr>
                                 <th>{translate('system_admin.system_setting.backup.version')}</th>
@@ -44,7 +44,7 @@ class SystemManagement extends Component {
                                                 content="<h3>Restore this backup data</h3>"
                                                 name="restore"
                                                 className="text-green"
-                                                func={()=>this.prpps.restore(data.version)}
+                                                func={()=>this.props.restore(data.version)}
                                             />
                                             <ConfirmNotification
                                                 icon="warning"

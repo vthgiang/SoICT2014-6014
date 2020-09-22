@@ -55,7 +55,7 @@ exports.restore = async (backupVersion, option) => {
     })
 
     // 2.Restore file data
-    const uploadPathServer = `${SERVER_DIR}/upload/${option.dbName}`;
+    const uploadPathServer = `${SERVER_DIR}/upload/private/${option.dbName}`;
     const uploadRestore = `${SERVER_BACKUP_DIR}/${option.dbName}/${backupVersion}/upload`;
     if (fs.existsSync(uploadPathServer)) {
         exec(`rm -rf ${uploadPathServer}`, function (err) { });
@@ -71,7 +71,7 @@ exports.restore = async (backupVersion, option) => {
 exports.backup = async (option) => {
     const serverBackupStorePath = createServerBackupDatabasePath(option.dbName);
     const versionTime = getTimeMDY();
-    const descriptionBackupDB = `Backup database ${option.dbName} at ${versionTime}`;
+    const descriptionBackupDB = `Backup database ${option.dbName}`;
     const command = `mongodump --host="${option.host}" --port="${option.dbPort}" --out="${serverBackupStorePath}/database" --db="${option.dbName}"`;
     
     // 1. Backup database
@@ -84,7 +84,7 @@ exports.backup = async (option) => {
 
     // 2. Backup file dữ liệu trong thư mục upload
     console.log("PATH:", serverBackupStorePath)
-    const commandBackupDataUpload  = `cp -r "${SERVER_DIR}/upload/${option.dbName}" "${serverBackupStorePath}/upload"`
+    const commandBackupDataUpload  = `cp -r "${SERVER_DIR}/upload/private/${option.dbName}" "${serverBackupStorePath}/upload"`
     await exec(commandBackupDataUpload, (error, stdout, stderr) => {
         if(error !== null) console.log(error);
     });

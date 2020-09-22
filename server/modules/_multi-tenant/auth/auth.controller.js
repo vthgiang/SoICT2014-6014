@@ -204,7 +204,7 @@ exports.getProfile = async (req, res) => {
 exports.downloadFile = async (req, res) => {
     try {
         const { path } = req.query;
-        res.download(path, "file");
+        res.download(path);
     } catch (error) {
         res.status(400).json({
             success: false,

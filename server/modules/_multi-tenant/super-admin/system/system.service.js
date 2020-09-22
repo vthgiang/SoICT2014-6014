@@ -46,6 +46,7 @@ exports.deleteBackup = async(portal, version) => {
 };
 
 exports.restore = async(portal, version) => {
+    console.log("restore portal: ", portal, version)
     return await backup(version, {
         host: process.env.DB_HOST,
         dbName: portal,
