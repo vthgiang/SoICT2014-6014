@@ -384,11 +384,11 @@ function editImportConfiguration(data) {
     }
 }
 
-function updateCompanyLinks(data) {
+function updateCompanyLinks(data, params) {
     return dispatch => {
         dispatch({ type: CompanyConstants.UPDATE_COMPANY_LINKS_REQUEST });
 
-        CompanyServices.updateCompanyLinks(data)
+        CompanyServices.updateCompanyLinks(data, params)
             .then(res => {
                 dispatch({
                     type: CompanyConstants.UPDATE_COMPANY_LINKS_SUCCESS,
