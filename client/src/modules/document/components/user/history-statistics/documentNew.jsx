@@ -118,7 +118,7 @@ class DocumentNew extends Component {
             name: this.state.name,
             category: this.state.category ? this.state.category[0] : "",
             domains: this.state.domain ? this.state.domain : "",
-            archives: path && path.length ? path[0] : "",
+            archives: path && path.length ? path : "",
         };
         await this.props.getUserDocumentStatistics('latest', data);
     }
@@ -518,7 +518,7 @@ class DocumentNew extends Component {
             name: this.state.name,
             category: this.state.category ? this.state.category[0] : "",
             domains: this.state.domain ? this.state.domain : "",
-            archives: path && path.length ? path[0] : "",
+            archives: path && path.length ? path : "",
         };
         await this.props.getUserDocumentStatistics('latest', data);
     }
