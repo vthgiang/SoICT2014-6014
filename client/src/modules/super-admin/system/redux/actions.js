@@ -1,125 +1,91 @@
-import {
-    LinkServices
-} from "./services";
-import {
-    LinkConstants
-} from "./constants";
+import { SystemServices } from "./services";
+import { SystemConstants } from "./constants";
 
-export const LinkActions = {
-    get,
-    show,
-    edit,
-    destroy,
-};
+export const SystemActions = {
+    getBackups,
+    createBackup,
+    deleteBackup,
+    restore
+}
 
-/**
- * Lấy danh sách tất cả các link của 1 công ty
- */
-function get(params) {
-    if (params.page !== undefined && params.limit !== undefined) {
-        return dispatch => {
+function getBackups() {
+    return dispatch => {
+        dispatch({ type: SystemConstants.GET_BACKUPS_REQUEST });
+        SystemServices.getBackups()
+        .then(res => {
             dispatch({
-                type: LinkConstants.GET_LINKS_PAGINATE_REQUEST
-            });
-            LinkServices.get(params)
-                .then(res => {
-                    dispatch({
-                        type: LinkConstants.GET_LINKS_PAGINATE_SUCCESS,
-                        payload: res.data.content
-                    })
-                }).catch(err => {
-                    dispatch({
-                        type: LinkConstants.GET_LINKS_PAGINATE_FAILE,
-                    })
-                })
-        }
-    } else {
-        return dispatch => {
+                type: SystemConstants.GET_BACKUPS_SUCCESS,
+                payload: res.data.content
+            })
+        })
+        .catch(error => {
             dispatch({
-                type: LinkConstants.GET_LINKS_REQUEST
-            });
-            LinkServices.get(params)
-                .then(res => {
-                    dispatch({
-                        type: LinkConstants.GET_LINKS_SUCCESS,
-                        payload: res.data.content
-                    })
-                })
-                .catch(err => {
-                    dispatch({
-                        type: LinkConstants.GET_LINKS_FAILE
-                    })
-                })
-        }
+                type: SystemConstants.GET_BACKUPS_FAILE,
+                payload: error
+            }) 
+        })
     }
 }
 
-/**
- * Lấy thông tin link theo id
- * @id id link
- */
-function show(id) {
+function deleteBackup(version) {
     return dispatch => {
-        dispatch({
-            type: LinkConstants.SHOW_LINK_REQUEST
-        });
-        LinkServices.show(id)
+        dispatch({ type: SystemConstants.DELETE_BACKUP_REQUEST });
+
+        SystemServices.deleteBackup(version)
             .then(res => {
                 dispatch({
-                    type: LinkConstants.SHOW_LINK_SUCCESS,
+                    type: SystemConstants.DELETE_BACKUP_SUCCESS,
                     payload: res.data.content
                 })
-            }).catch(err => {
+            })
+            .catch(error => {
                 dispatch({
-                    type: LinkConstants.SHOW_LINK_FAILE
+                    type: SystemConstants.DELETE_BACKUP_FAILE,
+                    payload: error
                 })
+                
             })
     }
 }
 
-/**
- * Chỉnh sửa link
- * @id id link
- * @link dữ liệu về link
- */
-function edit(id, link) {
+function createBackup() {
     return dispatch => {
-        dispatch({
-            type: LinkConstants.EDIT_LINK_REQUEST
-        });
-        LinkServices.edit(id, link)
+        dispatch({ type: SystemConstants.CREATE_BACKUP_REQUEST });
+
+        SystemServices.createBackup()
             .then(res => {
                 dispatch({
-                    type: LinkConstants.EDIT_LINK_SUCCESS,
+                    type: SystemConstants.CREATE_BACKUP_SUCCESS,
                     payload: res.data.content
                 })
-            }).catch(err => {
+            })
+            .catch(error => {
                 dispatch({
-                    type: LinkConstants.EDIT_LINK_FAILE
+                    type: SystemConstants.CREATE_BACKUP_FAILE,
+                    payload: error
                 })
+                
             })
     }
 }
 
-/**
- * Xóa link
- * @id id link
- */
-function destroy(id, link) {
+function restore(version) {
     return dispatch => {
-        dispatch({
-            type: LinkConstants.DELETE_LINK_REQUEST
-        });
-        LinkServices.destroy(id, link)
+        dispatch({ type: SystemConstants.RESTORE_REQUEST });
+
+        SystemServices.restore(version)
             .then(res => {
                 dispatch({
-                    type: LinkConstants.DELETE_LINK_SUCCESS,
-                    payload: id
+                    type: SystemConstants.RESTORE_SUCCESS,
+                    payload: res.data.content
                 })
-            }).catch(err => {
+            })
+            .catch(error => {
                 dispatch({
-                    type: LinkConstants.DELETE_LINK_FAILE
+                    type: SystemConstants.RESTORE_FAILE,
+                    payload: error
                 })
+                
             })
     }
 }

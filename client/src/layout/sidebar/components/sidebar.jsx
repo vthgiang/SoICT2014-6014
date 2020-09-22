@@ -4,6 +4,7 @@ import GroupItem from './groupItem';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { withTranslate } from 'react-redux-multilingual';
+import { ApiImage } from '../../../common-components';
 
 class SideBar extends Component {
 
@@ -35,7 +36,8 @@ class SideBar extends Component {
                     <section className="sidebar">
                         <div className="user-panel">
                             <div className="pull-left image">
-                                <img src={process.env.REACT_APP_SERVER + auth.user.avatar} className="img-circle" alt="User avatar" />
+                                <ApiImage className="img-circle" alt="User Avatar" src={`.${auth.user.avatar}`}/>
+                                {/* <img src={process.env.REACT_APP_SERVER + auth.user.avatar} className="img-circle" alt="User avatar" /> */}
                             </div>
                             <div className="pull-left info">
                                 <p>{user.name}</p>

@@ -206,7 +206,7 @@ class Routes extends Component {
                         component={Company}
                     />
                     <PrivateRoute
-                        isLoading={this.props.user.isLoading}
+                        isLoading={this.props.system.isLoading}
                         key={'system-management'}
                         arrPage={[
                             { link: '/', name: 'system_administration', icon: 'fa fa-key' },
