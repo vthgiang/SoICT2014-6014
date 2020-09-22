@@ -239,19 +239,19 @@ class TaskStatusChart extends Component {
 
             listTask.map(task => {
                 switch (task.status) {
-                    case "Inprocess":
+                    case "inprocess":
                         numberOfInprocess++;
                         break;
-                    case "WaitForApproval":
+                    case "wait_for_approval":
                         numberOfWaitForApproval++;
                         break;
-                    case "Finished":
+                    case "finished":
                         numberOfFinished++;
                         break;
-                    case "Delayed":
+                    case "delayed":
                         numberOfDelayed++;
                         break;
-                    case "Canceled":
+                    case "canceled":
                         numberOfCanceled++;
                         break;
                 }

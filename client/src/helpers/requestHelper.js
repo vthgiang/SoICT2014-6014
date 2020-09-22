@@ -9,7 +9,7 @@ const AuthenticateHeader = (name = 'jwt',) => {
     const token = getStorage(name);
     const currentRole = getStorage("currentRole");
     const fingerprint = getBrowserFingerprint();
-
+    console.log("f: ", fingerprint)
     return {
         'current-page': window.location.pathname,
         'auth-token': token,
@@ -68,6 +68,7 @@ export function sendRequest(options, showSuccessAlert = false, showFailAlert = t
         showSuccessAlert && toast.success(
                     <ServerResponseAlert
                         type='success'
+                        icon='fa fa-check-circle'
                         title = {successTitle}
                         content={messages.map(message => `${module}.${message}`)}
                     />,
@@ -88,6 +89,7 @@ export function sendRequest(options, showSuccessAlert = false, showFailAlert = t
                 showFailAlert && toast.error(
                     <ServerResponseAlert
                         type='error'
+                        icon='fa fa-close'
                         title={errorTitle}
                         content={messages.map(message => `${module}.${message}`)}
                     />,

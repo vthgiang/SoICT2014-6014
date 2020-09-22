@@ -47,7 +47,6 @@ class ModalDetailTask extends Component {
 
         let task;
         if (isProcess) {
-            console.log('quang');
             task = (this.props.task) && this.props.task;
         }
         else task = tasks && tasks.task;

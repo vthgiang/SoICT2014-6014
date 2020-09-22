@@ -1,50 +1,36 @@
-import {
-    sendRequest
-} from '../../../../helpers/requestHelper';
+import { sendRequest } from '../../../../helpers/requestHelper';
 
-export const LinkServices = {
-    get,
-    show,
-    create,
-    edit,
-    destroy,
+export const SystemServices = {
+    getBackups,
+    createBackup,
+    deleteBackup,
+    restore
 };
 
-function get(params) {
-    console.log("getlinks")
+function getBackups() {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/link/links`,
-        method: 'GET',
-        params
-    }, false, true, 'super_admin.link');
+        url: `${process.env.REACT_APP_SERVER}/system/backup`,
+        method: 'GET'
+    }, false, true, 'super_admin.system');
 }
 
-function show(id) {
+function createBackup() {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/link/links/${id}`,
-        method: 'GET',
-    }, false, true, 'super_admin.link');
+        url: `${process.env.REACT_APP_SERVER}/system/backup`,
+        method: 'POST'
+    }, true, true, 'super_admin.system');
 }
 
-function create(data) {
+function deleteBackup(version) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/link/links`,
-        method: 'POST',
-        data,
-    }, true, true, 'super_admin.link');
+        url: `${process.env.REACT_APP_SERVER}/system/backup/${version}`,
+        method: 'DELETE'
+    }, true, true, 'super_admin.system');
 }
 
-function edit(id, data) {
+function restore(version) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/link/links/${id}`,
-        method: 'PATCH',
-        data,
-    }, true, true, 'super_admin.link');
-}
-
-function destroy(id) {
-    return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/link/links/${id}`,
-        method: 'DELETE',
-    }, true, true, 'super_admin.link');
+        url: `${process.env.REACT_APP_SERVER}/system/restore/${version}`,
+        method: 'PATCH'
+    }, true, true, 'super_admin.system');
 }

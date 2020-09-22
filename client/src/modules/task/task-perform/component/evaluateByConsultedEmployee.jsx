@@ -139,7 +139,7 @@ class EvaluateByConsultedEmployee extends Component {
 
         let point = undefined;
         if (evaluations) {
-            let res = evaluations.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === "Consulted"));
+            let res = evaluations.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === "consulted"));
             if (res) {
                 point = res.employeePoint ? res.employeePoint : undefined;
                 if (res.organizationalUnit) {
@@ -165,7 +165,7 @@ class EvaluateByConsultedEmployee extends Component {
 
         for (let i in infoEval) {
 
-            if (infoEval[i].type === "Date") {
+            if (infoEval[i].type === "date") {
                 if (infoEval[i].value) {
                     info[`${infoEval[i].code}`] = {
                         value: this.formatDate(infoEval[i].value),
@@ -181,7 +181,7 @@ class EvaluateByConsultedEmployee extends Component {
                 //     }
                 // }
             }
-            else if (infoEval[i].type === "SetOfValues") {
+            else if (infoEval[i].type === "set_of_values") {
                 let splitSetOfValues = infoEval[i].extra.split('\n');
                 if (infoEval[i].value) {
                     info[`${infoEval[i].code}`] = {
@@ -318,7 +318,7 @@ class EvaluateByConsultedEmployee extends Component {
         taskId = this.state.task._id;
         let data = {
             user: getStorage("userId"),
-            role: "Consulted",
+            role: "consulted",
             unit: this.state.unit,
             kpi: this.state.kpi,
             employeePoint: this.state.point,
@@ -446,7 +446,7 @@ class EvaluateByConsultedEmployee extends Component {
                                     </strong>
                                     {
                                         evaluations.results.map((res, index) => {
-                                            if (res.role === "Responsible") {
+                                            if (res.role === "responsible") {
                                                 return <div key={index} >
                                                     <span style={{ fontWeight: "bold" }}>{translate('task.task_management.detail_emp_point_of')} {res.employee.name}</span>:&nbsp;&nbsp;&nbsp;{res.employeePoint}
                                                 </div>

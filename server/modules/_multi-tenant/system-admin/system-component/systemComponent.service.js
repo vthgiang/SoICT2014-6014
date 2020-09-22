@@ -1,4 +1,4 @@
-const { SystemComponent, SystemLink, RootRole } = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
+const { SystemComponent, SystemLink, RootRole, Company, Link, Component, Role, Privilege } = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
 const {connect} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 exports.getAllSystemComponents = async (query) => {

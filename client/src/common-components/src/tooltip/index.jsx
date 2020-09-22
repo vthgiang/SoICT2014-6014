@@ -39,6 +39,20 @@ class ToolTip extends Component {
         </React.Fragment>
     }
 
+    displayTooltipForIcon = (data, icon) => {
+        let title = data.map(element => {
+            return `${element}`
+        })
+
+        return <React.Fragment>
+
+            <a href="#" data-toggle="tooltip" data-placement="auto" title={title}>
+                <i className="material-icons">{icon}</i>
+            </a>
+
+        </React.Fragment>
+    }
+
     displayTitleContent = (data) => {
         var convertData = [];
         var min = data.length > 5 ? data.length - 5 : 0;
@@ -65,19 +79,20 @@ class ToolTip extends Component {
 
     }
 
-    diplayToolTip = (data, type) => {
+    diplayToolTip = (data, type, icon) => {
         switch (type) {
             case 'latest_history':
                 return this.displayTitleContent(data);
+            case 'icon_tooltip':
+                return this.displayTooltipForIcon(data, icon);
             default:
                 return this.displayDefault(data);
         }
     }
 
     render() {
-        const { dataTooltip, type = undefined } = this.props;
-
-        return this.diplayToolTip(dataTooltip, type);
+        const { dataTooltip, type = undefined, materialIcon = "help" } = this.props;
+        return this.diplayToolTip(dataTooltip, type, materialIcon);
     }
 }
 

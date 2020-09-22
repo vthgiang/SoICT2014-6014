@@ -46,7 +46,7 @@ exports.getAllSystemLinkCategories = async (req, res) => {
 exports.createSystemLink = async (req, res) => {
     try {
         const { url, description, roles, category } = req.body;
-
+        console.log("sjflksjfsdk")
         const link = await SystemLinkServices.createSystemLink(url, description, roles, category);
         const data = await SystemLinkServices.getSystemLink(link._id);
         
@@ -57,7 +57,7 @@ exports.createSystemLink = async (req, res) => {
             content: data
         });
     } catch (error) {
-        console.log(error)
+        console.log("Lỗi này:",error)
         Logger.error(req.user.email, 'create_system_link_faile');
         res.status(400).json({
             success: false,
@@ -123,7 +123,7 @@ exports.deleteSystemLink = async (req, res) => {
             content: link
         });
     } catch (error) {
-        
+        console.log(error)
         Logger.error(req.user.email, 'delete_system_link_faile');
         res.status(400).json({
             success: false,

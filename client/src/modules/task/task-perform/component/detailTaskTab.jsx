@@ -154,11 +154,11 @@ class DetailTaskTab extends Component {
 
     formatStatus = (data) => {
         const { translate } = this.props;
-        if (data === "Inprocess") return translate('task.task_management.inprocess');
-        else if (data === "WaitForApproval") return translate('task.task_management.wait_for_approval');
-        else if (data === "Finished") return translate('task.task_management.finished');
-        else if (data === "Delayed") return translate('task.task_management.delayed');
-        else if (data === "Canceled") return translate('task.task_management.canceled');
+        if (data === "inprocess") return translate('task.task_management.inprocess');
+        else if (data === "wait_for_approval") return translate('task.task_management.wait_for_approval');
+        else if (data === "finished") return translate('task.task_management.finished');
+        else if (data === "delayed") return translate('task.task_management.delayed');
+        else if (data === "canceled") return translate('task.task_management.canceled');
     }
 
     // convert ISODate to String dd-mm-yyyy
@@ -336,7 +336,7 @@ class DetailTaskTab extends Component {
                     if (task.responsibleEmployees) {
                         responsibleEmployeesNotKpiLink = task.responsibleEmployees.filter(item => {
                             for (let i = 0; i < evaluations[0].results.length; i++) {
-                                if (evaluations[0].results[i].employee && item._id === evaluations[0].results[i].employee._id && evaluations[0].results[i].role === 'Responsible') {
+                                if (evaluations[0].results[i].employee && item._id === evaluations[0].results[i].employee._id && evaluations[0].results[i].role === 'responsible') {
                                     if (evaluations[0].results[i].kpis && evaluations[0].results[i].kpis.length !== 0) {
                                         return false;
                                     }
@@ -348,7 +348,7 @@ class DetailTaskTab extends Component {
                     if (task.accountableEmployees) {
                         accountableEmployeesNotKpiLink = task.accountableEmployees.filter(item => {
                             for (let i = 0; i < evaluations[0].results.length; i++) {
-                                if (evaluations[0].results[i].employee && item._id === evaluations[0].results[i].employee._id && evaluations[0].results[i].role === 'Accountable') {
+                                if (evaluations[0].results[i].employee && item._id === evaluations[0].results[i].employee._id && evaluations[0].results[i].role === 'accountable') {
                                     if (evaluations[0].results[i].kpis && evaluations[0].results[i].kpis.length !== 0) {
                                         return false;
                                     }
@@ -360,7 +360,7 @@ class DetailTaskTab extends Component {
                     if (task.consultedEmployees) {
                         consultedEmployeesNotKpiLink = task.consultedEmployees.filter(item => {
                             for (let i = 0; i < evaluations[0].results.length; i++) {
-                                if (evaluations[0].results[i].employee && item._id === evaluations[0].results[i].employee._id && evaluations[0].results[i].role === 'Consulted') {
+                                if (evaluations[0].results[i].employee && item._id === evaluations[0].results[i].employee._id && evaluations[0].results[i].role === 'consulted') {
                                     if (evaluations[0].results[i].kpis && evaluations[0].results[i].kpis.length !== 0) {
                                         return false;
                                     }
@@ -568,7 +568,7 @@ class DetailTaskTab extends Component {
         checkEvaluationTaskAction = this.checkEvaluationTaskAction(task);
         checkEvaluationTaskAndKpiLink = this.checkEvaluationTaskAndKpiLink(task);
         checkDeadlineForEvaluation = this.checkDeadlineForEvaluation(task)
-        warning = (statusTask === "Inprocess") && ((checkConfirmTask && checkConfirmTask.checkConfirm)
+        warning = (statusTask === "inprocess") && ((checkConfirmTask && checkConfirmTask.checkConfirm)
             || (checkEvaluationTaskAction && checkEvaluationTaskAction.checkEvaluationTaskAction)
             || (checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkEvaluationTask)
             || (checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkKpiLink)
@@ -619,7 +619,7 @@ class DetailTaskTab extends Component {
                             </a>
                         }
                         {
-                            performtasks?.task?.status !== "Finished" &&
+                            performtasks?.task?.status !== "finished" &&
                             <React.Fragment>
                                 {((currentRole === "consulted" || currentRole === "responsible" || currentRole === "accountable") && checkInactive) &&
                                     <a className="btn btn-app" onClick={() => !performtasks.currentTimer && this.startTimer(task._id, currentUser)} title="Bắt đầu thực hiện công việc" disabled={performtasks.currentTimer}>
@@ -632,10 +632,10 @@ class DetailTaskTab extends Component {
                         {/* {checkInactive && codeInProcess && (currentRole === "accountable" || (currentRole === "responsible" && checkHasAccountable === false)) &&
                             (statusTask !== "Finished" &&
                                 (typeOfTask === "Gateway" ?
-                                    <a className="btn btn-app" onClick={() => this.handleEndTask(id, "Inprocess", codeInProcess, typeOfTask)} title={translate('task.task_management.detail_route_task')}>
+                                    <a className="btn btn-app" onClick={() => this.handleEndTask(id, "inprocess", codeInProcess, typeOfTask)} title={translate('task.task_management.detail_route_task')}>
                                         <i className="fa fa-location-arrow" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_route')}
                                     </a> :
-                                    <a className="btn btn-app" onClick={() => this.handleEndTask(id, "Finished", codeInProcess, typeOfTask)} title={translate('task.task_management.detail_end')}>
+                                    <a className="btn btn-app" onClick={() => this.handleEndTask(id, "finished", codeInProcess, typeOfTask)} title={translate('task.task_management.detail_end')}>
                                         <i className="fa fa-power-off" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_end')}
                                     </a>
                                 )
@@ -684,10 +684,10 @@ class DetailTaskTab extends Component {
                                 <h4>{translate('task.task_management.warning')}</h4>
 
                                 {/* Kích hoạt công việc phía sau trong quy trình */}
-                                {statusTask === "Inprocess" && checkInactive && codeInProcess && (currentRole === "accountable" || (currentRole === "responsible" && checkHasAccountable === false)) &&
+                                {statusTask === "inprocess" && checkInactive && codeInProcess && (currentRole === "accountable" || (currentRole === "responsible" && checkHasAccountable === false)) &&
                                     <div>
                                         <strong>{translate('task.task_perform.is_task_process')}:</strong>
-                                        <a style={{ cursor: "pointer" }} onClick={() => this.handleEndTask(id, "Inprocess", codeInProcess, typeOfTask)}>
+                                        <a style={{ cursor: "pointer" }} onClick={() => this.handleEndTask(id, "inprocess", codeInProcess, typeOfTask)}>
                                             {translate('task.task_perform.following_task')}
                                         </a>
                                     </div>
@@ -714,13 +714,13 @@ class DetailTaskTab extends Component {
 
                                 {/** Chưa có đánh giá */}
                                 {
-                                    task.status === "Inprocess" && checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkEvaluationTask
+                                    task.status === "inprocess" && checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkEvaluationTask
                                     && <div><strong>{translate('task.task_management.not_have_evaluation')}</strong></div>
                                 }
 
                                 {/** Chưa liên kết KPI */}
                                 {
-                                    task.status === "Inprocess" && checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkKpiLink
+                                    task.status === "inprocess" && checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkKpiLink
                                     && <div>
                                         <strong>{translate('task.task_management.detail_not_kpi')}:</strong>
                                         {
@@ -765,7 +765,7 @@ class DetailTaskTab extends Component {
                                 {
                                     (task && task.taskInformations && task.taskInformations.length !== 0) &&
                                     task.taskInformations.map((info, key) => {
-                                        if (info.type === "Date") {
+                                        if (info.type === "date") {
                                             return <div key={key}><strong>{info.name}:</strong> {info.value ? this.formatDate(info.value) : translate('task.task_management.detail_not_hasinfo')}</div>
                                         }
                                         return <div key={key}><strong>{info.name}:</strong> {info.value ? info.value : translate('task.task_management.detail_not_hasinfo')}</div>
@@ -912,7 +912,7 @@ class DetailTaskTab extends Component {
                                                         <li>{translate('task.task_management.detail_progress')}: &nbsp;&nbsp; {(eva.progress !== null && eva.progress !== undefined) ? `${eva.progress}%` : translate('task.task_management.detail_not_eval_on_month')}</li>
                                                         {
                                                             eva.taskInformations.map((info, key) => {
-                                                                if (info.type === "Date") {
+                                                                if (info.type === "date") {
                                                                     return <li key={key}>{info.name}: &nbsp;&nbsp; {info.value ? this.formatDate(info.value) : translate('task.task_management.detail_not_eval_on_month')}</li>
                                                                 }
                                                                 return <li key={key}>{info.name}: &nbsp;&nbsp; {info.value ? info.value : translate('task.task_management.detail_not_eval_on_month')}</li>
@@ -946,7 +946,7 @@ class DetailTaskTab extends Component {
 
                                                 {/* Thời gian bấm giờ */}
                                                 <strong>Thời gian đóng góp:</strong>
-                                                {showToolbar && <a style={{ cursor: "pointer" }} onClick={() => this.calculateHoursSpentOnTask(task._id, task.timesheetLogs, eva._id, eva.prevDate, eva.date)} title="Cập nhật thời gian bấm giờ">Nhấn chuột để cập nhật dữ liệu <i class="fa fa-fw fa-clock-o"></i></a>}
+                                                {showToolbar && <a style={{ cursor: "pointer" }} onClick={() => this.calculateHoursSpentOnTask(task._id, task.timesheetLogs, eva._id, eva.prevDate, eva.date)} title="Cập nhật thời gian bấm giờ">Nhấn chuột để cập nhật dữ liệu <i className="fa fa-fw fa-clock-o"></i></a>}
                                                 {
                                                     eva.results.length !== 0 && hoursSpentOfEmployeeInEvaluation[eva.date] && JSON.stringify(hoursSpentOfEmployeeInEvaluation[eva.date]) !== '{}'
                                                     &&

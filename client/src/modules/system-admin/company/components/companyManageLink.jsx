@@ -120,11 +120,12 @@ class CompanyManageLinks extends Component {
 
     render() { 
         const { translate, company } = this.props;
-        const { linkPaginate, checkedAll } = this.state;
+        const { linkPaginate, checkedAll, companyShortName } = this.state;
+        console.log(this.state)
 
         return ( 
             <div style={{padding: '10px 0px 10px 0px'}}>
-                <a className="btn btn-primary pull-right" onClick={this.updateCompanyLinks}><i className="material-icons">save</i></a>
+                <a className="btn btn-primary pull-right" onClick={()=>this.updateCompanyLinks(companyShortName)}><i className="material-icons">save</i></a>
                 <SearchBar 
                     columns={[
                         { title: translate('manage_link.url'), value: 'url' },
@@ -213,7 +214,7 @@ class CompanyManageLinks extends Component {
         }
     }
 
-    updateCompanyLinks = () => {
+    updateCompanyLinks = (portal) => {
         let {linkPaginate} = this.state;
         let data = linkPaginate.map(link=>{
             return {
@@ -222,7 +223,7 @@ class CompanyManageLinks extends Component {
             }
         });
 
-        this.props.updateCompanyLinks(data);
+        this.props.updateCompanyLinks(data, {portal});
     }
 }
 
