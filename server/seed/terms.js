@@ -173,8 +173,16 @@ const LINKS = [
         components: getComponentsInLink('/notifications')
     },
 
-
-
+    {
+        url: '/system-management',
+        description: 'Quản lý sao lưu - phục hồi dữ liệu',
+        category: LINK_CATEGORY.COMMON.name,
+        roles: [
+            ROOT_ROLES.SUPER_ADMIN.name,
+            ROOT_ROLES.ADMIN.name
+        ],
+        components: getComponentsInLink('/system-management')
+    },
 
     {
         url: '/departments-management',

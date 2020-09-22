@@ -84,8 +84,8 @@ if (process.env.MULTI_TENANT === 'true') {
 	app.use("/purchase-request", require("./modules/_multi-tenant/asset/purchase-request/purchase-request.route"));
 	app.use("/use-request", require("./modules/_multi-tenant/asset/use-request/use-request.route"));
 
-	// // Task report
-	// app.use("/taskreports", require("./modules/_multi-tenant/report/task-report/taskReport.route"));
+	// Task report
+	app.use("/taskreports", require("./modules/_multi-tenant/report/task-report/taskReport.route"));
 
 	// // material
 	// app.use("/materials", require("./modules/_multi-tenant/warehouse/material/material.router"));

@@ -61,7 +61,7 @@ const TaskReportSchema = new Schema({
         },
         type: {
             type: String,
-            enum: ['Text', 'Boolean', 'Date', 'Number', 'SetOfValues'],
+            enum: ['text', 'boolean', 'date', 'number', 'set_of_values'],
         },
         filter: {
             type: String,
