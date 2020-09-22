@@ -62,15 +62,17 @@ class ApiImage extends Component {
     }
 
     showImage = () => {
-        const { alt = "File not available" } = this.props;
+        const { alt = "File not available", showImg=true } = this.props;
         let { image } = this.state;
 
-        Swal.fire({
-            html: `<img src=${image} alt=${alt} style="max-width: 100%; max-height: 100%" />`,
-            width: 'auto',
-            showCloseButton: true,
-            showConfirmButton: false,
-        })
+        if(showImg){
+            Swal.fire({
+                html: `<img src=${image} alt=${alt} style="max-width: 100%; max-height: 100%" />`,
+                width: 'auto',
+                showCloseButton: true,
+                showConfirmButton: false,
+            })
+        }
     }
 
 

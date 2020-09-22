@@ -26,8 +26,8 @@ app.use(
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-app.use("/upload/avatars", express.static("upload/avatars"));
-app.use("/upload/asset/pictures", express.static("upload/asset/pictures"));
+// app.use("/upload/avatars", express.static("upload/avatars"));
+// app.use("/upload/asset/pictures", express.static("upload/asset/pictures"));
 
 
 
@@ -57,7 +57,7 @@ if (process.env.MULTI_TENANT === 'true') {
 	app.use("/notifications", require("./modules/_multi-tenant/notification/notification.route"));
 
 
-
+	router.use('/system', require('./modules/_multi-tenant/super-admin/system/system.route'));
 	router.use('/user', require('./modules/_multi-tenant/super-admin/user/user.route'));
 	router.use('/role', require('./modules/_multi-tenant/super-admin/role/role.route'));
 	router.use('/component', require("./modules/_multi-tenant/super-admin/component/component.route"));
@@ -82,8 +82,8 @@ if (process.env.MULTI_TENANT === 'true') {
 	app.use("/purchase-request", require("./modules/_multi-tenant/asset/purchase-request/purchase-request.route"));
 	app.use("/use-request", require("./modules/_multi-tenant/asset/use-request/use-request.route"));
 
-	// // Task report
-	// app.use("/taskreports", require("./modules/_multi-tenant/report/task-report/taskReport.route"));
+	// Task report
+	app.use("/taskreports", require("./modules/_multi-tenant/report/task-report/taskReport.route"));
 
 	// // material
 	// app.use("/materials", require("./modules/_multi-tenant/warehouse/material/material.router"));
@@ -96,7 +96,7 @@ if (process.env.MULTI_TENANT === 'true') {
 
 	// // example
 	// app.use("/examples", require("./modules/_multi-tenant/example/example.route"));
-	
+
 	app.use("/documents", require("./modules/_multi-tenant/document/document.route"));
 
 	// // Customer Management

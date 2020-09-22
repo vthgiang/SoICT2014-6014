@@ -80,7 +80,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
 
         for (let i in infoEval) {
 
-            if (infoEval[i].type === "Date") {
+            if (infoEval[i].type === "date") {
                 if (infoEval[i].value) {
                     info[`${infoEval[i].code}`] = {
                         value: this.formatDate(infoEval[i].value),
@@ -96,7 +96,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                     }
                 }
             }
-            else if (infoEval[i].type === "SetOfValues") {
+            else if (infoEval[i].type === "set_of_values") {
                 let splitSetOfValues = infoEval[i].extra.split('\n');
                 if (infoEval[i].value) {
                     info[`${infoEval[i].code}`] = {
@@ -125,7 +125,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         }
         if (evaluations) {
             if (evaluations.results.length !== 0) {
-                let res = evaluations.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === "Responsible"));
+                let res = evaluations.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === "responsible"));
                 if (res) point = res.employeePoint ? res.employeePoint : undefined;
             }
 
@@ -176,7 +176,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
             state.info[`${name}`] = {
                 value: value,
                 code: name,
-                type: 'Number'
+                type: 'number'
             }
             state.errorInfo[name] = this.validateNumberInfo(value);
             return {
@@ -192,7 +192,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
             state.info[`${name}`] = {
                 value: value,
                 code: name,
-                type: 'Text'
+                type: 'text'
             }
             state.errorInfo[name] = this.validateTextInfo(value);
             return {
@@ -207,7 +207,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
             state.info[`${code}`] = {
                 value: value,
                 code: code,
-                type: 'Date'
+                type: 'date'
             }
             state.errorInfo[code] = this.validateDate(value);
             return {
@@ -223,7 +223,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
             state.info[`${code}`] = {
                 value: value,
                 code: code,
-                type: 'SetOfValues'
+                type: 'set_of_values'
             }
             return {
                 ...state,
@@ -238,7 +238,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
             state.info[`${name}`] = {
                 value: value,
                 code: name,
-                type: 'Boolean'
+                type: 'boolean'
             }
             return {
                 ...state,

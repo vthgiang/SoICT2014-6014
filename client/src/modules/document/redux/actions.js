@@ -463,7 +463,7 @@ function getUserDocumentStatistics(option, data) {
         case 'common':
             return dispatch => {
                 dispatch({ type: DocumentConstants.GET_DOCUMENT_STATISTICS_COMMON_REQUEST });
-                DocumentServices.getUserDocumentStatistics({ option })
+                DocumentServices.getUserDocumentStatistics({ option }, data)
                     .then(res => {
                         dispatch({
                             type: DocumentConstants.GET_DOCUMENT_STATISTICS_COMMON_SUCCESS,
@@ -478,7 +478,7 @@ function getUserDocumentStatistics(option, data) {
         case 'latest':
             return dispatch => {
                 dispatch({ type: DocumentConstants.GET_DOCUMENT_STATISTICS_LATEST_REQUEST });
-                DocumentServices.getUserDocumentStatistics({ option })
+                DocumentServices.getUserDocumentStatistics({ option }, data)
                     .then(res => {
                         dispatch({
                             type: DocumentConstants.GET_DOCUMENT_STATISTICS_LATEST_SUCCESS,

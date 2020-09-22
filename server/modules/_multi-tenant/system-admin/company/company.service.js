@@ -20,10 +20,19 @@ exports.getAllCompanies = async (query) => {
 
     if (!page && !limit) {
         let companies = await Company(connect(DB_CONNECTION, process.env.DB_NAME)).find();
-
         for (let i = 0; i < companies.length; i++) {
             let superAdmin = await User(connect(DB_CONNECTION, companies[i].shortName)).findById(companies[i].superAdmin);
-            companies[i] = { ...companies[i]._doc, superAdmin }
+            companies[i] = { 
+                _id: companies[i]._id,
+                log: companies[i].log,
+                description: companies[i].description,
+                active: companies[i].active,
+                name: companies[i].name,
+                shortName: companies[i].shortName,
+                superAdmin: superAdmin,
+                createdAt: companies[i].createdAt,
+                updatedAt: companies[i].updatedAt
+            }
         }
         return companies;
     } else {

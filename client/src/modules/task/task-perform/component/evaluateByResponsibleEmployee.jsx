@@ -83,8 +83,6 @@ class EvaluateByResponsibleEmployee extends Component {
             this.setState(state => {
                 return {
                     ...state,
-                    // errorInfo: {},
-                    // errorOnProgress: undefined,
                     id: nextProps.id,
                     task: data.task,
                     info: data.info,
@@ -168,7 +166,7 @@ class EvaluateByResponsibleEmployee extends Component {
 
         let infoTask = task.taskInformations;
         for (let i in infoTask) {
-            if (infoTask[i].type === "Date") {
+            if (infoTask[i].type === "date") {
                 if (!infoTask[i].filledByAccountableEmployeesOnly) {
                     info[`${infoTask[i].code}`] = {
                         // value: this.formatDate(Date.now()),
@@ -177,7 +175,7 @@ class EvaluateByResponsibleEmployee extends Component {
                     }
                 }
             }
-            else if (infoTask[i].type === "SetOfValues") {
+            else if (infoTask[i].type === "set_of_values") {
                 let splitSetOfValues = infoTask[i].extra.split('\n');
                 if (!infoTask[i].filledByAccountableEmployeesOnly) {
                     info[`${infoTask[i].code}`] = {
@@ -194,7 +192,7 @@ class EvaluateByResponsibleEmployee extends Component {
         if (evaluation) {
             progress = evaluation.progress;
             if (evaluation.results.length !== 0) {
-                let tmp = evaluation.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === "Responsible"));
+                let tmp = evaluation.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === "responsible"));
                 if (tmp) {
                     if (tmp.organizationalUnit) {
                         unit = tmp.organizationalUnit._id;
@@ -220,7 +218,7 @@ class EvaluateByResponsibleEmployee extends Component {
             if (chkHasInfo) {
                 for (let i in infoEval) {
 
-                    if (infoEval[i].type === "Date") {
+                    if (infoEval[i].type === "date") {
                         if (infoEval[i].value) {
                             info[`${infoEval[i].code}`] = {
                                 value: this.formatDate(infoEval[i].value),
@@ -236,7 +234,7 @@ class EvaluateByResponsibleEmployee extends Component {
                             }
                         }
                     }
-                    else if (infoEval[i].type === "SetOfValues") {
+                    else if (infoEval[i].type === "set_of_values") {
                         let splitSetOfValues = infoEval[i].extra.split('\n');
                         if (infoEval[i].value) {
                             info[`${infoEval[i].code}`] = {
@@ -329,7 +327,7 @@ class EvaluateByResponsibleEmployee extends Component {
         let infoTask = task.taskInformations;
 
         for (let i in infoTask) {
-            if (infoTask[i].type === "Date") {
+            if (infoTask[i].type === "date") {
                 if (infoTask[i].value) {
                     info[`${infoTask[i].code}`] = {
                         value: this.formatDate(infoTask[i].value),
@@ -345,7 +343,7 @@ class EvaluateByResponsibleEmployee extends Component {
                     }
                 }
             }
-            else if (infoTask[i].type === "SetOfValues") {
+            else if (infoTask[i].type === "set_of_values") {
                 let splitSetOfValues = infoTask[i].extra.split('\n');
                 if (infoTask[i].value) {
                     info[`${infoTask[i].code}`] = {
@@ -516,16 +514,9 @@ class EvaluateByResponsibleEmployee extends Component {
             return {
                 ...state,
                 date: value,
-                // info: data.info,
-                // kpi: data.kpi,
                 autoPoint: automaticPoint,
-                // point: data.point,
                 oldAutoPoint: data.autoPoint,
-                // progress: data.progress,
-                // checkSave: data.checkSave,
                 errorOnDate: err,
-                // errorInfo: {},
-                // errorOnProgress: undefined,
                 indexReRender: state.indexReRender + 1,
             }
         });
@@ -569,7 +560,7 @@ class EvaluateByResponsibleEmployee extends Component {
             state.info[`${name}`] = {
                 value: value,
                 code: name,
-                type: 'Number'
+                type: 'number'
             }
             state.errorInfo[name] = this.validateNumberInfo(value);
             return {
@@ -586,7 +577,7 @@ class EvaluateByResponsibleEmployee extends Component {
             state.info[`${name}`] = {
                 value: value,
                 code: name,
-                type: 'Text'
+                type: 'text'
             }
             state.errorInfo[name] = this.validateTextInfo(value);
             return {
@@ -601,7 +592,7 @@ class EvaluateByResponsibleEmployee extends Component {
             state.info[`${code}`] = {
                 value: value,
                 code: code,
-                type: 'Date'
+                type: 'date'
             }
             state.errorInfo[code] = this.validateDate(value);
             return {
@@ -617,7 +608,7 @@ class EvaluateByResponsibleEmployee extends Component {
             state.info[`${code}`] = {
                 value: value,
                 code: code,
-                type: 'SetOfValues'
+                type: 'set_of_values'
             }
             return {
                 ...state,
@@ -631,7 +622,7 @@ class EvaluateByResponsibleEmployee extends Component {
             state.info[`${name}`] = {
                 value: value,
                 code: name,
-                type: 'Boolean'
+                type: 'boolean'
             }
             return {
                 ...state,
@@ -765,9 +756,9 @@ class EvaluateByResponsibleEmployee extends Component {
     // hàm format vai trò
     formatRole = (data) => {
         const { translate } = this.props;
-        if (data === "Consulted") return translate('task.task_management.consulted');
-        if (data === "Accountable") return translate('task.task_management.accountable');
-        if (data === "Responsible") return translate('task.task_management.responsible');
+        if (data === "consulted") return translate('task.task_management.consulted');
+        if (data === "accountable") return translate('task.task_management.accountable');
+        if (data === "responsible") return translate('task.task_management.responsible');
     }
 
     // hàm ghi lại lịch sử đánh giá
@@ -836,7 +827,7 @@ class EvaluateByResponsibleEmployee extends Component {
             progress: this.state.progress,
             automaticPoint: this.state.autoPoint,
             employeePoint: this.state.point,
-            role: "Responsible",
+            role: "responsible",
 
             kpi: this.state.kpi ? this.state.kpi : [],
             unit: this.state.unit,

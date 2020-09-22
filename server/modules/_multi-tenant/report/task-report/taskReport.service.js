@@ -1,5 +1,3 @@
-const mongoose = require("mongoose");
-const moment = require("moment");
 const { TaskReport } = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
 const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
@@ -82,9 +80,22 @@ exports.getTaskReportById = async (portal, id) => {
  * @param {*} user id người tạo
  */
 exports.createTaskReport = async (portal, data, user) => {
-    let { organizationalUnit, taskTemplate, nameTaskReport, descriptionTaskReport,
-        readByEmployees, responsibleEmployees, accountableEmployees, startDate, endDate, status, frequency, itemListBoxLeft, itemListBoxRight,
-        taskInformations } = data;
+    let {
+        organizationalUnit,
+        taskTemplate,
+        nameTaskReport,
+        descriptionTaskReport,
+        readByEmployees,
+        responsibleEmployees,
+        accountableEmployees,
+        startDate,
+        endDate,
+        status,
+        frequency,
+        itemListBoxLeft,
+        itemListBoxRight,
+        taskInformations
+    } = data;
     let startTime, start = null, endTime, end = null, configurations = [];
 
     if (status) {
@@ -148,8 +159,22 @@ exports.createTaskReport = async (portal, data, user) => {
  * @param {*} người sửa 
  */
 exports.editTaskReport = async (portal, id, data, user) => {
-    let { organizationalUnit, taskTemplate, name, description, readByEmployees, responsibleEmployees,
-        accountableEmployees, status, startDate, endDate, dataForAxisXInChart, frequency, listDataChart, taskInformations } = data;
+    let {
+        organizationalUnit,
+        taskTemplate,
+        name,
+        description,
+        readByEmployees,
+        responsibleEmployees,
+        accountableEmployees,
+        status,
+        startDate,
+        endDate,
+        dataForAxisXInChart,
+        frequency,
+        listDataChart,
+        taskInformations
+    } = data;
     let startTime, start = null, endTime, end = null, configurations = [];
 
     if (status && status.length > 0) {

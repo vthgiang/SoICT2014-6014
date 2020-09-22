@@ -26,9 +26,9 @@ const TaskProcessSchema = new Schema({
     },
     status: {
         type: String,
-        default: "Inprocess",
+        default: "inprocess",
         required: true,
-        enum: ["Inprocess", "WaitForApproval", "Finished", "Delayed", "Canceled"],
+        enum: ["inprocess", "wait_for_approval", "finished", "delayed", "canceled"],
     },
     creator: {
         type: Schema.Types.ObjectId,
