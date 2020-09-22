@@ -212,11 +212,11 @@ class ListAsset extends Component {
     }
 
     convertGroupAsset = (group) => {
-        if (group === 'Building') {
+        if (group === 'building') {
             return 'Mặt bằng';
-        } else if (group === 'Vehicle') {
+        } else if (group === 'vehicle') {
             return 'Xe cộ'
-        } else if (group === 'Machine') {
+        } else if (group === 'machine') {
             return 'Máy móc'
         } else {
             return 'Khác'
@@ -270,10 +270,10 @@ class ListAsset extends Component {
                                 options={{ nonSelectedText: translate('asset.asset_info.select_group'), allSelectedText: translate('asset.general_information.select_all_group') }}
                                 onChange={this.handleGroupChange}
                                 items={[
-                                    { value: "Building", text: translate('asset.dashboard.building') },
-                                    { value: "Vehicle", text: translate('asset.dashboard.vehicle') },
-                                    { value: "Machine", text: translate('asset.dashboard.machine') },
-                                    { value: "Other", text: translate('asset.dashboard.other') },
+                                    { value: "building", text: translate('asset.dashboard.building') },
+                                    { value: "vehicle", text: translate('asset.dashboard.vehicle') },
+                                    { value: "machine", text: translate('asset.dashboard.machine') },
+                                    { value: "other", text: translate('asset.dashboard.other') },
                                 ]}
                             >
                             </SelectMulti>
@@ -317,11 +317,11 @@ class ListAsset extends Component {
                                 options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('asset.general_information.select_all_status') }}
                                 onChange={this.handleStatusChange}
                                 items={[
-                                    { value: "Sẵn sàng sử dụng", text: translate('asset.general_information.ready_use') },
-                                    { value: "Đang sử dụng", text: translate('asset.general_information.using') },
-                                    { value: "Hỏng hóc", text: translate('asset.general_information.damaged') },
-                                    { value: "Mất", text: translate('asset.general_information.lost') },
-                                    { value: "Thanh lý", text: translate('asset.general_information.disposal') }
+                                    { value: "ready_to_use", text: translate('asset.general_information.ready_use') },
+                                    { value: "in_use", text: translate('asset.general_information.using') },
+                                    { value: "broken", text: translate('asset.general_information.damaged') },
+                                    { value: "lost", text: translate('asset.general_information.lost') },
+                                    { value: "disposed", text: translate('asset.general_information.disposal') }
                                 ]}
                             >
                             </SelectMulti>

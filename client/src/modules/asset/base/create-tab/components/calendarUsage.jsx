@@ -33,8 +33,8 @@ class CalendarUsage extends Component {
     this.props.searchRecommendDistributes(data); // Lấy phiếu đăng ký sử dụng theo tài sản
   }
 
-  shouldComponentUpdate = async (nextProps, nextState)=>{
-    if(nextState.clickInfo !== this.state.clickInfo || nextState.currentEvent !== this.state.currentEvent) {
+  shouldComponentUpdate = async (nextProps, nextState) => {
+    if (nextState.clickInfo !== this.state.clickInfo || nextState.currentEvent !== this.state.currentEvent) {
       await this.setState({
         clickInfo: nextState.clickInfo,
         currentEvent: nextState.currentEvent,
@@ -81,10 +81,10 @@ class CalendarUsage extends Component {
   }
 
   handleClick = () => {
-    if(this.state.currentEvent == 'delete'){
+    if (this.state.currentEvent == 'delete') {
       this.handleDeleteEvent(this.state.clickInfo);
-    } 
-    if(this.state.currentEvent == 'approve'){
+    }
+    if (this.state.currentEvent == 'approve') {
       this.handleApprove(this.state.clickInfo);
     }
   }
@@ -120,7 +120,7 @@ class CalendarUsage extends Component {
       startDate: new Date(data.startDate),
       endDate: new Date(data.endDate)
     }
-  
+
     usageLogs.push(newUsage);
 
     let calendarApi = currentRow.view.calendar;
@@ -142,12 +142,12 @@ class CalendarUsage extends Component {
       usageLogs: usageLogs,
       assignedToUser: data.usedByUser,
       assignedToOrganizationalUnit: data.usedByOrganizationalUnit,
-      status: "Đang sử dụng",
+      status: "in_use",
     })
 
     let createUsage = {
       usageLogs: usageLogs,
-      status: "Đang sử dụng",
+      status: "in_use",
       assignedToUser: data.usedByUser,
       assignedToOrganizationalUnit: data.usedByOrganizationalUnit,
     }
@@ -180,7 +180,7 @@ class CalendarUsage extends Component {
           note: dataRecommendDistribute[0].note,
           status: "Đã phê duyệt",
         })
-      
+
       let data = {
         receiptsCode: "",
         month: "",
@@ -200,11 +200,11 @@ class CalendarUsage extends Component {
 
       let createUsage = {
         usageLogs: usageLogs,
-        status: "Đang sử dụng",
+        status: "in_use",
         assignedToUser: dataRecommendDistribute[0].proponent,
         assignedToOrganizationalUnit: undefined,
       }
-  
+
       await this.props.createUsage(this.props.assetId, createUsage)
       await this.props.searchRecommendDistributes(data);
     }
@@ -214,27 +214,27 @@ class CalendarUsage extends Component {
   renderEventContent = (eventInfo) => {
     return (
       <>
-        { eventInfo.event.borderColor != "#337ab7" &&
-          <a className="edit" title="Approve" style={{color: "whitesmoke", cursor: "pointer"}} data-toggle="tooltip" onClick={async () => {
+        {eventInfo.event.borderColor != "#337ab7" &&
+          <a className="edit" title="Approve" style={{ color: "whitesmoke", cursor: "pointer" }} data-toggle="tooltip" onClick={async () => {
             await this.setState({
               currentEvent: 'approve',
             }, () => {
               return this.handleEventClick
             })
-  
+
           }}><i className="material-icons" id="approve-event">post_add</i></a>
         }
-        { eventInfo.event.borderColor == "#337ab7" &&
+        {eventInfo.event.borderColor == "#337ab7" &&
           <a className="delete" title="Delete" style={{}} data-toggle="tooltip" onClick={async () => {
             await this.setState({
               currentEvent: 'delete',
             }, () => {
               return this.handleEventClick
             })
-  
+
           }}><i className="material-icons" id="delete-event"></i></a>
         }
-        <br/>
+        <br />
         <i>{eventInfo.event.title}</i><br />
         <b>{eventInfo.timeText}</b><br />
       </>
@@ -273,7 +273,7 @@ class CalendarUsage extends Component {
       listRecommendDistributes = recommendDistribute.listRecommendDistributes
       for (let i in listRecommendDistributes) {
         let recommendDistribute;
-        if(listRecommendDistributes[i].status == "Chờ phê duyệt" ){
+        if (listRecommendDistributes[i].status == "Chờ phê duyệt") {
           recommendDistribute = {
             id: listRecommendDistributes[i]._id,
             color: listRecommendDistributes[i].status == "Chờ phê duyệt" ? '#00a65a' : (listRecommendDistributes[i].status == "Đã phê duyệt" ? '#337ab7' : 'yellow'),
@@ -304,14 +304,14 @@ class CalendarUsage extends Component {
             (!listRecommendDistributes && data.length == usageLogs.length))
             &&
             <Scheduler
-              className= "asset-usage-scheduler"
+              className="asset-usage-scheduler"
               headerToolbar={{
                 left: 'prev,next today',
                 center: 'title',
                 right: 'timeGridWeek'
               }}
               updateSizeEventRegistrations={[ // Áp dụng khi mở lại modal (trước đó modal đã mở và tab usage được chọn)
-                { selector: "#modal-view-asset", eventName: "shown.bs.modal" }, 
+                { selector: "#modal-view-asset", eventName: "shown.bs.modal" },
                 { selector: "#modal-edit-asset", eventName: "shown.bs.modal" },
               ]}
               initialView='timeGridWeek'
@@ -330,7 +330,7 @@ class CalendarUsage extends Component {
           }
         </div>
 
-        { currentRow &&
+        {currentRow &&
           <UsageLogAddModal
             calendarUsage={`calendar`}
             handleChange={this.handleAddUsage}

@@ -9,7 +9,7 @@ import { AssetManagerActions } from '../redux/actions';
 import { AssetImportTab } from './assetImportTab';
 
 import {
-    configurationGeneralInformationOfAsset, 
+    configurationGeneralInformationOfAsset,
     configurationUsageInformationOfAssetTemplate,
     configurationIncidentInformationOfAssetTemplate,
     configurationMaintainanceInformationOfAssetTemplate,
@@ -24,7 +24,7 @@ class AssetImportForm extends Component {
 
     constructor(props) {
         super(props);
-        
+
         this.state = {
             importGeneralInformationData: [],
             importDepreciationInformationData: [],
@@ -38,7 +38,7 @@ class AssetImportForm extends Component {
     componentDidMount() {
         this.props.getAllUsers();
     }
-    
+
     save = () => {
         const {
             importGeneralInformationData,
@@ -60,7 +60,7 @@ class AssetImportForm extends Component {
 
         this.props.addNewAsset(asset)
     }
-    
+
     isFormValidated = () => {
         const {
             errorGeneralInformationData,
@@ -379,14 +379,14 @@ class AssetImportForm extends Component {
 
         if (checkFileImport) {
             let assetTypeArray = [], roleArray = [], assetGroups, status, typeRegisterForUse, checkAssetType = false, checkRole = false;
-            
-            assetGroups = { "Mặt bằng": "Building", "Xe cộ": "Vehicle", "Máy móc": "Machine", "Khác": "Other" };
-            status = ["Sẵn sàng sử dụng", "Đang sử dụng", "Hỏng hóc", "Mất", "Thanh lý"];
+
+            assetGroups = { "Mặt bằng": "building", "Xe cộ": "vehicle", "Máy móc": "machine", "Khác": "other" };
+            status = { "Sẵn sàng sử dụng": "ready_to_use", "Đang sử dụng": "in_use", "Hỏng hóc": "broken", "Mất": "lost", "Thanh lý": "disposed" };
             typeRegisterForUse = { "Không đươc đăng ký sử dụng": 1, "Đăng ký sử dụng theo giờ": 2, "Đăng ký sử dụng lâu dài": 3 };
-            
+
             value = value.map((item, index) => {
                 let errorAlert = [];
-                
+
                 assetTypeArray = item.assetType && item.assetType.split(", ");
                 roleArray = item.readByRoles && item.readByRoles.split(", ");
                 assetTypeArray.map(item => {
@@ -404,7 +404,7 @@ class AssetImportForm extends Component {
                     || (item.group && !assetGroups[item.group])
                     || (item.assetType && checkAssetType)
                     || (item.typeRegisterForUse && !typeRegisterForUse[item.typeRegisterForUse])
-                    || (item.status && !status.includes(item.status))
+                    || (item.status && !status[item.status])
                     || (item.managedBy && !managers[item.managedBy])
                     || (item.readByRoles && checkRole)
                     || (item.location && !assetLocations[item.location])
@@ -463,15 +463,15 @@ class AssetImportForm extends Component {
 
                 item = { ...item, errorAlert: errorAlert };
                 importGeneralInformationData = [...importGeneralInformationData,
-                    {
-                        ...item,
-                        assetType: assetTypeArray.map(type => assetTypes[type]),
-                        readByRoles: roleArray.map(role => roles[role]),
-                        managedBy: managers[item.manager],
-                        location: assetLocations[item.location],
-                        group: assetGroups[item.group],
-                        typeRegisterForUse: typeRegisterForUse[item.typeRegisterForUse]
-                    }
+                {
+                    ...item,
+                    assetType: assetTypeArray.map(type => assetTypes[type]),
+                    readByRoles: roleArray.map(role => roles[role]),
+                    managedBy: managers[item.manager],
+                    location: assetLocations[item.location],
+                    group: assetGroups[item.group],
+                    typeRegisterForUse: typeRegisterForUse[item.typeRegisterForUse]
+                }
                 ];
 
                 return item;
@@ -502,7 +502,7 @@ class AssetImportForm extends Component {
     // Xử lý file import khấu hao tài sản
     handleImportExcelDepreciationInformation = (value, checkFileImport) => {
         let rowError = [], importDepreciationInformationData = [];
-        
+
         if (checkFileImport) {
             value = value.map((item, index) => {
                 let errorAlert = [];
@@ -563,7 +563,7 @@ class AssetImportForm extends Component {
         const { user, department } = this.props;
         let userList = {}, departmentList = {};
         let rowError = [], importUsageInformationData = [];
-         
+
         if (user) {
             user.list.map(item => {
                 userList[item.name + " - " + item.email] = item._id;
@@ -574,7 +574,7 @@ class AssetImportForm extends Component {
                 departmentList[item.name] = item._id;
             })
         }
-         
+
         if (checkFileImport) {
             value = value.map((item, index) => {
                 let errorAlert = [];
@@ -600,11 +600,11 @@ class AssetImportForm extends Component {
                 }
 
                 importUsageInformationData = [...importUsageInformationData,
-                    {
-                        ...item,
-                        usedByUser: item.usedByUser && userList[item.usedByUser],
-                        usedByOrganizationalUnit: item.usedByOrganizationalUnit && departmentList[item.usedByOrganizationalUnit]
-                    }
+                {
+                    ...item,
+                    usedByUser: item.usedByUser && userList[item.usedByUser],
+                    usedByOrganizationalUnit: item.usedByOrganizationalUnit && departmentList[item.usedByOrganizationalUnit]
+                }
                 ];
                 item = { ...item, errorAlert: errorAlert };
                 return item;
@@ -636,13 +636,13 @@ class AssetImportForm extends Component {
         const { user } = this.props;
         let userList = {};
         let rowError = [], importIncidentInformationData = [];
-         
+
         if (user) {
             user.list.map(item => {
                 userList[item.name + " - " + item.email] = item._id;
             })
         }
-         
+
         if (checkFileImport) {
             value = value.map((item, index) => {
                 let errorAlert = [];
@@ -678,10 +678,10 @@ class AssetImportForm extends Component {
                 }
 
                 importIncidentInformationData = [...importIncidentInformationData,
-                    {
-                        ...item,
-                        reportedBy: item.reportedBy && userList[item.reportedBy],
-                    }
+                {
+                    ...item,
+                    reportedBy: item.reportedBy && userList[item.reportedBy],
+                }
                 ]
                 item = { ...item, errorAlert: errorAlert };
                 return item;
@@ -711,7 +711,7 @@ class AssetImportForm extends Component {
     // Xử lý file import bảo trì tài sản
     handleImportExcelMaintainanceInformation = (value, checkFileImport) => {
         let rowError = [], importMaintainanceInformationData = [];
-         
+
         if (checkFileImport) {
             value = value.map((item, index) => {
                 let errorAlert = [];
@@ -760,7 +760,7 @@ class AssetImportForm extends Component {
     // Xử lý file import thanh lý tài sản
     handleImportExcelDisposalInformation = (value, checkFileImport) => {
         let rowError = [], importDisposalInformationData = [];
-         
+
         if (checkFileImport) {
             value = value.map((item, index) => {
                 let errorAlert = [];
@@ -803,13 +803,13 @@ class AssetImportForm extends Component {
 
     render() {
         const { translate } = this.props;
- 
+
         let importAssetTemplateData = this.convertAssetTemplate(importAssetTemplate);
-        
+
         return (
             <React.Fragment>
                 <DialogModal
-                    size='75' modalID="modal-import-asset" 
+                    size='75' modalID="modal-import-asset"
                     formID="form-import-asset"
                     title={translate('menu.add_asset')}
                     func={this.save}
