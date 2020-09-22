@@ -360,6 +360,7 @@ class UserDocumentsData extends Component {
         if (isLoading === false) {
             list = docs.list;
         }
+
         let exportData = this.convertDataToExportData(list);
         return (
             <div className="qlcv">
@@ -526,11 +527,14 @@ class UserDocumentsData extends Component {
 
     setPage = async (page) => {
         this.setState({ page });
+        let path = this.state.archive ? this.findPath(this.state.archive) : "";
         const data = {
             limit: this.state.limit,
             page: page,
-            key: this.state.option,
-            value: this.state.value
+            name: this.state.name,
+            category: this.state.category ? this.state.category[0] : "",
+            domains: this.state.domain ? this.state.domain : "",
+            archives: path && path.length ? path[0] : "",
         };
         await this.props.getAllDocuments(getStorage('currentRole'), data);
     }
