@@ -405,11 +405,11 @@ function updateCompanyLinks(data, params) {
     }
 }
 
-function updateCompanyComponents(data) {
+function updateCompanyComponents(data, params) {
     return dispatch => {
         dispatch({ type: CompanyConstants.UPDATE_COMPANY_COMPONENTS_REQUEST });
 
-        CompanyServices.updateCompanyComponents(data)
+        CompanyServices.updateCompanyComponents(data, params)
             .then(res => {
                 dispatch({
                     type: CompanyConstants.UPDATE_COMPANY_COMPONENTS_SUCCESS,

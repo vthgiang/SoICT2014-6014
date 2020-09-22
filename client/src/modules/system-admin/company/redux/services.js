@@ -69,11 +69,12 @@ function updateCompanyLinks(data, params={}) {
     }, true, true, 'system_admin.company');
 }
 
-function updateCompanyComponents(data) {
+function updateCompanyComponents(data, params={}) {
 
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/component/components/company/update`,
         method: 'PATCH',
+        params,
         data
     }, true, true, 'system_admin.company');
 }
