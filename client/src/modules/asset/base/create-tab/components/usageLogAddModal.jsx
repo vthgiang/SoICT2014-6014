@@ -178,7 +178,7 @@ class UsageLogAddModal extends Component {
         } else {
             endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
         }
-        
+
         if (this.state.usedByUser === '') {
             await this.setState({
                 ...this.state,
@@ -269,7 +269,7 @@ class UsageLogAddModal extends Component {
                             </div>
                             {this.props.typeRegisterForUse == 2 &&
                                 <TimePicker
-                                    id={`time-picker-start`}
+                                    id={`time-picker-start-${id}`}
                                     onChange={this.handleStartTimeChange}
                                     value={startTime}
                                 // getDefaultValue = {this.getDefaultStartValue}
@@ -287,7 +287,7 @@ class UsageLogAddModal extends Component {
                             </div>
                             {this.props.typeRegisterForUse == 2 &&
                                 <TimePicker
-                                    id={`time-picker-end`}
+                                    id={`time-picker-end-${id}`}
                                     onChange={this.handleStopTimeChange}
                                     value={stopTime}
                                 // getDefaultValue = {this.getDefaultEndValue}

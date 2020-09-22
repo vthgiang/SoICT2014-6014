@@ -22,7 +22,7 @@ class TaskHasActionNotEvaluated extends Component {
         var TaskHasActionsAccountable = [];
         var TaskHasActionsResponsible = [];
         if (accountableTasks) {
-            let inprocessAccountableTask = accountableTasks.filter(task => task.status === "Inprocess")
+            let inprocessAccountableTask = accountableTasks.filter(task => task.status === "inprocess")
 
             inprocessAccountableTask.length && inprocessAccountableTask.map(x => {
                 let taskActions;
@@ -41,7 +41,7 @@ class TaskHasActionNotEvaluated extends Component {
             })
         }
         if (responsibleTasks) {
-            let inprocessResponsibleTasks = responsibleTasks.filter(task => task.status === "Inprocess")
+            let inprocessResponsibleTasks = responsibleTasks.filter(task => task.status === "inprocess")
             inprocessResponsibleTasks.length && inprocessResponsibleTasks.map(x => {
                 let taskActions;
 

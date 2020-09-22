@@ -67,7 +67,7 @@ const TaskTemplateSchema = new Schema({
         type: {
             type: String,
             //require: true,
-            enum: ['Text', 'Boolean', 'Date', 'Number', 'SetOfValues'],
+            enum: ['text', 'boolean', 'date', 'number', 'set_of_values'],
         }
     }],
     readByEmployees: [{

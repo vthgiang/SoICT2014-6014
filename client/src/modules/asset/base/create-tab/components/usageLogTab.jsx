@@ -221,7 +221,7 @@ class UsageLogTab extends Component {
                         <legend className="scheduler-border"><h4 className="box-title">{translate('asset.asset_info.usage_logs')}</h4></legend>
 
                         {/* Form thêm thông tin sử dụng */}
-                        <UsageLogAddModal handleChange={this.handleAddUsage} id={`addUsage${id}`} />
+                        <UsageLogAddModal handleChange={this.handleAddUsage}  typeRegisterForUse = {typeRegisterForUse} id={`addUsage${id}`} />
                         
                         <div className="form-inline">
                             <div className="form-group">

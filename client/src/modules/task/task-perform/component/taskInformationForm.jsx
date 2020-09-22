@@ -66,7 +66,7 @@ class TaskInformationForm extends Component {
                         {
                             (task && task.taskInformations.length !== 0) &&
                             task.taskInformations.map((info, index) => {
-                                if (info.type === 'Text') {
+                                if (info.type === 'text') {
                                     return <div className={`form-group ${value.errorInfo && value.errorInfo[info.code] === undefined ? "" : "has-error"}`} key={index}>
                                         <label>{info.name}</label>
                                         <textarea
@@ -85,7 +85,7 @@ class TaskInformationForm extends Component {
                                 }
 
                                 {
-                                    if (info.type === 'Number') {
+                                    if (info.type === 'number') {
                                         return <div className={`form-group ${value.errorInfo && value.errorInfo[info.code] === undefined ? "" : "has-error"}`} key={index}>
                                             <label>{info.name}</label>
                                             <input
@@ -103,7 +103,7 @@ class TaskInformationForm extends Component {
                                 }
 
                                 {
-                                    if (info.type === 'Date') {
+                                    if (info.type === 'date') {
                                         return <div key={index} className={`form-group ${value.errorInfo && value.errorInfo[info.code] === undefined ? "" : "has-error"}`}>
                                             <label>{info.name}</label>
                                             <DatePicker
@@ -119,7 +119,7 @@ class TaskInformationForm extends Component {
                                 }
 
                                 {
-                                    if (info.type === 'Boolean') {
+                                    if (info.type === 'boolean') {
                                         return <div key={index} className={`form-group ${value.errorInfo && value.errorInfo[info.code] === undefined ? "" : "has-error"}`}>
                                             <label style={{ marginRight: "30px" }}>{info.name}</label>
                                             <label className="radio-inline">
@@ -147,7 +147,7 @@ class TaskInformationForm extends Component {
                                 }
 
                                 {
-                                    if (info.type === 'SetOfValues') {
+                                    if (info.type === 'set_of_values') {
                                         return <div key={index} className={`form-group ${value.errorInfo && value.errorInfo[info.code] === undefined ? "" : "has-error"}`}>
                                             <label>{info.name}</label>
                                             <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu

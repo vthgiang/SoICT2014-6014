@@ -20,7 +20,7 @@ class TaskManagement extends Component {
 
             currentTab: "responsible",
             organizationalUnit: '[]',
-            status: ["Inprocess", "WaitForApproval"],
+            status: ["inprocess", "wait_for_approval"],
             priority: '[]',
             special: '[]',
             name: "",
@@ -381,11 +381,11 @@ class TaskManagement extends Component {
 
     formatStatus = (data) => {
         const { translate } = this.props;
-        if (data === "Inprocess") return translate('task.task_management.inprocess');
-        else if (data === "WaitForApproval") return translate('task.task_management.wait_for_approval');
-        else if (data === "Finished") return translate('task.task_management.finished');
-        else if (data === "Delayed") return translate('task.task_management.delayed');
-        else if (data === "Canceled") return translate('task.task_management.canceled');
+        if (data === "inprocess") return translate('task.task_management.inprocess');
+        else if (data === "wait_for_approval") return translate('task.task_management.wait_for_approval');
+        else if (data === "finished") return translate('task.task_management.finished');
+        else if (data === "delayed") return translate('task.task_management.delayed');
+        else if (data === "canceled") return translate('task.task_management.canceled');
     }
 
     handleRoleChange = (value) => {
@@ -599,11 +599,11 @@ class TaskManagement extends Component {
                                 // ]}
                                 value={status}
                                 items={[
-                                    { value: "Inprocess", text: translate('task.task_management.inprocess') },
-                                    { value: "WaitForApproval", text: translate('task.task_management.wait_for_approval') },
-                                    { value: "Finished", text: translate('task.task_management.finished') },
-                                    { value: "Delayed", text: translate('task.task_management.delayed') },
-                                    { value: "Canceled", text: translate('task.task_management.canceled') }
+                                    { value: "inprocess", text: translate('task.task_management.inprocess') },
+                                    { value: "wait_for_approval", text: translate('task.task_management.wait_for_approval') },
+                                    { value: "finished", text: translate('task.task_management.finished') },
+                                    { value: "delayed", text: translate('task.task_management.delayed') },
+                                    { value: "canceled", text: translate('task.task_management.canceled') }
                                 ]}
                                 onChange={this.handleSelectStatus}
                                 options={{ nonSelectedText: translate('task.task_management.select_status'), allSelectedText: translate('task.task_management.select_all_status') }}>
