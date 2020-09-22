@@ -68,9 +68,9 @@ export function system(state = initState, action) {
             return {
                 ...state,
                 backup: {
-                    ...state.backup,
-                    isLoading: false
-                }
+                    ...state.backup
+                },
+                isLoading: false
             }
 
         default:

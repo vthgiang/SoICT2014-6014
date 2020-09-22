@@ -39,7 +39,7 @@ exports.deleteBackup = async(portal, version) => {
     const path = `${SERVER_BACKUP_DIR}/${portal}/${version}`;
     if (fs.existsSync(path)) {
         exec("rm -rf " + path, function (err) { });
-        return path;
+        return version;
     };
 
     return undefined;
