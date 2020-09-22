@@ -22,7 +22,7 @@ exports.backupAutomatic = new CronJob(SERVER_BACKUP_TIME, async function(){
         minute = time.getMinutes(),
         second = time.getSeconds();
     
-        return `${date}-${month}-${year}_${hour}h${minute}m${second}s`;
+        return `DMY${date}${month}${year}HMS${hour}${minute}${second}`;
     }
     
     createServerBackupDatabasePath = () => {

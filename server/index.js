@@ -26,8 +26,8 @@ app.use(
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-app.use("/upload/avatars", express.static("upload/avatars"));
-app.use("/upload/asset/pictures", express.static("upload/asset/pictures"));
+// app.use("/upload/avatars", express.static("upload/avatars"));
+// app.use("/upload/asset/pictures", express.static("upload/asset/pictures"));
 
 
 
@@ -59,7 +59,7 @@ if (process.env.MULTI_TENANT === 'true') {
 	app.use("/notifications", require("./modules/_multi-tenant/notification/notification.route"));
 
 
-
+	router.use('/system', require('./modules/_multi-tenant/super-admin/system/system.route'));
 	router.use('/user', require('./modules/_multi-tenant/super-admin/user/user.route'));
 	router.use('/role', require('./modules/_multi-tenant/super-admin/role/role.route'));
 	router.use('/component', require("./modules/_multi-tenant/super-admin/component/component.route"));
