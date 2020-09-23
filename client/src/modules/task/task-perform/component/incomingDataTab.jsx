@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from "react-redux-multilingual";
 import { CommentInProcess } from './commentInProcess';
-import { ApiImage } from '../../../../common-components'
+import { ApiImage, Comment } from '../../../../common-components'
 import { AuthActions } from '../../../auth/redux/actions';
+import { performTaskAction } from '../redux/actions';
+import { performtasks } from '../redux/reducers';
 class IncomingDataTab extends Component {
 
     constructor(props) {
@@ -34,7 +36,7 @@ class IncomingDataTab extends Component {
         this.props.downloadFile(path, fileName)
     }
     render() {
-        const { translate } = this.props;
+        const { translate, performtasks } = this.props;
         const { preceedingTasks } = this.props;
         const { showComment } = this.state;
 
@@ -117,6 +119,20 @@ class IncomingDataTab extends Component {
                                             task={task}
                                             inputAvatarCssClass="user-img-incoming-level1"
                                         />
+                                        {/* <Comment
+                                            data={task}
+                                            comments={task.commentsInProcess}
+                                            currentTask={performtasks?.task?._id}
+                                            createComment={(dataId, data) => this.props.createComment(dataId, data)}
+                                            editComment={(dataId, commentId, data) => this.props.editComment(dataId, commentId, data)}
+                                            deleteComment={(dataId, commentId) => this.props.deleteComment(dataId, commentId)}
+                                            createChildComment={(dataId, commentId, data) => this.props.createChildComment(dataId, commentId, data)}
+                                            editChildComment={(dataId, commentId, childCommentId, data) => this.props.editChildComment(dataId, commentId, childCommentId, data)}
+                                            deleteChildComment={(dataId, commentId, childCommentId) => this.props.deleteChildComment(dataId, commentId, childCommentId)}
+                                            deleteFileComment={(fileId, commentId, dataId) => this.props.deleteFileComment(fileId, commentId, dataId)}
+                                            deleteFileChildComment={(fileId, commentId, childCommentId, dataId) => this.props.deleteFileChildComment(fileId, commentId, childCommentId, dataId)}
+                                            downloadFile={(path, fileName) => this.props.downloadFile(path, fileName)}
+                                        /> */}
                                     </div>
                                 }
                             </div>
@@ -135,6 +151,14 @@ function mapState(state) {
 }
 const actions = {
     downloadFile: AuthActions.downloadFile,
+    createComment: performTaskAction.createComment,
+    editComment: performTaskAction.editComment,
+    deleteComment: performTaskAction.deleteComment,
+    createChildComment: performTaskAction.createChildComment,
+    editChildComment: performTaskAction.editChildComment,
+    deleteChildComment: performTaskAction.deleteChildComment,
+    deleteFileComment: performTaskAction.deleteFileComment,
+    deleteFileChildComment: performTaskAction.deleteFileChildComment
 }
 
 const connectIncomingDataTab = connect(mapState, actions)(withTranslate(IncomingDataTab));
