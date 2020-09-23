@@ -58,8 +58,8 @@ exports.getTaskReports = async (portal, params) => {
     keySearch = [
         ...keySearch,
         { $sort: { createdAt: -1 } },
-        { $limit: parseInt(params.limit) },
         { $skip: parseInt(params.page) },
+        { $limit: parseInt(params.limit) },
         {
             $lookup: {
                 from: "users",
