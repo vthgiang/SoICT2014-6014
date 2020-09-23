@@ -247,16 +247,24 @@ class DepartmentTreeView extends Component {
 
     showNodeContent = (data, translate) => {
         return (
-            <div className="tf-nc panel panel-primary" style={{padding: '0px', textAlign: 'center', fontWeight: '900'}}>
-                <div className="panel-heading" style={{padding: '8px'}}>{`${data.name}`}
+            <div className="tf-nc bg bg-primary" style={{
+                    minWidth: '120px',
+                    border: 'none',
+                    padding: '0px', 
+                    textAlign: 'center', 
+                    fontWeight: '900', 
+                    boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'
+                }}>
+                <div style={{padding: '8px'}}>
                     <span id={`department-${data.id}`} title={data.name} className="pull-right" style={{paddingLeft: '5px'}}>
-                        <a href="#abc" title="Ẩn/hiện điều khiển" style={{ border: 'none', backgroundColor: 'transparent', color:'white' }} onClick={() => this.toggleSetting(`department-setting-${data.id}`)}><i className="fa fa-gears"></i></a>
+                        <a href="#abc" style={{color: 'white'}} title="Ẩn/hiện điều khiển" onClick={() => this.toggleSetting(`department-setting-${data.id}`)}><i className="fa fa-gears"></i></a>
                     </span>
+                    {`${data.name}`}
                 </div>
                 
-                <div className="panel-body" style={{padding: '8px', display: 'none'}} id={`department-setting-${data.id}`}>
-                    <a href="#setting-organizationalUnit" className="edit text-green" onClick={() => this.handleCreateWithParent(data)} title={translate('manage_department.add_title')}><i className="material-icons">add</i></a>
-                    <a href="#setting-organizationalUnit" className="edit text-yellow" onClick={() => this.handleEdit(data)} title={translate('manage_department.edit_title')}><i className="material-icons">edit</i></a>
+                <div style={{backgroundColor: '#fff', paddingTop: '2px', display: 'none', borderTop: '0.5px solid #c1c1c1'}} id={`department-setting-${data.id}`}>
+                    <a href="#setting-organizationalUnit" className="edit text-green" onClick={() => this.handleCreateWithParent(data)} title={translate('manage_department.add_title')}><i className="material-icons">library_add</i></a>
+                    <a href="#setting-organizationalUnit" className="edit text-yellow" onClick={() => this.handleEdit(data)} title={translate('manage_department.edit_title')}><i className="material-icons">ballot</i></a>
                     <DeleteNotification
                         content={translate('manage_department.delete')}
                         data={{

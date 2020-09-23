@@ -584,7 +584,7 @@ var organizationalUnitKpiData = async () => {
             endDate: new Date(currentYear, currentMonth - 1, 30, 12),
             priority: 3, // Mức độ ưu tiên
             isArchived: false,
-            status: "Finished",
+            status: "finished",
             taskTemplate: null,
             parent: null,
             level: 1,
@@ -600,7 +600,7 @@ var organizationalUnitKpiData = async () => {
                     { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee_1,
                         organizationalUnit: organizationalUnit_1,
-                        role: "Responsible",
+                        role: "responsible",
                         kpis: [employee_1KpiArray[0][2]],
                         automaticPoint: 80,
                         employeePoint: 90,
@@ -611,7 +611,7 @@ var organizationalUnitKpiData = async () => {
                     { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee_2,
                         organizationalUnit: organizationalUnit_1,
-                        role: "Accountable",
+                        role: "accountable",
                         kpis: [employee_2KpiArray[0][0]],
                         automaticPoint: 90,
                         employeePoint: 90,
@@ -622,7 +622,7 @@ var organizationalUnitKpiData = async () => {
                     { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee_2,
                         organizationalUnit: organizationalUnit_1,
-                        role: "Consulted",
+                        role: "consulted",
                         kpis: [employee_2KpiArray[0][1]],
                         automaticPoint: 90,
                         employeePoint: 90,
@@ -645,7 +645,7 @@ var organizationalUnitKpiData = async () => {
             endDate: new Date(currentYear, currentMonth - 1, 30, 12),
             priority: 3, // Mức độ ưu tiên
             isArchived: false,
-            status: "Finished",
+            status: "finished",
             taskTemplate: null,
             parent: null,
             level: 1,
@@ -661,7 +661,7 @@ var organizationalUnitKpiData = async () => {
                     { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee_1,
                         organizationalUnit: organizationalUnit_1,
-                        role: "Responsible",
+                        role: "responsible",
                         kpis: [employee_1KpiArray[0][3]],
                         automaticPoint: 90,
                         employeePoint: 90,
@@ -671,7 +671,7 @@ var organizationalUnitKpiData = async () => {
                     }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee_2,
                         organizationalUnit: organizationalUnit_1,
-                        role: "Accountable",
+                        role: "accountable",
                         kpis: [employee_2KpiArray[0][0]],
                         automaticPoint: 70,
                         employeePoint: 90,
@@ -681,7 +681,7 @@ var organizationalUnitKpiData = async () => {
                     }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee_2,
                         organizationalUnit: organizationalUnit_1,
-                        role: "Consulted",
+                        role: "consulted",
                         kpis: [employee_2KpiArray[0][1]],
                         automaticPoint: 100,
                         employeePoint: 90,
@@ -704,7 +704,7 @@ var organizationalUnitKpiData = async () => {
             endDate: new Date(currentYear, currentMonth, 25, 12),
             priority: 2, // Mức độ ưu tiên
             isArchived: false,
-            status: "Finished",
+            status: "finished",
             taskTemplate: null,
             parent: null,
             level: 1,
@@ -721,7 +721,7 @@ var organizationalUnitKpiData = async () => {
                         { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                             employee: employee_1,
                             organizationalUnit: organizationalUnit_1,
-                            role: "Responsible",
+                            role: "responsible",
                             kpis: [employee_1KpiArray[0][2]],
                             automaticPoint: 80,
                             employeePoint: 80,
@@ -731,7 +731,7 @@ var organizationalUnitKpiData = async () => {
                         }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                             employee: employee_2,
                             organizationalUnit: organizationalUnit_1,
-                            role: "Accountable",
+                            role: "accountable",
                             kpis: [employee_2KpiArray[0][0]],
                             automaticPoint: 70,
                             employeePoint: 90,
@@ -741,7 +741,7 @@ var organizationalUnitKpiData = async () => {
                         }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                             employee: employee_2,
                             organizationalUnit: organizationalUnit_1,
-                            role: "Consulted",
+                            role: "consulted",
                             kpis: [employee_2KpiArray[0][1]],
                             automaticPoint: 100,
                             employeePoint: 90,
@@ -758,7 +758,7 @@ var organizationalUnitKpiData = async () => {
                         { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                             employee: employee_1,
                             organizationalUnit: organizationalUnit_1,
-                            role: "Responsible",
+                            role: "responsible",
                             kpis: [employee_1KpiArray[1][2]],
                             automaticPoint: 90,
                             employeePoint: 100,
@@ -768,7 +768,7 @@ var organizationalUnitKpiData = async () => {
                         }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                             employee: employee_2,
                             organizationalUnit: organizationalUnit_1,
-                            role: "Accountable",
+                            role: "accountable",
                             kpis: [employee_2KpiArray[1][0]],
                             automaticPoint: 70,
                             employeePoint: 90,
@@ -778,7 +778,7 @@ var organizationalUnitKpiData = async () => {
                         }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                             employee: employee_2,
                             organizationalUnit: organizationalUnit_1,
-                            role: "Consulted",
+                            role: "consulted",
                             kpis: [employee_2KpiArray[1][1]],
                             automaticPoint: 90,
                             employeePoint: 90,
@@ -803,7 +803,7 @@ var organizationalUnitKpiData = async () => {
             endDate: new Date(currentYear, currentMonth, 30, 12),
             priority: 3, // Mức độ ưu tiên
             isArchived: false,
-            status: "Finished",
+            status: "finished",
             taskTemplate: null,
             parent: null,
             level: 1,
@@ -819,7 +819,7 @@ var organizationalUnitKpiData = async () => {
                     { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee_1,
                         organizationalUnit: organizationalUnit_1,
-                        role: "Responsible",
+                        role: "responsible",
                         kpis: [employee_1KpiArray[1][2]],
                         automaticPoint: 90,
                         employeePoint: 90,
@@ -829,7 +829,7 @@ var organizationalUnitKpiData = async () => {
                     }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee_2,
                         organizationalUnit: organizationalUnit_1,
-                        role: "Accountable",
+                        role: "accountable",
                         kpis: [employee_2KpiArray[1][0]],
                         automaticPoint: 90,
                         employeePoint: 90,
@@ -839,7 +839,7 @@ var organizationalUnitKpiData = async () => {
                     }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee_2,
                         organizationalUnit: organizationalUnit_1,
-                        role: "Consulted",
+                        role: "consulted",
                         kpis: [employee_2KpiArray[1][1]],
                         automaticPoint: 90,
                         employeePoint: 100,
@@ -862,7 +862,7 @@ var organizationalUnitKpiData = async () => {
             endDate: new Date(currentYear, currentMonth, 30, 12),
             priority: 3, // Mức độ ưu tiên
             isArchived: false,
-            status: "Finished",
+            status: "finished",
             taskTemplate: null,
             parent: null,
             level: 1,
@@ -878,7 +878,7 @@ var organizationalUnitKpiData = async () => {
                     { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee_1,
                         organizationalUnit: organizationalUnit_1,
-                        role: "Responsible",
+                        role: "responsible",
                         kpis: [employee_1KpiArray[1][3]],
                         automaticPoint: 95,
                         employeePoint: 95,
@@ -888,7 +888,7 @@ var organizationalUnitKpiData = async () => {
                     }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee_2,
                         organizationalUnit: organizationalUnit_1,
-                        role: "Accountable",
+                        role: "accountable",
                         kpis: [employee_2KpiArray[1][0]],
                         automaticPoint: 80,
                         employeePoint: 90,
@@ -898,7 +898,7 @@ var organizationalUnitKpiData = async () => {
                     }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee_2,
                         organizationalUnit: organizationalUnit_1,
-                        role: "Consulted",
+                        role: "consulted",
                         kpis: [employee_2KpiArray[1][1]],
                         automaticPoint: 100,
                         employeePoint: 90,
@@ -927,7 +927,7 @@ var organizationalUnitKpiData = async () => {
             endDate: new Date(currentYear, currentMonth - 1, 30, 12),
             priority: 1, // Mức độ ưu tiên
             isArchived: false,
-            status: "Finished",
+            status: "finished",
             taskTemplate: null,
             parent: null,
             level: 1,
@@ -943,7 +943,7 @@ var organizationalUnitKpiData = async () => {
                     { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee_2,
                         organizationalUnit: organizationalUnit_1,
-                        role: "Responsible",
+                        role: "responsible",
                         kpis: [employee_2KpiArray[0][2]],
                         automaticPoint: 90,
                         employeePoint: 90,
@@ -953,7 +953,7 @@ var organizationalUnitKpiData = async () => {
                     }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee_1,
                         organizationalUnit: organizationalUnit_1,
-                        role: "Accountable",
+                        role: "accountable",
                         kpis: [employee_1KpiArray[0][0]],
                         automaticPoint: 90,
                         employeePoint: 90,
@@ -963,7 +963,7 @@ var organizationalUnitKpiData = async () => {
                     }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee_1,
                         organizationalUnit: organizationalUnit_1,
-                        role: "Consulted",
+                        role: "consulted",
                         kpis: [employee_1KpiArray[0][1]],
                         automaticPoint: 90,
                         employeePoint: 90,
@@ -986,7 +986,7 @@ var organizationalUnitKpiData = async () => {
             endDate: new Date(currentYear, currentMonth - 1, 30, 12),
             priority: 3, // Mức độ ưu tiên
             isArchived: false,
-            status: "Finished",
+            status: "finished",
             taskTemplate: null,
             parent: null,
             level: 1,
@@ -1002,7 +1002,7 @@ var organizationalUnitKpiData = async () => {
                     { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee_2,
                         organizationalUnit: organizationalUnit_1,
-                        role: "Responsible",
+                        role: "responsible",
                         kpis: [employee_2KpiArray[0][3]],
                         automaticPoint: 95,
                         employeePoint: 90,
@@ -1012,7 +1012,7 @@ var organizationalUnitKpiData = async () => {
                     }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee_1,
                         organizationalUnit: organizationalUnit_1,
-                        role: "Accountable",
+                        role: "accountable",
                         kpis: [employee_1KpiArray[0][0]],
                         automaticPoint: 80,
                         employeePoint: 90,
@@ -1022,7 +1022,7 @@ var organizationalUnitKpiData = async () => {
                     }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee_1,
                         organizationalUnit: organizationalUnit_1,
-                        role: "Consulted",
+                        role: "consulted",
                         kpis: [employee_1KpiArray[0][1]],
                         automaticPoint: 90,
                         employeePoint: 90,
@@ -1045,7 +1045,7 @@ var organizationalUnitKpiData = async () => {
             endDate: new Date(currentYear, currentMonth, 28, 12),
             priority: 2, // Mức độ ưu tiên
             isArchived: false,
-            status: "Finished",
+            status: "finished",
             taskTemplate: null,
             parent: null,
             level: 1,
@@ -1062,7 +1062,7 @@ var organizationalUnitKpiData = async () => {
                         { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                             employee: employee_2,
                             organizationalUnit: organizationalUnit_1,
-                            role: "Responsible",
+                            role: "responsible",
                             kpis: [employee_2KpiArray[0][2]],
                             automaticPoint: 60,
                             employeePoint: 90,
@@ -1072,7 +1072,7 @@ var organizationalUnitKpiData = async () => {
                         }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                             employee: employee_1,
                             organizationalUnit: organizationalUnit_1,
-                            role: "Accountable",
+                            role: "accountable",
                             kpis: [employee_1KpiArray[0][0]],
                             automaticPoint: 70,
                             employeePoint: 90,
@@ -1082,7 +1082,7 @@ var organizationalUnitKpiData = async () => {
                         }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                             employee: employee_1,
                             organizationalUnit: organizationalUnit_1,
-                            role: "Consulted",
+                            role: "consulted",
                             kpis: [employee_1KpiArray[0][1]],
                             automaticPoint: 95,
                             employeePoint: 90,
@@ -1099,7 +1099,7 @@ var organizationalUnitKpiData = async () => {
                         { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                             employee: employee_2,
                             organizationalUnit: organizationalUnit_1,
-                            role: "Responsible",
+                            role: "responsible",
                             kpis: [employee_2KpiArray[1][2]],
                             automaticPoint: 90,
                             employeePoint: 100,
@@ -1109,7 +1109,7 @@ var organizationalUnitKpiData = async () => {
                         }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                             employee: employee_1,
                             organizationalUnit: organizationalUnit_1,
-                            role: "Accountable",
+                            role: "accountable",
                             kpis: [employee_1KpiArray[1][0]],
                             automaticPoint: 80,
                             employeePoint: 90,
@@ -1119,7 +1119,7 @@ var organizationalUnitKpiData = async () => {
                         }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                             employee: employee_1,
                             organizationalUnit: organizationalUnit_1,
-                            role: "Consulted",
+                            role: "consulted",
                             kpis: [employee_1KpiArray[1][1]],
                             automaticPoint: 90,
                             employeePoint: 90,
@@ -1144,7 +1144,7 @@ var organizationalUnitKpiData = async () => {
             endDate: new Date(currentYear, currentMonth, 30, 12),
             priority: 2, // Mức độ ưu tiên
             isArchived: false,
-            status: "Finished",
+            status: "finished",
             taskTemplate: null,
             parent: null,
             level: 1,
@@ -1160,7 +1160,7 @@ var organizationalUnitKpiData = async () => {
                     { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee_2,
                         organizationalUnit: organizationalUnit_1,
-                        role: "Responsible",
+                        role: "responsible",
                         kpis: [employee_2KpiArray[1][2]],
                         automaticPoint: 50,
                         employeePoint: 90,
@@ -1170,7 +1170,7 @@ var organizationalUnitKpiData = async () => {
                     }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee_1,
                         organizationalUnit: organizationalUnit_1,
-                        role: "Accountable",
+                        role: "accountable",
                         kpis: [employee_1KpiArray[1][0]],
                         automaticPoint: 100,
                         employeePoint: 90,
@@ -1180,7 +1180,7 @@ var organizationalUnitKpiData = async () => {
                     }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee_1,
                         organizationalUnit: organizationalUnit_1,
-                        role: "Consulted",
+                        role: "consulted",
                         kpis: [employee_1KpiArray[1][1]],
                         automaticPoint: 90,
                         employeePoint: 100,
@@ -1203,7 +1203,7 @@ var organizationalUnitKpiData = async () => {
             endDate: new Date(currentYear, currentMonth, 30, 12),
             priority: 3, // Mức độ ưu tiên
             isArchived: false,
-            status: "Finished",
+            status: "finished",
             taskTemplate: null,
             parent: null,
             level: 1,
@@ -1219,7 +1219,7 @@ var organizationalUnitKpiData = async () => {
                     { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee_2,
                         organizationalUnit: organizationalUnit_1,
-                        role: "Responsible",
+                        role: "responsible",
                         kpis: [employee_2KpiArray[1][3]],
                         automaticPoint: 90,
                         employeePoint: 90,
@@ -1229,7 +1229,7 @@ var organizationalUnitKpiData = async () => {
                     }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee_1,
                         organizationalUnit: organizationalUnit_1,
-                        role: "Accountable",
+                        role: "accountable",
                         kpis: [employee_1KpiArray[1][0]],
                         automaticPoint: 80,
                         employeePoint: 90,
@@ -1239,7 +1239,7 @@ var organizationalUnitKpiData = async () => {
                     }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee_1,
                         organizationalUnit: organizationalUnit_1,
-                        role: "Consulted",
+                        role: "consulted",
                         kpis: [employee_1KpiArray[1][1]],
                         automaticPoint: 100,
                         employeePoint: 90,
@@ -1565,7 +1565,7 @@ var organizationalUnitKpiData = async () => {
             endDate: new Date(currentYear, currentMonth - 1, 30, 12),
             priority: 2, // Mức độ ưu tiên
             isArchived: false,
-            status: "Finished",
+            status: "finished",
             taskTemplate: null,
             parent: null,
             level: 1,
@@ -1581,7 +1581,7 @@ var organizationalUnitKpiData = async () => {
                     { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee,
                         organizationalUnit: organizationalUnit_2,
-                        role: "Responsible",
+                        role: "responsible",
                         kpis: [employeeKpiArray[0][2]],
                         automaticPoint: 80,
                         employeePoint: 60,
@@ -1591,7 +1591,7 @@ var organizationalUnitKpiData = async () => {
                     }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee,
                         organizationalUnit: organizationalUnit_2,
-                        role: "Accountable",
+                        role: "accountable",
                         kpis: [employeeKpiArray[0][0]],
                         automaticPoint: 80,
                         employeePoint: 70,
@@ -1601,7 +1601,7 @@ var organizationalUnitKpiData = async () => {
                     }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee,
                         organizationalUnit: organizationalUnit_2,
-                        role: "Consulted",
+                        role: "consulted",
                         kpis: [employeeKpiArray[0][1]],
                         automaticPoint: 90,
                         employeePoint: 50,
@@ -1624,7 +1624,7 @@ var organizationalUnitKpiData = async () => {
             endDate: new Date(currentYear, currentMonth - 1, 30, 12),
             priority: 3, // Mức độ ưu tiên
             isArchived: false,
-            status: "Finished",
+            status: "finished",
             taskTemplate: null,
             parent: null,
             level: 1,
@@ -1640,7 +1640,7 @@ var organizationalUnitKpiData = async () => {
                     { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee,
                         organizationalUnit: organizationalUnit_2,
-                        role: "Responsible",
+                        role: "responsible",
                         kpis: [employeeKpiArray[0][3]],
                         automaticPoint: 100,
                         employeePoint: 90,
@@ -1650,7 +1650,7 @@ var organizationalUnitKpiData = async () => {
                     }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee,
                         organizationalUnit: organizationalUnit_2,
-                        role: "Accountable",
+                        role: "accountable",
                         kpis: [employeeKpiArray[0][0]],
                         automaticPoint: 70,
                         employeePoint: 60,
@@ -1660,7 +1660,7 @@ var organizationalUnitKpiData = async () => {
                     }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee,
                         organizationalUnit: organizationalUnit_2,
-                        role: "Consulted",
+                        role: "consulted",
                         kpis: [employeeKpiArray[0][1]],
                         automaticPoint: 60,
                         employeePoint: 50,
@@ -1682,7 +1682,7 @@ var organizationalUnitKpiData = async () => {
             endDate: new Date(currentYear, currentMonth, 25, 12),
             priority: 1, // Mức độ ưu tiên
             isArchived: false,
-            status: "Finished",
+            status: "finished",
             taskTemplate: null,
             parent: null,
             level: 1,
@@ -1699,7 +1699,7 @@ var organizationalUnitKpiData = async () => {
                         { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                             employee: employee,
                             organizationalUnit: organizationalUnit_2,
-                            role: "Responsible",
+                            role: "responsible",
                             kpis: [employeeKpiArray[0][2]],
                             automaticPoint: 80,
                             employeePoint: 70,
@@ -1709,7 +1709,7 @@ var organizationalUnitKpiData = async () => {
                         }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                             employee: employee,
                             organizationalUnit: organizationalUnit_2,
-                            role: "Accountable",
+                            role: "accountable",
                             kpis: [employeeKpiArray[0][0]],
                             automaticPoint: 70,
                             employeePoint: 90,
@@ -1719,7 +1719,7 @@ var organizationalUnitKpiData = async () => {
                         }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                             employee: employee,
                             organizationalUnit: organizationalUnit_2,
-                            role: "Consulted",
+                            role: "consulted",
                             kpis: [employeeKpiArray[0][1]],
                             automaticPoint: 100,
                             employeePoint: 90,
@@ -1736,7 +1736,7 @@ var organizationalUnitKpiData = async () => {
                         { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                             employee: employee,
                             organizationalUnit: organizationalUnit_2,
-                            role: "Responsible",
+                            role: "responsible",
                             kpis: [employeeKpiArray[1][2]],
                             automaticPoint: 90,
                             employeePoint: 80,
@@ -1746,7 +1746,7 @@ var organizationalUnitKpiData = async () => {
                         }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                             employee: employee,
                             organizationalUnit: organizationalUnit_2,
-                            role: "Accountable",
+                            role: "accountable",
                             kpis: [employeeKpiArray[1][0]],
                             automaticPoint: 70,
                             employeePoint: 90,
@@ -1756,7 +1756,7 @@ var organizationalUnitKpiData = async () => {
                         }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                             employee: employee,
                             organizationalUnit: organizationalUnit_2,
-                            role: "Consulted",
+                            role: "consulted",
                             kpis: [employeeKpiArray[1][1]],
                             automaticPoint: 90,
                             employeePoint: 70,
@@ -1782,7 +1782,7 @@ var organizationalUnitKpiData = async () => {
             endDate: new Date(currentYear, currentMonth, 30, 12),
             priority: 2, // Mức độ ưu tiên
             isArchived: false,
-            status: "Finished",
+            status: "finished",
             taskTemplate: null,
             parent: null,
             level: 1,
@@ -1798,7 +1798,7 @@ var organizationalUnitKpiData = async () => {
                     { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee,
                         organizationalUnit: organizationalUnit_2,
-                        role: "Responsible",
+                        role: "responsible",
                         kpis: [employeeKpiArray[1][2]],
                         automaticPoint: 90,
                         employeePoint: 70,
@@ -1808,7 +1808,7 @@ var organizationalUnitKpiData = async () => {
                     }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee,
                         organizationalUnit: organizationalUnit_2,
-                        role: "Accountable",
+                        role: "accountable",
                         kpis: [employeeKpiArray[1][0]],
                         automaticPoint: 90,
                         employeePoint: 80,
@@ -1818,7 +1818,7 @@ var organizationalUnitKpiData = async () => {
                     }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee,
                         organizationalUnit: organizationalUnit_2,
-                        role: "Consulted",
+                        role: "consulted",
                         kpis: [employeeKpiArray[1][1]],
                         automaticPoint: 90,
                         employeePoint: 100,
@@ -1841,7 +1841,7 @@ var organizationalUnitKpiData = async () => {
             endDate: new Date(currentYear, currentMonth, 30, 12),
             priority: 3, // Mức độ ưu tiên
             isArchived: false,
-            status: "Finished",
+            status: "finished",
             taskTemplate: null,
             parent: null,
             level: 1,
@@ -1857,7 +1857,7 @@ var organizationalUnitKpiData = async () => {
                     { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee,
                         organizationalUnit: organizationalUnit_2,
-                        role: "Responsible",
+                        role: "responsible",
                         kpis: [employeeKpiArray[1][3]],
                         automaticPoint: 90,
                         employeePoint: 80,
@@ -1867,7 +1867,7 @@ var organizationalUnitKpiData = async () => {
                     }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee,
                         organizationalUnit: organizationalUnit_2,
-                        role: "Accountable",
+                        role: "accountable",
                         kpis: [employeeKpiArray[1][0]],
                         automaticPoint: 80,
                         employeePoint: 70,
@@ -1877,7 +1877,7 @@ var organizationalUnitKpiData = async () => {
                     }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee,
                         organizationalUnit: organizationalUnit_2,
-                        role: "Consulted",
+                        role: "consulted",
                         kpis: [employeeKpiArray[1][1]],
                         automaticPoint: 100,
                         employeePoint: 90,

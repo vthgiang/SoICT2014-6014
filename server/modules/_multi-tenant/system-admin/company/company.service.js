@@ -332,13 +332,14 @@ exports.createCompanyLinks = async (company, linkArr, roleArr) => {
  * @linkArr mảng các system link được kích hoạt để làm chuẩn cho các link của công ty
  */
 exports.createCompanyComponents = async (company, linkArr) => {
-
     let systemLinks = await SystemLink(connect(DB_CONNECTION, process.env.DB_NAME))
         .find({ _id: { $in: linkArr } });
 
     let dataSystemComponents = systemLinks.map(link => link.components);
     dataSystemComponents = dataSystemComponents.reduce((arr1, arr2) => [...arr1, ...arr2]);
-    dataSystemComponents.filter((component, index) => dataSystemComponents.indexOf(component) === index);
+    dataSystemComponents = dataSystemComponents.map(com => com.toString());
+    dataSystemComponents = dataSystemComponents.filter((component, index) => dataSystemComponents.indexOf(component) === index);
+
     const systemComponents = await SystemComponent(connect(DB_CONNECTION, process.env.DB_NAME))
         .find({_id: {$in: dataSystemComponents}})
         .populate({ path: 'roles' });
@@ -359,19 +360,17 @@ exports.createCompanyComponents = async (company, linkArr) => {
             await updateLink.save();
         }
         // Tạo phân quyền cho components
-        for (let k = 0; k < systemComponents.length; k++) {
-            let roles = await Role(connect(DB_CONNECTION, company)).find({
-                name: {$in: systemComponents[i].roles.map(role=>role.name)}
-            });
-            let dataPrivileges = roles.map(role => {
-                return {
-                    resourceId: component._id,
-                    resourceType: 'Component',
-                    roleId: role._id
-                }
-            });
-            await Privilege(connect(DB_CONNECTION, company)).insertMany(dataPrivileges);
-        }
+        let roles = await Role(connect(DB_CONNECTION, company)).find({
+            name: { $in: systemComponents[i].roles.map(role => role.name)}
+        });
+        let dataPrivileges = roles.map(role => {
+            return {
+                resourceId: component._id,
+                resourceType: 'Component',
+                roleId: role._id
+            }
+        });
+        await Privilege(connect(DB_CONNECTION, company)).insertMany(dataPrivileges);
     }
 
     return await Component(connect(DB_CONNECTION, company)).find();
