@@ -4,11 +4,11 @@ const Company = require('../system-admin/company.model');
 const AssetType = require('./assetType.model');
 const User = require('../auth/user.model');
 const OrganizationalUnit = require('../super-admin/organizationalUnit.model')
-    // Create Schema
+// Create Schema
 const AssetSchema = new Schema({
     group: {
         type: String,
-        enum: ["Building", "Vehicle", "Machine", "Other"],
+        enum: ["building", "vehicle", "machine", "other"],
         required: true
     },
 
@@ -79,7 +79,7 @@ const AssetSchema = new Schema({
 
     status: { //17.tình trạng: sẵn sàng sử dụng || đang sử dụng || hỏng hóc || mất || Thanh lý
         type: String,
-        enum: ["Sẵn sàng sử dụng", "Đang sử dụng", "Hỏng hóc", "Mất", "Thanh lý"],
+        enum: ["ready_to_use", "in_use", "broken", "lost", "disposed"],
         required: true
     },
 
@@ -106,7 +106,7 @@ const AssetSchema = new Schema({
      */
     depreciationType: { // Cách tính khấu hao
         type: String,
-        enum: ["Đường thẳng", "Số dư giảm dần", "Sản lượng"], // Reducing balance chính là Declining Balance Method
+        enum: ["straight_line", "declining_balance", "units_of_production"], // Reducing balance chính là Declining Balance Method
         required: true
     },
 
@@ -301,7 +301,7 @@ const AssetSchema = new Schema({
         type: {
             type: String,
             required: true,
-            enum: ['Text', 'Boolean', 'Date', 'Number', 'SetOfValues'],
+            enum: ['text', 'boolean', 'date', 'number', 'set_of_values'],
         },
         value: {
             type: Schema.Types.Mixed,

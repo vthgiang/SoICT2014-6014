@@ -28,3 +28,4 @@ export * from './src/lazy-load/forceCheckOrVisible';
 export * from './src/api-image';
 export * from './src/upload-file/uploadFile';
 export * from './src/comment/comment'
+export * from './src/scheduler/scheduler';

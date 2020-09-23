@@ -1,5 +1,6 @@
 const EmployeeService = require('./profile.service');
 const UserService = require(`${SERVER_MODULES_DIR}/_multi-tenant/super-admin/user/user.service`);
+const CompanyServices = require(`${SERVER_MODULES_DIR}/_multi-tenant/system-admin/company/company.service`);
 
 const Log = require(`${SERVER_LOGS_DIR}/_multi-tenant`);
 
@@ -75,8 +76,8 @@ exports.searchEmployeeProfiles = async (req, res) => {
                 let employee = await EmployeeService.getEmployeeProfile(req.portal, arrEmail[i]);
                 data = [...data, employee]
             }
-        } else if (req.query.numberMonth) {
-            data = await EmployeeService.getEmployeesOfNumberMonth(req.portal, req.query.organizationalUnits, req.query.numberMonth, req.user.company._id);
+        } else if (req.query.startDate && req.query.endDate) {
+            data = await EmployeeService.getEmployeesByStartingAndLeaving(req.portal, req.query.organizationalUnits, req.query.startDate, req.query.endDate, req.user.company._id);
         } else if (req.query.page === undefined && req.query.limit === undefined) {
             data = await EmployeeService.getEmployees(req.portal, req.user.company._id, req.query.organizationalUnits, req.query.position, false, req.query.status);
         } else {
@@ -540,5 +541,29 @@ exports.importEmployees = async (req, res) => {
                 error: error
             }
         });
+    }
+}
+
+
+exports.createNotificationEndOfContract = async () => {
+    let companys = await CompanyServices.getAllCompanies({
+        page: undefined,
+        limit: undefined
+    });
+    companys = companys.map(x => x.shortName);
+    for (let n in companys) {
+        await EmployeeService.createNotificationEndOfContract(companys[n]);
+    }
+};
+
+exports.createNotificationForEmployeesHaveBrithdayCurrent = async () => {
+    let companys = await CompanyServices.getAllCompanies({
+        page: undefined,
+        limit: undefined
+    });
+    companys = companys.map(x => x.shortName);
+    console.log(companys);
+    for (let n in companys) {
+        await EmployeeService.createNotificationForEmployeesHaveBrithdayCurrent(companys[n]);
     }
 }

@@ -85,7 +85,7 @@ class DepreciationTab extends Component {
             monthlyDepreciation = cost / usefulLife;
             remainingValue = cost - (cost / usefulLife) * ((new Date().getFullYear() * 12 + new Date().getMonth()) - (new Date(startDepreciation).getFullYear() * 12 + new Date(startDepreciation).getMonth()));
 
-        } else if (depreciationType === "Số dư giảm dần") { // Phương pháp khấu hao theo số dư giảm dần
+        } else if (depreciationType === "declining_balance") { // Phương pháp khấu hao theo số dư giảm dần
             let lastYears = false,
                 t,
                 usefulYear = usefulLife / 12,
@@ -127,8 +127,8 @@ class DepreciationTab extends Component {
                 monthlyDepreciation = annualDepreciation / 12;
                 remainingValue = remainingValue - (monthlyDepreciation * (usedTime % 12))
             }
-        
-        } else if (depreciationType === "Sản lượng") { // Phương pháp khấu hao theo sản lượng
+
+        } else if (depreciationType === "units_of_production") { // Phương pháp khấu hao theo sản lượng
             let monthTotal = unitsProducedDuringTheYears.length; // Tổng số tháng tính khấu hao
             let productUnitDepreciation = cost / (estimatedTotalProduction * (usefulLife / 12)); // Mức khấu hao đơn vị sản phẩm
             let accumulatedDepreciation = 0; // Giá trị hao mòn lũy kế

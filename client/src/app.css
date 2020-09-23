@@ -623,14 +623,14 @@ input[type=range]:focus::-ms-fill-upper {
 /* React-Toastify */
 .Toastify__progress-bar {
     height: 3px;
-    background-color: rgb(255, 255, 255);
+    background-color: rgb(182, 182, 182);
 }
 
 .notification-title {
-    font-size: 14px;
-    margin: 0px 0px 5px;
+    font-size: 16px;
+    margin: 0px;
     padding: 0px;
-    font-weight: bold;
+    font-weight: 700;
 }
 .Toastify__toast--info .notification-title {
     color: rgb(54, 156, 199);

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import { ApiImage } from '../../../common-components';
 import { AuthActions } from '../../../modules/auth/redux/actions';
 
 class Profile extends Component {
@@ -13,12 +14,14 @@ class Profile extends Component {
         return ( 
             <li className="dropdown user user-menu">
                 <a href='#abc' className="dropdown-toggle btn" data-toggle="dropdown" style={{width: '55px', height: '50px'}}>
-                    <img src={process.env.REACT_APP_SERVER+auth.user.avatar} className="user-image" alt="User Avatar" />
+                    <ApiImage className="user-image" alt="User Avatar" src={auth.user.avatar !== undefined ? '.'+auth.user.avatar : undefined} showImg={false}/>
+                    {/* <img src={process.env.REACT_APP_SERVER+auth.user.avatar} className="user-image" alt="User Avatar" /> */}
                 </a>
                 <ul className="dropdown-menu">
                     {/* User image */}
                     <li className="user-header">
-                        <img src={process.env.REACT_APP_SERVER+auth.user.avatar} className="img-circle" alt="User Avatar" />
+                        <ApiImage className="img-circle" src={auth.user.avatar !== undefined ? '.'+auth.user.avatar : undefined} showImg={false}/>
+                        {/* <img src={process.env.REACT_APP_SERVER+auth.user.avatar} className="img-circle" alt="User Avatar" /> */}
                         <p>
                             {auth.user.name}
                             <small>{auth.user.email}</small>

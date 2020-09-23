@@ -12,10 +12,9 @@ class ForgotPassword extends Component {
             password: null,
             confirm: null
         }
-        this.handleChange = this.handleChange.bind(this);
     }
 
-    handleChange(e) {
+    handleChange = (e) => {
         const target = e.target;
         const name = target.name;
         const value = target.value;
@@ -24,20 +23,16 @@ class ForgotPassword extends Component {
         });
     }
 
-    forgotPassword = (email) => {
-        this.props.forgotPassword(email);
-    }
-
-    resetPassword = () => {
-        const {email, password, confirm, otp} = this.state;
-        if(password !== confirm) 
-            alert("Password not confirm");
-        else
-            this.props.resetPassword(otp, email, password);
+    forgotPassword = (data) => {
+        this.props.forgotPassword({
+            portal: data.portal, 
+            email: data.email
+        });
     }
 
     render() { 
         const { translate, auth } = this.props;
+        const { portal, email } = this.state;
         
         return ( 
             <div className="modal fade" id="modal-reset-password">
@@ -50,14 +45,22 @@ class ForgotPassword extends Component {
                     {
                         !auth.forgotPassword ?
                         <React.Fragment>
-                            <div className="modal-body"><div className="form-group">
+                            <div className="modal-body">
+                                <div className="form-group">
+                                    <label>Portal</label>
+                                    <input type="text" className="form-control" name="portal" onChange={ this.handleChange }/>
+                                </div>
+                                <div className="form-group">
                                     <label>{ translate('form.email') }</label>
-                                    <input type="text" className="form-control" name="email" onChange={ this.handleChange }/><br/>
+                                    <input type="text" className="form-control" name="email" onChange={ this.handleChange }/>
                                 </div>
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-default" data-dismiss="modal">{ translate('form.close') }</button>
-                                <button type="button" className="btn btn-primary" onClick={() => this.forgotPassword(this.state.email)}>{ translate('form.next') }</button>
+                                <button type="button" className="btn btn-primary" onClick={() => this.forgotPassword({
+                                    portal,
+                                    email
+                                })}>{ translate('form.next') }</button>
                             </div>
                         </React.Fragment> : 
                         <React.Fragment>
@@ -83,8 +86,7 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = {
-    forgotPassword: AuthActions.forgotPassword,
-    resetPassword: AuthActions.resetPassword,
+    forgotPassword: AuthActions.forgotPassword
 }
 
 export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(ForgotPassword) );

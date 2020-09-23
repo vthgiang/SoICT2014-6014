@@ -18,107 +18,19 @@ class FileAddModal extends Component {
     }
 
     // Bắt sự kiện thay đổi file đính kèm
-    // handleChangeFile = (e) => {
-    //     var file = e.target.files[0];
-
-    //     if (file) {
-    //         var url = URL.createObjectURL(file);
-    //         var fileLoad = new FileReader();
-    //         fileLoad.readAsDataURL(file);
-    //         fileLoad.onload = () => {
-    //             let item = {
-    //                 fileName: file.name,
-    //                 url: url,
-    //                 fileUpload: file,
-    //             }
-    //             this.setState(state => {
-    //                 return {
-    //                     ...state,
-    //                     files: [...state.files, item],
-    //                 }
-    //             })
-    //         };
-    //     } else {
-    //         let item = {
-    //             fileName: "",
-    //             url: "",
-    //             fileUpload: ""
-    //         }
-
-    //         this.setState(state => {
-    //             return {
-    //                 ...state,
-    //                 files: [...state.files, item],
-    //             }
-    //         })
-    //     }
-    // }
-
-    // // Bắt sự kiện xóa file đính kèm
-    // handleDeleteFile = (name) => {
-    //     const { files } = this.state;
-    //     let newfiles = files.filter((item) => item.fileName !== name);
-
-    //     this.setState(state => {
-    //         return {
-    //             ...state,
-    //             files: newfiles,
-    //         }
-    //     })
-    // }
-    // Bắt sự kiện thay đổi file đính kèm
-    handleChangeFile = (e) => {
-        let file = e.target.files;
-
-        if (file) {
-            for (let i = 0; i < file.length; i++) {
-                if (file[i]) {
-                    var url = window.URL.createObjectURL(file[i]);
-                    var fileLoad = new FileReader();
-                    fileLoad.readAsDataURL(file[i]);
-                    fileLoad.onload = () => {
-                        let item = {
-                            fileName: file[i].name,
-                            url: url,
-                            fileUpload: file[i],
-                        }
-                        this.setState(state => {
-                            return {
-                                ...state,
-                                files: [...state.files, item],
-                            }
-                        })
-                    }
-                }
-            }
-        } else {
-            let item = {
-                fileName: "",
-                url: "",
-                fileUpload: ""
-            }
-
-            this.setState(state => {
-                return {
-                    ...state,
-                    files: [...state.files, item],
-                }
-            })
-        }
-    }
-
-    // Bắt sự kiện xóa file đính kèm
-    handleDeleteFile = (name) => {
-        const { files } = this.state;
-        let newfiles = files.filter((item) => item.fileName !== name);
-
-        this.setState(state => {
+    handleChangeFile = (file) => {
+        file = file.map(x => {
             return {
-                ...state,
-                files: newfiles,
+                fileName: x.fileName,
+                url: x.urlFile,
+                fileUpload: x.fileUpload
             }
         })
+        this.setState({
+            files: file
+        });
     }
+
     // Bắt sự kiên thay đổi tên tài liệu
     handleNameFileChange = (e) => {
         let { value } = e.target;
@@ -206,11 +118,7 @@ class FileAddModal extends Component {
                         {/* File đính kèm */}
                         <div className="form-group">
                             <label htmlFor="">Chọn tài liệu</label>
-                            <div><UploadFile
-                                files={this.state.files}
-                                handleChangeFile={this.handleChangeFile}
-                                handleDeleteFile={this.handleDeleteFile}
-                            /></div>
+                            <UploadFile multiple={true} onChange={this.handleChangeFile} />
                         </div>
 
                         {/* <div className="form-group">

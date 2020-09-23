@@ -891,7 +891,7 @@ class TaskReportEditForm extends Component {
                                                     <tr key={index}>
                                                         <td>{item.code}</td>
                                                         <td>{item.name}</td>
-                                                        <td>{(item.type === 'SetOfValues' ? 'Tập dữ liệu' : (item.type))}</td>
+                                                        <td>{(item.type === 'set_of_values' ? 'Tập dữ liệu' : (item.type))}</td>
 
                                                         {
                                                             editingReport && editingReport.taskInformations &&
@@ -899,7 +899,7 @@ class TaskReportEditForm extends Component {
                                                         }
                                                         <td>
                                                             {
-                                                                (item.type === 'Number') ?
+                                                                (item.type === 'number') ?
                                                                     <div className="checkbox" style={{ paddingLeft: "20%" }}>
                                                                         <label>
                                                                             <input name="showInReport" type="checkbox" checked={item.showInReport} onChange={(e) => this.handleEditShowInReport(index, e)} />
@@ -911,14 +911,14 @@ class TaskReportEditForm extends Component {
                                                         </td>
                                                         <td>
                                                             {
-                                                                (item.type === 'Number') ?
+                                                                (item.type === 'number') ?
                                                                     <input className="form-control" style={{ width: '100%' }} type="text" value={item.newName} onChange={(e) => this.handleEditNewName(index, e)} /> : ''
                                                             }
 
                                                         </td>
                                                         <td>
                                                             {
-                                                                (item.type === 'Number') ?
+                                                                (item.type === 'number') ?
                                                                     <SelectBox
                                                                         id={`select-box-calulator-${item.code}`}
                                                                         className="form-control select2"
@@ -938,7 +938,7 @@ class TaskReportEditForm extends Component {
                                                         </td>
                                                         <td data-select2-id="1111">
                                                             {
-                                                                (item.type === 'Number') ?
+                                                                (item.type === 'number') ?
                                                                     <SelectBox
                                                                         id={`select-box-chart-${item.code}`}
                                                                         className="form-control select2"

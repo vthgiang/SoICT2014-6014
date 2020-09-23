@@ -20,7 +20,8 @@ function getAll(data) {
         params: {
             exportData: data ? data.exportData : data,
             arrEmail: data ? data.arrEmail : data,
-            numberMonth: data ? data.numberMonth : data,
+            startDate: data ? data.startDate : data,
+            endDate: data ? data.endDate : data,
             organizationalUnits: data ? data.organizationalUnits : data,
             position: data ? data.position : data,
             employeeNumber: data ? data.employeeNumber : data,

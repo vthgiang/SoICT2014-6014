@@ -51,7 +51,6 @@ module.exports = {
     Course: require('./training/course.model'),
     EducationProgram: require('./training/educationProgram.model'),
     EmployeeCourse: require('./training/employeeCourse.model'),
-    ImportConfiguraion: require('./system-admin/importConfiguration.model'),
 
 //asset
     Asset: require('./asset/asset.model'), //tài sản

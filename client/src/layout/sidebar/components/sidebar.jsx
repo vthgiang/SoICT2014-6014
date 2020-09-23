@@ -4,6 +4,7 @@ import GroupItem from './groupItem';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { withTranslate } from 'react-redux-multilingual';
+import { ApiImage } from '../../../common-components';
 
 class SideBar extends Component {
 
@@ -35,7 +36,8 @@ class SideBar extends Component {
                     <section className="sidebar">
                         <div className="user-panel">
                             <div className="pull-left image">
-                                <img src={process.env.REACT_APP_SERVER + auth.user.avatar} className="img-circle" alt="User avatar" />
+                                <ApiImage className="img-circle" alt="User Avatar" src={auth.user.avatar !== undefined ? '.'+auth.user.avatar : undefined}/>
+                                {/* <img src={process.env.REACT_APP_SERVER + auth.user.avatar} className="img-circle" alt="User avatar" /> */}
                             </div>
                             <div className="pull-left info">
                                 <p>{user.name}</p>
@@ -86,6 +88,7 @@ class SideBar extends Component {
                                 name: 'menu.system_administration',
                                 icon: 'fa fa-key',
                                 list: [
+                                    { name: 'menu.manage_system', icon: 'fa fa-database', path: '/system-management' },
                                     { name: 'menu.manage_department', icon: 'fa fa-sitemap', path: '/departments-management' },
                                     { name: 'menu.manage_user', icon: 'fa fa-users', path: '/users-management' },
                                     { name: 'menu.manage_role', icon: 'fa fa-lock', path: '/roles-management' },

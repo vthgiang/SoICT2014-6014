@@ -204,11 +204,17 @@ function getDocumentsUserCanView(roleId, params) {
     }, false, true, 'document');
 }
 
-function getUserDocumentStatistics(params) {
+function getUserDocumentStatistics(params, data) {
+    let x;
+    x = {
+        ...data,
+        option: params.option
+    }
+    console.log('serviceee', x);
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/documents/documents/user-statistical`,
         method: 'GET',
-        params,
+        params: x
     }, false, true, 'document');
 }
 

@@ -443,12 +443,12 @@ function getDocumentsUserCanView(roleId, data = undefined) {
     }
 }
 
-function getUserDocumentStatistics(option) {
+function getUserDocumentStatistics(option, data) {
     switch (option) {
         case 'downloaded':
             return dispatch => {
                 dispatch({ type: DocumentConstants.GET_DOCUMENT_STATISTICS_DOWNLOADED_REQUEST });
-                DocumentServices.getUserDocumentStatistics({ option })
+                DocumentServices.getUserDocumentStatistics({ option }, data)
                     .then(res => {
                         dispatch({
                             type: DocumentConstants.GET_DOCUMENT_STATISTICS_DOWNLOADED_SUCCESS,
@@ -463,7 +463,7 @@ function getUserDocumentStatistics(option) {
         case 'common':
             return dispatch => {
                 dispatch({ type: DocumentConstants.GET_DOCUMENT_STATISTICS_COMMON_REQUEST });
-                DocumentServices.getUserDocumentStatistics({ option })
+                DocumentServices.getUserDocumentStatistics({ option }, data)
                     .then(res => {
                         dispatch({
                             type: DocumentConstants.GET_DOCUMENT_STATISTICS_COMMON_SUCCESS,
@@ -478,7 +478,7 @@ function getUserDocumentStatistics(option) {
         case 'latest':
             return dispatch => {
                 dispatch({ type: DocumentConstants.GET_DOCUMENT_STATISTICS_LATEST_REQUEST });
-                DocumentServices.getUserDocumentStatistics({ option })
+                DocumentServices.getUserDocumentStatistics({ option }, data)
                     .then(res => {
                         dispatch({
                             type: DocumentConstants.GET_DOCUMENT_STATISTICS_LATEST_SUCCESS,

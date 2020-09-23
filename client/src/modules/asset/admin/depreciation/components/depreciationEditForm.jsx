@@ -172,7 +172,7 @@ class DepreciationEditForm extends Component {
     isFormValidated = () => {
         let unitProductionValidate = true;
 
-        if (this.state.depreciationType === "Sản lượng") {
+        if (this.state.depreciationType === "units_of_production") {
             let { unitsProducedDuringTheYears, estimatedTotalProduction } = this.state;
             let check = true;
 
@@ -441,9 +441,9 @@ class DepreciationEditForm extends Component {
                                     value={depreciationType}
                                     items={[
                                         { value: '', text: `---${translate('asset.depreciation.select_depreciation_type')}---` },
-                                        { value: 'Đường thẳng', text: translate('asset.depreciation.line') },
-                                        { value: 'Số dư giảm dần', text: translate('asset.depreciation.declining_balance') },
-                                        { value: 'Sản lượng', text: translate('asset.depreciation.units_production') },
+                                        { value: 'straight_line', text: translate('asset.depreciation.line') },
+                                        { value: 'declining_balance', text: translate('asset.depreciation.declining_balance') },
+                                        { value: 'units_of_production', text: translate('asset.depreciation.units_production') },
                                     ]}
                                     onChange={this.handleDepreciationTypeChange}
                                 />
@@ -452,7 +452,7 @@ class DepreciationEditForm extends Component {
 
                             {/* Sản lượng theo công suất thiết kế */}
                             {
-                                depreciationType == 'Sản lượng' &&
+                                depreciationType == 'units_of_production' &&
                                 <div className={`form-group ${!errorOnEstimatedTotalProduction ? "" : "has-error"} `}>
                                     <label htmlFor="estimatedTotalProduction">{translate('asset.depreciation.estimated_production')}<span className="text-red">*</span></label>
                                     <input type="number" className="form-control" name="estimatedTotalProduction" value={estimatedTotalProduction} onChange={this.handleEstimatedTotalProductionChange}
@@ -463,11 +463,11 @@ class DepreciationEditForm extends Component {
 
                             {/* Sản lượng sản phẩm trong các năm */}
                             {
-                                depreciationType == 'Sản lượng' &&
+                                depreciationType == 'units_of_production' &&
                                 <div className="col-md-12" style={{ paddingLeft: '0px' }}>
                                     <label>{translate('asset.depreciation.months_production')}:
                                         <a style={{ cursor: "pointer" }} title={translate('asset.general_information.asset_properties')}><i className="fa fa-plus-square" style={{ color: "#00a65a", marginLeft: 5 }}
-                                        onClick={this.handleAddUnitsProduced} /></a>
+                                            onClick={this.handleAddUnitsProduced} /></a>
                                     </label>
                                     <div className={`form-group ${(!errorOnMonth && !errorOnValue) ? "" : "has-error"}`}>
 

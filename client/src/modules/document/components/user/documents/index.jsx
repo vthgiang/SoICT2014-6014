@@ -360,7 +360,7 @@ class UserDocumentsData extends Component {
         if (isLoading === false) {
             list = docs.list;
         }
-        console.log('==================', this.props.documents);
+
         let exportData = this.convertDataToExportData(list);
         return (
             <div className="qlcv">
@@ -527,11 +527,14 @@ class UserDocumentsData extends Component {
 
     setPage = async (page) => {
         this.setState({ page });
+        let path = this.state.archive ? this.findPath(this.state.archive) : "";
         const data = {
             limit: this.state.limit,
             page: page,
-            key: this.state.option,
-            value: this.state.value
+            name: this.state.name,
+            category: this.state.category ? this.state.category[0] : "",
+            domains: this.state.domain ? this.state.domain : "",
+            archives: path && path.length ? path[0] : "",
         };
         await this.props.getAllDocuments(getStorage('currentRole'), data);
     }
@@ -549,15 +552,25 @@ class UserDocumentsData extends Component {
             [title]: option
         });
     }
+    findPath = (select) => {
+        const archives = this.props.documents.administration.archives.list;
+        let paths = select.map(s => {
+            let archive = archives.filter(arch => arch._id === s);
+            return archive[0] ? archive[0].path : "";
+        })
+        return paths;
+
+    }
 
     searchWithOption = async () => {
+        let path = this.state.archive ? this.findPath(this.state.archive) : "";
         const data = {
             limit: this.state.limit,
             page: 1,
             name: this.state.name,
-            category: this.state.category[0],
-            domains: this.state.domain[0],
-            archives: this.state.archive[0],
+            category: this.state.category ? this.state.category[0] : "",
+            domains: this.state.domain ? this.state.domain : "",
+            archives: path && path.length ? path : "",
         };
         await this.props.getAllDocuments(getStorage('currentRole'), data);
     }

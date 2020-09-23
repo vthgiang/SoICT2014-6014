@@ -14,7 +14,7 @@ import { ModalCreateEmployeeKpiSet } from './employeeKpiCreateModal';
 import { ModalEditEmployeeKpi } from './employeeKpiEditTargetModal';
 
 import { getStorage } from '../../../../../config'
-import { DatePicker, SelectBox, SlimScroll, Comment } from '../../../../../../src/common-components';
+import { DatePicker, SelectBox, SlimScroll, ToolTip, Comment } from '../../../../../../src/common-components';
 import getEmployeeSelectBoxItems from '../../../../task/organizationalUnitHelper';
 import { AuthActions } from '../../../../auth/redux/actions';
 
@@ -632,7 +632,11 @@ class CreateEmployeeKpiSet extends Component {
                                                                     </a>
 
                                                                     {item.type !== 0 ?
-                                                                        <a className="copy" title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.action_title.content')}><i className="material-icons">notification_important</i></a>
+                                                                        // <a className="copy" title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.action_title.content')}><i className="material-icons">notification_important</i></a>
+                                                                        <ToolTip
+                                                                            type={"icon_tooltip"} materialIcon={"notification_important"}
+                                                                            dataTooltip={[translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.action_title.content')]}
+                                                                        />
                                                                         : <a
                                                                             style={{ color: "#E34724", fontSize: "16px" }}
                                                                             title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.action_title.delete')}

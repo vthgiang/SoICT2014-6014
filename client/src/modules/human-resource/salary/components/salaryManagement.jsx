@@ -215,35 +215,6 @@ class SalaryManagement extends Component {
                     sheetTitle: translate('human_resource.salary.file_name_export'),
                     tables: [
                         {
-                            // note: `Chú ý: 
-                            // noteHeight: 42,
-                            // tableName: "Bảng lương 1",
-                            // merges: [
-                            //     key: "other",
-                            //     columnName: "Lương thưởng 123",
-                            //     keyMerge: 'gender',
-                            //     colspan: 2
-                            // }, {
-                            //     key: "other1",
-                            //     columnName: "Lương thưởng 124",
-                            //     keyMerge: 'organizationalUnits',
-                            //     colspan: 2
-                            // }, {
-                            //     key: "other2",
-                            //     columnName: "Lương thưởng 1235",
-                            //     keyMerge: 'other1',
-                            //     colspan: 4
-                            // }],
-                            // styleColumn: {
-                            //     STT: {
-                            //         vertical: 'top', horizontal: 'center'
-                            //     }
-                            // },
-                            // moreInform: [{
-                            //     title: 'Tiêu đề thông tin thêm',
-                            //     value: ["dòng1", "dòng2"]
-                            // }],
-
                             rowHeader: 2,
                             merges: merges,
                             columns: [

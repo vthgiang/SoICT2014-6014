@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import moment from 'moment';
 
-import { DialogModal } from '../../../../../common-components';
+import { DialogModal, Scheduler } from '../../../../../common-components';
 import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter';
 import {
     GeneralTab, MaintainanceLogTab, UsageLogTab, DepreciationTab, IncidentLogTab, DisposalTab, FileTab
@@ -86,7 +86,7 @@ class AssetEditForm extends Component {
             usageLogs: data.usageLogs,
             assignedToUser: data.assignedToUser,
             assignedToOrganizationalUnit: data.assignedToOrganizationalUnit,
-            status: "Đang sử dụng"
+            status: "in_use"
         })
 
     }
@@ -222,7 +222,7 @@ class AssetEditForm extends Component {
 
         if (this.state !== {}) {
             let unitProductionValidate = true;
-            if (depreciationType === "Sản lượng") {
+            if (depreciationType === "units_of_production") {
                 unitProductionValidate = this.validatorInput(estimatedTotalProduction);
             }
 
@@ -284,7 +284,7 @@ class AssetEditForm extends Component {
                 },
                 assignedToUser: this.state.assignedToUser,
                 assignedToOrganizationalUnit: this.state.assignedToOrganizationalUnit,
-                status: "Đang sử dụng",
+                status: "in_use",
             });
         }
     }
@@ -415,7 +415,7 @@ class AssetEditForm extends Component {
                         <ul className="nav nav-tabs">
                             <li className="active"><a title={translate('asset.general_information.general_information')} data-toggle="tab" href={`#edit_general${_id}`}>{translate('asset.general_information.general_information')}</a></li>
                             <li><a title={translate('asset.general_information.depreciation_information')} data-toggle="tab" href={`#edit_depreciation${_id}`}>{translate('asset.general_information.depreciation_information')}</a></li>
-                            <li><a title={translate('asset.general_information.usage_information')} data-toggle="tab" href={`#edit_usage${_id}`}>{translate('asset.general_information.usage_information')}</a></li>
+                            <li><a title={translate('asset.general_information.usage_information')} data-toggle="tab" href={`#edit_usage${_id}`} onClick={() => { Scheduler.triggerOnActiveEvent(".asset-usage-scheduler") }}>{translate('asset.general_information.usage_information')}</a></li>
                             <li><a title={translate('asset.general_information.incident_information')} data-toggle="tab" href={`#edit_incident${_id}`}>{translate('asset.general_information.incident_information')}</a></li>
                             <li><a title={translate('asset.general_information.maintainance_information')} data-toggle="tab" href={`#edit_maintainance${_id}`}>{translate('asset.general_information.maintainance_information')}</a></li>
                             <li><a title={translate('asset.general_information.disposal_information')} data-toggle="tab" href={`#edit_disposal${_id}`}>{translate('asset.general_information.disposal_information')}</a></li>
@@ -472,7 +472,7 @@ class AssetEditForm extends Component {
                                 assignedToUser={assignedToUser}
                                 assignedToOrganizationalUnit={assignedToOrganizationalUnit}
                                 usageLogs={usageLogs}
-                                typeRegisterForUse = {typeRegisterForUse}
+                                typeRegisterForUse={typeRegisterForUse}
                                 handleAddUsage={this.handleCreateUsageLogs}
                                 handleEditUsage={this.handleEditUsageLogs}
                                 handleDeleteUsage={this.handleDeleteUsageLogs}

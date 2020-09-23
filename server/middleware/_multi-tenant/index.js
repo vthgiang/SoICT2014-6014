@@ -124,8 +124,8 @@ exports.authFunc = (checkPage = true) => {
                  * Kiểm tra xem user này có được gọi tới service này hay không?
                  */
                 const path = req.route.path !== '/' ? req.baseUrl + req.route.path : req.baseUrl;
-                const checkSP = await checkServicePermission(req.portal, data, path, req.method, currentRole);
-                if (!checkSP) throw ['service_permission_invalid'];
+                // const checkSP = await checkServicePermission(req.portal, data, path, req.method, currentRole);
+                // if (!checkSP) throw ['service_permission_invalid'];
 
             }
 
@@ -163,30 +163,16 @@ exports.uploadFile = (arrData, type) => {
             })
     }
 
-    const staticPath = [
-        "/avatars",
-        "/human-resource/avatars",
-        "/asset/pictures",
-    ];
-
     const getFile = multer({
         storage: multer.diskStorage({
             destination: (req, file, cb) => {
-                checkExistUploads(req.user.portal);
+                checkExistUploads(req.portal);
                 if (type === 'single' || type === 'array') {
-                    if(staticPath.indexOf(arrData[0].path) !== -1) {
-                        cb(null, `./upload${arrData[0].path}`);
-                    }else{
-                        cb(null, `./upload/private/${req.user.portal}${arrData[0].path}`);
-                    }
+                    cb(null, `./upload/private/${req.portal}${arrData[0].path}`);
                 } else if (type === 'fields') {
                     for (let n in arrData) {
                         if (file.fieldname === arrData[n].name) {
-                            if(staticPath.indexOf(arrData[n].path) !== -1) {
-                                cb(null, `./upload${arrData[n].path}`);
-                            }else{
-                                cb(null, `./upload/private/${req.user.portal}${arrData[n].path}`);
-                            }
+                            cb(null, `./upload/private/${req.portal}${arrData[n].path}`);
                             break;
                         }
                     }

@@ -88,7 +88,7 @@ class PieChartDetailForm extends Component {
         return (
             <React.Fragment>
                 <div className="box" >
-                    <div className="box-header with-border">
+                    <div className="box-header with-border" style={{ display: 'flex' }}>
                         <h4 className="box-title report-title"><span style={{ marginRight: '7px' }}>{`Biểu đồ tròn thống kê trường thông tin ${namePieChart ? (namePieChart + ' ') : ''} của các công việc từ `}</span>{`${startDate}`} đến {`${endDate}`}</h4>
                         <div className="box-tools pull-right">
                             <button onClick={this.collapseChart} className="btn btn-box-tool" data-toggle="collapse" data-target="#showPieChart"><i className={collapseChart ? `fa fa-plus` : `fa fa-minus`}></i></button>
