@@ -85,7 +85,7 @@ exports.createManualNotification = async (portal, data) => {
  * @return trả về một mảng các id các user
  */
 exports.getAllUsersInOrganizationalUnit = async (portal, departmentId) => {
-    var department = await OrganizationalUnit.findById(departmentId)
+    var department = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findById(departmentId)
         .populate([{
                 path: 'deans',
                 populate: {
@@ -129,7 +129,7 @@ exports.createNotification = async (portal, company, data, manualNotification = 
     let usersArr = data.users;
     for (let i = 0; i < data.organizationalUnits.length; i++) {
         let organizationalUnit = data.organizationalUnits[i]; // id đơn vị hiện tại
-        let userArr = await this.getAllUsersInOrganizationalUnit(organizationalUnit);
+        let userArr = await this.getAllUsersInOrganizationalUnit(portal, organizationalUnit);
         usersArr = await usersArr.concat(userArr);
     }
 
