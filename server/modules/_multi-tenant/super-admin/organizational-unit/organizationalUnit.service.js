@@ -299,7 +299,7 @@ exports.editOrganizationalUnit = async(portal, id, data) => {
     // Kiểm tra phòng ban cha muốn sửa đổi
     if(ObjectId.isValid(data.parent)){
         const upOrg = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findById(data.parent);
-        if(upOrg.parent.toString() === id.toString()){
+        if(upOrg.parent !== null && upOrg.parent.toString() === id.toString()){
             var oldP = department.parent;
             upOrg.parent = oldP;
             await upOrg.save();

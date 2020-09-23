@@ -132,7 +132,7 @@ exports.createTaskAction = async (req, res) => {
         var tasks = task.tasks;
         var user = task.user;
         var data = { "organizationalUnits": tasks.organizationalUnit, "title": "Phê duyệt hoạt động", "level": "general", "content": `<p><strong>${user.name}</strong> đã thêm mới hoạt động cho công việc <strong>${tasks.name}</strong>, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`, "sender": user.name, "users": [tasks.accountableEmployees] };
-        NotificationServices.createNotification(tasks.organizationalUnit, data,);
+        NotificationServices.createNotification(req.portal, tasks.organizationalUnit, data,);
         sendEmail(task.email, "Phê duyệt hoạt động", '', `<p><strong>${user.name}</strong> đã thêm mới hoạt động, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`);
         await Logger.info(req.user.email, ` create task action  `, req.portal)
         res.status(200).json({

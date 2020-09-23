@@ -18,8 +18,8 @@ class UseRequestCreateForm extends Component {
             dateCreate: this.formatDate(Date.now()),
             proponent: "",
             reqContent: "",
-            dateStartUse: this.formatDate(Date.now()),
-            dateEndUse: this.formatDate(Date.now()),
+            dateStartUse: this.props.startDate ? this.formatDate(this.props.startDate) : this.formatDate(Date.now()),
+            dateEndUse: this.props.endDate ? this.formatDate(this.props.endDate) : this.formatDate(Date.now()),
             startTime : null,
             stopTime: null,
             status: "Chờ phê duyệt",
@@ -201,6 +201,7 @@ class UseRequestCreateForm extends Component {
     save = () => {
         let dataToSubmit = { ...this.state, proponent: this.props.auth.user._id }
         if (this.isFormValidated() && this.validateExitsRecommendNumber(this.state.recommendNumber) === false) {
+            this.props.handleChange(dataToSubmit)
             return this.props.createRecommendDistribute(dataToSubmit);
         }
     }
@@ -211,6 +212,8 @@ class UseRequestCreateForm extends Component {
                 ...prevState,
                 _id: nextProps._id,
                 asset: nextProps.asset,
+                stopTime: nextProps.stopTime,
+                startTime: nextProps.startTime,
             }
         } else {
             return null;
@@ -224,14 +227,14 @@ class UseRequestCreateForm extends Component {
             recommendNumber, dateCreate, proponent, asset, reqContent, dateStartUse, dateEndUse, approver, positionApprover, status, note,
             errorOnRecommendNumber, errorOnDateCreate, errorOnReqContent, errorOnDateStartUse, errorOnDateEndUse, startTime, stopTime
         } = this.state;
-
+        // 
         var assetlist = assetsManager.listAssets;
         var userlist = user.list;
-
+        console.log("This.props", `modal-create-recommenddistribute-${_id}` , this.props)
         return (
             <React.Fragment>
                 <DialogModal
-                    size='50' modalID="modal-create-recommenddistribute" isLoading={recommendDistribute.isLoading}
+                    size='50' modalID={`modal-create-recommenddistribute-${_id}`} isLoading={recommendDistribute.isLoading}
                     formID="form-create-recommenddistribute"
                     title={translate('asset.asset_info.add_usage_info')}
                     func={this.save}

@@ -37,6 +37,7 @@ class UsageLogTab extends Component {
                 id: nextProps.id,
                 usageLogs: nextProps.usageLogs,
                 typeRegisterForUse: nextProps.typeRegisterForUse,
+                managedBy: nextProps.managedBy
             }
         } else {
             return null;
@@ -44,9 +45,9 @@ class UsageLogTab extends Component {
     }
 
     render() {
-        const { id } = this.props;
+        const { id, assetId } = this.props;
         const { translate, user, department } = this.props;
-        const { usageLogs, typeRegisterForUse } = this.state;
+        const { usageLogs, typeRegisterForUse, managedBy } = this.state;
         var userlist = user.list, departmentlist= department.list;
 
         return (
@@ -88,8 +89,10 @@ class UsageLogTab extends Component {
                         {
                             typeRegisterForUse == 2 &&
                             <CalendarUsage 
-                            assetId = {id}
+                            assetId = {assetId}
                             usageLogs = {usageLogs}
+                            managedBy={managedBy}
+                            typeRegisterForUse = {typeRegisterForUse}
                         />
                         }
                         {
