@@ -67,6 +67,7 @@ class AssetViewInfo extends Component {
             unitsProducedDuringTheYears, maintainanceLogs, usageLogs, incidentLogs, disposalDate, disposalType, disposalCost,
             disposalDesc, archivedRecordNumber, files
         } = this.props;
+        
         return (
             <React.Fragment>
                 <form className="form-group" id="form-view-asset" style={{ marginTop: "-15px" }}>
@@ -128,8 +129,9 @@ class AssetViewInfo extends Component {
                             {/* Thông tin sử dụng */}
                             <UsageLogTab
                                 id={`view_usage${_id}`}
-                                _id={_id}
+                                assetId={_id}
                                 typeRegisterForUse={typeRegisterForUse}
+                                managedBy={managedBy}
                                 usageLogs={usageLogs}
                             />
 

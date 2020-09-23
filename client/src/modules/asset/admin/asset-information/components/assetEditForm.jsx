@@ -473,6 +473,7 @@ class AssetEditForm extends Component {
                                 assignedToOrganizationalUnit={assignedToOrganizationalUnit}
                                 usageLogs={usageLogs}
                                 typeRegisterForUse={typeRegisterForUse}
+                                managedBy={managedBy}
                                 handleAddUsage={this.handleCreateUsageLogs}
                                 handleEditUsage={this.handleEditUsageLogs}
                                 handleDeleteUsage={this.handleDeleteUsageLogs}
