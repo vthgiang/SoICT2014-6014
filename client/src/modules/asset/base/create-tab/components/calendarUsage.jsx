@@ -5,15 +5,16 @@ import { RecommendDistributeActions } from '../../../user/use-request/redux/acti
 import { UseRequestActions } from '../../../admin/use-request/redux/actions'
 import { UsageLogAddModal } from './combinedContent';
 import { Scheduler, formatDate } from '../../../../../common-components';
-
+import { UseRequestCreateForm } from './../../../user/use-request/components/UseRequestCreateForm';
 import './calendarUsage.css';
-import { clearStorage } from '../../../../../config';
+
 
 
 class CalendarUsage extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      userId: localStorage.getItem('userId'),
       weekendsVisible: true,
       currentEvents: [],
       nowDate: new Date(),
@@ -56,22 +57,41 @@ class CalendarUsage extends Component {
     await this.setState(state => {
       return {
         ...state,
-        currentRow: undefined
+        currentRow: undefined,
+        currentRowAdd: undefined
       }
     });
     let startTime = [selectInfo.start.getHours(), selectInfo.start.getMinutes()].join(':');
     let stopTime = [selectInfo.end.getHours(), selectInfo.end.getMinutes()].join(':');
-    await this.setState(state => {
-      return {
-        ...state,
-        currentRow: {
-          ...selectInfo,
-          startTime: startTime,
-          stopTime: stopTime,
+    console.log("----",this.props.managedBy ,this.state.userId )
+    if( this.props.managedBy == this.state.userId){
+      await this.setState(state => {
+        return {
+          ...state,
+          currentRow: {
+            ...selectInfo,
+            startTime: startTime,
+            stopTime: stopTime,
+          }
         }
-      }
-    });
+      });
+
     window.$(`#modal-create-usage-calendar-${this.props.assetId}`).modal('show');
+    } else {
+      await this.setState(state => {
+        return {
+          ...state,
+          currentRowAdd: {
+            ...selectInfo,
+            startTime: startTime,
+            stopTime: stopTime,
+          }
+        }
+      });
+
+    window.$(`#modal-create-recommenddistribute-calendar-${this.props.assetId}`).modal('show');
+    }
+    
   }
 
   handleEventClick = async (clickInfo) => {
@@ -155,6 +175,33 @@ class CalendarUsage extends Component {
     await this.props.createUsage(this.props.assetId, createUsage)
     // await this.props.handleAddUsage(createUsage);
   }
+  
+  handleCreateUseRequest = async (data) => {
+    const { currentRowAdd } = this.state
+    const { user } = this.props;
+    let userlist = user.list, startDate, endDate, partStart, partEnd;
+
+    partStart =  data.dateStartUse.split('-');
+    startDate = [partStart[2], partStart[1], partStart[0]].join("-") + " " + data.startTime;
+
+    partEnd = data.dateEndUse.split('-');
+    endDate = [partEnd[2], partEnd[1], partEnd[0]].join("-") + " " + data.stopTime;  
+    startDate = new Date(startDate);
+    endDate =  new Date(endDate);
+
+    let calendarApi = currentRowAdd.view.calendar;
+    if (data) {
+      calendarApi.unselect() // clear date selection
+      calendarApi.addEvent({
+        // id: createEventId(),
+        id: 1,
+        title: userlist.filter(item => item._id === data.proponent).pop() ? userlist.filter(item => item._id === data.proponent).pop().name : "Chưa có đối tượng sử dụng",
+        color: '#00a65a',
+        start: startDate,
+        end: endDate,
+      })
+    }
+  }
 
   handleApprove = async (clickInfo) => {
     // event.preventDefault();
@@ -214,7 +261,7 @@ class CalendarUsage extends Component {
   renderEventContent = (eventInfo) => {
     return (
       <>
-        {eventInfo.event.borderColor != "#337ab7" &&
+        { (eventInfo.event.borderColor != "#337ab7" &&  this.props.managedBy == this.state.userId) &&
           <a className="edit" title="Approve" style={{ color: "whitesmoke", cursor: "pointer" }} data-toggle="tooltip" onClick={async () => {
             await this.setState({
               currentEvent: 'approve',
@@ -266,8 +313,8 @@ class CalendarUsage extends Component {
   }
 
   render() {
-    const { recommendDistribute, user, assetId } = this.props;
-    var { currentRow, typeRegisterForUse, usageLogs } = this.state;
+    const { recommendDistribute, user, assetId, managedBy } = this.props;
+    var { currentRow, typeRegisterForUse, usageLogs, currentRowAdd } = this.state;
     let listRecommendDistributes, data = [], userlist = user.list;
     if (recommendDistribute && recommendDistribute.listRecommendDistributes) {
       listRecommendDistributes = recommendDistribute.listRecommendDistributes
@@ -340,6 +387,21 @@ class CalendarUsage extends Component {
             endDate={currentRow.end}
             startTime={currentRow.startTime}
             stopTime={currentRow.stopTime}
+          />
+        }
+
+        {
+          currentRowAdd &&
+          <UseRequestCreateForm
+            _id={`calendar-${assetId}`}
+            asset={assetId}
+            typeRegisterForUse={typeRegisterForUse}
+            managedBy={currentRowAdd.managedBy}
+            startDate={currentRowAdd.start}
+            endDate={currentRowAdd.end}
+            startTime={currentRowAdd.startTime}
+            stopTime={currentRowAdd.stopTime}
+            handleChange = {this.handleCreateUseRequest}
           />
         }
       </div>
