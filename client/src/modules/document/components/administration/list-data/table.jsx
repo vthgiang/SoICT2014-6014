@@ -397,7 +397,6 @@ class Table extends Component {
         if (isLoading === false) {
             list = docs.list;
         }
-        console.log('uuuuuuuuuuuuu', currentRow);
 
         let exportData = list ? this.convertDataToExportData(list) : "";
         return (
@@ -633,7 +632,7 @@ class Table extends Component {
             name: this.state.name,
             category: this.state.category ? this.state.category[0] : "",
             domains: this.state.domain ? this.state.domain : "",
-            archives: path && path.length ? path[0] : "",
+            archives: path && path.length ? path : "",
         };
         await this.props.getAllDocuments(data);
     }

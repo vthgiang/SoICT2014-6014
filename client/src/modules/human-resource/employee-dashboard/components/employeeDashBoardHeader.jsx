@@ -20,7 +20,11 @@ class EmployeeDashBoardHeader extends Component {
         }
     }
 
-    // Function format dữ liệu Date thành string
+    /**
+     * Function format dữ liệu Date thành string
+     * @param {*} date : Ngày muốn format
+     * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
+     */
     formatDate(date, monthYear = false) {
         if (date) {
             let d = new Date(date),
@@ -38,7 +42,6 @@ class EmployeeDashBoardHeader extends Component {
             } else return [day, month, year].join('-');
         }
         return date;
-
     }
 
     componentDidMount() {

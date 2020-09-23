@@ -36,7 +36,6 @@ class DegreeAddModal extends Component {
                 fileUpload: ""
             })
         }
-        console.log(value);
     }
 
     /** Bắt sự kiên thay đổi tên bằng cấp */
@@ -175,8 +174,7 @@ class DegreeAddModal extends Component {
                         {/* File đính kèm*/}
                         <div className="form-group">
                             <label htmlFor="file">{translate('human_resource.profile.attached_files')}</label>
-                            <UploadFile multiple={true} onChange={this.handleChangeFile} />
-                            {/* <input type="file" style={{ height: 34, paddingTop: 2 }} className="form-control" name="file" onChange={this.handleChangeFile} /> */}
+                            <UploadFile onChange={this.handleChangeFile} />
                         </div>
                     </form>
                 </DialogModal>

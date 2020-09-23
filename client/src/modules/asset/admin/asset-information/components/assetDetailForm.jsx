@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal } from '../../../../../common-components';
+import { DialogModal, Scheduler } from '../../../../../common-components';
 
 import {
     GeneralTab, MaintainanceLogTab, UsageLogTab, DepreciationTab, IncidentLogTab, DisposalTab, AttachmentTab
 } from '../../../base/detail-tab/components/combinedContent';
+import { AssetViewInfo } from './assetViewInfo';
 
 class AssetDetailForm extends Component {
     constructor(props) {
@@ -65,7 +66,7 @@ class AssetDetailForm extends Component {
             managedBy, assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, location, description, status, typeRegisterForUse,
             detailInfo, cost, residualValue, startDepreciation, usefulLife, depreciationType, estimatedTotalProduction,
             unitsProducedDuringTheYears, maintainanceLogs, usageLogs, incidentLogs, disposalDate, disposalType, disposalCost,
-            disposalDesc, archivedRecordNumber, files
+            disposalDesc, archivedRecordNumber, files, readByRoles
         } = this.state;
         return (
             <React.Fragment>
@@ -75,94 +76,48 @@ class AssetDetailForm extends Component {
                     title={translate('asset.asset_info.asset_info')}
                     hasSaveButton={false}
                 >
-                    <form className="form-group" id="form-view-asset" style={{ marginTop: "-15px" }}>
-                        <div className="nav-tabs-custom">
-                            {/* Nav-tabs */}
-                            <ul className="nav nav-tabs">
-                                <li className="active"><a title={translate('asset.general_information.general_information')} data-toggle="tab" href={`#view_general${_id}`}>{translate('asset.general_information.general_information')}</a></li>
-                                <li><a title={translate('asset.general_information.depreciation_information')} data-toggle="tab" href={`#view_depreciation${_id}`}>{translate('asset.general_information.depreciation_information')}</a></li>
-                                <li><a title={translate('asset.general_information.usage_information')} data-toggle="tab" href={`#view_usage${_id}`}>{translate('asset.general_information.usage_information')}</a></li>
-                                <li><a title={translate('asset.general_information.incident_information')} data-toggle="tab" href={`#view_incident${_id}`}>{translate('asset.general_information.incident_information')}</a></li>
-                                <li><a title={translate('asset.general_information.maintainance_information')} data-toggle="tab" href={`#view_maintainance${_id}`}>{translate('asset.general_information.maintainance_information')}</a></li>
-                                <li><a title={translate('asset.general_information.disposal_information')} data-toggle="tab" href={`#view_disposal${_id}`}>{translate('asset.general_information.disposal_information')}</a></li>
-                                <li><a title={translate('asset.general_information.attach_infomation')} data-toggle="tab" href={`#view_attachments${_id}`}>{translate('asset.general_information.attach_infomation')}</a></li>
-                            </ul>
+                    <AssetViewInfo
+                        id="form-view-asset"
+                        _id={_id}
+                        avatar={avatar}
+                        code={code}
+                        assetName={assetName}
+                        serial={serial}
+                        assetType={assetType}
+                        group={group}
+                        purchaseDate={purchaseDate}
+                        warrantyExpirationDate={warrantyExpirationDate}
+                        managedBy={managedBy}
+                        assignedToUser={assignedToUser}
+                        assignedToOrganizationalUnit={assignedToOrganizationalUnit}
+                        handoverFromDate={handoverFromDate}
+                        handoverToDate={handoverToDate}
+                        location={location}
+                        description={description}
+                        status={status}
+                        typeRegisterForUse={typeRegisterForUse}
+                        detailInfo={detailInfo}
+                        cost={cost}
+                        readByRoles={readByRoles}
+                        residualValue={residualValue}
+                        startDepreciation={startDepreciation}
+                        usefulLife={usefulLife}
+                        depreciationType={depreciationType}
+                        estimatedTotalProduction={estimatedTotalProduction}
+                        unitsProducedDuringTheYears={unitsProducedDuringTheYears}
 
-                            <div className="tab-content">
-                                {/* Thông tin chung */}
-                                <GeneralTab
-                                    id={`view_general${_id}`}
-                                    avatar={avatar}
-                                    code={code}
-                                    assetName={assetName}
-                                    serial={serial}
-                                    assetTypes={assetType}
-                                    group={group}
-                                    purchaseDate={purchaseDate}
-                                    warrantyExpirationDate={warrantyExpirationDate}
-                                    managedBy={managedBy}
-                                    assignedToUser={assignedToUser}
-                                    assignedToOrganizationalUnit={assignedToOrganizationalUnit}
-                                    handoverFromDate={handoverFromDate}
-                                    handoverToDate={handoverToDate}
-                                    location={location}
-                                    description={description}
-                                    status={status}
-                                    typeRegisterForUse={typeRegisterForUse}
-                                    detailInfo={detailInfo}
-                                    usageLogs={usageLogs}
-                                />
+                        maintainanceLogs={maintainanceLogs}
+                        usageLogs={usageLogs}
+                        incidentLogs={incidentLogs}
 
-                                {/* Thông tin khấu hao */}
-                                <DepreciationTab
-                                    id={`view_depreciation${_id}`}
-                                    cost={cost}
-                                    residualValue={residualValue}
-                                    startDepreciation={startDepreciation}
-                                    usefulLife={usefulLife}
-                                    estimatedTotalProduction={estimatedTotalProduction}
-                                    unitsProducedDuringTheYears={unitsProducedDuringTheYears}
-                                    depreciationType={depreciationType}
-                                />
+                        disposalDate={disposalDate}
+                        disposalType={disposalType}
+                        disposalCost={disposalCost}
+                        disposalDesc={disposalDesc}
 
-                                {/* Thông tin bảo trì */}
-                                <MaintainanceLogTab
-                                    id={`view_maintainance${_id}`}
-                                    maintainanceLogs={maintainanceLogs}
-                                />
-
-                                {/* Thông tin sử dụng */}
-                                <UsageLogTab
-                                    id={`view_usage${_id}`}
-                                    _id = {_id}
-                                    typeRegisterForUse = {typeRegisterForUse}
-                                    usageLogs={usageLogs}
-                                />
-
-                                {/* Thông tin sự cố */}
-                                <IncidentLogTab
-                                    id={`view_incident${_id}`}
-                                    incidentLogs={incidentLogs}
-                                />
-
-                                {/* Thông tin thanh lý */}
-                                <DisposalTab
-                                    id={`view_disposal${_id}`}
-                                    disposalDate={disposalDate}
-                                    disposalType={disposalType}
-                                    disposalCost={disposalCost}
-                                    disposalDesc={disposalDesc}
-                                />
-
-                                {/* Tài liệu đính kèm */}
-                                <AttachmentTab
-                                    id={`view_attachments${_id}`}
-                                    archivedRecordNumber={archivedRecordNumber}
-                                    files={files}
-                                />
-                            </div>
-                        </div>
-                    </form>
+                        archivedRecordNumber={archivedRecordNumber}
+                        files={files}
+                    />
                 </DialogModal>
             </React.Fragment>
         );

@@ -140,8 +140,9 @@ exports.getLinkCategories = async (req, res) => {
 
 exports.updateCompanyLinks = async (req, res) => {
     try {
-        let data = req.body;
-        let content = await LinkService.updateCompanyLinks(data);
+        let data = req.body; 
+        let portal = req.query.portal !== undefined ? req.query.portal : req.portal;
+        let content = await LinkService.updateCompanyLinks(portal, data);
 
         await Logger.info(req.user.email, 'update_company_links_success');
         res.status(200).json({
@@ -150,6 +151,7 @@ exports.updateCompanyLinks = async (req, res) => {
             content
         });
     } catch (error) {
+
         await Logger.info(req.user.email, 'update_company_links_faile');
         res.status(400).json({
             success: false,

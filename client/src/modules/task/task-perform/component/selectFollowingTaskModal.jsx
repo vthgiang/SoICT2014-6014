@@ -45,7 +45,7 @@ class SelectFollowingTaskModal extends Component {
                 ...state,
             }
         });
-console.log('state', this.state);
+        console.log('state', this.state);
     }
 
     /**
@@ -121,11 +121,11 @@ console.log('state', this.state);
 
         // Mảng cấu hình trạng thái công việc
         let statusArr = [
-            { value: "Inprocess", text: translate('task.task_management.inprocess') },
-            { value: "WaitForApproval", text: translate('task.task_management.wait_for_approval') },
-            { value: "Finished", text: translate('task.task_management.finished') },
-            { value: "Delayed", text: translate('task.task_management.delayed') },
-            { value: "Canceled", text: translate('task.task_management.canceled') }
+            { value: "inprocess", text: translate('task.task_management.inprocess') },
+            { value: "wait_for_approval", text: translate('task.task_management.wait_for_approval') },
+            { value: "finished", text: translate('task.task_management.finished') },
+            { value: "delayed", text: translate('task.task_management.delayed') },
+            { value: "canceled", text: translate('task.task_management.canceled') }
         ];
 
         return (

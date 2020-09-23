@@ -63,7 +63,7 @@ exports.getXmlDiagramById = async (req, res) => {
  * tạo mới diagram
  */
 exports.createXmlDiagram = async (req, res) => {
-	try {
+	// try {
 		var data = await TaskProcessService.createXmlDiagram(req.portal, req.body);
 		await Logger.info(req.user.email, `create xml diagram `, req.portal);
 		res.status(200).json({
@@ -71,14 +71,14 @@ exports.createXmlDiagram = async (req, res) => {
 			messages: ['create_success'],
 			content: data
 		});
-	} catch (error) {
-		await Logger.error(req.user.email, `create xml diagram `, req.portal);
-		res.status(400).json({
-			success: false,
-			messages: ['create_error'],
-			content: error
-		});
-	}
+	// } catch (error) {
+	// 	await Logger.error(req.user.email, `create xml diagram `, req.portal);
+	// 	res.status(400).json({
+	// 		success: false,
+	// 		messages: ['create_error'],
+	// 		content: error
+	// 	});
+	// }
 }
 
 /**

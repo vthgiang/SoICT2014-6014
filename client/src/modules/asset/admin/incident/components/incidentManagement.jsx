@@ -268,7 +268,7 @@ class IncidentManagement extends Component {
         if (type == 1) {
             return 'Hỏng';
         } else if (type == 2) {
-            return 'Mất'
+            return 'lost'
         } else {
             return 'Type is deleted'
         }
@@ -326,8 +326,8 @@ class IncidentManagement extends Component {
                                 options={{ nonSelectedText: "Chọn loại sự cố", allSelectedText: "Chọn tất cả" }}
                                 onChange={this.handleIncidentTypeChange}
                                 items={[
-                                    { value: 1, text: "Hỏng" },
-                                    { value: 2, text: "Mất" },
+                                    { value: "broken", text: "Hỏng" },
+                                    { value: "lost", text: "Mất" },
                                 ]}
                             >
                             </SelectMulti>

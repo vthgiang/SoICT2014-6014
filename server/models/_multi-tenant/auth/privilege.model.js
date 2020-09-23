@@ -9,7 +9,7 @@ const PrivilegeSchema = new Schema({
     },
     resourceType: {
         type: String,
-        enum: ['Link', 'TaskTemplate', 'Component', 'ProcessTemplate'],
+        enum: ['Link', 'TaskTemplate', 'Component', 'ProcessTemplate'], // tên model tương ứng - không đổi về dạng chữ thường
     },
     roleId: {
         type: Schema.Types.ObjectId,
@@ -18,7 +18,7 @@ const PrivilegeSchema = new Schema({
     },
     actions: [{
         type: String,
-        enum: ['See', 'Open', 'Edit', 'Delete'],
+        enum: ['see', 'open', 'edit', 'delete'],
     }]
 });
 

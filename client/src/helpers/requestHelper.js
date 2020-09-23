@@ -34,7 +34,6 @@ const checkErrorAuth = (code) => {
         'fingerprint_invalid',
         'service_permisson_denied',
     ];
-    console.log("auth-eror", code)
     if (error_auth.indexOf(code) !== -1) return true;
     return false;
 }
@@ -68,6 +67,7 @@ export function sendRequest(options, showSuccessAlert = false, showFailAlert = t
         showSuccessAlert && toast.success(
                     <ServerResponseAlert
                         type='success'
+                        icon='fa fa-check-circle'
                         title = {successTitle}
                         content={messages.map(message => `${module}.${message}`)}
                     />,
@@ -88,6 +88,7 @@ export function sendRequest(options, showSuccessAlert = false, showFailAlert = t
                 showFailAlert && toast.error(
                     <ServerResponseAlert
                         type='error'
+                        icon='fa fa-close'
                         title={errorTitle}
                         content={messages.map(message => `${module}.${message}`)}
                     />,

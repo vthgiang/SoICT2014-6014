@@ -15,8 +15,8 @@ exports.searchAnnualLeaves = async (req, res) => {
         let data = {};
         if (req.query.numberAnnulLeave) {
             data = await AnnualLeaveService.getNumberAnnaulLeave(req.portal, req.user.email, req.query.year, req.user.company._id);
-        } else if (req.query.numberMonth) {
-            data = await AnnualLeaveService.getAnnualLeaveOfNumberMonth(req.portal, req.query.organizationalUnits, req.query.numberMonth, req.user.company._id)
+        } else if (req.query.startDate && req.query.endDate) {
+            data = await AnnualLeaveService.getAnnualLeaveByStartDateAndEndDate(req.portal, req.query.organizationalUnits, req.query.startDate, req.query.endDate, req.user.company._id)
         } else if (req.query.page === undefined && req.query.limit === undefined) {
             data = await AnnualLeaveService.getTotalAnnualLeave(req.portal, req.user.company._id, req.query.organizationalUnits, req.query.month)
         } else {

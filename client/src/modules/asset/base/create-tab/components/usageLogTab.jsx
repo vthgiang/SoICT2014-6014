@@ -104,16 +104,16 @@ class UsageLogTab extends Component {
             usageLogs: usageLogs,
             assignedToUser: data.usedByUser,
             assignedToOrganizationalUnit: data.usedByOrganizationalUnit,
-            status: "Đang sử dụng",
+            status: "in_use",
         })
 
         let createUsage = {
             usageLogs: usageLogs,
-            status: "Đang sử dụng",
+            status: "in_use",
             assignedToUser: data.usedByUser,
             assignedToOrganizationalUnit: data.usedByOrganizationalUnit,
         }
-        
+
         await this.props.createUsage(this.props.assetId, createUsage)
         await this.props.handleAddUsage(createUsage);
     }
@@ -123,8 +123,8 @@ class UsageLogTab extends Component {
         const { usageLogs } = this.state;
         let assignedToUser, assignedToOrganizationalUnit, updateUsage;
         usageLogs[data.index] = data;
-        if(data.index == (usageLogs.length - 1) && (this.state.assignedToUser || this.state.assignedToOrganizationalUnit)){
-            assignedToUser = data.usedByUser ? data.usedByUser : null ;
+        if (data.index == (usageLogs.length - 1) && (this.state.assignedToUser || this.state.assignedToOrganizationalUnit)) {
+            assignedToUser = data.usedByUser ? data.usedByUser : null;
             assignedToOrganizationalUnit = data.assignedToOrganizationalUnit ? data.assignedToOrganizationalUnit : null;
         } else {
             assignedToUser = this.state.assignedToUser;
@@ -136,7 +136,7 @@ class UsageLogTab extends Component {
             assignedToUser: assignedToUser,
             assignedToOrganizationalUnit: assignedToOrganizationalUnit,
         })
-        
+
         updateUsage = {
             _id: data._id,
             usedByUser: data.usedByUser,
@@ -149,7 +149,7 @@ class UsageLogTab extends Component {
         }
         await this.props.updateUsage(this.props.assetId, updateUsage)
         await this.props.handleEditUsage({
-            usageLogs: usageLogs, 
+            usageLogs: usageLogs,
             assignedToUser: assignedToUser,
             assignedToOrganizationalUnit: assignedToOrganizationalUnit,
         });
@@ -176,22 +176,22 @@ class UsageLogTab extends Component {
             ...this.state,
             assignedToUser: null,
             assignedToOrganizationalUnit: null,
-            status: "Sẵn sàng sử dụng",
+            status: "ready_to_use",
         })
-        let data =  {
+        let data = {
             usageId: assignedToUser,
         }
 
-        await this.props.recallAsset(assetId, data); 
+        await this.props.recallAsset(assetId, data);
         await this.props.handleRecallAsset({
             assignedToUser: null,
             assignedToOrganizationalUnit: null,
-            status: "Sẵn sàng sử dụng",
-        })       
+            status: "ready_to_use",
+        })
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id || nextProps.usageLogs !== prevState.usageLogs ) {
+        if (nextProps.id !== prevState.id || nextProps.usageLogs !== prevState.usageLogs) {
             return {
                 ...prevState,
                 id: nextProps.id,
@@ -199,6 +199,7 @@ class UsageLogTab extends Component {
                 assignedToUser: nextProps.assignedToUser,
                 assignedToOrganizationalUnit: nextProps.assignedToOrganizationalUnit,
                 typeRegisterForUse: nextProps.typeRegisterForUse,
+                managedBy: nextProps.managedBy
             }
         } else {
             return null;
@@ -209,35 +210,35 @@ class UsageLogTab extends Component {
     render() {
         const { id, assetId } = this.props;
         const { translate, user, department } = this.props;
-        const { assignedToOrganizationalUnit, assignedToUser, usageLogs, currentRow, typeRegisterForUse } = this.state;
+        const { assignedToOrganizationalUnit, assignedToUser, usageLogs, currentRow, typeRegisterForUse, managedBy } = this.state;
         var userlist = user.list, departmentlist = department.list;
         console.log("typeRegister", typeRegisterForUse);
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body qlcv">
                     {/* Lịch sử sử dụng */}
-                   
+
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border"><h4 className="box-title">{translate('asset.asset_info.usage_logs')}</h4></legend>
 
                         {/* Form thêm thông tin sử dụng */}
-                        <UsageLogAddModal handleChange={this.handleAddUsage} id={`addUsage${id}`} />
-                        
+                        <UsageLogAddModal handleChange={this.handleAddUsage} typeRegisterForUse={typeRegisterForUse} id={`addUsage${id}`} />
+
                         <div className="form-inline">
                             <div className="form-group">
                                 <label style={{ width: "auto" }} className="form-control-static"> Đối tượng đang sử dụng:</label>
                                 <div style={{ width: "auto" }} className="form-control-static">
-                                    { assignedToUser? 
-                                        userlist.filter(item => item._id === assignedToUser).pop() ? userlist.filter(item => item._id === assignedToUser).pop().name:"Chưa có đối tượng sử dụng": ''}
-                                    { assignedToUser && assignedToOrganizationalUnit && ' , ' }
-                                    { assignedToOrganizationalUnit ?
-                                        departmentlist.filter(item => item._id === assignedToOrganizationalUnit).pop() ? departmentlist.filter(item => item._id === assignedToOrganizationalUnit).pop().name:"Chưa có đối tượng sử dụng": ''}
-                                    { !assignedToUser && !assignedToOrganizationalUnit && 'Chưa có' }
+                                    {assignedToUser ?
+                                        userlist.filter(item => item._id === assignedToUser).pop() ? userlist.filter(item => item._id === assignedToUser).pop().name : "Chưa có đối tượng sử dụng" : ''}
+                                    {assignedToUser && assignedToOrganizationalUnit && ' , '}
+                                    {assignedToOrganizationalUnit ?
+                                        departmentlist.filter(item => item._id === assignedToOrganizationalUnit).pop() ? departmentlist.filter(item => item._id === assignedToOrganizationalUnit).pop().name : "Chưa có đối tượng sử dụng" : ''}
+                                    {!assignedToUser && !assignedToOrganizationalUnit && 'Chưa có'}
                                 </div>
                             </div>
-                            
-                            { (assignedToUser || assignedToOrganizationalUnit) &&
-                                <div className="form-group" style={{marginLeft: "20px"}}>
+
+                            {(assignedToUser || assignedToOrganizationalUnit) &&
+                                <div className="form-group" style={{ marginLeft: "20px" }}>
                                     <button type="button" className="btn btn-success" onClick={this.handleRecallAsset} >Thu hồi</button>
                                 </div>
                             }
@@ -245,53 +246,54 @@ class UsageLogTab extends Component {
 
                         {/* Bảng thông tin sử dụng */}
                         {
-                            typeRegisterForUse !== 2 && 
-                        <table className="table table-striped table-bordered table-hover">
-                            <thead>
-                                <tr>
-                                    <th style={{ width: "10%" }}>{translate('asset.general_information.user')}</th>
-                                    <th style={{ width: "10%" }}>{translate('asset.general_information.organization_unit')}</th>
-                                    <th style={{ width: "10%" }}>{translate('asset.general_information.handover_from_date')}</th>
-                                    <th style={{ width: "10%" }}>{translate('asset.general_information.handover_to_date')}</th>
-                                    <th style={{ width: "10%" }}>{translate('asset.general_information.content')}</th>
-                                    <th style={{ width: '100px', textAlign: 'center' }}>{translate('table.action')}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {(usageLogs && usageLogs.length !== 0) &&
-                                    usageLogs.map((x, index) => (
-                                        <tr key={index}>
-                                            <td>{x.usedByUser ? (userlist.length && userlist.filter(item => item._id === x.usedByUser).pop() ? userlist.filter(item => item._id === x.usedByUser).pop().name : 'User is deleted') : ''}</td>
-                                            <td>{x.usedByOrganizationalUnit ? (departmentlist.length && departmentlist.filter(item => item._id === x.usedByOrganizationalUnit).pop() ? departmentlist.filter(item => item._id === x.usedByOrganizationalUnit).pop().name : 'Organizational Unit is deleted') : ''}</td>
-                                            <td>{x.startDate ? this.formatDate(x.startDate) : ''}</td>
-                                            <td>{x.endDate ? this.formatDate(x.endDate) : ''}</td>
-                                            <td>{x.description}</td>
-                                            <td>
-                                                <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin sử dụng"><i
-                                                    className="material-icons">edit</i></a>
-                                                { ((assignedToUser && index != (usageLogs.length - 1)) || !assignedToUser) &&
-                                                    <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteUsage(index)}><i className="material-icons"></i></a>
-                                                }
-                                            </td>
-                                        </tr>
-                                    ))
-                                }
-                            </tbody>
-                        </table>
+                            typeRegisterForUse !== 2 &&
+                            <table className="table table-striped table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th style={{ width: "10%" }}>{translate('asset.general_information.user')}</th>
+                                        <th style={{ width: "10%" }}>{translate('asset.general_information.organization_unit')}</th>
+                                        <th style={{ width: "10%" }}>{translate('asset.general_information.handover_from_date')}</th>
+                                        <th style={{ width: "10%" }}>{translate('asset.general_information.handover_to_date')}</th>
+                                        <th style={{ width: "10%" }}>{translate('asset.general_information.content')}</th>
+                                        <th style={{ width: '100px', textAlign: 'center' }}>{translate('table.action')}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {(usageLogs && usageLogs.length !== 0) &&
+                                        usageLogs.map((x, index) => (
+                                            <tr key={index}>
+                                                <td>{x.usedByUser ? (userlist.length && userlist.filter(item => item._id === x.usedByUser).pop() ? userlist.filter(item => item._id === x.usedByUser).pop().name : 'User is deleted') : ''}</td>
+                                                <td>{x.usedByOrganizationalUnit ? (departmentlist.length && departmentlist.filter(item => item._id === x.usedByOrganizationalUnit).pop() ? departmentlist.filter(item => item._id === x.usedByOrganizationalUnit).pop().name : 'Organizational Unit is deleted') : ''}</td>
+                                                <td>{x.startDate ? this.formatDate(x.startDate) : ''}</td>
+                                                <td>{x.endDate ? this.formatDate(x.endDate) : ''}</td>
+                                                <td>{x.description}</td>
+                                                <td>
+                                                    <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin sử dụng"><i
+                                                        className="material-icons">edit</i></a>
+                                                    {((assignedToUser && index != (usageLogs.length - 1)) || !assignedToUser) &&
+                                                        <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteUsage(index)}><i className="material-icons"></i></a>
+                                                    }
+                                                </td>
+                                            </tr>
+                                        ))
+                                    }
+                                </tbody>
+                            </table>
                         }
                         {
                             typeRegisterForUse == 2 &&
-                        
-                        <CalendarUsage 
-                            id = {`edit`}
-                            assetId = {assetId}
-                            usageLogs = {usageLogs}
-                            assignedToUser = {assignedToUser}
-                            assignedToOrganizationalUnit = {assignedToOrganizationalUnit}
-                            typeRegisterForUse = {typeRegisterForUse}
-                        />
+
+                            <CalendarUsage
+                                id={`edit`}
+                                assetId={assetId}
+                                usageLogs={usageLogs}
+                                assignedToUser={assignedToUser}
+                                assignedToOrganizationalUnit={assignedToOrganizationalUnit}
+                                typeRegisterForUse={typeRegisterForUse}
+                                managedBy={managedBy}
+                            />
                         }
-                        {   typeRegisterForUse !== 2 &&
+                        {typeRegisterForUse !== 2 &&
                             (!usageLogs || usageLogs.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </fieldset>

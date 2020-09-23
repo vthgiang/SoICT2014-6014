@@ -1,7 +1,9 @@
-.timekeeping th, td{
-    width: auto !important;
+#delete-event{
+     color: whitesmoke;
+     cursor: pointer;
 }
-
-.fc-col-header {
-    width: 100% !important;
+#delete-event:hover{
+    color: red;
+    transition: 0.3s;
+    /* cursor: pointer; */
 }
