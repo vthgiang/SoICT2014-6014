@@ -20,19 +20,19 @@ class StautsChart extends Component {
         if (listAssets) {
             for (let i in listAssets) {
                 switch (listAssets[i].status) {
-                    case "Sẵn sàng sử dụng":
+                    case "ready_to_use":
                         numberOfReadyToUse++;
                         break;
-                    case "Đang sử dụng":
+                    case "in_use":
                         numberOfInUse++;
                         break;
-                    case "Hỏng hóc":
+                    case "broken":
                         numberOfBroken++;
                         break;
-                    case "Mất":
+                    case "lost":
                         numberOfLost++;
                         break;
-                    case "Thanh lý":
+                    case "disposed":
                         numberOfDisposed++;
                         break;
                 }
@@ -40,17 +40,17 @@ class StautsChart extends Component {
         }
 
         dataPieChart = [
-            ["Sẵn sàng sử dụng", numberOfReadyToUse],
-            ["Đang sử dụng", numberOfInUse],
-            ["Hỏng hóc", numberOfBroken],
-            ["Mất", numberOfLost],
-            ["Thanh lý", numberOfDisposed],
+            ["ready_to_use", numberOfReadyToUse],
+            ["in_use", numberOfInUse],
+            ["broken", numberOfBroken],
+            ["lost", numberOfLost],
+            ["disposed", numberOfDisposed],
         ];
 
         if (getAssetStatusData && listAssets) {
             getAssetStatusData(dataPieChart);
         }
-        
+
         return dataPieChart;
     }
 

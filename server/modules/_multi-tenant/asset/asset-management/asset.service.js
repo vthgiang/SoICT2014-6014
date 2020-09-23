@@ -189,7 +189,7 @@ exports.searchAssetProfiles = async (portal, params) => {
  * Danh sách mặt bằng dạng cây
  */
 exports.getListBuildingAsTree = async (portal) => {
-    const list = await Asset(connect(DB_CONNECTION, portal)).find({ group: "Building" }).populate({ path: 'assetType' });
+    const list = await Asset(connect(DB_CONNECTION, portal)).find({ group: "building" }).populate({ path: 'assetType' });
     const dataConverted = list.map(building => {
         return {
             id: building._id.toString(),
@@ -239,9 +239,9 @@ exports.createAsset = async (portal, data, fileInfo) => {
         file = fileInfo && fileInfo.file;
     let { maintainanceLogs, usageLogs, incidentLogs, locationLogs, files } = data;
     files = files && this.mergeUrlFileToObject(file, files);
-    
+
     data.purchaseDate = new Date(data.purchaseDate);
-    
+
     data.warrantyExpirationDate = new Date(data.warrantyExpirationDate);
 
     data.startDepreciation = new Date(data.startDepreciation);
@@ -255,14 +255,14 @@ exports.createAsset = async (portal, data, fileInfo) => {
             endDate: new Date(item.endDate)
         }
     })
-    
+
     incidentLogs = incidentLogs.map(item => {
         return {
             ...item,
             dateOfIncident: new Date(item.dateOfIncident)
         }
     })
-    
+
     maintainanceLogs = maintainanceLogs.map(item => {
         return {
             ...item,
@@ -681,7 +681,7 @@ exports.recallAsset = async (portal, assetId, data) => {
         $set: {
             assignedToUser: null,
             assignedToOrganizationalUnit: null,
-            status: "Sẵn sàng sử dụng",
+            status: "ready_to_use",
         }
     })
     return updateAsset;
