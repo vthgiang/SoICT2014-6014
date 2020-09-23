@@ -24,7 +24,7 @@ class IncidentLogEditModal extends Component {
         if (month.length < 2) {
             month = '0' + month;
         }
-            
+
         if (day.length < 2) {
             day = '0' + day;
         }
@@ -38,7 +38,7 @@ class IncidentLogEditModal extends Component {
 
     // Bắt sự kiện thay đổi mã sự cố
     handleIncidentCodeChange = (e) => {
-        let {value} = e.target;
+        let { value } = e.target;
         this.validateIncidentCode(value, true);
     }
     validateIncidentCode = (value, willUpdateState = true) => {
@@ -136,7 +136,7 @@ class IncidentLogEditModal extends Component {
         var dateOfIncident = [partDateOfIncident[2], partDateOfIncident[1], partDateOfIncident[0]].join('-');
 
         if (this.isFormValidated()) {
-            return this.props.handleChange({...this.state, dateOfIncident: dateOfIncident});
+            return this.props.handleChange({ ...this.state, dateOfIncident: dateOfIncident });
         }
     }
 
@@ -167,7 +167,7 @@ class IncidentLogEditModal extends Component {
         const { incidentCode, type, reportedBy, dateOfIncident, description, statusIncident, errorOnIncidentCode, errorOnDescription } = this.state;
 
         var userlist = user.list;
-        
+
         return (
             <React.Fragment>
                 <DialogModal
@@ -191,8 +191,8 @@ class IncidentLogEditModal extends Component {
                             <div className="form-group">
                                 <label>{translate('asset.general_information.incident_type')}</label>
                                 <select className="form-control" value={type} name="type" onChange={this.handleTypeChange}>
-                                    <option value="Hỏng hóc">{translate('asset.general_information.damaged')}</option>
-                                    <option value="Mất">{translate('asset.general_information.lost')}</option>
+                                    <option value="broken">{translate('asset.general_information.damaged')}</option>
+                                    <option value="lost">{translate('asset.general_information.lost')}</option>
                                 </select>
                             </div>
 

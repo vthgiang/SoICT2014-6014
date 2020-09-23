@@ -31,8 +31,6 @@ app.use(cookieParser());
 
 
 
-// Function gọi Api vào thời gian xác định
-schedulerController.chedulesCallApi();
 
 if (process.env.MULTI_TENANT === 'true') {
 	const router = express.Router();

@@ -23,16 +23,16 @@ class AmountPieChart extends Component {
         if (listAssets) {
             listAssets.map(asset => {
                 switch (asset.group) {
-                    case "Building":
+                    case "building":
                         numberOfBuilding++;
                         break;
-                    case "Vehicle":
+                    case "vehicle":
                         numberOfVehicle++;
                         break;
-                    case "Machine":
+                    case "machine":
                         numberOfMachine++;
                         break;
-                    case "Other":
+                    case "other":
                         numberOfOther++;
                         break;
                 }

@@ -17,8 +17,17 @@ class ResetPassword extends Component {
         }
     }
 
-    resetPassword = () => {
-        if(this.refs.new_password.value !== this.refs.confirm.value){
+    handleChange = (e) => {
+        const target = e.target;
+        const name = target.name;
+        const value = target.value;
+        this.setState({
+            [name]: value
+        });
+    }
+
+    resetPassword = (data) => {
+        if(this.state.new_password !== this.state.confirm){
             toast.error(
                 <ServerResponseAlert
                     type='error'
@@ -27,18 +36,19 @@ class ResetPassword extends Component {
                 />, 
                 {containerId: 'toast-notification'});
         } else{
-            this.props.resetPassword(
-                this.refs.otp.value,
-                this.refs.email.value,
-                this.refs.new_password.value
-            )
+            this.props.resetPassword({
+                portal: data.portal,
+                otp: data.otp,
+                email: data.email,
+                password: data.new_password
+            })
         }
     }
 
     render() { 
-        const { otp, email } = qs.parse(this.props.location.search, { ignoreQueryPrefix: true });
+        const { portal, otp, email } = qs.parse(this.props.location.search, { ignoreQueryPrefix: true });
         const { isLoading, reset_password } = this.props.auth;
-        const { translate } = this.props;
+        const { translate } = this.props; console.log(this.state)
 
         if(otp && email){
             return ( 
@@ -55,26 +65,30 @@ class ResetPassword extends Component {
                             <div className="login-box-body">
                                 <div className="form-group" hidden={true}>
                                     <label>{ translate(`auth.profile.otp`) }</label>
-                                    <input ref="otp" type="text" className="form-control" defaultValue={otp} disabled/>
+                                    <input name="otp" type="text" className="form-control" value={otp} disabled/>
                                 </div>
                                 <div className="form-group" hidden={true}>
                                     <label>{ translate(`auth.profile.email`) }</label>
-                                    <input ref="email" type="email" className="form-control" defaultValue={email} disabled/>
+                                    <input name="email" type="email" className="form-control" value={email} disabled/>
                                 </div>
                                 <div className="form-group">
                                     <label>{ translate(`auth.profile.password`) }</label>
-                                    <input ref="new_password" type="password" className="form-control"/>
+                                    <input name="new_password" type="password" className="form-control" onChange={this.handleChange}/>
                                 </div>
                                 <div className="form-group">
                                     <label>{ translate(`auth.profile.confirm`) }</label>
-                                    <input ref="confirm" type="password" className="form-control"/>
+                                    <input name="confirm" type="password" className="form-control" onChange={this.handleChange}/>
                                 </div>
                                 <div className="row">
                                     <div className="col-xs-6">
                                     </div>
                                     <div className="col-xs-6">
                                         <a className="btn btn-default" href="/login">{ translate(`general.cancel`) }</a>
-                                        <button className="btn btn-primary pull-right" onClick={this.resetPassword}>{ translate(`general.accept`) }</button>
+                                        <button className="btn btn-primary pull-right" onClick={() => this.resetPassword({
+                                            portal, otp, email, 
+                                            new_password: this.state.new_password,
+                                            confirm: this.state.confirm
+                                        })}>{ translate(`general.accept`) }</button>
                                     </div>
                                 </div>
                             </div>:

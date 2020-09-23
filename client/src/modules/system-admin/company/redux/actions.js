@@ -384,11 +384,11 @@ function editImportConfiguration(data) {
     }
 }
 
-function updateCompanyLinks(data) {
+function updateCompanyLinks(data, params) {
     return dispatch => {
         dispatch({ type: CompanyConstants.UPDATE_COMPANY_LINKS_REQUEST });
 
-        CompanyServices.updateCompanyLinks(data)
+        CompanyServices.updateCompanyLinks(data, params)
             .then(res => {
                 dispatch({
                     type: CompanyConstants.UPDATE_COMPANY_LINKS_SUCCESS,
@@ -405,11 +405,11 @@ function updateCompanyLinks(data) {
     }
 }
 
-function updateCompanyComponents(data) {
+function updateCompanyComponents(data, params) {
     return dispatch => {
         dispatch({ type: CompanyConstants.UPDATE_COMPANY_COMPONENTS_REQUEST });
 
-        CompanyServices.updateCompanyComponents(data)
+        CompanyServices.updateCompanyComponents(data, params)
             .then(res => {
                 dispatch({
                     type: CompanyConstants.UPDATE_COMPANY_COMPONENTS_SUCCESS,

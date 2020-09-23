@@ -42,15 +42,22 @@ exports.getDocuments = async (portal, query, company) => {
         if (query.category) {
             option.category = query.category;
         }
-        if (query.domains) {
-            option.domains = query.domains;
+        if (query.domains && query.domains.length) {
+            option.domains = { $in: query.domains };
         }
-        if (query.archives) {
-            const allArchives = await DocumentArchive(connect(DB_CONNECTION, portal))
-                .find({ path: new RegExp('^' + query.archives) })
+        if (query.archives && query.archives.length) {
+            let allArchive = [];
+            for (let i in query.archives) {
+                const archive = await DocumentArchive(connect(DB_CONNECTION, portal))
+                    .find({ path: new RegExp('^' + query.archives[i]) })
+                allArchive = allArchive.concat(archive);
+            }
+            // remove duplicate element 
+            let allArchives = allArchive.filter((item, index) => { return allArchive.indexOf(item) === index })
             const arrId = allArchives.map(archive => {
                 return archive.id;
             })
+
             option.archives = { $in: arrId }
         }
         if (query.name) {
@@ -590,12 +597,18 @@ exports.getDocumentsThatRoleCanView = async (portal, query, company) => {
         if (query.category) {
             option.category = query.category;
         }
-        if (query.domains) {
-            option.domains = query.domains;
+        if (query.domains && query.domains.length) {
+            option.domains = { $in: query.domains };
         }
-        if (query.archives) {
-            const allArchives = await DocumentArchive(connect(DB_CONNECTION, portal))
-                .find({ path: new RegExp('^' + query.archives) })
+        if (query.archives && query.archives.length) {
+            let allArchive = [];
+            for (let i in query.archives) {
+                const archive = await DocumentArchive(connect(DB_CONNECTION, portal))
+                    .find({ path: new RegExp('^' + query.archives[i]) })
+                allArchive = allArchive.concat(archive);
+            }
+            // remove duplicate element 
+            let allArchives = allArchive.filter((item, index) => { return allArchive.indexOf(item) === index })
             const arrId = allArchives.map(archive => {
                 return archive.id;
             })
@@ -639,12 +652,18 @@ exports.getDocumentsUserStatistical = async (userId, query, portal) => {
     if (query.category) {
         condition.category = query.category;
     }
-    if (query.domains) {
-        condition.domains = query.domains;
+    if (query.domains && query.domains.length) {
+        condition.domains = { $in: query.domains };
     }
-    if (query.archives) {
-        const allArchives = await DocumentArchive(connect(DB_CONNECTION, portal))
-            .find({ path: new RegExp('^' + query.archives) })
+    if (query.archives && query.archives.length) {
+        let allArchive = [];
+        for (let i in query.archives) {
+            const archive = await DocumentArchive(connect(DB_CONNECTION, portal))
+                .find({ path: new RegExp('^' + query.archives[i]) })
+            allArchive = allArchive.concat(archive);
+        }
+        // remove duplicate element 
+        let allArchives = allArchive.filter((item, index) => { return allArchive.indexOf(item) === index })
         const arrId = allArchives.map(archive => {
             return archive.id;
         })

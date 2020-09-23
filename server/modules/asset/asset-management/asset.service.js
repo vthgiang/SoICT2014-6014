@@ -196,7 +196,7 @@ exports.searchAssetProfiles = async (params, company) => {
  * Danh sách mặt bằng dạng cây
  */
 exports.getListBuildingAsTree = async (company) => {
-    const list = await Asset.find({ company: company, group: "Building" }).populate('assetType');
+    const list = await Asset.find({ company: company, group: "building" }).populate('assetType');
     const dataConverted = list.map(building => {
         return {
             id: building._id.toString(),
@@ -247,9 +247,9 @@ exports.createAsset = async (data, company, fileInfo) => {
         file = fileInfo && fileInfo.file;
     let { maintainanceLogs, usageLogs, incidentLogs, locationLogs, files } = data;
     files = files && this.mergeUrlFileToObject(file, files);
-    
+
     data.purchaseDate = new Date(data.purchaseDate);
-    
+
     data.warrantyExpirationDate = new Date(data.warrantyExpirationDate);
 
     data.startDepreciation = new Date(data.startDepreciation);
@@ -263,14 +263,14 @@ exports.createAsset = async (data, company, fileInfo) => {
             endDate: new Date(item.endDate)
         }
     })
-    
+
     incidentLogs = incidentLogs.map(item => {
         return {
             ...item,
             dateOfIncident: new Date(item.dateOfIncident)
         }
     })
-    
+
     maintainanceLogs = maintainanceLogs.map(item => {
         return {
             ...item,
@@ -331,7 +331,7 @@ exports.createAsset = async (data, company, fileInfo) => {
             files: files,
         }
     );
-    
+
     // Lấy thông tin nhân viên vừa thêm vào
     let assets = await Asset.find({ _id: asset._id });
 
@@ -618,7 +618,7 @@ exports.recallAsset = async (assetId, data) => {
         $set: {
             assignedToUser: null,
             assignedToOrganizationalUnit: null,
-            status: "Sẵn sàng sử dụng",
+            status: "ready_to_use",
         }
     })
     return updateAsset;
@@ -654,16 +654,16 @@ exports.getIncidents = async (params) => {
     }
 
     if (incidentStatus) {
-        incidentSearch = [...incidentSearch,  { statusIncident: { $in: incidentStatus } }]
+        incidentSearch = [...incidentSearch, { statusIncident: { $in: incidentStatus } }]
     }
 
-    let aggregateQuery = [ ];
-    if (assetSearch && assetSearch.length !== 0){
+    let aggregateQuery = [];
+    if (assetSearch && assetSearch.length !== 0) {
         aggregateQuery = [...aggregateQuery, { $match: { $and: assetSearch } }]
     }
     aggregateQuery = [...aggregateQuery, { $unwind: "$incidentLogs" }, { $replaceRoot: { newRoot: "$incidentLogs" } }]
 
-    if (incidentSearch && incidentSearch.length !== 0){
+    if (incidentSearch && incidentSearch.length !== 0) {
         aggregateQuery = [...aggregateQuery, { $match: { $and: incidentSearch } }]
     }
     aggregateQuery = [...aggregateQuery, { $sort: { 'createdAt': 1 } }, { $skip: (page - 1) * limit }, { $limit: limit }]
@@ -674,9 +674,9 @@ exports.getIncidents = async (params) => {
     // Đếm số sự cố
     let incidentLength = 0;
     let count = await Asset.aggregate([
-        { $unwind: "$incidentLogs" }, 
-        { $replaceRoot: { newRoot: "$incidentLogs" } }, 
-        {  $count :  "incident_length"  }
+        { $unwind: "$incidentLogs" },
+        { $replaceRoot: { newRoot: "$incidentLogs" } },
+        { $count: "incident_length" }
     ]);
     incidentLength = count[0].incident_length;
 

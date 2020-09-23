@@ -40,6 +40,7 @@ exports.getCompany = async (req, res) => {
             content: company
         });
     } catch (error) {
+
         Logger.error(req.user.email, 'show_company_faile');
         res.status(400).json({
             success: false,
@@ -71,7 +72,7 @@ exports.createCompany = async (req, res) => {
             content: resCompany
         });
     } catch (error) {
-
+ 
         Logger.error(req.user.email, 'create_company_faile');
         res.status(400).json({
             success: false,
@@ -100,6 +101,7 @@ exports.editCompany = async (req, res) => {
             content: resCompany
         });
     } catch (error) {
+        
         Logger.error(req.user.email, 'edit_company_faile');
         res.status(400).json({
             success: false,

@@ -15,7 +15,7 @@ class IncidentCreateForm extends Component {
         super(props);
         this.state = {
             incidentCode: "",
-            type: "Hỏng hóc", // Phân loại: 1. Hỏng hóc, 2. báo mất
+            type: "broken", // Phân loại: 1. broken, 2.  lost
             reportedBy: "", // Người báo cáo
             dateOfIncident: this.formatDate(Date.now()), // Ngày phát hiện
             description: "",
@@ -32,7 +32,7 @@ class IncidentCreateForm extends Component {
         if (month.length < 2) {
             month = '0' + month;
         }
-            
+
         if (day.length < 2) {
             day = '0' + day;
         }
@@ -133,7 +133,7 @@ class IncidentCreateForm extends Component {
     isFormValidated = () => {
         let result = this.validateDateOfIncident(this.state.dateOfIncident, false) &&
             this.validateIncidentDescription(this.state.description, false)
-        
+
         return result;
     }
 
@@ -202,7 +202,7 @@ class IncidentCreateForm extends Component {
                 >
                     {/* Form thêm thông tin sự cố */}
                     <form className="form-group" id="form-create-assetcrash">
-                        
+
                         <div className="col-md-12">
                             {/* Mã sự cố */}
                             <div className={`form-group ${errorOnIncidentCode === undefined ? "" : "has-error"}`}>
@@ -215,8 +215,8 @@ class IncidentCreateForm extends Component {
                             <div className="form-group">
                                 <label>{translate('asset.general_information.type')}</label>
                                 <select className="form-control" value={type} name="type" onChange={this.handleTypeChange}>
-                                    <option value="Hỏng hóc">{translate('asset.general_information.damaged')}</option>
-                                    <option value="Mất">{translate('asset.general_information.lost')}</option>
+                                    <option value="broken">{translate('asset.general_information.damaged')}</option>
+                                    <option value="lost">{translate('asset.general_information.lost')}</option>
                                 </select>
                             </div>
 
