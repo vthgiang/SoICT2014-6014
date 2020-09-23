@@ -12,7 +12,6 @@ class UploadFile extends Component {
     handleUploadFile = (e) => {
         const { multiple = false } = this.props;
         let fileList = e.target.files;
-
         if (fileList) {
             for (let i = 0; i < fileList.length; i++) {
                 let file = fileList[i];
@@ -50,6 +49,21 @@ class UploadFile extends Component {
         })
     };
 
+    static isEqual = (items1, items2) => {
+        if (!items1 || !items2) {
+            return false;
+        }
+        if (items1.length !== items2.length) {
+            return false;
+        }
+        for (let i = 0; i < items1.length; ++i) {
+            if (items1[i].fileName !== items2[i].fileName) { // Kiểu bình thường
+                return false;
+            }
+        }
+        return true;
+    }
+
     static getDerivedStateFromProps(nextProps, prevState) {
         if (prevState.files === undefined && nextProps.files && nextProps.files.length !== 0) {
             return {
@@ -58,13 +72,16 @@ class UploadFile extends Component {
             }
         }
         return null
-    }
+    };
 
-    componentDidUpdate() {
-        const { files } = this.state;
-        if (files !== undefined) {
-            this.props.onChange(files);
+    shouldComponentUpdate(nextProps, nextState) {
+        if (!UploadFile.isEqual(nextState.files, this.state.files)) {
+            this.props.onChange(nextState.files ? nextState.files : []);
+        };
+        if (nextState.files && nextState.files.length === 0) {
+            this.props.onChange(nextState.files ? nextState.files : []);
         }
+        return true
     }
 
     render() {
