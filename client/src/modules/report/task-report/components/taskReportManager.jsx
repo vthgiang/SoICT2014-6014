@@ -21,9 +21,7 @@ class TaskReportManager extends Component {
             page: 0,
             name: '',
             month: null,
-            creator: '',
             currentRole: localStorage.getItem("userId"),
-            chartStatus: false,
         }
     }
     componentDidMount() {
@@ -168,8 +166,8 @@ class TaskReportManager extends Component {
     }
 
     checkPermissonCreator = (creator) => {
-        let currentRole = this.state.currentRole;
-        if (currentRole === creator) {
+        const { currentRole } = this.state;
+        if (currentRole === creator.toString()) {
             return true;
         }
         return false;
@@ -213,7 +211,7 @@ class TaskReportManager extends Component {
     }
 
     render() {
-        const { reports, translate, deleteTaskReport, user } = this.props;
+        const { reports, translate } = this.props;
         let pageTotal = (reports.totalList % this.state.limit === 0) ?
             parseInt(reports.totalList / this.state.limit) :
             parseInt((reports.totalList / this.state.limit) + 1);
@@ -289,18 +287,18 @@ class TaskReportManager extends Component {
                         </thead>
                         <tbody>
                             {
-                                (reports && reports.listTaskReport && reports.listTaskReport.length !== 0 && typeof reports.listTaskReport !== 'undefined') ? reports.listTaskReport.map(item => (
+                                (reports && reports.listTaskReport && reports.listTaskReport.length > 0) ? reports.listTaskReport.map(item => (
                                     <tr key={item._id}>
                                         <td>{item.name} </td>
                                         <td>{item.description}</td>
-                                        <td>{item.creator.name}</td>
+                                        <td>{item.creator ? item.creator.map(o => o.name) : null}</td>
                                         <td>{item.createdAt.slice(0, 10)}</td>
                                         <td style={{ textAlign: 'center' }}>
                                             <a onClick={() => this.handleView(item._id)}><i className="material-icons">visibility</i></a>
 
                                             {/* Check nếu là người tạo thì có thể sửa, xóa báo cáo */}
                                             {
-                                                (this.checkPermissonDean(item.organizationalUnit.deans) || this.checkPermissonCreator(item.creator._id)) &&
+                                                (this.checkPermissonDean(item.organizationalUnit.deans) || this.checkPermissonCreator(item.creator.map(o => o._id))) &&
                                                 <React.Fragment>
                                                     <a onClick={() => this.handleEdit(item._id)} className="edit text-yellow" style={{ width: '5px' }} title={translate('report_manager.edit')}><i className="material-icons">edit</i></a>
                                                     <a onClick={() => this.handleDelete(item._id, item.name)} className="delete" title={translate('report_manager.title_delete')}>
