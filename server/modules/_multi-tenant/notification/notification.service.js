@@ -37,7 +37,7 @@ exports.paginateManualNotifications = async (portal, creator, data) => {
         creator
     }, data.content);
 
-    return await ManualNotification
+    return await ManualNotification(connect(DB_CONNECTION, portal))
         .paginate(info, {
             page: data.page,
             limit: data.limit,
@@ -182,7 +182,7 @@ exports.paginateNotifications = async (portal, user, data) => {
         var info = Object.assign({user}, data.content);
     }
 
-    return await Notification
+    return await Notification(connect(DB_CONNECTION, portal))
         .paginate(info, {
             page: data.page,
             limit: data.limit,
