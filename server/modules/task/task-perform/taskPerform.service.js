@@ -1180,9 +1180,9 @@ exports.editTaskByResponsibleEmployees = async (data, taskId) => {
     // chuẩn hóa dữ liệu info
     for (let i in info) {
         if (info[i].value) { // !== undefined
-            if (info[i].type === "Number") info[i].value = parseInt(info[i].value);
-            else if (info[i].type === "SetOfValues") info[i].value = info[i].value[0];
-            else if (info[i].type === "Date") {
+            if (info[i].type === "number") info[i].value = parseInt(info[i].value);
+            else if (info[i].type === "set_of_values") info[i].value = info[i].value[0];
+            else if (info[i].type === "date") {
                 let splitter = info[i].value.split("-");
                 let infoDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
                 info[i].value = infoDate;
@@ -1312,9 +1312,9 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
     // chuẩn hóa dữ liệu info
     for (let i in info) {
         if (info[i].value) { // !== undefined
-            if (info[i].type === "Number") info[i].value = parseInt(info[i].value);
-            else if (info[i].type === "SetOfValues") info[i].value = info[i].value[0];
-            else if (info[i].type === "Date") {
+            if (info[i].type === "number") info[i].value = parseInt(info[i].value);
+            else if (info[i].type === "set_of_values") info[i].value = info[i].value[0];
+            else if (info[i].type === "date") {
                 let splitter = info[i].value.split("-");
                 let infoDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
                 info[i].value = infoDate;
@@ -1458,7 +1458,7 @@ exports.evaluateTaskByConsultedEmployees = async (data, taskId) => {
 
     let listResult = task.evaluations.find(e => String(e._id) === String(evaluateId)).results
 
-    let check_results = listResult.find(r => (String(r.employee) === user && String(r.role) === "Consulted"));
+    let check_results = listResult.find(r => (String(r.employee) === user && String(r.role) === "consulted"));
     if (check_results === undefined) {
         await Task.updateOne(
             {
@@ -1567,9 +1567,9 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
     // chuẩn hóa dữ liệu info
     for (let i in info) {
         if (info[i].value) { // !== undefined || info[i].value !== null
-            if (info[i].type === "Number") info[i].value = parseInt(info[i].value);
-            else if (info[i].type === "SetOfValues") info[i].value = info[i].value[0];
-            else if (info[i].type === "Date") {
+            if (info[i].type === "number") info[i].value = parseInt(info[i].value);
+            else if (info[i].type === "setO_of_values") info[i].value = info[i].value[0];
+            else if (info[i].type === "date") {
                 let splitter = info[i].value.split("-");
                 let infoDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
                 info[i].value = infoDate;
@@ -1598,7 +1598,7 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
 
     let listResult = task.evaluations.find(e => String(e._id) === String(evaluateId)).results;
 
-    let check_results = listResult.find(r => (String(r.employee) === user && String(r.role) === "Responsible"));
+    let check_results = listResult.find(r => (String(r.employee) === user && String(r.role) === "responsible"));
     if (check_results === undefined) {
         await Task.updateOne(
             {
@@ -1800,9 +1800,9 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
     // chuẩn hóa dữ liệu info
     for (let i in info) {
         if (info[i].value) { // !== undefined
-            if (info[i].type === "Number") info[i].value = parseInt(info[i].value);
-            else if (info[i].type === "SetOfValues") info[i].value = info[i].value[0];
-            else if (info[i].type === "Date") {
+            if (info[i].type === "number") info[i].value = parseInt(info[i].value);
+            else if (info[i].type === "set_of_values") info[i].value = info[i].value[0];
+            else if (info[i].type === "date") {
                 let splitter = info[i].value.split("-");
                 let infoDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
                 info[i].value = infoDate;
@@ -1913,9 +1913,9 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
 
     let listResult2 = task2.evaluations.find(e => String(e._id) === String(evaluateId)).results;
 
-    let curentRole = "Accountable"
+    let curentRole = "accountable"
     if (!hasAccountable) {
-        curentRole = "Responsible"
+        curentRole = "responsible"
     }
 
     // cập nhật điểm cá nhân cho ng phe duyet
@@ -2466,7 +2466,7 @@ exports.editActivateOfTask = async (taskID, body) => {
         await Task.findByIdAndUpdate(body.listSelected[i],
             {
                 $set: {
-                    status: "Inprocess",
+                    status: "inprocess",
                     startDate: followStartDate,
                     endDate: followEndDate,
                 }
@@ -2477,7 +2477,7 @@ exports.editActivateOfTask = async (taskID, body) => {
         //     await Task.findByIdAndUpdate(body.listSelected[i],
         //         {
         //             $set: {
-        //                 status: "Inprocess",
+        //                 status: "inprocess",
         //                 endDate: followEndDate,
         //             }
         //         }
