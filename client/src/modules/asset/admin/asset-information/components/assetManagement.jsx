@@ -246,7 +246,7 @@ class AssetManagement extends Component {
         let length = 0;
         let convertedData = [];
         if (data) {
-            data = data.map((x, index) => {
+            data.forEach((x, index) => {
 
                 let code = x.code;
                 let name = x.assetName;
@@ -421,6 +421,8 @@ class AssetManagement extends Component {
 
         if (assetsManager.isLoading === false) {
             lists = assetsManager.listAssets;
+
+            console.log('\n\n\n*************\n', this.props.managedBy, lists);
         }
 
         var pageTotal = ((assetsManager.totalList % limit) === 0) ?
