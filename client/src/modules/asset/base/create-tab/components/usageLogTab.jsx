@@ -199,6 +199,7 @@ class UsageLogTab extends Component {
                 assignedToUser: nextProps.assignedToUser,
                 assignedToOrganizationalUnit: nextProps.assignedToOrganizationalUnit,
                 typeRegisterForUse: nextProps.typeRegisterForUse,
+                managedBy: nextProps.managedBy
             }
         } else {
             return null;
@@ -209,7 +210,7 @@ class UsageLogTab extends Component {
     render() {
         const { id, assetId } = this.props;
         const { translate, user, department } = this.props;
-        const { assignedToOrganizationalUnit, assignedToUser, usageLogs, currentRow, typeRegisterForUse } = this.state;
+        const { assignedToOrganizationalUnit, assignedToUser, usageLogs, currentRow, typeRegisterForUse, managedBy } = this.state;
         var userlist = user.list, departmentlist = department.list;
         console.log("typeRegister", typeRegisterForUse);
         return (
@@ -289,6 +290,7 @@ class UsageLogTab extends Component {
                                 assignedToUser={assignedToUser}
                                 assignedToOrganizationalUnit={assignedToOrganizationalUnit}
                                 typeRegisterForUse={typeRegisterForUse}
+                                managedBy={managedBy}
                             />
                         }
                         {typeRegisterForUse !== 2 &&
