@@ -51,29 +51,36 @@ module.exports = {
     Course: require('./training/course.model'),
     EducationProgram: require('./training/educationProgram.model'),
     EmployeeCourse: require('./training/employeeCourse.model'),
-    ImportConfiguraion: require('./system-admin/importConfiguration.model'),
 
-//asset
+    //asset
     Asset: require('./asset/asset.model'), //tài sản
     AssetType: require('./asset/assetType.model'), //loại tài sản
     RecommendProcure: require('./asset/assetPurchaseRequest.model'), //đề nghị mua sắm thiết bị
     RecommendDistribute: require('./asset/assetUseRequest.model'), //đề nghị cấp phát thiết bị
-//report
+    //report
     TaskReport: require('./report/taskReport.model'),
 
-//material
+    //material
     Material: require('./warehouse/material.model'),
-// Customer Management
+    Stock: require('./warehouse/stock.model'),
+    BinLocation: require('./warehouse/binLocation.model'),
+    Proposal: require('./warehouse/proposal.model'),
+    Partner: require('./warehouse/partner.model'),
+    Good: require('./warehouse/good.model'),
+    Consignment: require('./warehouse/consignment.model'),
+    Category: require('./warehouse/category.model'),
+    Bill: require('./warehouse/bill.model'),
+    // Customer Management
     CrmCustomer: require('./crm/crmCustomer.model'),
     CrmCare: require('./crm/crmCare.model'),
     CrmGroup: require('./crm/crmGroup.model'),
     CrmLiability: require('./crm/crmLiability.model'),
 
-//order
+    //order
     Order: require("./order/order.model"),
 
     Location: require('./common/location.model'),
 
-// plan
+    // plan
     Plan: require('./plan/plan.model'),
 }

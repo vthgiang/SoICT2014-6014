@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const AssetSchema = new Schema({
     group: {
         type: String,
-        enum: ["Building", "Vehicle", "Machine", "Other"]
+        enum: ["building", "vehicle", "machine", "other"]
     },
 
     /***************************************************************************************************
@@ -68,9 +68,8 @@ const AssetSchema = new Schema({
 
     status: { //17.tình trạng: sẵn sàng sử dụng || đang sử dụng || hỏng hóc || mất || Thanh lý
         type: String,
-        enum: ["Sẵn sàng sử dụng", "Đang sử dụng", "Hỏng hóc", "Mất", "Thanh lý"]
-            // enum: ["InUse", "Unassigned", "InStorage", "Broken", "InRepair", "Disposed"]
-            // InUse, Active, InStorage, Broken, Lost, In Repair, Disposed, Transferred out, Inoperable
+        // enum: ["Sẵn sàng sử dụng", "Đang sử dụng", "Hỏng hóc", "Mất", "Thanh lý"]
+        enum: ["ready_to_use", "in_use", "broken", "lost", "disposed"],
     },
 
     typeRegisterForUse: { //Đăng ký sử dụng: 1.Không được đăng ký, 2.Đăng ký sử dụng theo giờ, 3.Đăng ký sử dụng lâu dài
@@ -97,7 +96,8 @@ const AssetSchema = new Schema({
      */
     depreciationType: { // Cách tính khấu hao
         type: String,
-        enum: ["Đường thẳng", "Số dư giảm dần", "Sản lượng"],
+        // enum: ["Đường thẳng", "Số dư giảm dần", "Sản lượng"],
+        enum: ["straight_line", "declining_balance", "units_of_production"],
         // Reducing balance chính là Declining Balance Method
     },
 
@@ -289,7 +289,8 @@ const AssetSchema = new Schema({
         type: {
             type: String,
             required: true,
-            enum: ['Text', 'Boolean', 'Date', 'Number', 'SetOfValues'],
+            // enum: ['Text', 'Boolean', 'Date', 'Number', 'SetOfValues'],
+            enum: ['text', 'boolean', 'date', 'number', 'set_of_values'],
         },
         value: {
             type: Schema.Types.Mixed,
@@ -329,7 +330,7 @@ const AssetSchema = new Schema({
 });
 
 module.exports = (db) => {
-    if(!db.models.Asset)
+    if (!db.models.Asset)
         return db.model('Asset', AssetSchema);
     return db.models.Asset;
 }

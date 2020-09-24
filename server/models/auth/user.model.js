@@ -47,7 +47,7 @@ const UserSchema = new Schema({
     },
     avatar: {
         type: String,
-        default: '/upload/avatars/user.png'
+        default: './upload/avatars/user.png'
     }
 },{
     timestamps: true,

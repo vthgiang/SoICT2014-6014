@@ -24,6 +24,7 @@ function login(user){
             .then(res => {
                 setStorage('jwt', res.data.content.token);
                 setStorage('userId', res.data.content.user._id);
+                setStorage('portal', res.data.content.user.portal);
                 if(res.data.content.user.company!== undefined){
                     setStorage('companyId', res.data.content.user.company._id);
                 }
@@ -153,10 +154,10 @@ function refresh(){
     }
 }
 
-function forgotPassword(email){
+function forgotPassword(data){
     return dispatch => {
         dispatch({type: AuthConstants.FORGOT_PASSWORD_REQUEST});
-        AuthService.forgotPassword(email)
+        AuthService.forgotPassword(data)
             .then(res => {
                 dispatch({
                     type: AuthConstants.FORGOT_PASSWORD_SUCCESS,
@@ -169,10 +170,10 @@ function forgotPassword(email){
     }
 }
 
-function resetPassword(otp, email, password){
+function resetPassword(data){
     return dispatch => {
         dispatch({type: AuthConstants.RESET_PASSWORD_REQUEST});
-        AuthService.resetPassword(otp, email, password)
+        AuthService.resetPassword(data)
             .then(res => {
                 dispatch({
                     type: AuthConstants.RESET_PASSWORD_SUCCESS,

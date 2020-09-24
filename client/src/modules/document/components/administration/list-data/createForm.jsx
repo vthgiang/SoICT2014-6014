@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import moment from 'moment';
 
-import { DialogModal, ButtonModal, SelectBox, DatePicker, TreeSelect, ErrorLabel } from '../../../../../common-components';
+import { DialogModal, ButtonModal, SelectBox, DatePicker, TreeSelect, ErrorLabel, UploadFile } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
 import { DocumentImportForm } from './documentImportForm';
 
@@ -584,6 +584,7 @@ class CreateForm extends Component {
                                             </div>
                                             <div className="form-group">
                                                 <label>{translate('document.upload_file')}</label>
+                                                {/* <UploadFile /> */}
                                                 <br />
                                                 <div className="upload btn btn-primary">
                                                     <i className="fa fa-folder"></i>

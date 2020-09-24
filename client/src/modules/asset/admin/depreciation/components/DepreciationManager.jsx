@@ -266,12 +266,12 @@ class DepreciationManager extends Component {
     calculateDepreciation = (depreciationType, cost, usefulLife, estimatedTotalProduction, unitsProducedDuringTheYears, startDepreciation) => {
         let annualDepreciation = 0, monthlyDepreciation = 0, remainingValue = cost;
 
-        if (depreciationType === "Đường thẳng") { // Phương pháp khấu hao theo đường thẳng
+        if (depreciationType === "straight_line") { // Phương pháp khấu hao theo đường thẳng
             annualDepreciation = ((12 * cost) / usefulLife);
             monthlyDepreciation = cost / usefulLife;
             remainingValue = cost - (cost / usefulLife) * ((new Date().getFullYear() * 12 + new Date().getMonth()) - (new Date(startDepreciation).getFullYear() * 12 + new Date(startDepreciation).getMonth()));
 
-        } else if (depreciationType === "Số dư giảm dần") { // Phương pháp khấu hao theo số dư giảm dần
+        } else if (depreciationType === "declining_balance") { // Phương pháp khấu hao theo số dư giảm dần
             let lastYears = false,
                 t,
                 usefulYear = usefulLife / 12,
@@ -314,7 +314,7 @@ class DepreciationManager extends Component {
                 remainingValue = remainingValue - (monthlyDepreciation * (usedTime % 12))
             }
 
-        } else if (depreciationType === "Sản lượng") { // Phương pháp khấu hao theo sản lượng
+        } else if (depreciationType === "units_of_production") { // Phương pháp khấu hao theo sản lượng
             let monthTotal = unitsProducedDuringTheYears.length; // Tổng số tháng tính khấu hao
             let productUnitDepreciation = cost / (estimatedTotalProduction * (usefulLife / 12)); // Mức khấu hao đơn vị sản phẩm
             let accumulatedDepreciation = 0; // Giá trị hao mòn lũy kế
@@ -361,11 +361,11 @@ class DepreciationManager extends Component {
     }
 
     convertGroupAsset = (group) => {
-        if (group === 'Building') {
+        if (group === 'building') {
             return 'Mặt bằng';
-        } else if (group === 'Vehicle') {
+        } else if (group === 'vehicle') {
             return 'Xe cộ'
-        } else if (group === 'Machine') {
+        } else if (group === 'machine') {
             return 'Máy móc'
         } else {
             return 'Khác'
@@ -423,10 +423,10 @@ class DepreciationManager extends Component {
                                 options={{ nonSelectedText: translate('asset.asset_info.select_group'), allSelectedText: translate('asset.general_information.select_all_group') }}
                                 onChange={this.handleGroupChange}
                                 items={[
-                                    { value: "Building", text: translate('asset.dashboard.building') },
-                                    { value: "Vehicle", text: translate('asset.dashboard.vehicle') },
-                                    { value: "Machine", text: translate('asset.dashboard.machine') },
-                                    { value: "Other", text: translate('asset.dashboard.other') },
+                                    { value: "building", text: translate('asset.dashboard.building') },
+                                    { value: "vehicle", text: translate('asset.dashboard.vehicle') },
+                                    { value: "machine", text: translate('asset.dashboard.machine') },
+                                    { value: "other", text: translate('asset.dashboard.other') },
                                 ]}
                             >
                             </SelectMulti>
@@ -452,9 +452,9 @@ class DepreciationManager extends Component {
                                 options={{ nonSelectedText: "Chọn loại khấu hao", allSelectedText: "Chọn tất cả" }}
                                 onChange={this.handleDepreciationTypeChange}
                                 items={[
-                                    { value: "Đường thẳng", text: "Đường thẳng" },
-                                    { value: "Số dư giảm dần", text: "Số dư giảm dần" },
-                                    { value: "Sản lượng", text: "Sản lượng" },
+                                    { value: "straight_line", text: "Đường thẳng" },
+                                    { value: "declining_balance", text: "Số dư giảm dần" },
+                                    { value: "units_of_production", text: "Sản lượng" },
                                 ]}
                             >
                             </SelectMulti>

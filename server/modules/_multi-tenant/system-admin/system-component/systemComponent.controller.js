@@ -36,7 +36,7 @@ exports.createSystemComponent = async (req, res) => {
             content: data
         });
     } catch (error) {
-
+        console.log(error)
         Logger.error(req.user.email, 'create_system_component_faile');
         res.status(400).json({
             success: false,

@@ -47,7 +47,7 @@ class TaskReportViewForm extends Component {
         if (listTaskEvaluations && listTaskEvaluations.length > 0) {
             taskInfoName = listTaskEvaluations[0];
             taskInfoName.taskInformations.forEach(x => {
-                if (x.type === "Number") {
+                if (x.type === "number") {
                     headTable = [...headTable, x.name];
                 }
             })
@@ -183,7 +183,7 @@ class TaskReportViewForm extends Component {
                                                     let contentTable = [];
                                                     if (headTable) {
                                                         item.taskInformations.forEach(element => {
-                                                            if (element.type === 'Number') {
+                                                            if (element.type === 'number') {
                                                                 contentTable = [...contentTable, element.value]
                                                             }
                                                         })

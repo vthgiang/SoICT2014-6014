@@ -37,7 +37,7 @@ exports.paginateManualNotifications = async (portal, creator, data) => {
         creator
     }, data.content);
 
-    return await ManualNotification
+    return await ManualNotification(connect(DB_CONNECTION, portal))
         .paginate(info, {
             page: data.page,
             limit: data.limit,
@@ -85,7 +85,7 @@ exports.createManualNotification = async (portal, data) => {
  * @return trả về một mảng các id các user
  */
 exports.getAllUsersInOrganizationalUnit = async (portal, departmentId) => {
-    var department = await OrganizationalUnit.findById(departmentId)
+    var department = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findById(departmentId)
         .populate([{
                 path: 'deans',
                 populate: {
@@ -129,7 +129,7 @@ exports.createNotification = async (portal, company, data, manualNotification = 
     let usersArr = data.users;
     for (let i = 0; i < data.organizationalUnits.length; i++) {
         let organizationalUnit = data.organizationalUnits[i]; // id đơn vị hiện tại
-        let userArr = await this.getAllUsersInOrganizationalUnit(organizationalUnit);
+        let userArr = await this.getAllUsersInOrganizationalUnit(portal, organizationalUnit);
         usersArr = await usersArr.concat(userArr);
     }
 
@@ -182,7 +182,7 @@ exports.paginateNotifications = async (portal, user, data) => {
         var info = Object.assign({user}, data.content);
     }
 
-    return await Notification
+    return await Notification(connect(DB_CONNECTION, portal))
         .paginate(info, {
             page: data.page,
             limit: data.limit,

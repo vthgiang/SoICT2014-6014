@@ -131,19 +131,27 @@ exports.updateRecommendDistribute = async (id, data) => {
     let dateStartUse, dateEndUse, date, partStart, partEnd;
     partStart = data.dateStartUse.split('-');
     partEnd = data.dateEndUse.split('-');
-
     if (data.startTime) {
-        date = [partStart[2], partStart[1], partStart[0]].join('-') + ' ' + data.startTime;
+        date = [partStart[2], partStart[1], partStart[0]].join('-') + ' ' +  data.startTime ;
         dateStartUse = new Date(date);
     } else {
-        date = [partStart[2], partStart[1], partStart[0]].join('-')
+        if(data.dateStartUse.length > 12){
+            date = data.dateStartUse
+        } else {
+            date = [partStart[2], partStart[1], partStart[0]].join('-')
+
+        }
         dateStartUse = new Date(date);
     }
     if (data.stopTime) {
-        date = [partEnd[2], partEnd[1], partEnd[0]].join('-') + ' ' + data.stopTime;
-        dateEndUse = new Date(date);
+        date = [partEnd[2], partEnd[1], partEnd[0]].join('-') + ' ' +  data.stopTime;
+        dateEndUse = new Date (date);
     } else {
-        date = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+        if(data.dateEndUse.length > 12){
+            date = data.dateEndUse
+        } else {
+            date = [partEnd[2], partEnd[1], partEnd[0]].join('-')
+        }
         dateEndUse = new Date(date);
     }
 

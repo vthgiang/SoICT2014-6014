@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import c3 from 'c3';
 import 'c3/c3.css';
-// import * as d3 from "d3";
 import './transferList.css';
 import { chartFunction } from './chart';
 
@@ -82,11 +81,10 @@ class LineBarChartViewForm extends Component {
                 columns: newData,
                 type: 'bar',
                 types: typeChart,
-                // groups: [['p1', 'p2']]
             },
             bar: {
                 width: {
-                    ratio: 0.7
+                    ratio: (getLenghtData < 5) ? 0.4 : 0.7
                 }
             },
             axis: {
@@ -104,12 +102,6 @@ class LineBarChartViewForm extends Component {
                     },
                 }
             },
-
-            // tooltip: {
-            //     format: {
-            //         value: d3.format(',')
-            //     }
-            // }
         });
     }
 

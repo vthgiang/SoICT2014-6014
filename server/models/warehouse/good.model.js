@@ -1,9 +1,10 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const GoodSchema = new Schema ({
 
-    conpany: {
+    company: {
         type: Schema.Types.ObjectId,
         ref: "companies"
     },
@@ -69,4 +70,7 @@ const GoodSchema = new Schema ({
         }
     }]
 });
+
+GoodSchema.plugin(mongoosePaginate);
+
 module.exports = Good = mongoose.model("goods", GoodSchema);

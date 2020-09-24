@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const ConsignmentSchema = new Schema ({
 
@@ -21,7 +22,12 @@ const ConsignmentSchema = new Schema ({
 
         quantity: {
             type: Number
-        }
+        },
+
+        binLocations: [{
+            type: Schema.Types.ObjectId,
+            ref: "binLocations"
+        }]
     }],
 
     originalQuantity: {
@@ -69,12 +75,31 @@ const ConsignmentSchema = new Schema ({
         timestamp: {
             type: Date,
             default: Date.now
+        }
+    }],
+
+    logs: [{
+
+        createAt: {
+            type: Date,
+            default: Date.now
         },
 
-        binLocations: [{
+        creator: {
             type: Schema.Types.ObjectId,
-            ref: "binLocations"
-        }]
+            ref: 'users',
+        },
+
+        title: {
+            type: String
+        },
+
+        description: {
+            type: String
+        }
     }]
 });
+
+ConsignmentSchema.plugin(mongoosePaginate);
+
 module.exports = Consignment = mongoose.model("consignments", ConsignmentSchema);

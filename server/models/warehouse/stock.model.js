@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const StockSchema = new Schema ({
 
@@ -54,4 +55,7 @@ const StockSchema = new Schema ({
     }]
 
 });
+
+StockSchema.plugin(mongoosePaginate);
+
 module.exports = Stock = mongoose.model("stocks", StockSchema);

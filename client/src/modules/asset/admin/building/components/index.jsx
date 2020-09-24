@@ -5,7 +5,7 @@ import { AssetManagerActions } from '../../asset-information/redux/actions';
 
 import { Tree } from '../../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
-import { AssetInfoForm } from './infoForm'
+import { AssetViewInfo } from '../../asset-information/components/assetViewInfo';
 
 class BuildingAsset extends Component {
     constructor(props) {
@@ -70,7 +70,7 @@ class BuildingAsset extends Component {
                                 {/* Form xem thông tin tài sản */}
                                 {
                                     currentRowView &&
-                                    <AssetInfoForm
+                                    <AssetViewInfo
                                         _id={currentRowView._id}
                                         avatar={currentRowView.avatar}
                                         code={currentRowView.code}
@@ -81,7 +81,8 @@ class BuildingAsset extends Component {
                                         purchaseDate={currentRowView.purchaseDate}
                                         warrantyExpirationDate={currentRowView.warrantyExpirationDate}
                                         managedBy={currentRowView.managedBy}
-                                        assignedTo={currentRowView.assignedTo}
+                                        assignedToUser={currentRowView.assignedToUser}
+                                        assignedToOrganizationalUnit={currentRowView.assignedToOrganizationalUnit}
                                         handoverFromDate={currentRowView.handoverFromDate}
                                         handoverToDate={currentRowView.handoverToDate}
                                         location={currentRowView.location}
@@ -90,11 +91,13 @@ class BuildingAsset extends Component {
                                         typeRegisterForUse={currentRowView.typeRegisterForUse}
                                         detailInfo={currentRowView.detailInfo}
                                         cost={currentRowView.cost}
-
+                                        readByRoles={currentRowView.readByRoles}
                                         residualValue={currentRowView.residualValue}
                                         startDepreciation={currentRowView.startDepreciation}
                                         usefulLife={currentRowView.usefulLife}
                                         depreciationType={currentRowView.depreciationType}
+                                        estimatedTotalProduction={currentRowView.estimatedTotalProduction}
+                                        unitsProducedDuringTheYears={currentRowView.unitsProducedDuringTheYears}
 
                                         maintainanceLogs={currentRowView.maintainanceLogs}
                                         usageLogs={currentRowView.usageLogs}
@@ -106,7 +109,7 @@ class BuildingAsset extends Component {
                                         disposalDesc={currentRowView.disposalDesc}
 
                                         archivedRecordNumber={currentRowView.archivedRecordNumber}
-                                        files={currentRowView.files}
+                                        files={currentRowView.documents}
                                     />
                                 }
                             </div>

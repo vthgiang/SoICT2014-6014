@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const ProposalSchema = new Schema ({
 
@@ -69,4 +70,7 @@ const ProposalSchema = new Schema ({
         type: Date
     }
 });
+
+ProposalSchema.plugin(mongoosePaginate);
+
 module.exports = Proposal = mongoose.model("proposals", ProposalSchema)

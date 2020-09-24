@@ -36,11 +36,14 @@ class IncidentEditForm extends Component {
     }
 
     // Bắt sự kiện thay đổi loại sự cố
-    handleTypeChange = (e) => {
-        let { value } = e.target;
+    handleTypeChange = (value) => {
+        if (value.length === 0) {
+            value = ''
+        }
+
         this.setState({
             ...this.state,
-            type: value
+            type: value[0]
         })
     }
 
@@ -169,6 +172,7 @@ class IncidentEditForm extends Component {
         var userlist = user.list;
         var assetlist = assetsManager.listAssets;
 
+        console.log('\n\n @@@@@@@@@@', asset._id, assetlist);
         return (
             <React.Fragment>
                 <DialogModal
@@ -192,29 +196,32 @@ class IncidentEditForm extends Component {
                             {/* Phân loại */}
                             <div className="form-group">
                                 <label>{translate('asset.general_information.incident_type')}</label>
-                                <select className="form-control" value={type} name="type" onChange={this.handleTypeChange}>
-                                    <option value="Hỏng hóc">{translate('asset.general_information.damaged')}</option>
-                                    <option value="Mất">{translate('asset.general_information.lost')}</option>
-                                </select>
+                                <SelectBox
+                                    id={`edit-type-incident-asset${_id}`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={[
+                                        { value: 1, text: translate('asset.general_information.damaged') },
+                                        { value: 2, text: translate('asset.general_information.lost') },
+                                    ]}
+                                    onChange={this.handleTypeChange}
+                                    multiple={false}
+                                />
                             </div>
 
-                            {/* Tài ff sản */}
+                            {/* Tài sản */}
                             <div className={`form-group`}>
                                 <label>{translate('asset.general_information.asset')}</label>
-                                <div>
-                                    <div id="assetUBox">
-                                        <SelectBox
-                                            id={`edit-incident-asset${_id}`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            items={assetlist.map(x => ({ value: x._id, text: x.code + " - " + x.assetName }))}
-                                            onChange={this.handleAssetChange}
-                                            value={asset._id}
-                                            multiple={false}
-                                            disabled
-                                        />
-                                    </div>
-                                </div>
+                                <SelectBox
+                                    id={`edit-incident-asset${_id}`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={assetlist.map(x => ({ value: x._id, text: x.code + " - " + x.assetName }))}
+                                    onChange={this.handleAssetChange}
+                                    value={asset._id}
+                                    multiple={false}
+                                    disabled
+                                />
                             </div>
 
                             {/* Người báo cáo */}

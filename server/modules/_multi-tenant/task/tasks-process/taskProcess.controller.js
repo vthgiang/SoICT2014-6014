@@ -63,7 +63,7 @@ exports.getXmlDiagramById = async (req, res) => {
  * tạo mới diagram
  */
 exports.createXmlDiagram = async (req, res) => {
-	try {
+	// try {
 		var data = await TaskProcessService.createXmlDiagram(req.portal, req.body);
 		await Logger.info(req.user.email, `create xml diagram `, req.portal);
 		res.status(200).json({
@@ -71,14 +71,14 @@ exports.createXmlDiagram = async (req, res) => {
 			messages: ['create_success'],
 			content: data
 		});
-	} catch (error) {
-		await Logger.error(req.user.email, `create xml diagram `, req.portal);
-		res.status(400).json({
-			success: false,
-			messages: ['create_error'],
-			content: error
-		});
-	}
+	// } catch (error) {
+	// 	await Logger.error(req.user.email, `create xml diagram `, req.portal);
+	// 	res.status(400).json({
+	// 		success: false,
+	// 		messages: ['create_error'],
+	// 		content: error
+	// 	});
+	// }
 }
 
 /**
@@ -132,7 +132,7 @@ exports.deleteXmlDiagram = async (req, res) => {
  * @param {*} res 
  */
 exports.createTaskByProcess = async (req, res) => {
-	try {
+	// try {
 		let data = await TaskProcessService.createTaskByProcess(req.portal, req.params.processId, req.body);
 
 		let process = data.process;
@@ -153,14 +153,14 @@ exports.createTaskByProcess = async (req, res) => {
 			messages: ['create_task_by_process_success'],
 			content: process,
 		});
-	} catch (error) {
-		await Logger.error(req.user.email, `create_task_by_process`, req.portal);
-		res.status(400).json({
-			success: false,
-			messages: ['create_task_by_process_fail'],
-			content: error,
-		});
-	}
+	// } catch (error) {
+	// 	await Logger.error(req.user.email, `create_task_by_process`, req.portal);
+	// 	res.status(400).json({
+	// 		success: false,
+	// 		messages: ['create_task_by_process_fail'],
+	// 		content: error,
+	// 	});
+	// }
 }
 
 /**
@@ -169,7 +169,7 @@ exports.createTaskByProcess = async (req, res) => {
  * @param {*} res 
  */
 exports.getAllTaskProcess = async (req, res) => {
-	try {
+	// try {
 		var data = await TaskProcessService.getAllTaskProcess(req.portal, req.query);
 		await Logger.info(req.user.email, `get_all_task_process_success`, req.portal);
 		res.status(200).json({
@@ -177,14 +177,14 @@ exports.getAllTaskProcess = async (req, res) => {
 			messages: ['get_all_task_process_success'],
 			content: data,
 		});
-	} catch (error) {
-		await Logger.error(req.user.email, `get_all_task_process_fail`, req.portal);
-		res.status(400).json({
-			success: false,
-			messages: ['get_all_task_process_fail'],
-			content: error,
-		});
-	}
+	// } catch (error) {
+	// 	await Logger.error(req.user.email, `get_all_task_process_fail`, req.portal);
+	// 	res.status(400).json({
+	// 		success: false,
+	// 		messages: ['get_all_task_process_fail'],
+	// 		content: error,
+	// 	});
+	// }
 }
 
 
@@ -218,7 +218,7 @@ exports.updateDiagram = async (req, res) => {
  * @param {*} res 
  */
 exports.editProcessInfo = async (req, res) => {
-	try {
+	// try {
 		var data = await TaskProcessService.editProcessInfo(req.portal, req.params, req.body);
 		await Logger.info(req.user.email, `update info process`, req.portal);
 		res.status(200).json({
@@ -226,12 +226,12 @@ exports.editProcessInfo = async (req, res) => {
 			messages: ['edit_info_process_success'],
 			content: data,
 		});
-	} catch (error) {
-		await Logger.error(req.user.email, `update info process`, req.portal);
-		res.status(400).json({
-			success: false,
-			messages: ['edit_info_process_fail'],
-			content: error,
-		});
-	}
+	// } catch (error) {
+	// 	await Logger.error(req.user.email, `update info process`, req.portal);
+	// 	res.status(400).json({
+	// 		success: false,
+	// 		messages: ['edit_info_process_fail'],
+	// 		content: error,
+	// 	});
+	// }
 }

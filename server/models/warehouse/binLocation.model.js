@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const BinLocationSchema = new Schema ({
 
@@ -69,4 +70,7 @@ const BinLocationSchema = new Schema ({
         type: String
     }
 });
+
+BinLocationSchema.plugin(mongoosePaginate);
+
 module.exports = BinLocation = mongoose.model("binLocations", BinLocationSchema);

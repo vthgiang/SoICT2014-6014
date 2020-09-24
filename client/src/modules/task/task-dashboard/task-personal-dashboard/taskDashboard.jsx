@@ -133,7 +133,7 @@ class TaskDashboard extends Component {
             } else {
                 month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)) + 1);
             }
-            
+
             monthtitle = value.slice(0, 2) + '-' + value.slice(3, 7);
         } else {
             month = (new Number(value.slice(3, 7)) + 1) + '-' + '01';
@@ -180,7 +180,7 @@ class TaskDashboard extends Component {
             let task = tasks.responsibleTasks;
             let i;
             for (i in task) {
-                if (task[i].status === "Inprocess")
+                if (task[i].status === "inprocess")
                     amountResponsibleTask++;
 
             }
@@ -191,7 +191,7 @@ class TaskDashboard extends Component {
             let task = tasks.creatorTasks;
             let i;
             for (i in task) {
-                if (task[i].status === "Inprocess")
+                if (task[i].status === "inprocess")
                     amountTaskCreated++;
 
             }
@@ -202,7 +202,7 @@ class TaskDashboard extends Component {
             let task = tasks.accountableTasks;
             let i;
             for (i in task) {
-                if (task[i].status === "Inprocess")
+                if (task[i].status === "inprocess")
                     amountAccountableTasks++;
             }
         }
@@ -212,7 +212,7 @@ class TaskDashboard extends Component {
             let task = tasks.consultedTasks;
             let i;
             for (i in task) {
-                if (task[i].status === "Inprocess")
+                if (task[i].status === "inprocess")
                     amountConsultedTasks++;
             }
         }
@@ -230,7 +230,7 @@ class TaskDashboard extends Component {
                 numTask = numTask.concat(tasks.consultedTasks);
             let i;
             for (i in numTask) {
-                if (numTask[i].status === "Inprocess")
+                if (numTask[i].status === "inprocess")
                     tempObj[numTask[i]._id] = numTask[i].name;
             }
 
@@ -331,7 +331,9 @@ class TaskDashboard extends Component {
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.tasks_calendar')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
                             </div>
-                            <TasksSchedule />
+                            <TasksSchedule
+                                tasks={tasks}
+                            />
                         </div>
 
                     </div>
