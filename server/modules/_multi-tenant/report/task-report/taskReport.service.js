@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const { TaskReport } = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
 const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
@@ -7,9 +8,18 @@ const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
  * @param  params 
  */
 exports.getTaskReports = async (portal, params) => {
-    const { name, creator, month } = params;
-    let dateSearch, getMonth, year, startDate, endDate, keySearch = {};
+    const { name, creator, month, organizationalUnit } = params;
+    let dateSearch, getMonth, year, startDate, endDate, keySearch = [];
 
+    // search theo đơn vị
+    if (organizationalUnit && organizationalUnit.length > 0) {
+        keySearch = [
+            ...keySearch,
+            { $match: { organizationalUnit: { $in: [...organizationalUnit.map(o => mongoose.Types.ObjectId(o.toString()))] } } },
+        ]
+    }
+
+    // search theo tháng
     if (month) {
         dateSearch = params.month.split('-');
         getMonth = dateSearch[1], year = dateSearch[0];
@@ -19,40 +29,75 @@ exports.getTaskReports = async (portal, params) => {
 
     // Tìm kiếm theo tên báo cáo
     if (name && name.length !== 0) {
-        keySearch = {
+        keySearch = [
             ...keySearch,
-            name: { $regex: name, $options: "i" },
-        }
+            { $match: { name: { $regex: name, $options: "i" } } },
+        ]
     }
 
     // Tìm kiếm theo người tạo
     if (creator && creator.length !== 0) {
-        keySearch = {
+        keySearch = [
             ...keySearch,
-            creator: { $regex: params.creator, $options: "i" },
-        }
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "creator",
+                    foreignField: "_id",
+                    as: "Users"
+                }
+            },
+            {
+                $match: { Users: { $elemMatch: { name: { $regex: creator, $options: "i" } } } },
+            }
+        ]
     }
 
     // Tìm kiếm theo tháng
     if (month && month.length !== 0) {
-        keySearch = {
+        keySearch = [
             ...keySearch,
-            createdAt: { $gte: startDate, $lte: endDate }
-        }
+            {
+                $match: { createdAt: { $gte: startDate, $lte: endDate } }
+            }
+        ]
     };
 
-    // get tổng số record của bảng Task report
-    let totalList = await TaskReport(connect(DB_CONNECTION, portal)).countDocuments();
+    let countRecord = [
+        ...keySearch,
+        {
+            $count: "totalReport"
+        }
+    ]
+    // get tổng số bản ghi sau khi truy vấn tìm kiếm
+    let totalList = await TaskReport(connect(DB_CONNECTION, portal)).aggregate(countRecord);
 
-    let listTaskReport = await TaskReport(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'desc' })
-        .skip(parseInt(params.page)).limit(parseInt(params.limit))
-        .populate({ path: 'creator ', select: "_id name" })
-        .populate({ path: 'taskTemplate' })
-        .populate({ path: 'responsibleEmployees', select: '_id name company' })
-        .populate({ path: 'accountableEmployees', select: '_id name company' })
-        .populate({ path: 'organizationalUnit', select: 'deans viceDeans employees _id name company parent' })
-        .populate({ path: 'readByEmployees' })
+    keySearch = [
+        ...keySearch,
+        { $sort: { createdAt: -1 } },
+        { $skip: parseInt(params.page) },
+        { $limit: parseInt(params.limit) },
+        {
+            $lookup: {
+                from: "users",
+                localField: "creator",
+                foreignField: "_id",
+                as: "creator"
+            }
+        },
+        {
+            $lookup: {
+                from: "organizationalunits",
+                localField: "organizationalUnit",
+                foreignField: "_id",
+                as: "organizationalUnit"
+            }
+        },
+    ]
 
+    totalList = parseInt(totalList.map(o => o.totalReport));
+
+    let listTaskReport = await TaskReport(connect(DB_CONNECTION, portal)).aggregate(keySearch);
     return { totalList, listTaskReport };
 }
 

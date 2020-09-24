@@ -28,15 +28,18 @@ class UseRequestManager extends Component {
         let { managedBy } = this.state;
         this.props.searchRecommendDistributes(this.state);
         this.props.getUser();
-        this.props.getAllAsset({
-            code: "",
-            assetName: "",
-            assetType: null,
-            status: null,
-            page: 0,
-            limit: 5,
-            managedBy: managedBy
-        });
+
+        if(!this.props.isActive || this.props.isActive === "tab-pane active") {
+            this.props.getAllAsset({
+                code: "",
+                assetName: "",
+                assetType: null,
+                status: null,
+                page: 0,
+                limit: 5,
+                managedBy: managedBy
+            });
+        }
     }
 
     // Bắt sự kiện click chỉnh sửa thông tin phiếu đề nghị

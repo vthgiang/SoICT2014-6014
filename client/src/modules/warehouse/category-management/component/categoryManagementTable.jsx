@@ -76,6 +76,7 @@ class CategoryManagementTable extends Component {
     render (){
         const { categories, translate } = this.props;
         const { listPaginate, totalPages, page } = categories;
+        console.log(categories);
 
         return (
             <div className="box">
