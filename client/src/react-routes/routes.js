@@ -94,6 +94,13 @@ import TaskReportManager from '../modules/report/task-report/components/taskRepo
 //warehouse
 import MaterialManager from '../modules/warehouse/material-manager/component';
 import CategoryManagement from '../modules/warehouse/category-management/component';
+import GoodManagement from '../modules/warehouse/good-management/component';
+import StockManagement from '../modules/warehouse/stock-management/component';
+import BinLocationManagement from '../modules/warehouse/bin-location-management/components';
+import BillManagement from '../modules/warehouse/bill-management/components';
+import InventoryManagement from '../modules/warehouse/inventory-management/components';
+import PartnerManagement from '../modules/warehouse/partner-management/component';
+import ProposalManagement from '../modules/warehouse/proposal-management/component';
 
 // Customer Management
 import CrmCustomer from '../modules/crm/customer/components';
@@ -1084,6 +1091,112 @@ class Routes extends Component {
                         pageName={'category_management'}
                         layout={Layout}
                         component={CategoryManagement}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={'good-management'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/good-management', name: 'good_management', icon: 'fa fa-gift' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/good-management'}
+                        path={'/good-management'}
+                        pageName={'good_management'}
+                        layout={Layout}
+                        component={GoodManagement}
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={'stock-management'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/stock-management', name: 'stock_management', icon: 'fa fa-bank' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/stock-management'}
+                        path={'/stock-management'}
+                        pageName={'stock_management'}
+                        layout={Layout}
+                        component={StockManagement}
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={'bin-location-management'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/bin-location-management', name: 'bin_location_management', icon: 'fa fa-sitemap' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/bin-location-management'}
+                        path={'/bin-location-management'}
+                        pageName={'bin_location_management'}
+                        layout={Layout}
+                        component={BinLocationManagement}
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={'partner-management'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/partner-management', name: 'partner_management', icon: 'fa fa-users' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/partner-management'}
+                        path={'/partner-management'}
+                        pageName={'partner_management'}
+                        layout={Layout}
+                        component={PartnerManagement}
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={'proposal-management'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/proposal-management', name: 'proposal_management', icon: 'fa fa-envelope-o' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/proposal-management'}
+                        path={'/proposal-management'}
+                        pageName={'proposal_management'}
+                        layout={Layout}
+                        component={ProposalManagement}
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={'inventory-management'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/inventory-management', name: 'inventory_management', icon: 'fa fa-times-circle-o' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/inventory-management'}
+                        path={'/inventory-management'}
+                        pageName={'inventory_management'}
+                        layout={Layout}
+                        component={InventoryManagement}
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={'bill-management'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/bill-management', name: 'bill_management', icon: 'fa fa-reorder' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/bill-management'}
+                        path={'/bill-management'}
+                        pageName={'bill_management'}
+                        layout={Layout}
+                        component={BillManagement}
                     />
 
                     <PrivateRoute

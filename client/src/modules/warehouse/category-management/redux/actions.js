@@ -3,6 +3,7 @@ import { CategoryConstants } from './constants';
 
 export const CategoryActions = {
     getCategories,
+    getCategoriesByType,
     createCategory,
     editCategory,
     deleteCategory
@@ -39,6 +40,25 @@ function getCategories(data = undefined) {
         .catch(err => {
             dispatch({
                 type: CategoryConstants.GETALL_CATEGORY_FAILURE,
+                error: err
+            })
+        })
+    }
+}
+
+function getCategoriesByType(data) {
+    return dispatch => {
+        dispatch({ type: CategoryConstants.GETALL_CATEGORY_BY_TYPE_REQUEST });
+        CategoryServices.getCategoriesByType(data)
+        .then(res => {
+            dispatch({
+                type: CategoryConstants.GETALL_CATEGORY_BY_TYPE_SUCCESS,
+                payload: res.data.content
+            })
+        })
+        .catch(err => {
+            dispatch({
+                type: CategoryConstants.GETALL_CATEGORY_BY_TYPE_FAILURE,
                 error: err
             })
         })
