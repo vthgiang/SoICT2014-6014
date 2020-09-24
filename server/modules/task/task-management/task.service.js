@@ -44,9 +44,9 @@ exports.getTaskEvaluations = async (data) => {
     if (status === 0) {
         status = '';
     } else if (status === 1) {
-        status = "Finished";
+        status = "finished";
     } else if (status === 2) {
-        status = "Inprocess";
+        status = "inprocess";
     }
 
     // Lọc nếu ngày bắt đầu và kết thức có giá trị
@@ -1343,7 +1343,7 @@ exports.getTasksByUser = async (data) => {
                 { consultedEmployees: data.userId },
                 { informedEmployees: data.userId }
             ],
-            status: "Inprocess"
+            status: "inprocess"
         })
     }
 
@@ -1351,7 +1351,7 @@ exports.getTasksByUser = async (data) => {
         for (let i in data.organizationUnitId) {
             var organizationalUnit = await OrganizationalUnit.findOne({ _id: data.organizationUnitId[i] })
             var test = await Task.find(
-                { organizationalUnit: organizationalUnit._id, status: "Inprocess" },
+                { organizationalUnit: organizationalUnit._id, status: "inprocess" },
             )
 
             for (let j in test) {
@@ -1611,7 +1611,7 @@ exports.sendEmailCheckTaskLastMonth = async () => {
                     taskList = allTasks.concat(accTasks, resTasks, conTasks, infTasks);
                 }
                 if (taskList) {
-                    let inprocessTask = taskList.filter(task => task.status === "Inprocess");
+                    let inprocessTask = taskList.filter(task => task.status === "inprocess");
 
                     let distinctTasks = [];
                     for (let k in inprocessTask) {     // lọc task trùng nhau
@@ -1681,7 +1681,7 @@ exports.sendEmailCheckTaskLastMonth = async () => {
                 var TaskHasActionsResponsible = [];
 
                 if (accTasks) {
-                    let inprocessAccountableTask = accTasks.filter(task => task.status === "Inprocess")
+                    let inprocessAccountableTask = accTasks.filter(task => task.status === "inprocess")
                     inprocessAccountableTask.length && inprocessAccountableTask.map(x => {
                         let taskActions;
 
@@ -1707,7 +1707,7 @@ exports.sendEmailCheckTaskLastMonth = async () => {
                     })
                 }
                 if (resTasks) {
-                    let inprocessResponsibleTasks = resTasks.filter(task => task.status === "Inprocess")
+                    let inprocessResponsibleTasks = resTasks.filter(task => task.status === "inprocess")
                     inprocessResponsibleTasks.length && inprocessResponsibleTasks.map(x => {
                         let taskActions;
 

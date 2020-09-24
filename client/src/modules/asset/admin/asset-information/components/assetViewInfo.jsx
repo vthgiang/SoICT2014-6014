@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal } from '../../../../../common-components';
+import { DialogModal, Scheduler } from '../../../../../common-components';
 
 import {
     GeneralTab, MaintainanceLogTab, UsageLogTab, DepreciationTab, IncidentLogTab, DisposalTab, AttachmentTab
 } from '../../../base/detail-tab/components/combinedContent';
 
-class AssetInfoForm extends Component {
+class AssetViewInfo extends Component {
     constructor(props) {
         super(props);
         this.state = {};
@@ -29,7 +29,8 @@ class AssetInfoForm extends Component {
                 purchaseDate: nextProps.purchaseDate,
                 warrantyExpirationDate: nextProps.warrantyExpirationDate,
                 managedBy: nextProps.managedBy,
-                assignedTo: nextProps.assignedTo,
+                assignedToUser: nextProps.assignedToUser,
+                assignedToOrganizationalUnit: nextProps.assignedToOrganizationalUnit,
                 handoverFromDate: nextProps.handoverFromDate,
                 handoverToDate: nextProps.handoverToDate,
                 location: nextProps.location,
@@ -41,6 +42,8 @@ class AssetInfoForm extends Component {
                 residualValue: nextProps.residualValue,
                 startDepreciation: nextProps.startDepreciation,
                 usefulLife: nextProps.usefulLife,
+                estimatedTotalProduction: nextProps.estimatedTotalProduction,
+                unitsProducedDuringTheYears: nextProps.unitsProducedDuringTheYears,
                 depreciationType: nextProps.depreciationType,
                 maintainanceLogs: nextProps.maintainanceLogs,
                 usageLogs: nextProps.usageLogs,
@@ -58,30 +61,24 @@ class AssetInfoForm extends Component {
     }
     render() {
         const { translate, assetsManager } = this.props;
-        const { _id, avatar, code, assetName, serial, assetType, purchaseDate, warrantyExpirationDate,
-            managedBy, assignedTo, handoverFromDate, handoverToDate, location, description, status, typeRegisterForUse,
-            detailInfo, cost, residualValue, startDepreciation, usefulLife, depreciationType,
-            maintainanceLogs, usageLogs, incidentLogs, disposalDate, disposalType, disposalCost,
-            disposalDesc, archivedRecordNumber, files, group
-        } = this.state;
-
+        const { _id, avatar, code, assetName, serial, assetType, group, purchaseDate, warrantyExpirationDate,
+            managedBy, assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, location, description, status, typeRegisterForUse,
+            detailInfo, cost, residualValue, startDepreciation, usefulLife, depreciationType, estimatedTotalProduction,
+            unitsProducedDuringTheYears, maintainanceLogs, usageLogs, incidentLogs, disposalDate, disposalType, disposalCost,
+            disposalDesc, archivedRecordNumber, files
+        } = this.props;
+        
         return (
             <React.Fragment>
-                {/* <DialogModal
-                    size='75' modalID="modal-view-asset" isLoading={assetsManager}
-                    formID="form-view-asset"
-                    title={translate('asset.asset_info.asset_info')}
-                    hasSaveButton={false}
-                > */}
-                <div className="form-group" id="form-view-building" >
+                <form className="form-group" id="form-view-asset" style={{ marginTop: "-15px" }}>
                     <div className="nav-tabs-custom">
                         {/* Nav-tabs */}
                         <ul className="nav nav-tabs">
                             <li className="active"><a title={translate('asset.general_information.general_information')} data-toggle="tab" href={`#view_general${_id}`}>{translate('asset.general_information.general_information')}</a></li>
-                            <li><a title={translate('asset.general_information.usage_information')} data-toggle="tab" href={`#view_usage${_id}`}>{translate('asset.general_information.usage_information')}</a></li>
-                            <li><a title={translate('asset.general_information.maintainance_information')} data-toggle="tab" href={`#view_maintainance${_id}`}>{translate('asset.general_information.maintainance_information')}</a></li>
                             <li><a title={translate('asset.general_information.depreciation_information')} data-toggle="tab" href={`#view_depreciation${_id}`}>{translate('asset.general_information.depreciation_information')}</a></li>
+                            <li><a title={translate('asset.general_information.usage_information')} data-toggle="tab" href={`#view_usage${_id}`} onClick={() => { Scheduler.triggerOnActiveEvent(".asset-usage-scheduler") }}>{translate('asset.general_information.usage_information')}</a></li>
                             <li><a title={translate('asset.general_information.incident_information')} data-toggle="tab" href={`#view_incident${_id}`}>{translate('asset.general_information.incident_information')}</a></li>
+                            <li><a title={translate('asset.general_information.maintainance_information')} data-toggle="tab" href={`#view_maintainance${_id}`}>{translate('asset.general_information.maintainance_information')}</a></li>
                             <li><a title={translate('asset.general_information.disposal_information')} data-toggle="tab" href={`#view_disposal${_id}`}>{translate('asset.general_information.disposal_information')}</a></li>
                             <li><a title={translate('asset.general_information.attach_infomation')} data-toggle="tab" href={`#view_attachments${_id}`}>{translate('asset.general_information.attach_infomation')}</a></li>
                         </ul>
@@ -99,7 +96,8 @@ class AssetInfoForm extends Component {
                                 purchaseDate={purchaseDate}
                                 warrantyExpirationDate={warrantyExpirationDate}
                                 managedBy={managedBy}
-                                assignedTo={assignedTo}
+                                assignedToUser={assignedToUser}
+                                assignedToOrganizationalUnit={assignedToOrganizationalUnit}
                                 handoverFromDate={handoverFromDate}
                                 handoverToDate={handoverToDate}
                                 location={location}
@@ -107,6 +105,19 @@ class AssetInfoForm extends Component {
                                 status={status}
                                 typeRegisterForUse={typeRegisterForUse}
                                 detailInfo={detailInfo}
+                                usageLogs={usageLogs}
+                            />
+
+                            {/* Thông tin khấu hao */}
+                            <DepreciationTab
+                                id={`view_depreciation${_id}`}
+                                cost={cost}
+                                residualValue={residualValue}
+                                startDepreciation={startDepreciation}
+                                usefulLife={usefulLife}
+                                estimatedTotalProduction={estimatedTotalProduction}
+                                unitsProducedDuringTheYears={unitsProducedDuringTheYears}
+                                depreciationType={depreciationType}
                             />
 
                             {/* Thông tin bảo trì */}
@@ -118,17 +129,10 @@ class AssetInfoForm extends Component {
                             {/* Thông tin sử dụng */}
                             <UsageLogTab
                                 id={`view_usage${_id}`}
+                                assetId={_id}
+                                typeRegisterForUse={typeRegisterForUse}
+                                managedBy={managedBy}
                                 usageLogs={usageLogs}
-                            />
-
-                            {/* Thông tin khấu hao */}
-                            <DepreciationTab
-                                id={`view_depreciation${_id}`}
-                                cost={cost}
-                                residualValue={residualValue}
-                                startDepreciation={startDepreciation}
-                                usefulLife={usefulLife}
-                                depreciationType={depreciationType}
                             />
 
                             {/* Thông tin sự cố */}
@@ -154,7 +158,7 @@ class AssetInfoForm extends Component {
                             />
                         </div>
                     </div>
-                </div>
+                </form>
                 {/* </DialogModal> */}
             </React.Fragment>
         );
@@ -165,5 +169,5 @@ function mapState(state) {
     return { assetsManager };
 };
 
-const detailAsset = connect(null, null)(withTranslate(AssetInfoForm));
-export { detailAsset as AssetInfoForm };
+const AssetViewInfoConnected = connect(null, null)(withTranslate(AssetViewInfo));
+export { AssetViewInfoConnected as AssetViewInfo };

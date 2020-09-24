@@ -12,7 +12,7 @@ class DistributionOfEmployee extends Component {
     constructor(props) {
         super(props);
         this.infoSearch = {
-            status: ["Inprocess", "WaitForApproval", "Finished", "Delayed", "Canceled"],
+            status: ["inprocess", "wait_for_approval", "finished", "delayed", "canceled"],
         }
         this.state = {
             listNameEmployee: [],
@@ -32,7 +32,7 @@ class DistributionOfEmployee extends Component {
 
     handleSelectStatus = async (value) => {
         if (value.length === 0) {
-            value = ["Inprocess", "WaitForApproval", "Finished", "Delayed", "Canceled"];
+            value = ["inprocess", "wait_for_approval", "finished", "delayed", "canceled"];
         }
         this.infoSearch.status = value;
 
@@ -183,11 +183,11 @@ class DistributionOfEmployee extends Component {
                         <label style={{ minWidth: "150px" }}>{translate('task.task_management.task_status')}</label>
                         <SelectMulti id="multiSelectStatusInDistribution"
                             items={[
-                                { value: "Inprocess", text: translate('task.task_management.inprocess') },
-                                { value: "WaitForApproval", text: translate('task.task_management.wait_for_approval') },
-                                { value: "Finished", text: translate('task.task_management.finished') },
-                                { value: "Delayed", text: translate('task.task_management.delayed') },
-                                { value: "Canceled", text: translate('task.task_management.canceled') }
+                                { value: "inprocess", text: translate('task.task_management.inprocess') },
+                                { value: "wait_for_approval", text: translate('task.task_management.wait_for_approval') },
+                                { value: "finished", text: translate('task.task_management.finished') },
+                                { value: "delayed", text: translate('task.task_management.delayed') },
+                                { value: "canceled", text: translate('task.task_management.canceled') }
                             ]}
                             onChange={this.handleSelectStatus}
                             options={{ nonSelectedText: translate('task.task_management.select_all_status'), allSelectedText: translate('task.task_management.select_all_status') }}>

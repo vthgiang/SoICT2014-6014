@@ -12,6 +12,7 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import { taskTemplateActions } from '../../../task/task-template/redux/actions';
 import { taskManagementActions } from '../../../task/task-management/redux/actions';
 import { TaskReportActions } from '../redux/actions';
+import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 
 import './transferList.css';
 
@@ -110,8 +111,7 @@ class TaskReportCreateForm extends Component {
      */
     handleChangeReportOrganizationalUnit = e => {
         let { newReport } = this.state;
-        e.preventDefault();
-        let value = e.target.value;
+        let { value } = e.target;
         if (value) {
             this.props.getAllUserOfDepartment(value);
             this.props.getChildrenOfOrganizationalUnits(value);
@@ -190,19 +190,16 @@ class TaskReportCreateForm extends Component {
     }
 
 
-    shouldComponentUpdate = (nextProps, nextState) => {
+    shouldComponentUpdate = async (nextProps, nextState) => {
         const { user } = this.props;
-        const { newReport } = this.state;
+        const { newReport, currentRole } = this.state;
 
         if (newReport.organizationalUnit === '' && user.organizationalUnitsOfUser) {
-            let defaultUnit = user.organizationalUnitsOfUser.find(item =>
-                item.dean === this.state.currentRole
-                || item.viceDean === this.state.currentRole
-                || item.employee === this.state.currentRole);
 
-            if (!defaultUnit && user.organizationalUnitsOfUser.length > 0) { // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
-                defaultUnit = user.organizationalUnitsOfUser[0];
-            }
+            let defaultUnit = await user.organizationalUnitsOfUser.find(item =>
+                item.deans.toString() === currentRole
+                || item.viceDeans.toString() === currentRole
+                || item.employees.toString() === currentRole);
 
             // Lấy người dùng của đơn vị hiện tại và người dùng của đơn vị con
             if (defaultUnit) {
@@ -639,6 +636,7 @@ class TaskReportCreateForm extends Component {
 
     componentDidMount() {
         this.props.getTaskTemplateByUser("1", "0", "[]");
+        // this.props.getDepartment();
         // Lấy tất cả nhân viên trong công ty
         this.props.getAllUserOfCompany();
         this.props.getAllUserInAllUnitsOfCompany();
@@ -663,16 +661,16 @@ class TaskReportCreateForm extends Component {
         if (user.usersOfChildrenOrganizationalUnit) {
             usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
         }
-
+        console.log('state', this.state.newReport)
         // lấy list chức danh theo đơn vị hiện tại
-        if (user.roledepartments) {
-            listRole = user.roledepartments;
-            for (let x in listRole.deans)
-                listRoles[x] = listRole.deans[x];
-            for (let x in listRole.viceDeans)
-                listRoles = [...listRoles, listRole.viceDeans[x]];
-            for (let x in listRole.employees)
-                listRoles = [...listRoles, listRole.employees[x]];
+        if (user.usersInUnitsOfCompany) {
+            listRole = user.usersInUnitsOfCompany;
+            listRole.forEach(item => {
+                listRoles.push(Object.values(item.deans));
+                listRoles.push(Object.values(item.viceDeans));
+                listRoles.push(Object.values(item.employees));
+            })
+            listRoles = listRoles.flat(1);
         }
 
         // Lấy thông tin nhân viên của đơn vị
@@ -714,6 +712,7 @@ class TaskReportCreateForm extends Component {
                                     </select>
                                 }
                             </div>
+
                         </div>
 
                         <div className="col-md-6">
@@ -916,10 +915,10 @@ class TaskReportCreateForm extends Component {
                                                     <tr key={index}>
                                                         <td>{item2.code}</td>
                                                         <td>{item2.name}</td>
-                                                        <td>{(item2.type === 'SetOfValues' ? 'Tập dữ liệu' : (item2.type))}</td>
-                                                        <td><input className="form-control" style={{ width: '100%' }} type="text" onChange={(e) => this.handleChangeFilter(index, e)} placeholder={(item2.type === 'Number' ? `p${index + 1} > 3000` : (item2.type === 'SetOfValues' ? `p${index + 1} = 3000` : ''))} /></td>
+                                                        <td>{(item2.type === 'set_of_values' ? 'Tập dữ liệu' : (item2.type))}</td>
+                                                        <td><input className="form-control" style={{ width: '100%' }} type="text" onChange={(e) => this.handleChangeFilter(index, e)} placeholder={(item2.type === 'number' ? `p${index + 1} > 3000` : (item2.type === 'set_of_values' ? `p${index + 1} = 3000` : ''))} /></td>
                                                         <td>
-                                                            {(item2.type === 'Number') ?
+                                                            {(item2.type === 'number') ?
                                                                 <div className="checkbox" style={{ paddingLeft: "20%" }}>
                                                                     <label>
                                                                         <input name="showInReport" type="checkbox" value={item2.name} onChange={(e) => this.handleChangeShowInReport(index, e)} />
@@ -929,18 +928,18 @@ class TaskReportCreateForm extends Component {
                                                             }
                                                         </td>
                                                         <td>
-                                                            {(item2.type === 'Number') ?
+                                                            {(item2.type === 'number') ?
                                                                 <input className="form-control" style={{ width: '100%' }} type="text" onChange={(e) => this.handleChangeNewName(index, e)} /> : ''
                                                             }
 
                                                         </td>
                                                         <td>
-                                                            {(item2.type === 'Number') ?
+                                                            {(item2.type === 'number') ?
                                                                 <input type="text" className="form-control" style={{ width: '100%' }} onChange={(e) => this.handleChangeCoefficient(index, e)} /> : ''
                                                             }
                                                         </td>
                                                         <td>
-                                                            {(item2.type === 'Number') ?
+                                                            {(item2.type === 'number') ?
                                                                 <SelectBox
                                                                     id={`select-box-calulator-${item2.code}`}
                                                                     className="form-control select2"
@@ -959,7 +958,7 @@ class TaskReportCreateForm extends Component {
                                                         </td>
                                                         <td data-select2-id="1111">
                                                             {
-                                                                (item2.type === 'Number') ?
+                                                                (item2.type === 'number') ?
                                                                     <SelectBox
                                                                         id={`select-box-chart-${item2.code}`}
                                                                         className="form-control select2"

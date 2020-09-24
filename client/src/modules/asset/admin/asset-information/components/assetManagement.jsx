@@ -3,13 +3,16 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar, SelectMulti, ExportExcel, TreeSelect } from '../../../../../common-components';
+
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import { AssetManagerActions } from '../redux/actions';
 import { AssetTypeActions } from "../../asset-type/redux/actions";
 import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { RoleActions } from '../../../../super-admin/role/redux/actions';
-import { AssetCreateForm, AssetDetailForm, AssetEditForm } from './combinedContent';
+
+import { AssetCreateForm, AssetDetailForm, AssetEditForm, AssetImportForm } from './combinedContent';
 import { configTaskTempalte } from '../../../../task/task-template/component/fileConfigurationImportTaskTemplate';
+import { translate } from 'react-redux-multilingual/lib/utils';
 
 class AssetManagement extends Component {
     constructor(props) {
@@ -34,10 +37,13 @@ class AssetManagement extends Component {
     componentDidMount() {
         this.props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
         this.props.getListBuildingAsTree();
-        this.props.getAllAsset(this.state);
         this.props.getUser();
         this.props.getAllRoles();
         this.props.getAllDepartments();
+
+        if(!this.props.isActive || this.props.isActive === "tab-pane active") {
+            this.props.getAllAsset(this.state);
+        }
     }
 
     // Function format ngày hiện tại thành dạnh mm-yyyy
@@ -243,7 +249,7 @@ class AssetManagement extends Component {
         let length = 0;
         let convertedData = [];
         if (data) {
-            data = data.map((x, index) => {
+            data.forEach((x, index) => {
 
                 let code = x.code;
                 let name = x.assetName;
@@ -364,16 +370,16 @@ class AssetManagement extends Component {
         return typeArr;
     }
 
-    checkHasComponent = (name) => {
-        var { auth } = this.props;
-        var result = false;
-        if (auth) {
-            auth.components.forEach(component => {
-                if (component.name === name) result = true;
-            });
-        }
-        return result;
-    }
+    // checkHasComponent = (name) => {
+    //     var { auth } = this.props;
+    //     var result = false;
+    //     if (auth) {
+    //         auth.components.forEach(component => {
+    //             if (component.name === name) result = true;
+    //         });
+    //     }
+    //     return result;
+    // }
 
     getDepartment = () => {
         let { department } = this.props;
@@ -391,14 +397,18 @@ class AssetManagement extends Component {
     }
 
     convertGroupAsset = (group) => {
-        if (group === 'Building') {
-            return 'Mặt bằng';
-        } else if (group === 'Vehicle') {
-            return 'Xe cộ'
-        } else if (group === 'Machine') {
-            return 'Máy móc'
-        } else {
-            return 'Khác'
+        const { translate } = this.props;
+        if (group === 'building') {
+            return translate('asset.dashboard.building')
+        }
+        else if (group === 'vehicle') {
+            return translate('asset.dashboard.vehicle')
+        }
+        else if (group === 'machine') {
+            return translate('asset.dashboard.machine')
+        }
+        else {
+            return translate('asset.dashboard.other')
         }
     }
 
@@ -414,6 +424,8 @@ class AssetManagement extends Component {
 
         if (assetsManager.isLoading === false) {
             lists = assetsManager.listAssets;
+
+            console.log('\n\n\n*************\n', this.props.managedBy, lists);
         }
 
         var pageTotal = ((assetsManager.totalList % limit) === 0) ?
@@ -424,12 +436,20 @@ class AssetManagement extends Component {
         if (userlist && lists && assettypelist) {
             exportData = this.convertDataToExportData(lists, assettypelist, userlist);
         }
+
         return (
             <div className={isActive ? isActive : "box"}>
-
                 <div className="box-body qlcv">
                     {/* Form thêm tài sản mới */}
-                    {this.checkHasComponent("create-asset") && <AssetCreateForm />}
+                    <div className="dropdown pull-right">
+                        <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('human_resource.profile.employee_management.add_employee_title')} >{translate('menu.add_asset')}</button>
+                        <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
+                            <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-asset').modal('show')}>{translate('human_resource.profile.employee_management.add_import')}</a></li>
+                            <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-add-asset').modal('show')}>Thêm tài sản</a></li>
+                        </ul>
+                    </div>
+                    <AssetCreateForm />
+                    <AssetImportForm />
 
                     {/* Thanh tìm kiếm */}
                     <div className="form-inline">
@@ -456,10 +476,10 @@ class AssetManagement extends Component {
                                 options={{ nonSelectedText: translate('asset.asset_info.select_group'), allSelectedText: translate('asset.general_information.select_all_group') }}
                                 onChange={this.handleGroupChange}
                                 items={[
-                                    { value: "Building", text: translate('asset.dashboard.building') },
-                                    { value: "Vehicle", text: translate('asset.dashboard.vehicle') },
-                                    { value: "Machine", text: translate('asset.dashboard.machine') },
-                                    { value: "Other", text: translate('asset.dashboard.other') },
+                                    { value: "building", text: translate('asset.dashboard.building') },
+                                    { value: "vehicle", text: translate('asset.dashboard.vehicle') },
+                                    { value: "machine", text: translate('asset.dashboard.machine') },
+                                    { value: "other", text: translate('asset.dashboard.other') },
                                 ]}
                             >
                             </SelectMulti>
@@ -486,11 +506,11 @@ class AssetManagement extends Component {
                                 options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('asset.general_information.select_all_status') }}
                                 onChange={this.handleStatusChange}
                                 items={[
-                                    { value: "Sẵn sàng sử dụng", text: translate('asset.general_information.ready_use') },
-                                    { value: "Đang sử dụng", text: translate('asset.general_information.using') },
-                                    { value: "Hỏng hóc", text: translate('asset.general_information.damaged') },
-                                    { value: "Mất", text: translate('asset.general_information.lost') },
-                                    { value: "Thanh lý", text: translate('asset.general_information.disposal') }
+                                    { value: "ready_to_use", text: translate('asset.general_information.ready_use') },
+                                    { value: "in_use", text: translate('asset.general_information.using') },
+                                    { value: "broken", text: translate('asset.general_information.damaged') },
+                                    { value: "lost", text: translate('asset.general_information.lost') },
+                                    { value: "disposed", text: translate('asset.general_information.disposal') }
                                 ]}
                             >
                             </SelectMulti>
@@ -498,12 +518,12 @@ class AssetManagement extends Component {
 
                         {/* Quyền đăng ký sử dụng */}
                         <div className="form-group">
-                            <label>Quyền đăng ký</label>
+                            <label>{translate('asset.general_information.can_register')}</label>
                             <SelectMulti
                                 id={`typeRegisterForUseInManagement`}
                                 className="form-control select2"
                                 multiple="multiple"
-                                options={{ nonSelectedText: "Chọn quyền sử dụng", allSelectedText: "Chọn tất cả" }}
+                                options={{ nonSelectedText: translate('asset.general_information.select_register'), allSelectedText: translate('asset.general_information.select_all_register') }}
                                 style={{ width: "100%" }}
                                 items={[
                                     { value: 1, text: 'Không được đăng ký sử dụng' },

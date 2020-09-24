@@ -196,7 +196,7 @@ exports.searchAssetProfiles = async (params, company) => {
  * Danh sách mặt bằng dạng cây
  */
 exports.getListBuildingAsTree = async (company) => {
-    const list = await Asset.find({ company: company, group: "Building" }).populate('assetType');
+    const list = await Asset.find({ company: company, group: "building" }).populate('assetType');
     const dataConverted = list.map(building => {
         return {
             id: building._id.toString(),
@@ -243,62 +243,97 @@ exports.mergeUrlFileToObject = (arrayFile, arrayObject) => {
  */
 exports.createAsset = async (data, company, fileInfo) => {
 
-    let avatar = fileInfo.avatar === "" ? data.avatar : fileInfo.avatar,
-        file = fileInfo.file;
+    let avatar = fileInfo && fileInfo.avatar === "" ? data.avatar : fileInfo.avatar,
+        file = fileInfo && fileInfo.file;
     let { maintainanceLogs, usageLogs, incidentLogs, locationLogs, files } = data;
-    files = this.mergeUrlFileToObject(file, files);
-    let createAsset = await Asset.create({
-        company: company,
-        avatar: avatar,
-        assetName: data.assetName,
-        code: data.code,
-        serial: data.serial,
-        group: data.group,
-        assetType: data.assetType,
-        readByRoles: data.readByRoles,
-        purchaseDate: data.purchaseDate,
-        warrantyExpirationDate: data.warrantyExpirationDate,
-        managedBy: data.managedBy,
-        assignedToUser: data.assignedToUser ? data.assignedToUser : null,
-        assignedToOrganizationalUnit: data.assignedToOrganizationalUnit ? data.assignedToOrganizationalUnit : null,
+    files = files && this.mergeUrlFileToObject(file, files);
 
-        location: data.location,
-        status: data.status,
-        typeRegisterForUse: data.typeRegisterForUse,
-        description: data.description,
-        detailInfo: data.detailInfo,
+    data.purchaseDate = new Date(data.purchaseDate);
 
-        // Khấu hao
-        cost: data.cost,
-        usefulLife: data.usefulLife,
-        residualValue: data.residualValue,
-        startDepreciation: data.startDepreciation,
-        depreciationType: data.depreciationType,
+    data.warrantyExpirationDate = new Date(data.warrantyExpirationDate);
 
-        // Sửa chữa - bảo trì
-        maintainanceLogs: maintainanceLogs,
+    data.startDepreciation = new Date(data.startDepreciation);
 
-        // Cấp phát - sử dụng
-        usageLogs: usageLogs,
+    data.disposalDate = new Date(data.disposalDate);
 
-        // Sự cố tài sản
-        incidentLogs: incidentLogs,
+    usageLogs = usageLogs.map(item => {
+        return {
+            ...item,
+            startDate: new Date(item.startDate),
+            endDate: new Date(item.endDate)
+        }
+    })
 
-        // Lịch sử vị trí tài sản
-        locationLogs: locationLogs,
+    incidentLogs = incidentLogs.map(item => {
+        return {
+            ...item,
+            dateOfIncident: new Date(item.dateOfIncident)
+        }
+    })
 
-        // Thông tin thanh lý
-        disposalDate: data.disposalDate,
-        disposalType: data.disposalType,
-        disposalCost: data.disposalCost,
-        disposalDesc: data.disposalDesc,
+    maintainanceLogs = maintainanceLogs.map(item => {
+        return {
+            ...item,
+            createDate: new Date(item.createDate),
+            startDate: new Date(item.startDate),
+            endDate: new Date(item.endDate)
+        }
+    })
 
-        // Tài liệu đính kèm
-        files: files,
-    });
+    let asset = await Asset.create(
+        {
+            company: company,
+            avatar: avatar,
+            assetName: data.assetName,
+            code: data.code,
+            serial: data.serial,
+            group: data.group,
+            assetType: data.assetType,
+            readByRoles: data.readByRoles,
+            purchaseDate: data.purchaseDate,
+            warrantyExpirationDate: data.warrantyExpirationDate,
+            managedBy: data.managedBy,
+            assignedToUser: data.assignedToUser ? data.assignedToUser : null,
+            assignedToOrganizationalUnit: data.assignedToOrganizationalUnit ? data.assignedToOrganizationalUnit : null,
+
+            location: data.location,
+            status: data.status,
+            typeRegisterForUse: data.typeRegisterForUse,
+            description: data.description,
+            detailInfo: data.detailInfo,
+
+            // Khấu hao
+            cost: data.cost,
+            usefulLife: data.usefulLife,
+            residualValue: data.residualValue,
+            startDepreciation: data.startDepreciation,
+            depreciationType: data.depreciationType,
+
+            // Sửa chữa - bảo trì
+            maintainanceLogs: maintainanceLogs,
+
+            // Cấp phát - sử dụng
+            usageLogs: usageLogs,
+
+            // Sự cố tài sản
+            incidentLogs: incidentLogs,
+
+            // Lịch sử vị trí tài sản
+            locationLogs: locationLogs,
+
+            // Thông tin thanh lý
+            disposalDate: data.disposalDate,
+            disposalType: data.disposalType,
+            disposalCost: data.disposalCost,
+            disposalDesc: data.disposalDesc,
+
+            // Tài liệu đính kèm
+            files: files,
+        }
+    );
 
     // Lấy thông tin nhân viên vừa thêm vào
-    let assets = await Asset.find({ _id: createAsset._id });
+    let assets = await Asset.find({ _id: asset._id });
 
     return { assets };
 }
@@ -583,7 +618,7 @@ exports.recallAsset = async (assetId, data) => {
         $set: {
             assignedToUser: null,
             assignedToOrganizationalUnit: null,
-            status: "Sẵn sàng sử dụng",
+            status: "ready_to_use",
         }
     })
     return updateAsset;
@@ -619,16 +654,16 @@ exports.getIncidents = async (params) => {
     }
 
     if (incidentStatus) {
-        incidentSearch = [...incidentSearch,  { statusIncident: { $in: incidentStatus } }]
+        incidentSearch = [...incidentSearch, { statusIncident: { $in: incidentStatus } }]
     }
 
-    let aggregateQuery = [ ];
-    if (assetSearch && assetSearch.length !== 0){
+    let aggregateQuery = [];
+    if (assetSearch && assetSearch.length !== 0) {
         aggregateQuery = [...aggregateQuery, { $match: { $and: assetSearch } }]
     }
     aggregateQuery = [...aggregateQuery, { $unwind: "$incidentLogs" }, { $replaceRoot: { newRoot: "$incidentLogs" } }]
 
-    if (incidentSearch && incidentSearch.length !== 0){
+    if (incidentSearch && incidentSearch.length !== 0) {
         aggregateQuery = [...aggregateQuery, { $match: { $and: incidentSearch } }]
     }
     aggregateQuery = [...aggregateQuery, { $sort: { 'createdAt': 1 } }, { $skip: (page - 1) * limit }, { $limit: limit }]
@@ -639,9 +674,9 @@ exports.getIncidents = async (params) => {
     // Đếm số sự cố
     let incidentLength = 0;
     let count = await Asset.aggregate([
-        { $unwind: "$incidentLogs" }, 
-        { $replaceRoot: { newRoot: "$incidentLogs" } }, 
-        {  $count :  "incident_length"  }
+        { $unwind: "$incidentLogs" },
+        { $replaceRoot: { newRoot: "$incidentLogs" } },
+        { $count: "incident_length" }
     ]);
     incidentLength = count[0].incident_length;
 

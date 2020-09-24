@@ -14,9 +14,9 @@ import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
 import customModule from '../custom-task-process'
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
-import './../processDiagram.css'
+import './../process-template/processDiagram.css';
 import { TaskFormValidator } from "../../../task-management/component/taskFormValidator";
-import { TaskProcessValidator } from "../taskProcessValidator";
+import { TaskProcessValidator } from "../process-template/taskProcessValidator";
 import { TaskProcessActions } from "../../redux/actions";
 import getEmployeeSelectBoxItems from "../../../organizationalUnitHelper";
 
@@ -145,8 +145,8 @@ class ModalEditProcess extends Component {
             let state = this.state;
             this.modeler.importXML(nextProps.data.xmlDiagram, function (err) {
                 // handle zoom fit
-                let canvas = modeler.get('canvas');
-                canvas.zoom('fit-viewport');
+                // let canvas = modeler.get('canvas');
+                // canvas.zoom('fit-viewport');
 
                 // chỉnh màu sắc task
                 let infoTask = nextProps.data.tasks
@@ -154,7 +154,7 @@ class ModalEditProcess extends Component {
 
                 if (infoTask) {
                     for (let i in infoTask) {
-                        if (infoTask[i].status === "Finished") {
+                        if (infoTask[i].status === "finished") {
                             let element1 = (Object.keys(modeler.get('elementRegistry')).length > 0) && modeler.get('elementRegistry').get(infoTask[i].codeInProcess);
 
                             element1 && modeling.setColor(element1, {
@@ -165,7 +165,7 @@ class ModalEditProcess extends Component {
                             var outgoing = element1.outgoing;
                             outgoing.forEach(x => {
                                 console.log('x', x);
-                                if (info[x.businessObject.targetRef.id].status === "Inprocess") {
+                                if (info[x.businessObject.targetRef.id].status === "inprocess") {
                                     var outgoingEdge = modeler.get('elementRegistry').get(x.id);
 
                                     modeling.setColor(outgoingEdge, {
@@ -176,7 +176,7 @@ class ModalEditProcess extends Component {
                             })
                         }
 
-                        if (infoTask[i].status === "Inprocess") {
+                        if (infoTask[i].status === "inprocess") {
                             let element1 = (Object.keys(modeler.get('elementRegistry')).length > 0) && modeler.get('elementRegistry').get(infoTask[i].codeInProcess);
 
                             element1 && modeling.setColor(element1, {
@@ -225,7 +225,7 @@ class ModalEditProcess extends Component {
         })
         if (element.type === 'bpmn:Task' || element.type === 'bpmn:ExclusiveGateway') {
             console.log('0000', this.state.info[this.state.id]);
-            window.$(`#modal-detail-task`).modal("show");
+            window.$(`#modal-detail-task-edit-process`).modal("show");
         }
     }
 
@@ -506,7 +506,7 @@ class ModalEditProcess extends Component {
         const { translate, role, user } = this.props;
         const { idProcess } = this.props;
         const { id, info, viewer, startDate, endDate, status, processDescription, processName, errorOnViewer, errorOnProcessName, errorOnEndDate, errorOnStartDate, errorOnProcessDescription } = this.state;
-        
+
         // lấy danh sách các nhân viên trong cả công ty
         let listUserCompany = user?.usercompanys;
         let listItem = [];
@@ -523,11 +523,11 @@ class ModalEditProcess extends Component {
 
         // Mảng cấu hình trạng thái công việc
         let statusArr = [
-            { value: "Inprocess", text: translate('task.task_management.inprocess') },
-            { value: "WaitForApproval", text: translate('task.task_management.wait_for_approval') },
-            { value: "Finished", text: translate('task.task_management.finished') },
-            { value: "Delayed", text: translate('task.task_management.delayed') },
-            { value: "Canceled", text: translate('task.task_management.canceled') }
+            { value: "inprocess", text: translate('task.task_management.inprocess') },
+            { value: "wait_for_approval", text: translate('task.task_management.wait_for_approval') },
+            { value: "finished", text: translate('task.task_management.finished') },
+            { value: "delayed", text: translate('task.task_management.delayed') },
+            { value: "canceled", text: translate('task.task_management.canceled') }
         ];
 
         return (
@@ -542,7 +542,7 @@ class ModalEditProcess extends Component {
                 >
                     <div>
                         {id !== undefined &&
-                            <ModalDetailTask task={(info && info[`${id}`]) && info[`${id}`]} isProcess={true} />
+                            <ModalDetailTask action={"edit-process"} task={(info && info[`${id}`]) && info[`${id}`]} isProcess={true} />
                         }
 
                         <div className={'row'}>

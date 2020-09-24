@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { AuthActions } from '../../../modules/auth/redux/actions';
-import { DialogModal, ErrorLabel } from '../../../common-components';
+import { ApiImage, DialogModal, ErrorLabel } from '../../../common-components';
 import CropImage from './cropImage';
 import './cropImage.css';
 import ValidationHelper from '../../../helpers/validationHelper';
@@ -49,10 +49,10 @@ class ModalChangeUserInformation extends Component {
                         <div className="row">
                             <div className="col-xs-6 col-sm-4 col-md-4 col-lg-4">
                                 <div className="profile-pic">
-                                    <img className="user-avatar" src={
+                                    <ApiImage className="user-avatar" src={
                                         this.state.img !== undefined ? 
                                         this.state.img : 
-                                        (process.env.REACT_APP_SERVER+this.props.auth.user.avatar)}
+                                        ('.'+this.props.auth.user.avatar)}
                                     />
                                     <button type="button" className="edit-option" onClick={this.showCropImageSpace}><i className="fa fa-camera" style={{color: 'white'}}></i></button>
                                 </div>

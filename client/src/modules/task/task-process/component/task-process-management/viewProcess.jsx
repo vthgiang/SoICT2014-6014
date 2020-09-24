@@ -11,7 +11,7 @@ import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
 import customModule from '../custom-task-process'
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
-import './../processDiagram.css'
+import './../process-template/processDiagram.css';
 
 //Xóa element khỏi pallette theo data-action
 var _getPaletteEntries = PaletteProvider.prototype.getPaletteEntries;
@@ -49,7 +49,8 @@ class ViewProcess extends Component {
         this.modeler = new BpmnModeler({
             additionalModules: [
                 customModule,
-                { zoomScroll: ['value', ''] }
+                { zoomScroll: ['value', ''] },
+                // { moveCanvas: [ 'value', null ] }
             ],
         });
         this.generateId = 'viewtaskprocesstab';
@@ -139,7 +140,7 @@ class ViewProcess extends Component {
                         element1 && modeling.updateProperties(element1, {
                             progress: infoTask[i].progress,
                         });
-                        if (infoTask[i].status === "Finished") {
+                        if (infoTask[i].status === "finished") {
                             element1 && modeling.setColor(element1, {
                                 fill: '#f9f9f9',
                                 stroke: '#c4c4c7'
@@ -147,7 +148,7 @@ class ViewProcess extends Component {
 
                             var outgoing = element1.outgoing;
                             outgoing.forEach(x => {
-                                if (info[x.businessObject.targetRef.id].status === "Inprocess") {
+                                if (info[x.businessObject.targetRef.id].status === "inprocess") {
                                     var outgoingEdge = modeler.get('elementRegistry').get(x.id);
 
                                     modeling.setColor(outgoingEdge, {
@@ -157,7 +158,7 @@ class ViewProcess extends Component {
                                 }
                             })
                         }
-                        if (infoTask[i].status === "Inprocess") {
+                        if (infoTask[i].status === "inprocess") {
                             element1 && modeling.setColor(element1, {
                                 fill: '#84ffb8',
                                 stroke: '#14984c', //E02001
@@ -206,7 +207,7 @@ class ViewProcess extends Component {
         })
         if (element.type === 'bpmn:Task' || element.type === 'bpmn:ExclusiveGateway') {
             console.log('0000', this.state.info[this.state.id]);
-            window.$(`#modal-detail-task`).modal("show");
+            window.$(`#modal-detail-task-view-process`).modal("show");
         }
     }
 
@@ -359,11 +360,11 @@ class ViewProcess extends Component {
 
     formatStatus = (data) => {
         const { translate } = this.props;
-        if (data === "Inprocess") return translate('task.task_management.inprocess');
-        else if (data === "WaitForApproval") return translate('task.task_management.wait_for_approval');
-        else if (data === "Finished") return translate('task.task_management.finished');
-        else if (data === "Delayed") return translate('task.task_management.delayed');
-        else if (data === "Canceled") return translate('task.task_management.canceled');
+        if (data === "inprocess") return translate('task.task_management.inprocess');
+        else if (data === "wait_for_approval") return translate('task.task_management.wait_for_approval');
+        else if (data === "finished") return translate('task.task_management.finished');
+        else if (data === "delayed") return translate('task.task_management.delayed');
+        else if (data === "canceled") return translate('task.task_management.canceled');
     }
 
     render() {
@@ -376,7 +377,7 @@ class ViewProcess extends Component {
             <React.Fragment>
                 <div>
                     {id !== undefined &&
-                        <ModalDetailTask task={(info && info[`${id}`]) && info[`${id}`]} isProcess={true} />
+                        <ModalDetailTask action={"view-process"} task={(info && info[`${id}`]) && info[`${id}`]} isProcess={true} />
                     }
 
                     <div className={`${isTabPane ? 'is-tabbed-pane' : 'row'}`}>

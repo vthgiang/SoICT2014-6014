@@ -160,76 +160,95 @@ exports.getTotalAnnualLeave = async (portal, company, organizationalUnits, month
  * @param {*} numberMonth : Số tháng cần lấy thông tin nghỉ phép (6 hoặc 12)
  * @param {*} company : Id công ty
  */
-exports.getAnnualLeaveOfNumberMonth = async (portal, organizationalUnits, numberMonth, company) => {
-    let currentMonth = new Date().getMonth();
-    let currentYear = new Date().getFullYear();
-    currentMonth = currentMonth + 1;
-    let arrMonth = [];
-    for (let i = 0; i < Number(numberMonth); i++) {
-        let month = currentMonth - i;
-        if (month > 0) {
-            if (month.toString().length === 1) {
-                month = `${currentYear}-0${month}-01`;
-                arrMonth = [...arrMonth, month];
-            } else {
-                month = `${currentYear}-${month}-01`;
-                arrMonth = [...arrMonth, month];
-            }
-        } else {
-            month = month + 12;
-            if (month.toString().length === 1) {
-                month = `${currentYear-1}-0${month}-01`;
-                arrMonth = [...arrMonth, month];
-            } else {
-                month = `${currentYear-1}-${month}-01`;
-                arrMonth = [...arrMonth, month];
-            }
-        }
-    }
-
-    let querys = [];
-    arrMonth.forEach(x => {
-        let date = new Date(x);
-        let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-        let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
-        querys = [...querys, {
-            startDate: {
-                "$gt": firstDay,
-                "$lte": lastDay
-            }
-        }]
-    })
-
-    if (organizationalUnits) {
-        let listAnnualLeaveOfNumberMonth = await AnnualLeave(connect(DB_CONNECTION, portal)).find({
-            company: company,
-            status: 'pass',
-            organizationalUnit: {
-                $in: organizationalUnits
-            },
-            "$or": querys
-        }, {
-            startDate: 1,
-            endDate: 1
-        })
-
+exports.getAnnualLeaveByStartDateAndEndDate = async (portal, organizationalUnits, startDate, endDate, company) => {
+    if (new Date(startDate).getTime() > new Date(endDate).getTime()) {
         return {
-            listAnnualLeaveOfNumberMonth,
-            arrMonth
+            arrMonth: [],
+            listAnnualLeaveOfNumberMonth: [],
         }
     } else {
-        let listAnnualLeaveOfNumberMonth = await AnnualLeave(connect(DB_CONNECTION, portal)).find({
-            company: company,
-            status: 'pass',
-            "$or": querys
-        }, {
-            startDate: 1,
-            endDate: 1
+        let endMonth = new Date(endDate).getMonth();
+        let endYear = new Date(endDate).getFullYear();
+        endMonth = endMonth + 1;
+        let arrMonth = [];
+        for (let i = 0;; i++) {
+            let month = endMonth - i;
+            if (month > 0) {
+                if (month.toString().length === 1) {
+                    month = `${endYear}-0${month}-01`;
+                    arrMonth = [...arrMonth, month];
+                } else {
+                    month = `${endYear}-${month}-01`;
+                    arrMonth = [...arrMonth, month];
+                }
+                if (`${startDate}-01` === month) {
+                    break;
+                }
+            } else {
+                let j = 1;
+                for (j;; j++) {
+                    month = month + 12;
+                    if (month > 0) {
+                        break;
+                    }
+                }
+                if (month.toString().length === 1) {
+                    month = `${endYear-j}-0${month}-01`;
+                    arrMonth = [...arrMonth, month];
+                } else {
+                    month = `${endYear-j}-${month}-01`;
+                    arrMonth = [...arrMonth, month];
+                }
+                if (`${startDate}-01` === month) {
+                    break;
+                }
+            }
+        }
+
+        let querys = [];
+        arrMonth.forEach(x => {
+            let date = new Date(x);
+            let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+            let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
+            querys = [...querys, {
+                startDate: {
+                    "$gt": firstDay,
+                    "$lte": lastDay
+                }
+            }]
         })
 
-        return {
-            listAnnualLeaveOfNumberMonth,
-            arrMonth
+        if (organizationalUnits) {
+            let listAnnualLeaveOfNumberMonth = await AnnualLeave(connect(DB_CONNECTION, portal)).find({
+                company: company,
+                status: 'pass',
+                organizationalUnit: {
+                    $in: organizationalUnits
+                },
+                "$or": querys
+            }, {
+                startDate: 1,
+                endDate: 1
+            })
+
+            return {
+                listAnnualLeaveOfNumberMonth,
+                arrMonth
+            }
+        } else {
+            let listAnnualLeaveOfNumberMonth = await AnnualLeave(connect(DB_CONNECTION, portal)).find({
+                company: company,
+                status: 'pass',
+                "$or": querys
+            }, {
+                startDate: 1,
+                endDate: 1
+            })
+
+            return {
+                listAnnualLeaveOfNumberMonth,
+                arrMonth
+            }
         }
     }
 }

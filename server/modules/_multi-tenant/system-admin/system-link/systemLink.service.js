@@ -120,9 +120,9 @@ exports.deleteSystemLink = async (systemLinkId) => {
     let companies = await Company(connect(DB_CONNECTION, process.env.DB_NAME)).find();
     // 1. Xóa tất các link tương ứng của các công ty
     for (let index = 0; index < companies.length; index++) {
-        let links = await Link(connect(DB_CONNECTION, companies[i].shortName)).find({url: systemLink.url});
+        let links = await Link(connect(DB_CONNECTION, companies[index].shortName)).find({url: systemLink.url});
         //xóa phân quyền
-        await Privilege(connect(DB_CONNECTION, companies[i].shortName)).deleteMany({ 
+        await Privilege(connect(DB_CONNECTION, companies[index].shortName)).deleteMany({ 
             resourceType: 'Link',
             resourceId: { $in: links.map(link=>link._id) }
         });
@@ -136,7 +136,7 @@ exports.deleteSystemLink = async (systemLinkId) => {
                 await updateComponent.save();
             }
         }
-        await Link(connect(DB_CONNECTION, companies[i].shortName)).deleteMany({url: systemLink.url});
+        await Link(connect(DB_CONNECTION, companies[index].shortName)).deleteMany({url: systemLink.url});
     }
 
     // 2. Xóa system link 

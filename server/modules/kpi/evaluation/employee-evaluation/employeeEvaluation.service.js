@@ -343,7 +343,7 @@ exports.getTasksByListKpis =async(data) =>
     for(let i=0;i<data.length;i++){
         
         let employee_kpi_set = await EmployeeKPISet.findById(data[i])
-            .populate("creator")
+        .populate("organizationalUnit creator approver")
             .populate({ path: "kpis"})
         listkpis.push(employee_kpi_set);
     }

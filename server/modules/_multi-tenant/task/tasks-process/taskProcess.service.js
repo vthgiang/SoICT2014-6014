@@ -53,7 +53,7 @@ exports.getAllXmlDiagram = async (portal, query) => {
                 as: "privileges"
             }
         },
-        { $unwind: "$privileges" },
+        // { $unwind: "$privileges" },
         {
             $facet: {
                 processes: [{ $sort: { 'createdAt': 1 } },
@@ -179,7 +179,7 @@ exports.createXmlDiagram = async (portal, body) => {
         });
     }
 
-    data = await ProcessTemplate(connect(DB_CONNECTION, portal)).findById(data._id).populate({ path: 'creator', select: 'name' });
+    data = await ProcessTemplate(connect(DB_CONNECTION, portal)).findById(data._id).populate([{ path: 'creator', select: 'name' }, { path: 'manager', select: 'name' } ]);
     return data;
 }
 
@@ -234,7 +234,7 @@ exports.editXmlDiagram = async (portal, params, body) => {
         pageNumber: body.pageNumber,
         noResultsPerPage: body.noResultsPerPage,
     }
-    let data1 = await this.getAllXmlDiagram(queryData);
+    let data1 = await this.getAllXmlDiagram(portal, queryData);
     // let data1 = await ProcessTemplate(connect(DB_CONNECTION, portal)).find().populate({ path: 'creator', select: 'name' });
     return data1;
 }
@@ -257,7 +257,7 @@ exports.deleteXmlDiagram = async (portal, diagramId, query) => {
         noResultsPerPage: query.noResultsPerPage,
     }
 
-    let data = await this.getAllXmlDiagram(queryData);
+    let data = await this.getAllXmlDiagram(portal, queryData);
     return data;
 }
 
@@ -324,9 +324,9 @@ exports.createTaskByProcess = async (portal, processId, body) => {
         }
         // }
 
-        let status = "WaitForApproval";
+        let status = "wait_for_approval";
         if (isStartTask(data[i])) {
-            status = "Inprocess";
+            status = "inprocess";
         }
 
         let formula = data[i].formula;
@@ -374,10 +374,20 @@ exports.createTaskByProcess = async (portal, processId, body) => {
             let item = await Task(connect(DB_CONNECTION, portal)).findOne({ process: taskProcessId, codeInProcess: data[x].followingTasks[i].task });
 
             if (item) {
-                listFollowingTask.push({
-                    task: item._id,
-                    link: data[x].followingTasks[i].link,
-                })
+                if (item.status === "inprocess") {
+                    listFollowingTask.push({
+                        task: item._id,
+                        link: data[x].followingTasks[i].link,
+                        activated: true,
+                    })
+                }
+                else {
+                    listFollowingTask.push({
+                        task: item._id,
+                        link: data[x].followingTasks[i].link,
+                    })
+                }
+
             }
         }
         for (let i in data[x].preceedingTasks) {

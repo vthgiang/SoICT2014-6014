@@ -3,6 +3,12 @@ const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
 const DocumentSchema = new Schema({
+
+    company: { //thuộc công ty nào
+        type: Schema.Types.ObjectId,
+        ref: 'companies',
+        required: true
+    },
     /**Thông tin cơ bản về tài liệu*/
     name: { //tên 
         type: String,
@@ -157,7 +163,7 @@ const DocumentSchema = new Schema({
 DocumentSchema.plugin(mongoosePaginate);
 
 module.exports = (db) => {
-    if(!db.models.Document)
+    if (!db.models.Document)
         return db.model('Document', DocumentSchema);
     return db.models.Document;
 }

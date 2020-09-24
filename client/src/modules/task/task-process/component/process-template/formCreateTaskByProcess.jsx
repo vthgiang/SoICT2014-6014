@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { getStorage } from '../../../../config';
+import { getStorage } from '../../../../../config';
 
-import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
-import { UserActions } from '../../../super-admin/user/redux/actions';
-import { taskTemplateActions } from './../../task-template/redux/actions';
+import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
+import { UserActions } from '../../../../super-admin/user/redux/actions';
+import { taskTemplateActions } from '../../../task-template/redux/actions';
 
-import { SelectBox, ErrorLabel, DatePicker } from '../../../../common-components';
+import { SelectBox, ErrorLabel, DatePicker } from '../../../../../common-components';
 
-import { TaskTemplateFormValidator } from './../../task-template/component/taskTemplateFormValidator';
-import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
-import './../../task-template/component/tasktemplate.css';
-import { TaskFormValidator } from '../../task-management/component/taskFormValidator';
+import { TaskTemplateFormValidator } from '../../../task-template/component/taskTemplateFormValidator';
+import getEmployeeSelectBoxItems from '../../../organizationalUnitHelper';
+import './../../../task-template/component/tasktemplate.css';
+import { TaskFormValidator } from '../../../task-management/component/taskFormValidator';
 
 class FormCreateTaskByProcess extends Component {
 

@@ -59,4 +59,10 @@ AUTO_BACKUP_DATABASE.start();
 global.AUTO_SENDEMAIL_TASK = require(SERVER_MODULES_DIR+'/scheduler/scheduler.service').sendEmailTaskAutomatic ;
 AUTO_SENDEMAIL_TASK.start();
 
+global.AUTO_CREATE_NOTIFICATION_BIRTHDAY = require(SERVER_MODULES_DIR+'/_multi-tenant/scheduler/scheduler.service').createNotificationForEmployeesHaveBrithdayCurrent;
+AUTO_CREATE_NOTIFICATION_BIRTHDAY.start();
+
+global.AUTO_CREATE_NOTIFICATION_END_CONTRACT = require(SERVER_MODULES_DIR+'/_multi-tenant/scheduler/scheduler.service').createNotificationEndOfContract;
+AUTO_CREATE_NOTIFICATION_END_CONTRACT.start();
+
 global.PORTAL = process.env.DB_NAME; // tên db cần kết nối

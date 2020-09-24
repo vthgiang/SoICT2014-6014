@@ -81,15 +81,6 @@ class CompanyEditForm extends Component {
         this.setState({ nameError: message})
     }
 
-    handleChangeShortName = (e) => {
-        let {value} = e.target;
-        this.setState({ companyShortName: value });
-
-        let {translate} = this.props;
-        let {message} = ValidationHelper.validateName(translate, value, 4, 255);
-        this.setState({ shortNameError: message})
-    }
-
     handleChangeDescription = (e) => {
         let {value} = e.target;
         this.setState({ companyDescription: value });
@@ -161,8 +152,8 @@ class CompanyEditForm extends Component {
                             </div>
 
                             <div className={`form-group col-sm-9 ${shortNameError===undefined?"":"has-error"}`}>
-                                <label>{ translate('system_admin.company.table.short_name') }<span className="text-red"> * </span></label>
-                                <input type="text" className="form-control" onChange={ this.handleChangeShortName } value={ companyShortName }/>
+                                <label>{ translate('system_admin.company.table.short_name') }</label>
+                                <input type="text" className="form-control" value={ companyShortName } disabled={true}/>
                                 <ErrorLabel content={shortNameError}/>
                             </div>
                             <div className="form-group col-sm-3">

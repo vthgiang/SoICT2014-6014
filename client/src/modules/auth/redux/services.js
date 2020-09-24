@@ -86,25 +86,19 @@ function refresh() {
     }, false, true, 'auth');
 }
 
-function forgotPassword(email) {
+function forgotPassword(data) {
     return sendRequest({
         url: `${ process.env.REACT_APP_SERVER }/auth/forget-password`,
         method: 'POST',
-        data: {
-            email
-        }
+        data
     }, true, true, 'auth');
 }
 
-function resetPassword(otp, email, password) {
+function resetPassword(data) {
     return sendRequest({
         url: `${ process.env.REACT_APP_SERVER }/auth/reset-password`,
         method: 'POST',
-        data: {
-            otp,
-            email,
-            password
-        }
+        data
     }, true, true, 'auth');
 }
 

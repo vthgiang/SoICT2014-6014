@@ -20,20 +20,11 @@ function getIncidents(data) {
         limit: data ? data.limit : data,
     };
 
-    console.log('\n\n\\n\n**', params);
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/asset/assets/incident-logs`,
         method: 'GET',
-        params: {
-            code: data ? data.code : data,
-            assetName: data ? data.assetName : data,
-            incidentCode: data ? data.incidentCode : data,
-            incidentType : data ? data.incidentType : data,
-            incidentStatus : data ? data.incidentStatus : data,
-            page: data ? data.page : data,
-            limit: data ? data.limit : data,
-        }
-    }, false, true, 'asset.get_icidents');
+        params,
+    }, false, true, 'asset.incident');
 }
 
 // tạo mới thông tin sự cố tài sản
