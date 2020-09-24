@@ -4,7 +4,7 @@ const mongoosePaginate = require('mongoose-paginate-v2');
 
 const GoodSchema = new Schema ({
 
-    conpany: {
+    company: {
         type: Schema.Types.ObjectId,
         ref: "companies"
     },

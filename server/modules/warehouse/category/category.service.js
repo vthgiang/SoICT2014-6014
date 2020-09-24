@@ -22,6 +22,12 @@ exports.getCategories = async (company, query) => {
             })
     }
 }
+
+exports.getCategoriesByType = async (company, query) => {
+    let { type } = query;
+    if(!company) throw['company_invaild'];
+    return await Category.find({ company, type });
+}
 exports.createCategory = async (company, data) => {
     let category = await Category.create({
         company: company,

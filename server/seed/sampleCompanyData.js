@@ -2687,7 +2687,7 @@ const sampleCompanyData = async () => {
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu danh mục hàng hóa");
-    var list = await Category.insertMany([{
+    var listCategory = await Category.insertMany([{
         company: vnist._id,
         name: "Dạng bột",
         code: "CT001",
@@ -2700,9 +2700,149 @@ const sampleCompanyData = async () => {
         code: "CT002",
         type: "product",
         description: "Dạng viên viên"
+    },
+    {
+        company: vnist._id,
+        name: "NVL",
+        code: "MT002",
+        type: "material",
+        description: "NVL"
+    },
+    {
+        company: vnist._id,
+        name: "Dùng cho đóng gói",
+        code: "EQ002",
+        type: "equipment",
+        description: "NVL"
+    },
+    {
+        company: vnist._id,
+        name: "Tài sản",
+        code: "AS002",
+        type: "asset",
+        description: "NVL"
     }
     ]);
     console.log("Khởi tạo xong danh sách danh mục hàng hóa");
+
+    /*---------------------------------------------------------------------------------------------
+    -----------------------------------------------------------------------------------------------
+        TẠO DỮ LIỆU HÀNG HÓA
+    -----------------------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------------------- */
+    console.log("Khởi tạo dữ liệu hàng hóa");
+    var listGood = await Good.insertMany([{
+        company: vnist._id,
+        category: listCategory[2]._id,
+        name: "Jucca Nước",
+        code: "MT001",
+        type: "material",
+        baseUnit: 'ml',
+        unit: [],
+        quantity: 20,
+        description: "Nguyên liệu thuốc thú u"
+    },
+    {
+        company: vnist._id,
+        category: listCategory[2]._id,
+        name: "Propylen Glycon",
+        code: "MT002",
+        type: "material",
+        baseUnit: 'kg',
+        unit: [],
+        quantity: 30,
+        description: "Nguyên vật liệu thuốc thú y"
+    },
+    {
+        company: vnist._id,
+        category: listCategory[4]._id,
+        name: "Máy chiết rót viên thuốc tự động",
+        code: "AS001",
+        type: "asset",
+        baseUnit: 'Chiếc',
+        unit: [],
+        quantity: 2,
+        description: "Máy sản xuất thuốc thú y"
+    },
+    {
+        company: vnist._id,
+        category: listCategory[4]._id,
+        name: "Máy Dập Viên Thuốc",
+        code: "AS002",
+        type: "asset",
+        baseUnit: 'Chiếc',
+        unit: [],
+        quantity: 2,
+        description: "Máy sản xuất thuốc thú y"
+    },
+    {
+        company: vnist._id,
+        category: listCategory[3]._id,
+        name: "Bình ắc quy",
+        code: "EQ001",
+        type: "equipment",
+        baseUnit: 'Chiếc',
+        unit: [],
+        quantity: 10,
+        description: "Công cụ dụng cụ thuốc thú y"
+    },
+    {
+        company: vnist._id,
+        category: listCategory[3]._id,
+        name: "Máy nén",
+        code: "EQ002",
+        type: "equipment",
+        baseUnit: 'Chiếc',
+        unit: [],
+        quantity: 10,
+        description: "Công cụ dụng cụ thuốc thú y"
+    },
+    ]);
+
+    var listProduct = await Good.insertMany([
+        
+    {
+        company: vnist._id,
+        category: listCategory[0]._id,
+        name: "ĐƯỜNG ACESULFAME K",
+        code: "PR001",
+        type: "product",
+        baseUnit: 'Thùng',
+        unit: [],
+        quantity: 20,
+        goods: [{
+            good: listGood[0]._id,
+            quantity: 5
+        },
+        {
+            good: listGood[1]._id,
+            quantity: 3
+        }
+    ],
+        description: "Sản phẩm thuốc thú y"
+    },
+    {
+        company: vnist._id,
+        category: listCategory[0]._id,
+        name: "ACID CITRIC MONO",
+        code: "PR002",
+        type: "product",
+        baseUnit: 'Bao',
+        unit: [],
+        quantity: 20,
+        goods: [{
+            good: listGood[0]._id,
+            quantity: 2
+        },
+        {
+            good: listGood[1]._id,
+            quantity: 3
+        }
+    ],
+        description: "Sản phẩm thuốc thú y"
+    },
+    ]);
+    console.log("Khởi tạo xong danh sách hàng hóa");
 
 
     /*---------------------------------------------------------------------------------------------
