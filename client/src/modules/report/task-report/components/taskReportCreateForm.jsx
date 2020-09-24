@@ -661,7 +661,6 @@ class TaskReportCreateForm extends Component {
         if (user.usersOfChildrenOrganizationalUnit) {
             usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
         }
-        console.log('state', this.state.newReport)
         // lấy list chức danh theo đơn vị hiện tại
         if (user.usersInUnitsOfCompany) {
             listRole = user.usersInUnitsOfCompany;

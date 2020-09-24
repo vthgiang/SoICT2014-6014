@@ -24,11 +24,10 @@ class AuthAlert extends Component {
             <React.Fragment>
                 <div className="modal fade" id="alert-error-auth">
                     <div className="modal-dialog" style={{marginTop: '100px'}}>
-                        <div className="alert alert-danger alert-dismissible">
+                        <div className="modal-header bg bg-red" style={{fontSize: '18px'}}>
                             <i className="icon fa fa-bullhorn" />
-                            {translate('general.auth_alert.title')}
+                            <b> {translate('general.auth_alert.title')}</b>
                         </div>
-
                         <div className="modal-content">
                             <div className="modal-body">
                                 <p><b></b></p>

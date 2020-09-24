@@ -13,6 +13,7 @@ var findIndex = (array, id) => {
 const initState = {
     isLoading: false,
     listCategories: [],
+    listCategoriesByType: [],
     listPaginate: [],
     totalDocs: 0,
     limit: 0,
@@ -33,6 +34,7 @@ export function categories(state = initState, action){
 
     switch(action.type) {
         case CategoryConstants.GETALL_CATEGORY_REQUEST:
+        case CategoryConstants.GETALL_CATEGORY_BY_TYPE_REQUEST:
         case CategoryConstants.PAGINATE_CATEGORY_REQUEST:
         case CategoryConstants.CREATE_CATEGORY_REQUEST:
         case CategoryConstants.UPDATE_CATEGORY_REQUEST:
@@ -41,10 +43,18 @@ export function categories(state = initState, action){
                 ...state,
                 isLoading: true
             };
+
         case CategoryConstants.GETALL_CATEGORY_SUCCESS:
             return {
                 ...state,
                 listCategories: action.payload,
+                isLoading: false
+            };
+
+        case CategoryConstants.GETALL_CATEGORY_BY_TYPE_SUCCESS:
+            return {
+                ...state,
+                listCategoriesByType: action.payload,
                 isLoading: false
             };
 
@@ -109,6 +119,7 @@ export function categories(state = initState, action){
             }
 
         case CategoryConstants.GETALL_CATEGORY_FAILURE:
+        case CategoryConstants.GETALL_CATEGORY_BY_TYPE_FAILURE:
         case CategoryConstants.CREATE_CATEGORY_FAILURE:
         case CategoryConstants.PAGINATE_CATEGORY_FAILURE:
         case CategoryConstants.UPDATE_CATEGORY_FAILURE:
