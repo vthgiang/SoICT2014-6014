@@ -3441,7 +3441,7 @@ export default {
         },
 
         footer: {
-            copyright: 'Bản quyền thuộc về ',
+            copyright: 'Copyright by ',
             vnist: 'Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam',
             version: 'Phiên bản '
         },
