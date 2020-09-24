@@ -1511,7 +1511,7 @@ const initSampleCompanyDB = async () => {
     var listAsset = await Asset(vnistDB).insertMany([{
         avatar: "/upload/asset/pictures/picture5.png",
         assetName: "Laptop Sony Vaio",
-        group: "Machine",
+        group: "machine",
         usefulLife: "12",
         unitsProducedDuringTheYears: [{
             month: new Date("2020-06-20"),
@@ -1570,7 +1570,7 @@ const initSampleCompanyDB = async () => {
         avatar: "/upload/asset/pictures/picture5.png",
         assetName: "Điều hòa Panasonic 9.000BTU",
         code: "VVDH01.017",
-        group: "Machine",
+        group: "machine",
         usefulLife: "15",
         unitsProducedDuringTheYears: [{
             month: new Date("2015-06-20"),
@@ -1627,7 +1627,7 @@ const initSampleCompanyDB = async () => {
         avatar: "/upload/asset/pictures/picture5.png",
         assetName: "Máy tính cây",
         code: "VVMV18.001",
-        group: "Other",
+        group: "other",
         usefulLife: "20",
         unitsProducedDuringTheYears: [{
             month: new Date("2017-06-20"),
@@ -1685,7 +1685,7 @@ const initSampleCompanyDB = async () => {
         avatar: "/upload/asset/pictures/picture5.png",
         assetName: "Máy tính cây",
         code: "VVMV18.028",
-        group: "Other",
+        group: "other",
         usefulLife: "20",
         unitsProducedDuringTheYears: [{
             month: new Date("2017-06-20"),
@@ -1743,7 +1743,7 @@ const initSampleCompanyDB = async () => {
         avatar: "/upload/asset/pictures/picture5.png",
         assetName: "Iphone XS Max",
         code: "VVMV18.027",
-        group: "Other",
+        group: "other",
         usefulLife: "20",
         unitsProducedDuringTheYears: [{
             month: new Date("2017-06-20"),
@@ -1801,7 +1801,7 @@ const initSampleCompanyDB = async () => {
         avatar: "/upload/asset/pictures/picture5.png",
         assetName: "Card GTX 2050Ti",
         code: "VVMV18.0026",
-        group: "Other",
+        group: "other",
         usefulLife: "20",
         unitsProducedDuringTheYears: [{
             month: new Date("2017-06-20"),
