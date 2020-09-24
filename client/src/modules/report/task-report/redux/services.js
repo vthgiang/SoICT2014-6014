@@ -19,6 +19,7 @@ function getTaskReports(data) {
         params: {
             name: data.name,
             month: data.month,
+            organizationalUnit: data.organizationalUnit,
             creator: data.creator,
             page: data.page,
             limit: data.limit,

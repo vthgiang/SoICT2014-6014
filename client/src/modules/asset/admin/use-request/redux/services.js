@@ -20,7 +20,7 @@ function searchRecommendDistributes(data) {
             page: data.page,
             limit: data.limit,
         },
-    }, false, true, 'asset.recommend_distribute');
+    }, false, true, 'asset.manage_use_request');
 }
 
 // Cập nhật thông tin phiếu đề nghị mua sắm thiết bị
@@ -29,7 +29,7 @@ function updateRecommendDistribute(id, data) {
         url: `${ process.env.REACT_APP_SERVER }/use-request/use-requests/${id}`,
         method: 'PUT',
         data: data
-    }, true, true, 'asset.recommend_distribute');
+    }, true, true, 'asset.manage_use_request');
 }
 
 // Tạo mới thông tin phiếu đề nghị mua sắm thiết bị

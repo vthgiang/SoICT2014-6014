@@ -60,6 +60,7 @@ import { reports } from "../modules/report/task-report/redux/reducers";
 //warehouse
 import { materials } from "../modules/warehouse/material-manager/redux/reducers";
 import { categories } from "../modules/warehouse/category-management/redux/reducers";
+import { goods } from "../modules/warehouse/good-management/redux/reducers";
 
 //crm
 import { customer } from "../modules/crm/customer/redux/reducers";
@@ -149,6 +150,7 @@ const appReducer = combineReducers({
     //warehouse
     materials,
     categories,
+    goods,
 
     // customer management
     crm: combineReducers({

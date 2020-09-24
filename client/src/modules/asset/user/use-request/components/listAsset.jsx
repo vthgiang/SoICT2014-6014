@@ -445,6 +445,7 @@ class ListAsset extends Component {
                         _id={currentRow._id}
                         asset={currentRow._id}
                         typeRegisterForUse={currentRow.typeRegisterForUse}
+                        managedBy = {currentRow.managedBy}
                     />
                 }
             </div >
