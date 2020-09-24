@@ -33,8 +33,8 @@ export default {
             success: 'Thành công',
             error: 'Lỗi',
             auth_alert: {
-                title: 'Hệ thống xác nhận có lỗi xảy ra trong phiên làm việc hiện tại của bạn. Vui lòng đăng nhập lại.',
-                reason: 'Nguyên nhân có thể là do:',
+                title: 'Hệ thống xác nhận có lỗi xảy ra trong phiên làm việc của bạn!',
+                reason: 'Nguyên nhân:',
                 content: [
                     'Phiên làm việc đã hết hạn',
                     'Truy cập không hợp lệ',
