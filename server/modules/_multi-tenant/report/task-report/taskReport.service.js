@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const { TaskReport } = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
 const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
@@ -7,9 +8,18 @@ const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
  * @param  params 
  */
 exports.getTaskReports = async (portal, params) => {
-    const { name, creator, month } = params;
+    const { name, creator, month, organizationalUnit } = params;
     let dateSearch, getMonth, year, startDate, endDate, keySearch = [];
 
+    // search theo đơn vị
+    if (organizationalUnit && organizationalUnit.length > 0) {
+        keySearch = [
+            ...keySearch,
+            { $match: { organizationalUnit: { $in: [...organizationalUnit.map(o => mongoose.Types.ObjectId(o.toString()))] } } },
+        ]
+    }
+
+    // search theo tháng
     if (month) {
         dateSearch = params.month.split('-');
         getMonth = dateSearch[1], year = dateSearch[0];
@@ -53,8 +63,6 @@ exports.getTaskReports = async (portal, params) => {
         ]
     };
 
-    // get tổng số record của bảng Task report
-    let totalList = await TaskReport(connect(DB_CONNECTION, portal)).countDocuments();
     keySearch = [
         ...keySearch,
         { $sort: { createdAt: -1 } },
@@ -77,8 +85,10 @@ exports.getTaskReports = async (portal, params) => {
             }
         },
     ]
+    let listTaskReport = await TaskReport(connect(DB_CONNECTION, portal)).aggregate(keySearch);
+    // get tổng số record của bảng Task report
+    let totalList = await TaskReport(connect(DB_CONNECTION, portal)).countDocuments();
 
-    let listTaskReport = await TaskReport(connect(DB_CONNECTION, portal)).aggregate(keySearch)
     return { totalList, listTaskReport };
 }
 

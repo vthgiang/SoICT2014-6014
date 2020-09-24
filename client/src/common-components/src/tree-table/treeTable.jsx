@@ -121,6 +121,7 @@ class TreeTable extends Component {
     dataTreetable = (column, data) => {
         let keyColumn = column.map(col => col.key);
         let newarr = [];
+
         // Function chuyển đổi list thành tree 
         let listToTree = (items, parent_id = null, link = 'parent') =>
             items.filter(item => item[link] === parent_id).map(item => ({ ...item, children: listToTree(items, item._id) }));
@@ -129,20 +130,33 @@ class TreeTable extends Component {
         let list1 = data;
         data = listToTree(data);
 
+        let findData = (root, id) => {
+            let queue = [];
+            queue.push(root);
+
+            while (queue.length !== 0) {
+                let item = queue.pop();
+
+                if (item._id === id) {
+                    return true;
+                }
+
+                for (let k in item.children) {
+                    queue.push(item.children[k]);
+                }
+            }
+            
+            return false;
+        }
+
         // Thêm các công việc không tìm được cha vào mảng data
         let concatArray = [];
         for (let i in list1) {
             let flag = true;
             for (let j in data) {
-                if (list1[i]._id === data[j]._id) {
+                if (findData(data[j], list1[i]._id)) {
                     flag = false;
                     break;
-                }
-                for (let k in data[j].children) {
-                    if (list1[i]._id === data[j].children[k]._id) {
-                        flag = false;
-                        break;
-                    }
                 }
             }
             if (flag) {

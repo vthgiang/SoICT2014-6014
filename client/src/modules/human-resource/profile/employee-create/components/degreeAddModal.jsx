@@ -36,7 +36,6 @@ class DegreeAddModal extends Component {
                 fileUpload: ""
             })
         }
-        console.log(value);
     }
 
     /** Bắt sự kiên thay đổi tên bằng cấp */

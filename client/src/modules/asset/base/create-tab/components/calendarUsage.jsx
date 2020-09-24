@@ -63,7 +63,7 @@ class CalendarUsage extends Component {
     });
     let startTime = [selectInfo.start.getHours(), selectInfo.start.getMinutes()].join(':');
     let stopTime = [selectInfo.end.getHours(), selectInfo.end.getMinutes()].join(':');
-    console.log("----",this.props.managedBy ,this.state.userId )
+
     if( this.props.managedBy == this.state.userId){
       await this.setState(state => {
         return {
@@ -251,6 +251,9 @@ class CalendarUsage extends Component {
         assignedToUser: dataRecommendDistribute[0].proponent,
         assignedToOrganizationalUnit: undefined,
       }
+
+      clickInfo.event.setProp("backgroundColor", "#337ab7")
+      clickInfo.event.setProp("borderColor", "#337ab7")
 
       await this.props.createUsage(this.props.assetId, createUsage)
       await this.props.searchRecommendDistributes(data);
