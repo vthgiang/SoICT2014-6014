@@ -2,14 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2'
-import { ContentMaker, DialogModal, ApiImage } from '../../../../../common-components';
-import { getStorage } from '../../../../../config';
-
-import { createKpiSetActions } from '../redux/actions';
-import { AuthActions } from '../../../../auth/redux/actions';
-
+import { ContentMaker, DialogModal, ApiImage } from '../../index';
+import { getStorage } from '../../../config';
 import moment from 'moment';
-import TextareaAutosize from 'react-textarea-autosize';
 
 class Comment extends Component {
     constructor(props) {
@@ -144,7 +139,7 @@ class Comment extends Component {
     }
 
 
-    editComment = async (e, description, commentId, setKpiId) => {
+    editComment = async (e, description, commentId, dataId) => {
         e.preventDefault()
         let { newCommentEdited } = this.state;
         let data = new FormData();
@@ -159,10 +154,10 @@ class Comment extends Component {
             data.append("description", newCommentEdited.description)
         }
         if (newCommentEdited.description) {
-            this.props.editComment(setKpiId, commentId, data)
+            this.props.editComment(dataId, commentId, data)
         }
         if (newCommentEdited.description || newCommentEdited.files) {
-            this.props.editComment(setKpiId, commentId, data);
+            this.props.editComment(dataId, commentId, data);
         }
         await this.setState(state => {
             return {
@@ -176,7 +171,7 @@ class Comment extends Component {
             }
         })
     }
-    editChildComment = async (e, description, childCommentId, commentId, setKpiId) => {
+    editChildComment = async (e, description, childCommentId, commentId, dataId) => {
         e.preventDefault();
         let { newChildCommentEdited } = this.state;
         let data = new FormData();
@@ -190,7 +185,7 @@ class Comment extends Component {
         }
         data.append("creator", newChildCommentEdited.creator)
         if (newChildCommentEdited.description || newChildCommentEdited.files) {
-            this.props.editChildComment(setKpiId, commentId, childCommentId, data);
+            this.props.editChildComment(dataId, commentId, childCommentId, data);
         }
         await this.setState(state => {
             return {
@@ -204,16 +199,17 @@ class Comment extends Component {
             }
         })
     }
-    submitComment = async (setKpiId) => {
+    submitComment = async (dataId) => {
         var { comment } = this.state;
         const data = new FormData();
         data.append("creator", comment.creator);
         data.append("description", comment.description);
+        this.props.currentTask && data.append("currentTask", this.props.currentTask)
         comment.files && comment.files.forEach(x => {
             data.append("files", x);
         })
         if (comment.creator && comment.description) {
-            this.props.createComment(setKpiId, data);
+            this.props.createComment(dataId, data);
         }
         // Reset state cho việc thêm mới action
         await this.setState(state => {
@@ -227,7 +223,7 @@ class Comment extends Component {
             }
         })
     }
-    submitChildComment = async (setKpiId, commentId) => {
+    submitChildComment = async (dataId, commentId) => {
         var { childComment } = this.state;
         const data = new FormData();
         data.append("creator", childComment.creator);
@@ -236,7 +232,7 @@ class Comment extends Component {
             data.append("files", x);
         })
         if (childComment.creator && childComment.description) {
-            this.props.createChildComment(setKpiId, commentId, data);
+            this.props.createChildComment(dataId, commentId, data);
         }
         // Reset state cho việc thêm mới comment
         await this.setState(state => {
@@ -254,7 +250,7 @@ class Comment extends Component {
         e.preventDefault()
         this.props.downloadFile(path, fileName)
     }
-    handleDeleteFile = async (fileId, fileName, childCommentId, commentId, setKpiId, type) => {
+    handleDeleteFile = async (fileId, fileName, childCommentId, commentId, dataId, type) => {
         let { translate } = this.props
         Swal.fire({
             html: `<div style="max-width: 100%; max-height: 100%" >${translate("task.task_perform.question_delete_file")} ${fileName} ? <div>`,
@@ -263,7 +259,7 @@ class Comment extends Component {
             confirmButtonText: `Đồng ý`,
         }).then((result) => {
             if (result.isConfirmed) {
-                this.save(setKpiId)
+                this.save(dataId)
             }
         })
         await this.setState(state => {
@@ -274,7 +270,7 @@ class Comment extends Component {
                     commentId: commentId,
                     fileName: fileName,
                     type: type,
-                    setKpiId: setKpiId,
+                    dataId: dataId,
                     childCommentId: childCommentId
                 }
             }
@@ -314,24 +310,22 @@ class Comment extends Component {
         }
     }
 
-    save = (setKpiId) => {
+    save = () => {
         let { deleteFile } = this.state
         if (deleteFile.type === "comment") {
-            this.props.deleteFileComment(deleteFile.fileId, deleteFile.commentId, deleteFile.setKpiId)
+            this.props.deleteFileComment(deleteFile.fileId, deleteFile.commentId, deleteFile.dataId)
         } else if (deleteFile.type === "childComment") {
-            this.props.deleteFileChildComment(deleteFile.fileId, deleteFile.childCommentId, deleteFile.commentId, deleteFile.setKpiId)
+            this.props.deleteFileChildComment(deleteFile.fileId, deleteFile.childCommentId, deleteFile.commentId, deleteFile.dataId)
         }
     }
     render() {
-        var comments
         var minRows = 3, maxRows = 20
         const { editComment, editChildComment, showChildComment, currentUser, newCommentEdited, newChildCommentEdited, deleteFile, childComment, showfile } = this.state
         const { auth, translate } = this.props
-        const { currentKPI } = this.props
-        comments = currentKPI?.comments
+        const { data, comments } = this.props
         return (
             <React.Fragment>
-                {comments ?
+                { comments && comments ?
                     //Hiển thị bình luận của công việc
                     comments.map(item => {
                         return (
@@ -357,7 +351,7 @@ class Comment extends Component {
                                                     </span>
                                                     <ul className="dropdown-menu">
                                                         <li><a style={{ cursor: "pointer" }} onClick={() => this.handleEditComment(item._id)} >{translate('task.task_perform.edit_comment')}</a></li>
-                                                        <li><a style={{ cursor: "pointer" }} onClick={() => this.props.deleteComment(currentKPI._id, item._id)} >{translate('task.task_perform.delete_comment')}</a></li>
+                                                        <li><a style={{ cursor: "pointer" }} onClick={() => this.props.deleteComment(data._id, item._id)} >{translate('task.task_perform.delete_comment')}</a></li>
                                                     </ul>
                                                 </div>}
                                         </div>
@@ -413,13 +407,13 @@ class Comment extends Component {
                                                         return { ...state, newCommentEdited: { ...state.newCommentEdited, description: value } }
                                                     })
                                                 }}
-                                                onSubmit={(e) => { this.editComment(e, item.description, item._id, currentKPI._id) }}
+                                                onSubmit={(e) => { this.editComment(e, item.description, item._id, data._id) }}
                                             />
                                             {item.files.length > 0 &&
                                                 <div className="tool-level1" style={{ marginTop: -15 }}>
                                                     {item.files.map(file => {
                                                         return <div>
-                                                            <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { this.handleDeleteFile(file._id, file.name, "", item._id, currentKPI._id, "comment") }}><i className="fa fa-times"></i></a>
+                                                            <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { this.handleDeleteFile(file._id, file.name, "", item._id, data._id, "comment") }}><i className="fa fa-times"></i></a>
                                                         </div>
                                                     })}
                                                 </div>}
@@ -454,7 +448,7 @@ class Comment extends Component {
                                                                     </span>
                                                                     <ul className="dropdown-menu">
                                                                         <li><a style={{ cursor: "pointer" }} onClick={() => this.handleEditChildComment(child._id)} >Sửa bình luận</a></li>
-                                                                        <li><a style={{ cursor: "pointer" }} onClick={() => this.props.deleteChildComment(currentKPI._id, item._id, child._id)} >Xóa bình luận</a></li>
+                                                                        <li><a style={{ cursor: "pointer" }} onClick={() => this.props.deleteChildComment(data._id, item._id, child._id)} >Xóa bình luận</a></li>
                                                                     </ul>
                                                                 </div>}
                                                         </p>
@@ -509,14 +503,14 @@ class Comment extends Component {
                                                                         return { ...state, newChildCommentEdited: { ...state.newChildCommentEdited, description: value } }
                                                                     })
                                                                 }}
-                                                                onSubmit={(e) => { this.editChildComment(e, child.description, child._id, item._id, currentKPI._id) }}
+                                                                onSubmit={(e) => { this.editChildComment(e, child.description, child._id, item._id, data._id) }}
                                                             />
                                                             {/* Hiện file đã tải lên */}
                                                             {child.files.length > 0 &&
                                                                 <div className="tool-level2" style={{ marginTop: -15 }}>
                                                                     {child.files.map((file, index) => {
                                                                         return <div key={index}>
-                                                                            <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { this.handleDeleteFile(file._id, file.name, child._id, item._id, currentKPI._id, "childComment") }}><i className="fa fa-times"></i></a>
+                                                                            <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { this.handleDeleteFile(file._id, file.name, child._id, item._id, data._id, "childComment") }}><i className="fa fa-times"></i></a>
                                                                         </div>
                                                                     })}
                                                                 </div>}
@@ -544,7 +538,7 @@ class Comment extends Component {
                                                         return { ...state, childComment: { ...state.childComment, description: value } }
                                                     })
                                                 }}
-                                                onSubmit={() => this.submitChildComment(currentKPI._id, item._id)}
+                                                onSubmit={() => this.submitChildComment(data._id, item._id)}
                                             />
                                         </div>
                                     </div>
@@ -568,7 +562,7 @@ class Comment extends Component {
                             return { ...state, comment: { ...state.comment, description: value } }
                         })
                     }}
-                    onSubmit={(e) => this.submitComment(currentKPI._id)}
+                    onSubmit={(e) => this.submitComment(data._id)}
                 />
             </React.Fragment>
         );
@@ -580,15 +574,6 @@ function mapState(state) {
     return { auth };
 }
 const actionCreators = {
-    createComment: createKpiSetActions.createComment,
-    editComment: createKpiSetActions.editComment,
-    deleteComment: createKpiSetActions.deleteComment,
-    downloadFile: AuthActions.downloadFile,
-    createChildComment: createKpiSetActions.createChildComment,
-    editChildComment: createKpiSetActions.editChildComment,
-    deleteChildComment: createKpiSetActions.deleteChildComment,
-    deleteFileComment: createKpiSetActions.deleteFileComment,
-    deleteFileChildComment: createKpiSetActions.deleteFileChildComment
 };
 const comment = connect(mapState, actionCreators)(withTranslate(Comment));
 

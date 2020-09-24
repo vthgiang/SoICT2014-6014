@@ -612,9 +612,9 @@ function mapState(state) {
 }
 const actionCreators = {
     editComment: performTaskAction.editComment,
+    createComment: performTaskAction.createComment,
     deleteComment: performTaskAction.deleteComment,
     downloadFile: AuthActions.downloadFile,
-    createComment: performTaskAction.createComment,
     createChildComment: performTaskAction.createChildComment,
     editChildComment: performTaskAction.editChildComment,
     deleteChildComment: performTaskAction.deleteChildComment,

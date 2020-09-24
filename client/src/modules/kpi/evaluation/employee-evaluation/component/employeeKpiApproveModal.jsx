@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { kpiMemberActions } from '../redux/actions';
 import { DataTableSetting } from '../../../../../common-components';
-import { DialogModal, ErrorLabel, DatePicker } from '../../../../../common-components/index';
+import { DialogModal, ErrorLabel, DatePicker, Comment } from '../../../../../common-components/index';
 import { withTranslate } from 'react-redux-multilingual';
 import { getStorage } from '../../../../../config';
-import { EmployeeKpiComment } from './employeeKpiComment';
-import { Comment } from '../../../employee/creation/component/comment'
+import { createKpiSetActions } from '../../../employee/creation/redux/actions';
+import { AuthActions } from '../../../../auth/redux/actions';
+// import { Comment } from '../../../employee/creation/component/comment'
 class EmployeeKpiApproveModal extends Component {
     constructor(props) {
         let idUser = getStorage("userId");
@@ -42,7 +43,7 @@ class EmployeeKpiApproveModal extends Component {
             }
             return false;
         }
-        if(nextProps.auth.user.avatar !== this.props.auth.user.avatar) {
+        if (nextProps.auth.user.avatar !== this.props.auth.user.avatar) {
             this.props.getKpisByKpiSetId(nextProps.id);
             return true;
         }
@@ -337,7 +338,19 @@ class EmployeeKpiApproveModal extends Component {
                     </div>
                     <div className="row" style={{ display: 'flex', flex: 'no-wrap', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                         <div className="col-xs-12 col-sm-12 col-md-6">
-                            <Comment currentKPI={kpimembers.currentKPI} />
+                            <Comment
+                                data={kpimembers.currentKPI}
+                                comments={kpimembers?.currentKPI?.comment}
+                                createComment={(dataId, data) => this.props.createComment(dataId, data)}
+                                editComment={(dataId, commentId, data) => this.props.editComment(dataId, commentId, data)}
+                                deleteComment={(dataId, commentId) => this.props.deleteComment(dataId, commentId)}
+                                createChildComment={(dataId, commentId, data) => this.props.createChildComment(dataId, commentId, data)}
+                                editChildComment={(dataId, commentId, childCommentId, data) => this.props.editChildComment(dataId, commentId, childCommentId, data)}
+                                deleteChildComment={(dataId, commentId, childCommentId) => this.props.deleteChildComment(dataId, commentId, childCommentId)}
+                                deleteFileComment={(fileId, commentId, dataId) => this.props.deleteFileComment(fileId, commentId, dataId)}
+                                deleteFileChildComment={(fileId, commentId, childCommentId, dataId) => this.props.deleteFileChildComment(fileId, commentId, childCommentId, dataId)}
+                                downloadFile={(path, fileName) => this.props.downloadFile(path, fileName)}
+                            />
                         </div>
                     </div>
                 </DialogModal>
@@ -356,7 +369,16 @@ const actionCreators = {
     getKpisByMonth: kpiMemberActions.getKpisByMonth,
     editStatusKpi: kpiMemberActions.editStatusKpi,
     approveAllKpis: kpiMemberActions.approveAllKpis,
-    editTarget: kpiMemberActions.editKpi
+    editTarget: kpiMemberActions.editKpi,
+    createComment: createKpiSetActions.createComment,
+    editComment: createKpiSetActions.editComment,
+    deleteComment: createKpiSetActions.deleteComment,
+    createChildComment: createKpiSetActions.createChildComment,
+    editChildComment: createKpiSetActions.editChildComment,
+    deleteChildComment: createKpiSetActions.deleteChildComment,
+    deleteFileComment: createKpiSetActions.deleteFileComment,
+    deleteFileChildComment: createKpiSetActions.deleteFileChildComment,
+    downloadFile: AuthActions.downloadFile,
 };
 const connectedEmployeeKpiApproveModal = connect(mapState, actionCreators)(withTranslate(EmployeeKpiApproveModal));
 export { connectedEmployeeKpiApproveModal as EmployeeKpiApproveModal };

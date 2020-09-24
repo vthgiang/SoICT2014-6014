@@ -134,7 +134,6 @@ class OutgoingDataTab extends Component {
     }
     requestDownloadFile = (e, path, fileName) => {
         e.preventDefault()
-        console.log("abc")
         this.props.downloadFile(path, fileName)
     }
     isImage = (src) => {
@@ -202,9 +201,7 @@ class OutgoingDataTab extends Component {
                                             {
                                                 document.files && document.files.length !== 0
                                                 && document.files.map((file, index) =>
-
                                                     <div key={index}>
-                                                        {console.log(file)}
                                                         {this.isImage(file.name) ?
                                                             <ApiImage
                                                                 className="attachment-img files-attach"
@@ -253,7 +250,6 @@ function mapState(state) {
 const actions = {
     editDocument: performTaskAction.editDocument,
     editInformationTask: performTaskAction.editInformationTask,
-    getTaskById: performTaskAction.getTaskById,
     downloadFile: AuthActions.downloadFile,
 }
 
