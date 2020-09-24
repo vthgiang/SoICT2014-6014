@@ -1982,59 +1982,49 @@ export default {
                 supplier: 'Nhà cung cấp',
                 unit: 'Đơn vị tính',
                 expected_value: 'Giá trị dự tính',
-
-                //Thông điệp trả về từ server
-                get_recommend_procure_success: 'Lấy thông tin đề nghị mua sắm thiết bị thành công',
-                get_recommend_procure_faile: 'Lấy thông tin đề nghị mua sắm thiết bị thất bại',
-                create_recommend_procure_success: 'Thêm phiếu đề nghị mua sắm thiết bị thành công',
-                create_recommend_procure_faile: 'Thêm phiếu đề nghị mua sắm thiết bị thất bại',
-                delete_recommend_procure_success: 'Xoá phiếu đề nghị mua sắm thiết bị thành công',
-                delete_recommend_procure_faile: 'Xoá phiếu đề nghị mua sắm thiết bị thất bại',
-                edit_recommend_procure_success: 'Chỉnh sửa thông tin phiếu thành công',
-                edit_recommend_procure_faile: 'Chỉnh sửa thông tin phiếu thất bại',
             },
 
             // Quản lý đề nghị cấp phát
-            manage_recommend_distribute: {
+            manage_use_request: {
 
                 //Thông điệp trả về từ server
-                get_recommend_distribute_success: 'Lấy thông tin đề nghị cấp phát thiết bị thành công',
-                get_recommend_distribute_faile: 'Lấy thông tin đề nghị cấp phát thiết bị thất bại',
-                create_recommend_distribute_success: 'Thêm phiếu đề nghị cấp phát thiết bị thành công',
-                create_recommend_distribute_faile: 'Thêm phiếu đề nghị cấp phát thiết bị thất bại',
-                delete_recommend_distribute_success: 'Xoá phiếu đề nghị cấp phát thiết bị thành công',
-                delete_recommend_distribute_faile: 'Xoá phiếu đề nghị cấp phát thiết bị thất bại',
-                edit_recommend_distribute_success: 'Chỉnh sửa thông tin phiếu thành công',
-                edit_recommend_distribute_faile: 'Chỉnh sửa thông tin phiếu thất bại',
+                get_use_request_success: 'Lấy thông tin đề nghị cấp phát thiết bị thành công',
+                get_use_request_faile: 'Lấy thông tin đề nghị cấp phát thiết bị thất bại',
+                create_use_request_success: 'Thêm phiếu đề nghị cấp phát thiết bị thành công',
+                create_use_request_faile: 'Thêm phiếu đề nghị cấp phát thiết bị thất bại',
+                delete_use_request_success: 'Xoá phiếu đề nghị cấp phát thiết bị thành công',
+                delete_use_request_faile: 'Xoá phiếu đề nghị cấp phát thiết bị thất bại',
+                edit_use_request_success: 'Chỉnh sửa thông tin phiếu thành công',
+                edit_use_request_faile: 'Chỉnh sửa thông tin phiếu thất bại',
 
             },
 
             // Đăng ký mua sắm thiết bị
-            recommend_procure: {
+            purchase_request: {
 
                 //Thông điệp trả về từ server
-                get_recommend_procure_success: 'Lấy thông tin đề nghị mua sắm thiết bị thành công',
-                get_recommend_procure_faile: 'Lấy thông tin đề nghị mua sắm thiết bị thất bại',
-                create_recommend_procure_success: 'Thêm phiếu đề nghị mua sắm thiết bị thành công',
-                create_recommend_procure_faile: 'Thêm phiếu đề nghị mua sắm thiết bị thất bại',
-                delete_recommend_procure_success: 'Xoá phiếu đề nghị mua sắm thiết bị thành công',
-                delete_recommend_procure_faile: 'Xoá phiếu đề nghị mua sắm thiết bị thất bại',
-                edit_recommend_procure_success: 'Chỉnh sửa thông tin phiếu thành công',
-                edit_recommend_procure_faile: 'Chỉnh sửa thông tin phiếu thất bại',
+                get_purchase_request_success: 'Lấy thông tin đề nghị mua sắm thiết bị thành công',
+                get_purchase_request_faile: 'Lấy thông tin đề nghị mua sắm thiết bị thất bại',
+                create_purchase_request_success: 'Thêm phiếu đề nghị mua sắm thiết bị thành công',
+                create_purchase_request_faile: 'Thêm phiếu đề nghị mua sắm thiết bị thất bại',
+                delete_purchase_request_success: 'Xoá phiếu đề nghị mua sắm thiết bị thành công',
+                delete_purchase_request_faile: 'Xoá phiếu đề nghị mua sắm thiết bị thất bại',
+                edit_purchase_request_success: 'Chỉnh sửa thông tin phiếu thành công',
+                edit_purchase_request_faile: 'Chỉnh sửa thông tin phiếu thất bại',
             },
 
             // Đăng ký sử dụng thiết bị
-            recommend_distribute: {
+            use_request: {
 
                 //Thông điệp trả về từ server
-                get_recommend_distribute_success: 'Lấy thông tin đề nghị cấp phát thiết bị thành công',
-                get_recommend_distribute_faile: 'Lấy thông tin đề nghị cấp phát thiết bị thất bại',
-                create_recommend_distribute_success: 'Thêm phiếu đề nghị cấp phát thiết bị thành công',
-                create_recommend_distribute_faile: 'Thêm phiếu đề nghị cấp phát thiết bị thất bại',
-                delete_recommend_distribute_success: 'Xoá phiếu đề nghị cấp phát thiết bị thành công',
-                delete_recommend_distribute_faile: 'Xoá phiếu đề nghị cấp phát thiết bị thất bại',
-                edit_recommend_distribute_success: 'Chỉnh sửa thông tin phiếu thành công',
-                edit_recommend_distribute_faile: 'Chỉnh sửa thông tin phiếu thất bại',
+                get_use_request_success: 'Lấy thông tin đề nghị cấp phát thiết bị thành công',
+                get_use_request_faile: 'Lấy thông tin đề nghị cấp phát thiết bị thất bại',
+                create_use_request_success: 'Thêm phiếu đề nghị cấp phát thiết bị thành công',
+                create_use_request_faile: 'Thêm phiếu đề nghị cấp phát thiết bị thất bại',
+                delete_use_request_success: 'Xoá phiếu đề nghị cấp phát thiết bị thành công',
+                delete_use_request_faile: 'Xoá phiếu đề nghị cấp phát thiết bị thất bại',
+                edit_use_request_success: 'Chỉnh sửa thông tin phiếu thành công',
+                edit_use_request_faile: 'Chỉnh sửa thông tin phiếu thất bại',
             },
 
         },
@@ -3441,7 +3431,7 @@ export default {
         },
 
         footer: {
-            copyright: 'Bản quyền thuộc về ',
+            copyright: 'Copyright by ',
             vnist: 'Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam',
             version: 'Phiên bản '
         },
