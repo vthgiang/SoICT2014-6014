@@ -34,10 +34,13 @@ const {
     DocumentArchive,
     DocumentDomain,
     DocumentCategory,
+
     Material,
+    Category,
+    Good,
 
     CrmCustomer,
-    CrmGroup
+    CrmGroup,
 
 } = require('../../models/_multi-tenant');
 
@@ -125,7 +128,10 @@ const initSampleCompanyDB = async () => {
         if (!db.models.DocumentArchive) DocumentArchive(db);
         if (!db.models.DocumentDomain) DocumentDomain(db);
         if (!db.models.DocumentCategory) DocumentCategory(db);
+
         if (!db.models.Material) Material(db);
+        if (!db.models.Category) Category(db);
+        if (!db.models.Good) Good(db);
 
         if (!db.models.CrmCustomer) CrmCustomer(db);
         if (!db.models.CrmGroup) CrmGroup(db);

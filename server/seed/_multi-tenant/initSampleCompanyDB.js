@@ -34,7 +34,10 @@ const {
     DocumentArchive,
     DocumentDomain,
     DocumentCategory,
+
     Material,
+    Category,
+    Good,
 
     CrmCustomer,
     CrmGroup
@@ -126,7 +129,10 @@ const initSampleCompanyDB = async () => {
         if (!db.models.DocumentArchive) DocumentArchive(db);
         if (!db.models.DocumentDomain) DocumentDomain(db);
         if (!db.models.DocumentCategory) DocumentCategory(db);
+
         if (!db.models.Material) Material(db);
+        if (!db.models.Category) Category(db);
+        if (!db.models.Good) Good(db);
 
         if (!db.models.CrmCustomer) CrmCustomer(db);
         if (!db.models.CrmGroup) CrmGroup(db);
@@ -2513,6 +2519,156 @@ const initSampleCompanyDB = async () => {
     }
     ]);
     console.log("Khởi tạo xong danh sách vật tư");
+
+    /*---------------------------------------------------------------------------------------------
+    -----------------------------------------------------------------------------------------------
+        TẠO DỮ LIỆU DANH MỤC HÀNG HÓA
+    -----------------------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------------------- */
+    console.log("Khởi tạo dữ liệu danh mục hàng hóa");
+    var listCategory = await Category(vnistDB).insertMany([{
+        name: "Dạng bột",
+        code: "CT001",
+        type: "product",
+        description: "Dạng bột"
+    },
+    {
+        name: "Dạng viên",
+        code: "CT002",
+        type: "product",
+        description: "Dạng viên viên"
+    },
+    {
+        name: "NVL",
+        code: "MT002",
+        type: "material",
+        description: "NVL"
+    },
+    {
+        name: "Dùng cho đóng gói",
+        code: "EQ002",
+        type: "equipment",
+        description: "NVL"
+    },
+    {
+        name: "Tài sản",
+        code: "AS002",
+        type: "asset",
+        description: "NVL"
+    }
+    ]);
+    console.log("Khởi tạo xong danh sách danh mục hàng hóa");
+
+    /*---------------------------------------------------------------------------------------------
+    -----------------------------------------------------------------------------------------------
+        TẠO DỮ LIỆU HÀNG HÓA
+    -----------------------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------------------- */
+    console.log("Khởi tạo dữ liệu hàng hóa");
+    var listGood = await Good(vnistDB).insertMany([{
+        category: listCategory[2]._id,
+        name: "Jucca Nước",
+        code: "MT001",
+        type: "material",
+        baseUnit: 'ml',
+        unit: [],
+        quantity: 20,
+        description: "Nguyên liệu thuốc thú u"
+    },
+    {
+        category: listCategory[2]._id,
+        name: "Propylen Glycon",
+        code: "MT002",
+        type: "material",
+        baseUnit: 'kg',
+        unit: [],
+        quantity: 30,
+        description: "Nguyên vật liệu thuốc thú y"
+    },
+    {
+        category: listCategory[4]._id,
+        name: "Máy chiết rót viên thuốc tự động",
+        code: "AS001",
+        type: "asset",
+        baseUnit: 'Chiếc',
+        unit: [],
+        quantity: 2,
+        description: "Máy sản xuất thuốc thú y"
+    },
+    {
+        category: listCategory[4]._id,
+        name: "Máy Dập Viên Thuốc",
+        code: "AS002",
+        type: "asset",
+        baseUnit: 'Chiếc',
+        unit: [],
+        quantity: 2,
+        description: "Máy sản xuất thuốc thú y"
+    },
+    {
+        category: listCategory[3]._id,
+        name: "Bình ắc quy",
+        code: "EQ001",
+        type: "equipment",
+        baseUnit: 'Chiếc',
+        unit: [],
+        quantity: 10,
+        description: "Công cụ dụng cụ thuốc thú y"
+    },
+    {
+        category: listCategory[3]._id,
+        name: "Máy nén",
+        code: "EQ002",
+        type: "equipment",
+        baseUnit: 'Chiếc',
+        unit: [],
+        quantity: 10,
+        description: "Công cụ dụng cụ thuốc thú y"
+    },
+    ]);
+
+    var listProduct = await Good(vnistDB).insertMany([
+        
+    {
+        category: listCategory[0]._id,
+        name: "ĐƯỜNG ACESULFAME K",
+        code: "PR001",
+        type: "product",
+        baseUnit: 'Thùng',
+        unit: [],
+        quantity: 20,
+        goods: [{
+            good: listGood[0]._id,
+            quantity: 5
+        },
+        {
+            good: listGood[1]._id,
+            quantity: 3
+        }
+    ],
+        description: "Sản phẩm thuốc thú y"
+    },
+    {
+        category: listCategory[0]._id,
+        name: "ACID CITRIC MONO",
+        code: "PR002",
+        type: "product",
+        baseUnit: 'Bao',
+        unit: [],
+        quantity: 20,
+        goods: [{
+            good: listGood[0]._id,
+            quantity: 2
+        },
+        {
+            good: listGood[1]._id,
+            quantity: 3
+        }
+    ],
+        description: "Sản phẩm thuốc thú y"
+    },
+    ]);
+    console.log("Khởi tạo xong danh sách hàng hóa");
 
     console.log("Tạo mẫu dữ liệu khách hàng");
 
