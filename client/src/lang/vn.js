@@ -161,6 +161,11 @@ export default {
                 company_not_found: 'Không tìm thấy thông tin về công ty',
                 link_exist: 'Url cho link đã tồn tại',
                 component_exist: 'Component này đã tồn tại',
+
+                update_company_link_success: 'Cập nhật link thành công',
+                update_company_link_faile: 'Cập nhật link thất bại',
+                update_company_component_success: 'Cập nhật component thành công',
+                update_company_component_faile: 'Cập nhật component thất bại',
             },
 
             system_setting: {
@@ -285,6 +290,20 @@ export default {
             }
         },
         super_admin: {
+            system: {
+                restore_backup: 'Restore backup',
+                delete_backup: 'Delete backup',
+
+                get_backup_list_success: 'Lấy dữ liệu sao lưu thành công',
+                get_backup_list_faile: 'Lấy dữ liệu sao lưu thất bại',
+                create_backup_success: 'Tạo sao lưu thành công',
+                create_backup_faile: 'Tạo sao lưu thất bại',
+                delete_backup_success: 'Xóa sao lưu thành công',
+                delete_backup_faile: 'Xóa sao lưu thất bại',
+                restore_data_success: 'Khôi phục dữ liệu thành công',
+                restore_data_faile: 'Khôi phục dữ liệu thất bại'
+            },
+
             organization_unit: {
                 //Thông điệp trả về từ server
                 create_department_success: 'Tạo đơn vị thành công',

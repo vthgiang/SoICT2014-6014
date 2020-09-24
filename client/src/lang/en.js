@@ -161,6 +161,11 @@ export default {
                 company_not_found: 'Company not found',
                 link_exist: 'Link exist',
                 component_exist: 'Component exist',
+
+                update_company_links_success: 'Update company link successfully',
+                update_company_links_faile: 'Update company link faile',
+                update_company_components_success: 'Update company component successfully',
+                update_company_components_faile: 'Update company component faile',
             },
 
             system_setting: {
@@ -285,6 +290,20 @@ export default {
             }
         },
         super_admin: {
+            system: {
+                restore_backup: 'Restore backup',
+                delete_backup: 'Delete backup',
+
+                get_backup_list_success: 'Get backup list successfully',
+                get_backup_list_faile: 'Get backup list faile',
+                create_backup_success: 'Create backup successfully',
+                create_backup_faile: 'Create backup faile',
+                delete_backup_success: 'Delete backup successfully',
+                delete_backup_faile: 'Delete backup faile',
+                restore_data_success: 'Restore data successfully',
+                restore_data_faile: 'Restore data faile',
+            },
+
             organization_unit: {
                 //Thông điệp trả về từ server
                 create_department_success: 'Create organizational unit success',
