@@ -870,7 +870,7 @@ class ActionTab extends Component {
                                     return (
                                         <div key={item._id}>
                                             {item.creator ?
-                                                <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + item.creator.avatar)} alt="User Image" /> :
+                                                <ApiImage className="user-img-level1" src={'.' + item.creator.avatar} alt="User Image" /> :
                                                 <div className="user-img-level1" />
                                             }
                                             {editAction !== item._id && // khi chỉnh sửa thì ẩn action hiện tại đi
@@ -1054,7 +1054,7 @@ class ActionTab extends Component {
                                                 <div>
                                                     {item.comments.map(child => {
                                                         return <div key={child._id}>
-                                                            <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + child.creator?.avatar)} alt="User Image" />
+                                                            <ApiImage className="user-img-level2" src={'.' + child.creator?.avatar} alt="User Image" />
 
                                                             {editComment !== child._id && // Khi đang edit thì nội dung cũ đi
                                                                 <div>
@@ -1147,8 +1147,8 @@ class ActionTab extends Component {
                                                     }
                                                     {/*Thêm bình luận cho hoạt động */}
                                                     <div>
-                                                        <img className="user-img-level2"
-                                                            src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar"
+                                                        <ApiImage className="user-img-level2"
+                                                            src={'.'+auth.user.avatar} alt="user avatar"
                                                         />
                                                         <ContentMaker
                                                             inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
@@ -1175,7 +1175,7 @@ class ActionTab extends Component {
                             {/* Thêm hoạt động cho công việc*/}
                             {role === "responsible" && task &&
                                 <React.Fragment>
-                                    <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
+                                    <ApiImage className="user-img-level1" src={'.'+ auth.user.avatar} alt="user avatar" />
                                     <ContentMaker
                                         inputCssClass="text-input-level1" controlCssClass="tool-level1 row"
                                         onFilesChange={this.onActionFilesChange}
@@ -1201,7 +1201,7 @@ class ActionTab extends Component {
                                 taskComments.map((item, key) => {
                                     return (
                                         <div key={key}>
-                                            <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + item.creator?.avatar)} alt="User Image" />
+                                            <ApiImage className="user-img-level1" src={'.'+ item.creator?.avatar} alt="User Image" />
                                             {editTaskComment !== item._id && // Khi đang edit thì ẩn đi
                                                 <React.Fragment>
                                                     <div className="content-level1">
@@ -1296,7 +1296,7 @@ class ActionTab extends Component {
                                                 <div className="comment-content-child">
                                                     {item.comments.map(child => {
                                                         return <div key={child._id}>
-                                                            <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + item.creator?.avatar)} alt="User Image" />
+                                                            <ApiImage className="user-img-level2" src={'.'+ item.creator?.avatar} alt="User Image" />
 
                                                             {editCommentOfTaskComment !== child._id && // Đang edit thì ẩn đi
                                                                 <div>
@@ -1392,7 +1392,7 @@ class ActionTab extends Component {
                                                     }
                                                     {/*Thêm bình luận cho bình luận */}
                                                     <div>
-                                                        <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
+                                                        <ApiImage className="user-img-level2" src={('.'+ auth.user.avatar)} alt="user avatar" />
                                                         <ContentMaker
                                                             inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
                                                             onFilesChange={this.onCommentOfTaskCommentFilesChange}
@@ -1417,7 +1417,7 @@ class ActionTab extends Component {
                                 }) : null
                             }
                             {/* Thêm bình luận cho công việc*/}
-                            <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="User Image" />
+                            <ApiImage className="user-img-level1" src={('.' + auth.user.avatar)} alt="User Image" />
                             <ContentMaker
                                 inputCssClass="text-input-level1" controlCssClass="tool-level1 row"
                                 onFilesChange={this.onTaskCommentFilesChange}
@@ -1490,7 +1490,7 @@ class ActionTab extends Component {
                                                 {showEditTaskFile === item._id &&
                                                     <React.Fragment>
                                                         <div style={{ marginTop: '15px' }}>
-                                                            <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
+                                                            <ApiImage className="user-img-level1" src={('.' + auth.user.avatar)} alt="user avatar" />
                                                             <ContentMaker
                                                                 inputCssClass="text-input-level1" controlCssClass="tool-level2 row"
                                                                 // styletext={{ marginTop: "15px" }}
@@ -1527,7 +1527,7 @@ class ActionTab extends Component {
                             </div>
                             <React.Fragment>
                                 <div style={{ marginTop: '15px' }}>
-                                    <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
+                                    <ApiImage className="user-img-level1" src={('.' + auth.user.avatar)} alt="user avatar" />
                                     <ContentMaker
                                         inputCssClass="text-input-level1" controlCssClass="tool-level1"
                                         onFilesChange={this.onTaskFilesChange}
