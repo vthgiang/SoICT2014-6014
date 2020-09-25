@@ -17,7 +17,7 @@ class TimesheetsImportForm extends Component {
             checkFileImport: true,
             rowError: [],
             importData: [],
-            month: null,
+            month: "",
             limit: 100,
             page: 0
         };
@@ -241,19 +241,21 @@ class TimesheetsImportForm extends Component {
                             scrollTableWidth={850}
                             handleChangeConfig={this.handleChangeConfig}
                         />
+                        {/* Chọn tháng */}
                         <div className="row">
-                            {/* Chọn file import */}
                             <div className="form-group col-md-4 col-xs-12">
-                                <label>{translate('human_resource.month')}</label>
+                                <label>{translate('human_resource.month')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id="import_timesheets"
                                     dateFormat="month-year"
                                     deleteValue={false}
-                                    value=""
+                                    value={month}
                                     onChange={this.handleMonthChange}
                                 />
                             </div>
-                            {/* Hiện thị dữ liệu import */}
+                        </div>
+                        <div className="row">
+                            {/* Chọn file import */}
                             <div className="form-group col-md-4 col-xs-12">
                                 <ImportFileExcel
                                     configData={configData}
@@ -261,7 +263,8 @@ class TimesheetsImportForm extends Component {
                                     disabled={!month ? true : false}
                                 />
                             </div>
-                            <div className="form-group col-md-4 col-xs-12">
+
+                            <div className="form-group pull-right col-md-4 col-xs-12">
                                 {/* Dowload file import mẫu */}
                                 <ExportExcel id="download_template_salary" type='link' exportData={exportData}
                                     buttonName={` ${translate('human_resource.download_file')}`} />
