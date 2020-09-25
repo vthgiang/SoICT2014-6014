@@ -96,8 +96,9 @@ exports.createTimesheets = async (portal, data, company) => {
             employee: data.employee,
             company: company,
             month: month,
-            workSession1: data.workSession1,
-            workSession2: data.workSession2,
+            shift1: data.shift1,
+            shift2: data.shift2,
+            shift3: data.shift3,
         });
         // Lấy thông tin chấm công vừa cập nhật
         let newTimesheets = await Timesheet(connect(DB_CONNECTION, portal)).findOne({
@@ -129,8 +130,9 @@ exports.deleteTimesheets = async (portal, id) => {
 exports.updateTimesheets = async (portal, id, data) => {
     // Cập nhật thông tin chấm công
     let infoTimesheets = await Timesheet(connect(DB_CONNECTION, portal)).findById(id);
-    infoTimesheets.workSession1 = data.workSession1;
-    infoTimesheets.workSession2 = data.workSession2;
+    infoTimesheets.shift1 = data.shift1;
+    infoTimesheets.shift2 = data.shift2;
+    infoTimesheets.shift3 = data.shift3;
     await infoTimesheets.save();
 
     // Lấy thông tin chấm công vừa cập nhật

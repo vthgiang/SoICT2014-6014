@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DataTableSetting, DeleteNotification, PaginateBar, DatePicker, SelectMulti, SlimScroll, ExportExcel } from '../../../../common-components';
 
-import { TimesheetsImportForm, TimesheetsCreateForm, TimesheetsEditForm } from './combinedContent';
+import { TimesheetsByShiftImportForm, TimesheetsCreateForm, TimesheetsEditForm } from './combinedContent';
 
 import { TimesheetsActions } from '../redux/actions';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
@@ -203,9 +203,10 @@ class TimesheetsManagement extends Component {
         let dataExport = [];
         data.map((x, index) => {
             let total = 0;
-            let shifts1 = x.workSession1;
-            let shifts2 = x.workSession2;
-            let colShifts1 = {}, colShifts2 = {};
+            let shifts1 = x.shift1;
+            let shifts2 = x.shift2;
+            let shifts3 = x.shift3;
+            let colShifts1 = {}, colShifts2 = {}, colShifts3 = {};
             shifts1.forEach((y, key) => {
                 if (y === true) {
                     colShifts1 = { ...colShifts1, [`date${key + 1}`]: 'X' };
@@ -213,7 +214,7 @@ class TimesheetsManagement extends Component {
                 } else {
                     colShifts1 = { ...colShifts1, [`date${key + 1}`]: '' }
                 }
-            })
+            });
             shifts2.forEach((y, key) => {
                 if (y === true) {
                     colShifts2 = { ...colShifts2, [`date${key + 1}`]: 'X' };
@@ -221,11 +222,19 @@ class TimesheetsManagement extends Component {
                 } else {
                     colShifts2 = { ...colShifts2, [`date${key + 1}`]: '' }
                 }
-            })
+            });
+            shifts3.forEach((y, key) => {
+                if (y === true) {
+                    colShifts3 = { ...colShifts3, [`date${key + 1}`]: 'X' };
+                    total += 1;
+                } else {
+                    colShifts3 = { ...colShifts3, [`date${key + 1}`]: '' }
+                }
+            });
 
             let row = [
                 {
-                    merges: { STT: 2, employeeNumber: 2, fullName: 2, total: 2 },
+                    merges: { STT: 3, employeeNumber: 3, fullName: 3, total: 3 },
                     STT: index + 1,
                     fullName: x.employee ? x.employee.fullName : "",
                     employeeNumber: x.employee ? x.employee.employeeNumber : "",
@@ -238,6 +247,13 @@ class TimesheetsManagement extends Component {
                     employeeNumber: "",
                     space: translate('human_resource.timesheets.shifts2'),
                     ...colShifts2,
+                    total: "",
+                }, {
+                    STT: "",
+                    fullName: "",
+                    employeeNumber: "",
+                    space: translate('human_resource.timesheets.shifts3'),
+                    ...colShifts3,
                     total: "",
                 },
             ]
@@ -255,6 +271,7 @@ class TimesheetsManagement extends Component {
                 {
                     sheetName: "Sheet1",
                     sheetTitle: translate('human_resource.timesheets.file_name_export'),
+                    sheetTitleWidth: 35,
                     tables: [
                         {
                             merges: [{
@@ -361,41 +378,53 @@ class TimesheetsManagement extends Component {
                     />
 
                     <div id="croll-table" className="form-inline">
-                        <div className="sticky col-lg-4 col-md-4 col-sm-6 col-xs-7 " style={{ padding: 0 }}>
+                        <div className="sticky col-lg-5 col-md-5 col-sm-6 col-xs-7 " style={{ padding: 0 }}>
                             <table id="table-timesheets" className="keeping table table-bordered">
                                 <thead>
                                     <tr style={{ height: 58 }}>
                                         <th>{translate('human_resource.staff_number')}</th>
                                         <th>{translate('human_resource.staff_name')}</th>
                                         <th>{translate('general.action')}</th>
+                                        <th>{translate('human_resource.timesheets.shift_work')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {
                                         listTimesheets.length !== 0 && listTimesheets.map((x, index) => (
-                                            <tr key={index}>
-                                                <td style={{ paddingTop: 22 }}>{x.employee ? x.employee.employeeNumber : null}</td>
-                                                <td style={{ paddingTop: 22 }}>{x.employee ? x.employee.fullName : null}</td>
-                                                <td style={{ paddingTop: 22 }}>
-                                                    <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.timesheets.edit_timesheets')}><i className="material-icons">edit</i></a>
-                                                    <DeleteNotification
-                                                        content={translate('human_resource.timesheets.delete_timesheets')}
-                                                        data={{
-                                                            id: x._id,
-                                                            info: x.employee.employeeNumber + "- " + translate('human_resource.month') + ": " + month
-                                                        }}
-                                                        func={this.props.deleteTimesheets}
-                                                    />
+                                            <React.Fragment key={index}>
+                                                <tr>
+                                                    <td rowSpan="3" style={{ paddingTop: 22 }}>{x.employee ? x.employee.employeeNumber : null}</td>
+                                                    <td rowSpan="3" style={{ paddingTop: 22 }}>{x.employee ? x.employee.fullName : null}</td>
+                                                    <td rowSpan="3" style={{ paddingTop: 22, textAlign: "center" }}>
+                                                        <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.timesheets.edit_timesheets')}><i className="material-icons">edit</i></a>
+                                                        <DeleteNotification
+                                                            content={translate('human_resource.timesheets.delete_timesheets')}
+                                                            data={{
+                                                                id: x._id,
+                                                                info: x.employee.employeeNumber + "- " + translate('human_resource.month') + ": " + month
+                                                            }}
+                                                            func={this.props.deleteTimesheets}
+                                                        />
 
-                                                </td>
-                                            </tr>
+                                                    </td>
+                                                    <td>{translate('human_resource.timesheets.shifts1')}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>{translate('human_resource.timesheets.shifts2')}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>{translate('human_resource.timesheets.shifts3')}</td>
+                                                </tr>
+
+                                            </React.Fragment>
+
                                         ))
                                     }
                                 </tbody>
 
                             </table>
                         </div>
-                        <div className="col-lg-8 col-md-8 col-sm-6 col-xs-5" style={{ padding: 0 }}>
+                        <div className="col-lg-7 col-md-7 col-sm-6 col-xs-5" style={{ padding: 0 }}>
                             <table id="timesheets" className="timekeeping table table-striped table-bordered table-hover" style={{ marginLeft: -1 }}>
                                 <thead>
                                     <tr style={{ height: 58 }}>
@@ -407,13 +436,13 @@ class TimesheetsManagement extends Component {
                                 <tbody>
                                     {
                                         listTimesheets.length !== 0 && listTimesheets.map((x, index) => {
-                                            let workSession1 = x.workSession1, workSession2 = x.workSession2;
+                                            let shift1 = x.shift1, shift2 = x.shift2, shift3 = x.shift3;
                                             return (
                                                 <React.Fragment key={index}>
                                                     <tr>{
                                                         allDayOfMonth.map((y, indexs) => (
                                                             <td key={indexs}>
-                                                                {workSession1[indexs] ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
+                                                                {shift1[indexs] ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
                                                                     (indexs < dayNow - 1 ? <i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i> : null)}
                                                             </td>
                                                         ))
@@ -422,7 +451,16 @@ class TimesheetsManagement extends Component {
                                                     <tr>{
                                                         allDayOfMonth.map((y, indexs) => (
                                                             <td key={indexs}>
-                                                                {workSession2[indexs] === true ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
+                                                                {shift2[indexs] === true ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
+                                                                    (indexs < dayNow - 1 ? <i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i> : null)}
+                                                            </td>
+                                                        ))
+                                                    }
+                                                    </tr>
+                                                    <tr>{
+                                                        allDayOfMonth.map((y, indexs) => (
+                                                            <td key={indexs}>
+                                                                {shift3[indexs] === true ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
                                                                     (indexs < dayNow - 1 ? <i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i> : null)}
                                                             </td>
                                                         ))
@@ -443,7 +481,7 @@ class TimesheetsManagement extends Component {
                 <TimesheetsCreateForm />
 
                 {/* Form import chấm công */}
-                <TimesheetsImportForm />
+                <TimesheetsByShiftImportForm />
 
                 {   /* Form chinh sửa thông tin chấm công */
                     currentRow &&
@@ -451,8 +489,9 @@ class TimesheetsManagement extends Component {
                         _id={currentRow._id}
                         employeeNumber={currentRow.employee ? `${currentRow.employee.employeeNumber} - ${currentRow.employee.fullName}` : null}
                         month={this.formatDate(currentRow.month, true)}
-                        workSession1={currentRow.workSession1}
-                        workSession2={currentRow.workSession2}
+                        shift1={currentRow.shift1}
+                        shift2={currentRow.shift2}
+                        shift3={currentRow.shift3}
                         allDayOfMonth={this.getAllDayOfMonth(this.formatDate(currentRow.month, true))}
                     />
                 }

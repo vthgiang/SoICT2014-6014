@@ -1509,6 +1509,7 @@ export default {
                 shift_work: 'Shift work',
                 shifts1: 'shifts 1',
                 shifts2: 'shifts 2',
+                shifts2: 'shifts 3',
                 date_of_month: 'The days of the month',
 
                 // Nhóm dành cho action

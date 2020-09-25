@@ -1538,6 +1538,7 @@ export default {
                 shift_work: 'Ca làm việc',
                 shifts1: 'ca 1',
                 shifts2: 'ca 2',
+                shifts3: 'ca 3',
                 date_of_month: 'Các ngày trong tháng',
 
                 // Nhóm dành cho action
