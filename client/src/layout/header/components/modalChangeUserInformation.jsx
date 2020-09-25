@@ -49,11 +49,11 @@ class ModalChangeUserInformation extends Component {
                         <div className="row">
                             <div className="col-xs-6 col-sm-4 col-md-4 col-lg-4">
                                 <div className="profile-pic">
-                                    <ApiImage className="user-avatar" src={
-                                        this.state.img !== undefined ? 
-                                        this.state.img : 
-                                        ('.'+this.props.auth.user.avatar)}
-                                    />
+                                    {
+                                        this.state.img === undefined ?
+                                        <ApiImage className="user-avatar" src={'.'+this.props.auth.user.avatar}/> :
+                                        <img className="user-avatar" src={this.state.img}/>
+                                    }
                                     <button type="button" className="edit-option" onClick={this.showCropImageSpace}><i className="fa fa-camera" style={{color: 'white'}}></i></button>
                                 </div>
                             </div>

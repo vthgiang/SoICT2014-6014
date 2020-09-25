@@ -151,29 +151,48 @@ class CreateForm extends Component {
         this.setState({ documentArchivedRecordPlaceManager: value });
     }
 
-    handleUploadFile = (e) => {
-        const value = e.target.files[0];
-        console.log('fileeeeeeeee', value);
-        // this.validateDocumentFile(value, true);
+    // handleUploadFile = (e) => {
+    //     const value = e.target && e.target.files[0];
+    //     console.log('fileeeeeeeee', value);
+    //     // this.validateDocumentFile(value, true);
+    //     this.setState(state => {
+    //         return {
+    //             ...state,
+    //             documentFile: value,
+    //             // errorDocumentFile: msg,
+    //         }
+    //     })
+    // }
+    handleUploadFile = (file) => {
+        file = file.map(x => {
+            return {
+                fileName: x.fileName,
+                url: x.urlFile,
+                fileUpload: x.fileUpload
+            }
+        })
         this.setState(state => {
             return {
                 ...state,
-                documentFile: value,
-                // errorDocumentFile: msg,
+                documentFile: file
             }
-        })
+        });
     }
 
-    handleUploadFileScan = (e) => {
-        const value = e.target.files[0];
-        // this.validateDocumentFileScan(value, true);
+    handleUploadFileScan = (file) => {
+        file = file.map(x => {
+            return {
+                fileName: x.fileName,
+                url: x.urlFile,
+                fileUpload: x.fileUpload
+            }
+        })
         this.setState(state => {
             return {
                 ...state,
-                documentFileScan: value,
-                //errorDocumentFileScan: msg,
+                documentFileScan: file
             }
-        })
+        });
     }
     validateName = (value, willUpdateState) => {
         let msg = undefined;
@@ -585,22 +604,24 @@ class CreateForm extends Component {
                                             <div className="form-group">
                                                 <label>{translate('document.upload_file')}</label>
                                                 {/* <UploadFile /> */}
-                                                <br />
+                                                <UploadFile onChange={this.handleUploadFile} />
+                                                {/* <br />
                                                 <div className="upload btn btn-primary">
                                                     <i className="fa fa-folder"></i>
                                                     {" " + translate('document.choose_file')}
                                                     <input className="upload" type="file" name="file" onChange={this.handleUploadFile} />
-                                                    {/* <input type="file" style={{ height: 34, paddingTop: 2 }} className="form-control" name="file" onChange={this.handleChangeFile} /> */}
-                                                </div>
+                                                </div> */}
                                             </div>
                                             <div className="form-group">
                                                 <label>{translate('document.upload_file_scan')}</label>
-                                                <br />
+                                                <UploadFile onChange={this.handleUploadFileScan} />
+
+                                                {/* <br />
                                                 <div className="upload btn btn-primary">
                                                     <i className="fa fa-folder"></i>
                                                     {" " + translate('document.choose_file')}
                                                     <input className="upload" type="file" name="file" onChange={this.handleUploadFileScan} />
-                                                </div>
+                                                </div> */}
                                             </div>
                                             <div className="form-group">
                                                 <label>{translate('document.doc_version.issuing_date')}</label>
