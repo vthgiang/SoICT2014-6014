@@ -9,7 +9,7 @@ import { configurationTimesheets } from './fileConfigurationImportTimesheets';
 import { TimesheetsActions } from '../redux/actions';
 import { AuthActions } from '../../../auth/redux/actions';
 
-class TimesheetsImportForm extends Component {
+class TimesheetsByShiftImportForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -17,7 +17,7 @@ class TimesheetsImportForm extends Component {
             checkFileImport: true,
             rowError: [],
             importData: [],
-            month: null,
+            month: "",
             limit: 100,
             page: 0
         };
@@ -99,12 +99,14 @@ class TimesheetsImportForm extends Component {
     handleImportExcel = (value, checkFileImport) => {
         if (checkFileImport) {
             let importData = [], rowError = [];
-            for (let i = 0; i < value.length; i = i + 2) {
+            for (let i = 0; i < value.length; i = i + 3) {
                 let row1 = value[i];
                 let row2 = value[i + 1];
-                let workSession1 = row1.dateOfMonth.map(x => x ? true : false);
-                let workSession2 = row2.dateOfMonth.map(x => x ? true : false);
-                importData = [...importData, { employeeNumber: row1.employeeNumber, employeeName: row1.employeeName, workSession1: workSession1, workSession2: workSession2 }]
+                let row3 = value[i + 2];
+                let shift1 = row1.dateOfMonth.map(x => x ? true : false);
+                let shift2 = row2.dateOfMonth.map(x => x ? true : false);
+                let shift3 = row3.dateOfMonth.map(x => x ? true : false);
+                importData = [...importData, { employeeNumber: row1.employeeNumber, employeeName: row1.employeeName, shift1: shift1, shift2: shift2, shift3: shift3 }]
             }
 
             // Check dữ liệu import có hợp lệ hay không
@@ -241,19 +243,21 @@ class TimesheetsImportForm extends Component {
                             scrollTableWidth={850}
                             handleChangeConfig={this.handleChangeConfig}
                         />
+                        {/* Chọn tháng */}
                         <div className="row">
-                            {/* Chọn file import */}
                             <div className="form-group col-md-4 col-xs-12">
-                                <label>{translate('human_resource.month')}</label>
+                                <label>{translate('human_resource.month')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id="import_timesheets"
                                     dateFormat="month-year"
                                     deleteValue={false}
-                                    value=""
+                                    value={month}
                                     onChange={this.handleMonthChange}
                                 />
                             </div>
-                            {/* Hiện thị dữ liệu import */}
+                        </div>
+                        <div className="row">
+                            {/* Chọn file import */}
                             <div className="form-group col-md-4 col-xs-12">
                                 <ImportFileExcel
                                     configData={configData}
@@ -261,7 +265,8 @@ class TimesheetsImportForm extends Component {
                                     disabled={!month ? true : false}
                                 />
                             </div>
-                            <div className="form-group col-md-4 col-xs-12">
+
+                            <div className="form-group pull-right col-md-4 col-xs-12">
                                 {/* Dowload file import mẫu */}
                                 <ExportExcel id="download_template_salary" type='link' exportData={exportData}
                                     buttonName={` ${translate('human_resource.download_file')}`} />
@@ -300,17 +305,17 @@ class TimesheetsImportForm extends Component {
                                                     <tbody>
                                                         {
                                                             importDataCurrentPage.map((x, index) => {
-                                                                let workSession1 = x.workSession1, workSession2 = x.workSession2;
+                                                                let shift1 = x.shift1, shift2 = x.shift2, shift3 = x.shift3;
                                                                 return (
                                                                     <React.Fragment key={index}>
                                                                         <tr style={x.error ? { color: "#dd4b39" } : { color: '' }} title={x.errorAlert.join(', ')}>
-                                                                            <td rowSpan="2">{page + index + 1}</td>
-                                                                            <td rowSpan="2">{x.employeeNumber}</td>
-                                                                            <td rowSpan="2">{x.employeeName}</td>
+                                                                            <td rowSpan="3">{page + index + 1}</td>
+                                                                            <td rowSpan="3">{x.employeeNumber}</td>
+                                                                            <td rowSpan="3">{x.employeeName}</td>
                                                                             {
                                                                                 allDayOfMonth.map((y, indexs) => (
                                                                                     <td key={indexs}>
-                                                                                        {workSession1[indexs] ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
+                                                                                        {shift1[indexs] ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
                                                                                             <i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i>}
                                                                                     </td>
                                                                                 ))
@@ -319,7 +324,16 @@ class TimesheetsImportForm extends Component {
                                                                         <tr>{
                                                                             allDayOfMonth.map((y, indexs) => (
                                                                                 <td key={indexs}>
-                                                                                    {workSession2[indexs] ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
+                                                                                    {shift2[indexs] ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
+                                                                                        <i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i>}
+                                                                                </td>
+                                                                            ))
+                                                                        }
+                                                                        </tr>
+                                                                        <tr>{
+                                                                            allDayOfMonth.map((y, indexs) => (
+                                                                                <td key={indexs}>
+                                                                                    {shift3[indexs] ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
                                                                                         <i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i>}
                                                                                 </td>
                                                                             ))
@@ -357,5 +371,5 @@ const actionCreators = {
     downloadFile: AuthActions.downloadFile,
 };
 
-const importExcel = connect(mapState, actionCreators)(withTranslate(TimesheetsImportForm));
-export { importExcel as TimesheetsImportForm };
+const importExcel = connect(mapState, actionCreators)(withTranslate(TimesheetsByShiftImportForm));
+export { importExcel as TimesheetsByShiftImportForm };

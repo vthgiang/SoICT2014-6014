@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
-import { DialogModal, ButtonModal, DateTimeConverter, SelectBox, DatePicker, TreeSelect, ErrorLabel } from '../../../../../common-components';
+import { DialogModal, ButtonModal, DateTimeConverter, SelectBox, DatePicker, TreeSelect, ErrorLabel, UploadFile } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
 import moment from 'moment';
 import { getStorage } from "../../../../../config";
@@ -171,13 +171,40 @@ class EditForm extends Component {
             }
         })
     }
-    handleUploadFile = (e) => {
-        this.setState({ documentFile: e.target.files[0] });
-    }
 
-    handleUploadFileScan = (e) => {
-        this.setState({ documentFileScan: e.target.files[0] });
+    handleUploadFile = (file) => {
+        file = file.map(x => {
+            return {
+                fileName: x.fileName,
+                url: x.urlFile,
+                fileUpload: x.fileUpload
+            }
+        })
+        this.setState(state => {
+            return {
+                ...state,
+                documentFile: file
+            }
+        });
     }
+    handleUploadFileScan = (file) => {
+        file = file.map(x => {
+            return {
+                fileName: x.fileName,
+                url: x.urlFile,
+                fileUpload: x.fileUpload
+            }
+        })
+        this.setState(state => {
+            return {
+                ...state,
+                documentFileScan: file
+            }
+        });
+    }
+    // handleUploadFileScan = (e) => {
+    //     this.setState({ documentFileScan: e.target.files[0] });
+    // }
     validateName = (value, willUpdateState) => {
         let msg = undefined;
         const { translate } = this.props;
@@ -827,22 +854,24 @@ class EditForm extends Component {
                                                     </div>
                                                     <div className="form-group">
                                                         <label>{translate('document.upload_file')}</label>
-                                                        <br />
+                                                        <UploadFile multiple={true} onChange={this.handleUploadFile} />
+                                                        {/* <br />
                                                         <div className="upload btn btn-primary">
                                                             <i className="fa fa-folder"></i>
                                                             {" " + translate('document.choose_file')}
                                                             <input className="upload" type="file" name="file" onChange={this.handleUploadFile} />
-                                                        </div>
+                                                        </div> */}
                                                         <ErrorLabel content={errorDocumentFile} />
                                                     </div>
                                                     <div className="form-group">
                                                         <label>{translate('document.upload_file_scan')}</label>
-                                                        <br />
+                                                        <UploadFile multiple={true} onChange={this.handleUploadFileScan} />
+                                                        {/* <br />
                                                         <div className="upload btn btn-primary">
                                                             <i className="fa fa-folder"></i>
                                                             {" " + translate('document.choose_file')}
                                                             <input className="upload" type="file" name="file" onChange={this.handleUploadFileScan} />
-                                                        </div>
+                                                        </div> */}
                                                         <ErrorLabel content={errorDocumentFileScan} />
                                                     </div>
                                                     <div className="form-group">

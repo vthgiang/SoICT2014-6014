@@ -161,6 +161,11 @@ export default {
                 company_not_found: 'Company not found',
                 link_exist: 'Link exist',
                 component_exist: 'Component exist',
+
+                update_company_links_success: 'Update company link successfully',
+                update_company_links_faile: 'Update company link faile',
+                update_company_components_success: 'Update company component successfully',
+                update_company_components_faile: 'Update company component faile',
             },
 
             system_setting: {
@@ -285,6 +290,20 @@ export default {
             }
         },
         super_admin: {
+            system: {
+                restore_backup: 'Restore backup',
+                delete_backup: 'Delete backup',
+
+                get_backup_list_success: 'Get backup list successfully',
+                get_backup_list_faile: 'Get backup list faile',
+                create_backup_success: 'Create backup successfully',
+                create_backup_faile: 'Create backup faile',
+                delete_backup_success: 'Delete backup successfully',
+                delete_backup_faile: 'Delete backup faile',
+                restore_data_success: 'Restore data successfully',
+                restore_data_faile: 'Restore data faile',
+            },
+
             organization_unit: {
                 //Thông điệp trả về từ server
                 create_department_success: 'Create organizational unit success',
@@ -1490,6 +1509,7 @@ export default {
                 shift_work: 'Shift work',
                 shifts1: 'shifts 1',
                 shifts2: 'shifts 2',
+                shifts2: 'shifts 3',
                 date_of_month: 'The days of the month',
 
                 // Nhóm dành cho action
@@ -1556,6 +1576,7 @@ export default {
                 with_cost: 'with a cost of',
                 commitment_time: 'and commitment time',
                 month: 'months',
+                year: 'year',
                 staff: 'staff',
                 attend: 'involved',
 
@@ -1704,11 +1725,15 @@ export default {
                 manager: 'Manager',
                 user: 'User',
                 organization_unit: 'Organizaitonal Unit',
+                select_organization_unit: 'Select organization unit',
+                select_all_organization_unit: 'Select all',
                 handover_from_date: 'Handover from date',
                 handover_to_date: 'Handover to date',
                 status: 'Status',
                 action: 'Action',
                 asset_value: 'Asset value',
+                disposal_date: 'Disposal date',
+
 
                 general_information: 'General information',
                 usage_information: 'Usage information',
@@ -1900,6 +1925,7 @@ export default {
                 months_production: 'Product production in months',
                 production: 'Production',
                 select_depreciation_type: 'Select depreciation type',
+                select_all_depreciation_type: 'Select all',
                 line: 'Straight - line depreciation method',
                 declining_balance: 'Declining Balance depreciation method',
                 units_production: 'Unit of production method',
@@ -1943,58 +1969,49 @@ export default {
                 unit: 'Unit',
                 expected_value: 'Expected value',
 
-                //Thông điệp trả về từ server
-                get_recommend_procure_success: 'Lấy thông tin đề nghị mua sắm thiết bị thành công',
-                get_recommend_procure_faile: 'Lấy thông tin đề nghị mua sắm thiết bị thất bại',
-                create_recommend_procure_success: 'Thêm phiếu đề nghị mua sắm thiết bị thành công',
-                create_recommend_procure_faile: 'Thêm phiếu đề nghị mua sắm thiết bị thất bại',
-                delete_recommend_procure_success: 'Xoá phiếu đề nghị mua sắm thiết bị thành công',
-                delete_recommend_procure_faile: 'Xoá phiếu đề nghị mua sắm thiết bị thất bại',
-                edit_recommend_procure_success: 'Chỉnh sửa thông tin phiếu thành công',
-                edit_recommend_procure_faile: 'Chỉnh sửa thông tin phiếu thất bại',
             },
 
             // Quản lý đề nghị cấp phát
-            manage_recommend_distribute: {
+            manage_use_request: {
 
                 //Thông điệp trả về từ server
-                get_recommend_distribute_success: 'Lấy thông tin đề nghị cấp phát thiết bị thành công',
-                get_recommend_distribute_faile: 'Lấy thông tin đề nghị cấp phát thiết bị thất bại',
-                create_recommend_distribute_success: 'Thêm phiếu đề nghị cấp phát thiết bị thành công',
-                create_recommend_distribute_faile: 'Thêm phiếu đề nghị cấp phát thiết bị thất bại',
-                delete_recommend_distribute_success: 'Xoá phiếu đề nghị cấp phát thiết bị thành công',
-                delete_recommend_distribute_faile: 'Xoá phiếu đề nghị cấp phát thiết bị thất bại',
-                edit_recommend_distribute_success: 'Chỉnh sửa thông tin phiếu thành công',
-                edit_recommend_distribute_faile: 'Chỉnh sửa thông tin phiếu thất bại',
+                get_use_request_success: 'Lấy thông tin đề nghị cấp phát thiết bị thành công',
+                get_use_request_faile: 'Lấy thông tin đề nghị cấp phát thiết bị thất bại',
+                create_use_request_success: 'Thêm phiếu đề nghị cấp phát thiết bị thành công',
+                create_use_request_faile: 'Thêm phiếu đề nghị cấp phát thiết bị thất bại',
+                delete_use_request_success: 'Xoá phiếu đề nghị cấp phát thiết bị thành công',
+                delete_use_request_faile: 'Xoá phiếu đề nghị cấp phát thiết bị thất bại',
+                edit_use_request_success: 'Chỉnh sửa thông tin phiếu thành công',
+                edit_use_request_faile: 'Chỉnh sửa thông tin phiếu thất bại',
 
             },
 
             // Đăng ký mua sắm thiết bị
-            recommend_procure: {
+            purchase_request: {
 
                 //Thông điệp trả về từ server
-                get_recommend_procure_success: 'Lấy thông tin đề nghị mua sắm thiết bị thành công',
-                get_recommend_procure_faile: 'Lấy thông tin đề nghị mua sắm thiết bị thất bại',
-                create_recommend_procure_success: 'Thêm phiếu đề nghị mua sắm thiết bị thành công',
-                create_recommend_procure_faile: 'Thêm phiếu đề nghị mua sắm thiết bị thất bại',
-                delete_recommend_procure_success: 'Xoá phiếu đề nghị mua sắm thiết bị thành công',
-                delete_recommend_procure_faile: 'Xoá phiếu đề nghị mua sắm thiết bị thất bại',
-                edit_recommend_procure_success: 'Chỉnh sửa thông tin phiếu thành công',
-                edit_recommend_procure_faile: 'Chỉnh sửa thông tin phiếu thất bại',
+                get_purchase_request_success: 'Lấy thông tin đề nghị mua sắm thiết bị thành công',
+                get_purchase_request_faile: 'Lấy thông tin đề nghị mua sắm thiết bị thất bại',
+                create_purchase_request_success: 'Thêm phiếu đề nghị mua sắm thiết bị thành công',
+                create_purchase_request_faile: 'Thêm phiếu đề nghị mua sắm thiết bị thất bại',
+                delete_purchase_request_success: 'Xoá phiếu đề nghị mua sắm thiết bị thành công',
+                delete_purchase_request_faile: 'Xoá phiếu đề nghị mua sắm thiết bị thất bại',
+                edit_purchase_request_success: 'Chỉnh sửa thông tin phiếu thành công',
+                edit_purchase_request_faile: 'Chỉnh sửa thông tin phiếu thất bại',
             },
 
             // Đăng ký sử dụng thiết bị
-            recommend_distribute: {
+            use_request: {
 
                 //Thông điệp trả về từ server
-                get_recommend_distribute_success: 'Lấy thông tin đề nghị cấp phát thiết bị thành công',
-                get_recommend_distribute_faile: 'Lấy thông tin đề nghị cấp phát thiết bị thất bại',
-                create_recommend_distribute_success: 'Thêm phiếu đề nghị cấp phát thiết bị thành công',
-                create_recommend_distribute_faile: 'Thêm phiếu đề nghị cấp phát thiết bị thất bại',
-                delete_recommend_distribute_success: 'Xoá phiếu đề nghị cấp phát thiết bị thành công',
-                delete_recommend_distribute_faile: 'Xoá phiếu đề nghị cấp phát thiết bị thất bại',
-                edit_recommend_distribute_success: 'Chỉnh sửa thông tin phiếu thành công',
-                edit_recommend_distribute_faile: 'Chỉnh sửa thông tin phiếu thất bại',
+                get_use_request_success: 'Lấy thông tin đề nghị cấp phát thiết bị thành công',
+                get_use_request_faile: 'Lấy thông tin đề nghị cấp phát thiết bị thất bại',
+                create_use_request_success: 'Thêm phiếu đề nghị cấp phát thiết bị thành công',
+                create_use_request_faile: 'Thêm phiếu đề nghị cấp phát thiết bị thất bại',
+                delete_use_request_success: 'Xoá phiếu đề nghị cấp phát thiết bị thành công',
+                delete_use_request_faile: 'Xoá phiếu đề nghị cấp phát thiết bị thất bại',
+                edit_use_request_success: 'Chỉnh sửa thông tin phiếu thành công',
+                edit_use_request_faile: 'Chỉnh sửa thông tin phiếu thất bại',
             },
 
         },

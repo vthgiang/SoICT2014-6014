@@ -196,23 +196,24 @@ class HolidayImportForm extends Component {
                             scrollTable={false}
                             handleChangeConfig={this.handleChangeConfig}
                         />
-                        <div className="qlcv">
-                            <div className="form-inline">
-                                {/* Chọn file import */}
-                                <div className="form-group">
-                                    <ImportFileExcel
-                                        configData={configData}
-                                        handleImportExcel={this.handleImportExcel}
-                                    />
-                                </div>
+                        <div className="row">
+                            {/* Chọn file import */}
+                            <div className="form-group col-md-4 col-xs-12 col-sm-12">
+                                <ImportFileExcel
+                                    configData={configData}
+                                    handleImportExcel={this.handleImportExcel}
+                                />
                             </div>
 
                             {/* Dowload file import mẫu */}
-                            <ExportExcel id="download_template_salary" type='link' exportData={exportData}
-                                buttonName={` ${translate('human_resource.download_file')}`} />
+                            <div className="form-group pull-right col-md-4 col-xs-12 col-sm-12">
+                                <ExportExcel id="download_template_salary" type='link' exportData={exportData}
+                                    buttonName={` ${translate('human_resource.download_file')}`} />
+
+                            </div>
 
                             {/* Hiện thị dữ liệu import */}
-                            <div className="col-lg-12 col-md-12 col-sm-12 col-xs-12" style={{ padding: 0 }}>
+                            <div className="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                 <ShowImportData
                                     id="import_salary_show_data"
                                     configData={configData}

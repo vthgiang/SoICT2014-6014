@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
-import { DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
+import { DialogModal, ErrorLabel, SelectBox, ApiImage } from '../../../../common-components';
 import { UserActions } from '../redux/actions';
 import ValidationHelper from '../../../../helpers/validationHelper';
 
@@ -122,7 +122,7 @@ class UserEditForm extends Component {
                     <form id={`form-edit-user`}>
                         <div className="row">
                             <div className="form-group col-sm-3" style={{paddingTop: '25px'}}>
-                                <img className="user-avatar" src={process.env.REACT_APP_SERVER+userAvatar}/>
+                                <ApiImage className="user-avatar" src={'.'+userAvatar}/>
                             </div>
                             <div className="form-group col-sm-9">
                                 <div className={`form-group ${!userNameError ? "" : "has-error"}`}>

@@ -45,7 +45,7 @@ export default class CustomRenderer extends BaseRenderer {
         const shape = this.bpmnRenderer.drawShape(parentNode, element);
 
         if (element.type == 'bpmn:Task') {
-            element.height = 150;
+            element.height = 130;
             element.width = 160;
             let b = element.businessObject.$attrs.shapeName
             const line = drawLine(parentNode, 0, 50, 160, 50, 'black');

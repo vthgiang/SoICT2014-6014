@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ErrorLabel } from '../../../../../common-components';
+import { DialogModal, ErrorLabel, UploadFile } from '../../../../../common-components';
 
 import { AssetCreateValidator } from './combinedContent';
 
@@ -13,40 +13,17 @@ class FileEditModal extends Component {
     }
 
     // Bắt sự kiện thay đổi file đính kèm
-    handleChangeFile = (e) => {
-        var file = e.target.files[0];
-
-        if (file) {
-            var url = URL.createObjectURL(file);
-            var fileLoad = new FileReader();
-            fileLoad.readAsDataURL(file);
-            fileLoad.onload = () => {
-                let item = {
-                    fileName: file.name,
-                    url: url,
-                    fileUpload: file,
-                }
-                this.setState(state => {
-                    return {
-                        ...state,
-                        files: [...state.files, item],
-                    }
-                })
-            };
-        } else {
-            let item = {
-                fileName: "",
-                url: "",
-                fileUpload: ""
+    handleChangeFile = (file) => {
+        file = file.map(x => {
+            return {
+                fileName: x.fileName,
+                url: x.urlFile,
+                fileUpload: x.fileUpload
             }
-
-            this.setState(state => {
-                return {
-                    ...state,
-                    files: [...state.files, item],
-                }
-            })
-        }
+        })
+        this.setState({
+            files: file
+        });
     }
 
     // Bắt sự kiện xóa file đính kèm
@@ -167,27 +144,14 @@ class FileEditModal extends Component {
                         {/* File đính kèm */}
                         <div className="form-group">
                             <label htmlFor="file">{translate('asset.general_information.attached_file')}</label>
-                            {/* <input type="file" style={{ height: 34, paddingTop: 2 }} className="form-control" name="file" onChange={this.handleChangeFile} /> */}
-                            <br />
+                            <UploadFile multiple={true} onChange={this.handleChangeFile} />
+                            {/* <br />
                             <div className="upload btn btn-primary">
                                 <i className="fa fa-folder"></i>
                                 {" " + translate('document.choose_file')}
                                 <input className="upload" type="file" name="file" onChange={this.handleChangeFile} />
-                            </div>
+                            </div> */}
                         </div>
-                        <ul style={{ listStyle: 'none' }}>
-                            {files.map((child, index) => {
-                                return (
-                                    <React.Fragment>
-                                        <li key={index}>
-                                            <label><a style={{ cursor: "pointer" }} title='Xóa file này'><i className="fa fa-times" style={{ color: "black", marginRight: 5 }}
-                                                onClick={(e) => this.handleDeleteFile(child.fileName)} /></a></label>
-                                            <a>{child.fileName}</a>
-                                        </li>
-                                    </React.Fragment>
-                                )
-                            })}
-                        </ul>
                     </form>
                 </DialogModal>
             </React.Fragment>

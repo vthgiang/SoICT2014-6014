@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
 import { withTranslate } from 'react-redux-multilingual';
+import Swal from 'sweetalert2'
 import Rating from 'react-rating';
 import moment from 'moment';
 import 'moment/locale/vi';
 import Files from 'react-files';
 import './actionTab.css';
 
-import { ContentMaker, DialogModal, DateTimeConverter, ApiImage } from '../../../../common-components';
+import { ContentMaker, DateTimeConverter, ApiImage } from '../../../../common-components';
 import { getStorage } from '../../../../config';
 
 import { performTaskAction } from '../redux/actions';
@@ -110,7 +110,6 @@ class ActionTab extends Component {
             maxRows: 25,
             showFile: [],
             descriptionFile: "",
-            showModalDelete: '',
             deleteFile: ''
         };
         this.hover = [];
@@ -140,7 +139,7 @@ class ActionTab extends Component {
             this.props.getTaskLog(nextProps.id);
             return true;
         }
-        if(nextProps.auth.user.avatar !== this.props.auth.user.avatar) {
+        if (nextProps.auth.user.avatar !== this.props.auth.user.avatar) {
             this.props.getTaskById(nextProps.id)
             return true;
         }
@@ -742,11 +741,20 @@ class ActionTab extends Component {
         }
     }
     handleDeleteFile = async (fileId, fileName, actionId, type) => {
-
+        let { performtasks, translate } = this.props
+        Swal.fire({
+            html: `<div style="max-width: 100%; max-height: 100%" >${translate("task.task_perform.question_delete_file")} ${fileName} ? <div>`,
+            showCancelButton: true,
+            cancelButtonText: `Hủy bỏ`,
+            confirmButtonText: `Đồng ý`,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.save(performtasks?.task?._id)
+            }
+        })
         await this.setState(state => {
             return {
                 ...state,
-                showModalDelete: actionId,
                 deleteFile: {
                     fileId: fileId,
                     actionId: actionId,
@@ -755,7 +763,7 @@ class ActionTab extends Component {
                 }
             }
         });
-        window.$(`#modal-confirm-deletefile`).modal('show');
+        // window.$(`#modal-confirm-deletefile`).modal('show');
     }
     save = (taskId) => {
         let { deleteFile } = this.state
@@ -813,7 +821,7 @@ class ActionTab extends Component {
         const {
             showEvaluations, selected, comment, editComment, showChildComment, editAction, action,
             editTaskComment, showChildTaskComment, showEditTaskFile,
-            editCommentOfTaskComment, valueRating, currentUser, hover, showModalDelete, fileTaskEdited,
+            editCommentOfTaskComment, valueRating, currentUser, hover, fileTaskEdited,
             showFile, deleteFile, taskFiles, newActionEdited, newCommentOfActionEdited, newAction,
             newCommentOfAction, newTaskCommentEdited, newCommentOfTaskComment, newTaskComment, newCommentOfTaskCommentEdited
         } = this.state;
@@ -862,7 +870,7 @@ class ActionTab extends Component {
                                     return (
                                         <div key={item._id}>
                                             {item.creator ?
-                                                <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + item.creator.avatar)} alt="User Image" /> :
+                                                <ApiImage className="user-img-level1" src={'.' + item.creator.avatar} alt="User Image" /> :
                                                 <div className="user-img-level1" />
                                             }
                                             {editAction !== item._id && // khi chỉnh sửa thì ẩn action hiện tại đi
@@ -1037,19 +1045,6 @@ class ActionTab extends Component {
                                                                     </div>
                                                                 })}
                                                             </div>}
-                                                        {showModalDelete === item._id &&
-                                                            <DialogModal
-                                                                marginTop={"20vh"}
-                                                                size={50}
-                                                                maxWidth={100}
-                                                                modalID={`modal-confirm-deletefile`}
-                                                                formID={`from-confirm-deletefile`}
-                                                                isLoading={false}
-                                                                func={() => this.save(task._id)}
-                                                            >
-                                                                {translate("task.task_perform.question_delete_file")} {deleteFile.fileName} ?
-                                                            </DialogModal>
-                                                        }
                                                     </div>
                                                 </React.Fragment>
                                             }
@@ -1059,7 +1054,7 @@ class ActionTab extends Component {
                                                 <div>
                                                     {item.comments.map(child => {
                                                         return <div key={child._id}>
-                                                            <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + child.creator?.avatar)} alt="User Image" />
+                                                            <ApiImage className="user-img-level2" src={'.' + child.creator?.avatar} alt="User Image" />
 
                                                             {editComment !== child._id && // Khi đang edit thì nội dung cũ đi
                                                                 <div>
@@ -1143,20 +1138,6 @@ class ActionTab extends Component {
                                                                                     </div>
                                                                                 })}
                                                                             </div>}
-                                                                        {/* modal confirm delete file */}
-                                                                        {showModalDelete === item._id &&
-                                                                            <DialogModal
-                                                                                marginTop={"20vh"}
-                                                                                size={50}
-                                                                                maxWidth={100}
-                                                                                modalID={`modal-confirm-deletefile`}
-                                                                                formID={`from-confirm-deletefile`}
-                                                                                isLoading={false}
-                                                                                func={() => this.save(task._id)}
-                                                                            >
-                                                                                {translate("task.task_perform.question_delete_file")} {deleteFile.fileName}?
-                                                                    </DialogModal>
-                                                                        }
                                                                     </div>
                                                                 </React.Fragment>
                                                             }
@@ -1166,8 +1147,8 @@ class ActionTab extends Component {
                                                     }
                                                     {/*Thêm bình luận cho hoạt động */}
                                                     <div>
-                                                        <img className="user-img-level2"
-                                                            src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar"
+                                                        <ApiImage className="user-img-level2"
+                                                            src={'.'+auth.user.avatar} alt="user avatar"
                                                         />
                                                         <ContentMaker
                                                             inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
@@ -1194,7 +1175,7 @@ class ActionTab extends Component {
                             {/* Thêm hoạt động cho công việc*/}
                             {role === "responsible" && task &&
                                 <React.Fragment>
-                                    <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
+                                    <ApiImage className="user-img-level1" src={'.'+ auth.user.avatar} alt="user avatar" />
                                     <ContentMaker
                                         inputCssClass="text-input-level1" controlCssClass="tool-level1 row"
                                         onFilesChange={this.onActionFilesChange}
@@ -1220,7 +1201,7 @@ class ActionTab extends Component {
                                 taskComments.map((item, key) => {
                                     return (
                                         <div key={key}>
-                                            <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + item.creator?.avatar)} alt="User Image" />
+                                            <ApiImage className="user-img-level1" src={'.'+ item.creator?.avatar} alt="User Image" />
                                             {editTaskComment !== item._id && // Khi đang edit thì ẩn đi
                                                 <React.Fragment>
                                                     <div className="content-level1">
@@ -1306,20 +1287,6 @@ class ActionTab extends Component {
                                                                     </div>
                                                                 })}
                                                             </div>}
-                                                        {/* modal confirm delete file */}
-                                                        {showModalDelete === item._id &&
-                                                            <DialogModal
-                                                                marginTop={"20vh"}
-                                                                size={50}
-                                                                maxWidth={100}
-                                                                modalID={`modal-confirm-deletefile`}
-                                                                formID={`from-confirm-deletefile`}
-                                                                isLoading={false}
-                                                                func={() => this.save(task._id)}
-                                                            >
-                                                                {translate("task.task_perform.question_delete_file")} {deleteFile.fileName}?
-                                                    </DialogModal>
-                                                        }
                                                     </div>
                                                 </React.Fragment>
                                             }
@@ -1329,7 +1296,7 @@ class ActionTab extends Component {
                                                 <div className="comment-content-child">
                                                     {item.comments.map(child => {
                                                         return <div key={child._id}>
-                                                            <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + item.creator?.avatar)} alt="User Image" />
+                                                            <ApiImage className="user-img-level2" src={'.'+ item.creator?.avatar} alt="User Image" />
 
                                                             {editCommentOfTaskComment !== child._id && // Đang edit thì ẩn đi
                                                                 <div>
@@ -1416,20 +1383,6 @@ class ActionTab extends Component {
                                                                                     </div>
                                                                                 })}
                                                                             </div>}
-                                                                        {/* modal confirm delete file */}
-                                                                        {showModalDelete === item._id &&
-                                                                            <DialogModal
-                                                                                marginTop={"20vh"}
-                                                                                size={50}
-                                                                                maxWidth={100}
-                                                                                modalID={`modal-confirm-deletefile`}
-                                                                                formID={`from-confirm-deletefile`}
-                                                                                isLoading={false}
-                                                                                func={() => this.save(task._id)}
-                                                                            >
-                                                                                {translate("task.task_perform.question_delete_file")} {deleteFile.fileName}?
-                                                                    </DialogModal>
-                                                                        }
                                                                     </div>
                                                                 </React.Fragment>
                                                             }
@@ -1439,7 +1392,7 @@ class ActionTab extends Component {
                                                     }
                                                     {/*Thêm bình luận cho bình luận */}
                                                     <div>
-                                                        <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
+                                                        <ApiImage className="user-img-level2" src={('.'+ auth.user.avatar)} alt="user avatar" />
                                                         <ContentMaker
                                                             inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
                                                             onFilesChange={this.onCommentOfTaskCommentFilesChange}
@@ -1464,7 +1417,7 @@ class ActionTab extends Component {
                                 }) : null
                             }
                             {/* Thêm bình luận cho công việc*/}
-                            <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="User Image" />
+                            <ApiImage className="user-img-level1" src={('.' + auth.user.avatar)} alt="User Image" />
                             <ContentMaker
                                 inputCssClass="text-input-level1" controlCssClass="tool-level1 row"
                                 onFilesChange={this.onTaskCommentFilesChange}
@@ -1505,7 +1458,11 @@ class ActionTab extends Component {
                                                                 </ul>
                                                             </div>}
                                                         <div>
-                                                            <strong>{item.creator?.name} </strong>
+                                                            <ul className='list-inline'>
+                                                            <li><strong>{item.creator?.name} </strong></li>
+                                                            <li><span className="text-sm">{<DateTimeConverter dateTime={item.createdAt} />}</span></li>
+                                                            </ul>
+                                                            
                                                             {item.description}
                                                         </div>
                                                         <div>
@@ -1533,7 +1490,7 @@ class ActionTab extends Component {
                                                 {showEditTaskFile === item._id &&
                                                     <React.Fragment>
                                                         <div style={{ marginTop: '15px' }}>
-                                                            <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
+                                                            <ApiImage className="user-img-level1" src={('.' + auth.user.avatar)} alt="user avatar" />
                                                             <ContentMaker
                                                                 inputCssClass="text-input-level1" controlCssClass="tool-level2 row"
                                                                 // styletext={{ marginTop: "15px" }}
@@ -1560,19 +1517,6 @@ class ActionTab extends Component {
                                                                         </div>
                                                                     })}
                                                                 </div>}
-                                                            {showModalDelete === item._id &&
-                                                                <DialogModal
-                                                                    marginTop={"20vh"}
-                                                                    size={50}
-                                                                    maxWidth={100}
-                                                                    modalID={`modal-confirm-deletefile`}
-                                                                    formID={`from-confirm-deletefile`}
-                                                                    isLoading={false}
-                                                                    func={() => this.save(task._id)}
-                                                                >
-                                                                    {translate("task.task_perform.question_delete_file")} {deleteFile.fileName} ?
-                                                                </DialogModal>
-                                                            }
                                                         </div>
                                                     </React.Fragment>
                                                 }
@@ -1583,7 +1527,7 @@ class ActionTab extends Component {
                             </div>
                             <React.Fragment>
                                 <div style={{ marginTop: '15px' }}>
-                                    <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
+                                    <ApiImage className="user-img-level1" src={('.' + auth.user.avatar)} alt="user avatar" />
                                     <ContentMaker
                                         inputCssClass="text-input-level1" controlCssClass="tool-level1"
                                         onFilesChange={this.onTaskFilesChange}

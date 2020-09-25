@@ -35,12 +35,11 @@ class EmployeeImportTab extends Component {
                 checkFileImport: checkFileImport
             })
         }
-
     }
 
     isFormValidated = () => {
         const { rowErrorOfReducer, dataOfReducer } = this.props;
-        let { rowError, importData } = this.state;
+        let { rowError = [], importData = [] } = this.state;
         if (rowErrorOfReducer !== undefined) {
             rowError = rowErrorOfReducer;
             importData = dataOfReducer
@@ -96,7 +95,7 @@ class EmployeeImportTab extends Component {
                 <div id={id} className={className}>
                     <div className="box-body row">
                         {/* Cấu hình file import */}
-                        <div className="form-group col-md-12" style={{ marginBottom: 0 }}>
+                        <div className="form-group col-md-12 col-xs-12" style={{ marginBottom: 0 }}>
                             <ConFigImportFile
                                 id={`import_employees_config${id}`}
                                 configData={configData}
@@ -105,26 +104,28 @@ class EmployeeImportTab extends Component {
                                 handleChangeConfig={this.handleChangeConfig}
                             />
                         </div>
-                        <div className="form-group row col-md-12" style={{ marginBottom: 0 }}>
-                            {/* File import */}
-                            <div className="form-group col-md-4 col-xs-12">
-                                <ImportFileExcel
-                                    configData={configData}
-                                    handleImportExcel={this.handleImportExcel}
-                                />
-                            </div>
+
+                        {/* File import */}
+                        <div className="form-group col-md-4 col-xs-12" style={{ paddingTop: 5 }}>
+                            <ImportFileExcel
+                                configData={configData}
+                                handleImportExcel={this.handleImportExcel}
+                            />
+                        </div>
+
+
+                        <div className="form-group pull-right col-md-4 col-xs-12" style={{ marginBottom: 10 }}>
                             {/* Dowload file import mẫu */}
                             <ExportExcel id="download_template_salary" type='link' exportData={teamplateImport}
                                 buttonName={` ${translate('human_resource.download_file')}`} />
                         </div>
-                        {importData && importData.length !== 0 &&
-                            <div className="col-md-12">
-                                <button type="button" className="btn btn-primary" onClick={handleImport} disabled={!this.isFormValidated()}>Import excel</button>
-                            </div>
-                        }
+
+                        <div className="form-group col-md-8 col-xs-12">
+                            <button type="button" className="pull-right btn btn-success" onClick={handleImport} disabled={!this.isFormValidated()}>Import excel</button>
+                        </div>
 
                         {/* Hiện thị data import */}
-                        <div className="col-md-12">
+                        <div className="col-md-12 col-xs-12">
                             <ShowImportData
                                 id={`import_employee_infor_show_data${id}`}
                                 configData={configData}
@@ -138,7 +139,7 @@ class EmployeeImportTab extends Component {
                         </div>
                     </div>
                 </div>
-            </React.Fragment>
+            </React.Fragment >
         )
     }
 }

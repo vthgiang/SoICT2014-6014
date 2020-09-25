@@ -16,8 +16,9 @@ class TimesheetsCreateForm extends Component {
         this.state = {
             employee: "",
             month: this.formatDate(Date.now(), true),
-            workSession1: allDayOfMonth.map(x => false),
-            workSession2: allDayOfMonth.map(x => false),
+            shift1: allDayOfMonth.map(x => false),
+            shift2: allDayOfMonth.map(x => false),
+            shift3: allDayOfMonth.map(x => false),
             allDayOfMonth: allDayOfMonth,
         };
     }
@@ -97,8 +98,9 @@ class TimesheetsCreateForm extends Component {
         if (value) {
             let allDayOfMonth = this.getAllDayOfMonth(value);
             this.setState({
-                workSession1: allDayOfMonth.map(x => false),
-                workSession2: allDayOfMonth.map(x => false),
+                shift1: allDayOfMonth.map(x => false),
+                shift2: allDayOfMonth.map(x => false),
+                shift3: allDayOfMonth.map(x => false),
                 allDayOfMonth: allDayOfMonth
             })
         }
@@ -124,16 +126,21 @@ class TimesheetsCreateForm extends Component {
      * @param {*} index : Số thứ tự công thay đổi
      */
     handleCheckBoxChange = (workSession, index) => {
-        let { workSession1, workSession2 } = this.state;
-        if (workSession === "workSession1") {
-            workSession1[index] = !workSession1[index];
+        let { shift1, shift2, shift3 } = this.state;
+        if (workSession === "shift1") {
+            shift1[index] = !shift1[index];
             this.setState({
-                workSession1: workSession1
+                shift1: shift1
+            })
+        } else if (workSession === "shift2") {
+            shift2[index] = !shift2[index];
+            this.setState({
+                shift2: shift2
             })
         } else {
-            workSession2[index] = !workSession2[index];
+            shift3[index] = !shift3[index];
             this.setState({
-                workSession2: workSession2
+                shift3: shift3
             })
         }
     }
@@ -158,7 +165,7 @@ class TimesheetsCreateForm extends Component {
     render() {
         const { timesheets, translate, employeesManager } = this.props;
 
-        const { errorOnEmployee, errorOnMonthSalary, month, employee, allDayOfMonth, workSession1, workSession2 } = this.state;
+        const { errorOnEmployee, errorOnMonthSalary, month, employee, allDayOfMonth, shift1, shift2, shift3 } = this.state;
 
         let listAllEmployees = employeesManager.listAllEmployees;
         return (
@@ -215,8 +222,8 @@ class TimesheetsCreateForm extends Component {
                                         {allDayOfMonth.map((x, index) => (
                                             <th key={index}>
                                                 <div className="checkbox" style={{ textAlign: 'center' }}>
-                                                    <input type="checkbox" onChange={() => this.handleCheckBoxChange('workSession1', index)}
-                                                        style={{ margin: 'auto', position: 'inherit', width: 17, height: 17 }} checked={workSession1[index]} />
+                                                    <input type="checkbox" onChange={() => this.handleCheckBoxChange('shift1', index)}
+                                                        style={{ margin: 'auto', position: 'inherit', width: 17, height: 17 }} checked={shift1[index]} />
                                                 </div>
                                             </th>
                                         ))}
@@ -226,8 +233,19 @@ class TimesheetsCreateForm extends Component {
                                         {allDayOfMonth.map((x, index) => (
                                             <th key={index}>
                                                 <div className="checkbox" style={{ textAlign: 'center' }}>
-                                                    <input type="checkbox" onChange={() => this.handleCheckBoxChange('workSession2', index)}
-                                                        style={{ margin: 'auto', position: 'inherit', width: 17, height: 17 }} checked={workSession2[index]} />
+                                                    <input type="checkbox" onChange={() => this.handleCheckBoxChange('shift2', index)}
+                                                        style={{ margin: 'auto', position: 'inherit', width: 17, height: 17 }} checked={shift2[index]} />
+                                                </div>
+                                            </th>
+                                        ))}
+                                    </tr>
+                                    <tr>
+                                        <td>{translate('human_resource.timesheets.shifts3')}</td>
+                                        {allDayOfMonth.map((x, index) => (
+                                            <th key={index}>
+                                                <div className="checkbox" style={{ textAlign: 'center' }}>
+                                                    <input type="checkbox" onChange={() => this.handleCheckBoxChange('shift3', index)}
+                                                        style={{ margin: 'auto', position: 'inherit', width: 17, height: 17 }} checked={shift3[index]} />
                                                 </div>
                                             </th>
                                         ))}

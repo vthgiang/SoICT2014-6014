@@ -29,7 +29,7 @@ class TasksSchedule extends Component {
       .toDate();
 
     this.infoSearch = {
-      taskStatus: ["Inprocess"],
+      taskStatus: ["inprocess"],
     }
 
     this.INFO_CALENDAR = {
@@ -69,7 +69,7 @@ class TasksSchedule extends Component {
 
   handleSelectStatus = async (taskStatus) => {
     if (taskStatus.length === 0) {
-      taskStatus = ["Inprocess"];
+      taskStatus = ["inprocess"];
     }
 
     this.infoSearch.taskStatus = taskStatus;
@@ -636,7 +636,7 @@ class TasksSchedule extends Component {
         data = this.countTasks(fourTasks);
       }
     }
-
+    console.log('data', data);
     return (
       <React.Fragment>
         <div className="box-body qlcv">
@@ -696,15 +696,15 @@ class TasksSchedule extends Component {
           <div className="form-inline" style={{ textAlign: "center", margin: "10px" }}>
             <div className="form-group">
               <div id="in-time"></div>
-              <label id="label-for-calendar">{translate('task.task_management.in_time')}({data.intime ? data.intime : 0})</label>
+              <label id="label-for-calendar">{translate('task.task_management.in_time')}({data && data.intime ? data.intime : 0})</label>
             </div>
             <div className="form-group">
               <div id="delay"></div>
-              <label id="label-for-calendar">{translate('task.task_management.delayed_time')}({data.delay ? data.delay : 0})</label>
+              <label id="label-for-calendar">{translate('task.task_management.delayed_time')}({data && data.delay ? data.delay : 0})</label>
             </div>
             <div className="form-group">
               <div id="not-achieved"></div>
-              <label id="label-for-calendar">{translate('task.task_management.not_achieved')}({data.overDue ? data.overDue : 0})</label>
+              <label id="label-for-calendar">{translate('task.task_management.not_achieved')}({data && data.overDue ? data.overDue : 0})</label>
             </div>
 
           </div>

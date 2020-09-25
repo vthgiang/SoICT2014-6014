@@ -456,7 +456,7 @@ class DepreciationEditForm extends Component {
                                 <div className={`form-group ${!errorOnEstimatedTotalProduction ? "" : "has-error"} `}>
                                     <label htmlFor="estimatedTotalProduction">{translate('asset.depreciation.estimated_production')}<span className="text-red">*</span></label>
                                     <input type="number" className="form-control" name="estimatedTotalProduction" value={estimatedTotalProduction} onChange={this.handleEstimatedTotalProductionChange}
-                                        placeholder='Sản lượng theo công suất thiết kế' autoComplete="off" />
+                                        placeholder={translate('asset.depreciation.estimated_production')} autoComplete="off" />
                                     <ErrorLabel content={errorOnEstimatedTotalProduction} />
                                 </div>
                             }
