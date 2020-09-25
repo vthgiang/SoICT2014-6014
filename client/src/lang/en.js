@@ -1576,6 +1576,7 @@ export default {
                 with_cost: 'with a cost of',
                 commitment_time: 'and commitment time',
                 month: 'months',
+                year: 'year',
                 staff: 'staff',
                 attend: 'involved',
 
@@ -1724,11 +1725,15 @@ export default {
                 manager: 'Manager',
                 user: 'User',
                 organization_unit: 'Organizaitonal Unit',
+                select_organization_unit: 'Select organization unit',
+                select_all_organization_unit: 'Select all',
                 handover_from_date: 'Handover from date',
                 handover_to_date: 'Handover to date',
                 status: 'Status',
                 action: 'Action',
                 asset_value: 'Asset value',
+                disposal_date: 'Disposal date',
+
 
                 general_information: 'General information',
                 usage_information: 'Usage information',
@@ -1920,6 +1925,7 @@ export default {
                 months_production: 'Product production in months',
                 production: 'Production',
                 select_depreciation_type: 'Select depreciation type',
+                select_all_depreciation_type: 'Select all',
                 line: 'Straight - line depreciation method',
                 declining_balance: 'Declining Balance depreciation method',
                 units_production: 'Unit of production method',

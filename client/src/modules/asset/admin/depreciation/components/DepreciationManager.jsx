@@ -361,14 +361,16 @@ class DepreciationManager extends Component {
     }
 
     convertGroupAsset = (group) => {
+        const { translate } = this.props;
+
         if (group === 'building') {
-            return 'Mặt bằng';
+            return translate('asset.asset_info.building');
         } else if (group === 'vehicle') {
-            return 'Xe cộ'
+            return translate('asset.asset_info.vehicle')
         } else if (group === 'machine') {
-            return 'Máy móc'
+            return translate('asset.asset_info.machine')
         } else {
-            return 'Khác'
+            return translate('asset.asset_info.other')
         }
 
     }
@@ -447,14 +449,14 @@ class DepreciationManager extends Component {
 
                         {/* Loại khấu hao */}
                         <div className="form-group">
-                            <label className="form-control-static">Loại khấu hao</label>
+                            <label className="form-control-static">{translate('asset.general_information.asset_type')}</label>
                             <SelectMulti id={`multiSelectDepreTypeInManagement`} multiple="multiple"
-                                options={{ nonSelectedText: "Chọn loại khấu hao", allSelectedText: "Chọn tất cả" }}
+                                options={{ nonSelectedText: translate('asset.depreciation.select_depreciation_type'), allSelectedText: translate('asset.depreciation.select_all_depreciation_type') }}
                                 onChange={this.handleDepreciationTypeChange}
                                 items={[
-                                    { value: "straight_line", text: "Đường thẳng" },
-                                    { value: "declining_balance", text: "Số dư giảm dần" },
-                                    { value: "units_of_production", text: "Sản lượng" },
+                                    { value: "straight_line", text: translate('asset.depreciation.line') },
+                                    { value: "declining_balance", text: translate('asset.depreciation.declining_balance') },
+                                    { value: "units_of_production", text: translate('asset.depreciation.units_production') },
                                 ]}
                             >
                             </SelectMulti>
@@ -462,7 +464,7 @@ class DepreciationManager extends Component {
 
                         {/* Tháng bắt đầu trích khấu hao */}
                         <div className="form-group">
-                            <label className="form-control-static">Bắt đầu khấu hao</label>
+                            <label className="form-control-static">{translate('asset.general_information.start_depreciation')}</label>
                             <DatePicker
                                 id="month-start-depreciation"
                                 dateFormat="month-year"
@@ -530,9 +532,9 @@ class DepreciationManager extends Component {
                                             <td>{x.assetType && x.assetType.length ? x.assetType.map((item, index) => { let suffix = index < x.assetType.length - 1 ? ", " : ""; return item.typeName + suffix }) : 'Asset is deleted'}</td>
                                             <td>{formater.format(parseInt(x.cost))} VNĐ</td>
                                             <td>{this.formatDate(x.startDepreciation)}</td>
-                                            <td>{x.usefulLife} tháng</td>
-                                            <td>{formater.format(result[0])} VNĐ/năm</td>
-                                            <td>{formater.format(result[1])} VNĐ/tháng</td>
+                                            <td>{x.usefulLife} {translate('training.course.month')}</td>
+                                            <td>{formater.format(result[0])} VNĐ/{translate('training.course.year')}</td>
+                                            <td>{formater.format(result[1])} VNĐ/{translate('training.course.month')}</td>
                                             <td>{formater.format(x.cost - result[2])} VNĐ</td>
                                             <td>{formater.format(result[2])} VNĐ</td>
                                             <td>{this.addMonth(x.startDepreciation, x.usefulLife)}</td>
