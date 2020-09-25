@@ -168,7 +168,7 @@
     max-height: 40px; 
     display: block; 
     display: -webkit-box; 
-    -webkit-line-clamp: 2; /* số dòng */ 
+    -webkit-line-clamp: 2 !important; /* số dòng */ 
     -webkit-box-orient: vertical;
     overflow: hidden;
     word-break: break-word;
@@ -184,10 +184,12 @@
     height: 40px; 
     display: block; 
     display: -webkit-box; 
-    -webkit-line-clamp: 2; /* số dòng */ 
+    -webkit-line-clamp: 2 !important; /* số dòng */  
     -webkit-box-orient: vertical;
-    /* word-break: break-all; */
     overflow: hidden;
+    word-break: break-word;
+    white-space: -moz-pre-wrap; /* Firefox 1.0-2.0 */
+    white-space: pre-wrap;  
 }
 .task-process-gate-way-title {
     margin-bottom: 5px;
@@ -205,7 +207,6 @@
     overflow: hidden;
     
 }
-
 
 
 .list-task-process-gate-way-responsible {
