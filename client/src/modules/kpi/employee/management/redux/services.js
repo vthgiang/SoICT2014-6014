@@ -30,7 +30,7 @@ function getAllKpiSetsOrganizationalUnitByMonth(user, department, date) {
  * @param {*} dateOld 
  * @param {*} dateNew 
  */
-function copyEmployeeKPI( id, idcreator, unitId,  dateNew){
+function copyEmployeeKPI(id, idcreator, unitId, dateNew){
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/kpi/employee/management/employee-kpi-sets/${id}/copy`,
         method: 'POST',

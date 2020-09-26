@@ -68,10 +68,11 @@ class ModalDetailKPI extends Component {
             fileName+="tháng "+month+ "-" +year+"_";
 
         }
-        fileName += data.name;
-        let unitKpiData=[],detailData;
 
-        if(data){
+        let unitKpiData = [], detailData;
+
+        if (data) {
+            fileName += data.name;
             //Component excel nhận truyền vào là dữ liệu dạng mảng
             let dataObject ={
                 unitKpiName : data.name,
