@@ -94,8 +94,8 @@ if (process.env.MULTI_TENANT === 'true') {
 	// // Plan
 	// app.use("/plans", require("./modules/_multi-tenant/plan/plan.route"));
 
-	// // example
-	// app.use("/examples", require("./modules/_multi-tenant/example/example.route"));
+	// example
+	app.use("/examples", require("./modules/_multi-tenant/example/example.route"));
 
 	app.use("/documents", require("./modules/_multi-tenant/document/document.route"));
 

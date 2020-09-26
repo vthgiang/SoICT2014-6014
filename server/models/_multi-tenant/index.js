@@ -83,4 +83,7 @@ module.exports = {
 
     // plan
     Plan: require('./plan/plan.model'),
+
+    // Example
+    Example: require('./example/example.model'),
 }
