@@ -141,10 +141,21 @@ class TasksSchedule extends Component {
             let multi = false;
             let responsibleEmployeeIds = [];
             let responsibleEmployeeNames = [];
+            let addDate;
 
             currentTime = new Date();
+
+            // Xu ly neu ngay bat dau bang ngay ket thuc
+            if (tasksByStatus[i - 1].startDate === tasksByStatus[i - 1].endDate) {
+              addDate = Date.parse(tasksByStatus[i - 1].endDate) + 86400000;
+            }
+            else {
+              addDate = tasksByStatus[i - 1].endDate;
+            }
+
             startTime = new Date(tasksByStatus[i - 1].startDate);
-            endTime = new Date(tasksByStatus[i - 1].endDate);
+            endTime = new Date(addDate);
+
             start_time = moment(startTime);
             end_time = moment(endTime);
 
@@ -153,7 +164,7 @@ class TasksSchedule extends Component {
               responsibleEmployeeNames.push(x.name);
             });
 
-            title1 = tasksByStatus[i - 1].name + " - " + tasksByStatus[i - 1].progress + "%";
+            title1 = `${tasksByStatus[i - 1].name} - ${tasksByStatus[i - 1].progress} % `;
             title2 = tasksByStatus[i - 1].name + " - " + responsibleEmployeeNames.join(" - ") + " - " + tasksByStatus[i - 1].progress + "%";
             if (responsibleEmployeeIds.length > 1) {
               multi = true;
@@ -288,7 +299,7 @@ class TasksSchedule extends Component {
 
             if (tasksByStatus2[i]) {
               let startTime, endTime, start_time, end_time;
-              let titleTask = tasksByStatus2[i].name + " - " + tasksByStatus2[i].progress + "%";
+              let titleTask = `${tasksByStatus2[i].name} - ${tasksByStatus2[i].progress} % `;
 
               startTime = new Date(tasksByStatus2[i].startDate);
               endTime = new Date(tasksByStatus2[i].endDate);
@@ -451,13 +462,13 @@ class TasksSchedule extends Component {
   displayTaskProgress = async (progress, x, color) => {
     if (x) {
       let d, child;
+
       d = document.createElement('div');
       d.setAttribute("class", "task-progress");
-      d.style.width = `${progress}%`;
+      d.style.width = progress > 5 ? `${progress}%` : `5px`;
       d.style.backgroundColor = color;
 
       child = x.childElementCount;
-
       if (child === 1) {
         await x.appendChild(d);
       }
@@ -466,7 +477,6 @@ class TasksSchedule extends Component {
 
   handleItemClick = async (itemId) => {
     let { tasks } = this.props;
-    console.log('quangld');
     var taskList, tasksByStatus;
 
     if (tasks) {
@@ -636,7 +646,7 @@ class TasksSchedule extends Component {
         data = this.countTasks(fourTasks);
       }
     }
-    console.log('data', data);
+
     return (
       <React.Fragment>
         <div className="box-body qlcv">

@@ -2232,9 +2232,9 @@ export default {
                 tasks_calendar: 'Lịch công việc',
                 model_detail_task_title: 'Thông tin chi tiết công việc',
                 collaborative_tasks: 'Nhiều người thực hiện',
-                in_time: 'Đúng tiến độ',
-                delayed_time: 'Trễ tiến độ',
-                not_achieved: 'Quá hạn',
+                in_time: 'Đúng tiến độ ',
+                delayed_time: 'Trễ tiến độ ',
+                not_achieved: 'Quá hạn ',
 
                 err_organizational_unit: 'Đơn vị đã bị xóa',
                 err_name_task: 'Tên đã bị xóa',

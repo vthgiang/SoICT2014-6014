@@ -222,6 +222,24 @@ class ListAsset extends Component {
             return 'Khác'
         }
     }
+    convertStatusAsset = (status) => {
+        const { translate } = this.props;
+        if (status === 'ready_to_use') {
+            return translate('asset.general_information.ready_use');
+        }
+        else if (status === 'in_use') {
+            return translate('asset.general_information.using');
+        }
+        else if (status === 'broken') {
+            return translate('asset.general_information.damaged');
+        }
+        else if (status === 'lost') {
+            return translate('asset.general_information.lost');
+        }
+        else {
+            return translate('asset.general_information.disposal')
+        }
+    }
 
     render() {
         const { translate, assetsManager, assetType, user, auth } = this.props;
@@ -376,7 +394,7 @@ class ListAsset extends Component {
                                         <td>{x.assignedToUser ? (userlist.length && userlist.filter(item => item._id === x.assignedToUser).pop() ? userlist.filter(item => item._id === x.assignedToUser).pop().name : 'User is deleted') : ''}</td>
                                         <td>{x.handoverFromDate ? this.formatDate2(x.handoverFromDate) : ''}</td>
                                         <td>{x.handoverToDate ? this.formatDate2(x.handoverToDate) : ''}</td>
-                                        <td>{x.status}</td>
+                                        <td>{this.convertStatusAsset(x.status)}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title={translate('asset.general_information.view')}><i className="material-icons">view_list</i></a>
                                             <a onClick={() => this.handleCreateRecommend(x)} className="post_add" style={{ width: '5px' }} title={translate('menu.recommend_distribute_asset')}><i className="material-icons">post_add</i></a>
@@ -445,7 +463,7 @@ class ListAsset extends Component {
                         _id={currentRow._id}
                         asset={currentRow._id}
                         typeRegisterForUse={currentRow.typeRegisterForUse}
-                        managedBy = {currentRow.managedBy}
+                        managedBy={currentRow.managedBy}
                     />
                 }
             </div >
