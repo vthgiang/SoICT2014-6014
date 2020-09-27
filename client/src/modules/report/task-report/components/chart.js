@@ -393,7 +393,7 @@ function filterFieldInListTask(tasks) {
             time: (frequency && frequency === 'month') ? convertMonthYear(item.date)
                 : (frequency === 'quarter' ? getQuarter(item.date) : convertYear(item.date)),
             task: item.taskInformations.filter(task => {
-                if (task.type === 'Number')
+                if (task.type === 'number')
                     return task;
             }),
             responsibleEmployees: item.responsibleEmployees.map(x => x.name),

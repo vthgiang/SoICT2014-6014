@@ -160,10 +160,10 @@ class ModalDetailKPIPersonal extends Component {
             dataSheets: [
                 {
                     sheetName: "sheet1",
-                    sheetTitle: kpiData[0].sheetTitle,
+                    sheetTitle: kpiData[0] && kpiData[0].sheetTitle,
                     tables: [
                         {
-                            tableName: 'Thông tin chung KPI ' + kpiData[0].kpiName,
+                            tableName: 'Thông tin chung KPI ' + (kpiData[0] && kpiData[0].kpiName),
                             columns: [
                                 { key: "kpiName", value: "Tên KPI cá nhân" },
                                 { key: "kpiCriteria", value: "Tiêu chí đánh giá" },
@@ -207,7 +207,7 @@ class ModalDetailKPIPersonal extends Component {
                 taskId: id,
             }
         });
-        window.$(`#modal-detail-task`).modal('show');
+        window.$(`#modal-detail-task-kpi-detail`).modal('show');
     }
     showDetailTaskImportanceCal = async (item) => {
         await this.setState(state => {
@@ -378,7 +378,7 @@ class ModalDetailKPIPersonal extends Component {
                         })}
                     </div>
                 </DialogModal>
-                {<ModalDetailTask id={taskId} />}
+                {<ModalDetailTask action={'kpi-detail'} id={taskId} />}
             </React.Fragment>
         );
     }

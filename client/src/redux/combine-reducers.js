@@ -5,6 +5,8 @@ import { systemSetting } from '../modules/system-admin/system-setting/redux/redu
 import { auth } from '../modules/auth/redux/reducers';
 import { company } from '../modules/system-admin/company/redux/reducers';
 import { systemLinks } from '../modules/system-admin/system-link/redux/reducers';
+
+import { system } from '../modules/super-admin/system/redux/reducers';
 import { user } from '../modules/super-admin/user/redux/reducers';
 import { role } from '../modules/super-admin/role/redux/reducers';
 import { link } from '../modules/super-admin/link/redux/reducers';
@@ -50,13 +52,15 @@ import { recommendDistribute } from "../modules/asset/user/use-request/redux/red
 import { assetType } from "../modules/asset/admin/asset-type/redux/reducers";
 import { assetsManager } from "../modules/asset/admin/asset-information/redux/reducers";
 import { incidentManager } from "../modules/asset/admin/incident/redux/reducers";
-
+import { mintainanceManager } from "../modules/asset/admin/maintainance/redux/reducers";
 
 //report 
 import { reports } from "../modules/report/task-report/redux/reducers";
 
-//material
-import { materials } from "../modules/warehouse-manager/material-manager/redux/reducers";
+//warehouse
+import { materials } from "../modules/warehouse/material-manager/redux/reducers";
+import { categories } from "../modules/warehouse/category-management/redux/reducers";
+import { goods } from "../modules/warehouse/good-management/redux/reducers";
 
 //crm
 import { customer } from "../modules/crm/customer/redux/reducers";
@@ -84,6 +88,7 @@ const appReducer = combineReducers({
     systemComponents,
 
     //admin
+    system,
     user,
     role,
     link,
@@ -135,14 +140,17 @@ const appReducer = combineReducers({
     assetType,
     assetsManager,
     incidentManager,
+    mintainanceManager,
 
     dashboardEvaluationEmployeeKpiSet,
 
     //report
     reports,
 
-    //material
+    //warehouse
     materials,
+    categories,
+    goods,
 
     // customer management
     crm: combineReducers({

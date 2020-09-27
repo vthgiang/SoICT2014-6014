@@ -6,18 +6,27 @@ import './tooltip.css';
 class ToolTip extends Component {
     constructor(props) {
         super(props);
-        this.state = {  }
+        this.state = {}
+    }
+
+    componentDidMount = () => {
+        window.$(document).ready(function () {
+            window.$('[data-toggle="tooltip"]').tooltip();
+        });
     }
 
     displayDefault = (data) => {
+        let title = data.map(element => {
+            return `${element}`
+        })
         return <React.Fragment>
             {
                 data.map((element, index, arr) => {
-                    if(arr.length < 4){
-                        if(index !== arr.length - 1) return `${element}, `;
+                    if (arr.length < 4) {
+                        if (index !== arr.length - 1) return `${element}, `;
                         else return `${element}`
-                    }else{
-                        if(index < 3 ){
+                    } else {
+                        if (index < 3) {
                             return `${element}, `
                         }
                     }
@@ -25,34 +34,39 @@ class ToolTip extends Component {
             }
             {
                 data.length >= 4 &&
-                <div className="tooltip2">...
-                    <span className="tooltip2text">
-                        {
-                            data.map((element, index, arr) => {
-                                if(index !== arr.length - 1) return `${element}, `;
-                                else return `${element}`
-                            })
-                        }
-                    </span>
-                </div>
+                <a href="#" data-toggle="tooltip" data-placement="auto" title={title}>...</a>
             }
+        </React.Fragment>
+    }
+
+    displayTooltipForIcon = (data, icon) => {
+        let title = data.map(element => {
+            return `${element}`
+        })
+
+        return <React.Fragment>
+
+            <a href="#" data-toggle="tooltip" data-placement="auto" title={title}>
+                <i className="material-icons">{icon}</i>
+            </a>
+
         </React.Fragment>
     }
 
     displayTitleContent = (data) => {
         var convertData = [];
-        var min = data.length > 5 ? data.length-5 : 0;
-        for (let index = data.length-1 ; index >= min; index--) {
+        var min = data.length > 5 ? data.length - 5 : 0;
+        for (let index = data.length - 1; index >= min; index--) {
             const element = data[index];
             convertData.push(element);
         }
-        if(data.length <= 0)
+        if (data.length <= 0)
             return null;
         else return <React.Fragment>
             <div className="tooltip2">
-                <u className="text-blue" style={{marginLeft: '3px'}}>chi tiết</u>
+                <u className="text-blue" style={{ marginLeft: '3px' }}>chi tiết</u>
                 <span className="tooltip2text">
-                    {convertData.map((content, i)=> {
+                    {convertData.map((content, i) => {
                         return <p key={i} className="text-left" style={{
                             border: '0.2px solid gray',
                             borderRadius: '1px',
@@ -62,25 +76,26 @@ class ToolTip extends Component {
                 </span>
             </div>
         </React.Fragment>
-        
+
     }
- 
-    diplayToolTip = (data, type) => {
-        switch(type){
-            case 'latest_history': 
+
+    diplayToolTip = (data, type, icon) => {
+        switch (type) {
+            case 'latest_history':
                 return this.displayTitleContent(data);
+            case 'icon_tooltip':
+                return this.displayTooltipForIcon(data, icon);
             default:
                 return this.displayDefault(data);
         }
     }
 
-    render() { 
-        const {dataTooltip, type=undefined} = this.props;
-
-        return this.diplayToolTip(dataTooltip, type);
+    render() {
+        const { dataTooltip, type = undefined, materialIcon = "help" } = this.props;
+        return this.diplayToolTip(dataTooltip, type, materialIcon);
     }
 }
- 
+
 
 const mapState = state => state;
 const ToolTipExport = connect(mapState, null)(withTranslate(ToolTip));

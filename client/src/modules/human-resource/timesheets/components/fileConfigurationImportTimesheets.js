@@ -40,8 +40,10 @@ function templateImport(translate) {
                 employeeNumber: "MS2015123"
             },
             month: "2020-07-01",
-            workSession1: [true, false, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
-            workSession2: [false, true, true, true, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
+            shift1: [true, false, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
+            shift2: [false, true, true, true, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
+            shift3: [true, false, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
+
         },
         {
             employee: {
@@ -49,16 +51,19 @@ function templateImport(translate) {
                 employeeNumber: "MS2015124"
             },
             month: "2020-07-01",
-            workSession1: [true, false, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
-            workSession2: [false, true, true, true, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
+            shift1: [true, false, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
+            shift2: [false, true, true, true, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
+            shift3: [true, false, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
         }
     ]
     let dataExport = [];
     data.map((x, index) => {
-        let shifts1 = x.workSession1;
-        let shifts2 = x.workSession2;
+        let shifts1 = x.shift1;
+        let shifts2 = x.shift2;
+        let shifts3 = x.shift3;
         let colShifts1 = {},
-            colShifts2 = {};
+            colShifts2 = {},
+            colShifts3 = {};
         shifts1.forEach((y, key) => {
             if (y === true) {
                 colShifts1 = {
@@ -71,7 +76,7 @@ function templateImport(translate) {
                     [`date${key + 1}`]: ''
                 }
             }
-        })
+        });
         shifts2.forEach((y, key) => {
             if (y === true) {
                 colShifts2 = {
@@ -84,26 +89,47 @@ function templateImport(translate) {
                     [`date${key + 1}`]: ''
                 }
             }
+        });
+        shifts3.forEach((y, key) => {
+            if (y === true) {
+                colShifts3 = {
+                    ...colShifts3,
+                    [`date${key + 1}`]: 'X'
+                };
+            } else {
+                colShifts3 = {
+                    ...colShifts3,
+                    [`date${key + 1}`]: ''
+                }
+            }
         })
 
         let row = [{
-            merges: {
-                STT: 2,
-                employeeNumber: 2,
-                fullName: 2,
+                merges: {
+                    STT: 3,
+                    employeeNumber: 3,
+                    fullName: 3,
+                },
+                STT: index + 1,
+                fullName: x.employee ? x.employee.fullName : "",
+                employeeNumber: x.employee ? x.employee.employeeNumber : "",
+                space: translate('human_resource.timesheets.shifts1'),
+                ...colShifts1,
+            }, {
+                STT: "",
+                fullName: "",
+                employeeNumber: "",
+                space: translate('human_resource.timesheets.shifts2'),
+                ...colShifts2,
             },
-            STT: index + 1,
-            fullName: x.employee ? x.employee.fullName : "",
-            employeeNumber: x.employee ? x.employee.employeeNumber : "",
-            space: translate('human_resource.timesheets.shifts1'),
-            ...colShifts1,
-        }, {
-            STT: "",
-            fullName: "",
-            employeeNumber: "",
-            space: translate('human_resource.timesheets.shifts2'),
-            ...colShifts2,
-        }, ]
+            {
+                STT: "",
+                fullName: "",
+                employeeNumber: "",
+                space: translate('human_resource.timesheets.shifts3'),
+                ...colShifts3,
+            },
+        ]
         dataExport = dataExport.concat(row);
     });
 
@@ -121,6 +147,7 @@ function templateImport(translate) {
         dataSheets: [{
             sheetName: "Sheet1",
             sheetTitle: translate('human_resource.timesheets.file_name_export'),
+            sheetTitleWidth: 35,
             tables: [{
                 merges: [{
                     key: "other",

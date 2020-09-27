@@ -1,10 +1,11 @@
 const Models = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
+const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 const { RecommendProcure, User } = Models;
 
 /**
  * Lấy danh sách phiếu đề nghị mua sắm thiết bị
  */
-exports.searchRecommendProcures = async (query, portal) => {
+exports.searchPurchaseRequests = async (portal, query) => {
     const { recommendNumber, approver, proponent, proposalDate, status, page, limit } = query;
 
     var keySearch = {};
@@ -53,7 +54,7 @@ exports.searchRecommendProcures = async (query, portal) => {
  * Thêm mới thông tin phiếu đề nghị mua sắm thiết bị
  * @data: dữ liệu phiếu đề nghị mua sắm thiết bị
  */
-exports.createRecommendProcure = async (data, portal) => {
+exports.createPurchaseRequest = async (portal, data) => {
     var createRecommendProcure = await RecommendProcure(connect(DB_CONNECTION, portal)).create({
         recommendNumber: data.recommendNumber,
         dateCreate: data.dateCreate,
@@ -75,7 +76,7 @@ exports.createRecommendProcure = async (data, portal) => {
  * Xoá thông tin phiếu đề nghị mua sắm thiết bị
  * @id: id phiếu đề nghị mua sắm thiết bị muốn xoá
  */
-exports.deleteRecommendProcure = async (id) => {
+exports.deletePurchaseRequest = async (portal, id) => {
     return await RecommendProcure(connect(DB_CONNECTION, portal)).findOneAndDelete({
         _id: id
     });
@@ -85,7 +86,7 @@ exports.deleteRecommendProcure = async (id) => {
  * Update thông tin phiếu đề nghị mua sắm thiết bị
  * @id: id phiếu đề nghị mua sắm thiết bị muốn update
  */
-exports.updateRecommendProcure = async (id, data) => {
+exports.updatePurchaseRequest = async (portal, id, data) => {
     var recommendProcureChange = {
         recommendNumber: data.recommendNumber,
         dateCreate: data.dateCreate,

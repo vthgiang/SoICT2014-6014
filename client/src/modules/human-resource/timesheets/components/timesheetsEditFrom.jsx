@@ -18,16 +18,21 @@ class TimesheetsEditForm extends Component {
      * @param {*} index : Số thứ tự công thay đổi
      */
     handleCheckBoxChange = (workSession, index) => {
-        let { workSession1, workSession2 } = this.state;
-        if (workSession === "workSession1") {
-            workSession1[index] = !workSession1[index];
+        let { shift1, shift2, shift3 } = this.state;
+        if (workSession === "shift1") {
+            shift1[index] = !shift1[index];
             this.setState({
-                workSession1: workSession1
+                shift1: shift1
+            })
+        } else if (workSession === "shift2") {
+            shift2[index] = !shift2[index];
+            this.setState({
+                shift2: shift2
             })
         } else {
-            workSession2[index] = !workSession2[index];
+            shift3[index] = !shift3[index];
             this.setState({
-                workSession2: workSession2
+                shift3: shift3
             })
         }
     }
@@ -39,8 +44,9 @@ class TimesheetsEditForm extends Component {
                 _id: nextProps._id,
                 employeeNumber: nextProps.employeeNumber,
                 month: nextProps.month,
-                workSession1: nextProps.workSession1,
-                workSession2: nextProps.workSession2,
+                shift1: nextProps.shift1,
+                shift2: nextProps.shift2,
+                shift3: nextProps.shift3,
                 allDayOfMonth: nextProps.allDayOfMonth,
             }
         } else {
@@ -59,7 +65,7 @@ class TimesheetsEditForm extends Component {
     render() {
         const { timesheets, translate } = this.props;
 
-        const { _id, errorOnEmployeeNumber, errorOnMonthSalary, month, employeeNumber, allDayOfMonth, workSession1, workSession2 } = this.state;
+        const { _id, errorOnEmployeeNumber, errorOnMonthSalary, month, employeeNumber, allDayOfMonth, shift1, shift2, shift3 } = this.state;
 
         return (
             <React.Fragment>
@@ -107,8 +113,8 @@ class TimesheetsEditForm extends Component {
                                         {allDayOfMonth.map((x, index) => (
                                             <th key={index}>
                                                 <div className="checkbox" style={{ textAlign: 'center' }}>
-                                                    <input type="checkbox" onChange={() => this.handleCheckBoxChange('workSession1', index)}
-                                                        style={{ margin: 'auto', position: 'inherit', width: 17, height: 17 }} checked={workSession1[index]} />
+                                                    <input type="checkbox" onChange={() => this.handleCheckBoxChange('shift1', index)}
+                                                        style={{ margin: 'auto', position: 'inherit', width: 17, height: 17 }} checked={shift1[index]} />
                                                 </div>
                                             </th>
                                         ))}
@@ -118,8 +124,19 @@ class TimesheetsEditForm extends Component {
                                         {allDayOfMonth.map((x, index) => (
                                             <th key={index}>
                                                 <div className="checkbox" style={{ textAlign: 'center' }}>
-                                                    <input type="checkbox" onChange={() => this.handleCheckBoxChange('workSession2', index)}
-                                                        style={{ margin: 'auto', position: 'inherit', width: 17, height: 17 }} checked={workSession2[index]} />
+                                                    <input type="checkbox" onChange={() => this.handleCheckBoxChange('shift2', index)}
+                                                        style={{ margin: 'auto', position: 'inherit', width: 17, height: 17 }} checked={shift2[index]} />
+                                                </div>
+                                            </th>
+                                        ))}
+                                    </tr>
+                                    <tr>
+                                        <td>{translate('human_resource.timesheets.shifts3')}</td>
+                                        {allDayOfMonth.map((x, index) => (
+                                            <th key={index}>
+                                                <div className="checkbox" style={{ textAlign: 'center' }}>
+                                                    <input type="checkbox" onChange={() => this.handleCheckBoxChange('shift3', index)}
+                                                        style={{ margin: 'auto', position: 'inherit', width: 17, height: 17 }} checked={shift3[index]} />
                                                 </div>
                                             </th>
                                         ))}

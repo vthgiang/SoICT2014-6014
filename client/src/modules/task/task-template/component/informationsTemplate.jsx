@@ -13,11 +13,11 @@ class InformationForm extends Component{
     constructor(props){
         super(props);
         this.INFO_TYPE = {
-            TEXT: "Text",
-            NUMBER: "Number",
-            DATE: "Date",
-            BOOLEAN: "Boolean",
-            SET: "SetOfValues",
+            TEXT: "text",
+            NUMBER: "number",
+            DATE: "date",
+            BOOLEAN: "boolean",
+            SET: "set_of_values",
         };
         this.EMPTY_INFORMATION = {
             name: '',
@@ -255,6 +255,16 @@ class InformationForm extends Component{
         });
     }
 
+    formatTypeInfo = (type) => {
+        let { translate } = this.props;
+
+        if (type === "text") return translate('task_template.text');
+        else if (type === "number") return translate('task_template.number');
+        else if (type === "date") return translate('task_template.date');
+        else if (type === "boolean") return "Boolean";
+        else if (type === "set_of_values") return translate('task_template.value_set');
+    }
+
     render(){
         const { translate } = this.props;
         let { taskInformations, information } =this.state;
@@ -347,7 +357,7 @@ class InformationForm extends Component{
                                     <td>p{index + 1}</td>
                                     <td>{item.name}</td>
                                     <td>{item.description}</td>
-                                    <td>{item.type}</td>
+                                    <td>{this.formatTypeInfo(item.type)}</td>
                                     <td>{item.filledByAccountableEmployeesOnly ? translate('general.yes') : translate('general.no')}</td>
                                     <td>
                                         <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => this.handleEditInformation(item, index)}><i className="material-icons"></i></a>

@@ -34,7 +34,6 @@ const checkErrorAuth = (code) => {
         'fingerprint_invalid',
         'service_permisson_denied',
     ];
-    console.log("auth-eror", code)
     if (error_auth.indexOf(code) !== -1) return true;
     return false;
 }

@@ -125,7 +125,7 @@ getAllTasksCreatedByUser = async (req, res) => {
  * Lấy công việc theo vai trò người thực hiện chính
  */
 getPaginatedTasksThatUserHasResponsibleRole = async (req, res) => {
-    try {
+    // try {
         let task = {
             perPage: req.query.perPage,
             number: req.query.number,
@@ -149,14 +149,14 @@ getPaginatedTasksThatUserHasResponsibleRole = async (req, res) => {
             messages: ['get_task_of_responsible_employee_success'],
             content: responsibleTasks
         })
-    } catch (error) {
-        await await Logger.error(req.user.email, ` get task responsible by user `, req.portal)
-        res.status(400).json({
-            success: false,
-            messages: ['get_task_of_responsible_employee_fail'],
-            content: error
-        })
-    }
+    // } catch (error) {
+    //     await await Logger.error(req.user.email, ` get task responsible by user `, req.portal)
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: ['get_task_of_responsible_employee_fail'],
+    //         content: error
+    //     })
+    // }
 }
 
 /**

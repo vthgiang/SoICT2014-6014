@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import { UploadFile } from '../../../common-components'
 
 import XLSX from 'xlsx';
 
@@ -11,11 +12,11 @@ class ImportFileExcel extends Component {
     }
 
     // Bắt xự kiện chọn file import
-    handleChangeFileImport = (e) => {
+    handleChangeFileImport = (files) => {
         let { configData } = this.props;
         let sheets = configData.sheets.value;
         let rowHeader = configData.rowHeader ? Number(configData.rowHeader.value) : 1;
-        let file = e.target.files[0];
+        let file = files[0];
 
         if (file !== undefined) {
             const reader = new FileReader();
@@ -46,6 +47,7 @@ class ImportFileExcel extends Component {
 
                 let checkFileImport = false;
                 sheet_lists.length !== 0 && sheet_lists.forEach(x => {
+                    console.log(XLSX.utils.decode_col("A"));
                     let data = XLSX.utils.sheet_to_json(workbook.Sheets[x], { header: 1, blankrows: false, defval: null });
                     // Lấy index của các tiều đề cột mà người dùng muốn import
                     for (let i = 0; i < data.length - rowHeader; i++) {
@@ -132,14 +134,13 @@ class ImportFileExcel extends Component {
     render() {
         const { translate } = this.props;
 
-        const { disabled = false, style = {}, id = '' } = this.props;
+        const { disabled = false } = this.props;
 
         return (
             <React.Fragment>
                 <label>{translate('human_resource.choose_file')}</label>
-                <input id={id} type="file" style={style} className="form-control"
-                    accept=".xlms,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                    onChange={this.handleChangeFileImport} disabled={disabled} />
+                <UploadFile onChange={this.handleChangeFile} deleteValue={false} importFile={this.handleChangeFileImport} disabled={disabled}
+                    accept=".xlms,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
             </React.Fragment>
         )
     }

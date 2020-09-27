@@ -156,13 +156,13 @@ class CompanyManageComponent extends Component {
     render() { 
         const { translate, company, systemComponents } = this.props;
         const { 
-            companyId, componentDescriptionError,
+            companyId, componentDescriptionError, companyShortName,
             componentPaginate, checkedAll
         } = this.state;
         console.log("state", this.state)
         return ( 
             <div style={{padding: '10px 0px 10px 0px'}}>
-                <a className="btn btn-primary pull-right" onClick={this.updateCompanyComponents}><i className="material-icons">save</i></a>
+                <a className="btn btn-primary pull-right" onClick={() => this.updateCompanyComponents(companyShortName)}><i className="material-icons">save</i></a>
                 <SearchBar 
                     columns={[
                         { title: translate('manage_component.name'), value: 'name' },
@@ -250,7 +250,7 @@ class CompanyManageComponent extends Component {
         }
     }
 
-    updateCompanyComponents = () => {
+    updateCompanyComponents = (portal) => {
         let {componentPaginate} = this.state;
         let data = componentPaginate.map(component=>{
             return {
@@ -259,7 +259,7 @@ class CompanyManageComponent extends Component {
             }
         });
 
-        this.props.updateCompanyComponents(data);
+        this.props.updateCompanyComponents(data , {portal});
     }
 }
 

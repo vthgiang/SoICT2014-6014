@@ -25,6 +25,7 @@ import { ManageLinkSystem } from '../modules/system-admin/system-link/components
 import ManageRoleDefault from '../modules/system-admin/root-role/components';
 import ComponentsDefaultManagement from '../modules/system-admin/system-component/components';
 
+import ManageSystem from '../modules/super-admin/system/components';
 import ManageUser from '../modules/super-admin/user/components';
 import ManageRole from '../modules/super-admin/role/components';
 import ManageLink from '../modules/super-admin/link/components';
@@ -68,7 +69,7 @@ import { TaskComponent } from '../modules/task/task-perform/component/taskCompon
 import { TaskDashboard } from "../modules/task/task-dashboard/task-personal-dashboard/taskDashboard";
 import { TaskTemplate } from '../modules/task/task-template/component/taskTemplate';
 import { TaskProcessManagement } from '../modules/task/task-process/component/task-process-management/taskProcessManagement';
-import { ProcessTemplate } from '../modules/task/task-process/component/processTemplate';
+import { ProcessTemplate } from '../modules/task/task-process/component/process-template/processTemplate';
 import { TaskOrganizationUnitDashboard } from '../modules/task/task-dashboard/task-organization-dashboard/taskOrganizationUnitDashboard';
 
 //asset
@@ -92,7 +93,16 @@ import EmployeeAssetManagement from '../modules/asset/user/asser-managed/compone
 import TaskReportManager from '../modules/report/task-report/components/taskReportManager';
 
 //warehouse
-import MaterialManager from '../modules/warehouse-manager/material-manager/component';
+import MaterialManager from '../modules/warehouse/material-manager/component';
+import CategoryManagement from '../modules/warehouse/category-management/component';
+import GoodManagement from '../modules/warehouse/good-management/component';
+import StockManagement from '../modules/warehouse/stock-management/component';
+import BinLocationManagement from '../modules/warehouse/bin-location-management/components';
+import BillManagement from '../modules/warehouse/bill-management/components';
+import InventoryManagement from '../modules/warehouse/inventory-management/components';
+import PartnerManagement from '../modules/warehouse/partner-management/component';
+import ProposalManagement from '../modules/warehouse/proposal-management/component';
+
 // Customer Management
 import CrmCustomer from '../modules/crm/customer/components';
 import CrmGroup from '../modules/crm/group/components';
@@ -120,6 +130,7 @@ class Routes extends Component {
                         isLoading={false}
                         key={'manage_system'}
                         arrPage={[
+                            { link: '#', name: 'system_administration', icon: 'fa fa-key' },
                             { link: '/system/settings', name: 'manage_system', icon: 'fa fa-gears' }
                         ]}
                         // type='system-admin'
@@ -135,6 +146,7 @@ class Routes extends Component {
                         isLoading={this.props.rootRoles.isLoading}
                         key={'manage_roles_default'}
                         arrPage={[
+                            { link: '#', name: 'system_administration', icon: 'fa fa-key' },
                             { link: '/system/roles-default-management', name: 'manage_role', icon: 'fa fa-lock' }
                         ]}
                         auth={auth}
@@ -149,6 +161,7 @@ class Routes extends Component {
                         isLoading={this.props.systemLinks.isLoading}
                         key={'manage_links_default'}
                         arrPage={[
+                            { link: '#', name: 'system_administration', icon: 'fa fa-key' },
                             { link: '/system/links-default-management', name: 'manage_link', icon: 'fa fa-link' }
                         ]}
                         auth={auth}
@@ -163,6 +176,7 @@ class Routes extends Component {
                         isLoading={this.props.systemComponents.isLoading}
                         key={'manage_components_default'}
                         arrPage={[
+                            { link: '#', name: 'system_administration', icon: 'fa fa-key' },
                             { link: '/system/components-default-management', name: 'manage_component', icon: 'fa fa-object-group' }
                         ]}
                         auth={auth}
@@ -191,7 +205,6 @@ class Routes extends Component {
                         isLoading={this.props.company.isLoading}
                         key={'companies-management'}
                         arrPage={[
-                            { link: '/', name: 'home', icon: 'fa fa-home' },
                             { link: '/system/companies-management', name: 'manage_company', icon: 'fa fa-building' }
                         ]}
                         auth={auth}
@@ -203,10 +216,25 @@ class Routes extends Component {
                         component={Company}
                     />
                     <PrivateRoute
+                        isLoading={this.props.system.isLoading}
+                        key={'system-management'}
+                        arrPage={[
+                            { link: '#', name: 'system_administration', icon: 'fa fa-key' },
+                            { link: '/system-management', name: 'manage_system', icon: 'fa fa-database' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/system-management'}
+                        path={'/system-management'}
+                        pageName={'manage_system'}
+                        layout={Layout}
+                        component={ManageSystem}
+                    />
+                    <PrivateRoute
                         isLoading={this.props.user.isLoading}
                         key={'users-management'}
                         arrPage={[
-                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '#', name: 'system_administration', icon: 'fa fa-key' },
                             { link: '/users-management', name: 'manage_user', icon: 'fa fa-users' }
                         ]}
                         auth={auth}
@@ -220,7 +248,7 @@ class Routes extends Component {
                     <PrivateRoute
                         isLoading={this.props.role.isLoading}
                         arrPage={[
-                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '#', name: 'system_administration', icon: 'fa fa-key' },
                             { link: '/roles-management', name: 'manage_role', icon: 'fa fa-lock' }
                         ]}
                         key={'roles-management'}
@@ -236,7 +264,7 @@ class Routes extends Component {
                         isLoading={this.props.link.isLoading}
                         key={'links-management'}
                         arrPage={[
-                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '#', name: 'system_administration', icon: 'fa fa-key' },
                             { link: '/links-management', name: 'manage_link', icon: 'fa fa-link' }
                         ]}
                         auth={auth}
@@ -251,7 +279,7 @@ class Routes extends Component {
                         isLoading={this.props.department.isLoading}
                         key={'departments-management'}
                         arrPage={[
-                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '#', name: 'system_administration', icon: 'fa fa-key' },
                             { link: '/departments-management', name: 'manage_department', icon: 'fa fa-sitemap' }
                         ]}
                         auth={auth}
@@ -266,7 +294,7 @@ class Routes extends Component {
                         isLoading={this.props.component.isLoading}
                         key={'components-management'}
                         arrPage={[
-                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '#', name: 'system_administration', icon: 'fa fa-key' },
                             { link: '/components-management', name: 'manage_component', icon: 'fa fa-object-group' }
                         ]}
                         auth={auth}
@@ -1066,6 +1094,128 @@ class Routes extends Component {
                         pageName={'material_manager'}
                         layout={Layout}
                         component={MaterialManager}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={'category-management'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/category-management', name: 'category_management', icon: 'fa fa-cubes' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/category-management'}
+                        path={'/category-management'}
+                        pageName={'category_management'}
+                        layout={Layout}
+                        component={CategoryManagement}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={'good-management'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/good-management', name: 'good_management', icon: 'fa fa-gift' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/good-management'}
+                        path={'/good-management'}
+                        pageName={'good_management'}
+                        layout={Layout}
+                        component={GoodManagement}
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={'stock-management'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/stock-management', name: 'stock_management', icon: 'fa fa-bank' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/stock-management'}
+                        path={'/stock-management'}
+                        pageName={'stock_management'}
+                        layout={Layout}
+                        component={StockManagement}
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={'bin-location-management'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/bin-location-management', name: 'bin_location_management', icon: 'fa fa-sitemap' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/bin-location-management'}
+                        path={'/bin-location-management'}
+                        pageName={'bin_location_management'}
+                        layout={Layout}
+                        component={BinLocationManagement}
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={'partner-management'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/partner-management', name: 'partner_management', icon: 'fa fa-users' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/partner-management'}
+                        path={'/partner-management'}
+                        pageName={'partner_management'}
+                        layout={Layout}
+                        component={PartnerManagement}
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={'proposal-management'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/proposal-management', name: 'proposal_management', icon: 'fa fa-envelope-o' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/proposal-management'}
+                        path={'/proposal-management'}
+                        pageName={'proposal_management'}
+                        layout={Layout}
+                        component={ProposalManagement}
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={'inventory-management'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/inventory-management', name: 'inventory_management', icon: 'fa fa-times-circle-o' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/inventory-management'}
+                        path={'/inventory-management'}
+                        pageName={'inventory_management'}
+                        layout={Layout}
+                        component={InventoryManagement}
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={'bill-management'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/bill-management', name: 'bill_management', icon: 'fa fa-reorder' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/bill-management'}
+                        path={'/bill-management'}
+                        pageName={'bill_management'}
+                        layout={Layout}
+                        component={BillManagement}
                     />
 
                     <PrivateRoute

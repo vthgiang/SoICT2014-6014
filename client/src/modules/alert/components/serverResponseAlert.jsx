@@ -40,7 +40,7 @@ class ServerResponseAlert extends Component {
 
         return (
             <React.Fragment>
-                <div className="notification-title">{translate(title)}</div>
+                <div className="notification-title"><i></i> {translate(title)}</div>
                 {
                     content.map((message, i) => {
                         return this.checkTranslateExist(message) ?

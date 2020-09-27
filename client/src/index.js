@@ -19,9 +19,8 @@ ReactDOM.render(
             <AuthAlert />
             <ToastContainer 
                 enableMultiContainer={true}
-                closeOnClick={false}
+                closeOnClick={true}
                 draggable={false}
-                transition={Zoom}
                 containerId={'toast-notification'}
                 position={toast.POSITION.TOP_RIGHT}
             />

@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 const Models = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
 const { EmployeeKpiSet, EmployeeKpi, OrganizationalUnit, OrganizationalUnitKpiSet, OrganizationalUnitKpi,  } = Models;
-const OrganizationalUnitService = require('../../../super-admin/organizational-unit/organizationalUnit.service');
+const OrganizationalUnitService = require(`${SERVER_MODULES_DIR}/_multi-tenant/super-admin/organizational-unit/organizationalUnit.service`);
+const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 /**
  * get all kpi set in Organizational Unit by month
@@ -34,7 +35,7 @@ exports.getAllKPIEmployeeSetsInOrganizationByMonth = async (portal, data) => {
  * service Khởi tạo KPI tháng mới từ KPI tháng này
  */
 exports.copyKPI = async (portal, id, data) => {
-    let OldEmployeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
+    let oldEmployeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
         .findById(id)
         .populate("organizationalUnit creator")
         .populate({ path: "kpis", populate: { path: 'parent' } });
@@ -44,20 +45,20 @@ exports.copyKPI = async (portal, id, data) => {
 
     let NewEmployeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
         .create({
-            organizationalUnit: OldEmployeeKpiSet.organizationalUnit._id,
+            organizationalUnit: oldEmployeeKpiSet.organizationalUnit._id,
             creator: data.creator,
             date: dateNewEmployeeKPI,
             kpis: [],
-            approver: OldEmployeeKpiSet.approver,
+            approver: oldEmployeeKpiSet.approver,
         })
 
-    for (let i in OldEmployeeKpiSet.kpis) {
+    for (let i in oldEmployeeKpiSet.kpis) {
         let target = await EmployeeKpi(connect(DB_CONNECTION, portal))
             .create({
-                name: OldEmployeeKpiSet.kpis[i].name,
-                weight: OldEmployeeKpiSet.kpis[i].weight,
-                criteria: OldEmployeeKpiSet.kpis[i].criteria,
-                type: OldEmployeeKpiSet.kpis[i].type,
+                name: oldEmployeeKpiSet.kpis[i].name,
+                weight: oldEmployeeKpiSet.kpis[i].weight,
+                criteria: oldEmployeeKpiSet.kpis[i].criteria,
+                type: oldEmployeeKpiSet.kpis[i].type,
                 parent: null,
             });
         employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
@@ -69,7 +70,7 @@ exports.copyKPI = async (portal, id, data) => {
     employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
         .find({ creator: mongoose.Types.ObjectId(data.creator) })
         .populate("organizationalUnit creator")
-        .populate({ path: "kpis", populate: { path: 'parent' } });
+        .populate({ path: "kpis", populate: { path: 'parent' } })
 
     return employeeKpiSet;
 }
@@ -110,7 +111,7 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (portal, roleId, organizat
     } else {
         organizationalUnit = { '_id': new mongoose.Types.ObjectId(organizationalUnitId) }
     }
-
+    
     if (organizationalUnit) {
         employeeKpis = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
             .aggregate([
@@ -124,10 +125,10 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (portal, roleId, organizat
                     }
                 },
 
-                // Tìm các organizationalUnitKpis từ bảng organizational_unit_kpis
+                // Tìm các organizationalUnitKpis từ bảng organizationalunitkpis
                 {
                     $lookup: {
-                        from: "organizational_unit_kpis",
+                        from: "organizationalunitkpis",
                         localField: "kpis",
                         foreignField: "_id",
                         as: "organizationalUnitKpis"
@@ -135,10 +136,10 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (portal, roleId, organizat
                 },
                 { $unwind: "$organizationalUnitKpis" },
 
-                // Tìm các employeeKpis từ bảng employee_kpis
+                // Tìm các employeeKpis từ bảng employeekpis
                 {
                     $lookup: {
-                        from: "employee_kpis",
+                        from: "employeekpis",
                         localField: "organizationalUnitKpis._id",
                         foreignField: "parent",
                         as: "employeeKpis"
@@ -157,10 +158,10 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (portal, roleId, organizat
                     }
                 },
                 
-                // Tìm các parentNameOfUnitKpi từ bảng organizational_unit_kpis
+                // Tìm các parentNameOfUnitKpi từ bảng organizationalunitkpis
                 {
                     $lookup: {
-                        from: "organizational_unit_kpis",
+                        from: "organizationalunitkpis",
                         localField: "organizationalUnitKpis.parent",
                         foreignField: "_id",
                         as: "parentNameOfUnitKpi"
@@ -173,10 +174,10 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (portal, roleId, organizat
                     }
                 },
 
-                // Tìm các employeeKpiSet từ bảng employee_kpi_sets
+                // Tìm các employeeKpiSet từ bảng employeekpisets
                 {
                     $lookup: {
-                        from: "employee_kpi_sets",
+                        from: "employeekpisets",
                         localField: "employeeKpis._id",
                         foreignField: "kpis",
                         as: "employeeKpiSet"
@@ -249,7 +250,7 @@ exports.getAllEmployeeKpiSetInOrganizationalUnit = async (portal, query) => {
 
                 {
                     $lookup: {
-                        from: 'user_roles',
+                        from: 'userroles',
                         let: { viceDeans: '$viceDeans', employees: '$employees' },
                         pipeline: [
                             {
@@ -274,7 +275,7 @@ exports.getAllEmployeeKpiSetInOrganizationalUnit = async (portal, query) => {
 
                 {
                     $lookup: {
-                        from: 'employee_kpi_sets',
+                        from: 'employeekpisets',
                         localField: 'userId',
                         foreignField: 'creator',
                         as: 'employee_kpi_sets'
@@ -300,9 +301,9 @@ exports.getAllEmployeeKpiSetInOrganizationalUnit = async (portal, query) => {
 /** 
  * Lấy tất cả các đơn vị con của 1 đơn vị xếp vào 1 mảng 
  */
-exports.getAllChildrenOrganizational = async (portal, companyId, roleId, organizationalUnitId) => {
+exports.getAllChildrenOrganizational = async (portal, roleId, organizationalUnitId) => {  // portal, companyId, roleId, organizationalUnitId //
     
-    let arrayTreeOranizationalUnit = await OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree(portal, companyId, roleId, organizationalUnitId);
+    let arrayTreeOranizationalUnit = await OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree(portal, roleId, organizationalUnitId); // portal, companyId, roleId, organizationalUnitId
     let childrenOrganizationalUnits, temporaryChild, deg = 0;
 
     if (arrayTreeOranizationalUnit) {
@@ -345,11 +346,11 @@ exports.getAllChildrenOrganizational = async (portal, companyId, roleId, organiz
 /** 
  * Lấy tất cả EmployeeKpi thuộc các đơn vị con của đơn vị hiện tại 
  */
-exports.getAllEmployeeKpiInChildrenOrganizationalUnit = async (portal, companyId, roleId, month, organizationalUnitId) => {
+exports.getAllEmployeeKpiInChildrenOrganizationalUnit = async (portal, roleId, month, organizationalUnitId) => {
 
     let employeeKpisInChildrenOrganizationalUnit = [], childrenOrganizationalUnits;
 
-    childrenOrganizationalUnits = await this.getAllChildrenOrganizational(portal, companyId, roleId, organizationalUnitId);
+    childrenOrganizationalUnits = await this.getAllChildrenOrganizational(portal, roleId, organizationalUnitId);
 
     if (childrenOrganizationalUnits) {
         for (let i = 0; i < childrenOrganizationalUnits.length; i++) {
@@ -371,7 +372,7 @@ exports.getChildTargetByParentId = async (portal, data) => {
             { $match: { _id: mongoose.Types.ObjectId(data.organizationalUnitKpiSetId) } },
             {
                 $lookup: {
-                    from: "organizational_unit_kpis",
+                    from: "organizationalunitkpis",
                     localField: "kpis",
                     foreignField: "_id",
                     as: "kpis"
@@ -381,7 +382,7 @@ exports.getChildTargetByParentId = async (portal, data) => {
             { $unwind: "$kpis" },
             {
                 $lookup: {
-                    from: "employee_kpis",
+                    from: "employeekpis",
                     localField: "kpis._id",
                     foreignField: "parent",
                     as: "target"

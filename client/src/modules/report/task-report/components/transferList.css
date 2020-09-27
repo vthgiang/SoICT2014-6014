@@ -75,3 +75,8 @@
 .report-title{
     font-size: 17px !important;
 }
+
+.unitSearch .multiselect-container{
+    width: 100%;
+    cursor: pointer;
+}

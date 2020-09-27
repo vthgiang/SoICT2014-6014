@@ -47,7 +47,6 @@ class ModalDetailTask extends Component {
 
         let task;
         if (isProcess) {
-            console.log('quang');
             task = (this.props.task) && this.props.task;
         }
         else task = tasks && tasks.task;
@@ -55,7 +54,7 @@ class ModalDetailTask extends Component {
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID={`modal-detail-task`}
+                    modalID={`modal-detail-task-${this.props.action}`}
                     title={translate('task.task_management.model_detail_task_title')}
                     hasSaveButton={false}
                     size={75}>

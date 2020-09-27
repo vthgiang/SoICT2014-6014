@@ -75,9 +75,9 @@ const LINK_CATEGORY = {
         name: 'report-management',
         description: 'Quản lý báo cáo'
     },
-    MATERIAL: {
-        name: 'material-manager',
-        description: 'Quản lý vật tư'
+    WAREHOUSE: {
+        name: 'stock-management',
+        description: 'Quản lý kho'
     },
     ORDER: {
         name: "orders-management",
@@ -173,8 +173,16 @@ const LINKS = [
         components: getComponentsInLink('/notifications')
     },
 
-
-
+    {
+        url: '/system-management',
+        description: 'Quản lý sao lưu - phục hồi dữ liệu',
+        category: LINK_CATEGORY.COMMON.name,
+        roles: [
+            ROOT_ROLES.SUPER_ADMIN.name,
+            ROOT_ROLES.ADMIN.name
+        ],
+        components: getComponentsInLink('/system-management')
+    },
 
     {
         url: '/departments-management',
@@ -770,7 +778,7 @@ const LINKS = [
     {
         url: '/material-manager',
         description: 'Quản lý vật tư',
-        category: LINK_CATEGORY.MATERIAL.name,
+        category: LINK_CATEGORY.WAREHOUSE.name,
         roles: [
             ROOT_ROLES.SUPER_ADMIN.name,
             ROOT_ROLES.ADMIN.name,
@@ -779,6 +787,86 @@ const LINKS = [
             ROOT_ROLES.EMPLOYEE.name
         ],
         components: getComponentsInLink('/material-manager')
+    },
+    {
+        url: '/stock-management',
+        description: 'Quản lý thông tin kho',
+        category: LINK_CATEGORY.WAREHOUSE.name,
+        roles: [
+            ROOT_ROLES.SUPER_ADMIN.name,
+            ROOT_ROLES.ADMIN.name
+        ],
+        components: getComponentsInLink('/stock-management')
+    },
+    {
+        url: '/bin-location-management',
+        description: 'Quản lý thông tin lưu kho',
+        category: LINK_CATEGORY.WAREHOUSE.name,
+        roles: [
+            ROOT_ROLES.SUPER_ADMIN.name,
+            ROOT_ROLES.ADMIN.name
+        ],
+        components: getComponentsInLink('/bin-location-management')
+    },
+    {
+        url: '/category-management',
+        description: 'Quản lý danh mục hàng hóa',
+        category: LINK_CATEGORY.WAREHOUSE.name,
+        roles: [
+            ROOT_ROLES.SUPER_ADMIN.name,
+            ROOT_ROLES.ADMIN.name
+        ],
+        components: getComponentsInLink('/category-management')
+    },
+    {
+        url: '/good-management',
+        description: 'Quản lý thông tin hàng hóa',
+        category: LINK_CATEGORY.WAREHOUSE.name,
+        roles: [
+            ROOT_ROLES.SUPER_ADMIN.name,
+            ROOT_ROLES.ADMIN.name
+        ],
+        components: getComponentsInLink('/good-management')
+    },
+    {
+        url: '/partner-management',
+        description: 'Quản lý thông tin đối tác',
+        category: LINK_CATEGORY.WAREHOUSE.name,
+        roles: [
+            ROOT_ROLES.SUPER_ADMIN.name,
+            ROOT_ROLES.ADMIN.name
+        ],
+        components: getComponentsInLink('/partner-management')
+    },
+    {
+        url: '/proposal-management',
+        description: 'Quản lý phiếu đề nghị',
+        category: LINK_CATEGORY.WAREHOUSE.name,
+        roles: [
+            ROOT_ROLES.SUPER_ADMIN.name,
+            ROOT_ROLES.ADMIN.name
+        ],
+        components: getComponentsInLink('/proposal-management')
+    },
+    {
+        url: '/bill-management',
+        description: 'Quản lý thông tin phiếu',
+        category: LINK_CATEGORY.WAREHOUSE.name,
+        roles: [
+            ROOT_ROLES.SUPER_ADMIN.name,
+            ROOT_ROLES.ADMIN.name
+        ],
+        components: getComponentsInLink('/bill-management')
+    },
+    {
+        url: '/inventory-management',
+        description: 'Quản lý hàng tồn kho',
+        category: LINK_CATEGORY.WAREHOUSE.name,
+        roles: [
+            ROOT_ROLES.SUPER_ADMIN.name,
+            ROOT_ROLES.ADMIN.name
+        ],
+        components: getComponentsInLink('/inventory-management')
     },
     {
         url: "/manage-orders",

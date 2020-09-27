@@ -1,4 +1,5 @@
 const { TaskTemplate, Privilege, Role, UserRole, OrganizationalUnit, User } = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
+const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 const mongoose = require('mongoose');
 /**
  * Lấy tất cả các mẫu công việc
@@ -86,7 +87,7 @@ exports.searchTaskTemplates = async (portal, id, pageNumber, noResultsPerPage, o
                     as: "creator organizationalUnit"
                 }
             },
-            { $unwind: "$creator organizationalUnit" },
+            // { $unwind: "$creator organizationalUnit" },
             {
                 $facet: {
                     tasks: [{ $sort: { 'createdAt': 1 } },
@@ -130,7 +131,7 @@ exports.searchTaskTemplates = async (portal, id, pageNumber, noResultsPerPage, o
                     as: "creator organizationalUnit"
                 }
             },
-            { $unwind: "$creator organizationalUnit" },
+            // { $unwind: "$creator organizationalUnit" },
             {
                 $facet: {
                     tasks: [{ $sort: { 'createdAt': 1 } },

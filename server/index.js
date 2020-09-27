@@ -26,13 +26,11 @@ app.use(
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-app.use("/upload/avatars", express.static("upload/avatars"));
-app.use("/upload/asset/pictures", express.static("upload/asset/pictures"));
+// app.use("/upload/avatars", express.static("upload/avatars"));
+// app.use("/upload/asset/pictures", express.static("upload/asset/pictures"));
 
 
 
-// Function gọi Api vào thời gian xác định
-schedulerController.chedulesCallApi();
 
 if (process.env.MULTI_TENANT === 'true') {
 	const router = express.Router();
@@ -47,19 +45,19 @@ if (process.env.MULTI_TENANT === 'true') {
 	app.use("/salary", require("./modules/_multi-tenant/human-resource/salary/salary.route"));
 	app.use("/timesheet", require("./modules/_multi-tenant/human-resource/timesheets/timesheets.route"));
 
-	// app.use("/kpi/employee/creation", require("./modules/_multi-tenant/kpi/employee/creation/creation.route"));
-	// app.use("/kpi/employee/dashboard", require("./modules/_multi-tenant/kpi/employee/dashboard/dashboard.route"));
-	// app.use("/kpi/employee/management", require("./modules/_multi-tenant/kpi/employee/management/management.route"));
-	// app.use("/kpi/evaluation/dashboard", require("./modules/_multi-tenant/kpi/evaluation/dashboard/dashboard.route"));
-	// app.use("/kpi/evaluation/employee-evaluation", require("./modules/_multi-tenant/kpi/evaluation/employee-evaluation/employeeEvaluation.route"));
-	// app.use("/kpi/organizational-unit/creation", require("./modules/_multi-tenant/kpi/organizational-unit/creation/creation.route"));
-	// app.use("/kpi/organizational-unit/dashboard", require("./modules/_multi-tenant/kpi/organizational-unit/dashboard/dashboard.route"));
-	// app.use("/kpi/organizational-unit/management", require("./modules/_multi-tenant/kpi/organizational-unit/management/management.route"));
+	app.use("/kpi/employee/creation", require("./modules/_multi-tenant/kpi/employee/creation/creation.route"));
+	app.use("/kpi/employee/dashboard", require("./modules/_multi-tenant/kpi/employee/dashboard/dashboard.route"));
+	app.use("/kpi/employee/management", require("./modules/_multi-tenant/kpi/employee/management/management.route"));
+	app.use("/kpi/evaluation/dashboard", require("./modules/_multi-tenant/kpi/evaluation/dashboard/dashboard.route"));
+	app.use("/kpi/evaluation/employee-evaluation", require("./modules/_multi-tenant/kpi/evaluation/employee-evaluation/employeeEvaluation.route"));
+	app.use("/kpi/organizational-unit/creation", require("./modules/_multi-tenant/kpi/organizational-unit/creation/creation.route"));
+	app.use("/kpi/organizational-unit/dashboard", require("./modules/_multi-tenant/kpi/organizational-unit/dashboard/dashboard.route"));
+	app.use("/kpi/organizational-unit/management", require("./modules/_multi-tenant/kpi/organizational-unit/management/management.route"));
 
 	app.use("/notifications", require("./modules/_multi-tenant/notification/notification.route"));
 
 
-
+	router.use('/system', require('./modules/_multi-tenant/super-admin/system/system.route'));
 	router.use('/user', require('./modules/_multi-tenant/super-admin/user/user.route'));
 	router.use('/role', require('./modules/_multi-tenant/super-admin/role/role.route'));
 	router.use('/component', require("./modules/_multi-tenant/super-admin/component/component.route"));
@@ -84,8 +82,8 @@ if (process.env.MULTI_TENANT === 'true') {
 	app.use("/purchase-request", require("./modules/_multi-tenant/asset/purchase-request/purchase-request.route"));
 	app.use("/use-request", require("./modules/_multi-tenant/asset/use-request/use-request.route"));
 
-	// // Task report
-	// app.use("/taskreports", require("./modules/_multi-tenant/report/task-report/taskReport.route"));
+	// Task report
+	app.use("/taskreports", require("./modules/_multi-tenant/report/task-report/taskReport.route"));
 
 	// // material
 	// app.use("/materials", require("./modules/_multi-tenant/warehouse/material/material.router"));
@@ -96,9 +94,9 @@ if (process.env.MULTI_TENANT === 'true') {
 	// // Plan
 	// app.use("/plans", require("./modules/_multi-tenant/plan/plan.route"));
 
-	// // example
-	// app.use("/examples", require("./modules/_multi-tenant/example/example.route"));
-	
+	// example
+	app.use("/examples", require("./modules/_multi-tenant/example/example.route"));
+
 	app.use("/documents", require("./modules/_multi-tenant/document/document.route"));
 
 	// // Customer Management
@@ -164,8 +162,10 @@ if (process.env.MULTI_TENANT === 'true') {
 	// Task report
 	app.use("/taskreports", require("./modules/report/task-report/taskReport.route"));
 
-	// material
-	app.use("/materials", require("./modules/warehouse/material/material.router"));
+	// warehouse
+	app.use("/materials", require("./modules/warehouse/material/material.route"));
+	app.use("/categories", require('./modules/warehouse/category/category.route'));
+	app.use("/goods", require("./modules/warehouse/good/good.route"));
 
 	//order
 	app.use("/orders", require("./modules/order/order.route"));

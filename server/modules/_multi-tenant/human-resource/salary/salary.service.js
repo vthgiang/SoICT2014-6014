@@ -44,7 +44,7 @@ exports.searchSalaries = async (portal, params, company) => {
         }
     }
 
-    // Bắt sựu kiện đơn vị tìm kiếm khác undefined 
+    // Bắt sựu kiện tìm kiếm theo đơn vị
     if (params.organizationalUnits) {
         keySearch = {
             ...keySearch,
@@ -77,6 +77,27 @@ exports.searchSalaries = async (portal, params, company) => {
         totalList,
         listSalarys
     }
+}
+
+exports.getAllSalaryByMonthAndOrganizationalUnits = async (portal, organizationalUnits, month) => {
+    let keySearch = {
+        month: new Date(month)
+    };
+
+    // Bắt sựu kiện tìm kiếm theo đơn vị
+    if (organizationalUnits) {
+        keySearch = {
+            ...keySearch,
+            organizationalUnit: {
+                $in: organizationalUnits
+            }
+        };
+    }
+
+    return await Salary(connect(DB_CONNECTION, portal)).find(keySearch).populate({
+        path: 'employee',
+        select: 'emailInCompany fullName employeeNumber'
+    })
 }
 
 

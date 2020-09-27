@@ -212,14 +212,32 @@ class ListAsset extends Component {
     }
 
     convertGroupAsset = (group) => {
-        if (group === 'Building') {
+        if (group === 'building') {
             return 'Mặt bằng';
-        } else if (group === 'Vehicle') {
+        } else if (group === 'vehicle') {
             return 'Xe cộ'
-        } else if (group === 'Machine') {
+        } else if (group === 'machine') {
             return 'Máy móc'
         } else {
             return 'Khác'
+        }
+    }
+    convertStatusAsset = (status) => {
+        const { translate } = this.props;
+        if (status === 'ready_to_use') {
+            return translate('asset.general_information.ready_use');
+        }
+        else if (status === 'in_use') {
+            return translate('asset.general_information.using');
+        }
+        else if (status === 'broken') {
+            return translate('asset.general_information.damaged');
+        }
+        else if (status === 'lost') {
+            return translate('asset.general_information.lost');
+        }
+        else {
+            return translate('asset.general_information.disposal')
         }
     }
 
@@ -270,10 +288,10 @@ class ListAsset extends Component {
                                 options={{ nonSelectedText: translate('asset.asset_info.select_group'), allSelectedText: translate('asset.general_information.select_all_group') }}
                                 onChange={this.handleGroupChange}
                                 items={[
-                                    { value: "Building", text: translate('asset.dashboard.building') },
-                                    { value: "Vehicle", text: translate('asset.dashboard.vehicle') },
-                                    { value: "Machine", text: translate('asset.dashboard.machine') },
-                                    { value: "Other", text: translate('asset.dashboard.other') },
+                                    { value: "building", text: translate('asset.dashboard.building') },
+                                    { value: "vehicle", text: translate('asset.dashboard.vehicle') },
+                                    { value: "machine", text: translate('asset.dashboard.machine') },
+                                    { value: "other", text: translate('asset.dashboard.other') },
                                 ]}
                             >
                             </SelectMulti>
@@ -317,11 +335,11 @@ class ListAsset extends Component {
                                 options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('asset.general_information.select_all_status') }}
                                 onChange={this.handleStatusChange}
                                 items={[
-                                    { value: "Sẵn sàng sử dụng", text: translate('asset.general_information.ready_use') },
-                                    { value: "Đang sử dụng", text: translate('asset.general_information.using') },
-                                    { value: "Hỏng hóc", text: translate('asset.general_information.damaged') },
-                                    { value: "Mất", text: translate('asset.general_information.lost') },
-                                    { value: "Thanh lý", text: translate('asset.general_information.disposal') }
+                                    { value: "ready_to_use", text: translate('asset.general_information.ready_use') },
+                                    { value: "in_use", text: translate('asset.general_information.using') },
+                                    { value: "broken", text: translate('asset.general_information.damaged') },
+                                    { value: "lost", text: translate('asset.general_information.lost') },
+                                    { value: "disposed", text: translate('asset.general_information.disposal') }
                                 ]}
                             >
                             </SelectMulti>
@@ -376,7 +394,7 @@ class ListAsset extends Component {
                                         <td>{x.assignedToUser ? (userlist.length && userlist.filter(item => item._id === x.assignedToUser).pop() ? userlist.filter(item => item._id === x.assignedToUser).pop().name : 'User is deleted') : ''}</td>
                                         <td>{x.handoverFromDate ? this.formatDate2(x.handoverFromDate) : ''}</td>
                                         <td>{x.handoverToDate ? this.formatDate2(x.handoverToDate) : ''}</td>
-                                        <td>{x.status}</td>
+                                        <td>{this.convertStatusAsset(x.status)}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title={translate('asset.general_information.view')}><i className="material-icons">view_list</i></a>
                                             <a onClick={() => this.handleCreateRecommend(x)} className="post_add" style={{ width: '5px' }} title={translate('menu.recommend_distribute_asset')}><i className="material-icons">post_add</i></a>
@@ -445,6 +463,7 @@ class ListAsset extends Component {
                         _id={currentRow._id}
                         asset={currentRow._id}
                         typeRegisterForUse={currentRow.typeRegisterForUse}
+                        managedBy={currentRow.managedBy}
                     />
                 }
             </div >

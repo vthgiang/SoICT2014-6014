@@ -6,6 +6,7 @@ import { EmployeeManagerActions } from '../../profile/employee-management/redux/
 import { AnnualLeaveActions } from '../../annual-leave/redux/actions';
 import { DisciplineActions } from '../../commendation-discipline/redux/actions';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
+import { SalaryActions } from '../../salary/redux/actions';
 
 import { SelectMulti, DatePicker } from '../../../../common-components';
 class EmployeeDashBoardHeader extends Component {
@@ -19,7 +20,11 @@ class EmployeeDashBoardHeader extends Component {
         }
     }
 
-    // Function format dữ liệu Date thành string
+    /**
+     * Function format dữ liệu Date thành string
+     * @param {*} date : Ngày muốn format
+     * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
+     */
     formatDate(date, monthYear = false) {
         if (date) {
             let d = new Date(date),
@@ -37,24 +42,25 @@ class EmployeeDashBoardHeader extends Component {
             } else return [day, month, year].join('-');
         }
         return date;
-
     }
 
     componentDidMount() {
+        const { organizationalUnits, month } = this.state;
         this.props.getDepartment();
-        this.props.getAllEmployee({ organizationalUnits: this.state.organizationalUnits, status: 'active' });
-        this.props.searchAnnualLeaves({ organizationalUnits: this.state.organizationalUnits, month: this.state.month });
-        this.props.getListPraise({ organizationalUnits: this.state.organizationalUnits, month: this.state.month });
-        this.props.getListDiscipline({ organizationalUnits: this.state.organizationalUnits, month: this.state.month });
+        this.props.getAllEmployee({ organizationalUnits: organizationalUnits, status: 'active' });
+        this.props.searchAnnualLeaves({ organizationalUnits: organizationalUnits, month: month });
+        this.props.getListPraise({ organizationalUnits: organizationalUnits, month: month });
+        this.props.getListDiscipline({ organizationalUnits: organizationalUnits, month: month });
+        this.props.searchSalary({ callApiDashboard: true, organizationalUnits: organizationalUnits, month: month });
+        this.props.searchSalary({ callApiDashboard: true, month: month });
     }
 
     // Function bắt sự kiện thay đổi unit
-    handleSelectOrganizationalUnit = (value) => {
+    handleSelectOrganizationalUnit = async (value) => {
         if (value.length === 0) {
             value = null
         };
-        this.setState({
-            ...this.state,
+        await this.setState({
             organizationalUnits: value
         })
     };
@@ -73,7 +79,11 @@ class EmployeeDashBoardHeader extends Component {
 
     // Bắt sự kiện tìm kiếm 
     handleSunmitSearch = async () => {
-        const { organizationalUnits, month } = this.state;
+        let { organizationalUnits, month } = this.state;
+
+        let partMonth = this.formatDate(Date.now(), true).split('-');
+        let currentMonth = [partMonth[1], partMonth[0]].join('-');
+
         this.setState({
             arrUnitShow: organizationalUnits
         })
@@ -81,6 +91,11 @@ class EmployeeDashBoardHeader extends Component {
         this.props.searchAnnualLeaves({ organizationalUnits: organizationalUnits, month: month });
         this.props.getListPraise({ organizationalUnits: organizationalUnits, month: month });
         this.props.getListDiscipline({ organizationalUnits: organizationalUnits, month: month });
+
+        this.props.searchSalary({ callApiDashboard: true, organizationalUnits: organizationalUnits, month: month ? month : currentMonth });
+        this.props.searchSalary({ callApiDashboard: true, month: month ? month : currentMonth });
+
+        this.props.handleMonthChange(this.formatDate(month ? month : currentMonth, true));
         this.props.handleSelectOrganizationalUnit(organizationalUnits);
     }
     render() {
@@ -109,6 +124,7 @@ class EmployeeDashBoardHeader extends Component {
                         <DatePicker
                             id="month"
                             dateFormat="month-year"
+                            deleteValue={false}
                             value={this.formatDate(Date.now(), true)}
                             onChange={this.handleMonthChange}
                         />
@@ -177,6 +193,7 @@ const actionCreators = {
     searchAnnualLeaves: AnnualLeaveActions.searchAnnualLeaves,
     getListPraise: DisciplineActions.getListPraise,
     getListDiscipline: DisciplineActions.getListDiscipline,
+    searchSalary: SalaryActions.searchSalary,
 };
 
 const employeeDashBoardHeader = connect(mapState, actionCreators)(withTranslate(EmployeeDashBoardHeader));

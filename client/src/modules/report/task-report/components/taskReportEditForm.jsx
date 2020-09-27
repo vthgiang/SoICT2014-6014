@@ -4,7 +4,6 @@ import { withTranslate } from 'react-redux-multilingual';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { taskTemplateActions } from '../../../task/task-template/redux/actions';
 import { TaskReportActions } from '../redux/actions';
-import { taskReportFormValidator } from './taskReportFormValidator';
 import { DialogModal, ErrorLabel, SelectBox, DatePicker } from '../../../../common-components';
 import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
 import ValidationHelper from '../../../../helpers/validationHelper';
@@ -16,6 +15,7 @@ class TaskReportEditForm extends Component {
         this.state = {
             dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
             editingReport: {
+                // readByEmployees: [],
                 status: 0,
                 coefficient: 1,
                 itemListTempLeft: [],
@@ -39,10 +39,10 @@ class TaskReportEditForm extends Component {
      * Hàm xử lý sự kiện thay đổi đơn vị
      * @param {*} e 
      */
-    handleChangeReportOrganizationalUnit = (e) => {
-        e.preventDefault();
-        let value = e.target.value;
+    handleReportOrganizationalUnitChangeEditForm = (value) => {
         let { editingReport } = this.state;
+        value = value[0];
+
         if (value) {
             this.props.getAllUserOfDepartment(value);
             this.props.getChildrenOfOrganizationalUnits(value);
@@ -52,8 +52,14 @@ class TaskReportEditForm extends Component {
                     organizationalUnit: value,
                     responsibleEmployees: [],
                     accountableEmployees: [],
+                    readByEmployees: [],
                     taskTemplate: '',
-                }
+                },
+                nameErrorEditForm: undefined,
+                descriptionErrorEditForm: undefined,
+                readByEmployeeErrorCreateForm: undefined,
+                startDateErrorEditForm: undefined,
+                taskTemplateErrorEditForm: undefined,
             });
         }
     }
@@ -64,9 +70,9 @@ class TaskReportEditForm extends Component {
      * @param {*} value 
      * @param {*} willUpdateState 
      */
-    handleNameTaskReportChange = (e) => {
+    handleNameTaskReportChangeEditForm = (e) => {
         let { editingReport } = this.state;
-        let { translate } = this.props;
+        const { translate } = this.props;
         let { value } = e.target;
 
         this.setState({
@@ -76,7 +82,7 @@ class TaskReportEditForm extends Component {
             }
         })
         let { message } = ValidationHelper.validateName(translate, value, 4, 255);
-        this.setState({ nameError: message });
+        this.setState({ nameErrorEditForm: message });
     }
 
 
@@ -84,9 +90,9 @@ class TaskReportEditForm extends Component {
     * Bắt sự kiện thay đổi cho ô input mô tả báo cáo
     * @param {*} e 
     */
-    handleDesTaskReportChange = (e) => {
+    handleDesTaskReportChangeEditForm = (e) => {
         let { editingReport } = this.state;
-        let { translate } = this.props;
+        const { translate } = this.props;
         let value = e.target.value;
 
         this.setState({
@@ -96,7 +102,7 @@ class TaskReportEditForm extends Component {
             }
         });
         let { message } = ValidationHelper.validateDescription(translate, value);
-        this.setState({ descriptionError: message });
+        this.setState({ descriptionErrorEditForm: message });
     }
 
 
@@ -104,22 +110,11 @@ class TaskReportEditForm extends Component {
      * Hàm xử lý sự kiện thay đổi mẫu công việc
      * @param {*} e 
      */
-    handleChangeTaskTemplate = (e) => {
+    handleTaskTemplateChangeEditForm = (value) => {
         let { editingReport } = this.state;
-        let { value } = e.target;
-        if (value === '') {
-            this.setState({
-                editingReport: {
-                    ...editingReport,
-                    taskTemplate: '',
-                    status: '',
-                    startDate: '',
-                    endDate: '',
-                    responsibleEmployees: [],
-                    accountableEmployees: [],
-                }
-            });
-        } else {
+        value = value[0];
+
+        if (value) {
             let taskTemplate = this.props.tasktemplates.items.find((taskTemplate) =>
                 taskTemplate._id === value
             );
@@ -139,10 +134,15 @@ class TaskReportEditForm extends Component {
                 editingReport: {
                     ...editingReport,
                     taskTemplate: taskTemplate._id,
-                    responsibleEmployees: taskTemplate.responsibleEmployees,
-                    accountableEmployees: taskTemplate.accountableEmployees,
+                    responsibleEmployees: taskTemplate.responsibleEmployees.map(o => o._id),
+                    accountableEmployees: taskTemplate.accountableEmployees.map(o => o._id),
                     taskInformations: taskInformations,
-                }
+                },
+                nameErrorEditForm: undefined,
+                descriptionErrorEditForm: undefined,
+                readByEmployeeErrorCreateForm: undefined,
+                startDateErrorEditForm: undefined,
+                taskTemplateErrorEditForm: undefined
             })
         }
     }
@@ -152,7 +152,7 @@ class TaskReportEditForm extends Component {
      * Hàm xử lý sự kiện thay đổi đặc thù công việc
      * @param {*} value 
      */
-    handleChangeEditStatus = (value) => {
+    handleStatusChangeEditForm = (value) => {
         let { editingReport } = this.state;
         this.setState({
             editingReport: {
@@ -166,7 +166,7 @@ class TaskReportEditForm extends Component {
      * Hàm xử lý sự kiện thay đổi tần suất
      * @param {*} value 
      */
-    handleChangeEditFrequency = (value) => {
+    handleFrequencyChangeEditForm = (value) => {
         let { editingReport } = this.state;
         this.setState({
             editingReport: {
@@ -180,7 +180,7 @@ class TaskReportEditForm extends Component {
      * Hàm xử lý sự kiện thay đổi người thực hiện
      * @param {*} value 
      */
-    handleEditResponsibleEmployees = (value) => {
+    handleResponsibleEmployeesChangeEditForm = (value) => {
         let { editingReport } = this.state;
         this.setState({
             editingReport: {
@@ -194,7 +194,7 @@ class TaskReportEditForm extends Component {
      * Hàm xử lý sự kiện thay đổi người phê duyệt
      * @param {*} value 
      */
-    handleEditAccountableEmployees = (value) => {
+    handleAccountableEmployeesChangeEditForm = (value) => {
         let { editingReport } = this.state;
         this.setState({
             editingReport: {
@@ -204,12 +204,29 @@ class TaskReportEditForm extends Component {
         })
     }
 
+
+    handleTaskReportReadChangeEditForm = (value) => {
+        let { editingReport } = this.state;
+        const { translate } = this.props;
+
+        this.setState({
+            editingReport: {
+                ...editingReport,
+                readByEmployees: value
+            }
+        })
+
+        let { message } = ValidationHelper.validateEmpty(translate, value.toString());
+        this.setState({ readByEmployeeErrorCreateForm: message })
+    }
     /**
      * Hàm bắt sự kiện thay đổi ngày bắt đầu
      * @param {*} value 
      */
-    handleEditStartDate = (value) => {
+    handleStartDateChangeEditForm = (value) => {
         let { editingReport } = this.state;
+        const { translate } = this.props;
+
         if (typeof value === 'undefined') {
             this.setState({
                 editingReport: {
@@ -225,6 +242,9 @@ class TaskReportEditForm extends Component {
                 }
             })
         }
+
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+        this.setState({ startDateErrorEditForm: message });
     }
 
 
@@ -232,7 +252,7 @@ class TaskReportEditForm extends Component {
      * Hàm bắt sự kiện thy đổi ngày kết thúc
      * @param {*} value 
      */
-    handleEditEndDate = (value) => {
+    handleEndDateChangeEditForm = (value) => {
         let { editingReport } = this.state
         if (typeof value === 'undefined') {
             this.setState({
@@ -317,7 +337,7 @@ class TaskReportEditForm extends Component {
      * @param {*} index 
      * @param {*} value 
      */
-    handleEditAggregationType = (index, value) => {
+    handleAggregationTypeChangeEditForm = (index, value) => {
         let { editingReport } = this.state;
         let taskInformations = editingReport.taskInformations;
 
@@ -337,7 +357,7 @@ class TaskReportEditForm extends Component {
      * @param {*} index 
      * @param {*} value 
      */
-    handleEditChartType = (index, value) => {
+    handleChartTypeChangeEditForm = (index, value) => {
         let { editingReport } = this.state;
         let taskInformations = editingReport.taskInformations;
 
@@ -356,9 +376,12 @@ class TaskReportEditForm extends Component {
      */
     isFormValidated = () => {
         let { editingReport } = this.state;
-        let { name, description } = editingReport;
-        let { translate } = this.props;
-        if (!ValidationHelper.validateName(translate, name).status || !ValidationHelper.validateDescription(translate, description).status)
+        let { name, description, startDate } = editingReport;
+        const { translate } = this.props;
+
+        if (!ValidationHelper.validateName(translate, name).status
+            || !ValidationHelper.validateDescription(translate, description).status
+            || !ValidationHelper.validateEmpty(translate, startDate).status)
             return false;
         return true;
     }
@@ -607,8 +630,13 @@ class TaskReportEditForm extends Component {
     }
 
     render() {
-        const { translate, reports, tasktemplates, user } = this.props;
-        const { editingReport, nameError, descriptionError } = this.state;
+        const { translate, reports, tasktemplates, user, taskReportId } = this.props;
+        const { editingReport,
+            nameErrorEditForm,
+            descriptionErrorEditForm,
+            startDateErrorEditForm,
+            readByEmployeeErrorCreateForm,
+        } = this.state;
         const { name } = this.state.editingReport;
 
         let listTaskTemplate, units, listRole, listRoles = [];
@@ -657,75 +685,76 @@ class TaskReportEditForm extends Component {
                     <div className="row">
                         <div className="col-md-6">
                             {/* Chọn đơn vị */}
-                            <div className={'form-group'}>
-                                <label>Chọn đơn vị
-                                        <span className="text-red">*</span>
-                                </label>
+                            <div className={`form-group `}>
+                                <label className="control-label">Đơn vị <span className="text-red">*</span></label>
                                 {
-                                    listTaskReportById && units && listTaskReportById.organizationalUnit &&
-                                    <select value={editingReport.organizationalUnit} className="form-control" onChange={this.handleChangeReportOrganizationalUnit}>
-                                        {units.map(x => {
-                                            return <option key={x._id} value={x._id}>{x.name}</option>
-                                        })}
-                                    </select>
+                                    units && units.length > 0 &&
+                                    <SelectBox
+                                        id="editOrganizationalUnitId"
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        value={editingReport.organizationalUnit}
+                                        onChange={this.handleReportOrganizationalUnitChangeEditForm}
+                                        items={
+                                            units.map(o => ({ value: o._id, text: o.name }))
+                                        }
+                                        options={{ minimumResultsForSearch: 100 }}
+                                        multiple={false}
+                                    />
                                 }
                             </div>
-
                         </div>
                         <div className="col-md-6">
                             {/* Người được xem */}
-                            <div className={`form-group`} >
+                            <div className={`form-group ${!readByEmployeeErrorCreateForm ? "" : "has-error"}`}>
                                 <label className="control-label">{translate('task_template.permission_view')}<span className="text-red">*</span></label>
-                                {(listRoles && editingReport.readByEmployees) &&
+                                {(listRoles) &&
                                     <SelectBox
-                                        id={`read-select-box`}
+                                        id={`read-select-box-editform`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         items={
                                             listRoles.map(x => { return { value: x._id, text: x.name } })
                                         }
-
                                         value={editingReport.readByEmployees}
-                                        onChange={this.handleChangeReportReadByEmployees}
+                                        onChange={this.handleTaskReportReadChangeEditForm}
                                         multiple={true}
                                         options={{ placeholder: "Người được xem" }}
                                     />
                                 }
-                                {/* <ErrorLabel content={this.state.newTemplate.errorOnRead} /> */}
+                                <ErrorLabel content={readByEmployeeErrorCreateForm} />
                             </div>
                         </div>
                     </div>
                     <div className="row">
                         <div className="col-md-6">
                             {/* Mẫu công việc */}
-                            <div className="form-group">
-                                <label>Mẫu công việc
-                                        <span className="text-red">*</span>
-                                </label>
+                            <div className={`form-group `}>
+                                <label className="control-label">Mẫu công việc <span className="text-red">*</span></label>
                                 {
-                                    editingReport && listTaskTemplate &&
-                                    <React.Fragment>
-                                        <select className="form-control" value={editingReport.taskTemplate} onChange={this.handleChangeTaskTemplate}>
-                                            <option value="">--Hãy chọn mẫu công việc--</option>
-                                            {(listTaskTemplate && listTaskTemplate.length !== 0) &&
-                                                listTaskTemplate.map(item => {
-                                                    return <option key={item._id} value={item._id}>{item.name}</option>
-                                                })
-                                            }
-                                        </select>
-                                        {/* <ErrorLabel content={} /> */}
-                                    </React.Fragment>
+                                    listTaskTemplate && listTaskTemplate.length > 0 &&
+                                    <SelectBox
+                                        id="editTaskTemplateId"
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        value={editingReport.taskTemplate}
+                                        onChange={this.handleTaskTemplateChangeEditForm}
+                                        items={
+                                            listTaskTemplate.map(o => ({ value: o._id, text: o.name }))
+                                        }
+                                        multiple={false}
+                                    />
                                 }
                             </div>
 
                             {/* Tên báo cáo */}
                             {
-                                listTaskReportById && <div className={`form-group ${!nameError ? "" : "has-error"}`}>
+                                listTaskReportById && <div className={`form-group ${!nameErrorEditForm ? "" : "has-error"}`}>
                                     <label>{translate('report_manager.name')}
                                         <span className="text-red">*</span>
                                     </label>
-                                    <input type="text" className="form-control" value={name ? name : ''} onChange={this.handleNameTaskReportChange} />
-                                    <ErrorLabel content={nameError} />
+                                    <input type="text" className="form-control" value={name ? name : ''} onChange={this.handleNameTaskReportChangeEditForm} />
+                                    <ErrorLabel content={nameErrorEditForm} />
                                 </div>
                             }
                         </div>
@@ -733,12 +762,12 @@ class TaskReportEditForm extends Component {
                         <div className="col-md-6">
                             {/* Mô tả báo cáo */}
                             {
-                                listTaskReportById && <div className={`form-group ${!descriptionError ? "" : "has-error"}`}>
+                                listTaskReportById && <div className={`form-group ${!descriptionErrorEditForm ? "" : "has-error"}`}>
                                     <label htmlFor="Descriptionreport">{translate('report_manager.description')}
                                         <span className="text-red">*</span>
                                     </label>
-                                    <textarea rows={5} type="text" className="form-control" id="Descriptionreport" name="description" value={editingReport.description} onChange={this.handleDesTaskReportChange} />
-                                    <ErrorLabel content={descriptionError} />
+                                    <textarea rows={5} type="text" className="form-control" id="Descriptionreport" name="description" value={editingReport.description} onChange={this.handleDesTaskReportChangeEditForm} />
+                                    <ErrorLabel content={descriptionErrorEditForm} />
                                 </div>
                             }
                         </div>
@@ -755,7 +784,7 @@ class TaskReportEditForm extends Component {
                                         id="edit-select-status"
                                         className="form-control select2"
                                         style={{ width: "100%" }}
-                                        onChange={this.handleChangeEditStatus}
+                                        onChange={this.handleStatusChangeEditForm}
                                         value={listTaskReportById.status}
                                         items={
                                             [
@@ -779,7 +808,7 @@ class TaskReportEditForm extends Component {
                                         id="select-box-frequency"
                                         className="form-control select2"
                                         style={{ width: "100%" }}
-                                        onChange={this.handleChangeEditFrequency}
+                                        onChange={this.handleFrequencyChangeEditForm}
                                         value={listTaskReportById.frequency}
                                         items={
                                             [
@@ -789,6 +818,7 @@ class TaskReportEditForm extends Component {
                                             ]
                                         }
                                         multiple={false}
+                                        options={{ minimumResultsForSearch: 100 }}
                                     />
                                 }
                             </div>
@@ -803,12 +833,12 @@ class TaskReportEditForm extends Component {
                                 {
                                     unitMembers &&
                                     <SelectBox
-                                        id={`responsible-select-box-${editingReport.taskTemplate}`}
+                                        id={`responsible-select-box-${taskReportId}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         items={unitMembers}
-                                        onChange={this.handleEditResponsibleEmployees}
-                                        value={editingReport.responsibleEmployees}
+                                        onChange={this.handleResponsibleEmployeesChangeEditForm}
+                                        value={editingReport.responsibleEmployees ? editingReport.responsibleEmployees : []}
                                         multiple={true}
                                     />
                                 }
@@ -821,12 +851,12 @@ class TaskReportEditForm extends Component {
                                 {
                                     unitMembers &&
                                     <SelectBox
-                                        id={`accounttable-select-box-${editingReport.taskTemplate}`}
+                                        id={`accounttable-select-box-${taskReportId}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         items={unitMembers}
-                                        onChange={this.handleEditAccountableEmployees}
-                                        value={editingReport.accountableEmployees}
+                                        onChange={this.handleAccountableEmployeesChangeEditForm}
+                                        value={editingReport.accountableEmployees ? editingReport.accountableEmployees : []}
                                         multiple={true}
                                     />
                                 }
@@ -835,17 +865,18 @@ class TaskReportEditForm extends Component {
 
                     </div>
                     <div className="row">
-                        <div className="col-md-6">
+                        <div className={`col-md-6 ${!startDateErrorEditForm ? "" : "has-error"}`}>
                             {/* Thống kê từ ngày */}
                             {
                                 <div className="form-group">
-                                    <label>Thống kê từ ngày</label>
+                                    <label>Thống kê từ ngày <span className="text-red">*</span></label>
                                     <DatePicker
                                         id="start-date"
                                         value={editingReport.startDate ? editingReport.startDate : ''}
-                                        onChange={this.handleEditStartDate}
+                                        onChange={this.handleStartDateChangeEditForm}
                                         disabled={false}
                                     />
+                                    <ErrorLabel content={startDateErrorEditForm} />
                                 </div>
                             }
                         </div>
@@ -858,7 +889,7 @@ class TaskReportEditForm extends Component {
                                     <DatePicker
                                         id="end-date"
                                         value={editingReport.endDate ? editingReport.endDate : ''}
-                                        onChange={this.handleEditEndDate}
+                                        onChange={this.handleEndDateChangeEditForm}
                                         disabled={false}
                                     />
                                 </div>
@@ -891,7 +922,7 @@ class TaskReportEditForm extends Component {
                                                     <tr key={index}>
                                                         <td>{item.code}</td>
                                                         <td>{item.name}</td>
-                                                        <td>{(item.type === 'SetOfValues' ? 'Tập dữ liệu' : (item.type))}</td>
+                                                        <td>{(item.type === 'set_of_values' ? 'Tập dữ liệu' : (item.type))}</td>
 
                                                         {
                                                             editingReport && editingReport.taskInformations &&
@@ -899,7 +930,7 @@ class TaskReportEditForm extends Component {
                                                         }
                                                         <td>
                                                             {
-                                                                (item.type === 'Number') ?
+                                                                (item.type === 'number') ?
                                                                     <div className="checkbox" style={{ paddingLeft: "20%" }}>
                                                                         <label>
                                                                             <input name="showInReport" type="checkbox" checked={item.showInReport} onChange={(e) => this.handleEditShowInReport(index, e)} />
@@ -911,19 +942,19 @@ class TaskReportEditForm extends Component {
                                                         </td>
                                                         <td>
                                                             {
-                                                                (item.type === 'Number') ?
+                                                                (item.type === 'number') ?
                                                                     <input className="form-control" style={{ width: '100%' }} type="text" value={item.newName} onChange={(e) => this.handleEditNewName(index, e)} /> : ''
                                                             }
 
                                                         </td>
                                                         <td>
                                                             {
-                                                                (item.type === 'Number') ?
+                                                                (item.type === 'number') ?
                                                                     <SelectBox
                                                                         id={`select-box-calulator-${item.code}`}
                                                                         className="form-control select2"
                                                                         style={{ width: "100%" }}
-                                                                        onChange={(e) => this.handleEditAggregationType(index, e)}
+                                                                        onChange={(e) => this.handleAggregationTypeChangeEditForm(index, e)}
                                                                         value={item.aggregationType}
                                                                         items={
                                                                             [
@@ -938,12 +969,12 @@ class TaskReportEditForm extends Component {
                                                         </td>
                                                         <td data-select2-id="1111">
                                                             {
-                                                                (item.type === 'Number') ?
+                                                                (item.type === 'number') ?
                                                                     <SelectBox
                                                                         id={`select-box-chart-${item.code}`}
                                                                         className="form-control select2"
                                                                         style={{ width: "100%" }}
-                                                                        onChange={(e) => this.handleEditChartType(index, e)}
+                                                                        onChange={(e) => this.handleChartTypeChangeEditForm(index, e)}
                                                                         value={item.chartType}
                                                                         items={
                                                                             [

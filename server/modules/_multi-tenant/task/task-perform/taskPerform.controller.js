@@ -132,7 +132,7 @@ exports.createTaskAction = async (req, res) => {
         var tasks = task.tasks;
         var user = task.user;
         var data = { "organizationalUnits": tasks.organizationalUnit, "title": "Phê duyệt hoạt động", "level": "general", "content": `<p><strong>${user.name}</strong> đã thêm mới hoạt động cho công việc <strong>${tasks.name}</strong>, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`, "sender": user.name, "users": [tasks.accountableEmployees] };
-        NotificationServices.createNotification(tasks.organizationalUnit, data,);
+        NotificationServices.createNotification(req.portal, tasks.organizationalUnit, data,);
         sendEmail(task.email, "Phê duyệt hoạt động", '', `<p><strong>${user.name}</strong> đã thêm mới hoạt động, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`);
         await Logger.info(req.user.email, ` create task action  `, req.portal)
         res.status(200).json({
@@ -808,7 +808,7 @@ evaluateTaskByConsultedEmployees = async (req, res) => {
  * evaluate task by responsible employee
  */
 evaluateTaskByResponsibleEmployees = async (req, res) => {
-    try {
+    // try {
         let task = await PerformTaskService.evaluateTaskByResponsibleEmployees(req.portal, req.body.data, req.params.taskId);
         await Logger.info(req.user.email, ` edit task  `, req.portal);
         res.status(200).json({
@@ -816,14 +816,14 @@ evaluateTaskByResponsibleEmployees = async (req, res) => {
             messages: ['evaluate_task_success'],
             content: task
         })
-    } catch (error) {
-        await Logger.error(req.user.email, ` edit task `, req.portal);
-        res.status(400).json({
-            success: false,
-            messages: ['evaluate_task_fail'],
-            content: error
-        });
-    }
+    // } catch (error) {
+    //     await Logger.error(req.user.email, ` edit task `, req.portal);
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: ['evaluate_task_fail'],
+    //         content: error
+    //     });
+    // }
 }
 
 /**
@@ -922,7 +922,7 @@ editArchivedOfTask = async (req, res) => {
  * Chinh sua trang thai cua cong viec
  */
 editActivateOfTask = async (req, res) => {
-    try {
+    // try {
         let task = await PerformTaskService.editActivateOfTask(req.portal, req.params.taskId, req.body);
         await Logger.info(req.user.email, ` edit status of task  `, req.portal);
         res.status(200).json({
@@ -930,14 +930,14 @@ editActivateOfTask = async (req, res) => {
             messages: ['edit_status_of_task_success'],
             content: task
         })
-    } catch (error) {
-        await Logger.error(req.user.email, ` edit status of task `, req.portal);
-        res.status(400).json({
-            success: false,
-            messages: ['edit_status_of_task_fail'],
-            content: error
-        });
-    }
+    // } catch (error) {
+    //     await Logger.error(req.user.email, ` edit status of task `, req.portal);
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: ['edit_status_of_task_fail'],
+    //         content: error
+    //     });
+    // }
 }
 
 /** Xác nhận công việc */

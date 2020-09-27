@@ -33,8 +33,8 @@ export default {
             success: 'Thành công',
             error: 'Lỗi',
             auth_alert: {
-                title: 'Hệ thống xác nhận có lỗi xảy ra trong phiên làm việc hiện tại của bạn. Vui lòng đăng nhập lại.',
-                reason: 'Nguyên nhân có thể là do:',
+                title: 'Hệ thống xác nhận có lỗi xảy ra trong phiên làm việc của bạn!',
+                reason: 'Nguyên nhân:',
                 content: [
                     'Phiên làm việc đã hết hạn',
                     'Truy cập không hợp lệ',
@@ -161,6 +161,11 @@ export default {
                 company_not_found: 'Không tìm thấy thông tin về công ty',
                 link_exist: 'Url cho link đã tồn tại',
                 component_exist: 'Component này đã tồn tại',
+
+                update_company_link_success: 'Cập nhật link thành công',
+                update_company_link_faile: 'Cập nhật link thất bại',
+                update_company_component_success: 'Cập nhật component thành công',
+                update_company_component_faile: 'Cập nhật component thất bại',
             },
 
             system_setting: {
@@ -285,6 +290,20 @@ export default {
             }
         },
         super_admin: {
+            system: {
+                restore_backup: 'Restore backup',
+                delete_backup: 'Delete backup',
+
+                get_backup_list_success: 'Lấy dữ liệu sao lưu thành công',
+                get_backup_list_faile: 'Lấy dữ liệu sao lưu thất bại',
+                create_backup_success: 'Tạo sao lưu thành công',
+                create_backup_faile: 'Tạo sao lưu thất bại',
+                delete_backup_success: 'Xóa sao lưu thành công',
+                delete_backup_faile: 'Xóa sao lưu thất bại',
+                restore_data_success: 'Khôi phục dữ liệu thành công',
+                restore_data_faile: 'Khôi phục dữ liệu thất bại'
+            },
+
             organization_unit: {
                 //Thông điệp trả về từ server
                 create_department_success: 'Tạo đơn vị thành công',
@@ -709,6 +728,14 @@ export default {
             manage_warehouse: 'Quản lý kho',
             material_manager: 'Quản lý thông tin vật tư',
             dashboard_material: "Bảng tin quản lý vật tư",
+            stock_management: 'Quản lý thông tin kho',
+            bin_location_management: 'Quản lý thông tin lưu kho',
+            category_management: 'Quản lý danh mục hàng hóa',
+            good_management: 'Quản lý hàng hóa',
+            partner_management: 'Quản lý đối tác',
+            proposal_management: 'Quản lý phiếu đề nghị',
+            bill_management: 'Quản lý thông tin phiếu',
+            inventory_management: 'Quản lý hàng tồn kho',
 
             manage_kpi: 'Quản lý KPI',
             kpi_unit_create: 'Khởi tạo KPI đơn vị',
@@ -1511,6 +1538,7 @@ export default {
                 shift_work: 'Ca làm việc',
                 shifts1: 'ca 1',
                 shifts2: 'ca 2',
+                shifts3: 'ca 3',
                 date_of_month: 'Các ngày trong tháng',
 
                 // Nhóm dành cho action
@@ -1582,6 +1610,7 @@ export default {
                 with_cost: 'với chi phí',
                 commitment_time: 'và thời gian cam kết làm việc',
                 month: 'tháng',
+                year: 'năm',
                 staff: 'nhân viên',
                 attend: 'Tham gia',
 
@@ -1732,11 +1761,14 @@ export default {
                 manager: 'Người quản lý',
                 user: 'Người sử dụng',
                 organization_unit: 'Đơn vị sử dụng',
+                select_organization_unit: 'Chọn đơn vị sử dụng',
+                select_all_organization_unit: 'Chọn tất cả đơn vị',
                 handover_from_date: 'Thời gian bắt đầu sử dụng',
                 handover_to_date: 'Thời gian kết thúc sử dụng',
                 status: 'Trạng thái',
                 action: 'Hành động',
                 asset_value: 'Giá trị tài sản',
+                disposal_date: 'Ngày thanh lý',
 
                 general_information: 'Thông tin chung',
                 usage_information: 'Thông tin sử dụng',
@@ -1780,6 +1812,10 @@ export default {
                 file_name: 'Tên tài liệu',
                 number: 'Số lượng',
                 attached_file: 'File đính kèm',
+
+                not_for_registering: 'Không được đăng ký sử dụng',
+                register_by_hour: 'Đăng ký sử dụng theo giờ',
+                register_for_long_term: 'Đăng ký sử dụng lâu dài',
             },
 
             // Dashboard
@@ -1928,6 +1964,7 @@ export default {
                 months_production: 'Sản lượng sản phẩm trong các tháng',
                 production: 'Sản lượng',
                 select_depreciation_type: 'Chọn phương pháp khấu hao',
+                select_all_depreciation_type: 'Chọn tất cả',
                 line: 'Phương pháp khấu hao đường thẳng',
                 declining_balance: 'Phương pháp khấu hao theo số dư giảm dần',
                 units_production: 'Phương pháp khấu hao theo sản lượng',
@@ -1970,59 +2007,49 @@ export default {
                 supplier: 'Nhà cung cấp',
                 unit: 'Đơn vị tính',
                 expected_value: 'Giá trị dự tính',
-
-                //Thông điệp trả về từ server
-                get_recommend_procure_success: 'Lấy thông tin đề nghị mua sắm thiết bị thành công',
-                get_recommend_procure_faile: 'Lấy thông tin đề nghị mua sắm thiết bị thất bại',
-                create_recommend_procure_success: 'Thêm phiếu đề nghị mua sắm thiết bị thành công',
-                create_recommend_procure_faile: 'Thêm phiếu đề nghị mua sắm thiết bị thất bại',
-                delete_recommend_procure_success: 'Xoá phiếu đề nghị mua sắm thiết bị thành công',
-                delete_recommend_procure_faile: 'Xoá phiếu đề nghị mua sắm thiết bị thất bại',
-                edit_recommend_procure_success: 'Chỉnh sửa thông tin phiếu thành công',
-                edit_recommend_procure_faile: 'Chỉnh sửa thông tin phiếu thất bại',
             },
 
             // Quản lý đề nghị cấp phát
-            manage_recommend_distribute: {
+            manage_use_request: {
 
                 //Thông điệp trả về từ server
-                get_recommend_distribute_success: 'Lấy thông tin đề nghị cấp phát thiết bị thành công',
-                get_recommend_distribute_faile: 'Lấy thông tin đề nghị cấp phát thiết bị thất bại',
-                create_recommend_distribute_success: 'Thêm phiếu đề nghị cấp phát thiết bị thành công',
-                create_recommend_distribute_faile: 'Thêm phiếu đề nghị cấp phát thiết bị thất bại',
-                delete_recommend_distribute_success: 'Xoá phiếu đề nghị cấp phát thiết bị thành công',
-                delete_recommend_distribute_faile: 'Xoá phiếu đề nghị cấp phát thiết bị thất bại',
-                edit_recommend_distribute_success: 'Chỉnh sửa thông tin phiếu thành công',
-                edit_recommend_distribute_faile: 'Chỉnh sửa thông tin phiếu thất bại',
+                get_use_request_success: 'Lấy thông tin đề nghị cấp phát thiết bị thành công',
+                get_use_request_faile: 'Lấy thông tin đề nghị cấp phát thiết bị thất bại',
+                create_use_request_success: 'Thêm phiếu đề nghị cấp phát thiết bị thành công',
+                create_use_request_faile: 'Thêm phiếu đề nghị cấp phát thiết bị thất bại',
+                delete_use_request_success: 'Xoá phiếu đề nghị cấp phát thiết bị thành công',
+                delete_use_request_faile: 'Xoá phiếu đề nghị cấp phát thiết bị thất bại',
+                edit_use_request_success: 'Chỉnh sửa thông tin phiếu thành công',
+                edit_use_request_faile: 'Chỉnh sửa thông tin phiếu thất bại',
 
             },
 
             // Đăng ký mua sắm thiết bị
-            recommend_procure: {
+            purchase_request: {
 
                 //Thông điệp trả về từ server
-                get_recommend_procure_success: 'Lấy thông tin đề nghị mua sắm thiết bị thành công',
-                get_recommend_procure_faile: 'Lấy thông tin đề nghị mua sắm thiết bị thất bại',
-                create_recommend_procure_success: 'Thêm phiếu đề nghị mua sắm thiết bị thành công',
-                create_recommend_procure_faile: 'Thêm phiếu đề nghị mua sắm thiết bị thất bại',
-                delete_recommend_procure_success: 'Xoá phiếu đề nghị mua sắm thiết bị thành công',
-                delete_recommend_procure_faile: 'Xoá phiếu đề nghị mua sắm thiết bị thất bại',
-                edit_recommend_procure_success: 'Chỉnh sửa thông tin phiếu thành công',
-                edit_recommend_procure_faile: 'Chỉnh sửa thông tin phiếu thất bại',
+                get_purchase_request_success: 'Lấy thông tin đề nghị mua sắm thiết bị thành công',
+                get_purchase_request_faile: 'Lấy thông tin đề nghị mua sắm thiết bị thất bại',
+                create_purchase_request_success: 'Thêm phiếu đề nghị mua sắm thiết bị thành công',
+                create_purchase_request_faile: 'Thêm phiếu đề nghị mua sắm thiết bị thất bại',
+                delete_purchase_request_success: 'Xoá phiếu đề nghị mua sắm thiết bị thành công',
+                delete_purchase_request_faile: 'Xoá phiếu đề nghị mua sắm thiết bị thất bại',
+                edit_purchase_request_success: 'Chỉnh sửa thông tin phiếu thành công',
+                edit_purchase_request_faile: 'Chỉnh sửa thông tin phiếu thất bại',
             },
 
             // Đăng ký sử dụng thiết bị
-            recommend_distribute: {
+            use_request: {
 
                 //Thông điệp trả về từ server
-                get_recommend_distribute_success: 'Lấy thông tin đề nghị cấp phát thiết bị thành công',
-                get_recommend_distribute_faile: 'Lấy thông tin đề nghị cấp phát thiết bị thất bại',
-                create_recommend_distribute_success: 'Thêm phiếu đề nghị cấp phát thiết bị thành công',
-                create_recommend_distribute_faile: 'Thêm phiếu đề nghị cấp phát thiết bị thất bại',
-                delete_recommend_distribute_success: 'Xoá phiếu đề nghị cấp phát thiết bị thành công',
-                delete_recommend_distribute_faile: 'Xoá phiếu đề nghị cấp phát thiết bị thất bại',
-                edit_recommend_distribute_success: 'Chỉnh sửa thông tin phiếu thành công',
-                edit_recommend_distribute_faile: 'Chỉnh sửa thông tin phiếu thất bại',
+                get_use_request_success: 'Lấy thông tin đề nghị cấp phát thiết bị thành công',
+                get_use_request_faile: 'Lấy thông tin đề nghị cấp phát thiết bị thất bại',
+                create_use_request_success: 'Thêm phiếu đề nghị cấp phát thiết bị thành công',
+                create_use_request_faile: 'Thêm phiếu đề nghị cấp phát thiết bị thất bại',
+                delete_use_request_success: 'Xoá phiếu đề nghị cấp phát thiết bị thành công',
+                delete_use_request_faile: 'Xoá phiếu đề nghị cấp phát thiết bị thất bại',
+                edit_use_request_success: 'Chỉnh sửa thông tin phiếu thành công',
+                edit_use_request_faile: 'Chỉnh sửa thông tin phiếu thất bại',
             },
 
         },
@@ -2205,9 +2232,9 @@ export default {
                 tasks_calendar: 'Lịch công việc',
                 model_detail_task_title: 'Thông tin chi tiết công việc',
                 collaborative_tasks: 'Nhiều người thực hiện',
-                in_time: 'Đúng tiến độ',
-                delayed_time: 'Trễ tiến độ',
-                not_achieved: 'Quá hạn',
+                in_time: 'Đúng tiến độ ',
+                delayed_time: 'Trễ tiến độ ',
+                not_achieved: 'Quá hạn ',
 
                 err_organizational_unit: 'Đơn vị đã bị xóa',
                 err_name_task: 'Tên đã bị xóa',
@@ -3238,6 +3265,93 @@ export default {
             },
             dashboard_material: {
 
+            },
+            category_management: {
+                index: 'STT',
+                add: 'Thêm mới',
+                add_title: 'Thêm danh mục mới',
+                info: 'Thông tin về danh mục hàng hóa',
+                edit: 'Chỉnh sửa thông tin danh mục',
+                delete: 'Xóa danh mục',
+                add_success: 'Thêm mới danh mục thành công',
+                delete_success: 'Xóa danh mục thành công',
+                delete_faile: 'Xóa danh mục thất bại',
+                add_faile: 'Thêm mới danh mục thất bại',
+                edit_success: 'Chỉnh sửa thành công',
+                edit_faile: 'Chỉnh sửa thất bại',
+                name: 'Tên danh mục',
+                code: 'Mã danh mục',
+                type: 'Kiểu danh mục',
+                good: 'Hàng hóa',
+                address: 'Địa chỉ',
+                description: 'Mô tả',
+                choose_type: 'Chọn kiểu hàng hóa',
+                all_type: 'Chọn tất cả các kiểu hàng hóa',
+                product: 'Sản phẩm',
+                material: 'Nguyên vật liệu',
+                equipment: 'Công cụ dụng cụ',
+                asset: 'Tài sản',
+                search: 'Tìm kiếm',
+                validate_code: 'Mã danh mục không được để trống',
+                validate_name: 'Tên danh mục không được để trống',
+                validate_type: 'Bạn cần chọn kiểu danh mục',
+                delete_info: 'Bạn có muốn xóa danh mục'
+            },
+            good_management: {
+                product: 'Sản phẩm',
+                material: 'Nguyên vật liệu',
+                equipment: 'Công cụ dụng cụ',
+                asset: 'Tài sản',
+                index: 'STT',
+                add: 'Thêm mới',
+                add_title: 'Thêm danh mục mới',
+                info: 'Thông tin về danh mục hàng hóa',
+                edit: 'Chỉnh sửa thông tin danh mục',
+                delete: 'Xóa danh mục',
+                add_success: 'Thêm mới danh mục thành công',
+                delete_success: 'Xóa danh mục thành công',
+                delete_faile: 'Xóa danh mục thất bại',
+                add_faile: 'Thêm mới danh mục thất bại',
+                edit_success: 'Chỉnh sửa thành công',
+                edit_faile: 'Chỉnh sửa thất bại',
+                name: 'Tên danh mục',
+                code: 'Mã danh mục',
+                type: 'Kiểu danh mục',
+                good: 'Hàng hóa',
+                address: 'Địa chỉ',
+                description: 'Mô tả',
+                choose_type: 'Chọn kiểu hàng hóa',
+                all_type: 'Chọn tất cả các kiểu hàng hóa',
+                product: 'Sản phẩm',
+                material: 'Nguyên vật liệu',
+                equipment: 'Công cụ dụng cụ',
+                asset: 'Tài sản',
+                search: 'Tìm kiếm',
+                validate_code: 'Mã danh mục không được để trống',
+                validate_name: 'Tên danh mục không được để trống',
+                validate_type: 'Bạn cần chọn kiểu danh mục',
+                delete_info: 'Bạn có muốn xóa danh mục',
+                category: 'Danh mục',
+                unit: 'Đơn vị tính',
+                materials: 'Hoạt chất chính'
+            },
+            bin_location_management: {
+                bin_location: 'Nơi lưu trữ',
+                archive: 'Danh mục lưu trữ'
+            },
+            bill_management: {
+                stock_book: 'Sổ kho',
+                good_receipt: 'Nhập kho',
+                good_issue: 'Xuất kho',
+                good_return: 'Trả hàng',
+                stock_take: 'Kiểm kê',
+                stock_rotate: 'Luân chuyển',
+            },
+            inventory_management: {
+                product: 'Sản phẩm',
+                material: 'Nguyên vật liệu',
+                equipment: 'Công cụ dụng cụ',
+                asset: 'Tài sản',
             }
         },
 
@@ -3342,7 +3456,7 @@ export default {
         },
 
         footer: {
-            copyright: 'Bản quyền thuộc về ',
+            copyright: 'Copyright by ',
             vnist: 'Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam',
             version: 'Phiên bản '
         },

@@ -21,7 +21,7 @@ function searchRecommendProcures(data) {
             page: data.page,
             limit: data.limit,
         },
-    }, false, true, 'asset.recommend_procure');
+    }, false, true, 'asset.purchase-request');
 }
 
 // Tạo mới thông tin phiếu đề nghị mua sắm thiết bị
@@ -30,7 +30,7 @@ function createRecommendProcure(data) {
         url: `${process.env.REACT_APP_SERVER}/purchase-request/purchase-request`,
         method: 'POST',
         data: data
-    }, true, true, 'asset.recommend_procure');
+    }, true, true, 'asset.purchase-request');
 }
 
 // Cập nhật thông tin phiếu đề nghị mua sắm thiết bị
@@ -39,7 +39,7 @@ function updateRecommendProcure(id, data) {
         url: `${process.env.REACT_APP_SERVER}/purchase-request/purchase-request/${id}`,
         method: 'PUT',
         data: data
-    }, true, true, 'asset.recommend_procure');
+    }, true, true, 'asset.purchase-request');
 }
 
 // Xoá thông tin phiếu đề nghị mua sắm thiết bị
@@ -47,5 +47,5 @@ function deleteRecommendProcure(id) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/purchase-request/purchase-request/${id}`,
         method: 'DELETE',
-    }, true, true, 'asset.recommend_procure');
+    }, true, true, 'asset.purchase-request');
 }

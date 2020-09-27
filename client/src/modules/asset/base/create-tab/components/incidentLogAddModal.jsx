@@ -13,7 +13,7 @@ class IncidentLogAddModal extends Component {
         super(props);
         this.state = {
             incidentCode: "",
-            type: "Hỏng hóc",
+            type: "broken",
             dateOfIncident: this.formatDate(Date.now()),
             description: "",
             statusIncident: "Chờ xử lý",
@@ -127,9 +127,9 @@ class IncidentLogAddModal extends Component {
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
         let result = this.validateDateOfIncident(this.state.dateOfIncident, false) &&
-            this.validateIncidentDescription(this.state.description, false) && 
+            this.validateIncidentDescription(this.state.description, false) &&
             this.validateDateOfIncident(this.state.dateOfIncident, false)
-            
+
         return result;
     }
 
@@ -175,8 +175,8 @@ class IncidentLogAddModal extends Component {
                             <div className="form-group">
                                 <label>{translate('asset.general_information.incident_type')}</label>
                                 <select className="form-control" value={type} name="type" onChange={this.handleTypeChange}>
-                                    <option value="Hỏng hóc">{translate('asset.general_information.damaged')}</option>
-                                    <option value="Mất">{translate('asset.general_information.lost')}</option>
+                                    <option value="broken">{translate('asset.general_information.damaged')}</option>
+                                    <option value="lost">{translate('asset.general_information.lost')}</option>
                                 </select>
                             </div>
 

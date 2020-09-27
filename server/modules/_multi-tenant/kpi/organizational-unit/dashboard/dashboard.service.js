@@ -2,13 +2,14 @@ const Models = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
 const { OrganizationalUnit, OrganizationalUnitKpiSet } = Models;
 const arrayToTree = require('array-to-tree');
 const EvaluationDashboardService = require('../../evaluation/dashboard/dashboard.service');
+const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
  
 /**
  * Lấy các đơn vị con của một đơn vị và đơn vị đó
  * @id Id công ty
  * @role Id của role ứng với đơn vị cần lấy đơn vị con
  */
-exports.getChildrenOfOrganizationalUnitsAsTree = async (portal, id, role) => {
+exports.getChildrenOfOrganizationalUnitsAsTree = async (portal, role) => {
     let organizationalUnit = await OrganizationalUnit(connect(DB_CONNECTION, portal))
         .findOne({
             $or: [
@@ -17,8 +18,7 @@ exports.getChildrenOfOrganizationalUnitsAsTree = async (portal, id, role) => {
                 {'employees':{ $in: role }}
             ]
         });
-    const data = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ company: id });
-    
+    const data = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find();
     const newData = data.map( department => {return {
             id: department._id.toString(),
             name: department.name,

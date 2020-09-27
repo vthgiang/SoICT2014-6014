@@ -623,14 +623,28 @@ input[type=range]:focus::-ms-fill-upper {
 /* React-Toastify */
 .Toastify__progress-bar {
     height: 3px;
-    background-color: rgb(255, 255, 255);
+    background-color: rgb(182, 182, 182);
 }
-
 .notification-title {
-    font-size: 14px;
-    margin: 0px 0px 5px;
+    font-size: 16px;
+    margin: 0px;
     padding: 0px;
-    font-weight: bold;
+    font-weight: 700;
+}
+div.notification-title ::after {
+    font: normal normal normal 20px/1 "Material Icons";
+    display: inline-block;
+    vertical-align: top;
+    line-height: 19px;
+    font-weight: 900;
+}
+.Toastify__toast--success .notification-title ::after {
+    color: #4da75b;
+    content: "check_circle";
+}
+.Toastify__toast--error .notification-title ::after {
+    color: rgb(236, 61, 61);
+    content: "error_outline";
 }
 .Toastify__toast--info .notification-title {
     color: rgb(54, 156, 199);

@@ -4,6 +4,7 @@ import GroupItem from './groupItem';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { withTranslate } from 'react-redux-multilingual';
+import { ApiImage } from '../../../common-components';
 
 class SideBar extends Component {
 
@@ -31,11 +32,12 @@ class SideBar extends Component {
 
         return (
             <React.Fragment>
-                <aside className="main-sidebar">
+                <aside className="main-sidebar" style={{ minHeight: '100vh' }}>
                     <section className="sidebar">
                         <div className="user-panel">
                             <div className="pull-left image">
-                                <img src={process.env.REACT_APP_SERVER + auth.user.avatar} className="img-circle" alt="User avatar" />
+                                <ApiImage className="img-circle" alt="User Avatar" src={auth.user.avatar !== undefined ? '.' + auth.user.avatar : undefined} />
+                                {/* <img src={process.env.REACT_APP_SERVER + auth.user.avatar} className="img-circle" alt="User avatar" /> */}
                             </div>
                             <div className="pull-left info">
                                 <p>{user.name}</p>
@@ -60,8 +62,8 @@ class SideBar extends Component {
                                 icon: 'fa fa-user-circle',
                                 list: [
                                     { name: 'menu.detail_employee', icon: 'fa fa-user-o', path: '/hr-detail-employee' },
-                                    { name: 'menu.annual_leave_personal', icon: 'fa fa-calendar', path: '/hr-annual-leave-personal' },
                                     { name: 'menu.update_employee', icon: 'fa fa-pencil-square-o', path: '/hr-update-employee' },
+                                    { name: 'menu.annual_leave_personal', icon: 'fa fa-calendar', path: '/hr-annual-leave-personal' },
 
                                 ]
                             }} />
@@ -86,6 +88,7 @@ class SideBar extends Component {
                                 name: 'menu.system_administration',
                                 icon: 'fa fa-key',
                                 list: [
+                                    { name: 'menu.manage_system', icon: 'fa fa-database', path: '/system-management' },
                                     { name: 'menu.manage_department', icon: 'fa fa-sitemap', path: '/departments-management' },
                                     { name: 'menu.manage_user', icon: 'fa fa-users', path: '/users-management' },
                                     { name: 'menu.manage_role', icon: 'fa fa-lock', path: '/roles-management' },
@@ -101,10 +104,18 @@ class SideBar extends Component {
                             {/* Quản lý kho */}
                             <GroupItem groupItem={{
                                 name: 'menu.manage_warehouse',
-                                icon: 'fa fa-bank',
+                                icon: 'fa fa-safari',
                                 list: [
                                     { name: 'menu.dashboard_material', icon: 'fa fa-dashboard', path: '/dashboad-material' },
                                     { name: 'menu.material_manager', icon: 'fa fa-address-card', path: '/material-manager' },
+                                    { name: 'menu.stock_management', icon: 'fa fa-bank', path: '/stock-management' },
+                                    { name: 'menu.bin_location_management', icon: 'fa fa-sitemap', path: '/bin-location-management' },
+                                    { name: 'menu.category_management', icon: 'fa fa-cubes', path: '/category-management' },
+                                    { name: 'menu.good_management', icon: 'fa fa-gift', path: '/good-management' },
+                                    { name: 'menu.partner_management', icon: 'fa fa-users', path: '/partner-management' },
+                                    { name: 'menu.proposal_management', icon: 'fa fa-envelope-o', path: '/proposal-management' },
+                                    { name: 'menu.bill_management', icon: 'fa fa-reorder', path: '/bill-management' },
+                                    { name: 'menu.inventory_management', icon: 'fa fa-times-circle-o', path: '/inventory-management' }
                                 ]
                             }} />
 

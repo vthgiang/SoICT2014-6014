@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { AuthActions } from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
 import ForgotPassword from './forgotPassword';
+import { getStorage } from '../../../config';
 
 class Login extends Component {
     
@@ -12,7 +13,8 @@ class Login extends Component {
         this.state = {
             emailForgot: null,
             newPassword: null,
-            confirmNewPassword: null
+            confirmNewPassword: null,
+            portal: getStorage('portal')
         };
     }
 
@@ -42,7 +44,8 @@ class Login extends Component {
             <div className="hold-transition login-page" style={{ minHeight: '100vh' }}>
                 <div className="login-box" style={{ marginTop: 0, marginBottom: 0, paddingTop: '7vh' }}>
                     <div className="login-logo">
-                        <a href="/"><b>VNIST</b>-QLDN</a>
+                        <img src="VNIMA.png"></img>
+                        {/* <a href="/" style={{textShadow: '0 0 20px #FFFFFF, 0 0 20px #FFFFFF', fontSize: '64px'}}><b className="text-red">VNI</b><b className="text-blue">MA</b></a> */}
                     </div>
                     {
                         auth.error &&
@@ -62,7 +65,7 @@ class Login extends Component {
                                 <span className="glyphicon glyphicon-lock form-control-feedback" />
                             </div>
                             <div className="form-group has-feedback">
-                                <input name="portal" onChange={this.handleChange} type="text" className="form-control" placeholder="Portal"/>
+                                <input name="portal" onChange={this.handleChange} type="text" className="form-control" placeholder="Portal" value={this.state.portal}/>
                                 <span className="glyphicon glyphicon-hdd form-control-feedback" />
                             </div>
                             <div className="row">

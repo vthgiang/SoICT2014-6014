@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from "react-redux-multilingual";
 import { CommentInProcess } from './commentInProcess';
+import { ApiImage, Comment } from '../../../../common-components'
+import { AuthActions } from '../../../auth/redux/actions';
+import { performTaskAction } from '../redux/actions';
+import { performtasks } from '../redux/reducers';
 class IncomingDataTab extends Component {
 
     constructor(props) {
@@ -17,10 +21,22 @@ class IncomingDataTab extends Component {
         } else {
             this.setState({ showComment: taskId });
         }
-
+    }
+    isImage = (src) => {
+        let string = src.split(".")
+        let image = ['jpg', 'jpeg', 'png', 'psd', 'pdf', 'tiff', 'gif']
+        if (image.indexOf(string[string.length - 1]) !== -1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    requestDownloadFile = (e, path, fileName) => {
+        e.preventDefault()
+        this.props.downloadFile(path, fileName)
     }
     render() {
-        const { translate } = this.props;
+        const { translate, performtasks } = this.props;
         const { preceedingTasks } = this.props;
         const { showComment } = this.state;
 
@@ -42,7 +58,7 @@ class IncomingDataTab extends Component {
                                 <strong>{translate('task.task_process.information')}:</strong>
                                 {
                                     task.taskInformations && task.taskInformations.length !== 0 ?
-                                    task.taskInformations.map((info, key) =>
+                                        task.taskInformations.map((info, key) =>
                                             info.isOutput &&
                                             <ul key={key}>
                                                 <li>
@@ -66,10 +82,20 @@ class IncomingDataTab extends Component {
                                                 {
                                                     document.files
                                                     && document.files.length !== 0
-                                                    && document.files.map(file =>
-                                                        <li style={{ listStyle: "none", wordWrap: "break-word" }}>
-                                                            <a href={file.url}>{file.name}</a>
-                                                        </li>
+                                                    && document.files.map((file, index) =>
+                                                        <div key={index}>
+                                                            {this.isImage(file.name) ?
+                                                                <ApiImage
+                                                                    className="attachment-img files-attach"
+                                                                    style={{ marginTop: "5px" }}
+                                                                    src={file.url}
+                                                                    file={file}
+                                                                    requestDownloadFile={this.requestDownloadFile}
+                                                                />
+                                                                :
+                                                                <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, file.url, file.name)}> {file.name} </a>
+                                                            }
+                                                        </div>
                                                     )
                                                 }
                                             </ul>
@@ -93,6 +119,20 @@ class IncomingDataTab extends Component {
                                             task={task}
                                             inputAvatarCssClass="user-img-incoming-level1"
                                         />
+                                        {/* <Comment
+                                            data={task}
+                                            comments={task.commentsInProcess}
+                                            currentTask={performtasks?.task?._id}
+                                            createComment={(dataId, data) => this.props.createComment(dataId, data)}
+                                            editComment={(dataId, commentId, data) => this.props.editComment(dataId, commentId, data)}
+                                            deleteComment={(dataId, commentId) => this.props.deleteComment(dataId, commentId)}
+                                            createChildComment={(dataId, commentId, data) => this.props.createChildComment(dataId, commentId, data)}
+                                            editChildComment={(dataId, commentId, childCommentId, data) => this.props.editChildComment(dataId, commentId, childCommentId, data)}
+                                            deleteChildComment={(dataId, commentId, childCommentId) => this.props.deleteChildComment(dataId, commentId, childCommentId)}
+                                            deleteFileComment={(fileId, commentId, dataId) => this.props.deleteFileComment(fileId, commentId, dataId)}
+                                            deleteFileChildComment={(fileId, commentId, childCommentId, dataId) => this.props.deleteFileChildComment(fileId, commentId, childCommentId, dataId)}
+                                            downloadFile={(path, fileName) => this.props.downloadFile(path, fileName)}
+                                        /> */}
                                     </div>
                                 }
                             </div>
@@ -110,7 +150,15 @@ function mapState(state) {
     return {};
 }
 const actions = {
-
+    downloadFile: AuthActions.downloadFile,
+    createComment: performTaskAction.createComment,
+    editComment: performTaskAction.editComment,
+    deleteComment: performTaskAction.deleteComment,
+    createChildComment: performTaskAction.createChildComment,
+    editChildComment: performTaskAction.editChildComment,
+    deleteChildComment: performTaskAction.deleteChildComment,
+    deleteFileComment: performTaskAction.deleteFileComment,
+    deleteFileChildComment: performTaskAction.deleteFileChildComment
 }
 
 const connectIncomingDataTab = connect(mapState, actions)(withTranslate(IncomingDataTab));

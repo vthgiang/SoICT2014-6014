@@ -29,12 +29,12 @@ class TasksSchedule extends Component {
       .toDate();
 
     this.infoSearch = {
-      taskStatus: ["Inprocess"],
+      taskStatus: ["inprocess"],
     }
 
     this.INFO_CALENDAR = {
-      intime: 0,
       delay: 0,
+      intime: 0,
       overDue: 0
     }
 
@@ -46,21 +46,62 @@ class TasksSchedule extends Component {
       taskId: null,
       add: true,
       taskStatus: this.infoSearch.taskStatus,
-
     };
+  }
 
+  static getDerivedStateFromProps = (nextProps, prevState) => {
+
+    if (nextProps.tasks) {
+      return {
+        ...prevState,
+        tasks: nextProps.tasks
+      }
+    } else {
+      return null
+    }
+  }
+  shouldComponentUpdate = async (props, state) => {
+    if (props.tasks) {
+      return true
+    }
+    else return false
   }
 
   handleSelectStatus = async (taskStatus) => {
     if (taskStatus.length === 0) {
-      taskStatus = ["Inprocess"];
+      taskStatus = ["inprocess"];
     }
 
     this.infoSearch.taskStatus = taskStatus;
   }
 
   handleSearchData = async () => {
+    const { tasks, TaskOrganizationUnitDashboard } = this.props;
     let status = this.infoSearch.taskStatus;
+
+    if (tasks) {
+      let taskList, tasksByStatus;
+
+      // Đếm số công việc đơn vị
+      if (TaskOrganizationUnitDashboard) {
+        taskList = tasks.organizationUnitTasks && tasks.organizationUnitTasks.tasks;
+        tasksByStatus = taskList && taskList.filter(task => this.filterByStatus(task));
+
+        if (tasksByStatus) {
+          await this.countTasks(tasksByStatus);
+        }
+      }
+      // Đếm số công việc cá nhân
+      else {
+        let res = tasks.responsibleTasks && tasks.responsibleTasks;
+        let acc = tasks.accountableTasks && tasks.accountableTasks;
+        let con = tasks.consultedTasks && tasks.consultedTasks;
+        let inf = tasks.informedTasks && tasks.informedTasks;
+        let fourTasks = res.concat(acc, con, inf).filter(task => this.filterByStatus(task));
+
+        await this.countTasks(fourTasks);
+      }
+    }
     await this.setState(state => {
       return {
         ...state,
@@ -93,7 +134,6 @@ class TasksSchedule extends Component {
         tasksByStatus = taskList && taskList.filter(task => this.filterByStatus(task));
 
         if (tasksByStatus) {
-          this.countTasks(tasksByStatus);
           var startTime, endTime, currentTime, start_time, end_time, title1, title2, groupTask, titleTask;
           var workingDayMin;
 
@@ -101,10 +141,21 @@ class TasksSchedule extends Component {
             let multi = false;
             let responsibleEmployeeIds = [];
             let responsibleEmployeeNames = [];
+            let addDate;
 
             currentTime = new Date();
+
+            // Xu ly neu ngay bat dau bang ngay ket thuc
+            if (tasksByStatus[i - 1].startDate === tasksByStatus[i - 1].endDate) {
+              addDate = Date.parse(tasksByStatus[i - 1].endDate) + 86400000;
+            }
+            else {
+              addDate = tasksByStatus[i - 1].endDate;
+            }
+
             startTime = new Date(tasksByStatus[i - 1].startDate);
-            endTime = new Date(tasksByStatus[i - 1].endDate);
+            endTime = new Date(addDate);
+
             start_time = moment(startTime);
             end_time = moment(endTime);
 
@@ -113,7 +164,7 @@ class TasksSchedule extends Component {
               responsibleEmployeeNames.push(x.name);
             });
 
-            title1 = tasksByStatus[i - 1].name + " - " + tasksByStatus[i - 1].progress + "%";
+            title1 = `${tasksByStatus[i - 1].name} - ${tasksByStatus[i - 1].progress} % `;
             title2 = tasksByStatus[i - 1].name + " - " + responsibleEmployeeNames.join(" - ") + " - " + tasksByStatus[i - 1].progress + "%";
             if (responsibleEmployeeIds.length > 1) {
               multi = true;
@@ -189,10 +240,6 @@ class TasksSchedule extends Component {
         acc = tasks.accountableTasks && tasks.accountableTasks.filter(task => this.filterByStatus(task));
         con = tasks.consultedTasks && tasks.consultedTasks.filter(task => this.filterByStatus(task));
         inf = tasks.informedTasks && tasks.informedTasks.filter(task => this.filterByStatus(task));
-        this.countTasks(res);
-        this.countTasks(acc);
-        this.countTasks(con);
-        this.countTasks(inf);
 
         if (res) {
           for (let i = 0; i < res.length; i++) {
@@ -252,10 +299,19 @@ class TasksSchedule extends Component {
 
             if (tasksByStatus2[i]) {
               let startTime, endTime, start_time, end_time;
-              let titleTask = tasksByStatus2[i].name + " - " + tasksByStatus2[i].progress + "%";
+              let titleTask = `${tasksByStatus2[i].name} - ${tasksByStatus2[i].progress} % `;
+              let addDate2;
+
+              if (tasksByStatus2[i].startDate === tasksByStatus2[i].endDate) {
+                addDate2 = Date.parse(tasksByStatus2[i].endDate) + 86400000;
+              }
+              else {
+                addDate2 = tasksByStatus2[i].endDate;
+              }
 
               startTime = new Date(tasksByStatus2[i].startDate);
-              endTime = new Date(tasksByStatus2[i].endDate);
+              endTime = new Date(addDate2);
+
               start_time = moment(startTime);
               end_time = moment(endTime);
 
@@ -316,11 +372,9 @@ class TasksSchedule extends Component {
 
   getTaskGroups() {
     const { tasks, translate } = this.props;
-    let { taskStatus } = this.state;
     var taskList1, tasksByStatus1;
     let groupName = [], distinctGroupName = [], id = [], distinctId = [];
     let multiResponsibleEmployee = false;
-    // this.INFO_CALENDAR.delay = 0, this.INFO_CALENDAR.intime = 0, this.INFO_CALENDAR.overDue = 0;
 
     if (tasks) {
 
@@ -406,6 +460,7 @@ class TasksSchedule extends Component {
         }
       }
     }
+
     let group = [{ id: "no-data", title: "" }];
 
     return distinctGroupName.length ? distinctGroupName : group;
@@ -416,23 +471,20 @@ class TasksSchedule extends Component {
   displayTaskProgress = async (progress, x, color) => {
     if (x) {
       let d, child;
+
       d = document.createElement('div');
       d.setAttribute("class", "task-progress");
-      d.style.width = `${progress}%`;
+      d.style.width = progress > 5 ? `${progress}%` : `5px`;
       d.style.backgroundColor = color;
 
       child = x.childElementCount;
-
       if (child === 1) {
         await x.appendChild(d);
       }
     }
   }
 
-
-
   handleItemClick = async (itemId) => {
-    let { taskStatus } = this.state;
     let { tasks } = this.props;
     var taskList, tasksByStatus;
 
@@ -494,7 +546,7 @@ class TasksSchedule extends Component {
       }
     })
     await this.props.getTaskById(id);
-    window.$(`#modal-detail-task`).modal('show')
+    window.$(`#modal-detail-task-schedule`).modal('show')
   }
 
   animateScroll = invert => {
@@ -526,52 +578,81 @@ class TasksSchedule extends Component {
   };
 
   // Đếm số lượng công việc đúng hạn, trễ hạn, quá hạn
-  countTasks(taskList) {
-    this.INFO_CALENDAR.delay = 0;
-    this.INFO_CALENDAR.intime = 0;
-    this.INFO_CALENDAR.overDue = 0;
+  countTasks = (taskList) => {
+    let delay = 0;
+    let intime = 0;
+    let overDue = 0;
     let currentTime = new Date();
-    console.log('táks', taskList);
+
     for (let i in taskList) {
-      // if (taskList[i]) {
-      // console.log(this.INFO_CALENDAR);
       let startTime = new Date(taskList[i].startDate);
       let endTime = new Date(taskList[i].endDate);
       let workingDayMin;
+
       if (currentTime > endTime && taskList[i].progress < 100) {
-        this.INFO_CALENDAR.overDue++;
+        overDue++;
       }
       else {
         workingDayMin = (endTime - startTime) * taskList[i].progress / 100; // Số ngày làm việc tối thiểu để đúng hạn
         let dayFromStartDate = currentTime - startTime;
         let timeOver = workingDayMin - dayFromStartDate;
-        console.log('', dayFromStartDate, timeOver);
         if (timeOver >= 0) {
-          this.INFO_CALENDAR.intime++;
+          intime++;
         }
         else {
-          this.INFO_CALENDAR.delay++;
+          delay++;
         }
       }
-      // }
     }
 
+    let data = {
+      delay: delay,
+      intime: intime,
+      overDue: overDue
+    }
+
+    return data;
   }
+
   render() {
     const { tasks, translate } = this.props;
     const { TaskOrganizationUnitDashboard } = this.props;
     const { defaultTimeStart, defaultTimeEnd, taskStatus } = this.state;
-    let { overDue, delay, intime } = this.INFO_CALENDAR;
+
     let task = tasks && tasks.task;
     let today = new Date();
-
+    let data;
     let rctHeadText = TaskOrganizationUnitDashboard ? translate('task.task_management.responsible') : translate('task.task_management.role');
     let rctHead = document.getElementsByClassName("rct-header-root");
+
     if (rctHead[0]) {
       let first = rctHead[0].children;
       if (first[0]) {
         first[0].setAttribute("id", "rct-header-text")
         first[0].innerHTML = rctHeadText;
+      }
+    }
+
+    if (tasks) {
+      let taskList, tasksByStatus;
+      // Đếm số công việc đơn vị
+      if (TaskOrganizationUnitDashboard) {
+        taskList = tasks.organizationUnitTasks && tasks.organizationUnitTasks.tasks;
+        tasksByStatus = taskList && taskList.filter(task => this.filterByStatus(task));
+
+        if (tasksByStatus) {
+          data = this.countTasks(tasksByStatus);
+        }
+      }
+      // Đếm số công việc cá nhân
+      else {
+        let res = tasks.responsibleTasks && tasks.responsibleTasks;
+        let acc = tasks.accountableTasks && tasks.accountableTasks;
+        let con = tasks.consultedTasks && tasks.consultedTasks;
+        let inf = tasks.informedTasks && tasks.informedTasks;
+        let fourTasks = res && acc && con && inf && res.concat(acc, con, inf).filter(task => this.filterByStatus(task));
+
+        data = this.countTasks(fourTasks);
       }
     }
 
@@ -585,11 +666,11 @@ class TasksSchedule extends Component {
 
               <SelectMulti id="multiSelectStatusInCalendar"
                 items={[
-                  { value: "Inprocess", text: translate('task.task_management.inprocess') },
-                  { value: "WaitForApproval", text: translate('task.task_management.wait_for_approval') },
-                  { value: "Finished", text: translate('task.task_management.finished') },
-                  { value: "Delayed", text: translate('task.task_management.delayed') },
-                  { value: "Canceled", text: translate('task.task_management.canceled') }
+                  { value: "inprocess", text: translate('task.task_management.inprocess') },
+                  { value: "wait_for_approval", text: translate('task.task_management.wait_for_approval') },
+                  { value: "finished", text: translate('task.task_management.finished') },
+                  { value: "delayed", text: translate('task.task_management.delayed') },
+                  { value: "canceled", text: translate('task.task_management.canceled') }
                 ]}
                 onChange={this.handleSelectStatus}
                 options={{ nonSelectedText: translate('task.task_management.inprocess'), allSelectedText: translate('task.task_management.select_all_status') }}
@@ -601,7 +682,7 @@ class TasksSchedule extends Component {
               <button className="btn btn-success" onClick={this.handleSearchData}>{translate('task.task_management.filter')}</button>
             </div>
           </section>
-          {<ModalDetailTask task={task} />}
+          {<ModalDetailTask action={'schedule'} task={task} />}
           <Timeline
             scrollRef={el => (this.scrollRef = el)}
             groups={this.getTaskGroups()}
@@ -634,15 +715,15 @@ class TasksSchedule extends Component {
           <div className="form-inline" style={{ textAlign: "center", margin: "10px" }}>
             <div className="form-group">
               <div id="in-time"></div>
-              <label id="label-for-calendar">{translate('task.task_management.in_time')}({intime})</label>
+              <label id="label-for-calendar">{translate('task.task_management.in_time')}({data && data.intime ? data.intime : 0})</label>
             </div>
             <div className="form-group">
               <div id="delay"></div>
-              <label id="label-for-calendar">{translate('task.task_management.delayed_time')}({delay})</label>
+              <label id="label-for-calendar">{translate('task.task_management.delayed_time')}({data && data.delay ? data.delay : 0})</label>
             </div>
             <div className="form-group">
               <div id="not-achieved"></div>
-              <label id="label-for-calendar">{translate('task.task_management.not_achieved')}({overDue})</label>
+              <label id="label-for-calendar">{translate('task.task_management.not_achieved')}({data && data.overDue ? data.overDue : 0})</label>
             </div>
 
           </div>

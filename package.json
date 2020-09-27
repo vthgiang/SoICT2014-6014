@@ -6,8 +6,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "client": "cd client && npm start",
+    "client-install": "cd client && npm install",
+    "server-instal": "cd server && npm install",
     "server": "cd server && npm start",
     "server-mt": "cd server && npm run start-mt",
+    "setup-enviroment": "concurrently \"npm run client-install\" \"npm run server-install\"",
     "start": "concurrently \"npm run client\" \"npm run server\"",
     "start-mt": "concurrently \"npm run client\" \"npm run server-mt\""
   },
@@ -21,5 +24,8 @@
   "bugs": {
     "url": "https://github.com/VNISTResearch/qlcv/issues"
   },
-  "homepage": "https://github.com/VNISTResearch/qlcv"
+  "homepage": "https://github.com/VNISTResearch/qlcv",
+  "dependencies": {
+    "concurrently": "^5.3.0"
+  }
 }

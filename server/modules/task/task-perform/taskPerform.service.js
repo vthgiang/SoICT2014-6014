@@ -9,7 +9,7 @@ const User = require('../../../models/auth/user.model');
 const fs = require('fs');
 const moment = require("moment");
 const OrganizationalUnitService = require('../../super-admin/organizational-unit/organizationalUnit.service');
-
+const now = new Date()
 /**
  * Lấy mẫu công việc theo Id
  */
@@ -214,7 +214,6 @@ exports.getActiveTimesheetLog = async (query) => {
  * Bắt đầu bấm giờ: Lưu thời gian bắt đầu
  */
 exports.startTimesheetLog = async (params, body) => {
-    const now = new Date()
     let timerUpdate = {
         startedAt: now,
         creator: body.creator,
@@ -231,7 +230,6 @@ exports.startTimesheetLog = async (params, body) => {
  * Dừng bấm giờ: Lưu thời gian kết thúc và số giờ chạy (endTime và time)
  */
 exports.stopTimesheetLog = async (params, body) => {
-    const now = new Date().getTime()
     let stoppedAt
 
     if (body.stoppedAt) {
@@ -369,7 +367,6 @@ exports.createCommentOfTaskAction = async (params, body, files) => {
  * Sửa nội dung bình luận hoạt động
  */
 exports.editCommentOfTaskAction = async (params, body, files) => {
-    const now = new Date()
     let action = await Task.updateOne(
         { "_id": params.taskId, "taskActions._id": params.actionId, "taskActions.comments._id": params.commentId },
         {
@@ -700,7 +697,6 @@ exports.createTaskComment = async (params, body, files) => {
  * Sửa bình luận công việc
  */
 exports.editTaskComment = async (params, body, files) => {
-    let now = new Date()
     let taskComment = await Task.updateOne(
         { "_id": params.taskId, "taskComments._id": params.commentId },
         {
@@ -787,7 +783,6 @@ exports.createCommentOfTaskComment = async (params, body, files) => {
  * Sửa bình luận của bình luận công việc
  */
 exports.editCommentOfTaskComment = async (params, body, files) => {
-    const now = new Date();
     let comment = await Task.updateOne(
         //thieu 1 tham so child comment
         { "_id": params.taskId, "taskComments.comments._id": params.commentId },
@@ -1185,9 +1180,9 @@ exports.editTaskByResponsibleEmployees = async (data, taskId) => {
     // chuẩn hóa dữ liệu info
     for (let i in info) {
         if (info[i].value) { // !== undefined
-            if (info[i].type === "Number") info[i].value = parseInt(info[i].value);
-            else if (info[i].type === "SetOfValues") info[i].value = info[i].value[0];
-            else if (info[i].type === "Date") {
+            if (info[i].type === "number") info[i].value = parseInt(info[i].value);
+            else if (info[i].type === "set_of_values") info[i].value = info[i].value[0];
+            else if (info[i].type === "date") {
                 let splitter = info[i].value.split("-");
                 let infoDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
                 info[i].value = infoDate;
@@ -1317,9 +1312,9 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
     // chuẩn hóa dữ liệu info
     for (let i in info) {
         if (info[i].value) { // !== undefined
-            if (info[i].type === "Number") info[i].value = parseInt(info[i].value);
-            else if (info[i].type === "SetOfValues") info[i].value = info[i].value[0];
-            else if (info[i].type === "Date") {
+            if (info[i].type === "number") info[i].value = parseInt(info[i].value);
+            else if (info[i].type === "set_of_values") info[i].value = info[i].value[0];
+            else if (info[i].type === "date") {
                 let splitter = info[i].value.split("-");
                 let infoDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
                 info[i].value = infoDate;
@@ -1463,7 +1458,7 @@ exports.evaluateTaskByConsultedEmployees = async (data, taskId) => {
 
     let listResult = task.evaluations.find(e => String(e._id) === String(evaluateId)).results
 
-    let check_results = listResult.find(r => (String(r.employee) === user && String(r.role) === "Consulted"));
+    let check_results = listResult.find(r => (String(r.employee) === user && String(r.role) === "consulted"));
     if (check_results === undefined) {
         await Task.updateOne(
             {
@@ -1572,9 +1567,9 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
     // chuẩn hóa dữ liệu info
     for (let i in info) {
         if (info[i].value) { // !== undefined || info[i].value !== null
-            if (info[i].type === "Number") info[i].value = parseInt(info[i].value);
-            else if (info[i].type === "SetOfValues") info[i].value = info[i].value[0];
-            else if (info[i].type === "Date") {
+            if (info[i].type === "number") info[i].value = parseInt(info[i].value);
+            else if (info[i].type === "setO_of_values") info[i].value = info[i].value[0];
+            else if (info[i].type === "date") {
                 let splitter = info[i].value.split("-");
                 let infoDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
                 info[i].value = infoDate;
@@ -1603,7 +1598,7 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
 
     let listResult = task.evaluations.find(e => String(e._id) === String(evaluateId)).results;
 
-    let check_results = listResult.find(r => (String(r.employee) === user && String(r.role) === "Responsible"));
+    let check_results = listResult.find(r => (String(r.employee) === user && String(r.role) === "responsible"));
     if (check_results === undefined) {
         await Task.updateOne(
             {
@@ -1662,7 +1657,6 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
     let dateISO = new Date(splitterDate[2], splitterDate[1] - 1, splitterDate[0]);
     let monthOfParams = dateISO.getMonth();
     let yearOfParams = dateISO.getFullYear();
-    let now = new Date();
 
     let cloneInfo = task.taskInformations;
     for (let item in info) {
@@ -1806,9 +1800,9 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
     // chuẩn hóa dữ liệu info
     for (let i in info) {
         if (info[i].value) { // !== undefined
-            if (info[i].type === "Number") info[i].value = parseInt(info[i].value);
-            else if (info[i].type === "SetOfValues") info[i].value = info[i].value[0];
-            else if (info[i].type === "Date") {
+            if (info[i].type === "number") info[i].value = parseInt(info[i].value);
+            else if (info[i].type === "set_of_values") info[i].value = info[i].value[0];
+            else if (info[i].type === "date") {
                 let splitter = info[i].value.split("-");
                 let infoDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
                 info[i].value = infoDate;
@@ -1919,9 +1913,9 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
 
     let listResult2 = task2.evaluations.find(e => String(e._id) === String(evaluateId)).results;
 
-    let curentRole = "Accountable"
+    let curentRole = "accountable"
     if (!hasAccountable) {
-        curentRole = "Responsible"
+        curentRole = "responsible"
     }
 
     // cập nhật điểm cá nhân cho ng phe duyet
@@ -2014,7 +2008,6 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
     let dateISO = new Date(splitterDate[2], splitterDate[1] - 1, splitterDate[0]);
     let monthOfParams = dateISO.getMonth();
     let yearOfParams = dateISO.getFullYear();
-    let now = new Date();
 
     let cloneInfo = task.taskInformations;
     for (let item in info) {
@@ -2428,25 +2421,20 @@ exports.deleteFileChildTaskComment = async (params) => {
 
 /**
  * edit status of task 
- * @param taskID id công việc
+ * @param taskID id của công việc muốn kích hoạt các công việc sau nó
  * @param body trang thai công việc
  */
 exports.editActivateOfTask = async (taskID, body) => {
     let today = new Date();
-
-    let task1 = await Task.findById(taskID);
-
-    let startDate = task1.startDate;
-    let endDate = task1.endDate;
 
     // Cập nhật trạng thái hoạt động của các task sau
     for (let i = 0; i < body.listSelected.length; i++) {
         console.log('body', body.listSelected[i]);
 
         let listTask = await Task.find({ "followingTasks.task": body.listSelected[i] });
-        // console.log('list', listTask, listTask.length);
 
         for (let x in listTask) {
+            // update activate
             await Task.update(
                 {
                     _id: listTask[x]._id,
@@ -2460,12 +2448,17 @@ exports.editActivateOfTask = async (taskID, body) => {
             )
         }
 
-        
-        let followStartDate = endDate;
+        let followStartDate = today;
 
         let followItem = await Task.findById(body.listSelected[i]);
-        let numberOfDaysTaken = followItem.numberOfDaysTaken ? followItem.numberOfDaysTaken : 0;
-        let timer = followStartDate.getTime() + numberOfDaysTaken * 24 * 60 * 60 * 1000;
+        let startDateItem = followItem.startDate;
+        let endDateItem = followItem.endDate;
+        let dayTaken = endDateItem.getTime() - startDateItem.getTime();
+
+        // let followItem = await Task.findById(body.listSelected[i]);
+        // let numberOfDaysTaken = followItem.numberOfDaysTaken ? followItem.numberOfDaysTaken : 0;
+        // let timer = followStartDate.getTime() + numberOfDaysTaken * 24 * 60 * 60 * 1000;
+        let timer = followStartDate.getTime() + dayTaken;
 
         let followEndDate = new Date(timer).toISOString();
 
@@ -2473,7 +2466,7 @@ exports.editActivateOfTask = async (taskID, body) => {
         await Task.findByIdAndUpdate(body.listSelected[i],
             {
                 $set: {
-                    status: "Inprocess",
+                    status: "inprocess",
                     startDate: followStartDate,
                     endDate: followEndDate,
                 }
@@ -2484,7 +2477,7 @@ exports.editActivateOfTask = async (taskID, body) => {
         //     await Task.findByIdAndUpdate(body.listSelected[i],
         //         {
         //             $set: {
-        //                 status: "Inprocess",
+        //                 status: "inprocess",
         //                 endDate: followEndDate,
         //             }
         //         }
@@ -2656,7 +2649,8 @@ exports.editDocument = async (taskId, documentId, body, files) => {
                 $set:
                 {
                     "documents.$.description": body.description,
-                    "documents.$.isOutput": body.isOutput
+                    "documents.$.isOutput": body.isOutput,
+                    "updatedAt": now
                 },
 
                 $push:
@@ -2957,7 +2951,7 @@ exports.createChildComment = async (params, body, files) => {
  * Edit comment of comment
  */
 exports.editChildComment = async (params, body, files) => {
-    let now = new Date()
+
     let comment1 = await Task.updateOne(
         { "_id": params.taskId, "commentsInProcess._id": params.commentId, "commentsInProcess.comments._id": params.childCommentId },
         {

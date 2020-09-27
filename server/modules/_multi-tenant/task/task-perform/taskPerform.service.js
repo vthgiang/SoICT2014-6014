@@ -949,7 +949,7 @@ formatDate = (date) => {
 /**
  * hàm check điều kiện evaluate tồn tại
  */
-async function checkEvaluations(date, taskId, storeDate) {
+async function checkEvaluations(portal, date, taskId, storeDate) {
     let evaluateId;
     let splitterStoreDate = storeDate.split("-");
     let storeDateISO = new Date(splitterStoreDate[2], splitterStoreDate[1] - 1, splitterStoreDate[0]);
@@ -1061,9 +1061,9 @@ exports.editTaskByResponsibleEmployees = async (portal, data, taskId) => {
     // chuẩn hóa dữ liệu info
     for (let i in info) {
         if (info[i].value) { // !== undefined
-            if (info[i].type === "Number") info[i].value = parseInt(info[i].value);
-            else if (info[i].type === "SetOfValues") info[i].value = info[i].value[0];
-            else if (info[i].type === "Date") {
+            if (info[i].type === "number") info[i].value = parseInt(info[i].value);
+            else if (info[i].type === "set_of_values") info[i].value = info[i].value[0];
+            else if (info[i].type === "date") {
                 let splitter = info[i].value.split("-");
                 let infoDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
                 info[i].value = infoDate;
@@ -1200,9 +1200,9 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
     // chuẩn hóa dữ liệu info
     for (let i in info) {
         if (info[i].value) { // !== undefined
-            if (info[i].type === "Number") info[i].value = parseInt(info[i].value);
-            else if (info[i].type === "SetOfValues") info[i].value = info[i].value[0];
-            else if (info[i].type === "Date") {
+            if (info[i].type === "number") info[i].value = parseInt(info[i].value);
+            else if (info[i].type === "set_of_values") info[i].value = info[i].value[0];
+            else if (info[i].type === "date") {
                 let splitter = info[i].value.split("-");
                 let infoDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
                 info[i].value = infoDate;
@@ -1339,7 +1339,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
 exports.evaluateTaskByConsultedEmployees = async (portal, data, taskId) => {
     let user = data.user;
     let { automaticPoint, employeePoint, kpi, unit, role, date } = data;
-    let evaluateId = await checkEvaluations(date, taskId, date);
+    let evaluateId = await checkEvaluations(portal, date, taskId, date);
 
     let resultItem = {
         employee: user,
@@ -1355,7 +1355,7 @@ exports.evaluateTaskByConsultedEmployees = async (portal, data, taskId) => {
 
     let listResult = task.evaluations.find(e => String(e._id) === String(evaluateId)).results
 
-    let check_results = listResult.find(r => (String(r.employee) === user && String(r.role) === "Consulted"));
+    let check_results = listResult.find(r => (String(r.employee) === user && String(r.role) === "consulted"));
     if (check_results === undefined) {
         await Task(connect(DB_CONNECTION, portal)).updateOne(
             {
@@ -1466,14 +1466,14 @@ exports.evaluateTaskByResponsibleEmployees = async (portal, data, taskId) => {
         role: role
     }
 
-    let evaluateId = await checkEvaluations(date, taskId, date);
+    let evaluateId = await checkEvaluations(portal, date, taskId, date);
 
     // chuẩn hóa dữ liệu info
     for (let i in info) {
         if (info[i].value) { // !== undefined || info[i].value !== null
-            if (info[i].type === "Number") info[i].value = parseInt(info[i].value);
-            else if (info[i].type === "SetOfValues") info[i].value = info[i].value[0];
-            else if (info[i].type === "Date") {
+            if (info[i].type === "number") info[i].value = parseInt(info[i].value);
+            else if (info[i].type === "set_of_values") info[i].value = info[i].value[0];
+            else if (info[i].type === "date") {
                 let splitter = info[i].value.split("-");
                 let infoDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
                 info[i].value = infoDate;
@@ -1502,7 +1502,7 @@ exports.evaluateTaskByResponsibleEmployees = async (portal, data, taskId) => {
 
     let listResult = task.evaluations.find(e => String(e._id) === String(evaluateId)).results;
 
-    let check_results = listResult.find(r => (String(r.employee) === user && String(r.role) === "Responsible"));
+    let check_results = listResult.find(r => (String(r.employee) === user && String(r.role) === "responsible"));
     if (check_results === undefined) {
         await Task(connect(DB_CONNECTION, portal)).updateOne(
             {
@@ -1699,7 +1699,7 @@ exports.evaluateTaskByAccountableEmployees = async (portal, data, taskId) => {
     let evaluateDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
     let dateFormat = evaluateDate;
 
-    let evaluateId = await checkEvaluations(date, taskId, date);
+    let evaluateId = await checkEvaluations(portal, date, taskId, date);
 
     // lấy info có value khác undefined
     let filterInfo = [];
@@ -1712,9 +1712,9 @@ exports.evaluateTaskByAccountableEmployees = async (portal, data, taskId) => {
     // chuẩn hóa dữ liệu info
     for (let i in info) {
         if (info[i].value) { // !== undefined
-            if (info[i].type === "Number") info[i].value = parseInt(info[i].value);
-            else if (info[i].type === "SetOfValues") info[i].value = info[i].value[0];
-            else if (info[i].type === "Date") {
+            if (info[i].type === "number") info[i].value = parseInt(info[i].value);
+            else if (info[i].type === "set_of_values") info[i].value = info[i].value[0];
+            else if (info[i].type === "date") {
                 let splitter = info[i].value.split("-");
                 let infoDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
                 info[i].value = infoDate;
@@ -1825,9 +1825,9 @@ exports.evaluateTaskByAccountableEmployees = async (portal, data, taskId) => {
 
     let listResult2 = task2.evaluations.find(e => String(e._id) === String(evaluateId)).results;
 
-    let curentRole = "Accountable"
+    let curentRole = "accountable"
     if (!hasAccountable) {
-        curentRole = "Responsible"
+        curentRole = "responsible"
     }
 
     // cập nhật điểm cá nhân cho ng phe duyet
@@ -2361,11 +2361,6 @@ exports.deleteFileChildTaskComment = async (portal, params) => {
 exports.editActivateOfTask = async (portal, taskID, body) => {
     let today = new Date();
 
-    let task1 = await Task(connect(DB_CONNECTION, portal)).findById(taskID);
-
-    let startDate = task1.startDate;
-    let endDate = task1.endDate;
-
     // Cập nhật trạng thái hoạt động của các task sau
     for (let i = 0; i < body.listSelected.length; i++) {
         console.log('body', body.listSelected[i]);
@@ -2387,35 +2382,25 @@ exports.editActivateOfTask = async (portal, taskID, body) => {
             )
         }
 
-        let followStartDate = endDate;
+        let followStartDate = today;
 
         let followItem = await Task(connect(DB_CONNECTION, portal)).findById(body.listSelected[i]);
-        let numberOfDaysTaken = followItem.numberOfDaysTaken ? followItem.numberOfDaysTaken : 0;
-        let timer = followStartDate.getTime() + numberOfDaysTaken * 24 * 60 * 60 * 1000;
+        let startDateItem = followItem.startDate;
+        let endDateItem = followItem.endDate;
+        let dayTaken = endDateItem.getTime() - startDateItem.getTime();
 
+        let timer = followStartDate.getTime() + dayTaken;
         let followEndDate = new Date(timer).toISOString();
 
-        // if (body.status === "Finished") {
         await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(body.listSelected[i],
             {
                 $set: {
-                    status: "Inprocess",
+                    status: "inprocess",
                     startDate: followStartDate,
                     endDate: followEndDate,
                 }
             }
         )
-        // }
-        // else {
-        //     await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(body.listSelected[i],
-        //         {
-        //             $set: {
-        //                 status: "Inprocess",
-        //                 endDate: followEndDate,
-        //             }
-        //         }
-        //     )
-        // }
     }
 
     let task = await Task(connect(DB_CONNECTION, portal)).findById(taskID).populate([

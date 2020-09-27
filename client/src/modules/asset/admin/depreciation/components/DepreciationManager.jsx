@@ -266,12 +266,12 @@ class DepreciationManager extends Component {
     calculateDepreciation = (depreciationType, cost, usefulLife, estimatedTotalProduction, unitsProducedDuringTheYears, startDepreciation) => {
         let annualDepreciation = 0, monthlyDepreciation = 0, remainingValue = cost;
 
-        if (depreciationType === "Đường thẳng") { // Phương pháp khấu hao theo đường thẳng
+        if (depreciationType === "straight_line") { // Phương pháp khấu hao theo đường thẳng
             annualDepreciation = ((12 * cost) / usefulLife);
             monthlyDepreciation = cost / usefulLife;
             remainingValue = cost - (cost / usefulLife) * ((new Date().getFullYear() * 12 + new Date().getMonth()) - (new Date(startDepreciation).getFullYear() * 12 + new Date(startDepreciation).getMonth()));
 
-        } else if (depreciationType === "Số dư giảm dần") { // Phương pháp khấu hao theo số dư giảm dần
+        } else if (depreciationType === "declining_balance") { // Phương pháp khấu hao theo số dư giảm dần
             let lastYears = false,
                 t,
                 usefulYear = usefulLife / 12,
@@ -314,7 +314,7 @@ class DepreciationManager extends Component {
                 remainingValue = remainingValue - (monthlyDepreciation * (usedTime % 12))
             }
 
-        } else if (depreciationType === "Sản lượng") { // Phương pháp khấu hao theo sản lượng
+        } else if (depreciationType === "units_of_production") { // Phương pháp khấu hao theo sản lượng
             let monthTotal = unitsProducedDuringTheYears.length; // Tổng số tháng tính khấu hao
             let productUnitDepreciation = cost / (estimatedTotalProduction * (usefulLife / 12)); // Mức khấu hao đơn vị sản phẩm
             let accumulatedDepreciation = 0; // Giá trị hao mòn lũy kế
@@ -361,14 +361,16 @@ class DepreciationManager extends Component {
     }
 
     convertGroupAsset = (group) => {
-        if (group === 'Building') {
-            return 'Mặt bằng';
-        } else if (group === 'Vehicle') {
-            return 'Xe cộ'
-        } else if (group === 'Machine') {
-            return 'Máy móc'
+        const { translate } = this.props;
+
+        if (group === 'building') {
+            return translate('asset.asset_info.building');
+        } else if (group === 'vehicle') {
+            return translate('asset.asset_info.vehicle')
+        } else if (group === 'machine') {
+            return translate('asset.asset_info.machine')
         } else {
-            return 'Khác'
+            return translate('asset.asset_info.other')
         }
 
     }
@@ -423,10 +425,10 @@ class DepreciationManager extends Component {
                                 options={{ nonSelectedText: translate('asset.asset_info.select_group'), allSelectedText: translate('asset.general_information.select_all_group') }}
                                 onChange={this.handleGroupChange}
                                 items={[
-                                    { value: "Building", text: translate('asset.dashboard.building') },
-                                    { value: "Vehicle", text: translate('asset.dashboard.vehicle') },
-                                    { value: "Machine", text: translate('asset.dashboard.machine') },
-                                    { value: "Other", text: translate('asset.dashboard.other') },
+                                    { value: "building", text: translate('asset.dashboard.building') },
+                                    { value: "vehicle", text: translate('asset.dashboard.vehicle') },
+                                    { value: "machine", text: translate('asset.dashboard.machine') },
+                                    { value: "other", text: translate('asset.dashboard.other') },
                                 ]}
                             >
                             </SelectMulti>
@@ -447,14 +449,14 @@ class DepreciationManager extends Component {
 
                         {/* Loại khấu hao */}
                         <div className="form-group">
-                            <label className="form-control-static">Loại khấu hao</label>
+                            <label className="form-control-static">{translate('asset.general_information.asset_type')}</label>
                             <SelectMulti id={`multiSelectDepreTypeInManagement`} multiple="multiple"
-                                options={{ nonSelectedText: "Chọn loại khấu hao", allSelectedText: "Chọn tất cả" }}
+                                options={{ nonSelectedText: translate('asset.depreciation.select_depreciation_type'), allSelectedText: translate('asset.depreciation.select_all_depreciation_type') }}
                                 onChange={this.handleDepreciationTypeChange}
                                 items={[
-                                    { value: "Đường thẳng", text: "Đường thẳng" },
-                                    { value: "Số dư giảm dần", text: "Số dư giảm dần" },
-                                    { value: "Sản lượng", text: "Sản lượng" },
+                                    { value: "straight_line", text: translate('asset.depreciation.line') },
+                                    { value: "declining_balance", text: translate('asset.depreciation.declining_balance') },
+                                    { value: "units_of_production", text: translate('asset.depreciation.units_production') },
                                 ]}
                             >
                             </SelectMulti>
@@ -462,7 +464,7 @@ class DepreciationManager extends Component {
 
                         {/* Tháng bắt đầu trích khấu hao */}
                         <div className="form-group">
-                            <label className="form-control-static">Bắt đầu khấu hao</label>
+                            <label className="form-control-static">{translate('asset.general_information.start_depreciation')}</label>
                             <DatePicker
                                 id="month-start-depreciation"
                                 dateFormat="month-year"
@@ -530,9 +532,9 @@ class DepreciationManager extends Component {
                                             <td>{x.assetType && x.assetType.length ? x.assetType.map((item, index) => { let suffix = index < x.assetType.length - 1 ? ", " : ""; return item.typeName + suffix }) : 'Asset is deleted'}</td>
                                             <td>{formater.format(parseInt(x.cost))} VNĐ</td>
                                             <td>{this.formatDate(x.startDepreciation)}</td>
-                                            <td>{x.usefulLife} tháng</td>
-                                            <td>{formater.format(result[0])} VNĐ/năm</td>
-                                            <td>{formater.format(result[1])} VNĐ/tháng</td>
+                                            <td>{x.usefulLife} {translate('training.course.month')}</td>
+                                            <td>{formater.format(result[0])} VNĐ/{translate('training.course.year')}</td>
+                                            <td>{formater.format(result[1])} VNĐ/{translate('training.course.month')}</td>
                                             <td>{formater.format(x.cost - result[2])} VNĐ</td>
                                             <td>{formater.format(result[2])} VNĐ</td>
                                             <td>{this.addMonth(x.startDepreciation, x.usefulLife)}</td>
