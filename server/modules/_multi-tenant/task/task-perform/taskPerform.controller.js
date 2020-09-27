@@ -922,7 +922,7 @@ editArchivedOfTask = async (req, res) => {
  * Chinh sua trang thai cua cong viec
  */
 editActivateOfTask = async (req, res) => {
-    try {
+    // try {
         let task = await PerformTaskService.editActivateOfTask(req.portal, req.params.taskId, req.body);
         await Logger.info(req.user.email, ` edit status of task  `, req.portal);
         res.status(200).json({
@@ -930,14 +930,14 @@ editActivateOfTask = async (req, res) => {
             messages: ['edit_status_of_task_success'],
             content: task
         })
-    } catch (error) {
-        await Logger.error(req.user.email, ` edit status of task `, req.portal);
-        res.status(400).json({
-            success: false,
-            messages: ['edit_status_of_task_fail'],
-            content: error
-        });
-    }
+    // } catch (error) {
+    //     await Logger.error(req.user.email, ` edit status of task `, req.portal);
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: ['edit_status_of_task_fail'],
+    //         content: error
+    //     });
+    // }
 }
 
 /** Xác nhận công việc */

@@ -72,6 +72,7 @@ class SelectFollowingTaskModal extends Component {
         }).then((result) => {
             if (result.value) {
                 this.props.editActivateOfTask(this.props.id, this.props.typeOfTask, listFollowing);
+                this.props.refresh();
             }
         })
     }
@@ -102,8 +103,8 @@ class SelectFollowingTaskModal extends Component {
         // biến kiểm tra có công việc CHƯA kích hoạt hay không
         let checkHasNonActivatedFollowTask = false;
         if (task) {
-            for (let i in task.followingTasks) {
-                if (task.followingTasks[i].activated === false) {
+            for (let i in task?.followingTasks) {
+                if (task?.followingTasks[i].activated === false) {
                     checkHasNonActivatedFollowTask = true;
                 }
             }
@@ -112,8 +113,8 @@ class SelectFollowingTaskModal extends Component {
         // biến kiểm tra có công việc ĐÃ kích hoạt hay không
         let checkHasActivatedFollowTask = false;
         if (task) {
-            for (let i in task.followingTasks) {
-                if (task.followingTasks[i].activated === true) {
+            for (let i in task?.followingTasks) {
+                if (task?.followingTasks[i].activated === true) {
                     checkHasActivatedFollowTask = true;
                 }
             }
@@ -143,7 +144,7 @@ class SelectFollowingTaskModal extends Component {
                     {checkHasActivatedFollowTask &&
                         <div className="description-box">
                             <strong>{translate('task.task_perform.activated_task_list')}</strong>
-                            {task.followingTasks.map((x, key) => {
+                            {task?.followingTasks.map((x, key) => {
                                 if (x.activated) {
                                     return <div key={key} style={{ paddingLeft: 20 }}>
                                         {x.task.name} {x.link ? `- ${translate('task.task_perform.task_link_of_process')}: ${x.link}` : ''}
@@ -157,9 +158,9 @@ class SelectFollowingTaskModal extends Component {
                     <div className="description-box">
                         <strong>{translate('task.task_perform.choose_following_task')}<span style={{ color: "red" }}> *</span></strong>
 
-                        {task.followingTasks.length !== 0 ?
+                        {task?.followingTasks.length !== 0 ?
                             (checkHasNonActivatedFollowTask ?
-                                (task.followingTasks.map((x, key) => {
+                                (task?.followingTasks.map((x, key) => {
                                     if (x.activated === false) {
                                         return <div key={key} style={{ paddingLeft: 20 }}>
                                             <label style={{ fontWeight: "normal" }}>
@@ -192,6 +193,7 @@ function mapState(state) {
 
 const actionCreators = {
     editActivateOfTask: performTaskAction.editActivateOfTask,
+    getTaskById: performTaskAction.getTaskById,
 };
 const connectedSelectFollowingTaskModal = connect(mapState, actionCreators)(withTranslate(SelectFollowingTaskModal));
 export { connectedSelectFollowingTaskModal as SelectFollowingTaskModal };

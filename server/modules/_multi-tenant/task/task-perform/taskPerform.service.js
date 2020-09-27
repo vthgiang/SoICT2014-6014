@@ -2361,11 +2361,6 @@ exports.deleteFileChildTaskComment = async (portal, params) => {
 exports.editActivateOfTask = async (portal, taskID, body) => {
     let today = new Date();
 
-    let task1 = await Task(connect(DB_CONNECTION, portal)).findById(taskID);
-
-    let startDate = task1.startDate;
-    let endDate = task1.endDate;
-
     // Cập nhật trạng thái hoạt động của các task sau
     for (let i = 0; i < body.listSelected.length; i++) {
         console.log('body', body.listSelected[i]);
@@ -2387,15 +2382,16 @@ exports.editActivateOfTask = async (portal, taskID, body) => {
             )
         }
 
-        let followStartDate = endDate;
+        let followStartDate = today;
 
         let followItem = await Task(connect(DB_CONNECTION, portal)).findById(body.listSelected[i]);
-        let numberOfDaysTaken = followItem.numberOfDaysTaken ? followItem.numberOfDaysTaken : 0;
-        let timer = followStartDate.getTime() + numberOfDaysTaken * 24 * 60 * 60 * 1000;
+        let startDateItem = followItem.startDate;
+        let endDateItem = followItem.endDate;
+        let dayTaken = endDateItem.getTime() - startDateItem.getTime();
 
+        let timer = followStartDate.getTime() + dayTaken;
         let followEndDate = new Date(timer).toISOString();
 
-        // if (body.status === "Finished") {
         await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(body.listSelected[i],
             {
                 $set: {
@@ -2405,17 +2401,6 @@ exports.editActivateOfTask = async (portal, taskID, body) => {
                 }
             }
         )
-        // }
-        // else {
-        //     await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(body.listSelected[i],
-        //         {
-        //             $set: {
-        //                 status: "inprocess",
-        //                 endDate: followEndDate,
-        //             }
-        //         }
-        //     )
-        // }
     }
 
     let task = await Task(connect(DB_CONNECTION, portal)).findById(taskID).populate([
