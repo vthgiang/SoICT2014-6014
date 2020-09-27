@@ -1,11 +1,13 @@
 const mongoose = require("mongoose");
 const fs = require('fs');
 const moment = require("moment");
+const nodemailer = require("nodemailer");
 
 const { Task, User } = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
 
 const OrganizationalUnitService = require(`${SERVER_MODULES_DIR}/_multi-tenant/super-admin/organizational-unit/organizationalUnit.service`);
 
+const { sendEmail } = require(`${SERVER_HELPERS_DIR}/emailHelper`);
 const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 /**
  * Lấy mẫu công việc theo Id
@@ -2352,6 +2354,79 @@ exports.deleteFileChildTaskComment = async (portal, params) => {
 
 
 
+/**
+ * Gửi email khi kích hoạt công việc
+ * @param {*} portal id công ty
+ * @param {*} task công việc kích hoạt
+ */
+exports.sendEmailForActivateTask = async (portal, task) => {
+    task = await task.populate("organizationalUnit creator parent").execPopulate();
+
+    var transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: { user: 'vnist.qlcv@gmail.com', pass: 'qlcv123@' }
+    });
+
+    var email, userId, user, users, userIds;
+
+    var resId = task.responsibleEmployees;  // lấy id người thực hiện
+    var res = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: resId } });
+    res = res.map(item => item.name);
+    userIds = resId;
+    var accId = task.accountableEmployees;  // lấy id người phê duyệt
+    var acc = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: accId } });
+    userIds.push(...accId);
+
+    var conId = task.consultedEmployees;  // lấy id người hỗ trợ
+    var con = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: conId } })
+    userIds.push(...conId);
+
+    var infId = task.informedEmployees;  // lấy id người quan sát
+    var inf = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: infId } })
+    userIds.push(...infId);  // lấy ra id của tất cả người dùng có nhiệm vụ
+
+    // loại bỏ các id trùng nhau
+    userIds = userIds.map(u => u.toString());
+    for (let i = 0, max = userIds.length; i < max; i++) {
+        if (userIds.indexOf(userIds[i]) != userIds.lastIndexOf(userIds[i])) {
+            userIds.splice(userIds.indexOf(userIds[i]), 1);
+            i--;
+        }
+    }
+    user = await User(connect(DB_CONNECTION, portal)).find({
+        _id: { $in: userIds }
+    })
+
+    email = user.map(item => item.email); // Lấy ra tất cả email của người dùng
+    // email.push("trinhhong102@gmail.com");
+    var html = `<p>Công việc mà bạn tham gia đã được kích hoạt từ trạng thái đang chờ thành đang thực hiện:  <a href="${process.env.WEBSITE}/task?taskId=${task._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${task._id} </a></p> ` +
+        `<h3>Thông tin công việc</h3>` +
+        `<p>Tên công việc : <strong>${task.name}</strong></p>` +
+        `<p>Mô tả : ${task.description}</p>` +
+        `<p>Người thực hiện</p> ` +
+        `<ul>${res.map((item) => {
+            return `<li>${item}</li>`
+        })}
+                    </ul>`+
+        `<p>Người phê duyệt</p> ` +
+        `<ul>${acc.map((item) => {
+            return `<li>${item.name}</li>`
+        })}
+                    </ul>` +
+        `${con.length > 0 ? `<p>Người hỗ trợ</p> ` +
+            `<ul>${con.map((item) => {
+                return `<li>${item.name}</li>`
+            })}
+                    </ul>` : ""}` +
+        `${inf.length > 0 ? `<p>Người quan sát</p> ` +
+            `<ul>${inf.map((item) => {
+                return `<li>${item.name}</li>`
+            })}
+                    </ul>` : ""}`
+        ;
+
+    return { task: task, user: userIds, email: email, html: html };
+}
 
 /**
  * edit status of task 
@@ -2360,6 +2435,7 @@ exports.deleteFileChildTaskComment = async (portal, params) => {
  */
 exports.editActivateOfTask = async (portal, taskID, body) => {
     let today = new Date();
+    let mailArr = [];
 
     // Cập nhật trạng thái hoạt động của các task sau
     for (let i = 0; i < body.listSelected.length; i++) {
@@ -2401,6 +2477,10 @@ exports.editActivateOfTask = async (portal, taskID, body) => {
                 }
             }
         )
+
+        let x = await this.sendEmailForActivateTask(portal, followItem);
+        
+        mailArr.push(x);
     }
 
     let task = await Task(connect(DB_CONNECTION, portal)).findById(taskID).populate([
@@ -2451,7 +2531,8 @@ exports.editActivateOfTask = async (portal, taskID, body) => {
         },
     ]);
     task.evaluations.reverse();
-    return task
+
+    return { task: task, mailInfo: mailArr }
 }
 
 /** Xác nhận công việc */

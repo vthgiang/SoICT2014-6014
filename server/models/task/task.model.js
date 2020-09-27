@@ -71,7 +71,6 @@ const TaskSchema = new Schema({
     }],
     numberOfDaysTaken: {
         type: Number,
-        default: 7,
     },
     followingTasks: [{
         task: {

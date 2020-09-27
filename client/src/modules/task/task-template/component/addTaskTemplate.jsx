@@ -167,7 +167,7 @@ class AddTaskTemplate extends Component {
 
         if (willUpdateState) {
             this.state.newTemplate.numberOfDaysTaken = value;
-            // this.state.newTemplate.errorOnNumberOfDaysTaken = msg;
+            this.state.newTemplate.errorOnNumberOfDaysTaken = msg;
             this.setState(state => {
                 return {
                     ...state,
