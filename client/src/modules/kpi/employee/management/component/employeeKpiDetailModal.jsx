@@ -160,10 +160,10 @@ class ModalDetailKPIPersonal extends Component {
             dataSheets: [
                 {
                     sheetName: "sheet1",
-                    sheetTitle: kpiData[0].sheetTitle,
+                    sheetTitle: kpiData[0] && kpiData[0].sheetTitle,
                     tables: [
                         {
-                            tableName: 'Thông tin chung KPI ' + kpiData[0].kpiName,
+                            tableName: 'Thông tin chung KPI ' + (kpiData[0] && kpiData[0].kpiName),
                             columns: [
                                 { key: "kpiName", value: "Tên KPI cá nhân" },
                                 { key: "kpiCriteria", value: "Tiêu chí đánh giá" },

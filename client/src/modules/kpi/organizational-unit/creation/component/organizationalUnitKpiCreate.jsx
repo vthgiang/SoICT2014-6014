@@ -466,8 +466,6 @@ class OrganizationalUnitKpiCreate extends Component {
                                                                         type={"icon_tooltip"} materialIcon={"help"}
                                                                         dataTooltip={[translate('kpi.organizational_unit.create_organizational_unit_kpi_set.content')]}
                                                                     />
-
-
                                                                 }
                                                             </td>
                                                         }
@@ -479,7 +477,7 @@ class OrganizationalUnitKpiCreate extends Component {
                                 </div>
                             </div>
                             : organizationalUnitKpiLoading
-                            && <div>
+                            && <div className="box-body">
                                 <div style={{ marginLeft: "-10px" }}>
                                     {this.checkPermisson(currentUnit && currentUnit[0] && currentUnit[0].deans) &&
                                         <div>
