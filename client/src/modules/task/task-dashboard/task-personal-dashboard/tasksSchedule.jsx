@@ -300,9 +300,18 @@ class TasksSchedule extends Component {
             if (tasksByStatus2[i]) {
               let startTime, endTime, start_time, end_time;
               let titleTask = `${tasksByStatus2[i].name} - ${tasksByStatus2[i].progress} % `;
+              let addDate2;
+
+              if (tasksByStatus2[i].startDate === tasksByStatus2[i].endDate) {
+                addDate2 = Date.parse(tasksByStatus2[i].endDate) + 86400000;
+              }
+              else {
+                addDate2 = tasksByStatus2[i].endDate;
+              }
 
               startTime = new Date(tasksByStatus2[i].startDate);
-              endTime = new Date(tasksByStatus2[i].endDate);
+              endTime = new Date(addDate2);
+
               start_time = moment(startTime);
               end_time = moment(endTime);
 
