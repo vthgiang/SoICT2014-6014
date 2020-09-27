@@ -412,11 +412,11 @@ async function getResultTaskByMonth(portal, data) {
     let yearkpi = parseInt(date.getFullYear());
     let kpiType;
     if (data.kpiType === "1") {
-        kpiType = "Accountable";
+        kpiType = "accountable";
     } else if (data.kpiType === "2") {
-        kpiType = "Consulted";
+        kpiType = "consulted";
     } else {
-        kpiType = "Responsible";
+        kpiType = "responsible";
     }
 
     let conditions = [
