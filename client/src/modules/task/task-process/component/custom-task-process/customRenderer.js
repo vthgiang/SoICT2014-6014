@@ -45,7 +45,7 @@ export default class CustomRenderer extends BaseRenderer {
         const shape = this.bpmnRenderer.drawShape(parentNode, element);
 
         if (element.type == 'bpmn:Task') {
-            element.height = 150;
+            element.height = 130;
             element.width = 160;
             let b = element.businessObject.$attrs.shapeName
             const line = drawLine(parentNode, 0, 50, 160, 50, 'black');
@@ -107,7 +107,7 @@ export default class CustomRenderer extends BaseRenderer {
                 //Vẽ người thực hiện công việc
             let foreignObject2 = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
             foreignObject2.setAttribute('x', 120);
-            foreignObject2.setAttribute('y', 125);
+            foreignObject2.setAttribute('y', 110);
             foreignObject2.setAttribute('height', 30);
             foreignObject2.setAttribute('width', 40);
 

@@ -26,7 +26,7 @@ app.use(
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-// app.use("/upload/avatars", express.static("upload/avatars"));
+app.use("/upload/avatars", express.static("upload/avatars"));
 // app.use("/upload/asset/pictures", express.static("upload/asset/pictures"));
 
 
@@ -95,8 +95,8 @@ if (process.env.MULTI_TENANT === 'true') {
 	// // Plan
 	// app.use("/plans", require("./modules/_multi-tenant/plan/plan.route"));
 
-	// // example
-	// app.use("/examples", require("./modules/_multi-tenant/example/example.route"));
+	// example
+	app.use("/examples", require("./modules/_multi-tenant/example/example.route"));
 
 	app.use("/documents", require("./modules/_multi-tenant/document/document.route"));
 

@@ -10,7 +10,7 @@ import { TaskReportActions } from '../redux/actions';
 import { TaskReportCreateForm } from './taskReportCreateForm';
 import { TaskReportEditForm } from './taskReportEditForm';
 import { TaskReportDetailForm } from './taskReportDetailForm';
-
+import './transferList.css';
 
 class TaskReportManager extends Component {
     constructor(props) {
@@ -225,11 +225,14 @@ class TaskReportManager extends Component {
 
     render() {
         const { reports, translate, user } = this.props;
-        let pageTotal = (reports.totalList % this.state.limit === 0) ?
-            parseInt(reports.totalList / this.state.limit) :
-            parseInt((reports.totalList / this.state.limit) + 1);
-        let page = parseInt((this.state.page / this.state.limit) + 1);
+        const { limit, page, currentEditRow, currentViewRow } = this.state;
+
+        let pageTotal = (reports.totalList % limit === 0) ?
+            parseInt(reports.totalList / limit) :
+            parseInt((reports.totalList / limit) + 1);
+        let cr_page = parseInt((page / limit) + 1);
         let units;
+
         if (user.organizationalUnitsOfUser) {
             units = user.organizationalUnitsOfUser;
         }
@@ -238,20 +241,24 @@ class TaskReportManager extends Component {
         return (
             <div className="box">
                 <div className="box-body qlcv" >
-
-                    <TaskReportEditForm taskReportId={this.state.currentEditRow} />
+                    {
+                        currentEditRow && <TaskReportEditForm taskReportId={currentEditRow} />
+                    }
 
                     {/* Thêm mới bao cáo */}
                     <div style={{ height: '40px' }}>
                         <ButtonModal modalID="modal-create-task-report" button_name={translate('report_manager.add_report')} title={translate('report_manager.add_report')} />
                     </div>
+
                     <TaskReportCreateForm />
 
-                    <TaskReportDetailForm taskReportId={this.state.currentViewRow} />
+                    {
+                        currentViewRow && <TaskReportDetailForm taskReportId={currentViewRow} />
+                    }
 
                     {/* search form */}
                     <div className="form-inline" style={{ marginBottom: '2px' }}>
-                        <div className="form-group">
+                        <div className="form-group unitSearch">
                             <label>{translate('task.task_management.department')}</label>
                             {units &&
                                 <SelectMulti id="multiSelectUnit1"
@@ -349,7 +356,7 @@ class TaskReportManager extends Component {
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
                         reports.listTaskReport && reports.listTaskReport.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>}
 
-                    <PaginateBar pageTotal={pageTotal ? pageTotal : ""} currentPage={page} func={this.setPage} />
+                    <PaginateBar pageTotal={pageTotal ? pageTotal : ""} currentPage={cr_page} func={this.setPage} />
                 </div>
             </div>
         );

@@ -2421,25 +2421,20 @@ exports.deleteFileChildTaskComment = async (params) => {
 
 /**
  * edit status of task 
- * @param taskID id công việc
+ * @param taskID id của công việc muốn kích hoạt các công việc sau nó
  * @param body trang thai công việc
  */
 exports.editActivateOfTask = async (taskID, body) => {
     let today = new Date();
-
-    let task1 = await Task.findById(taskID);
-
-    let startDate = task1.startDate;
-    let endDate = task1.endDate;
 
     // Cập nhật trạng thái hoạt động của các task sau
     for (let i = 0; i < body.listSelected.length; i++) {
         console.log('body', body.listSelected[i]);
 
         let listTask = await Task.find({ "followingTasks.task": body.listSelected[i] });
-        // console.log('list', listTask, listTask.length);
 
         for (let x in listTask) {
+            // update activate
             await Task.update(
                 {
                     _id: listTask[x]._id,
@@ -2453,12 +2448,17 @@ exports.editActivateOfTask = async (taskID, body) => {
             )
         }
 
-        
-        let followStartDate = endDate;
+        let followStartDate = today;
 
         let followItem = await Task.findById(body.listSelected[i]);
-        let numberOfDaysTaken = followItem.numberOfDaysTaken ? followItem.numberOfDaysTaken : 0;
-        let timer = followStartDate.getTime() + numberOfDaysTaken * 24 * 60 * 60 * 1000;
+        let startDateItem = followItem.startDate;
+        let endDateItem = followItem.endDate;
+        let dayTaken = endDateItem.getTime() - startDateItem.getTime();
+
+        // let followItem = await Task.findById(body.listSelected[i]);
+        // let numberOfDaysTaken = followItem.numberOfDaysTaken ? followItem.numberOfDaysTaken : 0;
+        // let timer = followStartDate.getTime() + numberOfDaysTaken * 24 * 60 * 60 * 1000;
+        let timer = followStartDate.getTime() + dayTaken;
 
         let followEndDate = new Date(timer).toISOString();
 

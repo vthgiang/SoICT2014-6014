@@ -319,7 +319,7 @@ exports.createUser = async (portal, data) => {
             password: hash
         });
 
-    await this.sendMailAboutCreatedAccount(data.email, password)
+    await this.sendMailAboutCreatedAccount(data.email, password, portal)
 
     return user;
 }
@@ -329,7 +329,7 @@ exports.createUser = async (portal, data) => {
  * @email người nhận
  * @password của tài khoản đó
  */
-exports.sendMailAboutCreatedAccount = async (email, password) => {
+exports.sendMailAboutCreatedAccount = async (email, password, portal) => {
     var transporter = nodemailer.createTransport({
         service: 'Gmail',
         auth: {
@@ -396,6 +396,7 @@ exports.sendMailAboutCreatedAccount = async (email, password) => {
                         <div class="form">
                             <p><b>Thông tin tài khoản đăng nhập của bạn: </b></p>
                             <div class="info">
+                                <li>Portal: ${portal}</li>
                                 <li>Tài khoản: ${email}</li>
                                 <li>Mật khẩu: <b>${password}</b></li>
                             </div>
@@ -403,6 +404,7 @@ exports.sendMailAboutCreatedAccount = async (email, password) => {
                 
                             <p><b>Your account information: </b></p>
                             <div class="info">
+                                <li>Portal: ${portal}</li>
                                 <li>Account: ${email}</li>
                                 <li>Password: <b>${password}</b></li>
                             </div>

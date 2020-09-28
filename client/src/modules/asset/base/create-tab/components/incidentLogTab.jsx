@@ -20,7 +20,7 @@ class IncidentLogTab extends Component {
         if (month.length < 2) {
             month = '0' + month;
         }
-            
+
         if (day.length < 2) {
             day = '0' + day;
         }
@@ -89,6 +89,17 @@ class IncidentLogTab extends Component {
         }
     }
 
+    formatType = (type) => {
+        const { translate } = this.props;
+
+        if (type === 'broken') {
+            return translate('asset.general_information.damaged');
+        }
+        else if (type === 'lost') {
+            return translate('asset.general_information.lost');
+        }
+        else return 'Deleted';
+    }
 
     render() {
         const { id } = this.props;
@@ -125,9 +136,9 @@ class IncidentLogTab extends Component {
                                     incidentLogs.map((x, index) => (
                                         <tr key={index}>
                                             <td>{x.incidentCode}</td>
-                                            <td>{x.type}</td>
+                                            <td>{this.formatType(x.type)}</td>
                                             <td>{x.reportedBy ? (userlist.length && userlist.filter(item => item._id === x.reportedBy).pop() ? userlist.filter(item => item._id === x.reportedBy).pop().name : 'User is deleted') : ''}</td>
-                                            <td>{x.dateOfIncident ? this.formatDate(x.dateOfIncident): ''}</td>
+                                            <td>{x.dateOfIncident ? this.formatDate(x.dateOfIncident) : ''}</td>
                                             <td>{x.description}</td>
                                             <td>{x.statusIncident}</td>
                                             <td>

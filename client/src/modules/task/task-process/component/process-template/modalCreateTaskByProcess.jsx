@@ -9,17 +9,38 @@ import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { TaskProcessActions } from "../../redux/actions";
 import { TaskFormValidator } from "../../../task-management/component/taskFormValidator";
 import { TaskProcessValidator } from './taskProcessValidator';
-
+import ElementFactory from 'bpmn-js/lib/features/modeling/ElementFactory';
 import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil'
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 import customModule from '../custom-task-process-template';
 import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
-
+import { is } from 'bpmn-js/lib/util/ModelUtil';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import './processDiagram.css'
 import getEmployeeSelectBoxItems from "../../../organizationalUnitHelper";
 
+// custom element
+ElementFactory.prototype._getDefaultSize = function (semantic) {
+
+	if (is(semantic, 'bpmn:Task')) {
+		return { width: 160, height: 130 };
+	}
+
+	if (is(semantic, 'bpmn:Gateway')) {
+		return { width: 50, height: 50 };
+	}
+
+	if (is(semantic, 'bpmn:Event')) {
+		return { width: 36, height: 36 };
+	}
+
+	if (is(semantic, 'bpmn:TextAnnotation')) {
+		return { width: 100, height: 30 };
+	}
+	return { width: 100, height: 80 };
+
+};
 //Xóa element khỏi pallette theo data-action
 var _getPaletteEntries = PaletteProvider.prototype.getPaletteEntries;
 PaletteProvider.prototype.getPaletteEntries = function (element) {

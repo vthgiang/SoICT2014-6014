@@ -35,7 +35,7 @@ exports.getAllKPIEmployeeSetsInOrganizationByMonth = async (portal, data) => {
  * service Khởi tạo KPI tháng mới từ KPI tháng này
  */
 exports.copyKPI = async (portal, id, data) => {
-    let OldEmployeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
+    let oldEmployeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
         .findById(id)
         .populate("organizationalUnit creator")
         .populate({ path: "kpis", populate: { path: 'parent' } });
@@ -45,20 +45,20 @@ exports.copyKPI = async (portal, id, data) => {
 
     let NewEmployeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
         .create({
-            organizationalUnit: OldEmployeeKpiSet.organizationalUnit._id,
+            organizationalUnit: oldEmployeeKpiSet.organizationalUnit._id,
             creator: data.creator,
             date: dateNewEmployeeKPI,
             kpis: [],
-            approver: OldEmployeeKpiSet.approver,
+            approver: oldEmployeeKpiSet.approver,
         })
 
-    for (let i in OldEmployeeKpiSet.kpis) {
+    for (let i in oldEmployeeKpiSet.kpis) {
         let target = await EmployeeKpi(connect(DB_CONNECTION, portal))
             .create({
-                name: OldEmployeeKpiSet.kpis[i].name,
-                weight: OldEmployeeKpiSet.kpis[i].weight,
-                criteria: OldEmployeeKpiSet.kpis[i].criteria,
-                type: OldEmployeeKpiSet.kpis[i].type,
+                name: oldEmployeeKpiSet.kpis[i].name,
+                weight: oldEmployeeKpiSet.kpis[i].weight,
+                criteria: oldEmployeeKpiSet.kpis[i].criteria,
+                type: oldEmployeeKpiSet.kpis[i].type,
                 parent: null,
             });
         employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
@@ -70,7 +70,7 @@ exports.copyKPI = async (portal, id, data) => {
     employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
         .find({ creator: mongoose.Types.ObjectId(data.creator) })
         .populate("organizationalUnit creator")
-        .populate({ path: "kpis", populate: { path: 'parent' } });
+        .populate({ path: "kpis", populate: { path: 'parent' } })
 
     return employeeKpiSet;
 }
