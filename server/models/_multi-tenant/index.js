@@ -29,6 +29,7 @@ module.exports = {
     Link: require('./super-admin/link.model'),
     OrganizationalUnit: require('./super-admin/organizationalUnit.model'),
     RoleType: require('./super-admin/roleType.model'),
+    ModuleConfiguration: require('./super-admin/moduleConfiguration.model'),
 
     Company: require('./system-admin/company.model'),
     Configuration: require('./system-admin/configuration.model'),

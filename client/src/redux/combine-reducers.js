@@ -12,6 +12,7 @@ import { role } from '../modules/super-admin/role/redux/reducers';
 import { link } from '../modules/super-admin/link/redux/reducers';
 import { component } from '../modules/super-admin/component/redux/reducers';
 import { department } from '../modules/super-admin/organizational-unit/redux/reducers';
+import { modelConfiguration } from '../modules/super-admin/module-configuration/redux/reducers';
 
 import { employeesInfo } from '../modules/human-resource/profile/employee-info/redux/reducers';
 import { employeesManager } from '../modules/human-resource/profile/employee-management/redux/reducers';
@@ -94,6 +95,7 @@ const appReducer = combineReducers({
     link,
     component,
     department,
+    modelConfiguration,
 
     //---------------------------
     documents,

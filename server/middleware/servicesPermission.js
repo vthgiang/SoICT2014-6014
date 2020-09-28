@@ -98,6 +98,8 @@ exports.data = [
     { path: '/system-admin/system-setting/backup', method: 'PATCH', roles: ['System Admin'] },
     { path: '/system-admin/system-setting/restore', method: 'PATCH', roles: ['System Admin'] },
 
+    { path: '/configuration/configurations', method: 'GET', roles: ['System Admin','Super Admin', 'Admin',] },
+
     { path: '/user/users', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
 
     { path: '/user/users', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },

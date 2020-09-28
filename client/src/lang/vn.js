@@ -1533,12 +1533,13 @@ export default {
                 symbol: ' Ký hiệu',
                 not_work: 'Nghỉ làm',
                 do_work: 'Có đi làm',
-                total_timesheets: 'Tổng số công',
+                total_timesheets: 'Số giờ làm',
+                total_hours_off: 'Số giờ nghỉ',
                 work_date_in_month: 'Công làm việc trong tháng',
                 shift_work: 'Ca làm việc',
-                shifts1: 'ca 1',
-                shifts2: 'ca 2',
-                shifts3: 'ca 3',
+                shifts1: 'Ca 1',
+                shifts2: 'Ca 2',
+                shifts3: 'Ca 3',
                 date_of_month: 'Các ngày trong tháng',
 
                 // Nhóm dành cho action

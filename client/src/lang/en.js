@@ -1504,12 +1504,13 @@ export default {
                 symbol: ' Symbol',
                 not_work: 'Not work',
                 do_work: 'Do work',
-                total_timesheets: 'Total work date',
+                total_timesheets: 'Total hours',
+                total_hours_off: 'Total hours off',
                 work_date_in_month: 'Work date in month',
                 shift_work: 'Shift work',
-                shifts1: 'shifts 1',
-                shifts2: 'shifts 2',
-                shifts2: 'shifts 3',
+                shifts1: 'Shifts 1',
+                shifts2: 'Shifts 2',
+                shifts2: 'Shifts 3',
                 date_of_month: 'The days of the month',
 
                 // Nhóm dành cho action

@@ -12,6 +12,7 @@ const {
     Privilege,
     User,
     UserRole,
+    ModuleConfiguration,
 
     RootRole,
     SystemLink,
@@ -103,6 +104,7 @@ const initSampleCompanyDB = async () => {
         if (!db.models.Privilege) Privilege(db);
         if (!db.models.User) User(db);
         if (!db.models.UserRole) UserRole(db);
+        if (!db.models.ModuleConfiguration) ModuleConfiguration(db);
 
         if (!db.models.RootRole) RootRole(db);
         if (!db.models.SystemLink) SystemLink(db);
@@ -4061,7 +4063,24 @@ const initSampleCompanyDB = async () => {
         educationProgram: educationProgram[1]._id,
         employeeCommitmentTime: "6",
     }])
+
     console.log(`Xong! Thông tin khoá đào tạo  đã được tạo`);
+
+    console.log("Khởi tạo dữ liệu cấu hình module quản lý nhân sự!");
+
+    await ModuleConfiguration(vnistDB).create({
+        humanResource: {
+            contractNoticeTimes: [15, 30],
+            timekeepingType: "shift",
+            timekeepingByShift: {
+                shift1Time: 4,
+                shift2Time: 4,
+                shift3Time: 4,
+            },
+        },
+    })
+
+    console.log(`Xong! thông tin cấu hình module quản lý nhân sự đã được tạo`);
 
     /**
      * Ngắt kết nối db
