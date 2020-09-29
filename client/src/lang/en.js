@@ -1284,7 +1284,7 @@ export default {
                 add_default_title: 'Add the default document',
                 edit_file: 'Edit attached documents',
                 add_file: 'Add attached documents',
-                no_submitted: 'Not submitted',
+                not_submitted_yet: 'Not submitted',
                 submitted: 'Submitted',
                 returned: 'Returned',
                 no_files: 'No files yet',

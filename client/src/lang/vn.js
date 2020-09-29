@@ -1315,7 +1315,7 @@ export default {
                 add_default_title: 'Thêm các tài liệu mặc định',
                 edit_file: 'Chỉnh sửa tài liệu đính kèm',
                 add_file: 'Thêm tài liệu đính kèm',
-                no_submitted: 'Chưa nộp',
+                not_submitted_yet: 'Chưa nộp',
                 submitted: 'Đã nộp',
                 returned: 'Đã trả lại',
                 no_files: 'Chưa có file',
