@@ -271,13 +271,13 @@ const LINKS = [{
 
 
     {
-        url: '/hr-manage-holiday',
+        url: '/hr-manage-work-plan',
         description: 'Quản lý kế hoạch làm việc',
         category: LINK_CATEGORY.HUMAN_RESOURCE.name,
         roles: [
             ROOT_ROLES.ADMIN.name,
         ],
-        components: getComponentsInLink('/hr-manage-holiday')
+        components: getComponentsInLink('/hr-manage-work-plan')
     },
     {
         url: '/hr-add-employee',

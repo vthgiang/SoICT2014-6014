@@ -100,7 +100,6 @@ exports.createAnnualLeave = async (req, res) => {
                 reason: req.body.reason,
                 status: 'process',
             }
-
             let annualLeave = await AnnualLeaveService.createAnnualLeave(req.portal, data, req.user.company._id);
             await Log.info(req.user.email, 'CREATE_ANNUALLEAVE', req.portal);
             res.status(200).json({
@@ -161,7 +160,7 @@ exports.createAnnualLeave = async (req, res) => {
             success: false,
             messages: "create_annual_leave_faile",
             content: {
-                inputData: req.body
+                error: error
             }
         });
     }

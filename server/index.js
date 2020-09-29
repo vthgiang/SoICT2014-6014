@@ -40,7 +40,7 @@ if (process.env.MULTI_TENANT === 'true') {
 	app.use("/annualLeave", require("./modules/_multi-tenant/human-resource/annual-leave/annualLeave.route"));
 	app.use("/commendation", require("./modules/_multi-tenant/human-resource/commendation/commendation.route"));
 	app.use("/discipline", require("./modules/_multi-tenant/human-resource/discipline/discipline.route"));
-	app.use("/holiday", require("./modules/_multi-tenant/human-resource/holiday/holiday.route"));
+	app.use("/workPlan", require("./modules/_multi-tenant/human-resource/work-plan/workPlan.route"));
 	app.use("/employee", require("./modules/_multi-tenant/human-resource/profile/profile.route"));
 	app.use("/salary", require("./modules/_multi-tenant/human-resource/salary/salary.route"));
 	app.use("/timesheet", require("./modules/_multi-tenant/human-resource/timesheets/timesheets.route"));
@@ -118,7 +118,7 @@ if (process.env.MULTI_TENANT === 'true') {
 	app.use("/annualLeave", require("./modules/human-resource/annual-leave/annualLeave.route"));
 	app.use("/commendation", require("./modules/human-resource/commendation/commendation.route"));
 	app.use("/discipline", require("./modules/human-resource/discipline/discipline.route"));
-	app.use("/holiday", require("./modules/human-resource/holiday/holiday.route"));
+	app.use("/workPlan", require("./modules/human-resource/work-plan/workPlan.route"));
 	app.use("/employee", require("./modules/human-resource/profile/profile.route"));
 	app.use("/salary", require("./modules/human-resource/salary/salary.route"));
 	app.use("/timesheet", require("./modules/human-resource/timesheets/timesheets.route"));

@@ -4,17 +4,17 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal, ImportFileExcel, ConFigImportFile, ShowImportData, ExportExcel } from '../../../../common-components';
 
-import { configurationHoliday } from './fileConfigurationImportHoliday';
+import { configurationWorkPlan } from './fileConfigurationImportWorksPlan';
 
-import { HolidayActions } from '../redux/actions';
+import { WorkPlanActions } from '../redux/actions';
 import { AuthActions } from '../../../auth/redux/actions';
 
 
-class HolidayImportForm extends Component {
+class WorkPlanImportForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            configData: configurationHoliday.configurationImport(this.props.translate),
+            configData: configurationWorkPlan.configurationImport(this.props.translate),
             checkFileImport: true,
             rowError: [],
             importData: [],
@@ -25,8 +25,8 @@ class HolidayImportForm extends Component {
     }
 
     componentDidUpdate() {
-        const { holiday } = this.props;
-        holiday.importStatus && window.$(`#modal_import_file`).modal("hide");
+        const { workPlan } = this.props;
+        workPlan.importStatus && window.$(`#modal_import_file`).modal("hide");
     }
 
     /**
@@ -69,14 +69,14 @@ class HolidayImportForm extends Component {
             let endDate = typeof x.endDate === 'string' ? x.endDate : this.convertExcelDateToJSDate(x.endDate);
             let type = x.type;
             switch (type) {
-                case translate('human_resource.holiday.holiday'):
-                    type = 'holiday';
+                case translate('human_resource.work_plan.time_for_holiday'):
+                    type = 'time_for_holiday';
                     break;
-                case translate('human_resource.holiday.auto_leave'):
-                    type = 'auto_leave';
+                case translate('human_resource.work_plan.time_allow_to_leave'):
+                    type = 'time_allow_to_leave';
                     break;
-                case translate('human_resource.holiday.no_leave'):
-                    type = 'no_leave';
+                case translate('human_resource.work_plan.time_not_allow_to_leave'):
+                    type = 'time_not_allow_to_leave';
                     break;
                 default:
                     type = null;
@@ -124,10 +124,10 @@ class HolidayImportForm extends Component {
     /** Function kiểm tra lỗi của các dữ liệu nhập vào để undisable submit form */
     isFormValidated = () => {
         let { rowError, importData } = this.state;
-        const { holiday } = this.props;
-        if (holiday.error.rowError !== undefined) {
-            rowError = holiday.error.rowError;
-            importData = holiday.error.data
+        const { workPlan } = this.props;
+        if (workPlan.error.rowError !== undefined) {
+            rowError = workPlan.error.rowError;
+            importData = workPlan.error.data
         }
         if (rowError.length === 0 && importData.length !== 0) {
             return true
@@ -145,7 +145,7 @@ class HolidayImportForm extends Component {
             let endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
             data[n] = { ...data[n], startDate: startDate, endDate: endDate };
         };
-        this.props.importHoliday(data);
+        this.props.importWorkPlan(data);
     }
 
     /**
@@ -160,21 +160,21 @@ class HolidayImportForm extends Component {
     }
 
     render() {
-        const { translate, holiday } = this.props;
+        const { translate, workPlan } = this.props;
 
         let { limit, page, importData, rowError, configData, checkFileImport } = this.state;
 
-        if (holiday.error.rowError !== undefined) {
-            rowError = holiday.error.rowError;
-            importData = holiday.error.data
+        if (workPlan.error.rowError !== undefined) {
+            rowError = workPlan.error.rowError;
+            importData = workPlan.error.data
         };
 
         importData = importData.map(x => {
-            x = { ...x, type: translate(`human_resource.holiday.${x.type}`) }
+            x = { ...x, type: translate(`human_resource.work_plan.${x.type}`) }
             return x;
         })
 
-        let exportData = configurationHoliday.templateImport(translate);
+        let exportData = configurationWorkPlan.templateImport(translate);
 
         return (
             <React.Fragment>
@@ -234,14 +234,14 @@ class HolidayImportForm extends Component {
 };
 
 function mapState(state) {
-    const { holiday } = state;
-    return { holiday };
+    const { workPlan } = state;
+    return { workPlan };
 };
 
 const actionCreators = {
-    importHoliday: HolidayActions.importHoliday,
+    importWorkPlan: WorkPlanActions.importWorkPlan,
     downloadFile: AuthActions.downloadFile,
 };
 
-const importExcel = connect(mapState, actionCreators)(withTranslate(HolidayImportForm));
-export { importExcel as HolidayImportForm };
+const importExcel = connect(mapState, actionCreators)(withTranslate(WorkPlanImportForm));
+export { importExcel as WorkPlanImportForm };

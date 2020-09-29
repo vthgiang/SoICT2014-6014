@@ -21,7 +21,7 @@ import { course } from '../modules/training/course/redux/reducers';
 import { salary } from '../modules/human-resource/salary/redux/reducers';
 import { discipline } from '../modules/human-resource/commendation-discipline/redux/reducers';
 import { annualLeave } from '../modules/human-resource/annual-leave/redux/reducers';
-import { holiday } from '../modules/human-resource/holiday/redux/reducers';
+import { workPlan } from '../modules/human-resource/work-plan/redux/reducers';
 import { timesheets } from '../modules/human-resource/timesheets/redux/reducers';
 
 import { notifications } from '../modules/notification/redux/reducers';
@@ -108,7 +108,7 @@ const appReducer = combineReducers({
     salary,
     discipline,
     annualLeave,
-    holiday,
+    workPlan,
     timesheets,
 
     // hr-tranning

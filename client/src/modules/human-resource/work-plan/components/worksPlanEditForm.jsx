@@ -4,11 +4,11 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal, DatePicker, ErrorLabel, SelectBox } from '../../../../common-components';
 
-import { HolidayFormValidator } from './combinedContent';
+import { WorkPlanFormValidator } from './combinedContent';
 
-import { HolidayActions } from '../redux/actions';
+import { WorkPlanActions } from '../redux/actions';
 
-class HolidayEditForm extends Component {
+class WorkPlanEditForm extends Component {
     constructor(props) {
         super(props);
         this.state = {}
@@ -21,7 +21,7 @@ class HolidayEditForm extends Component {
     }
     validateDescription = (value, willUpdateState = true) => {
         const { translate } = this.props;
-        let msg = HolidayFormValidator.validateDescription(value, translate);
+        let msg = WorkPlanFormValidator.validateDescription(value, translate);
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -121,7 +121,7 @@ class HolidayEditForm extends Component {
         let partEnd = endDate.split('-');
         let endDateNew = [partEnd[2], partEnd[1], partEnd[0]].join('-');
         if (this.isFormValidated()) {
-            this.props.updateHoliday(_id, { ...this.state, startDate: startDateNew, endDate: endDateNew });
+            this.props.updateWorkPlan(_id, { ...this.state, startDate: startDateNew, endDate: endDateNew });
         }
     }
 
@@ -146,32 +146,32 @@ class HolidayEditForm extends Component {
     }
 
     render() {
-        const { translate, holiday } = this.props;
+        const { translate, workPlan } = this.props;
 
         const { type, startDate, endDate, description, errorOnStartDate, errorOnEndDate, errorOnDescription, _id } = this.state;
 
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID="modal-edit-holiday" isLoading={holiday.isLoading}
-                    formID="form-edit-holiday"
-                    title={translate('human_resource.holiday.edit_holiday')}
+                    modalID="modal-edit-work-plan" isLoading={workPlan.isLoading}
+                    formID="form-edit-work-plan"
+                    title={translate('human_resource.work_plan.edit_work_plan')}
                     func={this.save}
                     size={50}
                     maxWidth={500}
                 >
-                    <form className="form-group" id="form-edit-holiday" >
+                    <form className="form-group" id="form-edit-work-plan" >
                         {/* Thể loại kế hoạch làm việc */}
                         <div className="form-group">
-                            <label>{translate('human_resource.holiday.table.type')}<span className="text-red">*</span></label>
+                            <label>{translate('human_resource.work_plan.table.type')}<span className="text-red">*</span></label>
                             <SelectBox
-                                id={`edit_type_holiday`}
+                                id={`edit_type_work_plan`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 value={type}
-                                items={[{ value: "holiday", text: translate('human_resource.holiday.holiday') },
-                                { value: 'auto_leave', text: translate('human_resource.holiday.auto_leave') },
-                                { value: 'no_leave', text: translate('human_resource.holiday.no_leave') }]}
+                                items={[{ value: "time_for_holiday", text: translate('human_resource.work_plan.time_for_holiday') },
+                                { value: 'time_allow_to_leave', text: translate('human_resource.work_plan.time_allow_to_leave') },
+                                { value: 'time_not_allow_to_leave', text: translate('human_resource.work_plan.time_not_allow_to_leave') }]}
                                 onChange={this.handleTypetChange}
                             />
                         </div>
@@ -179,7 +179,7 @@ class HolidayEditForm extends Component {
                         <div className="row">
                             {/* Ngày bắt đầu */}
                             <div className={`form-group col-sm-6 col-xs-12 ${errorOnStartDate && "has-error"}`}>
-                                <label>{translate('human_resource.holiday.table.start_date')}<span className="text-red">*</span></label>
+                                <label>{translate('human_resource.work_plan.table.start_date')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`edit_start_date${_id}`}
                                     deleteValue={false}
@@ -190,7 +190,7 @@ class HolidayEditForm extends Component {
                             </div>
                             {/* Ngày kết thúc */}
                             <div className={`form-group col-sm-6 col-xs-12 ${errorOnEndDate && "has-error"}`}>
-                                <label>{translate('human_resource.holiday.table.end_date')}<span className="text-red">*</span></label>
+                                <label>{translate('human_resource.work_plan.table.end_date')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`edit_end_date${_id}`}
                                     deleteValue={false}
@@ -203,7 +203,7 @@ class HolidayEditForm extends Component {
 
                         {/* Mô tả */}
                         <div className={`form-group ${errorOnDescription && "has-error"}`}>
-                            <label htmlFor="description">{translate('human_resource.holiday.table.describe_timeline')}<span className="text-red">&#42;</span></label>
+                            <label htmlFor="description">{translate('human_resource.work_plan.table.describe_timeline')}<span className="text-red">&#42;</span></label>
                             <textarea className="form-control" rows="3" style={{ height: 72 }} name="description" value={description} onChange={this.handleDescriptionChange}></textarea>
                             <ErrorLabel content={errorOnDescription} />
                         </div>
@@ -215,13 +215,13 @@ class HolidayEditForm extends Component {
 };
 
 function mapState(state) {
-    const { holiday } = state;
-    return { holiday };
+    const { workPlan } = state;
+    return { workPlan };
 };
 
 const actionCreators = {
-    updateHoliday: HolidayActions.updateHoliday,
+    updateWorkPlan: WorkPlanActions.updateWorkPlan,
 };
 
-const editForm = connect(mapState, actionCreators)(withTranslate(HolidayEditForm));
-export { editForm as HolidayEditForm };
+const editForm = connect(mapState, actionCreators)(withTranslate(WorkPlanEditForm));
+export { editForm as WorkPlanEditForm };

@@ -1,37 +1,37 @@
 import {
-    HolidayConstants
+    WorkPlanConstants
 } from "./constants";
 
 import {
-    HolidayService
+    WorkPlanService
 } from "./services";
 
-export const HolidayActions = {
-    getListHoliday,
-    createNewHoliday,
-    deleteHoliday,
-    updateHoliday,
-    importHoliday,
+export const WorkPlanActions = {
+    getListWorkPlan,
+    createNewWorkPlan,
+    deleteWorkPlan,
+    updateWorkPlan,
+    importWorkPlan,
 };
 
 /**
  * Lấy danh sách lịch làm việc
  */
-function getListHoliday(data) {
+function getListWorkPlan(data) {
     return dispatch => {
         dispatch({
-            type: HolidayConstants.GET_HOLIDAY_REQUEST
+            type: WorkPlanConstants.GET_WORK_PLAN_REQUEST
         });
-        HolidayService.getListHoliday(data)
+        WorkPlanService.getListWorkPlan(data)
             .then(res => {
                 dispatch({
-                    type: HolidayConstants.GET_HOLIDAY_SUCCESS,
+                    type: WorkPlanConstants.GET_WORK_PLAN_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(err => {
                 dispatch({
-                    type: HolidayConstants.GET_HOLIDAY_FAILURE,
+                    type: WorkPlanConstants.GET_WORK_PLAN_FAILURE,
                     error: err
                 });
             })
@@ -42,21 +42,21 @@ function getListHoliday(data) {
  * Thêm mới thông tin lịch làm việc
  * @param {*} data : Dữ liệu thông tin lịch làm việc
  */
-function createNewHoliday(data) {
+function createNewWorkPlan(data) {
     return dispatch => {
         dispatch({
-            type: HolidayConstants.CREATE_HOLIDAY_REQUEST
+            type: WorkPlanConstants.CREATE_WORK_PLAN_REQUEST
         });
-        HolidayService.createNewHoliday(data)
+        WorkPlanService.createNewWorkPlan(data)
             .then(res => {
                 dispatch({
-                    type: HolidayConstants.CREATE_HOLIDAY_SUCCESS,
+                    type: WorkPlanConstants.CREATE_WORK_PLAN_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(err => {
                 dispatch({
-                    type: HolidayConstants.CREATE_HOLIDAY_FAILURE,
+                    type: WorkPlanConstants.CREATE_WORK_PLAN_FAILURE,
                     error: err
                 });
             })
@@ -67,22 +67,22 @@ function createNewHoliday(data) {
  * Xoá thông tin lịch làm việc
  * @param {*} id : Id thông tin lịch làm việc cần xoá
  */
-function deleteHoliday(id) {
+function deleteWorkPlan(id) {
     return dispatch => {
         dispatch({
-            type: HolidayConstants.DELETE_HOLIDAY_REQUEST,
+            type: WorkPlanConstants.DELETE_WORK_PLAN_REQUEST,
         });
 
-        HolidayService.deleteHoliday(id)
+        WorkPlanService.deleteWorkPlan(id)
             .then(res => {
                 dispatch({
-                    type: HolidayConstants.DELETE_HOLIDAY_SUCCESS,
+                    type: WorkPlanConstants.DELETE_WORK_PLAN_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(err => {
                 dispatch({
-                    type: HolidayConstants.DELETE_HOLIDAY_FAILURE,
+                    type: WorkPlanConstants.DELETE_WORK_PLAN_FAILURE,
                     error: err
                 });
             })
@@ -94,22 +94,22 @@ function deleteHoliday(id) {
  * @param {*} id : id thông tin lịch làm việc cần chỉnh sửa
  * @param {*} data : dữ liệu chỉnh sửa thông tin lịch làm việc
  */
-function updateHoliday(id, infoHoliday) {
+function updateWorkPlan(id, infoWorkPlan) {
     return dispatch => {
         dispatch({
-            type: HolidayConstants.UPDATE_HOLIDAY_REQUEST,
+            type: WorkPlanConstants.UPDATE_WORK_PLAN_REQUEST,
         });
 
-        HolidayService.updateHoliday(id, infoHoliday)
+        WorkPlanService.updateWorkPlan(id, infoWorkPlan)
             .then(res => {
                 dispatch({
-                    type: HolidayConstants.UPDATE_HOLIDAY_SUCCESS,
+                    type: WorkPlanConstants.UPDATE_WORK_PLAN_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(err => {
                 dispatch({
-                    type: HolidayConstants.UPDATE_HOLIDAY_FAILURE,
+                    type: WorkPlanConstants.UPDATE_WORK_PLAN_FAILURE,
                     error: err
                 });
             })
@@ -120,21 +120,21 @@ function updateHoliday(id, infoHoliday) {
  * Import dữ liệu lịch làm việc
  * @param {*} data : Array thông tin lịch làm việc
  */
-function importHoliday(data) {
+function importWorkPlan(data) {
     return dispatch => {
         dispatch({
-            type: HolidayConstants.IMPORT_HOLIDAY_REQUEST
+            type: WorkPlanConstants.IMPORT_WORK_PLAN_REQUEST
         });
-        HolidayService.importHoliday(data)
+        WorkPlanService.importWorkPlan(data)
             .then(res => {
                 dispatch({
-                    type: HolidayConstants.IMPORT_HOLIDAY_SUCCESS,
+                    type: WorkPlanConstants.IMPORT_WORK_PLAN_SUCCESS,
                     payload: res.data
                 })
             })
             .catch(err => {
                 dispatch({
-                    type: HolidayConstants.IMPORT_HOLIDAY_FAILURE,
+                    type: WorkPlanConstants.IMPORT_WORK_PLAN_FAILURE,
                     error: err.response.data.content
                 });
             })

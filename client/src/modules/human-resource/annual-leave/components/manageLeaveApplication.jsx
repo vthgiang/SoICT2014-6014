@@ -150,7 +150,7 @@ class ManageLeaveApplication extends Component {
         let endDateNew = this.formatDate2(value.endDate);
 
         Swal.fire({
-            html: `<h4 style="color: red"><div>${translate('human_resource.holiday.accept_application')}</div> <div>"${this.formatDate(value.startDate)} - ${this.formatDate(value.endDate)}" ?</div></h4>`,
+            html: `<h4 style="color: red"><div>${translate('human_resource.work_plan.accept_application')}</div> <div>"${this.formatDate(value.startDate)} - ${this.formatDate(value.endDate)}" ?</div></h4>`,
             icon: 'success',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -174,7 +174,7 @@ class ManageLeaveApplication extends Component {
         let endDateNew = this.formatDate2(value.endDate);
 
         Swal.fire({
-            html: `<h4 style="color: red"><div>${translate('human_resource.holiday.refuse_application')}</div> <div>"${this.formatDate(value.startDate)} - ${this.formatDate(value.endDate)}" ?</div></h4>`,
+            html: `<h4 style="color: red"><div>${translate('human_resource.work_plan.refuse_application')}</div> <div>"${this.formatDate(value.startDate)} - ${this.formatDate(value.endDate)}" ?</div></h4>`,
             icon: 'error',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -274,9 +274,9 @@ class ManageLeaveApplication extends Component {
                                         <td>{translate(`human_resource.annual_leave.status.${x.status}`)}</td>
                                         <td style={{ textAlign: "center" }}>
                                             {(x.status === 'process' || x.status === "faile") &&
-                                                <a onClick={() => this.handleAcceptApplication(x)} className="add_circle" style={{ width: '5px' }} title={translate('human_resource.holiday.accept_application')}><i className="material-icons">check</i></a>}
+                                                <a onClick={() => this.handleAcceptApplication(x)} className="add_circle" style={{ width: '5px' }} title={translate('human_resource.work_plan.accept_application')}><i className="material-icons">check</i></a>}
                                             {(x.status === 'process' || x.status === "pass") &&
-                                                <a onClick={() => this.handleRefuseApplication(x)} className="delete" style={{ width: '5px' }} title={translate('human_resource.holiday.refuse_application')}><i className="material-icons">clear</i></a>}
+                                                <a onClick={() => this.handleRefuseApplication(x)} className="delete" style={{ width: '5px' }} title={translate('human_resource.work_plan.refuse_application')}><i className="material-icons">clear</i></a>}
                                         </td>
                                     </tr>))
                             }

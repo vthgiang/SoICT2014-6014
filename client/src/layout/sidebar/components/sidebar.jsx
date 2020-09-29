@@ -171,7 +171,7 @@ class SideBar extends Component {
                                     { name: 'menu.time_keeping', icon: 'fa fa-calculator', path: '/hr-time-keeping' },
                                     { name: 'menu.discipline', icon: 'fa fa-balance-scale', path: '/hr-discipline' },
                                     { name: 'menu.annual_leave', icon: 'fa fa-calendar-times-o', path: '/hr-annual-leave' },
-                                    { name: 'menu.manage_holiday', icon: 'fa fa-calendar', path: '/hr-manage-holiday' },
+                                    { name: 'menu.manage_work_plan', icon: 'fa fa-calendar', path: '/hr-manage-work-plan' },
                                 ]
                             }} />
 

@@ -13,7 +13,7 @@ module.exports = {
     Commendation: require('./human-resource/commendation.model'),
     Discipline: require('./human-resource/discipline.model'),
     Employee: require('./human-resource/employee.model'),
-    Holiday: require('./human-resource/holiday.model'),
+    WorkPlan: require('./human-resource/workPlan.model'),
     Salary: require('./human-resource/salary.model'),
     Timesheet: require('./human-resource/timesheet.model'),
 

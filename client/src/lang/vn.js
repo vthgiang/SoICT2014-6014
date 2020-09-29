@@ -709,7 +709,7 @@ export default {
 
             leave_application: 'Quản lý đơn xin nghỉ',
             manage_employee: 'Quản lý nhân sự',
-            manage_holiday: 'Quản lý kế hoạch làm việc',
+            manage_work_plan: 'Quản lý kế hoạch làm việc',
             manage_training: 'Quản lý đào tạo',
             account: 'Tài khoản',
             annual_leave_personal: 'Nghỉ phép',
@@ -1484,7 +1484,7 @@ export default {
             },
 
             // Quản lý kế hoạch làm việc (lịch nghỉ lễ tết)
-            holiday: {
+            work_plan: {
                 file_name_export: 'Kế hoạch làm việc',
                 number_date_leave_of_year: 'Số ngày nghỉ tối đa',
                 date_year: 'ngày/năm',
@@ -1505,15 +1505,15 @@ export default {
                 },
 
                 // Nhóm thể loại kế hoạch làm Việc
-                holiday: 'Thời gian nghỉ lễ, nghỉ tết',
-                auto_leave: 'Thời gian được xin nghỉ phép',
-                no_leave: 'Thời gian không được xin nghỉ phép',
+                time_for_holiday: 'Thời gian nghỉ lễ, nghỉ tết',
+                time_allow_to_leave: 'Thời gian được xin nghỉ phép',
+                time_not_allow_to_leave: 'Thời gian không được xin nghỉ phép',
 
                 // Nhóm dành cho action
-                edit_holiday: 'Chỉnh sửa kế hoạch làm việc',
-                delete_holiday: 'Xoá kế hoạch làm việc',
-                add_holiday: 'Thêm mới',
-                add_holiday_title: 'Thêm mới kế hoạch làm việc',
+                edit_work_plan: 'Chỉnh sửa kế hoạch làm việc',
+                delete_work_plan: 'Xoá kế hoạch làm việc',
+                add_work_plan: 'Thêm mới',
+                add_work_plan_title: 'Thêm mới kế hoạch làm việc',
                 add_by_hand: 'Thêm một kế hoạch làm việc',
                 add_import: 'Import file excel',
                 accept_application: 'Chấp nhận đơn xin nghỉ',
@@ -1524,19 +1524,19 @@ export default {
                 start_date_required: 'Thời gian bắt đầu không được để trống',
                 end_date_required: 'Thời gian kết thúc không được để trống',
                 reason_required: 'Mô tả kế hoạch làm việc không được để trống',
-                holiday_duplicate_required: 'Thời gian bị trùng lặp',
+                work_plan_duplicate_required: 'Thời gian bị trùng lặp',
                 edit_number_date_leave_of_year_success: 'Thay đổi số ngày nghỉ trong một năm thành công',
 
-                get_holiday_success: 'Lấy danh sách kế hoạch làm việc thành công',
-                get_holiday_faile: 'Lấy danh sách kế hoạch làm việc thất bại',
-                create_holiday_success: 'Thêm mới kế hoạch làm việc thành công',
-                create_holiday_faile: 'Thêm mới kế hoạch làm việc thất bại',
-                delete_holiday_success: 'Xoá kế hoạch làm việc thành công',
-                delete_holiday_faile: 'Xoá kế hoạch làm việc thất bại',
-                edit_holiday_success: 'Chỉnh sửa kế hoạch làm việc thành công',
-                edit_holiday_faile: 'Chỉnh sửa kế hoạch làm việc thất bại',
-                import_holiday_success: 'Import thông tin nghỉ lễ tết thành công',
-                import_holiday_faile: 'Import thông tin nghỉ lễ tết thất bại',
+                get_work_plan_success: 'Lấy danh sách kế hoạch làm việc thành công',
+                get_work_plan_faile: 'Lấy danh sách kế hoạch làm việc thất bại',
+                create_work_plan_success: 'Thêm mới kế hoạch làm việc thành công',
+                create_work_plan_faile: 'Thêm mới kế hoạch làm việc thất bại',
+                delete_work_plan_success: 'Xoá kế hoạch làm việc thành công',
+                delete_work_plan_faile: 'Xoá kế hoạch làm việc thất bại',
+                edit_work_plan_success: 'Chỉnh sửa kế hoạch làm việc thành công',
+                edit_work_plan_faile: 'Chỉnh sửa kế hoạch làm việc thất bại',
+                import_work_plan_success: 'Import thông tin nghỉ lễ tết thành công',
+                import_work_plan_faile: 'Import thông tin nghỉ lễ tết thất bại',
             },
 
             // Quản lý chấm công nhân viên

@@ -689,7 +689,7 @@ export default {
             account: 'Account',
             annual_leave_personal: 'Annual Leave',
             manage_unit: 'Manage Units',
-            manage_holiday: 'Manage Work Plan',
+            manage_work_plan: 'Manage Work Plan',
             add_employee: 'Add New Staffs',
             list_employee: 'Manage Staffs Information',
             detail_employee: 'Personal Information',
@@ -1453,7 +1453,7 @@ export default {
             },
 
             // Quản lý kế hoạch làm việc (lịch nghỉ lễ tết)
-            holiday: {
+            work_plan: {
                 file_name_export: 'Work plan',
                 number_date_leave_of_year: 'Maximum number of leave days',
                 date_year: 'date/year',
@@ -1474,15 +1474,15 @@ export default {
                 },
 
                 // Nhóm thể loại kế hoạch làm Việc
-                holiday: 'Time off holidays, Tet holidays',
-                auto_leave: 'Time is allowed to take leave',
-                no_leave: 'Time is not allowed to take leave',
+                time_for_holiday: 'Time off holidays, Tet holidays',
+                time_allow_to_leave: 'Time is allowed to take leave',
+                time_not_allow_to_leave: 'Time is not allowed to take leave',
 
                 // Nhóm dành cho action
-                edit_holiday: 'Edit work schedule',
-                delete_holiday: 'Delete work schedule',
-                add_holiday: 'Add work schedule',
-                add_holiday_title: 'Add new work schedule',
+                edit_work_plan: 'Edit work schedule',
+                delete_work_plan: 'Delete work schedule',
+                add_work_plan: 'Add work schedule',
+                add_work_plan_title: 'Add new work schedule',
                 add_by_hand: 'Add one work schedule',
                 add_import: 'Import file excel',
                 accept_application: 'Accept leave application',
@@ -1493,19 +1493,19 @@ export default {
                 start_date_required: 'Start date required',
                 end_date_required: 'End date required',
                 reason_required: 'Description required',
-                holiday_duplicate_required: 'Time is overlapping',
+                work_plan_duplicate_required: 'Time is overlapping',
                 edit_number_date_leave_of_year_success: 'Change the number of days off in the year success',
 
-                get_holiday_success: 'Get work schedule success',
-                get_holiday_faile: 'Get work schedule faile',
-                create_holiday_success: 'Create work schedule success',
-                create_holiday_faile: 'Create work schedule faile',
-                delete_holiday_success: 'Delete work schedule success',
-                delete_holiday_faile: 'Delete work schedule faile',
-                edit_holiday_success: 'Edit work schedule success',
-                edit_holiday_faile: 'Edit work schedule faile',
-                import_holiday_success: 'Import work schedule success',
-                import_holiday_faile: 'Import work schedule faile',
+                get_work_plan_success: 'Get work schedule success',
+                get_work_plan_faile: 'Get work schedule faile',
+                create_work_plan_success: 'Create work schedule success',
+                create_work_plan_faile: 'Create work schedule faile',
+                delete_work_plan_success: 'Delete work schedule success',
+                delete_work_plan_faile: 'Delete work schedule faile',
+                edit_work_plan_success: 'Edit work schedule success',
+                edit_work_plan_faile: 'Edit work schedule faile',
+                import_work_plan_success: 'Import work schedule success',
+                import_work_plan_faile: 'Import work schedule faile',
 
             },
 

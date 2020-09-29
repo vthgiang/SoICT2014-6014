@@ -120,7 +120,7 @@ class HumanResourceConfiguration extends Component {
                     {
                         timekeepingType === 'shift' &&
                         <div className="col-md-12">
-                            <div id="holiday" className="description-box qlcv" style={{ paddingRight: 10 }}>
+                            <div id="work_plan" className="description-box qlcv" style={{ paddingRight: 10 }}>
                                 <h4>{`Chấm công theo ca`}</h4>
                                 {/* Số giờ ca 1 */}
                                 <div className="form-inline">
@@ -149,7 +149,7 @@ class HumanResourceConfiguration extends Component {
                         </div>
                     }
                     <div className="col-md-12">
-                        <button type="button" className="btn pull-right btn-success" onClick={() => this.save()} >{translate('human_resource.holiday.save_as')}</button>
+                        <button type="button" className="btn pull-right btn-success" onClick={() => this.save()} >{translate('human_resource.work_plan.save_as')}</button>
                     </div>
                 </div>
             </div>
