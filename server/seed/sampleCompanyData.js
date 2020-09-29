@@ -906,7 +906,7 @@ const sampleCompanyData = async () => {
         organizationalUnit: Directorate._id,
         startDate: "2020-02-06",
         endDate: "2020-02-08",
-        status: "pass",
+        status: "approved",
         reason: "Về quê",
     }, {
         employee: employee._id,
@@ -914,7 +914,7 @@ const sampleCompanyData = async () => {
         organizationalUnit: Directorate._id,
         startDate: "2020-02-05",
         endDate: "2020-02-10",
-        status: "process",
+        status: "waiting_for_approval",
         reason: "Nghỉ tết"
     }])
     console.log(`Xong! Thông tin nghỉ phép đã được tạo`);

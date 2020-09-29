@@ -98,7 +98,7 @@ exports.createAnnualLeave = async (req, res) => {
                 startDate: req.body.startDate,
                 endDate: req.body.endDate,
                 reason: req.body.reason,
-                status: 'process',
+                status: 'waiting_for_approval',
             }
             let annualLeave = await AnnualLeaveService.createAnnualLeave(req.portal, data, req.user.company._id);
             await Log.info(req.user.email, 'CREATE_ANNUALLEAVE', req.portal);

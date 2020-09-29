@@ -1051,7 +1051,7 @@ function templateImport(translate) {
                 //                 organizationalUnit: "Ban giám đốc",
                 //                 reason: "Về quê",
                 //                 startDate: "06-02-2020",
-                //                 status: translate(`human_resource.annual_leave.status.pass`)
+                //                 status: translate(`human_resource.annual_leave.status.approved`)
                 //             },{
                 //                 STT: 2,
                 //                 employeeNumber: "MS2015123",
@@ -1060,7 +1060,7 @@ function templateImport(translate) {
                 //                 organizationalUnit: "Ban giám đốc",
                 //                 reason: "Nghỉ du lịch",
                 //                 startDate: "05-02-2020",
-                //                 status: translate(`human_resource.annual_leave.status.process`)
+                //                 status: translate(`human_resource.annual_leave.status.waiting_for_approval`)
                 //             }]
                 //         }
                 //     ]

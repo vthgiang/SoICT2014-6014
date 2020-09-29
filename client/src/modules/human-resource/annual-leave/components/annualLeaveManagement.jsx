@@ -187,7 +187,7 @@ class AnnualLeaveManagement extends Component {
                     startDate: new Date(x.startDate),
                     endDate: new Date(x.endDate),
                     reason: x.reason,
-                    status: x.status === "pass" ? translate('human_resource.annual_leave.status.pass') : (x.status === "process" ? translate('human_resource.annual_leave.status.process') : translate('human_resource.annual_leave.status.faile'))
+                    status: x.status === "approved" ? translate('human_resource.annual_leave.status.approved') : (x.status === "waiting_for_approval" ? translate('human_resource.annual_leave.status.waiting_for_approval') : translate('human_resource.annual_leave.status.disapproved'))
                 };
 
             })
@@ -278,9 +278,9 @@ class AnnualLeaveManagement extends Component {
                                 options={{ nonSelectedText: translate('human_resource.non_status'), allSelectedText: translate('human_resource.all_status') }}
                                 onChange={this.handleStatusChange}
                                 items={[
-                                    { value: "pass", text: translate('human_resource.annual_leave.status.pass') },
-                                    { value: "process", text: translate('human_resource.annual_leave.status.process') },
-                                    { value: "faile", text: translate('human_resource.annual_leave.status.faile') }
+                                    { value: "approved", text: translate('human_resource.annual_leave.status.approved') },
+                                    { value: "waiting_for_approval", text: translate('human_resource.annual_leave.status.waiting_for_approval') },
+                                    { value: "disapproved", text: translate('human_resource.annual_leave.status.disapproved') }
                                 ]}
                             >
                             </SelectMulti>

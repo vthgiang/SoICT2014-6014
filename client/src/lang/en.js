@@ -1015,9 +1015,9 @@ export default {
 
                 // Nhóm dành cho trạng thái nghỉ phép 
                 status: {
-                    pass: 'Accepted',
-                    faile: 'Refused',
-                    process: 'Awaiting approval',
+                    approved: 'Approved',
+                    disapproved: 'Disapproved',
+                    waiting_for_approval: 'Waiting for approval',
                 },
 
                 // Nhóm dành cho action

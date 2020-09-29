@@ -3458,7 +3458,7 @@ const initSampleCompanyDB = async () => {
             organizationalUnit: Directorate._id,
             startDate: "2020-09-06",
             endDate: "2020-09-08",
-            status: "pass",
+            status: "approved",
             reason: "Về quê",
         }, {
             company: vnist._id,
@@ -3466,7 +3466,7 @@ const initSampleCompanyDB = async () => {
             organizationalUnit: Directorate._id,
             startDate: "2020-09-05",
             endDate: "2020-09-10",
-            status: "process",
+            status: "waiting_for_approval",
             reason: "Nghỉ tết"
         }, {
             company: vnist._id,
@@ -3474,7 +3474,7 @@ const initSampleCompanyDB = async () => {
             organizationalUnit: phongMaketing[0]._id,
             startDate: "2020-09-05",
             endDate: "2020-09-19",
-            status: "pass",
+            status: "approved",
             reason: "Nghỉ du lịch"
         }, {
             company: vnist._id,
@@ -3482,7 +3482,7 @@ const initSampleCompanyDB = async () => {
             organizationalUnit: phongMaketing[0]._id,
             startDate: "2020-09-02",
             endDate: "2020-09-22",
-            status: "pass",
+            status: "approved",
             reason: "Nghỉ về quê"
         }, {
             company: vnist._id,
@@ -3490,7 +3490,7 @@ const initSampleCompanyDB = async () => {
             organizationalUnit: phongMaketing[0]._id,
             startDate: "2020-02-02",
             endDate: "2020-02-22",
-            status: "pass",
+            status: "approved",
             reason: "Nghỉ về quê"
         },
         {
@@ -3499,7 +3499,7 @@ const initSampleCompanyDB = async () => {
             organizationalUnit: phongMaketing[0]._id,
             startDate: "2020-09-01",
             endDate: "2020-09-03",
-            status: "process",
+            status: "waiting_for_approval",
             reason: "Nghỉ du lịch"
         }, {
             company: vnist._id,
@@ -3507,7 +3507,7 @@ const initSampleCompanyDB = async () => {
             organizationalUnit: phongMaketing[0]._id,
             startDate: "2020-03-01",
             endDate: "2020-03-03",
-            status: "process",
+            status: "waiting_for_approval",
             reason: "Nghỉ du lịch"
         },
         {
@@ -3516,7 +3516,7 @@ const initSampleCompanyDB = async () => {
             organizationalUnit: phongKS[0]._id,
             startDate: "2020-09-05",
             endDate: "2020-09-10",
-            status: "pass",
+            status: "approved",
             reason: "Nghỉ về quê"
         },
         {
@@ -3525,7 +3525,7 @@ const initSampleCompanyDB = async () => {
             organizationalUnit: phongKS[0]._id,
             startDate: "2020-09-05",
             endDate: "2020-09-10",
-            status: "pass",
+            status: "approved",
             reason: "Nghỉ về quê"
         },
         {
@@ -3534,7 +3534,7 @@ const initSampleCompanyDB = async () => {
             organizationalUnit: phongKS[0]._id,
             startDate: "2020-04-05",
             endDate: "2020-04-10",
-            status: "pass",
+            status: "approved",
             reason: "Nghỉ về quê"
         },
         {
@@ -3543,7 +3543,7 @@ const initSampleCompanyDB = async () => {
             organizationalUnit: phongKS[0]._id,
             startDate: "2020-01-05",
             endDate: "2020-01-10",
-            status: "pass",
+            status: "approved",
             reason: "Nghỉ về quê"
         },
         {
@@ -3552,7 +3552,7 @@ const initSampleCompanyDB = async () => {
             organizationalUnit: phongKS[0]._id,
             startDate: "2020-09-04",
             endDate: "2020-09-16",
-            status: "process",
+            status: "waiting_for_approval",
             reason: "Nghỉ du lịch"
         },
         {
@@ -3561,7 +3561,7 @@ const initSampleCompanyDB = async () => {
             organizationalUnit: phongKS[0]._id,
             startDate: "2019-10-04",
             endDate: "2019-10-16",
-            status: "process",
+            status: "waiting_for_approval",
             reason: "Nghỉ du lịch"
         },
         {
@@ -3570,7 +3570,7 @@ const initSampleCompanyDB = async () => {
             organizationalUnit: phongQTNS[0]._id,
             startDate: "2020-09-05",
             endDate: "2020-09-10",
-            status: "pass",
+            status: "approved",
             reason: "Nghỉ về quê"
         },
         {
@@ -3579,7 +3579,7 @@ const initSampleCompanyDB = async () => {
             organizationalUnit: phongQTNS[0]._id,
             startDate: "2020-02-05",
             endDate: "2020-02-10",
-            status: "pass",
+            status: "approved",
             reason: "Nghỉ về quê"
         },
         {
@@ -3588,7 +3588,7 @@ const initSampleCompanyDB = async () => {
             organizationalUnit: phongQTNS[0]._id,
             startDate: "2020-05-05",
             endDate: "2020-05-10",
-            status: "pass",
+            status: "approved",
             reason: "Nghỉ về quê"
         },
 
