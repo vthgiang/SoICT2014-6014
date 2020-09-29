@@ -126,17 +126,17 @@ const COMPONENTS = [{
     links: [
         '/task-process-template'
     ]
-},{
+}, {
     name: 'create-asset',
     description: 'Button thêm mới tài sản',
     roles: [
         ROOT_ROLES.DEAN.name,
     ],
     links: [
-        '/employee-manage-info-asset', 
+        '/employee-manage-info-asset',
         '/manage-info-asset'
     ]
-} ];
+}];
 exports.COMPONENTS = COMPONENTS;
 
 const getComponentsInLink = (link) => {
@@ -145,8 +145,7 @@ const getComponentsInLink = (link) => {
         .map(component => component.name);
 }
 
-const LINKS = [
-    {
+const LINKS = [{
         url: '/',
         description: `Trang chủ công ty`,
         category: LINK_CATEGORY.COMMON.name,
@@ -172,11 +171,21 @@ const LINKS = [
         ],
         components: getComponentsInLink('/notifications')
     },
+    {
+        url: '/manage-configuration',
+        description: 'Cấu hình hệ thống',
+        category: LINK_CATEGORY.COMMON.name,
+        roles: [
+            ROOT_ROLES.SUPER_ADMIN.name,
+            ROOT_ROLES.ADMIN.name
+        ],
+        components: getComponentsInLink('/manage-configuration')
+    },
 
     {
         url: '/system-management',
         description: 'Quản lý sao lưu - phục hồi dữ liệu',
-        category: LINK_CATEGORY.COMMON.name,
+        category: LINK_CATEGORY.RBAC.name,
         roles: [
             ROOT_ROLES.SUPER_ADMIN.name,
             ROOT_ROLES.ADMIN.name

@@ -4,9 +4,10 @@ const Schema = mongoose.Schema;
 const ModuleConfigurationSchema = new Schema({
     // Cấu hình cho modul quản lý nhân sự
     humanResource: {
-        contractNoticeTimes: [{ // Thời gian nhắc hết hạn hợ đồng lao động
+        contractNoticeTime: { // Thời gian nhắc hết hạn hợp đồng lao động
             type: Number,
-        }],
+        },
+
         timekeepingType: {
             type: String,
             enum: ['shift', 'hours', 'shift_and_hour'] // shift chấm công theo ca, hour chấm công theo giờ, chấm công theo ca và giờ

@@ -656,6 +656,7 @@ export default {
         menu: {
             home: 'Home Page',
             system_administration: 'System Administration',
+            manage_configuration: 'Configuration',
             manage_system: 'Backup and Restore',
             manage_company: 'Manage Company',
             manage_role: 'Manage Roles',
@@ -896,6 +897,16 @@ export default {
             add_faile: 'Add falied!',
             edit_success: 'Edit successfully!',
             edit_faile: 'Edit failed!',
+        },
+
+        // Modules cấu hình các chức năng
+        module_configuration: {
+
+            // Thông điệp trả về từ server
+            get_configuration_success: 'Get configuration success',
+            get_configuration_faile: 'Get configuration faile',
+            edit_configuration_success: 'Edit configuration success',
+            edit_configuration_faile: 'Edit configuration faile',
         },
 
         // Module Quản lý nhân sự

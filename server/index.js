@@ -56,7 +56,7 @@ if (process.env.MULTI_TENANT === 'true') {
 
 	app.use("/notifications", require("./modules/_multi-tenant/notification/notification.route"));
 
-	app.use("/configuration", require("./modules/_multi-tenant/super-admin/module_configuration/moduleConfiguration.route"));
+	app.use("/configuration", require("./modules/_multi-tenant/super-admin/module-configuration/moduleConfiguration.route"));
 	
 	router.use('/system', require('./modules/_multi-tenant/super-admin/system/system.route'));
 	router.use('/user', require('./modules/_multi-tenant/super-admin/user/user.route'));

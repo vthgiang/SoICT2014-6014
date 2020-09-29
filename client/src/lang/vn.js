@@ -680,6 +680,7 @@ export default {
         menu: {
             home: 'Trang chủ',
             system_administration: 'Quản trị hệ thống',
+            manage_configuration: 'Cấu hình hệ thống',
             manage_system: 'Sao lưu phục hồi',
             manage_company: 'Doanh nghiệp',
             manage_role: 'Quản lý phân quyền',
@@ -928,6 +929,17 @@ export default {
             add_faile: 'Thêm mới thất bại',
             edit_success: 'Chỉnh sửa thành công',
             edit_faile: 'Chỉnh sửa thất bại',
+        },
+
+        // Modules cấu hình các chức năng
+        module_configuration: {
+
+            // Thông điệp trả về từ server
+            get_configuration_success: 'Lấy thông tin cấu hình thành công',
+            get_configuration_faile: 'Lấy thông tin cấu hình thất bại',
+            edit_configuration_success: 'Chỉnh sửa thông tin cấu hình thành công',
+            edit_configuration_faile: 'Chỉnh sửa thông tin cấu hình thất bại',
+
         },
 
         // Modules Quản lý nhân sự

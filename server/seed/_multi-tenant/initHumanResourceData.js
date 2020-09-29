@@ -4070,7 +4070,7 @@ const initSampleCompanyDB = async () => {
 
     await ModuleConfiguration(vnistDB).create({
         humanResource: {
-            contractNoticeTimes: [15, 30],
+            contractNoticeTime: 15,
             timekeepingType: "shift",
             timekeepingByShift: {
                 shift1Time: 4,

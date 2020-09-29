@@ -88,6 +88,7 @@ class SideBar extends Component {
                                 name: 'menu.system_administration',
                                 icon: 'fa fa-key',
                                 list: [
+                                    { name: 'menu.manage_configuration', icon: 'fa fa-gear', path: '/manage-configuration' },
                                     { name: 'menu.manage_system', icon: 'fa fa-database', path: '/system-management' },
                                     { name: 'menu.manage_department', icon: 'fa fa-sitemap', path: '/departments-management' },
                                     { name: 'menu.manage_user', icon: 'fa fa-users', path: '/users-management' },

@@ -31,6 +31,7 @@ import ManageRole from '../modules/super-admin/role/components';
 import ManageLink from '../modules/super-admin/link/components';
 import ManageDepartment from '../modules/super-admin/organizational-unit/components';
 import ManageComponent from '../modules/super-admin/component/components';
+import ConfigurationManager from '../modules/super-admin/module-configuration/components';
 
 
 import AnnualLeaveManager from '../modules/human-resource/annual-leave/components';
@@ -336,6 +337,22 @@ class Routes extends Component {
                         component={Document}
                     />
                     {/* Quan ly nhan su */}
+                    
+                    <PrivateRoute
+                        isLoading={this.props.annualLeave.isLoading}
+                        key={'manage_configuration'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/manage-configuration', name: 'manage_configuration', icon: 'fa fa-gear' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/manage-configuration'}
+                        path={'/manage-configuration'}
+                        pageName={'manage_configuration'}
+                        layout={Layout}
+                        component={ConfigurationManager}
+                    />
                     <PrivateRoute
                         isLoading={this.props.annualLeave.isLoading}
                         key={'leave_application'}
