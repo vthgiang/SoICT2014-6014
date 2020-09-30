@@ -60,7 +60,7 @@ class ListAsset extends Component {
                 currentRow: value
             }
         });
-        window.$('#modal-create-recommenddistribute').modal('show');
+        window.$(`#modal-create-recommenddistribute-${value._id}`).modal('show');
     }
 
     // Function format dữ liệu Date thành string

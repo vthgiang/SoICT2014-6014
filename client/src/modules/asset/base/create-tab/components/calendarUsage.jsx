@@ -323,10 +323,10 @@ class CalendarUsage extends Component {
       listRecommendDistributes = recommendDistribute.listRecommendDistributes
       for (let i in listRecommendDistributes) {
         let recommendDistribute;
-        if (listRecommendDistributes[i].status == "Chờ phê duyệt") {
+        if (listRecommendDistributes[i].status == "waiting_for_approval") {
           recommendDistribute = {
             id: listRecommendDistributes[i]._id,
-            color: listRecommendDistributes[i].status == "Chờ phê duyệt" ? '#00a65a' : (listRecommendDistributes[i].status == "Đã phê duyệt" ? '#337ab7' : 'yellow'),
+            color: listRecommendDistributes[i].status == "waiting_for_approval" ? '#00a65a' : (listRecommendDistributes[i].status == "approved" ? '#337ab7' : 'yellow'),
             title: listRecommendDistributes[i].proponent.name,
             start: listRecommendDistributes[i].dateStartUse,
             end: listRecommendDistributes[i].dateEndUse,
@@ -346,7 +346,7 @@ class CalendarUsage extends Component {
         })
       }
     }
-
+    console.log("data", data);
     return (
       <div className='demo-app'>
         <div className='demo-app-main'>

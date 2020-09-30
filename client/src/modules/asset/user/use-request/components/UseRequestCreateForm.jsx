@@ -22,7 +22,7 @@ class UseRequestCreateForm extends Component {
             dateEndUse: this.props.endDate ? this.formatDate(this.props.endDate) : this.formatDate(Date.now()),
             startTime : null,
             stopTime: null,
-            status: "Chờ phê duyệt",
+            status: "waiting_for_approval",
             asset: "",
         };
     }
@@ -201,7 +201,9 @@ class UseRequestCreateForm extends Component {
     save = () => {
         let dataToSubmit = { ...this.state, proponent: this.props.auth.user._id }
         if (this.isFormValidated() && this.validateExitsRecommendNumber(this.state.recommendNumber) === false) {
-            this.props.handleChange(dataToSubmit)
+            if(this.props._id == `calendar-${this.props.assetId}`){
+                this.props.handleChange(dataToSubmit)
+            }
             return this.props.createRecommendDistribute(dataToSubmit);
         }
     }
