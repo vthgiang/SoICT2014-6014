@@ -82,19 +82,21 @@ class TaskReportDetailForm extends Component {
         })
     }
 
+    formatTypeInfo = (type) => {
+        let { translate } = this.props;
+        if (type === "text") return translate('task_template.text');
+        else if (type === "number") return translate('task_template.number');
+        else if (type === "date") return translate('task_template.date');
+        else if (type === "boolean") return "Boolean";
+        else if (type === "set_of_values") return translate('task_template.value_set');
+    }
+
     render() {
         const { reports, tasks } = this.props;
         const { idLineBarChart, idPieChart, taskReportId } = this.state;
         let listTaskReportById = reports.listTaskReportById;
         let listTaskEvaluations = tasks.listTaskEvaluations;
         let newlistTaskEvaluations, dataForAxisXInChart = [], results, output, pieChartDataConvert, barAndLineDataChartConvert;
-
-        const mystyle = {
-            display: "flex",
-        };
-        const styledt = {
-            marginRight: '10px'
-        };
 
         if (listTaskEvaluations && listTaskEvaluations.length > 0) {
             // Lọc lấy các trường cần thiết cho việc config dữ liệu biểu đồ.
@@ -166,153 +168,160 @@ class TaskReportDetailForm extends Component {
 
                 {/* Modal Body */}
                 <div className="row row-equal-height" >
-                    <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ padding: 10 }}>
-                        <div className="box box-solid description">
-                            <div className="box-header with-border">
-                                Thông tin cơ bản
+                    <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                        <div className="description-box" style={{ height: "100%" }}>
+                            <h4>
+                                Thông tin chung
+                            </h4>
+
+                            {/* <div className="box-body"> */}
+                            <div>
+                                <strong>Đơn vị:</strong>
+                                <span>{(listTaskReportById && listTaskReportById.organizationalUnit) ? listTaskReportById.organizationalUnit.name : ''}</span>
                             </div>
-                            <div className="box-body">
 
-                                <div style={mystyle}>
-                                    <dt style={styledt}>Đơn vị: </dt>
-                                    <dd>{(listTaskReportById && listTaskReportById.organizationalUnit) ? listTaskReportById.organizationalUnit.name : ''}</dd>
-                                </div>
-
-                                <div style={mystyle}>
-                                    <dt style={styledt}>Mẫu công việc:</dt>
-                                    <dd>{listTaskReportById && listTaskReportById.taskTemplate.name}</dd>
-                                </div>
-
-                                <dt>Tên báo cáo</dt>
-                                <dd>{listTaskReportById && listTaskReportById.name}</dd>
-
-
-                                <dt>Mô tả</dt>
-                                <dd>{listTaskReportById && listTaskReportById.description}</dd>
-
-                                <div style={mystyle}>
-                                    <dt style={styledt}>Đặc thù công việc: </dt>
-                                    <dd>{listTaskReportById && (listTaskReportById.status === 0 ? 'Tất cả' : (listTaskReportById.status === 1 ? 'Đã hoàn thành' : 'Đang thực hiện'))}</dd>
-                                </div>
-
-                                <div style={mystyle}>
-                                    <dt style={styledt}>Tần suất:</dt>
-                                    <dd>{listTaskReportById && (listTaskReportById.frequency === 'month' ? 'Tháng' : (listTaskReportById.frequency === 'quarter' ? 'Quý' : 'Năm'))}</dd>
-                                </div>
-
-                                {listTaskReportById && listTaskReportById.responsibleEmployees &&
-                                    <React.Fragment>
-                                        <dt>Người thực hiện</dt>
-                                        <dd>
-                                            <ul>
-                                                {listTaskReportById && listTaskReportById.responsibleEmployees.map((item, index) => {
-                                                    return <li key={index}>{item.name}</li>
-                                                })}
-                                            </ul>
-                                        </dd>
-                                    </React.Fragment>
-                                }
-                                {listTaskReportById && listTaskReportById.accountableEmployees &&
-                                    <React.Fragment>
-                                        <dt>Người phê duyệt</dt>
-                                        <dd>
-                                            <ul>
-                                                {listTaskReportById && listTaskReportById.accountableEmployees.map((item, index) => {
-                                                    return <li key={index}>{item.name}</li>
-                                                })}
-                                            </ul>
-                                        </dd>
-                                    </React.Fragment>
-                                }
-
-                                {/* Người được xem */}
-                                {listTaskReportById && listTaskReportById.readByEmployees &&
-                                    <React.Fragment>
-                                        <dt>Người được xem</dt>
-                                        <dd>
-                                            <ul>
-                                                {listTaskReportById && listTaskReportById.readByEmployees.map((item, index) => {
-                                                    return <li key={index}>{item.name}</li>
-                                                })}
-                                            </ul>
-                                        </dd>
-                                    </React.Fragment>
-                                }
-
-                                {/* Thống kê từ ngày */}
-                                <dt>Thời gian thực hiện từ ngày</dt>
-                                <dd>{listTaskReportById && listTaskReportById.startDate && listTaskReportById.startDate.slice(0, 10)}</dd>
-
-                                {/* Thống kê đến ngày */}
-                                <dt>Thời gian thực hiện đến ngày</dt>
-                                <dd>{listTaskReportById && listTaskReportById.endDate && listTaskReportById.endDate.slice(0, 10)}</dd>
-
-                                <dt>Chiều dữ liệu cho biểu đồ</dt>
-                                <dd>{listTaskReportById && listTaskReportById.dataForAxisXInChart.map((x, index) => `${index + 1}. ${x.name} `)}</dd>
+                            <div>
+                                <strong>Mẫu công việc:</strong>
+                                <span>{listTaskReportById && listTaskReportById.taskTemplate.name}</span>
                             </div>
+
+                            <div>
+                                <strong>Tên báo cáo:</strong>
+                                <span>{listTaskReportById && listTaskReportById.name}</span>
+                            </div>
+
+
+                            <div>
+                                <strong>Mô tả:</strong>
+                                <span>{listTaskReportById && listTaskReportById.description}</span>
+                            </div>
+
+                            <div>
+                                <strong>Đặc thù công việc: </strong>
+                                <span>{listTaskReportById && (listTaskReportById.status === 0 ? 'Tất cả' : (listTaskReportById.status === 1 ? 'Đã hoàn thành' : 'Đang thực hiện'))}</span>
+                            </div>
+
+                            <div>
+                                <strong>Tần suất:</strong>
+                                <span>{listTaskReportById && (listTaskReportById.frequency === 'month' ? 'Tháng' : (listTaskReportById.frequency === 'quarter' ? 'Quý' : 'Năm'))}</span>
+                            </div>
+
+                            {listTaskReportById && listTaskReportById.responsibleEmployees &&
+                                <React.Fragment>
+                                    <strong>Người thực hiện:</strong>
+                                    <ul>
+                                        {listTaskReportById && listTaskReportById.responsibleEmployees.map((item, index) => {
+                                            return <li key={index}>{item.name}</li>
+                                        })}
+                                    </ul>
+                                </React.Fragment>
+                            }
+                            {listTaskReportById && listTaskReportById.accountableEmployees &&
+                                <React.Fragment>
+                                    <strong>Người phê duyệt:</strong>
+                                    <ul>
+                                        {listTaskReportById && listTaskReportById.accountableEmployees.map((item, index) => {
+                                            return <li key={index}>{item.name}</li>
+                                        })}
+                                    </ul>
+                                </React.Fragment>
+                            }
+
+                            {/* Người được xem */}
+                            {listTaskReportById && listTaskReportById.readByEmployees &&
+                                <React.Fragment>
+                                    <strong>Người được xem:</strong>
+                                    <ul>
+                                        {listTaskReportById && listTaskReportById.readByEmployees.map((item, index) => {
+                                            return <li key={index}>{item.name}</li>
+                                        })}
+                                    </ul>
+                                </React.Fragment>
+                            }
+
+                            {/* Thống kê từ ngày */}
+                            <div>
+                                <strong>Thời gian đánh giá công việc từ ngày:</strong>
+                                <span>{listTaskReportById && listTaskReportById.startDate && listTaskReportById.startDate.slice(0, 10)}</span>
+                            </div>
+
+                            {/* Thống kê đến ngày */}
+                            <div>
+                                <strong>Thời gian đánh giá công việc đến ngày:</strong>
+                                <ul>
+
+                                </ul>
+                                <span>{listTaskReportById && listTaskReportById.endDate && listTaskReportById.endDate.slice(0, 10)}</span>
+                            </div>
+
+                            <React.Fragment>
+                                <strong>Chiều dữ liệu cho biểu đồ:</strong>
+                                <ul>
+                                    {listTaskReportById && listTaskReportById.dataForAxisXInChart.map((x, index) => <li key={index}>{x.name}</li>)}
+                                </ul>
+                            </React.Fragment>
+                            {/* </div> */}
                         </div>
                     </div>
 
                     {/* form thông tin công việc theo mẫu */}
-                    <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ padding: 10 }} >
-                        <div className="box box-solid description">
-                            <div className="box-header with-border">
-                                Điều kiện lọc
-                                </div>
-                            <div className="box-body">
-                                {
-                                    listTaskReportById && (!listTaskReportById.configurations || listTaskReportById.configurations.length === 0) ?
-                                        <dt>Không có dữ liệu</dt> :
-                                        listTaskReportById && listTaskReportById.configurations.map((item, index) =>
-                                            <React.Fragment key={index}>
-                                                <dt>{item.code} - {item.name} - {item.type}</dt>
-                                                {
-                                                    <React.Fragment>
-                                                        <div style={mystyle}>
-                                                            <dt style={styledt}> Điều kiện lọc:  </dt>
-                                                            <dd>{item.filter}</dd>
-                                                        </div>
-                                                    </React.Fragment>
-                                                }
-
+                    <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6"  >
+                        <div className="description-box " style={{ height: "100%" }}>
+                            <h4>
+                                Điều kiện lọc theo các trường thông tin
+                                </h4>
+                            {
+                                listTaskReportById && (!listTaskReportById.configurations || listTaskReportById.configurations.length === 0) ?
+                                    <strong>Không có dữ liệu</strong> :
+                                    listTaskReportById && listTaskReportById.configurations.map((item, index) =>
+                                        <React.Fragment key={index}>
+                                            <strong>{item.code} - {item.name} - {`Kiểu ${this.formatTypeInfo(item.type)}`}</strong>
+                                            {
                                                 <React.Fragment>
-                                                    <div style={mystyle}>
-                                                        <dt style={styledt}> Hiển thị trong báo cáo: </dt>
-                                                        <dd>{(item.showInReport) === true ? "Có" : "Không"}</dd>
+                                                    <div>
+                                                        <strong> Điều kiện lọc:  </strong>
+                                                        <span>{item.filter}</span>
                                                     </div>
                                                 </React.Fragment>
+                                            }
 
-                                                {
-                                                    <React.Fragment>
-                                                        <div style={mystyle}>
-                                                            <dt style={styledt}> Tên mới: </dt>
-                                                            <dd>{item.newName}</dd>
-                                                        </div>
-                                                    </React.Fragment>
-                                                }
-
-                                                {
-                                                    <React.Fragment>
-                                                        <div style={mystyle}>
-                                                            <dt style={styledt}> Cách tính: </dt>
-                                                            <dd>{(item.aggregationType === 0) ? "Trung bình cộng" : "Tổng"}</dd>
-                                                        </div>
-                                                    </React.Fragment>
-                                                }
-
-                                                {
-                                                    <React.Fragment>
-                                                        <div style={mystyle}>
-                                                            <dt style={styledt}> Dạng biểu đồ: </dt>
-                                                            <dd>{(item.chartType === 0) ? "Cột" : (item.chartType === 1 ? "Đường" : "Tròn")}</dd>
-                                                        </div>
-                                                    </React.Fragment>
-                                                }
-                                                <div style={{ marginBottom: '12px' }}></div>
+                                            <React.Fragment>
+                                                <div>
+                                                    <strong> Hiển thị trong báo cáo: </strong>
+                                                    <span>{(item.showInReport) === true ? "Có" : "Không"}</span>
+                                                </div>
                                             </React.Fragment>
-                                        )
-                                }
-                            </div>
+
+                                            {
+                                                <React.Fragment>
+                                                    <div>
+                                                        <strong> Tên mới: </strong>
+                                                        <span>{item.newName}</span>
+                                                    </div>
+                                                </React.Fragment>
+                                            }
+
+                                            {
+                                                <React.Fragment>
+                                                    <div>
+                                                        <strong> Cách tính: </strong>
+                                                        <span>{(item.aggregationType === 0) ? "Trung bình cộng" : "Tổng"}</span>
+                                                    </div>
+                                                </React.Fragment>
+                                            }
+
+                                            {
+                                                <React.Fragment>
+                                                    <div>
+                                                        <strong> Dạng biểu đồ: </strong>
+                                                        <span>{(item.chartType === 0) ? "Cột" : (item.chartType === 1 ? "Đường" : "Tròn")}</span>
+                                                    </div>
+                                                </React.Fragment>
+                                            }
+                                            <div style={{ marginBottom: '12px' }}></div>
+                                        </React.Fragment>
+                                    )
+                            }
                         </div>
                     </div>
                 </div>

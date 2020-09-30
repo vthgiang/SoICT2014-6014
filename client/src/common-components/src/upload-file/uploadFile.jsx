@@ -15,7 +15,7 @@ class UploadFile extends Component {
         if (importFile) {
             importFile(fileList);
         };
-        if (fileList) {
+        if (fileList.length !== 0) {
             for (let i = 0; i < fileList.length; i++) {
                 let file = fileList[i];
                 if (file) {
@@ -36,6 +36,10 @@ class UploadFile extends Component {
                     };
                 }
             }
+        } else if (multiple === false) {
+            this.setState({
+                files: undefined
+            })
         }
     }
 

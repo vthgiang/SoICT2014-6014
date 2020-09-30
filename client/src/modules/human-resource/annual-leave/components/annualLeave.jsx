@@ -5,7 +5,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { AnnualLeaveApplicationForm } from './combinedContent';
 import { DatePicker } from '../../../../common-components';
 
-import { HolidayActions } from '../../holiday/redux/actions';
+import { WorkPlanActions } from '../../work-plan/redux/actions';
 import { AnnualLeaveActions } from '../redux/actions';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 
@@ -20,7 +20,7 @@ class AnnualLeave extends Component {
     componentDidMount() {
         const { year } = this.state;
         this.props.getDepartment();
-        this.props.getListHoliday({ year: year });
+        this.props.getListWorkPlan({ year: year });
         this.props.getNumberAnnaulLeave({ numberAnnulLeave: true, year: year });
     }
 
@@ -87,15 +87,15 @@ class AnnualLeave extends Component {
     }
 
     render() {
-        const { translate, holiday, annualLeave, department } = this.props;
+        const { translate, workPlan, annualLeave, department } = this.props;
 
         const { year } = this.state;
 
-        let holidays = [], maximumNumberOfLeaveDays = 0;
+        let workPlans = [], maximumNumberOfLeaveDays = 0;
         let listAnnualLeavesOfOneYear = annualLeave.listAnnualLeavesOfOneYear;
-        if (holiday.listHoliday && holiday.listHoliday.length !== 0) {
-            holidays = holiday.listHoliday;
-            maximumNumberOfLeaveDays = holiday.maximumNumberOfLeaveDays;
+        if (workPlan.listWorkPlan && workPlan.listWorkPlan.length !== 0) {
+            workPlans = workPlan.listWorkPlan;
+            maximumNumberOfLeaveDays = workPlan.maximumNumberOfLeaveDays;
         };
 
         return (
@@ -108,7 +108,7 @@ class AnnualLeave extends Component {
                         <div className="form-inline">
                             {/* Năm */}
                             <div className="form-group">
-                                <label style={{ width: 'auto' }}>{translate('human_resource.holiday.year')}</label>
+                                <label style={{ width: 'auto' }}>{translate('human_resource.work_plan.year')}</label>
                                 <DatePicker
                                     id="year"
                                     dateFormat="year"
@@ -177,27 +177,27 @@ class AnnualLeave extends Component {
                                 <thead>
                                     <tr>
                                         <th style={{ width: 40 }}>{translate('human_resource.stt')}</th>
-                                        <th>{translate('human_resource.holiday.table.timeline')}</th>
-                                        <th>{translate('human_resource.holiday.table.describe_timeline')}</th>
-                                        <th>{translate('human_resource.holiday.table.type')}</th>
+                                        <th>{translate('human_resource.work_plan.table.timeline')}</th>
+                                        <th>{translate('human_resource.work_plan.table.describe_timeline')}</th>
+                                        <th>{translate('human_resource.work_plan.table.type')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {holidays && holidays.length !== 0 &&
-                                        holidays.map((x, index) => (
+                                    {workPlans && workPlans.length !== 0 &&
+                                        workPlans.map((x, index) => (
                                             <tr key={index}>
                                                 <td>{index + 1}</td>
                                                 <td>{(this.formatDate(x.startDate) === this.formatDate(x.endDate)) ? this.formatDate(x.startDate) : this.formatDate(x.startDate) + " - " + this.formatDate(x.endDate)}</td>
                                                 <td>{x.description}</td>
-                                                <td>{translate(`human_resource.holiday.${x.type}`)}</td>
+                                                <td>{translate(`human_resource.work_plan.${x.type}`)}</td>
                                             </tr>)
                                         )}
                                 </tbody>
                             </table>
                             {
-                                holiday.isLoading ?
+                                workPlan.isLoading ?
                                     <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                                    (!holidays || holidays.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                                    (!workPlans || workPlans.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                             }
                         </div>
                     </div>
@@ -208,13 +208,13 @@ class AnnualLeave extends Component {
 };
 
 function mapState(state) {
-    const { holiday, annualLeave, department } = state;
-    return { holiday, annualLeave, department };
+    const { workPlan, annualLeave, department } = state;
+    return { workPlan, annualLeave, department };
 };
 
 const actionCreators = {
     getDepartment: DepartmentActions.get,
-    getListHoliday: HolidayActions.getListHoliday,
+    getListWorkPlan: WorkPlanActions.getListWorkPlan,
     getNumberAnnaulLeave: AnnualLeaveActions.searchAnnualLeaves,
 };
 

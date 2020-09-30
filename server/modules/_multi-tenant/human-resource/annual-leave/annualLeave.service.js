@@ -364,7 +364,7 @@ exports.createAnnualLeave = async (portal, data, company) => {
     });
 
     return await AnnualLeave(connect(DB_CONNECTION, portal)).findOne({
-        _id: createAnnualLeave(connect(DB_CONNECTION, portal))._id
+        _id: createAnnualLeave._id
     }).populate([{
         path: 'employee',
         select: 'emailInCompany fullName employeeNumber'

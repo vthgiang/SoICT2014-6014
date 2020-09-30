@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import { getStorage } from '../../../../config';
 
 import { DialogModal, ErrorLabel, DatePicker, SlimScroll, SelectBox } from '../../../../common-components';
 
@@ -16,9 +17,10 @@ class TimesheetsCreateForm extends Component {
         this.state = {
             employee: "",
             month: this.formatDate(Date.now(), true),
-            shift1: allDayOfMonth.map(x => false),
-            shift2: allDayOfMonth.map(x => false),
-            shift3: allDayOfMonth.map(x => false),
+            shift1s: allDayOfMonth.map(x => false),
+            shift2s: allDayOfMonth.map(x => false),
+            shift3s: allDayOfMonth.map(x => false),
+            timekeepingByHours: allDayOfMonth.map(x => 0),
             allDayOfMonth: allDayOfMonth,
         };
     }
@@ -56,9 +58,14 @@ class TimesheetsCreateForm extends Component {
      * @param {*} month : Tháng
      */
     getAllDayOfMonth = (month) => {
+        const lang = getStorage("lang");
+        let arrayDay = [], days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        if (lang === 'vn') {
+            days = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7']
+        };
         let partMonth = month.split('-');
         let lastDayOfmonth = new Date(partMonth[1], partMonth[0], 0);
-        let arrayDay = [], days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
         for (let i = 1; i <= lastDayOfmonth.getDate(); i++) {
             let day = i;
             if (i.toString().length < 2)
@@ -98,9 +105,9 @@ class TimesheetsCreateForm extends Component {
         if (value) {
             let allDayOfMonth = this.getAllDayOfMonth(value);
             this.setState({
-                shift1: allDayOfMonth.map(x => false),
-                shift2: allDayOfMonth.map(x => false),
-                shift3: allDayOfMonth.map(x => false),
+                shift1s: allDayOfMonth.map(x => false),
+                shift2s: allDayOfMonth.map(x => false),
+                shift3s: allDayOfMonth.map(x => false),
                 allDayOfMonth: allDayOfMonth
             })
         }
@@ -126,23 +133,36 @@ class TimesheetsCreateForm extends Component {
      * @param {*} index : Số thứ tự công thay đổi
      */
     handleCheckBoxChange = (workSession, index) => {
-        let { shift1, shift2, shift3 } = this.state;
-        if (workSession === "shift1") {
-            shift1[index] = !shift1[index];
+        let { shift1s, shift2s, shift3s } = this.state;
+        if (workSession === "shift1s") {
+            shift1s[index] = !shift1s[index];
             this.setState({
-                shift1: shift1
+                shift1s: shift1s
             })
-        } else if (workSession === "shift2") {
-            shift2[index] = !shift2[index];
+        } else if (workSession === "shift2s") {
+            shift2s[index] = !shift2s[index];
             this.setState({
-                shift2: shift2
+                shift2s: shift2s
             })
         } else {
-            shift3[index] = !shift3[index];
+            shift3s[index] = !shift3s[index];
             this.setState({
-                shift3: shift3
+                shift3s: shift3s
             })
         }
+    }
+
+    /**
+     * Function thay đổi số giờ làm của một ngày
+     * @param {*} index : số thứ tự ngày cần thay đổi
+     */
+    handleHoursChange = (e, index) => {
+        let { timekeepingByHours } = this.state;
+        const { value } = e.target;
+        timekeepingByHours[index] = value;
+        this.setState({
+            timekeepingByHours: timekeepingByHours
+        })
     }
 
     /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form  */
@@ -154,20 +174,23 @@ class TimesheetsCreateForm extends Component {
 
     /** Function bắt sự kiện lưu bảng chấm công */
     save = () => {
-        let { month } = this.state;
+        let { month, shift1s, shift2s, shift3s, timekeepingByHours } = this.state;
         let partMonth = month.split('-');
         let monthNew = [partMonth[1], partMonth[0]].join('-');
         if (this.isFormValidated()) {
-            this.props.createTimesheets({ ...this.state, month: monthNew });
+            this.props.createTimesheets({ ...this.state, month: monthNew, timekeepingByHours: timekeepingByHours, timekeepingByShift: { shift1s: shift1s, shift2s: shift2s, shift3s: shift3s } });
         }
     }
 
     render() {
         const { timesheets, translate, employeesManager } = this.props;
 
-        const { errorOnEmployee, errorOnMonthSalary, month, employee, allDayOfMonth, shift1, shift2, shift3 } = this.state;
+        const { timekeepingType } = this.props;
+
+        const { errorOnEmployee, errorOnMonthSalary, month, employee, allDayOfMonth, shift1s, shift2s, shift3s, timekeepingByHours } = this.state;
 
         let listAllEmployees = employeesManager.listAllEmployees;
+
         return (
             <React.Fragment>
                 <DialogModal
@@ -204,60 +227,89 @@ class TimesheetsCreateForm extends Component {
                             />
                             <ErrorLabel content={errorOnMonthSalary} />
                         </div>
-                        {/* Công các ngày trong tháng */}
-                        <div className="form-group" id="create-croll-table">
-                            <label>{translate('human_resource.timesheets.work_date_in_month')}</label>
-                            <table id="create-timesheets" className="table table-striped table-bordered table-hover">
-                                <thead>
-                                    <tr>
-                                        <th style={{ width: 100 }}>{translate('human_resource.timesheets.shift_work')}</th>
-                                        {allDayOfMonth.map((x, index) => (
-                                            <th key={index}>{x.day}&nbsp; {x.date}</th>
-                                        ))}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>{translate('human_resource.timesheets.shifts1')}</td>
-                                        {allDayOfMonth.map((x, index) => (
-                                            <th key={index}>
-                                                <div className="checkbox" style={{ textAlign: 'center' }}>
-                                                    <input type="checkbox" onChange={() => this.handleCheckBoxChange('shift1', index)}
-                                                        style={{ margin: 'auto', position: 'inherit', width: 17, height: 17 }} checked={shift1[index]} />
-                                                </div>
-                                            </th>
-                                        ))}
-                                    </tr>
-                                    <tr>
-                                        <td>{translate('human_resource.timesheets.shifts2')}</td>
-                                        {allDayOfMonth.map((x, index) => (
-                                            <th key={index}>
-                                                <div className="checkbox" style={{ textAlign: 'center' }}>
-                                                    <input type="checkbox" onChange={() => this.handleCheckBoxChange('shift2', index)}
-                                                        style={{ margin: 'auto', position: 'inherit', width: 17, height: 17 }} checked={shift2[index]} />
-                                                </div>
-                                            </th>
-                                        ))}
-                                    </tr>
-                                    <tr>
-                                        <td>{translate('human_resource.timesheets.shifts3')}</td>
-                                        {allDayOfMonth.map((x, index) => (
-                                            <th key={index}>
-                                                <div className="checkbox" style={{ textAlign: 'center' }}>
-                                                    <input type="checkbox" onChange={() => this.handleCheckBoxChange('shift3', index)}
-                                                        style={{ margin: 'auto', position: 'inherit', width: 17, height: 17 }} checked={shift3[index]} />
-                                                </div>
-                                            </th>
-                                        ))}
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <SlimScroll outerComponentId='create-croll-table' innerComponentId='create-timesheets' innerComponentWidth={1500} activate={true} />
 
+                        {/* Công các ngày trong tháng */}
+                        {
+                            timekeepingType === 'shift' &&
+                            <div className="form-group" id="create-croll-table">
+                                <label>{translate('human_resource.timesheets.work_date_in_month')}</label>
+
+                                <table id="create-timesheets" className="table table-striped table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th className="col-fixed" style={{ width: 100 }}>{translate('human_resource.timesheets.shift_work')}</th>
+                                            {allDayOfMonth.map((x, index) => (
+                                                <th className="col-fixed" style={{ width: 60 }} key={index}>{`${x.date} - ${x.day}`}</th>
+                                            ))}
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr>
+                                            <td>{translate('human_resource.timesheets.shifts1')}</td>
+                                            {allDayOfMonth.map((x, index) => (
+                                                <th key={index}>
+                                                    <div className="checkbox" style={{ textAlign: 'center' }}>
+                                                        <input type="checkbox" onChange={() => this.handleCheckBoxChange('shift1s', index)}
+                                                            style={{ margin: 'auto', position: 'inherit', width: 17, height: 17 }} checked={shift1s[index]} />
+                                                    </div>
+                                                </th>
+                                            ))}
+                                        </tr>
+                                        <tr>
+                                            <td>{translate('human_resource.timesheets.shifts2')}</td>
+                                            {allDayOfMonth.map((x, index) => (
+                                                <th key={index}>
+                                                    <div className="checkbox" style={{ textAlign: 'center' }}>
+                                                        <input type="checkbox" onChange={() => this.handleCheckBoxChange('shift2s', index)}
+                                                            style={{ margin: 'auto', position: 'inherit', width: 17, height: 17 }} checked={shift2s[index]} />
+                                                    </div>
+                                                </th>
+                                            ))}
+                                        </tr>
+                                        <tr>
+                                            <td>{translate('human_resource.timesheets.shifts3')}</td>
+                                            {allDayOfMonth.map((x, index) => (
+                                                <th key={index}>
+                                                    <div className="checkbox" style={{ textAlign: 'center' }}>
+                                                        <input type="checkbox" onChange={() => this.handleCheckBoxChange('shift3s', index)}
+                                                            style={{ margin: 'auto', position: 'inherit', width: 17, height: 17 }} checked={shift3s[index]} />
+                                                    </div>
+                                                </th>
+                                            ))}
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>}
+                        {
+                            timekeepingType === 'hours' &&
+                            <div className="form-group" id="create-croll-table">
+                                <label>{translate('human_resource.timesheets.date_of_month')}</label>
+                                <table id="create-timesheets" className="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            {allDayOfMonth.map((x, index) => (
+                                                <th className="col-fixed" style={{ width: 100 }} key={index}>{`${x.date} - ${x.day}`}</th>
+                                            ))}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            {timekeepingByHours.map((x, index) => (
+                                                <td key={index}>
+                                                    <input type="number" className="form-control" style={{ width: "100%" }} value={x !== 0 ? x : ''} onChange={(e) => this.handleHoursChange(e, index)} />
+                                                </td>
+                                            ))}
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+
+                        <SlimScroll outerComponentId='create-croll-table' innerComponentId='create-timesheets' innerComponentWidth={1500} activate={true} />
                     </form>
                 </DialogModal>
-            </React.Fragment>
+            </React.Fragment >
         )
     }
 }
