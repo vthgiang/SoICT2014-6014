@@ -1,4 +1,5 @@
 const CompanyServices = require('./company.service');
+const ConfigurationServices = require(`${SERVER_MODULES_DIR}/_multi-tenant/super-admin/module-configuration/moduleConfiguration.service`);
 const Logger = require(`${SERVER_LOGS_DIR}/_multi-tenant`);
 
 /**
@@ -64,6 +65,7 @@ exports.createCompany = async (req, res) => {
         await CompanyServices.createCompanyComponents(company.shortName, req.body.links);
         
         const resCompany = await CompanyServices.getCompany(company._id);
+        await ConfigurationServices.createHumanResourceConfiguration(company.shortName);
         
         Logger.info(req.user.email, 'create_company_success');
         res.status(200).json({

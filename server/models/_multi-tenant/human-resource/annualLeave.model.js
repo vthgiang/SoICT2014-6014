@@ -30,7 +30,7 @@ const AnnualLeaveSchema = new Schema({
     status: {
         type: String,
         required: true,
-        enum: ['pass', 'process', 'faile'], // pass-đã chấp nhận, process-chờ phê duyệt, faile-Không cấp nhận  , 
+        enum: ['approved', 'waiting_for_approval', 'disapproved'], // approved-đã chấp nhận, waiting_for_approval-chờ phê duyệt, disapproved-Không cấp nhận  , 
     }
 }, {
     timestamps: true,

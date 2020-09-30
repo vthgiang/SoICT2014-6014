@@ -4,15 +4,15 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal, DatePicker, ErrorLabel, SelectBox } from '../../../../common-components';
 
-import { HolidayFormValidator } from './combinedContent';
+import { WorkPlanFormValidator } from './combinedContent';
 
-import { HolidayActions } from '../redux/actions';
+import { WorkPlanActions } from '../redux/actions';
 
-class HolidayCreateForm extends Component {
+class WorkPlanCreateForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            type: 'holiday',
+            type: 'time_for_holiday',
             startDate: this.formatDate(Date.now()),
             endDate: this.formatDate(Date.now()),
             description: ""
@@ -47,7 +47,7 @@ class HolidayCreateForm extends Component {
     }
     validateDescription = (value, willUpdateState = true) => {
         const { translate } = this.props;
-        let msg = HolidayFormValidator.validateDescription(value, translate);
+        let msg = WorkPlanFormValidator.validateDescription(value, translate);
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -147,38 +147,38 @@ class HolidayCreateForm extends Component {
         let partEnd = endDate.split('-');
         let endDateNew = [partEnd[2], partEnd[1], partEnd[0]].join('-');
         if (this.isFormValidated()) {
-            this.props.createNewHoliday({ ...this.state, startDate: startDateNew, endDate: endDateNew });
+            this.props.createNewWorkPlan({ ...this.state, startDate: startDateNew, endDate: endDateNew });
         }
     }
 
     render() {
-        const { translate, holiday } = this.props;
+        const { translate, workPlan } = this.props;
 
         const { type, startDate, endDate, description, errorOnStartDate, errorOnEndDate, errorOnDescription } = this.state;
 
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID="modal-create-holiday" isLoading={holiday.isLoading}
-                    formID="form-create-holiday"
-                    title={translate('human_resource.holiday.add_holiday_title')}
+                    modalID="modal-create-work-plan" isLoading={workPlan.isLoading}
+                    formID="form-create-work-plan"
+                    title={translate('human_resource.work_plan.add_work_plan_title')}
                     func={this.save}
                     size={50}
                     maxWidth={500}
                     disableSubmit={!this.isFormValidated()}
                 >
-                    <form className="form-group" id="form-create-holiday" >
+                    <form className="form-group" id="form-create-work-plan" >
                         {/* Thể loại kế hoạch làm việc */}
                         <div className="form-group">
-                            <label>{translate('human_resource.holiday.table.type')}<span className="text-red">*</span></label>
+                            <label>{translate('human_resource.work_plan.table.type')}<span className="text-red">*</span></label>
                             <SelectBox
-                                id={`create_type_holiday`}
+                                id={`create_type_work-plan`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 value={type}
-                                items={[{ value: "holiday", text: translate('human_resource.holiday.holiday') },
-                                { value: 'auto_leave', text: translate('human_resource.holiday.auto_leave') },
-                                { value: 'no_leave', text: translate('human_resource.holiday.no_leave') }]}
+                                items={[{ value: "time_for_holiday", text: translate('human_resource.work_plan.time_for_holiday') },
+                                { value: 'time_allow_to_leave', text: translate('human_resource.work_plan.time_allow_to_leave') },
+                                { value: 'time_not_allow_to_leave', text: translate('human_resource.work_plan.time_not_allow_to_leave') }]}
                                 onChange={this.handleTypetChange}
                             />
                         </div>
@@ -186,7 +186,7 @@ class HolidayCreateForm extends Component {
                         <div className="row">
                             {/* Ngày bắt đầu */}
                             <div className={`form-group col-sm-6 col-xs-12 ${errorOnStartDate && "has-error"}`}>
-                                <label>{translate('human_resource.holiday.table.start_date')}<span className="text-red">*</span></label>
+                                <label>{translate('human_resource.work_plan.table.start_date')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id="create_start_date"
                                     deleteValue={false}
@@ -197,7 +197,7 @@ class HolidayCreateForm extends Component {
                             </div>
                             {/* Ngày kết thúc */}
                             <div className={`form-group col-sm-6 col-xs-12 ${errorOnEndDate && "has-error"}`}>
-                                <label>{translate('human_resource.holiday.table.end_date')}<span className="text-red">*</span></label>
+                                <label>{translate('human_resource.work_plan.table.end_date')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id="create_end_date"
                                     deleteValue={false}
@@ -210,7 +210,7 @@ class HolidayCreateForm extends Component {
 
                         {/* Mô tả */}
                         <div className={`form-group ${errorOnDescription && "has-error"}`}>
-                            <label htmlFor="description">{translate('human_resource.holiday.table.describe_timeline')}<span className="text-red">&#42;</span></label>
+                            <label htmlFor="description">{translate('human_resource.work_plan.table.describe_timeline')}<span className="text-red">&#42;</span></label>
                             <textarea className="form-control" rows="3" style={{ height: 72 }} name="description" value={description} onChange={this.handleDescriptionChange}></textarea>
                             <ErrorLabel content={errorOnDescription} />
                         </div>
@@ -222,13 +222,13 @@ class HolidayCreateForm extends Component {
 };
 
 function mapState(state) {
-    const { holiday } = state;
-    return { holiday };
+    const { workPlan } = state;
+    return { workPlan };
 };
 
 const actionCreators = {
-    createNewHoliday: HolidayActions.createNewHoliday,
+    createNewWorkPlan: WorkPlanActions.createNewWorkPlan,
 };
 
-const createForm = connect(mapState, actionCreators)(withTranslate(HolidayCreateForm));
-export { createForm as HolidayCreateForm };
+const createForm = connect(mapState, actionCreators)(withTranslate(WorkPlanCreateForm));
+export { createForm as WorkPlanCreateForm };

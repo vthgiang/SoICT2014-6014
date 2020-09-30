@@ -59,9 +59,14 @@ function validateTaskTemplateFormula(value) {
 
 function validateTaskTemplateNumberOfDaysTaken(value) {
     let msg = undefined;
-    if (value.trim() === ""){
-        msg = "Số ngày hoàn thành công việc dự kiến không được để trống";
+    let parseValue = parseInt(value);
+    console.log('val', value);
+    if (parseValue <= 0) {
+        msg = "Số ngày thực hiện dự kiến phải lớn hơn 0";
     }
+    // else if (value.trim() === ""){
+    //     msg = "Số ngày hoàn thành công việc dự kiến không được để trống";
+    // }
     return msg;
 }
 

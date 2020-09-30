@@ -202,6 +202,7 @@ exports.createCompanySuperAdminAccount = async (companyShortName, userEmail) => 
                 <div class="form">
                     <p><b>Thông tin tài khoản đăng nhập của bạn: </b></p>
                     <div class="info">
+                        <li>Portal: ${companyShortName}</li>
                         <li>Tài khoản: ${userEmail}</li>
                         <li>Mật khẩu: <b>${password}</b></li>
                     </div>
@@ -209,6 +210,7 @@ exports.createCompanySuperAdminAccount = async (companyShortName, userEmail) => 
         
                     <p><b>Your account information: </b></p>
                     <div class="info">
+                        <li>Portal: ${companyShortName}</li>
                         <li>Tài khoản: ${userEmail}</li>
                         <li>Mật khẩu: <b>${password}</b></li>
                     </div>

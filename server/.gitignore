@@ -6,5 +6,5 @@
 /logs/_multi-tenant/history
 
 /upload/private
-
+/upload/avatars
 package-lock.json

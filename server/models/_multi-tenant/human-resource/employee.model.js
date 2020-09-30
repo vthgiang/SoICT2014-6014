@@ -245,7 +245,7 @@ const EmployeeSchema = new Schema({
         number: String,
         status: {
             type: String,
-            enum: ['submitted', 'no_submitted', 'returned'] //submitted-Đã nộp, no_submitted-Chưa nộp, returned-Đã trả
+            enum: ['submitted', 'not_submitted_yet', 'returned'] //submitted-Đã nộp, not_submitted_yet-Chưa nộp, returned-Đã trả
         },
         file: String,
         urlFile: String
