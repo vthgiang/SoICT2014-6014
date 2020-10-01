@@ -319,10 +319,10 @@ class Comment extends Component {
         }
     }
     render() {
-        var minRows = 3, maxRows = 20
+        var minRows = 3, maxRows = 20;
         const { editComment, editChildComment, showChildComment, currentUser, newCommentEdited, newChildCommentEdited, deleteFile, childComment, showfile } = this.state
         const { auth, translate } = this.props
-        const { data, comments } = this.props
+        const { data, comments } = this.props;
         return (
             <React.Fragment>
                 { comments && comments ?
@@ -330,7 +330,7 @@ class Comment extends Component {
                     comments.map(item => {
                         return (
                             <div key={item._id}>
-                                <img className="user-img-level1" src='https://scontent.fhan2-4.fna.fbcdn.net/v/t1.0-9/120174980_3335762626539914_7151960763530155214_o.jpg?_nc_cat=110&_nc_sid=09cbfe&_nc_ohc=q6yreDm62m0AX9RVoyL&_nc_ht=scontent.fhan2-4.fna&oh=f1027b514918c7fdca43600ce82eee17&oe=5F960034' alt="User Image" />
+                                <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + item.creator?.avatar)} alt="User Image" />
                                 {editComment !== item._id && // Khi đang edit thì ẩn đi
                                     <React.Fragment>
                                         <div className="content-level1">
@@ -425,8 +425,8 @@ class Comment extends Component {
                                     <div className="comment-content-child">
                                         {item.comments.map(child => {
                                             return <div key={child._id}>
-                                                <img className="user-img-level2" src='https://scontent.fhan2-4.fna.fbcdn.net/v/t1.0-9/120174980_3335762626539914_7151960763530155214_o.jpg?_nc_cat=110&_nc_sid=09cbfe&_nc_ohc=q6yreDm62m0AX9RVoyL&_nc_ht=scontent.fhan2-4.fna&oh=f1027b514918c7fdca43600ce82eee17&oe=5F960034' alt="User Image" />
-
+                                                <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + item.creator?.avatar)} alt="User Image" />
+                                                
                                                 {editChildComment !== child._id && // Đang edit thì ẩn đi
                                                     <div>
                                                         <p className="content-level2">
