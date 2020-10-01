@@ -1,4 +1,4 @@
-export const HolidayFormValidator = {
+export const WorkPlanFormValidator = {
     validateDescription,
 }
 
@@ -10,7 +10,7 @@ export const HolidayFormValidator = {
 function validateDescription(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
-        msg = translate('human_resource.holiday.reason_required');
+        msg = translate('human_resource.work_plan.reason_required');
     }
     return msg;
 }

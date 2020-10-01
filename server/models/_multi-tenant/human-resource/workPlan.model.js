@@ -1,24 +1,22 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const Company = require('../system-admin/company.model');
-
 // Tạo bảng datatable nghỉ lễ tết
-const HolidaySchema = new Schema({
+const WorkPlanSchema = new Schema({
     company: {
         type: Schema.Types.ObjectId,
-        ref: Company
+        ref: "Company"
     },
     maximumNumberOfLeaveDays: {
         type: Number,
         default: 0,
         required: true,
     },
-    holidays: [{
+    workPlans: [{
         type: {
             type: String,
             required: true,
-            enum: ['holiday', 'auto_leave', 'no_leave'],
+            enum: ['time_for_holiday', 'time_not_allow_to_leave', 'time_allow_to_leave'],
         },
         startDate: {
             type: Date,
@@ -37,4 +35,8 @@ const HolidaySchema = new Schema({
     timestamps: true,
 });
 
-module.exports = Holiday = mongoose.model("holidays", HolidaySchema);
+module.exports = (db) => {
+    if (!db.models.WorkPlan)
+        return db.model('WorkPlan', WorkPlanSchema);
+    return db.models.WorkPlan;
+}

@@ -479,8 +479,8 @@ class EmployeeImportForm extends Component {
                 case translate('human_resource.profile.submitted'):
                     status = 'submitted';
                     break;
-                case translate('human_resource.profile.no_submitted'):
-                    status = 'no_submitted';
+                case translate('human_resource.profile.not_submitted_yet'):
+                    status = 'not_submitted_yet';
                     break;
                 case translate('human_resource.profile.returned'):
                     status = 'returned';

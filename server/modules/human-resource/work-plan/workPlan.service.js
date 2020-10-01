@@ -1,24 +1,20 @@
 const {
-    Holiday
-} = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
-
-const {
-    connect
-} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+    WorkPlan
+} = require('../../../models').schema;
 
 /**
  * Lấy danh sách lịch làm việc
  * @company : Id công ty
  */
-exports.getAllHolidays = async (portal,company) => {
-    let data = await Holiday(connect(DB_CONNECTION, portal)).findOne({
+exports.getAllWorkPlans = async (company) => {
+    let data = await WorkPlan.findOne({
         company: company
     }).sort({
-        'holidays.startDate': 'ASC'
+        'workPlans.startDate': 'ASC'
     });
     return {
         maximumNumberOfLeaveDays: data ? data.maximumNumberOfLeaveDays : 0,
-        holidays: data ? data.holidays : []
+        workPlans: data ? data.workPlans : []
     };
 }
 
@@ -27,21 +23,21 @@ exports.getAllHolidays = async (portal,company) => {
  * @param {*} year : Năm
  * @param {*} company : Id công ty
  */
-exports.getHolidaysOfYear = async (portal,company, year) => {
+exports.getWorkPlansOfYear = async (company, year) => {
     let firstDay = new Date(year, 0, 1);
     let lastDay = new Date(Number(year) + 1, 0, 1);
-    let data = await Holiday(connect(DB_CONNECTION, portal)).findOne({
+    let data = await WorkPlan.findOne({
         company: company,
-        'holidays.startDate': {
+        'workPlans.startDate': {
             "$gt": firstDay,
             "$lte": lastDay
         }
     }).sort({
-        'holidays.startDate': 'ASC'
+        'workPlans.startDate': 'ASC'
     });
     return {
         maximumNumberOfLeaveDays: data ? data.maximumNumberOfLeaveDays : 0,
-        holidays: data ? data.holidays : []
+        workPlans: data ? data.workPlans : []
     };
 }
 
@@ -50,40 +46,40 @@ exports.getHolidaysOfYear = async (portal,company, year) => {
  * @data : dữ liệu lịch làm việc cần thêm
  * @company : id công ty cần thêm
  */
-exports.createHoliday = async (portal,data, company) => {
-    let newHoliday = {
+exports.createWorkPlan = async (data, company) => {
+    let newWorkPlan = {
         type: data.type,
         startDate: data.startDate,
         endDate: data.endDate,
         description: data.description,
     }
-    let holiday = await Holiday(connect(DB_CONNECTION, portal)).findOne({
+    let workPlan = await WorkPlan.findOne({
         company: company,
     });
-    if (holiday === null) {
-        holiday = await Holiday(connect(DB_CONNECTION, portal)).create({
+    if (workPlan === null) {
+        workPlan = await WorkPlan.create({
             company: company,
             maximumNumberOfLeaveDays: 0,
-            holidays: [],
+            workPlans: [],
         });
     };
-    holiday.holidays.push(newHoliday);
-    holiday.save();
-    return holiday.holidays[holiday.holidays.length - 1];
+    workPlan.workPlans.push(newWorkPlan);
+    workPlan.save();
+    return workPlan.workPlans[workPlan.workPlans.length - 1];
 }
 
 /**
  * Xoá thông tin lịch làm việc
  * @id : id thông tin lịch làm việc cần xoá
  */
-exports.deleteHoliday = async (portal,id, company) => {
-    let holiday = await Holiday(connect(DB_CONNECTION, portal)).findOne({
+exports.deleteWorkPlan = async (id, company) => {
+    let workPlan = await WorkPlan.findOne({
         company: company,
     });
-    let deleteholiday = holiday.holidays.find(x => x._id.toString() === id);
-    holiday.holidays = holiday.holidays.filter(x => x._id.toString() !== id);
-    holiday.save();
-    return deleteholiday;
+    let deleteWorkPlan = workPlan.workPlans.find(x => x._id.toString() === id);
+    workPlan.workPlans = workPlan.workPlans.filter(x => x._id.toString() !== id);
+    workPlan.save();
+    return deleteWorkPlan;
 }
 
 /**
@@ -91,11 +87,11 @@ exports.deleteHoliday = async (portal,id, company) => {
  * @id : id thông tin lịch làm việc cần chỉnh sửa
  * @data : dữ liệu chỉnh sửa thông tin lịch làm việc
  */
-exports.updateHoliday = async (portal,id, data, company) => {
-    let holiday = await Holiday(connect(DB_CONNECTION, portal)).findOne({
+exports.updateWorkPlan = async (id, data, company) => {
+    let workPlan = await WorkPlan.findOne({
         company: company
     });
-    holiday.holidays = holiday.holidays.map(x => {
+    workPlan.workPlans = workPlan.workPlans.map(x => {
         if (x._id.toString() === id) {
             x.type = data.type;
             x.startDate = data.startDate;
@@ -104,9 +100,9 @@ exports.updateHoliday = async (portal,id, data, company) => {
         }
         return x;
     })
-    holiday.save();
+    workPlan.save();
     return {
-        holiday: holiday.holidays.find(x => x._id.toString() === id)
+        workPlan: workPlan.workPlans.find(x => x._id.toString() === id)
     };
 }
 
@@ -114,21 +110,21 @@ exports.updateHoliday = async (portal,id, data, company) => {
  * Cập nhật tổng số ngày nghỉ phép trong năm
  * @param {*} maximumNumberOfLeaveDays : Tổng số ngày nghỉ phép trong năm 
  */
-exports.updateNumberDateLeaveOfYear = async (portal,maximumNumberOfLeaveDays, company) => {
-    let holiday = await Holiday(connect(DB_CONNECTION, portal)).findOne({
+exports.updateNumberDateLeaveOfYear = async (maximumNumberOfLeaveDays, company) => {
+    let workPlan = await WorkPlan.findOne({
         company: company
     });
-    if (holiday === null) {
-        holiday = await Holiday(connect(DB_CONNECTION, portal)).create({
+    if (workPlan === null) {
+        workPlan = await WorkPlan.create({
             company: company,
             maximumNumberOfLeaveDays: 0,
-            holidays: [],
+            workPlans: [],
         });
     };
-    holiday.maximumNumberOfLeaveDays = maximumNumberOfLeaveDays;
-    holiday.save();
+    workPlan.maximumNumberOfLeaveDays = maximumNumberOfLeaveDays;
+    workPlan.save();
     return {
-        maximumNumberOfLeaveDays: holiday.maximumNumberOfLeaveDays
+        maximumNumberOfLeaveDays: workPlan.maximumNumberOfLeaveDays
     };
 }
 
@@ -154,26 +150,26 @@ exports.formatDate = (date) => {
  * @param {*} data : Dữ liệu import
  * @param {*} company : Id công ty
  */
-exports.importHolidays = async (portal,data, company) => {
-    let holiday = await Holiday(connect(DB_CONNECTION, portal)).findOne({
+exports.importWorkPlans = async (data, company) => {
+    let workPlan = await WorkPlan.findOne({
         company: company,
     });
-    if (holiday === null) {
-        holiday = await Holiday(connect(DB_CONNECTION, portal)).create({
+    if (workPlan === null) {
+        workPlan = await WorkPlan.create({
             company: company,
             maximumNumberOfLeaveDays: 0,
-            holidays: [],
+            workPlans: [],
         });
     };
-    let holidayExisted = holiday.holidays;
+    let workPlanExisted = workPlan.workPlans;
     let rowError = [];
     data = data.map((x, index) => {
-        if (holidayExisted.length !== 0) {
-            let holiday = holidayExisted.filter(y => x.startDate === this.formatDate(y.startDate) && x.endDate === this.formatDate(y.endDate));
-            if (holiday.length !== 0) {
+        if (workPlanExisted.length !== 0) {
+            let workPlan = workPlanExisted.filter(y => x.startDate === this.formatDate(y.startDate) && x.endDate === this.formatDate(y.endDate));
+            if (workPlan.length !== 0) {
                 x = {
                     ...x,
-                    errorAlert: [...x.errorAlert, "holiday_have_exist"],
+                    errorAlert: [...x.errorAlert, "work_plan_have_exist"],
                     error: true
                 };
                 rowError = [...rowError, index + 1];
@@ -201,8 +197,8 @@ exports.importHolidays = async (portal,data, company) => {
             rowError
         }
     } else {
-        holiday.holidays = holiday.holidays.concat(data);
-        holiday.save();
-        return holiday.holidays;
+        workPlan.workPlans = workPlan.workPlans.concat(data);
+        workPlan.save();
+        return workPlan.workPlans;
     }
 }

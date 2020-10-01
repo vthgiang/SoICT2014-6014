@@ -4,11 +4,11 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DeleteNotification, ExportExcel, DatePicker } from '../../../../common-components';
 
-import { HolidayEditForm, HolidayCreateForm, HolidayImportForm } from './combinedContent'
+import { WorkPlanEditForm, WorkPlanCreateForm, WorkPlanImportForm } from './combinedContent'
 
-import { HolidayActions } from '../redux/actions';
+import { WorkPlanActions } from '../redux/actions';
 
-class ManageHoliday extends Component {
+class ManageWorkPlan extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -17,23 +17,23 @@ class ManageHoliday extends Component {
     }
 
     componentDidMount() {
-        this.props.getListHoliday();
+        this.props.getListWorkPlan();
     }
 
     /** Bắt sự kiện import kế hoạch làm việc */
     handleImport = async () => {
         await this.setState({
-            importHoliday: true
+            importWorkPlan: true
         })
         window.$('#modal_import_file').modal('show');
     }
 
     /** Function bắt sự kiện thêm mới lịch làm việc */
-    createHoliday = async () => {
+    createWorkPlan = async () => {
         await this.setState({
-            createHoliday: true
+            createWorkPlan: true
         })
-        window.$('#modal-create-holiday').modal('show');
+        window.$('#modal-create-work-plan').modal('show');
     }
 
     /**
@@ -49,7 +49,7 @@ class ManageHoliday extends Component {
 
     handleSunmitSearch = () => {
         const { year } = this.state;
-        this.props.getListHoliday({ year: year });
+        this.props.getListWorkPlan({ year: year });
     }
 
     /**
@@ -101,7 +101,7 @@ class ManageHoliday extends Component {
             ...this.state,
             currentRow: value
         })
-        window.$('#modal-edit-holiday').modal('show');
+        window.$('#modal-edit-work-plan').modal('show');
     }
 
     handleNumberDateOfYearChange = (e) => {
@@ -112,14 +112,14 @@ class ManageHoliday extends Component {
     }
 
     updateNumberDateOfYear = async () => {
-        const { holiday } = this.props;
+        const { workPlan } = this.props;
         let { maximumNumberOfLeaveDays } = this.state;
 
         if (!maximumNumberOfLeaveDays) {
-            maximumNumberOfLeaveDays = holiday.maximumNumberOfLeaveDays
+            maximumNumberOfLeaveDays = workPlan.maximumNumberOfLeaveDays
         }
         await window.$(`#collapseNumberDateOfYear`).collapse("hide");
-        this.props.updateHoliday(null, { maximumNumberOfLeaveDays: maximumNumberOfLeaveDays })
+        this.props.updateWorkPlan(null, { maximumNumberOfLeaveDays: maximumNumberOfLeaveDays })
     }
 
     /**
@@ -131,27 +131,27 @@ class ManageHoliday extends Component {
         data = data.map((x, index) => {
             return {
                 STT: index + 1,
-                type: translate(`human_resource.holiday.${x.type}`),
+                type: translate(`human_resource.work_plan.${x.type}`),
                 startDate: new Date(x.startDate),
                 endDate: new Date(x.endDate),
                 description: x.description,
             }
         });
         let exportData = {
-            fileName: translate('human_resource.holiday.file_name_export'),
+            fileName: translate('human_resource.work_plan.file_name_export'),
 
             dataSheets: [
                 {
                     sheetName: "sheet1",
-                    sheetTitle: translate('human_resource.holiday.file_name_export'),
+                    sheetTitle: translate('human_resource.work_plan.file_name_export'),
                     tables: [
                         {
                             columns: [
                                 { key: "STT", value: translate('human_resource.stt'), width: 7 },
-                                { key: 'type', value: translate('human_resource.holiday.table.type'), width: 35 },
-                                { key: "startDate", value: translate('human_resource.holiday.table.start_date') },
-                                { key: "endDate", value: translate('human_resource.holiday.table.end_date') },
-                                { key: "description", value: translate('human_resource.holiday.table.describe_timeline'), width: 35 },
+                                { key: 'type', value: translate('human_resource.work_plan.table.type'), width: 35 },
+                                { key: "startDate", value: translate('human_resource.work_plan.table.start_date') },
+                                { key: "endDate", value: translate('human_resource.work_plan.table.end_date') },
+                                { key: "description", value: translate('human_resource.work_plan.table.describe_timeline'), width: 35 },
                             ],
                             data: data
                         }
@@ -163,20 +163,20 @@ class ManageHoliday extends Component {
     };
 
     render() {
-        const { translate, holiday } = this.props;
+        const { translate, workPlan } = this.props;
 
-        let { year, importHoliday, createHoliday, currentRow, maximumNumberOfLeaveDays } = this.state;
+        let { year, importWorkPlan, createWorkPlan, currentRow, maximumNumberOfLeaveDays } = this.state;
 
-        let holidays = holiday.listHoliday, numberDateLeave = holiday.maximumNumberOfLeaveDays;
+        let workPlans = workPlan.listWorkPlan, numberDateLeave = workPlan.maximumNumberOfLeaveDays;
 
         if (maximumNumberOfLeaveDays !== undefined) {
             numberDateLeave = maximumNumberOfLeaveDays;
         };
 
-        let exportData = this.convertDataToExportData(holidays);
-        let listNoLeave = holidays.filter(x => x.type === 'no_leave');
-        let listAutoLeave = holidays.filter(x => x.type === 'auto_leave');
-        let listHoliday = holidays.filter(x => x.type === 'holiday');
+        let exportData = this.convertDataToExportData(workPlans);
+        let listNoLeave = workPlans.filter(x => x.type === 'time_not_allow_to_leave');
+        let listAutoLeave = workPlans.filter(x => x.type === 'time_allow_to_leave');
+        let listWorkPlan = workPlans.filter(x => x.type === 'time_for_holiday');
 
         return (
             <div className="box">
@@ -185,19 +185,19 @@ class ManageHoliday extends Component {
                         {/* Button thêm lịch làm việc */}
                         <div className="dropdown pull-right">
                             <button type="button" className="btn btn-success pull-right dropdown-toggle" data-toggle="dropdown" aria-expanded="true"
-                                title={translate('human_resource.holiday.add_holiday_title')} >{translate('human_resource.holiday.add_holiday')}</button>
+                                title={translate('human_resource.work_plan.add_work_plan_title')} >{translate('human_resource.work_plan.add_work_plan')}</button>
                             <ul className="dropdown-menu pull-right" >
-                                <li><a style={{ cursor: 'pointer' }} title={translate('human_resource.holiday.add_data_by_excel')} onClick={this.handleImport}>{translate('human_resource.holiday.add_import')}</a></li>
-                                <li><a style={{ cursor: 'pointer' }} title={translate('human_resource.holiday.add_holiday_title')} onClick={this.createHoliday}>{translate('human_resource.holiday.add_by_hand')}</a></li>
+                                <li><a style={{ cursor: 'pointer' }} title={translate('human_resource.work_plan.add_data_by_excel')} onClick={this.handleImport}>{translate('human_resource.work_plan.add_import')}</a></li>
+                                <li><a style={{ cursor: 'pointer' }} title={translate('human_resource.work_plan.add_work_plan_title')} onClick={this.createWorkPlan}>{translate('human_resource.work_plan.add_by_hand')}</a></li>
                             </ul>
                         </div>
-                        <ExportExcel id="export-holiday" buttonName={translate('human_resource.name_button_export')} exportData={exportData} style={{ marginRight: 15, marginTop: 0 }} />
+                        <ExportExcel id="export-work-plan" buttonName={translate('human_resource.name_button_export')} exportData={exportData} style={{ marginRight: 15, marginTop: 0 }} />
                     </div>
 
                     <div className="form-inline">
                         {/* Năm */}
                         <div className="form-group">
-                            <label style={{ width: 'auto' }}>{translate('human_resource.holiday.year')}</label>
+                            <label style={{ width: 'auto' }}>{translate('human_resource.work_plan.year')}</label>
                             <DatePicker
                                 id="year"
                                 dateFormat="year"
@@ -216,33 +216,33 @@ class ManageHoliday extends Component {
                     <div className="row row-equal-height">
                         {/* Danh sách thời gian nghỉ lễ, ghỉ tết*/}
                         <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                            <div id="holiday" className="description-box" style={{ paddingRight: 10 }}>
-                                <h4>{translate('human_resource.holiday.list_holiday')}</h4>
+                            <div id="work-plan" className="description-box" style={{ paddingRight: 10 }}>
+                                <h4>{translate('human_resource.work_plan.list_holiday')}</h4>
                                 <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
                                     <thead>
                                         <tr>
                                             <th style={{ width: 40 }}>{translate('human_resource.stt')}</th>
-                                            <th>{translate('human_resource.holiday.table.timeline')}</th>
-                                            <th>{translate('human_resource.holiday.table.describe_timeline')}</th>
+                                            <th>{translate('human_resource.work_plan.table.timeline')}</th>
+                                            <th>{translate('human_resource.work_plan.table.describe_timeline')}</th>
                                             <th style={{ width: 120 }}>{translate('general.action')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {listHoliday && listHoliday.length !== 0 &&
-                                            listHoliday.map((x, index) => (
+                                        {listWorkPlan && listWorkPlan.length !== 0 &&
+                                            listWorkPlan.map((x, index) => (
                                                 <tr key={index}>
                                                     <td>{index + 1}</td>
                                                     <td>{(this.formatDate(x.startDate) === this.formatDate(x.endDate)) ? this.formatDate(x.startDate) : this.formatDate(x.startDate) + " - " + this.formatDate(x.endDate)}</td>
                                                     <td>{x.description}</td>
                                                     <td>
-                                                        <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.holiday.edit_holiday')}><i className="material-icons">edit</i></a>
+                                                        <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.work_plan.edit_work_plan')}><i className="material-icons">edit</i></a>
                                                         <DeleteNotification
-                                                            content={translate('human_resource.holiday.delete_holiday')}
+                                                            content={translate('human_resource.work_plan.delete_work_plan')}
                                                             data={{
                                                                 id: x._id,
                                                                 info: (this.formatDate(x.startDate) === this.formatDate(x.endDate)) ? this.formatDate(x.startDate) : this.formatDate(x.startDate) + " - " + this.formatDate(x.endDate)
                                                             }}
-                                                            func={this.props.deleteHoliday}
+                                                            func={this.props.deleteWorkPlan}
                                                         />
                                                     </td>
                                                 </tr>)
@@ -250,9 +250,9 @@ class ManageHoliday extends Component {
                                     </tbody>
                                 </table>
                                 {
-                                    holiday.isLoading ?
+                                    workPlan.isLoading ?
                                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                                        (!listHoliday || listHoliday.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                                        (!listWorkPlan || listWorkPlan.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                                 }
                             </div>
                         </div>
@@ -261,13 +261,13 @@ class ManageHoliday extends Component {
                         <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             {/* Danh sách thời gian không được xin nghỉ phép*/}
                             <div className="description-box " style={{ paddingRight: 10 }}>
-                                <h4>{translate('human_resource.holiday.list_no_leave')}</h4>
+                                <h4>{translate('human_resource.work_plan.list_no_leave')}</h4>
                                 <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
                                     <thead>
                                         <tr>
                                             <th style={{ width: 40 }}>{translate('human_resource.stt')}</th>
-                                            <th >{translate('human_resource.holiday.table.timeline')}</th>
-                                            <th>{translate('human_resource.holiday.table.describe_timeline')}</th>
+                                            <th >{translate('human_resource.work_plan.table.timeline')}</th>
+                                            <th>{translate('human_resource.work_plan.table.describe_timeline')}</th>
                                             <th style={{ width: 100 }}>{translate('general.action')}</th>
                                         </tr>
                                     </thead>
@@ -286,7 +286,7 @@ class ManageHoliday extends Component {
                                                                 id: x._id,
                                                                 info: (this.formatDate(x.startDate) === this.formatDate(x.endDate)) ? this.formatDate(x.startDate) : this.formatDate(x.startDate) + " - " + this.formatDate(x.endDate)
                                                             }}
-                                                            func={this.props.deleteHoliday}
+                                                            func={this.props.deleteWorkPlan}
                                                         />
                                                     </td>
                                                 </tr>)
@@ -294,7 +294,7 @@ class ManageHoliday extends Component {
                                     </tbody>
                                 </table>
                                 {
-                                    holiday.isLoading ?
+                                    workPlan.isLoading ?
                                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
                                         (!listNoLeave || listNoLeave.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                                 }
@@ -303,21 +303,21 @@ class ManageHoliday extends Component {
 
                             {/* Danh sách thời gian được nghỉ*/}
                             <div className="box-solid description description-box" style={{ paddingRight: 10, marginTop: 25 }}>
-                                <h4>{translate('human_resource.holiday.list_auto_leave')}</h4>
+                                <h4>{translate('human_resource.work_plan.list_auto_leave')}</h4>
                                 {/* Số ngày nghỉ phép trong một năm */}
                                 <div style={{ marginBottom: 10 }}>
-                                    <label style={{ width: 'auto' }} >{`${translate('human_resource.holiday.number_date_leave_of_year')} (${translate('human_resource.holiday.date_year')})`}&ensp;</label>
+                                    <label style={{ width: 'auto' }} >{`${translate('human_resource.work_plan.number_date_leave_of_year')} (${translate('human_resource.work_plan.date_year')})`}&ensp;</label>
                                     <input className="form-control" style={{ width: 80, display: 'inline' }} value={numberDateLeave} onChange={this.handleNumberDateOfYearChange} type="Number" />
                                     &ensp;
-                                    <button type="button" style={{ marginTop: -5 }} className="btn btn-primary" onClick={this.updateNumberDateOfYear}>{translate('human_resource.holiday.save_as')}</button>
+                                    <button type="button" style={{ marginTop: -5 }} className="btn btn-primary" onClick={this.updateNumberDateOfYear}>{translate('human_resource.work_plan.save_as')}</button>
                                 </div>
 
                                 <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
                                     <thead>
                                         <tr>
                                             <th style={{ width: 40 }}>{translate('human_resource.stt')}</th>
-                                            <th >{translate('human_resource.holiday.table.timeline')}</th>
-                                            <th>{translate('human_resource.holiday.table.describe_timeline')}</th>
+                                            <th >{translate('human_resource.work_plan.table.timeline')}</th>
+                                            <th>{translate('human_resource.work_plan.table.describe_timeline')}</th>
                                             <th style={{ width: 100 }}>{translate('general.action')}</th>
                                         </tr>
                                     </thead>
@@ -329,14 +329,14 @@ class ManageHoliday extends Component {
                                                     <td>{(this.formatDate(x.startDate) === this.formatDate(x.endDate)) ? this.formatDate(x.startDate) : this.formatDate(x.startDate) + " - " + this.formatDate(x.endDate)}</td>
                                                     <td>{x.description}</td>
                                                     <td>
-                                                        <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.holiday.edit_holiday')}><i className="material-icons">edit</i></a>
+                                                        <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.work_plan.edit_work_plan')}><i className="material-icons">edit</i></a>
                                                         <DeleteNotification
-                                                            content={translate('human_resource.holiday.delete_holiday')}
+                                                            content={translate('human_resource.work_plan.delete_work_plan')}
                                                             data={{
                                                                 id: x._id,
                                                                 info: (this.formatDate(x.startDate) === this.formatDate(x.endDate)) ? this.formatDate(x.startDate) : this.formatDate(x.startDate) + " - " + this.formatDate(x.endDate)
                                                             }}
-                                                            func={this.props.deleteHoliday}
+                                                            func={this.props.deleteWorkPlan}
                                                         />
                                                     </td>
                                                 </tr>)
@@ -344,7 +344,7 @@ class ManageHoliday extends Component {
                                     </tbody>
                                 </table>
                                 {
-                                    holiday.isLoading ?
+                                    workPlan.isLoading ?
                                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
                                         (!listAutoLeave || listAutoLeave.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                                 }
@@ -354,14 +354,14 @@ class ManageHoliday extends Component {
                 </div>
 
                 { /* Form import lịch làm việc */
-                    importHoliday && <HolidayImportForm />
+                    importWorkPlan && <WorkPlanImportForm />
                 }
                 { /* Form thêm lịch làm việc*/
-                    createHoliday && <HolidayCreateForm />
+                    createWorkPlan && <WorkPlanCreateForm />
                 }
                 { /* Form chỉnh sửa lịch làm việc*/
                     currentRow !== undefined &&
-                    <HolidayEditForm
+                    <WorkPlanEditForm
                         _id={currentRow._id}
                         type={currentRow.type}
                         startDate={this.formatDate2(currentRow.startDate)}
@@ -375,15 +375,15 @@ class ManageHoliday extends Component {
 };
 
 function mapState(state) {
-    const { holiday } = state;
-    return { holiday };
+    const { workPlan } = state;
+    return { workPlan };
 };
 
 const actionCreators = {
-    deleteHoliday: HolidayActions.deleteHoliday,
-    getListHoliday: HolidayActions.getListHoliday,
-    updateHoliday: HolidayActions.updateHoliday,
+    deleteWorkPlan: WorkPlanActions.deleteWorkPlan,
+    getListWorkPlan: WorkPlanActions.getListWorkPlan,
+    updateWorkPlan: WorkPlanActions.updateWorkPlan,
 };
 
-const listHoliday = connect(mapState, actionCreators)(withTranslate(ManageHoliday));
-export { listHoliday as ManageHoliday };
+const listWorkPlan = connect(mapState, actionCreators)(withTranslate(ManageWorkPlan));
+export { listWorkPlan as ManageWorkPlan };

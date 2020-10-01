@@ -75,7 +75,7 @@ LƯU Ý 1: Kiểu dữ liệu truyền vào component để export
                             */
                             styleColumn: {                                  
                                 STT: {                                  // Khoá tương ứng của tiêu đề bảng (key)
-                                    vertical: 'top',
+                                    vertical: 'middle',
                                     horizontal: 'center'   
                                 }
                             },

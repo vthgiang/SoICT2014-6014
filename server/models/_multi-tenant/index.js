@@ -13,7 +13,7 @@ module.exports = {
     Commendation: require('./human-resource/commendation.model'),
     Discipline: require('./human-resource/discipline.model'),
     Employee: require('./human-resource/employee.model'),
-    Holiday: require('./human-resource/holiday.model'),
+    WorkPlan: require('./human-resource/workPlan.model'),
     Salary: require('./human-resource/salary.model'),
     Timesheet: require('./human-resource/timesheet.model'),
 
@@ -29,6 +29,7 @@ module.exports = {
     Link: require('./super-admin/link.model'),
     OrganizationalUnit: require('./super-admin/organizationalUnit.model'),
     RoleType: require('./super-admin/roleType.model'),
+    ModuleConfiguration: require('./super-admin/moduleConfiguration.model'),
 
     Company: require('./system-admin/company.model'),
     Configuration: require('./system-admin/configuration.model'),

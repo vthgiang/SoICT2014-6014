@@ -31,13 +31,14 @@ import ManageRole from '../modules/super-admin/role/components';
 import ManageLink from '../modules/super-admin/link/components';
 import ManageDepartment from '../modules/super-admin/organizational-unit/components';
 import ManageComponent from '../modules/super-admin/component/components';
+import ConfigurationManager from '../modules/super-admin/module-configuration/components';
 
 
 import AnnualLeaveManager from '../modules/human-resource/annual-leave/components';
 import { ManagerPraiseDiscipline } from '../modules/human-resource/commendation-discipline/components';
 import EmployeeDashBoard from '../modules/human-resource/employee-dashboard/components';
 import { DepartmentManage } from '../modules/human-resource/employee-in-organizational-unit/components/employeeInOrganizationalUnit';
-import { ManageHoliday } from '../modules/human-resource/holiday/components/holidayManagement';
+import { ManageWorkPlan } from '../modules/human-resource/work-plan/components/worksPlanManagement';
 import { EmployeeDetail, UpdateEmployee } from '../modules/human-resource/profile/employee-info/components/combinedContent';
 import EmpoyeeManager from '../modules/human-resource/profile/employee-management/components';
 import EmployeeCreate from '../modules/human-resource/profile/employee-create/components';
@@ -336,6 +337,22 @@ class Routes extends Component {
                         component={Document}
                     />
                     {/* Quan ly nhan su */}
+                    
+                    <PrivateRoute
+                        isLoading={this.props.annualLeave.isLoading}
+                        key={'manage_configuration'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/manage-configuration', name: 'manage_configuration', icon: 'fa fa-gear' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/manage-configuration'}
+                        path={'/manage-configuration'}
+                        pageName={'manage_configuration'}
+                        layout={Layout}
+                        component={ConfigurationManager}
+                    />
                     <PrivateRoute
                         isLoading={this.props.annualLeave.isLoading}
                         key={'leave_application'}
@@ -474,22 +491,22 @@ class Routes extends Component {
                         component={AnnualLeaveManager}
                     />
                     <PrivateRoute
-                        isLoading={this.props.holiday.isLoading}
-                        key={'manage_holiday'}
+                        isLoading={this.props.workPlan.isLoading}
+                        key={'manage_work_plan'}
                         arrPage={[
                             { link: '/', name: 'home', icon: 'fa fa-home' },
-                            { link: '/hr-manage-holiday', name: 'manage_holiday', icon: 'fa fa-calendar' }
+                            { link: '/hr-manage-work-plan', name: 'manage_work_plan', icon: 'fa fa-calendar' }
                         ]}
                         auth={auth}
                         exact={true}
-                        link={'/hr-manage-holiday'}
-                        path={'/hr-manage-holiday'}
-                        pageName={'manage_holiday'}
+                        link={'/hr-manage-work-plan'}
+                        path={'/hr-manage-work-plan'}
+                        pageName={'manage_work_plan'}
                         layout={Layout}
-                        component={ManageHoliday}
+                        component={ManageWorkPlan}
                     />
                     <PrivateRoute
-                        isLoading={this.props.holiday.isLoading}
+                        isLoading={this.props.workPlan.isLoading}
                         key={'annual_leave_personal'}
                         arrPage={[
                             { link: '/', name: 'home', icon: 'fa fa-home' },

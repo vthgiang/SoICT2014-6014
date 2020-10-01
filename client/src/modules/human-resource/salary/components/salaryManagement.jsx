@@ -220,7 +220,7 @@ class SalaryManagement extends Component {
                             columns: [
                                 { key: "STT", value: translate('human_resource.stt'), width: 7, },
                                 { key: "month", value: translate('human_resource.month'), width: 10 },
-                                { key: "year", value: translate('human_resource.holiday.year'), width: 10 },
+                                { key: "year", value: translate('human_resource.work_plan.year'), width: 10 },
                                 { key: "employeeNumber", value: translate('human_resource.staff_number') },
                                 { key: "fullName", value: translate('human_resource.staff_name'), width: 20 },
                                 { key: "organizationalUnit", value: translate('human_resource.unit'), width: 25 },

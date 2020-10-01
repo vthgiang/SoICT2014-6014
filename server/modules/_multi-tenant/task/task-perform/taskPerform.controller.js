@@ -923,15 +923,27 @@ editArchivedOfTask = async (req, res) => {
  */
 editActivateOfTask = async (req, res) => {
     // try {
-        let task = await PerformTaskService.editActivateOfTask(req.portal, req.params.taskId, req.body);
-        await Logger.info(req.user.email, ` edit status of task  `, req.portal);
+        let data = await PerformTaskService.editActivateOfTask(req.portal, req.params.taskId, req.body);
+        let task = data.task;
+        let mails = data.mailInfo;
+		for (let i in mails) {
+			let task = mails[i].task;
+			let user = mails[i].user;
+			let email = mails[i].email;
+			let html = mails[i].html;
+
+			let mailData = { "organizationalUnits": task.organizationalUnit._id, "title": "Kích hoạt công việc", "level": "general", "content": html, "sender": task.organizationalUnit.name, "users": user };
+			NotificationServices.createNotification(req.portal, task.organizationalUnit.company, mailData,);
+			sendEmail(email, "Kích hoạt công việc hành công", '', html);
+		}
+        await Logger.info(req.user.email, ` edit activate of task  `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['edit_status_of_task_success'],
             content: task
         })
     // } catch (error) {
-    //     await Logger.error(req.user.email, ` edit status of task `, req.portal);
+    //     await Logger.error(req.user.email, ` edit activate of task `, req.portal);
     //     res.status(400).json({
     //         success: false,
     //         messages: ['edit_status_of_task_fail'],
