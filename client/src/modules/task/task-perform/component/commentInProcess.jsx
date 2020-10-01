@@ -341,7 +341,7 @@ class CommentInProcess extends Component {
         }
     }
     render() {
-        var comments
+        var comments;
         var minRows = 3, maxRows = 20
         const { editComment, editChildComment, showChildComment, currentUser, newCommentEdited, newChildCommentEdited, showModalDelete, deleteFile, childComment, showfile } = this.state
         const { auth, translate } = this.props
@@ -354,7 +354,7 @@ class CommentInProcess extends Component {
                     comments.map(item => {
                         return (
                             <div key={item._id}>
-                                <img className={inputAvatarCssClass} src='https://scontent.fhan2-4.fna.fbcdn.net/v/t1.0-9/120174980_3335762626539914_7151960763530155214_o.jpg?_nc_cat=110&_nc_sid=09cbfe&_nc_ohc=q6yreDm62m0AX9RVoyL&_nc_ht=scontent.fhan2-4.fna&oh=f1027b514918c7fdca43600ce82eee17&oe=5F960034' alt="User Image" />
+                                <img className={inputAvatarCssClass} src={(process.env.REACT_APP_SERVER + item.creator?.avatar)} alt="User Image" />
                                 {editComment !== item._id && // Khi đang edit thì ẩn đi
                                     <React.Fragment>
                                         <div className="content-level1">
@@ -465,8 +465,8 @@ class CommentInProcess extends Component {
                                     <div className="comment-content-child">
                                         {item.comments.map(child => {
                                             return <div key={child._id}>
-                                                <img className="user-img-level2" src='https://scontent.fhan2-4.fna.fbcdn.net/v/t1.0-9/120174980_3335762626539914_7151960763530155214_o.jpg?_nc_cat=110&_nc_sid=09cbfe&_nc_ohc=q6yreDm62m0AX9RVoyL&_nc_ht=scontent.fhan2-4.fna&oh=f1027b514918c7fdca43600ce82eee17&oe=5F960034' alt="User Image" />
-
+                                                <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + child.creator?.avatar)} alt="User Image" />
+                                                
                                                 {editChildComment !== child._id && // Đang edit thì ẩn đi
                                                     <div>
                                                         <p className="content-level2">
@@ -577,7 +577,8 @@ class CommentInProcess extends Component {
                                         }
                                         {/*Thêm bình luận cho bình luận */}
                                         <div>
-                                            <img className="user-img-level2" src='https://scontent.fhan2-4.fna.fbcdn.net/v/t1.0-9/120174980_3335762626539914_7151960763530155214_o.jpg?_nc_cat=110&_nc_sid=09cbfe&_nc_ohc=q6yreDm62m0AX9RVoyL&_nc_ht=scontent.fhan2-4.fna&oh=f1027b514918c7fdca43600ce82eee17&oe=5F960034' alt="user avatar" />
+                                            <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
+                                            
                                             <ContentMaker
                                                 inputCssClass="text-input-level2" controlCssClass="tool-level2"
                                                 onFilesChange={this.onCommentFilesChange}
@@ -601,7 +602,8 @@ class CommentInProcess extends Component {
                         )
                     }) : null
                 }
-                <img className={inputAvatarCssClass} src='https://scontent.fhan2-4.fna.fbcdn.net/v/t1.0-9/120174980_3335762626539914_7151960763530155214_o.jpg?_nc_cat=110&_nc_sid=09cbfe&_nc_ohc=q6yreDm62m0AX9RVoyL&_nc_ht=scontent.fhan2-4.fna&oh=f1027b514918c7fdca43600ce82eee17&oe=5F960034' alt="User Image" />
+                <img className={inputAvatarCssClass} src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="User Image" />
+                
                 <ContentMaker
                     inputCssClass="text-input-level1" controlCssClass="tool-level1"
                     onFilesChange={this.onFilesChange}

@@ -296,7 +296,7 @@ exports.getOrganizationalUnitsOfUser = async (portal, userId) => {
  * @data dữ liệu về user
  * @portal portal của db
  */
-exports.createUser = async (portal, data) => {
+exports.createUser = async (portal, data, company) => {
     var salt = bcrypt.genSaltSync(10);
     var password = generator.generate({
         length: 10,
@@ -316,7 +316,8 @@ exports.createUser = async (portal, data) => {
         .create({
             name: data.name,
             email: data.email,
-            password: hash
+            password: hash,
+            company: company
         });
 
     await this.sendMailAboutCreatedAccount(data.email, password, portal)
@@ -575,14 +576,16 @@ exports.deleteUser = async (portal, id) => {
  * @roleIdArr mảng id các role
  */
 exports.addRolesForUser = async (portal, userId, roleIdArr) => {
-    var data = await roleIdArr.map(roleId => {
-        return {
-            userId,
-            roleId
-        }
-    });
-    var relationship = await UserRole(connect(DB_CONNECTION, portal))
-        .insertMany(data);
+    if (roleIdArr && roleIdArr.length > 0) {
+        var data = await roleIdArr.map(roleId => {
+            return {
+                userId,
+                roleId
+            }
+        });
+        var relationship = await UserRole(connect(DB_CONNECTION, portal))
+            .insertMany(data);
+    }
 
     return relationship;
 }
