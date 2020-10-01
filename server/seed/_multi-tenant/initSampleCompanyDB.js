@@ -166,62 +166,77 @@ const initSampleCompanyDB = async () => {
         name: 'Super Admin VNIST',
         email: 'super.admin.vnist@gmail.com',
         password: hash,
+        company: vnist._id
     }, {
         name: 'Admin VNIST',
         email: 'admin.vnist@gmail.com',
         password: hash,
+        company: vnist._id
     }, {
         name: 'Nguyễn Văn An',
         email: 'nva.vnist@gmail.com',
         password: hash,
+        company: vnist._id
     }, {
         name: 'Trần Văn Bình',
         email: 'tvb.vnist@gmail.com',
         password: hash,
+        company: vnist._id
     }, {
         name: 'Vũ Thị Cúc',
         email: 'vtc.vnist@gmail.com',
         password: hash,
+        company: vnist._id
     }, {
         name: 'Nguyễn Văn Danh',
         email: 'nvd.vnist@gmail.com',
         password: hash,
+        company: vnist._id
     }, {
         name: 'Trần Thị Én',
         email: 'tte.vnist@gmail.com',
         password: hash,
+        company: vnist._id
     }, {
         name: 'Phạm Đình Phúc',
         email: 'pdp.vnist@gmail.com',
         password: hash,
+        company: vnist._id
     }, {
         name: 'Trần Minh Đức',
         email: 'tmd.vnist@gmail.com',
         password: hash,
+        company: vnist._id
     }, {
         name: 'Nguyễn Việt Anh',
         email: 'nguyenvietanh.vnist@gmail.com',
         password: hash,
+        company: vnist._id
     }, {
         name: 'Nguyễn Viết Thái',
         email: 'nguyenvietthai.vnist@gmail.com',
         password: hash,
+        company: vnist._id
     }, {
         name: 'Trần Mỹ Hạnh',
         email: 'tranmyhanh.vnist@gmail.com',
         password: hash,
+        company: vnist._id
     }, {
         name: 'Nguyễn Minh Thành',
         email: 'nguyenminhthanh.vnist@gmail.com',
         password: hash,
+        company: vnist._id
     }, {
         name: 'Nguyễn Gia Huy',
         email: 'nguyengiahuy.vnist@gmail.com',
         password: hash,
+        company: vnist._id
     }, {
         name: 'Trần Minh Anh',
         email: 'tranminhanh.vnist@gmail.com',
         password: hash,
+        company: vnist._id
     }]);
     console.log("Dữ liệu tài khoản người dùng cho công ty VNIST", users);
 
