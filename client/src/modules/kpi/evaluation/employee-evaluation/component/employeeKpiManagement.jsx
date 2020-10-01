@@ -260,7 +260,7 @@ class EmployeeKpiManagement extends Component {
                         kpiApprovedPoint :kpis[k].approverPoint,
                         kpiStatus : kpis[k].status,
                         taskName : task[0] ? (task[0].name):"",
-                        unit: task[0] ?task[0].unit:"",
+                        unit: task[0] ?(task[0].unit):"",
                         importantLevel: task[0] ?task[0].importantLevel:"",
                         contributionPoint: task[0] ?task[0].contributionPoint:"",
                         automaticPoint: task[0] ?task[0].automaticPoint:"",
@@ -296,7 +296,7 @@ class EmployeeKpiManagement extends Component {
                         kpiApprovedPoint :kpis[k].approverPoint,
                         kpiStatus : kpis[k].status,
                         taskName : task[0].name,
-                        unit: "",
+                        unit: task[0].unit,
                         importantLevel: task[0].importantLevel,
                         contributionPoint: task[0].contributionPoint,
                         automaticPoint: task[0].automaticPoint,
@@ -321,7 +321,7 @@ class EmployeeKpiManagement extends Component {
                             kpiApprovedPoint : "",
                             kpiStatus : "",
                             taskName : task[j].name,
-                            unit: "",
+                            unit: task[j].unit,
                             importantLevel: task[j].importantLevel,
                             contributionPoint: task[j].contributionPoint,
                             automaticPoint: task[j].automaticPoint,
@@ -363,7 +363,8 @@ class EmployeeKpiManagement extends Component {
         {
             
             listTasks =kpimembers.tasksList;
-            listKpis =kpimembers.kpimembers
+            listKpis =kpimembers.kpimembers;
+            console.log("\n\n\n\n\n\n\n",listTasks)
         }
         if(managerKpiUnit)
         {
@@ -422,6 +423,7 @@ class EmployeeKpiManagement extends Component {
                         let contributionPoint = parseInt(x.results.contribution);
                         let importantLevel = parseInt(x.results.taskImportanceLevel);
                         let progress = parseInt(x.progress);
+                        let unit = x.results.organizationalUnit.name;
 
                         return {
                             STT: idx + 1,
@@ -436,7 +438,8 @@ class EmployeeKpiManagement extends Component {
                             endApproveDate: endApproveD,
                             contributionPoint: contributionPoint,
                             importantLevel: importantLevel,
-                            progress : progress
+                            progress : progress,
+                            unit:unit
                         };
                     })
                     return oneKpiTasks;
@@ -554,14 +557,14 @@ class EmployeeKpiManagement extends Component {
                                 }],
                                 rowHeader: 2,
                                 columns: [
-                                    { key: "STT", value: "STT" },
-                                    { key: "kpiName", value: "KPI" }, 
-                                    { key: "kpiWeight", value : "Trọng số"},                               
-                                    { key: "kpiStatus", value: "Trạng thái KPI" },
-                                    { key: "kpiAutomaticPoint", value: "Tự động" },
-                                    { key: "kpiEmployeePoint", value: "Tự đánh giá" },
-                                    { key: "kpiApprovedPoint", value: "Được phê duyệt" },
-                                    { key: "taskName", value: "Tên hoạt động" },
+                                    { key: "STT", value: "STT" ,vertical:'center' ,horizontal:'center'},
+                                    { key: "kpiName", value: "KPI",vertical:'center' ,horizontal:'center' }, 
+                                    { key: "kpiWeight", value : "Trọng số",vertical:'center' ,horizontal:'center'},                               
+                                    { key: "kpiStatus", value: "Trạng thái KPI" ,vertical:'center' ,horizontal:'center'},
+                                    { key: "kpiAutomaticPoint", value: "Tự động",vertical:'center' ,horizontal:'center' },
+                                    { key: "kpiEmployeePoint", value: "Tự đánh giá",vertical:'center' ,horizontal:'center' },
+                                    { key: "kpiApprovedPoint", value: "Được phê duyệt",vertical:'center' ,horizontal:'center' },
+                                    { key: "taskName", value: "Tên công việc" },
                                     { key: "unit", value: "Đơn vị quản lý công việc" },
                                     { key: "importantLevel", value: "Độ quan trọng" },
                                     { key: "contributionPoint", value: "% Đóng góp công việc" },

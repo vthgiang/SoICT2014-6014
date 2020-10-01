@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import moment from 'moment';
-
+import Swal from 'sweetalert2'
 import { ContentMaker, DialogModal, ApiImage } from '../../../../common-components';
 
 import { getStorage } from '../../../../config';
@@ -265,6 +265,7 @@ class CommentInProcess extends Component {
         this.props.downloadFile(path, fileName)
     }
     handleDeleteFile = async (fileId, fileName, childCommentId, commentId, taskId, type) => {
+        let { translate } = this.props
         await this.setState(state => {
             return {
                 ...state,
@@ -279,7 +280,16 @@ class CommentInProcess extends Component {
                 }
             }
         });
-        window.$(`#modal-confirm-deletefile-kpi`).modal('show');
+        Swal.fire({
+            html: `<div style="max-width: 100%; max-height: 100%" >${translate("task.task_perform.question_delete_file")} ${fileName} ? <div>`,
+            showCancelButton: true,
+            cancelButtonText: `Hủy bỏ`,
+            confirmButtonText: `Đồng ý`,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.save()
+            }
+        })
     }
 
     onEditCommentFilesChange = (files) => {
@@ -313,7 +323,7 @@ class CommentInProcess extends Component {
         return true
     }
 
-    save = (taskId) => {
+    save = () => {
         let { deleteFile } = this.state
         if (deleteFile.type === "comment") {
             this.props.deleteFileComment(deleteFile.fileId, deleteFile.commentId, deleteFile.taskId)
@@ -344,7 +354,7 @@ class CommentInProcess extends Component {
                     comments.map(item => {
                         return (
                             <div key={item._id}>
-                                <img className={inputAvatarCssClass} src={(process.env.REACT_APP_SERVER + item.creator?.avatar)} alt="User Image" />
+                                <img className={inputAvatarCssClass} src='https://scontent.fhan2-4.fna.fbcdn.net/v/t1.0-9/120174980_3335762626539914_7151960763530155214_o.jpg?_nc_cat=110&_nc_sid=09cbfe&_nc_ohc=q6yreDm62m0AX9RVoyL&_nc_ht=scontent.fhan2-4.fna&oh=f1027b514918c7fdca43600ce82eee17&oe=5F960034' alt="User Image" />
                                 {editComment !== item._id && // Khi đang edit thì ẩn đi
                                     <React.Fragment>
                                         <div className="content-level1">
@@ -378,9 +388,23 @@ class CommentInProcess extends Component {
                                                     <li style={{ display: "inline-table" }}>
                                                         <div><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => this.handleShowFile(item._id)}><b><i className="fa fa-paperclip" aria-hidden="true">{translate('task.task_perform.attach_file')}({item.files && item.files.length})</i></b></a> </div></li>
                                                     {showfile.some(obj => obj === item._id) &&
-                                                        <li style={{ display: "inline-table" }}>{item.files.map(elem => {
-                                                            return <div><a style={{ cursor: "pointer" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a></div>
-                                                        })}</li>
+                                                         <div>
+                                                         {item.files.map((elem, index) => {
+                                                             return <div key={index} className="show-files-task">
+                                                                 {this.isImage(elem.name) ?
+                                                                     <ApiImage
+                                                                         className="attachment-img files-attach"
+                                                                         style={{ marginTop: "5px" }}
+                                                                         src={elem.url}
+                                                                         file={elem}
+                                                                         requestDownloadFile={this.requestDownloadFile}
+                                                                     />
+                                                                     :
+                                                                     <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
+                                                                 }
+                                                             </div>
+                                                         })}
+                                                     </div>
                                                     }
                                                 </React.Fragment>
                                             }
@@ -411,21 +435,14 @@ class CommentInProcess extends Component {
                                             />
                                             {item.files.length > 0 &&
                                                 <div className="tool-level1" style={{ marginTop: -15 }}>
-                                                    {item.files.map((elem, index) => {
-                                                        return <div key={index} className="show-files-task">
-                                                            {this.isImage(elem.name) ?
-                                                                <ApiImage
-                                                                    className="attachment-img files-attach"
-                                                                    style={{ marginTop: "5px" }}
-                                                                    src={elem.url}
-                                                                    file={elem}
-                                                                    requestDownloadFile={this.requestDownloadFile}
-                                                                />
-                                                                :
-                                                                <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
-                                                            }
-                                                        </div>
-                                                    })}
+                                                    {item.files.length > 0 &&
+                                                        <div className="tool-level1" style={{ marginTop: -15 }}>
+                                                            {item.files.map((file,index) => {
+                                                                return <div key={index}>
+                                                                    <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { this.handleDeleteFile(file._id, file.name, undefined, item._id, task._id, "comment") }}><i className="fa fa-times"></i></a>
+                                                                </div>
+                                                            })}
+                                                        </div>}
                                                 </div>}
                                             {showModalDelete === item._id &&
                                                 <DialogModal
@@ -448,7 +465,7 @@ class CommentInProcess extends Component {
                                     <div className="comment-content-child">
                                         {item.comments.map(child => {
                                             return <div key={child._id}>
-                                                <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + item.creator?.avatar)} alt="User Image" />
+                                                <img className="user-img-level2" src='https://scontent.fhan2-4.fna.fbcdn.net/v/t1.0-9/120174980_3335762626539914_7151960763530155214_o.jpg?_nc_cat=110&_nc_sid=09cbfe&_nc_ohc=q6yreDm62m0AX9RVoyL&_nc_ht=scontent.fhan2-4.fna&oh=f1027b514918c7fdca43600ce82eee17&oe=5F960034' alt="User Image" />
 
                                                 {editChildComment !== child._id && // Đang edit thì ẩn đi
                                                     <div>
@@ -560,7 +577,7 @@ class CommentInProcess extends Component {
                                         }
                                         {/*Thêm bình luận cho bình luận */}
                                         <div>
-                                            <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
+                                            <img className="user-img-level2" src='https://scontent.fhan2-4.fna.fbcdn.net/v/t1.0-9/120174980_3335762626539914_7151960763530155214_o.jpg?_nc_cat=110&_nc_sid=09cbfe&_nc_ohc=q6yreDm62m0AX9RVoyL&_nc_ht=scontent.fhan2-4.fna&oh=f1027b514918c7fdca43600ce82eee17&oe=5F960034' alt="user avatar" />
                                             <ContentMaker
                                                 inputCssClass="text-input-level2" controlCssClass="tool-level2"
                                                 onFilesChange={this.onCommentFilesChange}
@@ -584,7 +601,7 @@ class CommentInProcess extends Component {
                         )
                     }) : null
                 }
-                <img className={inputAvatarCssClass} src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="User Image" />
+                <img className={inputAvatarCssClass} src='https://scontent.fhan2-4.fna.fbcdn.net/v/t1.0-9/120174980_3335762626539914_7151960763530155214_o.jpg?_nc_cat=110&_nc_sid=09cbfe&_nc_ohc=q6yreDm62m0AX9RVoyL&_nc_ht=scontent.fhan2-4.fna&oh=f1027b514918c7fdca43600ce82eee17&oe=5F960034' alt="User Image" />
                 <ContentMaker
                     inputCssClass="text-input-level1" controlCssClass="tool-level1"
                     onFilesChange={this.onFilesChange}
