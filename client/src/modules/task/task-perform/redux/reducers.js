@@ -710,6 +710,7 @@ export function performtasks(state = {}, action) {
                 deleting: true
             }
         case performTaskConstants.DELETE_FILE_COMMENT_SUCCESS:
+            console.log(action.payload)
             return {
                 ...state,
                 task: action.payload
