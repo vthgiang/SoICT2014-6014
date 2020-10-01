@@ -18,20 +18,13 @@ class CalendarUsage extends Component {
       weekendsVisible: true,
       currentEvents: [],
       nowDate: new Date(),
+      data: [],
+      dataStatus: 1
     }
   }
 
   componentDidMount() {
-    let data = {
-      receiptsCode: "",
-      month: "",
-      reqUseStatus: null,
-      page: 0,
-      limit: 5,
-      managedBy: this.props.managedBy ? this.props.managedBy : '',
-      assetId: this.props.id
-    }
-    this.props.searchRecommendDistributes(data); // Lấy phiếu đăng ký sử dụng theo tài sản
+    this.props.getRecommendDistributeByAsset(this.props.assetId); // Lấy phiếu đăng ký sử dụng theo tài sản
   }
 
   shouldComponentUpdate = async (nextProps, nextState) => {
@@ -41,6 +34,35 @@ class CalendarUsage extends Component {
         currentEvent: nextState.currentEvent,
       });
       this.handleClick();
+      return false;
+    }
+    if(nextProps.recommendDistribute && nextProps.recommendDistribute.listRecommendDistributesByAsset){
+      if(this.state.dataStatus === 1){
+        let listRecommendDistributes = nextProps.recommendDistribute.listRecommendDistributesByAsset
+        let RecommendDistributesByAsset = [];
+        for (let i in listRecommendDistributes) {
+          let recommendDistribute;
+          if (listRecommendDistributes[i].status == "waiting_for_approval") {
+            recommendDistribute = {
+              id: listRecommendDistributes[i]._id,
+              color: listRecommendDistributes[i].status == "waiting_for_approval" ? '#aaa' : (listRecommendDistributes[i].status == "approved" ? '#337ab7' : 'yellow'),
+              title: listRecommendDistributes[i].proponent.name,
+              start: new Date(listRecommendDistributes[i].dateStartUse),
+              end: new Date(listRecommendDistributes[i].dateEndUse),
+            }
+            RecommendDistributesByAsset.push(recommendDistribute);
+          }
+        }
+        await this.setState(state => {
+          return {
+            ...state,
+            data: [...state.data, ...RecommendDistributesByAsset],
+            dataStatus: 2,
+          }
+        })
+        console.log('statetetetteetett', this.state)
+        return true;
+      }
       return false;
     }
     return true;
@@ -190,17 +212,19 @@ class CalendarUsage extends Component {
     endDate =  new Date(endDate);
 
     let calendarApi = currentRowAdd.view.calendar;
-    if (data) {
-      calendarApi.unselect() // clear date selection
-      calendarApi.addEvent({
-        // id: createEventId(),
-        id: 1,
-        title: userlist.filter(item => item._id === data.proponent).pop() ? userlist.filter(item => item._id === data.proponent).pop().name : "Chưa có đối tượng sử dụng",
-        color: '#00a65a',
-        start: startDate,
-        end: endDate,
-      })
-    }
+    // if (data) {
+    //   console.log("Chạy đến đây", data);
+    //   calendarApi.unselect() // clear date selection
+    //   calendarApi.addEvent({
+    //     // id: createEventId(),
+    //     id: 1,
+    //     title: userlist.filter(item => item._id === data.proponent).pop() ? userlist.filter(item => item._id === data.proponent).pop().name : "Chưa có đối tượng sử dụng",
+    //     color: '#00a65a',
+    //     start: startDate,
+    //     end: endDate,
+    //   })
+    // }
+    await this.props.getRecommendDistributeByAsset(this.props.assetId);
   }
 
   handleApprove = async (clickInfo) => {
@@ -256,7 +280,7 @@ class CalendarUsage extends Component {
       clickInfo.event.setProp("borderColor", "#337ab7")
 
       await this.props.createUsage(this.props.assetId, createUsage)
-      await this.props.searchRecommendDistributes(data);
+      await this.props.getRecommendDistributeByAsset(this.props.assetId);
     }
   }
 
@@ -319,17 +343,19 @@ class CalendarUsage extends Component {
     const { recommendDistribute, user, assetId, managedBy } = this.props;
     var { currentRow, typeRegisterForUse, usageLogs, currentRowAdd } = this.state;
     let listRecommendDistributes, data = [], userlist = user.list;
-    if (recommendDistribute && recommendDistribute.listRecommendDistributes) {
-      listRecommendDistributes = recommendDistribute.listRecommendDistributes
+    // this.props.getRecommendDistributeByAsset(this.props.assetId); // Lấy phiếu đăng ký sử dụng theo tài sản
+
+    if (recommendDistribute && recommendDistribute.listRecommendDistributesByAsset) {
+      listRecommendDistributes = recommendDistribute.listRecommendDistributesByAsset
       for (let i in listRecommendDistributes) {
         let recommendDistribute;
         if (listRecommendDistributes[i].status == "waiting_for_approval") {
           recommendDistribute = {
             id: listRecommendDistributes[i]._id,
-            color: listRecommendDistributes[i].status == "waiting_for_approval" ? '#00a65a' : (listRecommendDistributes[i].status == "approved" ? '#337ab7' : 'yellow'),
+            color: listRecommendDistributes[i].status == "waiting_for_approval" ? '#aaa' : (listRecommendDistributes[i].status == "approved" ? '#337ab7' : 'yellow'),
             title: listRecommendDistributes[i].proponent.name,
-            start: listRecommendDistributes[i].dateStartUse,
-            end: listRecommendDistributes[i].dateEndUse,
+            start: new Date(listRecommendDistributes[i].dateStartUse),
+            end: new Date(listRecommendDistributes[i].dateEndUse),
           }
           data.push(recommendDistribute);
         }
@@ -346,7 +372,7 @@ class CalendarUsage extends Component {
         })
       }
     }
-    console.log("data", data);
+    console.log("data đã chạy đến đây", this.state.data, listRecommendDistributes);
     return (
       <div className='demo-app'>
         <div className='demo-app-main'>
@@ -371,7 +397,7 @@ class CalendarUsage extends Component {
               dayMaxEvents={true}
               now={this.state.nowDate}
               weekends={this.state.weekendsVisible}
-              initialEvents={data} // alternatively, use the `events` setting to fetch from a feed
+              initialEvents={this.state.data.length>0 && this.state.data} // alternatively, use the `events` setting to fetch from a feed
               select={this.handleDateSelect}
               // eventsSet={this.handleEvents} // called after events are initialized/added/changed/removed
               eventContent={this.renderEventContent}
@@ -421,7 +447,7 @@ function mapState(state) {
 };
 
 const actionCreators = {
-  searchRecommendDistributes: RecommendDistributeActions.searchRecommendDistributes,
+  getRecommendDistributeByAsset: RecommendDistributeActions.getRecommendDistributeByAsset,
   updateRecommendDistribute: RecommendDistributeActions.updateRecommendDistribute,
   createUsage: UseRequestActions.createUsage,
   deleteUsage: UseRequestActions.deleteUsage,

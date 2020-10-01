@@ -198,13 +198,13 @@ class UseRequestCreateForm extends Component {
     }
 
     // Bắt sự kiện submit form
-    save = () => {
+    save = async () => {
         let dataToSubmit = { ...this.state, proponent: this.props.auth.user._id }
         if (this.isFormValidated() && this.validateExitsRecommendNumber(this.state.recommendNumber) === false) {
-            if(this.props._id == `calendar-${this.props.assetId}`){
-                this.props.handleChange(dataToSubmit)
+            await this.props.createRecommendDistribute(dataToSubmit);
+            if(this.props._id == `calendar-${this.props.asset}`){
+                await this.props.handleChange(dataToSubmit)
             }
-            return this.props.createRecommendDistribute(dataToSubmit);
         }
     }
 
