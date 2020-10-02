@@ -6,7 +6,7 @@ const Logger = require(`${SERVER_LOGS_DIR}/_multi-tenant`);
  */
 exports.searchPurchaseRequests = async (req, res) => {
     try {
-        var listRecommendProcures = await RecommendProcureService.searchPurchaseRequests(req.portal, req.query);
+        var listRecommendProcures = await RecommendProcureService.searchPurchaseRequests(req.portal, req.user.company._id, req.query);
         await Logger.info(req.user.email, 'GET_PURCHASE_REQUEST', req.portal);
         res.status(200).json({
             success: true,
@@ -31,7 +31,7 @@ exports.searchPurchaseRequests = async (req, res) => {
  */
 exports.createPurchaseRequest = async (req, res) => {
     try {
-        var newRecommendProcure = await RecommendProcureService.createPurchaseRequest(req.portal, req.body);
+        var newRecommendProcure = await RecommendProcureService.createPurchaseRequest(req.portal, req.user.company._id, req.body);
         await Logger.info(req.user.email, 'CREATE_PURCHASE_REQUEST', req.portal);
         res.status(200).json({
             success: true,
