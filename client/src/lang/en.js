@@ -703,7 +703,6 @@ export default {
             training_plan: 'Manage Training Courses',
 
             manage_warehouse: 'Manage warehouses',
-            material_manager: 'Manage materials information',
             dashboard_material: "Dashboad manage materials",
 
             manage_kpi: 'Manage KPI',
@@ -3212,28 +3211,6 @@ export default {
         },
 
         manage_warehouse: {
-            material_manager: {
-                index: 'Index',
-                add: 'Add material',
-                add_title: 'Add new material',
-                info: 'Material information',
-                edit: 'Edit material information',
-                delete: 'Delete material',
-                add_success: 'Add new material successfully',
-                add_faile: 'Add new material failed',
-                delete_success: 'Delete material successfully',
-                delete_faile: 'Delete material failed',
-                edit_success: 'Edit material successfully',
-                edit_faile: 'Edit material failed',
-                date: 'Date',
-                name: 'User name',
-                code: 'Code',
-                cost: 'Cost',
-                description: 'Description',
-                serial: 'Serial',
-                purchaseDate: 'Purchase date',
-                location: 'Location'
-            },
             dashboard_material: {
 
             }

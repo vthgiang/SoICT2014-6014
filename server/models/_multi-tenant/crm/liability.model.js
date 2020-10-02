@@ -2,7 +2,8 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
-const CrmLiabilitySchema = new Schema({
+// Chưa hoàn thiện
+const LiabilitySchema = new Schema({
     code: { // Mã phiếu
         type: String,
         required: true
@@ -21,15 +22,14 @@ const CrmLiabilitySchema = new Schema({
     total: {
         type: Number
     },
-},{
+}, {
     timestamps: true,
-    toJSON: { virtuals: true }
 });
 
-CrmLiabilitySchema.plugin(mongoosePaginate);
+LiabilitySchema.plugin(mongoosePaginate);
 
 module.exports = (db) => {
-    if(!db.models.CrmLiability)
-        return db.model('CrmLiability', CrmLiabilitySchema);
-    return db.models.CrmLiability;
+    if (!db.models.Liability)
+        return db.model('Liability', LiabilitySchema);
+    return db.models.Liability;
 }

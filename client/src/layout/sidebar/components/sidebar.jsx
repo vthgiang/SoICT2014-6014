@@ -108,7 +108,6 @@ class SideBar extends Component {
                                 icon: 'fa fa-safari',
                                 list: [
                                     { name: 'menu.dashboard_material', icon: 'fa fa-dashboard', path: '/dashboad-material' },
-                                    { name: 'menu.material_manager', icon: 'fa fa-address-card', path: '/material-manager' },
                                     { name: 'menu.stock_management', icon: 'fa fa-bank', path: '/stock-management' },
                                     { name: 'menu.bin_location_management', icon: 'fa fa-sitemap', path: '/bin-location-management' },
                                     { name: 'menu.category_management', icon: 'fa fa-cubes', path: '/category-management' },

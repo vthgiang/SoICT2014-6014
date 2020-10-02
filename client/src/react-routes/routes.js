@@ -94,7 +94,6 @@ import EmployeeAssetManagement from '../modules/asset/user/asser-managed/compone
 import TaskReportManager from '../modules/report/task-report/components/taskReportManager';
 
 //warehouse
-import MaterialManager from '../modules/warehouse/material-manager/component';
 import CategoryManagement from '../modules/warehouse/category-management/component';
 import GoodManagement from '../modules/warehouse/good-management/component';
 import StockManagement from '../modules/warehouse/stock-management/component';
@@ -1095,22 +1094,6 @@ class Routes extends Component {
                         pageName={'task_report'}
                         layout={Layout}
                         component={TaskReportManager}
-                    />
-
-                    <PrivateRoute
-                        isLoading={this.props.user.isLoading}
-                        key={'material-manager'}
-                        arrPage={[
-                            { link: '/', name: 'home', icon: 'fa fa-home' },
-                            { link: '/material-manager', name: 'material_manager', icon: 'fa fa-address-card' }
-                        ]}
-                        auth={auth}
-                        exact={true}
-                        link={'/material-manager'}
-                        path={'/material-manager'}
-                        pageName={'material_manager'}
-                        layout={Layout}
-                        component={MaterialManager}
                     />
 
                     <PrivateRoute

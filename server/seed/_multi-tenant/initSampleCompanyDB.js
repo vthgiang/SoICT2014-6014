@@ -35,7 +35,10 @@ const {
     DocumentArchive,
     DocumentDomain,
     DocumentCategory,
-    Material,
+
+    Stock,
+    Category,
+    Good,
 
     CrmCustomer,
     CrmGroup
@@ -128,7 +131,10 @@ const initSampleCompanyDB = async () => {
         if (!db.models.DocumentArchive) DocumentArchive(db);
         if (!db.models.DocumentDomain) DocumentDomain(db);
         if (!db.models.DocumentCategory) DocumentCategory(db);
-        if (!db.models.Material) Material(db);
+
+        if (!db.models.Stock) Stock(db);
+        if (!db.models.Category) Category(db);
+        if (!db.models.Good) Good(db);
 
         if (!db.models.CrmCustomer) CrmCustomer(db);
         if (!db.models.CrmGroup) CrmGroup(db);
@@ -2517,35 +2523,222 @@ const initSampleCompanyDB = async () => {
     ])
     console.log(`Xong! Thông tin đăng ký sử dụng tài sản đã được tạo`);
 
+    /*---------------------------------------------------------------------------------------------
+    -----------------------------------------------------------------------------------------------
+        TẠO DỮ LIỆU DANH MỤC HÀNG HÓA
+    -----------------------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------------------- */
+    console.log("Khởi tạo dữ liệu danh mục hàng hóa");
+    var listCategory = await Category(vnistDB).insertMany([{
+        name: "Dạng bột",
+        code: "CT001",
+        type: "product",
+        description: "Dạng bột"
+    },
+    {
+        name: "Dạng viên",
+        code: "CT002",
+        type: "product",
+        description: "Dạng viên viên"
+    },
+    {
+        name: "NVL",
+        code: "MT002",
+        type: "material",
+        description: "NVL"
+    },
+    {
+        name: "Dùng cho đóng gói",
+        code: "EQ002",
+        type: "equipment",
+        description: "NVL"
+    },
+    {
+        name: "Tài sản",
+        code: "AS002",
+        type: "asset",
+        description: "NVL"
+    }
+    ]);
+    console.log("Khởi tạo xong danh sách danh mục hàng hóa");
 
     /*---------------------------------------------------------------------------------------------
     -----------------------------------------------------------------------------------------------
-        TẠO DỮ LIỆU vật tư
+        TẠO DỮ LIỆU HÀNG HÓA
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
-    console.log("Khởi tạo dữ liệu vật tư");
-    var listMaterial = await Material(vnistDB).insertMany([{
-        materialName: "Laptop Sony Vaio",
-        code: "VVTM02.001",
-        serial: "00001",
-        materialType: "Máy tính",
-        purchaseDate: new Date("2020-06-20"),
-        location: "PKD",
-        description: "Laptop Sony Vaio",
-        cost: 50000000,
+    console.log("Khởi tạo dữ liệu hàng hóa");
+    var listGood = await Good(vnistDB).insertMany([{
+        company: vnist._id,
+        category: listCategory[2]._id,
+        name: "Jucca Nước",
+        code: "MT001",
+        type: "material",
+        baseUnit: 'ml',
+        unit: [],
+        quantity: 20,
+        description: "Nguyên liệu thuốc thú u"
     },
     {
-        materialName: "Bàn học",
-        code: "VVTM02.002",
-        serial: "00002",
-        materialType: "Bàn",
-        purchaseDate: new Date("2020-06-21"),
-        location: "PKD",
-        description: "Bàn học",
-        cost: 10000000,
-    }
+        company: vnist._id,
+        category: listCategory[2]._id,
+        name: "Propylen Glycon",
+        code: "MT002",
+        type: "material",
+        baseUnit: 'kg',
+        unit: [],
+        quantity: 30,
+        description: "Nguyên vật liệu thuốc thú y"
+    },
+    {
+        company: vnist._id,
+        category: listCategory[4]._id,
+        name: "Máy chiết rót viên thuốc tự động",
+        code: "AS001",
+        type: "asset",
+        baseUnit: 'Chiếc',
+        unit: [],
+        quantity: 2,
+        description: "Máy sản xuất thuốc thú y"
+    },
+    {
+        company: vnist._id,
+        category: listCategory[4]._id,
+        name: "Máy Dập Viên Thuốc",
+        code: "AS002",
+        type: "asset",
+        baseUnit: 'Chiếc',
+        unit: [],
+        quantity: 2,
+        description: "Máy sản xuất thuốc thú y"
+    },
+    {
+        company: vnist._id,
+        category: listCategory[3]._id,
+        name: "Bình ắc quy",
+        code: "EQ001",
+        type: "equipment",
+        baseUnit: 'Chiếc',
+        unit: [],
+        quantity: 10,
+        description: "Công cụ dụng cụ thuốc thú y"
+    },
+    {
+        company: vnist._id,
+        category: listCategory[3]._id,
+        name: "Máy nén",
+        code: "EQ002",
+        type: "equipment",
+        baseUnit: 'Chiếc',
+        unit: [],
+        quantity: 10,
+        description: "Công cụ dụng cụ thuốc thú y"
+    },
     ]);
-    console.log("Khởi tạo xong danh sách vật tư");
+
+    var listProduct = await Good(vnistDB).insertMany([
+        
+    {
+        company: vnist._id,
+        category: listCategory[0]._id,
+        name: "ĐƯỜNG ACESULFAME K",
+        code: "PR001",
+        type: "product",
+        baseUnit: 'Thùng',
+        unit: [],
+        quantity: 20,
+        materials: [{
+            good: listGood[0]._id,
+            quantity: 5
+        },
+        {
+            good: listGood[1]._id,
+            quantity: 3
+        }
+    ],
+        description: "Sản phẩm thuốc thú y"
+    },
+    {
+        company: vnist._id,
+        category: listCategory[0]._id,
+        name: "ACID CITRIC MONO",
+        code: "PR002",
+        type: "product",
+        baseUnit: 'Bao',
+        unit: [],
+        quantity: 20,
+        materials: [{
+            good: listGood[0]._id,
+            quantity: 2
+        },
+        {
+            good: listGood[1]._id,
+            quantity: 3
+        }
+    ],
+        description: "Sản phẩm thuốc thú y"
+    },
+    ]);
+    console.log("Khởi tạo xong danh sách hàng hóa");
+
+    /*---------------------------------------------------------------------------------------------
+    -----------------------------------------------------------------------------------------------
+        TẠO DỮ LIỆU THÔNG TIN KHO
+    -----------------------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------------------- */
+    console.log("Khởi tạo dữ liệu thông tin kho");
+    var listStock = await Stock(vnistDB).insertMany([{
+        company: vnist._id,
+        name: "D5",
+        code: "ST001",
+        address: 'Trần Đại Nghĩa - Hai Bà Trưng - Hà Nội',
+        description: "D5",
+        status: '1',
+        goods: [
+            {
+                good: listGood[0]._id,
+                maxQuantity: 100,
+                minQuantity: 10
+            },
+            {
+                good: listGood[1]._id,
+                maxQuantity: 200,
+                minQuantity: 30
+            },
+            {
+                good: listProduct[0]._id,
+                maxQuantity: 100,
+                minQuantity: 10
+            },
+        ]
+    },
+    {
+        company: vnist._id,
+        name: "B1",
+        code: "ST002",
+        address: 'Tạ Quang Bửu - Hai Bà Trưng - Hà Nội',
+        description: "B1",
+        status: '1',
+        goods: [
+            {
+                good: listGood[0]._id,
+                maxQuantity: 200,
+                minQuantity: 50
+            },
+            {
+                good: listGood[1]._id,
+                maxQuantity: 200,
+                minQuantity: 30
+            },
+            {
+                good: listProduct[1]._id,
+                maxQuantity: 50,
+                minQuantity: 4
+            },
+        ]
+    },
+    ]);
+    console.log("Khởi tạo xong danh sách thông tin kho");
 
     console.log("Tạo mẫu dữ liệu khách hàng");
 

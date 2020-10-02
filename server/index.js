@@ -86,8 +86,10 @@ if (process.env.MULTI_TENANT === 'true') {
 	// Task report
 	app.use("/taskreports", require("./modules/_multi-tenant/report/task-report/taskReport.route"));
 
-	// // material
-	// app.use("/materials", require("./modules/_multi-tenant/warehouse/material/material.router"));
+	// warehouse
+	app.use("/stocks", require('./modules/_multi-tenant/warehouse/stock/stock.route'));
+	app.use("/categories", require("./modules/_multi-tenant/warehouse/category/category.route"));
+	app.use("/goods", require("./modules/_multi-tenant/warehouse/good/good.route"));
 
 	// //order
 	// app.use("/orders", require("./modules/_multi-tenant/order/order.route"));
@@ -164,7 +166,7 @@ if (process.env.MULTI_TENANT === 'true') {
 	app.use("/taskreports", require("./modules/report/task-report/taskReport.route"));
 
 	// warehouse
-	app.use("/materials", require("./modules/warehouse/material/material.route"));
+	app.use("/stocks", require('./modules/warehouse/stock/stock.route'));
 	app.use("/categories", require('./modules/warehouse/category/category.route'));
 	app.use("/goods", require("./modules/warehouse/good/good.route"));
 

@@ -4,7 +4,8 @@ import { withTranslate } from "react-redux-multilingual";
 import { GoodActions } from '../redux/actions';
 import { CategoryActions } from '../../category-management/redux/actions';
 import { DataTableSetting, DeleteNotification, PaginateBar, SelectMulti } from '../../../../common-components';
-import { goods } from '../redux/reducers';
+import GoodCreateForm from './goodCreateFrom';
+import GoodEditForm from './goodEditForm';
 
 
 class GoodManagement extends Component {
@@ -18,12 +19,12 @@ class GoodManagement extends Component {
             name: '',
             category: '',
             value: '',
-            type: 'product'
+            type: 'product',
         }
     }
 
     componentDidMount(){
-        let { page, limit, type } = this.state;
+        let { page, limit, type, autoType } = this.state;
         this.props.getGoodsByType();
         this.props.getGoodsByType({ page, limit, type });
         this.props.getCategoriesByType({ type });
@@ -72,44 +73,52 @@ class GoodManagement extends Component {
 
     handleProduct = async () => {
         let type = 'product'
+        let page = 1;
         this.setState({
+            page: page,
             type: type,
             category: ''
         })
-        let { page, limit } = this.state;
+        const { limit } = this.state;
         await this.props.getGoodsByType({ page, limit, type });
         await this.props.getCategoriesByType({ type });
     }
 
     handleMaterial = async () => {
         let type = 'material';
+        let page = 1;
         this.setState({
+            page: page,
             type: type,
             category: ''
         })
-        let { page, limit } = this.state;
+        const { limit } = this.state;
         await this.props.getGoodsByType({ page, limit, type });
         await this.props.getCategoriesByType({ type });
     }
 
     handleEquipment = async () => {
         let type = 'equipment'
+        let page = 1;
         this.setState({
+            page: page,
             type: type,
             category: ''
         })
-        let { page, limit } = this.state;
+        const { limit } = this.state;
         await this.props.getGoodsByType({ page, limit, type });
         await this.props.getCategoriesByType({ type });
     }
 
     handleAsset = async () => {
         let type = 'asset';
+        let page = 1;
         this.setState({
+            page: page,
             type: type,
             category: ''
         })
-        let { page, limit } = this.state;
+        const { limit } = this.state;
         await this.props.getGoodsByType({ page, limit, type });
         await this.props.getCategoriesByType({ type });
     }
@@ -167,18 +176,26 @@ class GoodManagement extends Component {
             name: this.state.name,
             category: this.state.category
         };
-        console.log(data);
         await this.props.getGoodsByType(data);
+    }
+
+    handleEdit = async (goods) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                currentRow: goods
+            }
+        })
+        window.$('#modal-edit-good').modal('show');
     }
 
     render() {
 
         const { goods, categories, translate } = this.props;
-        const { type } = this.state;
-        const { listPaginate, totalPages, page } = goods;
         const { listCategoriesByType } = categories;
-        const dataSelectBox = this.getCategoriesByType()
-        console.log(listCategoriesByType);
+        const { type } = this.state;
+        const { listPaginate, totalPages, page, listGoodsByType } = goods;
+        const dataSelectBox = this.getCategoriesByType();
 
         return (
             <div className="nav-tabs-custom">
@@ -190,7 +207,21 @@ class GoodManagement extends Component {
                 </ul>
                 <div className="box">
                     <div className="box-body qlcv">
-
+                    <GoodCreateForm type={ type } />
+                    {
+                        this.state.currentRow &&
+                        <GoodEditForm
+                            goodId={this.state.currentRow._id}
+                            code={this.state.currentRow.code}
+                            name={this.state.currentRow.name}
+                            type={this.state.currentRow.type}
+                            category={this.state.currentRow.category}
+                            baseUnit={this.state.currentRow.baseUnit}
+                            units={this.state.currentRow.units}
+                            materials={this.state.currentRow.materials}
+                            description={this.state.currentRow.description}
+                        />
+                    }
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">{translate('manage_warehouse.good_management.code')}</label>
@@ -263,19 +294,20 @@ class GoodManagement extends Component {
                                             <td>{x.category.name}</td>
                                             <td>{x.baseUnit}</td>
                                             { type === 'product' ? 
-                                            <td>{x.goods.map(y => <p key={y.good._id}>{y.good.name},</p>)}</td>:
+                                            <td>{x.materials.map((y, i) => <p key={i}>{y.good.name},</p>)}</td>:
                                             []
                                             }
                                             <td>{x.description}</td>
                                             <td style={{textAlign: 'center'}}>
-                                                <a className="text-green"><i className="material-icons">visibility</i></a>
+                                                <a className="text-green" onClick={() => this.handleShowDetailInfo(x)}><i className="material-icons">visibility</i></a>
                                                 <a onClick={() => this.handleEdit(x)} href={`#${x._id}`} className="text-yellow" ><i className="material-icons">edit</i></a>
                                                 <DeleteNotification
                                                     content={translate('manage_warehouse.good_management.delete_info')}
                                                     data={{
                                                         id: x._id,
-                                                        info: x.code + " - " + x.name
+                                                        info: x.code + " - " + x.name,
                                                     }}
+                                                    func={this.props.deleteGood}
                                                 />
                                             </td>
                                         </tr>
@@ -303,6 +335,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     getGoodsByType: GoodActions.getGoodsByType,
-    getCategoriesByType: CategoryActions.getCategoriesByType
+    getCategoriesByType: CategoryActions.getCategoriesByType,
+    deleteGood: GoodActions.deleteGood,
 }
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(GoodManagement));
