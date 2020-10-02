@@ -87,7 +87,35 @@ class MaintainanceLogTab extends Component {
             return null;
         }
     }
+    formatType = (type) => {
+        const { translate } = this.props;
 
+        switch (type) {
+            case 1:
+                return translate('asset.asset_info.repair');
+            case 2:
+                return translate('asset.asset_info.replace');
+            case 3:
+                return translate('asset.asset_info.upgrade');
+            default:
+                return 'Deleted';
+        }
+    }
+
+    formatStatus = (status) => {
+        const { translate } = this.props;
+
+        switch (status) {
+            case 1:
+                return translate('asset.asset_info.unfulfilled');
+            case 2:
+                return translate('asset.asset_info.processing');
+            case 3:
+                return translate('asset.asset_info.made');
+            default:
+                return 'Deleted';
+        }
+    }
 
     render() {
         const { id } = this.props;
@@ -127,12 +155,12 @@ class MaintainanceLogTab extends Component {
                                         <tr key={index}>
                                             <td>{x.maintainanceCode}</td>
                                             <td>{x.createDate ? this.formatDate(x.createDate) : ''}</td>
-                                            <td>{x.type}</td>
+                                            <td>{this.formatType(x.type)}</td>
                                             <td>{x.description}</td>
                                             <td>{x.startDate ? this.formatDate(x.startDate) : ''}</td>
                                             <td>{x.endDate ? this.formatDate(x.endDate) : ''}</td>
                                             <td>{x.expense ? formater.format(parseInt(x.expense)) : ''} VNĐ</td>
-                                            <td>{x.status}</td>
+                                            <td>{this.formatStatus(x.status)}</td>
                                             <td>
                                                 <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.asset_info.edit_maintenance_card')}><i
                                                     className="material-icons">edit</i></a>

@@ -210,9 +210,9 @@ class AnnualLeaveEditForm extends Component {
                         <div className="form-group">
                             <label>{translate('human_resource.status')}<span className="text-red">*</span></label>
                             <select className="form-control" value={status} name="status" onChange={this.handleStatusChange}>
-                                <option value="pass">{translate('human_resource.annual_leave.status.pass')}</option>
-                                <option value="process">{translate('human_resource.annual_leave.status.process')}</option>
-                                <option value="faile">{translate('human_resource.annual_leave.status.faile')}</option>
+                                <option value="approved">{translate('human_resource.annual_leave.status.approved')}</option>
+                                <option value="waiting_for_approval">{translate('human_resource.annual_leave.status.waiting_for_approval')}</option>
+                                <option value="disapproved">{translate('human_resource.annual_leave.status.disapproved')}</option>
                             </select>
                         </div>
                     </form>

@@ -1169,7 +1169,7 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (task) => {
     };
 }
 
-exports.sendEmailFoCreateTask = async (task) => {
+exports.sendEmailForCreateTask = async (task) => {
     task = await task.populate("organizationalUnit creator parent").execPopulate();
 
     var transporter = nodemailer.createTransport({
@@ -1303,7 +1303,7 @@ exports.createTask = async (task) => {
         );
     }
 
-    let mail = await this.sendEmailFoCreateTask(task);
+    let mail = await this.sendEmailForCreateTask(task);
 
     return { task: task, user: mail.user, email: mail.email, html: mail.html };
 }

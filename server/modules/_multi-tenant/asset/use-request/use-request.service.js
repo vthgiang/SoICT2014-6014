@@ -69,6 +69,17 @@ exports.searchUseRequests = async (portal, query) => {
     return { totalList, listRecommendDistributes };
 }
 
+
+
+/**
+ * Lay thông tin phiếu đề nghị cap phat thiết bị theo tai san
+ * @data: du lieu tai san
+ */
+exports.getUseRequestByAsset = async (portal, data) => {
+    var listRecommendDistributes = await RecommendDistribute(connect(DB_CONNECTION, portal)).find({asset: data.assetId}).populate({ path: 'asset proponent approver' }).sort({ 'createdAt': 'desc' });
+    return listRecommendDistributes;
+}
+
 /**
  * Thêm mới thông tin phiếu đề nghị cap phat thiết bị
  * @data: dữ liệu phiếu đề nghị cap phat thiết bị

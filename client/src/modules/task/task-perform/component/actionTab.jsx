@@ -367,7 +367,8 @@ class ActionTab extends Component {
         })
         data.append("description", taskFiles.description)
         data.append("creator", creator);
-        if (taskFiles.files) {
+        if (taskFiles.files.length > 0) {
+            console.log(taskFiles.files)
             this.props.uploadFile(taskId, data);
         }
         // Reset state cho việc thêm mới bình luận
@@ -870,7 +871,7 @@ class ActionTab extends Component {
                                     return (
                                         <div key={item._id}>
                                             {item.creator ?
-                                                <ApiImage className="user-img-level1" src={'.' + item.creator.avatar} alt="User Image" /> :
+                                                <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + item.creator.avatar)} alt="User Image" /> :
                                                 <div className="user-img-level1" />
                                             }
                                             {editAction !== item._id && // khi chỉnh sửa thì ẩn action hiện tại đi
@@ -1054,8 +1055,7 @@ class ActionTab extends Component {
                                                 <div>
                                                     {item.comments.map(child => {
                                                         return <div key={child._id}>
-                                                            <ApiImage className="user-img-level2" src={'.' + child.creator?.avatar} alt="User Image" />
-
+                                                            <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + child.creator?.avatar)} alt="User Image" />
                                                             {editComment !== child._id && // Khi đang edit thì nội dung cũ đi
                                                                 <div>
                                                                     <div className="content-level2">
@@ -1147,9 +1147,10 @@ class ActionTab extends Component {
                                                     }
                                                     {/*Thêm bình luận cho hoạt động */}
                                                     <div>
-                                                        <ApiImage className="user-img-level2"
-                                                            src={'.'+auth.user.avatar} alt="user avatar"
+                                                        <img className="user-img-level2"
+                                                            src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar"
                                                         />
+
                                                         <ContentMaker
                                                             inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
                                                             onFilesChange={this.onCommentFilesChange}
@@ -1175,7 +1176,7 @@ class ActionTab extends Component {
                             {/* Thêm hoạt động cho công việc*/}
                             {role === "responsible" && task &&
                                 <React.Fragment>
-                                    <ApiImage className="user-img-level1" src={'.'+ auth.user.avatar} alt="user avatar" />
+                                    <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
                                     <ContentMaker
                                         inputCssClass="text-input-level1" controlCssClass="tool-level1 row"
                                         onFilesChange={this.onActionFilesChange}
@@ -1201,7 +1202,7 @@ class ActionTab extends Component {
                                 taskComments.map((item, key) => {
                                     return (
                                         <div key={key}>
-                                            <ApiImage className="user-img-level1" src={'.'+ item.creator?.avatar} alt="User Image" />
+                                            <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + item.creator?.avatar)} alt="User Image" />
                                             {editTaskComment !== item._id && // Khi đang edit thì ẩn đi
                                                 <React.Fragment>
                                                     <div className="content-level1">
@@ -1296,8 +1297,7 @@ class ActionTab extends Component {
                                                 <div className="comment-content-child">
                                                     {item.comments.map(child => {
                                                         return <div key={child._id}>
-                                                            <ApiImage className="user-img-level2" src={'.'+ item.creator?.avatar} alt="User Image" />
-
+                                                            <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + child.creator?.avatar)} alt="User Image" />
                                                             {editCommentOfTaskComment !== child._id && // Đang edit thì ẩn đi
                                                                 <div>
                                                                     <div className="content-level2">
@@ -1392,7 +1392,7 @@ class ActionTab extends Component {
                                                     }
                                                     {/*Thêm bình luận cho bình luận */}
                                                     <div>
-                                                        <ApiImage className="user-img-level2" src={('.'+ auth.user.avatar)} alt="user avatar" />
+                                                    <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
                                                         <ContentMaker
                                                             inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
                                                             onFilesChange={this.onCommentOfTaskCommentFilesChange}
@@ -1417,7 +1417,7 @@ class ActionTab extends Component {
                                 }) : null
                             }
                             {/* Thêm bình luận cho công việc*/}
-                            <ApiImage className="user-img-level1" src={('.' + auth.user.avatar)} alt="User Image" />
+                            <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="User Image" />
                             <ContentMaker
                                 inputCssClass="text-input-level1" controlCssClass="tool-level1 row"
                                 onFilesChange={this.onTaskCommentFilesChange}
@@ -1458,39 +1458,49 @@ class ActionTab extends Component {
                                                                 </ul>
                                                             </div>}
                                                         <div>
-                                                            <ul className='list-inline'>
-                                                            <li><strong>{item.creator?.name} </strong></li>
-                                                            <li><span className="text-sm">{<DateTimeConverter dateTime={item.createdAt} />}</span></li>
+                                                            <ul className='list-inline list-name-document'>
+                                                                <li><strong>{item.creator?.name} </strong></li>
+                                                                <li><span className="text-sm">{<DateTimeConverter dateTime={item.createdAt} />}</span></li>
                                                             </ul>
-                                                            
                                                             {item.description}
                                                         </div>
                                                         <div>
-                                                            {item.files.map((elem, index) => {
-                                                                return (
-                                                                    <div key={index} className="show-files-task">
-                                                                        {this.isImage(elem.name) ?
-                                                                            <ApiImage
-                                                                                className="attachment-img files-attach"
-                                                                                style={{ marginTop: "5px" }}
-                                                                                src={elem.url}
-                                                                                file={elem}
-                                                                                requestDownloadFile={this.requestDownloadFile}
-                                                                            />
-                                                                            :
-                                                                            <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
-                                                                        }
-
-                                                                    </div>
-                                                                )
-                                                            })}
+                                                            {showFile.some(obj => obj === item._id) ? 
+                                                                <a style={{cursor: 'pointer'}} onClick={() => { this.handleShowFile(item._id) }}>Ẩn bớt<i className='fa fa-angle-double-up'></i></a> 
+                                                                :
+                                                                <a style={{cursor: 'pointer'}} onClick={() => { this.handleShowFile(item._id) }}>Hiển thị {item?.files?.length} tài liệu &nbsp; <i className='fa fa-angle-double-down'></i> </a>
+                                                            }
                                                         </div>
+                                                        {showFile.some(obj => obj === item._id) &&
+                                                            <React.Fragment>
+                                                                <div>
+                                                                    {item.files.map((elem, index) => {
+                                                                        return (
+                                                                            <div key={index} className="show-files-task">
+                                                                                {this.isImage(elem.name) ?
+                                                                                    <ApiImage
+                                                                                        className="attachment-img files-attach"
+                                                                                        style={{ marginTop: "5px" }}
+                                                                                        src={elem.url}
+                                                                                        file={elem}
+                                                                                        requestDownloadFile={this.requestDownloadFile}
+                                                                                    />
+                                                                                    :
+                                                                                    <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
+                                                                                }
+
+                                                                            </div>
+                                                                        )
+                                                                    })}
+                                                                </div>
+                                                            </React.Fragment>
+                                                        }
                                                     </div>
                                                 }
                                                 {showEditTaskFile === item._id &&
                                                     <React.Fragment>
                                                         <div style={{ marginTop: '15px' }}>
-                                                            <ApiImage className="user-img-level1" src={('.' + auth.user.avatar)} alt="user avatar" />
+                                                        <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
                                                             <ContentMaker
                                                                 inputCssClass="text-input-level1" controlCssClass="tool-level2 row"
                                                                 // styletext={{ marginTop: "15px" }}
@@ -1527,7 +1537,7 @@ class ActionTab extends Component {
                             </div>
                             <React.Fragment>
                                 <div style={{ marginTop: '15px' }}>
-                                    <ApiImage className="user-img-level1" src={('.' + auth.user.avatar)} alt="user avatar" />
+                                    <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
                                     <ContentMaker
                                         inputCssClass="text-input-level1" controlCssClass="tool-level1"
                                         onFilesChange={this.onTaskFilesChange}
@@ -1543,6 +1553,7 @@ class ActionTab extends Component {
 
                                             })
                                         }}
+                                        disableSubmit={true}
                                         onSubmit={(e) => { this.handleUploadFile(task._id, currentUser) }}
                                     />
                                 </div>

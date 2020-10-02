@@ -541,7 +541,7 @@ exports.uploadFile = async (req, res) => {
  * Xóa file của task
  */
 exports.deleteFileTask = async (req, res) => {
-    try {
+    // try {
         let task = await PerformTaskService.deleteFileTask(req.params);
         await LogInfo(req.user.email, ` delete file of task  `, req.user.company);
         res.status(200).json({
@@ -549,14 +549,14 @@ exports.deleteFileTask = async (req, res) => {
             messages: ['delete_file_success'],
             content: task
         })
-    } catch (error) {
-        await LogError(req.user.email, `delete file of task  `, req.user.company);
-        res.status(400).json({
-            success: false,
-            messages: ['delete_file_fail'],
-            content: error
-        })
-    }
+    // } catch (error) {
+    //     await LogError(req.user.email, `delete file of task  `, req.user.company);
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: ['delete_file_fail'],
+    //         content: error
+    //     })
+    // }
 }
 /**
  * Xóa file của hoạt động

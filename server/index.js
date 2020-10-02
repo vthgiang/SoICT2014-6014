@@ -26,7 +26,7 @@ app.use(
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-// app.use("/upload/avatars", express.static("upload/avatars"));
+app.use("/upload/avatars", express.static("upload/avatars"));
 // app.use("/upload/asset/pictures", express.static("upload/asset/pictures"));
 
 
@@ -40,7 +40,7 @@ if (process.env.MULTI_TENANT === 'true') {
 	app.use("/annualLeave", require("./modules/_multi-tenant/human-resource/annual-leave/annualLeave.route"));
 	app.use("/commendation", require("./modules/_multi-tenant/human-resource/commendation/commendation.route"));
 	app.use("/discipline", require("./modules/_multi-tenant/human-resource/discipline/discipline.route"));
-	app.use("/holiday", require("./modules/_multi-tenant/human-resource/holiday/holiday.route"));
+	app.use("/workPlan", require("./modules/_multi-tenant/human-resource/work-plan/workPlan.route"));
 	app.use("/employee", require("./modules/_multi-tenant/human-resource/profile/profile.route"));
 	app.use("/salary", require("./modules/_multi-tenant/human-resource/salary/salary.route"));
 	app.use("/timesheet", require("./modules/_multi-tenant/human-resource/timesheets/timesheets.route"));
@@ -56,7 +56,8 @@ if (process.env.MULTI_TENANT === 'true') {
 
 	app.use("/notifications", require("./modules/_multi-tenant/notification/notification.route"));
 
-
+	app.use("/configuration", require("./modules/_multi-tenant/super-admin/module-configuration/moduleConfiguration.route"));
+	
 	router.use('/system', require('./modules/_multi-tenant/super-admin/system/system.route'));
 	router.use('/user', require('./modules/_multi-tenant/super-admin/user/user.route'));
 	router.use('/role', require('./modules/_multi-tenant/super-admin/role/role.route'));
@@ -85,8 +86,10 @@ if (process.env.MULTI_TENANT === 'true') {
 	// Task report
 	app.use("/taskreports", require("./modules/_multi-tenant/report/task-report/taskReport.route"));
 
-	// // material
-	// app.use("/materials", require("./modules/_multi-tenant/warehouse/material/material.router"));
+	// warehouse
+	app.use("/stocks", require('./modules/_multi-tenant/warehouse/stock/stock.route'));
+	app.use("/categories", require("./modules/_multi-tenant/warehouse/category/category.route"));
+	app.use("/goods", require("./modules/_multi-tenant/warehouse/good/good.route"));
 
 	// //order
 	// app.use("/orders", require("./modules/_multi-tenant/order/order.route"));
@@ -117,7 +120,7 @@ if (process.env.MULTI_TENANT === 'true') {
 	app.use("/annualLeave", require("./modules/human-resource/annual-leave/annualLeave.route"));
 	app.use("/commendation", require("./modules/human-resource/commendation/commendation.route"));
 	app.use("/discipline", require("./modules/human-resource/discipline/discipline.route"));
-	app.use("/holiday", require("./modules/human-resource/holiday/holiday.route"));
+	app.use("/workPlan", require("./modules/human-resource/work-plan/workPlan.route"));
 	app.use("/employee", require("./modules/human-resource/profile/profile.route"));
 	app.use("/salary", require("./modules/human-resource/salary/salary.route"));
 	app.use("/timesheet", require("./modules/human-resource/timesheets/timesheets.route"));
@@ -163,7 +166,7 @@ if (process.env.MULTI_TENANT === 'true') {
 	app.use("/taskreports", require("./modules/report/task-report/taskReport.route"));
 
 	// warehouse
-	app.use("/materials", require("./modules/warehouse/material/material.route"));
+	app.use("/stocks", require('./modules/warehouse/stock/stock.route'));
 	app.use("/categories", require('./modules/warehouse/category/category.route'));
 	app.use("/goods", require("./modules/warehouse/good/good.route"));
 

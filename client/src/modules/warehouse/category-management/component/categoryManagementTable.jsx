@@ -2,10 +2,11 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { CategoryActions} from '../redux/actions';
+import { GoodActions } from '../../good-management/redux/actions';
 import CategoryCreateForm from './categoryCreateForm';
 import CategoryEditForm from './categoryEditForm';
+import CategoryDetailForm from './categoryDetailInfo';
 import { DataTableSetting, DeleteNotification, PaginateBar, SearchBar } from '../../../../common-components';
-import { categories } from "../redux/reducers";
 
 class CategoryManagementTable extends Component {
     constructor(props) {
@@ -73,10 +74,21 @@ class CategoryManagementTable extends Component {
         window.$('#modal-edit-category').modal('show');
     }
 
+    handleShowDetailInfo = async (category) => {
+        let id = category._id;
+        this.props.getAllGoodsByCategory(id);
+        await this.setState(state => {
+            return {
+                ...state,
+                currentRow: category
+            }
+        })
+        window.$('#modal-detail-category').modal('show');
+    }
+
     render (){
         const { categories, translate } = this.props;
         const { listPaginate, totalPages, page } = categories;
-        console.log(categories);
 
         return (
             <div className="box">
@@ -108,7 +120,17 @@ class CategoryManagementTable extends Component {
                             code={this.state.currentRow.code}
                             name={this.state.currentRow.name}
                             type={this.state.currentRow.type}
-                            goods={this.state.currentRow.goods}
+                            description={this.state.currentRow.description}
+                        />
+                    }
+
+                    {
+                        this.state.currentRow &&
+                        <CategoryDetailForm
+                            categoryId={this.state.currentRow._id}
+                            code={this.state.currentRow.code}
+                            name={this.state.currentRow.name}
+                            type={this.state.currentRow.type}
                             description={this.state.currentRow.description}
                         />
                     }
@@ -148,7 +170,7 @@ class CategoryManagementTable extends Component {
                                         <td>{translate(`manage_warehouse.category_management.${x.type}`)}</td>
                                         <td>{x.description}</td>
                                         <td style={{textAlign: 'center'}}>
-                                            <a className="text-green"><i className="material-icons">visibility</i></a>
+                                            <a className="text-green" onClick={() => this.handleShowDetailInfo(x)}><i className="material-icons">visibility</i></a>
                                             <a onClick={() => this.handleEdit(x)} href={`#${x._id}`} className="text-yellow" ><i className="material-icons">edit</i></a>
                                             <DeleteNotification
                                                 content={translate('manage_warehouse.category_management.delete_info')}
@@ -178,12 +200,13 @@ class CategoryManagementTable extends Component {
 
 
 function mapStateToProps(state) {
-    const { categories } = state;
-    return { categories };
+    const { categories, goods } = state;
+    return { categories, goods };
 }
 
 const mapDispatchToProps = {
     getCategories: CategoryActions.getCategories,
+    getAllGoodsByCategory: GoodActions.getAllGoodsByCategory,
     deleteCategory: CategoryActions.deleteCategory
 }
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CategoryManagementTable));

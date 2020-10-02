@@ -361,7 +361,7 @@ exports.createTaskByProcess = async (portal, processId, body) => {
             confirmedByEmployees: data[i].responsibleEmployees.concat(data[i].accountableEmployees).concat(data[i].consultedEmployees).includes(data[i].creator) ? data[i].creator : []
         });
 
-        let x = await TaskService.sendEmailFoCreateTask(portal, newTaskItem);
+        let x = await TaskService.sendEmailForCreateTask(portal, newTaskItem);
 
         mailInfoArr.push(x);
         listTask.push(newTaskItem._id);

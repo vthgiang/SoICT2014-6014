@@ -412,6 +412,29 @@ class AssetManagement extends Component {
         }
     }
 
+    formatStatus = (status) => {
+        const { translate } = this.props;
+
+        if (status === 'ready_to_use') {
+            return translate('asset.general_information.ready_use')
+        }
+        else if (status === 'in_use') {
+            return translate('asset.general_information.using')
+        }
+        else if (status === 'broken') {
+            return translate('asset.general_information.damaged')
+        }
+        else if (status === 'lost') {
+            return translate('asset.general_information.lost')
+        }
+        else if (status === 'disposed') {
+            return translate('asset.general_information.disposal')
+        }
+        else {
+            return 'Deleted';
+        }
+    }
+
     render() {
         var { assetsManager, assetType, translate, user, isActive, department } = this.props;
         var { page, limit, currentRowView, currentRow, purchaseDate, disposalDate, managedBy, typeRegisterForUse, handoverUnit, handoverUser } = this.state;
@@ -424,8 +447,6 @@ class AssetManagement extends Component {
 
         if (assetsManager.isLoading === false) {
             lists = assetsManager.listAssets;
-
-            console.log('\n\n\n*************\n', this.props.managedBy, lists);
         }
 
         var pageTotal = ((assetsManager.totalList % limit) === 0) ?
@@ -636,8 +657,8 @@ class AssetManagement extends Component {
                                         <td>{x.managedBy && userlist.length && userlist.find(item => item._id === x.managedBy) ? userlist.find(item => item._id === x.managedBy).name : 'User is deleted'}</td>
                                         <td>{x.assignedToUser ? (userlist.length && userlist.find(item => item._id === x.assignedToUser) ? userlist.find(item => item._id === x.assignedToUser).name : 'User is deleted') : ''}</td>
                                         <td>{x.assignedToOrganizationalUnit ? (departmentlist.length && departmentlist.find(item => item._id === x.assignedToOrganizationalUnit) ? departmentlist.find(item => item._id === x.assignedToOrganizationalUnit).name : 'Organizational Unit is deleted') : ''}</td>
-                                        <td>{x.status}</td>
-                                        <td>{x.disposalDate ? this.formatDate(x.disposalDate) : "Disposal date is deleted"}</td>
+                                        <td>{this.formatStatus(x.status)}</td>
+                                        <td>{x.disposalDate ? this.formatDate(x.disposalDate) : ''}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title={translate('asset.general_information.view')}><i className="material-icons">view_list</i></a>
                                             <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.general_information.edit_info')}><i className="material-icons">edit</i></a>

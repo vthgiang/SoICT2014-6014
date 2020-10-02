@@ -11,7 +11,7 @@ class Home extends Component {
 
     render() {
         const { auth } = this.props;
-        if (auth.user.name === "System Admin")
+        if (!auth.user.company)
             return <SystemHome />
         else
             return <SuperHome />
