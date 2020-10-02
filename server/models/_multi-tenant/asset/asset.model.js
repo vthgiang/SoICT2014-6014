@@ -2,6 +2,13 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const AssetSchema = new Schema({
+
+    company: { //thuộc công ty nào
+        type: Schema.Types.ObjectId,
+        ref: 'companies',
+        required: true
+    },
+
     group: {
         type: String,
         enum: ["building", "vehicle", "machine", "other"]
