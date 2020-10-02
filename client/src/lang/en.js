@@ -1744,6 +1744,7 @@ export default {
                 action: 'Action',
                 asset_value: 'Asset value',
                 disposal_date: 'Disposal date',
+                not_disposal: 'Not disposal yet',
 
 
                 general_information: 'General information',
@@ -1778,6 +1779,8 @@ export default {
                 reported_by: 'Announcer',
                 incident_type: 'Incident type',
                 date_incident: 'Date of incident',
+                select_incident_type: 'Select incident type',
+                select_all_incident_type: 'Select all incident types',
 
                 disposal_date: 'Disposal date',
                 disposal_type: 'Disposal type',
@@ -1788,6 +1791,14 @@ export default {
                 file_name: 'File name',
                 number: 'Amount',
                 attached_file: 'Attached files',
+
+                not_for_registering: 'Not for registering',
+                register_by_hour: 'Register by hour',
+                register_for_long_term: 'Register for long term',
+
+                create_reception_date: 'Reception date',
+                select_reception_type: 'Select reception type',
+                select_all_reception_type: 'Select all reception types',
             },
 
             // Dashboard

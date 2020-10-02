@@ -1734,6 +1734,7 @@ export default {
         // Modules Quản lý tài sản
         asset: {
             general_information: {
+                view_more: 'Xem thêm',
                 asset: 'Tài sản',
                 asset_list: 'Dang sách tài sản',
                 search: 'Tìm kiếm',
@@ -1781,6 +1782,7 @@ export default {
                 action: 'Hành động',
                 asset_value: 'Giá trị tài sản',
                 disposal_date: 'Ngày thanh lý',
+                not_disposal: 'Chưa thanh lý',
 
                 general_information: 'Thông tin chung',
                 usage_information: 'Thông tin sử dụng',
@@ -1814,6 +1816,8 @@ export default {
                 reported_by: 'Người báo cáo',
                 incident_type: 'Loại sự cố',
                 date_incident: 'Ngày phát hiện',
+                select_incident_type: 'Chọn loại sự cố',
+                select_all_incident_type: 'Chọn tất cả loại sự cố',
 
                 disposal_date: 'Thời gian thanh lý',
                 disposal_type: 'Hình thức thanh lý',
@@ -1828,6 +1832,10 @@ export default {
                 not_for_registering: 'Không được đăng ký sử dụng',
                 register_by_hour: 'Đăng ký sử dụng theo giờ',
                 register_for_long_term: 'Đăng ký sử dụng lâu dài',
+
+                create_reception_date: 'Ngày lập phiếu',
+                select_reception_type: 'Chọn loại phiếu',
+                select_all_reception_type: 'Chọn tất cả loại phiếu',
             },
 
             // Dashboard

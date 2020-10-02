@@ -212,7 +212,28 @@ class AssetAssignedManager extends Component {
 
         return data
     }
+    formatStatus = (status) => {
+        const { translate } = this.props;
 
+        if (status === 'ready_to_use') {
+            return translate('asset.general_information.ready_use')
+        }
+        else if (status === 'in_use') {
+            return translate('asset.general_information.using')
+        }
+        else if (status === 'broken') {
+            return translate('asset.general_information.damaged')
+        }
+        else if (status === 'lost') {
+            return translate('asset.general_information.lost')
+        }
+        else if (status === 'disposed') {
+            return translate('asset.general_information.disposal')
+        }
+        else {
+            return 'Deleted';
+        }
+    }
     render() {
         const { id, translate, assetsManager, assetType, user, auth } = this.props;
         const { page, limit, currentRowView, currentRow } = this.state;
@@ -343,7 +364,7 @@ class AssetAssignedManager extends Component {
                                         <td>{x.assetName}</td>
                                         <td>{x.assetType && x.assetType.length ? x.assetType.map((item, index) => { let suffix = index < x.assetType.length - 1 ? ", " : ""; return item.typeName + suffix }) : 'Asset is deleted'}</td>
                                         <td>{formater.format(parseInt(x.cost))} VNĐ</td>
-                                        <td>{x.status}</td>
+                                        <td>{this.formatStatus(x.status)}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title={translate('asset.general_information.view')}><i className="material-icons">view_list</i></a>
                                             <a onClick={() => this.handleReport(x, x)} className="edit text-red" style={{ width: '5px' }} title={translate('asset.incident.report_incident')}><i

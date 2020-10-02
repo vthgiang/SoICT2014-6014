@@ -313,7 +313,7 @@ class MaintainanceManagement extends Component {
                         <div className="form-group">
                             <label className="form-control-static">{translate('asset.general_information.type')}</label>
                             <SelectMulti id={`multiSelectType`} multiple="multiple"
-                                options={{ nonSelectedText: "Chọn loại phiếu", allSelectedText: "Chọn tất cả các loại phiếu" }}
+                                options={{ nonSelectedText: translate('asset.general_information.select_reception_type'), allSelectedText: translate('asset.general_information.select_all_reception_type') }}
                                 onChange={this.handleTypeChange}
                                 items={[
                                     { value: 1, text: translate('asset.asset_info.repair') },
@@ -326,7 +326,7 @@ class MaintainanceManagement extends Component {
 
                         {/* Tháng */}
                         <div className="form-group">
-                            <label className="form-control-static">Ngày lập phiếu</label>
+                            <label className="form-control-static">{translate('asset.general_information.create_reception_date')}</label>
                             <DatePicker
                                 id="maintain-month"
                                 dateFormat="month-year"
@@ -398,32 +398,32 @@ class MaintainanceManagement extends Component {
                         <tbody>
                             {(lists && lists.length !== 0) &&
                                 lists.map((x, index) => (
-                                        <tr key={index}>
-                                            <td><a onClick={() => this.handleEditAsset(x.asset)}>{x.asset.code}</a></td>
-                                            <td>{x.maintainanceCode}</td>
-                                            <td>{x.createDate ? this.formatDate2(x.createDate) : ''}</td>
-                                            <td>{this.convertMaintainType(x.type)}</td>
-                                            <td>{x.asset.assetName}</td>
-                                            <td>{x.description}</td>
-                                            <td>{x.startDate ? this.formatDate2(x.startDate) : ''}</td>
-                                            <td>{x.endDate ? this.formatDate2(x.endDate) : ''}</td>
-                                            <td>{x.expense ? formater.format(parseInt(x.expense)) : ''} VNĐ</td>
-                                            <td>{this.convertMaintainStatus(x.status)}</td>
-                                            <td style={{ textAlign: "center" }}>
-                                                <a onClick={() => this.handleEdit(x, x.asset)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.asset_info.edit_maintenance_card')}><i
-                                                    className="material-icons">edit</i></a>
-                                                <DeleteNotification
-                                                    content={translate('asset.asset_info.delete_maintenance_card')}
-                                                    data={{
-                                                        id: x._id,
-                                                        info: x.maintainanceCode ? x.maintainanceCode : '' + " - "
-                                                    }}
-                                                    func={() => this.deleteMaintainance(x.asset._id, x._id)}
-                                                />
-                                            </td>
-                                        </tr>
-                                    ))
-                                }
+                                    <tr key={index}>
+                                        <td><a onClick={() => this.handleEditAsset(x.asset)}>{x.asset.code}</a></td>
+                                        <td>{x.maintainanceCode}</td>
+                                        <td>{x.createDate ? this.formatDate2(x.createDate) : ''}</td>
+                                        <td>{this.convertMaintainType(x.type)}</td>
+                                        <td>{x.asset.assetName}</td>
+                                        <td>{x.description}</td>
+                                        <td>{x.startDate ? this.formatDate2(x.startDate) : ''}</td>
+                                        <td>{x.endDate ? this.formatDate2(x.endDate) : ''}</td>
+                                        <td>{x.expense ? formater.format(parseInt(x.expense)) : ''} VNĐ</td>
+                                        <td>{this.convertMaintainStatus(x.status)}</td>
+                                        <td style={{ textAlign: "center" }}>
+                                            <a onClick={() => this.handleEdit(x, x.asset)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.asset_info.edit_maintenance_card')}><i
+                                                className="material-icons">edit</i></a>
+                                            <DeleteNotification
+                                                content={translate('asset.asset_info.delete_maintenance_card')}
+                                                data={{
+                                                    id: x._id,
+                                                    info: x.maintainanceCode ? x.maintainanceCode : '' + " - "
+                                                }}
+                                                func={() => this.deleteMaintainance(x.asset._id, x._id)}
+                                            />
+                                        </td>
+                                    </tr>
+                                ))
+                            }
                         </tbody>
                     </table>
                     {mintainanceManager.isLoading ?
