@@ -2810,7 +2810,7 @@ const sampleCompanyData = async () => {
         baseUnit: 'Thùng',
         unit: [],
         quantity: 20,
-        goods: [{
+        materials: [{
             good: listGood[0]._id,
             quantity: 5
         },
@@ -2830,7 +2830,7 @@ const sampleCompanyData = async () => {
         baseUnit: 'Bao',
         unit: [],
         quantity: 20,
-        goods: [{
+        materials: [{
             good: listGood[0]._id,
             quantity: 2
         },

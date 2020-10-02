@@ -8,35 +8,32 @@ import UnitCreateFrom from './unitCreateFrom';
 import ComponentCreateForm from './componentCreateForm';
 import { translate } from 'react-redux-multilingual/lib/utils';
 
-class GoodCreateForm extends Component {
+class GoodEditForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            code: '',
-            name: '',
-            baseUnit: '',
-            units: [],
-            materials: [],
-            quantity: 0,
-            description: '',
-            type: this.props.type,
-            category: '',
             
         }
     }
 
     static getDerivedStateFromProps(nextProps, prevState){
-        if(nextProps.type !== prevState.type){
-
+        if(nextProps.goodId !== prevState.goodId){
             return {
                 ...prevState,
+                goodId: nextProps.goodId,
                 type: nextProps.type,
-                baseUnit: nextProps.baseUnit ? nextProps.baseUnit : "",
-                units: nextProps.units ? nextProps.units : [],
-                materials: nextProps.materials ? nextProps.materials : [],
-                description: nextProps.description ? nextProps.description : "",
-                code: nextProps.code ? nextProps.code : "",
-                name: nextProps.name ? nextProps.name : ""
+                baseUnit: nextProps.baseUnit,
+                units: nextProps.units,
+                materials: nextProps.materials,
+                description: nextProps.description,
+                code: nextProps.code,
+                name: nextProps.name,
+                category: nextProps.category,
+                errorOnName: undefined, 
+                errorOnCode: undefined, 
+                errorOnBaseUnit: undefined, 
+                errorOnCategory: undefined,
+
             }
         } else {
             return null;
@@ -190,7 +187,7 @@ class GoodCreateForm extends Component {
 
     save = () => {
         if (this.isFormValidated()) {
-            this.props.createGoodByType(this.state);
+            this.props.editGood(this.props.goodId, this.state);
         }
     }
 
@@ -200,7 +197,7 @@ class GoodCreateForm extends Component {
         let listUnit = [];
         let listMaterial = [];
         const { translate, goods, categories, type } = this.props;
-        const { errorOnName, errorOnCode, errorOnBaseUnit, errorOnCategory, code, name, category, units, baseUnit, description, materials } = this.state;
+        const { errorOnName, errorOnCode, errorOnBaseUnit, errorOnCategory,goodId, code, name, category, units, materials, baseUnit, description } = this.state;
         const dataSelectBox = this.getCategoriesByType();
 
         if(units) listUnit = units;
@@ -211,12 +208,12 @@ class GoodCreateForm extends Component {
         } else {
             size = 50;
         }
+        
         return (
             <React.Fragment>
-                <ButtonModal modalID={`modal-create-${type}`} button_name={translate('manage_warehouse.good_management.add')} title={translate('manage_warehouse.good_management.add_title')} />
                 <DialogModal
-                    modalID={`modal-create-${type}`} isLoading={goods.isLoading}
-                    formID={`form-create-${type}`}
+                    modalID={`modal-edit-good`} isLoading={goods.isLoading}
+                    formID={`form-edit-good`}
                     title={translate('manage_warehouse.good_management.add_title')}
                     msg_success={translate('manage_warehouse.good_management.add_success')}
                     msg_faile={translate('manage_warehouse.good_management.add_faile')}
@@ -224,7 +221,7 @@ class GoodCreateForm extends Component {
                     func={this.save}
                     size={size}
                 >
-                    <form id={`form-create-${type}`} >
+                    <form id={`form-edit-good`} >
                         <div className="row">
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group ${!errorOnCode ? "" : "has-error"}`}>
@@ -237,7 +234,7 @@ class GoodCreateForm extends Component {
                                     <input type="text" className="form-control" value={baseUnit} onChange={this.handleBaseUnitChange} />
                                     <ErrorLabel content = { errorOnBaseUnit } />
                                 </div>
-                                {type === 'product' ? <UnitCreateFrom initialData={listUnit} onDataChange={this.handleListUnitChange} />: []}
+                                {type === 'product' ? <UnitCreateFrom id={goodId} initialData={listUnit} onDataChange={this.handleListUnitChange} />: []}
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group ${!errorOnName ? "" : "has-error"}`}>
@@ -248,7 +245,7 @@ class GoodCreateForm extends Component {
                                 <div className={`form-group ${!errorOnCategory ? "" : "has-error"}`}>
                                     <label>{translate('manage_warehouse.good_management.category')}</label>
                                     <SelectBox
-                                        id={`select-good-by-${type}`}
+                                        id={`select-category-by-${goodId}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         value={category._id}
@@ -258,14 +255,14 @@ class GoodCreateForm extends Component {
                                     />
                                     <ErrorLabel content = { errorOnCategory } />
                                 </div>
-                                {type === 'product' ? <ComponentCreateForm initialData={listMaterial} onDataChange={this.handleListMaterialChange} />: []}
+                                {type === 'product' ? <ComponentCreateForm id={goodId} initialData={listMaterial} onDataChange={this.handleListMaterialChange} />: []}
                             </div>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <div className="form-group">
                                     <label>{translate('manage_warehouse.good_management.description')}</label>
                                     <textarea type="text" className="form-control" value={description} onChange={this.handleDescriptionChange} />
                                 </div>
-                                {type !== 'product' ? <UnitCreateFrom initialData={listUnit} onDataChange={this.handleListUnitChange} />: []}
+                                {type !== 'product' ? <UnitCreateFrom id={goodId} initialData={listUnit} onDataChange={this.handleListUnitChange} />: []}
                             </div>
                         </div>
                     </form>
@@ -280,7 +277,7 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-    createGoodByType: GoodActions.createGoodByType,
+    editGood: GoodActions.editGood,
     getCategoriesByType: CategoryActions.getCategoriesByType
 }
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(GoodCreateForm));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(GoodEditForm));

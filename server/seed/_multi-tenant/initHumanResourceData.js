@@ -35,7 +35,7 @@ const {
     DocumentDomain,
     DocumentCategory,
 
-    Material,
+    Stock,
     Category,
     Good,
 
@@ -129,7 +129,7 @@ const initSampleCompanyDB = async () => {
         if (!db.models.DocumentDomain) DocumentDomain(db);
         if (!db.models.DocumentCategory) DocumentCategory(db);
 
-        if (!db.models.Material) Material(db);
+        if (!db.models.Stock) Stock(db);
         if (!db.models.Category) Category(db);
         if (!db.models.Good) Good(db);
 

@@ -58,7 +58,7 @@ import { mintainanceManager } from "../modules/asset/admin/maintainance/redux/re
 import { reports } from "../modules/report/task-report/redux/reducers";
 
 //warehouse
-import { materials } from "../modules/warehouse/material-manager/redux/reducers";
+import { stocks } from "../modules/warehouse/stock-management/redux/reducers";
 import { categories } from "../modules/warehouse/category-management/redux/reducers";
 import { goods } from "../modules/warehouse/good-management/redux/reducers";
 
@@ -148,7 +148,7 @@ const appReducer = combineReducers({
     reports,
 
     //warehouse
-    materials,
+    stocks,
     categories,
     goods,
 

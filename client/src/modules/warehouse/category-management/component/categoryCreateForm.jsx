@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { translate } from 'react-redux-multilingual/lib/utils';
 
 import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from '../../../../common-components';
 
@@ -13,7 +12,6 @@ class CategoryCreateForm extends Component {
             code: "",
             name: "",
             description: "",
-            goods: [],
             type: "product",
         }
     }
@@ -67,13 +65,7 @@ class CategoryCreateForm extends Component {
     handleTypeChange = (value) => {
         this.setState({
             type: value[0]
-        })
-    }
-
-    handleGoodsChange = (value) => {
-        this.setState({
-            goods: value
-        })
+        });
     }
 
     handleDescriptionChange = (e) => {
@@ -101,7 +93,7 @@ class CategoryCreateForm extends Component {
 
     render() {
         const { translate, categories } = this.props;
-        const { errorOnName, errorOnCode, id, code, name, type, goods, description } = this.state;
+        const { errorOnName, errorOnCode, id, code, name, type, description } = this.state;
         return (
             <React.Fragment>
                 <ButtonModal modalID="modal-create-category" button_name={translate('manage_warehouse.category_management.add')} title={translate('manage_warehouse.category_management.add_title')} />
@@ -117,7 +109,7 @@ class CategoryCreateForm extends Component {
                     size={50}
                     maxWidth={500}
                 >
-                    <form id="form-create-category" onSubmit={() => this.save(translate('manage_warehouse.category_management.add_success'))}>
+                    <form id="form-create-category">
                         <div className={`form-group ${!errorOnCode ? "" : "has-error"}`}>
                             <label>{translate('manage_warehouse.category_management.code')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" value={code} onChange={this.handleCodeChange} />
@@ -142,19 +134,6 @@ class CategoryCreateForm extends Component {
                                     ]}
                                     onChange={this.handleTypeChange}
                                     multiple={false}
-                                />
-                        </div>
-                        <div className="form-group">
-                            <label>{translate('manage_warehouse.category_management.good')}</label>
-                            <SelectBox
-                                    id="modal-create-category-good"
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    value={goods}
-                                    items= {[
-                                    ]}
-                                    onChange={this.handleGoodsChange}
-                                    multiple={true}
                                 />
                         </div>
                         <div className="form-group">

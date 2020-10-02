@@ -60,8 +60,7 @@ module.exports = {
     //report
     TaskReport: require('./report/taskReport.model'),
 
-    //material
-    Material: require('./warehouse/material.model'),
+    //warehouse
     Stock: require('./warehouse/stock.model'),
     BinLocation: require('./warehouse/binLocation.model'),
     Proposal: require('./warehouse/proposal.model'),
@@ -70,6 +69,7 @@ module.exports = {
     Consignment: require('./warehouse/consignment.model'),
     Category: require('./warehouse/category.model'),
     Bill: require('./warehouse/bill.model'),
+    
     // Customer Management
     CrmCustomer: require('./crm/crmCustomer.model'),
     CrmCare: require('./crm/crmCare.model'),

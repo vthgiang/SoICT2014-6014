@@ -12,7 +12,7 @@ function getCategories(params){
     return sendRequest({
         url: `${ process.env.REACT_APP_SERVER }/categories`,
         method: 'GET',
-        params,
+        params
     }, false, true, 'manage_warehouse.category_management');
 }
 
@@ -44,5 +44,5 @@ function deleteCategory(id){
     return sendRequest({
         url: `${ process.env.REACT_APP_SERVER }/categories/${id}`,
         method: 'DELETE'
-    }, false, true, 'manage_warehouse.category_management')
+    }, true, true, 'manage_warehouse.category_management')
 }

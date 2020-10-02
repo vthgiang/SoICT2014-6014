@@ -776,19 +776,6 @@ const LINKS = [
         components: getComponentsInLink('/task-report')
     },
     {
-        url: '/material-manager',
-        description: 'Quản lý vật tư',
-        category: LINK_CATEGORY.WAREHOUSE.name,
-        roles: [
-            ROOT_ROLES.SUPER_ADMIN.name,
-            ROOT_ROLES.ADMIN.name,
-            ROOT_ROLES.DEAN.name,
-            ROOT_ROLES.VICE_DEAN.name,
-            ROOT_ROLES.EMPLOYEE.name
-        ],
-        components: getComponentsInLink('/material-manager')
-    },
-    {
         url: '/stock-management',
         description: 'Quản lý thông tin kho',
         category: LINK_CATEGORY.WAREHOUSE.name,

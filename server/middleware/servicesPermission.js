@@ -450,10 +450,11 @@ exports.data = [
     { path: '/taskreports/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
 
     //warehouse
-    { path: '/materials', method: 'GET', roles: ['Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-    { path: '/materials', method: 'POST', roles: ['Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-    { path: '/materials/:id', method: 'DELETE', roles: ['Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-    { path: '/materials/:id', method: 'PATCH', roles: ['Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+
+    { path: 'stocks', method: 'GET', roles: ['Super Admin', 'Admin'] },
+    { path: 'stocks', method: 'POST', roles: ['Super Admin', 'Admin'] },
+    { path: 'stocks/:id', method: 'PATCH', roles: ['Super Admin', 'Admin'] },
+    { path: 'stocks/:id', method: 'DELETE', roles: ['Super Admin', 'Admin'] },
 
     { path: '/categories', method: 'GET', roles: ['Super Admin', 'Admin'] },
     { path: '/categories/by-type', method: 'GET', roles: ['Super Admin', 'Admin'] },
@@ -463,6 +464,12 @@ exports.data = [
     { path: '/categories/:id', method: 'DELETE', roles: ['Super Admin', 'Admin'] },
 
     { path: '/goods', method: 'GET', roles: ['Super Admin', 'Admin']},
+    { path: '/goods/by-type', method: 'GET', roles: ['Super Admin', 'Admin']},
+    { path: '/goods', method: 'POST', roles: ['Super Admin', 'Admin']},
+    { path: '/goods/:id', method: 'PATCH', roles: ['Super Admin', 'Admin']},
+    { path: '/goods/:id', method: 'GET', roles: ['Super Admin', 'Admin']},
+    { path: '/goods/:id', method: 'DELETE', roles: ['Super Admin', 'Admin']},
+    { path: '/goods/by-category/:id', method: 'GET', roles: ['Super Admin', 'Admin']},
     
     //order
     { path: "/orders", method: "GET", roles: ["Super Admin", "Admin", "Dean", "Vice Dean", "Employee"] },

@@ -1,17 +1,21 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import StockManagementTable from './stockManagementTable';
 
 class StockManagement extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            
+        }
     }
     
     render() {
         return (
             <div className="box" style={{ minHeight: "450px" }}>
                 <div className="box-body">
+                    <StockManagementTable />
                 </div>
             </div>
         );
