@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DocumentActions } from '../../../redux/actions';
 import { ExportExcel, Tree } from '../../../../../common-components';
-import ListDocument from './ListDocument';
 import TreeDomain from './domainChart/treeDomain';
 import TreeArchive from './archiveChart/treeArchive';
 import c3 from 'c3';
@@ -74,7 +73,6 @@ class AdministrationStatisticsReport extends Component {
     pieChart = () => {
         this.removePreviousPieChart();
         let dataChart = this.getDataDocumentAnalys();
-        console.log('oooooooooo', dataChart)
         this.chart = c3.generate({
             bindto: this.refs.piechart,
 
@@ -190,7 +188,6 @@ class AdministrationStatisticsReport extends Component {
         }
     }
     convertDataToExportData = (data, data2) => {
-        console.log(data2);
         let dataCategory = [];
         let dataDownload = [];
         let dataView = [];
@@ -276,7 +273,7 @@ class AdministrationStatisticsReport extends Component {
         }
         return false;
     }
-   
+
     removeDuplicateInArrayObject = (array) => {
         let idArray = [];
         let newArray = [];
@@ -571,7 +568,6 @@ class AdministrationStatisticsReport extends Component {
                 ]
             });
         }
-        console.log('iiiiiiii', this.props.documents)
         let exportData = this.convertDataToExportData(dataExport, data2);
         // this.countDocumentInDomain(list, docs)
         // this.countDocumentInArchive(listArchives, docs);

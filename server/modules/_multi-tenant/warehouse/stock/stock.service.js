@@ -41,6 +41,16 @@ exports.getAllStocks = async (company, query, portal) => {
     }
 }
 
+exports.getStock = async (id, portal) => {
+    return await Stock(connect(DB_CONNECTION, portal))
+        .findById(id)
+        .populate([
+            { path: 'goods.good', select: 'id name'},
+            { path: 'managementLocation', select: 'id name'},
+            { path: 'manageDepartment', select: 'id name'}
+        ])
+}
+
 exports.createStock = async (company, data, portal) => {
     let stock = await Stock(connect(DB_CONNECTION, portal)).create({
         company: company,

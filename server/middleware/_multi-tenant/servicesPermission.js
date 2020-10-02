@@ -463,6 +463,7 @@ exports.data = [
     //warehouse
 
     { path: 'stocks', method: 'GET', roles: ['Super Admin', 'Admin'] },
+    { path: 'stocks/stock-detail/:id', method: 'GET', roles: ['Super Admin', 'Admin'] },
     { path: 'stocks', method: 'POST', roles: ['Super Admin', 'Admin'] },
     { path: 'stocks/:id', method: 'PATCH', roles: ['Super Admin', 'Admin'] },
     { path: 'stocks/:id', method: 'DELETE', roles: ['Super Admin', 'Admin'] },

@@ -1,6 +1,7 @@
 import { sendRequest } from '../../../../helpers/requestHelper';
 export const StockServices = {
     getAllStocks,
+    getStock,
     createStock,
     editStock,
     deleteStock
@@ -12,6 +13,13 @@ function getAllStocks(params){
         method: 'GET',
         params
     }, false, true, 'manage_warehouse.stock_management')
+}
+
+function getStock(id){
+    return sendRequest({
+        url: `${ process.env.REACT_APP_SERVER }/stocks/stock-detail/${id}`,
+        method: 'GET',
+    })
 }
 
 function createStock(data){

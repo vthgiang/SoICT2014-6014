@@ -240,6 +240,17 @@ class PurchaseRequestManager extends Component {
         return userArr;
     }
 
+    formatStatus(status) {
+        const { translate } = this.props;
+
+        switch (status) {
+            case 'approved': return translate('asset.usage.approved');
+            case 'waiting_for_approval': return translate('asset.usage.waiting_approval');
+            case 'disapproved': return translate('asset.usage.not_approved');
+            default: return 'Deleted';
+        }
+    }
+
     render() {
         const { translate, recommendProcure } = this.props;
         const { page, limit, currentRowView, currentRow } = this.state;
@@ -362,7 +373,7 @@ class PurchaseRequestManager extends Component {
                                         <td>{x.equipmentDescription}</td>
                                         <td>{x.approver ? x.approver.name : ''}</td>
                                         <td>{x.note}</td>
-                                        <td>{x.status}</td>
+                                        <td>{this.formatStatus(x.status)}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title={translate('asset.manage_recommend_procure.view_recommend_card')}><i className="material-icons">view_list</i></a>
                                             <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.manage_recommend_procure.edit_recommend_card')}><i className="material-icons">edit</i></a>
