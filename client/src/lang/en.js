@@ -901,6 +901,16 @@ export default {
 
         // Modules cấu hình các chức năng
         module_configuration: {
+            timekeeping_type: 'Timekeeping type',
+            contract_notice_time: 'Notice of contract expiration (date)',
+            contract_notice_time_title: 'Notice advance of contract expiration',
+            shift1_time: 'Number hours of shift 1 (hour)',
+            shift2_time: 'Number hours of shift 2 (hour)',
+            shift3_time: 'Number hours of shift 3 (hour)',
+
+            shift: 'Timekeeping by shift',
+            hours: 'Timekeeping by the hour',
+            shift_and_hour: 'Timekeeping by shift and hour',
 
             // Thông điệp trả về từ server
             get_configuration_success: 'Get configuration success',

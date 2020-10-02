@@ -101,31 +101,32 @@ class HumanResourceConfiguration extends Component {
                 <div className="row box-body">
                     {/* Kiểu chấm công*/}
                     <div className="form-group col-md-4">
-                        <label >Kiểu chấm công</label>
+                        <label >{translate('module_configuration.timekeeping_type')}</label>
                         <SelectBox
                             id={`timekeeping-type`}
                             className="form-control select2"
                             style={{ width: "100%" }}
                             value={timekeepingType}
-                            items={[{ value: 'shift', text: 'Chấm công theo ca' }, { value: 'hours', text: 'Chấm công theo giờ' }, { value: 'shift_and_hour', text: 'Chấm công theo ca và giờ' }]}
+                            items={[{ value: 'shift', text: translate('module_configuration.shift') }, { value: 'hours', text: translate('module_configuration.hours') }]}
+                            // items={[{ value: 'shift', text: translate('module_configuration.shift') }, { value: 'hours', text: translate('module_configuration.hours') }, { value: 'shift_and_hour', text: translate('module_configuration.shift_and_hour') }]}
                             onChange={this.handleTimekeepingTypeChange}
                         />
                     </div>
 
                     {/* Báo hết hạn hợp đồng (ngày) */}
                     <div className="form-group col-md-4">
-                        <label>Báo hết hạn hợp đồng (ngày)</label>
-                        <input type="number" min='0' step='1' value={contractNoticeTime} className="form-control" name="contractNoticeTimes" onChange={this.handleContractNoticeTimeChange} placeholder='Báo trước hết hạn hợp đồng' />
+                        <label>{translate('module_configuration.contract_notice_time')}</label>
+                        <input type="number" min='0' step='1' value={contractNoticeTime} className="form-control" name="contractNoticeTimes" onChange={this.handleContractNoticeTimeChange} placeholder={translate('module_configuration.contract_notice_time_title')} />
                     </div>
                     {
                         timekeepingType === 'shift' &&
                         <div className="col-md-12">
                             <div id="work_plan" className="description-box qlcv" style={{ paddingRight: 10 }}>
-                                <h4>{`Chấm công theo ca`}</h4>
+                                <h4>{translate('module_configuration.shift')}</h4>
                                 {/* Số giờ ca 1 */}
                                 <div className="form-inline">
                                     <div className="form-group">
-                                        <label>Số giờ ca 1 (giờ)</label>
+                                        <label style={{ width:200}}>{translate('module_configuration.shift1_time')}</label>
                                         <input type="number" min='0' value={timekeepingByShift.shift1Time} className="form-control" name="shift1Time" onChange={this.handleShiftTimeChange} />
                                     </div>
                                 </div>
@@ -133,7 +134,7 @@ class HumanResourceConfiguration extends Component {
                                 {/* Số giờ ca 2 */}
                                 <div className="form-inline">
                                     <div className="form-group">
-                                        <label>Số giờ ca 2 (giờ)</label>
+                                        <label style={{ width:200}} >{translate('module_configuration.shift1_time')}</label>
                                         <input type="number" min='0' value={timekeepingByShift.shift2Time} className="form-control" name="shift2Time" onChange={this.handleShiftTimeChange} />
                                     </div>
                                 </div>
@@ -141,7 +142,7 @@ class HumanResourceConfiguration extends Component {
                                 {/* Số giờ ca 3 */}
                                 <div className="form-inline">
                                     <div className="form-group">
-                                        <label>Số giờ ca 3 (giờ)</label>
+                                        <label style={{ width:200}} >{translate('module_configuration.shift1_time')}</label>
                                         <input type="number" min='0' value={timekeepingByShift.shift3Time} className="form-control" name="shift3Time" onChange={this.handleShiftTimeChange} />
                                     </div>
                                 </div>
