@@ -22,6 +22,26 @@ exports.getAllStocks = async (req, res) => {
     }
 }
 
+exports.getStock = async (req, res) => {
+    try {
+        const stock = await StockService.getStock(req.params.id, req.portal);
+
+        await Logger.info(req.user.email, 'GET_STOCK', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['get_stock_success'],
+            content: stock
+        })
+    } catch(error){
+        await Logger.error(req.user.email, 'GET_STOCK', req.portal);
+        res.status(400).json({
+            success: false,
+            messages:['get_stock_failed'],
+            content: error
+        })
+    }
+}
+
 exports.createStock = async (req, res) => {
     try {
         const stock = await StockService.createStock(req.user.company._id, req.body, req.portal);
