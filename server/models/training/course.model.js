@@ -45,7 +45,6 @@ const CourseSchema = new Schema({
             type: String,
             enum: ['VND', 'USD']
         }
-
     },
     lecturer: {
         type: String

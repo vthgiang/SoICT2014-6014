@@ -5,9 +5,9 @@ const { RecommendDistribute, User } = Models;
 /**
  * Lấy danh sách phiếu đề nghị cấp thiết bị
  */
-exports.searchUseRequests = async (portal, query) => {
+exports.searchUseRequests = async (portal, company, query) => {
     const { receiptsCode, createReceiptsDate, reqUseStatus, reqUseEmployee, approver, page, limit, managedBy, assetId } = query;
-    var keySearch = {};
+    var keySearch = { company: company };
 
     // Bắt sựu kiện mã phiếu tìm kiếm khác ""
     if (receiptsCode) {
@@ -76,7 +76,7 @@ exports.searchUseRequests = async (portal, query) => {
  * @data: du lieu tai san
  */
 exports.getUseRequestByAsset = async (portal, data) => {
-    var listRecommendDistributes = await RecommendDistribute(connect(DB_CONNECTION, portal)).find({asset: data.assetId}).populate({ path: 'asset proponent approver' }).sort({ 'createdAt': 'desc' });
+    var listRecommendDistributes = await RecommendDistribute(connect(DB_CONNECTION, portal)).find({ asset: data.assetId }).populate({ path: 'asset proponent approver' }).sort({ 'createdAt': 'desc' });
     return listRecommendDistributes;
 }
 
@@ -84,7 +84,7 @@ exports.getUseRequestByAsset = async (portal, data) => {
  * Thêm mới thông tin phiếu đề nghị cap phat thiết bị
  * @data: dữ liệu phiếu đề nghị cap phat thiết bị
  */
-exports.createUseRequest = async (portal, data) => {
+exports.createUseRequest = async (portal, company, data) => {
 
     let dateStartUse, dateEndUse, dateCreate, date, partStart, partEnd, partCreate;
     partStart = data.dateStartUse.split('-');
@@ -110,6 +110,7 @@ exports.createUseRequest = async (portal, data) => {
     dateCreate = new Date(date);
 
     var createRecommendDistribute = await RecommendDistribute(connect(DB_CONNECTION, portal)).create({
+        company: company,
         recommendNumber: data.recommendNumber,
         dateCreate: dateCreate,
         proponent: data.proponent, // Người đề nghị
@@ -143,10 +144,10 @@ exports.updateUseRequest = async (portal, id, data) => {
     partStart = data.dateStartUse.split('-');
     partEnd = data.dateEndUse.split('-');
     if (data.startTime) {
-        date = [partStart[2], partStart[1], partStart[0]].join('-') + ' ' +  data.startTime ;
+        date = [partStart[2], partStart[1], partStart[0]].join('-') + ' ' + data.startTime;
         dateStartUse = new Date(date);
     } else {
-        if(data.dateStartUse.length > 12){
+        if (data.dateStartUse.length > 12) {
             date = data.dateStartUse
         } else {
             date = [partStart[2], partStart[1], partStart[0]].join('-')
@@ -155,10 +156,10 @@ exports.updateUseRequest = async (portal, id, data) => {
         dateStartUse = new Date(date);
     }
     if (data.stopTime) {
-        date = [partEnd[2], partEnd[1], partEnd[0]].join('-') + ' ' +  data.stopTime;
-        dateEndUse = new Date (date);
+        date = [partEnd[2], partEnd[1], partEnd[0]].join('-') + ' ' + data.stopTime;
+        dateEndUse = new Date(date);
     } else {
-        if(data.dateEndUse.length > 12){
+        if (data.dateEndUse.length > 12) {
             date = data.dateEndUse
         } else {
             date = [partEnd[2], partEnd[1], partEnd[0]].join('-')

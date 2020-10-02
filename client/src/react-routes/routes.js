@@ -94,7 +94,6 @@ import EmployeeAssetManagement from '../modules/asset/user/asser-managed/compone
 import TaskReportManager from '../modules/report/task-report/components/taskReportManager';
 
 //warehouse
-import MaterialManager from '../modules/warehouse/material-manager/component';
 import CategoryManagement from '../modules/warehouse/category-management/component';
 import GoodManagement from '../modules/warehouse/good-management/component';
 import StockManagement from '../modules/warehouse/stock-management/component';
@@ -107,6 +106,7 @@ import ProposalManagement from '../modules/warehouse/proposal-management/compone
 // Customer Management
 import CrmCustomer from '../modules/crm/customer/components';
 import CrmGroup from '../modules/crm/group/components';
+// import CrmCare from '../modules/crm/care/components'
 
 //orders
 import OrderManagement from "../modules/order/components";
@@ -337,7 +337,7 @@ class Routes extends Component {
                         component={Document}
                     />
                     {/* Quan ly nhan su */}
-                    
+
                     <PrivateRoute
                         isLoading={this.props.annualLeave.isLoading}
                         key={'manage_configuration'}
@@ -1098,22 +1098,6 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={this.props.user.isLoading}
-                        key={'material-manager'}
-                        arrPage={[
-                            { link: '/', name: 'home', icon: 'fa fa-home' },
-                            { link: '/material-manager', name: 'material_manager', icon: 'fa fa-address-card' }
-                        ]}
-                        auth={auth}
-                        exact={true}
-                        link={'/material-manager'}
-                        path={'/material-manager'}
-                        pageName={'material_manager'}
-                        layout={Layout}
-                        component={MaterialManager}
-                    />
-
-                    <PrivateRoute
                         isLoading={false}
                         key={'category-management'}
                         arrPage={[
@@ -1282,6 +1266,21 @@ class Routes extends Component {
                         layout={Layout}
                         component={CrmGroup}
                     />
+
+                    {/* <PrivateRoute
+                        isLoading={false}
+                        key={'customer-care'}
+                        arrPage={[
+                            { link: '/crm/care', name: 'crm_list.care', icon: 'fa fa-group' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/crm/care'}
+                        path={'/crm/care'}
+                        pageName={'crm_list.care'}
+                        layout={Layout}
+                        component={CrmCare}
+                    /> */}
 
                     {/* Orders Management */}
 

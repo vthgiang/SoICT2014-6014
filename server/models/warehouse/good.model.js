@@ -58,7 +58,7 @@ const GoodSchema = new Schema ({
         type: String
     },
 
-    goods: [{
+    materials: [{
         
         good: {
             type: Schema.Types.ObjectId,
@@ -68,7 +68,12 @@ const GoodSchema = new Schema ({
         quantity: {
             type: Number
         }
-    }]
+    }],
+
+    creator: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    }
 });
 
 GoodSchema.plugin(mongoosePaginate);

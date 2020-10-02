@@ -6,11 +6,11 @@ const { read } = require('fs');
  * Lấy danh sách phiếu đề nghị mua sắm thiết bị
  */
 exports.searchUseRequests = async (req, res) => {
-    if(req.query.getUseRequestByAssetId){
+    if (req.query.getUseRequestByAssetId) {
         getUseRequestByAsset(req, res);
     } else {
         try {
-            var listRecommendDistributes = await RecommendDistributeService.searchUseRequests(req.portal, req.query);
+            var listRecommendDistributes = await RecommendDistributeService.searchUseRequests(req.portal, req.user.company._id, req.query);
             await Logger.info(req.user.email, 'GET_USE_REQUEST', req.portal);
             res.status(200).json({
                 success: true,
@@ -27,7 +27,7 @@ exports.searchUseRequests = async (req, res) => {
                 }
             });
         }
-    }   
+    }
 }
 
 getUseRequestByAsset = async (req, res) => {
@@ -56,7 +56,7 @@ getUseRequestByAsset = async (req, res) => {
  */
 exports.createUseRequest = async (req, res) => {
     try {
-        var newRecommendDistribute = await RecommendDistributeService.createUseRequest(req.portal, req.body);
+        var newRecommendDistribute = await RecommendDistributeService.createUseRequest(req.portal, req.user.company._id, req.body);
         await Logger.info(req.user.email, 'CREATE_USE_REQUEST', req.portal);
         res.status(200).json({
             success: true,

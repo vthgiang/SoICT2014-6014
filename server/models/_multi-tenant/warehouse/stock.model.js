@@ -30,19 +30,19 @@ const StockSchema = new Schema ({
 
     status: {
         type: String,
-        enum: [""]
+        enum: ["1", "2", "3", "4"]
     },
 
-    users: [{
+    managementLocation: [{
         type: Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'Role'
     }],
 
     goods: [{
 
         good: {
             type: Schema.Types.ObjectId,
-            ref: "goods"
+            ref: "Good"
         },
 
         maxQuantity: {
@@ -52,7 +52,11 @@ const StockSchema = new Schema ({
         minQuantity: {
             type: Number
         }
-    }]
+    }],
+    manageDepartment: {
+        type: Schema.Types.ObjectId,
+        ref: "OrganizationalUnit"
+    }
 
 });
 

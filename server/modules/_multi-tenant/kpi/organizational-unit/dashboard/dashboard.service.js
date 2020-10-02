@@ -9,7 +9,7 @@ const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
  * @id Id công ty
  * @role Id của role ứng với đơn vị cần lấy đơn vị con
  */
-exports.getChildrenOfOrganizationalUnitsAsTree = async (portal, role) => {
+exports.getChildrenOfOrganizationalUnitsAsTree = async (portal, company, role) => {
     let organizationalUnit = await OrganizationalUnit(connect(DB_CONNECTION, portal))
         .findOne({
             $or: [
@@ -18,7 +18,8 @@ exports.getChildrenOfOrganizationalUnitsAsTree = async (portal, role) => {
                 {'employees':{ $in: role }}
             ]
         });
-    const data = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find();
+    const data = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find(); //{company: company}
+    
     const newData = data.map( department => {return {
             id: department._id.toString(),
             name: department.name,
