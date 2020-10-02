@@ -12,7 +12,7 @@ SOCKET_IO.on('connection', function(socket){
 
 	// Client disconnected
 	socket.on('disconnect', function(socket){
-		console.logog("Disconnected: ", socket.id);
+		console.log("Disconnected: ", socket.id);
 	})
 })
 
