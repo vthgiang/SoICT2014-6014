@@ -10,6 +10,8 @@ import { Provider } from 'react-redux';
 import translations from './lang';
 import AuthAlert from './modules/alert/components/authAlert';
 import { ToastContainer, toast } from 'react-toastify';
+import { SocketConstants } from './modules/socket/redux/constants';
+
 import 'react-toastify/dist/ReactToastify.css';
 import './app.css'
 
@@ -21,7 +23,10 @@ class App extends Component {
         this.state = { }
     }
     componentDidMount() {
-        console.log("didmount app.js")
+        console.log("didmount app.js");
+        store.dispatch({
+            type: SocketConstants.CONNECT_SOCKET_IO
+        });
         const lang = localStorage.getItem('lang');
         if(lang !== null){
             switch(lang){
