@@ -40,16 +40,16 @@ class SystemManagement extends Component {
                                         <td>
                                             <ConfirmNotification
                                                 icon="question"
-                                                title="Restore this backup data"
-                                                content="<h3>Restore this backup data</h3>"
+                                                title={translate('super_admin.system.restore_backup')}
+                                                content={`<h3>${translate('super_admin.system.restore_backup')}</h3>`}
                                                 name="restore"
                                                 className="text-green"
                                                 func={()=>this.props.restore(data.version)}
                                             />
                                             <ConfirmNotification
                                                 icon="warning"
-                                                title="Delete this backup data"
-                                                content="<h3>Delete this backup data</h3>"
+                                                title={translate('super_admin.system.delete_backup')}
+                                                content={`<h3>${translate('super_admin.system.delete_backup')}</h3>`}
                                                 name="delete_outline"
                                                 className="text-red"
                                                 func={()=>this.props.deleteBackup(data.version)}

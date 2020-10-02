@@ -5,10 +5,10 @@ const { RecommendProcure, User } = Models;
 /**
  * Lấy danh sách phiếu đề nghị mua sắm thiết bị
  */
-exports.searchRecommendProcures = async (portal, query) => {
+exports.searchPurchaseRequests = async (portal, company, query) => {
     const { recommendNumber, approver, proponent, proposalDate, status, page, limit } = query;
 
-    var keySearch = {};
+    var keySearch = { company: company };
 
     // Bắt sựu kiện mã phiếu tìm kiếm khác ""
     if (recommendNumber) {
@@ -54,8 +54,9 @@ exports.searchRecommendProcures = async (portal, query) => {
  * Thêm mới thông tin phiếu đề nghị mua sắm thiết bị
  * @data: dữ liệu phiếu đề nghị mua sắm thiết bị
  */
-exports.createRecommendProcure = async (portal, data) => {
+exports.createPurchaseRequest = async (portal, company, data) => {
     var createRecommendProcure = await RecommendProcure(connect(DB_CONNECTION, portal)).create({
+        company: company,
         recommendNumber: data.recommendNumber,
         dateCreate: data.dateCreate,
         proponent: data.proponent, // Người đề nghị
@@ -76,7 +77,7 @@ exports.createRecommendProcure = async (portal, data) => {
  * Xoá thông tin phiếu đề nghị mua sắm thiết bị
  * @id: id phiếu đề nghị mua sắm thiết bị muốn xoá
  */
-exports.deleteRecommendProcure = async (portal, id) => {
+exports.deletePurchaseRequest = async (portal, id) => {
     return await RecommendProcure(connect(DB_CONNECTION, portal)).findOneAndDelete({
         _id: id
     });
@@ -86,7 +87,7 @@ exports.deleteRecommendProcure = async (portal, id) => {
  * Update thông tin phiếu đề nghị mua sắm thiết bị
  * @id: id phiếu đề nghị mua sắm thiết bị muốn update
  */
-exports.updateRecommendProcure = async (portal, id, data) => {
+exports.updatePurchaseRequest = async (portal, id, data) => {
     var recommendProcureChange = {
         recommendNumber: data.recommendNumber,
         dateCreate: data.dateCreate,

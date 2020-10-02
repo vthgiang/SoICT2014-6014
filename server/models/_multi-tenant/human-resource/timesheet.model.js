@@ -16,12 +16,29 @@ const TimesheetSchema = new Schema({
         type: Date,
         required: true,
     },
-    workSession1: [{ // Ca làm việc 1 (ví dụ buổi sáng), true là làm việc, false là nghỉ việc
-        type: Boolean,
+
+    totalHours: { // Số giờ làm việc
+        type: Number,
+    },
+
+    // Chấm công theo giờ làm Việc
+    timekeepingByHours: [{
+        type: Number,
     }],
-    workSession2: [{ // Ca làm việc 2 (ví dụ buổi chiều), true là làm việc, false là nghỉ việc
-        type: Boolean,
-    }],
+
+    // Chấm công theo ca làm việc
+    timekeepingByShift: {
+        shift1s: [{ // Ca làm việc 1 (ví dụ buổi sáng), true là làm việc, false là nghỉ việc
+            type: Boolean,
+        }],
+        shift2s: [{ // Ca làm việc 2 (ví dụ buổi chiều), true là làm việc, false là nghỉ việc
+            type: Boolean,
+        }],
+        shift3s: [{ // Ca làm việc 3 (ví dụ tăng ca, buổi tối), true là làm việc, false là nghỉ việc
+            type: Boolean,
+        }],
+    },
+
 }, {
     timestamps: true,
 });

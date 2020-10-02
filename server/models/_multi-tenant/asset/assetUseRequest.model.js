@@ -3,6 +3,12 @@ const Schema = mongoose.Schema;
 
 // tạo bảng csdl Đề nghị cấp phát thiết bị
 const AssetUseRequestSchema = new Schema({
+    company: { //thuộc công ty nào
+        type: Schema.Types.ObjectId,
+        ref: 'companies',
+        required: true
+    },
+
     recommendNumber: { //mã phiếu
         type: String,
         required: true
@@ -38,7 +44,8 @@ const AssetUseRequestSchema = new Schema({
         type: String
     },
     status: { //trạng thái, tình trạng: chờ phê duyệt || không chấp nhận || đã chấp nhận
-        type: String
+        type: String,
+        enum: ['approved', 'waiting_for_approval', 'disapproved']
     },
     createdAt: {
         type: Date,
@@ -52,7 +59,7 @@ const AssetUseRequestSchema = new Schema({
 });
 
 module.exports = (db) => {
-    if(!db.models.AssetUseRequest)
+    if (!db.models.AssetUseRequest)
         return db.model('AssetUseRequest', AssetUseRequestSchema);
     return db.models.AssetUseRequest;
 }

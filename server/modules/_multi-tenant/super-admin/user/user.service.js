@@ -8,7 +8,7 @@ const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
  * Lấy danh sách tất cả user trong 1 công ty
  * @company id của công ty
  */
-exports.getUsers = async (portal, query) => {
+exports.getUsers = async (portal, company, query) => {
     var page = query.page;
     var limit = query.limit;
     var name = query.name;
@@ -17,7 +17,9 @@ exports.getUsers = async (portal, query) => {
     var departmentIds = query.departmentIds;
     var unitId = query.unitId;
 
-    var keySearch = {};
+    var keySearch = {
+        company: company
+    };
     if (!page && !limit && !userRole && !departmentIds && !unitId) {
         if (name) {
             keySearch = {
@@ -36,6 +38,9 @@ exports.getUsers = async (portal, query) => {
                     populate: {
                         path: 'roleId'
                     }
+                },
+                {
+                    path: 'company'
                 }
                 ]);
 
@@ -44,21 +49,28 @@ exports.getUsers = async (portal, query) => {
             }
         } else {
             return await User(connect(DB_CONNECTION, portal))
-                .find()
+                .find({
+                    company
+                })
                 .select('-password -status -deleteSoft -tokens')
                 .populate([{
                     path: 'roles',
                     populate: {
                         path: 'roleId'
                     }
+                },
+                {
+                    path: 'company'
                 }
                 ]);
         }
     } else if (page && limit && !userRole && !departmentIds && !unitId) {
         const option = (query.key && query.value) ?
-            Object.assign({}, {
+            Object.assign({ company }, {
                 [`${query.key}`]: new RegExp(query.value, "i")
-            }) : {};
+            }) : {
+                company
+            };
 
         return await User(connect(DB_CONNECTION, portal))
             .paginate(option, {
@@ -70,6 +82,9 @@ exports.getUsers = async (portal, query) => {
                     populate: {
                         path: 'roleId'
                     }
+                },
+                {
+                    path: 'company'
                 }
                 ]
             });
@@ -104,7 +119,7 @@ exports.getUsers = async (portal, query) => {
             return users;
         }
     } else if (unitId) {
-        return getAllUserInUnitAndItsSubUnits(portal, unitId);
+        return getAllUserInUnitAndItsSubUnits(portal, company, unitId);
     }
 }
 
@@ -128,7 +143,7 @@ exports.getAllEmployeeOfUnitByRole = async (portal, role) => {
             }
             ]
         });
-    
+
     let employees;
     if (organizationalUnit) {
         employee = await UserRole(connect(DB_CONNECTION, portal))
@@ -183,7 +198,7 @@ exports.getAllEmployeeOfUnitByIds = async (portal, id) => {
  * @id Id công ty
  * @unitID Id của của đơn vị cần lấy đơn vị con
  */
-getAllUserInUnitAndItsSubUnits = async (portal, unitId) => {
+getAllUserInUnitAndItsSubUnits = async (portal, id, unitId) => {
     //Lấy tất cả các đơn vị con của 1 đơn vị
     var data;
 
@@ -191,7 +206,7 @@ getAllUserInUnitAndItsSubUnits = async (portal, unitId) => {
         var organizationalUnit = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findById(unitId);
         // TODO: tối ưu hóa OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree
 
-        data = await OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree(portal, organizationalUnit.deans[0]);
+        data = await OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree(portal, id, organizationalUnit.deans[0]);
 
         var queue = [];
         var departments = [];
@@ -216,7 +231,7 @@ getAllUserInUnitAndItsSubUnits = async (portal, unitId) => {
         return userArray;
 
     } else { //Lấy tất nhan vien trong moi đơn vị trong công ty
-        const allUnits = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({});
+        const allUnits = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find(); // { company: id }
         const newData = allUnits.map(department => {
             return {
                 id: department._id.toString(),
@@ -296,7 +311,7 @@ exports.getOrganizationalUnitsOfUser = async (portal, userId) => {
  * @data dữ liệu về user
  * @portal portal của db
  */
-exports.createUser = async (portal, data) => {
+exports.createUser = async (portal, data, company) => {
     var salt = bcrypt.genSaltSync(10);
     var password = generator.generate({
         length: 10,
@@ -316,10 +331,11 @@ exports.createUser = async (portal, data) => {
         .create({
             name: data.name,
             email: data.email,
-            password: hash
+            password: hash,
+            company: company
         });
 
-    await this.sendMailAboutCreatedAccount(data.email, password)
+    await this.sendMailAboutCreatedAccount(data.email, password, portal)
 
     return user;
 }
@@ -329,7 +345,7 @@ exports.createUser = async (portal, data) => {
  * @email người nhận
  * @password của tài khoản đó
  */
-exports.sendMailAboutCreatedAccount = async (email, password) => {
+exports.sendMailAboutCreatedAccount = async (email, password, portal) => {
     var transporter = nodemailer.createTransport({
         service: 'Gmail',
         auth: {
@@ -394,22 +410,24 @@ exports.sendMailAboutCreatedAccount = async (email, password) => {
                             <h1>VNIMA</h1>
                         </div>
                         <div class="form">
-                            <p><b>Tài khoản đăng nhập của SUPER ADMIN: </b></p>
+                            <p><b>Thông tin tài khoản đăng nhập của bạn: </b></p>
                             <div class="info">
+                                <li>Portal: ${portal}</li>
                                 <li>Tài khoản: ${email}</li>
                                 <li>Mật khẩu: <b>${password}</b></li>
                             </div>
                             <p>Đăng nhập ngay tại: <a href="${process.env.WEBSITE}/login">${process.env.WEBSITE}/login</a></p><br />
                 
-                            <p><b>SUPER ADMIN account information: </b></p>
+                            <p><b>Your account information: </b></p>
                             <div class="info">
-                                <li>Tài khoản: ${email}</li>
-                                <li>Mật khẩu: <b>${password}</b></li>
+                                <li>Portal: ${portal}</li>
+                                <li>Account: ${email}</li>
+                                <li>Password: <b>${password}</b></li>
                             </div>
                             <p>Login in: <a href="${process.env.WEBSITE}/login">${process.env.WEBSITE}/login</a></p>
                         </div>
                         <div class="footer">
-                            <p>Bản quyền thuộc về
+                            <p>Copyright by
                                 <i>Công ty Cổ phần Công nghệ
                                     <br />
                                     An toàn thông tin và Truyền thông Việt Nam</i>
@@ -573,14 +591,16 @@ exports.deleteUser = async (portal, id) => {
  * @roleIdArr mảng id các role
  */
 exports.addRolesForUser = async (portal, userId, roleIdArr) => {
-    var data = await roleIdArr.map(roleId => {
-        return {
-            userId,
-            roleId
-        }
-    });
-    var relationship = await UserRole(connect(DB_CONNECTION, portal))
-        .insertMany(data);
+    if (roleIdArr && roleIdArr.length > 0) {
+        var data = await roleIdArr.map(roleId => {
+            return {
+                userId,
+                roleId
+            }
+        });
+        var relationship = await UserRole(connect(DB_CONNECTION, portal))
+            .insertMany(data);
+    }
 
     return relationship;
 }
@@ -639,7 +659,7 @@ _getAllUsersInOrganizationalUnit = async (portal, department) => {
             users.employees[item.roleId.toString()].members.push(item.userId);
         }
     });
-    
+
     return users;
 }
 
@@ -714,7 +734,7 @@ exports.getAllUsersWithRole = async (portal) => {
             path: "userId",
             select: 'name email avatar'
         })
-    
+
     return users
 }
 
@@ -723,10 +743,11 @@ exports.getAllUsersWithRole = async (portal) => {
  * @portal portal của db
  * @param {*} email : email user
  */
-exports.getUserInformByEmail = async (portal, email) => {
+exports.getUserInformByEmail = async (portal, email, company) => {
     let user = await User(connect(DB_CONNECTION, portal))
         .findOne({
             email: email,
+            company: company,
         }, {
             email: 1,
             _id: 1

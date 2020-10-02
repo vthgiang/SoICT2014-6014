@@ -181,13 +181,12 @@ exports.createTaskTemplate = async (portal, body) => {
             readByEmployee.push(roleDeans[i]);
         }
     }
-
+    readByEmployee = readByEmployee.map(x => String(x));
     //Tạo dữ liệu mẫu công việc
     var tasktemplate = await TaskTemplate(connect(DB_CONNECTION, portal)).create({
         organizationalUnit: body.organizationalUnit,
         name: body.name,
         creator: body.creator, //id của người tạo
-        priority: '1',
         readByEmployees: readByEmployee, //role của người có quyền xem
         responsibleEmployees: body.responsibleEmployees,
         accountableEmployees: body.accountableEmployees,
@@ -214,7 +213,6 @@ exports.createTaskTemplate = async (portal, body) => {
             }
         })
     });
-
     // TODO: Xử lý quyển với action
 
     // xu ly quyen nguoi xem
@@ -258,6 +256,7 @@ exports.createTaskTemplate = async (portal, body) => {
         });
     }
     tasktemplate = await tasktemplate.populate("organizationalUnit creator").execPopulate();
+    console.log(tasktemplate);
     return tasktemplate;
 }
 
@@ -389,9 +388,10 @@ exports.importTaskTemplate = async (portal, data, id) => {
                 // format thong tin "chi qua ly duoc dien"
                 data[i].taskInformations[j]["filledByAccountableEmployeesOnly"] = data[i].taskInformations[j][3];
                 // formart thong tin kieu du lieu
-                data[i].taskInformations[j]["type"] = data[i].taskInformations[j][2];
+                data[i].taskInformations[j]["type"] = data[i].taskInformations[j][2].toLowerCase();
                 data[i].taskInformations[j]["name"] = data[i].taskInformations[j][0];
                 data[i].taskInformations[j]["description"] = data[i].taskInformations[j][1];
+                data[i].taskInformations[j]["extra"] = "";
             } else {
                 data[i].taskInformations.splice(j, 1);
                 j--;
@@ -410,7 +410,7 @@ exports.importTaskTemplate = async (portal, data, id) => {
         let unit = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findOne({ name: data[i].organizationalUnit });
         data[i].organizationalUnit = String(unit._id);
         data[i].creator = id;
-        let result = await this.createTaskTemplate(data[i]);
+        let result = await this.createTaskTemplate(portal, data[i]);
         results = [...results, result];
     };
     console.log("results", results);

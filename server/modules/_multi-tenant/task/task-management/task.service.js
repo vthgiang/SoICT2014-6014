@@ -1199,7 +1199,12 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (portal, task) => {
     };
 }
 
-exports.sendEmailFoCreateTask = async (portal, task) => {
+/**
+ * Gửi email khi tạo mới công việc
+ * @param {*} portal id công ty
+ * @param {*} task công việc vừa tạo
+ */
+exports.sendEmailForCreateTask = async (portal, task) => {
     task = await task.populate("organizationalUnit creator parent").execPopulate();
 
     var transporter = nodemailer.createTransport({
@@ -1333,7 +1338,7 @@ exports.createTask = async (portal, task) => {
         );
     }
 
-    let mail = await this.sendEmailFoCreateTask(portal, task);
+    let mail = await this.sendEmailForCreateTask(portal, task);
 
     return { task: task, user: mail.user, email: mail.email, html: mail.html };
 }
@@ -1567,11 +1572,11 @@ exports.getAllTaskOfOrganizationalUnit = async (portal, roleId, organizationalUn
  * @param {*} organizationalUnitId 
  * @param {*} month 
  */
-exports.getAllTaskOfChildrenOrganizationalUnit = async (portal, roleId, month, organizationalUnitId) => { // companyId, 
+exports.getAllTaskOfChildrenOrganizationalUnit = async (portal, companyId, roleId, month, organizationalUnitId) => { 
 
     let tasksOfChildrenOrganizationalUnit = [], childrenOrganizationalUnits;
 
-    childrenOrganizationalUnits = await overviewService.getAllChildrenOrganizational(portal, roleId, organizationalUnitId); // companyId, 
+    childrenOrganizationalUnits = await overviewService.getAllChildrenOrganizational(portal, companyId, roleId, organizationalUnitId);
 
     if (childrenOrganizationalUnits) {
         for (let i = 0; i < childrenOrganizationalUnits.length; i++) {

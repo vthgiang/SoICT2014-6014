@@ -68,7 +68,7 @@ class AssetDisposalChart extends Component {
                 let maxDate = new Date(listMonth[i + 1]).getTime();
 
                 for (let j in listAssets) {
-                    if (listAssets[j].status === "Thanh lý") {
+                    if (listAssets[j].status === "disposed") {
                         let disposalDate = new Date(listAssets[j].disposalDate).getTime();
                         if (disposalDate < maxDate && disposalDate >= minDate) {
                             cnt++;
@@ -124,7 +124,7 @@ class AssetDisposalChart extends Component {
             for (let i = 0; i < category.length; i++) {
                 let cnt = 0, val = 0;
                 for (let j in listAssets) {
-                    if (listAssets[j].status === "Thanh lý") {
+                    if (listAssets[j].status === "disposed") {
                         let disposalDate = new Date(listAssets[j].disposalDate).getFullYear();
                         if (disposalDate == category[i]) {
                             cnt++;

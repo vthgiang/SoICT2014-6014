@@ -13,7 +13,7 @@ module.exports = {
     Commendation: require('./human-resource/commendation.model'),
     Discipline: require('./human-resource/discipline.model'),
     Employee: require('./human-resource/employee.model'),
-    Holiday: require('./human-resource/holiday.model'),
+    WorkPlan: require('./human-resource/workPlan.model'),
     Salary: require('./human-resource/salary.model'),
     Timesheet: require('./human-resource/timesheet.model'),
 
@@ -29,6 +29,7 @@ module.exports = {
     Link: require('./super-admin/link.model'),
     OrganizationalUnit: require('./super-admin/organizationalUnit.model'),
     RoleType: require('./super-admin/roleType.model'),
+    ModuleConfiguration: require('./super-admin/moduleConfiguration.model'),
 
     Company: require('./system-admin/company.model'),
     Configuration: require('./system-admin/configuration.model'),
@@ -52,16 +53,15 @@ module.exports = {
     EducationProgram: require('./training/educationProgram.model'),
     EmployeeCourse: require('./training/employeeCourse.model'),
 
-//asset
+    //asset
     Asset: require('./asset/asset.model'), //tài sản
     AssetType: require('./asset/assetType.model'), //loại tài sản
     RecommendProcure: require('./asset/assetPurchaseRequest.model'), //đề nghị mua sắm thiết bị
     RecommendDistribute: require('./asset/assetUseRequest.model'), //đề nghị cấp phát thiết bị
-//report
+    //report
     TaskReport: require('./report/taskReport.model'),
 
-//material
-    Material: require('./warehouse/material.model'),
+    //warehouse
     Stock: require('./warehouse/stock.model'),
     BinLocation: require('./warehouse/binLocation.model'),
     Proposal: require('./warehouse/proposal.model'),
@@ -70,17 +70,26 @@ module.exports = {
     Consignment: require('./warehouse/consignment.model'),
     Category: require('./warehouse/category.model'),
     Bill: require('./warehouse/bill.model'),
-// Customer Management
-    CrmCustomer: require('./crm/crmCustomer.model'),
-    CrmCare: require('./crm/crmCare.model'),
-    CrmGroup: require('./crm/crmGroup.model'),
-    CrmLiability: require('./crm/crmLiability.model'),
 
-//order
+    // Customer Management
+    Lead: require('./crm/lead.model'),
+    Care: require('./crm/care.model'),
+    CareType: require('./crm/careType.model'),
+    Group: require('./crm/group.model'),
+    Status: require('./crm/status.model'),
+    Product: require('./crm/product.model'),
+    ProductCategory: require('./crm/productCategory.model'),
+    ProductDiscount: require('./crm/productDiscount.model'),
+
+
+    //order
     Order: require("./order/order.model"),
 
     Location: require('./common/location.model'),
 
-// plan
+    // plan
     Plan: require('./plan/plan.model'),
+
+    // Example
+    Example: require('./example/example.model'),
 }

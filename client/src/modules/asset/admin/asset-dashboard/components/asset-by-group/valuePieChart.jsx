@@ -26,16 +26,16 @@ class ValuePieChart extends Component {
         if (listAssets) {
             listAssets.map(asset => {
                 switch (asset.group) {
-                    case "Building":
+                    case "building":
                         valueOfBuilding += asset.cost;
                         break;
-                    case "Vehicle":
+                    case "vehicle":
                         valueOfVehicle += asset.cost;
                         break;
-                    case "Machine":
+                    case "machine":
                         valueOfMachine += asset.cost;
                         break;
-                    case "Other":
+                    case "other":
                         valueOfOther += asset.cost;
                         break;
                 }

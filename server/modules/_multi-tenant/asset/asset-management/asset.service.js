@@ -18,8 +18,11 @@ exports.getAssetInforById = async (portal, id) => {
  * Lấy danh sách tài sản theo key tìm kiếm
  * @params : dữ liệu key tìm kiếm
  */
-exports.searchAssetProfiles = async (portal, params) => {
+exports.searchAssetProfiles = async (portal, company, params) => {
     let keySearch = {};
+    if (company) {
+        keySearch = { ...keySearch, company: company };
+    }
     // Bắt sựu kiện MSTS tìm kiếm khác ""
     if (params.code) {
         keySearch = { ...keySearch, code: { $regex: params.code, $options: "i" } }
@@ -188,8 +191,14 @@ exports.searchAssetProfiles = async (portal, params) => {
 /**
  * Danh sách mặt bằng dạng cây
  */
-exports.getListBuildingAsTree = async (portal) => {
-    const list = await Asset(connect(DB_CONNECTION, portal)).find({ group: "Building" }).populate({ path: 'assetType' });
+exports.getListBuildingAsTree = async (portal, company) => {
+    let keySearch = { group: "building" };
+
+    if (company) {
+        keySearch = { ...keySearch, company: company };
+    }
+
+    const list = await Asset(connect(DB_CONNECTION, portal)).find(keySearch).populate({ path: 'assetType' });
     const dataConverted = list.map(building => {
         return {
             id: building._id.toString(),
@@ -233,15 +242,15 @@ exports.mergeUrlFileToObject = (arrayFile, arrayObject) => {
  * @data : Dữ liệu thông tin tài sản
  * @fileInfo : Thông tin file đính kèm
  */
-exports.createAsset = async (portal, data, fileInfo) => {
+exports.createAsset = async (portal, company, data, fileInfo) => {
 
     let avatar = fileInfo && fileInfo.avatar === "" ? data.avatar : fileInfo.avatar,
         file = fileInfo && fileInfo.file;
     let { maintainanceLogs, usageLogs, incidentLogs, locationLogs, files } = data;
     files = files && this.mergeUrlFileToObject(file, files);
-    
+
     data.purchaseDate = new Date(data.purchaseDate);
-    
+
     data.warrantyExpirationDate = new Date(data.warrantyExpirationDate);
 
     data.startDepreciation = new Date(data.startDepreciation);
@@ -255,14 +264,14 @@ exports.createAsset = async (portal, data, fileInfo) => {
             endDate: new Date(item.endDate)
         }
     })
-    
+
     incidentLogs = incidentLogs.map(item => {
         return {
             ...item,
             dateOfIncident: new Date(item.dateOfIncident)
         }
     })
-    
+
     maintainanceLogs = maintainanceLogs.map(item => {
         return {
             ...item,
@@ -273,6 +282,7 @@ exports.createAsset = async (portal, data, fileInfo) => {
     })
 
     let createAsset = await Asset(connect(DB_CONNECTION, portal)).create({
+        company: company,
         avatar: avatar,
         assetName: data.assetName,
         code: data.code,
@@ -331,7 +341,7 @@ exports.createAsset = async (portal, data, fileInfo) => {
 /**
  * Cập nhât thông tin tài sản theo id
  */
-exports.updateAssetInformation = async (portal, id, data, fileInfo) => {
+exports.updateAssetInformation = async (portal, company, id, data, fileInfo) => {
     let {
         createMaintainanceLogs,
         deleteMaintainanceLogs,
@@ -424,7 +434,7 @@ exports.updateAssetInformation = async (portal, id, data, fileInfo) => {
     oldAsset.save();
 
     // Function edit, create, Delete Document of collection
-    queryEditCreateDeleteDocumentInCollection = async (portal, assetId, collection, arrDelete, arrEdit, arrCreate) => {
+    queryEditCreateDeleteDocumentInCollection = async (portal, company, assetId, collection, arrDelete, arrEdit, arrCreate) => {
         let queryDelete = arrDelete ? arrDelete.map(x => {
             return { deleteOne: { "filter": { "_id": x._id } } }
         }) : [];
@@ -432,7 +442,7 @@ exports.updateAssetInformation = async (portal, id, data, fileInfo) => {
             return { updateOne: { "filter": { "_id": x._id }, "update": { $set: x } } }
         }) : [];
         let queryCrete = arrCreate ? arrCreate.map(x => {
-            return { insertOne: { "document": { ...x, asset: assetId } } }
+            return { insertOne: { "document": { ...x, asset: assetId, company: company } } }
         }) : [];
         let query = [...queryDelete, ...queryEdit, ...queryCrete];
         if (query.length !== 0) {
@@ -498,7 +508,7 @@ exports.createMaintainanceForIncident = async (portal, incidentId, data) => {
 /*
  * Lấy danh sách tất cả các phiếu bảo trì của tất cả tài sản hoặc có thể lấy ra danh sách các phiếu bảo trì gần nhất của tất cả tài sản
  */
-exports.searchMaintainances = async (portal, id, data) => {
+exports.searchMaintainances = async (portal, company, id, data) => {
 
 }
 
@@ -621,7 +631,7 @@ exports.deleteMaintainance = async (portal, assetId, maintainanceId) => {
 /*
  * Lấy danh sách tất cả lịch sử sử dụng của tất cả tài sản hoặc có thể lấy ra danh sách các lịch sử sử dụng gần nhất của tất cả tài sản
  */
-exports.searchUsages = async (portal, id, data) => {
+exports.searchUsages = async (portal, company, id, data) => {
 
 }
 
@@ -681,7 +691,7 @@ exports.recallAsset = async (portal, assetId, data) => {
         $set: {
             assignedToUser: null,
             assignedToOrganizationalUnit: null,
-            status: "Sẵn sàng sử dụng",
+            status: "ready_to_use",
         }
     })
     return updateAsset;

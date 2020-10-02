@@ -86,7 +86,7 @@ class AssetEditForm extends Component {
             usageLogs: data.usageLogs,
             assignedToUser: data.assignedToUser,
             assignedToOrganizationalUnit: data.assignedToOrganizationalUnit,
-            status: "Đang sử dụng"
+            status: "in_use"
         })
 
     }
@@ -222,7 +222,7 @@ class AssetEditForm extends Component {
 
         if (this.state !== {}) {
             let unitProductionValidate = true;
-            if (depreciationType === "Sản lượng") {
+            if (depreciationType === "units_of_production") {
                 unitProductionValidate = this.validatorInput(estimatedTotalProduction);
             }
 
@@ -284,7 +284,7 @@ class AssetEditForm extends Component {
                 },
                 assignedToUser: this.state.assignedToUser,
                 assignedToOrganizationalUnit: this.state.assignedToOrganizationalUnit,
-                status: "Đang sử dụng",
+                status: "in_use",
             });
         }
     }
@@ -472,7 +472,8 @@ class AssetEditForm extends Component {
                                 assignedToUser={assignedToUser}
                                 assignedToOrganizationalUnit={assignedToOrganizationalUnit}
                                 usageLogs={usageLogs}
-                                typeRegisterForUse = {typeRegisterForUse}
+                                typeRegisterForUse={typeRegisterForUse}
+                                managedBy={managedBy}
                                 handleAddUsage={this.handleCreateUsageLogs}
                                 handleEditUsage={this.handleEditUsageLogs}
                                 handleDeleteUsage={this.handleDeleteUsageLogs}

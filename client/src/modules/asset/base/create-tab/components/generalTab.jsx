@@ -17,7 +17,7 @@ class GeneralTab extends Component {
         this.state = {
             detailInfo: [],
             isObj: true,
-            // status: "Sẵn sàng sử dụng",
+            // status: "ready_to_use",
             // typeRegisterForUse: "Được phép đăng ký sử dụng",
         };
     }
@@ -534,8 +534,8 @@ class GeneralTab extends Component {
         } = this.state;
 
         var userlist = user.list, departmentlist = department.list;
-        let startDate = status == "Đang sử dụng" && usageLogs && usageLogs.length ? this.formatDate(usageLogs[usageLogs.length - 1].startDate) : '';
-        let endDate = status == "Đang sử dụng" && usageLogs && usageLogs.length ? this.formatDate(usageLogs[usageLogs.length - 1].endDate) : '';
+        let startDate = status == "in_use" && usageLogs && usageLogs.length ? this.formatDate(usageLogs[usageLogs.length - 1].startDate) : '';
+        let endDate = status == "in_use" && usageLogs && usageLogs.length ? this.formatDate(usageLogs[usageLogs.length - 1].endDate) : '';
         var assettypelist = assetType.listAssetTypes;
         let typeInTreeSelect = [];
 
@@ -612,10 +612,10 @@ class GeneralTab extends Component {
                                         value={group}
                                         items={[
                                             { value: null, text: `---${translate('asset.asset_info.select_group')}---` },
-                                            { value: 'Building', text: translate('asset.asset_info.building') },
-                                            { value: 'Vehicle', text: translate('asset.asset_info.vehicle') },
-                                            { value: 'Machine', text: translate('asset.asset_info.machine') },
-                                            { value: 'Other', text: translate('asset.asset_info.other') },
+                                            { value: 'building', text: translate('asset.asset_info.building') },
+                                            { value: 'vehicle', text: translate('asset.asset_info.vehicle') },
+                                            { value: 'machine', text: translate('asset.asset_info.machine') },
+                                            { value: 'other', text: translate('asset.asset_info.other') },
                                         ]}
                                         onChange={this.handleGroupChange}
                                     />
@@ -706,11 +706,11 @@ class GeneralTab extends Component {
                                         value={status}
                                         items={[
                                             { value: '', text: '---Chọn trạng thái---' },
-                                            { value: 'Sẵn sàng sử dụng', text: translate('asset.general_information.ready_use') },
-                                            { value: 'Đang sử dụng', text: translate('asset.general_information.using') },
-                                            { value: 'Hỏng hóc', text: translate('asset.general_information.damaged') },
-                                            { value: 'Mất', text: translate('asset.general_information.lost') },
-                                            { value: 'Thanh lý', text: translate('asset.general_information.disposal') },
+                                            { value: 'ready_to_use', text: translate('asset.general_information.ready_use') },
+                                            { value: 'in_use', text: translate('asset.general_information.using') },
+                                            { value: 'broken', text: translate('asset.general_information.damaged') },
+                                            { value: 'lost', text: translate('asset.general_information.lost') },
+                                            { value: 'disposed', text: translate('asset.general_information.disposal') },
                                         ]}
                                         onChange={this.handleStatusChange}
                                     />
@@ -759,7 +759,7 @@ class GeneralTab extends Component {
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={[{ value: 'null', text: 'Chưa có đơn vị được giao sử dụng' }, ...departmentlist.map(x => { return { value: x._id, text: x.name } })]}
-                                            value={assignedToOrganizationalUnit ? assignedToOrganizationalUnit: ""}
+                                            value={assignedToOrganizationalUnit ? assignedToOrganizationalUnit : ""}
                                             multiple={false}
                                             disabled
                                         />
@@ -785,7 +785,7 @@ class GeneralTab extends Component {
                                         disabled
                                     />
                                 </div>
-                                
+
                                 {/* Mô tả */}
                                 <div className="form-group">
                                     <label htmlFor="description">{translate('asset.general_information.description')}</label>

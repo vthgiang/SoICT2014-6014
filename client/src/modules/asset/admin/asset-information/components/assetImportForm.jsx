@@ -9,7 +9,7 @@ import { AssetManagerActions } from '../redux/actions';
 import { AssetImportTab } from './assetImportTab';
 
 import {
-    configurationGeneralInformationOfAsset, 
+    configurationGeneralInformationOfAsset,
     configurationUsageInformationOfAssetTemplate,
     configurationIncidentInformationOfAssetTemplate,
     configurationMaintainanceInformationOfAssetTemplate,
@@ -24,7 +24,7 @@ class AssetImportForm extends Component {
 
     constructor(props) {
         super(props);
-        
+
         this.state = {
             importGeneralInformationData: [],
             importDepreciationInformationData: [],
@@ -38,7 +38,7 @@ class AssetImportForm extends Component {
     componentDidMount() {
         this.props.getAllUsers();
     }
-    
+
     save = () => {
         const {
             importGeneralInformationData,
@@ -60,7 +60,7 @@ class AssetImportForm extends Component {
 
         this.props.addNewAsset(asset)
     }
-    
+
     isFormValidated = () => {
         const {
             errorGeneralInformationData,
@@ -77,87 +77,50 @@ class AssetImportForm extends Component {
     // Xử lý dữ liệu export file mẫu import tài sản
     convertAssetTemplate = (dataTemplate) => {
         const { user, assetsManager, role, assetType, department } = this.props;
-        let userList = {}, departmentList = {}, assetTypes = {}, roles = {}, assetLocations = {}, assetGroups, status, typeRegisterForUse;
-        let depreciationType;
-        let incidentType, incidentStatus;
-        let maintainanceType, maintainanceStatus;
-        let disposalType;
+        let userList = [], departmentList = [], assetTypes = [], roles = [], assetLocations = [], assetGroups = [], status = [], typeRegisterForUse = [];
+        let depreciationType = [];
+        let incidentType = [], incidentStatus = [];
+        let maintainanceType = [], maintainanceStatus = [];
+        let disposalType = [];
 
         if (user) {
-            userList = {
-                title: "Người quản lý được điền",
-                value: user.list.map(item => item.name + " - " + item.email)
-            }
+            userList = user.list.map(item => item.name + " - " + item.email);
+            if (!userList) userList = [];
         }
         if (assetType) {
-            assetTypes = {
-                title: "Loại tài sản được điền",
-                value: assetType.listAssetTypes.map(item => item.typeName)
-            }
+            assetTypes = assetType.listAssetTypes.map(item => item.typeName);
+            if (!assetTypes) assetTypes = [];
         }
         if (role) {
-            roles = {
-                title: "Role được điền",
-                value: role.list.map(item => item.name)
-            }
+            roles = role.list.map(item => item.name);
+            if (!roles) roles = [];
         }
         if (assetsManager) {
-            assetLocations = {
-                title: "Vị trí tài sản được điền",
-                value: assetsManager.buildingAssets && assetsManager.buildingAssets.list.map(item => item.assetName)
-            }
+            assetLocations = assetsManager.buildingAssets && assetsManager.buildingAssets.list.map(item => item.assetName);
+            if (!assetLocations) assetLocations = [];
         }
         if (department) {
-            departmentList = {
-                title: "Đơn vị được điền",
-                value: department.list.map(item => item.name)
-            }
+            departmentList = department.list.map(item => item.name);
+            if (!departmentList) departmentList = [];
         }
 
         // Thông tin chung
-        assetGroups = {
-            title: "Nhóm tài sản được điền",
-            value: ["Mặt bằng", "Xe cộ", "Máy móc", "Khác"]
-        }
-        status = {
-            title: "Trạng thái được điền",
-            value: ["Sẵn sàng sử dụng", "Đang sử dụng", "Hỏng hóc", "Mất", "Thanh lý"]
-        }
-        typeRegisterForUse = {
-            title: "Quyền đăng ký sử dụng được điền",
-            value: ["Không đươc đăng ký sử dụng", "Đăng ký sử dụng theo giờ", "Đăng ký sử dụng lâu dài"]
-        }
+        assetGroups = ["Mặt bằng", "Xe cộ", "Máy móc", "Khác"];
+        status = ["Sẵn sàng sử dụng", "Đang sử dụng", "Hỏng hóc", "Mất", "Thanh lý"];
+        typeRegisterForUse = ["Không đươc đăng ký sử dụng", "Đăng ký sử dụng theo giờ", "Đăng ký sử dụng lâu dài"];
 
-        depreciationType = {
-            title: "Phương pháp khấu hao được điền",
-            value: ["Đường thẳng", "Số dư giảm dần", "Sản lượng"]
-        }
+        depreciationType = ["Đường thẳng", "Số dư giảm dần", "Sản lượng"];
 
         // Sự cố tài sản
-        incidentType = {
-            title: "Loại sự cố được điền",
-            value: ["Hỏng hóc", "Mất"]
-        }
-        incidentStatus = {
-            title: "Trạng thái được điền",
-            value: ["Chờ xử lý", "Đấ xử lý"]
-        }
+        incidentType = ["Hỏng hóc", "Mất"];
+        incidentStatus = ["Chờ xử lý", "Đấ xử lý"];
 
         // Bảo trì tài sản
-        maintainanceType = {
-            title: "Phân loại bảo trì được điền",
-            value: ["Sửa chữa", "Thay thế", "Nâng cấp"]
-        }
-        maintainanceStatus = {
-            title: "Trạng thái được điền",
-            value: ["Đã thực hiện", "Đang thực hiện", "Chưa thực hiện"]
-        }
+        maintainanceType = ["Sửa chữa", "Thay thế", "Nâng cấp"];
+        maintainanceStatus = ["Đã thực hiện", "Đang thực hiện", "Chưa thực hiện"];
 
         // Thanh lý tài sản
-        disposalType = {
-            title: "Hình thức thanh lý được điền",
-            value: ["Tiêu hủy", "Nhượng bán", "Tặng"]
-        }
+        disposalType = ["Tiêu hủy", "Nhượng bán", "Tặng"];
 
         for (let i = 0; i < dataTemplate.dataSheets.length; i++) {
             switch (dataTemplate.dataSheets[i].type) {
@@ -182,6 +145,62 @@ class AssetImportForm extends Component {
             }
         }
 
+        let data = [], sheetData;
+        let length = Math.max(userList.length, departmentList.length, assetTypes.length,
+            roles.length, assetLocations.length, assetGroups.length, status.length,
+            typeRegisterForUse.length, depreciationType.length, incidentType.length,
+            incidentStatus.length, maintainanceType.length, maintainanceStatus.length, disposalType.length);
+        
+        for (let i = 0; i < length; i++) {
+            data.push({
+                userList: userList[i] ? userList[i] : "",
+                assetTypes: assetTypes[i] ? assetTypes[i] : "",
+                roles: roles[i] ? roles[i] : "",
+                assetLocations: assetLocations[i] ? assetLocations[i] : "",
+                departmentList: departmentList[i] ? departmentList[i] : "",
+                assetGroups: assetGroups[i] ? assetGroups[i] : "",
+                status: status[i] ? status[i] : "",
+                typeRegisterForUse: typeRegisterForUse[i] ? typeRegisterForUse[i] : "",
+                depreciationType: depreciationType[i] ? depreciationType[i] : "",
+                incidentType: incidentType[i] ? incidentType[i] : "",
+                incidentStatus: incidentStatus[i] ? incidentStatus[i] : "",
+                maintainanceType: maintainanceType[i] ? maintainanceType[i] : "",
+                maintainanceStatus: maintainanceStatus[i] ? maintainanceStatus[i] : "",
+                disposalType: disposalType[i] ? disposalType[i] : ""
+            })
+        }
+
+        sheetData = {
+            sheetName: "Các trường thông tin",
+            tables: [{
+                rowHeader: 1,
+                columns: [
+                    { key: "userList", value: "Người quản lý" },
+                    { key: "assetTypes", value: "Loại tài sản" },
+                    { key: "roles", value: "Role" },
+                    { key: "assetLocations", value: "Vị trí tài sản" },
+                    { key: "departmentList", value: "Đơn vị" },
+                    { key: "assetGroups", value: "Nhóm tài sản" },
+                    { key: "status", value: "Trạng thái tài sản" },
+                    { key: "typeRegisterForUse", value: "Quyền đăng ký sử dụng" },
+                    { key: "depreciationType", value: "Phương pháp khấu hao" },
+                    { key: "incidentType", value: "Loại sự cố" },
+                    { key: "incidentStatus", value: "Trạng thái sự cố" },
+                    { key: "maintainanceType", value: "Phân loại bảo trì" },
+                    { key: "maintainanceStatus", value: "Trạng thái bảo trì" },
+                    { key: "disposalType", value: "Hình thức thanh lý" }
+                ],
+                data: data
+            }]
+        }
+
+        if (dataTemplate.dataSheets.filter(item => item.sheetName === "Các trường thông tin").length === 0) {
+            dataTemplate.dataSheets.push(sheetData);
+        } else {
+            dataTemplate.dataSheets.pop();
+            dataTemplate.dataSheets.push(sheetData);
+        }
+
         return dataTemplate;
     }
 
@@ -198,15 +217,15 @@ class AssetImportForm extends Component {
                     code: dataTemporary.code,
                     assetName: dataTemporary.assetName,
                     serial: dataTemporary.serial,
-                    group: assetGroups.value[0],
-                    assetType: assetTypes.value && assetTypes.value[0] ? (assetTypes.value[1] ? assetTypes.value[0] + ", " + assetTypes.value[1] : assetTypes.value[0]) : "",
+                    group: assetGroups[0],
+                    assetType: assetTypes && assetTypes[0] ? (assetTypes[1] ? assetTypes[0] + ", " + assetTypes[1] : assetTypes[0]) : "",
                     purchaseDate: dataTemporary.purchaseDate,
                     warrantyExpirationDate: dataTemporary.warrantyExpirationDate,
-                    managedBy: userList.value && userList.value[0] ? userList.value[0] : "",
-                    readByRoles: roles.value && roles.value[0] ? (roles.value[1] ? roles.value[0] + ", " + roles.value[1] : roles.value[0]) : "",
-                    location: assetLocations.value && assetLocations.value[0] ? assetLocations.value[0] : "",
-                    status: status.value[0],
-                    typeRegisterForUse: typeRegisterForUse.value[0],
+                    managedBy: userList && userList[0] ? userList[0] : "",
+                    readByRoles: roles && roles[0] ? (roles[1] ? roles[0] + ", " + roles[1] : roles[0]) : "",
+                    location: assetLocations && assetLocations[0] ? assetLocations[0] : "",
+                    status: status[0],
+                    typeRegisterForUse: typeRegisterForUse[0],
                     description: dataTemporary.description
                 }
                 datas = [...datas, out];
@@ -231,7 +250,7 @@ class AssetImportForm extends Component {
                     residualValue: Number(dataTemporary.residualValue),
                     usefulLife: Number(dataTemporary.usefulLife),
                     startDepreciation: dataTemporary.startDepreciation,
-                    depreciationType: depreciationType.value[0]
+                    depreciationType: depreciationType[0]
                 }
                 datas = [...datas, out];
             }
@@ -251,8 +270,8 @@ class AssetImportForm extends Component {
                 let dataTemporary = data[index];
 
                 let out = {
-                    usedByUser: userList.value && userList.value[0] ? userList.value[0] : "",
-                    usedByOrganizationalUnit: departmentList.value && departmentList.value[0] ? departmentList.value[0] : "",
+                    usedByUser: userList && userList[0] ? userList[0] : "",
+                    usedByOrganizationalUnit: departmentList && departmentList[0] ? departmentList[0] : "",
                     startDate: dataTemporary.startDate,
                     endDate: dataTemporary.endDate,
                     description: dataTemporary.description
@@ -276,11 +295,11 @@ class AssetImportForm extends Component {
 
                 let out = {
                     incidentCode: dataTemporary.incidentCode,
-                    type: incidentType.value[0],
-                    reportedBy: userList.value && userList.value[0] ? userList.value[0] : "",
+                    type: incidentType[0],
+                    reportedBy: userList && userList[0] ? userList[0] : "",
                     dateOfIncident: dataTemporary.dateOfIncident,
                     description: dataTemporary.description,
-                    statusIncident: status.value[0]
+                    statusIncident: status[0]
                 }
                 datas = [...datas, out];
             }
@@ -292,15 +311,6 @@ class AssetImportForm extends Component {
 
     // Xử lý dữ liệu export file mẫu bảo trì tài sản 
     convertImportMaintainanceInformationOfAssetTemplate = (dataTemplate, maintainanceType, status) => {
-        maintainanceType = {
-            title: "Phân loại bảo trì được điền",
-            value: ["Sửa chữa", "Thay thế", "Nâng cấp"]
-        }
-        status = {
-            title: "Trạng thái được điền",
-            value: ["Đã thực hiện", "Đang thực hiện", "Chưa thực hiện"]
-        }
-
         for (let j = 0; j < dataTemplate.tables.length; j++) {
             let datas = [];
             let data = dataTemplate.tables[j].data;
@@ -311,12 +321,12 @@ class AssetImportForm extends Component {
                 let out = {
                     maintainanceCode: dataTemporary.maintainanceCode,
                     createDate: dataTemporary.createDate,
-                    type: maintainanceType.value[0],
+                    type: maintainanceType[0],
                     description: dataTemporary.description,
                     startDate: dataTemporary.startDate,
                     endDate: dataTemporary.endDate,
                     expense: Number(dataTemporary.expense),
-                    status: status.value[0]
+                    status: status[0]
                 }
                 datas = [...datas, out];
             }
@@ -337,7 +347,7 @@ class AssetImportForm extends Component {
 
                 let out = {
                     disposalDate: dataTemporary.disposalDate,
-                    disposalType: disposalType.value[0],
+                    disposalType: disposalType[0],
                     disposalCost: Number(dataTemporary.disposalCost),
                     disposalDesc: dataTemporary.disposalDesc,
                 }
@@ -379,14 +389,14 @@ class AssetImportForm extends Component {
 
         if (checkFileImport) {
             let assetTypeArray = [], roleArray = [], assetGroups, status, typeRegisterForUse, checkAssetType = false, checkRole = false;
-            
-            assetGroups = { "Mặt bằng": "Building", "Xe cộ": "Vehicle", "Máy móc": "Machine", "Khác": "Other" };
-            status = ["Sẵn sàng sử dụng", "Đang sử dụng", "Hỏng hóc", "Mất", "Thanh lý"];
+
+            assetGroups = { "Mặt bằng": "building", "Xe cộ": "vehicle", "Máy móc": "machine", "Khác": "other" };
+            status = { "Sẵn sàng sử dụng": "ready_to_use", "Đang sử dụng": "in_use", "Hỏng hóc": "broken", "Mất": "lost", "Thanh lý": "disposed" };
             typeRegisterForUse = { "Không đươc đăng ký sử dụng": 1, "Đăng ký sử dụng theo giờ": 2, "Đăng ký sử dụng lâu dài": 3 };
-            
+
             value = value.map((item, index) => {
                 let errorAlert = [];
-                
+
                 assetTypeArray = item.assetType && item.assetType.split(", ");
                 roleArray = item.readByRoles && item.readByRoles.split(", ");
                 assetTypeArray.map(item => {
@@ -404,7 +414,7 @@ class AssetImportForm extends Component {
                     || (item.group && !assetGroups[item.group])
                     || (item.assetType && checkAssetType)
                     || (item.typeRegisterForUse && !typeRegisterForUse[item.typeRegisterForUse])
-                    || (item.status && !status.includes(item.status))
+                    || (item.status && !status[item.status])
                     || (item.managedBy && !managers[item.managedBy])
                     || (item.readByRoles && checkRole)
                     || (item.location && !assetLocations[item.location])
@@ -435,7 +445,7 @@ class AssetImportForm extends Component {
 
                 if (!item.status) {
                     errorAlert = [...errorAlert, 'Trạng thái không được để trống'];
-                } else if (item.status && !status.includes(item.status)) {
+                } else if (item.status && !status[item.status]) {
                     errorAlert = [...errorAlert, 'Trạng thái không chính xác'];
                 }
 
@@ -470,7 +480,8 @@ class AssetImportForm extends Component {
                         managedBy: managers[item.manager],
                         location: assetLocations[item.location],
                         group: assetGroups[item.group],
-                        typeRegisterForUse: typeRegisterForUse[item.typeRegisterForUse]
+                        typeRegisterForUse: typeRegisterForUse[item.typeRegisterForUse],
+                        status: status[item.status]
                     }
                 ];
 
@@ -502,13 +513,13 @@ class AssetImportForm extends Component {
     // Xử lý file import khấu hao tài sản
     handleImportExcelDepreciationInformation = (value, checkFileImport) => {
         let rowError = [], importDepreciationInformationData = [];
-        
+
         if (checkFileImport) {
             value = value.map((item, index) => {
                 let errorAlert = [];
-                let depreciationType = ["Đường thẳng", "Số dư giảm dần", "Sản lượng"];
+                let depreciationType = { "Đường thẳng": "straight_line", "Số dư giảm dần": "declining_balance", "Sản lượng": "units_of_production" };
 
-                if (!item.cost || !item.usefulLife || !item.startDepreciation || !item.depreciationType || !depreciationType.includes(item.depreciationType)) {
+                if (!item.cost || !item.usefulLife || !item.startDepreciation || !item.depreciationType || !depreciationType[item.depreciationType]) {
                     rowError = [...rowError, index + 1];
                     item = { ...item, error: true };
                 }
@@ -528,12 +539,17 @@ class AssetImportForm extends Component {
                 if (!item.depreciationType) {
                     errorAlert = [...errorAlert, 'Phương pháp khấu hao không được để trống'];
                 }
-                else if (!depreciationType.includes(item.depreciationType)) {
+                else if (!depreciationType[item.depreciationType]) {
                     errorAlert = [...errorAlert, 'Phương pháp khấu hao không chính xác'];
                 }
 
                 item = { ...item, errorAlert: errorAlert };
-                importDepreciationInformationData = [...importDepreciationInformationData, item]
+                importDepreciationInformationData = [...importDepreciationInformationData,
+                    {
+                        ...item,
+                        depreciationType: depreciationType[item.depreciationType]
+                    }
+                ]
                 return item;
             });
 
@@ -563,7 +579,7 @@ class AssetImportForm extends Component {
         const { user, department } = this.props;
         let userList = {}, departmentList = {};
         let rowError = [], importUsageInformationData = [];
-         
+
         if (user) {
             user.list.map(item => {
                 userList[item.name + " - " + item.email] = item._id;
@@ -574,7 +590,7 @@ class AssetImportForm extends Component {
                 departmentList[item.name] = item._id;
             })
         }
-         
+
         if (checkFileImport) {
             value = value.map((item, index) => {
                 let errorAlert = [];
@@ -636,13 +652,13 @@ class AssetImportForm extends Component {
         const { user } = this.props;
         let userList = {};
         let rowError = [], importIncidentInformationData = [];
-         
+
         if (user) {
             user.list.map(item => {
                 userList[item.name + " - " + item.email] = item._id;
             })
         }
-         
+
         if (checkFileImport) {
             value = value.map((item, index) => {
                 let errorAlert = [];
@@ -711,7 +727,7 @@ class AssetImportForm extends Component {
     // Xử lý file import bảo trì tài sản
     handleImportExcelMaintainanceInformation = (value, checkFileImport) => {
         let rowError = [], importMaintainanceInformationData = [];
-         
+
         if (checkFileImport) {
             value = value.map((item, index) => {
                 let errorAlert = [];
@@ -760,7 +776,7 @@ class AssetImportForm extends Component {
     // Xử lý file import thanh lý tài sản
     handleImportExcelDisposalInformation = (value, checkFileImport) => {
         let rowError = [], importDisposalInformationData = [];
-         
+
         if (checkFileImport) {
             value = value.map((item, index) => {
                 let errorAlert = [];
@@ -803,13 +819,13 @@ class AssetImportForm extends Component {
 
     render() {
         const { translate } = this.props;
- 
+
         let importAssetTemplateData = this.convertAssetTemplate(importAssetTemplate);
-        
+
         return (
             <React.Fragment>
                 <DialogModal
-                    size='75' modalID="modal-import-asset" 
+                    size='75' modalID="modal-import-asset"
                     formID="form-import-asset"
                     title={translate('menu.add_asset')}
                     func={this.save}

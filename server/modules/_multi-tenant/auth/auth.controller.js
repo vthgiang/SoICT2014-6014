@@ -86,7 +86,7 @@ exports.forgetPassword = async (req, res) => {
 
 exports.resetPassword = async (req, res) => {
     try {
-        const resetPassword = await AuthService.resetPassword(req.portal, req.body.otp, req.body.email, req.body.password);
+        const resetPassword = await AuthService.resetPassword(req.body.portal, req.body.otp, req.body.email, req.body.password);
 
         await Logger.info(req.body.email, 'reset_password_success');
         res.status(200).json({
@@ -112,7 +112,6 @@ exports.changeInformation = async (req, res) => {
         if(req.file){
             let path = req.file.destination +'/'+ req.file.filename;
             avatar = path.substr(1, path.length)
-            console.log("file: ", req.files)
         }
         const profile = await AuthService.changeInformation(req.portal, req.params.id, req.body.name, req.body.email, avatar);
 

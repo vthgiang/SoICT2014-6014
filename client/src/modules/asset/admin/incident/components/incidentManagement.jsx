@@ -38,7 +38,10 @@ class IncidentManagement extends Component {
         this.props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
         this.props.getUser();
         this.props.getIncidents(this.state);
-        this.props.getAllAsset(this.state);
+        
+        if(!this.props.isActive || this.props.isActive === "tab-pane active") {
+            this.props.getAllAsset(this.state);
+        }
     }
 
 
@@ -268,7 +271,7 @@ class IncidentManagement extends Component {
         if (type == 1) {
             return 'Hỏng';
         } else if (type == 2) {
-            return 'Mất'
+            return 'lost'
         } else {
             return 'Type is deleted'
         }
@@ -326,8 +329,8 @@ class IncidentManagement extends Component {
                                 options={{ nonSelectedText: "Chọn loại sự cố", allSelectedText: "Chọn tất cả" }}
                                 onChange={this.handleIncidentTypeChange}
                                 items={[
-                                    { value: 1, text: "Hỏng" },
-                                    { value: 2, text: "Mất" },
+                                    { value: "broken", text: "Hỏng" },
+                                    { value: "lost", text: "Mất" },
                                 ]}
                             >
                             </SelectMulti>

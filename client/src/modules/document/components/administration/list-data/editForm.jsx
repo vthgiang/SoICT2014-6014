@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
-import { DialogModal, ButtonModal, DateTimeConverter, SelectBox, DatePicker, TreeSelect, ErrorLabel } from '../../../../../common-components';
+import { DialogModal, ButtonModal, DateTimeConverter, SelectBox, DatePicker, TreeSelect, ErrorLabel, UploadFile } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
 import moment from 'moment';
 import { getStorage } from "../../../../../config";
@@ -156,12 +156,36 @@ class EditForm extends Component {
             }
         })
     }
-    handleUploadFile = (e) => {
-        this.setState({ documentFile: e.target.files[0] });
+    handleUploadFile = (file) => {
+        file = file.map(x => {
+            return {
+                fileName: x.fileName,
+                url: x.urlFile,
+                fileUpload: x.fileUpload
+            }
+        })
+        this.setState(state => {
+            return {
+                ...state,
+                documentFile: file
+            }
+        });
     }
 
-    handleUploadFileScan = (e) => {
-        this.setState({ documentFileScan: e.target.files[0] });
+    handleUploadFileScan = (file) => {
+        file = file.map(x => {
+            return {
+                fileName: x.fileName,
+                url: x.urlFile,
+                fileUpload: x.fileUpload
+            }
+        })
+        this.setState(state => {
+            return {
+                ...state,
+                documentFileScan: file
+            }
+        });
     }
 
 
@@ -416,6 +440,7 @@ class EditForm extends Component {
         const formData = new FormData();
         formData.append('name', documentName);
 
+        console.log('uuuuuuuuuuu', documentArchivedRecordPlaceOrganizationalUnit)
         if (documentName !== this.props.documentName) {
             if (!title.includes("Chỉnh sửa thông tin văn bản.")) {
                 title = (title + " Chỉnh sửa thông tin văn bản ");
@@ -521,10 +546,12 @@ class EditForm extends Component {
                 description += nameRole[0].text + " ";
             }
         }
+        console.log("aaaaaaaaaa", documentArchivedRecordPlaceOrganizationalUnit, this.props.documentArchivedRecordPlaceOrganizationalUnit, documentArchivedRecordPlaceOrganizationalUnit !== this.props.documentArchivedRecordPlaceOrganizationalUnit)
         if (documentArchivedRecordPlaceOrganizationalUnit !== this.props.documentArchivedRecordPlaceOrganizationalUnit) {
             if (!title.includes("Chỉnh sửa đơn vị quản lí")) {
                 title += "Chỉnh sửa đơn vị quản lí"
             }
+            console.log('iiiiiiiiiiiiiiiiiii', documentArchivedRecordPlaceOrganizationalUnit, this.props.documentArchivedRecordPlaceOrganizationalUnit, documentArchivedRecordPlaceOrganizationalUnit !== this.props.documentArchivedRecordPlaceOrganizationalUnit)
             let newDepartment;
             newDepartment = department.list.filter(d => d._id === documentArchivedRecordPlaceOrganizationalUnit)
             description += "Đơn vị quản lí mới " + newDepartment[0].name + ". "
@@ -559,6 +586,7 @@ class EditForm extends Component {
             documentFileScan
         } = this.state;
         let title, descriptions;
+        // console.log('dateeee', documentIssuingDate)
         title = "Thêm phiên bản mới";
         const formData = new FormData();
         if (documentVersionName) {
@@ -594,6 +622,7 @@ class EditForm extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
+        console.log('ffffffffffff', nextProps.documentVersions)
         if (nextProps.documentId !== prevState.documentId) {
             return {
                 ...prevState,
@@ -707,6 +736,7 @@ class EditForm extends Component {
         const relationshipDocs = documents.administration.data.list.filter(doc => doc._id !== documentId).map(doc => { return { value: doc._id, text: doc.name } })
         const archives = documents.administration.archives.list;
         let path = documentArchives ? this.findPath(archives, documentArchives) : "";
+        console.log('versionnnnnnn', documentVersions)
         return (
             <React.Fragment>
                 <DialogModal
@@ -811,21 +841,23 @@ class EditForm extends Component {
                                                     </div>
                                                     <div className="form-group">
                                                         <label>{translate('document.upload_file')}</label>
-                                                        <br />
+                                                        <UploadFile multiple={true} onChange={this.handleUploadFile} />
+                                                        {/* <br />
                                                         <div className="upload btn btn-primary">
                                                             <i className="fa fa-folder"></i>
                                                             {" " + translate('document.choose_file')}
                                                             <input className="upload" type="file" name="file" onChange={this.handleUploadFile} />
-                                                        </div>
+                                                        </div> */}
                                                     </div>
                                                     <div className="form-group">
                                                         <label>{translate('document.upload_file_scan')}</label>
-                                                        <br />
+                                                        <UploadFile multiple={true} onChange={this.handleUploadFileScan} />
+                                                        {/* <br />
                                                         <div className="upload btn btn-primary">
                                                             <i className="fa fa-folder"></i>
                                                             {" " + translate('document.choose_file')}
                                                             <input className="upload" type="file" name="file" onChange={this.handleUploadFileScan} />
-                                                        </div>
+                                                        </div> */}
                                                     </div>
                                                     <div className="form-group">
                                                         <label>{translate('document.doc_version.issuing_date')}</label>

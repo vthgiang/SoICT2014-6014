@@ -356,7 +356,7 @@ exports.getTasksByListKpis =async(data) =>
             infosearch[infosearch.length-1].push({ id:kpis[j]._id, employeeId: listkpis[i].creator._id, date: listkpis[i].date, kpiType:kpis[j].type })
         }
     }
-
+    
     let listTask = [],tasks;
     for(let i =0;i< infosearch.length;i++)
     {
@@ -365,11 +365,13 @@ exports.getTasksByListKpis =async(data) =>
         {
             listTask[listTask.length-1].push([]);
             tasks =await getResultTaskByMonth(infosearch[i][j]);
+            console.log("\n\n\n\n\n\n\n\n",tasks)
             let lastIndex =listTask[listTask.length-1].length-1;
             listTask[listTask.length-1][lastIndex]=tasks;
         }
         
     }
+ 
     return listTask;
 }
 async function getResultTaskByMonth(data) {
@@ -378,11 +380,11 @@ async function getResultTaskByMonth(data) {
     let yearkpi = parseInt(date.getFullYear());
     let kpiType;
     if (data.kpiType === "1") {
-        kpiType = "Accountable";
+        kpiType = "accountable";
     } else if (data.kpiType === "2") {
-        kpiType = "Consulted";
+        kpiType = "consulted";
     } else {
-        kpiType = "Responsible";
+        kpiType = "responsible";
     }
 
     let conditions = [
@@ -401,11 +403,20 @@ async function getResultTaskByMonth(data) {
         { $match: { 'results.employee': mongoose.Types.ObjectId(data.employeeId) } },
         { $match: { "month": monthkpi } },
         { $match: { "year": yearkpi } },
+        
+        {
+            $lookup:
+              {
+                from: "organizational_units",
+                localField: "evaluations.results.organizationalUnit",
+                foreignField: "_id",
+                as: "organizationalUnitInfo"
+              }
+         }
     ]
+    
 
-
-
-    let task = await Task.aggregate(conditions);
+    let task = await Task.aggregate(conditions)
     for (let i = 0; i < task.length; i++) {
         let x = task[i];
         let date = await new Date(x.date);
@@ -435,5 +446,10 @@ async function getResultTaskByMonth(data) {
             task[i].preEvaDate = await preEval[0].date;
         }
     }
+    console.log("\n\n\n\n\n\n\n\n\n\n",task)
+    task = await OrganizationalUnit.populate(
+        task, { path: 'results.organizationalUnit'},
+    );
+    
     return task;
 }

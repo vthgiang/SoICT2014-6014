@@ -3,6 +3,11 @@ const Schema = mongoose.Schema;
 
 // Bảng đề nghị mua sắm thiết bị
 const AssetPurchaseRequestSchema = new Schema({
+    company: { //thuộc công ty nào
+        type: Schema.Types.ObjectId,
+        ref: 'companies',
+        required: true
+    },
     recommendNumber: { //mã phiếu
         type: String,
         required: true

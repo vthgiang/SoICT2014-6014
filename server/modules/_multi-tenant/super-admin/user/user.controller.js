@@ -12,7 +12,7 @@ exports.getUsers = async (req, res) => {
     }
     else {
         try {
-            var users = await UserService.getUsers(req.portal, req.query);
+            var users = await UserService.getUsers(req.portal, req.user.company._id, req.query);
             Logger.info(req.user.email, 'get_users_success', req.portal);
 
             res.status(200).json({
@@ -118,7 +118,7 @@ exports.getOrganizationalUnitsOfUser = async (req, res) => {
 
 exports.createUser = async (req, res) => {
     try {
-        var user = await UserService.createUser(req.portal, req.body);
+        var user = await UserService.createUser(req.portal, req.body, req.user.company._id);
         await UserService.addRolesForUser(req.portal, user._id, req.body.roles);
         var result = await UserService.getUser(req.portal, user._id);
 

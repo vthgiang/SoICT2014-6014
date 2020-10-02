@@ -178,9 +178,10 @@ exports.createXmlDiagram = async (body) => {
         });
     }
 
-    data = await ProcessTemplate.findById(data._id).populate({ path: 'creator', model: User, select: 'name' });
+    data = await ProcessTemplate.findById(data._id).populate([{ path: 'creator', model: User, select: 'name' }, { path: 'manager', model: Role, select: 'name' }]);
     return data;
 }
+
 
 
 /**
@@ -323,9 +324,9 @@ exports.createTaskByProcess = async (processId, body) => {
         }
         // }
 
-        let status = "WaitForApproval";
+        let status = "wait_for_approval";
         if (isStartTask(data[i])) {
-            status = "Inprocess";
+            status = "inprocess";
         }
 
         let formula = data[i].formula;
@@ -360,7 +361,7 @@ exports.createTaskByProcess = async (processId, body) => {
             confirmedByEmployees: data[i].responsibleEmployees.concat(data[i].accountableEmployees).concat(data[i].consultedEmployees).includes(data[i].creator) ? data[i].creator : []
         });
 
-        let x = await TaskService.sendEmailFoCreateTask(newTaskItem);
+        let x = await TaskService.sendEmailForCreateTask(newTaskItem);
 
         mailInfoArr.push(x);
         listTask.push(newTaskItem._id);
@@ -373,7 +374,7 @@ exports.createTaskByProcess = async (processId, body) => {
             let item = await Task.findOne({ process: taskProcessId, codeInProcess: data[x].followingTasks[i].task });
 
             if (item) {
-                if (item.status === "Inprocess") {
+                if (item.status === "inprocess") {
                     listFollowingTask.push({
                         task: item._id,
                         link: data[x].followingTasks[i].link,

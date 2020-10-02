@@ -361,7 +361,7 @@ exports.createTaskByProcess = async (portal, processId, body) => {
             confirmedByEmployees: data[i].responsibleEmployees.concat(data[i].accountableEmployees).concat(data[i].consultedEmployees).includes(data[i].creator) ? data[i].creator : []
         });
 
-        let x = await TaskService.sendEmailFoCreateTask(portal, newTaskItem);
+        let x = await TaskService.sendEmailForCreateTask(portal, newTaskItem);
 
         mailInfoArr.push(x);
         listTask.push(newTaskItem._id);
@@ -374,10 +374,20 @@ exports.createTaskByProcess = async (portal, processId, body) => {
             let item = await Task(connect(DB_CONNECTION, portal)).findOne({ process: taskProcessId, codeInProcess: data[x].followingTasks[i].task });
 
             if (item) {
-                listFollowingTask.push({
-                    task: item._id,
-                    link: data[x].followingTasks[i].link,
-                })
+                if (item.status === "inprocess") {
+                    listFollowingTask.push({
+                        task: item._id,
+                        link: data[x].followingTasks[i].link,
+                        activated: true,
+                    })
+                }
+                else {
+                    listFollowingTask.push({
+                        task: item._id,
+                        link: data[x].followingTasks[i].link,
+                    })
+                }
+
             }
         }
         for (let i in data[x].preceedingTasks) {

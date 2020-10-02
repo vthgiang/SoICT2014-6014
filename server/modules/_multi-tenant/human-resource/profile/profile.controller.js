@@ -44,7 +44,7 @@ exports.updatePersonalInformation = async (req, res) => {
         if (req.file !== undefined) {
             avatar = `/${req.file.path}`;
         }
-        var data = await EmployeeService.updatePersonalInformation(req.portal, req.params.userId, req.body, avatar);
+        let data = await EmployeeService.updatePersonalInformation(req.portal, req.params.userId, req.body, avatar);
         await Log.info(req.user.email, 'EDIT_INFOR_PERSONAL', req.portal);
         res.status(200).json({
             success: true,
@@ -255,14 +255,14 @@ exports.createEmployee = async (req, res) => {
                         }
                     });
                 } else {
-                    var data = await EmployeeService.createEmployee(req.portal, req.body, req.user.company._id, fileInfor);
+                    let data = await EmployeeService.createEmployee(req.portal, req.body, req.user.company._id, fileInfor);
                     let checkUser = await UserService.checkUserExited(req.portal, req.body.emailInCompany);
                     if (checkUser === false) {
                         let userInfo = {
                             email: req.body.emailInCompany,
                             name: req.body.fullName
                         }
-                        await UserService.createUser(req.portal, userInfo, req.user.company._id);
+                        await UserService.createUser(req.portal, userInfo);
                     }
                     await Log.info(req.user.email, 'CREATE_EMPLOYEE', req.portal);
                     res.status(200).json({
@@ -314,7 +314,7 @@ exports.updateEmployeeInformation = async (req, res) => {
         };
         // Kiểm tra dữ liệu truyền vào
         if (req.body.employee.employeeNumber === undefined || req.body.employee.employeeNumber.trim() === "") {
-            await Log.error(req.user.email, 'CREATE_EMPLOYEE', req.portal);
+            await Log.error(req.user.email, 'EDIT_EMPLOYEE', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["employee_number_required"],
@@ -323,7 +323,7 @@ exports.updateEmployeeInformation = async (req, res) => {
                 }
             });
         } else if (req.body.employee.emailInCompany === undefined || req.body.employee.emailInCompany.trim() === "") {
-            await Log.error(req.user.email, 'CREATE_EMPLOYEE', req.portal);
+            await Log.error(req.user.email, 'EDIT_EMPLOYEE', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["email_in_company_required"],
@@ -332,7 +332,7 @@ exports.updateEmployeeInformation = async (req, res) => {
                 }
             });
         } else if (req.body.employee.employeeTimesheetId === undefined || req.body.employee.employeeTimesheetId.trim() === "") {
-            await Log.error(req.user.email, 'CREATE_EMPLOYEE', req.portal);
+            await Log.error(req.user.email, 'EDIT_EMPLOYEE', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["employee_timesheet_id_required"],
@@ -341,7 +341,7 @@ exports.updateEmployeeInformation = async (req, res) => {
                 }
             });
         } else if (req.body.employee.fullName === undefined || req.body.employee.fullName.trim() === "") {
-            await Log.error(req.user.email, 'CREATE_EMPLOYEE', req.portal);
+            await Log.error(req.user.email, 'EDIT_EMPLOYEE', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["full_name_required"],
@@ -350,7 +350,7 @@ exports.updateEmployeeInformation = async (req, res) => {
                 }
             });
         } else if (req.body.employee.birthdate === undefined || req.body.employee.birthdate.trim() === "") {
-            await Log.error(req.user.email, 'CREATE_EMPLOYEE', req.portal);
+            await Log.error(req.user.email, 'EDIT_EMPLOYEE', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["birthdate_required"],
@@ -359,7 +359,7 @@ exports.updateEmployeeInformation = async (req, res) => {
                 }
             });
         } else if (req.body.employee.identityCardNumber.toString() === undefined || req.body.employee.identityCardNumber.toString().trim() === "") {
-            await Log.error(req.user.email, 'CREATE_EMPLOYEE', req.portal);
+            await Log.error(req.user.email, 'EDIT_EMPLOYEE', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["identity_card_number_required"],
@@ -368,7 +368,7 @@ exports.updateEmployeeInformation = async (req, res) => {
                 }
             });
         } else if (req.body.employee.identityCardDate === undefined || req.body.employee.identityCardDate.trim() === "") {
-            await Log.error(req.user.email, 'CREATE_EMPLOYEE', req.portal);
+            await Log.error(req.user.email, 'EDIT_EMPLOYEE', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["identity_card_date_required"],
@@ -377,7 +377,7 @@ exports.updateEmployeeInformation = async (req, res) => {
                 }
             });
         } else if (req.body.employee.identityCardAddress === undefined || req.body.employee.identityCardAddress.trim() === "") {
-            await Log.error(req.user.email, 'CREATE_EMPLOYEE', req.portal);
+            await Log.error(req.user.email, 'EDIT_EMPLOYEE', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["identity_card_address_required"],
@@ -386,7 +386,7 @@ exports.updateEmployeeInformation = async (req, res) => {
                 }
             });
         } else if (req.body.employee.phoneNumber.toString() === undefined || req.body.employee.phoneNumber.toString().trim() === "") {
-            await Log.error(req.user.email, 'CREATE_EMPLOYEE', req.portal);
+            await Log.error(req.user.email, 'EDIT_EMPLOYEE', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["phone_number_required"],
@@ -395,7 +395,7 @@ exports.updateEmployeeInformation = async (req, res) => {
                 }
             });
         } else if (req.body.employee.temporaryResidence === undefined || req.body.employee.temporaryResidence.trim() === "") {
-            await Log.error(req.user.email, 'CREATE_EMPLOYEE', req.portal);
+            await Log.error(req.user.email, 'EDIT_EMPLOYEE', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["temporary_residence_required"],
@@ -409,7 +409,7 @@ exports.updateEmployeeInformation = async (req, res) => {
                 // Kiểm tra sự tồn tại của mã nhân viên
                 let checkMSNV = await EmployeeService.checkEmployeeExisted(req.portal, req.body.employee.employeeNumber, req.user.company._id);
                 if (checkMSNV === true) {
-                    await Log.error(req.user.email, 'CREATE_EMPLOYEE', req.portal);
+                    await Log.error(req.user.email, 'EDIT_EMPLOYEE', req.portal);
                     res.status(400).json({
                         success: false,
                         messages: ["employee_number_have_exist"],
@@ -423,7 +423,7 @@ exports.updateEmployeeInformation = async (req, res) => {
                 // Kiểm tra sự tồn tại của email công ty nhân viên
                 let checkEmail = await EmployeeService.checkEmployeeCompanyEmailExisted(req.portal, req.body.employee.emailInCompany);
                 if (checkEmail === true) {
-                    await Log.error(req.user.email, 'CREATE_EMPLOYEE', req.portal);
+                    await Log.error(req.user.email, 'EDIT_EMPLOYEE', req.portal);
                     res.status(400).json({
                         success: false,
                         messages: ["email_in_company_have_exist"],
@@ -433,7 +433,15 @@ exports.updateEmployeeInformation = async (req, res) => {
                     });
                 }
             }
-            var data = await EmployeeService.updateEmployeeInformation(req.portal, req.params.id, req.body, fileInfor, req.user.company._id);
+            let data = await EmployeeService.updateEmployeeInformation(req.portal, req.params.id, req.body, fileInfor, req.user.company._id);
+            let checkUser = await UserService.checkUserExited(req.portal, req.body.employee.emailInCompany);
+            if (checkUser === false) {
+                let userInfo = {
+                    email: req.body.employee.emailInCompany,
+                    name: req.body.employee.fullName
+                }
+                await UserService.createUser(req.portal, userInfo);
+            }
             await Log.info(req.user.email, 'EDIT_EMPLOYEE', req.portal);
             res.status(200).json({
                 success: true,
@@ -458,7 +466,7 @@ exports.updateEmployeeInformation = async (req, res) => {
  */
 exports.deleteEmployee = async (req, res) => {
     try {
-        var data = await EmployeeService.deleteEmployee(req.portal, req.params.id);
+        let data = await EmployeeService.deleteEmployee(req.portal, req.params.id);
         res.status(200).json({
             success: true,
             messages: ["delete_employee_success"],
@@ -521,7 +529,7 @@ exports.importEmployees = async (req, res) => {
                             email: x.emailInCompany,
                             name: x.fullName
                         }
-                        await UserService.createUser(req.portal, userInfo, req.user.company._id);
+                        await UserService.createUser(req.portal, userInfo);
                     }
                 }
             }

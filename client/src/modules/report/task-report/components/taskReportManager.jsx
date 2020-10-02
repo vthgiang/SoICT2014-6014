@@ -5,13 +5,12 @@ import Swal from 'sweetalert2';
 
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { ButtonModal } from '../../../../common-components';
-import { DataTableSetting, PaginateBar, DatePicker } from '../../../../common-components';
+import { DataTableSetting, PaginateBar, DatePicker, SelectMulti } from '../../../../common-components';
 import { TaskReportActions } from '../redux/actions';
 import { TaskReportCreateForm } from './taskReportCreateForm';
 import { TaskReportEditForm } from './taskReportEditForm';
 import { TaskReportDetailForm } from './taskReportDetailForm';
-import moment from 'moment';
-
+import './transferList.css';
 
 class TaskReportManager extends Component {
     constructor(props) {
@@ -21,9 +20,7 @@ class TaskReportManager extends Component {
             page: 0,
             name: '',
             month: null,
-            creator: '',
             currentRole: localStorage.getItem("userId"),
-            chartStatus: false,
         }
     }
     componentDidMount() {
@@ -168,8 +165,8 @@ class TaskReportManager extends Component {
     }
 
     checkPermissonCreator = (creator) => {
-        let currentRole = this.state.currentRole;
-        if (currentRole === creator) {
+        const { currentRole } = this.state;
+        if (currentRole === creator.toString()) {
             return true;
         }
         return false;
@@ -202,7 +199,10 @@ class TaskReportManager extends Component {
         } else return [day, month, year].join('-');
     }
 
-
+    /**
+     * Hàm bắt sự kiện thay đổi ô tìm kiếm theo tháng
+     * @param {*} value 
+     */
     handleMonthChange = (value) => {
         let partMonth = value.split('-');
         value = [partMonth[1], partMonth[0]].join('-');
@@ -212,32 +212,62 @@ class TaskReportManager extends Component {
         });
     }
 
+    /**
+     * Hàm bắt sự kiện thay đổi tìm kiếm theo đơn vị
+     * @param {*} value 
+     */
+    handleSelectOrganizationalUnit = (value) => {
+        this.setState({
+            ...this.state,
+            organizationalUnit: value,
+        })
+    }
+
     render() {
-        const { reports, translate, deleteTaskReport, user } = this.props;
-        let pageTotal = (reports.totalList % this.state.limit === 0) ?
-            parseInt(reports.totalList / this.state.limit) :
-            parseInt((reports.totalList / this.state.limit) + 1);
-        let page = parseInt((this.state.page / this.state.limit) + 1);
+        const { reports, translate, user } = this.props;
+        const { limit, page, currentEditRow, currentViewRow } = this.state;
+
+        let pageTotal = (reports.totalList % limit === 0) ?
+            parseInt(reports.totalList / limit) :
+            parseInt((reports.totalList / limit) + 1);
+        let cr_page = parseInt((page / limit) + 1);
+        let units;
+
+        if (user.organizationalUnitsOfUser) {
+            units = user.organizationalUnitsOfUser;
+        }
+
 
         return (
             <div className="box">
                 <div className="box-body qlcv" >
-
-                    <TaskReportEditForm taskReportId={this.state.currentEditRow} />
+                    {
+                        currentEditRow && <TaskReportEditForm taskReportId={currentEditRow} />
+                    }
 
                     {/* Thêm mới bao cáo */}
                     <div style={{ height: '40px' }}>
                         <ButtonModal modalID="modal-create-task-report" button_name={translate('report_manager.add_report')} title={translate('report_manager.add_report')} />
                     </div>
+
                     <TaskReportCreateForm />
 
-                    <TaskReportDetailForm taskReportId={this.state.currentViewRow} />
+                    {
+                        currentViewRow && <TaskReportDetailForm taskReportId={currentViewRow} />
+                    }
 
                     {/* search form */}
                     <div className="form-inline" style={{ marginBottom: '2px' }}>
-                        <div className="form-group">
-                            <label className="form-control-static">{translate('report_manager.name')}</label>
-                            <input className="form-control" type="text" onKeyUp={this.handleEnterLimitSetting} name="name" onChange={this.handleChangeInput} placeholder={translate('report_manager.search_by_name')} />
+                        <div className="form-group unitSearch">
+                            <label>{translate('task.task_management.department')}</label>
+                            {units &&
+                                <SelectMulti id="multiSelectUnit1"
+                                    defaultValue={units.map(item => { return item._id })}
+                                    items={units.map(item => { return { value: item._id, text: item.name } })}
+                                    onChange={this.handleSelectOrganizationalUnit}
+                                    options={{ nonSelectedText: units.length !== 0 ? translate('task.task_management.select_department') : "Bạn chưa có đơn vị", allSelectedText: translate(`task.task_management.select_all_department`) }}>
+                                </SelectMulti>
+                            }
                         </div>
                         <div className="form-group">
                             <label className="form-control-static">{translate('report_manager.creator')}</label>
@@ -246,6 +276,11 @@ class TaskReportManager extends Component {
                     </div>
 
                     <div className="form-inline" style={{ marginBottom: 10 }}>
+                        <div className="form-group">
+                            <label className="form-control-static">{translate('report_manager.name')}</label>
+                            <input className="form-control" type="text" onKeyUp={this.handleEnterLimitSetting} name="name" onChange={this.handleChangeInput} placeholder={translate('report_manager.search_by_name')} />
+                        </div>
+
                         <div className="form-group">
                             <label className="form-control-static">Tháng</label>
                             <DatePicker
@@ -256,6 +291,9 @@ class TaskReportManager extends Component {
                             />
                         </div>
 
+                    </div>
+
+                    <div className="form-inline">
                         <div className="form-group" >
                             <label></label>
                             <button type="button" className="btn btn-success" onClick={this.search} title={translate('form.search')}>{translate('form.search')}</button>
@@ -289,18 +327,18 @@ class TaskReportManager extends Component {
                         </thead>
                         <tbody>
                             {
-                                (reports && reports.listTaskReport && reports.listTaskReport.length !== 0 && typeof reports.listTaskReport !== 'undefined') ? reports.listTaskReport.map(item => (
+                                (reports && reports.listTaskReport && reports.listTaskReport.length > 0) ? reports.listTaskReport.map(item => (
                                     <tr key={item._id}>
                                         <td>{item.name} </td>
                                         <td>{item.description}</td>
-                                        <td>{item.creator.name}</td>
+                                        <td>{(item.creator && item.creator.length > 0) ? item.creator.map(o => o.name) : null}</td>
                                         <td>{item.createdAt.slice(0, 10)}</td>
                                         <td style={{ textAlign: 'center' }}>
                                             <a onClick={() => this.handleView(item._id)}><i className="material-icons">visibility</i></a>
 
                                             {/* Check nếu là người tạo thì có thể sửa, xóa báo cáo */}
                                             {
-                                                (this.checkPermissonDean(item.organizationalUnit.deans) || this.checkPermissonCreator(item.creator._id)) &&
+                                                (this.checkPermissonDean(item.organizationalUnit.deans) || this.checkPermissonCreator(item.creator && item.creator.length > 0 && item.creator.map(o => o._id))) &&
                                                 <React.Fragment>
                                                     <a onClick={() => this.handleEdit(item._id)} className="edit text-yellow" style={{ width: '5px' }} title={translate('report_manager.edit')}><i className="material-icons">edit</i></a>
                                                     <a onClick={() => this.handleDelete(item._id, item.name)} className="delete" title={translate('report_manager.title_delete')}>
@@ -318,7 +356,7 @@ class TaskReportManager extends Component {
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
                         reports.listTaskReport && reports.listTaskReport.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>}
 
-                    <PaginateBar pageTotal={pageTotal ? pageTotal : ""} currentPage={page} func={this.setPage} />
+                    <PaginateBar pageTotal={pageTotal ? pageTotal : ""} currentPage={cr_page} func={this.setPage} />
                 </div>
             </div>
         );

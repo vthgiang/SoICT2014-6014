@@ -132,7 +132,7 @@ exports.createTaskAction = async (req, res) => {
         var tasks = task.tasks;
         var user = task.user;
         var data = { "organizationalUnits": tasks.organizationalUnit, "title": "Phê duyệt hoạt động", "level": "general", "content": `<p><strong>${user.name}</strong> đã thêm mới hoạt động cho công việc <strong>${tasks.name}</strong>, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`, "sender": user.name, "users": [tasks.accountableEmployees] };
-        NotificationServices.createNotification(tasks.organizationalUnit, data,);
+        NotificationServices.createNotification(req.portal, tasks.organizationalUnit, data,);
         sendEmail(task.email, "Phê duyệt hoạt động", '', `<p><strong>${user.name}</strong> đã thêm mới hoạt động, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`);
         await Logger.info(req.user.email, ` create task action  `, req.portal)
         res.status(200).json({
@@ -922,22 +922,34 @@ editArchivedOfTask = async (req, res) => {
  * Chinh sua trang thai cua cong viec
  */
 editActivateOfTask = async (req, res) => {
-    try {
-        let task = await PerformTaskService.editActivateOfTask(req.portal, req.params.taskId, req.body);
-        await Logger.info(req.user.email, ` edit status of task  `, req.portal);
+    // try {
+        let data = await PerformTaskService.editActivateOfTask(req.portal, req.params.taskId, req.body);
+        let task = data.task;
+        let mails = data.mailInfo;
+		for (let i in mails) {
+			let task = mails[i].task;
+			let user = mails[i].user;
+			let email = mails[i].email;
+			let html = mails[i].html;
+
+			let mailData = { "organizationalUnits": task.organizationalUnit._id, "title": "Kích hoạt công việc", "level": "general", "content": html, "sender": task.organizationalUnit.name, "users": user };
+			NotificationServices.createNotification(req.portal, task.organizationalUnit.company, mailData,);
+			sendEmail(email, "Kích hoạt công việc hành công", '', html);
+		}
+        await Logger.info(req.user.email, ` edit activate of task  `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['edit_status_of_task_success'],
             content: task
         })
-    } catch (error) {
-        await Logger.error(req.user.email, ` edit status of task `, req.portal);
-        res.status(400).json({
-            success: false,
-            messages: ['edit_status_of_task_fail'],
-            content: error
-        });
-    }
+    // } catch (error) {
+    //     await Logger.error(req.user.email, ` edit activate of task `, req.portal);
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: ['edit_status_of_task_fail'],
+    //         content: error
+    //     });
+    // }
 }
 
 /** Xác nhận công việc */

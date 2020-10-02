@@ -1,5 +1,5 @@
 const Models = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
-const { EmployeeKpiSet, OrganizationalUnit, Task, EmployeeKPI, User } = Models;
+const { EmployeeKpiSet, OrganizationalUnit, Task, EmployeeKpi, User } = Models;
 const mongoose = require("mongoose");
 const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
@@ -130,7 +130,7 @@ exports.approveAllKpis = async (portal, id) => {
     if (employee_kpi_set.kpis) targets = employee_kpi_set.kpis;
     if (targets !== []) {
         targets = await Promise.all(targets.map(async (item) => {
-            let defaultT = await EmployeeKPI(connect(DB_CONNECTION, portal))
+            let defaultT = await EmployeeKpi(connect(DB_CONNECTION, portal))
                 .findByIdAndUpdate(item._id, { $set: { status: 1 } }, { new: true })
             return defaultT;
         }))
@@ -149,13 +149,15 @@ exports.approveAllKpis = async (portal, id) => {
  */
 
 exports.editStatusKpi = async (portal, data, query) => {
-    let target = await EmployeeKPI(connect(DB_CONNECTION, portal))
+
+    let target = await EmployeeKpi(connect(DB_CONNECTION, portal))
         .findByIdAndUpdate(data.id, { $set: { status: query.status } }, { new: true });
     let employee_kpi_set = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
         .findOne({ kpis: { $in: data.id } })
         .populate("kpis");
     let kpis = employee_kpi_set.kpis;
     let checkFullApprove = 2;
+
     await kpis.map(item => {
         if (!item.status) {
 
@@ -172,7 +174,9 @@ exports.editStatusKpi = async (portal, data, query) => {
         
     employee_kpi_set = employee_kpi_set && await employee_kpi_set
         .populate("organizationalUnit creator approver")
-        .populate({ path: "kpis", populate: { path: 'parent' } });
+        .populate({ path: "kpis", populate: { path: 'parent' } })
+        .execPopulate();
+
     return employee_kpi_set;
 }
 
@@ -189,7 +193,7 @@ exports.editKpi = async (portal, id, data) => {
         weight: data.weight,
         criteria: data.criteria
     }
-    let target = await EmployeeKPI(connect(DB_CONNECTION, portal))
+    let target = await EmployeeKpi(connect(DB_CONNECTION, portal))
         .findByIdAndUpdate(id, { $set: objUpdate }, { new: true })
 
     target = target && await target.populate("parent");
@@ -210,6 +214,7 @@ exports.getKpisByKpiSetId = async (portal, id) => {
             { path: 'comments.creator', select: 'name email avatar ' },
             { path: 'comments.comments.creator', select: 'name email avatar' }
         ])
+    
     return employee_kpi_set;
 }
 
@@ -279,7 +284,7 @@ exports.setTaskImportanceLevel = async (portal, id, kpiType, data) => {
 
     }
     let n = task.length;
-    let result = await EmployeeKPI(connect(DB_CONNECTION, portal))
+    let result = await EmployeeKpi(connect(DB_CONNECTION, portal))
         .findByIdAndUpdate(
             id,
             {
@@ -298,7 +303,7 @@ exports.setTaskImportanceLevel = async (portal, id, kpiType, data) => {
     let kpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal)).findOne({ kpis: result._id });
 
     for (let i = 0; i < kpiSet.kpis.length; i++) {
-        let kpi = await EmployeeKPI(connect(DB_CONNECTION, portal)).findById(kpiSet.kpis[i]);
+        let kpi = await EmployeeKpi(connect(DB_CONNECTION, portal)).findById(kpiSet.kpis[i]);
         if (kpi.automaticPoint !== 0 && kpi.automaticPoint !== null) {
             let weight = kpi.weight / 100;
             autoPointSet = kpi.automaticPoint * weight;
@@ -407,11 +412,11 @@ async function getResultTaskByMonth(portal, data) {
     let yearkpi = parseInt(date.getFullYear());
     let kpiType;
     if (data.kpiType === "1") {
-        kpiType = "Accountable";
+        kpiType = "accountable";
     } else if (data.kpiType === "2") {
-        kpiType = "Consulted";
+        kpiType = "consulted";
     } else {
-        kpiType = "Responsible";
+        kpiType = "responsible";
     }
 
     let conditions = [

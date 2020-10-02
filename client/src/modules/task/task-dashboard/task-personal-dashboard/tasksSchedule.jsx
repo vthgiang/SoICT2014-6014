@@ -29,7 +29,7 @@ class TasksSchedule extends Component {
       .toDate();
 
     this.infoSearch = {
-      taskStatus: ["Inprocess"],
+      taskStatus: ["inprocess"],
     }
 
     this.INFO_CALENDAR = {
@@ -69,7 +69,7 @@ class TasksSchedule extends Component {
 
   handleSelectStatus = async (taskStatus) => {
     if (taskStatus.length === 0) {
-      taskStatus = ["Inprocess"];
+      taskStatus = ["inprocess"];
     }
 
     this.infoSearch.taskStatus = taskStatus;
@@ -141,10 +141,21 @@ class TasksSchedule extends Component {
             let multi = false;
             let responsibleEmployeeIds = [];
             let responsibleEmployeeNames = [];
+            let addDate;
 
             currentTime = new Date();
+
+            // Xu ly neu ngay bat dau bang ngay ket thuc
+            if (tasksByStatus[i - 1].startDate === tasksByStatus[i - 1].endDate) {
+              addDate = Date.parse(tasksByStatus[i - 1].endDate) + 86400000;
+            }
+            else {
+              addDate = tasksByStatus[i - 1].endDate;
+            }
+
             startTime = new Date(tasksByStatus[i - 1].startDate);
-            endTime = new Date(tasksByStatus[i - 1].endDate);
+            endTime = new Date(addDate);
+
             start_time = moment(startTime);
             end_time = moment(endTime);
 
@@ -153,7 +164,7 @@ class TasksSchedule extends Component {
               responsibleEmployeeNames.push(x.name);
             });
 
-            title1 = tasksByStatus[i - 1].name + " - " + tasksByStatus[i - 1].progress + "%";
+            title1 = `${tasksByStatus[i - 1].name} - ${tasksByStatus[i - 1].progress} % `;
             title2 = tasksByStatus[i - 1].name + " - " + responsibleEmployeeNames.join(" - ") + " - " + tasksByStatus[i - 1].progress + "%";
             if (responsibleEmployeeIds.length > 1) {
               multi = true;
@@ -288,10 +299,19 @@ class TasksSchedule extends Component {
 
             if (tasksByStatus2[i]) {
               let startTime, endTime, start_time, end_time;
-              let titleTask = tasksByStatus2[i].name + " - " + tasksByStatus2[i].progress + "%";
+              let titleTask = `${tasksByStatus2[i].name} - ${tasksByStatus2[i].progress} % `;
+              let addDate2;
+
+              if (tasksByStatus2[i].startDate === tasksByStatus2[i].endDate) {
+                addDate2 = Date.parse(tasksByStatus2[i].endDate) + 86400000;
+              }
+              else {
+                addDate2 = tasksByStatus2[i].endDate;
+              }
 
               startTime = new Date(tasksByStatus2[i].startDate);
-              endTime = new Date(tasksByStatus2[i].endDate);
+              endTime = new Date(addDate2);
+
               start_time = moment(startTime);
               end_time = moment(endTime);
 
@@ -451,13 +471,13 @@ class TasksSchedule extends Component {
   displayTaskProgress = async (progress, x, color) => {
     if (x) {
       let d, child;
+
       d = document.createElement('div');
       d.setAttribute("class", "task-progress");
-      d.style.width = `${progress}%`;
+      d.style.width = progress > 5 ? `${progress}%` : `5px`;
       d.style.backgroundColor = color;
 
       child = x.childElementCount;
-
       if (child === 1) {
         await x.appendChild(d);
       }
@@ -466,7 +486,6 @@ class TasksSchedule extends Component {
 
   handleItemClick = async (itemId) => {
     let { tasks } = this.props;
-    console.log('quangld');
     var taskList, tasksByStatus;
 
     if (tasks) {
@@ -696,15 +715,15 @@ class TasksSchedule extends Component {
           <div className="form-inline" style={{ textAlign: "center", margin: "10px" }}>
             <div className="form-group">
               <div id="in-time"></div>
-              <label id="label-for-calendar">{translate('task.task_management.in_time')}({data.intime ? data.intime : 0})</label>
+              <label id="label-for-calendar">{translate('task.task_management.in_time')}({data && data.intime ? data.intime : 0})</label>
             </div>
             <div className="form-group">
               <div id="delay"></div>
-              <label id="label-for-calendar">{translate('task.task_management.delayed_time')}({data.delay ? data.delay : 0})</label>
+              <label id="label-for-calendar">{translate('task.task_management.delayed_time')}({data && data.delay ? data.delay : 0})</label>
             </div>
             <div className="form-group">
               <div id="not-achieved"></div>
-              <label id="label-for-calendar">{translate('task.task_management.not_achieved')}({data.overDue ? data.overDue : 0})</label>
+              <label id="label-for-calendar">{translate('task.task_management.not_achieved')}({data && data.overDue ? data.overDue : 0})</label>
             </div>
 
           </div>

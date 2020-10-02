@@ -200,22 +200,24 @@ exports.createCompanySuperAdminAccount = async (companyShortName, userEmail) => 
                     <h1>VNIMA</h1>
                 </div>
                 <div class="form">
-                    <p><b>Tài khoản đăng nhập của SUPER ADMIN: </b></p>
+                    <p><b>Thông tin tài khoản đăng nhập của bạn: </b></p>
                     <div class="info">
+                        <li>Portal: ${companyShortName}</li>
                         <li>Tài khoản: ${userEmail}</li>
                         <li>Mật khẩu: <b>${password}</b></li>
                     </div>
                     <p>Đăng nhập ngay tại: <a href="${process.env.WEBSITE}/login">${process.env.WEBSITE}/login</a></p><br />
         
-                    <p><b>SUPER ADMIN account information: </b></p>
+                    <p><b>Your account information: </b></p>
                     <div class="info">
+                        <li>Portal: ${companyShortName}</li>
                         <li>Tài khoản: ${userEmail}</li>
                         <li>Mật khẩu: <b>${password}</b></li>
                     </div>
                     <p>Login in: <a href="${process.env.WEBSITE}/login">${process.env.WEBSITE}/login</a></p>
                 </div>
                 <div class="footer">
-                    <p>Bản quyền thuộc về
+                    <p>Copyright by
                         <i>Công ty Cổ phần Công nghệ
                             <br />
                             An toàn thông tin và Truyền thông Việt Nam</i>
@@ -332,13 +334,14 @@ exports.createCompanyLinks = async (company, linkArr, roleArr) => {
  * @linkArr mảng các system link được kích hoạt để làm chuẩn cho các link của công ty
  */
 exports.createCompanyComponents = async (company, linkArr) => {
-
     let systemLinks = await SystemLink(connect(DB_CONNECTION, process.env.DB_NAME))
         .find({ _id: { $in: linkArr } });
 
     let dataSystemComponents = systemLinks.map(link => link.components);
     dataSystemComponents = dataSystemComponents.reduce((arr1, arr2) => [...arr1, ...arr2]);
-    dataSystemComponents.filter((component, index) => dataSystemComponents.indexOf(component) === index);
+    dataSystemComponents = dataSystemComponents.map(com => com.toString());
+    dataSystemComponents = dataSystemComponents.filter((component, index) => dataSystemComponents.indexOf(component) === index);
+
     const systemComponents = await SystemComponent(connect(DB_CONNECTION, process.env.DB_NAME))
         .find({_id: {$in: dataSystemComponents}})
         .populate({ path: 'roles' });
@@ -359,19 +362,17 @@ exports.createCompanyComponents = async (company, linkArr) => {
             await updateLink.save();
         }
         // Tạo phân quyền cho components
-        for (let k = 0; k < systemComponents.length; k++) {
-            let roles = await Role(connect(DB_CONNECTION, company)).find({
-                name: {$in: systemComponents[i].roles.map(role=>role.name)}
-            });
-            let dataPrivileges = roles.map(role => {
-                return {
-                    resourceId: component._id,
-                    resourceType: 'Component',
-                    roleId: role._id
-                }
-            });
-            await Privilege(connect(DB_CONNECTION, company)).insertMany(dataPrivileges);
-        }
+        let roles = await Role(connect(DB_CONNECTION, company)).find({
+            name: { $in: systemComponents[i].roles.map(role => role.name)}
+        });
+        let dataPrivileges = roles.map(role => {
+            return {
+                resourceId: component._id,
+                resourceType: 'Component',
+                roleId: role._id
+            }
+        });
+        await Privilege(connect(DB_CONNECTION, company)).insertMany(dataPrivileges);
     }
 
     return await Component(connect(DB_CONNECTION, company)).find();

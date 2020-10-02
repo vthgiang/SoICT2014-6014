@@ -2,6 +2,7 @@ import { sendRequest } from '../../../../helpers/requestHelper';
 
 export const CategoryServices = {
     getCategories,
+    getCategoriesByType,
     createCategory,
     editCategory,
     deleteCategory,
@@ -10,6 +11,14 @@ export const CategoryServices = {
 function getCategories(params){
     return sendRequest({
         url: `${ process.env.REACT_APP_SERVER }/categories`,
+        method: 'GET',
+        params
+    }, false, true, 'manage_warehouse.category_management');
+}
+
+function getCategoriesByType(params){
+    return sendRequest({
+        url: `${ process.env.REACT_APP_SERVER }/categories/by-type`,
         method: 'GET',
         params,
     }, false, true, 'manage_warehouse.category_management');
@@ -35,5 +44,5 @@ function deleteCategory(id){
     return sendRequest({
         url: `${ process.env.REACT_APP_SERVER }/categories/${id}`,
         method: 'DELETE'
-    }, false, true, 'manage_warehouse.category_management')
+    }, true, true, 'manage_warehouse.category_management')
 }

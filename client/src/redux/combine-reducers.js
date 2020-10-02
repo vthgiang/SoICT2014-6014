@@ -12,6 +12,7 @@ import { role } from '../modules/super-admin/role/redux/reducers';
 import { link } from '../modules/super-admin/link/redux/reducers';
 import { component } from '../modules/super-admin/component/redux/reducers';
 import { department } from '../modules/super-admin/organizational-unit/redux/reducers';
+import { modelConfiguration } from '../modules/super-admin/module-configuration/redux/reducers';
 
 import { employeesInfo } from '../modules/human-resource/profile/employee-info/redux/reducers';
 import { employeesManager } from '../modules/human-resource/profile/employee-management/redux/reducers';
@@ -20,7 +21,7 @@ import { course } from '../modules/training/course/redux/reducers';
 import { salary } from '../modules/human-resource/salary/redux/reducers';
 import { discipline } from '../modules/human-resource/commendation-discipline/redux/reducers';
 import { annualLeave } from '../modules/human-resource/annual-leave/redux/reducers';
-import { holiday } from '../modules/human-resource/holiday/redux/reducers';
+import { workPlan } from '../modules/human-resource/work-plan/redux/reducers';
 import { timesheets } from '../modules/human-resource/timesheets/redux/reducers';
 
 import { notifications } from '../modules/notification/redux/reducers';
@@ -58,8 +59,9 @@ import { mintainanceManager } from "../modules/asset/admin/maintainance/redux/re
 import { reports } from "../modules/report/task-report/redux/reducers";
 
 //warehouse
-import { materials } from "../modules/warehouse/material-manager/redux/reducers";
+import { stocks } from "../modules/warehouse/stock-management/redux/reducers";
 import { categories } from "../modules/warehouse/category-management/redux/reducers";
+import { goods } from "../modules/warehouse/good-management/redux/reducers";
 
 //crm
 import { customer } from "../modules/crm/customer/redux/reducers";
@@ -93,6 +95,7 @@ const appReducer = combineReducers({
     link,
     component,
     department,
+    modelConfiguration,
 
     //---------------------------
     documents,
@@ -105,7 +108,7 @@ const appReducer = combineReducers({
     salary,
     discipline,
     annualLeave,
-    holiday,
+    workPlan,
     timesheets,
 
     // hr-tranning
@@ -147,8 +150,9 @@ const appReducer = combineReducers({
     reports,
 
     //warehouse
-    materials,
+    stocks,
     categories,
+    goods,
 
     // customer management
     crm: combineReducers({

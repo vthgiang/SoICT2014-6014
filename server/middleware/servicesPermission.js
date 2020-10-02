@@ -98,6 +98,9 @@ exports.data = [
     { path: '/system-admin/system-setting/backup', method: 'PATCH', roles: ['System Admin'] },
     { path: '/system-admin/system-setting/restore', method: 'PATCH', roles: ['System Admin'] },
 
+    { path: '/configuration/configurations', method: 'GET', roles: ['System Admin','Super Admin', 'Admin',] },
+    { path: '/configuration/configurations', method: 'PATCH', roles: ['System Admin','Super Admin', 'Admin',] },
+
     { path: '/user/users', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
 
     { path: '/user/users', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
@@ -194,11 +197,11 @@ exports.data = [
     { path: '/notifications/delete-notification/:id', method: 'DELETE', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/notifications/readed', method: 'PATCH', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
 
-    { path: '/holiday/holidays', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-    { path: '/holiday/holidays', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-    { path: '/holiday/holidays/:id', method: 'PUT', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-    { path: '/holiday/holidays/:id', method: 'DELETE', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-    { path: '/holiday/holidays/import', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+    { path: '/workPlan/workPlans', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+    { path: '/workPlan/workPlans', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+    { path: '/workPlan/workPlans/:id', method: 'PUT', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+    { path: '/workPlan/workPlans/:id', method: 'DELETE', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+    { path: '/workPlan/workPlans/import', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
 
     { path: '/sample/item', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/sample/item', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
@@ -450,16 +453,26 @@ exports.data = [
     { path: '/taskreports/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
 
     //warehouse
-    { path: '/materials', method: 'GET', roles: ['Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-    { path: '/materials', method: 'POST', roles: ['Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-    { path: '/materials/:id', method: 'DELETE', roles: ['Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-    { path: '/materials/:id', method: 'PATCH', roles: ['Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+
+    { path: 'stocks', method: 'GET', roles: ['Super Admin', 'Admin'] },
+    { path: 'stocks', method: 'POST', roles: ['Super Admin', 'Admin'] },
+    { path: 'stocks/:id', method: 'PATCH', roles: ['Super Admin', 'Admin'] },
+    { path: 'stocks/:id', method: 'DELETE', roles: ['Super Admin', 'Admin'] },
 
     { path: '/categories', method: 'GET', roles: ['Super Admin', 'Admin'] },
+    { path: '/categories/by-type', method: 'GET', roles: ['Super Admin', 'Admin'] },
     { path: '/categories', method: 'POST', roles: ['Super Admin', 'Admin'] },
     { path: '/categories/:id', method: 'GET', roles: ['Super Admin', 'Admin'] },
     { path: '/categories/:id', method: 'PATCH', roles: ['Super Admin', 'Admin'] },
     { path: '/categories/:id', method: 'DELETE', roles: ['Super Admin', 'Admin'] },
+
+    { path: '/goods', method: 'GET', roles: ['Super Admin', 'Admin']},
+    { path: '/goods/by-type', method: 'GET', roles: ['Super Admin', 'Admin']},
+    { path: '/goods', method: 'POST', roles: ['Super Admin', 'Admin']},
+    { path: '/goods/:id', method: 'PATCH', roles: ['Super Admin', 'Admin']},
+    { path: '/goods/:id', method: 'GET', roles: ['Super Admin', 'Admin']},
+    { path: '/goods/:id', method: 'DELETE', roles: ['Super Admin', 'Admin']},
+    { path: '/goods/by-category/:id', method: 'GET', roles: ['Super Admin', 'Admin']},
     
     //order
     { path: "/orders", method: "GET", roles: ["Super Admin", "Admin", "Dean", "Vice Dean", "Employee"] },

@@ -20,6 +20,25 @@ exports.getCategories = async (req, res) => {
         });
     }
 }
+exports.getCategoriesByType = async (req, res) => {
+    try {
+        const categories = await CategoryService.getCategoriesByType(req.user.company._id, req.query);
+        LogInfo(req.user.email, 'GET_CATEGORIES', req.user.company)
+        res.status(200).json({
+            success: true,
+            messages: ['get_category_success'],
+            content: categories
+        });
+    }
+    catch(error) {
+        LogError(req.user.email, 'GET_CATEGORIES', req.user.company)
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['get_category_faile'],
+            content: error
+        });
+    }
+}
 exports.createCategory = async (req, res) => {
     try{
         let category = await CategoryService.createCategory(req.user.company._id, req.body);
