@@ -693,9 +693,9 @@ export default {
             manage_document: 'Quản lý tài liệu',
             documents: 'Tài liệu văn bản',
 
-            crm: 'CRM',
+            customer_Management: 'Quản lý khách hàng',
             crm_list: {
-                customer: 'Khách hàng',
+                customer: 'Quản lý thông tin khách hàng',
                 lead: 'Khách hàng thân thiết',
                 care: 'Chăm sóc khách hàng',
                 group: 'Nhóm khách hàng',

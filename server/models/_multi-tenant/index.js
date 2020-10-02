@@ -70,12 +70,17 @@ module.exports = {
     Consignment: require('./warehouse/consignment.model'),
     Category: require('./warehouse/category.model'),
     Bill: require('./warehouse/bill.model'),
-    
+
     // Customer Management
-    CrmCustomer: require('./crm/crmCustomer.model'),
-    CrmCare: require('./crm/crmCare.model'),
-    CrmGroup: require('./crm/crmGroup.model'),
-    CrmLiability: require('./crm/crmLiability.model'),
+    Lead: require('./crm/lead.model'),
+    Care: require('./crm/care.model'),
+    CareType: require('./crm/careType.model'),
+    Group: require('./crm/group.model'),
+    Status: require('./crm/status.model'),
+    Product: require('./crm/product.model'),
+    ProductCategory: require('./crm/productCategory.model'),
+    ProductDiscount: require('./crm/productDiscount.model'),
+
 
     //order
     Order: require("./order/order.model"),

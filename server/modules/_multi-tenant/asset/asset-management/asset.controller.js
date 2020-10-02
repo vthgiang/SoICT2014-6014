@@ -9,9 +9,9 @@ exports.searchAssetProfiles = async (req, res) => {
     try {
         let data;
         if (req.query.type === "get-building-as-tree") {
-            data = await AssetService.getListBuildingAsTree(req.portal);
+            data = await AssetService.getListBuildingAsTree(req.portal, req.user.company._id);
         } else if (!req.query.page && !req.query.limit) {
-            data = await AssetService.getAssets(req.portal, false);
+            data = await AssetService.getAssets(req.portal, req.user.company._id, false);
         } else {
             let params = {
                 code: req.query.code,
@@ -41,7 +41,7 @@ exports.searchAssetProfiles = async (req, res) => {
                 incidentStatus: req.query.incidentStatus,
                 incidentType: req.query.incidentType,
             }
-            data = await AssetService.searchAssetProfiles(req.portal, params);
+            data = await AssetService.searchAssetProfiles(req.portal, req.user.company._id, params);
 
         }
 
@@ -78,7 +78,7 @@ exports.createAsset = async (req, res) => {
         let file = req.files && req.files.file;
         let fileInfo = { file, avatar };
 
-        let data = await AssetService.createAsset(req.portal, req.body, fileInfo);
+        let data = await AssetService.createAsset(req.portal, req.user.company._id, req.body, fileInfo);
         await Logger.info(req.user.email, 'CREATE_ASSET', req.portal);
         res.status(200).json({
             success: true,
@@ -108,7 +108,7 @@ exports.updateAssetInformation = async (req, res) => {
         let file = req.files.file;
         let fileInfo = { file, avatar };
 
-        let data = await AssetService.updateAssetInformation(req.portal, req.params.id, req.body, fileInfo);
+        let data = await AssetService.updateAssetInformation(req.portal, req.user.company._id, req.params.id, req.body, fileInfo);
 
         await Logger.info(req.user.email, 'EDIT_ASSET', req.portal);
         res.status(200).json({

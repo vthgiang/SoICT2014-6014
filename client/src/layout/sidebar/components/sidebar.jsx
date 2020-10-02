@@ -119,9 +119,9 @@ class SideBar extends Component {
                                 ]
                             }} />
 
-                            {/* CRM */}
+                            {/* Quản lý khách hàng */}
                             <GroupItem groupItem={{
-                                name: 'menu.crm',
+                                name: 'menu.customer_Management',
                                 icon: 'fa fa-users',
                                 list: [
                                     { name: 'menu.crm_list.customer', icon: 'fa fa-circle-o', path: '/crm/customer' },
