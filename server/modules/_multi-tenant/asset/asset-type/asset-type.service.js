@@ -30,7 +30,7 @@ exports.getAssetTypes = async (portal, company, query) => {
 
         return { totalList, listAssetTypes };
     } else {
-        const list = await AssetType(connect(DB_CONNECTION, portal)).find(company);
+        const list = await AssetType(connect(DB_CONNECTION, portal)).find({ company: company });
         const dataConverted = list.map(type => {
             return {
                 id: type._id.toString(),
@@ -57,7 +57,7 @@ exports.createAssetTypes = async (portal, company, data) => {
     }
     for (let i = 0; i < dataArray.length; i++) {
         let query = {
-            company,
+            company: company,
             typeNumber: dataArray[i].typeNumber,
             typeName: dataArray[i].typeName,
             description: dataArray[i].description,
