@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ButtonModal, ErrorLabel, DatePicker } from '../../../../../common-components';
+import { DialogModal, ButtonModal, ErrorLabel, DatePicker, UploadFile } from '../../../../../common-components';
 
 import { EmployeeCreateValidator } from './combinedContent';
 class CertificateAddModal extends Component {
@@ -41,22 +41,15 @@ class CertificateAddModal extends Component {
     }
 
     /** Bắt sự kiện thay đổi file đính kèm */
-    handleChangeFile = (e) => {
-        const { name } = e.target;
-        let file = e.target.files[0];
-        if (file !== undefined) {
-            let url = URL.createObjectURL(file);
-            let fileLoad = new FileReader();
-            fileLoad.readAsDataURL(file);
-            fileLoad.onload = () => {
-                this.setState({
-                    [name]: file.name,
-                    urlFile: url,
-                    fileUpload: file,
-                })
-            };
-        }
-        else {
+    handleChangeFile = (value) => {
+        if (value.length !== 0) {
+            this.setState({
+                file: value[0].fileName,
+                urlFile: value[0].urlFile,
+                fileUpload: value[0].fileUpload
+
+            })
+        } else {
             this.setState({
                 file: "",
                 urlFile: "",
@@ -250,13 +243,7 @@ class CertificateAddModal extends Component {
                         {/* File đính kèm */}
                         <div className="form-group">
                             <label htmlFor="file">{translate('human_resource.profile.attached_files')}</label>
-                            {/* <input type="file" style={{ height: 34, paddingTop: 2 }} className="form-control" name="file" onChange={this.handleChangeFile} /> */}
-                            <br />
-                            <div className="upload btn btn-primary">
-                                <i className="fa fa-folder"></i>
-                                {" " + translate('document.choose_file')}
-                                <input className="upload" type="file" name="file" onChange={this.handleChangeFile} />
-                            </div>
+                            <UploadFile onChange={this.handleChangeFile} />
                         </div>
                     </form>
                 </DialogModal>

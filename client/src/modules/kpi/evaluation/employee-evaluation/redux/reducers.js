@@ -1,5 +1,7 @@
 import { kpiMemberConstants } from "./constants";
-import { createKpiSetConstants } from '../../../employee/creation/redux/constants'
+import { createKpiSetConstants } from '../../../employee/creation/redux/constants';
+import { managerKPIConstants } from '../../../employee/management/redux/constants';
+
 export function kpimembers(state = {}, action) {
   switch (action.type) {
     case kpiMemberConstants.GETALL_KPIMEMBER_OfUNIT_REQUEST:
@@ -347,6 +349,25 @@ export function kpimembers(state = {}, action) {
       return {
         ...state,
         error: action.payload,
+      }
+
+    case managerKPIConstants.COPY_KPIPERSONALS_REQUEST:
+      return {
+        ...state,
+        adding: true,
+        isLoading: false
+      }
+    case managerKPIConstants.COPY_KPIPERSONALS_SUCCESS:
+      return {
+        ...state,
+        adding: false,
+        isLoading: false,
+        kpimembers: action.payload
+      }
+    case managerKPIConstants.COPY_KPIPERSONALS_FAILURE:
+      return {
+        error: action.payload,
+        isLoading: false
       }
     default:
       return state

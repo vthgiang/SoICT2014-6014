@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
-import { Comment } from './comment';
+// import { Comment } from './comment';
 
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { createKpiSetActions } from '../redux/actions';
@@ -14,8 +14,9 @@ import { ModalCreateEmployeeKpiSet } from './employeeKpiCreateModal';
 import { ModalEditEmployeeKpi } from './employeeKpiEditTargetModal';
 
 import { getStorage } from '../../../../../config'
-import { DatePicker, SelectBox, SlimScroll, ToolTip } from '../../../../../../src/common-components';
+import { DatePicker, SelectBox, SlimScroll, ToolTip, Comment } from '../../../../../../src/common-components';
 import getEmployeeSelectBoxItems from '../../../../task/organizationalUnitHelper';
+import { AuthActions } from '../../../../auth/redux/actions';
 
 
 var translate = '';
@@ -653,7 +654,19 @@ class CreateEmployeeKpiSet extends Component {
                                 </div>
                                 <div className="row" style={{ display: 'flex', flex: 'no-wrap', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                                     <div className="col-xs-12 col-sm-12 col-md-6">
-                                        <Comment currentKPI={currentKPI} />
+                                        <Comment
+                                            data={currentKPI}
+                                            comments={currentKPI.comments}
+                                            createComment={(dataId, data) => this.props.createComment(dataId, data)}
+                                            editComment={(dataId, commentId, data) => this.props.editComment(dataId, commentId, data)}
+                                            deleteComment={(dataId, commentId) => this.props.deleteComment(dataId, commentId)}
+                                            createChildComment={(dataId, commentId, data) => this.props.createChildComment(dataId, commentId, data)}
+                                            editChildComment={(dataId, commentId, childCommentId, data) => this.props.editChildComment(dataId, commentId, childCommentId, data)}
+                                            deleteChildComment={(dataId, commentId, childCommentId) => this.props.deleteChildComment(dataId, commentId, childCommentId)}
+                                            deleteFileComment={(fileId, commentId, dataId) => this.props.deleteFileComment(fileId, commentId, dataId)}
+                                            deleteFileChildComment={(fileId, commentId, childCommentId, dataId) => this.props.deleteFileChildComment(fileId, commentId, childCommentId, dataId)}
+                                            downloadFile={(path, fileName) => this.props.downloadFile(path, fileName)}
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -698,8 +711,15 @@ const actionCreators = {
     deleteEmployeeKpiSet: createKpiSetActions.deleteEmployeeKpiSet,
     updateEmployeeKpiSetStatus: createKpiSetActions.updateEmployeeKpiSetStatus,
     getCurrentKPIUnit: createUnitKpiActions.getCurrentKPIUnit,
-
-
+    createComment: createKpiSetActions.createComment,
+    editComment: createKpiSetActions.editComment,
+    deleteComment: createKpiSetActions.deleteComment,
+    createChildComment: createKpiSetActions.createChildComment,
+    editChildComment: createKpiSetActions.editChildComment,
+    deleteChildComment: createKpiSetActions.deleteChildComment,
+    deleteFileComment: createKpiSetActions.deleteFileComment,
+    deleteFileChildComment: createKpiSetActions.deleteFileChildComment,
+    downloadFile: AuthActions.downloadFile,
 };
 
 const connectedCreateEmployeeKpiSet = connect(mapState, actionCreators)(withTranslate(CreateEmployeeKpiSet));

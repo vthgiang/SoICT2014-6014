@@ -71,7 +71,6 @@ const TaskSchema = new Schema({
     }],
     numberOfDaysTaken: {
         type: Number,
-        default: 7,
     },
     followingTasks: [{
         task: {
@@ -289,6 +288,14 @@ const TaskSchema = new Schema({
             type: Boolean,
             default: false,
             required: true
+        },
+        createdAt: {
+            type: Date,
+            default: Date.now
+        },
+        updatedAt: {
+            type: Date,
+            default: Date.now
         }
     }],
     hoursSpentOnTask: {

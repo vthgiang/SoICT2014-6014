@@ -68,10 +68,11 @@ class ModalDetailKPI extends Component {
             fileName+="tháng "+month+ "-" +year+"_";
 
         }
-        fileName += data.name;
-        let unitKpiData=[],detailData;
 
-        if(data){
+        let unitKpiData = [], detailData;
+
+        if (data) {
+            fileName += data.name;
             //Component excel nhận truyền vào là dữ liệu dạng mảng
             let dataObject ={
                 unitKpiName : data.name,
@@ -146,105 +147,8 @@ class ModalDetailKPI extends Component {
        
     }
 
-    /**Chuyển đổi dữ liệu tất cả KPI đơn vị thành dữ liệu export to file excel */
-    convertDataToTotalExportData = (data,date) => {      
-        let dataSheetsArray;
-        let fileName = "Thông tin chi tiết tất cả KPI đơn vị ";
-        if(date) {
-            let d= new Date(date), 
-                month =d.getMonth()+1,
-                year =d.getFullYear();
-            fileName+="tháng "+month+ "-" +year;
-        }
-
-        if(data){
-            dataSheetsArray = data.map((item, index) => {
-
-                let unitKpiData=[],detailData;                
-                if(item){
-                    //Component excel nhận truyền vào là dữ liệu dạng mảng
-                    let dataObject ={
-                        unitKpiName : item.name,
-                        unitKpiCriteria :item.criteria,
-                        unitKpiWeight : parseInt(item.weight),
-                        automaticPoint : (item.automaticPoint === null)?"Chưa đánh giá":parseInt(item.automaticPoint),
-                        employeePoint : (item.employeePoint === null)?"Chưa đánh giá":parseInt(item.employeePoint),
-                        approverPoint : (item.approvedPoint===null)?"Chưa đánh giá":parseInt(item.approvedPoint),
-                    }
-                    unitKpiData.push(dataObject);
-                }
-        
-                if (item.arrtarget) {           
-                    detailData = item.arrtarget.map((x, index) => {               
-                        let creatorName = x.creator.name;
-                        let creatorEmail = x.creator.email;
-                        let targetName = x.target.name;      
-                        let unitName =x.organizationalUnit.name;
-                        let criteria = x.target.criteria;         
-                        let result = (x.target.approvedPoint ? x.target.approvedPoint : "Chưa đánh giá")           
-        
-                        return {
-                            STT: index + 1,
-                            creatorName: creatorName, 
-                            creatorEmail:creatorEmail,                  
-                            targetName : targetName,
-                            unitName:unitName,
-                            criteria :criteria,
-                            result: result                   
-                        };
-                    })
-                }
-                return {
-                    sheetName : "sheet"+ (index+1),
-                    unitKpiData: unitKpiData,
-                    detailData : detailData
-                };
-            });
-        }
-
-        let exportData = {
-            fileName: fileName,
-            dataSheets: dataSheetsArray.map((item,index)=>{
-                return {
-                    sheetName: item.sheetName,
-                    sheetTitle : 'Thông tin KPI '+ item.unitKpiData[0].unitKpiName,
-                    tables: [
-                        {
-                            tableName : 'Thông tin chung KPI '+ item.unitKpiData[0].unitKpiName,
-                            columns: [
-                                { key: "unitKpiName", value: "Tên KPI đơn vị" },
-                                { key: "unitKpiCriteria", value: "Tiêu chí đánh giá" },                                
-                                { key: "unitKpiWeight", value: "Trọng số (/100)" },
-                                { key: "automaticPoint", value: "Điểm KPI tự động" },
-                                { key: "employeePoint", value: "Điểm KPI tự đánh giá" },
-                                { key: "approverPoint", value: "Điểm KPI được phê duyệt" }
- 
-                            ],
-                            data:item.unitKpiData
-                        },
-                        {
-                            tableName : 'Danh sách KPI con của KPI '+ item.unitKpiData[0].unitKpiName,
-                            columns: [
-                                { key: "STT", value: "STT" },
-                                { key: "creatorName", value: "Người tạo" },
-                                { key: "creatorEmail", value: "Email người tạo" },                                
-                                { key: "targetName", value: "Tên mục tiêu" },
-                                { key: "unitName", value: "Đơn vị" },
-                                { key: "criteria", value: "Tiêu chí đánh giá" },
-                                { key: "result", value: "Kết quả đánh giá" },
-                            ],
-                            data: item.detailData
-                        }
-                    ]
-                }
-            })  
-        }
-        return exportData;        
-       
-    }
-
     render() {
-        let listchildtarget, detailExportData, totalExportData;
+        let listchildtarget, detailExportData;
         const { managerKpiUnit, translate } = this.props;
         let selectedKpi =this.state.content;
 
@@ -256,12 +160,6 @@ class ModalDetailKPI extends Component {
         {          
             let data = listchildtarget.filter(item => (item._id === selectedKpi));
             detailExportData=this.convertDataToDetailExportData(data[0],this.props.date);
-        }
-
-        if(listchildtarget)
-        {
-            let data = listchildtarget
-            totalExportData =this.convertDataToTotalExportData(data,this.props.date);
         }
 
         return (
@@ -290,7 +188,6 @@ class ModalDetailKPI extends Component {
                                 }
                             </ul>
                         </div>
-                        {totalExportData&&<ExportExcel id="export-all-unit-kpi-management-detail-kpi" exportData={totalExportData} style={{ marginTop:5 }} />}
                     </div>
                 </div>
 

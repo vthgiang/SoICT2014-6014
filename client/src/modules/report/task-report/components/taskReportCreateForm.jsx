@@ -4,7 +4,6 @@ import { withTranslate } from 'react-redux-multilingual';
 import { getStorage } from '../../../../config';
 import { DialogModal, ErrorLabel, SelectBox, DatePicker } from '../../../../common-components';
 
-import { taskReportFormValidator } from './taskReportFormValidator';
 import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
 import { TaskReportViewForm } from './taskReportViewForm';
 
@@ -12,7 +11,8 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import { taskTemplateActions } from '../../../task/task-template/redux/actions';
 import { taskManagementActions } from '../../../task/task-management/redux/actions';
 import { TaskReportActions } from '../redux/actions';
-import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
+
+import ValidationHelper from '../../../../helpers/validationHelper';
 
 import './transferList.css';
 
@@ -28,6 +28,7 @@ class TaskReportCreateForm extends Component {
                 status: 0,
                 responsibleEmployees: [],
                 accountableEmployees: [],
+                readByEmployees: [],
                 startDate: '',
                 endDate: '',
                 frequency: 'month',
@@ -50,48 +51,18 @@ class TaskReportCreateForm extends Component {
      * @param {*} e 
      */
     handleNameTaskReportChange = (e) => {
-        let value = e.target.value;
-        this.validateNameTaskReport(value, true);
-    }
-
-    /**
-     * Hàm validate input NameTaskReport
-     * @param {*} value 
-     * @param {*} willUpdateState 
-     */
-    validateNameTaskReport = (value, willUpdateState = true) => {
         let { newReport } = this.state;
-        let msg = taskReportFormValidator.validateNameTaskReport(value)
-        if (willUpdateState) {
-            this.setState({
-                newReport: {
-                    ...newReport,
-                    nameTaskReport: value,
-                },
-                errorOnNameTaskReport: msg,
-            });
-        }
-        return msg === undefined;
-    }
+        const { translate } = this.props;
+        let { value } = e.target;
 
-    /**
-     * Hàm kiểm tra validate cho input mô tả báo cáo
-     * @param {*} value 
-     * @param {*} willUpdateState 
-     */
-    validateDescriptionTaskReport = (value, willUpdateState = true) => {
-        let { newReport } = this.state;
-        let msg = taskReportFormValidator.validateDescriptionTaskReport(value)
-        if (willUpdateState) {
-            this.setState({
-                newReport: {
-                    ...newReport,
-                    descriptionTaskReport: value,
-                },
-                errorOnDescriptiontTaskReport: msg,
-            });
-        }
-        return msg === undefined;
+        this.setState({
+            newReport: {
+                ...newReport,
+                nameTaskReport: value,
+            },
+        });
+        let { message } = ValidationHelper.validateName(translate, value, 4, 255);
+        this.setState({ nameErrorCreateForm: message });
     }
 
 
@@ -100,8 +71,20 @@ class TaskReportCreateForm extends Component {
      * @param {*} e 
      */
     handleDesTaskReportChange = (e) => {
-        let value = e.target.value;
-        this.validateDescriptionTaskReport(value, true);
+        let { newReport } = this.state;
+        const { translate } = this.props;
+        let { value } = e.target;
+
+        this.setState({
+            newReport: {
+                ...newReport,
+                descriptionTaskReport: value,
+            },
+        });
+
+        let { message } = ValidationHelper.validateDescription(translate, value);
+        this.setState({ descriptionErrorCreateForm: message });
+
     }
 
 
@@ -109,27 +92,28 @@ class TaskReportCreateForm extends Component {
      * Hàm xử lý khi thay đổi đơn vị
      * @param {*} e 
      */
-    handleChangeReportOrganizationalUnit = e => {
+    handleChangeReportOrganizationalUnit = async value => {
         let { newReport } = this.state;
-        let { value } = e.target;
-        if (value) {
-            this.props.getAllUserOfDepartment(value);
-            this.props.getChildrenOfOrganizationalUnits(value);
-            this.setState({
-                newReport: {
-                    ...newReport,
-                    nameTaskReport: '',
-                    descriptionTaskReport: '',
-                    organizationalUnit: value,
-                    responsibleEmployees: [],
-                    accountableEmployees: [],
-                    taskTemplate: '',
-                },
-                errorOnDescriptiontTaskReport: undefined,
-                errorOnNameTaskReport: undefined,
-                errorOnStartDate: undefined,
-            });
-        }
+        value = value[0];
+        // this.props.getAllUserOfDepartment(value);
+        //this.props.getChildrenOfOrganizationalUnits(value);
+        this.setState({
+            newReport: {
+                ...newReport,
+                nameTaskReport: '',
+                descriptionTaskReport: '',
+                organizationalUnit: value,
+                responsibleEmployees: [],
+                accountableEmployees: [],
+                readByEmployees: [],
+                taskTemplate: '',
+            },
+            nameErrorCreateForm: undefined,
+            descriptionErrorCreateForm: undefined,
+            startDateErrorCreateForm: undefined,
+            readByEmployeeErrorCreateForm: undefined,
+            taskTemplateErrorCreateForm: undefined,
+        });
     }
 
 
@@ -137,9 +121,10 @@ class TaskReportCreateForm extends Component {
      * Hàm xử lý khi thay đổi mẫu công việc
      * @param {*} e 
      */
-    handleChangeTaskTemplate = (e) => {
+    handleChangeTaskTemplate = (value) => {
         let { newReport } = this.state;
-        let { value } = e.target;
+        const { translate } = this.props;
+        value = value[0];
 
         if (value === '') { // Reset các input nhận giá trị tự động khi mẫu công việc trống
             this.setState({
@@ -151,10 +136,13 @@ class TaskReportCreateForm extends Component {
                     status: '',
                     responsibleEmployees: [],
                     accountableEmployees: [],
+                    readByEmployees: [],
                 },
-                errorOnDescriptiontTaskReport: undefined,
-                errorOnNameTaskReport: undefined,
-                errorOnStartDate: undefined,
+                nameErrorCreateForm: undefined,
+                descriptionErrorCreateForm: undefined,
+                startDateErrorCreateForm: undefined,
+                readByEmployeeErrorCreateForm: undefined,
+                taskTemplateErrorCreateForm: undefined,
             });
         } else {
             let taskTemplate = this.props.tasktemplates.items.find((taskTemplate) =>
@@ -187,15 +175,17 @@ class TaskReportCreateForm extends Component {
                 }
             })
         }
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+        this.setState({ taskTemplateErrorCreateForm: message });
     }
 
 
     shouldComponentUpdate = async (nextProps, nextState) => {
         const { user } = this.props;
-        const { newReport, currentRole } = this.state;
+        let { newReport, currentRole } = this.state;
 
         if (newReport.organizationalUnit === '' && user.organizationalUnitsOfUser) {
-
+            console.log('vao day');
             let defaultUnit = await user.organizationalUnitsOfUser.find(item =>
                 item.deans.toString() === currentRole
                 || item.viceDeans.toString() === currentRole
@@ -210,7 +200,7 @@ class TaskReportCreateForm extends Component {
                 return {
                     ...state,
                     newReport: {
-                        ...this.state.newReport,
+                        ...newReport,
                         organizationalUnit: defaultUnit && defaultUnit._id,
                     },
                     units: user.organizationalUnitsOfUser
@@ -227,23 +217,18 @@ class TaskReportCreateForm extends Component {
      * @param {*} value 
      */
     handleChangeStartDate = (value) => {
-        this.validateTaskStartDate(value, true);
-
-    }
-
-    validateTaskStartDate = (value, willUpdateState = true) => {
         let { newReport } = this.state;
-        let msg = taskReportFormValidator.validateTaskStartDate(value);
-        if (willUpdateState) {
-            this.setState({
-                newReport: {
-                    ...newReport,
-                    startDate: value,
-                },
-                errorOnStartDate: msg,
-            })
-        }
-        return msg === undefined;
+        const { translate } = this.props;
+
+        this.setState({
+            newReport: {
+                ...newReport,
+                startDate: value,
+            },
+        })
+
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+        this.setState({ startDateErrorCreateForm: message });
     }
 
 
@@ -416,6 +401,19 @@ class TaskReportCreateForm extends Component {
         })
     }
 
+    handleTaskReportRead = value => {
+        let { newReport } = this.state;
+        const { translate } = this.props;
+        this.setState({
+            newReport: {
+                ...newReport,
+                readByEmployees: value,
+            }
+        });
+
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+        this.setState({ readByEmployeeErrorCreateForm: message });
+    }
 
     /**
      * Hàm xử lý khi click vào checkbox
@@ -601,25 +599,29 @@ class TaskReportCreateForm extends Component {
      */
     handleView = async () => {
         const { newReport } = this.state;
-
-        await this.props.getTaskEvaluations(newReport);
-        this.setState({
-            modal: 'view'
-        })
-        window.$('#modal-view-taskreport').modal('show');
-
+        if (this.isFormValidated()) {
+            await this.props.getTaskEvaluations(newReport);
+            this.setState({
+                modal: 'view'
+            })
+            window.$('#modal-view-taskreport').modal('show');
+        }
     }
 
     /**
     * Hàm kiểm tra đã validate chưa
     */
     isFormValidated = () => {
-        const { newReport } = this.state;
-        let result =
-            this.validateNameTaskReport(newReport.nameTaskReport, false) &&
-            this.validateDescriptionTaskReport(newReport.descriptionTaskReport, false) &&
-            this.validateTaskStartDate(newReport.startDate, false);
-        return result;
+        let { newReport } = this.state;
+        let { nameTaskReport, descriptionTaskReport, startDate, readByEmployees } = newReport;
+        const { translate } = this.props;
+
+        if (!ValidationHelper.validateName(translate, nameTaskReport).status
+            || !ValidationHelper.validateDescription(translate, descriptionTaskReport).status
+            || !ValidationHelper.validateEmpty(translate, startDate).status
+            || !ValidationHelper.validateEmpty(translate, readByEmployees).status)
+            return false;
+        return true;
     }
 
 
@@ -636,17 +638,24 @@ class TaskReportCreateForm extends Component {
 
     componentDidMount() {
         this.props.getTaskTemplateByUser("1", "0", "[]");
-        // this.props.getDepartment();
+        this.props.getDepartment();
         // Lấy tất cả nhân viên trong công ty
         this.props.getAllUserOfCompany();
         this.props.getAllUserInAllUnitsOfCompany();
         this.props.getRoleSameDepartment(localStorage.getItem("currentRole"));
-
     }
 
     render() {
         const { translate, reports, tasktemplates, user } = this.props;
-        const { newReport, modal, units, errorOnNameTaskReport, errorOnDescriptiontTaskReport, errorOnStartDate } = this.state;
+        const { newReport,
+            modal,
+            units,
+            nameErrorCreateForm,
+            descriptionErrorCreateForm,
+            startDateErrorCreateForm,
+            readByEmployeeErrorCreateForm,
+            taskTemplateErrorCreateForm,
+        } = this.state;
         let { itemListBoxLeft, itemListBoxRight } = this.state.newReport;
         let listTaskTemplate, taskInformations = newReport.taskInformations, listRole, listRoles = [];
 
@@ -657,11 +666,12 @@ class TaskReportCreateForm extends Component {
             })
         }
 
-        let usersOfChildrenOrganizationalUnit;
+        let usersOfChildrenOrganizationalUnit, unitMembers = [];
         if (user.usersOfChildrenOrganizationalUnit) {
             usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
+            unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
         }
-        console.log('state', this.state.newReport)
+
         // lấy list chức danh theo đơn vị hiện tại
         if (user.usersInUnitsOfCompany) {
             listRole = user.usersInUnitsOfCompany;
@@ -674,11 +684,17 @@ class TaskReportCreateForm extends Component {
         }
 
         // Lấy thông tin nhân viên của đơn vị
-        let unitMembers = [];
-        if (usersOfChildrenOrganizationalUnit) {
-            unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
+
+        if (listTaskTemplate) {
+            listTaskTemplate = listTaskTemplate.map(x => {
+                return { value: x._id, text: x.name }
+            })
+            listTaskTemplate.unshift({ value: '', text: 'Chọn mẫu công việc' });
         }
 
+        // console.log('state', this.state);
+        // console.log('====================')
+        // console.log('unitMembers', unitMembers);
         return (
             <React.Fragment>
                 <DialogModal
@@ -694,7 +710,12 @@ class TaskReportCreateForm extends Component {
                     <div className="row" >
                         <div className="col-md-12 col-lg-12" style={{ display: 'flex', justifyContent: 'flex-end' }}>
                             <div className="form-inline d-flex justify-content-end">
-                                <button id="exportButton" className="btn btn-sm btn-success " title="Xem biểu đồ" style={{ marginBottom: '6px' }} onClick={() => this.handleView()} ><span className="fa fa-fw fa-line-chart" style={{ color: 'rgb(66 65 64)', fontSize: '15px', marginRight: '5px' }}></span></button>
+                                {
+                                    !this.isFormValidated() ?
+                                        <button disabled id="exportButton" className="btn btn-sm btn-success " title="Xem biểu đồ" style={{ marginBottom: '6px' }}><span className="fa fa-fw fa-line-chart" style={{ color: 'rgb(66 65 64)', fontSize: '15px', marginRight: '5px' }}></span></button>
+                                        :
+                                        <button id="exportButton" className="btn btn-sm btn-success " title="Xem biểu đồ" style={{ marginBottom: '6px' }} onClick={() => this.handleView()} ><span className="fa fa-fw fa-line-chart" style={{ color: 'rgb(66 65 64)', fontSize: '15px', marginRight: '5px' }}></span></button>
+                                }
                             </div>
                         </div>
                     </div>
@@ -702,17 +723,24 @@ class TaskReportCreateForm extends Component {
                     <div className="row">
                         <div className="col-md-6">
                             {/* Chọn đơn vị */}
-                            <div className={'form-group'}>
-                                <label className="control-label">Chọn đơn vị</label>
-                                {units &&
-                                    <select value={newReport.organizationalUnit} className="form-control" onChange={this.handleChangeReportOrganizationalUnit}>
-                                        {units.map(x => {
-                                            return <option key={x._id} value={x._id}>{x.name}</option>
-                                        })}
-                                    </select>
+                            <div className={`form-group `}>
+                                <label className="control-label">Đơn vị <span className="text-red">*</span></label>
+                                {
+                                    units &&
+                                    <SelectBox
+                                        id={`organizationalUnitId-create-form`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        value={newReport.organizationalUnit}
+                                        onChange={this.handleChangeReportOrganizationalUnit}
+                                        items={
+                                            units.map(o => ({ value: o._id, text: o.name }))
+                                        }
+                                        options={{ minimumResultsForSearch: 100 }}
+                                        multiple={false}
+                                    />
                                 }
                             </div>
-
                         </div>
 
                         <div className="col-md-6">
@@ -721,57 +749,63 @@ class TaskReportCreateForm extends Component {
                                 <label className="control-label">{translate('task_template.permission_view')}<span className="text-red">*</span></label>
                                 {listRoles &&
                                     <SelectBox
-                                        id={`read-select-box-create`}
+                                        id={`read-select-box-create-${newReport.organizationalUnit}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         items={
                                             listRoles.map(x => { return { value: x._id, text: x.name } })
                                         }
-                                        onChange={this.handleTaskTemplateRead}
+                                        value={newReport.readByEmployees}
+                                        onChange={this.handleTaskReportRead}
                                         multiple={true}
                                         options={{ placeholder: "Người được xem" }}
                                     />
                                 }
-                                {/* <ErrorLabel content={this.state.newTemplate.errorOnRead} /> */}
+                                <ErrorLabel content={readByEmployeeErrorCreateForm} />
                             </div>
                         </div>
                     </div>
 
                     <div className="row">
-                        <div className="col-md-6">
+                        <div className={`col-md-6`}>
                             {/* Chọn mẫu công việc */}
-                            <div className="form-group">
-                                <label>Mẫu công việc
-                                        <span className="text-red">*</span>
-                                </label>
-                                <select className="form-control" value={newReport.taskTemplate} onChange={this.handleChangeTaskTemplate}>
-                                    <option value="">--Hãy chọn mẫu công việc--</option>
-                                    {(listTaskTemplate && listTaskTemplate.length !== 0) &&
-                                        listTaskTemplate.map(item => {
-                                            return <option key={item._id} value={item._id}>{item.name}</option>
-                                        })
-                                    }
-                                </select>
+                            <div className={`form-group ${!taskTemplateErrorCreateForm ? "" : "has-error"}`}>
+                                <label className="control-label">Mẫu công việc <span className="text-red">*</span></label>
+                                {
+                                    listTaskTemplate && listTaskTemplate.length > 0 &&
+                                    <SelectBox
+                                        id={`taskTemplateId-create-form-${newReport.organizationalUnit}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        value={newReport.taskTemplate}
+                                        onChange={this.handleChangeTaskTemplate}
+                                        items={
+                                            listTaskTemplate
+                                        }
+                                        multiple={false}
+                                    />
+                                }
+                                <ErrorLabel content={taskTemplateErrorCreateForm} />
                             </div>
 
                             {/* Tên báo cáo */}
-                            <div className={`form-group ${!errorOnNameTaskReport ? "" : "has-error"}`}>
+                            <div className={`form-group ${!nameErrorCreateForm ? "" : "has-error"}`}>
                                 <label>{translate('report_manager.name')}
                                     <span className="text-red">*</span>
                                 </label>
                                 <input type="Name" className="form-control" value={(newReport.nameTaskReport)} onChange={this.handleNameTaskReportChange} placeholder="Nhập tên báo cáo" />
-                                <ErrorLabel content={errorOnNameTaskReport} />
+                                <ErrorLabel content={nameErrorCreateForm} />
                             </div>
                         </div>
 
                         <div className="col-md-6">
                             {/* Mô tả báo cáo */}
-                            <div className={`form-group ${!errorOnDescriptiontTaskReport ? "" : "has-error"}`}>
+                            <div className={`form-group ${!descriptionErrorCreateForm ? "" : "has-error"}`}>
                                 <label htmlFor="Descriptionreport">{translate('report_manager.description')}
                                     <span className="text-red">*</span>
                                 </label>
                                 <textarea rows={5} type="text" className="form-control" id="Descriptionreport" name="description" value={(newReport.descriptionTaskReport)} onChange={this.handleDesTaskReportChange} />
-                                <ErrorLabel content={errorOnDescriptiontTaskReport} />
+                                <ErrorLabel content={descriptionErrorCreateForm} />
                             </div>
                         </div>
                     </div>
@@ -782,10 +816,11 @@ class TaskReportCreateForm extends Component {
                             <div className={`form-group `}>
                                 <label className="control-label">Đặc thù công việc</label>
                                 <SelectBox
-                                    id="select-status"
+                                    id={`status-create-form-${newReport.organizationalUnit}`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     onChange={this.handleChangeStatus}
+                                    value={newReport.status}
                                     items={
                                         [
                                             { value: 0, text: 'Tất cả' },
@@ -803,10 +838,11 @@ class TaskReportCreateForm extends Component {
                             <div className={`form-group`}>
                                 <label className="control-label">Tần suất</label>
                                 <SelectBox
-                                    id="select-box-frequency"
+                                    id={`frequency-create-form-${newReport.organizationalUnit}`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     onChange={this.handleChangeFrequency}
+                                    value={newReport.frequency}
                                     items={
                                         [
                                             { value: 'month', text: 'Tháng' },
@@ -815,6 +851,7 @@ class TaskReportCreateForm extends Component {
                                         ]
                                     }
                                     multiple={false}
+                                    options={{ minimumResultsForSearch: 100 }}
                                 />
                             </div>
                         </div>
@@ -827,12 +864,12 @@ class TaskReportCreateForm extends Component {
                                 <label className="control-label">Người thực hiện</label>
                                 {unitMembers &&
                                     <SelectBox
-                                        id={`responsible-select-box${newReport.taskTemplate}`}
+                                        id={`responsible-create-form-${newReport.organizationalUnit}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         items={unitMembers}
                                         onChange={this.handleChangeReportResponsibleEmployees}
-                                        value={newReport.responsibleEmployees}
+                                        value={newReport.responsibleEmployees ? newReport.responsibleEmployees : []}
                                         multiple={true}
                                         options={{ placeholder: "Chọn người thực hiện" }}
                                     />
@@ -846,12 +883,12 @@ class TaskReportCreateForm extends Component {
                                 <label className="control-label">Người phê duyệt</label>
                                 {unitMembers &&
                                     <SelectBox
-                                        id={`accountableEmployees-select-box${newReport.taskTemplate}`}
+                                        id={`accountableEmployees-create-form-${newReport.organizationalUnit}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         items={unitMembers}
                                         onChange={this.handleChangeReportAccountableEmployees}
-                                        value={newReport.accountableEmployees}
+                                        value={newReport.accountableEmployees ? newReport.accountableEmployees : []}
                                         multiple={true}
                                         options={{ placeholder: "Chọn người phê duyệt" }}
                                     />
@@ -861,7 +898,7 @@ class TaskReportCreateForm extends Component {
                     </div>
 
                     <div className="row">
-                        <div className={`col-md-6 ${!errorOnStartDate ? "" : "has-error"}`}>
+                        <div className={`col-md-6 ${!startDateErrorCreateForm ? "" : "has-error"}`}>
                             {/* Thống kê từ ngày */}
                             <div className={`form-group`}>
                                 <label className="control-label ">Thống kê từ ngày <span className="text-red">*</span></label>
@@ -871,7 +908,7 @@ class TaskReportCreateForm extends Component {
                                     onChange={this.handleChangeStartDate}
                                     disabled={false}
                                 />
-                                <ErrorLabel content={errorOnStartDate} />
+                                <ErrorLabel content={startDateErrorCreateForm} />
                             </div>
                         </div>
 

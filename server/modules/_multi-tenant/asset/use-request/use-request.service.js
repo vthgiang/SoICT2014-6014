@@ -5,7 +5,7 @@ const { RecommendDistribute, User } = Models;
 /**
  * Lấy danh sách phiếu đề nghị cấp thiết bị
  */
-exports.searchRecommendDistributes = async (portal, query) => {
+exports.searchUseRequests = async (portal, query) => {
     const { receiptsCode, createReceiptsDate, reqUseStatus, reqUseEmployee, approver, page, limit, managedBy, assetId } = query;
     var keySearch = {};
 
@@ -69,11 +69,22 @@ exports.searchRecommendDistributes = async (portal, query) => {
     return { totalList, listRecommendDistributes };
 }
 
+
+
+/**
+ * Lay thông tin phiếu đề nghị cap phat thiết bị theo tai san
+ * @data: du lieu tai san
+ */
+exports.getUseRequestByAsset = async (portal, data) => {
+    var listRecommendDistributes = await RecommendDistribute(connect(DB_CONNECTION, portal)).find({asset: data.assetId}).populate({ path: 'asset proponent approver' }).sort({ 'createdAt': 'desc' });
+    return listRecommendDistributes;
+}
+
 /**
  * Thêm mới thông tin phiếu đề nghị cap phat thiết bị
  * @data: dữ liệu phiếu đề nghị cap phat thiết bị
  */
-exports.createRecommendDistribute = async (portal, data) => {
+exports.createUseRequest = async (portal, data) => {
 
     let dateStartUse, dateEndUse, dateCreate, date, partStart, partEnd, partCreate;
     partStart = data.dateStartUse.split('-');
@@ -117,7 +128,7 @@ exports.createRecommendDistribute = async (portal, data) => {
  * Xoá thông tin phiếu đề nghị cap phat thiết bị
  * @id: id phiếu đề nghị cap phat thiết bị muốn xoá
  */
-exports.deleteRecommendDistribute = async (id) => {
+exports.deleteUseRequest = async (id) => {
     return await RecommendDistribute(connect(DB_CONNECTION, portal)).findOneAndDelete({
         _id: id
     });
@@ -127,7 +138,7 @@ exports.deleteRecommendDistribute = async (id) => {
  * Update thông tin phiếu đề nghị cap phat thiết bị
  * @id: id phiếu đề nghị cap phat thiết bị muốn update
  */
-exports.updateRecommendDistribute = async (id, data) => {
+exports.updateUseRequest = async (id, data) => {
     let dateStartUse, dateEndUse, date, partStart, partEnd;
     partStart = data.dateStartUse.split('-');
     partEnd = data.dateEndUse.split('-');

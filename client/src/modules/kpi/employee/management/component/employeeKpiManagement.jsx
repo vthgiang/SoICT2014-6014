@@ -238,11 +238,11 @@ class KPIPersonalManager extends Component {
         var userdepartments;
         let exportData;
 
-        const { translate, kpimembers, user} =this.props;
-        const {status,startDate, endDate} = this.state;
+        const { translate, kpimembers, user } =this.props;
+        const { status,startDate, endDate} = this.state;
 
-        if (user !== "undefined") userdepartments = user.userdepartments;
-        if ( kpimembers !== "undefined") kpipersonal =  kpimembers.kpimembers;
+        if (user) userdepartments = user.userdepartments;
+        if (kpimembers) kpipersonal =  kpimembers.kpimembers;
         
         if(kpipersonal){
             exportData=this.convertDataToExportData(kpipersonal)
@@ -363,8 +363,8 @@ class KPIPersonalManager extends Component {
 }
 
 function mapState(state) {
-    const { user,kpimembers ,KPIPersonalManager } = state;
-    return {user, kpimembers,  KPIPersonalManager };
+    const { user, kpimembers } = state;
+    return { user, kpimembers };
 }
 
 const actionCreators = {

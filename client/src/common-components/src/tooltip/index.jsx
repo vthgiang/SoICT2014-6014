@@ -10,9 +10,7 @@ class ToolTip extends Component {
     }
 
     componentDidMount = () => {
-        window.$(document).ready(function () {
-            window.$('[data-toggle="tooltip"]').tooltip();
-        });
+        window.$('[data-toggle="tooltip"]').tooltip();
     }
 
     displayDefault = (data) => {
@@ -46,7 +44,7 @@ class ToolTip extends Component {
 
         return <React.Fragment>
 
-            <a href="#" data-toggle="tooltip" data-placement="auto" title={title}>
+            <a style={{cursor: "pointer"}} data-toggle="tooltip" data-placement="auto" title={title}>
                 <i className="material-icons">{icon}</i>
             </a>
 

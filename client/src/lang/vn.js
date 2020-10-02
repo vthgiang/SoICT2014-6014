@@ -161,6 +161,11 @@ export default {
                 company_not_found: 'Không tìm thấy thông tin về công ty',
                 link_exist: 'Url cho link đã tồn tại',
                 component_exist: 'Component này đã tồn tại',
+
+                update_company_link_success: 'Cập nhật link thành công',
+                update_company_link_faile: 'Cập nhật link thất bại',
+                update_company_component_success: 'Cập nhật component thành công',
+                update_company_component_faile: 'Cập nhật component thất bại',
             },
 
             system_setting: {
@@ -285,6 +290,20 @@ export default {
             }
         },
         super_admin: {
+            system: {
+                restore_backup: 'Restore backup',
+                delete_backup: 'Delete backup',
+
+                get_backup_list_success: 'Lấy dữ liệu sao lưu thành công',
+                get_backup_list_faile: 'Lấy dữ liệu sao lưu thất bại',
+                create_backup_success: 'Tạo sao lưu thành công',
+                create_backup_faile: 'Tạo sao lưu thất bại',
+                delete_backup_success: 'Xóa sao lưu thành công',
+                delete_backup_faile: 'Xóa sao lưu thất bại',
+                restore_data_success: 'Khôi phục dữ liệu thành công',
+                restore_data_faile: 'Khôi phục dữ liệu thất bại'
+            },
+
             organization_unit: {
                 //Thông điệp trả về từ server
                 create_department_success: 'Tạo đơn vị thành công',
@@ -661,6 +680,7 @@ export default {
         menu: {
             home: 'Trang chủ',
             system_administration: 'Quản trị hệ thống',
+            manage_configuration: 'Cấu hình hệ thống',
             manage_system: 'Sao lưu phục hồi',
             manage_company: 'Doanh nghiệp',
             manage_role: 'Quản lý phân quyền',
@@ -689,7 +709,7 @@ export default {
 
             leave_application: 'Quản lý đơn xin nghỉ',
             manage_employee: 'Quản lý nhân sự',
-            manage_holiday: 'Quản lý kế hoạch làm việc',
+            manage_work_plan: 'Quản lý kế hoạch làm việc',
             manage_training: 'Quản lý đào tạo',
             account: 'Tài khoản',
             annual_leave_personal: 'Nghỉ phép',
@@ -910,6 +930,17 @@ export default {
             edit_faile: 'Chỉnh sửa thất bại',
         },
 
+        // Modules cấu hình các chức năng
+        module_configuration: {
+
+            // Thông điệp trả về từ server
+            get_configuration_success: 'Lấy thông tin cấu hình thành công',
+            get_configuration_faile: 'Lấy thông tin cấu hình thất bại',
+            edit_configuration_success: 'Chỉnh sửa thông tin cấu hình thành công',
+            edit_configuration_faile: 'Chỉnh sửa thông tin cấu hình thất bại',
+
+        },
+
         // Modules Quản lý nhân sự
         human_resource: {
             // Nhóm dùng chung cho module quản lý nhân sự
@@ -1013,9 +1044,9 @@ export default {
 
                 // Nhóm dành cho trạng thái nghỉ phép 
                 status: {
-                    pass: 'Đã chấp nhận',
-                    faile: 'Không chấp nhận',
-                    process: 'Chờ phê duyệt',
+                    approved: 'Đã chấp nhận',
+                    disapproved: 'Không chấp nhận',
+                    waiting_for_approval: 'Chờ phê duyệt',
                 },
 
                 // Nhóm dành cho action
@@ -1283,7 +1314,7 @@ export default {
                 add_default_title: 'Thêm các tài liệu mặc định',
                 edit_file: 'Chỉnh sửa tài liệu đính kèm',
                 add_file: 'Thêm tài liệu đính kèm',
-                no_submitted: 'Chưa nộp',
+                not_submitted_yet: 'Chưa nộp',
                 submitted: 'Đã nộp',
                 returned: 'Đã trả lại',
                 no_files: 'Chưa có file',
@@ -1452,7 +1483,7 @@ export default {
             },
 
             // Quản lý kế hoạch làm việc (lịch nghỉ lễ tết)
-            holiday: {
+            work_plan: {
                 file_name_export: 'Kế hoạch làm việc',
                 number_date_leave_of_year: 'Số ngày nghỉ tối đa',
                 date_year: 'ngày/năm',
@@ -1473,15 +1504,15 @@ export default {
                 },
 
                 // Nhóm thể loại kế hoạch làm Việc
-                holiday: 'Thời gian nghỉ lễ, nghỉ tết',
-                auto_leave: 'Thời gian được xin nghỉ phép',
-                no_leave: 'Thời gian không được xin nghỉ phép',
+                time_for_holiday: 'Thời gian nghỉ lễ, nghỉ tết',
+                time_allow_to_leave: 'Thời gian được xin nghỉ phép',
+                time_not_allow_to_leave: 'Thời gian không được xin nghỉ phép',
 
                 // Nhóm dành cho action
-                edit_holiday: 'Chỉnh sửa kế hoạch làm việc',
-                delete_holiday: 'Xoá kế hoạch làm việc',
-                add_holiday: 'Thêm mới',
-                add_holiday_title: 'Thêm mới kế hoạch làm việc',
+                edit_work_plan: 'Chỉnh sửa kế hoạch làm việc',
+                delete_work_plan: 'Xoá kế hoạch làm việc',
+                add_work_plan: 'Thêm mới',
+                add_work_plan_title: 'Thêm mới kế hoạch làm việc',
                 add_by_hand: 'Thêm một kế hoạch làm việc',
                 add_import: 'Import file excel',
                 accept_application: 'Chấp nhận đơn xin nghỉ',
@@ -1492,19 +1523,19 @@ export default {
                 start_date_required: 'Thời gian bắt đầu không được để trống',
                 end_date_required: 'Thời gian kết thúc không được để trống',
                 reason_required: 'Mô tả kế hoạch làm việc không được để trống',
-                holiday_duplicate_required: 'Thời gian bị trùng lặp',
+                work_plan_duplicate_required: 'Thời gian bị trùng lặp',
                 edit_number_date_leave_of_year_success: 'Thay đổi số ngày nghỉ trong một năm thành công',
 
-                get_holiday_success: 'Lấy danh sách kế hoạch làm việc thành công',
-                get_holiday_faile: 'Lấy danh sách kế hoạch làm việc thất bại',
-                create_holiday_success: 'Thêm mới kế hoạch làm việc thành công',
-                create_holiday_faile: 'Thêm mới kế hoạch làm việc thất bại',
-                delete_holiday_success: 'Xoá kế hoạch làm việc thành công',
-                delete_holiday_faile: 'Xoá kế hoạch làm việc thất bại',
-                edit_holiday_success: 'Chỉnh sửa kế hoạch làm việc thành công',
-                edit_holiday_faile: 'Chỉnh sửa kế hoạch làm việc thất bại',
-                import_holiday_success: 'Import thông tin nghỉ lễ tết thành công',
-                import_holiday_faile: 'Import thông tin nghỉ lễ tết thất bại',
+                get_work_plan_success: 'Lấy danh sách kế hoạch làm việc thành công',
+                get_work_plan_faile: 'Lấy danh sách kế hoạch làm việc thất bại',
+                create_work_plan_success: 'Thêm mới kế hoạch làm việc thành công',
+                create_work_plan_faile: 'Thêm mới kế hoạch làm việc thất bại',
+                delete_work_plan_success: 'Xoá kế hoạch làm việc thành công',
+                delete_work_plan_faile: 'Xoá kế hoạch làm việc thất bại',
+                edit_work_plan_success: 'Chỉnh sửa kế hoạch làm việc thành công',
+                edit_work_plan_faile: 'Chỉnh sửa kế hoạch làm việc thất bại',
+                import_work_plan_success: 'Import thông tin nghỉ lễ tết thành công',
+                import_work_plan_faile: 'Import thông tin nghỉ lễ tết thất bại',
             },
 
             // Quản lý chấm công nhân viên
@@ -1513,11 +1544,13 @@ export default {
                 symbol: ' Ký hiệu',
                 not_work: 'Nghỉ làm',
                 do_work: 'Có đi làm',
-                total_timesheets: 'Tổng số công',
+                total_timesheets: 'Số giờ làm',
+                total_hours_off: 'Số giờ nghỉ',
                 work_date_in_month: 'Công làm việc trong tháng',
                 shift_work: 'Ca làm việc',
-                shifts1: 'ca 1',
-                shifts2: 'ca 2',
+                shifts1: 'Ca 1',
+                shifts2: 'Ca 2',
+                shifts3: 'Ca 3',
                 date_of_month: 'Các ngày trong tháng',
 
                 // Nhóm dành cho action
@@ -1589,6 +1622,7 @@ export default {
                 with_cost: 'với chi phí',
                 commitment_time: 'và thời gian cam kết làm việc',
                 month: 'tháng',
+                year: 'năm',
                 staff: 'nhân viên',
                 attend: 'Tham gia',
 
@@ -1739,11 +1773,14 @@ export default {
                 manager: 'Người quản lý',
                 user: 'Người sử dụng',
                 organization_unit: 'Đơn vị sử dụng',
+                select_organization_unit: 'Chọn đơn vị sử dụng',
+                select_all_organization_unit: 'Chọn tất cả đơn vị',
                 handover_from_date: 'Thời gian bắt đầu sử dụng',
                 handover_to_date: 'Thời gian kết thúc sử dụng',
                 status: 'Trạng thái',
                 action: 'Hành động',
                 asset_value: 'Giá trị tài sản',
+                disposal_date: 'Ngày thanh lý',
 
                 general_information: 'Thông tin chung',
                 usage_information: 'Thông tin sử dụng',
@@ -1939,6 +1976,7 @@ export default {
                 months_production: 'Sản lượng sản phẩm trong các tháng',
                 production: 'Sản lượng',
                 select_depreciation_type: 'Chọn phương pháp khấu hao',
+                select_all_depreciation_type: 'Chọn tất cả',
                 line: 'Phương pháp khấu hao đường thẳng',
                 declining_balance: 'Phương pháp khấu hao theo số dư giảm dần',
                 units_production: 'Phương pháp khấu hao theo sản lượng',
@@ -1981,59 +2019,49 @@ export default {
                 supplier: 'Nhà cung cấp',
                 unit: 'Đơn vị tính',
                 expected_value: 'Giá trị dự tính',
-
-                //Thông điệp trả về từ server
-                get_recommend_procure_success: 'Lấy thông tin đề nghị mua sắm thiết bị thành công',
-                get_recommend_procure_faile: 'Lấy thông tin đề nghị mua sắm thiết bị thất bại',
-                create_recommend_procure_success: 'Thêm phiếu đề nghị mua sắm thiết bị thành công',
-                create_recommend_procure_faile: 'Thêm phiếu đề nghị mua sắm thiết bị thất bại',
-                delete_recommend_procure_success: 'Xoá phiếu đề nghị mua sắm thiết bị thành công',
-                delete_recommend_procure_faile: 'Xoá phiếu đề nghị mua sắm thiết bị thất bại',
-                edit_recommend_procure_success: 'Chỉnh sửa thông tin phiếu thành công',
-                edit_recommend_procure_faile: 'Chỉnh sửa thông tin phiếu thất bại',
             },
 
             // Quản lý đề nghị cấp phát
-            manage_recommend_distribute: {
+            manage_use_request: {
 
                 //Thông điệp trả về từ server
-                get_recommend_distribute_success: 'Lấy thông tin đề nghị cấp phát thiết bị thành công',
-                get_recommend_distribute_faile: 'Lấy thông tin đề nghị cấp phát thiết bị thất bại',
-                create_recommend_distribute_success: 'Thêm phiếu đề nghị cấp phát thiết bị thành công',
-                create_recommend_distribute_faile: 'Thêm phiếu đề nghị cấp phát thiết bị thất bại',
-                delete_recommend_distribute_success: 'Xoá phiếu đề nghị cấp phát thiết bị thành công',
-                delete_recommend_distribute_faile: 'Xoá phiếu đề nghị cấp phát thiết bị thất bại',
-                edit_recommend_distribute_success: 'Chỉnh sửa thông tin phiếu thành công',
-                edit_recommend_distribute_faile: 'Chỉnh sửa thông tin phiếu thất bại',
+                get_use_request_success: 'Lấy thông tin đề nghị cấp phát thiết bị thành công',
+                get_use_request_faile: 'Lấy thông tin đề nghị cấp phát thiết bị thất bại',
+                create_use_request_success: 'Thêm phiếu đề nghị cấp phát thiết bị thành công',
+                create_use_request_faile: 'Thêm phiếu đề nghị cấp phát thiết bị thất bại',
+                delete_use_request_success: 'Xoá phiếu đề nghị cấp phát thiết bị thành công',
+                delete_use_request_faile: 'Xoá phiếu đề nghị cấp phát thiết bị thất bại',
+                edit_use_request_success: 'Chỉnh sửa thông tin phiếu thành công',
+                edit_use_request_faile: 'Chỉnh sửa thông tin phiếu thất bại',
 
             },
 
             // Đăng ký mua sắm thiết bị
-            recommend_procure: {
+            purchase_request: {
 
                 //Thông điệp trả về từ server
-                get_recommend_procure_success: 'Lấy thông tin đề nghị mua sắm thiết bị thành công',
-                get_recommend_procure_faile: 'Lấy thông tin đề nghị mua sắm thiết bị thất bại',
-                create_recommend_procure_success: 'Thêm phiếu đề nghị mua sắm thiết bị thành công',
-                create_recommend_procure_faile: 'Thêm phiếu đề nghị mua sắm thiết bị thất bại',
-                delete_recommend_procure_success: 'Xoá phiếu đề nghị mua sắm thiết bị thành công',
-                delete_recommend_procure_faile: 'Xoá phiếu đề nghị mua sắm thiết bị thất bại',
-                edit_recommend_procure_success: 'Chỉnh sửa thông tin phiếu thành công',
-                edit_recommend_procure_faile: 'Chỉnh sửa thông tin phiếu thất bại',
+                get_purchase_request_success: 'Lấy thông tin đề nghị mua sắm thiết bị thành công',
+                get_purchase_request_faile: 'Lấy thông tin đề nghị mua sắm thiết bị thất bại',
+                create_purchase_request_success: 'Thêm phiếu đề nghị mua sắm thiết bị thành công',
+                create_purchase_request_faile: 'Thêm phiếu đề nghị mua sắm thiết bị thất bại',
+                delete_purchase_request_success: 'Xoá phiếu đề nghị mua sắm thiết bị thành công',
+                delete_purchase_request_faile: 'Xoá phiếu đề nghị mua sắm thiết bị thất bại',
+                edit_purchase_request_success: 'Chỉnh sửa thông tin phiếu thành công',
+                edit_purchase_request_faile: 'Chỉnh sửa thông tin phiếu thất bại',
             },
 
             // Đăng ký sử dụng thiết bị
-            recommend_distribute: {
+            use_request: {
 
                 //Thông điệp trả về từ server
-                get_recommend_distribute_success: 'Lấy thông tin đề nghị cấp phát thiết bị thành công',
-                get_recommend_distribute_faile: 'Lấy thông tin đề nghị cấp phát thiết bị thất bại',
-                create_recommend_distribute_success: 'Thêm phiếu đề nghị cấp phát thiết bị thành công',
-                create_recommend_distribute_faile: 'Thêm phiếu đề nghị cấp phát thiết bị thất bại',
-                delete_recommend_distribute_success: 'Xoá phiếu đề nghị cấp phát thiết bị thành công',
-                delete_recommend_distribute_faile: 'Xoá phiếu đề nghị cấp phát thiết bị thất bại',
-                edit_recommend_distribute_success: 'Chỉnh sửa thông tin phiếu thành công',
-                edit_recommend_distribute_faile: 'Chỉnh sửa thông tin phiếu thất bại',
+                get_use_request_success: 'Lấy thông tin đề nghị cấp phát thiết bị thành công',
+                get_use_request_faile: 'Lấy thông tin đề nghị cấp phát thiết bị thất bại',
+                create_use_request_success: 'Thêm phiếu đề nghị cấp phát thiết bị thành công',
+                create_use_request_faile: 'Thêm phiếu đề nghị cấp phát thiết bị thất bại',
+                delete_use_request_success: 'Xoá phiếu đề nghị cấp phát thiết bị thành công',
+                delete_use_request_faile: 'Xoá phiếu đề nghị cấp phát thiết bị thất bại',
+                edit_use_request_success: 'Chỉnh sửa thông tin phiếu thành công',
+                edit_use_request_faile: 'Chỉnh sửa thông tin phiếu thất bại',
             },
 
         },
@@ -2216,9 +2244,9 @@ export default {
                 tasks_calendar: 'Lịch công việc',
                 model_detail_task_title: 'Thông tin chi tiết công việc',
                 collaborative_tasks: 'Nhiều người thực hiện',
-                in_time: 'Đúng tiến độ',
-                delayed_time: 'Trễ tiến độ',
-                not_achieved: 'Quá hạn',
+                in_time: 'Đúng tiến độ ',
+                delayed_time: 'Trễ tiến độ ',
+                not_achieved: 'Quá hạn ',
 
                 err_organizational_unit: 'Đơn vị đã bị xóa',
                 err_name_task: 'Tên đã bị xóa',
@@ -3462,7 +3490,7 @@ export default {
         },
 
         footer: {
-            copyright: 'Bản quyền thuộc về ',
+            copyright: 'Copyright by ',
             vnist: 'Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam',
             version: 'Phiên bản '
         },

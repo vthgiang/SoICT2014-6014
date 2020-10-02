@@ -12,6 +12,7 @@ const {
     Privilege,
     User,
     UserRole,
+    ModuleConfiguration,
 
     RootRole,
     SystemLink,
@@ -106,6 +107,7 @@ const initSampleCompanyDB = async () => {
         if (!db.models.Privilege) Privilege(db);
         if (!db.models.User) User(db);
         if (!db.models.UserRole) UserRole(db);
+        if (!db.models.ModuleConfiguration) ModuleConfiguration(db);
 
         if (!db.models.RootRole) RootRole(db);
         if (!db.models.SystemLink) SystemLink(db);
@@ -3462,7 +3464,7 @@ const initSampleCompanyDB = async () => {
             organizationalUnit: Directorate._id,
             startDate: "2020-09-06",
             endDate: "2020-09-08",
-            status: "pass",
+            status: "approved",
             reason: "Về quê",
         }, {
             company: vnist._id,
@@ -3470,7 +3472,7 @@ const initSampleCompanyDB = async () => {
             organizationalUnit: Directorate._id,
             startDate: "2020-09-05",
             endDate: "2020-09-10",
-            status: "process",
+            status: "waiting_for_approval",
             reason: "Nghỉ tết"
         }, {
             company: vnist._id,
@@ -3478,7 +3480,7 @@ const initSampleCompanyDB = async () => {
             organizationalUnit: phongMaketing[0]._id,
             startDate: "2020-09-05",
             endDate: "2020-09-19",
-            status: "pass",
+            status: "approved",
             reason: "Nghỉ du lịch"
         }, {
             company: vnist._id,
@@ -3486,7 +3488,7 @@ const initSampleCompanyDB = async () => {
             organizationalUnit: phongMaketing[0]._id,
             startDate: "2020-09-02",
             endDate: "2020-09-22",
-            status: "pass",
+            status: "approved",
             reason: "Nghỉ về quê"
         }, {
             company: vnist._id,
@@ -3494,7 +3496,7 @@ const initSampleCompanyDB = async () => {
             organizationalUnit: phongMaketing[0]._id,
             startDate: "2020-02-02",
             endDate: "2020-02-22",
-            status: "pass",
+            status: "approved",
             reason: "Nghỉ về quê"
         },
         {
@@ -3503,7 +3505,7 @@ const initSampleCompanyDB = async () => {
             organizationalUnit: phongMaketing[0]._id,
             startDate: "2020-09-01",
             endDate: "2020-09-03",
-            status: "process",
+            status: "waiting_for_approval",
             reason: "Nghỉ du lịch"
         }, {
             company: vnist._id,
@@ -3511,7 +3513,7 @@ const initSampleCompanyDB = async () => {
             organizationalUnit: phongMaketing[0]._id,
             startDate: "2020-03-01",
             endDate: "2020-03-03",
-            status: "process",
+            status: "waiting_for_approval",
             reason: "Nghỉ du lịch"
         },
         {
@@ -3520,7 +3522,7 @@ const initSampleCompanyDB = async () => {
             organizationalUnit: phongKS[0]._id,
             startDate: "2020-09-05",
             endDate: "2020-09-10",
-            status: "pass",
+            status: "approved",
             reason: "Nghỉ về quê"
         },
         {
@@ -3529,7 +3531,7 @@ const initSampleCompanyDB = async () => {
             organizationalUnit: phongKS[0]._id,
             startDate: "2020-09-05",
             endDate: "2020-09-10",
-            status: "pass",
+            status: "approved",
             reason: "Nghỉ về quê"
         },
         {
@@ -3538,7 +3540,7 @@ const initSampleCompanyDB = async () => {
             organizationalUnit: phongKS[0]._id,
             startDate: "2020-04-05",
             endDate: "2020-04-10",
-            status: "pass",
+            status: "approved",
             reason: "Nghỉ về quê"
         },
         {
@@ -3547,7 +3549,7 @@ const initSampleCompanyDB = async () => {
             organizationalUnit: phongKS[0]._id,
             startDate: "2020-01-05",
             endDate: "2020-01-10",
-            status: "pass",
+            status: "approved",
             reason: "Nghỉ về quê"
         },
         {
@@ -3556,7 +3558,7 @@ const initSampleCompanyDB = async () => {
             organizationalUnit: phongKS[0]._id,
             startDate: "2020-09-04",
             endDate: "2020-09-16",
-            status: "process",
+            status: "waiting_for_approval",
             reason: "Nghỉ du lịch"
         },
         {
@@ -3565,7 +3567,7 @@ const initSampleCompanyDB = async () => {
             organizationalUnit: phongKS[0]._id,
             startDate: "2019-10-04",
             endDate: "2019-10-16",
-            status: "process",
+            status: "waiting_for_approval",
             reason: "Nghỉ du lịch"
         },
         {
@@ -3574,7 +3576,7 @@ const initSampleCompanyDB = async () => {
             organizationalUnit: phongQTNS[0]._id,
             startDate: "2020-09-05",
             endDate: "2020-09-10",
-            status: "pass",
+            status: "approved",
             reason: "Nghỉ về quê"
         },
         {
@@ -3583,7 +3585,7 @@ const initSampleCompanyDB = async () => {
             organizationalUnit: phongQTNS[0]._id,
             startDate: "2020-02-05",
             endDate: "2020-02-10",
-            status: "pass",
+            status: "approved",
             reason: "Nghỉ về quê"
         },
         {
@@ -3592,7 +3594,7 @@ const initSampleCompanyDB = async () => {
             organizationalUnit: phongQTNS[0]._id,
             startDate: "2020-05-05",
             endDate: "2020-05-10",
-            status: "pass",
+            status: "approved",
             reason: "Nghỉ về quê"
         },
 
@@ -4067,7 +4069,24 @@ const initSampleCompanyDB = async () => {
         educationProgram: educationProgram[1]._id,
         employeeCommitmentTime: "6",
     }])
+
     console.log(`Xong! Thông tin khoá đào tạo  đã được tạo`);
+
+    console.log("Khởi tạo dữ liệu cấu hình module quản lý nhân sự!");
+
+    await ModuleConfiguration(vnistDB).create({
+        humanResource: {
+            contractNoticeTime: 15,
+            timekeepingType: "shift",
+            timekeepingByShift: {
+                shift1Time: 4,
+                shift2Time: 4,
+                shift3Time: 4,
+            },
+        },
+    })
+
+    console.log(`Xong! thông tin cấu hình module quản lý nhân sự đã được tạo`);
 
     /**
      * Ngắt kết nối db

@@ -63,6 +63,15 @@ exports.getTaskReports = async (portal, params) => {
         ]
     };
 
+    let countRecord = [
+        ...keySearch,
+        {
+            $count: "totalReport"
+        }
+    ]
+    // get tổng số bản ghi sau khi truy vấn tìm kiếm
+    let totalList = await TaskReport(connect(DB_CONNECTION, portal)).aggregate(countRecord);
+
     keySearch = [
         ...keySearch,
         { $sort: { createdAt: -1 } },
@@ -85,10 +94,10 @@ exports.getTaskReports = async (portal, params) => {
             }
         },
     ]
-    let listTaskReport = await TaskReport(connect(DB_CONNECTION, portal)).aggregate(keySearch);
-    // get tổng số record của bảng Task report
-    let totalList = await TaskReport(connect(DB_CONNECTION, portal)).countDocuments();
 
+    totalList = parseInt(totalList.map(o => o.totalReport));
+
+    let listTaskReport = await TaskReport(connect(DB_CONNECTION, portal)).aggregate(keySearch);
     return { totalList, listTaskReport };
 }
 

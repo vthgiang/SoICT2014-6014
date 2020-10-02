@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ErrorLabel } from '../../../../../common-components';
+import { DialogModal, ErrorLabel, UploadFile } from '../../../../../common-components';
 
 import { EmployeeCreateValidator } from './combinedContent';
 
@@ -13,20 +13,14 @@ class FileEditModal extends Component {
     }
 
     /** Bắt sự kiện thay đổi file đính kèm */
-    handleChangeFile = (e) => {
-        const { name } = e.target;
-        let file = e.target.files[0];
-        if (file !== undefined) {
-            let url = URL.createObjectURL(file);
-            let fileLoad = new FileReader();
-            fileLoad.readAsDataURL(file);
-            fileLoad.onload = () => {
-                this.setState({
-                    [name]: file.name,
-                    urlFile: url,
-                    fileUpload: file,
-                })
-            };
+    handleChangeFile = (value) => {
+        if (value.length !== 0) {
+            this.setState({
+                file: value[0].fileName,
+                urlFile: value[0].urlFile,
+                fileUpload: value[0].fileUpload
+
+            })
         } else {
             this.setState({
                 file: "",
@@ -131,6 +125,9 @@ class FileEditModal extends Component {
                 description: nextProps.description,
                 number: nextProps.number,
                 status: nextProps.status,
+                file: nextProps.file,
+                urlFile: nextProps.urlFile,
+                fileUpload: nextProps.fileUpload,
 
                 errorOnNameFile: undefined,
                 errorOnDiscFile: undefined,
@@ -146,8 +143,13 @@ class FileEditModal extends Component {
 
         const { id } = this.props;
 
-        const { name, description, number, status,
+        const { name, description, number, status, file, urlFile, fileUpload,
             errorOnNameFile, errorOnDiscFile, errorOnNumberFile } = this.state;
+
+        let files;
+        if (file) {
+            files = [{ fileName: file, urlFile: urlFile, fileUpload: fileUpload }]
+        }
 
         return (
             <React.Fragment>
@@ -182,7 +184,7 @@ class FileEditModal extends Component {
                             <div className="form-group col-sm-6 col-xs-12">
                                 <label>{translate('table.status')}<span className="text-red">*</span></label>
                                 <select className="form-control" value={status} name="status" onChange={this.handleStatusChange}>
-                                    <option value="no_submitted">{translate('human_resource.profile.no_submitted')}</option>
+                                    <option value="not_submitted_yet">{translate('human_resource.profile.not_submitted_yet')}</option>
                                     <option value="submitted">{translate('human_resource.profile.submitted')}</option>
                                     <option value="returned">{translate('human_resource.profile.returned')}</option>
                                 </select>
@@ -191,13 +193,7 @@ class FileEditModal extends Component {
                         {/* File đính kèm */}
                         <div className="form-group">
                             <label htmlFor="file">{translate('human_resource.profile.attached_files')}</label>
-                            {/* <input type="file" style={{ height: 34, paddingTop: 2 }} className="form-control" name="file" onChange={this.handleChangeFile} /> */}
-                            <br />
-                            <div className="upload btn btn-primary">
-                                <i className="fa fa-folder"></i>
-                                {" " + translate('document.choose_file')}
-                                <input className="upload" type="file" name="file" onChange={this.handleChangeFile} />
-                            </div>
+                            <UploadFile files={files} onChange={this.handleChangeFile} />
                         </div>
                     </form>
                 </DialogModal>

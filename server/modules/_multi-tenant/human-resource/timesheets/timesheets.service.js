@@ -1,7 +1,8 @@
 const EmployeeService = require('../profile/profile.service');
 const {
     Employee,
-    Timesheet
+    Timesheet,
+    ModuleConfiguration
 } = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
 
 const {
@@ -40,8 +41,8 @@ exports.searchTimesheets = async (portal, params, company) => {
         }
     }
     if (keySearchEmployee) {
-        var employeeInfo = await Employee(connect(DB_CONNECTION, portal)).find(keySearchEmployee);
-        var employee = employeeInfo.map(x => x._id);
+        let employeeInfo = await Employee(connect(DB_CONNECTION, portal)).find(keySearchEmployee);
+        let employee = employeeInfo.map(x => x._id);
         keySearch = {
             ...keySearch,
             employee: {
@@ -80,6 +81,23 @@ exports.searchTimesheets = async (portal, params, company) => {
  * @param {*} company : Id công ty
  */
 exports.createTimesheets = async (portal, data, company) => {
+    let config = await ModuleConfiguration(connect(DB_CONNECTION, portal)).find();
+    let humanResourceConfig = config.length > 0 ? config[0] : undefined;
+    let timekeepingType = "shift",
+        timeShift1 = 4,
+        timeShift2 = 4,
+        timeShift3 = 4;
+
+    if (humanResourceConfig && humanResourceConfig.humanResource && humanResourceConfig.humanResource.timekeepingType) {
+        timekeepingType = humanResourceConfig.humanResource.timekeepingType;
+    };
+    if (timekeepingType === "shift" && humanResourceConfig.humanResource.timekeepingByShift) {
+        let timekeepingByShift = humanResourceConfig.humanResource.timekeepingByShift;
+        timeShift1 = timekeepingByShift.shift1Time;
+        timeShift2 = timekeepingByShift.shift2Time;
+        timeShift3 = timekeepingByShift.shift3Time;
+    }
+
     let month = new Date(data.month);
     let isSalary = await Timesheet(connect(DB_CONNECTION, portal)).findOne({
         employee: data.employee,
@@ -88,17 +106,47 @@ exports.createTimesheets = async (portal, data, company) => {
     }, {
         field1: 1
     });
+
     if (isSalary !== null) {
         return "have_exist"
     } else {
-        // Thêm thông tin chấm công
-        let createTimesheets = await Timesheet(connect(DB_CONNECTION, portal)).create({
-            employee: data.employee,
-            company: company,
-            month: month,
-            workSession1: data.workSession1,
-            workSession2: data.workSession2,
-        });
+        let createTimesheets;
+        if (timekeepingType === 'shift') {
+            let timekeepingByShift = data.timekeepingByShift;
+            let shift1s = timekeepingByShift.shift1s.map(x => x ? timeShift1 : 0);
+            let shift2s = timekeepingByShift.shift2s.map(x => x ? timeShift2 : 0);
+            let shift3s = timekeepingByShift.shift3s.map(x => x ? timeShift3 : 0);
+            let timekeepingByHours = shift1s.map((x, index) => x + shift2s[index] + shift3s[index]);
+            let totalHours = 0;
+            timekeepingByHours.forEach(x => {
+                totalHours = totalHours + x;
+            })
+            // Thêm thông tin chấm công
+            createTimesheets = await Timesheet(connect(DB_CONNECTION, portal)).create({
+                employee: data.employee,
+                company: company,
+                month: month,
+                totalHours: totalHours,
+                timekeepingByHours: timekeepingByHours,
+                timekeepingByShift: data.timekeepingByShift,
+
+            });
+        } else if (timekeepingType === "hours") {
+            let totalHours = 0;
+            data.timekeepingByHours.forEach(x => {
+                totalHours = totalHours + parseInt(x);
+            })
+
+            // Thêm thông tin chấm công
+            createTimesheets = await Timesheet(connect(DB_CONNECTION, portal)).create({
+                employee: data.employee,
+                company: company,
+                month: month,
+                totalHours: totalHours,
+                timekeepingByHours: data.timekeepingByHours,
+            });
+        }
+
         // Lấy thông tin chấm công vừa cập nhật
         let newTimesheets = await Timesheet(connect(DB_CONNECTION, portal)).findOne({
             _id: createTimesheets._id
@@ -127,11 +175,52 @@ exports.deleteTimesheets = async (portal, id) => {
  * @data : Dữ liệu thay đổi thông tin chấm công
  */
 exports.updateTimesheets = async (portal, id, data) => {
-    // Cập nhật thông tin chấm công
-    let infoTimesheets = await Timesheet(connect(DB_CONNECTION, portal)).findById(id);
-    infoTimesheets.workSession1 = data.workSession1;
-    infoTimesheets.workSession2 = data.workSession2;
-    await infoTimesheets.save();
+    let config = await ModuleConfiguration(connect(DB_CONNECTION, portal)).find();
+    let humanResourceConfig = config.length > 0 ? config[0] : undefined;
+    let timekeepingType = "shift",
+        timeShift1 = 4,
+        timeShift2 = 4,
+        timeShift3 = 4;
+
+    if (humanResourceConfig && humanResourceConfig.humanResource && humanResourceConfig.humanResource.timekeepingType) {
+        timekeepingType = humanResourceConfig.humanResource.timekeepingType;
+    };
+    if (timekeepingType === "shift" && humanResourceConfig.humanResource.timekeepingByShift) {
+        let timekeepingByShift = humanResourceConfig.humanResource.timekeepingByShift;
+        timeShift1 = timekeepingByShift.shift1Time;
+        timeShift2 = timekeepingByShift.shift2Time;
+        timeShift3 = timekeepingByShift.shift3Time;
+    }
+
+    if (timekeepingType === "shift") {
+        let timekeepingByShift = data.timekeepingByShift;
+        let shift1s = timekeepingByShift.shift1s.map(x => x ? timeShift1 : 0);
+        let shift2s = timekeepingByShift.shift2s.map(x => x ? timeShift2 : 0);
+        let shift3s = timekeepingByShift.shift3s.map(x => x ? timeShift3 : 0);
+        let timekeepingByHours = shift1s.map((x, index) => x + shift2s[index] + shift3s[index]);
+        let totalHours = 0;
+        timekeepingByHours.forEach(x => {
+            totalHours = totalHours + x;
+        })
+
+        // Cập nhật thông tin chấm công
+        let infoTimesheets = await Timesheet(connect(DB_CONNECTION, portal)).findById(id);
+        infoTimesheets.totalHours = totalHours;
+        infoTimesheets.timekeepingByShift = data.timekeepingByShift;
+        infoTimesheets.timekeepingByHours = timekeepingByHours;
+        await infoTimesheets.save();
+    } else if (timekeepingType === "hours") {
+        let totalHours = 0;
+        data.timekeepingByHours.forEach(x => {
+            totalHours = totalHours + parseInt(x);
+        })
+
+        // Cập nhật thông tin chấm công
+        let infoTimesheets = await Timesheet(connect(DB_CONNECTION, portal)).findById(id);
+        infoTimesheets.totalHours = totalHours;
+        infoTimesheets.timekeepingByHours = data.timekeepingByHours;
+        await infoTimesheets.save();
+    }
 
     // Lấy thông tin chấm công vừa cập nhật
     let updateTimesheets = await Timesheet(connect(DB_CONNECTION, portal)).findOne({
@@ -195,6 +284,43 @@ exports.importTimesheets = async (portal, data, company) => {
             rowError
         }
     } else {
+        let config = await ModuleConfiguration(connect(DB_CONNECTION, portal)).find();
+        let humanResourceConfig = config.length > 0 ? config[0] : undefined;
+        let timekeepingType = "shift",
+            timeShift1 = 4,
+            timeShift2 = 4,
+            timeShift3 = 4;
+
+        if (humanResourceConfig && humanResourceConfig.humanResource && humanResourceConfig.humanResource.timekeepingType) {
+            timekeepingType = humanResourceConfig.humanResource.timekeepingType;
+        };
+        if (timekeepingType === "shift" && humanResourceConfig.humanResource.timekeepingByShift) {
+            let timekeepingByShift = humanResourceConfig.humanResource.timekeepingByShift;
+            timeShift1 = timekeepingByShift.shift1Time;
+            timeShift2 = timekeepingByShift.shift2Time;
+            timeShift3 = timekeepingByShift.shift3Time;
+        }
+
+        if (timekeepingType === "shift") {
+            data = data.map(y => {
+                let timekeepingByShift = y.timekeepingByShift;
+                let shift1s = timekeepingByShift.shift1s.map(x => x ? timeShift1 : 0);
+                let shift2s = timekeepingByShift.shift2s.map(x => x ? timeShift2 : 0);
+                let shift3s = timekeepingByShift.shift3s.map(x => x ? timeShift3 : 0);
+                let timekeepingByHours = shift1s.map((x, index) => x + shift2s[index] + shift3s[index]);
+                let totalHours = 0;
+                timekeepingByHours.forEach(x => {
+                    totalHours = totalHours + x;
+                });
+
+                return {
+                    ...y,
+                    totalHours: totalHours,
+                    timekeepingByHours: timekeepingByHours
+                }
+            })
+        }
+
         return await Timesheet(connect(DB_CONNECTION, portal)).insertMany(data);
     }
 }

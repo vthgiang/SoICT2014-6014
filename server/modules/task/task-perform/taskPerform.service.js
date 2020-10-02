@@ -9,7 +9,7 @@ const User = require('../../../models/auth/user.model');
 const fs = require('fs');
 const moment = require("moment");
 const OrganizationalUnitService = require('../../super-admin/organizational-unit/organizationalUnit.service');
-
+const now = new Date()
 /**
  * Lấy mẫu công việc theo Id
  */
@@ -214,7 +214,6 @@ exports.getActiveTimesheetLog = async (query) => {
  * Bắt đầu bấm giờ: Lưu thời gian bắt đầu
  */
 exports.startTimesheetLog = async (params, body) => {
-    const now = new Date()
     let timerUpdate = {
         startedAt: now,
         creator: body.creator,
@@ -231,7 +230,6 @@ exports.startTimesheetLog = async (params, body) => {
  * Dừng bấm giờ: Lưu thời gian kết thúc và số giờ chạy (endTime và time)
  */
 exports.stopTimesheetLog = async (params, body) => {
-    const now = new Date().getTime()
     let stoppedAt
 
     if (body.stoppedAt) {
@@ -369,7 +367,6 @@ exports.createCommentOfTaskAction = async (params, body, files) => {
  * Sửa nội dung bình luận hoạt động
  */
 exports.editCommentOfTaskAction = async (params, body, files) => {
-    const now = new Date()
     let action = await Task.updateOne(
         { "_id": params.taskId, "taskActions._id": params.actionId, "taskActions.comments._id": params.commentId },
         {
@@ -700,7 +697,6 @@ exports.createTaskComment = async (params, body, files) => {
  * Sửa bình luận công việc
  */
 exports.editTaskComment = async (params, body, files) => {
-    let now = new Date()
     let taskComment = await Task.updateOne(
         { "_id": params.taskId, "taskComments._id": params.commentId },
         {
@@ -787,7 +783,6 @@ exports.createCommentOfTaskComment = async (params, body, files) => {
  * Sửa bình luận của bình luận công việc
  */
 exports.editCommentOfTaskComment = async (params, body, files) => {
-    const now = new Date();
     let comment = await Task.updateOne(
         //thieu 1 tham so child comment
         { "_id": params.taskId, "taskComments.comments._id": params.commentId },
@@ -1662,7 +1657,6 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
     let dateISO = new Date(splitterDate[2], splitterDate[1] - 1, splitterDate[0]);
     let monthOfParams = dateISO.getMonth();
     let yearOfParams = dateISO.getFullYear();
-    let now = new Date();
 
     let cloneInfo = task.taskInformations;
     for (let item in info) {
@@ -2014,7 +2008,6 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
     let dateISO = new Date(splitterDate[2], splitterDate[1] - 1, splitterDate[0]);
     let monthOfParams = dateISO.getMonth();
     let yearOfParams = dateISO.getFullYear();
-    let now = new Date();
 
     let cloneInfo = task.taskInformations;
     for (let item in info) {
@@ -2428,25 +2421,20 @@ exports.deleteFileChildTaskComment = async (params) => {
 
 /**
  * edit status of task 
- * @param taskID id công việc
+ * @param taskID id của công việc muốn kích hoạt các công việc sau nó
  * @param body trang thai công việc
  */
 exports.editActivateOfTask = async (taskID, body) => {
     let today = new Date();
-
-    let task1 = await Task.findById(taskID);
-
-    let startDate = task1.startDate;
-    let endDate = task1.endDate;
 
     // Cập nhật trạng thái hoạt động của các task sau
     for (let i = 0; i < body.listSelected.length; i++) {
         console.log('body', body.listSelected[i]);
 
         let listTask = await Task.find({ "followingTasks.task": body.listSelected[i] });
-        // console.log('list', listTask, listTask.length);
 
         for (let x in listTask) {
+            // update activate
             await Task.update(
                 {
                     _id: listTask[x]._id,
@@ -2460,12 +2448,17 @@ exports.editActivateOfTask = async (taskID, body) => {
             )
         }
 
-        
-        let followStartDate = endDate;
+        let followStartDate = today;
 
         let followItem = await Task.findById(body.listSelected[i]);
-        let numberOfDaysTaken = followItem.numberOfDaysTaken ? followItem.numberOfDaysTaken : 0;
-        let timer = followStartDate.getTime() + numberOfDaysTaken * 24 * 60 * 60 * 1000;
+        let startDateItem = followItem.startDate;
+        let endDateItem = followItem.endDate;
+        let dayTaken = endDateItem.getTime() - startDateItem.getTime();
+
+        // let followItem = await Task.findById(body.listSelected[i]);
+        // let numberOfDaysTaken = followItem.numberOfDaysTaken ? followItem.numberOfDaysTaken : 0;
+        // let timer = followStartDate.getTime() + numberOfDaysTaken * 24 * 60 * 60 * 1000;
+        let timer = followStartDate.getTime() + dayTaken;
 
         let followEndDate = new Date(timer).toISOString();
 
@@ -2601,7 +2594,6 @@ exports.deleteFileTask = async (params) => {
         { $replaceRoot: { newRoot: "$files" } },
         { $match: { _id: mongoose.Types.ObjectId(params.fileId) } }
     ])
-    console.log(file)
     fs.unlinkSync(file[0].url)
 
     let task = await Task.update(
@@ -2609,11 +2601,24 @@ exports.deleteFileTask = async (params) => {
         { $pull: { "documents.$.files": { "_id": params.fileId } } },
         { safe: true }
     )
-    let task1 = await Task.findById({ _id: params.taskId }).populate([
+    let document = await Task.aggregate([
+        { $match: { _id: mongoose.Types.ObjectId(params.taskId) } },
+        { $unwind: "$documents" },
+        { $replaceRoot: { newRoot: "$documents" } },
+        { $match: { _id: mongoose.Types.ObjectId(params.documentId) } },
+    ])
+    if(document[0].files.length === 0 ) {
+        let task23 = await Task.update(
+            { "_id": params.taskId, "documents._id": params.documentId },
+            { $pull: { "documents": { "_id": params.documentId } } },
+            { safe: true }
+        )
+    }
+    let task3 = await Task.findById({ _id: params.taskId }).populate([
         { path: "documents.creator", model: User, select: 'name email avatar' },
     ]);
 
-    return task1.documents;
+    return task3.documents;
 }
 
 /**
@@ -2656,7 +2661,8 @@ exports.editDocument = async (taskId, documentId, body, files) => {
                 $set:
                 {
                     "documents.$.description": body.description,
-                    "documents.$.isOutput": body.isOutput
+                    "documents.$.isOutput": body.isOutput,
+                    "updatedAt": now
                 },
 
                 $push:
@@ -2957,7 +2963,7 @@ exports.createChildComment = async (params, body, files) => {
  * Edit comment of comment
  */
 exports.editChildComment = async (params, body, files) => {
-    let now = new Date()
+
     let comment1 = await Task.updateOne(
         { "_id": params.taskId, "commentsInProcess._id": params.commentId, "commentsInProcess.comments._id": params.childCommentId },
         {
@@ -3081,7 +3087,6 @@ exports.deleteChildComment = async (params) => {
  * Xóa file của bình luận
  */
 exports.deleteFileComment = async (params) => {
-    console.log(params)
     let file = await Task.aggregate([
         { $match: { "_id": mongoose.Types.ObjectId(params.taskId) } },
         { $unwind: "$commentsInProcess" },
@@ -3098,12 +3103,12 @@ exports.deleteFileComment = async (params) => {
         { $pull: { "commentsInProcess.$.files": { _id: params.fileId } } },
         { safe: true }
     )
-    let task = await Task.findOne({ "_id": params.taskId, "commentsInProcess._id": params.commentId }).populate([
+    let task = await Task.findOne({ "_id": params.taskId}).populate([
         { path: "commentsInProcess.creator", model: User, select: 'name email avatar' },
         { path: "commentsInProcess.comments.creator", model: User, select: 'name email avatar' },
     ]);
 
-    return task.commentsInProcess;
+    return task;
 }
 
 /**

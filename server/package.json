@@ -11,7 +11,7 @@
     "init-db": "node seed/_multi-tenant/initDB.js",
     "init-sample-company": "node seed/_multi-tenant/initSampleCompanyDB.js",
     "init-sample-organizational-unit-kpi": "node seed/_multi-tenant/initOrganizationalUnitKPIData.js",
-    "init-human-resource-data":"node seed/_multi-tenant/initHumanResourceData.js"
+    "init-human-resource-data": "node seed/_multi-tenant/initHumanResourceData.js"
   },
   "keywords": [],
   "author": "",

@@ -72,7 +72,7 @@ exports.searchAssetProfiles = async (req, res) => {
 exports.createAsset = async (req, res) => {
     try {
         let avatar = "";
-        if (req.files.fileAvatar) {
+        if (req.files && req.files.fileAvatar) {
             avatar = `/${req.files.fileAvatar[0].path}`;
         }
         let file = req.files && req.files.file;
