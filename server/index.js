@@ -1,36 +1,30 @@
 // NODE_MODULES
 const express = require("express");
 const bodyParser = require("body-parser");
-const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const app = express();
+const server = require('http').createServer(app);
+
+global.SOCKET_IO = require('socket.io')(server);
+SOCKET_IO.on('connection', function(socket){
+	// Client connected
+	console.log("Client connected: ", socket.id);
+
+	// Client disconnected
+	socket.on('disconnect', function(socket){
+		console.logog("Disconnected: ", socket.id);
+	})
+})
 
 require("dotenv").config();
 require('./connectDatabase');
 require('./global');
 
-if (process.env.MULTI_TENANT) console.log(`Running app Multi-Tenant [${process.env.MULTI_TENANT}]`);
-
-// Application Modules
-const schedulerController = require("./modules/scheduler/scheduler.controller");
-
-// APP
-const app = express();
-
-// Bodyparser middleware
-app.use(cors());
-app.use(
-	bodyParser.urlencoded({
-		extended: false,
-	})
-);
+app.use(require("cors")());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
-
 app.use("/upload/avatars", express.static("upload/avatars"));
-// app.use("/upload/asset/pictures", express.static("upload/asset/pictures"));
-
-
-
 
 if (process.env.MULTI_TENANT === 'true') {
 	const router = express.Router();
@@ -187,6 +181,8 @@ if (process.env.MULTI_TENANT === 'true') {
 	app.use("/crm", crm);
 }
 
-// Start server
+/**
+ * Server initial
+ */
 const port = process.env.PORT || 8000;
-app.listen(port, () => console.log(`Server up and running on: ${port} !`));
+server.listen(port, () => console.log(`Server up and running on: ${port} !`));
