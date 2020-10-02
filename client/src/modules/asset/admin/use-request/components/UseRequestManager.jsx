@@ -383,7 +383,7 @@ class UseRequestManager extends Component {
                                         <td>{this.formatDate2(x.dateStartUse)}</td>
                                         <td>{this.formatDate2(x.dateEndUse)}</td>
                                         <td>{x.approver ? x.approver.name : 'User is deleted'}</td>
-                                        <td>{x.status}</td>
+                                        <td>{x.status == 'waiting_for_approval' ? translate('asset.usage.waiting_approval') : (x.status == 'approved'? translate('asset.usage.approved'): translate('asset.usage.not_approved'))}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.asset_info.edit_usage_info')}><i className="material-icons">edit</i></a>
                                             <DeleteNotification

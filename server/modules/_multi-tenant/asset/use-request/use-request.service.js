@@ -138,7 +138,7 @@ exports.deleteUseRequest = async (id) => {
  * Update thông tin phiếu đề nghị cap phat thiết bị
  * @id: id phiếu đề nghị cap phat thiết bị muốn update
  */
-exports.updateUseRequest = async (id, data) => {
+exports.updateUseRequest = async (portal, id, data) => {
     let dateStartUse, dateEndUse, date, partStart, partEnd;
     partStart = data.dateStartUse.split('-');
     partEnd = data.dateEndUse.split('-');
@@ -168,7 +168,7 @@ exports.updateUseRequest = async (id, data) => {
 
     var recommendDistributeChange = {
         recommendNumber: data.recommendNumber,
-        dateCreate: data.dateCreate,
+        dateCreate: new Date(data.dateCreate),
         proponent: data.proponent, // Người đề nghị
         reqContent: data.reqContent, // Người đề nghị
         asset: data.asset,

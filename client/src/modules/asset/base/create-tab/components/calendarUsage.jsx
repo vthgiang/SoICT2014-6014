@@ -38,6 +38,7 @@ class CalendarUsage extends Component {
     }
     if(nextProps.recommendDistribute && nextProps.recommendDistribute.listRecommendDistributesByAsset && this.state.dataStatus == 1){
       if(this.state.dataStatus === 1){
+        console.log("data", this.state.data)
         let listRecommendDistributes = nextProps.recommendDistribute.listRecommendDistributesByAsset
         let RecommendDistributesByAsset = [];
         for (let i in listRecommendDistributes) {
@@ -228,8 +229,8 @@ class CalendarUsage extends Component {
     const { recommendDistribute } = this.props;
     var { usageLogs } = this.state;
     let list, dataRecommendDistribute, value = clickInfo.event.id;
-    if (recommendDistribute && recommendDistribute.listRecommendDistributes) {
-      list = recommendDistribute.listRecommendDistributes;
+    if (recommendDistribute && recommendDistribute.listRecommendDistributesByAsset) {
+      list = recommendDistribute.listRecommendDistributesByAsset;
       dataRecommendDistribute = list.filter(item => item._id == value);
     }
     if (dataRecommendDistribute) {
@@ -238,9 +239,9 @@ class CalendarUsage extends Component {
         {
           recommendNumber: dataRecommendDistribute[0].recommendNumber,
           dateCreate: dataRecommendDistribute[0].dateCreate,
-          proponent: dataRecommendDistribute[0].proponent, // Người đề nghị
+          proponent: dataRecommendDistribute[0].proponent._id, // Người đề nghị
           reqContent: dataRecommendDistribute[0].reqContent,
-          asset: dataRecommendDistribute[0].asset,
+          asset: dataRecommendDistribute[0].asset._id,
           dateStartUse: dataRecommendDistribute[0].dateStartUse,
           dateEndUse: dataRecommendDistribute[0].dateEndUse,
           approver: dataRecommendDistribute[0].approver, // Người phê duyệt
@@ -248,15 +249,6 @@ class CalendarUsage extends Component {
           status: "approved",
         })
 
-      let data = {
-        receiptsCode: "",
-        month: "",
-        reqUseStatus: null,
-        page: 0,
-        limit: 5,
-        managedBy: this.props.managedBy ? this.props.managedBy : '',
-        assetId: this.props.assetId
-      }
       let newUsage = {
         usedByUser: dataRecommendDistribute[0].proponent,
         usedByOrganizationalUnit: null,
@@ -326,11 +318,11 @@ class CalendarUsage extends Component {
       let userlist = nextProps.user.list
       for (let i in nextProps.usageLogs) {
         usageLogs.push({
-          id: usageLogs[i]._id,
-          title: userlist.filter(item => item._id === usageLogs[i].usedByUser).pop() ? userlist.filter(item => item._id === usageLogs[i].usedByUser).pop().name : "Chưa có đối tượng sử dụng",
+          id: nextProps.usageLogs[i]._id,
+          title: userlist.filter(item => item._id === nextProps.usageLogs[i].usedByUser).pop() ? userlist.filter(item => item._id === nextProps.usageLogs[i].usedByUser).pop().name : "Chưa có đối tượng sử dụng",
           color: '#337ab7',
-          start: usageLogs[i].startDate,
-          end: usageLogs[i].endDate,
+          start: nextProps.usageLogs[i].startDate,
+          end: nextProps.usageLogs[i].endDate,
           // url: usageLogs[i].description,
         })
       }
