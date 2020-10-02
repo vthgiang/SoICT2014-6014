@@ -979,7 +979,7 @@ const initSampleCompanyDB = async () => {
         employeeCommitmentTime: "6",
     }])
     console.log(`Xong! Thông tin khoá đào tạo  đã được tạo`);
-    
+
     console.log("Khởi tạo dữ liệu cấu hình module quản lý nhân sự!");
 
     await ModuleConfiguration(vnistDB).create({
@@ -1341,131 +1341,157 @@ const initSampleCompanyDB = async () => {
     ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu loại tài sản");
     var listAssetType = await AssetType(vnistDB).insertMany([{ //0
+        company: vnist._id,
         typeNumber: "BA",
         typeName: "Bàn",
         parent: null,
         description: "Các loại bàn"
     }, { //1
+        company: vnist._id,
         typeNumber: "BC",
         typeName: "Băng chuyền",
         parent: null,
         description: "Các loại băng chuyền"
     }, { //2
+        company: vnist._id,
         typeNumber: "BG",
         typeName: "Bảng",
         parent: null,
         description: "Các loại bảng, viết, bảng từ, bảng chỉ dẫn"
     }, { //3
+        company: vnist._id,
         typeNumber: "BI",
         typeName: "Bình",
         parent: null,
         description: "Các loại bình chứa: bình nước,..."
     }, { //4
+        company: vnist._id,
         typeNumber: "BN",
         typeName: "Bồn",
         parent: null,
         description: "Các loại bồn rửa tay, bồn đựng nước"
     }, { //5
+        company: vnist._id,
         typeNumber: "BU",
         typeName: "Bục",
         parent: null,
         description: "Các loại bục để giày dép, để chân, để tượng"
     }, { //6
+        company: vnist._id,
         typeNumber: "CA",
         typeName: "Cân",
         parent: null,
         description: "Các loại cân"
     }, { //7
+        company: vnist._id,
         typeNumber: "Đèn",
         typeName: "DE",
         parent: null,
         description: "Đèn các loại"
     }, { //8
+        company: vnist._id,
         typeNumber: "DH",
         typeName: "Điều hòa",
         parent: null,
         description: "Điều hòa các loại"
     }, { //9
+        company: vnist._id,
         typeNumber: "DO",
         typeName: "Đồng hồ",
         parent: null,
         description: "Các loại đồng hồ"
     }, { //10
+        company: vnist._id,
         typeNumber: "GH",
         typeName: "Ghế",
         parent: null,
         description: "Ghế các loại"
     }, { //11
+        company: vnist._id,
         typeNumber: "GI",
         typeName: "Giá",
         parent: null,
         description: "Giá các chất liệu để tài liệu, trei, vật dụng nhỏ"
     }, { //12
+        company: vnist._id,
         typeNumber: "HT",
         typeName: "Hệ thống",
         parent: null,
         description: "Các thiết bị hệ thống"
     }, { //13
+        company: vnist._id,
         typeNumber: "KE",
         typeName: "Kệ hòm",
         parent: null,
         description: "Hòm, Kệ các chất liệu để tài liệu, có thể di động, có mặt phẳng"
     }, { //14
+        company: vnist._id,
         typeNumber: "QU",
         typeName: "Quạt",
         parent: null,
         description: "Quạt các loại"
     }, { //15
+        company: vnist._id,
         typeNumber: "TU",
         typeName: "Tủ đựng tài liệu và chứa các vật phẩm, TB",
         parent: null,
         description: ""
     }, { //16
+        company: vnist._id,
         typeNumber: "MV",
         typeName: "Thiết bị máy văn phòng",
         parent: null,
         description: "Tất cả các máy liên quan tới làm việc tại VP, Máy hút bụi, máy giặt, máy hút mùi"
     }, { //17
+        company: vnist._id,
         typeNumber: "DX",
         typeName: "Dụng cụ SX",
         parent: null,
         description: "Các vật dụng như thùng các chất liệu để đựng, chứa, pha chế, chia liều cột"
     }, { //18
+        company: vnist._id,
         typeNumber: "MK",
         typeName: "Máy cơ khí",
         parent: null,
         description: "Các máy liên quan tới hỗ trọ SX trực tiếp, sửa chữa, xây dựng"
     }, { //19
+        company: vnist._id,
         typeNumber: "TM",
         typeName: "Máy vi tính và thiết bị mạng",
         parent: null,
         description: "Máy vi tính các loại + phụ kiện + các thiết bị mạng"
     }, { //20
+        company: vnist._id,
         typeNumber: "AA",
         typeName: "Thiết bị âm thanh, hình ảnh",
         parent: null,
         description: "Các thiết bị điện tử riêng biệt liên quan tới âm thanh, hình ảnh"
     }, { //21
+        company: vnist._id,
         typeNumber: "NB",
         typeName: "Các vật dụng liên quan tới nhà bếp",
         parent: null,
         description: "Bếp, bình ga, nồi, chảo..."
     }, { //22
+        company: vnist._id,
         typeNumber: "PC",
         typeName: "Các thiết bị PCCC",
         parent: null,
         description: ""
     }, { //23
+        company: vnist._id,
         typeNumber: "XE",
         typeName: "Xe các loại",
         parent: null,
         description: ""
     }, { //24
+        company: vnist._id,
         typeNumber: "KH",
         typeName: "Khác",
         parent: null,
         description: ""
     }, { //25
+        company: vnist._id,
         typeNumber: "MB",
         typeName: "Mặt bằng",
         parent: null,
@@ -1481,6 +1507,8 @@ const initSampleCompanyDB = async () => {
     ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu phiếu đăng ký mua sắm tài sản");
     var listRecommendProcure = await RecommendProcure(vnistDB).insertMany([{
+
+        company: vnist._id,
         recommendNumber: "MS0001",
         dateCreate: new Date("2020-05-19"),
         proponent: users[4]._id,
@@ -1494,6 +1522,7 @@ const initSampleCompanyDB = async () => {
         approver: null,
         status: "waiting_for_approval"
     }, {
+        company: vnist._id,
         recommendNumber: "MS0002",
         dateCreate: new Date("2020-06-19"),
         proponent: users[5]._id,
@@ -1507,6 +1536,7 @@ const initSampleCompanyDB = async () => {
         approver: null,
         status: "waiting_for_approval"
     }, {
+        company: vnist._id,
         recommendNumber: "MS0003",
         dateCreate: new Date("2020-04-19"),
         proponent: users[7]._id,
@@ -1520,6 +1550,7 @@ const initSampleCompanyDB = async () => {
         approver: null,
         status: "waiting_for_approval"
     }, {
+        company: vnist._id,
         recommendNumber: "MS0004",
         dateCreate: new Date("2020-05-19"),
         proponent: users[4]._id,
@@ -1542,6 +1573,7 @@ const initSampleCompanyDB = async () => {
     ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu tài sản");
     var listAsset = await Asset(vnistDB).insertMany([{
+        company: vnist._id,
         avatar: "/upload/asset/pictures/picture5.png",
         assetName: "Laptop Sony Vaio",
         group: "machine",
@@ -1600,6 +1632,7 @@ const initSampleCompanyDB = async () => {
         //tài liệu đính kèm
         files: [],
     }, {
+        company: vnist._id,
         avatar: "/upload/asset/pictures/picture5.png",
         assetName: "Điều hòa Panasonic 9.000BTU",
         code: "VVDH01.017",
@@ -1657,6 +1690,7 @@ const initSampleCompanyDB = async () => {
         //tài liệu đính kèm
         files: [],
     }, {
+        company: vnist._id,
         avatar: "/upload/asset/pictures/picture5.png",
         assetName: "Máy tính cây",
         code: "VVMV18.001",
@@ -1715,6 +1749,7 @@ const initSampleCompanyDB = async () => {
         files: [],
     },
     {
+        company: vnist._id,
         avatar: "/upload/asset/pictures/picture5.png",
         assetName: "Máy tính cây",
         code: "VVMV18.028",
@@ -1773,6 +1808,7 @@ const initSampleCompanyDB = async () => {
         files: [],
     },
     {
+        company: vnist._id,
         avatar: "/upload/asset/pictures/picture5.png",
         assetName: "Iphone XS Max",
         code: "VVMV18.027",
@@ -1831,6 +1867,7 @@ const initSampleCompanyDB = async () => {
         files: [],
     },
     {
+        company: vnist._id,
         avatar: "/upload/asset/pictures/picture5.png",
         assetName: "Card GTX 2050Ti",
         code: "VVMV18.0026",
@@ -1884,6 +1921,7 @@ const initSampleCompanyDB = async () => {
     ])
 
     var asset = await Asset(vnistDB).create({
+        company: vnist._id,
         avatar: "/upload/asset/pictures/picture5.png",
         assetName: "HUST",
         group: "building",
@@ -1928,6 +1966,7 @@ const initSampleCompanyDB = async () => {
         files: [],
     })
     var assetManagedByEmployee2 = await Asset(vnistDB).create({
+        company: vnist._id,
         avatar: "/upload/asset/pictures/picture5.png",
         assetName: "Phòng họp 02",
         group: "building",
@@ -1984,6 +2023,7 @@ const initSampleCompanyDB = async () => {
         files: [],
     })
     var assetManagedByEmployee1 = await Asset(vnistDB).create({
+        company: vnist._id,
         avatar: "/upload/asset/pictures/picture5.png",
         assetName: "Phòng họp 01",
         group: "building",
@@ -2038,6 +2078,7 @@ const initSampleCompanyDB = async () => {
     var listAsset1 = await Asset(vnistDB).insertMany([
 
         { //1 B1
+            company: vnist._id,
             avatar: "/upload/asset/pictures/picture5.png",
             assetName: "B1",
             group: "building",
@@ -2083,6 +2124,7 @@ const initSampleCompanyDB = async () => {
             documents: [],
         },
         { //2 TQB
+            company: vnist._id,
             avatar: "/upload/asset/pictures/picture5.png",
             assetName: "TV TQB",
             group: "building",
@@ -2130,6 +2172,7 @@ const initSampleCompanyDB = async () => {
     ]);
 
     var listAsset2 = await Asset(vnistDB).insertMany([{ //3 B1 101
+        company: vnist._id,
         avatar: "/upload/asset/pictures/picture5.png",
         assetName: "B1-101",
         group: "building",
@@ -2174,6 +2217,7 @@ const initSampleCompanyDB = async () => {
         documents: [],
     },
     { //04
+        company: vnist._id,
         avatar: "/upload/asset/pictures/picture5.png",
         assetName: "B1-202",
         group: "building",
@@ -2218,6 +2262,7 @@ const initSampleCompanyDB = async () => {
         documents: [],
     },
     { //04
+        company: vnist._id,
         avatar: "/upload/asset/pictures/picture5.png",
         assetName: "B1-202",
         group: "building",
@@ -2262,6 +2307,7 @@ const initSampleCompanyDB = async () => {
         documents: [],
     },
     { // 06
+        company: vnist._id,
         avatar: "/upload/asset/pictures/picture5.png",
         assetName: "D3-102",
         group: "building",
@@ -2324,6 +2370,7 @@ const initSampleCompanyDB = async () => {
         documents: [],
     },
     { // 07
+        company: vnist._id,
         avatar: "/upload/asset/pictures/picture5.png",
         assetName: "D3-103",
         group: "building",
@@ -2387,6 +2434,7 @@ const initSampleCompanyDB = async () => {
         documents: [],
     },
     { // 07
+        company: vnist._id,
         avatar: "/upload/asset/pictures/picture5.png",
         assetName: "D3-103",
         group: "building",
@@ -2461,6 +2509,7 @@ const initSampleCompanyDB = async () => {
     ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu đăng ký sử dụng tài sản!");
     var recommmenddistribute = await RecommendDistribute(vnistDB).insertMany([{
+        company: vnist._id,
         asset: asset._id,
         recommendNumber: "CP0001",
         dateCreate: new Date("2020-05-19"),
@@ -2473,6 +2522,7 @@ const initSampleCompanyDB = async () => {
         status: "waiting_for_approval",
     },
     {
+        company: vnist._id,
         asset: assetManagedByEmployee1._id,
         recommendNumber: "CP0002",
         dateCreate: new Date("2020-05-19"),
@@ -2485,6 +2535,7 @@ const initSampleCompanyDB = async () => {
         status: "waiting_for_approval",
     },
     {
+        company: vnist._id,
         asset: assetManagedByEmployee2._id,
         recommendNumber: "CP0003",
         dateCreate: new Date("2020-05-19"),
@@ -2497,6 +2548,7 @@ const initSampleCompanyDB = async () => {
         status: "waiting_for_approval",
     },
     {
+        company: vnist._id,
         asset: listAsset2[4]._id,
         recommendNumber: "CP0003",
         dateCreate: new Date("2020-05-19"),
@@ -2509,6 +2561,7 @@ const initSampleCompanyDB = async () => {
         status: "waiting_for_approval",
     },
     {
+        company: vnist._id,
         asset: listAsset2[4]._id,
         recommendNumber: "CP0003",
         dateCreate: new Date("2020-05-19"),
@@ -2637,47 +2690,47 @@ const initSampleCompanyDB = async () => {
     ]);
 
     var listProduct = await Good(vnistDB).insertMany([
-        
-    {
-        company: vnist._id,
-        category: listCategory[0]._id,
-        name: "ĐƯỜNG ACESULFAME K",
-        code: "PR001",
-        type: "product",
-        baseUnit: 'Thùng',
-        unit: [],
-        quantity: 20,
-        materials: [{
-            good: listGood[0]._id,
-            quantity: 5
+
+        {
+            company: vnist._id,
+            category: listCategory[0]._id,
+            name: "ĐƯỜNG ACESULFAME K",
+            code: "PR001",
+            type: "product",
+            baseUnit: 'Thùng',
+            unit: [],
+            quantity: 20,
+            materials: [{
+                good: listGood[0]._id,
+                quantity: 5
+            },
+            {
+                good: listGood[1]._id,
+                quantity: 3
+            }
+            ],
+            description: "Sản phẩm thuốc thú y"
         },
         {
-            good: listGood[1]._id,
-            quantity: 3
-        }
-    ],
-        description: "Sản phẩm thuốc thú y"
-    },
-    {
-        company: vnist._id,
-        category: listCategory[0]._id,
-        name: "ACID CITRIC MONO",
-        code: "PR002",
-        type: "product",
-        baseUnit: 'Bao',
-        unit: [],
-        quantity: 20,
-        materials: [{
-            good: listGood[0]._id,
-            quantity: 2
+            company: vnist._id,
+            category: listCategory[0]._id,
+            name: "ACID CITRIC MONO",
+            code: "PR002",
+            type: "product",
+            baseUnit: 'Bao',
+            unit: [],
+            quantity: 20,
+            materials: [{
+                good: listGood[0]._id,
+                quantity: 2
+            },
+            {
+                good: listGood[1]._id,
+                quantity: 3
+            }
+            ],
+            description: "Sản phẩm thuốc thú y"
         },
-        {
-            good: listGood[1]._id,
-            quantity: 3
-        }
-    ],
-        description: "Sản phẩm thuốc thú y"
-    },
     ]);
     console.log("Khởi tạo xong danh sách hàng hóa");
 

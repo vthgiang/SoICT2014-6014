@@ -5,10 +5,10 @@ const { RecommendProcure, User } = Models;
 /**
  * Lấy danh sách phiếu đề nghị mua sắm thiết bị
  */
-exports.searchPurchaseRequests = async (portal, query) => {
+exports.searchPurchaseRequests = async (portal, company, query) => {
     const { recommendNumber, approver, proponent, proposalDate, status, page, limit } = query;
 
-    var keySearch = {};
+    var keySearch = { company: company };
 
     // Bắt sựu kiện mã phiếu tìm kiếm khác ""
     if (recommendNumber) {
@@ -54,8 +54,9 @@ exports.searchPurchaseRequests = async (portal, query) => {
  * Thêm mới thông tin phiếu đề nghị mua sắm thiết bị
  * @data: dữ liệu phiếu đề nghị mua sắm thiết bị
  */
-exports.createPurchaseRequest = async (portal, data) => {
+exports.createPurchaseRequest = async (portal, company, data) => {
     var createRecommendProcure = await RecommendProcure(connect(DB_CONNECTION, portal)).create({
+        company: company,
         recommendNumber: data.recommendNumber,
         dateCreate: data.dateCreate,
         proponent: data.proponent, // Người đề nghị
