@@ -5,24 +5,24 @@ const Logger = require(`${SERVER_LOGS_DIR}/_multi-tenant`);
  * Các controller cho phần quản lý tài liệu văn bản
  */
 exports.getDocuments = async (req, res) => {
-    // try {
-    const documents = await DocumentServices.getDocuments(req.portal, req.query, req.user.company._id);
+    try {
+        const documents = await DocumentServices.getDocuments(req.portal, req.query, req.user.company._id);
 
-    await Logger.info(req.user.email, 'GET_DOCUMENTS', req.portal);
-    res.status(200).json({
-        success: true,
-        messages: ['get_documents_success'],
-        content: documents
-    });
-    // } catch (error) {
+        await Logger.info(req.user.email, 'GET_DOCUMENTS', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['get_documents_success'],
+            content: documents
+        });
+    } catch (error) {
 
-    //     await Logger.error(req.user.email, 'GET_DOCUMENTS', req.portal);
-    //     res.status(400).json({
-    //         success: false,
-    //         messages: Array.isArray(error) ? error : ['get_documents_faile'],
-    //         content: error
-    //     });
-    // }
+        await Logger.error(req.user.email, 'GET_DOCUMENTS', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['get_documents_faile'],
+            content: error
+        });
+    }
 };
 
 exports.createDocument = async (req, res) => {

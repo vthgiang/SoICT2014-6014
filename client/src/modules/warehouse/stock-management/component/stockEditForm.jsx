@@ -445,7 +445,6 @@ class StockEditForm extends Component {
                                     />
                                 </div>
                                 <div className={`form-group ${!errorOnManagementLocation ? "" : "has-error"}`}>
-                                { console.log(managementLocation)}
                                     <label>{translate('manage_warehouse.stock_management.management_location')}<span className="attention"> * </span></label>
                                     <SelectBox
                                         id={`select-management-location-edit-stock`}

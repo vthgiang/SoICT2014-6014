@@ -105,7 +105,7 @@ exports.deleteUseRequest = async (req, res) => {
  */
 exports.updateUseRequest = async (req, res) => {
     try {
-        var recommenddistributeUpdate = await RecommendDistributeService.updateUseRequest(req.params.id, req.body);
+        var recommenddistributeUpdate = await RecommendDistributeService.updateUseRequest(req.portal, req.params.id, req.body);
         await Logger.info(req.user.email, 'EDIT_USE_REQUEST', req.portal);
         res.status(200).json({
             success: true,

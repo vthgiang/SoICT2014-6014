@@ -134,11 +134,11 @@ exports.getAllOrganizationalUnitKpiSetByTime = async (portal, roleId, organizati
  * @query {*} startDate
  * @query {*} endDate
  */
-exports.getAllOrganizationalUnitKpiSetByTimeOfChildUnit = async (portal, query) => {
+exports.getAllOrganizationalUnitKpiSetByTimeOfChildUnit = async (portal, companyId, query) => {
    
     let childOrganizationalUnitKpiSets = [], childrenOrganizationalUnits;
     
-    childrenOrganizationalUnits = await overviewService.getAllChildrenOrganizational(portal, query.roleId);
+    childrenOrganizationalUnits = await overviewService.getAllChildrenOrganizational(portal, companyId, query.roleId);
    
     for (let i = 0; i < childrenOrganizationalUnits.length; i++) {
         childOrganizationalUnitKpiSets.push(await this.getAllOrganizationalUnitKpiSetByTime(portal, null, childrenOrganizationalUnits[i].id, query.startDate, query.endDate));
