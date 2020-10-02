@@ -33,10 +33,10 @@ const GroupSchema = new Schema({
     timestamps: true,
 });
 
-CrmGroupSchema.plugin(mongoosePaginate);
+GroupSchema.plugin(mongoosePaginate);
 
 module.exports = (db) => {
-    if (!db.models.CrmGroup)
-        return db.model('CrmGroup', GroupSchema);
-    return db.models.CrmGroup;
+    if (!db.models.Group)
+        return db.model('Group', GroupSchema);
+    return db.models.Group;
 }
