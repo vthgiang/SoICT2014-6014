@@ -45,7 +45,8 @@ const AssetUseRequestSchema = new Schema({
         type: String
     },
     status: { //trạng thái, tình trạng: chờ phê duyệt || không chấp nhận || đã chấp nhận
-        type: String
+        type: String,
+        enum: ['approved', 'waiting_for_approval', 'disapproved']
     },
     createdAt: {
         type: Date,

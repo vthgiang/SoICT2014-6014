@@ -2594,7 +2594,6 @@ exports.deleteFileTask = async (params) => {
         { $replaceRoot: { newRoot: "$files" } },
         { $match: { _id: mongoose.Types.ObjectId(params.fileId) } }
     ])
-    console.log(file)
     fs.unlinkSync(file[0].url)
 
     let task = await Task.update(
@@ -2602,11 +2601,24 @@ exports.deleteFileTask = async (params) => {
         { $pull: { "documents.$.files": { "_id": params.fileId } } },
         { safe: true }
     )
-    let task1 = await Task.findById({ _id: params.taskId }).populate([
+    let document = await Task.aggregate([
+        { $match: { _id: mongoose.Types.ObjectId(params.taskId) } },
+        { $unwind: "$documents" },
+        { $replaceRoot: { newRoot: "$documents" } },
+        { $match: { _id: mongoose.Types.ObjectId(params.documentId) } },
+    ])
+    if(document[0].files.length === 0 ) {
+        let task23 = await Task.update(
+            { "_id": params.taskId, "documents._id": params.documentId },
+            { $pull: { "documents": { "_id": params.documentId } } },
+            { safe: true }
+        )
+    }
+    let task3 = await Task.findById({ _id: params.taskId }).populate([
         { path: "documents.creator", model: User, select: 'name email avatar' },
     ]);
 
-    return task1.documents;
+    return task3.documents;
 }
 
 /**
@@ -3075,7 +3087,6 @@ exports.deleteChildComment = async (params) => {
  * Xóa file của bình luận
  */
 exports.deleteFileComment = async (params) => {
-    console.log(params)
     let file = await Task.aggregate([
         { $match: { "_id": mongoose.Types.ObjectId(params.taskId) } },
         { $unwind: "$commentsInProcess" },
@@ -3092,12 +3103,12 @@ exports.deleteFileComment = async (params) => {
         { $pull: { "commentsInProcess.$.files": { _id: params.fileId } } },
         { safe: true }
     )
-    let task = await Task.findOne({ "_id": params.taskId, "commentsInProcess._id": params.commentId }).populate([
+    let task = await Task.findOne({ "_id": params.taskId}).populate([
         { path: "commentsInProcess.creator", model: User, select: 'name email avatar' },
         { path: "commentsInProcess.comments.creator", model: User, select: 'name email avatar' },
     ]);
 
-    return task.commentsInProcess;
+    return task;
 }
 
 /**

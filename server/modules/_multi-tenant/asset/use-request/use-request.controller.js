@@ -6,26 +6,50 @@ const { read } = require('fs');
  * Lấy danh sách phiếu đề nghị mua sắm thiết bị
  */
 exports.searchUseRequests = async (req, res) => {
+    if(req.query.getUseRequestByAssetId){
+        getUseRequestByAsset(req, res);
+    } else {
+        try {
+            var listRecommendDistributes = await RecommendDistributeService.searchUseRequests(req.portal, req.query);
+            await Logger.info(req.user.email, 'GET_USE_REQUEST', req.portal);
+            res.status(200).json({
+                success: true,
+                messages: ["get_use_request_success"],
+                content: listRecommendDistributes
+            });
+        } catch (error) {
+            await Logger.error(req.user.email, 'GET_USE_REQUEST', req.portal);
+            res.status(400).json({
+                success: false,
+                messages: ["get_use_request_faile"],
+                content: {
+                    error: error
+                }
+            });
+        }
+    }   
+}
+
+getUseRequestByAsset = async (req, res) => {
     try {
-        var listRecommendDistributes = await RecommendDistributeService.searchUseRequests(req.portal, req.query);
-        await Logger.info(req.user.email, 'GET_USE_REQUEST', req.portal);
+        var listRecommendDistributes = await RecommendDistributeService.getUseRequestByAsset(req.portal, req.query);
+        await Logger.info(req.user.email, 'GET_USE_REQUEST_BY_ASSET', req.portal);
         res.status(200).json({
             success: true,
-            messages: ["get_use_request_success"],
+            messages: ["get_use_request_by_asset_success"],
             content: listRecommendDistributes
         });
     } catch (error) {
-        await Logger.error(req.user.email, 'GET_USE_REQUEST', req.portal);
+        await Logger.error(req.user.email, 'GET_USE_REQUEST_BY_ASSET', req.portal);
         res.status(400).json({
             success: false,
-            messages: ["get_use_request_faile"],
+            messages: ["get_use_request_by_asset_faile"],
             content: {
                 error: error
             }
         });
     }
 }
-
 
 /**
  * Tạo mới thông tin phiếu đề nghị mua sắm thiết bị

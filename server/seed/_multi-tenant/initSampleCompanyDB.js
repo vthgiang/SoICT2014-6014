@@ -168,62 +168,77 @@ const initSampleCompanyDB = async () => {
         name: 'Super Admin VNIST',
         email: 'super.admin.vnist@gmail.com',
         password: hash,
+        company: vnist._id
     }, {
         name: 'Admin VNIST',
         email: 'admin.vnist@gmail.com',
         password: hash,
+        company: vnist._id
     }, {
         name: 'Nguyễn Văn An',
         email: 'nva.vnist@gmail.com',
         password: hash,
+        company: vnist._id
     }, {
         name: 'Trần Văn Bình',
         email: 'tvb.vnist@gmail.com',
         password: hash,
+        company: vnist._id
     }, {
         name: 'Vũ Thị Cúc',
         email: 'vtc.vnist@gmail.com',
         password: hash,
+        company: vnist._id
     }, {
         name: 'Nguyễn Văn Danh',
         email: 'nvd.vnist@gmail.com',
         password: hash,
+        company: vnist._id
     }, {
         name: 'Trần Thị Én',
         email: 'tte.vnist@gmail.com',
         password: hash,
+        company: vnist._id
     }, {
         name: 'Phạm Đình Phúc',
         email: 'pdp.vnist@gmail.com',
         password: hash,
+        company: vnist._id
     }, {
         name: 'Trần Minh Đức',
         email: 'tmd.vnist@gmail.com',
         password: hash,
+        company: vnist._id
     }, {
         name: 'Nguyễn Việt Anh',
         email: 'nguyenvietanh.vnist@gmail.com',
         password: hash,
+        company: vnist._id
     }, {
         name: 'Nguyễn Viết Thái',
         email: 'nguyenvietthai.vnist@gmail.com',
         password: hash,
+        company: vnist._id
     }, {
         name: 'Trần Mỹ Hạnh',
         email: 'tranmyhanh.vnist@gmail.com',
         password: hash,
+        company: vnist._id
     }, {
         name: 'Nguyễn Minh Thành',
         email: 'nguyenminhthanh.vnist@gmail.com',
         password: hash,
+        company: vnist._id
     }, {
         name: 'Nguyễn Gia Huy',
         email: 'nguyengiahuy.vnist@gmail.com',
         password: hash,
+        company: vnist._id
     }, {
         name: 'Trần Minh Anh',
         email: 'tranminhanh.vnist@gmail.com',
         password: hash,
+        company: vnist._id
     }]);
     console.log("Dữ liệu tài khoản người dùng cho công ty VNIST", users);
 
@@ -1471,7 +1486,7 @@ const initSampleCompanyDB = async () => {
         estimatePrice: "30000000",
         note: "",
         approver: null,
-        status: "Chờ phê duyệt"
+        status: "waiting_for_approval"
     }, {
         recommendNumber: "MS0002",
         dateCreate: new Date("2020-06-19"),
@@ -1484,7 +1499,7 @@ const initSampleCompanyDB = async () => {
         estimatePrice: "50000000",
         note: "",
         approver: null,
-        status: "Chờ phê duyệt"
+        status: "waiting_for_approval"
     }, {
         recommendNumber: "MS0003",
         dateCreate: new Date("2020-04-19"),
@@ -1497,7 +1512,7 @@ const initSampleCompanyDB = async () => {
         estimatePrice: "25000000",
         note: "",
         approver: null,
-        status: "Chờ phê duyệt"
+        status: "waiting_for_approval"
     }, {
         recommendNumber: "MS0004",
         dateCreate: new Date("2020-05-19"),
@@ -1510,7 +1525,7 @@ const initSampleCompanyDB = async () => {
         estimatePrice: "500000000",
         note: "",
         approver: null,
-        status: "Chờ phê duyệt"
+        status: "waiting_for_approval"
     }])
     console.log(`Xong! Thông tin phiếu đăng ký mua sắm tài sản đã được tạo`);
 
@@ -2449,7 +2464,7 @@ const initSampleCompanyDB = async () => {
         dateEndUse: new Date("2020-06-19"),
         approver: users[1]._id,
         note: "",
-        status: "Chờ phê duyệt",
+        status: "waiting_for_approval",
     },
     {
         asset: assetManagedByEmployee1._id,
@@ -2461,7 +2476,7 @@ const initSampleCompanyDB = async () => {
         dateEndUse: new Date("2020-07-19"),
         approver: users[5]._id,
         note: "",
-        status: "Chờ phê duyệt",
+        status: "waiting_for_approval",
     },
     {
         asset: assetManagedByEmployee2._id,
@@ -2473,7 +2488,7 @@ const initSampleCompanyDB = async () => {
         dateEndUse: new Date("2020-06-19"),
         approver: users[5]._id,
         note: "",
-        status: "Chờ phê duyệt",
+        status: "waiting_for_approval",
     },
     {
         asset: listAsset2[4]._id,
@@ -2485,7 +2500,7 @@ const initSampleCompanyDB = async () => {
         dateEndUse: "10:00 AM 10-09-2020",
         approver: users[5]._id,
         note: "",
-        status: "Chờ phê duyệt",
+        status: "waiting_for_approval",
     },
     {
         asset: listAsset2[4]._id,
@@ -2497,7 +2512,7 @@ const initSampleCompanyDB = async () => {
         dateEndUse: "5:00 PM 10-09-2020",
         approver: users[5]._id,
         note: "",
-        status: "Chờ phê duyệt",
+        status: "waiting_for_approval",
     },
     ])
     console.log(`Xong! Thông tin đăng ký sử dụng tài sản đã được tạo`);

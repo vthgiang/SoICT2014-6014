@@ -9,6 +9,7 @@ export const RecommendDistributeActions = {
     createRecommendDistribute,
     updateRecommendDistribute,
     deleteRecommendDistribute,
+    getRecommendDistributeByAsset,
 };
 
 // lấy danh sách phiếu đề nghị mua sắm thiết bị
@@ -157,4 +158,24 @@ function deleteRecommendDistribute(id) {
                 });
             })
     }
+}
+
+function getRecommendDistributeByAsset(data) {
+
+    return async (dispatch) => {
+        try {
+            const result = await RecommendDistributeService.getRecommendDistributeByAsset(data);
+
+            dispatch({
+                type: RecommendDistributeConstants.GET_RECOMMEND_DISTRIBUTE_BY_ASSET_SUCCESS,
+                payload: result.data.content
+            })
+
+        } catch (error) {
+            dispatch({
+                type: RecommendDistributeConstants.GET_RECOMMEND_DISTRIBUTE_BY_ASSET_FAILURE,
+                error: error.response && error.response.data
+            });
+        }
+    };
 }

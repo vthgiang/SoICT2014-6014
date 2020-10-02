@@ -9,7 +9,7 @@ const EmployeeKpiSchema = new Schema({
     },
     parent: {
         type: Schema.Types.ObjectId,
-        ref: 'OrganizationalUnit',
+        ref: 'OrganizationalUnitKpi',
     },
     weight: {
         type: Number,
