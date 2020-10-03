@@ -212,6 +212,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
                     executionTime = executionTime/arrayListTaskSameOrganizationUnitKpi.length;
                 }
                 temporary[parent.name] = executionTime;
+
                 executionTimes = Object.assign(executionTimes, temporary);
             })
         }
@@ -426,7 +427,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
             dataChart = listOrganizationalUnitKpi.map(kpis => {
                 let temporary;
                 temporary = data.map(x => {
-                    return x[kpis.name];
+                    return x[kpis.name] ? x[kpis.name] : 0;
                 })
                 
                 temporary = [kpis.name].concat(temporary);
@@ -436,7 +437,6 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         }
 
         dataChart.unshift(titleX);
-        
         this.chart = c3.generate({
             bindto: this.refs.chart,                
 

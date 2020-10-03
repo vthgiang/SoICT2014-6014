@@ -100,7 +100,6 @@ getChildrenOfOrganizationalUnitsAsTree = async (req, res) => {
             content: tree
         });
     } catch (error) {
-
         await Logger.error(req.user.email, 'get_children_departments_faile', req.portal);
         res.status(400).json({
             success: false,

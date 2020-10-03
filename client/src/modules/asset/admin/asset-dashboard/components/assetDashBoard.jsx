@@ -465,26 +465,14 @@ class DashBoardAssets extends Component {
             <div className="qlcv">
                 <div className="row" style={{ marginTop: 10 }}>
 
-                    {/* Tổng số tài sản */}
-                    {/* <div className="col-md-3 col-sm-6 col-xs-6">
-                        <div className="info-box with-border">
-                            <span className="info-box-icon bg-aqua"><i className="fa fa-users"></i></span>
-                            <div className="info-box-content">
-                                <span className="info-box-text">Tổng số tài sản</span>
-                                <span className="info-box-number">{listAssets.length ? listAssets.length : 0}</span>
-                                <a href="/manage-info-asset">Xem thêm <i className="fa fa-arrow-circle-right"></i></a>
-                            </div>
-                        </div>
-                    </div> */}
-
                     {/* ready_to_use */}
                     <div className="col-md-3 col-sm-6 col-xs-6">
                         <div className="info-box">
                             <span className="info-box-icon bg-green"><i className="fa fa-check"></i></span>
                             <div className="info-box-content">
-                                <span className="info-box-text">ready_to_use</span>
+                                <span className="info-box-text">{translate('asset.general_information.ready_use')}</span>
                                 <span className="info-box-number">{listAssets.length ? this.returnCountNumber(listAssets, 'ready_to_use') : 0}</span>
-                                <a href="/manage-info-asset">Xem thêm <i className="fa fa-arrow-circle-right"></i></a>
+                                <a href="/manage-info-asset">{translate('asset.general_information.view_more')} <i className="fa fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
                     </div>
@@ -494,9 +482,9 @@ class DashBoardAssets extends Component {
                         <div className="info-box">
                             <span className="info-box-icon bg-aqua"><i className="fa fa-play"></i></span>
                             <div className="info-box-content" style={{ paddingBottom: 0 }}>
-                                <span className="info-box-text">in_use</span>
+                                <span className="info-box-text">{translate('asset.general_information.using')}</span>
                                 <span className="info-box-number">{listAssets.length ? this.returnCountNumber(listAssets, 'in_use') : 0}</span>
-                                <a href="/manage-info-asset">Xem thêm <i className="fa fa-arrow-circle-right"></i></a>
+                                <a href="/manage-info-asset">{translate('asset.general_information.view_more')} <i className="fa fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
                     </div>
@@ -506,9 +494,9 @@ class DashBoardAssets extends Component {
                         <div className="info-box">
                             <span className="info-box-icon bg-yellow"><i className="fa fa-warning"></i></span>
                             <div className="info-box-content" style={{ paddingBottom: 0 }}>
-                                <span className="info-box-text">broken</span>
+                                <span className="info-box-text">{translate('asset.general_information.damaged')}</span>
                                 <span className="info-box-number">{listAssets.length ? this.returnCountNumber(listAssets, 'broken') : 0}</span>
-                                <a href="/manage-info-asset">Xem thêm <i className="fa  fa-arrow-circle-o-right"></i></a>
+                                <a href="/manage-info-asset">{translate('asset.general_information.view_more')} <i className="fa  fa-arrow-circle-o-right"></i></a>
                             </div>
                         </div>
                     </div>
@@ -518,9 +506,9 @@ class DashBoardAssets extends Component {
                         <div className="info-box">
                             <span className="info-box-icon bg-red"><i className="fa fa-calendar-times-o"></i></span>
                             <div className="info-box-content" style={{ paddingBottom: 0 }}>
-                                <span className="info-box-text">disposed</span>
+                                <span className="info-box-text">{translate('asset.general_information.disposal')}</span>
                                 <span className="info-box-number">{listAssets.length ? this.returnCountNumber(listAssets, 'disposed') : 0}</span>
-                                <a href="/manage-info-asset">Xem thêm <i className="fa  fa-arrow-circle-o-right"></i></a>
+                                <a href="/manage-info-asset">{translate('asset.general_information.view_more')} <i className="fa  fa-arrow-circle-o-right"></i></a>
                             </div>
                         </div>
                     </div>

@@ -8,11 +8,11 @@ const server = require('http').createServer(app);
 global.SOCKET_IO = require('socket.io')(server);
 SOCKET_IO.on('connection', function(socket){
 	// Client connected
-	console.log("Client connected: ", socket.id);
+	console.log("Client connected: ", socket.id, socket.handshake.query.userId);
 
 	// Client disconnected
-	socket.on('disconnect', function(socket){
-		console.log("Disconnected: ", socket.id);
+	socket.on('disconnect', function(){
+		console.log("Disconnected: ", socket.id, socket.handshake.query.userId);
 	})
 })
 

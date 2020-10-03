@@ -29,7 +29,7 @@ class UseRequestManager extends Component {
         this.props.searchRecommendDistributes(this.state);
         this.props.getUser();
 
-        if(!this.props.isActive || this.props.isActive === "tab-pane active") {
+        if (!this.props.isActive || this.props.isActive === "tab-pane active") {
             this.props.getAllAsset({
                 code: "",
                 assetName: "",
@@ -261,6 +261,17 @@ class UseRequestManager extends Component {
 
     }
 
+    formatStatus(status) {
+        const { translate } = this.props;
+
+        switch (status) {
+            case 'approved': return translate('asset.usage.approved');
+            case 'waiting_for_approval': return translate('asset.usage.waiting_approval');
+            case 'disapproved': return translate('asset.usage.not_approved');
+            default: return 'Deleted';
+        }
+    }
+
     render() {
         const { translate, recommendDistribute, isActive } = this.props;
         const { page, limit, currentRow, currentRowEditAsset, managedBy } = this.state;
@@ -383,7 +394,7 @@ class UseRequestManager extends Component {
                                         <td>{this.formatDate2(x.dateStartUse)}</td>
                                         <td>{this.formatDate2(x.dateEndUse)}</td>
                                         <td>{x.approver ? x.approver.name : 'User is deleted'}</td>
-                                        <td>{x.status == 'waiting_for_approval' ? translate('asset.usage.waiting_approval') : (x.status == 'approved'? translate('asset.usage.approved'): translate('asset.usage.not_approved'))}</td>
+                                        <td>{this.formatStatus(x.status)}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.asset_info.edit_usage_info')}><i className="material-icons">edit</i></a>
                                             <DeleteNotification

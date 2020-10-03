@@ -93,7 +93,7 @@ exports.deleteOrganizationalUnitKpiSet = async (req, res) => {
  */
 exports.deleteOrganizationalUnitKpi = async (req, res) => {
     try {
-        var organizationalUnitKpiSet = await KPIUnitService.deleteOrganizationalUnitKpi(req.portal, req.params.id, req.params.kpiunit);
+        var organizationalUnitKpiSet = await KPIUnitService.deleteOrganizationalUnitKpi(req.portal, req.params.idUnitKpi, req.params.idUnitKpiSet);
         Logger.info(req.user.email, 'delete target kpi unit', req.portal);
         res.status(200).json({
             success: true,
