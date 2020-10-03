@@ -1896,7 +1896,7 @@ export default {
                 incident_list: 'Danh sách sự cố tài sản',
                 file_list: 'Danh sách tài liệu đính kèm',
                 edit_document: 'Chỉnh sửa tài liệu đính kèm',
-                add_usage_info: 'Thêm mới thông tin cấp phát sử dụng',
+                add_usage_info: 'Thêm mới thông tin sử dụng tài sản',
                 edit_usage_info: 'Chỉnh sửa phiếu đăng kí sử dụng',
                 delete_usage_info: 'Xóa thông tin cấp phát sử dụng',
                 add_maintenance_card: 'Thêm mới phiếu bảo trì',
