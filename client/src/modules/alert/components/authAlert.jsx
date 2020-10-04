@@ -4,6 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import './alert.css';
 
 import store from '../../../redux/store';
+import { SocketConstants } from '../../socket/redux/constants';
 
 class AuthAlert extends Component {
     
@@ -12,9 +13,8 @@ class AuthAlert extends Component {
         this.state = {};
     }
     reset = () => {
-        store.dispatch({
-            type: 'RESET'
-        });
+        store.dispatch({ type: SocketConstants.DISCONNECT_SOCKET_IO })
+        store.dispatch({ type: 'RESET' });
     }
 
     render() { 
