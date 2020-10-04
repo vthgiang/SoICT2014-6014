@@ -1,24 +1,19 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const Company = require('../system-admin/company.model');
-const Employee = require('./employee.model');
-const OrganizationalUnit = require('../super-admin/organizationalUnit.model');
-
-// Tạo bảng datatable nghỉ phép
 const AnnualLeaveSchema = new Schema({
     employee: {
         type: Schema.Types.ObjectId,
-        ref: Employee,
+        ref: 'Employee',
         required: true,
     },
     company: {
         type: Schema.Types.ObjectId,
-        ref: Company,
+        ref: 'Company',
     },
     organizationalUnit: {
         type: Schema.Types.ObjectId,
-        ref: OrganizationalUnit,
+        ref: 'OrganizationalUnit',
     },
     startDate: {
         type: Date,
@@ -41,4 +36,8 @@ const AnnualLeaveSchema = new Schema({
     timestamps: true,
 });
 
-module.exports = AnnualLeave = mongoose.model("annual_leaves", AnnualLeaveSchema);
+module.exports = (db) => {
+    if (!db.models.AnnualLeave)
+        return db.model('AnnualLeave', AnnualLeaveSchema);
+    return db.models.AnnualLeave;
+}

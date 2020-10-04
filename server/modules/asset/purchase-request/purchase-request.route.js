@@ -1,16 +1,16 @@
 const express = require("express");
 const router = express.Router();
-const { auth } = require('../../../middleware');
+const { auth } = require(`${SERVER_MIDDLEWARE_DIR}`);
 
 const RecommendProcureController = require("./purchase-request.controller");
 
 
-router.get('/purchase-request',auth, RecommendProcureController.searchRecommendProcures);
+router.get('/purchase-request',auth, RecommendProcureController.searchPurchaseRequests);
 
 
-router.post('/purchase-request', auth, RecommendProcureController.createRecommendProcure);
-router.put('/purchase-request/:id',auth, RecommendProcureController.updateRecommendProcure);
-router.delete('/purchase-request/:id',auth, RecommendProcureController.deleteRecommendProcure);
+router.post('/purchase-request', auth, RecommendProcureController.createPurchaseRequest);
+router.put('/purchase-request/:id',auth, RecommendProcureController.updatePurchaseRequest);
+router.delete('/purchase-request/:id',auth, RecommendProcureController.deletePurchaseRequest);
 
 
 

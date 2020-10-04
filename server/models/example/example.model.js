@@ -11,4 +11,8 @@ const ExampleSchema = new Schema({
     }
 });
 
-module.exports = Example = mongoose.model('examples', ExampleSchema);
+module.exports = (db) => {
+    if (!db.models.Example)
+        return db.model('Example', ExampleSchema);
+    return db.models.Example;
+} 

@@ -1,15 +1,11 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const Role = require('../auth/role.model');
-const Task = require('./task.model');
-const ProcessTemplate = require('./processTemplate.model');
-const User = require('../auth/user.model');
 
 // Create Schema
 const TaskProcessSchema = new Schema({
     processTemplate: {
         type: Schema.Types.ObjectId,
-        ref: ProcessTemplate,
+        ref: 'ProcessTemplate',
     },
     xmlDiagram: {
         type: String,
@@ -37,23 +33,27 @@ const TaskProcessSchema = new Schema({
     creator: {
         type: Schema.Types.ObjectId,
         required: true,
-        ref: User,
+        ref: 'User',
     },
     viewer: [{
         type: Schema.Types.ObjectId,
         required: true,
-        ref: User,
+        ref: 'User',
     }],
     manager: [{
         type: Schema.Types.ObjectId,
         required: true,
-        ref: User,
+        ref: 'User',
     }],
     tasks: [{
         type: Schema.Types.ObjectId,
-        ref: Task,
+        ref: 'Task',
     }],
     
 });
 
-module.exports = TaskProcess = mongoose.model("task_processes", TaskProcessSchema);
+module.exports = (db) => {
+    if(!db.models.TaskProcess)
+        return db.model('TaskProcess', TaskProcessSchema);
+    return db.models.TaskProcess;
+}

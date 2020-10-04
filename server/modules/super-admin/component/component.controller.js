@@ -1,6 +1,6 @@
 const ComponentService = require('./component.service');
-const LinkServices = require('../link/link.service');
-const { LogInfo, LogError } = require(SERVER_LOGS_DIR);
+const LinkServices = require(`${SERVER_MODULES_DIR}/super-admin/link/link.service`);
+const Logger = require(`${SERVER_LOGS_DIR}`);
 
 /**
  * Chú ý: tất cả các phương thức đều xét trong ngữ cảnh một công ty
@@ -8,18 +8,18 @@ const { LogInfo, LogError } = require(SERVER_LOGS_DIR);
 
 exports.getComponents = async (req, res) => {
     try {
-        let company = !req.query.company ? (!req.user.company ? undefined : req.user.company._id) : req.query.company;
-        let components = await ComponentService.getComponents(company, req.query);
+        let portal = !req.query.portal ? req.portal : req.query.portal;
+        let components = await ComponentService.getComponents(portal, req.query);
 
-        await LogInfo(req.user.email, 'GET_ALL_COMPONENTS', req.user.company);
+        await Logger.info(req.user.email, 'get_components_success', req.portal);
         res.status(200).json({
             success: true,
             messages: ['get_components_success'],
             content: components
         });
     } catch (error) {
-        console.log("error: ", error)
-        await LogError(req.user.email, 'GET_ALL_COMPONENTS', req.user.company);
+
+        await Logger.error(req.user.email, 'get_components_faile', req.portal);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error)? error: ['get_components_faile'],
@@ -30,10 +30,10 @@ exports.getComponents = async (req, res) => {
 
 exports.getComponent = async (req, res) => {
     try {
-        let {id} = req.params;
-        let component = await ComponentService.getComponent(id);
+        let portal = !req.query.portal ? req.portal : req.query.portal;
+        let component = await ComponentService.getComponent(portal, req.params.id);
         
-        await LogInfo(req.user.email, 'GET_COMPONENT_BY_ID', req.user.company);
+        await Logger.info(req.user.email, 'show_component_success', req.portal);
         res.status(200).json({
             success: true,
             messages: ['show_component_success'],
@@ -41,7 +41,7 @@ exports.getComponent = async (req, res) => {
         });
     } catch (error) {
         
-        await LogError(req.user.email, 'GET_COMPONENT_BY_ID', req.user.company);
+        await Logger.error(req.user.email, 'show_component_faile', req.portal);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error)? error: ['show_component_faile'],
@@ -52,14 +52,13 @@ exports.getComponent = async (req, res) => {
 
 exports.createComponent = async (req, res) => {
     try {
-        let {company} = req.query;
-        req.body.company = company;
-        let createComponent = await ComponentService.createComponent(req.body);
-        await ComponentService.relationshipComponentRole(createComponent._id, req.body.roles);
-        let component = await ComponentService.getComponent(createComponent._id);
-        await LinkServices.addComponentOfLink(req.body.linkId, createComponent._id); // Thêm component đó vào trang
+        let portal = !req.query.portal ? req.portal : req.query.portal;
+        let createComponent = await ComponentService.createComponent(portal, req.body);
+        await ComponentService.relationshipComponentRole(portal, createComponent._id, req.body.roles);
+        let component = await ComponentService.getComponent(portal, createComponent._id);
+        await LinkServices.addComponentOfLink(portal, req.body.linkId, createComponent._id); // Thêm component đó vào trang
 
-        await LogInfo(req.user.email, 'CREATE_COMPONENT', req.user.company);
+        await Logger.info(req.user.email, 'create_component_success', req.portal);
         res.status(200).json({
             success: true,
             messages: ['create_component_success'],
@@ -67,7 +66,7 @@ exports.createComponent = async (req, res) => {
         });
     } catch (error) {
         
-        await LogError(req.user.email, 'CREATE_COMPONENT', req.user.company);
+        await Logger.error(req.user.email, 'create_component_faile', req.portal);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error)? error: ['create_component_faile'],
@@ -78,11 +77,12 @@ exports.createComponent = async (req, res) => {
 
 exports.editComponent = async (req, res) => {
     try {
-        await ComponentService.relationshipComponentRole(req.params.id, req.body.roles);
-        let component = await ComponentService.editComponent(req.params.id, req.body);
-        let resComponent = await ComponentService.getComponent(component._id);
+        let portal = !req.query.portal ? req.portal : req.query.portal;
+        await ComponentService.relationshipComponentRole(portal, req.params.id, req.body.roles);
+        let component = await ComponentService.editComponent(portal, req.params.id, req.body);
+        let resComponent = await ComponentService.getComponent(portal, component._id);
 
-        await LogInfo(req.user.email, 'EDIT_COMPONENT', req.user.company);
+        await Logger.info(req.user.email, 'edit_component_success', req.portal);
         res.status(200).json({
             success: true,
             messages: ['edit_component_success'],
@@ -90,7 +90,7 @@ exports.editComponent = async (req, res) => {
         });
     } catch (error) {
         
-        await LogError(req.user.email, 'EDIT_COMPONENT', req.user.company);
+        await Logger.error(req.user.email, 'edit_component_faile', req.portal);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error)? error: ['edit_component_faile'],
@@ -101,11 +101,12 @@ exports.editComponent = async (req, res) => {
 
 exports.deleteComponent = async (req, res) => {
     try {
+        let portal = !req.query.portal ? req.portal : req.query.portal;
         let {id} = req.params;
         let {type} = req.query;
-        let component = await ComponentService.deleteComponent(id, type);
+        let component = await ComponentService.deleteComponent(portal, id, type);
         
-        await LogInfo(req.user.email, 'DELETE_COMPONENT', req.user.company);
+        await Logger.info(req.user.email, 'delete_component_success', req.portal);
         res.status(200).json({
             success: true,
             messages: ['delete_component_success'],
@@ -113,7 +114,7 @@ exports.deleteComponent = async (req, res) => {
         });
     } catch (error) {
         
-        await LogError(req.user.email, 'DELETE_COMPONENT', req.user.company);
+        await Logger.error(req.user.email, 'delete_component_faile', req.portal);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error)? error: ['delete_component_faile'],
@@ -124,17 +125,18 @@ exports.deleteComponent = async (req, res) => {
 
 exports.updateCompanyComponents = async (req, res) => {
     try {
+        let portal = !req.query.portal ? req.portal : req.query.portal;
         let data = req.body;
-        let content = await ComponentService.updateCompanyComponents(data);
+        let content = await ComponentService.updateCompanyComponents(portal, data);
 
-        await LogInfo(req.user.email, 'UPDATE_COMPANY_COMPONENTS');
+        await Logger.info(req.user.email, 'update_company_components_success');
         res.status(200).json({
             success: true,
             messages: ['update_company_components_success'],
             content
         });
     } catch (error) {
-        await LogInfo(req.user.email, 'UPDATE_COMPANY_COMPONENTS');
+        await Logger.info(req.user.email, 'update_company_components_faile');
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['update_company_components_faile'],

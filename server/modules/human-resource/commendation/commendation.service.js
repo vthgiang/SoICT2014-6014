@@ -1,8 +1,13 @@
-const EmployeeService = require('../profile/profile.service');
 const {
     Employee,
     Commendation
-} = require('../../../models').schema;
+} = require(`${SERVER_MODELS_DIR}`);
+
+const {
+    connect
+} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+
+
 
 /**
  * Lấy tổng số thông tin khen thường theo đơn vị (phòng ban) và tháng 
@@ -10,7 +15,7 @@ const {
  * @organizationalUnits : Array id đơn vị tìm kiếm
  * @month : Tháng tìm kiếm
  */
-exports.getTotalCommendation = async (company, organizationalUnits, month) => {
+exports.getTotalCommendation = async (portal, company, organizationalUnits, month) => {
     let keySearch = {
         company: company
     };
@@ -33,7 +38,7 @@ exports.getTotalCommendation = async (company, organizationalUnits, month) => {
         let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
         let firstDayOfYear = new Date(date.getFullYear() - 1, 12, 1);
         let lastDayOfYear = new Date(date.getFullYear(), 12, 1);
-        totalListOfYear = await Commendation.count({
+        totalListOfYear = await Commendation(connect(DB_CONNECTION, portal)).countDocuments({
             ...keySearch,
             startDate: {
                 "$gt": firstDayOfYear,
@@ -51,7 +56,7 @@ exports.getTotalCommendation = async (company, organizationalUnits, month) => {
         let date = new Date();
         let firstDayOfYear = new Date(date.getFullYear() - 1, 12, 1);
         let lastDayOfYear = new Date(date.getFullYear(), 12, 1);
-        totalListOfYear = await Commendation.count({
+        totalListOfYear = await Commendation(connect(DB_CONNECTION, portal)).count({
             ...keySearch,
             startDate: {
                 "$gt": firstDayOfYear,
@@ -66,7 +71,7 @@ exports.getTotalCommendation = async (company, organizationalUnits, month) => {
             }
         }
     }
-    let totalList = await Commendation.count(keySearch);
+    let totalList = await Commendation(connect(DB_CONNECTION, portal)).count(keySearch);
     return {
         totalList,
         totalListOfYear
@@ -79,14 +84,14 @@ exports.getTotalCommendation = async (company, organizationalUnits, month) => {
  * @params : dữ liệu key tìm kiếm
  * @company : Id công ty người tìm kiếm
  */
-exports.searchCommendations = async (params, company) => {
+exports.searchCommendations = async (portal, params, company) => {
     let keySearch = {
         company: company
     };
 
     // Bắt sựu kiện tìm kiếm them MSNV
     if (params.employeeNumber) {
-        let employee = await Employee.find({
+        let employee = await Employee(connect(DB_CONNECTION, portal)).find({
             employeeNumber: {
                 $regex: params.employeeNumber,
                 $options: "i"
@@ -143,14 +148,14 @@ exports.searchCommendations = async (params, company) => {
     };
 
     // Lấy danh sách khen thưởng
-    let listCommendations = await Commendation.find(keySearch).populate({
+    let listCommendations = await Commendation(connect(DB_CONNECTION, portal)).find(keySearch).populate({
             path: 'employee',
             select: 'emailInCompany fullName employeeNumber'
         })
         .sort({
             'createAt': 'desc'
         }).skip(params.page).limit(params.limit);
-    let totalList = await Commendation.countDocuments(keySearch);
+    let totalList = await Commendation(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
 
     return {
         totalList,
@@ -163,11 +168,11 @@ exports.searchCommendations = async (params, company) => {
  * @data : dữ liệu khen thưởng cần thêm
  * @company : Id công ty người thêm
  */
-exports.createCommendation = async (data, company) => {
+exports.createCommendation = async (portal, data, company) => {
     console.log(data);
 
 
-    let isCommendation = await Commendation.findOne({
+    let isCommendation = await Commendation(connect(DB_CONNECTION, portal)).findOne({
         employee: data.employee,
         company: company,
         decisionNumber: data.decisionNumber
@@ -179,7 +184,7 @@ exports.createCommendation = async (data, company) => {
         return "have_exist"
     } else {
         // Thêm khen thưởng vào database
-        let createCommendation = await Commendation.create({
+        let createCommendation = await Commendation(connect(DB_CONNECTION, portal)).create({
             employee: data.employee,
             company: company,
             decisionNumber: data.decisionNumber,
@@ -190,8 +195,8 @@ exports.createCommendation = async (data, company) => {
         });
 
         // Lấy thông tin khen thưởng vừa tạo
-        return await Commendation.findOne({
-            _id: createCommendation._id
+        return await Commendation(connect(DB_CONNECTION, portal)).findOne({
+            _id: createCommendation(connect(DB_CONNECTION, portal))._id
         }).populate([{
             path: 'employee',
             select: 'emailInCompany fullName employeeNumber'
@@ -203,8 +208,8 @@ exports.createCommendation = async (data, company) => {
  * Xoá thông tin khen thưởng
  * @id : Id khen thưởng cần xoá
  */
-exports.deleteCommendation = async (id) => {
-    return await Commendation.findOneAndDelete({
+exports.deleteCommendation = async (portal, id) => {
+    return await Commendation(connect(DB_CONNECTION, portal)).findOneAndDelete({
         _id: id
     });
 }
@@ -215,8 +220,8 @@ exports.deleteCommendation = async (id) => {
  * @data : Dữ liệu chỉnh sửa khen thưởng
  * @company : Id công ty người thực hiện thay đổi
  */
-exports.updateCommendation = async (id, data) => {
-    let commendation = await Commendation.findById(id);
+exports.updateCommendation = async (portal, id, data) => {
+    let commendation = await Commendation(connect(DB_CONNECTION, portal)).findById(id);
 
     commendation.organizationalUnit = data.organizationalUnit;
     commendation.startDate = data.startDate;
@@ -224,7 +229,7 @@ exports.updateCommendation = async (id, data) => {
     commendation.reason = data.reason;
     await commendation.save();
 
-    return await Commendation.findOne({
+    return await Commendation(connect(DB_CONNECTION, portal)).findOne({
         _id: id
     }).populate([{
         path: 'employee',

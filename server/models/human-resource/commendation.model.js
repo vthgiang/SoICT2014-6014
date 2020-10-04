@@ -1,20 +1,16 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const Company = require('../system-admin/company.model');
-const Employee = require('./employee.model');
-const OrganizationalUnit = require('../super-admin/organizationalUnit.model')
-
 // Tạo bảng datatable khen thưởng
 const CommendationSchema = new Schema({
     employee: {
         type: Schema.Types.ObjectId,
-        ref: Employee,
+        ref: 'Employee',
         required: true,
     },
     company: {
         type: Schema.Types.ObjectId,
-        ref: Company
+        ref: 'Company',
     },
     decisionNumber: { // mã số quyết định khen thưởng
         type: String,
@@ -22,7 +18,7 @@ const CommendationSchema = new Schema({
     },
     organizationalUnit: { // cấp ra quyết định
         type: Schema.Types.ObjectId,
-        ref: OrganizationalUnit
+        ref: 'OrganizationalUnit'
     },
     startDate: { // ngày ra quyết định
         type: Date,
@@ -40,4 +36,8 @@ const CommendationSchema = new Schema({
     timestamps: true,
 });
 
-module.exports = Commendation = mongoose.model("commendations", CommendationSchema);
+module.exports = (db) => {
+    if (!db.models.Commendation)
+        return db.model('Commendation', CommendationSchema);
+    return db.models.Commendation;
+}

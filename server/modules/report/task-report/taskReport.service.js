@@ -1,14 +1,25 @@
-const { TaskReport } = require('../../../models').schema;
+const mongoose = require("mongoose");
+const { TaskReport } = require(`${SERVER_MODELS_DIR}`);
+const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 
 /**
  * Lấy ra danh sách các báo cáo công việc
  * @param  params 
  */
-exports.getTaskReports = async (params) => {
-    const { name, creator, month } = params;
-    let dateSearch, getMonth, year, startDate, endDate, keySearch = {};
+exports.getTaskReports = async (portal, params) => {
+    const { name, creator, month, organizationalUnit } = params;
+    let dateSearch, getMonth, year, startDate, endDate, keySearch = [];
 
+    // search theo đơn vị
+    if (organizationalUnit && organizationalUnit.length > 0) {
+        keySearch = [
+            ...keySearch,
+            { $match: { organizationalUnit: { $in: [...organizationalUnit.map(o => mongoose.Types.ObjectId(o.toString()))] } } },
+        ]
+    }
+
+    // search theo tháng
     if (month) {
         dateSearch = params.month.split('-');
         getMonth = dateSearch[1], year = dateSearch[0];
@@ -18,40 +29,75 @@ exports.getTaskReports = async (params) => {
 
     // Tìm kiếm theo tên báo cáo
     if (name && name.length !== 0) {
-        keySearch = {
+        keySearch = [
             ...keySearch,
-            name: { $regex: name, $options: "i" },
-        }
+            { $match: { name: { $regex: name, $options: "i" } } },
+        ]
     }
 
     // Tìm kiếm theo người tạo
     if (creator && creator.length !== 0) {
-        keySearch = {
+        keySearch = [
             ...keySearch,
-            creator: { $regex: params.creator, $options: "i" },
-        }
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "creator",
+                    foreignField: "_id",
+                    as: "Users"
+                }
+            },
+            {
+                $match: { Users: { $elemMatch: { name: { $regex: creator, $options: "i" } } } },
+            }
+        ]
     }
 
     // Tìm kiếm theo tháng
     if (month && month.length !== 0) {
-        keySearch = {
+        keySearch = [
             ...keySearch,
-            createdAt: { $gte: startDate, $lte: endDate }
-        }
+            {
+                $match: { createdAt: { $gte: startDate, $lte: endDate } }
+            }
+        ]
     };
 
-    // get tổng số record của bảng Task report
-    let totalList = await TaskReport.countDocuments();
+    let countRecord = [
+        ...keySearch,
+        {
+            $count: "totalReport"
+        }
+    ]
+    // get tổng số bản ghi sau khi truy vấn tìm kiếm
+    let totalList = await TaskReport(connect(DB_CONNECTION, portal)).aggregate(countRecord);
 
-    let listTaskReport = await TaskReport.find(keySearch).sort({ 'createdAt': 'desc' })
-        .skip(parseInt(params.page)).limit(parseInt(params.limit))
-        .populate({ path: 'creator ', select: "_id name" })
-        .populate({ path: 'taskTemplate' })
-        .populate({ path: 'responsibleEmployees', select: '_id name company' })
-        .populate({ path: 'accountableEmployees', select: '_id name company' })
-        .populate({ path: 'organizationalUnit', select: 'deans viceDeans employees _id name company parent' })
-        .populate({ path: 'readByEmployees' })
+    keySearch = [
+        ...keySearch,
+        { $sort: { createdAt: -1 } },
+        { $skip: parseInt(params.page) },
+        { $limit: parseInt(params.limit) },
+        {
+            $lookup: {
+                from: "users",
+                localField: "creator",
+                foreignField: "_id",
+                as: "creator"
+            }
+        },
+        {
+            $lookup: {
+                from: "organizationalunits",
+                localField: "organizationalUnit",
+                foreignField: "_id",
+                as: "organizationalUnit"
+            }
+        },
+    ]
 
+    totalList = parseInt(totalList.map(o => o.totalReport));
+
+    let listTaskReport = await TaskReport(connect(DB_CONNECTION, portal)).aggregate(keySearch);
     return { totalList, listTaskReport };
 }
 
@@ -60,8 +106,8 @@ exports.getTaskReports = async (params) => {
  * Lây 1 báo cáo 
  * @param {*} id id báo cáo
  */
-exports.getTaskReportById = async (id) => {
-    let taskReportById = await TaskReport.findById(id)
+exports.getTaskReportById = async (portal, id) => {
+    let taskReportById = await TaskReport(connect(DB_CONNECTION, portal)).findById(id)
         .populate({ path: 'taskTemplate' })
         .populate({ path: 'creator', select: '_id name' })
         .populate({ path: 'responsibleEmployees', select: '_id name company' })
@@ -78,10 +124,23 @@ exports.getTaskReportById = async (id) => {
  * @param {*} data dữ liệu caần tạo
  * @param {*} user id người tạo
  */
-exports.createTaskReport = async (data, user) => {
-    let { organizationalUnit, taskTemplate, nameTaskReport, descriptionTaskReport,
-        readByEmployees, responsibleEmployees, accountableEmployees, startDate, endDate, status, frequency, itemListBoxLeft, itemListBoxRight,
-        taskInformations } = data;
+exports.createTaskReport = async (portal, data, user) => {
+    let {
+        organizationalUnit,
+        taskTemplate,
+        nameTaskReport,
+        descriptionTaskReport,
+        readByEmployees,
+        responsibleEmployees,
+        accountableEmployees,
+        startDate,
+        endDate,
+        status,
+        frequency,
+        itemListBoxLeft,
+        itemListBoxRight,
+        taskInformations
+    } = data;
     let startTime, start = null, endTime, end = null, configurations = [];
 
     if (status) {
@@ -114,7 +173,7 @@ exports.createTaskReport = async (data, user) => {
         }
     }
 
-    let newTaskReport = await TaskReport.create({
+    let newTaskReport = await TaskReport(connect(DB_CONNECTION, portal)).create({
         organizationalUnit: organizationalUnit,
         taskTemplate: taskTemplate,
         name: nameTaskReport,
@@ -133,7 +192,7 @@ exports.createTaskReport = async (data, user) => {
 
     })
 
-    let getNewTaskReport = await TaskReport.findById(newTaskReport._id).populate({ path: 'creator', select: "_id name" });
+    let getNewTaskReport = await TaskReport(connect(DB_CONNECTION, portal)).findById(newTaskReport._id).populate({ path: 'creator', select: "_id name" });
     return getNewTaskReport;
 }
 
@@ -144,9 +203,23 @@ exports.createTaskReport = async (data, user) => {
  * @param {*} data dữ liệu cần sửa 
  * @param {*} người sửa 
  */
-exports.editTaskReport = async (id, data, user) => {
-    let { organizationalUnit, taskTemplate, name, description, readByEmployees, responsibleEmployees,
-        accountableEmployees, status, startDate, endDate, dataForAxisXInChart, frequency, listDataChart, taskInformations } = data;
+exports.editTaskReport = async (portal, id, data, user) => {
+    let {
+        organizationalUnit,
+        taskTemplate,
+        name,
+        description,
+        readByEmployees,
+        responsibleEmployees,
+        accountableEmployees,
+        status,
+        startDate,
+        endDate,
+        dataForAxisXInChart,
+        frequency,
+        listDataChart,
+        taskInformations
+    } = data;
     let startTime, start = null, endTime, end = null, configurations = [];
 
     if (status && status.length > 0) {
@@ -179,7 +252,7 @@ exports.editTaskReport = async (id, data, user) => {
         }
     }
 
-    await TaskReport.findByIdAndUpdate(id, {
+    await TaskReport(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
         $set: {
             organizationalUnit: organizationalUnit,
             taskTemplate: taskTemplate,
@@ -198,7 +271,7 @@ exports.editTaskReport = async (id, data, user) => {
             dataForAxisXInChart: dataForAxisXInChart,
         }
     }, { new: true });
-    return await TaskReport.findOne({ _id: id })
+    return await TaskReport(connect(DB_CONNECTION, portal)).findOne({ _id: id })
         .populate({ path: 'creator', select: '_id name' })
         .populate({ path: 'taskTemplate' })
         .populate({ path: 'responsibleEmployees', select: '_id name company' })
@@ -213,7 +286,7 @@ exports.editTaskReport = async (id, data, user) => {
  * Xóa một báo cáo
  * @param {*} id báo cáo cần xóa
  */
-exports.deleteTaskReport = async (id) => {
-    let deleteReport = await TaskReport.findOneAndDelete({ _id: id });
+exports.deleteTaskReport = async (portal, id) => {
+    let deleteReport = await TaskReport(connect(DB_CONNECTION, portal)).findOneAndDelete({ _id: id });
     return deleteReport;
 }

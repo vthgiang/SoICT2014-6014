@@ -1,19 +1,19 @@
 const RoleService = require('./role.service');
-const {LogInfo, LogError} = require('../../../logs');
+const Logger = require(`${SERVER_LOGS_DIR}`);
 
 exports.getRoles = async (req, res) => {
     try {
-        var roles = await RoleService.getRoles(req.user.company._id, req.query); //truyen vao id cua cong ty
+        var roles = await RoleService.getRoles(req.portal, req.query); //truyen vao id cua cong ty
         
-        LogInfo(req.user.email, 'GET_ALL_ROLES', req.user.company);
+        Logger.info(req.user.email, 'get_roles_success', req.portal);
         res.status(200).json({
             success: true,
             messages: ['get_roles_success'],
             content: roles
         });
     } catch (error) {
-        
-        LogError(req.user.email, 'GET_ALL_ROLES', req.user.company);
+ 
+        Logger.error(req.user.email, 'get_roles_faile', req.portal);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['get_roles_faile'],
@@ -24,9 +24,9 @@ exports.getRoles = async (req, res) => {
 
 exports.getRole = async (req, res) => {
     try {
-        var role = await RoleService.getRole(req.params.id);
+        var role = await RoleService.getRole(req.portal, req.params.id);
         
-        LogInfo(req.user.email, 'SHOW_ROLE_INFORMATION', req.user.company);
+        Logger.info(req.user.email, 'show_role_success', req.portal);
         res.status(200).json({
             success: true,
             messages: ['show_role_success'],
@@ -34,7 +34,7 @@ exports.getRole = async (req, res) => {
         });
     } catch (error) {
         
-        LogError(req.user.email, 'SHOW_ROLE_INFORMATION', req.user.company);
+        Logger.error(req.user.email, 'show_role_faile', req.portal);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['show_role_faile'],
@@ -45,19 +45,19 @@ exports.getRole = async (req, res) => {
 
 exports.createRole = async (req, res) => {
     try {
-        var role = await RoleService.createRole(req.body, req.user.company._id);
-        await RoleService.editRelationshipUserRole(role._id, req.body.users);
-        var data = await RoleService.getRole(role._id);
+        var role = await RoleService.createRole(req.portal, req.body);
+        await RoleService.editRelationshipUserRole(req.portal, role._id, req.body.users);
+        var data = await RoleService.getRole(req.portal, role._id);
         
-        LogInfo(req.user.email, 'CREATE_ROLE', req.user.company);
+        Logger.info(req.user.email, 'create_role_success', req.portal);
         res.status(200).json({
             success: true,
             messages: ['create_role_success'],
             content: data
         });
     } catch (error) {
-        console.log("error create role", error)
-        LogError(req.user.email, 'CREATE_ROLE', req.user.company);
+
+        Logger.error(req.user.email, 'create_role_faile', req.portal);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['create_role_faile'],
@@ -68,11 +68,11 @@ exports.createRole = async (req, res) => {
 
 exports.editRole = async (req, res) => {
     try {
-        await RoleService.editRelationshipUserRole(req.params.id, req.body.users);
-        var role = await RoleService.editRole(req.params.id, req.body); //truyền vào id role và dữ liệu chỉnh sửa
-        var data = await RoleService.getRole(role._id);
+        await RoleService.editRelationshipUserRole(req.portal, req.params.id, req.body.users);
+        var role = await RoleService.editRole(req.portal, req.params.id, req.body); //truyền vào id role và dữ liệu chỉnh sửa
+        var data = await RoleService.getRole(req.portal, role._id);
         
-        LogInfo(req.user.email, 'EDIT_ROLE', req.user.company);
+        Logger.info(req.user.email, 'edit_role_success', req.portal);
         res.status(200).json({
             success: true,
             messages: ['edit_role_success'],
@@ -80,7 +80,7 @@ exports.editRole = async (req, res) => {
         });
     } catch (error) {
         
-        LogError(req.user.email, 'EDIT_ROLE', req.user.company);
+        Logger.error(req.user.email, 'edit_role_faile', req.portal);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['edit_role_faile'],
@@ -91,17 +91,17 @@ exports.editRole = async (req, res) => {
 
 exports.deleteRole = async (req, res) => {
     try {
-        var role = await RoleService.deleteRole(req.params.id);
+        var role = await RoleService.deleteRole(req.portal, req.params.id);
         
-        LogInfo(req.user.email, 'DELETE_ROLE', req.user.company);
+        Logger.info(req.user.email, 'delete_role_success', req.portal);
         res.status(200).json({
             success: true,
             messages: ['delete_role_success'],
             content: role
         });
     } catch (error) {
-        console.log("errro:", error)
-        LogError(req.user.email, 'DELETE_ROLE', req.user.company);
+
+        Logger.error(req.user.email, 'delete_role_faile', req.portal);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['delete_role_faile'],

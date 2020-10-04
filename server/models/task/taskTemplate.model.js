@@ -1,15 +1,11 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const User = require('../auth/user.model');
-const Role = require('../auth/role.model');
-const OrganizationalUnit = require('../super-admin/organizationalUnit.model');
-
 // Model quản lý dữ liệu của một mẫu công việc
 const TaskTemplateSchema = new Schema({
     organizationalUnit: {
         type: Schema.Types.ObjectId,
-        ref: OrganizationalUnit,
+        ref: 'OrganizationalUnit',
         //require: true
     },
     name: {
@@ -18,7 +14,7 @@ const TaskTemplateSchema = new Schema({
     },
     creator: {
         type: Schema.Types.ObjectId,
-        ref: User,
+        ref: 'User',
         //require: true
     },
     priority: { // 1: Thấp, 2: Trung Bình, 3: Cao
@@ -76,24 +72,24 @@ const TaskTemplateSchema = new Schema({
     }],
     readByEmployees: [{
         type: Schema.Types.ObjectId,
-        ref: Role,
+        ref: 'Role',
         //require: true
     }],
     responsibleEmployees: [{
         type: Schema.Types.ObjectId,
-        ref: User
+        ref: 'User'
     }],
     accountableEmployees: [{
         type: Schema.Types.ObjectId,
-        ref: User
+        ref: 'User'
     }],
     consultedEmployees: [{
         type: Schema.Types.ObjectId,
-        ref: User
+        ref: 'User'
     }],
     informedEmployees: [{
         type: Schema.Types.ObjectId,
-        ref: User
+        ref: 'User'
     }],
     description: {
         type: String,
@@ -116,4 +112,9 @@ const TaskTemplateSchema = new Schema({
 }, {
     timestamps: true
 });
-module.exports = TaskTemplate = mongoose.model("task_templates", TaskTemplateSchema);
+
+module.exports = (db) => {
+    if(!db.models.TaskTemplate)
+        return db.model('TaskTemplate', TaskTemplateSchema);
+    return db.models.TaskTemplate;
+}

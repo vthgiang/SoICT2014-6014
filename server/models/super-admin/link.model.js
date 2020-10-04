@@ -2,10 +2,6 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
-const Privilege= require('../auth/privilege.model');
-
-
-// Create Schema
 const LinkSchema = new Schema({
     url: {
         type: String,
@@ -19,12 +15,8 @@ const LinkSchema = new Schema({
     },
     components: [{
         type: Schema.Types.ObjectId,
-        ref: 'components'
+        ref: 'Component'
     }],
-    company: {
-        type: Schema.Types.ObjectId,
-        ref: 'companies'
-    },
     deleteSoft: {
         type: Boolean,
         default: true
@@ -35,11 +27,15 @@ const LinkSchema = new Schema({
 });
 
 LinkSchema.virtual('roles', {
-    ref: Privilege,
+    ref: 'Privilege',
     localField: '_id',
     foreignField: 'resourceId'
 });
 
 LinkSchema.plugin(mongoosePaginate);
 
-module.exports = Link = mongoose.model("links", LinkSchema);
+module.exports = (db) => {
+    if(!db.models.Link)
+        return db.model('Link', LinkSchema);
+    return db.models.Link;
+}

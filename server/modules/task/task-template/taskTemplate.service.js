@@ -1,10 +1,11 @@
-const { TaskTemplate, Privilege, Role, UserRole, OrganizationalUnit, User } = require('../../../models').schema;
+const { TaskTemplate, Privilege, Role, UserRole, OrganizationalUnit, User } = require(`${SERVER_MODELS_DIR}`);
+const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 const mongoose = require('mongoose');
 /**
  * Lấy tất cả các mẫu công việc
  */
-exports.getAllTaskTemplates = (req, res) => {
-    var taskTemplates = TaskTemplate.find()
+exports.getAllTaskTemplates = (portal, req, res) => {
+    var taskTemplates = TaskTemplate(connect(DB_CONNECTION, portal)).find()
     return taskTemplates;
 }
 
@@ -12,11 +13,11 @@ exports.getAllTaskTemplates = (req, res) => {
  * Lấy mẫu công việc thoe Id
  * @id id mẫu công việc
  */
-exports.getTaskTemplate = async (id) => {
-    var taskTemplate = TaskTemplate.findById(id).populate([
-        {path: "organizationalUnit", model: OrganizationalUnit, select :"name deans"},
-        {path: "readByEmployees", model: Role, select: "name"},
-        {path: "creator responsibleEmployees accountableEmployees consultedEmployees informedEmployees", model: User, select: "name email"}]);
+exports.getTaskTemplate = async (portal, id) => {
+    var taskTemplate = TaskTemplate(connect(DB_CONNECTION, portal)).findById(id).populate([
+        { path: "organizationalUnit", select: "name deans" },
+        { path: "readByEmployees", select: "name" },
+        { path: "creator responsibleEmployees accountableEmployees consultedEmployees informedEmployees", select: "name email" }]);
     return taskTemplate;
 }
 
@@ -24,15 +25,15 @@ exports.getTaskTemplate = async (id) => {
  * Lấy mẫu công việc theo chức danh
  * @id id role
  */
-exports.getTaskTemplatesOfUserRole = async (id) => {
+exports.getTaskTemplatesOfUserRole = async (portal, id) => {
 
-    var roleId = await Role.findById(id); //lấy id role hiện tại
+    var roleId = await Role(connect(DB_CONNECTION, portal)).findById(id); //lấy id role hiện tại
     var roles = [roleId._id]; //thêm id role hiện tại vào 1 mảng
     roles = roles.concat(roleId.abstract); //thêm các role children vào mảng
-    var tasks = await Privilege.find({
+    var tasks = await Privilege(connect(DB_CONNECTION, portal)).find({
         role: { $in: roles },
         resource_type: 'TaskTemplate'
-    }).populate({ path: 'resource', model: TaskTemplate, populate: { path: 'creator' } });
+    }).populate({ path: 'resource', populate: { path: 'creator' } });
 
     return tasks;
 }
@@ -45,9 +46,9 @@ exports.getTaskTemplatesOfUserRole = async (id) => {
  * @organizationalUnit id phòng ban 
  * @name tên mẫu công việc truy vấn
  */
-exports.searchTaskTemplates = async (id, pageNumber, noResultsPerPage, organizationalUnit, name = "") => {
+exports.searchTaskTemplates = async (portal, id, pageNumber, noResultsPerPage, organizationalUnit, name = "") => {
     // Lấy tất cả các role người dùng có
-    var roles = await UserRole.find({ userId: id }).populate({ path: "roleId" });
+    var roles = await UserRole(connect(DB_CONNECTION, portal)).find({ userId: id }).populate({ path: "roleId" });
     var newRoles = roles.map(role => role.roleId);
     // lấy tất cả các role con của role người dùng có
     var allRole = [];
@@ -58,7 +59,7 @@ exports.searchTaskTemplates = async (id, pageNumber, noResultsPerPage, organizat
     var tasktemplates = [];
     let roleId = allRole.map(function (el) { return mongoose.Types.ObjectId(el) });
     if ((organizationalUnit === "[]") || (JSON.stringify(organizationalUnit) == JSON.stringify([]))) {
-        var tasktemplate = await TaskTemplate.aggregate([
+        var tasktemplate = await TaskTemplate(connect(DB_CONNECTION, portal)).aggregate([
             { $match: { name: { "$regex": name, "$options": "i" } } },
             {
                 $lookup:
@@ -86,9 +87,10 @@ exports.searchTaskTemplates = async (id, pageNumber, noResultsPerPage, organizat
                     as: "creator organizationalUnit"
                 }
             },
+            // { $unwind: "$creator organizationalUnit" },
             {
                 $facet: {
-                    tasks: [ { $sort: { 'createdAt': 1 } },
+                    tasks: [{ $sort: { 'createdAt': 1 } },
                     ...noResultsPerPage === 0 ? [] : [{ $limit: noResultsPerPage * pageNumber }],
                     ...noResultsPerPage === 0 ? [] : [{ $skip: noResultsPerPage * (pageNumber - 1) }]],
                     totalCount: [
@@ -101,7 +103,7 @@ exports.searchTaskTemplates = async (id, pageNumber, noResultsPerPage, organizat
         ])
     } else {
         unit = organizationalUnit.map(function (el) { return mongoose.Types.ObjectId(el) });
-        var tasktemplate = await TaskTemplate.aggregate([
+        var tasktemplate = await TaskTemplate(connect(DB_CONNECTION, portal)).aggregate([
             { $match: { $and: [{ name: { "$regex": name, "$options": "i" } }, { organizationalUnit: { $in: unit } }] } },
             {
                 $lookup:
@@ -129,6 +131,7 @@ exports.searchTaskTemplates = async (id, pageNumber, noResultsPerPage, organizat
                     as: "creator organizationalUnit"
                 }
             },
+            // { $unwind: "$creator organizationalUnit" },
             {
                 $facet: {
                     tasks: [{ $sort: { 'createdAt': 1 } },
@@ -145,10 +148,10 @@ exports.searchTaskTemplates = async (id, pageNumber, noResultsPerPage, organizat
     }
 
     tasktemplates = tasktemplate[0].tasks;
-    await TaskTemplate.populate(tasktemplates, [
-        {path: "organizationalUnit", model: OrganizationalUnit, select :"name deans"},
-        {path: "readByEmployees", model: Role, select: "name"},
-        {path: "creator responsibleEmployees accountableEmployees consultedEmployees informedEmployees", model: User, select: "name email"}]);
+    await TaskTemplate(connect(DB_CONNECTION, portal)).populate(tasktemplates, [
+        { path: "organizationalUnit", select: "name deans" },
+        { path: "readByEmployees", select: "name" },
+        { path: "creator responsibleEmployees accountableEmployees consultedEmployees informedEmployees", select: "name email" }]);
     var totalCount = 0;
     if (JSON.stringify(tasktemplates) !== JSON.stringify([])) {
         totalCount = tasktemplate[0].totalCount[0].count;
@@ -161,9 +164,9 @@ exports.searchTaskTemplates = async (id, pageNumber, noResultsPerPage, organizat
  * Tạo mới mẫu công việc
  * @body dữ liệu tạo mới mẫu công việc
  */
-exports.createTaskTemplate = async (body) => {
+exports.createTaskTemplate = async (portal, body) => {
     // thêm quyền xem mẫu công việc cho trưởng đơn vị của công việc
-    let units = await OrganizationalUnit.findById(body.organizationalUnit);
+    let units = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findById(body.organizationalUnit);
     let roleDeans = units.deans;
     let readByEmployee = body.readByEmployees;
     for (let i in roleDeans) {
@@ -171,20 +174,19 @@ exports.createTaskTemplate = async (body) => {
         for (let x in readByEmployee) {
             if (JSON.stringify(readByEmployee[x]) === JSON.stringify(roleDeans[i])) {
                 flag = false;
-                break; 
+                break;
             }
         }
         if (flag) {
             readByEmployee.push(roleDeans[i]);
         }
     }
-
+    readByEmployee = readByEmployee.map(x => String(x));
     //Tạo dữ liệu mẫu công việc
-    var tasktemplate = await TaskTemplate.create({        
+    var tasktemplate = await TaskTemplate(connect(DB_CONNECTION, portal)).create({
         organizationalUnit: body.organizationalUnit,
         name: body.name,
         creator: body.creator, //id của người tạo
-        priority: '1',
         readByEmployees: readByEmployee, //role của người có quyền xem
         responsibleEmployees: body.responsibleEmployees,
         accountableEmployees: body.accountableEmployees,
@@ -211,14 +213,13 @@ exports.createTaskTemplate = async (body) => {
             }
         })
     });
-
     // TODO: Xử lý quyển với action
 
     // xu ly quyen nguoi xem
     var read = readByEmployee;
     var roleId = [];
     var role, roleParent;
-    role = await Role.find({ _id: { $in: read } });
+    role = await Role(connect(DB_CONNECTION, portal)).find({ _id: { $in: read } });
     roleParent = role.map(item => item.parents);   // lấy ra các parent của các role
     var flag;
     var reads = role.map(item => item._id);     // lấy ra danh sách role có quyền xem ( thứ tự cùng với roleParent)
@@ -247,7 +248,7 @@ exports.createTaskTemplate = async (body) => {
     }
     // mỗi roleId là một Document
     for (let i in roleId) {
-        var privilege = await Privilege.create({
+        var privilege = await Privilege(connect(DB_CONNECTION, portal)).create({
             roleId: roleId[i], //id của người cấp quyền xem
             resourceId: tasktemplate._id,
             resourceType: "TaskTemplate",
@@ -255,6 +256,7 @@ exports.createTaskTemplate = async (body) => {
         });
     }
     tasktemplate = await tasktemplate.populate("organizationalUnit creator").execPopulate();
+    console.log(tasktemplate);
     return tasktemplate;
 }
 
@@ -262,9 +264,9 @@ exports.createTaskTemplate = async (body) => {
  * Xóa mẫu công việc
  * @id id công việc cần xóa
  */
-exports.deleteTaskTemplate = async (id) => {
-    var template = await TaskTemplate.findByIdAndDelete(id); // xóa mẫu công việc theo id
-    var privileges = await Privilege.deleteMany({
+exports.deleteTaskTemplate = async (portal, id) => {
+    var template = await TaskTemplate(connect(DB_CONNECTION, portal)).findByIdAndDelete(id); // xóa mẫu công việc theo id
+    var privileges = await Privilege(connect(DB_CONNECTION, portal)).deleteMany({
         resourceId: id, //id của task template
         resourceType: "TaskTemplate"
     });
@@ -277,8 +279,8 @@ exports.deleteTaskTemplate = async (id) => {
  * @data dữ liệu cập nhật
  * @id id mẫu công việc cập nhật
  */
-exports.editTaskTemplate = async (data, id) => {
-    var taskTemplate = await TaskTemplate.findByIdAndUpdate(id,
+exports.editTaskTemplate = async (portal, data, id) => {
+    var taskTemplate = await TaskTemplate(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id,
         {
             $set: {
                 name: data.name,
@@ -296,12 +298,12 @@ exports.editTaskTemplate = async (data, id) => {
         },
         { new: true },
     ).populate([
-        {path: "organizationalUnit", model: OrganizationalUnit, select :"name deans"},
-        {path: "readByEmployees", model: Role, select: "name"},
-        {path: "creator responsibleEmployees accountableEmployees consultedEmployees informedEmployees", model: User, select: "name email"}]);
-        
+        { path: "organizationalUnit", select: "name deans" },
+        { path: "readByEmployees", select: "name" },
+        { path: "creator responsibleEmployees accountableEmployees consultedEmployees informedEmployees", select: "name email" }]);
+
     // xóa privilege tương ứng để tạo lại privilege tương ứng với quyền xem
-    var privileges = await Privilege.deleteMany({
+    var privileges = await Privilege(connect(DB_CONNECTION, portal)).deleteMany({
         resourceId: id, //id của task template
         resourceType: "TaskTemplate"
     });
@@ -309,7 +311,7 @@ exports.editTaskTemplate = async (data, id) => {
     var read = data.readByEmployees;
     var roleId = [];
     var role, roleParent;
-    role = await Role.find({ _id: { $in: read } });
+    role = await Role(connect(DB_CONNECTION, portal)).find({ _id: { $in: read } });
     roleParent = role.map(item => item.parents);   // lấy ra các parent của các role
     var flag;
     var reads = role.map(item => item._id);     // lấy ra danh sách role có quyền xem ( thứ tự cùng với roleParent)
@@ -338,7 +340,7 @@ exports.editTaskTemplate = async (data, id) => {
     }
     // mỗi roleId là một Document
     for (let i in roleId) {
-        var privilege = await Privilege.create({
+        var privilege = await Privilege(connect(DB_CONNECTION, portal)).create({
             roleId: roleId[i], //id của người cấp quyền xem
             resourceId: id,
             resourceType: "TaskTemplate",
@@ -353,32 +355,32 @@ exports.editTaskTemplate = async (data, id) => {
  * @param {*} data 
  * @param {*} id : id user
  */
-exports.importTaskTemplate = async (data,id) => {
+exports.importTaskTemplate = async (portal, data, id) => {
     let results = [];
     for (let i = 0; i < data.length; i++) {
         // chuyen dia chi email sang id
         for (let j = 0; j < data[i].accountableEmployees.length; j++) {
-            let accountableEmployees = await User.findOne({ email: data[i].accountableEmployees[j] });
+            let accountableEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ email: data[i].accountableEmployees[j] });
             data[i].accountableEmployees[j] = String(accountableEmployees._id);
         };
         let read = [];
         for (let j = 0; j < data[i].readByEmployees.length; j++) {
-            let readByEmployees = await Role.findOne({ name: data[i].readByEmployees[j] });
+            let readByEmployees = await Role(connect(DB_CONNECTION, portal)).findOne({ name: data[i].readByEmployees[j] });
             readByEmployees = readByEmployees._id;
             read = [...read, readByEmployees];
         }
         data[i].readByEmployees = read;
         for (let j = 0; j < data[i].consultedEmployees.length; j++) {
-            let consultedEmployees = await User.findOne({ email: data[i].consultedEmployees[j] });
+            let consultedEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ email: data[i].consultedEmployees[j] });
             data[i].consultedEmployees[j] = String(consultedEmployees._id);
         };
         for (let j = 0; j < data[i].informedEmployees.length; j++) {
-            let informedEmployees = await User.findOne({ email: data[i].informedEmployees[j] });
+            let informedEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ email: data[i].informedEmployees[j] });
             data[i].informedEmployees[j] = String(informedEmployees._id);
         };
         for (let j = 0; j < data[i].responsibleEmployees.length; j++) {
-            let responsibleEmployees = await User.findOne({ email: data[i].responsibleEmployees[j] });
-            data[i].responsibleEmployees[j] = String(responsibleEmployees._id);            
+            let responsibleEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ email: data[i].responsibleEmployees[j] });
+            data[i].responsibleEmployees[j] = String(responsibleEmployees._id);
         };
         // xu ly thong tin filledByAccountableEmployeesOnly 
         for (let j = 0; j < data[i].taskInformations.length; j++) {
@@ -386,11 +388,12 @@ exports.importTaskTemplate = async (data,id) => {
                 // format thong tin "chi qua ly duoc dien"
                 data[i].taskInformations[j]["filledByAccountableEmployeesOnly"] = data[i].taskInformations[j][3];
                 // formart thong tin kieu du lieu
-                data[i].taskInformations[j]["type"] = data[i].taskInformations[j][2];
+                data[i].taskInformations[j]["type"] = data[i].taskInformations[j][2].toLowerCase();
                 data[i].taskInformations[j]["name"] = data[i].taskInformations[j][0];
                 data[i].taskInformations[j]["description"] = data[i].taskInformations[j][1];
+                data[i].taskInformations[j]["extra"] = "";
             } else {
-                data[i].taskInformations.splice(j,1);
+                data[i].taskInformations.splice(j, 1);
                 j--;
             }
         }
@@ -400,14 +403,14 @@ exports.importTaskTemplate = async (data,id) => {
                 data[i].taskActions[j]["name"] = data[i].taskActions[j][0];
                 data[i].taskActions[j]["description"] = data[i].taskActions[j][1];
             } else {
-                data[i].taskActions.splice(j,1);
+                data[i].taskActions.splice(j, 1);
                 j--;
             }
         }
-        let unit = await OrganizationalUnit.findOne({name: data[i].organizationalUnit});
+        let unit = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findOne({ name: data[i].organizationalUnit });
         data[i].organizationalUnit = String(unit._id);
         data[i].creator = id;
-        let result = await this.createTaskTemplate(data[i]);
+        let result = await this.createTaskTemplate(portal, data[i]);
         results = [...results, result];
     };
     console.log("results", results);
