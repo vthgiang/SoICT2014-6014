@@ -20,11 +20,10 @@ class AdministrationDocumentDomains extends Component {
     }
 
     componentDidMount() {
-        this.props.getDocumentDomains();
+        //this.props.getDocumentDomains();
     }
 
     onChanged = async (e, data) => {
-        console.log('ttt', data)
         await this.setState({ currentDomain: data.node })
         window.$(`#edit-document-domain`).slideDown();
     }
@@ -73,7 +72,6 @@ class AdministrationDocumentDomains extends Component {
         window.$('#modal-create-document-domain').modal('show');
     }
     convertDataToExportData = (data) => {
-        console.log(data);
         data = data ? data.map((x, index) => {
             return {
                 STT: index + 1,
@@ -121,7 +119,6 @@ class AdministrationDocumentDomains extends Component {
         if (documents.isLoading === false) {
             dataExport = list;
         }
-        console.log('domainnnn', this.state.currentDomain);
         let exportData = this.convertDataToExportData(dataExport);
         return (
             <React.Fragment>

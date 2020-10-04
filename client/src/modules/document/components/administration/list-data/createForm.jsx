@@ -18,6 +18,8 @@ class CreateForm extends Component {
             documentEffectiveDate: "",
             documentExpiredDate: "",
             documentCategory: "",
+            page: 1,
+            limit: 5,
         }
     }
 
@@ -31,7 +33,6 @@ class CreateForm extends Component {
     }
 
     handleDomains = value => {
-        console.log('valueeeee', value)
         this.setState({ documentDomains: value });
     }
     handleArchives = value => {
@@ -428,7 +429,6 @@ class CreateForm extends Component {
             documentArchivedRecordPlaceOrganizationalUnit,
             documentArchivedRecordPlaceManager,
         } = this.state;
-        console.log('dateeee', documentIssuingDate)
         const formData = new FormData();
         formData.append('name', documentName);
         formData.append('category', documentCategory);
@@ -505,11 +505,22 @@ class CreateForm extends Component {
         event.preventDefault();
         window.$('#modal_import_file_document').modal('show');
     }
+    onSearch = async (name) => {
+
+        await this.props.getAllDocuments({ page: this.state.page, limit: this.state.limit, name: name, type: "relationshipDocs" });
+
+        this.setState(state => {
+            state.listDocumentRelationship = "";
+            return {
+                ...state,
+            }
+        });
+    }
 
     render() {
         const { translate, role, documents, department } = this.props;
         const { list } = documents.administration.domains;
-        const { errorName, errorCategory, errorVersionName, documentArchives, documentDomains } = this.state;
+        const { errorName, errorCategory, errorVersionName, documentArchives, documentDomains, listDocumentRelationship } = this.state;
         const archives = documents.administration.archives.list;
         const categories = documents.administration.categories.list.map(category => { return { value: category._id, text: category.name } });
         const documentRoles = role.list.map(role => { return { value: role._id, text: role.name } });
@@ -664,8 +675,10 @@ class CreateForm extends Component {
                                                     className="form-control select2"
                                                     style={{ width: "100%" }}
                                                     items={relationshipDocs}
+                                                    value={listDocumentRelationship}
                                                     onChange={this.handleRelationshipDocuments}
-                                                    multiple={true}
+                                                    multiple={false}
+                                                    onSearch={this.onSearch}
                                                 />
                                             </div>
                                             <div className="form-group">
@@ -722,6 +735,7 @@ class CreateForm extends Component {
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
+    getAllDocuments: DocumentActions.getDocuments,
     createDocument: DocumentActions.createDocument
 }
 

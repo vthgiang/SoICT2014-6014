@@ -36,8 +36,8 @@ export const DocumentActions = {
 
 };
 
-function getDocuments(data = undefined) {
-    if (data !== undefined) {
+function getDocuments(data) {
+    if (data.type === "paginate") {
         return dispatch => {
             dispatch({ type: DocumentConstants.PAGINATE_DOCUMENTS_REQUEST });
             DocumentServices.getDocuments(data)

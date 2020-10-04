@@ -13,16 +13,11 @@ exports.getDocuments = async (portal, query, company) => {
     let limit = query.limit;
 
     if (!(page || limit)) {
-        console.log('helloooo');
         return await Document(connect(DB_CONNECTION, portal))
             .find({ company })
-            .populate([
-                { path: 'category', select: 'name id' },
-                { path: 'domains', select: 'name id' },
-                { path: 'archives', select: 'name id path' },
-
-            ]);
-    } else {
+            .select("id name archives category domains numberOfDownload numberOfView ");
+    }
+    else {
         let option = {
             company: company,
         };

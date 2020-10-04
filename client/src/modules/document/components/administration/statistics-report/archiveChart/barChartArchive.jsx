@@ -96,7 +96,7 @@ class BarChartArchive extends Component {
         if (docs) {
             docs.map(doc => {
                 doc.archives.map(archive => {
-                    let idx = idArchive.indexOf(archive.id);
+                    let idx = idArchive.indexOf(archive);
                     countArchive[idx]++;
                 })
             })

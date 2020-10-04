@@ -151,7 +151,6 @@ export function documents(state = initState, action) {
             };
 
         case DocumentConstants.GET_DOCUMENT_STATISTICS_DOWNLOADED_SUCCESS:
-            console.log('reducerDownloadddd', action.payload)
             return {
                 ...state,
                 isLoading: false,
@@ -263,7 +262,6 @@ export function documents(state = initState, action) {
             };
 
         case DocumentConstants.PAGINATE_DOCUMENTS_USER_CAN_VIEW_SUCCESS:
-            console.log('reducerIndexxxxxx', action.payload)
             return {
                 ...state,
                 isLoading: false,
@@ -286,7 +284,6 @@ export function documents(state = initState, action) {
             };
 
         case DocumentConstants.PAGINATE_DOCUMENTS_SUCCESS:
-
             return {
                 ...state,
                 isLoading: false,
@@ -307,6 +304,7 @@ export function documents(state = initState, action) {
                     }
                 }
             };
+            
 
         case DocumentConstants.PAGINATE_DOCUMENT_CATEGORIES_SUCCESS:
             return {

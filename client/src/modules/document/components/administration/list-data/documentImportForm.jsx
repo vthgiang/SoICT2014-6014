@@ -31,7 +31,6 @@ class DocumentImportForm extends Component {
 
     handleImportExcel = (value, checkFileImport) => {
         let startDate = new Date(1900, 1, 1, 0, 0, 0);
-        console.log('valueeee', value);
         let date = -2209131850214;
         let values = [];
         let showValues = [];
@@ -47,7 +46,6 @@ class DocumentImportForm extends Component {
 
                     issuingDate = date + x.issuingDate * 24 * 60 * 60 * 1000;
                     let iDate = new Date(issuingDate)
-                    console.log('dayyyy', iDate.toString());
                 }
                 if (x.effectiveDate) {
                     effectiveDate = date + x.effectiveDate * 24 * 60 * 60 * 1000;
@@ -96,7 +94,6 @@ class DocumentImportForm extends Component {
                 }]
             } else {
                 if (k >= 0) {
-                    console.log('xxxxx', x);
                     let out = {
                         "STT": "",
                         "name": "",
@@ -255,7 +252,6 @@ class DocumentImportForm extends Component {
 
     save = () => {
         let { importShowData } = this.state;
-        console.log(importShowData);
         this.props.importDocument(importShowData);
     }
     render() {

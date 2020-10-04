@@ -440,7 +440,6 @@ class EditForm extends Component {
         const formData = new FormData();
         formData.append('name', documentName);
 
-        console.log('uuuuuuuuuuu', documentArchivedRecordPlaceOrganizationalUnit)
         if (documentName !== this.props.documentName) {
             if (!title.includes("Chỉnh sửa thông tin văn bản.")) {
                 title = (title + " Chỉnh sửa thông tin văn bản ");
@@ -546,12 +545,10 @@ class EditForm extends Component {
                 description += nameRole[0].text + " ";
             }
         }
-        console.log("aaaaaaaaaa", documentArchivedRecordPlaceOrganizationalUnit, this.props.documentArchivedRecordPlaceOrganizationalUnit, documentArchivedRecordPlaceOrganizationalUnit !== this.props.documentArchivedRecordPlaceOrganizationalUnit)
         if (documentArchivedRecordPlaceOrganizationalUnit !== this.props.documentArchivedRecordPlaceOrganizationalUnit) {
             if (!title.includes("Chỉnh sửa đơn vị quản lí")) {
                 title += "Chỉnh sửa đơn vị quản lí"
             }
-            console.log('iiiiiiiiiiiiiiiiiii', documentArchivedRecordPlaceOrganizationalUnit, this.props.documentArchivedRecordPlaceOrganizationalUnit, documentArchivedRecordPlaceOrganizationalUnit !== this.props.documentArchivedRecordPlaceOrganizationalUnit)
             let newDepartment;
             newDepartment = department.list.filter(d => d._id === documentArchivedRecordPlaceOrganizationalUnit)
             description += "Đơn vị quản lí mới " + newDepartment[0].name + ". "
@@ -586,7 +583,6 @@ class EditForm extends Component {
             documentFileScan
         } = this.state;
         let title, descriptions;
-        // console.log('dateeee', documentIssuingDate)
         title = "Thêm phiên bản mới";
         const formData = new FormData();
         if (documentVersionName) {
@@ -622,7 +618,6 @@ class EditForm extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        console.log('ffffffffffff', nextProps.documentVersions)
         if (nextProps.documentId !== prevState.documentId) {
             return {
                 ...prevState,
@@ -736,7 +731,6 @@ class EditForm extends Component {
         const relationshipDocs = documents.administration.data.list.filter(doc => doc._id !== documentId).map(doc => { return { value: doc._id, text: doc.name } })
         const archives = documents.administration.archives.list;
         let path = documentArchives ? this.findPath(archives, documentArchives) : "";
-        console.log('versionnnnnnn', documentVersions)
         return (
             <React.Fragment>
                 <DialogModal
