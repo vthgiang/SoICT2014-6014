@@ -1,4 +1,4 @@
-const { TaskProcess, ProcessTemplate, Privilege, Role, Task } = require(`${SERVER_MODELS_DIR}`);
+const { TaskProcess, ProcessTemplate, Privilege, Role, Task, UserRole } = require(`${SERVER_MODELS_DIR}`);
 
 const TaskService = require(`${SERVER_MODULES_DIR}/task/task-management/task.service`);
 const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
@@ -14,7 +14,7 @@ exports.getAllXmlDiagram = async (portal, query) => {
     let name = query.name;
     let pageNumber = query.pageNumber;
     let noResultsPerPage = query.noResultsPerPage;
-    let roles = await UserRole.find({ userId: userId }).populate({ path: "roleId" });
+    let roles = await UserRole(connect(DB_CONNECTION, portal)).find({ userId: userId }).populate({ path: "roleId" });
     let newRoles = roles.map(role => role.roleId);
 
     // lấy tất cả các role con của role người dùng có
