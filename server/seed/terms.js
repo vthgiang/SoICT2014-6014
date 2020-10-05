@@ -865,8 +865,8 @@ const LINKS = [{
     components: getComponentsInLink('/inventory-management')
 },
 {
-    url: "/manage-orders",
-    description: "Quản lý đơn hàng",
+    url: "/manage-sales-order",
+    description: "Đơn hàng kinh doanh",
     category: LINK_CATEGORY.ORDER.name,
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,
@@ -875,7 +875,86 @@ const LINKS = [{
         ROOT_ROLES.VICE_DEAN.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
-    components: getComponentsInLink('/manage-orders'),
+    components: getComponentsInLink('/manage-sales-order'),
+},
+{
+    url: "/manage-manufacturing-order",
+    description: "Đơn hàng sản xuất",
+    category: LINK_CATEGORY.ORDER.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.DEAN.name,
+        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/manage-manufacturing-order'),
+},
+{
+    url: "/manage-purchase-order",
+    description: "Đơn mua hàng",
+    category: LINK_CATEGORY.ORDER.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.DEAN.name,
+        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/manage-purchase-order'),
+},
+{
+    url: "/manage-quotation",
+    description: "Báo giá",
+    category: LINK_CATEGORY.ORDER.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.DEAN.name,
+        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/manage-quotation'),
+},
+{
+    url: "/manage-discount",
+    description: "Khuyến mãi",
+    category: LINK_CATEGORY.ORDER.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.DEAN.name,
+        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/manage-discount'),
+},
+{
+    url: "/manage-tax",
+    description: "Thuế",
+    category: LINK_CATEGORY.ORDER.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.DEAN.name,
+        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    
+    components: getComponentsInLink('/manage-tax'),
+},
+{
+    url: "/manage-sla",
+    description: "Cam kết chất lượng",
+    category: LINK_CATEGORY.ORDER.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.DEAN.name,
+        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/manage-sla'),
 },
 {
     url: '/crm/customer',

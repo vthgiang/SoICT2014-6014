@@ -763,8 +763,14 @@ export default {
             task_report: 'Manage task reports',
 
             //QUẢN LÝ ĐƠN HÀNG
-            manage_orders: "Manage Orders",
-            manage_list_orders: "Manage List Orders",
+            manage_orders: 'Manage Order',
+            manage_sales_order: 'Sales Order',
+            manage_manufacturing_order: 'Manufacturing Order',
+            manage_purchase_order: 'PurchaseOrder',
+            manage_quotation: 'Quotation',
+            manage_discount: 'Discount',
+            manage_tax: 'Tax',
+            manage_sla: 'Service Level Agreement',
 
             //QUẢN LÝ KẾ HOẠCH SẢN XUẤT
             manage_plans: "Manage Plans",

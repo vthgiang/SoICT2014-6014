@@ -797,8 +797,15 @@ export default {
             task_report: 'Quản lý báo cáo công việc',
 
             //QUẢN LÝ ĐƠN HÀNG
-            manage_orders: "Quản lý đơn hàng",
-            manage_list_orders: "Danh sách đơn hàng",
+            manage_orders: 'Quản lý đơn hàng',
+            manage_sales_order: 'Đơn hàng kinh doanh',
+            manage_manufacturing_order: 'Đơn hàng sản xuất',
+            manage_purchase_order: 'Đơn mua hàng',
+            manage_quotation: 'Báo giá',
+            manage_discount: 'Giảm giá',
+            manage_tax: 'Thuế',
+            manage_sla: 'Cam kết chất lượng',
+
             // Quản lý kế hoạch sản xuất
             manage_plans: "Quản lý kế hoạch sản xuất",
             //VÍ DỤ EXAMPLE
