@@ -2,15 +2,13 @@ import React, { Component } from 'react';
 import { Router } from "react-router-dom";
 import { createBrowserHistory } from 'history';
 import Routes from './react-routes/routes';
-import { IntlActions, IntlProvider } from 'react-redux-multilingual';
+import { IntlActions } from 'react-redux-multilingual';
 import store from './redux/store';
 import { PinnedPanel } from '../src/common-components';
 import TaskTimesheetLog from '../src/modules/task/task-perform/component/taskTimesheetLog';
-import { Provider } from 'react-redux';
-import translations from './lang';
+
 import AuthAlert from './modules/alert/components/authAlert';
 import { ToastContainer, toast } from 'react-toastify';
-import { SocketConstants } from './modules/socket/redux/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
 import './app.css'
@@ -24,9 +22,7 @@ class App extends Component {
     }
     componentDidMount() {
         console.log("didmount app.js");
-        store.dispatch({
-            type: SocketConstants.CONNECT_SOCKET_IO
-        });
+
         const lang = localStorage.getItem('lang');
         if(lang !== null){
             switch(lang){
@@ -46,24 +42,22 @@ class App extends Component {
     }
     render() {
         return (
-            <Provider store={store}>
-                <IntlProvider translations={translations}>
-                    <AuthAlert />
-                    <ToastContainer 
-                        enableMultiContainer={true}
-                        closeOnClick={true}
-                        draggable={false}
-                        containerId={'toast-notification'}
-                        position={toast.POSITION.TOP_RIGHT}
-                    />
-                    <Router history={history}>
-                        <Routes/>
-                    </Router>
-                    <PinnedPanel>
-                        <TaskTimesheetLog />
-                    </PinnedPanel>        
-                </IntlProvider>
-            </Provider>
+            <React.Fragment>
+                <AuthAlert />
+                <ToastContainer 
+                    enableMultiContainer={true}
+                    closeOnClick={true}
+                    draggable={false}
+                    containerId={'toast-notification'}
+                    position={toast.POSITION.TOP_RIGHT}
+                />
+                <Router history={history}>
+                    <Routes/>
+                </Router>
+                <PinnedPanel>
+                    <TaskTimesheetLog />
+                </PinnedPanel> 
+            </React.Fragment >
         );
     }
 }

@@ -13,7 +13,7 @@
     "server": "cd server && npm start",
 
     "setup-enviroment": "concurrently \"npm run client-install\" \"npm run server-install\"",
-    "start": "concurrently \"npm run client\" \"npm run server\"",
+    "start": "concurrently \"npm run client\" \"npm run server\""
   },
   "repository": {
     "type": "git",
