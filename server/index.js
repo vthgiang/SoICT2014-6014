@@ -13,7 +13,15 @@ SOCKET_IO.on('connection', function(socket){
 	// Client disconnected
 	socket.on('disconnect', function(){
 		console.log("Disconnected: ", socket.id, socket.handshake.query.userId);
-	})
+	});
+
+	socket.on('chat message', data => {
+		console.log("Chat message from client: ", data);
+
+		socket.broadcast.emit('chat message', data);
+	});
+
+	SOCKET_IO.clients((error, clients) => console.log("Clients", clients))
 })
 
 require("dotenv").config();
