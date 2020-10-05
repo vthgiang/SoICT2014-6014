@@ -2779,6 +2779,10 @@ export default {
                             content: 'This is the default target (if necessary, weights can be corrected)',
                             delete: 'Delete'
                         },
+                        add_new_target: {
+                            approving: 'KPI is being approved, you can not create new target!',
+                            activated: 'KPI is being activated, you can not create new target!'
+                        },
                         handle_populate_info_null: {
                             error_kpi_approver_null: 'Error! The approver of this KPI set is not exist or was deleted',
                             error_kpi_organizational_unit_null: 'Error! The organizational unit of this KPI set is not exist or was deleted',

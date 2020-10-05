@@ -2826,6 +2826,10 @@ export default {
                             approving: 'KPI đang được phê duyệt, bạn không thể xóa!',
                             activated: 'KPI đã được kích hoạt, bạn không thể xóa!'
                         },
+                        add_new_target: {
+                            approving: 'KPI đang được phê duyệt, bạn không thể thêm mới!',
+                            activated: 'KPI đã được kích hoạt, bạn không thể thêm mới!',
+                        },
                         handle_populate_info_null: {
                             error_kpi_approver_null: 'Người phê duyệt tập KPI này không tồn tại hoặc đã bị xóa',
                             error_kpi_organizational_unit_null: 'Đơn vị của tập KPI này không tồn tại hoặc đã bị xóa',
