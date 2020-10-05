@@ -14,14 +14,14 @@ class CrmCustomerImportFile extends Component {
     }
 
     render() {
-        const { translate } = this.props;
+        const { translate, crm } = this.props;
         const { customer } = this.props;
         const { nameError } = this.state;
 
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID="modal-customer-import" isLoading={customer.isLoading}
+                    modalID="modal-customer-import" isLoading={crm.customers.isLoading}
                     formID="form-customer-import"
                     title="Nhập dữ liệu khách hàng"
                     func={this.save}
@@ -107,8 +107,8 @@ class CrmCustomerImportFile extends Component {
 }
 
 function mapStateToProps(state) {
-    const { customer, customerGroup } = state;
-    return { customer, customerGroup };
+    const { customer, customerGroup, crm } = state;
+    return { customer, customerGroup, crm };
 }
 
 const mapDispatchToProps = {

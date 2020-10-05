@@ -3,7 +3,7 @@ import { CrmCustomerConstants } from "./constants";
 var findIndex = (array, id) => {
     var result = -1;
     array.forEach((value, index) => {
-        if(value._id === id){
+        if (value._id === id) {
             result = index;
         }
     });
@@ -12,20 +12,11 @@ var findIndex = (array, id) => {
 
 const initState = {
     list: [],
-    listPaginate: [],
     totalDocs: 0,
-    limit: 0,
-    totalPages: 0,
-    page: 0,
-    pagingCounter: 0,
-    hasPrevPage: false,
-    hasNextPage: false,
-    prevPage: 0,
-    nextPage: 0,
     isLoading: true,
 }
 
-export function customer(state = initState, action) {
+export function customers(state = initState, action) {
     var index = -1;
     var indexPaginate = -1;
 
@@ -48,7 +39,7 @@ export function customer(state = initState, action) {
         case CrmCustomerConstants.GET_CRM_CUSTOMER_FAILE:
         case CrmCustomerConstants.EDIT_CRM_CUSTOMER_FAILE:
         case CrmCustomerConstants.DELETE_CRM_CUSTOMER_FAILE:
-            
+
             return {
                 ...state,
                 isLoading: false
@@ -58,7 +49,8 @@ export function customer(state = initState, action) {
 
             return {
                 ...state,
-                list: action.payload,
+                list: action.payload.customers,
+                totalDocs: action.payload.listDocsTotal,
                 isLoading: false
             };
 
@@ -69,7 +61,7 @@ export function customer(state = initState, action) {
                 list: [action.payload, ...state.customers.list],
                 isLoading: false
             };
-        
+
         case CrmCustomerConstants.PAGINATE_CRM_CUSTOMERS_SUCCESS:
 
             return {
@@ -89,9 +81,9 @@ export function customer(state = initState, action) {
 
         case CrmCustomerConstants.EDIT_CRM_CUSTOMER_SUCCESS:
             index = findIndex(state.list, action.payload._id);
-            if(index !== -1) state.list[index] = action.payload;
+            if (index !== -1) state.list[index] = action.payload;
             indexPaginate = findIndex(state.listPaginate, action.payload._id);
-            if(indexPaginate !== -1) state.listPaginate[index] = action.payload;
+            if (indexPaginate !== -1) state.listPaginate[index] = action.payload;
 
             return {
                 ...state,
@@ -100,9 +92,9 @@ export function customer(state = initState, action) {
 
         case CrmCustomerConstants.DELETE_CRM_CUSTOMER_SUCCESS:
             index = findIndex(state.list, action.payload._id);
-            if(index !== -1) state.list.splice(index, 1);
+            if (index !== -1) state.list.splice(index, 1);
             indexPaginate = findIndex(state.listPaginate, action.payload._id);
-            if(indexPaginate !== -1) state.listPaginate.splice(indexPaginate, 1);
+            if (indexPaginate !== -1) state.listPaginate.splice(indexPaginate, 1);
 
             return {
                 ...state,

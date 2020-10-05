@@ -3,27 +3,71 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, SelectBox, DatePicker } from '../../../../common-components';
 import { CrmCustomerActions } from '../redux/actions';
+import { UserActions } from '../../../super-admin/user/redux/actions';
+import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
+import { getStorage } from '../../../../config';
 
 class CrmCustomerCreate extends Component {
     constructor(props) {
         super(props);
         this.state = {
             newCustomer: {
+                owner: [],
                 status: 0,
             },
+            currentRole: getStorage('currentRole')
         }
     }
 
+    shouldComponentUpdate = async (nextProps, nextState) => {
+        const { auth, user } = this.props;
+        const { newCustomer, currentRole } = this.state;
+
+        if (newCustomer.owner && newCustomer.owner.length === 0 && auth.user && user.organizationalUnitsOfUser) {
+            let getCurrentUnit = await user.organizationalUnitsOfUser.find(item =>
+                item.deans[0] === currentRole
+                || item.viceDeans[0] === currentRole
+                || item.employees[0] === currentRole);
+
+            // Lấy người dùng của đơn vị hiện tại và người dùng của đơn vị con
+            if (getCurrentUnit) {
+                this.props.getChildrenOfOrganizationalUnits(getCurrentUnit._id);
+            }
+
+            this.setState({
+                newCustomer: {
+                    ...newCustomer,
+                    owner: [auth.user._id],
+                },
+            })
+            return false;
+        }
+        return true;
+    }
+
     render() {
-        const { translate, crm } = this.props;
+        const { translate, crm, user } = this.props;
+        const { groups } = crm;
         const { owner, customerSource, code, name, company, companyEstablishmentDate, mobilephoneNumber, telephoneNumber
             , email, email2, address, address2, gender, birth, group, status, location, taxNumber, website, linkedIn
         } = this.state.newCustomer;
 
+        let unitMembers = [];
+        if (user.usersOfChildrenOrganizationalUnit) {
+            unitMembers = getEmployeeSelectBoxItems(user.usersOfChildrenOrganizationalUnit);
+        }
+
+        // Lấy danh sách nhóm khách hàng
+        let listGroups;
+        if (groups.list && groups.list.length > 0) {
+            listGroups = groups.list.map(x => { return { value: x._id, text: x.name } })
+            listGroups.unshift({ value: '', text: 'Chọn nhóm khách hàng' });
+        }
+        console.log(listGroups)
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID="modal-crm-customer-create" isLoading={crm.customer.isLoading}
+                    modalID="modal-crm-customer-create" isLoading={crm.customers.isLoading}
                     formID="form-crm-customer-create"
                     title={translate("crm.customer.add")}
                     size={75}
@@ -42,28 +86,22 @@ class CrmCustomerCreate extends Component {
                                     <div className="col-md-6">
                                         {/* Người quản lý khách hàng*/}
                                         <div className={`form-group`} >
-                                            <label className="control-label">Người quản lý<span className="text-red">*</span></label>
+                                            <label className="control-label">{translate('crm.customer.owner')}<span className="text-red">*</span></label>
                                             <SelectBox
                                                 id={`customer-ownwe`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
-                                                items={
-                                                    [
-                                                        { value: 0, text: 'Nguyễn Văn Danh' },
-                                                        { value: 1, text: 'Vũ Thị Cúc' },
-                                                    ]
-                                                }
-                                                value={owner ? owner : []}
+                                                items={unitMembers}
+                                                value={owner && owner.length > 0 ? owner : []}
                                                 onChange={this.handleChangeCustomerOwner}
                                                 multiple={true}
-                                                options={{ placeholder: "Người quản lý" }}
                                             />
                                         </div>
                                     </div>
                                     <div className="col-md-6">
                                         {/* nguồn lấy được khách hàng */}
                                         <div className={`form-group`} >
-                                            <label className="control-label">Nguồn khách hàng</label>
+                                            <label className="control-label">{translate('crm.customer.source')}</label>
                                             <input type="text" className="form-control" value={customerSource ? customerSource : ''} onChange={this.handleChangeCustomerSource} placeholder="Facebook,...." />
                                         </div>
                                     </div>
@@ -73,16 +111,16 @@ class CrmCustomerCreate extends Component {
                                     <div className="col-md-6">
                                         {/* Mã khách hàng */}
                                         <div className={`form-group`}>
-                                            <label>Mã khách hàng<span className="text-red">*</span></label>
-                                            <input type="text" className="form-control" value={code ? code : ''} onChange={this.handleChangeCustomerCode} placeholder="Mã khách hàng" />
+                                            <label>{translate('crm.customer.code')}<span className="text-red">*</span></label>
+                                            <input type="text" className="form-control" value={code ? code : ''} onChange={this.handleChangeCustomerCode} placeholder={translate('crm.customer.code')} />
                                             {/* <ErrorLabel content={nameErrorCreateForm} /> */}
                                         </div>
                                     </div>
                                     <div className="col-md-6">
                                         {/* Tên khách hàng */}
                                         <div className={`form-group`}>
-                                            <label>Tên khách hàng<span className="text-red">*</span></label>
-                                            <input type="Name" className="form-control" value={name ? name : ''} onChange={this.handleChangeCustomerName} placeholder="Mã khách hàng" />
+                                            <label>{translate('crm.customer.name')}<span className="text-red">*</span></label>
+                                            <input type="Name" className="form-control" value={name ? name : ''} onChange={this.handleChangeCustomerName} placeholder={translate('crm.customer.name')} />
                                             {/* <ErrorLabel content={nameErrorCreateForm} /> */}
                                         </div>
                                     </div>
@@ -92,16 +130,15 @@ class CrmCustomerCreate extends Component {
                                     <div className="col-md-6">
                                         {/* Tên công ty */}
                                         <div className={`form-group`}>
-                                            <label>Tên công ty </label>
-                                            <input type="Name" className="form-control" value={company ? company : ''} onChange={this.handleChangeCompanyName} placeholder="Tên công ty" />
-                                            {/* <ErrorLabel content={nameErrorCreateForm} /> */}
+                                            <label>{translate('crm.customer.company')}</label>
+                                            <input type="Name" className="form-control" value={company ? company : ''} onChange={this.handleChangeCompanyName} placeholder={translate('crm.customer.company')} />
                                         </div>
                                     </div>
 
                                     <div className="col-md-6">
                                         {/* Ngày thành lập công ty */}
                                         <div className="form-group">
-                                            <label>Ngày thành lập công ty </label>
+                                            <label>{translate('crm.customer.companyEstablishmentDate')}</label>
                                             <DatePicker
                                                 id="start-date-form-create"
                                                 value={companyEstablishmentDate ? companyEstablishmentDate : ''}
@@ -116,16 +153,15 @@ class CrmCustomerCreate extends Component {
                                     <div className="col-md-6">
                                         {/* Số điện thoại di động*/}
                                         <div className={`form-group`}>
-                                            <label>Số điện thoại di động </label>
-                                            <input type="text" className="form-control" value={mobilephoneNumber ? mobilephoneNumber : ''} onChange={this.handleChangeMobilephoneNumber} placeholder="Số điện thoại di động" />
-                                            {/* <ErrorLabel content={nameErrorCreateForm} /> */}
+                                            <label>{translate('crm.customer.mobilephoneNumber')} </label>
+                                            <input type="text" className="form-control" value={mobilephoneNumber ? mobilephoneNumber : ''} onChange={this.handleChangeMobilephoneNumber} placeholder={translate('crm.customer.mobilephoneNumber')} />
                                         </div>
                                     </div>
                                     <div className="col-md-6">
                                         {/* Số điện thoại cố định */}
                                         <div className={`form-group`}>
-                                            <label>Số điện thoại cố định</label>
-                                            <input type="text" className="form-control" value={telephoneNumber ? telephoneNumber : ''} onChange={this.handleChangeTelephoneNumber} placeholder="Số điện thoại cố định" />
+                                            <label>{translate('crm.customer.telephoneNumber')} </label>
+                                            <input type="text" className="form-control" value={telephoneNumber ? telephoneNumber : ''} onChange={this.handleChangeTelephoneNumber} placeholder={translate('crm.customer.telephoneNumber')} />
                                         </div>
                                     </div>
                                 </div>
@@ -134,17 +170,16 @@ class CrmCustomerCreate extends Component {
                                     <div className="col-md-6">
                                         {/* Địa chỉ email*/}
                                         <div className={`form-group`}>
-                                            <label>Email </label>
-                                            <input type="email" className="form-control" value={email ? email : ''} onChange={this.handleChangeCustomerEmail} placeholder="Địa chỉ email" />
+                                            <label>{translate('crm.customer.email')} </label>
+                                            <input type="email" className="form-control" value={email ? email : ''} onChange={this.handleChangeCustomerEmail} placeholder={translate('crm.customer.email')} />
                                         </div>
                                     </div>
 
                                     <div className="col-md-6">
                                         {/* Địa chỉ email phu*/}
                                         <div className={`form-group`}>
-                                            <label>Email phụ</label>
-                                            <input type="email" className="form-control" value={email2 ? email2 : ''} onChange={this.handleChangeCustomerEmail2} placeholder="Địa chỉ email" />
-                                            {/* <ErrorLabel content={nameErrorCreateForm} /> */}
+                                            <label>{translate('crm.customer.secondaryEmail')}</label>
+                                            <input type="email" className="form-control" value={email2 ? email2 : ''} onChange={this.handleChangeCustomerEmail2} placeholder={translate('crm.customer.secondaryEmail')} />
                                         </div>
                                     </div>
                                 </div>
@@ -153,17 +188,15 @@ class CrmCustomerCreate extends Component {
                                     <div className="col-md-6">
                                         {/* Địa chỉ 1 */}
                                         <div className={`form-group`}>
-                                            <label>Địa chỉ 1</label>
-                                            <input type="text" className="form-control" value={address ? address : ''} onChange={this.handleChangeCustomerAddress} placeholder="Địa chỉ" />
-                                            {/* <ErrorLabel content={nameErrorCreateForm} /> */}
+                                            <label>{translate('crm.customer.address')}</label>
+                                            <input type="text" className="form-control" value={address ? address : ''} onChange={this.handleChangeCustomerAddress} placeholder={translate('crm.customer.address')} />
                                         </div>
                                     </div>
                                     <div className="col-md-6">
                                         {/* Địa chỉ 2 */}
                                         <div className={`form-group`}>
-                                            <label>Địa chỉ 2 </label>
-                                            <input type="text" className="form-control" value={address2 ? address2 : ''} onChange={this.handleChangeCustomerAddress2} placeholder="Địa chỉ 2" />
-                                            {/* <ErrorLabel content={nameErrorCreateForm} /> */}
+                                            <label>{translate('crm.customer.address2')}</label>
+                                            <input type="text" className="form-control" value={address2 ? address2 : ''} onChange={this.handleChangeCustomerAddress2} placeholder={translate('crm.customer.address2')} />
                                         </div>
                                     </div>
                                 </div>
@@ -172,7 +205,7 @@ class CrmCustomerCreate extends Component {
                                     <div className="col-md-6">
                                         {/* Giới tính */}
                                         <div className={`form-group`}>
-                                            <label>Giới tính</label>
+                                            <label>{translate('crm.customer.gender')}</label>
                                             <SelectBox
                                                 id={`customer-gender`}
                                                 className="form-control select2"
@@ -180,8 +213,8 @@ class CrmCustomerCreate extends Component {
                                                 items={
                                                     [
                                                         { value: '', text: 'Chọn' },
-                                                        { value: 0, text: 'Nam' },
-                                                        { value: 1, text: 'Nữ' },
+                                                        { value: 'male', text: 'Nam' },
+                                                        { value: 'female', text: 'Nữ' },
                                                     ]
                                                 }
                                                 value={gender ? gender : ''}
@@ -193,7 +226,7 @@ class CrmCustomerCreate extends Component {
                                     <div className="col-md-6">
                                         {/* ngày sinh */}
                                         <div className={`form-group`}>
-                                            <label>Ngày sinh </label>
+                                            <label>{translate('crm.customer.birth')}</label>
                                             <DatePicker
                                                 id="birth-form-create"
                                                 value={birth ? birth : ''}
@@ -208,41 +241,36 @@ class CrmCustomerCreate extends Component {
                                     {/* Nhóm khách hàng */}
                                     <div className="col-md-6">
                                         <div className="form-group">
-                                            <label>Nhóm khách hàng</label>
-                                            <SelectBox
+                                            <label>{translate('crm.customer.group')}</label>
+                                            {listGroups && <SelectBox
                                                 id={`customer-group`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
                                                 items={
-                                                    [
-                                                        { value: '', text: 'Chọn' },
-                                                        { value: 0, text: 'Bán buôn' },
-                                                        { value: 1, text: 'Bán lẻ ' },
-                                                        { value: 2, text: '... ' },
-                                                    ]
+                                                    listGroups
                                                 }
                                                 value={group ? group : ''}
                                                 onChange={this.handleChangeCustomerGroup}
                                                 multiple={false}
-                                            />
+                                            />}
                                         </div>
                                     </div>
                                     {/* Trạng thái khách hàng */}
                                     <div className="col-md-6">
                                         <div className="form-group">
-                                            <label>Trạng thái khách hàng</label>
+                                            <label>{translate('crm.customer.status')}</label>
                                             <SelectBox
                                                 id={`customer-status`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
                                                 items={
                                                     [
-                                                        { value: 0, text: 'Khách hàng mới' },
-                                                        { value: 1, text: 'Quan tâm đến sản phẩm ' },
-                                                        { value: 2, text: 'Đã báo giá ' },
-                                                        { value: 3, text: 'Đã mua sản phẩm ' },
-                                                        { value: 4, text: 'Đã kí hợp đồng' },
-                                                        { value: 5, text: 'Dừng liên hệ ' },
+                                                        { value: '0', text: 'Khách hàng mới' },
+                                                        { value: '1', text: 'Quan tâm đến sản phẩm ' },
+                                                        { value: '2', text: 'Đã báo giá ' },
+                                                        { value: '3', text: 'Đã mua sản phẩm ' },
+                                                        { value: '4', text: 'Đã kí hợp đồng' },
+                                                        { value: '5', text: 'Dừng liên hệ ' },
                                                     ]
                                                 }
                                                 value={status ? status : ''}
@@ -257,7 +285,7 @@ class CrmCustomerCreate extends Component {
                                     {/* location */}
                                     <div className="col-md-6">
                                         <div className="form-group">
-                                            <label>Vùng </label>
+                                            <label>{translate('crm.customer.location')} </label>
                                             <SelectBox
                                                 id={`customer-location`}
                                                 className="form-control select2"
@@ -279,8 +307,8 @@ class CrmCustomerCreate extends Component {
                                     {/* Mã số thuế */}
                                     <div className="col-md-6">
                                         <div className="form-group">
-                                            <label>Mã số thuế</label>
-                                            <input type="text" className="form-control" value={taxNumber ? taxNumber : ''} onChange={this.handleChangeTaxNumber} placeholder="Mã số thuế" />
+                                            <label>{translate('crm.customer.taxNumber')}</label>
+                                            <input type="text" className="form-control" value={taxNumber ? taxNumber : ''} onChange={this.handleChangeTaxNumber} placeholder={translate('crm.customer.taxNumber')} />
                                         </div>
                                     </div>
                                 </div>
@@ -289,15 +317,15 @@ class CrmCustomerCreate extends Component {
                                     {/* website */}
                                     <div className="col-md-6">
                                         <div className="form-group">
-                                            <label>website</label>
-                                            <input type="text" className="form-control" value={website ? website : ''} onChange={this.handleChangeCustomerWebsite} placeholder="Địa chỉ website" />
+                                            <label>{translate('crm.customer.website')}</label>
+                                            <input type="text" className="form-control" value={website ? website : ''} onChange={this.handleChangeCustomerWebsite} placeholder={translate('crm.customer.website')} />
                                         </div>
                                     </div>
                                     {/* linkedIn */}
                                     <div className="col-md-6">
                                         <div className="form-group">
-                                            <label>linkedIn</label>
-                                            <input type="text" className="form-control" value={linkedIn ? linkedIn : ''} onChange={this.handleChangeCustomerLinkedIn} placeholder="Địa chỉ linkedIn" />
+                                            <label>{translate('crm.customer.linkedIn')}</label>
+                                            <input type="text" className="form-control" value={linkedIn ? linkedIn : ''} onChange={this.handleChangeCustomerLinkedIn} placeholder={translate('crm.customer.linkedIn')} />
                                         </div>
                                     </div>
                                 </div>
@@ -385,7 +413,7 @@ class CrmCustomerCreate extends Component {
         this.setState({
             newCustomer: {
                 ...newCustomer,
-                mobilephoneNumber: value,
+                mobilephoneNumber: parseInt(value),
             }
         });
     }
@@ -396,7 +424,7 @@ class CrmCustomerCreate extends Component {
         this.setState({
             newCustomer: {
                 ...newCustomer,
-                telephoneNumber: value,
+                telephoneNumber: parseInt(value),
             }
         });
     }
@@ -494,7 +522,7 @@ class CrmCustomerCreate extends Component {
         this.setState({
             newCustomer: {
                 ...newCustomer,
-                location: value,
+                location: parseInt(value),
             }
         })
     }
@@ -539,12 +567,13 @@ class CrmCustomerCreate extends Component {
 }
 
 function mapStateToProps(state) {
-    const { crm } = state;
-    return { crm };
+    const { crm, auth, user } = state;
+    return { crm, auth, user };
 }
 
 const mapDispatchToProps = {
-    createCustomer: CrmCustomerActions.createCustomer
+    createCustomer: CrmCustomerActions.createCustomer,
+    getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CrmCustomerCreate));

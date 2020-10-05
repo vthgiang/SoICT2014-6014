@@ -28,7 +28,11 @@ const GroupSchema = new Schema({
         value: {
             type: String,
         }
-    }]
+    }],
+    company: {
+        type: Schema.Types.ObjectId,
+        ref: 'Company',
+    }
 }, {
     timestamps: true,
 });

@@ -22,6 +22,10 @@ const LiabilitySchema = new Schema({
     total: {
         type: Number
     },
+    company: {
+        type: Schema.Types.ObjectId,
+        ref: 'Company',
+    }
 }, {
     timestamps: true,
 });
