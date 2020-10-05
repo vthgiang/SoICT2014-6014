@@ -156,6 +156,11 @@ exports.createNotification = async (portal, company, data, manualNotification = 
         }
     });
     await Notification(connect(DB_CONNECTION, portal)).insertMany(notifications);
+    const sendToUsers = CONNECTED_CLIENTS.filter(client => usersArr.indexOf(client.userId) !== -1);
+    console.log("Notify users: ", sendToUsers);
+    for (let i = 0; i < sendToUsers.length; i++) {
+        SOCKET_IO.to(sendToUsers[i].socketId).emit('new notifications', data);
+    }
     return true;
 }
 
