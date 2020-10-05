@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
-// Create Schema
 const LocationSchema = new Schema({
     name: {
         type: String,
@@ -27,4 +26,8 @@ const LocationSchema = new Schema({
 
 LocationSchema.plugin(mongoosePaginate);
 
-module.exports = Location = mongoose.model("locations", LocationSchema);
+module.exports = (db) => {
+    if(!db.models.Location)
+        return db.model('Location', LocationSchema);
+    return db.models.Location;
+}

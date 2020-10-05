@@ -1,25 +1,21 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const OrganizationalUnit= require('../super-admin/organizationalUnit.model');
-const User= require('../auth/user.model');
-const EmployeeKpi= require('./employeeKpi.model');
-
 // Model quản lý dữ liệu của một kpi cá nhân
 const EmployeeKpiSetSchema = new Schema({
     organizationalUnit: {
         type: Schema.Types.ObjectId,
-        ref: OrganizationalUnit,
+        ref: 'OrganizationalUnit',
         required: true
     },
     creator: {
         type: Schema.Types.ObjectId,
-        ref: User,
+        ref: 'User',
         required: true
     },
     approver: {
         type: Schema.Types.ObjectId,
-        ref: User,
+        ref: 'User',
         required: true
     },
     date: {
@@ -45,13 +41,13 @@ const EmployeeKpiSetSchema = new Schema({
     },
     kpis: [{
         type: Schema.Types.ObjectId,
-        ref: EmployeeKpi,
+        ref: 'EmployeeKpi',
         required: true
     }],
     comments: [{ // Trao đổi khi thiết lập KPIs
         creator: {
             type: Schema.Types.ObjectId,
-            ref: User,
+            ref: 'User',
             required: true
         },
         description: {
@@ -77,7 +73,7 @@ const EmployeeKpiSetSchema = new Schema({
         comments: [{  // Comments của comment
             creator: {
                 type: Schema.Types.ObjectId,
-                ref: User,
+                ref: 'User',
                 required: true
             },
             description: {
@@ -106,4 +102,8 @@ const EmployeeKpiSetSchema = new Schema({
     timestamps: true
 });
 
-module.exports = EmployeeKpiSet = mongoose.model("employee_kpi_sets", EmployeeKpiSetSchema);
+module.exports = (db) => {
+    if(!db.models.EmployeeKpiSet)
+        return db.model('EmployeeKpiSet', EmployeeKpiSetSchema);
+    return db.models.EmployeeKpiSet;
+}

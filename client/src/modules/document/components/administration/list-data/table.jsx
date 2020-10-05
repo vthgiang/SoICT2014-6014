@@ -30,7 +30,6 @@ class Table extends Component {
         super(props);
         this.state = {
             category: "",
-            // domain: "",
             archive: "",
             name: "",
             option: {
@@ -44,8 +43,8 @@ class Table extends Component {
     }
 
     componentDidMount() {
-        this.props.getAllDocuments();
-        this.props.getAllDocuments({ page: this.state.page, limit: this.state.limit });
+        this.props.getAllDocuments({ type: "all" });
+        this.props.getAllDocuments({ page: this.state.page, limit: this.state.limit, type: "paginate" });
         this.props.getAllRoles();
         this.props.getAllDepartments();
         this.props.getDocumentDomains();
@@ -72,11 +71,11 @@ class Table extends Component {
     static getDerivedStateFromProps(nextProps, prevState) {
         const { data } = nextProps.documents.administration;
         if (prevState.currentRow) {
-            const index = getIndex(data.list, prevState.currentRow._id);
-            if (data.list[index].versions.length !== prevState.currentRow.versions.length) {
+            const index = getIndex(data.paginate, prevState.currentRow._id);
+            if (data.paginate[index].versions.length !== prevState.currentRow.versions.length) {
                 return {
                     ...prevState,
-                    currentRow: data.list[index]
+                    currentRow: data.paginate[index]
                 }
             }
             else return null;
@@ -397,7 +396,6 @@ class Table extends Component {
         if (isLoading === false) {
             list = docs.list;
         }
-
         let exportData = list ? this.convertDataToExportData(list) : "";
         return (
             <div className="qlcv">
@@ -434,7 +432,7 @@ class Table extends Component {
                         documentRoles={currentRow.roles}
 
                         documentArchivedRecordPlaceInfo={currentRow.archivedRecordPlaceInfo}
-                        documentArchivedRecordPlaceOrganizationalUnit={currentRow.archivedRecordPlaceOrganizationalUnit ? currentRow.archivedRecordPlaceOrganizationalUnit.id : ""}
+                        documentArchivedRecordPlaceOrganizationalUnit={currentRow.archivedRecordPlaceOrganizationalUnit ? currentRow.archivedRecordPlaceOrganizationalUnit._id : ""}
                         documentArchivedRecordPlaceManager={currentRow.archivedRecordPlaceManager}
 
                     />
@@ -555,7 +553,7 @@ class Table extends Component {
                     </thead>
                     <tbody>
                         {
-                            paginate.length > 0 ?
+                            paginate && paginate.length > 0 ?
                                 paginate.map(doc =>
 
                                     <tr key={doc._id}>
@@ -596,7 +594,8 @@ class Table extends Component {
             limit: this.state.limit,
             page: page,
             key: this.state.option,
-            value: this.state.value
+            value: this.state.value,
+            type: "paginate"
         };
         await this.props.getAllDocuments(data);
     }
@@ -613,7 +612,7 @@ class Table extends Component {
     setLimit = (number) => {
         if (this.state.limit !== number) {
             this.setState({ limit: number });
-            const data = { limit: number, page: this.state.page };
+            const data = { limit: number, page: this.state.page, type: "paginate" };
             this.props.getAllDocuments(data);
         }
     }
@@ -633,6 +632,7 @@ class Table extends Component {
             category: this.state.category ? this.state.category[0] : "",
             domains: this.state.domain ? this.state.domain : "",
             archives: path && path.length ? path : "",
+            type: "paginate"
         };
         await this.props.getAllDocuments(data);
     }

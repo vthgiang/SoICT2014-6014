@@ -1,3 +1,2 @@
-Quy tac dat ten cho module trong project
-    1. Ten thu muc bao gom nhieu tu thi dung dau gach ngang - ( vd : manage-document )
-
+1. Module này thực hiện chức năng quản lý chương trình đào tạo bắt buộc
+2. module này sử dụng model Course của module training/course 

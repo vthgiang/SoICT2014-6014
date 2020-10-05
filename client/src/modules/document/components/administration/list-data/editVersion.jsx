@@ -15,7 +15,6 @@ class EditVersion extends Component {
     }
 
     handleChangeVersionName = (e) => {
-        console.log('eeee', e.target.value)
         const value = e.target.value;
         this.setState(state => {
             return {
@@ -124,8 +123,16 @@ class EditVersion extends Component {
         formData.append('title', title);
         formData.append('creator', getStorage("userId"))
         formData.append('descriptions', descriptions);
-        //console.log('stateeee', this.state)
-        this.props.editDocument(documentId, formData, 'EDIT_VERSION')
+        this.props.editDocument(documentId, formData, 'EDIT_VERSION');
+        this.props.updateDocumentVersions({
+            _id: versionId,
+            versionName: versionName,
+            issuingDate: issuingDate,
+            effectiveDate: effectiveDate,
+            expiredDate: expiredDate,
+            file: documentFile,
+            scannedFileOfSignedDocument: documentFileScan,
+        })
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -149,8 +156,7 @@ class EditVersion extends Component {
 
     render() {
         const { translate, documents } = this.props;
-        const { versionId, versionName, issuingDate, effectiveDate, expiredDate, documentFile, documentFileScan } = this.state;
-        //console.log('ssssssssss', this.state)
+        const { versionId, versionName, issuingDate, effectiveDate, expiredDate } = this.state;
         return (
             <DialogModal
                 size="25"

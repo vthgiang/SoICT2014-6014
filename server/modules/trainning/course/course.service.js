@@ -2,8 +2,11 @@ const {
     EducationProgram,
     Course,
     EmployeeCourse,
-    Employee
-} = require('../../../models').schema;
+} = require(`${SERVER_MODELS_DIR}`);
+
+const {
+    connect
+} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 /**
  * Lấy danh sách các khoá đào tạo theo phòng ban(đơn vị), chức vụ
@@ -11,7 +14,7 @@ const {
  * @positions : Array id chức vụ
  * @company : Id công ty
  */
-exports.getAllCourses = async (company, organizationalUnits, positions) => {
+exports.getAllCourses = async (portal, company, organizationalUnits, positions) => {
     let keySearch = {
         company: company
     };
@@ -31,14 +34,14 @@ exports.getAllCourses = async (company, organizationalUnits, positions) => {
             }
         }
     }
-    let listEducations = await EducationProgram.find(keySearch, {
+    let listEducations = await EducationProgram(connect(DB_CONNECTION, portal)).find(keySearch, {
         _id: 1
     })
     listEducations = listEducations.map(x => {
         return x._id
     });
 
-    let listCourses = await Course.find({
+    let listCourses = await Course(connect(DB_CONNECTION, portal)).find({
         educationProgram: {
             $in: listEducations
         }
@@ -54,7 +57,7 @@ exports.getAllCourses = async (company, organizationalUnits, positions) => {
  * @params : Dữ liệu key tìm kiếm
  * @company : Id công ty
  */
-exports.searchCourses = async (params, company) => {
+exports.searchCourses = async (portal, params, company) => {
     let keySearch = {
         company: company
     }
@@ -81,19 +84,17 @@ exports.searchCourses = async (params, company) => {
             type: params.type
         }
     }
-    let totalList = await Course.countDocuments(keySearch);
-    let listCourses = await Course.find(keySearch)
+    let totalList = await Course(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+    let listCourses = await Course(connect(DB_CONNECTION, portal)).find(keySearch)
         .skip(params.page).limit(params.limit)
         .populate({
             path: 'educationProgram',
-            model: EducationProgram
         });
     for (let n in listCourses) {
-        let listEmployees = await EmployeeCourse.find({
+        let listEmployees = await EmployeeCourse(connect(DB_CONNECTION, portal)).find({
             course: listCourses[n]._id
         }).populate({
             path: 'employee',
-            model: Employee,
             select: {
                 '_id': 1,
                 'fullName': 1,
@@ -116,8 +117,8 @@ exports.searchCourses = async (params, company) => {
  * @data : Dữ liệu khoá đào tạo cần thêm
  * @company : Id công ty 
  */
-exports.createCourse = async (data, company) => {
-    let isCourse = await Course.findOne({
+exports.createCourse = async (portal, data, company) => {
+    let isCourse = await Course(connect(DB_CONNECTION, portal)).findOne({
         courseId: data.courseId,
         company: company
     }, {
@@ -126,7 +127,7 @@ exports.createCourse = async (data, company) => {
     if (isCourse !== null) {
         return "have_exist"
     } else {
-        let course = await Course.create({
+        let course = await Course(connect(DB_CONNECTION, portal)).create({
             company: company,
             name: data.name,
             courseId: data.courseId,
@@ -151,17 +152,15 @@ exports.createCourse = async (data, company) => {
                     result: x.result
                 }
             });
-            await EmployeeCourse.insertMany([...data.listEmployees]);
+            await EmployeeCourse(connect(DB_CONNECTION, portal)).insertMany([...data.listEmployees]);
         }
-        let newCourse = await Course.findById(course._id).populate({
+        let newCourse = await Course(connect(DB_CONNECTION, portal)).findById(course._id).populate({
             path: 'educationProgram',
-            model: EducationProgram
         });
-        let listEmployees = await EmployeeCourse.find({
+        let listEmployees = await EmployeeCourse(connect(DB_CONNECTION, portal)).find({
             course: newCourse._id
         }).populate({
             path: 'employee',
-            model: Employee,
             select: {
                 '_id': 1,
                 'fullName': 1,
@@ -179,11 +178,11 @@ exports.createCourse = async (data, company) => {
  * Xoá khoá đào tạo
  * @id : Id khoá đào tạo cần xoá
  */
-exports.deleteCourse = async (id) => {
-    let courseDelete = await Course.findOneAndDelete({
+exports.deleteCourse = async (portal, id) => {
+    let courseDelete = await Course(connect(DB_CONNECTION, portal)).findOneAndDelete({
         _id: id
     });
-    let listEmployees = await EmployeeCourse.deleteMany({
+    let listEmployees = await EmployeeCourse(connect(DB_CONNECTION, portal)).deleteMany({
         course: id
     })
     return {
@@ -197,7 +196,7 @@ exports.deleteCourse = async (id) => {
  * @id : Id khoá đào tạo cần xoá
  * @data : Dữ liệu chỉnh sửa khoá đào tạo
  */
-exports.updateCourse = async (id, data) => {
+exports.updateCourse = async (portal, id, data) => {
     let courseChange = {
         name: data.name,
         offeredBy: data.offeredBy,
@@ -213,12 +212,12 @@ exports.updateCourse = async (id, data) => {
         educationProgram: data.educationProgram,
         employeeCommitmentTime: data.employeeCommitmentTime
     };
-    await Course.findOneAndUpdate({
+    await Course(connect(DB_CONNECTION, portal)).findOneAndUpdate({
         _id: id
     }, {
         $set: courseChange
     });
-    await EmployeeCourse.deleteMany({
+    await EmployeeCourse(connect(DB_CONNECTION, portal)).deleteMany({
         course: id
     });
     if (data.listEmployees.length !== 0) {
@@ -229,18 +228,16 @@ exports.updateCourse = async (id, data) => {
                 result: x.result
             }
         });
-        await EmployeeCourse.insertMany([...data.listEmployees]);
+        await EmployeeCourse(connect(DB_CONNECTION, portal)).insertMany([...data.listEmployees]);
     }
 
-    let updateCourse = await Course.findById(id).populate({
+    let updateCourse = await Course(connect(DB_CONNECTION, portal)).findById(id).populate({
         path: 'educationProgram',
-        model: EducationProgram
     });
-    let listEmployees = await EmployeeCourse.find({
+    let listEmployees = await EmployeeCourse(connect(DB_CONNECTION, portal)).find({
         course: id
     }).populate({
         path: 'employee',
-        model: Employee,
         select: {
             '_id': 1,
             'fullName': 1,

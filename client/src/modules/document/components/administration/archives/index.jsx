@@ -19,7 +19,7 @@ class AdministrationDocumentArchives extends Component {
     }
 
     componentDidMount() {
-        this.props.getDocumentArchive();
+        //   this.props.getDocumentArchive();
     }
     onChanged = async (e, data) => {
         await this.setState({
@@ -49,7 +49,6 @@ class AdministrationDocumentArchives extends Component {
     }
     /**Mở modal import file excel */
     handImportFile = (event) => {
-        console.log('aaaaa');
         event.preventDefault();
         window.$('#modal_import_file_archive').modal('show');
     }
@@ -71,7 +70,6 @@ class AdministrationDocumentArchives extends Component {
                     deleteNode: []
                 });
             } else if (result.value && archiveParent.length === 1) {
-                console.log('iiiiiiiiiiii', archiveParent)
                 this.props.deleteDocumentArchive(archiveParent, 'single');
                 this.setState({
                     deleteNode: []
@@ -80,7 +78,6 @@ class AdministrationDocumentArchives extends Component {
         })
     }
     convertDataToExportData = (data) => {
-        console.log(data);
         data = data.map((x, index) => {
             return {
                 STT: index + 1,

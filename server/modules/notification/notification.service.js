@@ -1,30 +1,55 @@
-const {OrganizationalUnit, UserRole, Notification, ManualNotification, Role, User} = require('../../models').schema;
+const {
+    OrganizationalUnit,
+    UserRole,
+    Notification,
+    ManualNotification,
+    Role,
+    User
+} = require(`${SERVER_MODELS_DIR}`);
+
+const {
+    connect
+} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 /**
  * Lấy tất cả thông báo mà admin, giám đốc... đã tạo - get manual notification
  */
-exports.getAllManualNotifications = async (creator) => { //id cua cong ty do
-    return await ManualNotification.find({ creator })
-        .populate([
-            {path: 'users', model: User},
-            {path: 'organizationalUnits', model: OrganizationalUnit}
-        ]).sort({createdAt: -1});
+exports.getAllManualNotifications = async (portal, creator) => { //id cua cong ty do
+    return await ManualNotification(connect(DB_CONNECTION, portal)).find({
+            creator
+        })
+        .populate([{
+                path: 'users',
+            },
+            {
+                path: 'organizationalUnits',
+            }
+        ]).sort({
+            createdAt: -1
+        });
 }
 
 /**
  * Phân trang danh sách các thông báo đã được tạo bởi admin, giám đốc ..
  */
-exports.paginateManualNotifications = async (creator, data) => {
-    var info = Object.assign({creator}, data.content);
-    
-    return await ManualNotification
-        .paginate( info , { 
-            page: data.page, 
+exports.paginateManualNotifications = async (portal, creator, data) => {
+    var info = Object.assign({
+        creator
+    }, data.content);
+
+    return await ManualNotification(connect(DB_CONNECTION, portal))
+        .paginate(info, {
+            page: data.page,
             limit: data.limit,
-            sort: { createdAt: -1 }, 
-            populate: [
-                {path: 'users', model: User},
-                {path: 'organizationalUnits', model: OrganizationalUnit}
+            sort: {
+                createdAt: -1
+            },
+            populate: [{
+                    path: 'users',
+                },
+                {
+                    path: 'organizationalUnits',
+                }
             ]
         });
 }
@@ -34,9 +59,9 @@ exports.paginateManualNotifications = async (creator, data) => {
  * @company id của công ty
  * @data thông tin về thông báo muốn tạo
  */
-exports.createManualNotification = async (data) => {
-    
-    const notify = await ManualNotification.create({
+exports.createManualNotification = async (portal, data) => {
+
+    const notify = await ManualNotification(connect(DB_CONNECTION, portal)).create({
         creator: data.creator,
         sender: data.sender,
         title: data.title,
@@ -46,9 +71,12 @@ exports.createManualNotification = async (data) => {
         organizationalUnits: data.organizationalUnits
     });
 
-    return await ManualNotification.findById(notify._id).populate([
-        {path: 'users', model: User},
-        {path: 'organizationalUnits', model: OrganizationalUnit}
+    return await ManualNotification(connect(DB_CONNECTION, portal)).findById(notify._id).populate([{
+            path: 'users',
+        },
+        {
+            path: 'organizationalUnits',
+        }
     ]);
 }
 
@@ -56,22 +84,36 @@ exports.createManualNotification = async (data) => {
  * Lấy danh sách các user của organizationalUnit để gửi thông báo
  * @return trả về một mảng các id các user
  */
-exports.getAllUsersInOrganizationalUnit = async (departmentId) => {
-    var department = await OrganizationalUnit.findById(departmentId)
-        .populate([
-            { path: 'deans', model: Role, populate: { path: 'users', model: UserRole}},
-            { path: 'viceDeans', model: Role, populate: { path: 'users', model: UserRole}},
-            { path: 'employees', model: Role, populate: { path: 'users', model: UserRole}}
+exports.getAllUsersInOrganizationalUnit = async (portal, departmentId) => {
+    var department = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findById(departmentId)
+        .populate([{
+                path: 'deans',
+                populate: {
+                    path: 'users',
+                }
+            },
+            {
+                path: 'viceDeans',
+                populate: {
+                    path: 'users',
+                }
+            },
+            {
+                path: 'employees',
+                populate: {
+                    path: 'users',
+                }
+            }
         ]);
     var users = [];
     for (let i = 0; i < department.deans.length; i++) {
-        users = [...users, ...department.deans[i].users.map(user=>user.userId)]
+        users = [...users, ...department.deans[i].users.map(user => user.userId)]
     }
     for (let j = 0; j < department.viceDeans.length; j++) {
-        users = [...users, ...department.viceDeans[j].users.map(user=>user.userId)]
+        users = [...users, ...department.viceDeans[j].users.map(user => user.userId)]
     }
     for (let k = 0; k < department.employees.length; k++) {
-        users = [...users, ...department.employees[k].users.map(user=>user.userId)]
+        users = [...users, ...department.employees[k].users.map(user => user.userId)]
     }
 
     return users;
@@ -83,23 +125,23 @@ exports.getAllUsersInOrganizationalUnit = async (departmentId) => {
  * @param {*} data 
  * @param {*} manualNotification 
  */
-exports.createNotification = async (company, data, manualNotification=undefined) => {
+exports.createNotification = async (portal, company, data, manualNotification = undefined) => {
     let usersArr = data.users;
     for (let i = 0; i < data.organizationalUnits.length; i++) {
         let organizationalUnit = data.organizationalUnits[i]; // id đơn vị hiện tại
-        let userArr = await this.getAllUsersInOrganizationalUnit(organizationalUnit);
+        let userArr = await this.getAllUsersInOrganizationalUnit(portal, organizationalUnit);
         usersArr = await usersArr.concat(userArr);
     }
 
     // Loại bỏ các giá trị trùng nhau
     usersArr = usersArr.map(user => user.toString());
-    for(let i = 0, max = usersArr.length; i < max; i++) {
-        if(usersArr.indexOf(usersArr[i]) != usersArr.lastIndexOf(usersArr[i])) {
+    for (let i = 0, max = usersArr.length; i < max; i++) {
+        if (usersArr.indexOf(usersArr[i]) != usersArr.lastIndexOf(usersArr[i])) {
             usersArr.splice(usersArr.indexOf(usersArr[i]), 1);
             i--;
         }
     }
-    
+
     // Gửi thông báo cho các user
     let notifications = usersArr.map(user => {
         return {
@@ -113,7 +155,12 @@ exports.createNotification = async (company, data, manualNotification=undefined)
             manualNotification
         }
     });
-    await Notification.insertMany(notifications);
+    await Notification(connect(DB_CONNECTION, portal)).insertMany(notifications);
+    const sendToUsers = CONNECTED_CLIENTS.filter(client => usersArr.indexOf(client.userId) !== -1);
+    console.log("Notify users: ", sendToUsers);
+    for (let i = 0; i < sendToUsers.length; i++) {
+        SOCKET_IO.to(sendToUsers[i].socketId).emit('new notifications', data);
+    }
     return true;
 }
 
@@ -121,44 +168,51 @@ exports.createNotification = async (company, data, manualNotification=undefined)
  * Lấy tất cả thông báo mà một user nhận được
  * @user id của user đó
  */
-exports.getAllNotifications = async (user) => {
-    return await Notification.find({user}).sort({createdAt: -1});
+exports.getAllNotifications = async (portal, user) => {
+    return await Notification(connect(DB_CONNECTION, portal)).find({
+        user
+    }).sort({
+        createdAt: -1
+    });
 }
 
 /**
  * Phân trang danh sách các thông báo của người dùng nhận được
  */
-exports.paginateNotifications = async (user, data) => {
+exports.paginateNotifications = async (portal, user, data) => {
     if (typeof data.readed === "boolean") {
         var info = Object.assign({user}, data.content, {readed: false});
     }
     else {
         var info = Object.assign({user}, data.content);
     }
-    return await Notification
-        .paginate( info , { 
-            page: data.page, 
+
+    return await Notification(connect(DB_CONNECTION, portal))
+        .paginate(info, {
+            page: data.page,
             limit: data.limit,
-            sort: { createdAt: -1 }
+            sort: {
+                createdAt: -1
+            }
         });
 }
 
 /**
  * Đánh dấu thông báo nhận đã được đọc
  */
-exports.changeNotificationStateToReaded = async (user, id, readAll) => {
+exports.changeNotificationStateToReaded = async (portal, user, id, readAll) => {
     let notification;
     if (!readAll) {
-        notification = await Notification.findById(id);
+        notification = await Notification(connect(DB_CONNECTION, portal)).findById(id);
         notification.readed = true;
         await notification.save();
     } else {
-        notification = await Notification.find({ readed: false, user: user});
+        notification = await Notification(connect(DB_CONNECTION, portal)).find({ readed: false, user: user});
         let listId = notification.map(x => x._id);
         for (let i in notification){
             notification[i].readed = true;
         }
-        await Notification.updateMany({ _id: listId }, { $set: { readed: true } });
+        await Notification(connect(DB_CONNECTION, portal)).updateMany({ _id: listId }, { $set: { readed: true } });
     }
     console.log(notification);
     return notification;
@@ -167,13 +221,17 @@ exports.changeNotificationStateToReaded = async (user, id, readAll) => {
 /**
  * Xóa manual notification
  */
-exports.deleteManualNotification = async (notificationId) => {
-    return await ManualNotification.deleteOne({_id: notificationId});
+exports.deleteManualNotification = async (portal, notificationId) => {
+    return await ManualNotification(connect(DB_CONNECTION, portal)).deleteOne({
+        _id: notificationId
+    });
 }
 
 /**
  * Xóa notification của user
  */
-exports.deleteNotification = async (notificationId) => {
-    return await Notification.deleteOne({_id: notificationId});
+exports.deleteNotification = async (portal, notificationId) => {
+    return await Notification(connect(DB_CONNECTION, portal)).deleteOne({
+        _id: notificationId
+    });
 }

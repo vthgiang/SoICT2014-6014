@@ -71,6 +71,7 @@ export function assetsManager(state = initState, action) {
             return {
                 ...state,
                 listAssets: assets,
+                currentAsset: action.payload,
                 isLoading: false
             };
 

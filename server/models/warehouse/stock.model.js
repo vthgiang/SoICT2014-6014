@@ -6,7 +6,7 @@ const StockSchema = new Schema ({
 
     company: {
         type: Schema.Types.ObjectId,
-        ref: "companies"
+        ref: 'Company'
     },
 
     code: {
@@ -30,19 +30,19 @@ const StockSchema = new Schema ({
 
     status: {
         type: String,
-        enum: [""]
+        enum: ["1", "2", "3", "4"]
     },
 
-    users: [{
+    managementLocation: [{
         type: Schema.Types.ObjectId,
-        ref: "users"
+        ref: 'Role'
     }],
 
     goods: [{
 
         good: {
             type: Schema.Types.ObjectId,
-            ref: "goods"
+            ref: "Good"
         },
 
         maxQuantity: {
@@ -52,10 +52,19 @@ const StockSchema = new Schema ({
         minQuantity: {
             type: Number
         }
-    }]
+    }],
+    manageDepartment: {
+        type: Schema.Types.ObjectId,
+        ref: "OrganizationalUnit"
+    }
 
 });
 
 StockSchema.plugin(mongoosePaginate);
 
-module.exports = Stock = mongoose.model("stocks", StockSchema);
+module.exports = (db) => {
+    if(!db.models.Stock){
+        return db.model('Stock', StockSchema);
+    }
+    return db.models.Stock;
+}

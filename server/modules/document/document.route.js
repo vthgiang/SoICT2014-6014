@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const DocumentController = require('./document.controller');
-const { auth, uploadFile } = require('../../middleware');
+const { auth, uploadFile } = require(`${SERVER_MIDDLEWARE_DIR}`);
 
 router.get("/documents/:id/download-file", auth, DocumentController.downloadDocumentFile);
 router.get("/documents/:id/download-file-scan", auth, DocumentController.downloadDocumentFileScan);

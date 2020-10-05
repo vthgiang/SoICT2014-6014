@@ -4,10 +4,6 @@ const mongoosePaginate = require('mongoose-paginate-v2');
 
 // Create Schema
 const NotificationSchema = new Schema({
-    company: {
-        type: Schema.Types.ObjectId,
-        ref: 'companies'
-    },
     level: { //gồm 4 loại: info, general, important, emergency
         type: String
     },
@@ -24,7 +20,7 @@ const NotificationSchema = new Schema({
     },
     user: { // thông báo này của ai (người đó sẽ thấy thông báo này trong giao diện)
         type: Schema.Types.ObjectId,
-        ref: 'users',
+        ref: 'User',
         required: true
     },
     readed: { // đã đọc hay chưa?
@@ -33,11 +29,17 @@ const NotificationSchema = new Schema({
     },
     manualNotification: { // Nếu là loại thông báo tạo bởi ai đó, thì sẽ kết nối với bngr 
         type: Schema.Types.ObjectId,
-        ref: 'manual_notifications',
+        ref: 'ManualNotification',
     }
 },{
     timestamps: true,
     toJSON: { virtuals: true }
 });
+
 NotificationSchema.plugin(mongoosePaginate);
-module.exports = Notification = mongoose.model("notifications", NotificationSchema);
+
+module.exports = (db) => {
+    if(!db.models.Notification)
+        return db.model('Notification', NotificationSchema);
+    return db.models.Notification;
+}

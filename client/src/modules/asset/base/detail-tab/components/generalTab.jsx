@@ -77,6 +77,28 @@ class GeneralTab extends Component {
             return null;
         }
     }
+    formatStatus = (status) => {
+        const { translate } = this.props;
+
+        if (status === 'ready_to_use') {
+            return translate('asset.general_information.ready_use')
+        }
+        else if (status === 'in_use') {
+            return translate('asset.general_information.using')
+        }
+        else if (status === 'broken') {
+            return translate('asset.general_information.damaged')
+        }
+        else if (status === 'lost') {
+            return translate('asset.general_information.lost')
+        }
+        else if (status === 'disposed') {
+            return translate('asset.general_information.disposal')
+        }
+        else {
+            return 'Deleted';
+        }
+    }
 
     render() {
         const { id, translate, user, assetType, assetsManager, department } = this.props;
@@ -199,7 +221,7 @@ class GeneralTab extends Component {
                                     {/* Trạng thái */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.status')}&emsp; </strong>
-                                        {status}
+                                        {this.formatStatus(status)}
                                     </div>
 
                                     {/* Quyền đăng ký sử dụng */}

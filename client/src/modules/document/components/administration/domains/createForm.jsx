@@ -7,7 +7,6 @@ import { DocumentActions } from '../../../redux/actions';
 class CreateForm extends Component {
     constructor(props) {
         super(props);
-        console.log('cons', this.props.domainParent);
         this.state = {
             domainParent: this.props.domainParent,
         }
@@ -28,7 +27,6 @@ class CreateForm extends Component {
     }
 
     handleParent = (value) => {
-        console.log("domain parent: ", value[0])
         this.setState({ domainParent: value[0] });
     }; 
 
@@ -60,7 +58,6 @@ class CreateForm extends Component {
 
     save = () => {
         const {domainName, domainDesription, domainParent} = this.state;
-        console.log("domains", domainName, domainDesription, domainParent)
         this.props.createDocumentDomain({
             name: domainName,
             description: domainDesription,

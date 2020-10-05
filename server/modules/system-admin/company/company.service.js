@@ -2,12 +2,13 @@ const {
     Company, Link, SystemLink, Component,
     SystemComponent, Privilege, Role, RootRole,
     RoleType, User, UserRole, ImportConfiguraion
-} = require(SERVER_MODELS_DIR).schema;
+} = require(`${SERVER_MODELS_DIR}`);
 
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const generator = require("generate-password");
-const Terms = require(SERVER_SEED_DIR + "/terms");
+const Terms = require(`${SERVER_SEED_DIR}/terms`);
+const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 /**
  * Lấy danh sách tất cả các công ty
@@ -18,28 +19,31 @@ exports.getAllCompanies = async (query) => {
     let limit = query.limit;
 
     if (!page && !limit) {
-        return await Company
-            .find()
-            .populate([
-                { path: "links", model: Link },
-                { path: "superAdmin", model: User, select: '_id name email' }
-            ]);
-    } else {
-        let option = (query.key && query.value)
-            ? { [`${query.key}`]: new RegExp(query.value, "i") }
-            : {};
-
-        return await Company.paginate(
-            option,
-            {
-                page,
-                limit,
-                populate: [
-                    { path: 'links', model: Link },
-                    { path: "superAdmin", model: User, select: '_id name email' }
-                ]
+        let companies = await Company(connect(DB_CONNECTION, process.env.DB_NAME)).find();
+        for (let i = 0; i < companies.length; i++) {
+            let superAdmin = await User(connect(DB_CONNECTION, companies[i].shortName)).findById(companies[i].superAdmin);
+            companies[i] = { 
+                _id: companies[i]._id,
+                log: companies[i].log,
+                description: companies[i].description,
+                active: companies[i].active,
+                name: companies[i].name,
+                shortName: companies[i].shortName,
+                superAdmin: superAdmin,
+                createdAt: companies[i].createdAt,
+                updatedAt: companies[i].updatedAt
             }
-        );
+        }
+        return companies;
+    } else {
+        let option = (query.key && query.value) ? { [`${query.key}`] : new RegExp(query.value, "i") } : {};
+        let companies = await Company(connect(DB_CONNECTION, process.env.DB_NAME)).paginate(option, { page, limit });
+        for (let i = 0; i < companies.docs.length; i++) {
+            let superAdmin = await User(connect(DB_CONNECTION, companies.docs[i].shortName)).findById(companies.docs[i].superAdmin);
+            companies.docs[i].superAdmin = superAdmin;
+        }
+        
+        return companies;
     }
 }
 
@@ -48,13 +52,12 @@ exports.getAllCompanies = async (query) => {
  * @id id của công ty
  */
 exports.getCompany = async (id) => {
+    let company = await Company(connect(DB_CONNECTION, process.env.DB_NAME)).findById(id);
+    if (!company) throw ['company_not_found'];
+    let superAdmin = await User(connect(DB_CONNECTION, company.shortName)).findById(company.superAdmin);
+    company.superAdmin = superAdmin;
 
-    return await Company
-        .findById(id)
-        .populate([
-            { path: "links", model: Link },
-            { path: "superAdmin", model: User, select: '_id name email' }
-        ]);
+    return company;
 }
 
 /**
@@ -63,11 +66,12 @@ exports.getCompany = async (id) => {
  */
 exports.createCompany = async (data) => {
 
-    return await Company.create({
-        name: data.name,
-        description: data.description,
-        shortName: data.shortName
-    });
+    return await Company(connect(DB_CONNECTION, process.env.DB_NAME))
+        .create({
+            name: data.name,
+            description: data.description,
+            shortName: data.shortName
+        });
 }
 
 /**
@@ -77,7 +81,7 @@ exports.createCompany = async (data) => {
  */
 exports.editCompany = async (id, data) => {
 
-    let company = await Company.findById(id);
+    let company = await Company(connect(DB_CONNECTION, process.env.DB_NAME)).findById(id);
     if (!company) throw ['company_not_found'];
 
     company.name = data.name;
@@ -100,19 +104,22 @@ exports.editCompany = async (id, data) => {
  * @ViceDean phó đơn vị
  * @Employee nhân viên đơn vị
  */
-exports.createCompanyRootRoles = async (companyId) => {
+exports.createCompanyRootRoles = async (portal, companyId) => {
+    //Tạo các role root theo mẫu từ systemadmin và roleType
+    let dataRoleType = await RoleType(connect(DB_CONNECTION, process.env.DB_NAME)).find();
+    await RoleType(connect(DB_CONNECTION, portal)).insertMany(dataRoleType.map(role => {
+        return { name: role.name, company: companyId }
+    }));
 
-    let data = await RootRole.find();
-    let rootType = await RoleType.findOne({ name: Terms.ROLE_TYPES.ROOT });
-    let roles = await data.map(role => {
-        return {
-            name: role.name,
-            company: companyId,
-            type: rootType._id
-        };
-    })
+    let rootType = await RoleType(connect(DB_CONNECTION, portal)).findOne({ name: Terms.ROLE_TYPES.ROOT, company: companyId });
 
-    return await Role.insertMany(roles);
+    let admin = await Role(connect(DB_CONNECTION, portal)).create({ type: rootType._id, name: Terms.ROOT_ROLES.ADMIN.name, company: companyId });
+    let superAdmin = await Role(connect(DB_CONNECTION, portal)).create({ type: rootType._id, name: Terms.ROOT_ROLES.SUPER_ADMIN.name, parents: [admin._id], company: companyId });
+    let dean = await Role(connect(DB_CONNECTION, portal)).create({ type: rootType._id, name: Terms.ROOT_ROLES.DEAN.name, company: companyId });
+    let viceDean = await Role(connect(DB_CONNECTION, portal)).create({ type: rootType._id, name: Terms.ROOT_ROLES.VICE_DEAN.name, company: companyId });
+    let employee = await Role(connect(DB_CONNECTION, portal)).create({ type: rootType._id, name: Terms.ROOT_ROLES.EMPLOYEE.name, company: companyId });
+
+    return [admin, superAdmin, dean, viceDean, employee];
 }
 
 /**
@@ -122,12 +129,12 @@ exports.createCompanyRootRoles = async (companyId) => {
  * @userEmail email của tài khoản được chọn làm super admin của công ty
  * @roleSuperAdminId Id của role SuperAdmin của công ty dùng để phân quyền cho tài khoản có email ở trên
  */
-exports.createCompanySuperAdminAccount = async (companyId, companyName, userEmail) => {
-
-    let checkEmail = await User.findOne({ email: userEmail });
+exports.createCompanySuperAdminAccount = async (companyShortName, userEmail, companyId) => {
+    let checkEmail = await User(connect(DB_CONNECTION, companyShortName))
+        .findOne({ email: userEmail });
     if (checkEmail) throw ['email_exist'];
-
-    let roleSuperAdmin = await Role.findOne({ company: companyId, name: Terms.ROOT_ROLES.SUPER_ADMIN.name });
+    let roleSuperAdmin = await Role(connect(DB_CONNECTION, companyShortName))
+        .findOne({ name: Terms.ROOT_ROLES.SUPER_ADMIN.name });
     let salt = await bcrypt.genSaltSync(10);
     let password = await generator.generate({ length: 10, numbers: true });
     let hash = await bcrypt.hashSync(password, salt);
@@ -140,100 +147,104 @@ exports.createCompanySuperAdminAccount = async (companyId, companyName, userEmai
     let mainOptions = {
         from: 'vnist.qlcv@gmail.com',
         to: userEmail,
-        subject: `Tạo tài khoản SUPER ADMIN cho doanh nghiệp/công ty ${companyName}`,
-        text: `Email thông báo đăng kí thành công sử dụng dịch vụ Quản lý công việc và thông tin về tài khoản SUPER ADMIN của doanh nghiệp/công ty ${companyName}.`,
+        subject: `Tạo tài khoản SUPER ADMIN cho doanh nghiệp/công ty ${companyShortName}`,
+        text: `Email thông báo đăng kí thành công sử dụng dịch vụ Quản lý công việc và thông tin về tài khoản SUPER ADMIN của doanh nghiệp/công ty ${companyShortName}.`,
         html:
             `<html>
-            <head>
-                <style>
-                    .wrapper {
-                        width: 100%;
-                        min-width: 580px;
-                        background-color: #FAFAFA;
-                        padding: 10px 0;
-                    }
-            
-                    .info {
-                        list-style-type: none;
-                    }
-            
-                    @media screen and (max-width: 600px) {
-                        .form {
-                            border: solid 1px #dddddd;
-                            padding: 50px 30px;
-                            border-radius: 3px;
-                            margin: 0px 5%;
-                            background-color: #FFFFFF;
-                        }
-                    }
-            
+        <head>
+            <style>
+                .wrapper {
+                    width: 100%;
+                    min-width: 580px;
+                    background-color: #FAFAFA;
+                    padding: 10px 0;
+                }
+        
+                .info {
+                    list-style-type: none;
+                }
+        
+                @media screen and (max-width: 600px) {
                     .form {
                         border: solid 1px #dddddd;
                         padding: 50px 30px;
                         border-radius: 3px;
-                        margin: 0px 25%;
+                        margin: 0px 5%;
                         background-color: #FFFFFF;
                     }
-            
-                    .title {
-                        text-align: center;
-                    }
-            
-                    .footer {
-                        margin: 0px 25%;
-                        text-align: center;
-            
-                    }
-                </style>
-            </head>
-            
-            <body>
-                <div class="wrapper">
-                    <div class="title">
-                        <h1>VNIMA</h1>
-                    </div>
-                    <div class="form">
-                        <p><b>Thông tin tài khoản đăng nhập của bạn: </b></p>
-                        <div class="info">
-                            <li>Tài khoản: ${userEmail}</li>
-                            <li>Mật khẩu: <b>${password}</b></li>
-                        </div>
-                        <p>Đăng nhập ngay tại: <a href="${process.env.WEBSITE}/login">${process.env.WEBSITE}/login</a></p><br />
-            
-                        <p><b>Your account information: </b></p>
-                        <div class="info">
-                            <li>Tài khoản: ${userEmail}</li>
-                            <li>Mật khẩu: <b>${password}</b></li>
-                        </div>
-                        <p>Login in: <a href="${process.env.WEBSITE}/login">${process.env.WEBSITE}/login</a></p>
-                    </div>
-                    <div class="footer">
-                        <p>Copyright by
-                            <i>Công ty Cổ phần Công nghệ
-                                <br />
-                                An toàn thông tin và Truyền thông Việt Nam</i>
-                        </p>
-                    </div>
+                }
+        
+                .form {
+                    border: solid 1px #dddddd;
+                    padding: 50px 30px;
+                    border-radius: 3px;
+                    margin: 0px 25%;
+                    background-color: #FFFFFF;
+                }
+        
+                .title {
+                    text-align: center;
+                }
+        
+                .footer {
+                    margin: 0px 25%;
+                    text-align: center;
+        
+                }
+            </style>
+        </head>
+        
+        <body>
+            <div class="wrapper">
+                <div class="title">
+                    <h1>VNIMA</h1>
                 </div>
-            </body>
-        </html>`
+                <div class="form">
+                    <p><b>Thông tin tài khoản đăng nhập của bạn: </b></p>
+                    <div class="info">
+                        <li>Portal: ${companyShortName}</li>
+                        <li>Tài khoản: ${userEmail}</li>
+                        <li>Mật khẩu: <b>${password}</b></li>
+                    </div>
+                    <p>Đăng nhập ngay tại: <a href="${process.env.WEBSITE}/login">${process.env.WEBSITE}/login</a></p><br />
+        
+                    <p><b>Your account information: </b></p>
+                    <div class="info">
+                        <li>Portal: ${companyShortName}</li>
+                        <li>Tài khoản: ${userEmail}</li>
+                        <li>Mật khẩu: <b>${password}</b></li>
+                    </div>
+                    <p>Login in: <a href="${process.env.WEBSITE}/login">${process.env.WEBSITE}/login</a></p>
+                </div>
+                <div class="footer">
+                    <p>Copyright by
+                        <i>Công ty Cổ phần Công nghệ
+                            <br />
+                            An toàn thông tin và Truyền thông Việt Nam</i>
+                    </p>
+                </div>
+            </div>
+        </body>
+    </html>`
     }
 
-    let user = await User.create({
-        name: `Super Admin`,
-        email: userEmail,
-        password: hash,
-        company: companyId
-    });
-
-    let companyUpdate = await Company.findById(companyId);
+    let user = await User(connect(DB_CONNECTION, companyShortName))
+        .create({
+            name: `Super Admin`,
+            email: userEmail,
+            password: hash,
+            company: companyId
+        });
+    let companyUpdate = await Company(connect(DB_CONNECTION, process.env.DB_NAME))
+        .findOne({ shortName: companyShortName });
     companyUpdate.superAdmin = user._id;
     await companyUpdate.save();
 
-    await UserRole.create({
-        userId: user._id,
-        roleId: roleSuperAdmin._id
-    });
+    await UserRole(connect(DB_CONNECTION, companyShortName))
+        .create({
+            userId: user._id,
+            roleId: roleSuperAdmin._id
+        })
 
     await transporter.sendMail(mainOptions);
 
@@ -246,7 +257,7 @@ exports.createCompanySuperAdminAccount = async (companyId, companyName, userEmai
  * @linkArr mảng các SystemLink làm chuẩn để tạo link cho công ty
  * @roleArr mảng các RootRole của công ty đó
  */
-exports.createCompanyLinks = async (companyId, linkArr, roleArr) => {
+exports.createCompanyLinks = async (company, linkArr, roleArr, companyId) => {
     let checkIndex = (link, arr) => {
         let resIndex = -1;
         arr.forEach((node, i) => {
@@ -258,13 +269,15 @@ exports.createCompanyLinks = async (companyId, linkArr, roleArr) => {
         return resIndex;
     }
 
-    let allLinks = await SystemLink.find()
-        .populate({ path: 'roles', model: RootRole });;
-    let activeLinks = await SystemLink.find({ _id: { $in: linkArr } })
-        .populate({ path: 'roles', model: RootRole });
+    let allLinks = await SystemLink(connect(DB_CONNECTION, process.env.DB_NAME))
+        .find()
+        .populate({ path: 'roles' });
+    let activeLinks = await SystemLink(connect(DB_CONNECTION, process.env.DB_NAME))
+        .find({ _id: { $in: linkArr }})
+        .populate({ path: 'roles' });
 
-    let dataLinks = allLinks.map(link => {
-        if (checkIndex(link, activeLinks) === -1)
+    let dataLinks = allLinks.map( link => {
+        if(checkIndex(link, activeLinks) === -1)
             return {
                 url: link.url,
                 category: link.category,
@@ -275,12 +288,12 @@ exports.createCompanyLinks = async (companyId, linkArr, roleArr) => {
             url: link.url,
             category: link.category,
             description: link.description,
-            company: companyId,
-            deleteSoft: false
+            deleteSoft: false,
+            company: companyId
         }
     })
 
-    let links = await Link.insertMany(dataLinks);
+    let links = await Link(connect(DB_CONNECTION, company)).insertMany(dataLinks);
 
     //Thêm phân quyền cho link
     let dataPrivilege = [];
@@ -309,10 +322,13 @@ exports.createCompanyLinks = async (companyId, linkArr, roleArr) => {
             }
         }
     }
-    await Privilege.insertMany(dataPrivilege);
-
-    return await Link.find({ company: companyId })
-        .populate({ path: 'roles', model: Privilege, populate: { path: 'roleId', model: Role } });
+    
+    await Privilege(connect(DB_CONNECTION, company))
+        .insertMany(dataPrivilege);
+    
+    return await Link(connect(DB_CONNECTION, company))
+        .find()
+        .populate({ path: 'roles', populate: { path: 'roleId' } });
 }
 
 /**
@@ -320,51 +336,50 @@ exports.createCompanyLinks = async (companyId, linkArr, roleArr) => {
  * @companyId id của công ty
  * @linkArr mảng các system link được kích hoạt để làm chuẩn cho các link của công ty
  */
-exports.createCompanyComponents = async (companyId, linkArr) => {
-
-    let systemLinks = await SystemLink.find({ _id: { $in: linkArr } });
+exports.createCompanyComponents = async (company, linkArr, companyId) => {
+    let systemLinks = await SystemLink(connect(DB_CONNECTION, process.env.DB_NAME))
+        .find({ _id: { $in: linkArr } });
 
     let dataSystemComponents = systemLinks.map(link => link.components);
     dataSystemComponents = dataSystemComponents.reduce((arr1, arr2) => [...arr1, ...arr2]);
-    dataSystemComponents.filter((component, index) => dataSystemComponents.indexOf(component) === index);
-    const systemComponents = await SystemComponent
-        .find({ _id: { $in: dataSystemComponents } })
-        .populate({ path: 'roles', model: RootRole });
+    dataSystemComponents = dataSystemComponents.map(com => com.toString());
+    dataSystemComponents = dataSystemComponents.filter((component, index) => dataSystemComponents.indexOf(component) === index);
+
+    const systemComponents = await SystemComponent(connect(DB_CONNECTION, process.env.DB_NAME))
+        .find({_id: {$in: dataSystemComponents}})
+        .populate({ path: 'roles' });
 
     for (let i = 0; i < systemComponents.length; i++) {
-        let sysLinks = await SystemLink.find({ _id: { $in: systemComponents[i].links } });
-        let links = await Link.find({ company: companyId, url: sysLinks.map(link => link.url) });
+        let sysLinks = await SystemLink(connect(DB_CONNECTION, process.env.DB_NAME)).find({_id: {$in: systemComponents[i].links}});
+        let links = await Link(connect(DB_CONNECTION, company)).find({url: sysLinks.map(link=>link.url)});
         // Tạo component
-        let component = await Component.create({
+        let component = await Component(connect(DB_CONNECTION, company)).create({
             name: systemComponents[i].name,
             description: systemComponents[i].description,
-            links: links.map(link => link._id),
-            company: companyId,
-            deleteSoft: false
+            links: links.map(link=>link._id),
+            deleteSoft: false,
+            company: companyId
         })
         for (let j = 0; j < links.length; j++) {
-            let updateLink = await Link.findById(links[j]._id);
+            let updateLink = await Link(connect(DB_CONNECTION, company)).findById(links[j]._id);
             updateLink.components.push(component._id);
             await updateLink.save();
         }
         // Tạo phân quyền cho components
-        for (let k = 0; k < systemComponents.length; k++) {
-            let roles = await Role.find({
-                company: companyId,
-                name: { $in: systemComponents[i].roles.map(role => role.name) }
-            });
-            let dataPrivileges = roles.map(role => {
-                return {
-                    resourceId: component._id,
-                    resourceType: 'Component',
-                    roleId: role._id
-                }
-            });
-            await Privilege.insertMany(dataPrivileges);
-        }
+        let roles = await Role(connect(DB_CONNECTION, company)).find({
+            name: { $in: systemComponents[i].roles.map(role => role.name)}
+        });
+        let dataPrivileges = roles.map(role => {
+            return {
+                resourceId: component._id,
+                resourceType: 'Component',
+                roleId: role._id
+            }
+        });
+        await Privilege(connect(DB_CONNECTION, company)).insertMany(dataPrivileges);
     }
 
-    return await Component.find({ company: companyId });
+    return await Component(connect(DB_CONNECTION, company)).find();
 }
 
 /**
@@ -372,27 +387,27 @@ exports.createCompanyComponents = async (companyId, linkArr) => {
  * @companyId id của công ty
  * @superAdminEmail email dùng để thay thế làm email mới của super admin
  */
-exports.editCompanySuperAdmin = async (companyId, superAdminEmail) => {
+exports.editCompanySuperAdmin = async (company, superAdminEmail) => {
 
-    let com = await Company.findById(companyId)
-        .populate({ path: 'superAdmin', model: User });
-    let roleSuperAdmin = await Role.findOne({ company: com._id, name: Terms.ROOT_ROLES.SUPER_ADMIN.name });
+    let com = await Company(connect(DB_CONNECTION, process.env.DB_NAME)).findOne({shortName: company})
+        .populate({ path: 'superAdmin', model: User(connect(DB_CONNECTION, company)) });
+    let roleSuperAdmin = await Role(connect(DB_CONNECTION, company)).findOne({ name: Terms.ROOT_ROLES.SUPER_ADMIN.name });
 
-    let oldSuperAdmin = await User.findById(com.superAdmin._id);
+    let oldSuperAdmin = await User(connect(DB_CONNECTION, company)).findById(com.superAdmin._id);
     if (oldSuperAdmin.email === superAdminEmail) {
         return oldSuperAdmin;
     } else {
-        await UserRole.deleteOne({ userId: oldSuperAdmin._id, roleId: roleSuperAdmin._id });
+        await UserRole(connect(DB_CONNECTION, company)).deleteOne({ userId: oldSuperAdmin._id, roleId: roleSuperAdmin._id });
 
-        let user = await User.findOne({ company: com._id, email: superAdminEmail });
+        let user = await User(connect(DB_CONNECTION, company)).findOne({ email: superAdminEmail });
         if (user === null) {
-            let newUser = await this.createCompanySuperAdminAccount(com._id, com.name, superAdminEmail);
+            let newUser = await this.createCompanySuperAdminAccount(com.shortName, com.name, superAdminEmail);
 
             return newUser;
         } else {
             com.superAdmin = user._id;
             await com.save();
-            await UserRole.create({ userId: user._id, roleId: roleSuperAdmin._id })
+            await UserRole(connect(DB_CONNECTION, company)).create({ userId: user._id, roleId: roleSuperAdmin._id })
 
             return user;
         }

@@ -14,6 +14,7 @@ const initState = {
     isLoading: false,
     listStocks: [],
     listPaginate: [],
+    stock:'',
     totalDocs: 0,
     limit: 0,
     totalPages: 0,
@@ -34,6 +35,7 @@ export function stocks(state = initState, action){
     switch(action.type){
 
         case StockConstants.GET_STOCK_REQUEST:
+        case StockConstants.GET_DETAIL_STOCK_REQUEST:
         case StockConstants.PAGINATE_STOCK_REQUEST:
         case StockConstants.CREATE_STOCK_REQUEST:
         case StockConstants.UPDATE_STOCK_REQUEST:
@@ -47,6 +49,13 @@ export function stocks(state = initState, action){
             return {
                 ...state,
                 listStocks: action.payload,
+                isLoading: false
+            };
+        
+        case StockConstants.GET_DETAIL_STOCK_SUCCESS:
+            return {
+                ...state,
+                stock: action.payload,
                 isLoading: false
             };
 
@@ -108,6 +117,7 @@ export function stocks(state = initState, action){
             };
 
         case StockConstants.GET_STOCK_FAILURE:
+        case StockConstants.GET_DETAIL_STOCK_FAILURE:
         case StockConstants.PAGINATE_STOCK_FAILURE:
         case StockConstants.CREATE_STOCK_FAILURE:
         case StockConstants.UPDATE_STOCK_FAILURE:

@@ -29,7 +29,6 @@ class ArchiveImportForm extends Component {
         })
     }
     handleImportExcel = (value, checkFileImport) => {
-        console.log('vlueee', value, checkFileImport)
         let values = [];
         let showValues = [];
         let k = -1;
@@ -84,7 +83,6 @@ class ArchiveImportForm extends Component {
 
     save = () => {
         let { importShowData } = this.state;
-        console.log(importShowData);
         this.props.importArchive(importShowData);
     }
 
@@ -102,7 +100,6 @@ class ArchiveImportForm extends Component {
         const { translate } = this.props;
         let { limit, page, importData, rowError, configData, checkFileImport } = this.state;
         //let templateImportArchive = this.convertDataExport(exportArchive);
-        console.log('exporttt', exportArchive);
         return (
             <React.Fragment>
                 <DialogModal

@@ -1,16 +1,19 @@
 const {
     EducationProgram,
     Course,
-    OrganizationalUnit,
-    Role
-} = require('../../../models').schema;
+} = require(`${SERVER_MODELS_DIR}`);
+
+const {
+    connect
+} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+
 
 /**
  * Lấy danh sách tất cả các chương trình đào tạo
  * @company : Id công ty
  */
-exports.getAllEducationPrograms = async (company) => {
-    return await EducationProgram.find({
+exports.getAllEducationPrograms = async (portal, company) => {
+    return await EducationProgram(connect(DB_CONNECTION, portal)).find({
         company: company
     })
 }
@@ -20,7 +23,7 @@ exports.getAllEducationPrograms = async (company) => {
  * @params : Dữ liệu key tìm kiếm
  * @company : Id công ty
  */
-exports.searchEducationPrograms = async (params, company) => {
+exports.searchEducationPrograms = async (portal, params, company) => {
     let keySearch = {
         company: company
     }
@@ -43,24 +46,22 @@ exports.searchEducationPrograms = async (params, company) => {
         }
     }
 
-    let totalList = await EducationProgram.countDocuments(keySearch);
-    let educations = await EducationProgram.find(keySearch)
+    let totalList = await EducationProgram(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+    let educations = await EducationProgram(connect(DB_CONNECTION, portal)).find(keySearch)
         .skip(params.page).limit(params.limit)
         .populate([{
             path: 'applyForOrganizationalUnits',
-            model: OrganizationalUnit
         }, {
             path: 'applyForPositions',
-            model: Role
         }]);
     let listEducations = []
 
     for (let n in educations) {
-        let total = await Course.countDocuments({
+        let total = await Course(connect(DB_CONNECTION, portal)).countDocuments({
             educationProgram: educations[n]._id
         });
 
-        let listCourses = await Course.find({
+        let listCourses = await Course(connect(DB_CONNECTION, portal)).find({
             educationProgram: educations[n]._id
         }).skip(0).limit(5)
 
@@ -82,8 +83,8 @@ exports.searchEducationPrograms = async (params, company) => {
  * @data : Dữ liệu chương trình đào tạo cần thêm
  * @company : Id công ty
  */
-exports.createEducationProgram = async (data, company) => {
-    let isEducationProgram = await EducationProgram.findOne({
+exports.createEducationProgram = async (portal, data, company) => {
+    let isEducationProgram = await EducationProgram(connect(DB_CONNECTION, portal)).findOne({
         programId: data.programId,
         company: company
     }, {
@@ -92,7 +93,7 @@ exports.createEducationProgram = async (data, company) => {
     if (isEducationProgram !== null) {
         return 'have_exist'
     } else {
-        let createEducation = await EducationProgram.create({
+        let createEducation = await EducationProgram(connect(DB_CONNECTION, portal)).create({
             company: company,
             name: data.name,
             programId: data.programId,
@@ -100,14 +101,12 @@ exports.createEducationProgram = async (data, company) => {
             applyForPositions: data.position,
         });
 
-        let newEducation = await EducationProgram.findById(createEducation._id).populate([{
+        let newEducation = await EducationProgram(connect(DB_CONNECTION, portal)).findById(createEducation._id).populate([{
             path: 'applyForOrganizationalUnits',
-            model: OrganizationalUnit
         }, {
             path: 'applyForPositions',
-            model: Role
         }])
-        let totalList = await Course.count({
+        let totalList = await Course(connect(DB_CONNECTION, portal)).count({
             educationProgram: newEducation._id
         });
         return {
@@ -122,8 +121,8 @@ exports.createEducationProgram = async (data, company) => {
  * Xoá chương trình đào tạo
  * @id : Id chương trình đào tạo cần xoá
  */
-exports.deleteEducationProgram = async (id) => {
-    let educationDelete = await EducationProgram.findOneAndDelete({
+exports.deleteEducationProgram = async (portal, id) => {
+    let educationDelete = await EducationProgram(connect(DB_CONNECTION, portal)).findOneAndDelete({
         _id: id
     });
     return educationDelete;
@@ -134,30 +133,28 @@ exports.deleteEducationProgram = async (id) => {
  * @id : Id chương trình đào tạo cần chỉnh sửa
  * @data : Dữ liệu chỉnh sửa chương trình đào tạo
  */
-exports.updateEducationProgram = async (id, data) => {
+exports.updateEducationProgram = async (portal, id, data) => {
     let eduacationChange = {
         name: data.name,
         programId: data.programId,
         applyForOrganizationalUnits: data.organizationalUnit,
         applyForPositions: data.position
     };
-    await EducationProgram.findOneAndUpdate({
+    await EducationProgram(connect(DB_CONNECTION, portal)).findOneAndUpdate({
         _id: id
     }, {
         $set: eduacationChange
     });
 
-    let updateEducation = await EducationProgram.findOne({
+    let updateEducation = await EducationProgram(connect(DB_CONNECTION, portal)).findOne({
         _id: id
     }).populate([{
         path: 'applyForOrganizationalUnits',
-        model: OrganizationalUnit
     }, {
         path: 'applyForPositions',
-        model: Role
     }]);
 
-    let totalList = await Course.countDocuments({
+    let totalList = await Course(connect(DB_CONNECTION, portal)).countDocuments({
         educationProgram: updateEducation._id
     });
     return {

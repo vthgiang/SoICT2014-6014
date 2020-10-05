@@ -1,6 +1,6 @@
 const EmployeeKpiSetService = require('./creation.service');
 const KPIPersonalController = require("../../employee/management/management.controller");
-const { LogInfo, LogError } = require('../../../../logs');
+const Logger = require(`${SERVER_LOGS_DIR}`);
 
 // Điều phối đến các hàm thao tác với cơ sở dữ liệu của module quản lý kpi cá nhân
 
@@ -23,15 +23,15 @@ exports.getEmployeeKpiSet = async (req, res) => {
     }
     else {
         try {
-            let employeeKpiSet = await EmployeeKpiSetService.getEmployeeKpiSet(req.query.userId, req.query.role, req.query.month);
-            await LogInfo(req.user.email, ` get employee kpi set by user id `, req.user.company);
+            let employeeKpiSet = await EmployeeKpiSetService.getEmployeeKpiSet(req.portal, req.query.userId, req.query.role, req.query.month);
+            await Logger.info(req.user.email, ` get employee kpi set by user id `, req.portal);
             res.status(200).json({
                 success: true,
                 messages: ['Get employee kpi set successfully'],
                 content: employeeKpiSet
             });
         } catch (error) {
-            await LogError(req.user.email, ` get employee kpi set by user id `, req.user.company)
+            await Logger.error(req.user.email, ` get employee kpi set by user id `, req.portal)
             res.status(400).json({
                 success: false,
                 messages: ['Get employee kpi set unsuccessfully'],
@@ -44,16 +44,16 @@ exports.getEmployeeKpiSet = async (req, res) => {
 /** Lấy tất cả các tập KPI của 1 nhân viên theo thời gian cho trước */
 exports.getAllEmployeeKpiSetByMonth = async (req, res) => {
     try {
-        const employeeKpiSetByMonth = await EmployeeKpiSetService.getAllEmployeeKpiSetByMonth(req.query.organizationalUnitIds, req.query.userId, req.query.startDate, req.query.endDate);
+        const employeeKpiSetByMonth = await EmployeeKpiSetService.getAllEmployeeKpiSetByMonth(req.portal, req.query.organizationalUnitIds, req.query.userId, req.query.startDate, req.query.endDate);
 
-        await LogInfo(req.user.email, ` get all employee kpi set by month `, req.user.company);
+        await Logger.info(req.user.email, ` get all employee kpi set by month `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['Get all employee kpi set by month successfully'],
             content: employeeKpiSetByMonth
         });
     } catch (error) {
-        await LogError(req.user.email, ` get all employee kpi set by month `, req.user.company)
+        await Logger.error(req.user.email, ` get all employee kpi set by month `, req.portal)
         res.status(400).json({
             success: false,
             messages: ['Get all employee kpi set by month unsuccessfully'],
@@ -65,16 +65,16 @@ exports.getAllEmployeeKpiSetByMonth = async (req, res) => {
 /** Lấy tất cả các tập KPI của tất cả nhân viên trong mảng đơn vị cho trước theo thời gian */
 exports.getAllEmployeeKpiSetOfAllEmployeeInOrganizationalUnitByMonth = async (req, res) => {
     try {
-        const employeeKpiSetsInOrganizationalUnitByMonth = await EmployeeKpiSetService.getAllEmployeeKpiSetOfAllEmployeeInOrganizationalUnitByMonth(req.query.organizationalUnitIds, req.query.startDate, req.query.endDate);
+        const employeeKpiSetsInOrganizationalUnitByMonth = await EmployeeKpiSetService.getAllEmployeeKpiSetOfAllEmployeeInOrganizationalUnitByMonth(req.portal, req.query.organizationalUnitIds, req.query.startDate, req.query.endDate);
 
-        await LogInfo(req.user.email, ` get all employee kpi set of all employee in organizational unit by month `, req.user.company);
+        await Logger.info(req.user.email, ` get all employee kpi set of all employee in organizational unit by month `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['Get all employee kpi set of all employee in organizational unit by month successfully'],
             content: employeeKpiSetsInOrganizationalUnitByMonth
         });
     } catch (error) {
-        await LogError(req.user.email, ` get all employee kpi set of all employee in organizational unit by month `, req.user.company)
+        await Logger.error(req.user.email, ` get all employee kpi set of all employee in organizational unit by month `, req.portal)
         res.status(400).json({
             success: false,
             messages: ['Get all employee kpi set of all employee in organizational unit by month unsuccessfully'],
@@ -86,16 +86,16 @@ exports.getAllEmployeeKpiSetOfAllEmployeeInOrganizationalUnitByMonth = async (re
 /** Khởi tạo KPI cá nhân */
 exports.createEmployeeKpiSet = async (req, res) => {
     try {
-        let employeeKpiSet = await EmployeeKpiSetService.createEmployeeKpiSet(req.body);
+        let employeeKpiSet = await EmployeeKpiSetService.createEmployeeKpiSet(req.portal, req.body);
 
-        await LogInfo(req.user.email, ` create employee kpi set `, req.user.company)
+        await Logger.info(req.user.email, ` create employee kpi set `, req.portal)
         res.status(200).json({
             success: true,
             messages: ['initialize_employee_kpi_set_success'],
             content: employeeKpiSet
         })
     } catch (error) {
-        await LogError(req.user.email, ` create employee kpi set `, req.user.company)
+        await Logger.error(req.user.email, ` create employee kpi set `, req.portal)
         res.status(400).json({
             success: false,
             messages: ['initialize_employee_kpi_set_failure'],
@@ -108,16 +108,16 @@ exports.createEmployeeKpiSet = async (req, res) => {
 /** Tạo 1 mục tiêu KPI mới */
 exports.createEmployeeKpi = async (req, res) => {
     try {
-        let employeeKpi = await EmployeeKpiSetService.createEmployeeKpi(req.body);
+        let employeeKpi = await EmployeeKpiSetService.createEmployeeKpi(req.portal, req.body);
         
-        await LogInfo(req.user.email, ` create employee kpi `, req.user.company)
+        await Logger.info(req.user.email, ` create employee kpi `, req.portal)
         res.status(200).json({
             success: true,
             messages: ['create_employee_kpi_success'],
             content: employeeKpi
         })
     } catch (error) {
-        await LogError(req.user.email, ` create employee kpi `, req.user.company)
+        await Logger.error(req.user.email, ` create employee kpi `, req.portal)
         res.status(400).json({
             success: false,
             messages: ['create_employee_kpi_failure'],
@@ -134,15 +134,15 @@ exports.editEmployeeKpiSet = async (req, res) => {
     }
     else {
         try {
-            var employeeKpiSet = await EmployeeKpiSetService.editEmployeeKpiSet(req.body.date, req.params.id);
-            await LogInfo(req.user.email, ` edit employee kpi set `, req.user.company)
+            var employeeKpiSet = await EmployeeKpiSetService.editEmployeeKpiSet(req.portal, req.body.date, req.params.id);
+            await Logger.info(req.user.email, ` edit employee kpi set `, req.portal)
             res.status(200).json({
                 success: true,
                 messages: ['edit_employee_kpi_set_success'],
                 content: employeeKpiSet
             });
         } catch (error) {
-            await LogError(req.user.email, ` edit employee kpi set `, req.user.company)
+            await Logger.error(req.user.email, ` edit employee kpi set `, req.portal)
             res.status(400).json({
                 success: false,
                 messages: ['edit_employee_kpi_set_failure'],
@@ -156,15 +156,15 @@ exports.editEmployeeKpiSet = async (req, res) => {
 exports.updateEmployeeKpiSetStatus = async (req, res) => {
     try {
 
-        var employeeKpiSet = await EmployeeKpiSetService.updateEmployeeKpiSetStatus(req.params.id, req.query.status);
-        await LogInfo(req.user.email, ` edit employee kpi set status `, req.user.company)
+        var employeeKpiSet = await EmployeeKpiSetService.updateEmployeeKpiSetStatus(req.portal, req.params.id, req.query.status);
+        await Logger.info(req.user.email, ` edit employee kpi set status `, req.portal)
         res.status(200).json({
             success: true,
             messages: ['approve_success'],
             content: employeeKpiSet
         })
     } catch (error) {
-        await LogError(req.user.email, ` edit employee kpi set status `, req.user.company)
+        await Logger.error(req.user.email, ` edit employee kpi set status `, req.portal)
         res.status(400).json({
             success: false,
             messages: ['approve_failure'],
@@ -176,10 +176,10 @@ exports.updateEmployeeKpiSetStatus = async (req, res) => {
 /** Xóa KPI cá nhân */
 exports.deleteEmployeeKpiSet = async (req, res) => {
     try {
-        var arr = await EmployeeKpiSetService.deleteEmployeeKpiSet(req.params.id);
+        var arr = await EmployeeKpiSetService.deleteEmployeeKpiSet(req.portal, req.params.id);
         employeeKpiSet = arr[0];
         kpis = arr[1];
-        await LogInfo(req.user.email, ` delete employee kpi set `, req.user.company)
+        await Logger.info(req.user.email, ` delete employee kpi set `, req.portal)
         res.status(200).json({
             success: true,
             messages: ['delete_employee_kpi_set_success'],
@@ -187,7 +187,7 @@ exports.deleteEmployeeKpiSet = async (req, res) => {
             kpis: kpis
         })
     } catch (error) {
-        await LogError(req.user.email, ` delete employee kpi set `, req.user.company)
+        await Logger.error(req.user.email, ` delete employee kpi set `, req.portal)
         res.status(400).json({
             success: false,
             messages: ['delete_employee_kpi_set_failure'],
@@ -200,22 +200,22 @@ exports.deleteEmployeeKpiSet = async (req, res) => {
 /** Xóa 1 mục tiêu KPI cá nhân */
 exports.deleteEmployeeKpi = async (req, res) => {
     try {
-        var employeeKpiSet = await EmployeeKpiSetService.deleteEmployeeKpi(req.params.id, req.query.employeeKpiSetId);
-        await LogInfo(req.user.email, ` delete employee kpi `, req.user.company)
+        var employeeKpiSet = await EmployeeKpiSetService.deleteEmployeeKpi(req.portal, req.params.id, req.query.employeeKpiSetId);
+        await Logger.info(req.user.email, ` delete employee kpi `, req.portal)
         res.status(200).json({
             success: true,
             messages: ['delete_employee_kpi_success'],
             content: employeeKpiSet,
         })
     } catch (error) {
-        await LogError(req.user.email, ` delete employee kpi `, req.user.company)
+        await Logger.error(req.user.email, ` delete employee kpi `, req.portal)
         res.status(400).json({
             success: false,
             messages: ['delete_employee_kpi_failure'],
             content: error
         });
     }
-    return EmployeeKpiSetService.deleteEmployeeKpi(req.params.id, req.params.kpipersonal);
+    return EmployeeKpiSetService.deleteEmployeeKpi(req.portal, req.params.id, req.params.kpipersonal);
 }
 
 /**
@@ -231,15 +231,15 @@ exports.createComment = async (req, res) => {
 
             })
         }
-        var comments = await EmployeeKpiSetService.createComment(req.params, req.body, files);
-        await LogInfo(req.user.email, ` create comment `, req.user.company)
+        var comments = await EmployeeKpiSetService.createComment(req.portal, req.params, req.body, files);
+        await Logger.info(req.user.email, ` create comment `, req.portal)
         res.status(200).json({
             success: true,
             messages: ['create_comment_success'],
             content: comments
         })
     } catch (error) {
-        await LogError(req.user.email, ` create comment kpi `, req.user.company)
+        await Logger.error(req.user.email, ` create comment kpi `, req.portal)
         res.status(400).json({
             success: false,
             messages: ['create_comment_fail'],
@@ -262,15 +262,15 @@ exports.createChildComment = async (req, res) => {
 
             })
         }
-        var comments = await EmployeeKpiSetService.createChildComment(req.params, req.body, files);
-        await LogInfo(req.user.email, ` create comment `, req.user.company)
+        var comments = await EmployeeKpiSetService.createChildComment(req.portal, req.params, req.body, files);
+        await Logger.info(req.user.email, ` create comment `, req.portal)
         res.status(200).json({
             success: true,
             messages: ['create_child_comment_success'],
             content: comments
         })
     } catch (error) {
-        await LogError(req.user.email, ` create child comment kpi `, req.user.company)
+        await Logger.error(req.user.email, ` create child comment kpi `, req.portal)
         res.status(400).json({
             success: false,
             messages: ['create_child_comment_fail'],
@@ -293,15 +293,15 @@ exports.editComment = async (req, res) => {
 
             })
         }
-        let comments = await EmployeeKpiSetService.editComment(req.params, req.body, files);
-        await LogInfo(req.user.email, ` edit comment kpi `, req.user.company)
+        let comments = await EmployeeKpiSetService.editComment(req.portal, req.params, req.body, files);
+        await Logger.info(req.user.email, ` edit comment kpi `, req.portal)
         res.status(200).json({
             success: true,
             messages: ['edit_comment_success'],
             content: comments
         })
     } catch (error) {
-        await LogError(req.user.email, ` edit comment kpi `, req.user.company)
+        await Logger.error(req.user.email, ` edit comment kpi `, req.portal)
         res.status(400).json({
             success: false,
             messages: ['edit_comment_fail'],
@@ -316,15 +316,15 @@ exports.editComment = async (req, res) => {
 exports.deleteComment = async (req, res) => {
     try {
 
-        var comments = await EmployeeKpiSetService.deleteComment(req.params);
-        await LogInfo(req.user.email, ` delete comment kpi`, req.user.company)
+        var comments = await EmployeeKpiSetService.deleteComment(req.portal, req.params);
+        await Logger.info(req.user.email, ` delete comment kpi`, req.portal)
         res.status(200).json({
             success: false,
             messages: ['delete_comment_success'],
             content: comments
         })
     } catch (error) {
-        await LogError(req.user.email, ` delete comment kpi `, req.user.company)
+        await Logger.error(req.user.email, ` delete comment kpi `, req.portal)
         res.status(200).json({
             success: false,
             messages: ['delete_comment_fail'],
@@ -345,15 +345,15 @@ exports.editChildComment = async (req, res) => {
 
             })
         }
-        var comments = await EmployeeKpiSetService.editChildComment(req.params, req.body, files);
-        await LogInfo(req.user.email, ` edit comment of comment kpi `, req.user.company)
+        var comments = await EmployeeKpiSetService.editChildComment(req.portal, req.params, req.body, files);
+        await Logger.info(req.user.email, ` edit comment of comment kpi `, req.portal)
         res.status(200).json({
             success: true,
             messages: ['edit_comment_of_comment_success'],
             content: comments
         })
     } catch (error) {
-        await LogError(req.user.email, ` edit comment of comment kpi `, req.user.company)
+        await Logger.error(req.user.email, ` edit comment of comment kpi `, req.portal)
         res.status(400).json({
             success: true,
             messages: ['edit_comment_of_comment_fail'],
@@ -367,15 +367,15 @@ exports.editChildComment = async (req, res) => {
  */
 exports.deleteChildComment = async (req, res) => {
     try {
-        var comments = await EmployeeKpiSetService.deleteChildComment(req.params);
-        await LogInfo(req.user.email, ` delete child comment kpi `, req.user.company)
+        var comments = await EmployeeKpiSetService.deleteChildComment(req.portal, req.params);
+        await Logger.info(req.user.email, ` delete child comment kpi `, req.portal)
         res.status(200).json({
             success: true,
             messages: ['delete_child_comment_success'],
             content: comments
         })
     } catch (error) {
-        await LogError(req.user.email, ` delete child comment kpi `, req.user.company)
+        await Logger.error(req.user.email, ` delete child comment kpi `, req.portal)
         res.status(400).json({
             success: true,
             messages: ['delete_child_comment_fail'],
@@ -388,15 +388,15 @@ exports.deleteChildComment = async (req, res) => {
  */
 exports.deleteFileComment = async (req, res) => {
     try {
-        var comments = await EmployeeKpiSetService.deleteFileComment(req.params);
-        await LogInfo(req.user.email, ` delete file comment `, req.user.company)
+        var comments = await EmployeeKpiSetService.deleteFileComment(req.portal, req.params);
+        await Logger.info(req.user.email, ` delete file comment `, req.portal)
         res.status(200).json({
             success: true,
             messages: ['delete_file_comment_success'],
             content: comments
         })
     } catch (error) {
-        await LogError(req.user.email, ` delete file comment `, req.user.company)
+        await Logger.error(req.user.email, ` delete file comment `, req.portal)
         res.status(400).json({
             success: true,
             messages: ['delete_file_comment_fail'],
@@ -409,15 +409,15 @@ exports.deleteFileComment = async (req, res) => {
  */
 exports.deleteFileChildComment = async (req, res) => {
     try {
-        var comments = await EmployeeKpiSetService.deleteFileChildComment(req.params);
-        await LogInfo(req.user.email, ` delete file child comment `, req.user.company)
+        var comments = await EmployeeKpiSetService.deleteFileChildComment(req.portal, req.params);
+        await Logger.info(req.user.email, ` delete file child comment `, req.portal)
         res.status(200).json({
             success: true,
             messages: ['delete_file_comment_success'],
             content: comments
         })
     } catch (error) {
-        await LogError(req.user.email, ` delete file child comment `, req.user.company)
+        await Logger.error(req.user.email, ` delete file child comment `, req.portal)
         res.status(400).json({
             success: true,
             messages: ['delete_file_comment_fail'],

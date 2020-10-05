@@ -1,8 +1,9 @@
 const {backup, restore} = require(SERVER_HELPERS_DIR+'/backupHelper');
+const {connect} = require(SERVER_HELPERS_DIR+'/dbHelper');
 const {time} = require('cron');
 const fs = require('fs');
 const exec = require('child_process').exec;
-const {Configuration} = require(SERVER_MODELS_DIR).schema;
+const {Configuration} = require(`${SERVER_MODELS_DIR}`);
 
 exports.getBackupSetting = async() => {
 
@@ -15,7 +16,7 @@ exports.backup = async (data, params) => {
             switch(schedule) {
                 case 'weekly':
                     let timeWeekly = `${data.second} ${data.minute} ${data.hour} * * ${data.day}`;
-                    let dbWeekly = await Configuration.findOne({database: process.env.DB_NAME});
+                    let dbWeekly = await Configuration(connect(DB_CONNECTION, process.env.DB_NAME)).findOne({database: process.env.DB_NAME});
                     SERVER_BACKUP_LIMIT = data.limit;
                     if(dbWeekly !== null){
                         dbWeekly.backup.time.second = data.second;

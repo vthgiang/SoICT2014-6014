@@ -6,6 +6,7 @@ import { CategoryActions } from '../../category-management/redux/actions';
 import { DataTableSetting, DeleteNotification, PaginateBar, SelectMulti } from '../../../../common-components';
 import GoodCreateForm from './goodCreateFrom';
 import GoodEditForm from './goodEditForm';
+import GoodDetailForm from './goodDetailForm';
 
 
 class GoodManagement extends Component {
@@ -189,12 +190,24 @@ class GoodManagement extends Component {
         window.$('#modal-edit-good').modal('show');
     }
 
+    handleShowDetailInfo = async (good) => {
+        let id = good._id;
+        this.props.getGoodDetail(id);
+        await this.setState(state => {
+            return {
+                ...state,
+                currentRow: good
+            }
+        })
+        window.$('#modal-detail-good').modal('show');
+    }
+
     render() {
 
         const { goods, categories, translate } = this.props;
         const { listCategoriesByType } = categories;
         const { type } = this.state;
-        const { listPaginate, totalPages, page, listGoodsByType } = goods;
+        const { listPaginate, totalPages, page } = goods;
         const dataSelectBox = this.getCategoriesByType();
 
         return (
@@ -211,6 +224,21 @@ class GoodManagement extends Component {
                     {
                         this.state.currentRow &&
                         <GoodEditForm
+                            goodId={this.state.currentRow._id}
+                            code={this.state.currentRow.code}
+                            name={this.state.currentRow.name}
+                            type={this.state.currentRow.type}
+                            category={this.state.currentRow.category}
+                            baseUnit={this.state.currentRow.baseUnit}
+                            units={this.state.currentRow.units}
+                            materials={this.state.currentRow.materials}
+                            description={this.state.currentRow.description}
+                        />
+                    }
+
+                    {
+                        this.state.currentRow &&
+                        <GoodDetailForm
                             goodId={this.state.currentRow._id}
                             code={this.state.currentRow.code}
                             name={this.state.currentRow.name}
@@ -291,7 +319,7 @@ class GoodManagement extends Component {
                                             <td>{index + 1}</td>
                                             <td>{x.code}</td>
                                             <td>{x.name}</td>
-                                            <td>{x.category.name}</td>
+                                            <td>{x.category && listCategoriesByType.length && listCategoriesByType.filter(item => item._id === x.category).pop() ? listCategoriesByType.filter(item => item._id === x.category).pop().name : ""}</td>
                                             <td>{x.baseUnit}</td>
                                             { type === 'product' ? 
                                             <td>{x.materials.map((y, i) => <p key={i}>{y.good.name},</p>)}</td>:
@@ -337,5 +365,6 @@ const mapDispatchToProps = {
     getGoodsByType: GoodActions.getGoodsByType,
     getCategoriesByType: CategoryActions.getCategoriesByType,
     deleteGood: GoodActions.deleteGood,
+    getGoodDetail: GoodActions.getGoodDetail
 }
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(GoodManagement));

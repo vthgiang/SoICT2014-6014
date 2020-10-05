@@ -1,4 +1,5 @@
 import { IntlReducer as Intl } from 'react-redux-multilingual';
+import { socket } from '../modules/socket/redux/reducers';
 import { clearStorage } from '../config';
 import { combineReducers } from 'redux';
 import { systemSetting } from '../modules/system-admin/system-setting/redux/reducers';
@@ -82,6 +83,7 @@ import { example1 } from "../modules/example/example1/redux/reducers";
 import { example2 } from "../modules/example/example2/redux/reducers";
 
 const appReducer = combineReducers({
+    socket,
     //system
     systemSetting,
     company,

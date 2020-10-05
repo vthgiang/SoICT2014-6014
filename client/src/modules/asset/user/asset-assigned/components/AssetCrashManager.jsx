@@ -167,6 +167,17 @@ class AssetCrashManager extends Component {
         });
     }
 
+    convertIncidentType = (type) => {
+        const { translate } = this.props;
+        if (type == 1) {
+            return translate('asset.general_information.damaged');
+        } else if (type == 2) {
+            return translate('asset.general_information.lost')
+        } else {
+            return 'Type is deleted'
+        }
+    }
+
     render() {
         const { translate, assetsManager, assetType, user, auth } = this.props;
         const { page, limit, currentRow } = this.state;
@@ -210,11 +221,11 @@ class AssetCrashManager extends Component {
                         <div className="form-group">
                             <label className="form-control-static">{translate('asset.general_information.type')}</label>
                             <SelectMulti id={`multiSelectType1`} multiple="multiple"
-                                options={{ nonSelectedText: "Chọn loại sự cố", allSelectedText: "Chọn tất cả sự cố" }}
+                                options={{ nonSelectedText: translate('asset.general_information.select_incident_type'), allSelectedText: translate('asset.general_information.select_all_incident_type') }}
                                 onChange={this.handleTypeChange}
                                 items={[
-                                    { value: "Báo hỏng", text: translate('asset.general_information.damaged') },
-                                    { value: "Báo mất", text: translate('asset.general_information.lost') }
+                                    { value: "broken", text: translate('asset.general_information.damaged') },
+                                    { value: "lost", text: translate('asset.general_information.lost') }
                                 ]}
                             >
                             </SelectMulti>
@@ -248,9 +259,8 @@ class AssetCrashManager extends Component {
                                 <th style={{ width: "8%" }}>{translate('asset.general_information.reported_by')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.date_incident')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.content')}</th>
-                                <th style={{ width: "10%" }}>{translate('asset.general_information.status')}</th>
                                 <th style={{ width: '100px', textAlign: 'center' }}>{translate('table.action')}
-                                <DataTableSetting
+                                    <DataTableSetting
                                         tableId="incident-table"
                                         columnArr={[
                                             translate('asset.general_information.asset_code'),
@@ -260,7 +270,6 @@ class AssetCrashManager extends Component {
                                             translate('asset.general_information.reported_by'),
                                             translate('asset.general_information.date_incident'),
                                             translate('asset.general_information.content'),
-                                            translate('asset.general_information.status'),
                                         ]}
                                         limit={limit}
                                         setLimit={this.setLimit}
@@ -277,11 +286,10 @@ class AssetCrashManager extends Component {
                                             <td>{asset.code}</td>
                                             <td>{asset.assetName}</td>
                                             <td>{x.incidentCode}</td>
-                                            <td>{x.type}</td>
+                                            <td>{this.convertIncidentType(x.type)}</td>
                                             <td>{x.reportedBy && userlist.length && userlist.filter(item => item._id === x.reportedBy).pop() ? userlist.filter(item => item._id === x.reportedBy).pop().name : 'User is deleted'}</td>
                                             <td>{this.formatDate2(x.dateOfIncident)}</td>
                                             <td>{x.description}</td>
-                                            <td>{x.statusIncident}</td>
                                             <td style={{ textAlign: "center" }}>
                                                 <a onClick={() => this.handleEdit(x, asset)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.asset_info.edit_incident_info')}><i
                                                     className="material-icons">edit</i></a>

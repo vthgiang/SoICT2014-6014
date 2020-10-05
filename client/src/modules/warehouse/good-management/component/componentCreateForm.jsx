@@ -197,6 +197,10 @@ class ComponentCreateForm extends Component{
         const { translate, id, type } = this.props;
         let { listMaterial, material, errorOnMaterialQuantity, errorOnGood } =this.state;
         const dataGoodByType = this.getGoodsByType();
+        let component = '';
+        if(material.good){
+            component = material.good._id
+        }
 
         return(
             
@@ -209,7 +213,7 @@ class ComponentCreateForm extends Component{
                         id={`select-material-by-${id}`}
                         className="form-control select2"
                         style={{ width: "100%" }}
-                        value={material.good._id}
+                        value={component}
                         items={dataGoodByType}
                         onChange={this.handleGoodChange}
                         multiple={false}

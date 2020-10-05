@@ -7,7 +7,6 @@ import { DocumentActions } from '../../../redux/actions';
 class CreateForm extends Component {
     constructor(props) {
         super(props);
-        console.log('cons', this.props.archiveParent);
         this.state = {
             archiveParent: this.props.archiveParent,
         }

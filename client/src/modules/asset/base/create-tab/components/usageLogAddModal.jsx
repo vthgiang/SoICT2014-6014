@@ -201,7 +201,6 @@ class UsageLogAddModal extends Component {
     render() {
 
         const { id } = this.props;
-        console.log("Chạy đến modal", `modal-create-usage-${id}`)
         const { translate, user, department } = this.props;
         const { usedByUser, usedByOrganizationalUnit, startDate, endDate, description, errorOnDescription, startTime, stopTime } = this.state;
 

@@ -1,10 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const {
-    auth
-} = require('../../../middleware');
 
 const DisciplineController = require("./discipline.controller");
+const { auth } = require(`${SERVER_MIDDLEWARE_DIR}`);
 
 
 router.get('/disciplines', auth, DisciplineController.searchDisciplines);

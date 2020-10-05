@@ -1,10 +1,13 @@
 const express = require("express");
 const router = express.Router();
+
 const {
     auth,
     uploadFile
-} = require('../../../middleware');
+} = require(`${SERVER_MIDDLEWARE_DIR}`);
+
 const EmployeeController = require("./profile.controller");
+
 const data = [{
         name: 'fileAvatar',
         path: '/human-resource/avatars'
@@ -38,6 +41,7 @@ router.patch('/employees/:userId', auth, uploadFile([{
 
 // Lấy danh sách nhân viên
 router.get('/employees', auth, EmployeeController.searchEmployeeProfiles);
+
 
 router.post('/employees', auth, uploadFile(data, 'fields'), EmployeeController.createEmployee);
 

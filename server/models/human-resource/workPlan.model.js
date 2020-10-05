@@ -1,13 +1,11 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const Company = require('../system-admin/company.model');
-
 // Tạo bảng datatable nghỉ lễ tết
 const WorkPlanSchema = new Schema({
     company: {
         type: Schema.Types.ObjectId,
-        ref: Company
+        ref: "Company"
     },
     maximumNumberOfLeaveDays: {
         type: Number,
@@ -37,4 +35,8 @@ const WorkPlanSchema = new Schema({
     timestamps: true,
 });
 
-module.exports = WorkPlan = mongoose.model("WorkPlans", WorkPlanSchema);
+module.exports = (db) => {
+    if (!db.models.WorkPlan)
+        return db.model('WorkPlan', WorkPlanSchema);
+    return db.models.WorkPlan;
+}
