@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { Customer } = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
+const { Customer } = require(`${SERVER_MODELS_DIR}`);
 const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 
@@ -40,7 +40,6 @@ exports.createCustomer = async (portal, companyId, data, userId) => {
 exports.getCustomers = async (portal, companyId, query) => {
     const { page, limit } = query;
     let keySearch = {};
-
     const listDocsTotal = await Customer(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
 
     const customers = await Customer(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'desc' })

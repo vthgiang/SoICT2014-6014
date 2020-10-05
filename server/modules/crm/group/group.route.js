@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { auth } = require(`${SERVER_MIDDLEWARE_DIR}/_multi-tenant`);
+const { auth } = require(`${SERVER_MIDDLEWARE_DIR}`);
 
 const GroupController = require('./group.controller');
 

@@ -1,5 +1,5 @@
 const CustomerService = require('./customer.service');
-const Logger = require(`${SERVER_LOGS_DIR}/_multi-tenant`);
+const Logger = require(`${SERVER_LOGS_DIR}`);
 
 /**
  * Lấy thông tin của tất cả khách hàng
