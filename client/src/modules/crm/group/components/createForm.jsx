@@ -3,38 +3,53 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, SelectBox, ErrorLabel } from '../../../../common-components';
 import { CrmGroupActions } from '../redux/actions';
+import ValidationHelper from '../../../../helpers/validationHelper';
 
 class CreateForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            newCustomerGroup: {}
+        }
     }
 
     render() {
         const { translate } = this.props;
-        const {crm} = this.props;
+        const { groups } = this.props.crm;
+        const { groupNameError, groupCodeError } = this.state;
 
         return (
             <React.Fragment>
                 <ButtonModal modalID="modal-crm-group-create" button_name={translate('general.add')} title={translate('crm.group.add')} />
                 <DialogModal
-                    modalID="modal-crm-group-create" isLoading={crm.group.isLoading}
+                    modalID="modal-crm-group-create" isLoading={groups.isLoading}
                     formID="form-crm-group-create"
                     title={translate('crm.group.add')}
                     func={this.save}
+                    disableSubmit={!this.isFormValidated()}
                 >
                     <form id="form-crm-group-create">
-                        <div className="form-group">
-                            <label>{translate('crm.group.name')}<span className="attention"> * </span></label>
-                            <input type="text" className="form-control" onChange={this.handleName} />
-                        </div>
-                        <div className="form-group">
+                        {/* Mã nhóm khách hàng */}
+                        <div className={`form-group ${!groupCodeError ? "" : "has-error"}`}>
                             <label>{translate('crm.group.code')}<span className="attention"> * </span></label>
-                            <input type="text" className="form-control" onChange={this.handleCode} />
+                            <input type="text" className="form-control" onChange={this.handleChangeGroupCode} />
+                            <ErrorLabel content={groupCodeError} />
                         </div>
+                        {/* Tên nhóm khách hàng */}
+                        <div className={`form-group ${!groupNameError ? "" : "has-error"}`}>
+                            <label>{translate('crm.group.name')}<span className="attention"> * </span></label>
+                            <input type="text" className="form-control" onChange={this.handleChangeGroupName} />
+                            <ErrorLabel content={groupNameError} />
+                        </div>
+                        {/* Mô tả nhóm khách hàng */}
                         <div className="form-group">
                             <label>{translate('crm.group.description')}</label>
-                            <textarea type="text" className="form-control" onChange={this.handleDescription} />
+                            <textarea type="text" className="form-control" onChange={this.handleChangeGroupDescription} />
+                        </div>
+                        {/* Ưu đãi kèm theo nhóm khách hàng */}
+                        <div className="form-group">
+                            <label>{translate('crm.group.promotion')}</label>
+                            <input type="text" className="form-control" onChange={this.handleChangeGroupPromotion} />
                         </div>
                     </form>
                 </DialogModal>
@@ -42,37 +57,80 @@ class CreateForm extends Component {
         );
     }
 
-    handleName = (e) => {
+    handleChangeGroupCode = (e) => {
+        const { newCustomerGroup } = this.state;
+        const { value } = e.target;
+        const { translate } = this.props;
         this.setState({
-            name: e.target.value
+            newCustomerGroup: {
+                ...newCustomerGroup,
+                code: value
+            }
+        });
+        // validate Mã nhóm khách hàng
+        let { message } = ValidationHelper.validateName(translate, value, 4, 255);
+        this.setState({ groupCodeError: message });
+    }
+
+    handleChangeGroupName = (e) => {
+        const { newCustomerGroup } = this.state;
+        const { value } = e.target;
+        const { translate } = this.props;
+        this.setState({
+            newCustomerGroup: {
+                ...newCustomerGroup,
+                name: value
+            }
+        });
+        // validate tên nhóm khách hàng
+        let { message } = ValidationHelper.validateName(translate, value, 4, 255);
+        this.setState({ groupNameError: message });
+    }
+
+    handleChangeGroupDescription = (e) => {
+        const { newCustomerGroup } = this.state;
+        const { value } = e.target;
+        this.setState({
+            newCustomerGroup: {
+                ...newCustomerGroup,
+                description: value
+            }
         });
     }
 
-    handleCode = (e) => {
+
+    handleChangeGroupPromotion = (e) => {
+        const { newCustomerGroup } = this.state;
+        const { value } = e.target;
         this.setState({
-            code: e.target.value
+            newCustomerGroup: {
+                ...newCustomerGroup,
+                promotion: value
+            }
         });
     }
 
-    handleDescription = (e) => {
-        this.setState({
-            description: e.target.value
-        });
-    }
+    isFormValidated = () => {
+        const { newCustomerGroup } = this.state;
+        const { code, name } = newCustomerGroup;
+        const { translate } = this.props;
 
+        if (!ValidationHelper.validateName(translate, code).status
+            || !ValidationHelper.validateDescription(translate, name).status)
+            return false;
+        return true;
+    }
     save = () => {
-        const data = {
-            name: this.state.name,
-            code: this.state.code,
-            description: this.state.description
+        const { newCustomerGroup } = this.state;
+        if (this.isFormValidated()) {
+            this.props.createGroup(newCustomerGroup);
         }
-        return this.props.createGroup(data);
     }
 }
 
 function mapStateToProps(state) {
-    const {crm} = state;
-    return {crm};
+    const { crm } = state;
+    return { crm };
 }
 
 const mapDispatchToProps = {

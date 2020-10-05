@@ -7,17 +7,48 @@ import { NotificationActions } from '../../../modules/notification/redux/actions
 class Notification extends Component {
     constructor(props) {
         super(props);
-        this.state = {  }
+        this.state = { 
+            notify: []
+         }
+    }
+
+    componentWillUnmount(){
+        this.props.socket.io.on('new notifications', data => {
+            let notify = this.state.notify;
+            this.setState({
+                notify: [...notify, data]
+            })
+        })
     }
 
     componentDidMount(){
         this.props.getAllManualNotifications();
         this.props.getAllNotifications();
+        this.props.socket.io.on('new notifications', data => {
+            let notify = this.state.notify;
+            this.setState({
+                notify: [...notify, data]
+            })
+        })
+    }
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if(nextProps.notifications.receivered.list.length > prevState.notify.length){
+            return {
+                ...prevState,
+                notify: nextProps.notifications.receivered.list
+            }
+        }else{
+            return null;
+        }
     }
 
     render() { 
-        const {translate, notifications} = this.props;
-        const count = notifications.receivered.list.filter(notification => !notification.readed).length;
+        const {translate} = this.props;
+        const {notify} = this.state;
+        const count = notify.length;
+        console.log("notify: ", this.state.notify);
+
         return ( 
             <React.Fragment>
                 <li className="dropdown notifications-menu">
@@ -28,12 +59,12 @@ class Notification extends Component {
                         }
                     </a>
                     <ul className="dropdown-menu" style={{borderColor: 'gray'}}>
-                        <li className="header text-center"><strong className="text-red">{notifications.receivered.list.filter(notification => !notification.readed).length}</strong> {translate('notification.news')}</li>
+                        <li className="header text-center"><strong className="text-red">{notify.filter(notification => !notification.readed).length}</strong> {translate('notification.news')}</li>
                         <li>
                             <ul className="menu">
                                 {
-                                    notifications.receivered.list.filter(notification => !notification.readed).map(notification => {
-                                        return <li key={notification._id}>
+                                    notify.filter(notification => !notification.readed).map((notification, index) => {
+                                        return <li key={index}>
                                             <Link to="/notifications">  
                                                 {
                                                     notification.level === 'info' ? <i className="fa fa-info-circle text-blue"/> :

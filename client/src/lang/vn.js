@@ -525,17 +525,27 @@ export default {
 
         crm: {
             customer: {
+                owner: 'Người quản lý',
+                source: 'Nguồn khách hàng',
+                company: 'Tên công ty',
+                companyEstablishmentDate: 'Ngày thành lập công ty',
                 name: 'Tên khách hàng',
                 code: 'Mã khách hàng',
-                phone: 'Số điện thoại',
+                mobilephoneNumber: 'Số điện thoại di động',
+                telephoneNumber: 'Số điện thoại cố định',
                 group: 'Nhóm khách hàng',
+                status: 'Trạng thái khách hàng',
                 address: 'Địa chỉ',
+                address2: 'Địa chỉ 2',
                 email: 'Email',
+                secondaryEmail: 'Email phụ',
                 location: 'Khu vực',
                 birth: 'Ngày sinh',
                 gender: 'Giới tính',
                 liability: 'Công nợ',
-                tax: 'Mã số thuế',
+                taxNumber: 'Mã số thuế',
+                website: 'Website',
+                linkedIn: 'linkedIn',
                 document: 'Giấy tờ',
                 description: 'Mô tả',
                 carier: 'Nhân viên chăm sóc phụ trách',
@@ -557,6 +567,7 @@ export default {
                 name: 'Tên nhóm khách hàng',
                 code: 'Mã nhóm khách hàng',
                 description: 'Mô tả nhóm khách hàng',
+                promotion: 'Ưu đãi kèm theo',
 
                 add: 'Thêm mới nhóm khách hàng',
                 edit: 'Chỉnh sửa thông tin nhóm khách hàng',
@@ -797,14 +808,33 @@ export default {
             task_report: 'Quản lý báo cáo công việc',
 
             //QUẢN LÝ ĐƠN HÀNG
-            manage_orders: "Quản lý đơn hàng",
-            manage_list_orders: "Danh sách đơn hàng",
+            manage_orders: 'Quản lý đơn hàng',
+            manage_sales_order: 'Đơn hàng kinh doanh',
+            manage_manufacturing_order: 'Đơn hàng sản xuất',
+            manage_purchase_order: 'Đơn mua hàng',
+            manage_quotation: 'Báo giá',
+            manage_discount: 'Giảm giá',
+            manage_tax: 'Thuế',
+            manage_sla: 'Cam kết chất lượng',
+
             // Quản lý kế hoạch sản xuất
             manage_plans: "Quản lý kế hoạch sản xuất",
             //VÍ DỤ EXAMPLE
             manage_examples: "Ví dụ CRUD",
             manage_examples_1: "CRUD theo mô hình số 1",
             manage_examples_2: "CRUD theo mô hình số 2",
+
+            // Quản lý sản xuất
+            manage_manufacturing: "Quản lý sản xuất",
+            manage_manufacturing_plan: "Quản lý kế hoạch sản xuất",
+            manage_manufacturing_command: "Quản lý lệnh sản xuất",
+            manage_manufacturing_process: "Quản lý tiến độ sản xuất",
+            manage_manufacturing_schedule: "Quản lý lịch sản xuất",
+            manage_purchasing_request: "Quản lý phiếu mua hàng",
+            track_order: "Theo dõi đơn hàng",
+            analysis_manufacturing_performance: "Phân tích hiệu suất sản xuất",
+            manage_manufacturing_works: "Quản lý nhà máy sản xuất",
+            manage_manufacturing_mill: "Quản lý xưởng sản xuất"
         },
 
         manage_system: {

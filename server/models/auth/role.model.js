@@ -15,7 +15,11 @@ const RoleSchema = new Schema({
     type: {
         type: Schema.Types.ObjectId,
         ref: 'RoleType'
-    }
+    },
+    company: {
+        type: Schema.Types.ObjectId,
+        ref: 'Company'
+    },
 },{
     timestamps: true,
     toJSON: { virtuals: true }
