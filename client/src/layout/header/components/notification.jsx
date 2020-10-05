@@ -63,8 +63,8 @@ class Notification extends Component {
                         <li>
                             <ul className="menu">
                                 {
-                                    notify.filter(notification => !notification.readed).map(notification => {
-                                        return <li key={notification._id}>
+                                    notify.filter(notification => !notification.readed).map((notification, index) => {
+                                        return <li key={index}>
                                             <Link to="/notifications">  
                                                 {
                                                     notification.level === 'info' ? <i className="fa fa-info-circle text-blue"/> :
