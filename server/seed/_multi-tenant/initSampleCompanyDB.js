@@ -40,7 +40,7 @@ const {
     Category,
     Good,
 
-    Lead,
+    Customer,
     Care,
     CareType,
     Group,
@@ -142,7 +142,7 @@ const initSampleCompanyDB = async () => {
         if (!db.models.Category) Category(db);
         if (!db.models.Good) Good(db);
 
-        if (!db.models.Lead) Lead(db);
+        if (!db.models.Customer) Customer(db);
         if (!db.models.Care) Care(db);
         if (!db.models.CareType) CareType(db);
         if (!db.models.Group) Group(db);

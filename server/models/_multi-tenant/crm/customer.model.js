@@ -2,7 +2,11 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
-const LeadSchema = new Schema({
+const CustomerSchema = new Schema({
+    creator: {// Người thêm khách hàng
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    },
     code: { // Mã khách hàng
         type: String,
         required: true,
@@ -11,10 +15,10 @@ const LeadSchema = new Schema({
         type: String,
         required: true,
     },
-    owner: {
+    owner: [{
         type: Schema.Types.ObjectId,
         ref: 'User',
-    },
+    }],
     gender: { // Giới tính
         type: String,
         enum: ['male', 'female'],
@@ -26,9 +30,9 @@ const LeadSchema = new Schema({
         type: String,
     },
     taxNumber: { // Mã số thuế
-        type: Number,
+        type: String,
     },
-    leadSource: { // nguồn tìm thấy khách hàng
+    customerSource: { // nguồn tìm thấy khách hàng
         type: String,
     },
     companyEstablishmentDate: { // Ngày thành lập công ty
@@ -44,6 +48,9 @@ const LeadSchema = new Schema({
         type: Number,
     },
     email: { // Địa chỉ email
+        type: String,
+    },
+    email2: {
         type: String,
     },
     address: { // Địa chỉ thứ 1 của khách hàng
@@ -71,7 +78,7 @@ const LeadSchema = new Schema({
     },
     isDeleted: { // Trạng thái kích hoạt khách hàng
         type: Boolean,
-        required: true,
+        // required: true,
         default: false,
     },
     files: [{ // Tài liệu liên quan tới khách hàng
@@ -104,16 +111,20 @@ const LeadSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'User'
         },
-    }]
+    }],
+    // company: {
+    //     type: Schema.Types.ObjectId,
+    //     ref: 'Company',
+    // }
 
 }, {
     timestamps: true,
 });
 
-LeadSchema.plugin(mongoosePaginate);
+CustomerSchema.plugin(mongoosePaginate);
 
 module.exports = (db) => {
-    if (!db.models.Lead)
-        return db.model('Lead', LeadSchema);
-    return db.models.Lead;
+    if (!db.models.Customer)
+        return db.model('Customer', CustomerSchema);
+    return db.models.Customer;
 }

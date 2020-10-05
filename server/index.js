@@ -57,7 +57,7 @@ if (process.env.MULTI_TENANT === 'true') {
 	app.use("/notifications", require("./modules/_multi-tenant/notification/notification.route"));
 
 	app.use("/configuration", require("./modules/_multi-tenant/super-admin/module-configuration/moduleConfiguration.route"));
-	
+
 	router.use('/system', require('./modules/_multi-tenant/super-admin/system/system.route'));
 	router.use('/user', require('./modules/_multi-tenant/super-admin/user/user.route'));
 	router.use('/role', require('./modules/_multi-tenant/super-admin/role/role.route'));
@@ -102,14 +102,10 @@ if (process.env.MULTI_TENANT === 'true') {
 
 	app.use("/documents", require("./modules/_multi-tenant/document/document.route"));
 
-	// // Customer Management
-	// const crm = express.Router();
-	// crm.use(require("./modules/_multi-tenant/crm/customer/customer.route"));
-	// crm.use(require("./modules/_multi-tenant/crm/lead/lead.route"));
-	// crm.use(require("./modules/_multi-tenant/crm/care/care.route"));
-	// crm.use(require("./modules/_multi-tenant/crm/group/group.route"));
-	// crm.use(require("./modules/_multi-tenant/crm/statistic/statistic.route"));
-	// app.use("/crm", crm);
+	// Customer Management
+	app.use("/crm/customers", require("./modules/_multi-tenant/crm/customer/customer.route"));
+	app.use("/crm/cares", require("./modules/_multi-tenant/crm/care/care.route"));
+	app.use("/crm/groups", require("./modules/_multi-tenant/crm/group/group.route"));
 
 	app.use(router);
 } else {

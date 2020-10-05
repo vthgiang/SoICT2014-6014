@@ -72,7 +72,7 @@ module.exports = {
     Bill: require('./warehouse/bill.model'),
 
     // Customer Management
-    Lead: require('./crm/lead.model'),
+    Customer: require('./crm/customer.model'),
     Care: require('./crm/care.model'),
     CareType: require('./crm/careType.model'),
     Group: require('./crm/group.model'),

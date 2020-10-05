@@ -64,8 +64,9 @@ import { categories } from "../modules/warehouse/category-management/redux/reduc
 import { goods } from "../modules/warehouse/good-management/redux/reducers";
 
 //crm
-import { customer } from "../modules/crm/customer/redux/reducers";
-import { group } from "../modules/crm/group/redux/reducers";
+import { customers } from "../modules/crm/customer/redux/reducers";
+import { groups } from "../modules/crm/group/redux/reducers";
+// import { care } from "../modules/crm/care/redux/reducers";
 
 //order
 import { order } from "../modules/order/redux/reducers";
@@ -156,7 +157,7 @@ const appReducer = combineReducers({
 
     // customer management
     crm: combineReducers({
-        customer, group
+        customers, groups
     }),
 
     //order
