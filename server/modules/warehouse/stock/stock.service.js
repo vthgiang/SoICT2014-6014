@@ -8,9 +8,7 @@ exports.getAllStocks = async (company, query, portal) => {
         return await Stock(connect(DB_CONNECTION, portal))
             .find({ company })
             .populate([
-                { path: 'goods.good', select: 'id name'},
-                { path: 'managementLocation', select: 'id name'},
-                { path: 'manageDepartment', select: 'id name'}
+                { path: 'goods.good', select: 'id name'}
             ])
     }
     else{
@@ -33,9 +31,7 @@ exports.getAllStocks = async (company, query, portal) => {
                 page,
                 limit,
                 populate: [
-                    { path: 'goods.good', select: 'id name'},
-                    { path: 'managementLocation', select: 'id name'},
-                    { path: 'manageDepartment', select: 'id name'}
+                    { path: 'goods.good', select: 'id name'}
                 ]
             })
     }
@@ -45,9 +41,7 @@ exports.getStock = async (id, portal) => {
     return await Stock(connect(DB_CONNECTION, portal))
         .findById(id)
         .populate([
-            { path: 'goods.good', select: 'id name'},
-            { path: 'managementLocation', select: 'id name'},
-            { path: 'manageDepartment', select: 'id name'}
+            { path: 'goods.good', select: 'id name'}
         ])
 }
 
@@ -72,9 +66,7 @@ exports.createStock = async (company, data, portal) => {
     return await Stock(connect(DB_CONNECTION, portal))
         .findById(stock._id)
         .populate([
-            { path: 'goods.good', select: 'id name'},
-            { path: 'managementLocation', select: 'id name'},
-            { path: 'manageDepartment', select: 'id name'}
+            { path: 'goods.good', select: 'id name'}
         ])
 }
 
@@ -101,9 +93,7 @@ exports.editStock = async (id, data, portal) => {
     return await Stock(connect(DB_CONNECTION, portal))
         .findById(stock._id)
         .populate([
-            { path: 'goods.good', select: 'id name'},
-            { path: 'managementLocation', select: 'id name'},
-            { path: 'manageDepartment', select: 'id name'}
+            { path: 'goods.good', select: 'id name'}
         ])
 }
 

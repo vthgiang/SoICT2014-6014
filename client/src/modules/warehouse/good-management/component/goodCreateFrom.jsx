@@ -251,7 +251,7 @@ class GoodCreateForm extends Component {
                                         id={`select-good-by-${type}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
-                                        value={category._id}
+                                        value={category}
                                         items={dataSelectBox}
                                         onChange={this.handleCategoryChange}    
                                         multiple={false}

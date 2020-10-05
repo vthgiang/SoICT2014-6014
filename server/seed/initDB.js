@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
-const Terms = require('../terms');
+const Terms = require('./terms');
 
 const { 
     User, UserRole, RoleType, Role, Link, Privilege, RootRole, SystemComponent, SystemLink
-} = require('../../models');
+} = require('../models');
 
 require('dotenv').config();
 
