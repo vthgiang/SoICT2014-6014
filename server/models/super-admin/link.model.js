@@ -20,7 +20,11 @@ const LinkSchema = new Schema({
     deleteSoft: {
         type: Boolean,
         default: true
-    }
+    },
+    company: {
+        type: Schema.Types.ObjectId,
+        ref: 'Company'
+    },
 },{
     timestamps: true,
     toJSON: { virtuals: true }
