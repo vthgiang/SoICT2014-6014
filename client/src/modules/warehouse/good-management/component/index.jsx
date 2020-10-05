@@ -207,7 +207,7 @@ class GoodManagement extends Component {
         const { goods, categories, translate } = this.props;
         const { listCategoriesByType } = categories;
         const { type } = this.state;
-        const { listPaginate, totalPages, page, listGoodsByType } = goods;
+        const { listPaginate, totalPages, page } = goods;
         const dataSelectBox = this.getCategoriesByType();
 
         return (
@@ -319,7 +319,7 @@ class GoodManagement extends Component {
                                             <td>{index + 1}</td>
                                             <td>{x.code}</td>
                                             <td>{x.name}</td>
-                                            <td>{x.category.name}</td>
+                                            <td>{x.category && listCategoriesByType.length && listCategoriesByType.filter(item => item._id === x.category).pop() ? listCategoriesByType.filter(item => item._id === x.category).pop().name : ""}</td>
                                             <td>{x.baseUnit}</td>
                                             { type === 'product' ? 
                                             <td>{x.materials.map((y, i) => <p key={i}>{y.good.name},</p>)}</td>:

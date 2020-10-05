@@ -14,7 +14,9 @@ class GoodDetailForm extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState){
-        if(nextProps.goodId !== prevState.goodId){
+        if(nextProps.goodId !== prevState.goodId || nextProps.baseUnit !== prevState.baseUnit || nextProps.units !== prevState.units || 
+            nextProps.materials !== prevState.materials || nextProps.code !== prevState.code || nextProps.name !== prevState.name ||
+            nextProps.category !== prevState.category || nextProps.description !== prevState.description){
             return {
                 ...prevState,
                 goodId: nextProps.goodId,
@@ -34,7 +36,7 @@ class GoodDetailForm extends Component {
 
     render() {
 
-        const { translate, goods, type } = this.props;
+        const { translate, goods, type, categories } = this.props;
         const { goodId, code, name, category, units, materials, baseUnit, description } = this.state;
         let size;
         if(type === 'product'){
@@ -100,7 +102,7 @@ class GoodDetailForm extends Component {
                                 </div>
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.good_management.category')}:&emsp;</strong>
-                                    {category.name}
+                                    {category && categories.listCategoriesByType.length && categories.listCategoriesByType.filter(item => item._id === category).pop() ? categories.listCategoriesByType.filter(item => item._id === category).pop().name : "aaa"}
                                 </div>
                                 {type === 'product' ? 
                                 <fieldset className="scheduler-border">

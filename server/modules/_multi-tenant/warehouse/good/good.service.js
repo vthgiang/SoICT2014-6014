@@ -1,4 +1,4 @@
-const { Good } = require(`${SERVER_MODELS_DIR}`);
+const { Good } = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
 const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 exports.getGoodsByType = async (company, query, portal) => {
