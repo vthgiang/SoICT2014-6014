@@ -23,6 +23,7 @@ class CreateForm extends Component {
         }
     }
 
+
     handleName = (e) => {
         const value = e.target.value.trim();
         this.validateName(value, true);
@@ -507,10 +508,10 @@ class CreateForm extends Component {
     }
     onSearch = async (name) => {
 
-        await this.props.getAllDocuments({ page: this.state.page, limit: this.state.limit, name: name, type: "relationshipDocs" });
+        await this.props.getAllDocuments({ page: this.state.page, limit: this.state.limit, name: name, calledId: "relationshipDocs" });
 
         this.setState(state => {
-            state.listDocumentRelationship = "";
+            // state.listDocumentRelationship = "";
             return {
                 ...state,
             }
@@ -524,7 +525,7 @@ class CreateForm extends Component {
         const archives = documents.administration.archives.list;
         const categories = documents.administration.categories.list.map(category => { return { value: category._id, text: category.name } });
         const documentRoles = role.list.map(role => { return { value: role._id, text: role.name } });
-        const relationshipDocs = documents.administration.data.list.map(doc => { return { value: doc._id, text: doc.name } });
+        const relationshipDocs = documents.administration.relationshipDocs.paginate.map(doc => { return { value: doc._id, text: doc.name } });
         let path = documentArchives ? this.findPath(archives, documentArchives) : "";
         return (
             <React.Fragment>
@@ -677,7 +678,7 @@ class CreateForm extends Component {
                                                     items={relationshipDocs}
                                                     value={listDocumentRelationship}
                                                     onChange={this.handleRelationshipDocuments}
-                                                    multiple={false}
+                                                    multiple={true}
                                                     onSearch={this.onSearch}
                                                 />
                                             </div>
