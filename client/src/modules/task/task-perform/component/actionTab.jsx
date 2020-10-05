@@ -1000,10 +1000,10 @@ class ActionTab extends Component {
                                                                 {item.files.map((elem, index) => {
                                                                     return <div key={index} className="show-files-task">
                                                                         {this.isImage(elem.name) ?
-                                                                            <ApiImage
+                                                                            <img
                                                                                 className="attachment-img files-attach"
                                                                                 style={{ marginTop: "5px" }}
-                                                                                src={elem.url}
+                                                                                src={process.env.REACT_APP_SERVER+elem.url}
                                                                                 file={elem}
                                                                                 requestDownloadFile={this.requestDownloadFile}
                                                                             />
@@ -1089,10 +1089,10 @@ class ActionTab extends Component {
                                                                                 {child.files.map((elem, index) => {
                                                                                     return <div key={index} className="show-files-task">
                                                                                         {this.isImage(elem.name) ?
-                                                                                            <ApiImage
+                                                                                            <img
                                                                                                 className="attachment-img files-attach"
                                                                                                 style={{ marginTop: "5px" }}
-                                                                                                src={elem.url}
+                                                                                                src={process.env.REACT_APP_SERVER+elem.url}
                                                                                                 file={elem}
                                                                                                 requestDownloadFile={this.requestDownloadFile}
                                                                                             />
@@ -1239,10 +1239,10 @@ class ActionTab extends Component {
                                                                     <li style={{ display: "inline-table" }}>{item.files.map((elem, index) => {
                                                                         return <div key={index} className="show-files-task">
                                                                             {this.isImage(elem.name) ?
-                                                                                <ApiImage
+                                                                                <img
                                                                                     className="attachment-img files-attach"
                                                                                     style={{ marginTop: "5px" }}
-                                                                                    src={elem.url}
+                                                                                    src={process.env.REACT_APP_SERVER+elem.url}
                                                                                     file={elem}
                                                                                     requestDownloadFile={this.requestDownloadFile}
                                                                                 />
@@ -1333,10 +1333,10 @@ class ActionTab extends Component {
                                                                                         {child.files.map((elem, index) => {
                                                                                             return <div key={index} className="show-files-task">
                                                                                                 {this.isImage(elem.name) ?
-                                                                                                    <ApiImage
+                                                                                                    <img
                                                                                                         className="attachment-img files-attach"
                                                                                                         style={{ marginTop: "5px" }}
-                                                                                                        src={elem.url}
+                                                                                                        src={process.env.REACT_APP_SERVER+elem.url}
                                                                                                         file={elem}
                                                                                                         requestDownloadFile={this.requestDownloadFile}
                                                                                                     />
@@ -1478,10 +1478,10 @@ class ActionTab extends Component {
                                                                         return (
                                                                             <div key={index} className="show-files-task">
                                                                                 {this.isImage(elem.name) ?
-                                                                                    <ApiImage
+                                                                                    <img
                                                                                         className="attachment-img files-attach"
                                                                                         style={{ marginTop: "5px" }}
-                                                                                        src={elem.url}
+                                                                                        src={process.env.REACT_APP_SERVER+elem.url}
                                                                                         file={elem}
                                                                                         requestDownloadFile={this.requestDownloadFile}
                                                                                     />

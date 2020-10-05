@@ -5,20 +5,9 @@ const cookieParser = require("cookie-parser");
 const app = express();
 const server = require('http').createServer(app);
 
-global.SOCKET_IO = require('socket.io')(server);
-SOCKET_IO.on('connection', function(socket){
-	// Client connected
-	console.log("Client connected: ", socket.id, socket.handshake.query.userId);
-
-	// Client disconnected
-	socket.on('disconnect', function(){
-		console.log("Disconnected: ", socket.id, socket.handshake.query.userId);
-	})
-})
-
 require("dotenv").config();
 require('./connectDatabase');
-require('./global');
+require('./global')(server);
 
 app.use(require("cors")());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -26,162 +15,68 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use("/upload/avatars", express.static("upload/avatars"));
 
-// if (process.env.MULTI_TENANT === 'true') {
-	const router = express.Router();
+const router = express.Router();
 
-	router.use('/auth', require('./modules/auth/auth.route'));
+router.use('/auth', require('./modules/auth/auth.route'));
 
-	app.use("/annualLeave", require("./modules/human-resource/annual-leave/annualLeave.route"));
-	app.use("/commendation", require("./modules/human-resource/commendation/commendation.route"));
-	app.use("/discipline", require("./modules/human-resource/discipline/discipline.route"));
-	app.use("/workPlan", require("./modules/human-resource/work-plan/workPlan.route"));
-	app.use("/employee", require("./modules/human-resource/profile/profile.route"));
-	app.use("/salary", require("./modules/human-resource/salary/salary.route"));
-	app.use("/timesheet", require("./modules/human-resource/timesheets/timesheets.route"));
+router.use("/annualLeave", require("./modules/human-resource/annual-leave/annualLeave.route"));
+router.use("/commendation", require("./modules/human-resource/commendation/commendation.route"));
+router.use("/discipline", require("./modules/human-resource/discipline/discipline.route"));
+router.use("/workPlan", require("./modules/human-resource/work-plan/workPlan.route"));
+router.use("/employee", require("./modules/human-resource/profile/profile.route"));
+router.use("/salary", require("./modules/human-resource/salary/salary.route"));
+router.use("/timesheet", require("./modules/human-resource/timesheets/timesheets.route"));
 
-	app.use("/kpi/employee/creation", require("./modules/kpi/employee/creation/creation.route"));
-	app.use("/kpi/employee/dashboard", require("./modules/kpi/employee/dashboard/dashboard.route"));
-	app.use("/kpi/employee/management", require("./modules/kpi/employee/management/management.route"));
-	app.use("/kpi/evaluation/dashboard", require("./modules/kpi/evaluation/dashboard/dashboard.route"));
-	app.use("/kpi/evaluation/employee-evaluation", require("./modules/kpi/evaluation/employee-evaluation/employeeEvaluation.route"));
-	app.use("/kpi/organizational-unit/creation", require("./modules/kpi/organizational-unit/creation/creation.route"));
-	app.use("/kpi/organizational-unit/dashboard", require("./modules/kpi/organizational-unit/dashboard/dashboard.route"));
-	app.use("/kpi/organizational-unit/management", require("./modules/kpi/organizational-unit/management/management.route"));
+router.use("/kpi/employee/creation", require("./modules/kpi/employee/creation/creation.route"));
+router.use("/kpi/employee/dashboard", require("./modules/kpi/employee/dashboard/dashboard.route"));
+router.use("/kpi/employee/management", require("./modules/kpi/employee/management/management.route"));
+router.use("/kpi/evaluation/dashboard", require("./modules/kpi/evaluation/dashboard/dashboard.route"));
+router.use("/kpi/evaluation/employee-evaluation", require("./modules/kpi/evaluation/employee-evaluation/employeeEvaluation.route"));
+router.use("/kpi/organizational-unit/creation", require("./modules/kpi/organizational-unit/creation/creation.route"));
+router.use("/kpi/organizational-unit/dashboard", require("./modules/kpi/organizational-unit/dashboard/dashboard.route"));
+router.use("/kpi/organizational-unit/management", require("./modules/kpi/organizational-unit/management/management.route"));
 
-	app.use("/notifications", require("./modules/notification/notification.route"));
+router.use("/notifications", require("./modules/notification/notification.route"));
 
-	app.use("/configuration", require("./modules/super-admin/module-configuration/moduleConfiguration.route"));
-	
-	router.use('/system', require('./modules/super-admin/system/system.route'));
-	router.use('/user', require('./modules/super-admin/user/user.route'));
-	router.use('/role', require('./modules/super-admin/role/role.route'));
-	router.use('/component', require("./modules/super-admin/component/component.route"));
-	router.use('/link', require("./modules/super-admin/link/link.route"));
-	router.use('/organizational-units', require("./modules/super-admin/organizational-unit/organizationalUnit.route"));
+router.use("/configuration", require("./modules/super-admin/module-configuration/moduleConfiguration.route"));
 
-	router.use('/system-admin/company', require("./modules/system-admin/company/company.route"));
-	router.use('/system-admin/system-component', require("./modules/system-admin/system-component/systemComponent.route"));
-	router.use('/system-admin/system-link', require("./modules/system-admin/system-link/systemLink.route"));
-	router.use('/system-admin/root-role', require("./modules/system-admin/root-role/rootRole.route"));
-	router.use('/system-admin/system-setting', require("./modules/system-admin/system-setting/systemSetting.route"));
+router.use('/system', require('./modules/super-admin/system/system.route'));
+router.use('/user', require('./modules/super-admin/user/user.route'));
+router.use('/role', require('./modules/super-admin/role/role.route'));
+router.use('/component', require("./modules/super-admin/component/component.route"));
+router.use('/link', require("./modules/super-admin/link/link.route"));
+router.use('/organizational-units', require("./modules/super-admin/organizational-unit/organizationalUnit.route"));
 
-	app.use("/task", require("./modules/task/task-management/task.route"));
-	app.use("/performtask", require("./modules/task/task-perform/taskPerform.route"));
-	app.use("/task/task-templates", require("./modules/task/task-template/taskTemplate.route"));
-	app.use("/process", require("./modules/task/tasks-process/taskProcess.route"));
-	app.use("/educationProgram", require("./modules/trainning/education-program/educationProgram.route"));
-	app.use("/course", require("./modules/trainning/course/course.route"));
+router.use('/system-admin/company', require("./modules/system-admin/company/company.route"));
+router.use('/system-admin/system-component', require("./modules/system-admin/system-component/systemComponent.route"));
+router.use('/system-admin/system-link', require("./modules/system-admin/system-link/systemLink.route"));
+router.use('/system-admin/root-role', require("./modules/system-admin/root-role/rootRole.route"));
+router.use('/system-admin/system-setting', require("./modules/system-admin/system-setting/systemSetting.route"));
 
-	app.use("/assettype", require("./modules/asset/asset-type/asset-type.route"));
-	app.use("/asset", require("./modules/asset/asset-management/asset.route"));
-	app.use("/purchase-request", require("./modules/asset/purchase-request/purchase-request.route"));
-	app.use("/use-request", require("./modules/asset/use-request/use-request.route"));
+router.use("/task", require("./modules/task/task-management/task.route"));
+router.use("/performtask", require("./modules/task/task-perform/taskPerform.route"));
+router.use("/task/task-templates", require("./modules/task/task-template/taskTemplate.route"));
+router.use("/process", require("./modules/task/tasks-process/taskProcess.route"));
+router.use("/educationProgram", require("./modules/trainning/education-program/educationProgram.route"));
+router.use("/course", require("./modules/trainning/course/course.route"));
 
-	// Task report
-	app.use("/taskreports", require("./modules/report/task-report/taskReport.route"));
+router.use("/assettype", require("./modules/asset/asset-type/asset-type.route"));
+router.use("/asset", require("./modules/asset/asset-management/asset.route"));
+router.use("/purchase-request", require("./modules/asset/purchase-request/purchase-request.route"));
+router.use("/use-request", require("./modules/asset/use-request/use-request.route"));
 
-	// warehouse
-	app.use("/stocks", require('./modules/warehouse/stock/stock.route'));
-	app.use("/categories", require("./modules/warehouse/category/category.route"));
-	app.use("/goods", require("./modules/warehouse/good/good.route"));
+// Task report
+router.use("/taskreports", require("./modules/report/task-report/taskReport.route"));
 
-	// //order
-	// app.use("/orders", require("./modules/order/order.route"));
+// warehouse
+router.use("/stocks", require('./modules/warehouse/stock/stock.route'));
+router.use("/categories", require("./modules/warehouse/category/category.route"));
+router.use("/goods", require("./modules/warehouse/good/good.route"));
 
-	// // Plan
-	// app.use("/plans", require("./modules/plan/plan.route"));
+router.use("/examples", require("./modules/example/example.route"));
+router.use("/documents", require("./modules/document/document.route"));
 
-	// example
-	app.use("/examples", require("./modules/example/example.route"));
-
-	app.use("/documents", require("./modules/document/document.route"));
-
-	// // Customer Management
-	// const crm = express.Router();
-	// crm.use(require("./modules/crm/customer/customer.route"));
-	// crm.use(require("./modules/crm/lead/lead.route"));
-	// crm.use(require("./modules/crm/care/care.route"));
-	// crm.use(require("./modules/crm/group/group.route"));
-	// crm.use(require("./modules/crm/statistic/statistic.route"));
-	// app.use("/crm", crm);
-
-	app.use(router);
-// } else {
-// 	app.use("/auth", require("./modules/auth/auth.route"));
-
-// 	app.use("/documents", require("./modules/document/document.route"));
-
-// 	app.use("/annualLeave", require("./modules/human-resource/annual-leave/annualLeave.route"));
-// 	app.use("/commendation", require("./modules/human-resource/commendation/commendation.route"));
-// 	app.use("/discipline", require("./modules/human-resource/discipline/discipline.route"));
-// 	app.use("/workPlan", require("./modules/human-resource/work-plan/workPlan.route"));
-// 	app.use("/employee", require("./modules/human-resource/profile/profile.route"));
-// 	app.use("/salary", require("./modules/human-resource/salary/salary.route"));
-// 	app.use("/timesheet", require("./modules/human-resource/timesheets/timesheets.route"));
-
-// 	app.use("/kpi/employee/creation", require("./modules/kpi/employee/creation/creation.route"));
-// 	app.use("/kpi/employee/dashboard", require("./modules/kpi/employee/dashboard/dashboard.route"));
-// 	app.use("/kpi/employee/management", require("./modules/kpi/employee/management/management.route"));
-// 	app.use("/kpi/evaluation/dashboard", require("./modules/kpi/evaluation/dashboard/dashboard.route"));
-// 	app.use("/kpi/evaluation/employee-evaluation", require("./modules/kpi/evaluation/employee-evaluation/employeeEvaluation.route"));
-// 	app.use("/kpi/organizational-unit/creation", require("./modules/kpi/organizational-unit/creation/creation.route"));
-// 	app.use("/kpi/organizational-unit/dashboard", require("./modules/kpi/organizational-unit/dashboard/dashboard.route"));
-// 	app.use("/kpi/organizational-unit/management", require("./modules/kpi/organizational-unit/management/management.route"));
-
-// 	app.use("/notifications", require("./modules/notification/notification.route"));
-
-// 	app.use("/component", require("./modules/super-admin/component/component.route"));
-// 	app.use("/link", require("./modules/super-admin/link/link.route"));
-// 	app.use("/organizational-units", require("./modules/super-admin/organizational-unit/organizationalUnit.route"));
-// 	app.use("/privilege", require("./modules/super-admin/privilege/privilege.route"));
-// 	app.use("/role", require("./modules/super-admin/role/role.route"));
-// 	app.use("/user", require("./modules/super-admin/user/user.route"));
-
-// 	app.use("/system-admin/company", require("./modules/system-admin/company/company.route"));
-// 	app.use("/system-admin/system-component", require("./modules/system-admin/system-component/systemComponent.route"));
-// 	app.use("/system-admin/system-link", require("./modules/system-admin/system-link/systemLink.route"));
-// 	app.use("/system-admin/root-role", require("./modules/system-admin/root-role/rootRole.route"));
-// 	app.use("/system-admin/system-setting", require("./modules/system-admin/system-setting/systemSetting.route"));
-
-// 	app.use("/task", require("./modules/task/task-management/task.route"));
-// 	app.use("/performtask", require("./modules/task/task-perform/taskPerform.route"));
-// 	app.use("/task/task-templates", require("./modules/task/task-template/taskTemplate.route"));
-// 	app.use("/process", require("./modules/task/tasks-process/taskProcess.route"));
-// 	app.use("/educationProgram", require("./modules/trainning/education-program/educationProgram.route"));
-// 	app.use("/course", require("./modules/trainning/course/course.route"));
-
-// 	//asset
-// 	app.use("/assettype", require("./modules/asset/asset-type/asset-type.route"));
-// 	app.use("/asset", require("./modules/asset/asset-management/asset.route"));
-// 	app.use("/purchase-request", require("./modules/asset/purchase-request/purchase-request.route"));
-// 	app.use("/use-request", require("./modules/asset/use-request/use-request.route"));
-
-// 	// Task report
-// 	app.use("/taskreports", require("./modules/report/task-report/taskReport.route"));
-
-// 	// warehouse
-// 	app.use("/stocks", require('./modules/warehouse/stock/stock.route'));
-// 	app.use("/categories", require('./modules/warehouse/category/category.route'));
-// 	app.use("/goods", require("./modules/warehouse/good/good.route"));
-
-// 	//order
-// 	app.use("/orders", require("./modules/order/order.route"));
-
-// 	// Plan
-// 	app.use("/plans", require("./modules/plan/plan.route"));
-
-// 	// example
-// 	app.use("/examples", require("./modules/example/example.route"));
-
-// 	// Customer Management
-// 	const crm = express.Router();
-// 	crm.use(require("./modules/crm/customer/customer.route"));
-// 	crm.use(require("./modules/crm/lead/lead.route"));
-// 	crm.use(require("./modules/crm/care/care.route"));
-// 	crm.use(require("./modules/crm/group/group.route"));
-// 	crm.use(require("./modules/crm/statistic/statistic.route"));
-// 	app.use("/crm", crm);
-// }
+app.use(router);
 
 /**
  * Server initial

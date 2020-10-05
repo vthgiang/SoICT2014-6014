@@ -36,8 +36,7 @@ class SideBar extends Component {
                     <section className="sidebar">
                         <div className="user-panel">
                             <div className="pull-left image">
-                                <ApiImage className="img-circle" alt="User Avatar" src={auth.user.avatar !== undefined ? '.' + auth.user.avatar : undefined} />
-                                {/* <img src={process.env.REACT_APP_SERVER + auth.user.avatar} className="img-circle" alt="User avatar" /> */}
+                                <img src={process.env.REACT_APP_SERVER + auth.user.avatar} className="img-circle" alt="User avatar" />
                             </div>
                             <div className="pull-left info">
                                 <p>{user.name}</p>
@@ -207,10 +206,15 @@ class SideBar extends Component {
                             {/* Quản lý đơn hàng */}
                             <GroupItem groupItem={{
                                 name: 'menu.manage_orders',
-                                icon: 'fa fa-reorder',
+                                icon: 'fa  fa-book',
                                 list: [
-                                    { name: 'menu.manage_list_orders', icon: 'fa fa-reorder', path: '/manage-orders' },
-                                    { name: 'menu.manage_list_orders', icon: 'fa fa-reorder', path: '/manage-list-orders' },
+                                    { name: 'menu.manage_sales_order', icon: 'fa fa-dollar', path: '/manage-sales-order' },
+                                    { name: 'menu.manage_manufacturing_order', icon: 'fa  fa-flask', path: '/manage-manufacturing-order' },
+                                    { name: 'menu.manage_purchase_order', icon: 'fa fa-shopping-cart', path: '/manage-purchase-order' },
+                                    { name: 'menu.manage_quotation', icon: 'fa fa-tablet', path: '/manage-quotation' },
+                                    { name: 'menu.manage_discount', icon: 'fa fa-arrow-down', path: '/manage-discount' },
+                                    { name: 'menu.manage_tax', icon: 'fa fa-money', path: '/manage-tax' },
+                                    { name: 'menu.manage_sla', icon: 'fa fa-registered', path: '/manage-sla' },
                                 ]
                             }} />
 

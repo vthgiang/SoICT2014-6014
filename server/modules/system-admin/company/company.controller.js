@@ -58,11 +58,11 @@ exports.getCompany = async (req, res) => {
 exports.createCompany = async (req, res) => {
     try {
         const company = await CompanyServices.createCompany(req.body);
-        const abstractRoles = await CompanyServices.createCompanyRootRoles(company.shortName);
+        const abstractRoles = await CompanyServices.createCompanyRootRoles(company.shortName, company._id);
 
-        await CompanyServices.createCompanySuperAdminAccount(company.shortName, req.body.email);
-        await CompanyServices.createCompanyLinks(company.shortName, req.body.links, abstractRoles);
-        await CompanyServices.createCompanyComponents(company.shortName, req.body.links);
+        await CompanyServices.createCompanySuperAdminAccount(company.shortName, req.body.email, company._id);
+        await CompanyServices.createCompanyLinks(company.shortName, req.body.links, abstractRoles, company._id);
+        await CompanyServices.createCompanyComponents(company.shortName, req.body.links, company._id);
         
         const resCompany = await CompanyServices.getCompany(company._id);
         await ConfigurationServices.createHumanResourceConfiguration(company.shortName);

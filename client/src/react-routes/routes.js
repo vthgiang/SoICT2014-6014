@@ -1298,20 +1298,140 @@ class Routes extends Component {
 
                     <PrivateRoute
                         isLoading={this.props.order.isLoading}
-                        key={"manage-orders"}
+                        key={"/manage-sales-order"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
                             {
-                                link: "/manage-orders",
-                                name: "manage_orders",
+                                link: "/manage-sales-order",
+                                name: "manage_sales_order",
                                 icon: "fa fa-address-card",
                             },
                         ]}
                         auth={auth}
                         exact={true}
-                        link={"/manage-orders"}
-                        path={"/manage-orders"}
-                        pageName={"manage-orders"}
+                        link={"/manage-sales-order"}
+                        path={"/manage-sales-order"}
+                        pageName={"manage_sales_order"}
+                        layout={Layout}
+                        component={OrderManagement}
+                    />
+
+                    <PrivateRoute
+                        isLoading={this.props.order.isLoading}
+                        key={"/manage-manufacturing-order"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-manufacturing-order",
+                                name: "manage_manufacturing_order",
+                                icon: "fa fa-address-card",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-manufacturing-order"}
+                        path={"/manage-manufacturing-order"}
+                        pageName={"manage_manufacturing_order"}
+                        layout={Layout}
+                        component={OrderManagement}
+                    />
+
+                    <PrivateRoute
+                        isLoading={this.props.order.isLoading}
+                        key={"/manage-purchase-order"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-purchase-order",
+                                name: "manage_purchase_order",
+                                icon: "fa fa-address-card",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-purchase-order"}
+                        path={"/manage-purchase-order"}
+                        pageName={"manage_purchase_order"}
+                        layout={Layout}
+                        component={OrderManagement}
+                    />
+
+                    <PrivateRoute
+                        isLoading={this.props.order.isLoading}
+                        key={"/manage-quotation"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-quotation",
+                                name: "manage_quotation",
+                                icon: "fa fa-address-card",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-quotation"}
+                        path={"/manage-quotation"}
+                        pageName={"manage_quotation"}
+                        layout={Layout}
+                        component={OrderManagement}
+                    />
+
+                    <PrivateRoute
+                        isLoading={this.props.order.isLoading}
+                        key={"/manage-discount"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-discount",
+                                name: "manage_discount",
+                                icon: "fa fa-address-card",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-discount"}
+                        path={"/manage-discount"}
+                        pageName={"manage_discount"}
+                        layout={Layout}
+                        component={OrderManagement}
+                    />
+
+                    <PrivateRoute
+                        isLoading={this.props.order.isLoading}
+                        key={"/manage-tax"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-tax",
+                                name: "manage_tax",
+                                icon: "fa fa-address-card",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-tax"}
+                        path={"/manage-tax"}
+                        pageName={"manage_tax"}
+                        layout={Layout}
+                        component={OrderManagement}
+                    />
+
+                    <PrivateRoute
+                        isLoading={this.props.order.isLoading}
+                        key={"/manage-sla"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-sla",
+                                name: "manage_sla",
+                                icon: "fa fa-address-card",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-sla"}
+                        path={"/manage-sla"}
+                        pageName={"manage_sla"}
                         layout={Layout}
                         component={OrderManagement}
                     />

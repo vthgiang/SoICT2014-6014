@@ -14,8 +14,9 @@ import { ModalCreateTaskByProcess } from './modalCreateTaskByProcess';
 import { TaskProcessActions } from '../../redux/actions';
 import { RoleActions } from '../../../../super-admin/role/redux/actions';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
+import { FormImportProcessTemplate } from './formImportProcessTemplate';
 import Swal from 'sweetalert2';
-// import { FormImportProcessTemplate } from './formImportProcessTemplate';
+
 class ProcessTemplate extends Component {
     constructor(props) {
         super(props);
@@ -208,13 +209,13 @@ class ProcessTemplate extends Component {
                                     title={translate("task.task_process.add_modal")}
                                 />
                             }
-                            {/* {
+                            {
                                 showModalImportProcess &&
                                 <FormImportProcessTemplate
                                     listOrganizationalUnit={listOrganizationalUnit}
                                     title={translate("task.task_process.add_modal")}
                                 />
-                            } */}
+                            }
                         </React.Fragment>
                     }
                     <div className="form-inline">

@@ -444,7 +444,7 @@ class StockCreateForm extends Component {
                                             id={`select-good-by-stock`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            value={good.good._id}
+                                            value={good.good}
                                             items={listGoods}
                                             onChange={this.handleGoodChange}
                                             multiple={false}

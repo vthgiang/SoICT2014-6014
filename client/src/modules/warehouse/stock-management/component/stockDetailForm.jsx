@@ -14,7 +14,9 @@ class StockDetailForm extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState){
-        if(nextProps.stockId !== prevState.stockId){
+        if(nextProps.stockId !== prevState.stockId || nextProps.code !== prevState.code || nextProps.name !== prevState.name ||
+            nextProps.status !== prevState.status || nextProps.address !== prevState.address || nextProps.goods !== prevState.goods ||
+            nextProps.managementLocation !== prevState.managementLocation || nextProps.manageDepartment !== prevState.manageDepartment || nextProps.description !== prevState.description){
             return {
                 ...prevState,
                 stockId: nextProps.stockId,
@@ -22,8 +24,8 @@ class StockDetailForm extends Component {
                 name: nextProps.name,
                 status: nextProps.status,
                 address: nextProps.address,
-                goods: nextProps.goodsManagement ? nextProps.goodsManagement : [],
-                managementLocation: nextProps.managementLocation ? nextProps.managementLocation : '',
+                goods: nextProps.goodsManagement,
+                managementLocation: nextProps.managementLocation,
                 manageDepartment: nextProps.manageDepartment,
                 description: nextProps.description,
             }
@@ -33,10 +35,8 @@ class StockDetailForm extends Component {
         }
     }
     render() {
-        const { translate, stocks } = this.props;
-        const { stock } = stocks;
+        const { translate, stocks, department, role } = this.props;
         const { code, name, managementLocation, status, address, description, manageDepartment, goods, good } = this.state;
-        console.log(managementLocation);
         return (
             <React.Fragment>
                 <DialogModal
@@ -62,7 +62,7 @@ class StockDetailForm extends Component {
                                 </div>
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.stock_management.department')}:&emsp;</strong>
-                                    {manageDepartment.name}
+                                    {manageDepartment && department.list.length && department.list.filter(item => item._id === manageDepartment).pop() ? department.list.filter(item => item._id === manageDepartment).pop().name : 'Department is deleted'}
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
@@ -76,7 +76,9 @@ class StockDetailForm extends Component {
                                 </div>
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.stock_management.management_location')}:&emsp;</strong>
-                                    <div style={{marginLeft:"40%"}}>{managementLocation.map((x, index) => <p key={index}>{x.name}</p>)}</div>
+                                    <div style={{marginLeft:"40%"}}>{managementLocation.map((x, index) => 
+                                        <p key={index}>{role.list.filter(item => item._id === x).pop().name}</p>
+                                    )}</div>
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
