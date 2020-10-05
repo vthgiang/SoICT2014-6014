@@ -23,7 +23,6 @@ const ManufacturingPlanSchema = new Schema({
             type: Number
         },
     }],
-
     approvers: [{ // Danh sách người phê duyệt
         approver: { // Người phê duyệt
             type: Schema.Types.ObjectId,

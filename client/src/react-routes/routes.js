@@ -118,6 +118,18 @@ import PlanManagement from "../modules/plan/components";
 import ExampleManagement1 from "../modules/example/example1/components";
 import ExampleManagement2 from "../modules/example/example2/components";
 
+// Manufacturing Managements
+
+import ManufacturingPlan from "../modules/production/manufacturing/manufacturing-plan/components";
+import ManufacturingCommand from "../modules/production/manufacturing/manufacturing-command/components";
+import ManufacturingMill from "../modules/production/manufacturing/manufacturing-mill/components";
+import ManufacturingPerformance from "../modules/production/manufacturing/manufacturing-performance/components";
+import ManufacturingProcess from "../modules/production/manufacturing/manufacturing-process/components";
+import ManufacturingSchedule from "../modules/production/manufacturing/manufacturing-schedule/components";
+import ManufacturingWorks from "../modules/production/manufacturing/manufacturing-works/components";
+import PurchasingRequest from "../modules/production/manufacturing/purchasing-request/components";
+import TrackOrder from "../modules/production/manufacturing/track-order/components";
+
 class Routes extends Component {
 
     render() {
@@ -1448,7 +1460,7 @@ class Routes extends Component {
 
                     {/* Example Management */}
                     <PrivateRoute
-                        isLoading={false}
+                        isLoading={this.props.example1.isLoading}
                         key={"manage-examples-1"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1468,12 +1480,12 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={false}
+                        isLoading={this.props.example2.isLoading}
                         key={"manage-examples-2"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
                             {
-                                link: "/manage-examples-1",
+                                link: "/manage-examples-2",
                                 name: "manage_examples_2",
                                 icon: "fa fa-adjust",
                             },
@@ -1486,6 +1498,192 @@ class Routes extends Component {
                         layout={Layout}
                         component={ExampleManagement2}
                     />
+
+                    {/* Manufacturing-management */}
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"manage-manufacturing-plan"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-manufacturing-plan",
+                                name: "manage_manufacturing_plan",
+                                icon: "fa fa-file-o",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-manufacturing-plan"}
+                        path={"/manage-manufacturing-plan"}
+                        pageName={"manage_manufacturing_plan"}
+                        layout={Layout}
+                        component={ManufacturingPlan}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"manage-manufacturing-command"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-manufacturing-command",
+                                name: "manage_manufacturing_command",
+                                icon: "fa fa-gavel",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-manufacturing-command"}
+                        path={"/manage-manufacturing-command"}
+                        pageName={"manage_manufacturing_command"}
+                        layout={Layout}
+                        component={ManufacturingCommand}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"manage-manufacturing-process"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-manufacturing-process",
+                                name: "manage_manufacturing_process",
+                                icon: "fa fa-line-chart",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-manufacturing-process"}
+                        path={"/manage-manufacturing-process"}
+                        pageName={"manage_manufacturing_process"}
+                        layout={Layout}
+                        component={ManufacturingProcess}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"manage-manufacturing-schedule"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-manufacturing-schedule",
+                                name: "manage_manufacturing_schedule",
+                                icon: "fa fa-calendar",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-manufacturing-schedule"}
+                        path={"/manage-manufacturing-schedule"}
+                        pageName={"manage_manufacturing_schedule"}
+                        layout={Layout}
+                        component={ManufacturingSchedule}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"manage-purchasing-request"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-purchasing-request",
+                                name: "manage_purchasing_request",
+                                icon: "fa fa-file-text-o",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-purchasing-request"}
+                        path={"/manage-purchasing-request"}
+                        pageName={"manage_purchasing_request"}
+                        layout={Layout}
+                        component={PurchasingRequest}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"track-order"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/track-order",
+                                name: "track_order",
+                                icon: "fa fa-search",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/track-order"}
+                        path={"/track-order"}
+                        pageName={"track_order"}
+                        layout={Layout}
+                        component={TrackOrder}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"analysis-manufacturing-performance"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/analysis-manufacturing-performance",
+                                name: "analysis_manufacturing_performance",
+                                icon: "fa fa-bar-chart",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/analysis-manufacturing-performance"}
+                        path={"/analysis-manufacturing-performance"}
+                        pageName={"analysis_manufacturing_performance"}
+                        layout={Layout}
+                        component={ManufacturingPerformance}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"manage-manufacturing-works"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-manufacturing-works",
+                                name: "manage_manufacturing_works",
+                                icon: "fa fa-university",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-manufacturing-works"}
+                        path={"/manage-manufacturing-works"}
+                        pageName={"manage_manufacturing_works"}
+                        layout={Layout}
+                        component={ManufacturingWorks}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"manage-manufacturing-mill"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-manufacturing-mill",
+                                name: "manage_manufacturing_mill",
+                                icon: "fa fa-home",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-manufacturing-mill"}
+                        path={"/manage-manufacturing-mill"}
+                        pageName={"manage_manufacturing_mill"}
+                        layout={Layout}
+                        component={ManufacturingMill}
+                    />
+
+
+
+
 
                     {/* NOT FOUND */}
                     <Route component={NotFound}></Route>
