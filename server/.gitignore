@@ -3,7 +3,7 @@
 .env
 
 /logs/history
-/logs/_multi-tenant/history
+/logs/history
 
 /upload/private
 /upload/avatars

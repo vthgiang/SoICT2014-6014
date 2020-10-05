@@ -53,7 +53,7 @@ class BuildingAsset extends Component {
         })
         return (
             <React.Fragment>
-                <div className="box">
+                <div className="box box-solid">
                     <div className="box-body">
                         <div className="row">
                             <div className="col-xs-12 col-sm-12 col-md-4 col-lg-4">

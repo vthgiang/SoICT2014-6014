@@ -1,12 +1,12 @@
 const ExampleService = require('./example.service');
-const { LogInfo, LogError } = require('../../logs');
+const Log = require(`${SERVER_LOGS_DIR}`);
 
 // Thêm mới một ví dụ
 exports.createExample = async (req, res) => {
     try {
-        const newExample = await ExampleService.createExample(req.body);
+        const newExample = await ExampleService.createExample(req.body, req.portal);
 
-        await LogInfo(req.user.email, "CREATED_NEW_EXAMPLE", req.user.company);
+        await Log.info(req.user.email, 'CREATED_NEW_EXAMPLE', req.portal);
 
         res.status(201).json({
             success: true,
@@ -14,7 +14,7 @@ exports.createExample = async (req, res) => {
             content: newExample
         });
     } catch (error) {
-        await LogError(req.user.email, "CREATED_NEW_EXAMPLE", req.user.company);
+        await Log.error(req.user.email, "CREATED_NEW_EXAMPLE", req.portal);
 
         res.status(400).json({
             success: false,
@@ -36,17 +36,17 @@ exports.getExamples = async (req, res) => {
                 page: 0,
                 limit: 10
             }
-            data = await ExampleService.getExamples(params);
+            data = await ExampleService.getExamples(params, req.portal);
         } else {
             params = {
                 exampleName: exampleName,
                 page: Number(page),
                 limit: Number(limit)
             }
-            data = await ExampleService.getExamples(params);
+            data = await ExampleService.getExamples(params, req.portal);
         }
 
-        await LogInfo(req.user.email, "GET_ALL_EXAMPLES", req.user.company);
+        await Log.info(req.user.email, "GET_ALL_EXAMPLES", req.portal);
 
         res.status(200).json({
             success: true,
@@ -54,7 +54,7 @@ exports.getExamples = async (req, res) => {
             content: data
         });
     } catch (error) {
-        await LogError(req.user.email, "GET_ALL_EXAMPLES", req.user.company);
+        await Log.error(req.user.email, "GET_ALL_EXAMPLES", req.portal);
 
         res.status(400).json({
             success: false,
@@ -68,9 +68,9 @@ exports.getExamples = async (req, res) => {
 exports.getExampleById = async (req, res) => {
     try {
         let { id } = req.params;
-        let example = await ExampleService.getExampleById(id);
+        let example = await ExampleService.getExampleById(id, req.portal);
         if (example !== -1) {
-            await LogInfo(req.user.email, "GET_EXAMPLE_BY_ID", req.user.company);
+            await Log.info(req.user.email, "GET_EXAMPLE_BY_ID", req.portal);
             res.status(200).json({
                 success: true,
                 messages: ["get_example_by_id_success"],
@@ -80,7 +80,7 @@ exports.getExampleById = async (req, res) => {
             throw Error("example is invalid")
         }
     } catch (error) {
-        await LogError(req.user.email, "GET_EXAMPLE_BY_ID", req.user.company);
+        await Log.error(req.user.email, "GET_EXAMPLE_BY_ID", req.portal);
 
         res.status(400).json({
             success: false,
@@ -95,9 +95,9 @@ exports.editExample = async (req, res) => {
     try {
         let { id } = req.params;
         let data = req.body;
-        let updatedExample = await ExampleService.editExample(id, data);
+        let updatedExample = await ExampleService.editExample(id, data, req.portal);
         if (updatedExample !== -1) {
-            await LogInfo(req.user.email, "UPDATED_EXAMPLE", req.user.company);
+            await Log.info(req.user.email, "UPDATED_EXAMPLE", req.portal);
             res.status(200).json({
                 success: true,
                 messages: ["edit_example_success"],
@@ -108,7 +108,7 @@ exports.editExample = async (req, res) => {
         }
 
     } catch (error) {
-        await LogError(req.user.email, "UPDATED_EXAMPLE", req.user.company);
+        await Log.error(req.user.email, "UPDATED_EXAMPLE", req.portal);
 
         res.status(400).json({
             success: false,
@@ -122,9 +122,9 @@ exports.editExample = async (req, res) => {
 exports.deleteExample = async (req, res) => {
     try {
         let { id } = req.params;
-        let deletedExample = await ExampleService.deleteExample(id);
+        let deletedExample = await ExampleService.deleteExample(id, req.portal);
         if (deletedExample) {
-            LogInfo(req.user.email, "DELETED_EXAMPLE", req.user.company);
+            await Log.info(req.user.email, "DELETED_EXAMPLE", req.portal);
             res.status(200).json({
                 success: true,
                 messages: ["delete_success"],
@@ -134,7 +134,7 @@ exports.deleteExample = async (req, res) => {
             throw Error("Example is invalid");
         }
     } catch (error) {
-        await LogError(req.user.email, "DELETED_EXAMPLE", req.user.company);
+        await Log.error(req.user.email, "DELETED_EXAMPLE", req.portal);
         res.status(400).json({
             success: false,
             messages: ["delete_fail"],
@@ -155,17 +155,17 @@ exports.getOnlyExampleName = async (req, res) => {
                 page: 0,
                 limit: 10
             }
-            data = await ExampleService.getOnlyExampleName(params);
+            data = await ExampleService.getOnlyExampleName(params, req.portal);
         } else {
             params = {
                 exampleName: exampleName,
                 page: Number(page),
                 limit: Number(limit)
             }
-            data = await ExampleService.getOnlyExampleName(params);
+            data = await ExampleService.getOnlyExampleName(params, req.portal);
         }
 
-        await LogInfo(req.user.email, "GET_ONLY_NAME_ALL_EXAMPLES", req.user.company);
+        await Log.info(req.user.email, "GET_ONLY_NAME_ALL_EXAMPLES", req.portal);
 
         res.status(200).json({
             success: true,
@@ -173,7 +173,7 @@ exports.getOnlyExampleName = async (req, res) => {
             content: data
         });
     } catch (error) {
-        await LogError(req.user.email, "GET_ONLY_NAME_ALL_EXAMPLES", req.user.company);
+        await Log.error(req.user.email, "GET_ONLY_NAME_ALL_EXAMPLES", req.portal);
 
         res.status(400).json({
             success: false,

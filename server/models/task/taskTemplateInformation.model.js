@@ -1,13 +1,11 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const TaskTemplate = require('./taskTemplate.model');
-
 // Model lưu dữ liệu của các thông tin công việc theo mẫu công việc
 const TaskTemplateInformationSchema = new Schema({
     taskTemplate:{
         type: Schema.Types.ObjectId,
-        ref: TaskTemplate,
+        ref: 'TaskTemplate',
         required: true
     },
     code: { // Mã dùng trong công thức
@@ -36,4 +34,8 @@ const TaskTemplateInformationSchema = new Schema({
     }
 });
 
-module.exports = TaskTemplateInformation = mongoose.model("task_template_informations", TaskTemplateInformationSchema);
+module.exports = (db) => {
+    if(!db.models.TaskTemplateInformation)
+        return db.model('TaskTemplateInformation', TaskTemplateInformationSchema);
+    return db.models.TaskTemplateInformation;
+}

@@ -96,7 +96,7 @@ class BarChartDomain extends Component {
         if (docs) {
             docs.map(doc => {
                 doc.domains.map(domain => {
-                    let idx = idDomain.indexOf(domain.id);
+                    let idx = idDomain.indexOf(domain);
                     countDomain[idx]++;
                 })
             })

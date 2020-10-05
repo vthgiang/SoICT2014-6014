@@ -1,10 +1,11 @@
-const RecommendProcure = require('../../../models/asset/assetPurchaseRequest.model');
-const { User } = require('../../../models').schema;
+const Models = require(`${SERVER_MODELS_DIR}`);
+const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const { RecommendProcure, User } = Models;
 
 /**
  * Lấy danh sách phiếu đề nghị mua sắm thiết bị
  */
-exports.searchRecommendProcures = async (query, company) => {
+exports.searchPurchaseRequests = async (portal, company, query) => {
     const { recommendNumber, approver, proponent, proposalDate, status, page, limit } = query;
 
     var keySearch = { company: company };
@@ -21,7 +22,7 @@ exports.searchRecommendProcures = async (query, company) => {
 
     // Thêm người đề nghị vào trường tìm kiếm
     if (proponent) {
-        let user = await User.find({ name: { $regex: proponent, $options: "i" } }).select('_id');
+        let user = await User(connect(DB_CONNECTION, portal)).find({ name: { $regex: proponent, $options: "i" } }).select('_id');
         let userIds = [];
         user.map(x => {
             userIds.push(x._id)
@@ -31,7 +32,7 @@ exports.searchRecommendProcures = async (query, company) => {
 
     // Thêm người phê duyệt vào trường tìm kiếm
     if (approver) {
-        let user = await User.find({ name: { $regex: approver, $options: "i" } }).select('_id');
+        let user = await User(connect(DB_CONNECTION, portal)).find({ name: { $regex: approver, $options: "i" } }).select('_id');
         let userIds = [];
         user.map(x => {
             userIds.push(x._id)
@@ -43,9 +44,8 @@ exports.searchRecommendProcures = async (query, company) => {
     if (status) {
         keySearch = { ...keySearch, status: { $in: status } };
     };
-
-    var totalList = await RecommendProcure.count(keySearch);
-    var listRecommendProcures = await RecommendProcure.find(keySearch).populate('proponent approver').sort({ 'createdAt': 'desc' }).skip(page ? parseInt(page) : 0).limit(limit ? parseInt(limit) : 0);
+    var totalList = await RecommendProcure(connect(DB_CONNECTION, portal)).count(keySearch);
+    var listRecommendProcures = await RecommendProcure(connect(DB_CONNECTION, portal)).find(keySearch).populate({ path: 'proponent approver' }).sort({ 'createdAt': 'desc' }).skip(page ? parseInt(page) : 0).limit(limit ? parseInt(limit) : 0);
 
     return { totalList, listRecommendProcures };
 }
@@ -53,11 +53,9 @@ exports.searchRecommendProcures = async (query, company) => {
 /**
  * Thêm mới thông tin phiếu đề nghị mua sắm thiết bị
  * @data: dữ liệu phiếu đề nghị mua sắm thiết bị
- * @company: id công ty người tạo
  */
-exports.createRecommendProcure = async (data, company) => {
-    console.log(data);
-    var createRecommendProcure = await RecommendProcure.create({
+exports.createPurchaseRequest = async (portal, company, data) => {
+    var createRecommendProcure = await RecommendProcure(connect(DB_CONNECTION, portal)).create({
         company: company,
         recommendNumber: data.recommendNumber,
         dateCreate: data.dateCreate,
@@ -79,8 +77,8 @@ exports.createRecommendProcure = async (data, company) => {
  * Xoá thông tin phiếu đề nghị mua sắm thiết bị
  * @id: id phiếu đề nghị mua sắm thiết bị muốn xoá
  */
-exports.deleteRecommendProcure = async (id) => {
-    return await RecommendProcure.findOneAndDelete({
+exports.deletePurchaseRequest = async (portal, id) => {
+    return await RecommendProcure(connect(DB_CONNECTION, portal)).findOneAndDelete({
         _id: id
     });
 }
@@ -89,7 +87,7 @@ exports.deleteRecommendProcure = async (id) => {
  * Update thông tin phiếu đề nghị mua sắm thiết bị
  * @id: id phiếu đề nghị mua sắm thiết bị muốn update
  */
-exports.updateRecommendProcure = async (id, data) => {
+exports.updatePurchaseRequest = async (portal, id, data) => {
     var recommendProcureChange = {
         recommendNumber: data.recommendNumber,
         dateCreate: data.dateCreate,
@@ -106,12 +104,12 @@ exports.updateRecommendProcure = async (id, data) => {
     };
 
     // Cập nhật thông tin phiếu đề nghị mua sắm thiết bị vào database
-    await RecommendProcure.findOneAndUpdate({
+    await RecommendProcure(connect(DB_CONNECTION, portal)).findOneAndUpdate({
         _id: id
     }, {
         $set: recommendProcureChange
     });
-    return await RecommendProcure.findOne({
+    return await RecommendProcure(connect(DB_CONNECTION, portal)).findOne({
         _id: id
     })
 }

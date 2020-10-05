@@ -1,7 +1,7 @@
 const TaskManagementService = require('./task.service');
-const NotificationServices = require('../../notification/notification.service');
-const { sendEmail } = require('../../../helpers/emailHelper');
-const { LogInfo, LogError } = require('../../../logs');
+const NotificationServices = require(`${SERVER_MODULES_DIR}/notification/notification.service`);
+const { sendEmail } = require(`${SERVER_HELPERS_DIR}/emailHelper`);
+const Logger = require(`${SERVER_LOGS_DIR}`);
 // Điều hướng đến dịch vụ cơ sở dữ liệu của module quản lý công việc
 
 
@@ -55,15 +55,15 @@ getAllTasks = async (req, res) => {
     }
     else {
         try {
-            var task = await TaskManagementService.getAllTasks(req, res);
-            await LogInfo(req.user.email, ` get all tasks `, req.user.company);
+            var task = await TaskManagementService.getAllTasks(req.portal);
+            await Logger.info(req.user.email, ` get all tasks `, req.portal);
             res.status(200).json({
                 success: true,
                 messages: ['get_all_task_success'],
                 content: task
             });
         } catch (error) {
-            await LogError(req.user.email, ` get task by id `, req.user.company);
+            await Logger.error(req.user.email, ` get task by id `, req.portal);
             res.status(400).json({
                 success: false,
                 messages: ['get_all_task_fail'],
@@ -80,13 +80,15 @@ getAllTasks = async (req, res) => {
  */
 exports.getTaskEvaluations = async (req, res) => {
     try {
-        let taskEvaluation = await TaskManagementService.getTaskEvaluations(req.query);
+        let taskEvaluation = await TaskManagementService.getTaskEvaluations(req.portal, req.query);
+        await Logger.info(req.user.email, `get_task_evaluation_success `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['get_task_evaluation_success'],
             content: taskEvaluation,
         });
     } catch (error) {
+        await Logger.error(req.user.email, ` get_task_evaluation_fail `, req.portal);
         res.status(400).json({
             success: false,
             messages: ['get_task_evaluation_fail'],
@@ -101,15 +103,15 @@ exports.getTaskEvaluations = async (req, res) => {
  */
 getAllTasksCreatedByUser = async (req, res) => {
     try {
-        var tasks = await TaskManagementService.getTasksCreatedByUser(req.query.userId);
-        await LogInfo(req.user.email, ` get task by role `, req.user.company)
+        var tasks = await TaskManagementService.getTasksCreatedByUser(req.portal, req.query.userId);
+        await Logger.info(req.user.email, ` get task by role `, req.portal)
         res.status(200).json({
             success: true,
             messages: ['get_tasks_by_role_success'],
             content: tasks
         });
     } catch (error) {
-        await LogError(req.user.email, ` get task by role  `, req.user.company)
+        await Logger.error(req.user.email, ` get task by role  `, req.portal)
         res.status(400).json({
             success: false,
             messages: ['get_tasks_by_role_fail'],
@@ -123,7 +125,7 @@ getAllTasksCreatedByUser = async (req, res) => {
  * Lấy công việc theo vai trò người thực hiện chính
  */
 getPaginatedTasksThatUserHasResponsibleRole = async (req, res) => {
-    try {
+    // try {
         let task = {
             perPage: req.query.perPage,
             number: req.query.number,
@@ -139,22 +141,22 @@ getPaginatedTasksThatUserHasResponsibleRole = async (req, res) => {
             endDateBefore: req.query.endDateBefore,
             aPeriodOfTime: req.query.aPeriodOfTime
         };
-        let responsibleTasks = await TaskManagementService.getPaginatedTasksThatUserHasResponsibleRole(task);
+        let responsibleTasks = await TaskManagementService.getPaginatedTasksThatUserHasResponsibleRole(req.portal, task);
 
-        await await LogInfo(req.user.email, ` get task responsible by user `, req.user.company)
+        await await Logger.info(req.user.email, ` get task responsible by user `, req.portal)
         res.status(200).json({
             success: true,
             messages: ['get_task_of_responsible_employee_success'],
             content: responsibleTasks
         })
-    } catch (error) {
-        await await LogError(req.user.email, ` get task responsible by user `, req.user.company)
-        res.status(400).json({
-            success: false,
-            messages: ['get_task_of_responsible_employee_fail'],
-            content: error
-        })
-    }
+    // } catch (error) {
+    //     await await Logger.error(req.user.email, ` get task responsible by user `, req.portal)
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: ['get_task_of_responsible_employee_fail'],
+    //         content: error
+    //     })
+    // }
 }
 
 /**
@@ -176,15 +178,15 @@ getPaginatedTasksThatUserHasAccountableRole = async (req, res) => {
             aPeriodOfTime: req.query.aPeriodOfTime
         };
 
-        var accountableTasks = await TaskManagementService.getPaginatedTasksThatUserHasAccountableRole(task);
-        await LogInfo(req.user.email, ` get task accountable by user  `, req.user.company)
+        var accountableTasks = await TaskManagementService.getPaginatedTasksThatUserHasAccountableRole(req.portal, task);
+        await Logger.info(req.user.email, ` get task accountable by user  `, req.portal)
         res.status(200).json({
             success: true,
             messages: ['get_task_of_accountable_employee_success'],
             content: accountableTasks
         });
     } catch (error) {
-        await LogError(req.user.email, ` get task accountable by user `, req.user.company)
+        await Logger.error(req.user.email, ` get task accountable by user `, req.portal)
         res.status(400).json({
             success: false,
             messages: ['get_task_of_accountable_employee_fail'],
@@ -212,15 +214,15 @@ getPaginatedTasksThatUserHasConsultedRole = async (req, res) => {
             aPeriodOfTime: req.query.aPeriodOfTime
         };
 
-        var consultedTasks = await TaskManagementService.getPaginatedTasksThatUserHasConsultedRole(task);
-        await LogInfo(req.user.email, ` get task consulted by user `, req.user.company)
+        var consultedTasks = await TaskManagementService.getPaginatedTasksThatUserHasConsultedRole(req.portal, task);
+        await Logger.info(req.user.email, ` get task consulted by user `, req.portal)
         res.status(200).json({
             success: true,
             messages: ['get_task_of_consulted_employee_success'],
             content: consultedTasks
         })
     } catch (error) {
-        await LogError(req.user.email, ` get task consulted by user `, req.user.company)
+        await Logger.error(req.user.email, ` get task consulted by user `, req.portal)
         res.status(400).json({
             success: false,
             messages: ['get_task_of_consulted_employee_fail'],
@@ -247,15 +249,15 @@ getPaginatedTasksCreatedByUser = async (req, res) => {
             endDate: req.query.endDate,
             aPeriodOfTime: req.query.aPeriodOfTime
         };
-        var creatorTasks = await TaskManagementService.getPaginatedTasksCreatedByUser(task);
-        await LogInfo(req.user.email, ` get task creator by user `, req.user.company)
+        var creatorTasks = await TaskManagementService.getPaginatedTasksCreatedByUser(req.portal, task);
+        await Logger.info(req.user.email, ` get task creator by user `, req.portal)
         res.status(200).json({
             success: true,
             messages: ['get_task_of_creator_success'],
             content: creatorTasks
         })
     } catch (error) {
-        await LogError(req.user.email, ` get task creator by user `, req.user.company)
+        await Logger.error(req.user.email, ` get task creator by user `, req.portal)
         res.status(400).json({
             success: false,
             messages: ['get_task_of_creator_fail'],
@@ -283,15 +285,15 @@ getPaginatedTasksThatUserHasInformedRole = async (req, res) => {
             aPeriodOfTime: req.query.aPeriodOfTime
         };
 
-        var informedTasks = await TaskManagementService.getPaginatedTasksThatUserHasInformedRole(task);
-        await LogInfo(req.user.email, ` get task informed by user `, req.user.company)
+        var informedTasks = await TaskManagementService.getPaginatedTasksThatUserHasInformedRole(req.portal, task);
+        await Logger.info(req.user.email, ` get task informed by user `, req.portal)
         res.status(200).json({
             success: true,
             messages: ['get_task_of_informed_employee_success'],
             content: informedTasks
         })
     } catch (error) {
-        await LogError(req.user.email, ` get task informed by user  `, req.user.company)
+        await Logger.error(req.user.email, ` get task informed by user  `, req.portal)
         res.status(400).json({
             success: false,
             messages: ['get_task_of_informed_employee_fail'],
@@ -319,15 +321,15 @@ getPaginatedTasksByUser = async (req, res) => {
             aPeriodOfTime: req.query.aPeriodOfTime
         };
 
-        var tasks = await TaskManagementService.getPaginatedTasksByUser(task);
-        await LogInfo(req.user.email, ` get task informed by user `, req.user.company)
+        var tasks = await TaskManagementService.getPaginatedTasksByUser(req.portal, task);
+        await Logger.info(req.user.email, ` get task informed by user `, req.portal)
         res.status(200).json({
             success: true,
             messages: ['get_task_of_user_success'],
             content: tasks
         })
     } catch (error) {
-        await LogError(req.user.email, ` get task informed by user  `, req.user.company)
+        await Logger.error(req.user.email, ` get task informed by user  `, req.portal)
         res.status(400).json({
             success: false,
             messages: ['get_task_of_user_fail'],
@@ -353,16 +355,16 @@ getTasksThatUserHasResponsibleRoleByDate = async (req, res) => {
             endDate: req.query.endDate,
             aPeriodOfTime: req.query.aPeriodOfTime
         };
-        var responsibleTasks = await TaskManagementService.getTasksThatUserHasResponsibleRoleByDate(task);
+        var responsibleTasks = await TaskManagementService.getTasksThatUserHasResponsibleRoleByDate(req.portal, task);
 
-        await await LogInfo(req.user.email, ` get task responsible by user `, req.user.company)
+        await await Logger.info(req.user.email, ` get task responsible by user `, req.portal)
         res.status(200).json({
             success: true,
             messages: ['get_task_of_responsible_employee_success'],
             content: responsibleTasks
         })
     } catch (error) {
-        await await LogError(req.user.email, ` get task responsible by user `, req.user.company)
+        await await Logger.error(req.user.email, ` get task responsible by user `, req.portal)
         res.status(400).json({
             success: false,
             messages: ['get_task_of_responsible_employee_fail'],
@@ -376,22 +378,22 @@ getTasksThatUserHasResponsibleRoleByDate = async (req, res) => {
  */
 exports.createTask = async (req, res) => {
     try {
-        var tasks = await TaskManagementService.createTask(req.body);
+        var tasks = await TaskManagementService.createTask(req.portal, req.body);
         var task = tasks.task;
         var user = tasks.user;
         var email = tasks.email;
         var html = tasks.html;
         var data = { "organizationalUnits": task.organizationalUnit._id, "title": "Tạo mới công việc", "level": "general", "content": html, "sender": task.organizationalUnit.name, "users": user };
-        NotificationServices.createNotification(task.organizationalUnit.company, data,);
+        NotificationServices.createNotification(req.portal, task.organizationalUnit.company, data,);
         sendEmail(email, "Tạo mới công việc hành công", '', html);
-        await LogInfo(req.user.email, ` create task `, req.user.company)
+        await Logger.info(req.user.email, ` create task `, req.portal)
         res.status(200).json({
             success: true,
             messages: ['create_task_success'],
             content: task
         });
     } catch (error) {
-        await LogError(req.user.email, ` create task  `, req.user.company)
+        await Logger.error(req.user.email, ` create task  `, req.portal)
         res.status(400).json({
             success: false,
             messages: ['create_task_fail'],
@@ -405,14 +407,14 @@ exports.createTask = async (req, res) => {
  */
 exports.deleteTask = async (req, res) => {
     try {
-        TaskManagementService.deleteTask(req.params.taskId);
-        await LogInfo(req.user.email, ` delete task  `, req.user.company)
+        TaskManagementService.deleteTask(req.portal, req.params.taskId);
+        await Logger.info(req.user.email, ` delete task  `, req.portal)
         res.status(200).json({
             success: true,
             messages: ['delete_success']
         });
     } catch (error) {
-        await LogError(req.user.email, ` delete task `, req.user.company)
+        await Logger.error(req.user.email, ` delete task `, req.portal)
         res.status(400).json({
             success: false,
             messages: ['delete_fail']
@@ -425,15 +427,15 @@ exports.deleteTask = async (req, res) => {
  */
 exports.getSubTask = async (req, res) => {
     try {
-        var task = await TaskManagementService.getSubTask(req.params.taskId);
-        await LogInfo(req.user.email, ` get subtask  `, req.user.company);
+        var task = await TaskManagementService.getSubTask(req.portal, req.params.taskId);
+        await Logger.info(req.user.email, ` get subtask  `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['get_subtask_success'],
             content: task
         })
     } catch (error) {
-        await LogError(req.user.email, ` get subtask `, req.user.company);
+        await Logger.error(req.user.email, ` get subtask `, req.portal);
         res.status(400).json({
             success: false,
             messages: ['get_subtask_fail'],
@@ -447,20 +449,20 @@ exports.getSubTask = async (req, res) => {
  */
 exports.editTaskByResponsibleEmployees = async (req, res) => {
     try {
-        var task = await TaskManagementService.editTaskByResponsibleEmployees(req.body, req.params.id);
+        var task = await TaskManagementService.editTaskByResponsibleEmployees(req.portal, req.body, req.params.id);
         var user = task.user;
         var tasks = task.tasks;
         var data = { "organizationalUnits": tasks.organizationalUnit, "title": "Cập nhật thông tin công việc", "level": "general", "content": `${user.name} đã cập nhật thông tin công việc với vai trò người phê duyệt`, "sender": tasks.name, "users": tasks.accountableEmployees };
-        NotificationServices.createNotification(tasks.organizationalUnit, data,);
+        NotificationServices.createNotification(req.portal, tasks.organizationalUnit, data,);
         sendEmail(task.email, "Cập nhật thông tin công việc", '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.id}">${process.env.WEBSITE}/task?taskId=${req.params.id}</a></p>`);
-        await LogInfo(req.user.email, ` edit task  `, req.user.company);
+        await Logger.info(req.user.email, ` edit task  `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['edit_task_success'],
             content: task.newTask
         })
     } catch (error) {
-        await LogError(req.user.email, ` edit task `, req.user.company);
+        await Logger.error(req.user.email, ` edit task `, req.portal);
         res.status(400).json({
             success: false,
             messages: ['edit_task_fail'],
@@ -473,20 +475,20 @@ exports.editTaskByResponsibleEmployees = async (req, res) => {
  */
 exports.editTaskByAccountableEmployees = async (req, res) => {
     try {
-        var task = await TaskManagementService.editTaskByAccountableEmployees(req.body, req.params.id);
+        var task = await TaskManagementService.editTaskByAccountableEmployees(req.portal, req.body, req.params.id);
         var user = task.user;
         var tasks = task.tasks;
         var data = { "organizationalUnits": tasks.organizationalUnit, "title": "Cập nhật thông tin công việc", "level": "general", "content": `${user.name} đã cập nhật thông tin công việc với vai trò người phê duyệt`, "sender": tasks.name, "users": tasks.responsibleEmployees };
-        NotificationServices.createNotification(tasks.organizationalUnit, data,);
+        NotificationServices.createNotification(req.portal, tasks.organizationalUnit, data,);
         sendEmail(task.email, "Cập nhật thông tin công việc", '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.id}">${process.env.WEBSITE}/task?taskId=${req.params.id}</a></p>`);
-        await LogInfo(req.user.email, ` edit task  `, req.user.company);
+        await Logger.info(req.user.email, ` edit task  `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['edit_task_success'],
             content: task.newTask
         })
     } catch (error) {
-        await LogError(req.user.email, ` edit task `, req.user.company);
+        await Logger.error(req.user.email, ` edit task `, req.portal);
         res.status(400).json({
             success: false,
             messages: ['edit_task_fail'],
@@ -499,15 +501,15 @@ exports.editTaskByAccountableEmployees = async (req, res) => {
  */
 exports.evaluateTaskByConsultedEmployees = async (req, res) => {
     try {
-        var task = await TaskManagementService.evaluateTaskByConsultedEmployees(req.body, req.params.id);
-        await LogInfo(req.user.email, ` edit task  `, req.user.company);
+        var task = await TaskManagementService.evaluateTaskByConsultedEmployees(req.portal, req.body, req.params.id);
+        await Logger.info(req.user.email, ` edit task  `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['evaluate_task_success'],
             content: task
         })
     } catch (error) {
-        await LogError(req.user.email, ` edit task `, req.user.company);
+        await Logger.error(req.user.email, ` edit task `, req.portal);
         res.status(400).json({
             success: false,
             messages: ['evaluate_task_fail'],
@@ -520,15 +522,15 @@ exports.evaluateTaskByConsultedEmployees = async (req, res) => {
  */
 exports.evaluateTaskByResponsibleEmployees = async (req, res) => {
     try {
-        var task = await TaskManagementService.evaluateTaskByResponsibleEmployees(req.body, req.params.id);
-        await LogInfo(req.user.email, ` edit task  `, req.user.company);
+        var task = await TaskManagementService.evaluateTaskByResponsibleEmployees(req.portal, req.body, req.params.id);
+        await Logger.info(req.user.email, ` edit task  `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['evaluate_task_success'],
             content: task
         })
     } catch (error) {
-        await LogError(req.user.email, ` edit task `, req.user.company);
+        await Logger.error(req.user.email, ` edit task `, req.portal);
         res.status(400).json({
             success: false,
             messages: ['evaluate_task_fail'],
@@ -541,15 +543,15 @@ exports.evaluateTaskByResponsibleEmployees = async (req, res) => {
  */
 exports.evaluateTaskByAccountableEmployees = async (req, res) => {
     try {
-        var task = await TaskManagementService.evaluateTaskByAccountableEmployees(req.body, req.params.id);
-        await LogInfo(req.user.email, ` edit task  `, req.user.company);
+        var task = await TaskManagementService.evaluateTaskByAccountableEmployees(req.portal, req.body, req.params.id);
+        await Logger.info(req.user.email, ` edit task  `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['evaluate_task_success'],
             content: task
         })
     } catch (error) {
-        await LogError(req.user.email, ` edit task `, req.user.company);
+        await Logger.error(req.user.email, ` edit task `, req.portal);
         res.status(400).json({
             success: false,
             messages: ['evaluate_task_fail'],
@@ -563,9 +565,9 @@ exports.evaluateTaskByAccountableEmployees = async (req, res) => {
  */
 getTasksByUser = async (req, res) => {
     try {
-        const tasks = await TaskManagementService.getTasksByUser(req.query);
+        const tasks = await TaskManagementService.getTasksByUser(req.portal, req.query);
 
-        await LogInfo(req.user.email, 'GET_TASK_BY_USER', req.user.company);
+        await Logger.info(req.user.email, 'GET_TASK_BY_USER', req.portal);
         res.status(200).json({
             success: true,
             messages: ['get_task_by_user_success'],
@@ -573,7 +575,7 @@ getTasksByUser = async (req, res) => {
         });
     }
     catch (error) {
-        await LogError(req.user.email, 'GET_TASK_BY_USER', req.user.company);
+        await Logger.error(req.user.email, 'GET_TASK_BY_USER', req.portal);
         res.status(400).json({
             success: false,
             messages: ['get_task_by_user_fail'],
@@ -585,16 +587,16 @@ getTasksByUser = async (req, res) => {
 /** Lấy tất cả task của organizationalUnit theo tháng hiện tại */
 getAllTaskOfOrganizationalUnit = async (req, res) => {
     try {
-        let tasksOfOrganizationalUnit = await TaskManagementService.getAllTaskOfOrganizationalUnit(req.query.roleId, req.query.organizationalUnitId, req.query.month);
+        let tasksOfOrganizationalUnit = await TaskManagementService.getAllTaskOfOrganizationalUnit(req.portal, req.query.roleId, req.query.organizationalUnitId, req.query.month);
 
-        LogInfo(req.user.email, ' get all task of organizational unit ', req.user.company);
+        Logger.info(req.user.email, ' get all task of organizational unit ', req.portal);
         res.status(200).json({
             success: true,
             messages: ['get_all_task_of_organizational_unit_success'],
             content: tasksOfOrganizationalUnit
         })
     } catch (error) {
-        LogError(req.user.email, ' get all task of organizational unit ', req.user.company);
+        Logger.error(req.user.email, ' get all task of organizational unit ', req.portal);
         res.status(400).json({
             success: false,
             messages: ['get_all_task_of_organizational_unit_failure'],
@@ -606,16 +608,16 @@ getAllTaskOfOrganizationalUnit = async (req, res) => {
 /** Lấy tất cả task của các đơn vị con của đơn vị hiện tại */
 getAllTaskOfChildrenOrganizationalUnit = async (req, res) => {
     try {
-        let tasksOfChildrenOrganizationalUnit = await TaskManagementService.getAllTaskOfChildrenOrganizationalUnit(req.user.company._id, req.query.roleId, req.query.month, req.query.organizationalUnitId);
+        let tasksOfChildrenOrganizationalUnit = await TaskManagementService.getAllTaskOfChildrenOrganizationalUnit(req.portal, req.user.company._id, req.query.roleId, req.query.month, req.query.organizationalUnitId); // req.portal === req.user.company._id
 
-        LogInfo(req.user.email, ' get all task of children organizational unit ', req.user.company);
+        Logger.info(req.user.email, ' get all task of children organizational unit ', req.portal);
         res.status(200).json({
             success: true,
             messages: ['get_all_task_of_children_organizational_unit_success'],
             content: tasksOfChildrenOrganizationalUnit
         })
     } catch (error) {
-        LogError(req.user.email, ' get all task of children organizational unit ', req.user.company);
+        Logger.error(req.user.email, ' get all task of children organizational unit ', req.portal);
         res.status(400).json({
             success: false,
             messages: ['get_all_task_of_children_organizational_unit_failure'],
@@ -631,16 +633,16 @@ getAllTaskOfOrganizationalUnitByMonth = async (req, res) => {
             startDateAfter: req.query.startDateAfter,
             endDateBefore: req.query.endDateBefore,
         };
-        var responsibleTasks = await TaskManagementService.getAllTaskOfOrganizationalUnitByMonth(task);
+        var responsibleTasks = await TaskManagementService.getAllTaskOfOrganizationalUnitByMonth(req.portal, task);
 
-        await await LogInfo(req.user.email, ` get task responsible by user `, req.user.company)
+        await Logger.info(req.user.email, ` get task responsible by user `, req.portal)
         res.status(200).json({
             success: true,
             messages: ['get_all_task_of_organizational_unit_success'],
             content: responsibleTasks
         })
     } catch (error) {
-        await await LogError(req.user.email, ` get task responsible by user `, req.user.company)
+        await Logger.error(req.user.email, ` get task responsible by user `, req.portal)
         res.status(400).json({
             success: false,
             messages: ['get_all_task_of_organizational_unit_failure'],

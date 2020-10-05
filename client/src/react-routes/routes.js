@@ -106,6 +106,7 @@ import ProposalManagement from '../modules/warehouse/proposal-management/compone
 // Customer Management
 import CrmCustomer from '../modules/crm/customer/components';
 import CrmGroup from '../modules/crm/group/components';
+// import CrmCare from '../modules/crm/care/components'
 
 //orders
 import OrderManagement from "../modules/order/components";
@@ -336,7 +337,7 @@ class Routes extends Component {
                         component={Document}
                     />
                     {/* Quan ly nhan su */}
-                    
+
                     <PrivateRoute
                         isLoading={this.props.annualLeave.isLoading}
                         key={'manage_configuration'}
@@ -1265,6 +1266,21 @@ class Routes extends Component {
                         layout={Layout}
                         component={CrmGroup}
                     />
+
+                    {/* <PrivateRoute
+                        isLoading={false}
+                        key={'customer-care'}
+                        arrPage={[
+                            { link: '/crm/care', name: 'crm_list.care', icon: 'fa fa-group' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/crm/care'}
+                        path={'/crm/care'}
+                        pageName={'crm_list.care'}
+                        layout={Layout}
+                        component={CrmCare}
+                    /> */}
 
                     {/* Orders Management */}
 

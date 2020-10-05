@@ -38,7 +38,7 @@ class TreeArchive extends Component {
         if (documents) {
             documents.map(doc => {
                 doc.archives.map(archive => {
-                    let idx = idArchive.indexOf(archive.id);
+                    let idx = idArchive.indexOf(archive);
                     countArchive[idx]++;
                 })
             })
@@ -54,7 +54,7 @@ class TreeArchive extends Component {
                     typeName: title,
                     parentId: archives[i].parent,
                 })
-            }
+            } 
         }
         let dataTree = chart && chart.map(node => {
             return {

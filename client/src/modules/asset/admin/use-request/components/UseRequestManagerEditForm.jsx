@@ -221,7 +221,21 @@ class UseRequestManagerEditForm extends Component {
         
         let dataToSubmit = { ...this.state, approver: this.props.auth.user._id };
         if (this.isFormValidated()) {
-            return this.props.updateRecommendDistribute(this.state._id, dataToSubmit,managedBy);
+            let data = {
+                status: dataToSubmit.status,
+                recommendNumber: dataToSubmit.recommendNumber,
+                dateCreate: dataToSubmit.dateCreate,
+                proponent: dataToSubmit.proponent._id, // Người đề nghị
+                reqContent: dataToSubmit.reqContent, // Người đề nghị
+                asset: dataToSubmit.asset._id,
+                dateStartUse: dataToSubmit.dateStartUse,
+                dateEndUse: dataToSubmit.dateEndUse,
+                approver: dataToSubmit.approver, // Người phê duyệt
+                note: dataToSubmit.note,
+                stopTime: dataToSubmit.stopTime,
+                startTime: dataToSubmit.startTime
+            }
+            return this.props.updateRecommendDistribute(this.state._id, data,managedBy);
         }
     }
 
@@ -431,9 +445,9 @@ class UseRequestManagerEditForm extends Component {
                                         style={{ width: "100%" }}
                                         value={status}
                                         items={[
-                                            { value: 'Đã phê duyệt', text: translate('asset.usage.approved') },
-                                            { value: 'Chờ phê duyệt', text: translate('asset.usage.waiting_approval') },
-                                            { value: 'Không phê duyệt', text: translate('asset.usage.not_approved') },
+                                            { value: 'approved', text: translate('asset.usage.approved') },
+                                            { value: 'waiting_for_approval', text: translate('asset.usage.waiting_approval') },
+                                            { value: 'disapproved', text: translate('asset.usage.not_approved') },
                                         ]}
                                         onChange={this.handleStatusChange}
                                     />

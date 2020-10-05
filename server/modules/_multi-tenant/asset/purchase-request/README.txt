@@ -1,1 +1,0 @@
-Chức năng: Đề nghị mua sắm thiết bị (bên phía nhân viên)

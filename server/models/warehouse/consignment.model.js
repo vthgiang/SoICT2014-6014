@@ -11,13 +11,13 @@ const ConsignmentSchema = new Schema ({
 
     good: {
         type: Schema.Types.ObjectId,
-        ref: "goods"
+        ref: 'Good'
     },
 
     stocks: [{
         stock: {
             type: Schema.Types.ObjectId,
-            ref: "stocks"
+            ref: 'Stock'
         },
 
         quantity: {
@@ -26,7 +26,7 @@ const ConsignmentSchema = new Schema ({
 
         binLocations: [{
             type: Schema.Types.ObjectId,
-            ref: "binLocations"
+            ref: 'BinLocation'
         }]
     }],
 
@@ -57,7 +57,7 @@ const ConsignmentSchema = new Schema ({
 
         bill: {
             type: Schema.Types.ObjectId,
-            ref: "bills"
+            ref: 'Bill'
         },
 
         quantity: {
@@ -87,7 +87,7 @@ const ConsignmentSchema = new Schema ({
 
         creator: {
             type: Schema.Types.ObjectId,
-            ref: 'users',
+            ref: 'User',
         },
 
         title: {
@@ -102,4 +102,8 @@ const ConsignmentSchema = new Schema ({
 
 ConsignmentSchema.plugin(mongoosePaginate);
 
-module.exports = Consignment = mongoose.model("consignments", ConsignmentSchema);
+module.exports = (db) => {
+    if(!db.models.Consignment)
+        return db.model('Consignment', ConsignmentSchema);
+    return db.models.Consignment;
+}

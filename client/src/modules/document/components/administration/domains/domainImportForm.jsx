@@ -84,12 +84,10 @@ class DomainImportForm extends Component {
 
     save = () => {
         let { importShowData } = this.state;
-        console.log(importShowData);
         this.props.importDomain(importShowData);
     }
     render() {
         const { translate } = this.props;
-        console.log('state', this.state);
         let { limit, page, importData, rowError, configData, checkFileImport } = this.state;
 
         return (

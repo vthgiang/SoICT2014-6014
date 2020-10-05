@@ -1,20 +1,17 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const Company = require('../system-admin/company.model');
-const AssetType = require('./assetType.model');
-const User = require('../auth/user.model');
-const OrganizationalUnit = require('../super-admin/organizationalUnit.model')
-// Create Schema
+
 const AssetSchema = new Schema({
-    group: {
-        type: String,
-        enum: ["building", "vehicle", "machine", "other"],
+
+    company: { //thuộc công ty nào
+        type: Schema.Types.ObjectId,
+        ref: 'companies',
         required: true
     },
 
-    company: { // công ty
-        type: Schema.Types.ObjectId,
-        ref: Company,
+    group: {
+        type: String,
+        enum: ["building", "vehicle", "machine", "other"]
     },
 
     /***************************************************************************************************
@@ -40,8 +37,7 @@ const AssetSchema = new Schema({
 
     assetType: [{ //5.loại tài sản
         type: Schema.Types.ObjectId,
-        ref: AssetType,
-        required: true
+        ref: 'AssetType',
     }],
 
     purchaseDate: { //6.ngày nhập, ngày mua
@@ -56,19 +52,19 @@ const AssetSchema = new Schema({
 
     managedBy: { //11.Người quản lý
         type: Schema.Types.ObjectId,
-        ref: User,
+        ref: 'User',
         // required: true
     },
 
     assignedToUser: { //12.Người đang được giao sử dụng
         type: Schema.Types.ObjectId,
-        ref: User,
+        ref: 'User',
         // required: true
     },
 
     assignedToOrganizationalUnit: { //13.Đơn vị đang được giao sử dụng
         type: Schema.Types.ObjectId,
-        ref: OrganizationalUnit,
+        ref: 'OrganizationalUnit',
     },
 
     location: { // 16.vị trí tài sản
@@ -79,13 +75,14 @@ const AssetSchema = new Schema({
 
     status: { //17.tình trạng: sẵn sàng sử dụng || đang sử dụng || hỏng hóc || mất || Thanh lý
         type: String,
+        // enum: ["Sẵn sàng sử dụng", "Đang sử dụng", "Hỏng hóc", "Mất", "Thanh lý"]
         enum: ["ready_to_use", "in_use", "broken", "lost", "disposed"],
-        required: true
     },
 
     typeRegisterForUse: { //Đăng ký sử dụng: 1.Không được đăng ký, 2.Đăng ký sử dụng theo giờ, 3.Đăng ký sử dụng lâu dài
         type: Number,
-        required: true
+        //     type: String,
+        //    enum: ["Được phép đăng ký sử dụng", "Không được phép đăng ký sử dụng"]
     },
 
     description: { //18.mô tả
@@ -99,30 +96,28 @@ const AssetSchema = new Schema({
 
     readByRoles: [{ // quyền xem theo Role
         type: Schema.Types.ObjectId,
-        ref: 'root_roles'
+        ref: 'RootRole'
     }],
     /***********************************************************************************************
      * Tab Khấu hao
      */
     depreciationType: { // Cách tính khấu hao
         type: String,
-        enum: ["straight_line", "declining_balance", "units_of_production"], // Reducing balance chính là Declining Balance Method
-        required: true
+        // enum: ["Đường thẳng", "Số dư giảm dần", "Sản lượng"],
+        enum: ["straight_line", "declining_balance", "units_of_production"],
+        // Reducing balance chính là Declining Balance Method
     },
 
-    cost: { // 8. Nguyên giá
-        type: Number,
-        required: true
+    cost: { //8. Nguyên giá
+        type: Number
     },
 
-    usefulLife: { // 9. Thời gian sử dụng
-        type: Number,
-        required: true
+    usefulLife: { //9. Thời gian sử dụng
+        type: Number
     },
 
     startDepreciation: { // thời gian bắt đầu trích khấu hao
-        type: Date,
-        required: true
+        type: Date
     },
 
     residualValue: { // 10. Giá trị thu hồi ước tính.
@@ -156,11 +151,11 @@ const AssetSchema = new Schema({
     usageLogs: [{ //ghi lại lịch sử sử dụng
         usedByUser: { // người sử dụng
             type: Schema.Types.ObjectId,
-            ref: User,
+            ref: 'User',
         },
         usedByOrganizationalUnit: {
             type: Schema.Types.ObjectId,
-            ref: OrganizationalUnit,
+            ref: 'OrganizationalUnit',
         },
         startDate: { // ngày bắt đầu sử dụng
             type: Date
@@ -228,7 +223,7 @@ const AssetSchema = new Schema({
         },
         reportedBy: { //Người báo cáo
             type: Schema.Types.ObjectId,
-            ref: User,
+            ref: 'User',
             // required: true
         },
         dateOfIncident: { //Ngày phát hiện
@@ -301,6 +296,7 @@ const AssetSchema = new Schema({
         type: {
             type: String,
             required: true,
+            // enum: ['Text', 'Boolean', 'Date', 'Number', 'SetOfValues'],
             enum: ['text', 'boolean', 'date', 'number', 'set_of_values'],
         },
         value: {
@@ -340,4 +336,8 @@ const AssetSchema = new Schema({
 
 });
 
-module.exports = Asset = mongoose.model("assets", AssetSchema);
+module.exports = (db) => {
+    if (!db.models.Asset)
+        return db.model('Asset', AssetSchema);
+    return db.models.Asset;
+}

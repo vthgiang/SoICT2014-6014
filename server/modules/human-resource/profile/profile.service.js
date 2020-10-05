@@ -7,34 +7,37 @@ const {
     OrganizationalUnit,
     UserRole,
     User,
-    Role,
     EmployeeCourse,
     Notification,
     Timesheet,
-} = require('../../../models').schema;
+} = require(`${SERVER_MODELS_DIR}`);
+
+const {
+    connect
+} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+
 const fs = require('fs');
 
 /**
  * Lấy thông tin phòng ban, chức vụ của nhân viên theo emailCompany
  * @emailInCompany : Email công ty của nhân viên
  */
-exports.getAllPositionRolesAndOrganizationalUnitsOfUser = async (emailInCompany) => {
+exports.getAllPositionRolesAndOrganizationalUnitsOfUser = async (portal, emailInCompany) => {
     let roles = [],
         organizationalUnits = [];
-    let user = await User.findOne({
+    let user = await User(connect(DB_CONNECTION, portal)).findOne({
         email: emailInCompany
     }, {
         _id: 1
     })
     if (user !== null) {
-        roles = await UserRole.find({
+        roles = await UserRole(connect(DB_CONNECTION, portal)).find({
             userId: user._id
         }).populate([{
             path: 'roleId',
-            model: Role
         }]);
         let newRoles = roles.map(role => role.roleId._id);
-        organizationalUnits = await OrganizationalUnit.find({
+        organizationalUnits = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({
             $or: [{
                     'deans': {
                         $in: newRoles
@@ -70,12 +73,12 @@ exports.getAllPositionRolesAndOrganizationalUnitsOfUser = async (emailInCompany)
  * @organizationalUnits : Mảng id phòng ban
  * @position : Mảng id chức vụ(role)
  */
-exports.getEmployeeEmailsByOrganizationalUnitsAndPositions = async (organizationalUnits, position) => {
+exports.getEmployeeEmailsByOrganizationalUnitsAndPositions = async (portal, organizationalUnits, position) => {
     let units = [],
         roles = [];
     for (let n in organizationalUnits) {
         // Lấy thông tin đơn vị
-        let unitInfo = await OrganizationalUnit.findById(organizationalUnits[n]);
+        let unitInfo = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findById(organizationalUnits[n]);
         units = [...units, unitInfo]
     }
     if (position === undefined) {
@@ -87,7 +90,7 @@ exports.getEmployeeEmailsByOrganizationalUnitsAndPositions = async (organization
     }
 
     // Lấy danh sách người dùng theo phòng ban và chức danh
-    let userRoles = await UserRole.find({
+    let userRoles = await UserRole(connect(DB_CONNECTION, portal)).find({
         roleId: {
             $in: roles
         }
@@ -97,7 +100,7 @@ exports.getEmployeeEmailsByOrganizationalUnitsAndPositions = async (organization
     let userId = userRoles.map(userRole => userRole.userId);
 
     // Lấy email của người dùng theo phòng ban và chức danh
-    let emailUsers = await User.find({
+    let emailUsers = await User(connect(DB_CONNECTION, portal)).find({
         _id: {
             $in: userId
         }
@@ -111,8 +114,8 @@ exports.getEmployeeEmailsByOrganizationalUnitsAndPositions = async (organization
  * Lấy thông tin cá nhân của nhân viên theo emailInCompany
  * @userId : Id người dùng(tài khoản)
  */
-exports.getEmployeeProfile = async (email) => {
-    let employees = await Employee.find({
+exports.getEmployeeProfile = async (portal, email) => {
+    let employees = await Employee(connect(DB_CONNECTION, portal)).find({
         emailInCompany: email
     });
     if (employees.length === 0) {
@@ -120,20 +123,20 @@ exports.getEmployeeProfile = async (email) => {
             employees: employees
         }
     } else {
-        let value = await this.getAllPositionRolesAndOrganizationalUnitsOfUser(email);
-        let salaries = await Salary.find({
+        let value = await this.getAllPositionRolesAndOrganizationalUnitsOfUser(portal, email);
+        let salaries = await Salary(connect(DB_CONNECTION, portal)).find({
             employee: employees[0]._id
         })
-        let annualLeaves = await AnnualLeave.find({
+        let annualLeaves = await AnnualLeave(connect(DB_CONNECTION, portal)).find({
             employee: employees[0]._id
         })
-        let commendations = await Commendation.find({
+        let commendations = await Commendation(connect(DB_CONNECTION, portal)).find({
             employee: employees[0]._id
         })
-        let disciplines = await Discipline.find({
+        let disciplines = await Discipline(connect(DB_CONNECTION, portal)).find({
             employee: employees[0]._id
         })
-        let courses = await EmployeeCourse.find({
+        let courses = await EmployeeCourse(connect(DB_CONNECTION, portal)).find({
             employee: employees[0]._id
         })
         return {
@@ -155,12 +158,12 @@ exports.getEmployeeProfile = async (email) => {
  * @data : Dữ liệu chỉnh sửa thông tin của nhân viên
  * @avatar : URL file avatar
  */
-exports.updatePersonalInformation = async (userId, data, avatar) => {
+exports.updatePersonalInformation = async (portal, userId, data, avatar) => {
     if (avatar === "") {
         avatar = data.avatar;
     }
-    let user = await User.findById(userId);
-    let employeeInfo = await Employee.findOne({
+    let user = await User(connect(DB_CONNECTION, portal)).findById(userId);
+    let employeeInfo = await Employee(connect(DB_CONNECTION, portal)).findOne({
         emailInCompany: user.email
     }, {
         _id: 1
@@ -196,13 +199,13 @@ exports.updatePersonalInformation = async (userId, data, avatar) => {
         temporaryResidenceWard: data.temporaryResidenceWard,
     }
     // Cập nhật thông tin cơ bản vào database
-    await Employee.findOneAndUpdate({
+    await Employee(connect(DB_CONNECTION, portal)).findOneAndUpdate({
         _id: employeeInfo._id
     }, {
         $set: employeeUpdate
     });
 
-    return await Employee.find({
+    return await Employee(connect(DB_CONNECTION, portal)).find({
         _id: employeeInfo._id
     });
 }
@@ -211,8 +214,8 @@ exports.updatePersonalInformation = async (userId, data, avatar) => {
  * Lấy thông tin nhân viên theo id
  * @id : Id thông tin nhân viên cần lấy
  */
-exports.getEmployeeInforById = async (id) => {
-    return await Employee.findById(id);
+exports.getEmployeeInforById = async (portal, id) => {
+    return await Employee(connect(DB_CONNECTION, portal)).findById(id);
 }
 
 /**
@@ -220,8 +223,8 @@ exports.getEmployeeInforById = async (id) => {
  * @param {*} emailInCompany : Email công ty
  * @param {*} company : Id công ty
  */
-exports.getEmployeeInforByEmailInCompany = async (emailInCompany, company) => {
-    return await Employee.findOne({
+exports.getEmployeeInforByEmailInCompany = async (portal, emailInCompany, company) => {
+    return await Employee(connect(DB_CONNECTION, portal)).findOne({
         company: company,
         emailInCompany: emailInCompany
     }, {
@@ -237,7 +240,7 @@ exports.getEmployeeInforByEmailInCompany = async (emailInCompany, company) => {
  * @positions : Array id chức vụ
  * @allInfor : 'true' lấy hết thông tin của mỗi nhân viên, false lấy 1 số thông tin của mỗi nhân viên
  */
-exports.getEmployees = async (company, organizationalUnits, positions, allInfor = true, status = 'active') => {
+exports.getEmployees = async (portal, company, organizationalUnits, positions, allInfor = true, status = 'active') => {
     let keySearch = {
         company: company
     };
@@ -249,21 +252,21 @@ exports.getEmployees = async (company, organizationalUnits, positions, allInfor 
     }
     if (allInfor === true) {
         if (organizationalUnits !== undefined) {
-            let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(organizationalUnits, positions);
+            let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(portal, organizationalUnits, positions);
             keySearch = {
                 ...keySearch,
                 emailInCompany: {
                     $in: emailInCompany
                 }
             };
-            let listEmployeesOfOrganizationalUnits = await Employee.find(keySearch);
+            let listEmployeesOfOrganizationalUnits = await Employee(connect(DB_CONNECTION, portal)).find(keySearch);
             let totalEmployee = listEmployeesOfOrganizationalUnits.length;
             return {
                 totalEmployee,
                 listEmployeesOfOrganizationalUnits
             }
         }
-        let listAllEmployees = await Employee.find(keySearch);
+        let listAllEmployees = await Employee(connect(DB_CONNECTION, portal)).find(keySearch);
         let totalAllEmployee = listAllEmployees.length;
         return {
             totalAllEmployee,
@@ -271,7 +274,7 @@ exports.getEmployees = async (company, organizationalUnits, positions, allInfor 
         }
     } else {
         if (organizationalUnits !== undefined) {
-            let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(organizationalUnits, positions);
+            let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(portal, organizationalUnits, positions);
             keySearch = {
                 ...keySearch,
                 emailInCompany: {
@@ -279,7 +282,7 @@ exports.getEmployees = async (company, organizationalUnits, positions, allInfor 
                 }
             };
 
-            let listEmployeesOfOrganizationalUnits = await Employee.find(keySearch, {
+            let listEmployeesOfOrganizationalUnits = await Employee(connect(DB_CONNECTION, portal)).find(keySearch, {
                 _id: 1,
                 emailInCompany: 1,
                 fullName: 1,
@@ -287,7 +290,9 @@ exports.getEmployees = async (company, organizationalUnits, positions, allInfor 
                 gender: 1,
                 birthdate: 1,
                 startingDate: 1,
-                leavingDate: 1
+                leavingDate: 1,
+                professionalSkill: 1,
+
             });
             let totalEmployee = listEmployeesOfOrganizationalUnits.length;
             return {
@@ -295,8 +300,8 @@ exports.getEmployees = async (company, organizationalUnits, positions, allInfor 
                 listEmployeesOfOrganizationalUnits
             }
         }
-        let totalAllEmployee = await Employee.countDocuments(keySearch);
-        let listAllEmployees = await Employee.find(keySearch, {
+        let totalAllEmployee = await Employee(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+        let listAllEmployees = await Employee(connect(DB_CONNECTION, portal)).find(keySearch, {
             _id: 1,
             emailInCompany: 1,
             fullName: 1,
@@ -304,7 +309,8 @@ exports.getEmployees = async (company, organizationalUnits, positions, allInfor 
             gender: 1,
             birthdate: 1,
             startingDate: 1,
-            leavingDate: 1
+            leavingDate: 1,
+            professionalSkill: 1
         });
         return {
             totalAllEmployee,
@@ -317,10 +323,10 @@ exports.getEmployees = async (company, organizationalUnits, positions, allInfor 
  * Lấy số nhân viên hết hạn hợp đồng lao động trong tháng hiện tại
  * @param {*} company : Id công ty
  */
-exports.getEmployeeNumberExpiresContractInCurrentMonth = async (company, month = new Date()) => {
+exports.getEmployeeNumberExpiresContractInCurrentMonth = async (portal, company, month = new Date()) => {
     let firstDay = new Date(month.getFullYear(), month.getMonth(), 1);
     let lastDay = new Date(month.getFullYear(), month.getMonth() + 1, 1);
-    let results = await Employee.count({
+    let results = await Employee(connect(DB_CONNECTION, portal)).countDocuments({
         company: company,
         status: "active",
         contractEndDate: {
@@ -336,8 +342,8 @@ exports.getEmployeeNumberExpiresContractInCurrentMonth = async (company, month =
  * @param {*} company 
  * @param {*} month 
  */
-exports.getEmployeeNumberHaveBirthdateInCurrentMonth = async (company, month = new Date()) => {
-    return await Employee.countDocuments({
+exports.getEmployeeNumberHaveBirthdateInCurrentMonth = async (portal, company, month = new Date()) => {
+    return await Employee(connect(DB_CONNECTION, portal)).countDocuments({
         company: company,
         status: "active",
         "$expr": {
@@ -354,105 +360,124 @@ exports.getEmployeeNumberHaveBirthdateInCurrentMonth = async (company, month = n
  * @param {*} numberMonth : số tháng gần nhất
  * @param {*} company : Id công ty
  */
-exports.getEmployeesOfNumberMonth = async (organizationalUnits, numberMonth, company) => {
-    let currentMonth = new Date().getMonth();
-    let currentYear = new Date().getFullYear();
-    currentMonth = currentMonth + 1;
-    let arrMonth = [];
-    for (let i = 0; i < Number(numberMonth); i++) {
-        let month = currentMonth - i;
-        if (month > 0) {
-            if (month.toString().length === 1) {
-                month = `${currentYear}-0${month}-01`;
-                arrMonth = [...arrMonth, month];
-            } else {
-                month = `${currentYear}-${month}-01`;
-                arrMonth = [...arrMonth, month];
-            }
-        } else {
-            month = month + 12;
-            if (month.toString().length === 1) {
-                month = `${currentYear-1}-0${month}-01`;
-                arrMonth = [...arrMonth, month];
-            } else {
-                month = `${currentYear-1}-${month}-01`;
-                arrMonth = [...arrMonth, month];
-            }
-        }
-    }
-
-    let querysStartingDate = [],
-        querysLeavingDate = [];
-    arrMonth.forEach(x => {
-        let date = new Date(x);
-        let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-        let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
-        querysStartingDate = [...querysStartingDate, {
-                startingDate: {
-                    "$gt": firstDay,
-                    "$lte": lastDay
-                }
-            }],
-            querysLeavingDate = [...querysLeavingDate, {
-                leavingDate: {
-                    "$gt": firstDay,
-                    "$lte": lastDay
-                }
-            }]
-    })
-
-    if (organizationalUnits) {
-        let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(organizationalUnits, undefined);
-        let listEmployeesHaveStartingDateOfNumberMonth = await Employee.find({
-            company: company,
-            emailInCompany: {
-                $in: emailInCompany
-            },
-            "$or": querysStartingDate,
-        }, {
-            _id: 1,
-            startingDate: 1,
-            leavingDate: 1
-        });
-        let listEmployeesHaveLeavingDateOfNumberMonth = await Employee.find({
-            company: company,
-            emailInCompany: {
-                $in: emailInCompany
-            },
-            "$or": querysLeavingDate,
-        }, {
-            _id: 1,
-            startingDate: 1,
-            leavingDate: 1
-        });
-
+exports.getEmployeesByStartingAndLeaving = async (portal, organizationalUnits, startDate, endDate, company) => {
+    if (new Date(startDate).getTime() > new Date(endDate).getTime()) {
         return {
-            arrMonth,
-            listEmployeesHaveStartingDateOfNumberMonth,
-            listEmployeesHaveLeavingDateOfNumberMonth
+            arrMonth: [],
+            listEmployeesHaveStartingDateOfNumberMonth: [],
+            listEmployeesHaveLeavingDateOfNumberMonth: [],
         }
     } else {
-        let listEmployeesHaveStartingDateOfNumberMonth = await Employee.find({
-            company: company,
-            "$or": querysStartingDate
-        }, {
-            _id: 1,
-            startingDate: 1,
-            leavingDate: 1
-        });
-        let listEmployeesHaveLeavingDateOfNumberMonth = await Employee.find({
-            company: company,
-            "$or": querysLeavingDate
-        }, {
-            _id: 1,
-            startingDate: 1,
-            leavingDate: 1
-        });
+        let endMonth = new Date(endDate).getMonth();
+        let endYear = new Date(endDate).getFullYear();
+        endMonth = endMonth + 1;
+        let arrMonth = [];
+        for (let i = 0;; i++) {
+            let month = endMonth - i;
+            if (month > 0) {
+                if (month.toString().length === 1) {
+                    month = `${endYear}-0${month}-01`;
+                    arrMonth = [...arrMonth, month];
+                } else {
+                    month = `${endYear}-${month}-01`;
+                    arrMonth = [...arrMonth, month];
+                }
+                if (`${startDate}-01` === month) {
+                    break;
+                }
+            } else {
+                let j = 1;
+                for (j;; j++) {
+                    month = month + 12;
+                    if (month > 0) {
+                        break;
+                    }
+                }
+                if (month.toString().length === 1) {
+                    month = `${endYear-j}-0${month}-01`;
+                    arrMonth = [...arrMonth, month];
+                } else {
+                    month = `${endYear-j}-${month}-01`;
+                    arrMonth = [...arrMonth, month];
+                }
+                if (`${startDate}-01` === month) {
+                    break;
+                }
+            }
+        }
+        let querysStartingDate = [],
+            querysLeavingDate = [];
+        arrMonth.forEach(x => {
+            let date = new Date(x);
+            let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+            let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
+            querysStartingDate = [...querysStartingDate, {
+                    startingDate: {
+                        "$gt": firstDay,
+                        "$lte": lastDay
+                    }
+                }],
+                querysLeavingDate = [...querysLeavingDate, {
+                    leavingDate: {
+                        "$gt": firstDay,
+                        "$lte": lastDay
+                    }
+                }]
+        })
 
-        return {
-            arrMonth,
-            listEmployeesHaveStartingDateOfNumberMonth,
-            listEmployeesHaveLeavingDateOfNumberMonth
+        if (organizationalUnits) {
+            let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(portal, organizationalUnits, undefined);
+            let listEmployeesHaveStartingDateOfNumberMonth = await Employee(connect(DB_CONNECTION, portal)).find({
+                company: company,
+                emailInCompany: {
+                    $in: emailInCompany
+                },
+                "$or": querysStartingDate,
+            }, {
+                _id: 1,
+                startingDate: 1,
+                leavingDate: 1
+            });
+            let listEmployeesHaveLeavingDateOfNumberMonth = await Employee(connect(DB_CONNECTION, portal)).find({
+                company: company,
+                emailInCompany: {
+                    $in: emailInCompany
+                },
+                "$or": querysLeavingDate,
+            }, {
+                _id: 1,
+                startingDate: 1,
+                leavingDate: 1
+            });
+
+            return {
+                arrMonth,
+                listEmployeesHaveStartingDateOfNumberMonth,
+                listEmployeesHaveLeavingDateOfNumberMonth
+            }
+        } else {
+            let listEmployeesHaveStartingDateOfNumberMonth = await Employee(connect(DB_CONNECTION, portal)).find({
+                company: company,
+                "$or": querysStartingDate
+            }, {
+                _id: 1,
+                startingDate: 1,
+                leavingDate: 1
+            });
+            let listEmployeesHaveLeavingDateOfNumberMonth = await Employee(connect(DB_CONNECTION, portal)).find({
+                company: company,
+                "$or": querysLeavingDate
+            }, {
+                _id: 1,
+                startingDate: 1,
+                leavingDate: 1
+            });
+
+            return {
+                arrMonth,
+                listEmployeesHaveStartingDateOfNumberMonth,
+                listEmployeesHaveLeavingDateOfNumberMonth
+            }
         }
     }
 }
@@ -462,14 +487,14 @@ exports.getEmployeesOfNumberMonth = async (organizationalUnits, numberMonth, com
  * @params : Dữ liệu key tìm kiếm
  * @company : Id công ty người tìm kiếm
  */
-exports.searchEmployeeProfiles = async (params, company) => {
+exports.searchEmployeeProfiles = async (portal, params, company) => {
     let keySearch = {
         company: company
     };
 
     // Bắt sựu kiện theo đơn vị
     if (params.organizationalUnits) {
-        let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(params.organizationalUnits, undefined);
+        let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(portal, params.organizationalUnits, undefined);
         keySearch = {
             ...keySearch,
             emailInCompany: {
@@ -537,7 +562,6 @@ exports.searchEmployeeProfiles = async (params, company) => {
     // Bắt sựu kiện theo tháng sinh
     if (params.birthdate) {
         let month = new Date(params.birthdate).getMonth() + 1;
-        console.log(month);
         keySearch = {
             ...keySearch,
             "$expr": {
@@ -549,7 +573,7 @@ exports.searchEmployeeProfiles = async (params, company) => {
     }
 
     // Lấy danh sách nhân viên
-    let listEmployees = await Employee.find(keySearch, {
+    let listEmployees = await Employee(connect(DB_CONNECTION, portal)).find(keySearch, {
             field1: 1,
             employeeNumber: 1,
             emailInCompany: 1,
@@ -565,10 +589,10 @@ exports.searchEmployeeProfiles = async (params, company) => {
             'createdAt': 'desc'
         }).skip(params.page).limit(params.limit);
 
-    let totalList = await Employee.countDocuments(keySearch);
+    let totalList = await Employee(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
 
-    let expiresContract = await this.getEmployeeNumberExpiresContractInCurrentMonth(company, new Date());
-    let employeesHaveBirthdateInCurrentMonth = await this.getEmployeeNumberHaveBirthdateInCurrentMonth(company, new Date())
+    let expiresContract = await this.getEmployeeNumberExpiresContractInCurrentMonth(portal, company, new Date());
+    let employeesHaveBirthdateInCurrentMonth = await this.getEmployeeNumberHaveBirthdateInCurrentMonth(portal, company, new Date())
     return {
         listEmployees,
         totalList,
@@ -606,7 +630,7 @@ exports.mergeUrlFileToObject = (arrayFile, arrayObject) => {
  * @company : Id công ty
  * @fileInfor : Thông tin file đính kèm
  */
-exports.createEmployee = async (data, company, fileInfor) => {
+exports.createEmployee = async (portal, data, company, fileInfor) => {
     let avatar = fileInfor.avatar === "" ? data.avatar : fileInfor.avatar,
         fileDegree = fileInfor.fileDegree,
         fileCertificate = fileInfor.fileCertificate,
@@ -623,7 +647,7 @@ exports.createEmployee = async (data, company, fileInfor) => {
     contracts = this.mergeUrlFileToObject(fileContract, contracts);
     files = this.mergeUrlFileToObject(file, files);
 
-    let createEmployee = await Employee.create({
+    let createEmployee = await Employee(connect(DB_CONNECTION, portal)).create({
         avatar: avatar,
         fullName: data.fullName,
         employeeNumber: data.employeeNumber,
@@ -693,7 +717,7 @@ exports.createEmployee = async (data, company, fileInfor) => {
     if (data.disciplines !== undefined) {
         let disciplines = data.disciplines;
         for (let x in disciplines) {
-            await Discipline.create({
+            await Discipline(connect(DB_CONNECTION, portal)).create({
                 employee: createEmployee._id,
                 company: company,
                 decisionNumber: disciplines[x].decisionNumber,
@@ -708,7 +732,7 @@ exports.createEmployee = async (data, company, fileInfor) => {
     if (data.commendations !== undefined) {
         let commendations = data.commendations;
         for (let x in commendations) {
-            await Commendation.create({
+            await Commendation(connect(DB_CONNECTION, portal)).create({
                 employee: createEmployee._id,
                 company: company,
                 decisionNumber: commendations[x].decisionNumber,
@@ -722,7 +746,7 @@ exports.createEmployee = async (data, company, fileInfor) => {
     if (data.salaries !== undefined) {
         let salaries = data.salaries;
         for (let x in salaries) {
-            await Salary.create({
+            await Salary(connect(DB_CONNECTION, portal)).create({
                 employee: createEmployee._id,
                 company: company,
                 organizationalUnit: salaries[x].organizationalUnit,
@@ -759,7 +783,7 @@ exports.createEmployee = async (data, company, fileInfor) => {
     }
 
     // Lấy thông tin nhân viên vừa thêm vào
-    return await Employee.findOne({
+    return await Employee(connect(DB_CONNECTION, portal)).findOne({
         _id: createEmployee._id
     }, {
         field1: 1,
@@ -778,7 +802,7 @@ exports.createEmployee = async (data, company, fileInfor) => {
 /**
  * Cập nhât thông tin nhân viên theo id
  */
-exports.updateEmployeeInformation = async (id, data, fileInfor, company) => {
+exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company) => {
     let {
         employee,
         createExperiences,
@@ -827,7 +851,7 @@ exports.updateEmployeeInformation = async (id, data, fileInfor, company) => {
             fs.unlinkSync(deleteAvatar);
         }
     }
-    let oldEmployee = await Employee.findById(id);
+    let oldEmployee = await Employee(connect(DB_CONNECTION, portal)).findById(id);
 
     deleteEditCreateObjectInArrayObject = (arrObject, arrDelete, arrEdit, arrCreate, fileInfor = undefined) => {
         if (arrDelete !== undefined) {
@@ -987,7 +1011,7 @@ exports.updateEmployeeInformation = async (id, data, fileInfor, company) => {
 
 
     // Lấy thông tin nhân viên vừa chỉnh sửa
-    return await Employee.findOne({
+    return await Employee(connect(DB_CONNECTION, portal)).findOne({
         _id: id
     }, {
         field1: 1,
@@ -1007,23 +1031,23 @@ exports.updateEmployeeInformation = async (id, data, fileInfor, company) => {
  * Xoá thông tin nhân viên
  * @id : Id nhân viên cần xoá
  */
-exports.deleteEmployee = async (id) => {
-    let employee = await Employee.findOneAndDelete({
+exports.deleteEmployee = async (portal, id) => {
+    let employee = await Employee(connect(DB_CONNECTION, portal)).findOneAndDelete({
         _id: id
     });
-    await Discipline.deleteMany({
+    await Discipline(connect(DB_CONNECTION, portal)).deleteMany({
         employee: id
     });
-    await Commendation.deleteMany({
+    await Commendation(connect(DB_CONNECTION, portal)).deleteMany({
         employee: id
     });
-    await AnnualLeave.deleteMany({
+    await AnnualLeave(connect(DB_CONNECTION, portal)).deleteMany({
         employee: id
     });
-    await Salary.deleteMany({
+    await Salary(connect(DB_CONNECTION, portal)).deleteMany({
         employee: id
     });
-    await Timesheet.deleteMany({
+    await Timesheet(connect(DB_CONNECTION, portal)).deleteMany({
         employee: id
     })
     if (employee.avatar) {
@@ -1072,8 +1096,8 @@ exports.deleteEmployee = async (id) => {
  * @employeeNumber : Mã số nhân viên
  * @company : Id công ty
  */
-exports.checkEmployeeExisted = async (employeeNumber, company) => {
-    let employee = await Employee.find({
+exports.checkEmployeeExisted = async (portal, employeeNumber, company) => {
+    let employee = await Employee(connect(DB_CONNECTION, portal)).find({
         employeeNumber: employeeNumber,
         company: company
     }, {
@@ -1090,8 +1114,8 @@ exports.checkEmployeeExisted = async (employeeNumber, company) => {
  * Kiểm tra sự tồn tại của email công ty
  * @email : Mã số nhân viên
  */
-exports.checkEmployeeCompanyEmailExisted = async (email) => {
-    let employee = await Employee.find({
+exports.checkEmployeeCompanyEmailExisted = async (portal, email) => {
+    let employee = await Employee(connect(DB_CONNECTION, portal)).find({
         emailInCompany: email
     }, {
         field1: 1
@@ -1126,15 +1150,17 @@ exports.formatDate = (date, monthDay = true) => {
 
 /**
  * Tạo thông báo cho các nhân viên có ngày sinh trùng với ngày hiện tại
+ * @param {*} portal : Tên ngắn công ty
  */
-exports.createNotificationForEmployeesHaveBrithdayCurrent = async () => {
-    let employees = await Employee.find({}, {
+exports.createNotificationForEmployeesHaveBrithdayCurrent = async (portal) => {
+    
+    let employees = await Employee(connect(DB_CONNECTION, portal)).find({}, {
         birthdate: 1,
         emailInCompany: 1
     });
     employees = employees.filter(x => this.formatDate(x.birthdate) === this.formatDate(new Date()));
     emails = employees.map(x => x.emailInCompany);
-    users = await User.find({
+    users = await User(connect(DB_CONNECTION, portal)).find({
         email: {
             $in: emails
         }
@@ -1160,15 +1186,15 @@ exports.createNotificationForEmployeesHaveBrithdayCurrent = async () => {
 
     // Tạo thông báo cho nhân viên cùng phòng ban với người có sinh nhật là ngày hiện tại
     for (let n in users) {
-        // lấy id phòng ban của nhân viên có sinh nhật là hôm nay
-        let value = await this.getAllPositionRolesAndOrganizationalUnitsOfUser(users[n].email);
+        // Lấy id phòng ban của nhân viên có sinh nhật là hôm nay
+        let value = await this.getAllPositionRolesAndOrganizationalUnitsOfUser(portal, users[n].email);
         let unitId = value.organizationalUnits;
         let roles = [];
         unitId.forEach(x => {
             roles = roles.concat(x.deans).concat(x.viceDeans).concat(x.employees);
         })
-        // lấy danh sách nhân viên cùng phòng ban với người
-        let usersArr = await UserRole.find({
+        // Lấy danh sách nhân viên cùng phòng ban với người
+        let usersArr = await UserRole(connect(DB_CONNECTION, portal)).find({
             roleId: {
                 $in: roles
             }
@@ -1195,20 +1221,22 @@ exports.createNotificationForEmployeesHaveBrithdayCurrent = async () => {
         })
         notifications = notifications.concat(notificationsArr)
     }
-    await Notification.insertMany(notifications);
+    let result = await Notification(connect(DB_CONNECTION, portal)).insertMany(notifications);
+    console.log(result);
 }
 
 /**
  * Tạo thông báo cho nhân viên khi hết hạn ký hợp đồng làm việc
+ * @param {*} portal : Tên ngắn công ty
  */
-exports.createNotificationEndOfContract = async () => {
+exports.createNotificationEndOfContract = async (portal) => {
     let arrayTime = [30, 15];
     let dateNow = new Date(this.formatDate(new Date(), false));
     let notifications = [];
     for (let n in arrayTime) {
         let dateCheck = new Date(dateNow.getFullYear(), dateNow.getMonth(), dateNow.getDate() + arrayTime[n]);
         dateCheck = new Date(this.formatDate(dateCheck, false));
-        let employees = await Employee.find({
+        let employees = await Employee(connect(DB_CONNECTION, portal)).find({
             contractEndDate: dateCheck
         }, {
             emailInCompany: 1,
@@ -1217,7 +1245,7 @@ exports.createNotificationEndOfContract = async () => {
 
         // Lấy thời gian phải gia hạn hợp đồng do được học các khoá đào tạo có thời gian cam kết
         for (let i in employees) {
-            let infoCourses = await EmployeeCourse.find({
+            let infoCourses = await EmployeeCourse(connect(DB_CONNECTION, portal)).find({
                     employee: employees[i]._id
                 }, {
                     course: 1
@@ -1248,7 +1276,7 @@ exports.createNotificationEndOfContract = async () => {
 
         // Lấy thông tin tài khoản ứng với mỗi nhân viên
         let emails = employees.map(x => x.emailInCompany);
-        let users = await User.find({
+        let users = await User(connect(DB_CONNECTION, portal)).find({
             email: {
                 $in: emails
             }
@@ -1274,7 +1302,7 @@ exports.createNotificationEndOfContract = async () => {
             notifications = [...notifications, notification]
         })
     }
-    await Notification.insertMany(notifications);
+    await Notification(connect(DB_CONNECTION, portal)).insertMany(notifications);
 
 }
 
@@ -1283,8 +1311,8 @@ exports.createNotificationEndOfContract = async () => {
  * @param {*} company : Id công ty
  * @param {*} data : Dữ liệu thông tin nhân viên cần import
  */
-exports.importEmployeeInfor = async (company, data) => {
-    let employeeInfo = await Employee.find({
+exports.importEmployeeInfor = async (portal, company, data) => {
+    let employeeInfo = await Employee(connect(DB_CONNECTION, portal)).find({
         company: company
     }, {
         employeeNumber: 1,
@@ -1308,7 +1336,7 @@ exports.importEmployeeInfor = async (company, data) => {
         if (checkEmailInCompany) {
             x = {
                 ...x,
-                errorAlert: [...x.errorAlert, "email_in_company_have_exist"],
+                errorAlert: [...x.errorAlert, "email_in_company_required"],
                 error: true
             };
         }
@@ -1339,7 +1367,7 @@ exports.importEmployeeInfor = async (company, data) => {
                 company: company,
             }
         })
-        return await Employee.insertMany(data);
+        return await Employee(connect(DB_CONNECTION, portal)).insertMany(data);
     }
 }
 
@@ -1349,8 +1377,8 @@ exports.importEmployeeInfor = async (company, data) => {
  * @param {*} company : Id công ty
  * @param {*} data : Dữ liệu import
  */
-exports.checkImportData = async (company, data) => {
-    let employeeInfo = await Employee.find({
+exports.checkImportData = async (portal, company, data) => {
+    let employeeInfo = await Employee(connect(DB_CONNECTION, portal)).find({
         company: company
     }, {
         employeeNumber: 1,
@@ -1386,8 +1414,8 @@ exports.checkImportData = async (company, data) => {
  * @param {*} company : Id công ty
  * @param {*} data : Dữ liệu kinh nghiệm làm việc cần import
  */
-exports.importExperience = async (company, data) => {
-    let result = await this.checkImportData(company, data);
+exports.importExperience = async (portal, company, data) => {
+    let result = await this.checkImportData(portal, company, data);
     data = result.data;
     let rowError = result.rowError;
 
@@ -1418,7 +1446,7 @@ exports.importExperience = async (company, data) => {
         })
 
         for (let x of importData) {
-            let editEmployee = await Employee.findOne({
+            let editEmployee = await Employee(connect(DB_CONNECTION, portal)).findOne({
                 _id: x._id
             });
             editEmployee.experiences = editEmployee.experiences.concat(x.experiences);
@@ -1434,8 +1462,8 @@ exports.importExperience = async (company, data) => {
  * @param {*} company : Id công ty
  * @param {*} data : Dữ liệu thông tin bằng cấp cần import
  */
-exports.importDegree = async (company, data) => {
-    let result = await this.checkImportData(company, data);
+exports.importDegree = async (portal, company, data) => {
+    let result = await this.checkImportData(portal, company, data);
     data = result.data;
     let rowError = result.rowError;
 
@@ -1466,7 +1494,7 @@ exports.importDegree = async (company, data) => {
             return result;
         })
         for (let x of importData) {
-            let editEmployee = await Employee.findOne({
+            let editEmployee = await Employee(connect(DB_CONNECTION, portal)).findOne({
                 _id: x._id
             });
             editEmployee.degrees = editEmployee.degrees.concat(x.degrees);
@@ -1481,8 +1509,8 @@ exports.importDegree = async (company, data) => {
  * @param {*} company : Id công ty
  * @param {*} data : Dữ liệu thông tin chứng chỉ cần import
  */
-exports.importCertificate = async (company, data) => {
-    let result = await this.checkImportData(company, data);
+exports.importCertificate = async (portal, company, data) => {
+    let result = await this.checkImportData(portal, company, data);
     data = result.data;
     let rowError = result.rowError;
 
@@ -1512,7 +1540,7 @@ exports.importCertificate = async (company, data) => {
             return result;
         })
         for (let x of importData) {
-            let editEmployee = await Employee.findOne({
+            let editEmployee = await Employee(connect(DB_CONNECTION, portal)).findOne({
                 _id: x._id
             });
             editEmployee.certificates = editEmployee.certificates.concat(x.certificates);
@@ -1527,8 +1555,8 @@ exports.importCertificate = async (company, data) => {
  * @param {*} company : Id công ty
  * @param {*} data : Dữ liệu hợp đồng lao động cần import
  */
-exports.importContract = async (company, data) => {
-    let result = await this.checkImportData(company, data);
+exports.importContract = async (portal, company, data) => {
+    let result = await this.checkImportData(portal, company, data);
     data = result.data;
     let rowError = result.rowError;
 
@@ -1564,7 +1592,7 @@ exports.importContract = async (company, data) => {
                     crurrentContract = y;
                 }
             });
-            let editEmployee = await Employee.findOne({
+            let editEmployee = await Employee(connect(DB_CONNECTION, portal)).findOne({
                 _id: x._id
             });
 
@@ -1590,8 +1618,8 @@ exports.importContract = async (company, data) => {
  * @param {*} company : Id công ty
  * @param {*} data : Dữ liệu quá trình đóng bảo hiểm xã hội cần import
  */
-exports.importSocialInsuranceDetails = async (company, data) => {
-    let result = await this.checkImportData(company, data);
+exports.importSocialInsuranceDetails = async (portal, company, data) => {
+    let result = await this.checkImportData(portal, company, data);
     data = result.data;
     let rowError = result.rowError;
 
@@ -1622,7 +1650,7 @@ exports.importSocialInsuranceDetails = async (company, data) => {
         })
 
         for (let x of importData) {
-            let editEmployee = await Employee.findOne({
+            let editEmployee = await Employee(connect(DB_CONNECTION, portal)).findOne({
                 _id: x._id
             });
             editEmployee.socialInsuranceDetails = editEmployee.socialInsuranceDetails.concat(x.socialInsuranceDetails);
@@ -1639,8 +1667,8 @@ exports.importSocialInsuranceDetails = async (company, data) => {
  * @param {*} company : Id công ty
  * @param {*} data : Dữ liệu tài liệu đính kèm cần import
  */
-exports.importFile = async (company, data) => {
-    let result = await this.checkImportData(company, data);
+exports.importFile = async (portal, company, data) => {
+    let result = await this.checkImportData(portal, company, data);
     data = result.data;
     let rowError = result.rowError;
 
@@ -1670,7 +1698,7 @@ exports.importFile = async (company, data) => {
             return result;
         })
         for (let x of importData) {
-            let editEmployee = await Employee.findOne({
+            let editEmployee = await Employee(connect(DB_CONNECTION, portal)).findOne({
                 _id: x._id
             });
             editEmployee.files = editEmployee.files.concat(x.files);

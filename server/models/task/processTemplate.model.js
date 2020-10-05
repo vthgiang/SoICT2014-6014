@@ -1,10 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const Role = require('../auth/role.model');
-const User = require('../auth/user.model');
-const OrganizationalUnits = require('../super-admin/organizationalUnit.model');
-const TaskTemplate = require('./taskTemplate.model');
-// Create Schema
+
 const ProcessTemplateSchema = new Schema({
     xmlDiagram: {
         type: String,
@@ -17,16 +13,16 @@ const ProcessTemplateSchema = new Schema({
     },
     viewer: [{
         type: Schema.Types.ObjectId,
-        ref: Role,
+        ref: 'Role',
     }],
     manager: [{
         type: Schema.Types.ObjectId,
-        ref: Role,
+        ref: 'Role',
     }],
     creator: {
         type: Schema.Types.ObjectId,
         required: true,
-        ref: User,
+        ref: 'User',
     },
     tasks: [{
         code: {
@@ -34,7 +30,7 @@ const ProcessTemplateSchema = new Schema({
         },
         organizationalUnit: {
             type: Schema.Types.ObjectId,
-            ref: OrganizationalUnit,
+            ref: 'OrganizationalUnit',
             required: true
         },
         name: {
@@ -43,7 +39,7 @@ const ProcessTemplateSchema = new Schema({
         },
         creator: {
             type: Schema.Types.ObjectId,
-            ref: User,
+            ref: 'User',
             required: true
         },
         priority: { // 1: Thấp, 2: Trung Bình, 3: Cao
@@ -100,24 +96,24 @@ const ProcessTemplateSchema = new Schema({
         }],
         readByEmployees: [{
             type: Schema.Types.ObjectId,
-            ref: Role,
+            ref: 'Role',
             required: true
         }],
         responsibleEmployees: [{
             type: Schema.Types.ObjectId,
-            ref: User
+            ref: 'User'
         }],
         accountableEmployees: [{
             type: Schema.Types.ObjectId,
-            ref: User
+            ref: 'User'
         }],
         consultedEmployees: [{
             type: Schema.Types.ObjectId,
-            ref: User
+            ref: 'User'
         }],
         informedEmployees: [{
             type: Schema.Types.ObjectId,
-            ref: User
+            ref: 'User'
         }],
         description: {
             type: String,
@@ -162,4 +158,8 @@ const ProcessTemplateSchema = new Schema({
     },
 });
 
-module.exports = ProcessTemplate = mongoose.model("process_templates", ProcessTemplateSchema);
+module.exports = (db) => {
+    if(!db.models.ProcessTemplate)
+        return db.model('ProcessTemplate', ProcessTemplateSchema);
+    return db.models.ProcessTemplate;
+}

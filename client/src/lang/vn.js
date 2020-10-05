@@ -693,9 +693,9 @@ export default {
             manage_document: 'Quản lý tài liệu',
             documents: 'Tài liệu văn bản',
 
-            crm: 'CRM',
+            customer_Management: 'Quản lý khách hàng',
             crm_list: {
-                customer: 'Khách hàng',
+                customer: 'Quản lý thông tin khách hàng',
                 lead: 'Khách hàng thân thiết',
                 care: 'Chăm sóc khách hàng',
                 group: 'Nhóm khách hàng',
@@ -1734,6 +1734,7 @@ export default {
         // Modules Quản lý tài sản
         asset: {
             general_information: {
+                view_more: 'Xem thêm',
                 asset: 'Tài sản',
                 asset_list: 'Dang sách tài sản',
                 search: 'Tìm kiếm',
@@ -1781,6 +1782,7 @@ export default {
                 action: 'Hành động',
                 asset_value: 'Giá trị tài sản',
                 disposal_date: 'Ngày thanh lý',
+                not_disposal: 'Chưa thanh lý',
 
                 general_information: 'Thông tin chung',
                 usage_information: 'Thông tin sử dụng',
@@ -1814,6 +1816,8 @@ export default {
                 reported_by: 'Người báo cáo',
                 incident_type: 'Loại sự cố',
                 date_incident: 'Ngày phát hiện',
+                select_incident_type: 'Chọn loại sự cố',
+                select_all_incident_type: 'Chọn tất cả loại sự cố',
 
                 disposal_date: 'Thời gian thanh lý',
                 disposal_type: 'Hình thức thanh lý',
@@ -1828,6 +1832,10 @@ export default {
                 not_for_registering: 'Không được đăng ký sử dụng',
                 register_by_hour: 'Đăng ký sử dụng theo giờ',
                 register_for_long_term: 'Đăng ký sử dụng lâu dài',
+
+                create_reception_date: 'Ngày lập phiếu',
+                select_reception_type: 'Chọn loại phiếu',
+                select_all_reception_type: 'Chọn tất cả loại phiếu',
             },
 
             // Dashboard
@@ -1888,7 +1896,7 @@ export default {
                 incident_list: 'Danh sách sự cố tài sản',
                 file_list: 'Danh sách tài liệu đính kèm',
                 edit_document: 'Chỉnh sửa tài liệu đính kèm',
-                add_usage_info: 'Thêm mới thông tin cấp phát sử dụng',
+                add_usage_info: 'Thêm mới thông tin sử dụng tài sản',
                 edit_usage_info: 'Chỉnh sửa phiếu đăng kí sử dụng',
                 delete_usage_info: 'Xóa thông tin cấp phát sử dụng',
                 add_maintenance_card: 'Thêm mới phiếu bảo trì',
@@ -2732,8 +2740,8 @@ export default {
                         initialize_kpi_newmonth: 'Khởi tạo KPI tháng mới',
                         request_approval: 'Yêu cầu phê duyệt',
                         cancel_request_approval: 'Hủy yêu cầu phê duyệt',
-                        not_initialize_organiztional_unit_kpi: 'Chưa thể khởi tạo KPI tháng này cho bạn do đơn vị của bạn chưa thiết lập KPI. Liên hệ với trưởng đơn vị để hỏi thêm',
-                        not_activate_organiztional_unit_kpi: 'Đơn vị của bạn chưa kích hoạt KPI. Liên hệ với trưởng đơn vị để hỏi thêm',
+                        not_initialize_organiztional_unit_kpi: 'Đơn vị cấp trên của bạn chưa thiết lập KPI. Liên hệ với trưởng đơn vị để hỏi thêm',
+                        not_activate_organiztional_unit_kpi: 'Đơn vị cấp trên của bạn chưa kích hoạt KPI. Liên hệ với trưởng đơn vị để hỏi thêm',
                         // Nhóm dành cho các trạng thái tập KPI
                         kpi_status: {
                             status: 'Trạng thái KPI',

@@ -1,13 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const {
-    auth
-} = require('../../../middleware');
 
 const AnnualLeaveController = require("./annualLeave.controller");
+const { auth } = require(`${SERVER_MIDDLEWARE_DIR}`);
 
 
 router.get('/annualLeaves', auth, AnnualLeaveController.searchAnnualLeaves);
+
 
 router.post('/annualLeaves', auth, AnnualLeaveController.createAnnualLeave);
 

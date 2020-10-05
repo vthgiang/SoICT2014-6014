@@ -38,35 +38,29 @@ class EditForm extends Component {
 
     handleIssuingBody = (e) => {
         const value = e.target.value;
-        // this.validateIssuingBody(value, true);
         this.setState(state => {
             return {
                 ...state,
                 documentIssuingBody: value,
-                //errorIssuingBody: msg,
             }
         })
     }
     handleOfficialNumber = (e) => {
         const value = e.target.value;
-        // this.validateOfficialNumber(value, true);
         this.setState(state => {
             return {
                 ...state,
                 documentOfficialNumber: value,
-                // errorOfficialNumber: msg,
             }
         })
     }
 
     handleSigner = (e) => {
         const value = e.target.value;
-        // this.validateSinger(value, true);
         this.setState(state => {
             return {
                 ...state,
                 documentSigner: value,
-                //  errorSigner: msg,
             }
         })
     }
@@ -79,7 +73,6 @@ class EditForm extends Component {
         this.validateVersionName(value, true)
     }
     handleRelationshipDocuments = value => {
-        //  this.setState({ documentDomains: value });
         this.setState({ documentRelationshipDocuments: value });
     }
 
@@ -87,33 +80,25 @@ class EditForm extends Component {
         this.setState({ documentRoles: value });
     }
 
-    // handleArchivedRecordPlaceInformation = (e) => {
-    //     const { value } = e.target;
-    //     this.setState(state => {
-    //         return {
-    //             ...state,
-    //             documentArchivedRecordPlace: {
-    //                 ...state.documentArchivedRecordPlace,
-    //                 information: value
-    //             }
-    //         }
-    //     });
-    // }
 
     handleArchivedRecordPlaceOrganizationalUnit = (value) => {
-        // const { value } = e.target;
         this.setState(state => {
             return {
                 ...state,
-                // documentArchivedRecordPlace: {
-                //     ...state.documentArchivedRecordPlace,
-                //     organizationalUnit: value
-                // }
                 documentArchivedRecordPlaceOrganizationalUnit: value[0]
             }
         });
     }
 
+    handleVersionName = (e) => {
+        const value = e.target.value;
+        this.setState(state => {
+            return {
+                ...state,
+                documentVersionName: value,
+            }
+        })
+    }
     handleArchivedRecordPlaceManager = (e) => {
         const { value } = e.target;
         this.setState(state => {
@@ -171,7 +156,6 @@ class EditForm extends Component {
             }
         })
     }
-
     handleUploadFile = (file) => {
         file = file.map(x => {
             return {
@@ -187,6 +171,7 @@ class EditForm extends Component {
             }
         });
     }
+
     handleUploadFileScan = (file) => {
         file = file.map(x => {
             return {
@@ -202,9 +187,8 @@ class EditForm extends Component {
             }
         });
     }
-    // handleUploadFileScan = (e) => {
-    //     this.setState({ documentFileScan: e.target.files[0] });
-    // }
+
+
     validateName = (value, willUpdateState) => {
         let msg = undefined;
         const { translate } = this.props;
@@ -406,14 +390,8 @@ class EditForm extends Component {
     }
 
     isValidateForm = () => {
-        // console.log('tttttttttttt', this.validateName(this.state.documentName, false), this.validateCategory(this.state.documentCategory, false),
-        //     this.validateOfficialNumber(this.state.documentOfficialNumber, false), this.validateSinger(this.state.documentSigner, false),
-        //     this.validateIssuingBody(this.state.documentIssuingBody, false))
         return this.validateName(this.state.documentName, false)
             && this.validateCategory(this.state.documentCategory, false)
-        // && this.validateOfficialNumber(this.state.documentOfficialNumber, false)
-        // && this.validateSinger(this.state.documentSigner, false)
-        // && this.validateIssuingBody(this.state.documentIssuingBody, false);
     }
     isValidateFormAddVersion = () => {
         return this.validateVersionName(this.state.documentVersionName, false);
@@ -461,6 +439,7 @@ class EditForm extends Component {
         let description = "";
         const formData = new FormData();
         formData.append('name', documentName);
+
         if (documentName !== this.props.documentName) {
             if (!title.includes("Chỉnh sửa thông tin văn bản.")) {
                 title = (title + " Chỉnh sửa thông tin văn bản ");
@@ -566,25 +545,16 @@ class EditForm extends Component {
                 description += nameRole[0].text + " ";
             }
         }
-
         if (documentArchivedRecordPlaceOrganizationalUnit !== this.props.documentArchivedRecordPlaceOrganizationalUnit) {
             if (!title.includes("Chỉnh sửa đơn vị quản lí")) {
                 title += "Chỉnh sửa đơn vị quản lí"
             }
-            //console.log('iiiiiiiiiiiiiiiiiii', documentArchivedRecordPlaceOrganizationalUnit, this.props.documentArchivedRecordPlaceOrganizationalUnit, documentArchivedRecordPlaceOrganizationalUnit !== this.props.documentArchivedRecordPlaceOrganizationalUnit)
             let newDepartment;
             newDepartment = department.list.filter(d => d._id === documentArchivedRecordPlaceOrganizationalUnit)
-            // console.log('newDepartment', newDepartment)
             description += "Đơn vị quản lí mới " + newDepartment[0].name + ". "
             formData.append('archivedRecordPlaceOrganizationalUnit', documentArchivedRecordPlaceOrganizationalUnit);
         }
-        if (documentArchivedRecordPlaceManager !== this.props.documentArchivedRecordPlaceManager) {
-            if (!title.includes("Chỉnh sửa khác")) {
-                title += "Chỉnh sửa khác"
-            }
-            description += + documentArchivedRecordPlaceManager + ". "
-            formData.append('archivedRecordPlaceManager', documentArchivedRecordPlaceManager);
-        }
+
         if (title) {
             formData.append('title', title);
             formData.append('creator', getStorage("userId"))
@@ -613,7 +583,6 @@ class EditForm extends Component {
             documentFileScan
         } = this.state;
         let title, descriptions;
-        // console.log('dateeee', documentIssuingDate)
         title = "Thêm phiên bản mới";
         const formData = new FormData();
         if (documentVersionName) {
@@ -685,7 +654,7 @@ class EditForm extends Component {
                 errorExpiredDate: undefined,
                 errorCategory: undefined
             }
-        } else if (nextProps.documentVersions.length > prevState.documentVersions.length) {
+        } else if (nextProps.documentVersions.length !== prevState.documentVersions.length) {
             return {
                 ...prevState,
                 documentId: nextProps.documentId,
@@ -734,6 +703,18 @@ class EditForm extends Component {
             }
         })
     }
+
+    updateDocumentVersions = async (version) => {
+        let { documentVersions } = this.state;
+        for (let i in documentVersions) {
+            if (documentVersions[i]._id === version._id) {
+                documentVersions[i] = version
+            }
+        }
+
+        this.setState({ documentVersions: documentVersions });
+    }
+
     render() {
         const {
             documentId, documentName, documentDescription, documentCategory, documentDomains,
@@ -750,8 +731,6 @@ class EditForm extends Component {
         const relationshipDocs = documents.administration.data.list.filter(doc => doc._id !== documentId).map(doc => { return { value: doc._id, text: doc.name } })
         const archives = documents.administration.archives.list;
         let path = documentArchives ? this.findPath(archives, documentArchives) : "";
-
-        //  console.log('rrrrrrrr', !this.isValidateForm());
         return (
             <React.Fragment>
                 <DialogModal
@@ -773,6 +752,8 @@ class EditForm extends Component {
                             expiredDate={currentVersion.expiredDate}
                             documentFile={currentVersion.documentFile}
                             documentFileScan={currentVersion.documentFileScan}
+
+                            updateDocumentVersions={this.updateDocumentVersions}
                         />
                     }
                     <form id="form-edit-document">
@@ -861,7 +842,6 @@ class EditForm extends Component {
                                                             {" " + translate('document.choose_file')}
                                                             <input className="upload" type="file" name="file" onChange={this.handleUploadFile} />
                                                         </div> */}
-                                                        <ErrorLabel content={errorDocumentFile} />
                                                     </div>
                                                     <div className="form-group">
                                                         <label>{translate('document.upload_file_scan')}</label>
@@ -872,7 +852,6 @@ class EditForm extends Component {
                                                             {" " + translate('document.choose_file')}
                                                             <input className="upload" type="file" name="file" onChange={this.handleUploadFileScan} />
                                                         </div> */}
-                                                        <ErrorLabel content={errorDocumentFileScan} />
                                                     </div>
                                                     <div className="form-group">
                                                         <label>{translate('document.doc_version.issuing_date')}</label>
@@ -975,7 +954,7 @@ class EditForm extends Component {
                                                     style={{ width: "100%" }}
                                                     items={department.list.map(organ => { return { value: organ._id, text: organ.name } })}
                                                     onChange={this.handleArchivedRecordPlaceOrganizationalUnit}
-                                                    value={documentArchivedRecordPlaceOrganizationalUnit}
+                                                    value={[documentArchivedRecordPlaceOrganizationalUnit]}
                                                     multiple={false}
                                                 />
                                             </div>

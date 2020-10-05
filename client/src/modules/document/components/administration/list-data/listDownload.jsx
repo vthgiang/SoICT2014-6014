@@ -14,7 +14,6 @@ class ListView extends Component {
 
     render() {
         const { translate } = this.props;
-        console.log('nameeeeeee', this.props.docs.name)
         const { downloads } = this.props.docs;
         return (
             <React.Fragment>

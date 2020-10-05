@@ -1,82 +1,63 @@
 const { createLogger, format, transports } = require('winston');
+const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 const { combine, timestamp, label, printf } = format;
-const Company = require('../models/system-admin/company.model');
+const { Company } = require(`${SERVER_MODELS_DIR}`);
 
 const myFormat = printf(({ level, message, label, timestamp }) => {
     return `${timestamp} |${label}| ${level} ${message}`;
 });
 
-const Log = async (filename, title) => {
+const Log = (company, content) => {
     var option = {
         level: 'error',
         format: combine(
-            label({label: title}),
+            label({ label: content}),
             timestamp(),
             myFormat
         ),
         transports: [
-            new transports.File({ filename: `./logs/history/${filename}/error.log`, level: 'error' }),
-            new transports.File({ filename: `./logs/history/${filename}/info.log`, level: 'info' }),
-            new transports.File({ filename: `./logs/history/${filename}/debug.log`, level: 'debug' }),
-            new transports.File({ filename: `./logs/history/${filename}/combined.log` })
+            new transports.File({ filename: `./logs/history/${company}/error.log`, level: 'error' }),
+            new transports.File({ filename: `./logs/history/${company}/info.log`, level: 'info' }),
+            new transports.File({ filename: `./logs/history/${company}/debug.log`, level: 'debug' }),
+            new transports.File({ filename: `./logs/history/${company}/combined.log` })
         ]
     };
 
-    return await createLogger(option);
-}
-
-const LogInfo = async(user, content, company=undefined) => {
-    try {
-        if(company === undefined){
-            //Không có id công ty để check trong databse
-            const Logger = await Log('system', content); //Khởi tạo lưu vào thư mục guest
-            await Logger.info(user);
-        }else{
-            //Có id của công ty
-            const com = await Company.findById(company._id); //lấy thông tin về công ty trong hệ thống
-            if(com === null){
-                //Không có dữ liệu về công ty này
-                const Logger = await Log('system', content); //ghi log vào thư mục system - systemadmin
-                await Logger.info(user);
-            }else{
-                //Có dữ liệu về công ty
-                const Logger = await Log(`${company.shortName}-${company._id}`, content);
-                com.log && await Logger.info(user);
-            }
-        }
-    } catch (error) {
-        console.log(error)
-    }
-    
-}
-
-const LogError = async(user, content, company=undefined) => {
-    try {
-        if(company === undefined){
-            //Không có id công ty để check trong databse
-            const Logger = await Log('system', content); //Khởi tạo lưu vào thư mục guest
-            await Logger.error(user);
-        }else{
-            //Có id của công ty
-            const com = await Company.findById(company._id); //lấy thông tin về công ty trong hệ thống
-            if(com === null){
-                //Không có dữ liệu về công ty này
-                const Logger = await Log('system', content); //ghi log vào thư mục log chung
-                await Logger.error(user);
-            }else{
-                //Có dữ liệu về công ty
-                const Logger = await Log(`${company.shortName}-${company._id}`, content);
-                com.log && await Logger.error(user);
-            }
-        }
-    } catch (error) {
-        console.log(error)
-    }
-    
+    return createLogger(option);
 }
 
 module.exports = {
-    Log,
-    LogInfo,
-    LogError
-};
+    info: async(user, content, portal) => {
+        try {
+            if(!portal) portal = process.env.DB_NAME;
+            const com = await Company(connect(DB_CONNECTION, process.env.DB_NAME))
+            .findOne({shortName: portal});
+            if(com === null){
+                const log = Log(process.env.DB_NAME, content);
+                log.info(user)
+            }else{
+                const log = Log(portal, content);
+                com.log && log.info(user)
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    },
+
+    error: async(user, content, portal) => {
+        try {
+            if(!portal) portal = process.env.DB_NAME;
+            const com = await Company(connect(DB_CONNECTION, process.env.DB_NAME))
+                .findOne({shortName: portal});
+            if(com === null){
+                const log = Log(process.env.DB_NAME, content);
+                log.error(user)
+            }else{
+                const log = Log(portal, content);
+                com.log && log.error(user)
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    },
+}

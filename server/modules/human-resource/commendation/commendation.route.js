@@ -1,13 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const {
-    auth
-} = require('../../../middleware');
 
 const CommendationController = require("./commendation.controller");
+const { auth } = require(`${SERVER_MIDDLEWARE_DIR}`);
 
 
 router.get('/commendations', auth, CommendationController.searchCommendations);
+
 
 router.post('/commendations', auth, CommendationController.createCommendation);
 

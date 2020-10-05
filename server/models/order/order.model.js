@@ -20,4 +20,8 @@ const OrderSchema = new Schema({
   },
 });
 
-module.exports = Order = mongoose.model("orders", OrderSchema);
+module.exports = (db) => {
+  if(!db.models.Order)
+      return db.model('Order', OrderSchema);
+  return db.models.Order;
+}

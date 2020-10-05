@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DocumentActions } from '../../../redux/actions';
 import { ExportExcel, Tree } from '../../../../../common-components';
-import ListDocument from './ListDocument';
 import TreeDomain from './domainChart/treeDomain';
 import TreeArchive from './archiveChart/treeArchive';
 import c3 from 'c3';
@@ -22,7 +21,6 @@ class AdministrationStatisticsReport extends Component {
     }
 
     componentDidMount() {
-        this.props.getAllDocuments();
         this.props.getDocumentCategories();
         this.props.getDocumentDomains();
     }
@@ -62,7 +60,7 @@ class AdministrationStatisticsReport extends Component {
         const categoryList = documents.administration.categories.list;
         const docList = documents.administration.data.list;
         const data = categoryList.map(category => {
-            let docs = docList.filter(doc => doc.category !== undefined && doc.category.name === category.name).length;
+            let docs = docList.filter(doc => doc.category !== undefined && doc.category === category.id).length;
             return [
                 category.name,
                 docs
@@ -74,7 +72,6 @@ class AdministrationStatisticsReport extends Component {
     pieChart = () => {
         this.removePreviousPieChart();
         let dataChart = this.getDataDocumentAnalys();
-        console.log('oooooooooo', dataChart)
         this.chart = c3.generate({
             bindto: this.refs.piechart,
 
@@ -100,7 +97,7 @@ class AdministrationStatisticsReport extends Component {
         const docList = documents.administration.data.list;
 
         const data = categoryList.map(category => {
-            let docs = docList.filter(doc => doc.category !== undefined && doc.category.name === category.name);
+            let docs = docList.filter(doc => doc.category !== undefined && doc.category === category.id);
             let totalDownload = 0;
             let totalView = 0;
             for (let index = 0; index < docs.length; index++) {
@@ -190,7 +187,6 @@ class AdministrationStatisticsReport extends Component {
         }
     }
     convertDataToExportData = (data, data2) => {
-        console.log(data2);
         let dataCategory = [];
         let dataDownload = [];
         let dataView = [];
@@ -276,7 +272,7 @@ class AdministrationStatisticsReport extends Component {
         }
         return false;
     }
-   
+
     removeDuplicateInArrayObject = (array) => {
         let idArray = [];
         let newArray = [];
@@ -355,6 +351,7 @@ class AdministrationStatisticsReport extends Component {
     barChartDocumentInDomain = () => {
         this.removePreviousDomainChart();
         let dataChart = this.setDataDomainBarchart();
+
         let count = dataChart.count;
         let heightCalc
         if (dataChart.type) {
@@ -486,7 +483,8 @@ class AdministrationStatisticsReport extends Component {
         if (docs) {
             docs.map(doc => {
                 doc.domains.map(domain => {
-                    let idx = idDomain.indexOf(domain.id);
+                    let idx = idDomain.indexOf(domain);
+
                     countDomain[idx]++;
                 })
             })
@@ -517,7 +515,7 @@ class AdministrationStatisticsReport extends Component {
         if (docs) {
             docs.map(doc => {
                 doc.archives.map(archive => {
-                    let idx = idArchive.indexOf(archive.id);
+                    let idx = idArchive.indexOf(archive);
                     countArchive[idx]++;
                 })
             })
@@ -527,7 +525,6 @@ class AdministrationStatisticsReport extends Component {
                 let name = archives[i].path.length > 15 ? longName : archives[i].path;
                 shortName.push(name);
                 typeName.push(archives[i].path);
-
             }
         }
         let data = {
@@ -571,11 +568,9 @@ class AdministrationStatisticsReport extends Component {
                 ]
             });
         }
-        console.log('iiiiiiii', this.props.documents)
         let exportData = this.convertDataToExportData(dataExport, data2);
         // this.countDocumentInDomain(list, docs)
         // this.countDocumentInArchive(listArchives, docs);
-        // console.log('oooooooooo', list);
 
         // const dataTreeDomains = list.map(node => {
         //     return {
@@ -594,7 +589,6 @@ class AdministrationStatisticsReport extends Component {
         //     }
         // })
 
-        // console.log('uuuuuuuuu', dataTreeDomains, dataTreeArchives)
         return <React.Fragment>
             {<ExportExcel id="export-document-archive" exportData={exportData} style={{ marginRight: 5, marginTop: 2 }} />}
             <div className="row">
