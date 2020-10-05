@@ -36,8 +36,7 @@ class SideBar extends Component {
                     <section className="sidebar">
                         <div className="user-panel">
                             <div className="pull-left image">
-                                <ApiImage className="img-circle" alt="User Avatar" src={auth.user.avatar !== undefined ? '.' + auth.user.avatar : undefined} />
-                                {/* <img src={process.env.REACT_APP_SERVER + auth.user.avatar} className="img-circle" alt="User avatar" /> */}
+                                <img src={process.env.REACT_APP_SERVER + auth.user.avatar} className="img-circle" alt="User avatar" />
                             </div>
                             <div className="pull-left info">
                                 <p>{user.name}</p>
