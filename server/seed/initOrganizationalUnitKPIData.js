@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
-const Terms = require('../terms');
+const Terms = require('./terms');
 
 const {
     EmployeeKpi,
@@ -10,7 +10,7 @@ const {
     User,
     OrganizationalUnit,
     Task
-} = require('../../models');
+} = require('../models');
 
 require('dotenv').config();
 

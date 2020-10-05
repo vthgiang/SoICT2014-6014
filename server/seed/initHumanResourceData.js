@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
-const Terms = require('../terms');
+const Terms = require('./terms');
 
 const {
     Component,
@@ -43,7 +43,7 @@ const {
     CrmCustomer,
     CrmGroup,
 
-} = require('../../models');
+} = require('../models');
 
 require('dotenv').config();
 
