@@ -104,20 +104,20 @@ exports.editCompany = async (id, data) => {
  * @ViceDean phó đơn vị
  * @Employee nhân viên đơn vị
  */
-exports.createCompanyRootRoles = async (portal) => {
+exports.createCompanyRootRoles = async (portal, companyId) => {
     //Tạo các role root theo mẫu từ systemadmin và roleType
     let dataRoleType = await RoleType(connect(DB_CONNECTION, process.env.DB_NAME)).find();
     await RoleType(connect(DB_CONNECTION, portal)).insertMany(dataRoleType.map(role => {
-        return { name: role.name }
+        return { name: role.name, company: companyId }
     }));
 
-    let rootType = await RoleType(connect(DB_CONNECTION, portal)).findOne({ name: Terms.ROLE_TYPES.ROOT });
+    let rootType = await RoleType(connect(DB_CONNECTION, portal)).findOne({ name: Terms.ROLE_TYPES.ROOT, company: companyId });
 
-    let admin = await Role(connect(DB_CONNECTION, portal)).create({ type: rootType._id, name: Terms.ROOT_ROLES.ADMIN.name });
-    let superAdmin = await Role(connect(DB_CONNECTION, portal)).create({ type: rootType._id, name: Terms.ROOT_ROLES.SUPER_ADMIN.name, parents: [admin._id] });
-    let dean = await Role(connect(DB_CONNECTION, portal)).create({ type: rootType._id, name: Terms.ROOT_ROLES.DEAN.name });
-    let viceDean = await Role(connect(DB_CONNECTION, portal)).create({ type: rootType._id, name: Terms.ROOT_ROLES.VICE_DEAN.name });
-    let employee = await Role(connect(DB_CONNECTION, portal)).create({ type: rootType._id, name: Terms.ROOT_ROLES.EMPLOYEE.name });
+    let admin = await Role(connect(DB_CONNECTION, portal)).create({ type: rootType._id, name: Terms.ROOT_ROLES.ADMIN.name, company: companyId });
+    let superAdmin = await Role(connect(DB_CONNECTION, portal)).create({ type: rootType._id, name: Terms.ROOT_ROLES.SUPER_ADMIN.name, parents: [admin._id], company: companyId });
+    let dean = await Role(connect(DB_CONNECTION, portal)).create({ type: rootType._id, name: Terms.ROOT_ROLES.DEAN.name, company: companyId });
+    let viceDean = await Role(connect(DB_CONNECTION, portal)).create({ type: rootType._id, name: Terms.ROOT_ROLES.VICE_DEAN.name, company: companyId });
+    let employee = await Role(connect(DB_CONNECTION, portal)).create({ type: rootType._id, name: Terms.ROOT_ROLES.EMPLOYEE.name, company: companyId });
 
     return [admin, superAdmin, dean, viceDean, employee];
 }
@@ -129,7 +129,7 @@ exports.createCompanyRootRoles = async (portal) => {
  * @userEmail email của tài khoản được chọn làm super admin của công ty
  * @roleSuperAdminId Id của role SuperAdmin của công ty dùng để phân quyền cho tài khoản có email ở trên
  */
-exports.createCompanySuperAdminAccount = async (companyShortName, userEmail) => {
+exports.createCompanySuperAdminAccount = async (companyShortName, userEmail, companyId) => {
     let checkEmail = await User(connect(DB_CONNECTION, companyShortName))
         .findOne({ email: userEmail });
     if (checkEmail) throw ['email_exist'];
@@ -232,7 +232,8 @@ exports.createCompanySuperAdminAccount = async (companyShortName, userEmail) => 
         .create({
             name: `Super Admin`,
             email: userEmail,
-            password: hash
+            password: hash,
+            company: companyId
         });
     let companyUpdate = await Company(connect(DB_CONNECTION, process.env.DB_NAME))
         .findOne({ shortName: companyShortName });
@@ -256,7 +257,7 @@ exports.createCompanySuperAdminAccount = async (companyShortName, userEmail) => 
  * @linkArr mảng các SystemLink làm chuẩn để tạo link cho công ty
  * @roleArr mảng các RootRole của công ty đó
  */
-exports.createCompanyLinks = async (company, linkArr, roleArr) => {
+exports.createCompanyLinks = async (company, linkArr, roleArr, companyId) => {
     let checkIndex = (link, arr) => {
         let resIndex = -1;
         arr.forEach((node, i) => {
@@ -281,12 +282,14 @@ exports.createCompanyLinks = async (company, linkArr, roleArr) => {
                 url: link.url,
                 category: link.category,
                 description: link.description,
+                company: companyId
             }
         else return {
             url: link.url,
             category: link.category,
             description: link.description,
-            deleteSoft: false
+            deleteSoft: false,
+            company: companyId
         }
     })
 
@@ -319,10 +322,10 @@ exports.createCompanyLinks = async (company, linkArr, roleArr) => {
             }
         }
     }
-    console.log("privileges");
+    
     await Privilege(connect(DB_CONNECTION, company))
         .insertMany(dataPrivilege);
-    console.log("link-create");
+    
     return await Link(connect(DB_CONNECTION, company))
         .find()
         .populate({ path: 'roles', populate: { path: 'roleId' } });
@@ -333,7 +336,7 @@ exports.createCompanyLinks = async (company, linkArr, roleArr) => {
  * @companyId id của công ty
  * @linkArr mảng các system link được kích hoạt để làm chuẩn cho các link của công ty
  */
-exports.createCompanyComponents = async (company, linkArr) => {
+exports.createCompanyComponents = async (company, linkArr, companyId) => {
     let systemLinks = await SystemLink(connect(DB_CONNECTION, process.env.DB_NAME))
         .find({ _id: { $in: linkArr } });
 
@@ -354,7 +357,8 @@ exports.createCompanyComponents = async (company, linkArr) => {
             name: systemComponents[i].name,
             description: systemComponents[i].description,
             links: links.map(link=>link._id),
-            deleteSoft: false
+            deleteSoft: false,
+            company: companyId
         })
         for (let j = 0; j < links.length; j++) {
             let updateLink = await Link(connect(DB_CONNECTION, company)).findById(links[j]._id);

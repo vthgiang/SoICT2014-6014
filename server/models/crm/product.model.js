@@ -36,6 +36,10 @@ const ProductSchema = new Schema({
     discount: {
         type: Schema.Types.ObjectId,
         ref: 'ProductDiscount'
+    },
+    company: {
+        type: Schema.Types.ObjectId,
+        ref: 'Company',
     }
 }, {
     timestamps: true,

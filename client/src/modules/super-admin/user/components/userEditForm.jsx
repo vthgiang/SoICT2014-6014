@@ -122,7 +122,7 @@ class UserEditForm extends Component {
                     <form id={`form-edit-user`}>
                         <div className="row">
                             <div className="form-group col-sm-3" style={{paddingTop: '25px'}}>
-                                <ApiImage className="user-avatar" src={'.'+userAvatar}/>
+                                <img className="user-avatar" src={process.env.REACT_APP_SERVER+userAvatar}/>
                             </div>
                             <div className="form-group col-sm-9">
                                 <div className={`form-group ${!userNameError ? "" : "has-error"}`}>

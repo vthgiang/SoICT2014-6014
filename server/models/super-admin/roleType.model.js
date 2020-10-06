@@ -5,7 +5,11 @@ const RoleTypeSchema = new Schema({
     name: {
         type: String,
         required: true
-    }
+    },
+    company: {
+        type: Schema.Types.ObjectId,
+        ref: 'Company'
+    },
 },{
     timestamps: true
 });

@@ -143,19 +143,23 @@ exports.createNotification = async (portal, company, data, manualNotification = 
     }
 
     // Gửi thông báo cho các user
-    let notifications = usersArr.map(user => {
-        return {
-            company,
-            title: data.title,
-            level: data.level,
-            content: data.content,
-            creator: data.creator,
-            sender: data.sender,
-            user,
-            manualNotification
-        }
-    });
-    await Notification(connect(DB_CONNECTION, portal)).insertMany(notifications);
+    for (let i = 0; i < usersArr.length; i++) {
+        const notify = await Notification(connect(DB_CONNECTION, portal))
+            .create({
+                company,
+                title: data.title,
+                level: data.level,
+                content: data.content,
+                creator: data.creator,
+                sender: data.sender,
+                user: usersArr[i],
+                manualNotification
+            });
+
+        const arr = CONNECTED_CLIENTS.filter(client => client.userId === usersArr[i]);
+        if(arr.length > 0) console.log("USER ĐƯỢC GỬI THÔNG BÁO MỚI: ", arr)
+        if(arr.length === 1) SOCKET_IO.to(arr[0].socketId).emit('new notifications', notify);
+    }
     return true;
 }
 

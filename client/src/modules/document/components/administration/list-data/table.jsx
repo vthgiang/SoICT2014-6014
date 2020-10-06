@@ -43,8 +43,9 @@ class Table extends Component {
     }
 
     componentDidMount() {
-        this.props.getAllDocuments({ type: "all" });
-        this.props.getAllDocuments({ page: this.state.page, limit: this.state.limit, type: "paginate" });
+        this.props.getAllDocuments({ calledId: "all" });
+        this.props.getAllDocuments({ page: this.state.page, limit: this.state.limit, calledId: "paginate" });
+        this.props.getAllDocuments({ page: this.state.page, limit: this.state.limit, calledId: "relationshipDocs" });
         this.props.getAllRoles();
         this.props.getAllDepartments();
         this.props.getDocumentDomains();
@@ -394,7 +395,7 @@ class Table extends Component {
         const listArchive = archives.list;
         let list = [];
         if (isLoading === false) {
-            list = docs.list;
+            list = docs.paginate;
         }
         let exportData = list ? this.convertDataToExportData(list) : "";
         return (
@@ -593,9 +594,9 @@ class Table extends Component {
         const data = {
             limit: this.state.limit,
             page: page,
-            key: this.state.option,
-            value: this.state.value,
-            type: "paginate"
+            // key: this.state.option,
+            // value: this.state.value,
+            calledId: "paginate"
         };
         await this.props.getAllDocuments(data);
     }
@@ -612,16 +613,16 @@ class Table extends Component {
     setLimit = (number) => {
         if (this.state.limit !== number) {
             this.setState({ limit: number });
-            const data = { limit: number, page: this.state.page, type: "paginate" };
+            const data = { limit: number, page: this.state.page, calledId: "paginate" };
             this.props.getAllDocuments(data);
         }
     }
 
-    setOption = (title, option) => {
-        this.setState({
-            [title]: option
-        });
-    }
+    // setOption = (title, option) => {
+    //     this.setState({
+    //         [title]: option
+    //     });
+    // }
 
     searchWithOption = async () => {
         let path = this.state.archive ? this.findPath(this.state.archive) : "";
@@ -632,7 +633,7 @@ class Table extends Component {
             category: this.state.category ? this.state.category[0] : "",
             domains: this.state.domain ? this.state.domain : "",
             archives: path && path.length ? path : "",
-            type: "paginate"
+            calledId: "paginate"
         };
         await this.props.getAllDocuments(data);
     }

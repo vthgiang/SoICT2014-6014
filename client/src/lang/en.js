@@ -32,6 +32,7 @@ export default {
             no_data: 'No data',
             success: 'Successfully',
             error: 'Error',
+            new_notification: 'You have new notification!',
             auth_alert: {
                 title: 'Current Session invalid. Please log in again',
                 reason: 'Reasons maybe:',
@@ -763,8 +764,14 @@ export default {
             task_report: 'Manage task reports',
 
             //QUẢN LÝ ĐƠN HÀNG
-            manage_orders: "Manage Orders",
-            manage_list_orders: "Manage List Orders",
+            manage_orders: 'Manage Order',
+            manage_sales_order: 'Sales Order',
+            manage_manufacturing_order: 'Manufacturing Order',
+            manage_purchase_order: 'PurchaseOrder',
+            manage_quotation: 'Quotation',
+            manage_discount: 'Discount',
+            manage_tax: 'Tax',
+            manage_sla: 'Service Level Agreement',
 
             //QUẢN LÝ KẾ HOẠCH SẢN XUẤT
             manage_plans: "Manage Plans",
@@ -773,6 +780,18 @@ export default {
             manage_examples: "CRUD example",
             manage_examples_1: "CRUD by model 1",
             manage_examples_2: "CRUD by model 2",
+
+            // Quản lý sản xuất
+            manage_manufacturing: "Quản lý sản xuất",
+            manage_manufacturing_plan: "Quản lý kế hoạch sản xuất",
+            manage_manufacturing_command: "Quản lý lệnh sản xuất",
+            manage_manufacturing_process: "Quản lý tiến độ sản xuất",
+            manage_manufacturing_schedule: "Quản lý lịch sản xuất",
+            manage_purchasing_request: "Quản lý phiếu mua hàng",
+            track_order: "Theo dõi đơn hàng",
+            analysis_manufacturing_performance: "Phân tích hiệu suất sản xuất",
+            manage_manufacturing_works: "Quản lý nhà máy sản xuất",
+            manage_manufacturing_mill: "Quản lý xưởng sản xuất"
         },
 
         manage_system: {

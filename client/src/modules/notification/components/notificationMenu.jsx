@@ -16,7 +16,7 @@ class NotificationMenu extends Component {
     getManualNotifications = async() => {
         await this.props.setLevelNotificationSent();
         await this.props.paginateManualNotifications({
-            limit: 5,
+            limit: 10,
             page: 1
         })
     }
@@ -26,14 +26,14 @@ class NotificationMenu extends Component {
         if (unRead) {
             await this.props.setLevelNotificationReceivered();
             await this.props.paginateNotifications({
-                limit: 5,
+                limit: 10,
                 page: 1,
                 readed: false,
             })
         } else {
             await this.props.setLevelNotificationReceivered();
             await this.props.paginateNotifications({
-                limit: 5,
+                limit: 10,
                 page: 1
             })
         }
