@@ -70,7 +70,6 @@ import { groups } from "../modules/crm/group/redux/reducers";
 // import { care } from "../modules/crm/care/redux/reducers";
 
 //order
-import { order } from "../modules/order/redux/reducers";
 
 //plan
 import { plan } from "../modules/plan/redux/reducers";
@@ -163,7 +162,6 @@ const appReducer = combineReducers({
     }),
 
     //order
-    order,
 
     //plane
     plan,
