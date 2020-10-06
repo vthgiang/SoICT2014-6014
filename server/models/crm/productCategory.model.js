@@ -14,6 +14,10 @@ const ProductCategorySchema = new Schema({
     description: { // Mô tả danh mục
         type: String
     },
+    company: {
+        type: Schema.Types.ObjectId,
+        ref: 'Company',
+    }
 }, {
     timestamps: true,
 });

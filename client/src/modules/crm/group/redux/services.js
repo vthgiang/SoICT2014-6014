@@ -10,7 +10,7 @@ export const CrmGroupServices = {
 
 function getGroups(params) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/crm/group`,
+        url: `${process.env.REACT_APP_SERVER}/crm/groups`,
         method: 'GET',
         params,
     }, false, true, 'customer');
@@ -18,7 +18,7 @@ function getGroups(params) {
 
 function createGroup(data) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/crm/group`,
+        url: `${process.env.REACT_APP_SERVER}/crm/groups`,
         method: 'POST',
         data
     }, true, true, 'customer');
@@ -26,14 +26,14 @@ function createGroup(data) {
 
 function getGroup(id) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/crm/group/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/crm/groups/${id}`,
         method: 'GET'
     }, false, true, 'customer');
 }
 
 function editGroup(id, data) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/crm/group/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/crm/groups/${id}`,
         method: 'PATCH',
         data
     }, false, true, 'customer');
@@ -41,7 +41,7 @@ function editGroup(id, data) {
 
 function deleteGroup(id) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/crm/group/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/crm/groups/${id}`,
         method: 'DELETE'
     }, false, true, 'customer');
 }

@@ -17,6 +17,10 @@ const ProductDiscountSchema = new Schema({
     hits: { // Số lượt sử dụng mã giảm giá
         type: Number,
     },
+    company: {
+        type: Schema.Types.ObjectId,
+        ref: 'Company',
+    }
     // value: {
 
     // }

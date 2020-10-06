@@ -7,22 +7,28 @@ import CreateForm from './createForm';
 class CrmGroup extends Component {
     constructor(props) {
         super(props);
-        this.state = { 
-            limit: 10,
-            page: 1,
+        this.state = {
+            limit: 5,
+            page: 0,
             option: 'name',
             value: ''
-         }
+        }
     }
 
-    render() { 
-        const {crm, translate} = this.props;
-        const {group, option} = this.state;
+    render() {
+        const { crm, translate } = this.props;
+        const { list } = crm.groups;
+        const { option, limit, page } = this.state;
 
-        return ( 
+        let pageTotal = (crm.groups.totalDocs % limit === 0) ?
+            parseInt(crm.groups.totalDocs / limit) :
+            parseInt((crm.groups.totalDocs / limit) + 1);
+        let cr_page = parseInt((page / limit) + 1);
+
+        return (
             <div className="box">
                 <div className="box-body">
-                    <CreateForm/>
+                    <CreateForm />
                     {/* { group !== undefined && <EditForm group={group} /> } */}
 
                     <SearchBar
@@ -35,7 +41,7 @@ class CrmGroup extends Component {
                         setOption={this.setOption}
                         search={this.searchWithOption}
                     />
-                    <table className="table table-hover table-striped table-bordered" id="table-manage-crm-group">
+                    <table className="table table-hover table-striped table-bordered" id="table-manage-crm-group" style={{ marginTop: '10px' }}>
                         <thead>
                             <tr>
                                 <th>{translate('crm.group.name')}</th>
@@ -58,8 +64,8 @@ class CrmGroup extends Component {
                         </thead>
                         <tbody>
                             {
-                                crm.group.listPaginate.length > 0 ? 
-                                crm.group.listPaginate.map(gr =>
+                                list && list.length > 0 ?
+                                    list.map(gr =>
                                         <tr key={gr._id}>
                                             <td>{gr.name}</td>
                                             <td>{gr.code}</td>
@@ -73,27 +79,26 @@ class CrmGroup extends Component {
                                                     content="<h3>Xóa thông tin khách hàng</h3>"
                                                     name="delete"
                                                     className="text-red"
-                                                    func={()=>this.deleteGroup(gr._id)}
+                                                    func={() => this.deleteGroup(gr._id)}
                                                 />
                                             </td>
                                         </tr>
-                                    ) : crm.group.isLoading ?
-                                    <tr><td colSpan={4}>{translate('general.loading')}</td></tr> :
-                                    <tr><td colSpan={4}>{translate('general.no_data')}</td></tr>
+                                    ) : crm.groups.isLoading ?
+                                        <tr><td colSpan={4}>{translate('general.loading')}</td></tr> :
+                                        <tr><td colSpan={4}>{translate('general.no_data')}</td></tr>
                             }
                         </tbody>
                     </table>
 
                     {/* PaginateBar */}
-                    <PaginateBar pageTotal={crm.group.totalPages} currentPage={crm.group.page} func={this.setPage} />
+                    <PaginateBar pageTotal={pageTotal} currentPage={cr_page} func={this.setPage} />
                 </div>
             </div>
-         );
+        );
     }
 
-    componentDidMount(){
-        this.props.getGroups();
-        this.props.getGroups({limit: this.state.limit, page: this.state.page});
+    componentDidMount() {
+        this.props.getGroups(this.state);
     }
 
     // Cac ham thiet lap va tim kiem gia tri
@@ -113,15 +118,14 @@ class CrmGroup extends Component {
         await this.props.getGroups(data);
     }
 
-    setPage = (page) => {
-        this.setState({ page });
-        const data = {
-            limit: this.state.limit,
-            page: page,
-            key: this.state.option,
-            value: this.state.value
-        };
-        this.props.getGroups(data);
+    setPage = async (pageNumber) => {
+        let { limit } = this.state;
+        let page = (pageNumber - 1) * (limit);
+
+        await this.setState({
+            page: parseInt(page),
+        });
+        this.props.getGroups(this.state);
     }
 
     setLimit = (number) => {
@@ -136,26 +140,26 @@ class CrmGroup extends Component {
     }
 
     deleteGroup = async (id) => {
-        const {group} = this.props.crm;
-        if(group.listPaginate.length === 1 && group.totalPages > 1){
+        const { groups } = this.props.crm;
+        if (groups.listPaginate.length === 1 && groups.totalPages > 1) {
             await this.props.deleteGroup(id);
             const data = {
                 limit: this.state.limit,
-                page: group.page === group.totalPages ? group.prevPage : this.state.page,
+                page: groups.page === groups.totalPages ? groups.prevPage : this.state.page,
                 key: this.state.option,
                 value: this.state.value
             };
             await this.props.getGroups(data);
-        }else {
+        } else {
             await this.props.deleteGroup(id);
         }
     }
 }
- 
+
 
 function mapStateToProps(state) {
-    const {crm} = state;
-    return {crm};
+    const { crm } = state;
+    return { crm };
 }
 
 const mapDispatchToProps = {

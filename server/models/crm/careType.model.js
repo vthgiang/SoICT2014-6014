@@ -10,6 +10,10 @@ const CareTypeSchema = new Schema({
     description: { // Mô tả loại hình chăm sóc
         type: String,
     },
+    company: {
+        type: Schema.Types.ObjectId,
+        ref: 'Company',
+    }
 }, {
     timestamps: true,
 });
