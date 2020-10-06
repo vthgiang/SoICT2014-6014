@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import PurchasingRequestManagementTable from './purchasingRequestManagementTable';
+import ManufacturingOrderManagement from './manufacturingOrderManagementTable';
 
-class PurchasingRequest extends Component {
+class ManufacturingOrderList extends Component {
     constructor(props) {
         super(props);
         this.state = {}
@@ -11,13 +11,13 @@ class PurchasingRequest extends Component {
 
     render() {
         return (
-            <div className="box" style={{ minHeight: "450px" }}>
+            <div style={{ minHeight: "450px" }}>
                 <div className="box-body">
-                    <PurchasingRequestManagementTable />
+                    <ManufacturingOrderManagement />
                 </div>
             </div>
 
         );
     }
 }
-export default connect(null, null)(withTranslate(PurchasingRequest));
+export default connect(null, null)(withTranslate(ManufacturingOrderList));
