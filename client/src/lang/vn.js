@@ -32,6 +32,7 @@ export default {
             no_data: 'Không có dữ liệu',
             success: 'Thành công',
             error: 'Lỗi',
+            new_notification: 'Bạn có thông báo mới!',
             auth_alert: {
                 title: 'Hệ thống xác nhận có lỗi xảy ra trong phiên làm việc của bạn!',
                 reason: 'Nguyên nhân:',
