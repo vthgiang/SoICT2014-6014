@@ -12,7 +12,7 @@ export const CrmCustomerActions = {
 function getCustomers(data) {
     return dispatch => {
         dispatch({ type: CrmCustomerConstants.GET_CRM_CUSTOMERS_REQUEST });
-        CrmCustomerServices.getCustomers()
+        CrmCustomerServices.getCustomers(data)
             .then(res => {
                 dispatch({
                     type: CrmCustomerConstants.GET_CRM_CUSTOMERS_SUCCESS,

@@ -12,8 +12,8 @@ class CrmCustomerCreate extends Component {
         super(props);
         this.state = {
             newCustomer: {
-                owner: [],
-                status: 0,
+                status: '0',
+                group: '',
             },
             currentRole: getStorage('currentRole')
         }
@@ -23,7 +23,7 @@ class CrmCustomerCreate extends Component {
         const { auth, user } = this.props;
         const { newCustomer, currentRole } = this.state;
 
-        if (newCustomer.owner && newCustomer.owner.length === 0 && auth.user && user.organizationalUnitsOfUser) {
+        if (!newCustomer.owner && auth.user && user.organizationalUnitsOfUser) {
             let getCurrentUnit = await user.organizationalUnitsOfUser.find(item =>
                 item.deans[0] === currentRole
                 || item.viceDeans[0] === currentRole
@@ -63,7 +63,7 @@ class CrmCustomerCreate extends Component {
             listGroups = groups.list.map(x => { return { value: x._id, text: x.name } })
             listGroups.unshift({ value: '', text: 'Chọn nhóm khách hàng' });
         }
-        console.log(listGroups)
+
         return (
             <React.Fragment>
                 <DialogModal
@@ -87,15 +87,18 @@ class CrmCustomerCreate extends Component {
                                         {/* Người quản lý khách hàng*/}
                                         <div className={`form-group`} >
                                             <label className="control-label">{translate('crm.customer.owner')}<span className="text-red">*</span></label>
-                                            <SelectBox
-                                                id={`customer-ownwe`}
-                                                className="form-control select2"
-                                                style={{ width: "100%" }}
-                                                items={unitMembers}
-                                                value={owner && owner.length > 0 ? owner : []}
-                                                onChange={this.handleChangeCustomerOwner}
-                                                multiple={true}
-                                            />
+                                            {
+                                                unitMembers &&
+                                                <SelectBox
+                                                    id={`customer-ownwe`}
+                                                    className="form-control select2"
+                                                    style={{ width: "100%" }}
+                                                    items={unitMembers}
+                                                    value={owner ? owner : []}
+                                                    onChange={this.handleChangeCustomerOwner}
+                                                    multiple={true}
+                                                />
+                                            }
                                         </div>
                                     </div>
                                     <div className="col-md-6">

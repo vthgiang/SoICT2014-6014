@@ -26,6 +26,7 @@ class CreateGroupForm extends Component {
                     formID="form-crm-group-create"
                     title={translate('crm.group.add')}
                     func={this.save}
+                    size={50}
                     disableSubmit={!this.isFormValidated()}
                 >
                     <form id="form-crm-group-create">
