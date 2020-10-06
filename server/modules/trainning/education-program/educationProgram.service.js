@@ -106,7 +106,7 @@ exports.createEducationProgram = async (portal, data, company) => {
         }, {
             path: 'applyForPositions',
         }])
-        let totalList = await Course(connect(DB_CONNECTION, portal)).count({
+        let totalList = await Course(connect(DB_CONNECTION, portal)).countDocuments({
             educationProgram: newEducation._id
         });
         return {

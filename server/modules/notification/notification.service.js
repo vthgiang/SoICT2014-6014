@@ -157,7 +157,7 @@ exports.createNotification = async (portal, company, data, manualNotification = 
             });
 
         const arr = CONNECTED_CLIENTS.filter(client => client.userId === usersArr[i]);
-        console.log("user new notify: ", arr)
+        if(arr.length > 0) console.log("USER ĐƯỢC GỬI THÔNG BÁO MỚI: ", arr)
         if(arr.length === 1) SOCKET_IO.to(arr[0].socketId).emit('new notifications', notify);
     }
     return true;
