@@ -29,7 +29,6 @@ class Notification extends Component {
     static getDerivedStateFromProps(nextProps, prevState) {
         const list = nextProps.notifications.receivered.list.filter(notification => !notification.readed);
         if(JSON.stringify(list) !== JSON.stringify(prevState.notify)){
-            console.log("Caapj nhat danh sach thong bao moi")
             return {
                 ...prevState,
                 notify: list
