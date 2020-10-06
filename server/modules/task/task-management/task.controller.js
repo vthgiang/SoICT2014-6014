@@ -378,13 +378,14 @@ getTasksThatUserHasResponsibleRoleByDate = async (req, res) => {
  */
 exports.createTask = async (req, res) => {
     try {
+        console.log("Tao moi cong viec")
         var tasks = await TaskManagementService.createTask(req.portal, req.body);
         var task = tasks.task;
         var user = tasks.user;
         var email = tasks.email;
         var html = tasks.html;
         var data = { "organizationalUnits": task.organizationalUnit._id, "title": "Tạo mới công việc", "level": "general", "content": html, "sender": task.organizationalUnit.name, "users": user };
-        NotificationServices.createNotification(req.portal, task.organizationalUnit.company, data,);
+        NotificationServices.createNotification(req.portal, task.organizationalUnit.company, data);
         sendEmail(email, "Tạo mới công việc hành công", '', html);
         await Logger.info(req.user.email, ` create task `, req.portal)
         res.status(200).json({

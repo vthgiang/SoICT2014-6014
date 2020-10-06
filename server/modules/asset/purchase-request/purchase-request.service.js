@@ -44,7 +44,7 @@ exports.searchPurchaseRequests = async (portal, company, query) => {
     if (status) {
         keySearch = { ...keySearch, status: { $in: status } };
     };
-    var totalList = await RecommendProcure(connect(DB_CONNECTION, portal)).count(keySearch);
+    var totalList = await RecommendProcure(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
     var listRecommendProcures = await RecommendProcure(connect(DB_CONNECTION, portal)).find(keySearch).populate({ path: 'proponent approver' }).sort({ 'createdAt': 'desc' }).skip(page ? parseInt(page) : 0).limit(limit ? parseInt(limit) : 0);
 
     return { totalList, listRecommendProcures };
