@@ -56,7 +56,7 @@ exports.getGroupById = async (req, res) => {
  */
 exports.createGroup = async (req, res) => {
     try {
-        const newGroup = await GroupService.createGroup(req.portal, req.user.company._id, req.body);
+        const newGroup = await GroupService.createGroup(req.portal, req.user.company._id, req.user._id, req.body);
         await Logger.info(req.user.email, ' create_group_success ', req.portal);
         res.status(200).json({
             success: true,
@@ -104,7 +104,7 @@ exports.editGroup = async (req, res) => {
  */
 exports.deleteGroup = async (req, res) => {
     try {
-        const deleteGroup = GroupService.deleteGroup(req.portal, req.user.company._id, req.params.id);
+        const deleteGroup = await GroupService.deleteGroup(req.portal, req.user.company._id, req.params.id);
         await Logger.info(req.user.email, ' delete_group_success ', req.portal);
         res.status(200).json({
             success: true,
