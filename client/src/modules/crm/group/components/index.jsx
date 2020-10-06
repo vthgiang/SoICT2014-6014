@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { CrmGroupActions } from '../redux/actions';
 import { SearchBar, PaginateBar, DataTableSetting, ConfirmNotification } from '../../../../common-components';
-import CreateForm from './createForm';
+import CreateGroupForm from './createForm';
+import EditGroupForm from './editForm';
 class CrmGroup extends Component {
     constructor(props) {
         super(props);
@@ -18,7 +19,7 @@ class CrmGroup extends Component {
     render() {
         const { crm, translate } = this.props;
         const { list } = crm.groups;
-        const { option, limit, page } = this.state;
+        const { option, limit, page, groupIdEdit } = this.state;
 
         let pageTotal = (crm.groups.totalDocs % limit === 0) ?
             parseInt(crm.groups.totalDocs / limit) :
@@ -28,8 +29,8 @@ class CrmGroup extends Component {
         return (
             <div className="box">
                 <div className="box-body">
-                    <CreateForm />
-                    {/* { group !== undefined && <EditForm group={group} /> } */}
+                    <CreateGroupForm />
+                    {groupIdEdit && <EditGroupForm groupCustomerId={groupIdEdit} />}
 
                     <SearchBar
                         columns={[
@@ -53,7 +54,7 @@ class CrmGroup extends Component {
                                         columnArr={[
                                             translate('crm.group.name'),
                                             translate('crm.group.code'),
-                                            translate('crm.group.descripiton'),
+                                            translate('crm.group.description'),
                                         ]}
                                         limit={this.state.limit}
                                         setLimit={this.setLimit}
@@ -71,8 +72,8 @@ class CrmGroup extends Component {
                                             <td>{gr.code}</td>
                                             <td>{gr.description}</td>
                                             <td style={{ textAlign: 'center' }}>
-                                                <a className="text-green" onClick={() => this.handleInfo(gr)}><i className="material-icons">visibility</i></a>
-                                                <a className="text-yellow" onClick={() => this.handleEdit(gr)}><i className="material-icons">edit</i></a>
+                                                <a className="text-green" onClick={() => this.handleInfo(gr._id)}><i className="material-icons">visibility</i></a>
+                                                <a className="text-yellow" onClick={() => this.handleEditGroup(gr._id)}><i className="material-icons">edit</i></a>
                                                 <ConfirmNotification
                                                     icon="question"
                                                     title="Xóa thông tin về khách hàng"
@@ -140,19 +141,17 @@ class CrmGroup extends Component {
     }
 
     deleteGroup = async (id) => {
-        const { groups } = this.props.crm;
-        if (groups.listPaginate.length === 1 && groups.totalPages > 1) {
-            await this.props.deleteGroup(id);
-            const data = {
-                limit: this.state.limit,
-                page: groups.page === groups.totalPages ? groups.prevPage : this.state.page,
-                key: this.state.option,
-                value: this.state.value
-            };
-            await this.props.getGroups(data);
-        } else {
+        if (id) {
             await this.props.deleteGroup(id);
         }
+    }
+
+    handleEditGroup = async (id) => {
+        await this.setState({
+            ...this.state,
+            groupIdEdit: id,
+        });
+        await window.$('#modal-edit-group').modal('show'); // hiển thị modal edit
     }
 }
 
