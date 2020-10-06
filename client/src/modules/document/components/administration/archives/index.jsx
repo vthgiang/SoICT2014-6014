@@ -19,7 +19,7 @@ class AdministrationDocumentArchives extends Component {
     }
 
     componentDidMount() {
-        //   this.props.getDocumentArchive();
+        // this.props.getDocumentArchive();
     }
     onChanged = async (e, data) => {
         await this.setState({
