@@ -381,10 +381,17 @@ exports.createTask = async (req, res) => {
         console.log("Tao moi cong viec")
         var tasks = await TaskManagementService.createTask(req.portal, req.body);
         var task = tasks.task;
-        var user = tasks.user;
+        var user = tasks.user.filter(user => user !== req.user._id); //lọc thông tin người tạo ra khỏi danh sách sẽ gửi thông báo
         var email = tasks.email;
         var html = tasks.html;
-        var data = { "organizationalUnits": task.organizationalUnit._id, "title": "Tạo mới công việc", "level": "general", "content": html, "sender": task.organizationalUnit.name, "users": user };
+        var data = { 
+            organizationalUnits: task.organizationalUnit._id, 
+            title: "Tạo mới công việc",
+            level: "general",
+            content: html,
+            sender: task.organizationalUnit.name,
+            users: user 
+        };
         NotificationServices.createNotification(req.portal, task.organizationalUnit.company, data);
         sendEmail(email, "Tạo mới công việc hành công", '', html);
         await Logger.info(req.user.email, ` create task `, req.portal)
