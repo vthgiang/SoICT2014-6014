@@ -3,6 +3,10 @@ const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
 const GroupSchema = new Schema({
+    creator: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+    },
     code: { // Mã nhóm khách hàng
         type: String,
         required: true

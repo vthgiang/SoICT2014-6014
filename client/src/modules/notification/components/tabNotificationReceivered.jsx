@@ -10,7 +10,7 @@ class TabNotificationReceivered extends Component {
     constructor(props) {
         super(props);
         this.state = { 
-            limit: 5, page: 1
+            limit: 10, page: 1
         }
     }
     render() { 

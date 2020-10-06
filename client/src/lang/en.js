@@ -32,6 +32,7 @@ export default {
             no_data: 'No data',
             success: 'Successfully',
             error: 'Error',
+            new_notification: 'You have new notification!',
             auth_alert: {
                 title: 'Current Session invalid. Please log in again',
                 reason: 'Reasons maybe:',

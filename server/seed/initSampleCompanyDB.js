@@ -2802,6 +2802,7 @@ const initSampleCompanyDB = async () => {
     ]);
     console.log("Khởi tạo xong danh sách thông tin kho");
 
+    // ****************** Tạo mẫu dữ liệu khách hàng********************
     console.log("Tạo mẫu dữ liệu khách hàng");
 
     const customerGroupData = [{
@@ -2821,8 +2822,38 @@ const initSampleCompanyDB = async () => {
         code: "ĐLVA",
         description: "Đại lý việt anh cung cấp đồ nhựa",
     }];
-    const customerGroup = await Group(vnistDB).insertMany(customerGroupData);
+    await Group(vnistDB).insertMany(customerGroupData);
     console.log("Xong! Đã tạo mẫu dữ liệu khách hàng")
+
+    // ****************** Tạo mẫu dữ liệu trạng thái khách hàng********************
+    console.log("Tạo mẫu dữ liệu trạng thái khách hàng");
+    const customerStatusData = [{
+        code: "ST001",
+        name: "Khách hàng mới",
+        description: "Khách hàng mới toanh"
+    }, {
+        code: "ST002",
+        name: "Quan tâm tới sản phẩm",
+        description: "Khách hàng hứng thú với sản phẩm của công ty"
+    }, {
+        code: "ST003",
+        name: "Đã báo giá",
+        description: "Khách hàng đã được báo giá"
+    }, {
+        code: "ST004",
+        name: "Đã mua sản phẩm",
+        description: "Khách hàng đã mua sản phẩm"
+    }, {
+        code: "ST005",
+        name: "Đã kí hợp đồng",
+        description: "Khách hàng đã kỹ hợp đồng với công ty"
+    }, {
+        code: "ST006",
+        name: "Dừng liên hệ",
+        description: "Không chơi với công ty mình nữa"
+    }];
+    await Status(vnistDB).insertMany(customerStatusData);
+    console.log("Xong! Đã tạo mẫu dữ liệu trạng thái khách hàng")
 
     /**
      * Ngắt kết nối db

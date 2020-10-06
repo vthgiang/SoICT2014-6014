@@ -56,7 +56,7 @@ exports.getTotalCommendation = async (portal, company, organizationalUnits, mont
         let date = new Date();
         let firstDayOfYear = new Date(date.getFullYear() - 1, 12, 1);
         let lastDayOfYear = new Date(date.getFullYear(), 12, 1);
-        totalListOfYear = await Commendation(connect(DB_CONNECTION, portal)).count({
+        totalListOfYear = await Commendation(connect(DB_CONNECTION, portal)).countDocuments({
             ...keySearch,
             startDate: {
                 "$gt": firstDayOfYear,
@@ -71,7 +71,7 @@ exports.getTotalCommendation = async (portal, company, organizationalUnits, mont
             }
         }
     }
-    let totalList = await Commendation(connect(DB_CONNECTION, portal)).count(keySearch);
+    let totalList = await Commendation(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
     return {
         totalList,
         totalListOfYear

@@ -76,6 +76,11 @@ router.use("/goods", require("./modules/warehouse/good/good.route"));
 router.use("/examples", require("./modules/example/example.route"));
 router.use("/documents", require("./modules/document/document.route"));
 
+// CRM
+app.use("/crm/customers", require("./modules/crm/customer/customer.route"));
+app.use("/crm/cares", require("./modules/crm/care/care.route"));
+app.use("/crm/groups", require("./modules/crm/group/group.route"));
+
 app.use(router);
 
 /**

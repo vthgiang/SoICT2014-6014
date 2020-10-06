@@ -5,7 +5,7 @@ import { DialogModal, ButtonModal, SelectBox, ErrorLabel } from '../../../../com
 import { CrmGroupActions } from '../redux/actions';
 import ValidationHelper from '../../../../helpers/validationHelper';
 
-class CreateForm extends Component {
+class CreateGroupForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -26,6 +26,7 @@ class CreateForm extends Component {
                     formID="form-crm-group-create"
                     title={translate('crm.group.add')}
                     func={this.save}
+                    size={50}
                     disableSubmit={!this.isFormValidated()}
                 >
                     <form id="form-crm-group-create">
@@ -61,6 +62,7 @@ class CreateForm extends Component {
         const { newCustomerGroup } = this.state;
         const { value } = e.target;
         const { translate } = this.props;
+
         this.setState({
             newCustomerGroup: {
                 ...newCustomerGroup,
@@ -137,4 +139,4 @@ const mapDispatchToProps = {
     createGroup: CrmGroupActions.createGroup
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CreateForm));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CreateGroupForm));

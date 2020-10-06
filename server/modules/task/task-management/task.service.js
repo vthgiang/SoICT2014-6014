@@ -406,7 +406,7 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
     responsibleTasks = await Task(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'asc' })
         .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent responsibleEmployees" });
 
-    var totalCount = await Task(connect(DB_CONNECTION, portal)).count(keySearch);
+    var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
     var totalPages = Math.ceil(totalCount / perPage);
 
     return {
@@ -558,7 +558,7 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (portal, task) => {
     accountableTasks = await Task(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'asc' })
         .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
 
-    var totalCount = await Task(connect(DB_CONNECTION, portal)).count(keySearch);
+    var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
     var totalPages = Math.ceil(totalCount / perPage);
     return {
         "tasks": accountableTasks,
@@ -708,7 +708,7 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (portal, task) => {
     consultedTasks = await Task(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'asc' })
         .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
 
-    var totalCount = await Task(connect(DB_CONNECTION, portal)).count(keySearch);
+    var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
     var totalPages = Math.ceil(totalCount / perPage);
     return {
         "tasks": consultedTasks,
@@ -830,7 +830,7 @@ exports.getPaginatedTasksCreatedByUser = async (portal, task) => {
     creatorTasks = await Task(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'asc' })
         .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
 
-    var totalCount = await Task(connect(DB_CONNECTION, portal)).count(keySearch);
+    var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
     var totalPages = Math.ceil(totalCount / perPage);
     return {
         "tasks": creatorTasks,
@@ -981,7 +981,7 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
         .skip(perPage * (page - 1)).limit(perPage)
         .populate({ path: "organizationalUnit creator parent" });
 
-    var totalCount = await Task(connect(DB_CONNECTION, portal)).count(keySearch);
+    var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
     var totalPages = Math.ceil(totalCount / perPage);
     return {
         "tasks": informedTasks,

@@ -25,7 +25,7 @@ exports.getAssetTypes = async (portal, company, query) => {
             keySearch = { ...keySearch, typeName: { $regex: typeName, $options: "i" } }
         };
 
-        var totalList = await AssetType(connect(DB_CONNECTION, portal)).count(keySearch);
+        var totalList = await AssetType(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
         var listAssetTypes = await AssetType(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createDate': 'desc' }).skip(page ? parseInt(page) : 0).limit(limit ? parseInt(limit) : 0).populate({ path: 'parent' });
 
         return { totalList, listAssetTypes };

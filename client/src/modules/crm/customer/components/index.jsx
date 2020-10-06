@@ -35,7 +35,7 @@ class CrmCustomer extends Component {
     render() {
         const { translate, crm, user } = this.props;
         const { list } = crm.customers;
-        const { customer, importCustomer, limit, page } = this.state;
+        const { customer, importCustomer, limit, page, customerIdEdit } = this.state;
 
         let pageTotal = (crm.customers.totalDocs % limit === 0) ?
             parseInt(crm.customers.totalDocs / limit) :
@@ -46,7 +46,7 @@ class CrmCustomer extends Component {
         if (user.organizationalUnitsOfUser) {
             units = user.organizationalUnitsOfUser;
         }
-
+        console.log('list', list)
         return (
             <div className="box">
                 <div className="box-body qlcv">
@@ -70,7 +70,7 @@ class CrmCustomer extends Component {
                     <CreateForm />
 
                     {customer !== undefined && <InfoForm customer={customer} />}
-                    {customer !== undefined && <EditForm customer={customer} />}
+                    {customerIdEdit && <EditForm customerIdEdit={customerIdEdit} />}
 
                     {/* search form */}
                     <div className="form-inline" style={{ marginBottom: '2px' }}>
@@ -117,6 +117,7 @@ class CrmCustomer extends Component {
                             </SelectMulti>
                         </div>
                     </div>
+
                     <div className="form-inline">
                         <div className="form-group" >
                             <label></label>
@@ -128,17 +129,21 @@ class CrmCustomer extends Component {
                             <tr>
                                 <th>{translate('crm.customer.code')}</th>
                                 <th>{translate('crm.customer.name')}</th>
+                                <th>{translate('crm.customer.group')}</th>
+                                <th>{translate('crm.customer.status')}</th>
+                                <th>{translate('crm.customer.owner')}</th>
                                 <th>{translate('crm.customer.mobilephoneNumber')}</th>
-                                <th>{translate('crm.customer.email')}</th>
                                 <th>{translate('crm.customer.address')}</th>
                                 <th style={{ width: "120px" }}>
                                     {translate('table.action')}
                                     <DataTableSetting
                                         columnArr={[
-                                            translate('crm.customer.name'),
                                             translate('crm.customer.code'),
-                                            translate('crm.customer.phone'),
-                                            translate('crm.customer.email'),
+                                            translate('crm.customer.name'),
+                                            translate('crm.customer.group'),
+                                            translate('crm.customer.status'),
+                                            translate('crm.customer.owner'),
+                                            translate('crm.customer.mobilephoneNumber'),
                                             translate('crm.customer.address')
                                         ]}
                                         limit={this.state.limit}
@@ -155,12 +160,14 @@ class CrmCustomer extends Component {
                                         <tr key={cus._id}>
                                             <td>{cus.code}</td>
                                             <td>{cus.name}</td>
+                                            <td>{cus.group && cus.group.name ? cus.group.name : null}</td>
+                                            <td>{cus.status && cus.status.name ? cus.status.name : null}</td>
+                                            <td>{cus.owner && cus.owner.length > 0 ? cus.owner.map(o => o.name).join(', ') : null}</td>
                                             <td>{cus.mobilephoneNumber}</td>
-                                            <td>{cus.email}</td>
                                             <td>{cus.address}</td>
                                             <td style={{ textAlign: 'center' }}>
-                                                <a className="text-green" onClick={() => this.handleInfo(cus)}><i className="material-icons">visibility</i></a>
-                                                <a className="text-yellow" onClick={() => this.handleEdit(cus)}><i className="material-icons">edit</i></a>
+                                                <a className="text-green" onClick={() => this.handleInfo(cus._id)}><i className="material-icons">visibility</i></a>
+                                                <a className="text-yellow" onClick={() => this.handleEdit(cus._id)}><i className="material-icons">edit</i></a>
                                                 <ConfirmNotification
                                                     icon="question"
                                                     title="Xóa thông tin về khách hàng"
@@ -196,8 +203,11 @@ class CrmCustomer extends Component {
         window.$('#modal-crm-customer-info').modal('show');
     }
 
-    handleEdit = async (customer) => {
-        await this.setState({ customer });
+    handleEdit = async (id) => {
+        await this.setState({
+            ...this.state,
+            customerIdEdit: id,
+        });
         window.$('#modal-crm-customer-edit').modal('show');
     }
 
@@ -224,7 +234,7 @@ class CrmCustomer extends Component {
 
         await this.setState({
             page: parseInt(page),
-        });
+        }, console.log('state', this.state));
         this.props.getCustomers(this.state);
     }
 
@@ -237,6 +247,12 @@ class CrmCustomer extends Component {
             value: this.state.value
         };
         this.props.getCustomers(data);
+    }
+
+    deleteCustomer = (id) => {
+        if (id) {
+            this.props.deleteCustomer(id);
+        }
     }
 }
 

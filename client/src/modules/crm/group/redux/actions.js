@@ -3,7 +3,9 @@ import { CrmGroupConstants } from "./constants";
 
 export const CrmGroupActions = {
     getGroups,
+    getGroup,
     createGroup,
+    editGroup,
     deleteGroup,
 };
 
@@ -21,6 +23,20 @@ function getGroups(data) {
     }
 }
 
+function getGroup(id) {
+    return dispatch => {
+        dispatch({ type: CrmGroupConstants.GET_CRM_GROUP_REQUEST });
+        CrmGroupServices.getGroup(id)
+            .then(res => {
+                dispatch({
+                    type: CrmGroupConstants.GET_CRM_GROUP_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => { dispatch({ type: CrmGroupConstants.GET_CRM_GROUP_FAILE }) })
+    }
+}
+
 function createGroup(data) {
     return dispatch => {
         dispatch({ type: CrmGroupConstants.CREATE_CRM_GROUP_REQUEST });
@@ -32,6 +48,20 @@ function createGroup(data) {
                 })
             })
             .catch(err => { dispatch({ type: CrmGroupConstants.CREATE_CRM_GROUP_FAILE }) })
+    }
+}
+
+function editGroup(id, data) {
+    return dispatch => {
+        dispatch({ type: CrmGroupConstants.EDIT_CRM_GROUP_REQUEST });
+        CrmGroupServices.editGroup(id, data)
+            .then(res => {
+                dispatch({
+                    type: CrmGroupConstants.EDIT_CRM_GROUP_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => { dispatch({ type: CrmGroupConstants.EDIT_CRM_GROUP_FAILE }) })
     }
 }
 
