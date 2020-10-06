@@ -43,9 +43,7 @@ class DocumentImportForm extends Component {
                 let effectiveDate = "";
                 let expiredDate = "";
                 if (x.issuingDate) {
-
                     issuingDate = date + x.issuingDate * 24 * 60 * 60 * 1000;
-                    let iDate = new Date(issuingDate)
                 }
                 if (x.effectiveDate) {
                     effectiveDate = date + x.effectiveDate * 24 * 60 * 60 * 1000;

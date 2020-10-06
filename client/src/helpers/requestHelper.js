@@ -65,13 +65,13 @@ export function sendRequest(options, showSuccessAlert = false, showFailAlert = t
         const messages = Array.isArray(res.data.messages) ? res.data.messages : [res.data.messages];
 
         showSuccessAlert && toast.success(
-                    <ServerResponseAlert
-                        type='success'
-                        title = {successTitle}
-                        content={messages.map(message => `${module}.${message}`)}
-                    />,
-                    { containerId: 'toast-notification' }
-                );
+            <ServerResponseAlert
+                type='success'
+                title={successTitle}
+                content={messages.map(message => `${module}.${message}`)}
+            />,
+            { containerId: 'toast-notification' }
+        );
         return Promise.resolve(res);
     }).catch(err => {
         const messages = Array.isArray(err.response.data.messages) ? err.response.data.messages : [err.response.data.messages];

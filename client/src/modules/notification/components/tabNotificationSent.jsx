@@ -11,7 +11,7 @@ class TabNotificationSent extends Component {
     constructor(props) {
         super(props);
         this.state = { 
-            limit: 5,
+            limit: 10,
             page: 1
          }
     }

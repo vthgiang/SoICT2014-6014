@@ -1,6 +1,6 @@
 const { connection } = require("mongoose");
 
-const { Role } = require(`${SERVER_MODELS_DIR}`);
+const { Role } = require(`${SERVER_MODELS_DIR}/_multi-tenant`);
 const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 /**
@@ -463,7 +463,6 @@ exports.data = [
     //warehouse
 
     { path: 'stocks', method: 'GET', roles: ['Super Admin', 'Admin'] },
-    { path: 'stocks/stock-detail/:id', method: 'GET', roles: ['Super Admin', 'Admin'] },
     { path: 'stocks', method: 'POST', roles: ['Super Admin', 'Admin'] },
     { path: 'stocks/:id', method: 'PATCH', roles: ['Super Admin', 'Admin'] },
     { path: 'stocks/:id', method: 'DELETE', roles: ['Super Admin', 'Admin'] },
