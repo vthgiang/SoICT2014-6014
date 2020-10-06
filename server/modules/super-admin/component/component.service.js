@@ -4,7 +4,7 @@ const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
  * Lấy danh sách các component của công ty
  * @id id của công ty
  */
-exports.getComponents = async (portal, query) => { console.log("Get components")
+exports.getComponents = async (portal, query) => {
     let {page, limit, currentRole, linkId, type} = query;
     
     let optionExpression = (type === 'active') ? {deleteSoft: false} : {};

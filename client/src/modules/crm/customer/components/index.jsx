@@ -2,53 +2,133 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { CrmCustomerActions } from '../redux/actions';
-import { getStorage } from '../../../../config';
-import { DataTableSetting, PaginateBar, ConfirmNotification, SearchBar } from '../../../../common-components';
+import { UserActions } from '../../../super-admin/user/redux/actions';
+import { CrmGroupActions } from '../../group/redux/actions';
+import { DataTableSetting, PaginateBar, ConfirmNotification, SelectMulti } from '../../../../common-components';
 import CreateForm from './createForm';
 import InfoForm from './infoForm';
 import EditForm from './editForm';
+import CrmCustomerImportFile from './importFileForm';
 
 class CrmCustomer extends Component {
     constructor(props) {
         super(props);
-        this.state = { 
-            limit: 10,
-            page: 1,
+        this.state = {
+            limit: 5,
+            page: 0,
             option: 'name',
             value: ''
-         }
+        }
     }
 
-    render() { 
-        const { translate, crm } = this.props;
-        const { list, listPaginate } = crm.customer;
-        const { option, value, customer } = this.state;
+    importCustomer = async () => {
+        await this.setState({
+            importCustomer: true,
+        })
+        window.$('#modal-customer-import').modal('show');
+    }
 
-        return ( 
+    createCustomer = () => {
+        window.$('#modal-crm-customer-create').modal('show');
+    }
+
+    render() {
+        const { translate, crm, user } = this.props;
+        const { list } = crm.customers;
+        const { customer, importCustomer, limit, page } = this.state;
+
+        let pageTotal = (crm.customers.totalDocs % limit === 0) ?
+            parseInt(crm.customers.totalDocs / limit) :
+            parseInt((crm.customers.totalDocs / limit) + 1);
+        let cr_page = parseInt((page / limit) + 1);
+
+        let units;
+        if (user.organizationalUnitsOfUser) {
+            units = user.organizationalUnitsOfUser;
+        }
+
+        return (
             <div className="box">
-                <div className="box-body">
-                    <CreateForm/>
-                    { customer !== undefined && <InfoForm customer={customer} /> }
-                    { customer !== undefined && <EditForm customer={customer} /> }
+                <div className="box-body qlcv">
+                    {/* Nút thêm khách hàng */}
+                    <div className="form-inline">
+                        <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
+                            <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={'Thêm khách hàng'} >Thêm khách hàng</button>
+                            <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
+                                <li><a style={{ cursor: 'pointer' }} title={`Nhập bằng file`} onClick={this.importCustomer}>
+                                    {translate('human_resource.salary.add_import')}</a></li>
+                                <li><a style={{ cursor: 'pointer' }} title={`Nhập bằng tay`} onClick={this.createCustomer}>
+                                    {`Thêm bằng tay`}</a></li>
+                            </ul>
+                        </div>
+                    </div>
 
-                    <SearchBar
-                        columns={[
-                            { title: translate('crm.customer.name'), value: 'name' },
-                            { title: translate('crm.customer.code'), value: 'code' },
-                            { title: translate('crm.customer.phone'), value: 'phone' },
-                            { title: translate('crm.customer.email'), value: 'email' },
-                            { title: translate('crm.customer.address'), value: 'address' },
-                        ]}
-                        option={option}
-                        setOption={this.setOption}
-                        search={this.searchWithOption}
-                    />
+                    {/* form import khách hàng */}
+                    {importCustomer && <CrmCustomerImportFile />}
+
+                    {/* form thêm mới khách hàng bằng tay */}
+                    <CreateForm />
+
+                    {customer !== undefined && <InfoForm customer={customer} />}
+                    {customer !== undefined && <EditForm customer={customer} />}
+
+                    {/* search form */}
+                    <div className="form-inline" style={{ marginBottom: '2px' }}>
+                        <div className="form-group unitSearch">
+                            <label>{translate('task.task_management.department')}</label>
+                            {units &&
+                                <SelectMulti id="multiSelectUnit1"
+                                    defaultValue={units.map(item => { return item._id })}
+                                    items={units.map(item => { return { value: item._id, text: item.name } })}
+                                    onChange={this.handleSelectOrganizationalUnit}
+                                    options={{ nonSelectedText: units.length !== 0 ? translate('task.task_management.select_department') : "Bạn chưa có đơn vị", allSelectedText: translate(`task.task_management.select_all_department`) }}>
+                                </SelectMulti>
+                            }
+                        </div>
+                        <div className="form-group">
+                            <label className="form-control-static">Mã khách hàng</label>
+                            <input className="form-control" type="text" onKeyUp={this.handleEnterLimitSetting} name="customerCode" onChange={this.handleChangeCreator} placeholder={`Mã nhân viên`} />
+                        </div>
+                    </div>
+
+                    <div className="form-inline" style={{ marginBottom: '2px' }}>
+                        <div className="form-group">
+                            <label>Trạng thái</label>
+                            <SelectMulti id="multiSelectUnit12"
+                                items={[
+                                    { value: 0, text: 'Khách hàng mới' },
+                                    { value: 1, text: 'Quan tâm tới sản phẩm' },
+                                    { value: 2, text: 'Đã mua hàng' },
+                                ]}
+                                onChange={this.handleSelectOrganizationalUnit}
+                            >
+                            </SelectMulti>
+                        </div>
+                        <div className="form-group ">
+                            <label>Nhóm khách hàng</label>
+                            <SelectMulti id="multiSelectUnit13"
+                                items={[
+                                    { value: 0, text: 'Bắc' },
+                                    { value: 1, text: 'Trung' },
+                                    { value: 2, text: 'Nam' },
+                                ]}
+                                onChange={this.handleSelectOrganizationalUnit}
+                            >
+                            </SelectMulti>
+                        </div>
+                    </div>
+                    <div className="form-inline">
+                        <div className="form-group" >
+                            <label></label>
+                            <button type="button" className="btn btn-success" onClick={this.search} title={translate('form.search')}>{translate('form.search')}</button>
+                        </div>
+                    </div>
                     <table className="table table-hover table-striped table-bordered" id="table-manage-crm-customer">
                         <thead>
                             <tr>
-                                <th>{translate('crm.customer.name')}</th>
                                 <th>{translate('crm.customer.code')}</th>
-                                <th>{translate('crm.customer.phone')}</th>
+                                <th>{translate('crm.customer.name')}</th>
+                                <th>{translate('crm.customer.mobilephoneNumber')}</th>
                                 <th>{translate('crm.customer.email')}</th>
                                 <th>{translate('crm.customer.address')}</th>
                                 <th style={{ width: "120px" }}>
@@ -70,12 +150,12 @@ class CrmCustomer extends Component {
                         </thead>
                         <tbody>
                             {
-                                listPaginate.length > 0 ?
-                                    listPaginate.map(cus =>
+                                list && list.length > 0 ?
+                                    list.map(cus =>
                                         <tr key={cus._id}>
-                                            <td>{cus.name}</td>
                                             <td>{cus.code}</td>
-                                            <td>{cus.phone}</td>
+                                            <td>{cus.name}</td>
+                                            <td>{cus.mobilephoneNumber}</td>
                                             <td>{cus.email}</td>
                                             <td>{cus.address}</td>
                                             <td style={{ textAlign: 'center' }}>
@@ -87,11 +167,11 @@ class CrmCustomer extends Component {
                                                     content="<h3>Xóa thông tin khách hàng</h3>"
                                                     name="delete"
                                                     className="text-red"
-                                                    func={()=>this.props.deleteCustomer(cus._id)}
+                                                    func={() => this.props.deleteCustomer(cus._id)}
                                                 />
                                             </td>
                                         </tr>
-                                    ) : crm.customer.isLoading ?
+                                    ) : crm.customers.isLoading ?
                                         <tr><td colSpan={6}>{translate('general.loading')}</td></tr> :
                                         <tr><td colSpan={6}>{translate('general.no_data')}</td></tr>
                             }
@@ -99,27 +179,25 @@ class CrmCustomer extends Component {
                     </table>
 
                     {/* PaginateBar */}
-                    <PaginateBar pageTotal={crm.customer.totalPages} currentPage={crm.customer.page} func={this.setPage} />
+                    <PaginateBar pageTotal={pageTotal} currentPage={cr_page} func={this.setPage} />
                 </div>
             </div>
-         );
+        );
     }
 
-    componentDidMount(){
-        let { limit, page } = this.state;
-        this.props.getCustomers();
-        this.props.getCustomers({limit, page});
+    componentDidMount() {
+        this.props.getCustomers(this.state);
+        this.props.getDepartment();
+        this.props.getGroups({});
     }
 
     handleInfo = async (customer) => {
         await this.setState({ customer });
-
         window.$('#modal-crm-customer-info').modal('show');
     }
 
     handleEdit = async (customer) => {
         await this.setState({ customer });
-
         window.$('#modal-crm-customer-edit').modal('show');
     }
 
@@ -140,15 +218,14 @@ class CrmCustomer extends Component {
         await this.props.getCustomers(data);
     }
 
-    setPage = (page) => {
-        this.setState({ page });
-        const data = {
-            limit: this.state.limit,
-            page: page,
-            key: this.state.option,
-            value: this.state.value
-        };
-        this.props.getCustomers(data);
+    setPage = async (pageNumber) => {
+        let { limit } = this.state;
+        let page = (pageNumber - 1) * (limit);
+
+        await this.setState({
+            page: parseInt(page),
+        });
+        this.props.getCustomers(this.state);
     }
 
     setLimit = (number) => {
@@ -162,16 +239,19 @@ class CrmCustomer extends Component {
         this.props.getCustomers(data);
     }
 }
- 
+
 
 function mapStateToProps(state) {
-    const { crm } = state;
-    return { crm };
+    const { crm, user } = state;
+    return { crm, user };
 }
 
 const mapDispatchToProps = {
+    getDepartment: UserActions.getDepartmentOfUser,
     getCustomers: CrmCustomerActions.getCustomers,
     deleteCustomer: CrmCustomerActions.deleteCustomer,
+
+    getGroups: CrmGroupActions.getGroups,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CrmCustomer));

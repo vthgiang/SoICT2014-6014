@@ -2,7 +2,7 @@
 
 .env
 
-/logs/history
+/logs/_multi-tenant
 /logs/history
 
 /upload/private

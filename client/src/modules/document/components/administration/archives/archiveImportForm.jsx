@@ -99,7 +99,6 @@ class ArchiveImportForm extends Component {
     render() {
         const { translate } = this.props;
         let { limit, page, importData, rowError, configData, checkFileImport } = this.state;
-        //let templateImportArchive = this.convertDataExport(exportArchive);
         return (
             <React.Fragment>
                 <DialogModal

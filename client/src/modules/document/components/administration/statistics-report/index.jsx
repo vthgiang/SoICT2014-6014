@@ -114,9 +114,10 @@ class AdministrationStatisticsReport extends Component {
         return data;
     }
     barChart = () => {
+        const { translate } = this.props;
         this.removePreviousBarChart();
         let dataChart = this.getDataViewDownloadBarChart();
-        let x = ["View", "Download"];
+        let x = [translate('document.views'), translate('document.downloads')];
         this.chart = c3.generate({
             bindto: this.refs.barchart,
 
@@ -131,26 +132,17 @@ class AdministrationStatisticsReport extends Component {
                 x: {
                     type: 'category',
                     categories: x,
-                    // tick: {
-                    //     multiline: false
-                    // }
+                    tick: {
+                        multiline: false
+                    }
                 },
-                // y: {
-                //     label: {
-                //         text: 'Số lượng',
-                //         position: 'outer-right'
-                //     }
-                // },
-                // rotated: true
+                //  rotated: true
             },
             data: {                                 // Dữ liệu biểu đồ
                 columns: dataChart,
                 type: 'bar',
             },
-            axis: {
-                type: 'category',
-                value: x,
-            }
+
         })
     }
     removePreviousPieChart() {

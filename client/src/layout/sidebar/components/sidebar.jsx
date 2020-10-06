@@ -36,8 +36,7 @@ class SideBar extends Component {
                     <section className="sidebar">
                         <div className="user-panel">
                             <div className="pull-left image">
-                                <ApiImage className="img-circle" alt="User Avatar" src={auth.user.avatar !== undefined ? '.' + auth.user.avatar : undefined} />
-                                {/* <img src={process.env.REACT_APP_SERVER + auth.user.avatar} className="img-circle" alt="User avatar" /> */}
+                                <img src={process.env.REACT_APP_SERVER + auth.user.avatar} className="img-circle" alt="User avatar" />
                             </div>
                             <div className="pull-left info">
                                 <p>{user.name}</p>
@@ -245,7 +244,7 @@ class SideBar extends Component {
 
 
                             {/* Quản lý kế hoạch sản xuất */}
-                            <Item item={{ name: 'menu.manage_plans', icon: 'fa fa-calendar', path: '/manage-plans' }} />
+                            {/* <Item item={{ name: 'menu.manage_plans', icon: 'fa fa-calendar', path: '/manage-plans' }} /> */}
 
                             {/* CRUD ví dụ theo 2 mô hình lấy dữ liệu */}
                             <GroupItem groupItem={{
@@ -254,6 +253,23 @@ class SideBar extends Component {
                                 list: [
                                     { name: 'menu.manage_examples_1', icon: 'fa fa-circle', path: '/manage-examples-1' },
                                     { name: 'menu.manage_examples_2', icon: 'fa fa-adjust', path: '/manage-examples-2' },
+                                ]
+                            }} />
+
+                            {/* Quản lý sản xuất */}
+                            <GroupItem groupItem={{
+                                name: 'menu.manage_manufacturing',
+                                icon: 'fa fa-gears',
+                                list: [
+                                    { name: 'menu.manage_manufacturing_plan', icon: 'fa fa-file-o', path: '/manage-manufacturing-plan' },
+                                    { name: 'menu.manage_manufacturing_command', icon: 'fa fa-gavel', path: '/manage-manufacturing-command' },
+                                    { name: 'menu.manage_manufacturing_process', icon: 'fa fa-line-chart', path: '/manage-manufacturing-process' },
+                                    { name: 'menu.manage_manufacturing_schedule', icon: 'fa fa-calendar', path: '/manage-manufacturing-schedule' },
+                                    { name: 'menu.manage_purchasing_request', icon: 'fa fa-file-text-o', path: '/manage-purchasing-request' },
+                                    { name: 'menu.track_order', icon: 'fa fa-search', path: '/track-order' },
+                                    { name: 'menu.analysis_manufacturing_performance', icon: 'fa fa-bar-chart', path: '/analysis-manufacturing-performance' },
+                                    { name: 'menu.manage_manufacturing_works', icon: 'fa fa-university', path: '/manage-manufacturing-works' },
+                                    { name: 'menu.manage_manufacturing_mill', icon: 'fa fa-home', path: '/manage-manufacturing-mill' },
                                 ]
                             }} />
 

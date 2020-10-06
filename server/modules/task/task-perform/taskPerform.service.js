@@ -2542,7 +2542,7 @@ exports.confirmTask = async (portal, taskId, userId) => {
         { $push: { confirmedByEmployees: userId } }
     )
 
-    let task = await this.getTaskById(taskId, userId);
+    let task = await this.getTaskById( portal, taskId, userId);
     return task;
 }
 

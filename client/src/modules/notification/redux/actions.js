@@ -12,6 +12,7 @@ export const NotificationActions = {
     deleteNotification,
     setLevelNotificationReceivered,
     setLevelNotificationSent,
+    receiveNotification
 }
 
 function getAllManualNotifications(){
@@ -156,5 +157,12 @@ function setLevelNotificationReceivered(level=undefined){
 
 function setLevelNotificationSent(level=undefined){
     return dispatch => dispatch({ type: NotificationConstants.SET_LEVEL_TO_QUERY_NOTIFICATION_SENT, level});
+}
+
+function receiveNotification(notification){
+    return dispatch => dispatch({
+        type: NotificationConstants.RECEIVE_NOTIFICATION_SUCCESS,
+        payload: notification
+    })
 }
 

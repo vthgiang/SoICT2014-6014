@@ -17,7 +17,11 @@ const ComponentSchema = new Schema({
     links: [{
         type: Schema.Types.ObjectId,
         ref: 'Link'
-    }]
+    }],
+    company: {
+        type: Schema.Types.ObjectId,
+        ref: 'Company'
+    },
 },{
     timestamps: true,
     toJSON: { virtuals: true }

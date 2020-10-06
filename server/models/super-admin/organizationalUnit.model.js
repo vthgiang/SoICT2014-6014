@@ -24,7 +24,11 @@ const OrganizationalUnitSchema = new Schema({
     parent: {
         type: Schema.Types.ObjectId,
         replies: this
-    }
+    },
+    company: {
+        type: Schema.Types.ObjectId,
+        ref: 'Company'
+    },
 },{
     timestamps: true
 });
