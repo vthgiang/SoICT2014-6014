@@ -14,10 +14,7 @@ class Notification extends Component {
 
     componentWillUnmount(){
         this.props.socket.io.on('new notifications', data => {
-            let notify = this.state.notify;
-            this.setState({
-                notify: [...notify, data]
-            })
+            this.props.receiveNofitication(data);
         })
     }
 
@@ -25,18 +22,17 @@ class Notification extends Component {
         this.props.getAllManualNotifications();
         this.props.getAllNotifications();
         this.props.socket.io.on('new notifications', data => {
-            let notify = this.state.notify;
-            this.setState({
-                notify: [...notify, data]
-            })
+            this.props.receiveNofitication(data);
         })
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if(nextProps.notifications.receivered.list.length > prevState.notify.length){
+        const list = nextProps.notifications.receivered.list.filter(notification => !notification.readed);
+        if(JSON.stringify(list) !== JSON.stringify(prevState.notify)){
+            console.log("Caapj nhat danh sach thong bao moi")
             return {
                 ...prevState,
-                notify: nextProps.notifications.receivered.list
+                notify: list
             }
         }else{
             return null;
@@ -47,7 +43,6 @@ class Notification extends Component {
         const {translate} = this.props;
         const {notify} = this.state;
         const count = notify.length;
-        console.log("notify: ", this.state.notify);
 
         return ( 
             <React.Fragment>
@@ -93,7 +88,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = { 
     getAllManualNotifications: NotificationActions.getAllManualNotifications,
-    getAllNotifications: NotificationActions.getAllNotifications
+    getAllNotifications: NotificationActions.getAllNotifications,
+    receiveNofitication: NotificationActions.receiveNotification
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(Notification));

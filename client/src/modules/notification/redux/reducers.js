@@ -198,6 +198,18 @@ export function notifications(state = initState, action) {
                 ...state,
                 isLoading: false
             };
+        
+        case NotificationConstants.RECEIVE_NOTIFICATION_SUCCESS:
+            console.log("New notification: ", action.payload)
+            return {
+                ...state,
+                receivered: {
+                    ...state.receivered,
+                    list: [action.payload, ...state.receivered.list],
+                    paginate: [action.payload, ...state.receivered.paginate]
+                },
+                isLoading: false
+            }
 
         default:
             return state;
