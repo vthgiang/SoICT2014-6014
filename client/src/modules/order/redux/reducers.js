@@ -10,7 +10,7 @@ const initialState = {
   error: null,
   hasPrevPage: false,
   hasNextPage: false,
-  isLoading: true,
+  isLoading: false,
 };
 
 export function order(state = initialState, action) {

@@ -110,6 +110,7 @@ import CrmGroup from '../modules/crm/group/components';
 
 //orders
 import OrderManagement from "../modules/order/components";
+import PurchaseOrder from '../modules/order/purchase-order/components/index'
 
 // plans
 import PlanManagement from "../modules/plan/components";
@@ -1341,7 +1342,7 @@ class Routes extends Component {
                         path={"/manage-purchase-order"}
                         pageName={"manage_purchase_order"}
                         layout={Layout}
-                        component={OrderManagement}
+                        component={PurchaseOrder}
                     />
 
                     <PrivateRoute
