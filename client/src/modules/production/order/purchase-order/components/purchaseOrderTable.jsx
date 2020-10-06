@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from  'react-redux-multilingual';
 import {PaginateBar,
   DataTableSetting,
-  DeleteNotification} from '../../../../common-components';
+  DeleteNotification} from '../../../../../common-components';
 
 import data from '../../dataTest/PurchaseOrderData.json'
 import PurchaseDetailForm from './purchaseDetailForm';

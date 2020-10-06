@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class Tax extends Component {
+class ServiceLevelAgreement extends Component {
   constructor(props) {
     super(props);
     this.state = {}
@@ -9,10 +9,11 @@ class Tax extends Component {
     return (
       <div className="box" style={{ minHeight: "450px" }}>
         <div className="box-body">
+          SLA
         </div>
       </div>
     );
   }
 }
 
-export default Tax;
+export default ServiceLevelAgreement;

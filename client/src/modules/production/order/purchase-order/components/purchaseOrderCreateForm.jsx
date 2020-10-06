@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { DialogModal, SelectBox, ErrorLabel, ButtonModal } from '../../../../common-components'
+import { DialogModal, SelectBox, ErrorLabel, ButtonModal } from '../../../../../common-components'
 
 class PurchaseOrderCreateForm extends Component {
   constructor(props) {

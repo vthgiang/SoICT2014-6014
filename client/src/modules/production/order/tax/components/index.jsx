@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class Discount extends Component {
+class Tax extends Component {
   constructor(props) {
     super(props);
     this.state = {}
@@ -9,10 +9,11 @@ class Discount extends Component {
     return (
       <div className="box" style={{ minHeight: "450px" }}>
         <div className="box-body">
+          Tax
         </div>
       </div>
     );
   }
 }
 
-export default Discount;
+export default Tax;

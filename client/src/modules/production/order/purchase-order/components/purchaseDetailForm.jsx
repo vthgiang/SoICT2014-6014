@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal } from '../../../../common-components';
+import { DialogModal } from '../../../../../common-components';
 
 class PurchaseDetailForm extends Component {
   constructor(props) {
