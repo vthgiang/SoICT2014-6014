@@ -6,7 +6,6 @@ const GroupSchema = new Schema({
     creator: {
         type: Schema.Types.ObjectId,
         ref: 'User',
-        required: true,
     },
     code: { // Mã nhóm khách hàng
         type: String,
