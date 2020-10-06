@@ -1,5 +1,5 @@
 const fs = require('fs');
-const {backup} = require(`${SERVER_HELPERS_DIR}/backupHelper`);
+const {backup, restore} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 const child_process = require('child_process');
 const exec = child_process.exec;
 
@@ -10,14 +10,13 @@ exports.getBackups = async(portal) => {
         });
     };
     const list = await fs.readdirSync(`${SERVER_BACKUP_DIR}/${portal}`);
-    const backupedList = list.map( dir => {
-        const folderInfo = fs.statSync(`${`${SERVER_BACKUP_DIR}/${portal}`}/${dir}`);
-        const subPath = `${`${SERVER_BACKUP_DIR}/${portal}`}/${dir}/README.txt`;
-        const description = fs.readFileSync(subPath, {encoding:'utf8', flag:'r'});
+    const backupedList = list.map( version => {
+        const folderInfo = fs.statSync(`${SERVER_BACKUP_DIR}/${portal}/${version}`);
+        const description = fs.readFileSync(`${SERVER_BACKUP_DIR}/${portal}/${version}/README.txt`, {encoding:'utf8', flag:'r'});
         
         return {
-            version: dir,
-            path: `${`${SERVER_BACKUP_DIR}/${portal}`}/${dir}`,
+            version,
+            path: `${SERVER_BACKUP_DIR}/${portal}/${version}`,
             description,
             createdAt: folderInfo.ctime
         }
@@ -29,28 +28,27 @@ exports.getBackups = async(portal) => {
 exports.createBackup = async(portal) => {
     return backup({
         host: process.env.DB_HOST,
-        dbName: portal,
-        dbPort: process.env.DB_PORT || '27017',
-        store: SERVER_BACKUP_DIR
+        db: portal,
+        port: process.env.DB_PORT || '27017'
     });
 }
 
-exports.deleteBackup = async(portal, version) => {
-    const path = `${SERVER_BACKUP_DIR}/${portal}/${version}`;
+exports.deleteBackup = async(version, portal=undefined) => {
+    const path = portal ? `${SERVER_BACKUP_DIR}/${portal}/${version}` : `${SERVER_BACKUP_DIR}/all/${version}`;;
     if (fs.existsSync(path)) {
         exec("rm -rf " + path, function (err) { });
         return version;
     };
 
-    return undefined;
+    return false;
 };
 
 exports.restore = async(portal, version) => {
-    console.log("restore portal: ", portal, version)
-    return await backup(version, {
+    console.log("restore: ", portal, version)
+    return await restore({
         host: process.env.DB_HOST,
-        dbName: portal,
-        dbPort: process.env.DB_PORT || '27017',
-        store: SERVER_BACKUP_DIR
+        db: portal,
+        port: process.env.DB_PORT || '27017',
+        version
     });
 }
