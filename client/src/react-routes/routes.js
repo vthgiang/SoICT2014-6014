@@ -115,7 +115,7 @@ import ManufacturingOrder from '../modules/production/order/manufacturing-order/
 import Discount from '../modules/production/order/discount/components';
 import Quotation from '../modules/production/order/quotation/components';
 import Tax from '../modules/production/order/tax/components';
-import ServiceLevelAgreement from '../modules/production/order/serviceLevelAgreement/components';
+import ServiceLevelAgreement from '../modules/production/order/service-level-agreement/components';
 
 
 // plans
