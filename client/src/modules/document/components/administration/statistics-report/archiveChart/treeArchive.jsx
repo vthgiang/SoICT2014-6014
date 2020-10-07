@@ -64,7 +64,6 @@ class TreeArchive extends Component {
                 parent: node.parentId ? node.parentId.toString() : "#"
             }
         })
-        console.log('treeeeeeeeeeeeee', dataTree);
         return (
             <div className="amout-docs" id="amout-docs">
                 <br />

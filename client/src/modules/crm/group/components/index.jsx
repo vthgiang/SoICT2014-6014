@@ -30,7 +30,7 @@ class CrmGroup extends Component {
             <div className="box">
                 <div className="box-body">
                     <CreateGroupForm />
-                    {groupIdEdit && <EditGroupForm groupCustomerId={groupIdEdit} />}
+                    {groupIdEdit && <EditGroupForm groupIdEdit={groupIdEdit} />}
 
                     <SearchBar
                         columns={[

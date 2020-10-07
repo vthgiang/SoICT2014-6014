@@ -104,7 +104,7 @@ exports.editCustomer = async (req, res) => {
  */
 exports.deleteCustomer = async (req, res) => {
     try {
-        const deleteCustomer = CustomerService.deleteCustomer(req.portal, req.user.company._id, req.params.id);
+        const deleteCustomer = await CustomerService.deleteCustomer(req.portal, req.user.company._id, req.params.id);
         await Logger.info(req.user.email, ' delete_customer_success ', req.portal);
         res.status(200).json({
             success: true,

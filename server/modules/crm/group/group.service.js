@@ -34,7 +34,7 @@ exports.getGroupById = async (portal, companyId, id) => {
 
 exports.editGroup = async (portal, companyId, id, data, userId) => {
     const { code, name, description, promotion } = data;
-    console.log('data', data)
+
     await Group(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
         $set: {
             creator: userId,

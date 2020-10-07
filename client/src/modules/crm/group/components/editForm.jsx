@@ -18,15 +18,14 @@ class EditGroupForm extends Component {
     render() {
         const { translate, crm } = this.props;
         const { groups } = crm;
-        const { editingGroup, groupCodeEditFormError, groupNameEditFormError } = this.state;
-
+        const { editingGroup, groupCodeEditFormError, groupNameEditFormError, groupIdEdit } = this.state;
         return (
             <React.Fragment>
                 <DialogModal
                     modalID="modal-edit-group" isLoading={groups.isLoading}
                     formID="form-edit-group"
                     title="Chỉnh sửa nhóm khách hàng"
-                    func={this.save} size="75"
+                    func={this.save} size="50"
                 >
                     {/* Form thêm nhóm khách hàng mới */}
                     <form id="form-crm-group-edit">
@@ -58,17 +57,13 @@ class EditGroupForm extends Component {
         );
     }
 
-    componentDidMount() {
-
-    }
-
 
     static getDerivedStateFromProps(props, state) {
-        if (props.groupCustomerId !== state.groupIdEdit) {
-            props.getGroup(props.groupCustomerId);
+        if (props.groupIdEdit !== state.groupIdEdit) {
+            props.getGroup(props.groupIdEdit);
             return {
                 dataStatus: 1,
-                groupIdEdit: props.groupCustomerId,
+                groupIdEdit: props.groupIdEdit,
             }
         } else {
             return null;
@@ -78,13 +73,13 @@ class EditGroupForm extends Component {
     shouldComponentUpdate = (nextProps, nextState) => {
         let { editingGroup } = this.state;
         if (this.state.dataStatus === this.DATA_STATUS.QUERYING && !nextProps.crm.groups.isLoading) {
-            let groupCustomer = nextProps.crm.groups.groupCustomerById;
+            let group = nextProps.crm.groups.groupById;
             editingGroup = {
                 ...editingGroup,
-                code: groupCustomer && groupCustomer.code,
-                name: groupCustomer && groupCustomer.name,
-                description: groupCustomer && groupCustomer.description,
-                promotion: groupCustomer && groupCustomer.promotion,
+                code: group && group.code,
+                name: group && group.name,
+                description: group && group.description,
+                promotion: group && group.promotion,
             }
             this.setState({
                 dataStatus: this.DATA_STATUS.AVAILABLE,

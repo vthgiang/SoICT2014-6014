@@ -821,24 +821,25 @@ exports.deleteManyDocumentArchive = async (array, portal, company) => {
     return await this.getDocumentArchives(portal, company);
 }
 
-exports.editDocumentArchive = async (id, data, portal) => {
+exports.editDocumentArchive = async (id, data, portal, company) => {
+    console.log('aaaaaaaaa', data)
     const archive = await DocumentArchive(connect(DB_CONNECTION, portal)).findById(id);
     let array = data.array;
     archive.name = data.name;
     archive.description = data.description;
     archive.parent = ObjectId.isValid(data.parent) ? data.parent : undefined
-    archive.path = await findPath(data)
+    archive.path = await findPath(data, portal)
     await archive.save();
     for (let i = 0; i < array.length; i++) {
 
         const archive = await DocumentArchive(connect(DB_CONNECTION, portal)).findById(array[i]);
-        archive.path = await findPath(archive);
+        archive.path = await findPath(archive, portal);
         await archive.save();
     }
-    const document = await this.getDocumentArchives(portal)
+    const document = await this.getDocumentArchives(portal, company)
     return document;
 }
-async function findPath(data) {
+async function findPath(data, portal) {
     let path = "";
     let arrayParent = [];
     arrayParent.push(data.name);
