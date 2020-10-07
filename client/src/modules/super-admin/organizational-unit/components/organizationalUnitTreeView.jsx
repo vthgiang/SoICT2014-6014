@@ -46,7 +46,7 @@ class DepartmentTreeView extends Component {
                     <div className="dropdown pull-right" >
                         <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title='Thêm'>{translate('manage_department.add_title')}</button>
                         <ul className="dropdown-menu pull-right">
-                            <li><a href="#modal-create-department" title="ImportForm" onClick={(event) => { this.handleCreate(event) }}>{translate('manage_department.add_title')}</a></li>
+                            <li><a href="#modal-create-department" title={translate('manage_department.add_title')} onClick={(event) => { this.handleCreate(event) }}>{translate('manage_department.add_title')}</a></li>
                             <li><a href="#modal_import_file" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>ImportFile</a></li>
                         </ul>
                     </div>
