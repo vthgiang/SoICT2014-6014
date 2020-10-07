@@ -1,175 +1,185 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import { CrmGroupActions } from '../redux/actions';
 import { DialogModal, ButtonModal, SelectBox, ErrorLabel } from '../../../../common-components';
+import ValidationHelper from '../../../../helpers/validationHelper';
 
-class CustomerGroupEdit extends Component {
+class EditGroupForm extends Component {
     constructor(props) {
         super(props);
+        this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
         this.state = {
-            roleName: '',
-            roleParents: [],
-            roleUsers: []
+            dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
+            editingGroup: {}
         }
     }
 
     render() {
-        const { translate } = this.props;
-        const {customer} = this.props;
-        const {nameError} = this.state;
-
+        const { translate, crm } = this.props;
+        const { groups } = crm;
+        const { editingGroup, groupCodeEditFormError, groupNameEditFormError, groupIdEdit } = this.state;
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID="modal-edit-customer" isLoading={customer.isLoading}
-                    formID="form-edit-customer"
-                    title="Chỉnh sửa thông tin khách hàng"
-                    func={this.save} size="100"
+                    modalID="modal-edit-group" isLoading={groups.isLoading}
+                    formID="form-edit-group"
+                    title="Chỉnh sửa nhóm khách hàng"
+                    func={this.save} size="50"
                 >
-                    {/* Form thêm khách hàng mới */}
-                    <form id="form-edit-customer">
-                        <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">Thông tin chung</legend>
-                            <div className="row">
-                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                    <div className="form-group">
-                                        <label>Tên khách hàng<span className="attention"> * </span></label>
-                                        <input type="text" className="form-control" onChange={this.handleName} /><br />
-                                    </div>
-                                    <div className="form-group">
-                                        <label>Số điện thoại<span className="attention"> * </span></label>
-                                        <input type="text" className="form-control" onChange={this.handleName} /><br />
-                                    </div>
-                                    <div className="form-group">
-                                        <label>Nhóm khách hàng<span className="attention"> * </span></label>
-                                        <input type="text" className="form-control" onChange={this.handleName} /><br />
-                                    </div>
-                                    <div className="form-group">
-                                        <label>Giới tính<span className="attention"> * </span></label>
-                                        <input type="text" className="form-control" onChange={this.handleName} /><br />
-                                    </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                    <div className="form-group">
-                                        <label>Mã khách hàng<span className="attention"> * </span></label>
-                                        <input type="text" className="form-control" onChange={this.handleName} /><br />
-                                    </div>
-                                    <div className="form-group">
-                                        <label>Email<span className="attention"> * </span></label>
-                                        <input type="text" className="form-control" onChange={this.handleName} /><br />
-                                    </div>
-                                    <div className="form-group">
-                                        <label>Ngày sinh<span className="attention"> * </span></label>
-                                        <input type="text" className="form-control" onChange={this.handleName} /><br />
-                                    </div>
-                                    <div className="form-group">
-                                        <label>Mã số thuế<span className="attention"> * </span></label>
-                                        <input type="text" className="form-control" onChange={this.handleName} /><br />
-                                    </div>
-                                </div>
-                            </div>
-                        </fieldset>
-                        <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">Thông tin liên hệ</legend>
-                            <div className="row">
-                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                    <div className="form-group">
-                                        <label>Địa chỉ<span className="attention"> * </span></label>
-                                        <input type="text" className="form-control" onChange={this.handleName} /><br />
-                                    </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                    <div className="form-group">
-                                        <label>Khu vực<span className="attention"> * </span></label>
-                                        <input type="text" className="form-control" onChange={this.handleName} /><br />
-                                    </div>
-                                </div>
-                            </div>
-                        </fieldset>
-                        <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">Thông tin khác</legend>
-                            <div className="form-group">
-                                <label>Nhân viên chăm sóc<span className="attention"> * </span></label>
-                                <input type="text" className="form-control" onChange={this.handleName} /><br />
-                            </div>
-                            <div className="form-group">
-                                <label>Mô tả<span className="attention"> * </span></label>
-                                <input type="text" className="form-control" onChange={this.handleName} /><br />
-                            </div>
-                            <div className="form-group">
-                                <label>Ưu đãi áp dụng<span className="attention"> * </span></label>
-                                <input type="text" className="form-control" onChange={this.handleName} /><br />
-                            </div>
-                        </fieldset>
+                    {/* Form thêm nhóm khách hàng mới */}
+                    <form id="form-crm-group-edit">
+                        {/* Mã nhóm khách hàng */}
+                        <div className={`form-group ${!groupCodeEditFormError ? "" : "has-error"}`}>
+                            <label>{translate('crm.group.code')}<span className="attention"> * </span></label>
+                            <input type="text" className="form-control" value={editingGroup.code ? editingGroup.code : ''} onChange={this.handleChangeGroupCode} />
+                            <ErrorLabel content={groupCodeEditFormError} />
+                        </div>
+                        {/* Tên nhóm khách hàng */}
+                        <div className={`form-group ${!groupNameEditFormError ? "" : "has-error"}`}>
+                            <label>{translate('crm.group.name')}<span className="attention"> * </span></label>
+                            <input type="text" className="form-control" value={editingGroup.name ? editingGroup.name : ''} onChange={this.handleChangeGroupName} />
+                            <ErrorLabel content={groupNameEditFormError} />
+                        </div>
+                        {/* Mô tả nhóm khách hàng */}
+                        <div className="form-group">
+                            <label>{translate('crm.group.description')}</label>
+                            <textarea type="text" value={editingGroup.description ? editingGroup.description : ''} className="form-control" onChange={this.handleChangeGroupDescription} />
+                        </div>
+                        {/* Ưu đãi kèm theo nhóm khách hàng */}
+                        <div className="form-group">
+                            <label>{translate('crm.group.promotion')}</label>
+                            <input type="text" className="form-control" value="" value={editingGroup.promotion ? editingGroup.promotion : ''} onChange={this.handleChangeGroupPromotion} />
+                        </div>
                     </form>
                 </DialogModal>
             </React.Fragment>
         );
     }
 
-    componentDidMount() {
-   
+
+    static getDerivedStateFromProps(props, state) {
+        if (props.groupIdEdit !== state.groupIdEdit) {
+            props.getGroup(props.groupIdEdit);
+            return {
+                dataStatus: 1,
+                groupIdEdit: props.groupIdEdit,
+            }
+        } else {
+            return null;
+        }
     }
 
-    // Xy ly va validate role name
-    handleRoleName = (e) => {
+    shouldComponentUpdate = (nextProps, nextState) => {
+        let { editingGroup } = this.state;
+        if (this.state.dataStatus === this.DATA_STATUS.QUERYING && !nextProps.crm.groups.isLoading) {
+            let group = nextProps.crm.groups.groupById;
+            editingGroup = {
+                ...editingGroup,
+                code: group && group.code,
+                name: group && group.name,
+                description: group && group.description,
+                promotion: group && group.promotion,
+            }
+            this.setState({
+                dataStatus: this.DATA_STATUS.AVAILABLE,
+                editingGroup,
+            })
+            return false;
+        }
+
+        if (this.state.dataStatus === this.DATA_STATUS.AVAILABLE) {
+            this.setState({
+                dataStatus: this.DATA_STATUS.FINISHED,
+            });
+            return false;
+        }
+        return true;
+    }
+
+    handleChangeGroupCode = (e) => {
+        let { editingGroup } = this.state;
         const { value } = e.target;
-        this.validateRoleName(value, true);
-    }
-
-    handleParents = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                roleParents: value
+        const { translate } = this.props;
+        this.setState({
+            editingGroup: {
+                ...editingGroup,
+                code: value
             }
         });
+        // validate Mã nhóm khách hàng
+        let { message } = ValidationHelper.validateName(translate, value, 4, 255);
+        this.setState({ groupCodeEditFormError: message });
     }
 
-    handleUsers = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                roleUsers: value
-            }
-        });
-    }
-
-    handleRoleUser = (e) => {
+    handleChangeGroupName = (e) => {
+        let { editingGroup } = this.state;
         const { value } = e.target;
-        this.setState(state => {
-            return {
-                ...state,
-                roleUsers: [value]
+        const { translate } = this.props;
+
+        this.setState({
+            editingGroup: {
+                ...editingGroup,
+                name: value
+            }
+        });
+        // validate tên nhóm khách hàng
+        let { message } = ValidationHelper.validateName(translate, value, 4, 255);
+        this.setState({ groupNameEditFormError: message });
+    }
+
+    handleChangeGroupDescription = (e) => {
+        let { editingGroup } = this.state;
+        const { value } = e.target;
+
+        this.setState({
+            editingGroup: {
+                ...editingGroup,
+                description: value
             }
         });
     }
+
+    handleChangeGroupPromotion = (e) => {
+        let { editingGroup } = this.state;
+        const { value } = e.target;
+
+        this.setState({
+            editingGroup: {
+                ...editingGroup,
+                promotion: value
+            }
+        });
+    }
+
 
     isFormValidated = () => {
-        let result = this.validateRoleName(this.state.roleName, false);
-        return result;
+        const { editingGroup } = this.state;
+        const { code, name } = editingGroup;
+        const { translate } = this.props;
+
+        if (!ValidationHelper.validateName(translate, code).status
+            || !ValidationHelper.validateDescription(translate, name).status)
+            return false;
+        return true;
     }
 
     save = () => {
-        const data = {
-            name: this.state.roleName,
-            parents: this.state.roleParents,
-            users: this.state.roleUsers
-        }
-
+        const { editingGroup, groupIdEdit } = this.state;
         if (this.isFormValidated()) {
-            return this.props.create(data);
+            this.props.editGroup(groupIdEdit, editingGroup);
         }
     }
 }
 
 function mapStateToProps(state) {
-    const { customer } = state;
-    return { customer };
+    const { crm } = state;
+    return { crm };
 }
 
 const mapDispatchToProps = {
-
+    getGroup: CrmGroupActions.getGroup,
+    editGroup: CrmGroupActions.editGroup,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CustomerGroupEdit));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(EditGroupForm));

@@ -82,8 +82,6 @@ class CreateForm extends Component {
         this.validateTypeDescription(value, true);
     }
     isFormValidated = () => {
-        // let {documentTypeDescription, documentTypeName} = this.state
-
         let cons = this.validateTypeName(this.state.documentTypeName, false)
             && this.validateTypeDescription(this.state.documentTypeDescription, false);
 
@@ -119,7 +117,7 @@ class CreateForm extends Component {
                         </ul>
                     </div>
                 </div>
-                {/* <ButtonModal modalID="modal-create-document-type" button_name={translate('general.add')} title={translate('manage_user.add_title')} /> */}
+
                 <DialogModal
                     modalID="modal-create-document-type"
                     formID="form-create-document-type"

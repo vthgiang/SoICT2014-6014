@@ -32,6 +32,7 @@ export default {
             no_data: 'No data',
             success: 'Successfully',
             error: 'Error',
+            new_notification: 'You have new notification!',
             auth_alert: {
                 title: 'Current Session invalid. Please log in again',
                 reason: 'Reasons maybe:',
@@ -2780,6 +2781,10 @@ export default {
                             edit: 'Edit',
                             content: 'This is the default target (if necessary, weights can be corrected)',
                             delete: 'Delete'
+                        },
+                        add_new_target: {
+                            approving: 'KPI is being approved, you can not create new target!',
+                            activated: 'KPI is being activated, you can not create new target!'
                         },
                         handle_populate_info_null: {
                             error_kpi_approver_null: 'Error! The approver of this KPI set is not exist or was deleted',

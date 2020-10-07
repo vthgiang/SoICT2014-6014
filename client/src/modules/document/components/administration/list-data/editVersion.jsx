@@ -33,23 +33,19 @@ class EditVersion extends Component {
         })
     }
     handleEffectiveDate = (value) => {
-        // this.validateEffectiveDate(value, true);
         this.setState(state => {
             return {
                 ...state,
                 effectiveDate: value,
-                // errorEffectiveDate: msg,
             }
         })
     }
 
     handleExpiredDate = (value) => {
-        //this.validateExpiredDate(value, true);
         this.setState(state => {
             return {
                 ...state,
                 expiredDate: value,
-                //  errorExpiredDate: msg,
             }
         })
     }
@@ -155,7 +151,7 @@ class EditVersion extends Component {
     }
 
     render() {
-        const { translate, documents } = this.props;
+        const { translate } = this.props;
         const { versionId, versionName, issuingDate, effectiveDate, expiredDate } = this.state;
         return (
             <DialogModal

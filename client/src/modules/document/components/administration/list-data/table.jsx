@@ -43,8 +43,9 @@ class Table extends Component {
     }
 
     componentDidMount() {
-        this.props.getAllDocuments({ type: "all" });
-        this.props.getAllDocuments({ page: this.state.page, limit: this.state.limit, type: "paginate" });
+        this.props.getAllDocuments({ calledId: "all" });
+        this.props.getAllDocuments({ page: this.state.page, limit: this.state.limit, calledId: "paginate" });
+        this.props.getAllDocuments({ page: this.state.page, limit: this.state.limit, calledId: "relationshipDocs" });
         this.props.getAllRoles();
         this.props.getAllDepartments();
         this.props.getDocumentDomains();
@@ -203,9 +204,8 @@ class Table extends Component {
         for (let i = 0; i < data.length; i++) {
             let element = {};
             let x = data[i];
-            let length = 0;
-            let domain = "";
-            let length_domains, length_archives, length_relationship, length_roles, length_versions, length_logs, length_views, length_downloads;
+            let length_domains, length_archives, length_relationship, length_roles, length_versions, length_logs,
+                length_views, length_downloads;
             if (x.domains && x.domains.length) {
                 element.domains = x.domains[0].name;
                 length_domains = x.domains.length;
@@ -282,7 +282,8 @@ class Table extends Component {
             element.relationshipDescription = x.relationshipDescription ? x.relationshipDescription : "";
             element.organizationUnitManager = x.organizationUnitManager ? x.organizationUnitManager.name : "";
             element.officialNumber = x.officialNumber ? x.officialNumber : "";
-            let max_length = Math.max(length_domains, length_archives, length_relationship, length_roles, length_versions, length_logs, length_views, length_downloads);
+            let max_length = Math.max(length_domains, length_archives, length_relationship,
+                length_roles, length_versions, length_logs, length_views, length_downloads);
 
             newData = [...newData, element];
             if (max_length > 1) {
@@ -384,17 +385,20 @@ class Table extends Component {
     }
     render() {
         const { translate } = this.props;
-        const docs = this.props.documents.administration.data;
         const { domains, categories, archives } = this.props.documents.administration;
-        const { paginate } = docs;
         const { isLoading } = this.props.documents;
+        const docs = this.props.documents.administration.data;
+
         const { currentRow, archive, domain, category } = this.state;
+        const { paginate } = docs;
+
         const listDomain = domains.list
-        const listCategory = this.convertData(categories.list)
         const listArchive = archives.list;
+        const listCategory = this.convertData(categories.list)
+
         let list = [];
         if (isLoading === false) {
-            list = docs.list;
+            list = docs.paginate;
         }
         let exportData = list ? this.convertDataToExportData(list) : "";
         return (
@@ -562,8 +566,16 @@ class Table extends Component {
                                         <td><DateTimeConverter dateTime={doc.versions[doc.versions.length - 1].issuingDate} type="DD-MM-YYYY" /></td>
                                         <td><DateTimeConverter dateTime={doc.versions[doc.versions.length - 1].effectiveDate} type="DD-MM-YYYY" /></td>
                                         <td><DateTimeConverter dateTime={doc.versions[doc.versions.length - 1].expiredDate} type="DD-MM-YYYY" /></td>
-                                        <td><a href="#" onClick={() => this.requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}><u>{doc.versions[doc.versions.length - 1].file ? translate('document.download') : ""}</u></a></td>
-                                        <td><a href="#" onClick={() => this.requestDownloadDocumentFileScan(doc._id, "SCAN_" + doc.name, doc.versions.length - 1)}><u>{doc.versions[doc.versions.length - 1].scannedFileOfSignedDocument ? translate('document.download') : ""}</u></a></td>
+                                        <td>
+                                            <a href="#" onClick={() => this.requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}>
+                                                <u>{doc.versions[doc.versions.length - 1].file ? translate('document.download') : ""}</u>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href="#" onClick={() => this.requestDownloadDocumentFileScan(doc._id, "SCAN_" + doc.name, doc.versions.length - 1)}>
+                                                <u>{doc.versions[doc.versions.length - 1].scannedFileOfSignedDocument ? translate('document.download') : ""}</u>
+                                            </a>
+                                        </td>
                                         <td>
                                             <a href="#modal-list-view" onClick={() => this.showDetailListView(doc)}>{doc.numberOfView}</a>
                                         </td>
@@ -571,9 +583,15 @@ class Table extends Component {
                                             <a href="#modal-list-download" onClick={() => this.showDetailListDownload(doc)}>{doc.numberOfDownload}</a>
                                         </td>
                                         <td>
-                                            <a className="text-green" title={translate('document.view')} onClick={() => this.toggleDocumentInformation(doc)}><i className="material-icons">visibility</i></a>
-                                            <a className="text-yellow" title={translate('document.edit')} onClick={() => this.toggleEditDocument(doc)}><i className="material-icons">edit</i></a>
-                                            <a className="text-red" title={translate('document.delete')} onClick={() => this.deleteDocument(doc._id, doc.name)}><i className="material-icons">delete</i></a>
+                                            <a className="text-green" title={translate('document.view')} onClick={() => this.toggleDocumentInformation(doc)}>
+                                                <i className="material-icons">visibility</i>
+                                            </a>
+                                            <a className="text-yellow" title={translate('document.edit')} onClick={() => this.toggleEditDocument(doc)}>
+                                                <i className="material-icons">edit</i>
+                                            </a>
+                                            <a className="text-red" title={translate('document.delete')} onClick={() => this.deleteDocument(doc._id, doc.name)}>
+                                                <i className="material-icons">delete</i>
+                                            </a>
                                         </td>
                                     </tr>) :
                                 isLoading ?
@@ -593,9 +611,7 @@ class Table extends Component {
         const data = {
             limit: this.state.limit,
             page: page,
-            key: this.state.option,
-            value: this.state.value,
-            type: "paginate"
+            calledId: "paginate"
         };
         await this.props.getAllDocuments(data);
     }
@@ -612,15 +628,9 @@ class Table extends Component {
     setLimit = (number) => {
         if (this.state.limit !== number) {
             this.setState({ limit: number });
-            const data = { limit: number, page: this.state.page, type: "paginate" };
+            const data = { limit: number, page: this.state.page, calledId: "paginate" };
             this.props.getAllDocuments(data);
         }
-    }
-
-    setOption = (title, option) => {
-        this.setState({
-            [title]: option
-        });
     }
 
     searchWithOption = async () => {
@@ -632,7 +642,7 @@ class Table extends Component {
             category: this.state.category ? this.state.category[0] : "",
             domains: this.state.domain ? this.state.domain : "",
             archives: path && path.length ? path : "",
-            type: "paginate"
+            calledId: "paginate"
         };
         await this.props.getAllDocuments(data);
     }

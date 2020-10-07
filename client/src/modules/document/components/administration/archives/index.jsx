@@ -19,7 +19,7 @@ class AdministrationDocumentArchives extends Component {
     }
 
     componentDidMount() {
-        //   this.props.getDocumentArchive();
+        // this.props.getDocumentArchive();
     }
     onChanged = async (e, data) => {
         await this.setState({
@@ -145,7 +145,7 @@ class AdministrationDocumentArchives extends Component {
                     archiveParent.length > 0 && <button className="btn btn-danger" style={{ marginLeft: '5px' }} onClick={this.deleteArchive}>{translate('general.delete')}</button>
                 }
                 {<ExportExcel id="export-document-archive" exportData={exportData} style={{ marginRight: 5, marginTop: 2 }} />}
-                <CreateForm domainParent={this.state.archiveParent[0]} />
+                <CreateForm archiveParent={this.state.archiveParent[0]} />
                 <ArchiveImportForm />
                 <div className="row"
                 >

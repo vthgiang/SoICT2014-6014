@@ -37,29 +37,33 @@ export const DocumentActions = {
 };
 
 function getDocuments(data) {
-    if (data.type === "paginate") {
-        return dispatch => {
-            dispatch({ type: DocumentConstants.PAGINATE_DOCUMENTS_REQUEST });
-            DocumentServices.getDocuments(data)
-                .then(res => {
-                    dispatch({
-                        type: DocumentConstants.PAGINATE_DOCUMENTS_SUCCESS,
-                        payload: res.data.content
-                    })
-                })
-                .catch(err => {
-                    dispatch({ type: DocumentConstants.PAGINATE_DOCUMENTS_FAILE });
+    // if (data.type === "paginate") {
+    //     return dispatch => {
+    //         dispatch({ type: DocumentConstants.PAGINATE_DOCUMENTS_REQUEST });
+    //         DocumentServices.getDocuments(data)
+    //             .then(res => {
+    //                 dispatch({
+    //                     type: DocumentConstants.PAGINATE_DOCUMENTS_SUCCESS,
+    //                     payload: res.data.content
+    //                 })
+    //             })
+    //             .catch(err => {
+    //                 dispatch({ type: DocumentConstants.PAGINATE_DOCUMENTS_FAILE });
 
-                })
-        }
-    }
+    //             })
+    //     }
+    // }
     return dispatch => {
-        dispatch({ type: DocumentConstants.GET_DOCUMENTS_REQUEST });
-        DocumentServices.getDocuments()
+        dispatch({
+            type: DocumentConstants.GET_DOCUMENTS_REQUEST,
+            calledId: data.calledId
+        });
+        DocumentServices.getDocuments(data)
             .then(res => {
                 dispatch({
                     type: DocumentConstants.GET_DOCUMENTS_SUCCESS,
-                    payload: res.data.content
+                    payload: res.data.content,
+                    calledId: data.calledId
                 })
             })
             .catch(err => {

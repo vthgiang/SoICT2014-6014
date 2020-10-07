@@ -21,7 +21,6 @@ const CustomerSchema = new Schema({
     }],
     gender: { // Giới tính
         type: String,
-        enum: ['male', 'female'],
     },
     avatar: { // Ảnh đại diện khách hàng
         type: String,

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { configDocument, exportDocument } from './fileConfigImportDocument.js'
-import { DialogModal, ImportFileExcel, ShowImportData, ConFigImportFile, ExportExcel } from '../../../../../common-components';
-//import { taskTemplateActions } from '../redux/actions';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
+import { DialogModal, ImportFileExcel, ShowImportData, ConFigImportFile, ExportExcel } from '../../../../../common-components';
 import { AuthActions } from '../../../../auth/redux/actions';
 import { DocumentActions } from '../../../redux/actions'
 
@@ -43,9 +43,7 @@ class DocumentImportForm extends Component {
                 let effectiveDate = "";
                 let expiredDate = "";
                 if (x.issuingDate) {
-
                     issuingDate = date + x.issuingDate * 24 * 60 * 60 * 1000;
-                    let iDate = new Date(issuingDate)
                 }
                 if (x.effectiveDate) {
                     effectiveDate = date + x.effectiveDate * 24 * 60 * 60 * 1000;

@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const exec = require('child_process').exec;
+const fs = require('fs');
 
 exports.initConnect = (dbName) => {
     return mongoose.createConnection(
@@ -38,7 +40,7 @@ exports.initModels = (db, models) => {
     }
 }
 
-versionName = () => {
+const versionName = () => {
     const time = new Date(),
         month = time.getMonth() + 1,
         date = time.getDate(),
@@ -48,7 +50,7 @@ versionName = () => {
         second = time.getSeconds();
 
 
-        return  `${year}.${month}.${date}.${hour}.${minute}.${second}`;
+        return  `${year}${month}${date}${hour}${minute}${second}`;
 }
 
 /**
@@ -57,18 +59,24 @@ versionName = () => {
  */
 exports.restore = async (options) => {
     const commandRestoreDB = (options) => {
-        if(options.db === undefined){
-            return `mongorestore --drop --host="${option.host}" --port="${option.port}" ${SERVER_BACKUP_DIR}/system/${options.version}/database`;
+        if(!options.db){
+            return `mongorestore --drop --host="${options.host}" --port="${options.port}" ${SERVER_BACKUP_DIR}/all/${options.version}/database`;
         } else {
-            return `mongorestore --drop --host="${option.host}" --port="${option.port}" -d ${option.db} ${SERVER_BACKUP_DIR}/${options.db}/${options.version}/database`;
+            return `mongorestore --drop --host="${options.host}" --port="${options.port}" -d ${options.db} ${SERVER_BACKUP_DIR}/${options.db}/${options.version}/database/${options.db}`;
         }
     }
 
     const commandRestoreFile = (options) => {
-        return {
-            delete: `${SERVER_DIR}/upload/private/${options.db}`,
-            new: `${SERVER_BACKUP_DIR}/${option.db}/${options.version}/upload`
-        }
+        if(options.db)
+            return {
+                delete: `${SERVER_DIR}/upload/private/${options.db}`,
+                new: `${SERVER_BACKUP_DIR}/${options.db}/${options.version}/upload`
+            }
+        else 
+            return {
+                delete: `${SERVER_DIR}/upload}`,
+                new: `${SERVER_BACKUP_DIR}/all/${options.version}/upload` 
+            }
     }
     
     // 1. Restore database
@@ -82,7 +90,10 @@ exports.restore = async (options) => {
     if (fs.existsSync(command2.delete)) {
         exec(`rm -rf ${command2.delete}`, function (err) { });
         if(fs.existsSync(command2.new)){
-            exec(`cp -r ${command2.new} ${SERVER_DIR}`, function (err) { });
+            if(options.db) 
+                exec(`cp -r ${command2.new} ${SERVER_DIR}/upload/private`, function (err) { });
+            else    
+                exec(`cp -r ${command2.new} ${SERVER_DIR}`, function (err) { });
         }
     }
 }
@@ -92,8 +103,8 @@ exports.restore = async (options) => {
  * @options option to restore { host, port, db, version }
  */
 exports.backup = async (options) => {
+    const version = versionName();
     const dbBackupPath = (options) => {
-        const version = this.versionName();
         const path = `${SERVER_BACKUP_DIR}/${options.db}/${version}`;
         if (!fs.existsSync(path)) {
             fs.mkdirSync(path, {
@@ -105,37 +116,48 @@ exports.backup = async (options) => {
     }
 
     const backupPath = dbBackupPath(options);
-    const version = this.versionName();
-    const description = `Backup database ${options.db}`;
-
+    const description = `Backup database ${options.db ? options.db : 'all'}`;
     const commandBackupDB = (options) => {
         if(options.db) {
-            return `mongodump --host="${option.host}" --port="${option.dbPort}" --out="${serverBackupStorePath}/database" --db="${option.dbName}"`;
+            fs.appendFile(backupPath+'/README.txt', description, err => { 
+                if(err) throw err;
+            });
+            return `mongodump --host="${options.host}" --port="${options.port}" --out="${backupPath}/database" --db="${options.db}"`;
+        }else{
+            fs.appendFile(`${SERVER_BACKUP_DIR}/all/${version}`+'/README.txt', description, err => { 
+                if(err) throw err;
+            });
+            return `mongodump --host="${options.host}" --port="${options.port}" --out="${SERVER_BACKUP_DIR}/all/${version}"`;
         }
     }
-
-    const command = `mongodump --host="${option.host}" --port="${option.dbPort}" --out="${serverBackupStorePath}/database" --db="${option.dbName}"`;
+    const command = commandBackupDB(options);
     
     // 1. Backup database
     await exec(command, (error, stdout, stderr) => {
         if(error !== null) console.log(error);
     });
-    fs.appendFile(serverBackupStorePath+'/README.txt', descriptionBackupDB, err => { 
-        if(err) throw err;
-    });
+
+    const getCommandBackupFile = (options) => {
+        if(options.db) {
+            return `cp -r "${SERVER_DIR}/upload/private/${options.db}" "${backupPath}/upload/private" && cp -r "${SERVER_DIR}/upload/avatars/${options.db}" "${backupPath}/upload/avatars"`;
+        }else{
+            return `cp -r "${SERVER_DIR}/upload" "${SERVER_BACKUP_DIR}/all/${version}/upload"`;
+        }
+    }
 
     // 2. Backup file dữ liệu trong thư mục upload
-    console.log("PATH:", serverBackupStorePath)
-    const commandBackupDataUpload  = `cp -r "${SERVER_DIR}/upload/private/${option.dbName}" "${serverBackupStorePath}/upload"`
-    await exec(commandBackupDataUpload, (error, stdout, stderr) => {
+    const commandBackupFile  = getCommandBackupFile(options);
+    await exec(commandBackupFile, (error, stdout, stderr) => {
         if(error !== null) console.log(error);
     });
-    const folderInfo = fs.statSync(`${SERVER_BACKUP_DIR}/${option.dbName}/${versionTime}`);
+    const folderInfo = options.db ?
+    fs.statSync(backupPath) :
+    fs.statSync(`${SERVER_BACKUP_DIR}/all/${version}`);
 
     return {
-        version: versionTime,
-        description: descriptionBackupDB,
-        path: serverBackupStorePath,
+        version,
+        description: description,
+        path: options.db ? backupPath : `${SERVER_BACKUP_DIR}/all/${version}`,
         createdAt: folderInfo.ctime
     }
 }

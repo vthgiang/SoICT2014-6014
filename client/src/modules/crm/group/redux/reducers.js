@@ -17,12 +17,9 @@ const initState = {
 }
 
 export function groups(state = initState, action) {
-    var index = -1;
-    var indexPaginate = -1;
 
     switch (action.type) {
         case CrmGroupConstants.GET_CRM_GROUPS_REQUEST:
-        case CrmGroupConstants.PAGINATE_CRM_GROUPS_REQUEST:
         case CrmGroupConstants.CREATE_CRM_GROUP_REQUEST:
         case CrmGroupConstants.GET_CRM_GROUP_REQUEST:
         case CrmGroupConstants.EDIT_CRM_GROUP_REQUEST:
@@ -34,7 +31,6 @@ export function groups(state = initState, action) {
             }
 
         case CrmGroupConstants.GET_CRM_GROUPS_FAILE:
-        case CrmGroupConstants.PAGINATE_CRM_GROUPS_FAILE:
         case CrmGroupConstants.CREATE_CRM_GROUP_FAILE:
         case CrmGroupConstants.GET_CRM_GROUP_FAILE:
         case CrmGroupConstants.EDIT_CRM_GROUP_FAILE:
@@ -46,7 +42,6 @@ export function groups(state = initState, action) {
             }
 
         case CrmGroupConstants.GET_CRM_GROUPS_SUCCESS:
-
             return {
                 ...state,
                 list: action.payload.groups,
@@ -54,42 +49,31 @@ export function groups(state = initState, action) {
                 isLoading: false
             };
 
+        case CrmGroupConstants.GET_CRM_GROUP_SUCCESS:
+            return {
+                ...state,
+                groupById: action.payload,
+                isLoading: false
+            };
+
         case CrmGroupConstants.CREATE_CRM_GROUP_SUCCESS:
-            console.log('payload', action.payload);
             return {
                 ...state,
                 list: [action.payload, ...state.list],
                 isLoading: false
             };
 
-        case CrmGroupConstants.PAGINATE_CRM_GROUPS_SUCCESS:
-
-            return {
-                ...state,
-                listPaginate: action.payload.docs,
-                ...action.payload,
-                isLoading: false
-            };
-
         case CrmGroupConstants.EDIT_CRM_GROUP_SUCCESS:
-            index = findIndex(state.list, action.payload._id);
-            if (index !== -1) state.list[index] = action.payload;
-            indexPaginate = findIndex(state.listPaginate, action.payload._id);
-            if (indexPaginate !== -1) state.listPaginate[index] = action.payload;
-
             return {
                 ...state,
+                list: state.list.map(gr => ((gr._id === action.payload._id) ? action.payload : gr)),
                 isLoading: false
             };
 
         case CrmGroupConstants.DELETE_CRM_GROUP_SUCCESS:
-            index = findIndex(state.list, action.payload);
-            if (index !== -1) state.list.splice(index, 1);
-            indexPaginate = findIndex(state.listPaginate, action.payload);
-            if (indexPaginate !== -1) state.listPaginate.splice(indexPaginate, 1);
-
             return {
                 ...state,
+                list: state.list.filter(gr => (gr._id !== action.payload._id)),
                 isLoading: false
             };
 

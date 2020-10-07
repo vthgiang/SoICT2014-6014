@@ -54,7 +54,7 @@ class TreeArchive extends Component {
                     typeName: title,
                     parentId: archives[i].parent,
                 })
-            } 
+            }
         }
         let dataTree = chart && chart.map(node => {
             return {

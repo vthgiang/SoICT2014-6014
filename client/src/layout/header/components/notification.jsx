@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { NotificationActions } from '../../../modules/notification/redux/actions';
+import { toast } from 'react-toastify';
 
 class Notification extends Component {
     constructor(props) {
@@ -12,12 +13,21 @@ class Notification extends Component {
          }
     }
 
+    _contentNotification = (data) => {
+        console.log("dữ liệu của thông báo: ", data)
+        const {translate} = this.props;
+        return (
+            <React.Fragment>
+                <div className="notification-title"><i className="fa fa-info-circle"></i> {translate('general.new_notification')}</div>
+                <p>{data.title ? data.title : null}</p>
+            </React.Fragment>
+        );
+    }
+
     componentWillUnmount(){
         this.props.socket.io.on('new notifications', data => {
-            let notify = this.state.notify;
-            this.setState({
-                notify: [...notify, data]
-            })
+            toast.info(this._contentNotification(data), { containerId: 'toast-notification' })
+            this.props.receiveNofitication(data);
         })
     }
 
@@ -25,18 +35,17 @@ class Notification extends Component {
         this.props.getAllManualNotifications();
         this.props.getAllNotifications();
         this.props.socket.io.on('new notifications', data => {
-            let notify = this.state.notify;
-            this.setState({
-                notify: [...notify, data]
-            })
+            toast.info(this._contentNotification(data), { containerId: 'toast-notification' })
+            this.props.receiveNofitication(data);
         })
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if(nextProps.notifications.receivered.list.length > prevState.notify.length){
+        const list = nextProps.notifications.receivered.list.filter(notification => !notification.readed);
+        if(JSON.stringify(list) !== JSON.stringify(prevState.notify)){
             return {
                 ...prevState,
-                notify: nextProps.notifications.receivered.list
+                notify: list
             }
         }else{
             return null;
@@ -47,7 +56,6 @@ class Notification extends Component {
         const {translate} = this.props;
         const {notify} = this.state;
         const count = notify.length;
-        console.log("notify: ", this.state.notify);
 
         return ( 
             <React.Fragment>
@@ -93,7 +101,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = { 
     getAllManualNotifications: NotificationActions.getAllManualNotifications,
-    getAllNotifications: NotificationActions.getAllNotifications
+    getAllNotifications: NotificationActions.getAllNotifications,
+    receiveNofitication: NotificationActions.receiveNotification
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(Notification));
