@@ -1810,6 +1810,8 @@ export default {
                 number: 'Amount',
                 attached_file: 'Attached files',
 
+                select_role_to_use: 'Select type to use',
+                select_all_roles_to_use: 'Select all types',
                 not_for_registering: 'Not for registering',
                 register_by_hour: 'Register by hour',
                 register_for_long_term: 'Register for long term',
