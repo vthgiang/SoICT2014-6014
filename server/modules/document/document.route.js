@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const DocumentController = require('./document.controller');
-const { auth, uploadFile } = require('../../middleware');
+const { auth, uploadFile } = require(`${SERVER_MIDDLEWARE_DIR}`);
 
 router.get("/documents/:id/download-file", auth, DocumentController.downloadDocumentFile);
 router.get("/documents/:id/download-file-scan", auth, DocumentController.downloadDocumentFileScan);
@@ -11,12 +11,12 @@ router.get("/documents/user-statistical", auth, DocumentController.getDocumentsU
 
 // Danh mục văn bản - domain
 router.get("/document-domains", auth, DocumentController.getDocumentDomains);
-//router.get("/domains/:id", auth, DocumentController.showDocumentDomain);
 router.post("/document-domains", auth, DocumentController.createDocumentDomain);
 router.post("/document-domains/delete-many", auth, DocumentController.deleteManyDocumentDomain);
 router.patch("/document-domains/:id", auth, DocumentController.editDocumentDomain);
 router.delete("/document-domains/:id", auth, DocumentController.deleteDocumentDomain);
 router.post("/document-domains/import-file", auth, DocumentController.importDocumentDomain)
+
 // Loại văn bản - category
 router.get("/document-categories", auth, DocumentController.getDocumentCategories);
 router.get("/document-categories/:id", auth, DocumentController.showDocumentCategory);

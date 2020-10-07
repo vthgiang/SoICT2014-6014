@@ -7,7 +7,6 @@ import { DocumentActions } from '../../../redux/actions';
 class CreateForm extends Component {
     constructor(props) {
         super(props);
-        console.log('cons', this.props.archiveParent);
         this.state = {
             archiveParent: this.props.archiveParent,
         }
@@ -80,7 +79,8 @@ class CreateForm extends Component {
     render() {
         const { translate, documents } = this.props;
         const { list } = documents.administration.archives;
-        const { archiveParent, errorName } = this.state;
+        let { archiveParent, errorName } = this.state;
+        archiveParent = archiveParent ? archiveParent : this.props.archiveParent;
         return (
             <React.Fragment>
                 <DialogModal

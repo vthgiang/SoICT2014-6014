@@ -443,6 +443,7 @@ class AddTaskTemplate extends Component {
 
         var allUnitsMember = getEmployeeSelectBoxItems(usersInUnitsOfCompany);
         let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
+
         return (
             <React.Fragment>
 

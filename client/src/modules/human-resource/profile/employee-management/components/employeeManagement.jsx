@@ -728,7 +728,7 @@ class EmployeeManagement extends Component {
                             columns: [
                                 { key: "STT", value: translate(`human_resource.stt`), width: 7 },
                                 { key: "month", value: translate('human_resource.month') },
-                                { key: "year", value: translate('human_resource.holiday.year') },
+                                { key: "year", value: translate('human_resource.work_plan.year') },
                                 { key: "employeeNumber", value: translate(`human_resource.profile.staff_number`) },
                                 { key: "fullName", value: translate(`human_resource.profile.full_name`), width: 20 },
                                 { key: "organizationalUnit", value: translate('human_resource.unit'), width: 25 },

@@ -87,4 +87,8 @@ const PartnerSchema = new Schema ({
 
 PartnerSchema.plugin(mongoosePaginate);
 
-module.exports = Partner = mongoose.model("partners", PartnerSchema);
+module.exports = (db) => {
+    if(!db.models.Partner)
+        return db.model('Partner', PartnerSchema);
+    return db.models.Partner;
+}

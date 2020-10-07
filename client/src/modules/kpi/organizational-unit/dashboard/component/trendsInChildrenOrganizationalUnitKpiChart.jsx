@@ -535,7 +535,7 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
             dataChart = listOrganizationalUnitKpi.map(kpis => {
                 let temporary;
                 temporary = data.map(x => {
-                    return x[kpis.name];
+                    return x[kpis.name] ? x[kpis.name] : 0;
                 })
                 
                 temporary = [kpis.name].concat(temporary);

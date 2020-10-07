@@ -1,10 +1,12 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const Company = require('../system-admin/company.model');
-
 // Tạo bảng datatable thông tin nhân viên
 const EmployeeSchema = new Schema({
+    company: {
+        type: Schema.Types.ObjectId,
+        ref: 'Company',
+    },
     avatar: {
         type: String
     },
@@ -26,10 +28,6 @@ const EmployeeSchema = new Schema({
     },
     leavingDate: { // Ngày nghỉ việc
         type: Date,
-    },
-    company: {
-        type: Schema.Types.ObjectId,
-        ref: Company
     },
     employeeTimesheetId: { // mã số chấm công của nhân viên
         type: String,
@@ -247,7 +245,7 @@ const EmployeeSchema = new Schema({
         number: String,
         status: {
             type: String,
-            enum: ['submitted', 'no_submitted', 'returned'] //submitted-Đã nộp, no_submitted-Chưa nộp, returned-Đã trả
+            enum: ['submitted', 'not_submitted_yet', 'returned'] //submitted-Đã nộp, not_submitted_yet-Chưa nộp, returned-Đã trả
         },
         file: String,
         urlFile: String
@@ -256,4 +254,8 @@ const EmployeeSchema = new Schema({
     timestamps: true,
 });
 
-module.exports = Employee = mongoose.model("employees", EmployeeSchema);
+module.exports = (db) => {
+    if (!db.models.Employee)
+        return db.model('Employee', EmployeeSchema);
+    return db.models.Employee;
+}

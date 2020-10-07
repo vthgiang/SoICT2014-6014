@@ -1,8 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const User = require('../auth/user.model');
-
 // Create Schema
 const TaskHistorySchema = new Schema({
     time: {
@@ -10,14 +8,15 @@ const TaskHistorySchema = new Schema({
     },
     user: {
         type: Schema.Types.ObjectId,
-        ref: User
+        ref: 'User'
     },
     role: {
         type: Schema.Types.ObjectId,
-        ref: Role
+        ref: 'Role'
     },
     task: {
-        type: Schema.Types.ObjectId
+        type: Schema.Types.ObjectId,
+        ref: 'Task'
     },
     log: {
         type: String
@@ -26,4 +25,8 @@ const TaskHistorySchema = new Schema({
     }
 });
 
-module.exports = TaskHistory = mongoose.model("task_histories", TaskHistorySchema);
+module.exports = (db) => {
+    if(!db.models.TaskHistory)
+        return db.model('TaskHistory', TaskHistorySchema);
+    return db.models.TaskHistory;
+}

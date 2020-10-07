@@ -25,7 +25,7 @@ const CompanySchema = new Schema({
     },
     superAdmin: {
         type: Schema.Types.ObjectId,
-        ref: 'users'
+        ref: 'User'
     }
 },{
     timestamps: true
@@ -33,4 +33,8 @@ const CompanySchema = new Schema({
 
 CompanySchema.plugin(mongoosePaginate);
 
-module.exports = Company = mongoose.model("companies", CompanySchema);
+module.exports = (db) => {
+    if(!db.models.Company)
+        return db.model('Company', CompanySchema);
+    return db.models.Company;
+}

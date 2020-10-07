@@ -1,19 +1,16 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const User = require('../auth/user.model');
-const Task = require('./task.model');
-
 // Model quản lý dữ liệu lịch sử bấm giờ thực hiện công việc
 const TimesheetLogSchema = new Schema({
     task: { //lưu id của công việc 
         type: Schema.Types.ObjectId,
-        ref: Task,
+        ref: 'Task',
         required: true
     },
     user: {
         type: Schema.Types.ObjectId,
-        ref: User,
+        ref: 'User',
         required: true
     },
     // Thời gian bắt đầu bấm giờ 
@@ -40,4 +37,8 @@ const TimesheetLogSchema = new Schema({
     }
 });
 
-module.exports = TimesheetLog = mongoose.model("timesheet_logs", TimesheetLogSchema);
+module.exports = (db) => {
+    if(!db.models.TimesheetLog)
+        return db.model('TimesheetLog', TimesheetLogSchema);
+    return db.models.TimesheetLog;
+}

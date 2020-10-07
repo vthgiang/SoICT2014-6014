@@ -32,6 +32,7 @@ export default {
             no_data: 'Không có dữ liệu',
             success: 'Thành công',
             error: 'Lỗi',
+            new_notification: 'Bạn có thông báo mới!',
             auth_alert: {
                 title: 'Hệ thống xác nhận có lỗi xảy ra trong phiên làm việc của bạn!',
                 reason: 'Nguyên nhân:',
@@ -525,17 +526,27 @@ export default {
 
         crm: {
             customer: {
+                owner: 'Người quản lý',
+                source: 'Nguồn khách hàng',
+                company: 'Tên công ty',
+                companyEstablishmentDate: 'Ngày thành lập công ty',
                 name: 'Tên khách hàng',
                 code: 'Mã khách hàng',
-                phone: 'Số điện thoại',
+                mobilephoneNumber: 'Số điện thoại di động',
+                telephoneNumber: 'Số điện thoại cố định',
                 group: 'Nhóm khách hàng',
+                status: 'Trạng thái khách hàng',
                 address: 'Địa chỉ',
+                address2: 'Địa chỉ 2',
                 email: 'Email',
+                secondaryEmail: 'Email phụ',
                 location: 'Khu vực',
                 birth: 'Ngày sinh',
                 gender: 'Giới tính',
                 liability: 'Công nợ',
-                tax: 'Mã số thuế',
+                taxNumber: 'Mã số thuế',
+                website: 'Website',
+                linkedIn: 'linkedIn',
                 document: 'Giấy tờ',
                 description: 'Mô tả',
                 carier: 'Nhân viên chăm sóc phụ trách',
@@ -557,6 +568,7 @@ export default {
                 name: 'Tên nhóm khách hàng',
                 code: 'Mã nhóm khách hàng',
                 description: 'Mô tả nhóm khách hàng',
+                promotion: 'Ưu đãi kèm theo',
 
                 add: 'Thêm mới nhóm khách hàng',
                 edit: 'Chỉnh sửa thông tin nhóm khách hàng',
@@ -680,6 +692,7 @@ export default {
         menu: {
             home: 'Trang chủ',
             system_administration: 'Quản trị hệ thống',
+            manage_configuration: 'Cấu hình hệ thống',
             manage_system: 'Sao lưu phục hồi',
             manage_company: 'Doanh nghiệp',
             manage_role: 'Quản lý phân quyền',
@@ -692,9 +705,9 @@ export default {
             manage_document: 'Quản lý tài liệu',
             documents: 'Tài liệu văn bản',
 
-            crm: 'CRM',
+            customer_Management: 'Quản lý khách hàng',
             crm_list: {
-                customer: 'Khách hàng',
+                customer: 'Quản lý thông tin khách hàng',
                 lead: 'Khách hàng thân thiết',
                 care: 'Chăm sóc khách hàng',
                 group: 'Nhóm khách hàng',
@@ -708,7 +721,7 @@ export default {
 
             leave_application: 'Quản lý đơn xin nghỉ',
             manage_employee: 'Quản lý nhân sự',
-            manage_holiday: 'Quản lý kế hoạch làm việc',
+            manage_work_plan: 'Quản lý kế hoạch làm việc',
             manage_training: 'Quản lý đào tạo',
             account: 'Tài khoản',
             annual_leave_personal: 'Nghỉ phép',
@@ -726,7 +739,6 @@ export default {
             training_plan: 'Quản lý khoá đào tạo',
 
             manage_warehouse: 'Quản lý kho',
-            material_manager: 'Quản lý thông tin vật tư',
             dashboard_material: "Bảng tin quản lý vật tư",
             stock_management: 'Quản lý thông tin kho',
             bin_location_management: 'Quản lý thông tin lưu kho',
@@ -797,14 +809,33 @@ export default {
             task_report: 'Quản lý báo cáo công việc',
 
             //QUẢN LÝ ĐƠN HÀNG
-            manage_orders: "Quản lý đơn hàng",
-            manage_list_orders: "Danh sách đơn hàng",
+            manage_orders: 'Quản lý đơn hàng',
+            manage_sales_order: 'Đơn hàng kinh doanh',
+            manage_manufacturing_order: 'Đơn hàng sản xuất',
+            manage_purchase_order: 'Đơn mua hàng',
+            manage_quotation: 'Báo giá',
+            manage_discount: 'Giảm giá',
+            manage_tax: 'Thuế',
+            manage_sla: 'Cam kết chất lượng',
+
             // Quản lý kế hoạch sản xuất
             manage_plans: "Quản lý kế hoạch sản xuất",
             //VÍ DỤ EXAMPLE
             manage_examples: "Ví dụ CRUD",
             manage_examples_1: "CRUD theo mô hình số 1",
             manage_examples_2: "CRUD theo mô hình số 2",
+
+            // Quản lý sản xuất
+            manage_manufacturing: "Quản lý sản xuất",
+            manage_manufacturing_plan: "Quản lý kế hoạch sản xuất",
+            manage_manufacturing_command: "Quản lý lệnh sản xuất",
+            manage_manufacturing_process: "Quản lý tiến độ sản xuất",
+            manage_manufacturing_schedule: "Quản lý lịch sản xuất",
+            manage_purchasing_request: "Quản lý phiếu mua hàng",
+            track_order: "Theo dõi đơn hàng",
+            analysis_manufacturing_performance: "Phân tích hiệu suất sản xuất",
+            manage_manufacturing_works: "Quản lý nhà máy sản xuất",
+            manage_manufacturing_mill: "Quản lý xưởng sản xuất"
         },
 
         manage_system: {
@@ -930,6 +961,17 @@ export default {
             edit_faile: 'Chỉnh sửa thất bại',
         },
 
+        // Modules cấu hình các chức năng
+        module_configuration: {
+
+            // Thông điệp trả về từ server
+            get_configuration_success: 'Lấy thông tin cấu hình thành công',
+            get_configuration_faile: 'Lấy thông tin cấu hình thất bại',
+            edit_configuration_success: 'Chỉnh sửa thông tin cấu hình thành công',
+            edit_configuration_faile: 'Chỉnh sửa thông tin cấu hình thất bại',
+
+        },
+
         // Modules Quản lý nhân sự
         human_resource: {
             // Nhóm dùng chung cho module quản lý nhân sự
@@ -1033,9 +1075,9 @@ export default {
 
                 // Nhóm dành cho trạng thái nghỉ phép 
                 status: {
-                    pass: 'Đã chấp nhận',
-                    faile: 'Không chấp nhận',
-                    process: 'Chờ phê duyệt',
+                    approved: 'Đã chấp nhận',
+                    disapproved: 'Không chấp nhận',
+                    waiting_for_approval: 'Chờ phê duyệt',
                 },
 
                 // Nhóm dành cho action
@@ -1303,7 +1345,7 @@ export default {
                 add_default_title: 'Thêm các tài liệu mặc định',
                 edit_file: 'Chỉnh sửa tài liệu đính kèm',
                 add_file: 'Thêm tài liệu đính kèm',
-                no_submitted: 'Chưa nộp',
+                not_submitted_yet: 'Chưa nộp',
                 submitted: 'Đã nộp',
                 returned: 'Đã trả lại',
                 no_files: 'Chưa có file',
@@ -1472,7 +1514,7 @@ export default {
             },
 
             // Quản lý kế hoạch làm việc (lịch nghỉ lễ tết)
-            holiday: {
+            work_plan: {
                 file_name_export: 'Kế hoạch làm việc',
                 number_date_leave_of_year: 'Số ngày nghỉ tối đa',
                 date_year: 'ngày/năm',
@@ -1493,15 +1535,15 @@ export default {
                 },
 
                 // Nhóm thể loại kế hoạch làm Việc
-                holiday: 'Thời gian nghỉ lễ, nghỉ tết',
-                auto_leave: 'Thời gian được xin nghỉ phép',
-                no_leave: 'Thời gian không được xin nghỉ phép',
+                time_for_holiday: 'Thời gian nghỉ lễ, nghỉ tết',
+                time_allow_to_leave: 'Thời gian được xin nghỉ phép',
+                time_not_allow_to_leave: 'Thời gian không được xin nghỉ phép',
 
                 // Nhóm dành cho action
-                edit_holiday: 'Chỉnh sửa kế hoạch làm việc',
-                delete_holiday: 'Xoá kế hoạch làm việc',
-                add_holiday: 'Thêm mới',
-                add_holiday_title: 'Thêm mới kế hoạch làm việc',
+                edit_work_plan: 'Chỉnh sửa kế hoạch làm việc',
+                delete_work_plan: 'Xoá kế hoạch làm việc',
+                add_work_plan: 'Thêm mới',
+                add_work_plan_title: 'Thêm mới kế hoạch làm việc',
                 add_by_hand: 'Thêm một kế hoạch làm việc',
                 add_import: 'Import file excel',
                 accept_application: 'Chấp nhận đơn xin nghỉ',
@@ -1512,19 +1554,19 @@ export default {
                 start_date_required: 'Thời gian bắt đầu không được để trống',
                 end_date_required: 'Thời gian kết thúc không được để trống',
                 reason_required: 'Mô tả kế hoạch làm việc không được để trống',
-                holiday_duplicate_required: 'Thời gian bị trùng lặp',
+                work_plan_duplicate_required: 'Thời gian bị trùng lặp',
                 edit_number_date_leave_of_year_success: 'Thay đổi số ngày nghỉ trong một năm thành công',
 
-                get_holiday_success: 'Lấy danh sách kế hoạch làm việc thành công',
-                get_holiday_faile: 'Lấy danh sách kế hoạch làm việc thất bại',
-                create_holiday_success: 'Thêm mới kế hoạch làm việc thành công',
-                create_holiday_faile: 'Thêm mới kế hoạch làm việc thất bại',
-                delete_holiday_success: 'Xoá kế hoạch làm việc thành công',
-                delete_holiday_faile: 'Xoá kế hoạch làm việc thất bại',
-                edit_holiday_success: 'Chỉnh sửa kế hoạch làm việc thành công',
-                edit_holiday_faile: 'Chỉnh sửa kế hoạch làm việc thất bại',
-                import_holiday_success: 'Import thông tin nghỉ lễ tết thành công',
-                import_holiday_faile: 'Import thông tin nghỉ lễ tết thất bại',
+                get_work_plan_success: 'Lấy danh sách kế hoạch làm việc thành công',
+                get_work_plan_faile: 'Lấy danh sách kế hoạch làm việc thất bại',
+                create_work_plan_success: 'Thêm mới kế hoạch làm việc thành công',
+                create_work_plan_faile: 'Thêm mới kế hoạch làm việc thất bại',
+                delete_work_plan_success: 'Xoá kế hoạch làm việc thành công',
+                delete_work_plan_faile: 'Xoá kế hoạch làm việc thất bại',
+                edit_work_plan_success: 'Chỉnh sửa kế hoạch làm việc thành công',
+                edit_work_plan_faile: 'Chỉnh sửa kế hoạch làm việc thất bại',
+                import_work_plan_success: 'Import thông tin nghỉ lễ tết thành công',
+                import_work_plan_faile: 'Import thông tin nghỉ lễ tết thất bại',
             },
 
             // Quản lý chấm công nhân viên
@@ -1533,12 +1575,13 @@ export default {
                 symbol: ' Ký hiệu',
                 not_work: 'Nghỉ làm',
                 do_work: 'Có đi làm',
-                total_timesheets: 'Tổng số công',
+                total_timesheets: 'Số giờ làm',
+                total_hours_off: 'Số giờ nghỉ',
                 work_date_in_month: 'Công làm việc trong tháng',
                 shift_work: 'Ca làm việc',
-                shifts1: 'ca 1',
-                shifts2: 'ca 2',
-                shifts3: 'ca 3',
+                shifts1: 'Ca 1',
+                shifts2: 'Ca 2',
+                shifts3: 'Ca 3',
                 date_of_month: 'Các ngày trong tháng',
 
                 // Nhóm dành cho action
@@ -1722,6 +1765,7 @@ export default {
         // Modules Quản lý tài sản
         asset: {
             general_information: {
+                view_more: 'Xem thêm',
                 asset: 'Tài sản',
                 asset_list: 'Dang sách tài sản',
                 search: 'Tìm kiếm',
@@ -1769,6 +1813,7 @@ export default {
                 action: 'Hành động',
                 asset_value: 'Giá trị tài sản',
                 disposal_date: 'Ngày thanh lý',
+                not_disposal: 'Chưa thanh lý',
 
                 general_information: 'Thông tin chung',
                 usage_information: 'Thông tin sử dụng',
@@ -1802,6 +1847,8 @@ export default {
                 reported_by: 'Người báo cáo',
                 incident_type: 'Loại sự cố',
                 date_incident: 'Ngày phát hiện',
+                select_incident_type: 'Chọn loại sự cố',
+                select_all_incident_type: 'Chọn tất cả loại sự cố',
 
                 disposal_date: 'Thời gian thanh lý',
                 disposal_type: 'Hình thức thanh lý',
@@ -1816,6 +1863,10 @@ export default {
                 not_for_registering: 'Không được đăng ký sử dụng',
                 register_by_hour: 'Đăng ký sử dụng theo giờ',
                 register_for_long_term: 'Đăng ký sử dụng lâu dài',
+
+                create_reception_date: 'Ngày lập phiếu',
+                select_reception_type: 'Chọn loại phiếu',
+                select_all_reception_type: 'Chọn tất cả loại phiếu',
             },
 
             // Dashboard
@@ -1876,7 +1927,7 @@ export default {
                 incident_list: 'Danh sách sự cố tài sản',
                 file_list: 'Danh sách tài liệu đính kèm',
                 edit_document: 'Chỉnh sửa tài liệu đính kèm',
-                add_usage_info: 'Thêm mới thông tin cấp phát sử dụng',
+                add_usage_info: 'Thêm mới thông tin sử dụng tài sản',
                 edit_usage_info: 'Chỉnh sửa phiếu đăng kí sử dụng',
                 delete_usage_info: 'Xóa thông tin cấp phát sử dụng',
                 add_maintenance_card: 'Thêm mới phiếu bảo trì',
@@ -2720,8 +2771,8 @@ export default {
                         initialize_kpi_newmonth: 'Khởi tạo KPI tháng mới',
                         request_approval: 'Yêu cầu phê duyệt',
                         cancel_request_approval: 'Hủy yêu cầu phê duyệt',
-                        not_initialize_organiztional_unit_kpi: 'Chưa thể khởi tạo KPI tháng này cho bạn do đơn vị của bạn chưa thiết lập KPI. Liên hệ với trưởng đơn vị để hỏi thêm',
-                        not_activate_organiztional_unit_kpi: 'Đơn vị của bạn chưa kích hoạt KPI. Liên hệ với trưởng đơn vị để hỏi thêm',
+                        not_initialize_organiztional_unit_kpi: 'Đơn vị cấp trên của bạn chưa thiết lập KPI. Liên hệ với trưởng đơn vị để hỏi thêm',
+                        not_activate_organiztional_unit_kpi: 'Đơn vị cấp trên của bạn chưa kích hoạt KPI. Liên hệ với trưởng đơn vị để hỏi thêm',
                         // Nhóm dành cho các trạng thái tập KPI
                         kpi_status: {
                             status: 'Trạng thái KPI',
@@ -3241,28 +3292,6 @@ export default {
         },
 
         manage_warehouse: {
-            material_manager: {
-                index: 'STT',
-                add: 'Thêm vật tư',
-                add_title: 'Thêm vật tư mới',
-                info: 'Thông tin về vật tư',
-                edit: 'Chỉnh sửa thông tin vật tư',
-                delete: 'Xóa vật tư',
-                add_success: 'Thêm mới vật tư thành công',
-                delete_success: 'Xóa vật tư thành công',
-                delete_faile: 'Xóa vật tư thất bại',
-                add_faile: 'Thêm mới vật tư thất bại',
-                edit_success: 'Chỉnh sửa thành công',
-                edit_faile: 'Chỉnh sửa thất bại',
-                date: 'Ngày mua',
-                name: 'Tên vật tư',
-                code: 'Mã vật tư',
-                cost: 'Giá trị',
-                description: 'Mô tả',
-                serial: 'Số serial',
-                purchaseDate: 'Ngày mua',
-                location: 'Vị trí vật tư'
-            },
             dashboard_material: {
 
             },
@@ -3333,11 +3362,96 @@ export default {
                 delete_info: 'Bạn có muốn xóa danh mục',
                 category: 'Danh mục',
                 unit: 'Đơn vị tính',
-                materials: 'Hoạt chất chính'
+                baseUnit: 'Đơn vị tính cơ bản',
+                materials: 'Hoạt chất chính',
+                unit_name: 'Tên',
+                conversion_rate: 'Giá trị chuyển đổi',
+                quantity: 'Số lượng',
+                choose_category: 'Chọn danh mục'
+            },
+
+            stock_management: {
+                1: 'Sẵn sàng sử dụng',
+                2: 'Đang sử dụng',
+                3: 'Đang sử chữa',
+                4: 'Không sử dụng',
+                index: 'STT',
+                add: 'Thêm mới',
+                add_title: 'Thêm danh mục mới',
+                info: 'Thông tin về kho',
+                edit: 'Chỉnh sửa thông tin kho',
+                delete: 'Xóa kho',
+                add_success: 'Thêm mới kho thành công',
+                delete_success: 'Xóa kho thành công',
+                delete_faile: 'Xóa kho thất bại',
+                add_faile: 'Thêm mới kho thất bại',
+                edit_success: 'Chỉnh sửa thành công',
+                edit_faile: 'Chỉnh sửa thất bại',
+                name: 'Tên kho',
+                code: 'Mã kho',
+                goods: 'Hàng hóa trong kho',
+                good: 'Hàng hóa',
+                status: 'Trạng thái kho',
+                address: 'Địa chỉ',
+                description: 'Mô tả',
+                choose_status: 'Chọn trạng thái',
+                choose_department: '--Chọn đơn vị--',
+                department: 'Đơn vị quản lý',
+                management_location: 'Những vị trí đang quản lý',
+                all_type: 'Chọn tất cả các trạng thái',
+                search: 'Tìm kiếm',
+                validate_code: 'Mã kho không được để trống',
+                validate_name: 'Tên kho không được để trống',
+                validate_status: 'Bạn cần chọn kiểu kho',
+                delete_info: 'Bạn có muốn xóa kho',
+                max_quantity: 'Định mức tối đa',
+                min_quantity: 'Định mức tối thiểu'
+
             },
             bin_location_management: {
                 bin_location: 'Nơi lưu trữ',
-                archive: 'Danh mục lưu trữ'
+                archive: 'Danh mục lưu trữ',
+                1: 'Sẵn sàng sử dụng',
+                2: 'Đang sử dụng',
+                3: 'Đang sử chữa',
+                4: 'Không sử dụng',
+                index: 'STT',
+                add: 'Thêm mới',
+                add_title: 'Thêm danh mục mới',
+                info: 'Thông tin về kho',
+                edit: 'Chỉnh sửa thông tin kho',
+                delete: 'Xóa kho',
+                add_success: 'Thêm mới kho thành công',
+                delete_success: 'Xóa kho thành công',
+                delete_faile: 'Xóa kho thất bại',
+                add_faile: 'Thêm mới kho thất bại',
+                edit_success: 'Chỉnh sửa thành công',
+                edit_faile: 'Chỉnh sửa thất bại',
+                name: 'Tên khu vực lưu trữ',
+                unit: 'Đơn vị tính',
+                parent: 'Vị trí lưu trữ cha',
+                code: 'Mã',
+                goods: 'Hàng hóa đang chứa',
+                enable_good: 'Hàng hóa có thể chứa',
+                good: 'Hàng hóa',
+                type: 'Loại hàng hóa',
+                status: 'Trạng thái',
+                capacity: 'Sức chứa',
+                contained: 'Đã chứa',
+                address: 'Địa chỉ',
+                description: 'Mô tả',
+                choose_status: 'Chọn trạng thái',
+                choose_department: '--Chọn đơn vị--',
+                department: 'Đơn vị quản lý',
+                management_location: 'Người đang quản lý',
+                all_type: 'Chọn tất cả các trạng thái',
+                search: 'Tìm kiếm',
+                validate_code: 'Mã kho không được để trống',
+                validate_name: 'Tên kho không được để trống',
+                validate_status: 'Bạn cần chọn kiểu kho',
+                delete_info: 'Bạn có muốn xóa kho',
+                max_quantity: 'Định mức tối đa',
+                min_quantity: 'Định mức tối thiểu'
             },
             bill_management: {
                 stock_book: 'Sổ kho',
@@ -3346,12 +3460,56 @@ export default {
                 good_return: 'Trả hàng',
                 stock_take: 'Kiểm kê',
                 stock_rotate: 'Luân chuyển',
+                code: 'Mã phiếu',
+                type: 'Loại phiếu',
+                creator: 'Người tạo',
+                date: 'Ngày tạo',
+                description: 'Mô tả',
+                stock: 'Kho',
+                from_date: 'Từ ngày',
+                to_date: 'Đến ngày',
+                search: 'Tìm kiếm',
+                index: 'STT',
+                proposal: 'Phiếu đề nghị',
+                status: 'Trạng thái',
+                issue_stock: 'Kho xuất',
+                receipt_stock: 'Kho nhập',
+                customer: 'Khách hàng',
+                supplier: 'Nhà cung cấp',
+                issued: 'Đơn đã xuất',
+                partner: 'Đối tác'
             },
             inventory_management: {
                 product: 'Sản phẩm',
                 material: 'Nguyên vật liệu',
                 equipment: 'Công cụ dụng cụ',
                 asset: 'Tài sản',
+                name: 'Tên hàng hóa',
+                stock: 'Kho',
+                index: 'STT',
+                unit: 'Đơn vị tính',
+                quantity: 'Số lượng tồn kho',
+                lot: 'Số lô',
+                date: 'Hạn sử dụng',
+                search: 'Tìm kiếm',
+                good_code: 'Mã hàng hóa',
+                lot_code: 'Số lô',
+                description: 'Mô tả',
+                history: 'Lịch sử hoạt động',
+                date_month: 'Ngày, tháng',
+                receipt: 'Nhập',
+                issue: 'Xuất',
+                inventory: 'Tồn',
+                stock_card: 'Thẻ kho',
+                lot_detail: 'Chi tiết lô hàng',
+                original_quantity: 'Số lượng ban đầu',
+                type: 'Kiểu',
+                number: 'Số lượng',
+                bin: 'Nơi lưu trữ',
+                partner: 'Đối tác',
+                from_to: 'Nhập từ',
+                status: 'Trạng thái',
+                note: 'Ghi chú'
             }
         },
 

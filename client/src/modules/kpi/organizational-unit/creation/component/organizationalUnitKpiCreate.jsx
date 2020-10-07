@@ -288,14 +288,14 @@ class OrganizationalUnitKpiCreate extends Component {
         let parentKpi = createKpiUnit && createKpiUnit.parent;
         if (parentKpi == null) {
             Swal.fire({
-                title: 'Chưa thể khởi tạo KPI cho đơn vị bạn tháng này, do đơn vị cấp trên của đơn vị bạn chưa khởi tạo KPI!',
+                title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.not_initialize_organiztional_unit_kpi'),
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: 'Đồng ý'
             })
         } else {
             Swal.fire({
-                title: 'Đơn vị cấp trên của đơn vị bạn chưa kích hoạt KPI!',
+                title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.not_activate_organiztional_unit_kpi'),
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: 'Đồng ý'

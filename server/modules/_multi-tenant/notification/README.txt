@@ -1,1 +1,0 @@
-1. Module này thực hiện chức năng thông báo đến các đơn vị, người dùng

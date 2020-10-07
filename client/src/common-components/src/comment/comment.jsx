@@ -319,10 +319,10 @@ class Comment extends Component {
         }
     }
     render() {
-        var minRows = 3, maxRows = 20
+        var minRows = 3, maxRows = 20;
         const { editComment, editChildComment, showChildComment, currentUser, newCommentEdited, newChildCommentEdited, deleteFile, childComment, showfile } = this.state
         const { auth, translate } = this.props
-        const { data, comments } = this.props
+        const { data, comments } = this.props;
         return (
             <React.Fragment>
                 { comments && comments ?
@@ -368,10 +368,10 @@ class Comment extends Component {
                                                             {item.files.map((elem, index) => {
                                                                 return <div key={index} className="show-files-task">
                                                                     {this.isImage(elem.name) ?
-                                                                        <ApiImage
+                                                                        <img
                                                                             className="attachment-img files-attach"
                                                                             style={{ marginTop: "5px" }}
-                                                                            src={elem.url}
+                                                                            src={process.env.REACT_APP_SERVER+elem.url}
                                                                             file={elem}
                                                                             requestDownloadFile={this.requestDownloadFile}
                                                                         />
@@ -426,7 +426,7 @@ class Comment extends Component {
                                         {item.comments.map(child => {
                                             return <div key={child._id}>
                                                 <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + item.creator?.avatar)} alt="User Image" />
-
+                                                
                                                 {editChildComment !== child._id && // Đang edit thì ẩn đi
                                                     <div>
                                                         <p className="content-level2">
@@ -463,10 +463,10 @@ class Comment extends Component {
                                                                             {child.files.map((elem, index) => {
                                                                                 return <div key={index} className="show-files-task">
                                                                                     {this.isImage(elem.name) ?
-                                                                                        <ApiImage
+                                                                                        <img
                                                                                             className="attachment-img files-attach"
                                                                                             style={{ marginTop: "5px" }}
-                                                                                            src={elem.url}
+                                                                                            src={process.env.REACT_APP_SERVER+elem.url}
                                                                                             file={elem}
                                                                                             requestDownloadFile={this.requestDownloadFile}
                                                                                         />

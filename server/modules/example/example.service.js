@@ -1,17 +1,23 @@
-const { Example } = require('../../models').schema;
+const {
+    Example
+} = require(`${SERVER_MODELS_DIR}`);
+
+const {
+    connect
+} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 // Tạo mới một Ví dụ
-exports.createExample = async (data) => {
-    let newExample = await Example.create({
+exports.createExample = async (data, portal) => {
+    let newExample = await Example(connect(DB_CONNECTION, portal)).create({
         exampleName: data.exampleName,
         description: data.description
     });
-    let example = await Example.findById({ _id: newExample._id });;
+    let example = await Example(connect(DB_CONNECTION, portal)).findById({ _id: newExample._id });;
     return { example }
 }
 
 // Lấy ra tất cả các thông tin Ví dụ theo mô hình lấy dữ liệu số  1
-exports.getExamples = async (params) => {
+exports.getExamples = async (params, portal) => {
     let keySearch;
     if (params.exampleName !== undefined && params.exampleName.length !== 0) {
         keySearch = {
@@ -22,14 +28,14 @@ exports.getExamples = async (params) => {
             }
         }
     }
-    let totalList = await Example.count(keySearch);
-    let ExampleCollection = await Example.find(keySearch)
+    let totalList = await Example(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+    let ExampleCollection = await Example(connect(DB_CONNECTION, portal)).find(keySearch)
         .skip(params.page * params.limit)
         .limit(params.limit);
     return { data: ExampleCollection, totalList }
 }
 // Lấy ra một phần thông tin Ví dụ (lấy ra exampleName) theo mô hình dữ liệu số  2
-exports.getOnlyExampleName = async (params) => {
+exports.getOnlyExampleName = async (params, portal) => {
     let keySearch;
     if (params.exampleName !== undefined && params.exampleName.length !== 0) {
         keySearch = {
@@ -40,16 +46,16 @@ exports.getOnlyExampleName = async (params) => {
             }
         }
     }
-    let totalList = await Example.count(keySearch);
-    let ExampleCollection = await Example.find(keySearch, { exampleName: 1 })
+    let totalList = await Example(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+    let ExampleCollection = await Example(connect(DB_CONNECTION, portal)).find(keySearch, { exampleName: 1 })
         .skip(params.page * params.limit)
         .limit(params.limit);
     return { data: ExampleCollection, totalList }
 }
 
 // Lấy ra Ví dụ theo id
-exports.getExampleById = async (id) => {
-    let example = await Example.findById({ _id: id });
+exports.getExampleById = async (id, portal) => {
+    let example = await Example(connect(DB_CONNECTION, portal)).findById({ _id: id });
     if (example) {
         return { example };
     }
@@ -57,8 +63,8 @@ exports.getExampleById = async (id) => {
 }
 
 // Chỉnh sửa một Ví dụ
-exports.editExample = async (id, data) => {
-    let oldExample = await Example.findById(id);
+exports.editExample = async (id, data, portal) => {
+    let oldExample = await Example(connect(DB_CONNECTION, portal)).findById(id);
     if (!oldExample) {
         return -1;
     }
@@ -70,13 +76,13 @@ exports.editExample = async (id, data) => {
     // await oldExample.save();
 
     // Cach 2 de update
-    await Example.update({ _id: id }, { $set: data });
-    let example = await Example.findById({ _id: oldExample._id });
+    await Example(connect(DB_CONNECTION, portal)).update({ _id: id }, { $set: data });
+    let example = await Example(connect(DB_CONNECTION, portal)).findById({ _id: oldExample._id });
     return { example };
 }
 
 // Xóa một Ví dụ
-exports.deleteExample = async (id) => {
-    let example = Example.findByIdAndDelete({ _id: id });
+exports.deleteExample = async (id, portal) => {
+    let example = Example(connect(DB_CONNECTION, portal)).findByIdAndDelete({ _id: id });
     return example;
 }

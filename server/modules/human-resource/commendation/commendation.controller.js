@@ -1,15 +1,12 @@
 const CommendationService = require('./commendation.service');
-const {
-    LogInfo,
-    LogError
-} = require('../../../logs');
+const Log = require(`${SERVER_LOGS_DIR}`);
 
 /** Lấy danh sách khen thưởng */
 exports.searchCommendations = async (req, res) => {
     try {
         let data = {};
         if (req.query.page === undefined && req.query.limit === undefined) {
-            data = await CommendationService.getTotalCommendation(req.user.company._id, req.query.organizationalUnits, req.query.month)
+            data = await CommendationService.getTotalCommendation(req.portal,req.user.company._id, req.query.organizationalUnits, req.query.month)
         } else {
             let params = {
                 organizationalUnits: req.query.organizationalUnits,
@@ -19,17 +16,17 @@ exports.searchCommendations = async (req, res) => {
                 page: Number(req.query.page),
                 limit: Number(req.query.limit),
             }
-            data = await CommendationService.searchCommendations(params, req.user.company._id);
+            data = await CommendationService.searchCommendations(req.portal,params, req.user.company._id);
         }
 
-        await LogInfo(req.user.email, 'GET_COMMENDATIONS', req.user.company);
+        await Log.info(req.user.email, 'GET_COMMENDATIONS', req.portal);
         res.status(200).json({
             success: true,
             messages: ["get_commendations_success"],
             content: data
         });
     } catch (error) {
-        await LogError(req.user.email, 'GET_COMMENDATIONS', req.user.company);
+        await Log.error(req.user.email, 'GET_COMMENDATIONS', req.portal);
         res.status(400).json({
             success: false,
             messages: ["get_commendations_faile"],
@@ -44,7 +41,7 @@ exports.createCommendation = async (req, res) => {
     try {
         // Kiểm tra dữ liệu truyền vào
         if (req.body.decisionNumber.trim() === "") {
-            await LogError(req.user.email, 'CREATE_COMMENDATIONS', req.user.company);
+            await Log.error(req.user.email, 'CREATE_COMMENDATIONS', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["number_decisions_required"],
@@ -53,7 +50,7 @@ exports.createCommendation = async (req, res) => {
                 }
             });
         } else if (req.body.organizationalUnit.trim() === "") {
-            await LogError(req.user.email, 'CREATE_COMMENDATIONS', req.user.company);
+            await Log.error(req.user.email, 'CREATE_COMMENDATIONS', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["unit_decisions_required"],
@@ -62,7 +59,7 @@ exports.createCommendation = async (req, res) => {
                 }
             });
         } else if (req.body.startDate.trim() === "") {
-            await LogError(req.user.email, 'CREATE_COMMENDATIONS', req.user.company);
+            await Log.error(req.user.email, 'CREATE_COMMENDATIONS', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["decisions_date_required"],
@@ -71,7 +68,7 @@ exports.createCommendation = async (req, res) => {
                 }
             });
         } else if (req.body.type.trim() === "") {
-            await LogError(req.user.email, 'CREATE_COMMENDATIONS', req.user.company);
+            await Log.error(req.user.email, 'CREATE_COMMENDATIONS', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["type_commendations_required"],
@@ -80,7 +77,7 @@ exports.createCommendation = async (req, res) => {
                 }
             });
         } else if (req.body.reason.trim() === "") {
-            await LogError(req.user.email, 'CREATE_COMMENDATIONS', req.user.company);
+            await Log.error(req.user.email, 'CREATE_COMMENDATIONS', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["reason_commendations_required"],
@@ -89,10 +86,10 @@ exports.createCommendation = async (req, res) => {
                 }
             });
         } else {
-            let createCommendation = await CommendationService.createCommendation(req.body, req.user.company._id);
+            let createCommendation = await CommendationService.createCommendation(req.portal,req.body, req.user.company._id);
             // Kiểm tra trùng lặp
             if (createCommendation === "have_exist") {
-                await LogError(req.user.email, 'CREATE_COMMENDATIONS', req.user.company);
+                await Log.error(req.user.email, 'CREATE_COMMENDATIONS', req.portal);
                 res.status(400).json({
                     success: false,
                     messages: ["number_decisions_have_exist"],
@@ -101,7 +98,7 @@ exports.createCommendation = async (req, res) => {
                     }
                 });
             } else {
-                await LogInfo(req.user.email, 'CREATE_COMMENDATIONS', req.user.company);
+                await Log.info(req.user.email, 'CREATE_COMMENDATIONS', req.portal);
                 res.status(200).json({
                     success: true,
                     messages: ["create_commendations_success"],
@@ -110,7 +107,7 @@ exports.createCommendation = async (req, res) => {
             }
         }
     } catch (error) {
-        await LogError(req.user.email, 'CREATE_COMMENDATIONS', req.user.company);
+        await Log.error(req.user.email, 'CREATE_COMMENDATIONS', req.portal);
         res.status(400).json({
             success: false,
             messages: ["create_commendations_faile"],
@@ -123,15 +120,15 @@ exports.createCommendation = async (req, res) => {
 /** Xoá thông tin khen thưởng */
 exports.deleteCommendation = async (req, res) => {
     try {
-        let commendationDelete = await CommendationService.deleteCommendation(req.params.id);
-        await LogInfo(req.user.email, 'DELETE_COMMENDATIONS', req.user.company);
+        let commendationDelete = await CommendationService.deleteCommendation(req.portal,req.params.id);
+        await Log.info(req.user.email, 'DELETE_COMMENDATIONS', req.portal);
         res.status(200).json({
             success: true,
             messages: ["delete_commendations_success"],
             content: commendationDelete
         });
     } catch (error) {
-        await LogError(req.user.email, 'DELETE_COMMENDATIONS', req.user.company);
+        await Log.error(req.user.email, 'DELETE_COMMENDATIONS', req.portal);
         res.status(400).json({
             success: false,
             messages: ["delete_commendations_faile"],
@@ -146,7 +143,7 @@ exports.updateCommendation = async (req, res) => {
     try {
         // Kiểm tra dữ liệu truyền vào
         if (req.body.organizationalUnit.trim() === "") {
-            await LogError(req.user.email, 'EDIT_COMMENDATIONS', req.user.company);
+            await Log.error(req.user.email, 'EDIT_COMMENDATIONS', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["unit_decisions_required"],
@@ -155,7 +152,7 @@ exports.updateCommendation = async (req, res) => {
                 }
             });
         } else if (req.body.startDate.trim() === "") {
-            await LogError(req.user.email, 'EDIT_COMMENDATIONS', req.user.company);
+            await Log.error(req.user.email, 'EDIT_COMMENDATIONS', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["start_date_required"],
@@ -164,7 +161,7 @@ exports.updateCommendation = async (req, res) => {
                 }
             });
         } else if (req.body.type.trim() === "") {
-            await LogError(req.user.email, 'EDIT_COMMENDATIONS', req.user.company);
+            await Log.error(req.user.email, 'EDIT_COMMENDATIONS', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["type_commendations_required"],
@@ -173,7 +170,7 @@ exports.updateCommendation = async (req, res) => {
                 }
             });
         } else if (req.body.reason.trim() === "") {
-            await LogError(req.user.email, 'EDIT_COMMENDATIONS', req.user.company);
+            await Log.error(req.user.email, 'EDIT_COMMENDATIONS', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["reason_commendations_required"],
@@ -182,8 +179,8 @@ exports.updateCommendation = async (req, res) => {
                 }
             });
         } else {
-            let commendationUpdate = await CommendationService.updateCommendation(req.params.id, req.body);
-            await LogInfo(req.user.email, 'EDIT_COMMENDATIONS', req.user.company);
+            let commendationUpdate = await CommendationService.updateCommendation(req.portal,req.params.id, req.body);
+            await Log.info(req.user.email, 'EDIT_COMMENDATIONS', req.portal);
             res.status(200).json({
                 success: true,
                 messages: ["edit_commendations_success"],
@@ -191,7 +188,7 @@ exports.updateCommendation = async (req, res) => {
             });
         }
     } catch (error) {
-        await LogError(req.user.email, 'EDIT_COMMENDATIONS', req.user.company);
+        await Log.error(req.user.email, 'EDIT_COMMENDATIONS', req.portal);
         res.status(400).json({
             success: false,
             messages: ["edit_commendations_faile"],

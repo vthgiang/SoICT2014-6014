@@ -1,10 +1,8 @@
-const OrganizationalUnit = require('../../../../models/super-admin/organizationalUnit.model');
-const OrganizationalUnitKpiSet = require('../../../../models/kpi/organizationalUnitKpiSet.model');
-const OrganizationalUnitKpi = require('../../../../models/kpi/organizationalUnitKpi.model');
-const EmployeeKPI = require('../../../../models/kpi/employeeKpi.model');
-const EmployeeKPISet = require('../../../../models/kpi/employeeKpiSet.model');
+const Models = require(`${SERVER_MODELS_DIR}`);
+const { OrganizationalUnitKpiSet, OrganizationalUnitKpi } = Models;
 
 const mongoose = require("mongoose");
+const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 
 
@@ -15,8 +13,9 @@ const mongoose = require("mongoose");
  * @query {*} creator Id người tạo
  * @query {*} idunit Id của đơn vị 
  */
-exports.copyKPI = async (kpiId, data) => {
-    var organizationalUnitOldKPISet = await OrganizationalUnitKpiSet.findById(kpiId)
+exports.copyKPI = async (portal, kpiId, data) => {
+    var organizationalUnitOldKPISet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+        .findById(kpiId)
         .populate("organizationalUnit creator")
         .populate({ path: "kpis", populate: { path: 'parent' } });
 
@@ -24,27 +23,32 @@ exports.copyKPI = async (kpiId, data) => {
     date = data.datenew.split("-");
     dateNewKPIUnit = new Date(date[1], date[0], 0);
 
-    var organizationalUnitNewKpi = await OrganizationalUnitKpiSet.create({
-        organizationalUnit: organizationalUnitOldKPISet.organizationalUnit._id,
-        creator: data.creator,
-        date: dateNewKPIUnit,
-        kpis: []
-    })
+    var organizationalUnitNewKpi = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+        .create({
+            organizationalUnit: organizationalUnitOldKPISet.organizationalUnit._id,
+            creator: data.creator,
+            date: dateNewKPIUnit,
+            kpis: []
+        })
 
     for (let i in organizationalUnitOldKPISet.kpis) {
-        var target = await OrganizationalUnitKpi.create({
-            name: organizationalUnitOldKPISet.kpis[i].name,
-            parent: organizationalUnitOldKPISet.kpis[i].parent,
-            weight: organizationalUnitOldKPISet.kpis[i].weight,
-            criteria: organizationalUnitOldKPISet.kpis[i].criteria,
-            type: organizationalUnitOldKPISet.kpis[i].type
-        })
-        organizationalUnitKpiSet = await OrganizationalUnitKpiSet.findByIdAndUpdate(
-            organizationalUnitNewKpi, { $push: { kpis: target._id } }, { new: true }
-        );
+        var target = await OrganizationalUnitKpi(connect(DB_CONNECTION, portal))
+            .create({
+                name: organizationalUnitOldKPISet.kpis[i].name,
+                parent: organizationalUnitOldKPISet.kpis[i].parent,
+                weight: organizationalUnitOldKPISet.kpis[i].weight,
+                criteria: organizationalUnitOldKPISet.kpis[i].criteria,
+                type: organizationalUnitOldKPISet.kpis[i].type
+            })
+        organizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+            .findByIdAndUpdate(
+                organizationalUnitNewKpi, { $push: { kpis: target._id } }, { new: true }
+            );
     }
-    organizationalUnitKpiSet = await OrganizationalUnitKpiSet.find({ organizationalUnit: data.idunit })
+    organizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+        .find({ organizationalUnit: data.idunit })
         .populate("organizationalUnit creator")
         .populate({ path: "kpis", populate: { path: 'parent' } });
+    
     return organizationalUnitKpiSet;
 }

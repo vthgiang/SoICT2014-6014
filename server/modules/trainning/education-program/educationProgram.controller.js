@@ -1,8 +1,5 @@
 const EducationProgramService = require('./educationProgram.service');
-const {
-    LogInfo,
-    LogError
-} = require('../../../logs');
+const Log = require(`${SERVER_LOGS_DIR}`);
 
 /**
  * Lấy danh sách chương trình đào tạo
@@ -17,18 +14,18 @@ exports.searchEducationPrograms = async (req, res) => {
                 page: Number(req.query.page),
                 limit: Number(req.query.limit),
             }
-            data = await EducationProgramService.searchEducationPrograms(params, req.user.company._id);
+            data = await EducationProgramService.searchEducationPrograms(req.portal, params, req.user.company._id);
         } else {
-            data = await EducationProgramService.getAllEducationPrograms(req.user.company._id);
+            data = await EducationProgramService.getAllEducationPrograms(req.portal, req.user.company._id);
         }
-        await LogInfo(req.user.email, 'GET_EDUCATION_PROGRAM', req.user.company);
+        await Log.info(req.user.email, 'GET_EDUCATION_PROGRAM', req.portal);
         res.status(200).json({
             success: true,
             messages: ["get_education_program_success"],
             content: data
         });
     } catch (error) {
-        await LogError(req.user.email, 'GET_EDUCATION_PROGRAM', req.user.company);
+        await Log.error(req.user.email, 'GET_EDUCATION_PROGRAM', req.portal);
         res.status(400).json({
             success: false,
             messages: ["get_education_program_faile"],
@@ -45,7 +42,7 @@ exports.createEducationProgram = async (req, res) => {
     try {
         // Kiểm tra dữ liệ truyền vào
         if (req.body.applyForOrganizationalUnits === null) {
-            await LogError(req.user.email, 'CREATE_EDUCATIONPROGRAM', req.user.company);
+            await Log.error(req.user.email, 'CREATE_EDUCATIONPROGRAM', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["apply_for_organizational_units_required"],
@@ -54,7 +51,7 @@ exports.createEducationProgram = async (req, res) => {
                 }
             });
         } else if (req.body.position === null) {
-            await LogError(req.user.email, 'CREATE_EDUCATIONPROGRAM', req.user.company);
+            await Log.error(req.user.email, 'CREATE_EDUCATIONPROGRAM', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["apply_for_positions_required"],
@@ -63,7 +60,7 @@ exports.createEducationProgram = async (req, res) => {
                 }
             });
         } else if (req.body.programId.trim() === "") {
-            await LogError(req.user.email, 'CREATE_EDUCATIONPROGRAM', req.user.company);
+            await Log.error(req.user.email, 'CREATE_EDUCATIONPROGRAM', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["program_id_required"],
@@ -72,7 +69,7 @@ exports.createEducationProgram = async (req, res) => {
                 }
             });
         } else if (req.body.name.trim() === "") {
-            await LogError(req.user.email, 'CREATE_EDUCATIONPROGRAM', req.user.company);
+            await Log.error(req.user.email, 'CREATE_EDUCATIONPROGRAM', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["name_required"],
@@ -81,10 +78,10 @@ exports.createEducationProgram = async (req, res) => {
                 }
             });
         } else {
-            let education = await EducationProgramService.createEducationProgram(req.body, req.user.company._id);
+            let education = await EducationProgramService.createEducationProgram(req.portal, req.body, req.user.company._id);
             // Kiểm tra trùng lặp mã chương trình đào tạo
             if (education === 'have_exist') {
-                await LogError(req.user.email, 'CREATE_EDUCATIONPROGRAM', req.user.company);
+                await Log.error(req.user.email, 'CREATE_EDUCATIONPROGRAM', req.portal);
                 res.status(400).json({
                     success: false,
                     messages: ["program_id_have_exist"],
@@ -93,7 +90,7 @@ exports.createEducationProgram = async (req, res) => {
                     }
                 });
             } else {
-                await LogInfo(req.user.email, 'CREATE_EDUCATIONPROGRAM', req.user.company);
+                await Log.info(req.user.email, 'CREATE_EDUCATIONPROGRAM', req.portal);
                 res.status(200).json({
                     success: true,
                     messages: ["create_education_program_success"],
@@ -103,7 +100,7 @@ exports.createEducationProgram = async (req, res) => {
         }
 
     } catch (error) {
-        await LogError(req.user.email, 'CREATE_EDUCATIONPROGRAM', req.user.company);
+        await Log.error(req.user.email, 'CREATE_EDUCATIONPROGRAM', req.portal);
         res.status(400).json({
             success: false,
             messages: ["create_education_program_faile"],
@@ -119,15 +116,15 @@ exports.createEducationProgram = async (req, res) => {
  */
 exports.deleteEducationProgram = async (req, res) => {
     try {
-        let deleteEducation = await EducationProgramService.deleteEducationProgram(req.params.id);
-        await LogInfo(req.user.email, 'DELETE_EDUCATIONPROGRAM', req.user.company);
+        let deleteEducation = await EducationProgramService.deleteEducationProgram(req.portal, req.params.id);
+        await Log.info(req.user.email, 'DELETE_EDUCATIONPROGRAM', req.portal);
         res.status(200).json({
             success: true,
             messages: ["delete_education_program_success"],
             content: deleteEducation
         });
     } catch (error) {
-        await LogError(req.user.email, 'DELETE_EDUCATIONPROGRAM', req.user.company);
+        await Log.error(req.user.email, 'DELETE_EDUCATIONPROGRAM', req.portal);
         res.status(400).json({
             success: false,
             messages: ["delete_education_program_faile"],
@@ -145,7 +142,7 @@ exports.updateEducationProgram = async (req, res) => {
     try {
         // Kiểm tra dữ liệ truyền vào
         if (req.body.applyForOrganizationalUnits === null) {
-            await LogError(req.user.email, 'EDIT_EDUCATIONPROGRAM', req.user.company);
+            await Log.error(req.user.email, 'EDIT_EDUCATIONPROGRAM', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["apply_for_organizational_units_required"],
@@ -154,7 +151,7 @@ exports.updateEducationProgram = async (req, res) => {
                 }
             });
         } else if (req.body.position === null) {
-            await LogError(req.user.email, 'EDIT_EDUCATIONPROGRAM', req.user.company);
+            await Log.error(req.user.email, 'EDIT_EDUCATIONPROGRAM', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["apply_for_positions_required"],
@@ -163,7 +160,7 @@ exports.updateEducationProgram = async (req, res) => {
                 }
             });
         } else if (req.body.name.trim() === "") {
-            await LogError(req.user.email, 'EDIT_EDUCATIONPROGRAM', req.user.company);
+            await Log.error(req.user.email, 'EDIT_EDUCATIONPROGRAM', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["name_required"],
@@ -173,8 +170,8 @@ exports.updateEducationProgram = async (req, res) => {
             });
         } else {
             // Cập nhật thông tin chương trình đào tạo
-            let education = await EducationProgramService.updateEducationProgram(req.params.id, req.body);
-            await LogInfo(req.user.email, 'EDIT_EDUCATIONPROGRAM', req.user.company);
+            let education = await EducationProgramService.updateEducationProgram(req.portal, req.params.id, req.body);
+            await Log.info(req.user.email, 'EDIT_EDUCATIONPROGRAM', req.portal);
             res.status(200).json({
                 success: true,
                 messages: ["edit_education_program_success"],
@@ -182,7 +179,7 @@ exports.updateEducationProgram = async (req, res) => {
             });
         }
     } catch (error) {
-        await LogError(req.user.email, 'EDIT_EDUCATIONPROGRAM', req.user.company);
+        await Log.error(req.user.email, 'EDIT_EDUCATIONPROGRAM', req.portal);
         res.status(400).json({
             success: false,
             messages: ["edit_education_program_faile"],

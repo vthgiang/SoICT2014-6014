@@ -51,7 +51,7 @@ class ModalChangeUserInformation extends Component {
                                 <div className="profile-pic">
                                     {
                                         this.state.img === undefined ?
-                                        <ApiImage className="user-avatar" src={'.'+this.props.auth.user.avatar}/> :
+                                        <img className="user-avatar" src={process.env.REACT_SERVER_APP+this.props.auth.user.avatar}/> :
                                         <img className="user-avatar" src={this.state.img}/>
                                     }
                                     <button type="button" className="edit-option" onClick={this.showCropImageSpace}><i className="fa fa-camera" style={{color: 'white'}}></i></button>

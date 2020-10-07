@@ -1,172 +1,95 @@
-const Privilege = require('./auth/privilege.model');
-const Role = require('./auth/role.model');
-const User = require('./auth/user.model');
-const UserRole = require('./auth/userRole.model');
+module.exports = {
+    Privilege: require('./auth/privilege.model'),
+    Role: require('./auth/role.model'),
+    User: require('./auth/user.model'),
+    UserRole: require('./auth/userRole.model'),
 
-const Document = require('./document/document.model');
-const DocumentCategory = require('./document/documentCategory.model');
-const DocumentDomain = require('./document/documentDomain.model');
-const DocumentArchive = require('./document/documentArchive.model')
+    Document: require('./document/document.model'),
+    DocumentCategory: require('./document/documentCategory.model'),
+    DocumentDomain: require('./document/documentDomain.model'),
+    DocumentArchive: require('./document/documentArchive.model'),
 
-const AnnualLeave = require('./human-resource/annualLeave.model');
-const Commendation = require('./human-resource/commendation.model');
-const Discipline = require('./human-resource/discipline.model');
-const Employee = require('./human-resource/employee.model');
-const Holiday = require('./human-resource/holiday.model');
-const Salary = require('./human-resource/salary.model');
-const Timesheet = require('./human-resource/timesheet.model');
+    AnnualLeave: require('./human-resource/annualLeave.model'),
+    Commendation: require('./human-resource/commendation.model'),
+    Discipline: require('./human-resource/discipline.model'),
+    Employee: require('./human-resource/employee.model'),
+    WorkPlan: require('./human-resource/workPlan.model'),
+    Salary: require('./human-resource/salary.model'),
+    Timesheet: require('./human-resource/timesheet.model'),
 
-const EmployeeKpi = require('./kpi/employeeKpi.model');
-const EmployeeKpiSet = require('./kpi/employeeKpiSet.model');
-const OrganizationalUnitKpi = require('./kpi/organizationalUnitKpi.model');
-const OrganizationalUnitKpiSet = require('./kpi/organizationalUnitKpiSet.model');
+    EmployeeKpi: require('./kpi/employeeKpi.model'),
+    EmployeeKpiSet: require('./kpi/employeeKpiSet.model'),
+    OrganizationalUnitKpi: require('./kpi/organizationalUnitKpi.model'),
+    OrganizationalUnitKpiSet: require('./kpi/organizationalUnitKpiSet.model'),
 
-const Notification = require('./notification/notification.model');
-const ManualNotification = require('./notification/manualNotification.model');
+    Notification: require('./notification/notification.model'),
+    ManualNotification: require('./notification/manualNotification.model'),
 
-const Action = require('./super-admin/action.model');
-const Component = require('./super-admin/component.model');
-const Link = require('./super-admin/link.model');
-const OrganizationalUnit = require('./super-admin/organizationalUnit.model');
-const RoleType = require('./super-admin/roleType.model');
+    Component: require('./super-admin/component.model'),
+    Link: require('./super-admin/link.model'),
+    OrganizationalUnit: require('./super-admin/organizationalUnit.model'),
+    RoleType: require('./super-admin/roleType.model'),
+    ModuleConfiguration: require('./super-admin/moduleConfiguration.model'),
 
-const Company = require('./system-admin/company.model');
-const Configuration = require('./system-admin/configuration.model');
-const SystemComponent = require('./system-admin/systemComponent.model');
-const SystemLink = require('./system-admin/systemLink.model');
-const RootRole = require('./system-admin/rootRole.model');
+    Company: require('./system-admin/company.model'),
+    Configuration: require('./system-admin/configuration.model'),
+    SystemComponent: require('./system-admin/systemComponent.model'),
+    SystemLink: require('./system-admin/systemLink.model'),
+    RootRole: require('./system-admin/rootRole.model'),
 
-const Task = require('./task/task.model');
-const TaskComment = require('./task/taskComment.model');
-const TaskFile = require('./task/taskFile.model');
-const TaskHistory = require('./task/taskHistory.model');
-const TaskResult = require('./task/taskResult.model');
-const TaskResultInformation = require('./task/taskResultInformation.model');
-const TaskTemplate = require('./task/taskTemplate.model');
-const TaskTemplateInformation = require('./task/taskTemplateInformation.model');
-const TimesheetLog = require('./task/timesheetLog.model');
-const TaskProcess = require("./task/taskProcess.model");
-const ProcessTemplate = require("./task/processTemplate.model");
+    Task: require('./task/task.model'),
+    TaskComment: require('./task/taskComment.model'),
+    TaskFile: require('./task/taskFile.model'),
+    TaskHistory: require('./task/taskHistory.model'),
+    TaskResult: require('./task/taskResult.model'),
+    TaskResultInformation: require('./task/taskResultInformation.model'),
+    TaskTemplate: require('./task/taskTemplate.model'),
+    TaskTemplateInformation: require('./task/taskTemplateInformation.model'),
+    TimesheetLog: require('./task/timesheetLog.model'),
+    TaskProcess: require("./task/taskProcess.model"),
+    ProcessTemplate: require("./task/processTemplate.model"),
 
-const Course = require('./training/course.model');
-const EducationProgram = require('./training/educationProgram.model');
-const EmployeeCourse = require('./training/employeeCourse.model');
+    Course: require('./training/course.model'),
+    EducationProgram: require('./training/educationProgram.model'),
+    EmployeeCourse: require('./training/employeeCourse.model'),
 
-//asset
-const Asset = require('./asset/asset.model'); //tài sản
-const AssetType = require('./asset/assetType.model'); //loại tài sản
-const RecommendProcure = require('./asset/assetPurchaseRequest.model'); //đề nghị mua sắm thiết bị
-const RecommendDistribute = require('./asset/assetUseRequest.model'); //đề nghị cấp phát thiết bị
-//report
-const TaskReport = require('./report/taskReport.model');
+    //asset
+    Asset: require('./asset/asset.model'), //tài sản
+    AssetType: require('./asset/assetType.model'), //loại tài sản
+    RecommendProcure: require('./asset/assetPurchaseRequest.model'), //đề nghị mua sắm thiết bị
+    RecommendDistribute: require('./asset/assetUseRequest.model'), //đề nghị cấp phát thiết bị
+    //report
+    TaskReport: require('./report/taskReport.model'),
 
-//material
-const Material = require('./warehouse/material.model');
-const Bill = require('./warehouse/bill.model');
-const BinLocation = require('./warehouse/binLocation.model');
-const Category = require('./warehouse/category.model');
-const Consignment = require('./warehouse/consignment.model');
-const Good = require('./warehouse/good.model');
-const Partner = require('./warehouse/partner.model');
-const Proposal = require('./warehouse/proposal.model');
-const Stock = require('./warehouse/stock.model');
-// Customer Management
-const CrmCustomer = require('./crm/crmCustomer.model');
-const CrmCare = require('./crm/crmCare.model');
-const CrmGroup = require('./crm/crmGroup.model');
-const CrmLiability = require('./crm/crmLiability.model');
+    //warehouse
+    Stock: require('./warehouse/stock.model'),
+    BinLocation: require('./warehouse/binLocation.model'),
+    Proposal: require('./warehouse/proposal.model'),
+    Partner: require('./warehouse/partner.model'),
+    Good: require('./warehouse/good.model'),
+    Consignment: require('./warehouse/consignment.model'),
+    Category: require('./warehouse/category.model'),
+    Bill: require('./warehouse/bill.model'),
 
-//order
-const Order = require("./order/order.model");
+    // Customer Management
+    Customer: require('./crm/customer.model'),
+    Care: require('./crm/care.model'),
+    CareType: require('./crm/careType.model'),
+    Group: require('./crm/group.model'),
+    Status: require('./crm/status.model'),
+    Product: require('./crm/product.model'),
+    ProductCategory: require('./crm/productCategory.model'),
+    ProductDiscount: require('./crm/productDiscount.model'),
 
-const Location = require('./common/location.model');
 
-// plan
-const Plan = require('./plan/plan.model');
+    //order
+    Order: require("./order/order.model"),
 
-// example
+    Location: require('./common/location.model'),
 
-const Example = require('./example/example.model');
+    // plan
+    Plan: require('./plan/plan.model'),
 
-exports.schema = {
-    Privilege,
-    Role,
-    UserRole,
-    User,
-
-    Document,
-    DocumentCategory,
-    DocumentDomain,
-    DocumentArchive,
-
-    AnnualLeave,
-    Commendation,
-    Discipline,
-    Employee,
-    Holiday,
-    Salary,
-    Timesheet,
-
-    EmployeeKpi,
-    EmployeeKpiSet,
-    OrganizationalUnitKpi,
-    OrganizationalUnitKpiSet,
-
-    Notification,
-    ManualNotification,
-
-    Action,
-    Component,
-    Link,
-    OrganizationalUnit,
-    RoleType,
-
-    Company,
-    Configuration,
-    SystemComponent,
-    SystemLink,
-    RootRole,
-
-    Task,
-    TaskComment,
-    TaskFile,
-    TaskHistory,
-    TaskResult,
-    TaskResultInformation,
-    TaskTemplate,
-    TaskTemplateInformation,
-    TimesheetLog,
-    TaskProcess,
-    ProcessTemplate,
-    Course,
-    EducationProgram,
-    EmployeeCourse,
-
-    Asset,
-    AssetType,
-    RecommendProcure,
-    RecommendDistribute,
-
-    TaskReport,
-
-    Material,
-    Bill,
-    BinLocation,
-    Category,
-    Consignment,
-    Good,
-    Partner,
-    Proposal,
-    Stock,
-
-    CrmCustomer,
-    CrmCare,
-    CrmGroup,
-    CrmLiability,
-
-    Location,
-
-    Order,
-    Plan, 
-    Example
+    // Example
+    Example: require('./example/example.model'),
 }

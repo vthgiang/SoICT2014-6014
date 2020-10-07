@@ -296,6 +296,7 @@ class ModalCreateTaskProcess extends Component {
 						...state.info[`${element.businessObject.id}`],
 						organizationalUnit: this.props.listOrganizationalUnit[0]?._id,
 					}
+					console.log('this.props.listOrganizationalUnit[0]?._id', this.props.listOrganizationalUnit[0]?._id);
 				}
 				return {
 					...state,

@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
-// Create Schema
 const DocumentSchema = new Schema({
 
     company: { //thuộc công ty nào
@@ -10,7 +9,6 @@ const DocumentSchema = new Schema({
         ref: 'companies',
         required: true
     },
-
     /**Thông tin cơ bản về tài liệu*/
     name: { //tên 
         type: String,
@@ -18,12 +16,12 @@ const DocumentSchema = new Schema({
     },
     domains: [{
         type: Schema.Types.ObjectId,
-        ref: 'document_domains'
+        ref: 'DocumentDomain'
     }],
 
     category: {
         type: Schema.Types.ObjectId,
-        ref: 'document_categories'
+        ref: 'DocumentCategory'
     },
     description: { //mô tả
         type: String
@@ -40,7 +38,7 @@ const DocumentSchema = new Schema({
     views: [{
         viewer: {
             type: Schema.Types.ObjectId,
-            ref: 'users'
+            ref: 'User'
         },
         time: {
             type: Date,
@@ -50,7 +48,7 @@ const DocumentSchema = new Schema({
     downloads: [{
         downloader: {
             type: Schema.Types.ObjectId,
-            ref: 'users'
+            ref: 'User'
         },
         time: {
             type: Date,
@@ -117,24 +115,24 @@ const DocumentSchema = new Schema({
     /** Những vị trí có quyền xem mẫu này */
     roles: [{
         type: Schema.Types.ObjectId,
-        ref: 'roles'
+        ref: 'Role'
     }],
 
     /**Hồ sơ lưu trữ bản cứng */
     archives: [{
         type: Schema.Types.ObjectId,
-        ref: 'document_domains'
+        ref: 'DocumentArchive'
     }],
     // archivedRecordPlaceInfo: {
     //     type: String
     // },
     archivedRecordPlaceOrganizationalUnit: {
         type: Schema.Types.ObjectId,
-        ref: 'organizational_units'
+        ref: 'OrganizationalUnit'
     },
     archivedRecordPlaceManager: {
         type: Schema.Types.ObjectId,
-        ref: 'users'
+        ref: 'User'
     },
     /**
      * Lịch sử chỉnh sửa
@@ -146,7 +144,7 @@ const DocumentSchema = new Schema({
         },
         creator: {
             type: Schema.Types.ObjectId,
-            ref: User,
+            ref: 'User',
             required: true
         },
         title: {
@@ -164,4 +162,8 @@ const DocumentSchema = new Schema({
 
 DocumentSchema.plugin(mongoosePaginate);
 
-module.exports = Document = mongoose.model("documents", DocumentSchema);
+module.exports = (db) => {
+    if (!db.models.Document)
+        return db.model('Document', DocumentSchema);
+    return db.models.Document;
+}

@@ -1,13 +1,13 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const Company = require('../system-admin/company.model');
 const mongoosePaginate = require('mongoose-paginate-v2');
 
 // Create Schema
 const AssetTypeSchema = new Schema({
-    company: { // Công ty
+    company: { //thuộc công ty nào
         type: Schema.Types.ObjectId,
-        ref: Company,
+        ref: 'companies',
+        required: true
     },
 
     typeNumber: { // Mã loại
@@ -22,7 +22,7 @@ const AssetTypeSchema = new Schema({
 
     parent: { // Loại tài sản cha
         type: Schema.Types.ObjectId,
-        replies: this 
+        replies: this
     },
 
     description: { // Mô tả
@@ -47,4 +47,8 @@ const AssetTypeSchema = new Schema({
 
 AssetTypeSchema.plugin(mongoosePaginate);
 
-module.exports = AssetType = mongoose.model("asset_type", AssetTypeSchema);
+module.exports = (db) => {
+    if (!db.models.AssetType)
+        return db.model('AssetType', AssetTypeSchema);
+    return db.models.AssetType;
+}

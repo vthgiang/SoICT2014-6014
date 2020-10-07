@@ -184,7 +184,7 @@ class FileEditModal extends Component {
                             <div className="form-group col-sm-6 col-xs-12">
                                 <label>{translate('table.status')}<span className="text-red">*</span></label>
                                 <select className="form-control" value={status} name="status" onChange={this.handleStatusChange}>
-                                    <option value="no_submitted">{translate('human_resource.profile.no_submitted')}</option>
+                                    <option value="not_submitted_yet">{translate('human_resource.profile.not_submitted_yet')}</option>
                                     <option value="submitted">{translate('human_resource.profile.submitted')}</option>
                                     <option value="returned">{translate('human_resource.profile.returned')}</option>
                                 </select>

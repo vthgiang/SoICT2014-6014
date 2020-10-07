@@ -174,8 +174,8 @@ class DocumentInformation extends Component {
                                                         <th>{translate('document.issuing_date')}</th>
                                                         <th>{translate('document.effective_date')}</th>
                                                         <th>{translate('document.expired_date')}</th>
-                                                        <th>{translate('document.doc_version.file')}</th>
-                                                        <th>{translate('document.doc_version.scanned_file_of_signed_document')}</th>
+                                                        <th>{translate('document.upload_file')}</th>
+                                                        <th>{translate('document.upload_file_scan')}</th>
 
                                                     </tr>
                                                 </thead>

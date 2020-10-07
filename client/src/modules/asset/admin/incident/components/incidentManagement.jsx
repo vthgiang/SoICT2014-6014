@@ -38,8 +38,8 @@ class IncidentManagement extends Component {
         this.props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
         this.props.getUser();
         this.props.getIncidents(this.state);
-        
-        if(!this.props.isActive || this.props.isActive === "tab-pane active") {
+
+        if (!this.props.isActive || this.props.isActive === "tab-pane active") {
             this.props.getAllAsset(this.state);
         }
     }
@@ -268,10 +268,11 @@ class IncidentManagement extends Component {
     }
 
     convertIncidentType = (type) => {
+        const { translate } = this.props;
         if (type == 1) {
-            return 'Hỏng';
+            return translate('asset.general_information.damaged');
         } else if (type == 2) {
-            return 'lost'
+            return translate('asset.general_information.lost')
         } else {
             return 'Type is deleted'
         }
@@ -318,19 +319,19 @@ class IncidentManagement extends Component {
 
                         {/* Mã sự cố */}
                         <div className="form-group">
-                            <label className="form-control-static">Mã sự cố</label>
-                            <input type="text" className="form-control" name="incidentCode" onChange={this.handleIncidentCodeChange} placeholder="Nhập mã sự cố" autoComplete="off" />
+                            <label className="form-control-static">{translate('asset.general_information.incident_code')}</label>
+                            <input type="text" className="form-control" name="incidentCode" onChange={this.handleIncidentCodeChange} placeholder={translate('asset.general_information.incident_code')} autoComplete="off" />
                         </div>
 
                         {/* Loại sự cố */}
                         <div className="form-group">
-                            <label className="form-control-static">Loại sự cố</label>
+                            <label className="form-control-static">{translate('asset.general_information.incident_type')}</label>
                             <SelectMulti id={`multiSelectIncidentType`} multiple="multiple"
-                                options={{ nonSelectedText: "Chọn loại sự cố", allSelectedText: "Chọn tất cả" }}
+                                options={{ nonSelectedText: translate('asset.general_information.select_incident_type'), allSelectedText: translate('asset.general_information.select_all_incident_type') }}
                                 onChange={this.handleIncidentTypeChange}
                                 items={[
-                                    { value: "broken", text: "Hỏng" },
-                                    { value: "lost", text: "Mất" },
+                                    { value: "broken", text: translate('asset.general_information.damaged') },
+                                    { value: "lost", text: translate('asset.general_information.lost') },
                                 ]}
                             >
                             </SelectMulti>
@@ -340,13 +341,13 @@ class IncidentManagement extends Component {
                     <div className="form-inline" style={{ marginBottom: 10 }}>
                         {/* Trạng thái */}
                         <div className="form-group">
-                            <label className="form-control-static">Trạng thái</label>
+                            <label className="form-control-static">{translate('asset.general_information.status')}</label>
                             <SelectMulti id={`multiSelectIncidentStatus`} multiple="multiple"
-                                options={{ nonSelectedText: "Chọn trạng thái", allSelectedText: "Chọn tất cả" }}
+                                options={{ nonSelectedText: translate('task.task_management.select_status'), allSelectedText: translate('task.task_management.select_all_status') }}
                                 onChange={this.handleIncidentStatusChange}
                                 items={[
-                                    { value: "Chờ xử lý", text: "Chờ xử lý" },
-                                    { value: "Đã xử lý", text: "Đã xử lý" },
+                                    { value: "wait_for_approving", text: translate('asset.general_information.waiting') },
+                                    { value: "approved", text: translate('asset.general_information.processed') },
                                 ]}
                             >
                             </SelectMulti>
@@ -370,7 +371,6 @@ class IncidentManagement extends Component {
                                 <th style={{ width: "8%" }}>{translate('asset.general_information.reported_by')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.date_incident')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.content')}</th>
-                                <th style={{ width: "10%" }}>{translate('asset.general_information.status')}</th>
                                 <th style={{ width: '100px', textAlign: 'center' }}>{translate('table.action')}
                                     <DataTableSetting
                                         tableId="incident-table"
@@ -382,7 +382,6 @@ class IncidentManagement extends Component {
                                             translate('asset.general_information.reported_by'),
                                             translate('asset.general_information.date_incident'),
                                             translate('asset.general_information.content'),
-                                            translate('asset.general_information.status'),
                                         ]}
                                         limit={limit}
                                         setLimit={this.setLimit}
@@ -403,7 +402,6 @@ class IncidentManagement extends Component {
                                             <td>{x.reportedBy && userlist.length && userlist.filter(item => item._id === x.reportedBy).pop() ? userlist.filter(item => item._id === x.reportedBy).pop().name : 'User is deleted'}</td>
                                             <td>{x.dateOfIncident ? this.formatDate2(x.dateOfIncident) : ''}</td>
                                             <td>{x.description}</td>
-                                            <td>{x.statusIncident ? x.statusIncident : ""}</td>
                                             <td style={{ textAlign: "center" }}>
                                                 <a onClick={() => this.handleEdit(x, x.asset)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.asset_info.edit_incident_info')}><i
                                                     className="material-icons">edit</i></a>

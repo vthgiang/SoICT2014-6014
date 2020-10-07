@@ -14,7 +14,7 @@ class ManageLeaveApplication extends Component {
         super(props);
         this.state = {
             dataStatus: 0,
-            status: ['process'],
+            status: ['waiting_for_approval'],
             page: 0,
             limit: 5,
         }
@@ -150,7 +150,7 @@ class ManageLeaveApplication extends Component {
         let endDateNew = this.formatDate2(value.endDate);
 
         Swal.fire({
-            html: `<h4 style="color: red"><div>${translate('human_resource.holiday.accept_application')}</div> <div>"${this.formatDate(value.startDate)} - ${this.formatDate(value.endDate)}" ?</div></h4>`,
+            html: `<h4 style="color: red"><div>${translate('human_resource.work_plan.accept_application')}</div> <div>"${this.formatDate(value.startDate)} - ${this.formatDate(value.endDate)}" ?</div></h4>`,
             icon: 'success',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -174,7 +174,7 @@ class ManageLeaveApplication extends Component {
         let endDateNew = this.formatDate2(value.endDate);
 
         Swal.fire({
-            html: `<h4 style="color: red"><div>${translate('human_resource.holiday.refuse_application')}</div> <div>"${this.formatDate(value.startDate)} - ${this.formatDate(value.endDate)}" ?</div></h4>`,
+            html: `<h4 style="color: red"><div>${translate('human_resource.work_plan.refuse_application')}</div> <div>"${this.formatDate(value.startDate)} - ${this.formatDate(value.endDate)}" ?</div></h4>`,
             icon: 'error',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -224,9 +224,9 @@ class ManageLeaveApplication extends Component {
                                 onChange={this.handleStatusChange}
                                 value={status}
                                 items={[
-                                    { value: "pass", text: translate('human_resource.annual_leave.status.pass') },
-                                    { value: "process", text: translate('human_resource.annual_leave.status.process') },
-                                    { value: "faile", text: translate('human_resource.annual_leave.status.faile') }
+                                    { value: "approved", text: translate('human_resource.annual_leave.status.approved') },
+                                    { value: "waiting_for_approval", text: translate('human_resource.annual_leave.status.waiting_for_approval') },
+                                    { value: "disapproved", text: translate('human_resource.annual_leave.status.disapproved') }
                                 ]}
                             >
                             </SelectMulti>
@@ -273,10 +273,10 @@ class ManageLeaveApplication extends Component {
                                         <td>{x.reason}</td>
                                         <td>{translate(`human_resource.annual_leave.status.${x.status}`)}</td>
                                         <td style={{ textAlign: "center" }}>
-                                            {(x.status === 'process' || x.status === "faile") &&
-                                                <a onClick={() => this.handleAcceptApplication(x)} className="add_circle" style={{ width: '5px' }} title={translate('human_resource.holiday.accept_application')}><i className="material-icons">check</i></a>}
-                                            {(x.status === 'process' || x.status === "pass") &&
-                                                <a onClick={() => this.handleRefuseApplication(x)} className="delete" style={{ width: '5px' }} title={translate('human_resource.holiday.refuse_application')}><i className="material-icons">clear</i></a>}
+                                            {(x.status === 'waiting_for_approval' || x.status === "disapproved") &&
+                                                <a onClick={() => this.handleAcceptApplication(x)} className="add_circle" style={{ width: '5px' }} title={translate('human_resource.work_plan.accept_application')}><i className="material-icons">check</i></a>}
+                                            {(x.status === 'waiting_for_approval' || x.status === "approved") &&
+                                                <a onClick={() => this.handleRefuseApplication(x)} className="delete" style={{ width: '5px' }} title={translate('human_resource.work_plan.refuse_application')}><i className="material-icons">clear</i></a>}
                                         </td>
                                     </tr>))
                             }

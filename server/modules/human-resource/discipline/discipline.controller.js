@@ -1,15 +1,12 @@
 const DisciplineService = require('./discipline.service');
-const {
-    LogInfo,
-    LogError
-} = require('../../../logs');
+const Log = require(`${SERVER_LOGS_DIR}`);
 
 /** Lấy danh sách kỷ luật */
 exports.searchDisciplines = async (req, res) => {
     try {
         let data = {};
         if (req.query.page === undefined && req.query.limit === undefined) {
-            data = await DisciplineService.getTotalDiscipline(req.user.company._id, req.query.organizationalUnits, req.query.month)
+            data = await DisciplineService.getTotalDiscipline(req.portal, req.user.company._id, req.query.organizationalUnits, req.query.month)
         } else {
             let params = {
                 organizationalUnits: req.query.organizationalUnits,
@@ -19,17 +16,17 @@ exports.searchDisciplines = async (req, res) => {
                 page: Number(req.query.page),
                 limit: Number(req.query.limit),
             }
-            data = await DisciplineService.searchDisciplines(params, req.user.company._id);
+            data = await DisciplineService.searchDisciplines(req.portal, params, req.user.company._id);
         }
 
-        await LogInfo(req.user.email, 'GET_DISCIPLINE', req.user.company);
+        await Log.info(req.user.email, 'GET_DISCIPLINE', req.portal);
         res.status(200).json({
             success: true,
             messages: ["get_discipline_success"],
             content: data
         });
     } catch (error) {
-        await LogError(req.user.email, 'GET_DISCIPLINE', req.user.company);
+        await Log.error(req.user.email, 'GET_DISCIPLINE', req.portal);
         res.status(400).json({
             success: false,
             messages: ["get_discipline_faile"],
@@ -45,7 +42,7 @@ exports.createDiscipline = async (req, res) => {
     try {
         // Kiểm tra dữ liệu truyền vào
         if (req.body.decisionNumber.trim() === "") {
-            await LogError(req.user.email, 'CREATE_DISCIPLINE', req.user.company);
+            await Log.error(req.user.email, 'CREATE_DISCIPLINE', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["number_decisions_required"],
@@ -54,7 +51,7 @@ exports.createDiscipline = async (req, res) => {
                 }
             });
         } else if (req.body.organizationalUnit.trim() === "") {
-            await LogError(req.user.email, 'CREATE_DISCIPLINE', req.user.company);
+            await Log.error(req.user.email, 'CREATE_DISCIPLINE', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["unit_decisions_required"],
@@ -63,7 +60,7 @@ exports.createDiscipline = async (req, res) => {
                 }
             });
         } else if (req.body.startDate.trim() === "") {
-            await LogError(req.user.email, 'CREATE_DISCIPLINE', req.user.company);
+            await Log.error(req.user.email, 'CREATE_DISCIPLINE', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["start_date_discipline_required"],
@@ -72,7 +69,7 @@ exports.createDiscipline = async (req, res) => {
                 }
             });
         } else if (req.body.type.trim() === "") {
-            await LogError(req.user.email, 'CREATE_DISCIPLINE', req.user.company);
+            await Log.error(req.user.email, 'CREATE_DISCIPLINE', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["type_discipline_required"],
@@ -81,7 +78,7 @@ exports.createDiscipline = async (req, res) => {
                 }
             });
         } else if (req.body.reason.trim() === "") {
-            await LogError(req.user.email, 'CREATE_DISCIPLINE', req.user.company);
+            await Log.error(req.user.email, 'CREATE_DISCIPLINE', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["reason_discipline_required"],
@@ -90,9 +87,9 @@ exports.createDiscipline = async (req, res) => {
                 }
             });
         } else {
-            let createDiscipline = await DisciplineService.createDiscipline(req.body, req.user.company._id, req.user.company._id);
+            let createDiscipline = await DisciplineService.createDiscipline(req.portal, req.body, req.user.company._id, req.user.company._id);
             if (createDiscipline === "have_exist") { // Kiểm tra trùng lặp
-                await LogError(req.user.email, 'CREATE_DISCIPLINE', req.user.company);
+                await Log.error(req.user.email, 'CREATE_DISCIPLINE', req.portal);
                 res.status(400).json({
                     success: false,
                     messages: ["number_decisions_have_exist"],
@@ -101,7 +98,7 @@ exports.createDiscipline = async (req, res) => {
                     }
                 });
             } else {
-                await LogInfo(req.user.email, 'CREATE_DISCIPLINE', req.user.company);
+                await Log.info(req.user.email, 'CREATE_DISCIPLINE', req.portal);
                 res.status(200).json({
                     success: true,
                     messages: ["create_discipline_success"],
@@ -110,7 +107,7 @@ exports.createDiscipline = async (req, res) => {
             }
         }
     } catch (error) {
-        await LogError(req.user.email, 'CREATE_DISCIPLINE', req.user.company);
+        await Log.error(req.user.email, 'CREATE_DISCIPLINE', req.portal);
         res.status(400).json({
             success: false,
             messages: ["create_discipline_faile"],
@@ -124,15 +121,15 @@ exports.createDiscipline = async (req, res) => {
 /** Xoá thông tin kỷ luật */
 exports.deleteDiscipline = async (req, res) => {
     try {
-        let disciplineDelete = await DisciplineService.deleteDiscipline(req.params.id);
-        await LogInfo(req.user.email, 'DELETE_DISCIPLINE', req.user.company);
+        let disciplineDelete = await DisciplineService.deleteDiscipline(req.portal, req.params.id);
+        await Log.info(req.user.email, 'DELETE_DISCIPLINE', req.portal);
         res.status(200).json({
             success: true,
             messages: ["delete_discipline_success"],
             content: disciplineDelete
         });
     } catch (error) {
-        await LogError(req.user.email, 'DELETE_DISCIPLINE', req.user.company);
+        await Log.error(req.user.email, 'DELETE_DISCIPLINE', req.portal);
         res.status(400).json({
             success: false,
             messages: ["delete_discipline_faile"],
@@ -148,7 +145,7 @@ exports.updateDiscipline = async (req, res) => {
     try {
         // Kiểm tra dữ liệu truyền vào
         if (req.body.organizationalUnit.trim() === "") {
-            await LogError(req.user.email, 'EDIT_DISCIPLINE', req.user.company);
+            await Log.error(req.user.email, 'EDIT_DISCIPLINE', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["unit_decisions_required"],
@@ -157,7 +154,7 @@ exports.updateDiscipline = async (req, res) => {
                 }
             });
         } else if (req.body.startDate.trim() === "") {
-            await LogError(req.user.email, 'EDIT_DISCIPLINE', req.user.company);
+            await Log.error(req.user.email, 'EDIT_DISCIPLINE', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["start_date_required"],
@@ -166,7 +163,7 @@ exports.updateDiscipline = async (req, res) => {
                 }
             });
         } else if (req.body.type.trim() === "") {
-            await LogError(req.user.email, 'EDIT_DISCIPLINE', req.user.company);
+            await Log.error(req.user.email, 'EDIT_DISCIPLINE', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["type_discipline_required"],
@@ -175,7 +172,7 @@ exports.updateDiscipline = async (req, res) => {
                 }
             });
         } else if (req.body.reason.trim() === "") {
-            await LogError(req.user.email, 'EDIT_DISCIPLINE', req.user.company);
+            await Log.error(req.user.email, 'EDIT_DISCIPLINE', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["reason_discipline_required"],
@@ -184,8 +181,8 @@ exports.updateDiscipline = async (req, res) => {
                 }
             });
         } else {
-            let disciplineUpdate = await DisciplineService.updateDiscipline(req.params.id, req.body);
-            await LogInfo(req.user.email, 'EDIT_DISCIPLINE', req.user.company);
+            let disciplineUpdate = await DisciplineService.updateDiscipline(req.portal, req.params.id, req.body);
+            await Log.info(req.user.email, 'EDIT_DISCIPLINE', req.portal);
             res.status(200).json({
                 success: true,
                 messages: ["edit_discipline_success"],
@@ -193,7 +190,7 @@ exports.updateDiscipline = async (req, res) => {
             });
         }
     } catch (error) {
-        await LogError(req.user.email, 'EDIT_DISCIPLINE', req.user.company);
+        await Log.error(req.user.email, 'EDIT_DISCIPLINE', req.portal);
         res.status(400).json({
             success: false,
             messages: ["edit_discipline_faile"],

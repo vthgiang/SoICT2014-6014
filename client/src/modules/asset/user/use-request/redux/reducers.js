@@ -45,7 +45,14 @@ export function recommendDistribute(state =initState, action) {
                 isLoading: false,
                 listRecommendDistributes: state.listRecommendDistributes.filter(recommendDistribute => (recommendDistribute._id !== action.payload._id)),
             };
-        
+
+        case RecommendDistributeConstants.GET_RECOMMEND_DISTRIBUTE_BY_ASSET_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                listRecommendDistributesByAsset: action.payload
+            }
+        case RecommendDistributeConstants.GET_RECOMMEND_DISTRIBUTE_BY_ASSET_FAILURE:
         case RecommendDistributeConstants.GET_RECOMMEND_DISTRIBUTE_FAILURE:
         case RecommendDistributeConstants.CREATE_RECOMMEND_DISTRIBUTE_FAILURE:
         case RecommendDistributeConstants.UPDATE_RECOMMEND_DISTRIBUTE_FAILURE:

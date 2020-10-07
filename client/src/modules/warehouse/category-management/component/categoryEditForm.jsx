@@ -66,12 +66,6 @@ class CategoryEditForm extends Component {
         })
     }
 
-    handleGoodsChange = (value) => {
-        this.setState({
-            goods: value
-        })
-    }
-
     handleDescriptionChange = (e) => {
         let value = e.target.value;
         this.setState(state => {
@@ -115,7 +109,7 @@ class CategoryEditForm extends Component {
 
     render() {
         const { translate, categories } = this.props;
-        const { errorOnName, errorOnCode, id, code, name, type, goods, description } = this.state;
+        const { errorOnName, errorOnCode, id, code, name, type, description } = this.state;
         return (
             <React.Fragment>
 
@@ -130,7 +124,7 @@ class CategoryEditForm extends Component {
                     size={50}
                     maxWidth={500}
                 >
-                    <form id="form-edit-category" onSubmit={() => this.save(translate('manage_warehouse.category_management.edit_success'))}>
+                    <form id="form-edit-category" >
                         <div className={`form-group ${!errorOnCode ? "" : "has-error"}`}>
                             <label>{translate('manage_warehouse.category_management.code')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" value={code} onChange={this.handleCodeChange} />
@@ -157,19 +151,18 @@ class CategoryEditForm extends Component {
                                     multiple={false}
                                 />
                         </div>
-                        <div className="form-group">
+                        {/* <div className="form-group">
                             <label>{translate('manage_warehouse.category_management.good')}</label>
                             <SelectBox
                                     id={`select-edit-category-goods${id}`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     value={goods}
-                                    items= {[
-                                    ]}
+                                    items= {dataSelectBox}
                                     onChange={this.handleGoodsChange}
                                     multiple={true}
                                 />
-                        </div>
+                        </div> */}
                         <div className="form-group">
                             <label>{translate('manage_warehouse.category_management.description')}</label>
                             <textarea type="text" className="form-control" value={description} onChange={this.handleDescriptionChange} />

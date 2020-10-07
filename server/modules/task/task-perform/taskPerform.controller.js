@@ -1,7 +1,7 @@
 const PerformTaskService = require('./taskPerform.service');
-const { LogInfo, LogError } = require('../../../logs');
-const NotificationServices = require('../../notification/notification.service');
-const { sendEmail } = require('../../../helpers/emailHelper');
+const Logger = require(`${SERVER_LOGS_DIR}`);
+const NotificationServices = require(`${SERVER_MODULES_DIR}/notification/notification.service`);
+const { sendEmail } = require(`${SERVER_HELPERS_DIR}/emailHelper`);
 
 // Điều hướng đến dịch vụ cơ sở dữ liệu của module thực hiện công việc
 
@@ -9,22 +9,22 @@ const { sendEmail } = require('../../../helpers/emailHelper');
  *  Lấy công việc theo id
  */
 exports.getTaskById = async (req, res) => {
-    // try {
-    var task = await PerformTaskService.getTaskById(req.params.taskId, req.user._id);
-    await LogInfo(req.user.email, ` get task by id `, req.user.company);
-    res.status(200).json({
-        success: true,
-        messages: ['get_task_by_id_success'],
-        content: task
-    });
-    // } catch (error) {
-    //     await LogError(req.user.email, ` get task by id `, req.user.company);
-    //     res.status(400).json({
-    //         success: false,
-    //         messages: ['get_task_by_id_fail'],
-    //         content: error
-    //     });
-    // };
+    try {
+        var task = await PerformTaskService.getTaskById(req.portal, req.params.taskId, req.user._id);
+        await Logger.info(req.user.email, ` get task by id `, req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['get_task_by_id_success'],
+            content: task
+        });
+    } catch (error) {
+        await Logger.error(req.user.email, ` get task by id `, req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['get_task_by_id_fail'],
+            content: error
+        });
+    };
 };
 
 /**
@@ -32,15 +32,15 @@ exports.getTaskById = async (req, res) => {
  */
 exports.getTaskTimesheetLogs = async (req, res) => {
     try {
-        let logTimer = await PerformTaskService.getTaskTimesheetLogs(req.params);
-        await LogInfo(req.user.email, ` get log timer  `, req.user.company)
+        let logTimer = await PerformTaskService.getTaskTimesheetLogs(req.portal, req.params);
+        await Logger.info(req.user.email, ` get log timer  `, req.portal)
         res.status(200).json({
             success: true,
             messages: ['get_log_timer_success'],
             content: logTimer
         })
     } catch (error) {
-        await LogError(req.user.email, ` get log timer  `, req.user.company)
+        await Logger.error(req.user.email, ` get log timer  `, req.portal)
         res.status(400).json({
             success: false,
             messages: ['get_log_timer_fail'],
@@ -53,15 +53,15 @@ exports.getTaskTimesheetLogs = async (req, res) => {
  */
 exports.getActiveTimesheetLog = async (req, res) => {
     try {
-        let timerStatus = await PerformTaskService.getActiveTimesheetLog(req.query);
-        await LogInfo(req.user.email, `get timer status`, req.user.company)
+        let timerStatus = await PerformTaskService.getActiveTimesheetLog(req.portal, req.query);
+        await Logger.info(req.user.email, `get timer status`, req.portal)
         res.status(200).json({
             success: true,
             messages: ['get_timer_status_success'],
             content: timerStatus
         })
     } catch (error) {
-        await LogError(req.user.email, `get timer status`, req.user.company)
+        await Logger.error(req.user.email, `get timer status`, req.portal)
         res.status(400).json({
             success: false,
             messages: ['get_timer_status_fail'],
@@ -74,15 +74,15 @@ exports.getActiveTimesheetLog = async (req, res) => {
  */
 exports.startTimesheetLog = async (req, res) => {
     try {
-        let timerStatus = await PerformTaskService.startTimesheetLog(req.params, req.body);
-        await LogInfo(req.user.email, ` start timer `, req.user.company)
+        let timerStatus = await PerformTaskService.startTimesheetLog(req.portal, req.params, req.body);
+        await Logger.info(req.user.email, ` start timer `, req.portal)
         res.status(200).json({
             success: true,
             messages: ['start_timer_success'],
             content: timerStatus
         })
     } catch (error) {
-        await LogError(req.user.email, ` start timer `, req.user.company)
+        await Logger.error(req.user.email, ` start timer `, req.portal)
         res.status(400).json({
             success: false,
             messages: ['start_timer_fail'],
@@ -96,8 +96,8 @@ exports.startTimesheetLog = async (req, res) => {
  */
 exports.stopTimesheetLog = async (req, res) => {
     try {
-        let timer = await PerformTaskService.stopTimesheetLog(req.params, req.body);
-        await LogInfo(req.user.email, ` stop timer `, req.user.company)
+        let timer = await PerformTaskService.stopTimesheetLog(req.portal, req.params, req.body);
+        await Logger.info(req.user.email, ` stop timer `, req.portal)
         res.status(200).json({
             success: true,
             messages: ['stop_timer_success'],
@@ -105,7 +105,7 @@ exports.stopTimesheetLog = async (req, res) => {
         })
     } catch (error) {
         console.log(error);
-        await LogError(req.user.email, ` stop timer `, req.user.company)
+        await Logger.error(req.user.email, ` stop timer `, req.portal)
         res.status(400).json({
             success: false,
             messages: ['stop_timer_fail'],
@@ -127,21 +127,21 @@ exports.createTaskAction = async (req, res) => {
             })
         }
 
-        var task = await PerformTaskService.createTaskAction(req.params, req.body, files);
+        var task = await PerformTaskService.createTaskAction(req.portal, req.params, req.body, files);
         var taskAction = task.taskActions;
         var tasks = task.tasks;
         var user = task.user;
         var data = { "organizationalUnits": tasks.organizationalUnit, "title": "Phê duyệt hoạt động", "level": "general", "content": `<p><strong>${user.name}</strong> đã thêm mới hoạt động cho công việc <strong>${tasks.name}</strong>, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`, "sender": user.name, "users": [tasks.accountableEmployees] };
-        NotificationServices.createNotification(tasks.organizationalUnit, data,);
+        NotificationServices.createNotification(req.portal, tasks.organizationalUnit, data,);
         sendEmail(task.email, "Phê duyệt hoạt động", '', `<p><strong>${user.name}</strong> đã thêm mới hoạt động, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`);
-        await LogInfo(req.user.email, ` create task action  `, req.user.company)
+        await Logger.info(req.user.email, ` create task action  `, req.portal)
         res.status(200).json({
             success: true,
             messages: ['create_task_action_success'],
             content: taskAction
         })
     } catch (error) {
-        await LogError(req.user.email, ` create task action  `, req.user.company)
+        await Logger.error(req.user.email, ` create task action  `, req.portal)
         res.status(400).json({
             success: false,
             messages: ['create_task_action_fail'],
@@ -168,15 +168,15 @@ exports.editTaskAction = async (req, res) => {
 
                 })
             }
-            let taskAction = await PerformTaskService.editTaskAction(req.params, req.body, files);
-            await LogInfo(req.user.email, ` edit task action  `, req.user.company)
+            let taskAction = await PerformTaskService.editTaskAction(req.portal, req.params, req.body, files);
+            await Logger.info(req.user.email, ` edit task action  `, req.portal)
             res.status(200).json({
                 success: true,
                 messages: ['edit_task_action_success'],
                 content: taskAction
             })
         } catch (error) {
-            await LogError(req.user.email, ` edit task action  `, req.user.company)
+            await Logger.error(req.user.email, ` edit task action  `, req.portal)
             res.status(400).json({
                 success: false,
                 messages: ['edit_task_action_fail'],
@@ -189,15 +189,15 @@ exports.editTaskAction = async (req, res) => {
  */
 exports.deleteTaskAction = async (req, res) => {
     try {
-        let taskAction = await PerformTaskService.deleteTaskAction(req.params);
-        await LogInfo(req.user.email, ` delete task action  `, req.user.company);
+        let taskAction = await PerformTaskService.deleteTaskAction(req.portal, req.params);
+        await Logger.info(req.user.email, ` delete task action  `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['delete_task_action_success'],
             content: taskAction
         })
     } catch (error) {
-        await LogError(req.user.email, ` delete task action  `, req.user.company);
+        await Logger.error(req.user.email, ` delete task action  `, req.portal);
         res.status(400).json({
             success: false,
             messages: ['delete_task_action_fail'],
@@ -218,15 +218,15 @@ exports.createCommentOfTaskAction = async (req, res) => {
 
             })
         }
-        let actionComment = await PerformTaskService.createCommentOfTaskAction(req.params, req.body, files);
-        await LogInfo(req.user.email, ` create  action comment  `, req.user.company);
+        let actionComment = await PerformTaskService.createCommentOfTaskAction(req.portal, req.params, req.body, files);
+        await Logger.info(req.user.email, ` create  action comment  `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['create_action_comment_success'],
             content: actionComment
         })
     } catch (error) {
-        await LogError(req.user.email, ` create  action comment  `, req.user.company);
+        await Logger.error(req.user.email, ` create  action comment  `, req.portal);
         res.status(400).json({
             success: false,
             messages: ['create_action_comment_fail'],
@@ -247,15 +247,15 @@ exports.editCommentOfTaskAction = async (req, res) => {
 
             })
         }
-        let actionComment = await PerformTaskService.editCommentOfTaskAction(req.params, req.body, files);
-        await LogInfo(req.user.email, ` edit action comment  `, req.user.company);
+        let actionComment = await PerformTaskService.editCommentOfTaskAction(req.portal, req.params, req.body, files);
+        await Logger.info(req.user.email, ` edit action comment  `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['edit_action_comment_success'],
             content: actionComment
         })
     } catch (error) {
-        await LogError(req.user.email, ` edit action comment  `, req.user.company);
+        await Logger.error(req.user.email, ` edit action comment  `, req.portal);
         res.status(400).json({
             success: false,
             messages: ['edit_action_comment_fail'],
@@ -269,15 +269,15 @@ exports.editCommentOfTaskAction = async (req, res) => {
  */
 exports.deleteCommentOfTaskAction = async (req, res) => {
     try {
-        let task = await PerformTaskService.deleteCommentOfTaskAction(req.params);
-        await LogInfo(req.user.email, ` delete action comment  `, req.user.company);
+        let task = await PerformTaskService.deleteCommentOfTaskAction(req.portal, req.params);
+        await Logger.info(req.user.email, ` delete action comment  `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['delete_action_comment_success'],
             content: task
         })
     } catch (error) {
-        await LogError(req.user.email, ` delete action comment  `, req.user.company);
+        await Logger.error(req.user.email, ` delete action comment  `, req.portal);
         res.status(400).json({
             success: false,
             messages: ['delete_action_comment_fail'],
@@ -300,15 +300,15 @@ exports.createTaskComment = async (req, res) => {
 
             })
         }
-        let taskComment = await PerformTaskService.createTaskComment(req.params, req.body, files);
-        await LogInfo(req.user.email, ` create task comment  `, req.user.company);
+        let taskComment = await PerformTaskService.createTaskComment(req.portal, req.params, req.body, files);
+        await Logger.info(req.user.email, ` create task comment  `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['create_task_comment_success'],
             content: taskComment
         })
     } catch (error) {
-        await LogError(req.user.email, ` create task comment  `, req.user.company);
+        await Logger.error(req.user.email, ` create task comment  `, req.portal);
         res.status(400).json({
             success: false,
             messages: ["create_task_comment_fail"],
@@ -329,15 +329,15 @@ exports.editTaskComment = async (req, res) => {
 
             })
         }
-        let taskComment = await PerformTaskService.editTaskComment(req.params, req.body, files);
-        await LogInfo(req.user.email, ` edit task comments  `, req.user.company);
+        let taskComment = await PerformTaskService.editTaskComment(req.portal, req.params, req.body, files);
+        await Logger.info(req.user.email, ` edit task comments  `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['edit_task_comment_success'],
             content: taskComment
         })
     } catch (error) {
-        await LogError(req.user.email, ` edit task comments  `, req.user.company);
+        await Logger.error(req.user.email, ` edit task comments  `, req.portal);
         res.status(400).json({
             success: false,
             messages: ['edit_task_comment_fail'],
@@ -350,15 +350,15 @@ exports.editTaskComment = async (req, res) => {
  */
 exports.deleteTaskComment = async (req, res) => {
     try {
-        let taskComment = await PerformTaskService.deleteTaskComment(req.params);
-        await LogInfo(req.user.email, ` delete task comments  `, req.user.company);
+        let taskComment = await PerformTaskService.deleteTaskComment(req.portal, req.params);
+        await Logger.info(req.user.email, ` delete task comments  `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['delete_task_comment_success'],
             content: taskComment
         })
     } catch (error) {
-        await LogError(req.user.email, ` delete task comments  `, req.user.company);
+        await Logger.error(req.user.email, ` delete task comments  `, req.portal);
         res.status(400).json({
             success: false,
             messages: ['delete_task_comment_fail'],
@@ -371,15 +371,15 @@ exports.deleteTaskComment = async (req, res) => {
  */
 exports.deleteFileChildTaskComment = async (req, res) => {
     try {
-        let taskComment = await PerformTaskService.deleteFileChildTaskComment(req.params);
-        await LogInfo(req.user.email, ` delete task comments  `, req.user.company);
+        let taskComment = await PerformTaskService.deleteFileChildTaskComment(req.portal, req.params);
+        await Logger.info(req.user.email, ` delete task comments  `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['delete_file_child_task_comment_success'],
             content: taskComment
         })
     } catch (error) {
-        await LogError(req.user.email, ` delete task comments  `, req.user.company);
+        await Logger.error(req.user.email, ` delete task comments  `, req.portal);
         res.status(400).json({
             success: false,
             messages: ['delete_file_child_task_comment_fail'],
@@ -400,15 +400,15 @@ exports.createCommentOfTaskComment = async (req, res) => {
 
             })
         }
-        let comment = await PerformTaskService.createCommentOfTaskComment(req.params, req.body, files);
-        await LogInfo(req.user.email, ` create comment of task comment  `, req.user.company);
+        let comment = await PerformTaskService.createCommentOfTaskComment(req.portal, req.params, req.body, files);
+        await Logger.info(req.user.email, ` create comment of task comment  `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['create_comment_of_task_comment_success'],
             content: comment
         })
     } catch (error) {
-        await LogError(req.user.email, ` create comment of task comment  `, req.user.company);
+        await Logger.error(req.user.email, ` create comment of task comment  `, req.portal);
         res.status(400).json({
             success: false,
             messages: ['create_comment_of_task_comment_fail'],
@@ -429,15 +429,15 @@ exports.editCommentOfTaskComment = async (req, res) => {
 
             })
         }
-        let comment = await PerformTaskService.editCommentOfTaskComment(req.params, req.body, files);
-        await LogInfo(req.user.email, ` edit comment of task comment  `, req.user.company);
+        let comment = await PerformTaskService.editCommentOfTaskComment(req.portal, req.params, req.body, files);
+        await Logger.info(req.user.email, ` edit comment of task comment  `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['edit_comment_of_task_comment_success'],
             content: comment
         })
     } catch (error) {
-        await LogError(req.user.email, ` edit comment of task comment  `, req.user.company);
+        await Logger.error(req.user.email, ` edit comment of task comment  `, req.portal);
         res.status(400).json({
             success: false,
             messages: ['edit_comment_of_task_comment_fail'],
@@ -450,15 +450,15 @@ exports.editCommentOfTaskComment = async (req, res) => {
  */
 exports.deleteCommentOfTaskComment = async (req, res) => {
     try {
-        let comment = await PerformTaskService.deleteCommentOfTaskComment(req.params);
-        await LogInfo(req.user.email, ` delete comment of task comment  `, req.user.company);
+        let comment = await PerformTaskService.deleteCommentOfTaskComment(req.portal, req.params);
+        await Logger.info(req.user.email, ` delete comment of task comment  `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['delete_comment_of_task_comment_success'],
             content: comment
         })
     } catch (error) {
-        await LogError(req.user.email, ` delete comment of task comment  `, req.user.company);
+        await Logger.error(req.user.email, ` delete comment of task comment  `, req.portal);
         res.status(400).json({
             success: false,
             messages: ['delete_comment_of_task_comment_fail'],
@@ -471,15 +471,15 @@ exports.deleteCommentOfTaskComment = async (req, res) => {
  */
 evaluationAction = async (req, res) => {
     try {
-        let taskAction = await PerformTaskService.evaluationAction(req.params, req.body);
-        await LogInfo(req.user.email, ` evaluation action  `, req.user.company)
+        let taskAction = await PerformTaskService.evaluationAction(req.portal, req.params, req.body);
+        await Logger.info(req.user.email, ` evaluation action  `, req.portal)
         res.status(200).json({
             success: true,
             messages: ['evaluation_action_success'],
             content: taskAction
         })
     } catch (error) {
-        await LogError(req.user.email, ` evaluation action  `, req.user.company)
+        await Logger.error(req.user.email, ` evaluation action  `, req.portal)
         res.status(400).json({
             success: false,
             messages: ['evaluation_action_fail'],
@@ -492,15 +492,15 @@ evaluationAction = async (req, res) => {
  */
 exports.confirmAction = async (req, res) => {
     try {
-        let abc = await PerformTaskService.confirmAction(req.params, req.body);
-        await LogInfo(req.user.email, ` confirm action  `, req.user.company)
+        let abc = await PerformTaskService.confirmAction(req.portal, req.params, req.body);
+        await Logger.info(req.user.email, ` confirm action  `, req.portal)
         res.status(200).json({
             success: true,
             messages: ['confirm_action_success'],
             content: abc
         })
     } catch (error) {
-        await LogError(req.user.email, ` confirm action  `, req.user.company)
+        await Logger.error(req.user.email, ` confirm action  `, req.portal)
         res.status(400).json({
             success: false,
             messages: ['confirm_action_fail'],
@@ -521,15 +521,15 @@ exports.uploadFile = async (req, res) => {
 
             })
         }
-        let comment = await PerformTaskService.uploadFile(req.params, req.body, files);
-        await LogInfo(req.user.email, ` upload file of task  `, req.user.company);
+        let comment = await PerformTaskService.uploadFile(req.portal, req.params, req.body, files);
+        await Logger.info(req.user.email, ` upload file of task  `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['upload_file_success'],
             content: comment
         })
     } catch (error) {
-        await LogError(req.user.email, `upload file of task  `, req.user.company);
+        await Logger.error(req.user.email, `upload file of task  `, req.portal);
         res.status(400).json({
             success: false,
             messages: ['upload_file_fail'],
@@ -542,15 +542,15 @@ exports.uploadFile = async (req, res) => {
  */
 exports.deleteFileTask = async (req, res) => {
     try {
-        let task = await PerformTaskService.deleteFileTask(req.params);
-        await LogInfo(req.user.email, ` delete file of task  `, req.user.company);
+        let task = await PerformTaskService.deleteFileTask(req.portal, req.params);
+        await Logger.info(req.user.email, ` delete file of task  `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['delete_file_success'],
             content: task
         })
     } catch (error) {
-        await LogError(req.user.email, `delete file of task  `, req.user.company);
+        await Logger.error(req.user.email, `delete file of task  `, req.portal);
         res.status(400).json({
             success: false,
             messages: ['delete_file_fail'],
@@ -563,15 +563,15 @@ exports.deleteFileTask = async (req, res) => {
  */
 exports.deleteFileOfAction = async (req, res) => {
     try {
-        let comment = await PerformTaskService.deleteFileOfAction(req.params);
-        await LogInfo(req.user.email, ` delete file of task action  `, req.user.company);
+        let comment = await PerformTaskService.deleteFileOfAction(req.portal, req.params);
+        await Logger.info(req.user.email, ` delete file of task action  `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['delete_file_success'],
             content: comment
         })
     } catch (error) {
-        await LogError(req.user.email, `delete file of task action  `, req.user.company);
+        await Logger.error(req.user.email, `delete file of task action  `, req.portal);
         res.status(400).json({
             success: false,
             messages: ['delete_file_fail'],
@@ -584,15 +584,15 @@ exports.deleteFileOfAction = async (req, res) => {
  */
 exports.deleteFileCommentOfAction = async (req, res) => {
     try {
-        let file = await PerformTaskService.deleteFileCommentOfAction(req.params);
-        await LogInfo(req.user.email, ` delete file of task  `, req.user.company);
+        let file = await PerformTaskService.deleteFileCommentOfAction(req.portal, req.params);
+        await Logger.info(req.user.email, ` delete file of task  `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['delete_file_comment_of_action_success'],
             content: file
         })
     } catch (error) {
-        await LogError(req.user.email, `delete file of task  `, req.user.company);
+        await Logger.error(req.user.email, `delete file of task  `, req.portal);
         res.status(400).json({
             success: false,
             messages: ['delete_file_comment_of_action_fail'],
@@ -605,15 +605,15 @@ exports.deleteFileCommentOfAction = async (req, res) => {
  */
 exports.deleteFileTaskComment = async (req, res) => {
     try {
-        let file = await PerformTaskService.deleteFileTaskComment(req.params);
-        await LogInfo(req.user.email, ` delete file of task  `, req.user.company);
+        let file = await PerformTaskService.deleteFileTaskComment(req.portal, req.params);
+        await Logger.info(req.user.email, ` delete file of task  `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['delete_file_task_comment_success'],
             content: file
         })
     } catch (error) {
-        await LogError(req.user.email, `delete file of task  `, req.user.company);
+        await Logger.error(req.user.email, `delete file of task  `, req.portal);
         res.status(400).json({
             success: false,
             messages: ['delete_file_task_comment_fail'],
@@ -626,15 +626,15 @@ exports.deleteFileTaskComment = async (req, res) => {
  */
 exports.addTaskLog = async (req, res) => {
     try {
-        let task = await PerformTaskService.addTaskLog(req.params, req.body);
-        await LogInfo(req.user.email, ` CREATE_TASK_LOG  `, req.user.company);
+        let task = await PerformTaskService.addTaskLog(req.portal, req.params, req.body);
+        await Logger.info(req.user.email, ` CREATE_TASK_LOG  `, req.portal);
         res.status(200).json({
             success: true,
             messages: ["create_task_log_success"],
             content: task
         });
     } catch (error) {
-        await LogError(req.user.email, ` CREATE_TASK_LOG  `, req.user.company);
+        await Logger.error(req.user.email, ` CREATE_TASK_LOG  `, req.portal);
         res.status(400).json({
             success: false,
             messages: ['create_task_log_fail'],
@@ -648,15 +648,15 @@ exports.addTaskLog = async (req, res) => {
  */
 exports.getTaskLog = async (req, res) => {
     try {
-        let taskLog = await PerformTaskService.getTaskLog(req.params);
-        await LogInfo(req.user.email, ` GET_TASK_LOG  `, req.user.company);
+        let taskLog = await PerformTaskService.getTaskLog(req.portal, req.params);
+        await Logger.info(req.user.email, ` GET_TASK_LOG  `, req.portal);
         res.status(200).json({
             success: true,
             messages: ["get_task_log_success"],
             content: taskLog
         });
     } catch (error) {
-        await LogError(req.user.email, ` GET_TASK_LOG  `, req.user.company);
+        await Logger.error(req.user.email, ` GET_TASK_LOG  `, req.portal);
         res.status(400).json({
             success: false,
             messages: ['get_task_log_fail'],
@@ -684,7 +684,7 @@ exports.editTask = async (req, res) => {
     }
     else if (req.body.type === 'edit_activate') {
         editActivateOfTask(req, res);
-    } 
+    }
     else if (req.query.type === 'confirm_task') {
         confirmTask(req, res);
     }
@@ -714,20 +714,20 @@ exports.evaluateTask = async (req, res) => {
  */
 editTaskByResponsibleEmployees = async (req, res) => {
     try {
-        var task = await PerformTaskService.editTaskByResponsibleEmployees(req.body.data, req.params.taskId);
+        var task = await PerformTaskService.editTaskByResponsibleEmployees(req.portal, req.body.data, req.params.taskId);
         var user = task.user;
         var tasks = task.tasks;
         var data = { "organizationalUnits": tasks.organizationalUnit, "title": "Cập nhật thông tin công việc", "level": "general", "content": `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc <strong>${tasks.name}</strong> với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}" target="_blank">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`, "sender": user.name, "users": tasks.accountableEmployees };
-        NotificationServices.createNotification(tasks.organizationalUnit, data,);
-        sendEmail(task.email, "Cập nhật thông tin công việc", '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người thực hiện <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}" target="_blank">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`);
-        await LogInfo(req.user.email, ` edit task  `, req.user.company);
+        NotificationServices.createNotification(req.portal, tasks.organizationalUnit, data,);
+        sendEmail(task.email, "Cập nhật thông tin công việc", '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}" target="_blank">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`);
+        await Logger.info(req.user.email, ` edit task  `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['edit_task_success'],
             content: task.newTask
         })
     } catch (error) {
-        await LogError(req.user.email, ` edit task `, req.user.company);
+        await Logger.error(req.user.email, ` edit task `, req.portal);
         res.status(400).json({
             success: false,
             messages: ['edit_task_fail'],
@@ -739,42 +739,42 @@ editTaskByResponsibleEmployees = async (req, res) => {
  * edit task by responsible employee
  */
 editTaskByAccountableEmployees = async (req, res) => {
-    // try {
-        var task = await PerformTaskService.editTaskByAccountableEmployees(req.body.data, req.params.taskId);
+    try {
+        var task = await PerformTaskService.editTaskByAccountableEmployees(req.portal, req.body.data, req.params.taskId);
         var user = task.user;
         var tasks = task.tasks;
         var data = { "organizationalUnits": tasks.organizationalUnit, "title": "Cập nhật thông tin công việc", "level": "general", "content": `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc <strong>${tasks.name}</strong> với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`, "sender": user.name, "users": tasks.responsibleEmployees };
-        NotificationServices.createNotification(tasks.organizationalUnit, data,);
+        NotificationServices.createNotification(req.portal, tasks.organizationalUnit, data,);
         sendEmail(task.email, "Cập nhật thông tin công việc", '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`);
-        await LogInfo(req.user.email, ` edit task  `, req.user.company);
+        await Logger.info(req.user.email, ` edit task  `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['edit_task_success'],
             content: task.newTask
         })
-    // } catch (error) {
-    //     await LogError(req.user.email, ` edit task `, req.user.company);
-    //     res.status(400).json({
-    //         success: false,
-    //         messages: ['edit_task_fail'],
-    //         content: error
-    //     });
-    // }
+    } catch (error) {
+        await Logger.error(req.user.email, ` edit task `, req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['edit_task_fail'],
+            content: error
+        });
+    }
 }
 
 /** Chỉnh sửa taskInformation của task */
 exports.editTaskInformation = async (req, res) => {
     try {
-        let task = await PerformTaskService.editTaskInformation(req.params.taskId, req.user._id, req.body);
+        let task = await PerformTaskService.editTaskInformation(req.portal, req.params.taskId, req.user._id, req.body);
 
-        await LogInfo(req.user.email, ` edit task information `, req.user.company);
+        await Logger.info(req.user.email, ` edit task information `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['edit_task_information_success'],
             content: task
         })
     } catch (error) {
-        await LogError(req.user.email, ` edit task information `, req.user.company);
+        await Logger.error(req.user.email, ` edit task information `, req.portal);
         res.status(400).json({
             success: false,
             messages: ['edit_task_information_failure'],
@@ -788,15 +788,15 @@ exports.editTaskInformation = async (req, res) => {
  */
 evaluateTaskByConsultedEmployees = async (req, res) => {
     try {
-        let task = await PerformTaskService.evaluateTaskByConsultedEmployees(req.body.data, req.params.taskId);
-        await LogInfo(req.user.email, ` edit task  `, req.user.company);
+        let task = await PerformTaskService.evaluateTaskByConsultedEmployees(req.portal, req.body.data, req.params.taskId);
+        await Logger.info(req.user.email, ` edit task  `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['evaluate_task_success'],
             content: task
         })
     } catch (error) {
-        await LogError(req.user.email, ` edit task `, req.user.company);
+        await Logger.error(req.user.email, ` edit task `, req.portal);
         res.status(400).json({
             success: false,
             messages: ['evaluate_task_fail'],
@@ -808,22 +808,22 @@ evaluateTaskByConsultedEmployees = async (req, res) => {
  * evaluate task by responsible employee
  */
 evaluateTaskByResponsibleEmployees = async (req, res) => {
-    try {
-        let task = await PerformTaskService.evaluateTaskByResponsibleEmployees(req.body.data, req.params.taskId);
-        await LogInfo(req.user.email, ` edit task  `, req.user.company);
+    // try {
+        let task = await PerformTaskService.evaluateTaskByResponsibleEmployees(req.portal, req.body.data, req.params.taskId);
+        await Logger.info(req.user.email, ` edit task  `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['evaluate_task_success'],
             content: task
         })
-    } catch (error) {
-        await LogError(req.user.email, ` edit task `, req.user.company);
-        res.status(400).json({
-            success: false,
-            messages: ['evaluate_task_fail'],
-            content: error
-        });
-    }
+    // } catch (error) {
+    //     await Logger.error(req.user.email, ` edit task `, req.portal);
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: ['evaluate_task_fail'],
+    //         content: error
+    //     });
+    // }
 }
 
 /**
@@ -831,15 +831,15 @@ evaluateTaskByResponsibleEmployees = async (req, res) => {
  */
 evaluateTaskByAccountableEmployees = async (req, res) => {
     try {
-        let task = await PerformTaskService.evaluateTaskByAccountableEmployees(req.body.data, req.params.taskId);
-        await LogInfo(req.user.email, ` edit task  `, req.user.company);
+        let task = await PerformTaskService.evaluateTaskByAccountableEmployees(req.portal, req.body.data, req.params.taskId);
+        await Logger.info(req.user.email, ` edit task  `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['evaluate_task_success'],
             content: task
         })
     } catch (error) {
-        await LogError(req.user.email, ` edit task `, req.user.company);
+        await Logger.error(req.user.email, ` edit task `, req.portal);
         res.status(400).json({
             success: false,
             messages: ['evaluate_task_fail'],
@@ -853,9 +853,9 @@ evaluateTaskByAccountableEmployees = async (req, res) => {
  */
 editHoursSpentInEvaluate = async (req, res) => {
     try {
-        let task = await PerformTaskService.editHoursSpentInEvaluate(req.body.data, req.params.taskId);
+        let task = await PerformTaskService.editHoursSpentInEvaluate(req.portal, req.body.data, req.params.taskId);
 
-        await LogInfo(req.user.email, ` edit task  `, req.user.company);
+        await Logger.info(req.user.email, ` edit task  `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['edit_hours_spent_in_evaluate_success'],
@@ -863,7 +863,7 @@ editHoursSpentInEvaluate = async (req, res) => {
         })
     } catch (error) {
         console.log(error);
-        await LogError(req.user.email, ` edit task `, req.user.company);
+        await Logger.error(req.user.email, ` edit task `, req.portal);
         res.status(400).json({
             success: false,
             messages: ['edit_hours_spent_in_evaluate_fail'],
@@ -878,15 +878,15 @@ editHoursSpentInEvaluate = async (req, res) => {
  */
 exports.deleteEvaluation = async (req, res) => {
     try {
-        let task = await PerformTaskService.deleteEvaluation(req.params);
-        await LogInfo(req.user.email, ` delete evaluation  `, req.user.company);
+        let task = await PerformTaskService.deleteEvaluation(req.portal, req.params);
+        await Logger.info(req.user.email, ` delete evaluation  `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['delete_evaluation_success'],
             content: task
         })
     } catch (error) {
-        await LogError(req.user.email, ` delete evaluation `, req.user.company);
+        await Logger.error(req.user.email, ` delete evaluation `, req.portal);
         res.status(400).json({
             success: false,
             messages: ['delete_evaluation_fail'],
@@ -901,15 +901,15 @@ exports.deleteEvaluation = async (req, res) => {
  */
 editArchivedOfTask = async (req, res) => {
     try {
-        let task = await PerformTaskService.editArchivedOfTask(req.params.taskId);
-        await LogInfo(req.user.email, ` edit status archived of task  `, req.user.company);
+        let task = await PerformTaskService.editArchivedOfTask(req.portal, req.params.taskId);
+        await Logger.info(req.user.email, ` edit status archived of task  `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['edit_status_archived_of_task_success'],
             content: task
         })
     } catch (error) {
-        await LogError(req.user.email, ` edit status of task `, req.user.company);
+        await Logger.error(req.user.email, ` edit status of task `, req.portal);
         res.status(400).json({
             success: false,
             messages: ['edit_status_archived_of_task_fail'],
@@ -922,37 +922,49 @@ editArchivedOfTask = async (req, res) => {
  * Chinh sua trang thai cua cong viec
  */
 editActivateOfTask = async (req, res) => {
-    // try {
-        let task = await PerformTaskService.editActivateOfTask(req.params.taskId, req.body);
-        await LogInfo(req.user.email, ` edit status of task  `, req.user.company);
+    try {
+        let data = await PerformTaskService.editActivateOfTask(req.portal, req.params.taskId, req.body);
+        let task = data.task;
+        let mails = data.mailInfo;
+		for (let i in mails) {
+			let task = mails[i].task;
+			let user = mails[i].user;
+			let email = mails[i].email;
+			let html = mails[i].html;
+
+			let mailData = { "organizationalUnits": task.organizationalUnit._id, "title": "Kích hoạt công việc", "level": "general", "content": html, "sender": task.organizationalUnit.name, "users": user };
+			NotificationServices.createNotification(req.portal, task.organizationalUnit.company, mailData,);
+			sendEmail(email, "Kích hoạt công việc hành công", '', html);
+		}
+        await Logger.info(req.user.email, ` edit activate of task  `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['edit_status_of_task_success'],
             content: task
         })
-    // } catch (error) {
-    //     await LogError(req.user.email, ` edit status of task `, req.user.company);
-    //     res.status(400).json({
-    //         success: false,
-    //         messages: ['edit_status_of_task_fail'],
-    //         content: error
-    //     });
-    // }
+    } catch (error) {
+        await Logger.error(req.user.email, ` edit activate of task `, req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['edit_status_of_task_fail'],
+            content: error
+        });
+    }
 }
 
 /** Xác nhận công việc */
 confirmTask = async (req, res) => {
     try {
-        let task = await PerformTaskService.confirmTask(req.params.taskId, req.user._id);
+        let task = await PerformTaskService.confirmTask(req.portal, req.params.taskId, req.user._id);
 
-        await LogInfo(req.user.email, ` confirm task `, req.user.company);
+        await Logger.info(req.user.email, ` confirm task `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['confirm_task_success'],
             content: task
         })
     } catch (error) {
-        await LogError(req.user.email, ` confirm task `, req.user.company);
+        await Logger.error(req.user.email, ` confirm task `, req.portal);
         res.status(400).json({
             success: false,
             messages: ['confirm_task_failure'],
@@ -966,15 +978,15 @@ confirmTask = async (req, res) => {
  */
 exports.deleteDocument = async (req, res) => {
     try {
-        let file = await PerformTaskService.deleteDocument(req.params);
-        await LogInfo(req.user.email, ` delete document of task  `, req.user.company);
+        let file = await PerformTaskService.deleteDocument(req.portal, req.params);
+        await Logger.info(req.user.email, ` delete document of task  `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['delete_document_task_comment_success'],
             content: file
         })
     } catch (error) {
-        await LogError(req.user.email, `delete document of task  `, req.user.company);
+        await Logger.error(req.user.email, `delete document of task  `, req.portal);
         res.status(400).json({
             success: false,
             messages: ['delete_document_task_comment_fail'],
@@ -996,15 +1008,15 @@ exports.editDocument = async (req, res) => {
 
             })
         }
-        let file = await PerformTaskService.editDocument(req.params.taskId, req.query.documentId, req.body, files);
-        await LogInfo(req.user.email, ` delete document of task  `, req.user.company);
+        let file = await PerformTaskService.editDocument(req.portal, req.params.taskId, req.query.documentId, req.body, files);
+        await Logger.info(req.user.email, ` delete document of task  `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['edit_document_task_comment_success'],
             content: file
         })
     } catch (error) {
-        await LogError(req.user.email, `delete document of task  `, req.user.company);
+        await Logger.error(req.user.email, `delete document of task  `, req.portal);
         res.status(400).json({
             success: false,
             messages: ['edit_document_task_comment_failure'],
@@ -1027,15 +1039,15 @@ exports.createComment = async (req, res) => {
 
             })
         }
-        var comments = await PerformTaskService.createComment(req.params, req.body, files);
-        await LogInfo(req.user.email, ` create comment `, req.user.company)
+        var comments = await PerformTaskService.createComment(req.portal, req.params, req.body, files);
+        await Logger.info(req.user.email, ` create comment `, req.portal)
         res.status(200).json({
             success: true,
             messages: ['create_comment_success'],
             content: comments
         })
     } catch (error) {
-        await LogError(req.user.email, ` create comment kpi `, req.user.company)
+        await Logger.error(req.user.email, ` create comment kpi `, req.portal)
         res.status(400).json({
             success: false,
             messages: ['create_comment_fail'],
@@ -1059,15 +1071,15 @@ exports.editComment = async (req, res) => {
 
             })
         }
-        let comments = await PerformTaskService.editComment(req.params, req.body, files);
-        await LogInfo(req.user.email, ` edit comment kpi `, req.user.company)
+        let comments = await PerformTaskService.editComment(req.portal, req.params, req.body, files);
+        await Logger.info(req.user.email, ` edit comment kpi `, req.portal)
         res.status(200).json({
             success: true,
             messages: ['edit_comment_success'],
             content: comments
         })
     } catch (error) {
-        await LogError(req.user.email, ` edit comment kpi `, req.user.company)
+        await Logger.error(req.user.email, ` edit comment kpi `, req.portal)
         res.status(400).json({
             success: false,
             messages: ['edit_comment_fail'],
@@ -1081,15 +1093,15 @@ exports.editComment = async (req, res) => {
  */
 exports.deleteComment = async (req, res) => {
     try {
-        var comments = await PerformTaskService.deleteComment(req.params);
-        await LogInfo(req.user.email, ` delete comment kpi`, req.user.company)
+        var comments = await PerformTaskService.deleteComment(req.portal, req.params);
+        await Logger.info(req.user.email, ` delete comment kpi`, req.portal)
         res.status(200).json({
             success: false,
             messages: ['delete_comment_success'],
             content: comments
         })
     } catch (error) {
-        await LogError(req.user.email, ` delete comment kpi `, req.user.company)
+        await Logger.error(req.user.email, ` delete comment kpi `, req.portal)
         res.status(200).json({
             success: false,
             messages: ['delete_comment_fail'],
@@ -1111,15 +1123,15 @@ exports.createChildComment = async (req, res) => {
 
             })
         }
-        var comments = await PerformTaskService.createChildComment(req.params, req.body, files);
-        await LogInfo(req.user.email, ` create comment `, req.user.company)
+        var comments = await PerformTaskService.createChildComment(req.portal, req.params, req.body, files);
+        await Logger.info(req.user.email, ` create comment `, req.portal)
         res.status(200).json({
             success: true,
             messages: ['create_child_comment_success'],
             content: comments
         })
     } catch (error) {
-        await LogError(req.user.email, ` create child comment kpi `, req.user.company)
+        await Logger.error(req.user.email, ` create child comment kpi `, req.portal)
         res.status(400).json({
             success: false,
             messages: ['create_child_comment_fail'],
@@ -1142,15 +1154,15 @@ exports.editChildComment = async (req, res) => {
 
             })
         }
-        var comments = await PerformTaskService.editChildComment(req.params, req.body, files);
-        await LogInfo(req.user.email, ` edit comment of comment kpi `, req.user.company)
+        var comments = await PerformTaskService.editChildComment(req.portal, req.params, req.body, files);
+        await Logger.info(req.user.email, ` edit comment of comment kpi `, req.portal)
         res.status(200).json({
             success: true,
             messages: ['edit_comment_of_comment_success'],
             content: comments
         })
     } catch (error) {
-        await LogError(req.user.email, ` edit comment of comment kpi `, req.user.company)
+        await Logger.error(req.user.email, ` edit comment of comment kpi `, req.portal)
         res.status(400).json({
             success: true,
             messages: ['edit_comment_of_comment_fail'],
@@ -1164,15 +1176,15 @@ exports.editChildComment = async (req, res) => {
  */
 exports.deleteChildComment = async (req, res) => {
     try {
-        var comments = await PerformTaskService.deleteChildComment(req.params);
-        await LogInfo(req.user.email, ` delete child comment kpi `, req.user.company)
+        var comments = await PerformTaskService.deleteChildComment(req.portal, req.params);
+        await Logger.info(req.user.email, ` delete child comment kpi `, req.portal)
         res.status(200).json({
             success: true,
             messages: ['delete_child_comment_success'],
             content: comments
         })
     } catch (error) {
-        await LogError(req.user.email, ` delete child comment kpi `, req.user.company)
+        await Logger.error(req.user.email, ` delete child comment kpi `, req.portal)
         res.status(400).json({
             success: true,
             messages: ['delete_child_comment_fail'],
@@ -1185,15 +1197,15 @@ exports.deleteChildComment = async (req, res) => {
  */
 exports.deleteFileComment = async (req, res) => {
     try {
-        var comments = await PerformTaskService.deleteFileComment(req.params);
-        await LogInfo(req.user.email, ` delete file comment `, req.user.company)
+        var comments = await PerformTaskService.deleteFileComment(req.portal, req.params);
+        await Logger.info(req.user.email, ` delete file comment `, req.portal)
         res.status(200).json({
             success: true,
             messages: ['delete_file_comment_success'],
             content: comments
         })
     } catch (error) {
-        await LogError(req.user.email, ` delete file comment `, req.user.company)
+        await Logger.error(req.user.email, ` delete file comment `, req.portal)
         res.status(400).json({
             success: true,
             messages: ['delete_file_comment_fail'],
@@ -1206,15 +1218,15 @@ exports.deleteFileComment = async (req, res) => {
  */
 exports.deleteFileChildComment = async (req, res) => {
     try {
-        var comments = await PerformTaskService.deleteFileChildComment(req.params);
-        await LogInfo(req.user.email, ` delete file child comment `, req.user.company)
+        var comments = await PerformTaskService.deleteFileChildComment(req.portal, req.params);
+        await Logger.info(req.user.email, ` delete file child comment `, req.portal)
         res.status(200).json({
             success: true,
             messages: ['delete_file_comment_success'],
             content: comments
         })
     } catch (error) {
-        await LogError(req.user.email, ` delete file child comment `, req.user.company)
+        await Logger.error(req.user.email, ` delete file child comment `, req.portal)
         res.status(400).json({
             success: true,
             messages: ['delete_file_comment_fail'],

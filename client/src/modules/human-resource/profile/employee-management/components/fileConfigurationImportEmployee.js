@@ -985,7 +985,7 @@ function templateImport(translate) {
                 //         columns: [
                 //             { key: "STT", value: translate('human_resource.stt'), width: 7 },
                 //             { key: "month", value: translate('human_resource.month'), width: 10 },
-                //             { key: "year", value: translate('human_resource.holiday.year'), width: 10 },
+                //             { key: "year", value: translate('human_resource.work_plan.year'), width: 10 },
                 //             { key: "employeeNumber", value: translate('human_resource.staff_number') },
                 //             { key: "fullName", value: translate('human_resource.staff_name'), width: 20 },
                 //             { key: "organizationalUnit", value: translate('human_resource.unit'), width: 25 },
@@ -1051,7 +1051,7 @@ function templateImport(translate) {
                 //                 organizationalUnit: "Ban giám đốc",
                 //                 reason: "Về quê",
                 //                 startDate: "06-02-2020",
-                //                 status: translate(`human_resource.annual_leave.status.pass`)
+                //                 status: translate(`human_resource.annual_leave.status.approved`)
                 //             },{
                 //                 STT: 2,
                 //                 employeeNumber: "MS2015123",
@@ -1060,7 +1060,7 @@ function templateImport(translate) {
                 //                 organizationalUnit: "Ban giám đốc",
                 //                 reason: "Nghỉ du lịch",
                 //                 startDate: "05-02-2020",
-                //                 status: translate(`human_resource.annual_leave.status.process`)
+                //                 status: translate(`human_resource.annual_leave.status.waiting_for_approval`)
                 //             }]
                 //         }
                 //     ]

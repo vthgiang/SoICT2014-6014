@@ -22,7 +22,7 @@ class Table extends Component {
     }
 
     componentDidMount(){
-        this.props.getDocumentCategories();
+      //  this.props.getDocumentCategories();
         this.props.getDocumentCategories({page: this.state.page, limit: this.state.limit});
     }
 
@@ -48,7 +48,6 @@ class Table extends Component {
         window.$('#modal-edit-document-category').modal('show');
     }
     convertDataToExportData = (data) => {
-        console.log(data);
         data = data.map((x, index) => {
             return {
                 STT: index + 1,

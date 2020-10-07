@@ -1,14 +1,12 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const User = require('../auth/user.model');
-
 // Model quản lý kết quả thực hiệc công việc
 const TaskResultSchema = new Schema({
     // Người được đánh giá
     employee:{
         type: Schema.Types.ObjectId,
-        ref: User,
+        ref: 'User',
         required: true
     },
     // vai trò: người thực hiện: responsible, người hỗ trợ: consulted, người phê duyệt: accountable
@@ -35,4 +33,8 @@ const TaskResultSchema = new Schema({
     timestamps: true
 });
 
-module.exports = TaskResult = mongoose.model("task_results", TaskResultSchema);
+module.exports = (db) => {
+    if(!db.models.TaskResult)
+        return db.model('TaskResult', TaskResultSchema);
+    return db.models.TaskResult;
+}

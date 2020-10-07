@@ -1,10 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const Company = require('../system-admin/company.model');
-const OrganizationalUnit = require('../super-admin/organizationalUnit.model');
-const Role = require('../auth/role.model');
-
 const EducationProgramSchema = new Schema({ // Chương trình đào tạo
     name: {
         type: String,
@@ -12,7 +8,7 @@ const EducationProgramSchema = new Schema({ // Chương trình đào tạo
     },
     company: {
         type: Schema.Types.ObjectId,
-        ref: Company
+        ref: "Company"
     },
     programId: { // Mã chương trình đào tạo
         type: String,
@@ -20,13 +16,18 @@ const EducationProgramSchema = new Schema({ // Chương trình đào tạo
     },
     applyForOrganizationalUnits: [{ // Những đơn vị mà nhân viên bắt buộc phải tham gia chương trình này
         type: Schema.Types.ObjectId,
-        ref: OrganizationalUnit
+        ref: 'OrganizationalUnit'
     }],
     applyForPositions: [{ // Những chức vụ bắt buộc phải tham gia chương trình đào tạo
         type: Schema.Types.ObjectId,
-        ref: Role
+        ref: 'Role'
     }]
 }, {
     timestamps: true,
 });
-module.exports = EducationProgram = mongoose.model("education_programs", EducationProgramSchema);
+
+module.exports = (db) => {
+    if(!db.models.EducationProgram)
+        return db.model('EducationProgram', EducationProgramSchema);
+    return db.models.EducationProgram;
+}
