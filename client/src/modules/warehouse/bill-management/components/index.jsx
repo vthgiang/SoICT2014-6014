@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import BookManagement from '../components/stock-book';
+import RotateManagement from '../components/stock-rotate';
+import ReceiptManagement from '../components/good-receipts';
+import IssueManagement from '../components/good-issues';
+import ReturnManagement from '../components/good-returns';
+import TakeManagementTable from '../components/stock-takes';
 
 import { LazyLoadComponent, forceCheckOrVisible } from '../../../../common-components/index';
 
@@ -32,35 +38,41 @@ class BillManagement extends Component {
                     <div className="tab-pane active" id="bill-stock-book">
                         <LazyLoadComponent
                         >
+                        <BookManagement />
                         </LazyLoadComponent>
                     </div>
 
                     <div className="tab-pane" id="bill-good-receipts">
                         <LazyLoadComponent
                         >
+                        <ReceiptManagement />
                         </LazyLoadComponent>
                     </div>
 
                     <div className="tab-pane" id="bill-good-issues">
                         <LazyLoadComponent
                         >
+                        <IssueManagement />
                         </LazyLoadComponent>
                     </div>
 
                     <div className="tab-pane" id="bill-good-returns">
                         <LazyLoadComponent
                         >
+                        <ReturnManagement />
                         </LazyLoadComponent>
                     </div>
 
                     <div className="tab-pane" id="bill-stock-takes">
                         <LazyLoadComponent
                         >
+                        <TakeManagementTable />
                         </LazyLoadComponent>
                     </div>
                     <div className="tab-pane" id="bill-stock-rotates">
                         <LazyLoadComponent
                         >
+                        <RotateManagement />
                         </LazyLoadComponent>
                     </div>
                 </div>

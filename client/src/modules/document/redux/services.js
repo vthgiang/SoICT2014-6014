@@ -35,7 +35,7 @@ export const DocumentServices = {
 
 };
 
-function getDocuments(params) {
+function getDocuments(params = undefined) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/documents/documents`,
         method: 'GET',
@@ -66,7 +66,6 @@ function increaseNumberView(id) {
 }
 
 function editDocument(id, data, option = undefined) {
-    console.log('data serviceeeeeeeeeeee', data, option);
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/documents/documents/${id}`,
         method: 'PATCH',
@@ -87,7 +86,6 @@ function downloadDocumentFile(id, numberVersion) {
 }
 
 function importDocument(data) {
-    console.log('dataaa', data);
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/documents/documents/import-file`,
         method: 'POST',
@@ -193,7 +191,6 @@ function importDocumentDomain(data) {
 }
 
 function getDocumentsUserCanView(roleId, params) {
-    console.log('ttt', params)
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/documents/documents/permission-view`,
         method: 'GET',
@@ -210,7 +207,6 @@ function getUserDocumentStatistics(params, data) {
         ...data,
         option: params.option
     }
-    console.log('serviceee', x);
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/documents/documents/user-statistical`,
         method: 'GET',

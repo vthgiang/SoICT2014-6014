@@ -3,6 +3,7 @@ import { StockConstants } from './constants';
 
 export const StockActions = {
     getAllStocks,
+    getStock,
     createStock,
     editStock,
     deleteStock
@@ -43,6 +44,27 @@ function getAllStocks(data=undefined){
         .catch(err => {
             dispatch({
                 type: StockConstants.GET_STOCK_FAILURE,
+                error: err
+            })
+        })
+    }
+}
+
+function getStock(id){
+    return dispatch => {
+        dispatch({
+            type: StockConstants.GET_DETAIL_STOCK_REQUEST
+        })
+        StockServices.getStock(id)
+        .then(res => {
+            dispatch({
+                type: StockConstants.GET_DETAIL_STOCK_SUCCESS,
+                payload: res.data.content
+            })
+        })
+        .catch(err => {
+            dispatch({
+                type: StockConstants.GET_DETAIL_STOCK_FAILURE,
                 error: err
             })
         })

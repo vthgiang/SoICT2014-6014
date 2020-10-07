@@ -37,9 +37,9 @@ class StockEditForm extends Component {
                 name: nextProps.name,
                 status: nextProps.status,
                 address: nextProps.address,
-                goodsManagement: nextProps.goodsManagement ? nextProps.goodsManagement : [],
-                goods: nextProps.goodsManagement ? nextProps.goodsManagement : [],
-                managementLocation: nextProps.managementLocation ? nextProps.managementLocation : '',
+                goodsManagement: nextProps.goodsManagement,
+                goods: nextProps.goodsManagement,
+                managementLocation: nextProps.managementLocation,
                 manageDepartment: nextProps.manageDepartment,
                 description: nextProps.description,
                 errorOnName: undefined, 
@@ -381,7 +381,6 @@ class StockEditForm extends Component {
                 errorOnGood, errorOnMinQuantity, errorOnMaxQuantity, code, name, managementLocation, status, address, description, manageDepartment, goods, good } = this.state;
         const departmentManagement = this.getAllDepartment();
         const listGoods = this.getAllGoods();
-
         return (
             <React.Fragment>
                 <DialogModal
@@ -413,7 +412,7 @@ class StockEditForm extends Component {
                                         id={`select-edit-status-of-stock`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
-                                        value={manageDepartment._id}
+                                        value={manageDepartment}
                                         items={departmentManagement}
                                         onChange={this.handleDepartmentChange}    
                                         multiple={false}
@@ -445,14 +444,13 @@ class StockEditForm extends Component {
                                     />
                                 </div>
                                 <div className={`form-group ${!errorOnManagementLocation ? "" : "has-error"}`}>
-                                { console.log(managementLocation)}
                                     <label>{translate('manage_warehouse.stock_management.management_location')}<span className="attention"> * </span></label>
                                     <SelectBox
                                         id={`select-management-location-edit-stock`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         items={role.list.map((y, index) => { return { value: y._id, text: y.name}})}
-                                        value={managementLocation._id}
+                                        value={managementLocation}
                                         onChange={this.handleManagementLocationtChange}    
                                         multiple={true}
                                     />
@@ -473,7 +471,7 @@ class StockEditForm extends Component {
                                             id={`select-edit-good-by-stock`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            value={good.good._id}
+                                            value={goods.good}
                                             items={listGoods}
                                             onChange={this.handleGoodChange}
                                             multiple={false}

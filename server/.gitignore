@@ -2,8 +2,8 @@
 
 .env
 
+/logs/_multi-tenant
 /logs/history
-/logs/_multi-tenant/history
 
 /upload/private
 /upload/avatars

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { configDocument, exportDocument } from './fileConfigImportDocument.js'
-import { DialogModal, ImportFileExcel, ShowImportData, ConFigImportFile, ExportExcel } from '../../../../../common-components';
-//import { taskTemplateActions } from '../redux/actions';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
+import { DialogModal, ImportFileExcel, ShowImportData, ConFigImportFile, ExportExcel } from '../../../../../common-components';
 import { AuthActions } from '../../../../auth/redux/actions';
 import { DocumentActions } from '../../../redux/actions'
 
@@ -31,7 +31,6 @@ class DocumentImportForm extends Component {
 
     handleImportExcel = (value, checkFileImport) => {
         let startDate = new Date(1900, 1, 1, 0, 0, 0);
-        console.log('valueeee', value);
         let date = -2209131850214;
         let values = [];
         let showValues = [];
@@ -44,10 +43,7 @@ class DocumentImportForm extends Component {
                 let effectiveDate = "";
                 let expiredDate = "";
                 if (x.issuingDate) {
-
                     issuingDate = date + x.issuingDate * 24 * 60 * 60 * 1000;
-                    let iDate = new Date(issuingDate)
-                    console.log('dayyyy', iDate.toString());
                 }
                 if (x.effectiveDate) {
                     effectiveDate = date + x.effectiveDate * 24 * 60 * 60 * 1000;
@@ -96,7 +92,6 @@ class DocumentImportForm extends Component {
                 }]
             } else {
                 if (k >= 0) {
-                    console.log('xxxxx', x);
                     let out = {
                         "STT": "",
                         "name": "",
@@ -255,7 +250,6 @@ class DocumentImportForm extends Component {
 
     save = () => {
         let { importShowData } = this.state;
-        console.log(importShowData);
         this.props.importDocument(importShowData);
     }
     render() {

@@ -1,10 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const Role = require('./role.model');
-const Action = require('../super-admin/action.model');
-
-// Create Schema
 const PrivilegeSchema = new Schema({
     resourceId: {
         type: Schema.Types.ObjectId,
@@ -13,17 +9,21 @@ const PrivilegeSchema = new Schema({
     },
     resourceType: {
         type: String,
-        enum: ['Link', 'TaskTemplate', 'Component', 'ProcessTemplate'],
+        enum: ['Link', 'TaskTemplate', 'Component', 'ProcessTemplate'], // tên model tương ứng - không đổi về dạng chữ thường
     },
     roleId: {
         type: Schema.Types.ObjectId,
-        ref: Role,
+        ref: 'Role',
         required: true
     },
     actions: [{
         type: String,
-        enum: ['See', 'Open', 'Edit', 'Delete'],
+        enum: ['see', 'open', 'edit', 'delete'],
     }]
 });
 
-module.exports = Privilege = mongoose.model("privileges", PrivilegeSchema);
+module.exports = (db) => {
+    if(!db.models.Privilege) 
+        return db.model('Privilege', PrivilegeSchema);
+    return db.models.Privilege;
+}

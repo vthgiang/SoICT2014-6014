@@ -1,10 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const Company = require('../system-admin/company.model');
-const EducationProgram = require('./educationProgram.model');
-
-
 const CourseSchema = new Schema({
     courseId: { // mã đào tạo
         type: String,
@@ -21,7 +17,7 @@ const CourseSchema = new Schema({
     },
     company: {
         type: Schema.Types.ObjectId,
-        ref: Company
+        ref: "Company"
     },
     offeredBy: { // Đơn vị tổ chức/cung cấp khóa học, có thể ở ngoài công ty
         type: String,
@@ -45,6 +41,7 @@ const CourseSchema = new Schema({
             type: String,
             enum: ['VND', 'USD']
         }
+
     },
     lecturer: {
         type: String
@@ -55,11 +52,15 @@ const CourseSchema = new Schema({
     },
     educationProgram: {
         type: Schema.Types.ObjectId,
-        ref: EducationProgram,
+        ref: 'EducationProgram',
         required: true
     },
 }, {
     timestamps: true,
 });
 
-module.exports = Course = mongoose.model("courses", CourseSchema);
+module.exports = (db) => {
+    if(!db.models.Course)
+        return db.model('Course', CourseSchema);
+    return db.models.Course;
+}

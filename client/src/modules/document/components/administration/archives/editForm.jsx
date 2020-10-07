@@ -77,14 +77,13 @@ class EditForm extends Component {
         return array
     }
     save = () => {
-        const { translate, documents } = this.props;
+        const { documents } = this.props;
         const { archiveId, archiveName, archiveDescription, archiveParent } = this.state;
-        const { tree, list } = documents.administration.archives;
+        const { list } = documents.administration.archives;
 
         let node = "";
-        // find node
         node = list.filter(archive => archive._id === archiveId)[0]
-        //  node = nodes[0];
+
         // find node child 
         let array = [];
         if (node) {
@@ -97,7 +96,6 @@ class EditForm extends Component {
             parent: archiveParent,
             array: array,
         });
-        //this.props.getDocumentArchives();
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {

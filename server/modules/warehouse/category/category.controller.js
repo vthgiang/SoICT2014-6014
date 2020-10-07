@@ -1,10 +1,10 @@
 const CategoryService = require('./category.service');
-const { LogInfo, LogError } = require(SERVER_LOGS_DIR);
+const Logger = require(`${SERVER_LOGS_DIR}`);
 
 exports.getCategories = async (req, res) => {
     try {
-        const categories = await CategoryService.getCategories(req.user.company._id, req.query);
-        LogInfo(req.user.email, 'GET_CATEGORIES', req.user.company)
+        const categories = await CategoryService.getCategories(req.query, req.portal);
+        await Logger.info(req.user.email, 'GET_CATEGORIES', req.portal)
         res.status(200).json({
             success: true,
             messages: ['get_category_success'],
@@ -12,7 +12,7 @@ exports.getCategories = async (req, res) => {
         });
     }
     catch(error) {
-        LogError(req.user.email, 'GET_CATEGORIES', req.user.company)
+        await Logger.error(req.user.email, 'GET_CATEGORIES', req.portal)
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['get_category_faile'],
@@ -22,8 +22,8 @@ exports.getCategories = async (req, res) => {
 }
 exports.getCategoriesByType = async (req, res) => {
     try {
-        const categories = await CategoryService.getCategoriesByType(req.user.company._id, req.query);
-        LogInfo(req.user.email, 'GET_CATEGORIES', req.user.company)
+        const categories = await CategoryService.getCategoriesByType(req.query, req.portal);
+        await Logger.info(req.user.email, 'GET_CATEGORIES', req.portal)
         res.status(200).json({
             success: true,
             messages: ['get_category_success'],
@@ -31,7 +31,7 @@ exports.getCategoriesByType = async (req, res) => {
         });
     }
     catch(error) {
-        LogError(req.user.email, 'GET_CATEGORIES', req.user.company)
+        await Logger(req.user.email, 'GET_CATEGORIES', req.portal)
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['get_category_faile'],
@@ -41,17 +41,16 @@ exports.getCategoriesByType = async (req, res) => {
 }
 exports.createCategory = async (req, res) => {
     try{
-        let category = await CategoryService.createCategory(req.user.company._id, req.body);
+        let category = await CategoryService.createCategory(req.body, req.portal);
 
-        LogInfo(req.user.email, 'CREATE_CATEGORY', req.user.company);
+        await Logger.info(req.user.email, 'CREATE_CATEGORY', req.portal);
         res.status(200).json({
             success: true,
             messages: ['add_success'],
             content: category
         });
     } catch(error) {
-        console.log(error);
-        LogError(req.user.email, 'CREATE_CATEGORY', req.user.company);
+        await Logger.error(req.user.email, 'CREATE_CATEGORY', req.portal);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['add_faile'],
@@ -61,16 +60,16 @@ exports.createCategory = async (req, res) => {
 }
 exports.getCategory = async (req, res) => {
     try {
-        let category = await CategoryService.getCategory(req.params.id);
+        let category = await CategoryService.getCategory(req.params.id, req.portal);
 
-        LogInfo(req.user.email, 'GET_CATEGORY', req.user.company);
+        await Logger.info(req.user.email, 'GET_CATEGORY', req.portal);
         res.status(200).json({
             success: true,
             messages: ['get_category_success'],
             content: category
         });
     } catch(error) {
-        LogError(req.user.email, 'GET_CATEGORY', req.user.company);
+        await Logger.error(req.user.email, 'GET_CATEGORY', req.portal);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['get_category_faile'],
@@ -80,17 +79,15 @@ exports.getCategory = async (req, res) => {
 }
 exports.editCategory = async (req, res) => {
     try {
-        let category = await CategoryService.editCategory(req.params.id, req.body);
-        console.log(req.params.id)
-        LogInfo(req.user.email, 'EDIT_CATEGORY', req.user.company);
+        let category = await CategoryService.editCategory(req.params.id, req.body, req.portal);
+        await Logger.info(req.user.email, 'EDIT_CATEGORY', req.portal);
         res.status(200).json({
             success: true,
             messages: ['edit_success'],
             content: category
         });
     } catch(error) {
-        console.log(error)
-        LogError(req.user.email, 'EDIT_CATEGORY', req.user.company);
+        await Logger.error(req.user.email, 'EDIT_CATEGORY', req.portal);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['edit_faile'],
@@ -100,16 +97,16 @@ exports.editCategory = async (req, res) => {
 }
 exports.deleteCategory = async (req, res) => {
     try {
-        const category = await CategoryService.deleteCategory(req.params.id);
+        const category = await CategoryService.deleteCategory(req.params.id, req.portal);
 
-        LogInfo(req.user.email, 'DELETE_CATEGORY', req.user.company);
+        await Logger.info(req.user.email, 'DELETE_CATEGORY', req.portal);
         res.status(200).json({
             success: true,
             messages: ['delete_success'],
             content: category
         });
     } catch(error) {
-        LogError(req.user.email, 'DELETE_CATEGORY', req.user.company);
+        await Logger.error(req.user.email, 'DELETE_CATEGORY', req.portal);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['delete_faile'],

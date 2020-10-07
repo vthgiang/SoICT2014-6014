@@ -8,7 +8,6 @@ exports.getGoodsByType = async (company, query, portal) => {
         return await Good(connect(DB_CONNECTION, portal))
             .find({ company, type })
             .populate([
-                { path: 'category', select: 'id name'},
                 { path: 'materials.good', select: 'id name' }
             ])
     } else {
@@ -34,7 +33,6 @@ exports.getGoodsByType = async (company, query, portal) => {
                 page,
                 limit,
                 populate: [
-                    { path: 'category', select: 'id name'},
                     { path: 'materials.good', select: 'id name'}
                 ]
             })
@@ -47,7 +45,6 @@ exports.getAllGoodsByType = async (company, query, portal) => {
     return await Good(connect(DB_CONNECTION, portal))
         .find({ company, type })
         .populate([
-            { path: 'category', select: 'id name'},
             { path: 'materials.good', select: 'id name' }
         ])
 }
@@ -88,7 +85,6 @@ exports.createGoodByType = async (company, data, portal) => {
     return await Good(connect(DB_CONNECTION, portal))
         .findById(good._id)
         .populate([
-            { path: 'category', select: 'id name'},
             { path: 'materials.good', select: 'id name' }
         ])
 }
@@ -97,7 +93,6 @@ exports.getGoodDetail = async (id, portal) => {
     return await Good(connect(DB_CONNECTION, portal))
         .findById(id)
         .populate([
-            { path: 'category', select: 'id name'},
             { path: 'materials.good', select: 'id name' }
         ])
 }
@@ -129,7 +124,6 @@ exports.editGood = async (id, data, portal) => {
     return await Good(connect(DB_CONNECTION, portal))
         .findById(id)
         .populate([
-            { path: 'category', select: 'id name'},
             { path: 'materials.good', select: 'id name' }
         ])
 
@@ -144,7 +138,6 @@ exports.getAllGoods = async (company, portal) => {
     return await Good(connect(DB_CONNECTION, portal))
         .find({ company })
         .populate([
-            { path: 'category', select: 'id name'},
             { path: 'materials.good', select: 'id name' },
         ])
 }

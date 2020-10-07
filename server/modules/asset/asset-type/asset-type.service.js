@@ -1,4 +1,6 @@
-const AssetType = require('../../../models/asset/assetType.model');
+const Models = require(`${SERVER_MODELS_DIR}`);
+const { AssetType } = Models;
+const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 const arrayToTree = require('array-to-tree');
 const fs = require('fs');
 const ObjectId = require('mongoose').Types.ObjectId;
@@ -7,7 +9,7 @@ const ObjectId = require('mongoose').Types.ObjectId;
 /**
  * Danh mục văn bản
  */
-exports.getAssetTypes = async (query, company) => {
+exports.getAssetTypes = async (portal, company, query) => {
     const { typeNumber, typeName, page, limit } = query;
 
     if (typeNumber || typeName || page || limit) {
@@ -23,12 +25,12 @@ exports.getAssetTypes = async (query, company) => {
             keySearch = { ...keySearch, typeName: { $regex: typeName, $options: "i" } }
         };
 
-        var totalList = await AssetType.count(keySearch);
-        var listAssetTypes = await AssetType.find(keySearch).sort({ 'createDate': 'desc' }).skip(page ? parseInt(page) : 0).limit(limit ? parseInt(limit) : 0).populate('parent');
+        var totalList = await AssetType(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+        var listAssetTypes = await AssetType(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createDate': 'desc' }).skip(page ? parseInt(page) : 0).limit(limit ? parseInt(limit) : 0).populate({ path: 'parent' });
 
         return { totalList, listAssetTypes };
     } else {
-        const list = await AssetType.find({ company });
+        const list = await AssetType(connect(DB_CONNECTION, portal)).find({ company: company });
         const dataConverted = list.map(type => {
             return {
                 id: type._id.toString(),
@@ -45,7 +47,7 @@ exports.getAssetTypes = async (query, company) => {
 
 }
 
-exports.createAssetTypes = async (company, data) => {
+exports.createAssetTypes = async (portal, company, data) => {
 
     let dataArray;
     if (!Array.isArray(data)) {
@@ -53,10 +55,9 @@ exports.createAssetTypes = async (company, data) => {
     } else {
         dataArray = data;
     }
-    console.log("55", dataArray)
     for (let i = 0; i < dataArray.length; i++) {
         let query = {
-            company,
+            company: company,
             typeNumber: dataArray[i].typeNumber,
             typeName: dataArray[i].typeName,
             description: dataArray[i].description,
@@ -66,42 +67,41 @@ exports.createAssetTypes = async (company, data) => {
         if (dataArray[i].parent && dataArray[i].parent.length) {
             query.parent = dataArray[i].parent
         }
-        console.log(query)
-        await AssetType.create(query);
+        await AssetType(connect(DB_CONNECTION, portal)).create(query);
     }
-    
-    return await this.getAssetTypes({}, company);
+
+    return await this.getAssetTypes(portal, company, {});
 }
 
-exports.editAssetType = async (id, data) => {
-    const type = await AssetType.findById(id);
+exports.editAssetType = async (portal, id, data) => {
+    const type = await AssetType(connect(DB_CONNECTION, portal)).findById(id);
 
     type.typeNumber = data.typeNumber,
-    type.typeName = data.typeName,
-    type.description = data.description,
-    type.parent = ObjectId.isValid(data.parent) ? data.parent : undefined
+        type.typeName = data.typeName,
+        type.description = data.description,
+        type.parent = ObjectId.isValid(data.parent) ? data.parent : undefined
     type.defaultInformation = data.defaultInformation,
 
-    await type.save();
+        await type.save();
 
     return type;
 }
 
-exports.deleteAssetTypes = async (id) => {
-    const type = await AssetType.findById(id);
+exports.deleteAssetTypes = async (portal, id) => {
+    const type = await AssetType(connect(DB_CONNECTION, portal)).findById(id);
 
     if (!type) {
         throw ['document_domain_not_found']
     }
 
-    await AssetType.deleteOne({ _id: id });
+    await AssetType(connect(DB_CONNECTION, portal)).deleteOne({ _id: id });
 
-    return await this.getAssetTypes({}, type.company);
+    return await this.getAssetTypes(portal, type.company, {});
 }
 
 
-exports.deleteManyAssetType = async (array, company) => {
-    await AssetType.deleteMany({ _id: { $in: array } });
+exports.deleteManyAssetType = async (portal, company, array) => {
+    await AssetType(connect(DB_CONNECTION, portal)).deleteMany({ _id: { $in: array } });
 
-    return await this.getAssetTypes({}, company);
+    return await this.getAssetTypes(portal, company, {});
 }

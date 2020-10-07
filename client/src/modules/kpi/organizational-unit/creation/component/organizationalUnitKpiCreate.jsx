@@ -58,7 +58,7 @@ class OrganizationalUnitKpiCreate extends Component {
     handleEditKPi = async (status) => {
         if (status === 1) {
             Swal.fire({
-                title: translate('kpi.organizational_unit.create_organizational_unit_kpi_set.confirm_approving'),
+                title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.edit_target.activated'),
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: translate('kpi.organizational_unit.create_organizational_unit_kpi_set.confirm'),
@@ -237,7 +237,7 @@ class OrganizationalUnitKpiCreate extends Component {
         return (deanCurrentUnit && deanCurrentUnit.includes(currentRole));
     }
 
-    checkStartKpiUnit = (currentUnit) => {
+    checkEdittingPermission = (currentUnit) => {
         const { createKpiUnit } = this.props;
 
         if (currentUnit) {
@@ -260,7 +260,7 @@ class OrganizationalUnitKpiCreate extends Component {
         }
     }
 
-    handleEditOrganizationalUnitKPi = async (organizationalUnitKpiId, organizationalUnitKpi, currentUnit) => {
+    handleEditOrganizationalUnitKPi = async (organizationalUnitKpiId, organizationalUnitKpi, currentUnit, organizationalUnitKpiSet) => {
         await this.setState(state => {
             return {
                 ...state,
@@ -270,36 +270,57 @@ class OrganizationalUnitKpiCreate extends Component {
             }
         })
 
-        if (organizationalUnitKpi.status === 1) {
-            Swal.fire({
-                title: translate('kpi.organizational_unit.create_organizational_unit_kpi_set.confirm_approving'),
-                type: 'warning',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: translate('kpi.organizational_unit.create_organizational_unit_kpi_set.confirm'),
-            })
+        if (organizationalUnitKpiSet && organizationalUnitKpiSet.status === 1) {
+            this.swalOfUnitKpi("edit");
         } else {
             window.$(`#editTargetKPIUnit${organizationalUnitKpiId}`).modal("show");
         }
     }
 
-    startKpiUnitError = () => {
+    swalEdittingPermission = () => {
         const { createKpiUnit } = this.props;
 
         let parentKpi = createKpiUnit && createKpiUnit.parent;
         if (parentKpi == null) {
             Swal.fire({
-                title: 'Chưa thể khởi tạo KPI cho đơn vị bạn tháng này, do đơn vị cấp trên của đơn vị bạn chưa khởi tạo KPI!',
+                title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.not_initialize_organiztional_unit_kpi'),
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Đồng ý'
+                confirmButtonText: translate('kpi.organizational_unit.create_organizational_unit_kpi_set.confirm')
             })
         } else {
             Swal.fire({
-                title: 'Đơn vị cấp trên của đơn vị bạn chưa kích hoạt KPI!',
+                title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.not_activate_organiztional_unit_kpi'),
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Đồng ý'
+                confirmButtonText: translate('kpi.organizational_unit.create_organizational_unit_kpi_set.confirm')
             })
+        }
+    }
+
+    swalOfUnitKpi = (type) => {
+        switch (type) {
+            case "add_target":
+                return Swal.fire({
+                    title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.add_new_target.activated'),
+                    type: 'warning',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Đồng ý'
+                })
+            case "edit":
+                return Swal.fire({
+                    title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.edit_target.activated'),
+                    type: 'warning',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Đồng ý'
+                })
+            case "delete":
+                return Swal.fire({
+                    title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.delete_kpi.activated'),
+                    type: 'warning',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Đồng ý'
+                })
         }
     }
 
@@ -348,32 +369,32 @@ class OrganizationalUnitKpiCreate extends Component {
                                                 </a>
                                             </React.Fragment>
                                             : <React.Fragment>
-                                                <a className="btn btn-app" onClick={this.checkStartKpiUnit(currentUnit) ? () => this.handleEditKPi(currentKPI.status) : () => this.startKpiUnitError()} title="Chỉnh sửa thông tin chung">
+                                                <a className="btn btn-app" onClick={this.checkEdittingPermission(currentUnit) ? () => this.handleEditKPi(currentKPI.status) : () => this.swalEdittingPermission()} title="Chỉnh sửa thông tin chung">
                                                     <i className="fa fa-edit" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.edit')}
                                                 </a>
                                             </React.Fragment>
                                         }
 
                                         {/* Xóa KPI tháng */}
-                                        <a className="btn btn-app" onClick={this.checkStartKpiUnit(currentUnit) ? () => this.deleteKPI(currentKPI.status, currentKPI._id) : () => this.startKpiUnitError()} title="Xóa KPI tháng">
+                                        <a className="btn btn-app" onClick={this.checkEdittingPermission(currentUnit) ? () => this.deleteKPI(currentKPI.status, currentKPI._id) : () => this.swalEdittingPermission()} title="Xóa KPI tháng">
                                             <i className="fa fa-trash" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.delete')}
                                         </a>
 
                                         {/* Kich hoạt KPI tháng */}
                                         {currentKPI.status === 0 ?
-                                            <a className="btn btn-app" onClick={this.checkStartKpiUnit(currentUnit) ? (event) => this.approveKPIUnit(event, currentKPI.status, currentKPI, 1) : () => this.startKpiUnitError()}>
+                                            <a className="btn btn-app" onClick={this.checkEdittingPermission(currentUnit) ? (event) => this.approveKPIUnit(event, currentKPI.status, currentKPI, 1) : () => this.swalEdittingPermission()}>
                                                 <i className="fa fa-rocket" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.approve')}
                                             </a> :
-                                            <a className="btn btn-app" onClick={this.checkStartKpiUnit(currentUnit) ? (event) => this.cancelKPIUnit(event, currentKPI._id, 0) : () => this.startKpiUnitError()}>
+                                            <a className="btn btn-app" onClick={this.checkEdittingPermission(currentUnit) ? (event) => this.cancelKPIUnit(event, currentKPI._id, 0) : () => this.swalEdittingPermission()}>
                                                 <i className="fa fa-lock" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.cancel_approve')}
                                             </a>
                                         }
 
                                         {/* Thêm mục tiêu */}
-                                        {this.checkStartKpiUnit(currentUnit) ?
+                                        {this.checkEdittingPermission(currentUnit) ?
                                             <span>
                                                 {currentKPI.status === 1 ?
-                                                    <a className="btn btn-app" onClick={() => this.swalOfUnitKpiActivated()}>
+                                                    <a className="btn btn-app" onClick={() => this.swalOfUnitKpi("add_target")}>
                                                         <i className="fa fa-plus-circle" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.add_target')}
                                                     </a>
                                                     : <span>
@@ -385,7 +406,7 @@ class OrganizationalUnitKpiCreate extends Component {
                                                 }
                                             </span>
                                             : <span>
-                                                <a className="btn btn-app" onClick={() => this.startKpiUnitError()}>
+                                                <a className="btn btn-app" onClick={() => this.swalEdittingPermission()}>
                                                     <i className="fa fa-plus-circle" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.add_target')}
                                                 </a>
                                             </span>
@@ -451,15 +472,15 @@ class OrganizationalUnitKpiCreate extends Component {
                                                                     className="edit"
                                                                     title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.edit')}
                                                                     data-toggle="modal"
-                                                                    data-target={`#editTargetKPIUnit${item._id}`}
+                                                                    // data-target={`#editTargetKPIUnit${item._id}`}
                                                                     data-backdrop="static"
                                                                     data-keyboard="false"
-                                                                    onClick={this.checkStartKpiUnit(currentUnit) ? () => this.handleEditOrganizationalUnitKPi(item._id, item, currentUnit) : () => this.startKpiUnitError()}>
+                                                                    onClick={this.checkEdittingPermission(currentUnit) ? () => this.handleEditOrganizationalUnitKPi(item._id, item, currentUnit, currentKPI) : () => this.swalEdittingPermission()}>
                                                                     <i className="material-icons"></i>
                                                                 </a>
 
                                                                 {item.type === 0 ?
-                                                                    <a href="#abc" className="delete" title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.delete_title')} onClick={this.checkStartKpiUnit(currentUnit) ? () => this.deleteTargetKPIUnit(currentKPI.status, item._id, currentKPI._id) : () => this.startKpiUnitError()}>
+                                                                    <a href="#abc" className="delete" title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.delete_title')} onClick={this.checkEdittingPermission(currentUnit) ? () => this.deleteTargetKPIUnit(currentKPI.status, item._id, currentKPI._id) : () => this.swalEdittingPermission()}>
                                                                         <i className="material-icons"></i>
                                                                     </a> :
                                                                     <ToolTip
@@ -481,7 +502,7 @@ class OrganizationalUnitKpiCreate extends Component {
                                 <div style={{ marginLeft: "-10px" }}>
                                     {this.checkPermisson(currentUnit && currentUnit[0] && currentUnit[0].deans) &&
                                         <div>
-                                            {this.checkStartKpiUnit(currentUnit) ?
+                                            {this.checkEdittingPermission(currentUnit) ?
                                                 <React.Fragment>
                                                     <a className="btn btn-app" data-toggle="modal" data-target="#startKPIUnit" data-backdrop="static" data-keyboard="false">
                                                         <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.initialize_kpi_newmonth')}
@@ -490,7 +511,7 @@ class OrganizationalUnitKpiCreate extends Component {
                                                 </React.Fragment>
                                                 :
                                                 <React.Fragment>
-                                                    <a className="btn btn-app" data-toggle="modal" data-backdrop="static" data-keyboard="false" onClick={() => this.startKpiUnitError()}>
+                                                    <a className="btn btn-app" data-toggle="modal" data-backdrop="static" data-keyboard="false" onClick={() => this.swalEdittingPermission()}>
                                                         <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.initialize_kpi_newmonth')}
                                                     </a>
                                                 </React.Fragment>

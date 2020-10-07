@@ -7,6 +7,7 @@ import { DepartmentActions } from '../../../super-admin/organizational-unit/redu
 import { RoleActions } from '../../../super-admin/role/redux/actions';
 import StockCreateForm from './stockCreateForm';
 import StockEditForm from './stockEditForm';
+import StockDetailForm from './stockDetailForm';
 import { DataTableSetting, DeleteNotification, PaginateBar, SelectMulti } from '../../../../common-components';
 
 class StockManagementTable extends Component {
@@ -54,11 +55,11 @@ class StockManagementTable extends Component {
         });
     }
 
-    handleEdit = async (stocks) => {
+    handleEdit = async (stock) => {
         await this.setState(state => {
             return {
                 ...state,
-                currentRow: stocks
+                currentRow: stock
             }
         });
 
@@ -106,17 +107,17 @@ class StockManagementTable extends Component {
         this.props.getAllStocks(data);
     }
 
-    // handleShowDetailInfo = async (stock) => {
-    //     let id = stock._id;
-    //     this.props.getAllGoodsByCategory(id);
-    //     await this.setState(state => {
-    //         return {
-    //             ...state,
-    //             currentRow: stock
-    //         }
-    //     })
-    //     window.$('#modal-detail-stock').modal('show');
-    // }
+    handleShowDetailInfo = async (stock) => {
+        let id = stock._id;
+        this.props.getStock(id);
+        await this.setState(state => {
+            return {
+                ...state,
+                currentRow: stock
+            }
+        })
+        window.$('#modal-detail-stock').modal('show');
+    }
 
     render (){
         const { stocks, translate } = this.props;
@@ -175,16 +176,20 @@ class StockManagementTable extends Component {
                         />
                     }
 
-                    {/* {
+                    {
                         this.state.currentRow &&
-                        <CategoryDetailForm
-                            categoryId={this.state.currentRow._id}
+                        <StockDetailForm
+                            stockId={this.state.currentRow._id}
                             code={this.state.currentRow.code}
                             name={this.state.currentRow.name}
-                            type={this.state.currentRow.type}
+                            status={this.state.currentRow.status}
+                            address={this.state.currentRow.address}
+                            manageDepartment={this.state.currentRow.manageDepartment}
+                            managementLocation={this.state.currentRow.managementLocation}
+                            goodsManagement={this.state.currentRow.goods}
                             description={this.state.currentRow.description}
                         />
-                    } */}
+                    }
 
                     <table id="stock-table" className="table table-striped table-bordered table-hover" style={{marginTop: '15px'}}>
                         <thead>
@@ -263,6 +268,7 @@ const mapDispatchToProps = {
     getAllRoles: RoleActions.get,
     getAllGoods: GoodActions.getAllGoods,
     getAllStocks: StockActions.getAllStocks,
-    deleteStock: StockActions.deleteStock
+    deleteStock: StockActions.deleteStock,
+    getStock: StockActions.getStock
 }
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(StockManagementTable));

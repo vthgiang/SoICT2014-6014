@@ -1,17 +1,20 @@
 const mongoose = require("mongoose");
-const { Task, TaskProcess, TaskTemplate, TaskAction, TaskTemplateInformation, Role, OrganizationalUnit, User, UserRole, Company } = require('../../../models/index').schema;
-
 const moment = require("moment");
 const nodemailer = require("nodemailer");
-const { sendEmail } = require('../../../helpers/emailHelper');
-const OrganizationalUnitService = require('../../super-admin/organizational-unit/organizationalUnit.service');
-const overviewService = require('../../kpi/employee/management/management.service');
+
+const { Task, TaskTemplate, OrganizationalUnit, User, Company } = require(`${SERVER_MODELS_DIR}`);
+
+const OrganizationalUnitService = require(`${SERVER_MODULES_DIR}/super-admin/organizational-unit/organizationalUnit.service`);
+const overviewService = require(`${SERVER_MODULES_DIR}/kpi/employee/management/management.service`);
+
+const { sendEmail } = require(`${SERVER_HELPERS_DIR}/emailHelper`);
+const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 /**
  * Lấy tất cả các công việc
  */
-exports.getAllTasks = async () => {
-    var tasks = await Task.find();
+exports.getAllTasks = async (portal) => {
+    var tasks = await Task(connect(DB_CONNECTION, portal)).find();
     return tasks;
 }
 
@@ -19,9 +22,17 @@ exports.getAllTasks = async () => {
  * Lấy tất cả công việc theo id mẫu công việc thỏa mãn điều kiện
  * @param {*} data 
  */
-exports.getTaskEvaluations = async (data) => {
+exports.getTaskEvaluations = async (portal, data) => {
     // Lấy data tu client gui trong body
-    let { organizationalUnit, taskTemplate, status, startDate, endDate, frequency, responsibleEmployees, accountableEmployees } = data;
+    let {
+        organizationalUnit,
+        taskTemplate,
+        status, startDate,
+        endDate, frequency,
+        responsibleEmployees,
+        accountableEmployees
+    } = data;
+
     let startTime, start, endTime, end, filterDate = {};
     status = Number(data.status);
 
@@ -170,7 +181,8 @@ exports.getTaskEvaluations = async (data) => {
         ]
     }
 
-    let result = await Task.aggregate(condition); // kết quả sau khi truy vấn mongodb
+
+    let result = await Task(connect(DB_CONNECTION, portal)).aggregate(condition); // kết quả sau khi truy vấn mongodb
 
     // lấy danh sachs điều kiện lọc của trường thông tin của công việc, vì dữ liệu gửi trong query là dạng string nên phải parse sang đối tượng
     let taskInformations = data.taskInformations, listDataChart = [], configurations = [];
@@ -202,6 +214,15 @@ exports.getTaskEvaluations = async (data) => {
          * Mục đích để đính kèm các điều kiện lọc của các trường thông tin vào taskInfomation để tính toán
          */
         let taskMerge = taskInformations.map((item, index) => Object.assign({}, item, configurations[index]))
+        taskMerge.map(item => {
+            if (item.filter) {
+                let replacer = new RegExp(item.code, 'g')
+                item.filter = eval(item.filter.replace(replacer, item.value));
+            } else {
+                item.filter = true;
+            }
+            return item;
+        })
         return { // Lấy các trường cần thiết
             _id: item._id,
             name: item.name,
@@ -217,6 +238,15 @@ exports.getTaskEvaluations = async (data) => {
             results: item.results,
             dataForAxisXInChart: listDataChart,
         };
+    });
+
+
+    newResult.map(o => {
+        if (o.taskInformations.some(item => (item.filter === true))) {
+            return o;
+        } else {
+            newResult = [];
+        }
     })
     return newResult;
 }
@@ -226,10 +256,10 @@ exports.getTaskEvaluations = async (data) => {
  * Lấy mẫu công việc theo chức danh và người dùng
  * @id : id người dùng
  */
-exports.getTasksCreatedByUser = async (id) => {
-    var tasks = await Task.find({
+exports.getTasksCreatedByUser = async (portal, id) => {
+    var tasks = await Task(connect(DB_CONNECTION, portal)).find({
         creator: id
-    }).populate({ path: 'taskTemplate', model: TaskTemplate });
+    }).populate({ path: 'taskTemplate' }); // , model: TaskTemplate 
     return tasks;
 }
 
@@ -237,7 +267,7 @@ exports.getTasksCreatedByUser = async (id) => {
  * Lấy công việc thực hiện chính theo id người dùng
  * @task dữ liệu trong params
  */
-exports.getPaginatedTasksThatUserHasResponsibleRole = async (task) => {
+exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
     var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime } = task;
 
     var responsibleTasks;
@@ -373,10 +403,10 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (task) => {
         }
     }
 
-    responsibleTasks = await Task.find(keySearch).sort({ 'createdAt': 'asc' })
+    responsibleTasks = await Task(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'asc' })
         .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent responsibleEmployees" });
 
-    var totalCount = await Task.count(keySearch);
+    var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
     var totalPages = Math.ceil(totalCount / perPage);
 
     return {
@@ -389,7 +419,7 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (task) => {
  * Lấy công việc phê duyệt theo id người dùng
  * @task dữ liệu từ params
  */
-exports.getPaginatedTasksThatUserHasAccountableRole = async (task) => {
+exports.getPaginatedTasksThatUserHasAccountableRole = async (portal, task) => {
     var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime } = task;
 
     var accountableTasks;
@@ -525,10 +555,10 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (task) => {
             }
         }
     }
-    accountableTasks = await Task.find(keySearch).sort({ 'createdAt': 'asc' })
+    accountableTasks = await Task(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'asc' })
         .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
 
-    var totalCount = await Task.count(keySearch);
+    var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
     var totalPages = Math.ceil(totalCount / perPage);
     return {
         "tasks": accountableTasks,
@@ -539,7 +569,7 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (task) => {
 /**
  * Lấy công việc hỗ trợ theo id người dùng
  */
-exports.getPaginatedTasksThatUserHasConsultedRole = async (task) => {
+exports.getPaginatedTasksThatUserHasConsultedRole = async (portal, task) => {
     var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime } = task;
 
     var consultedTasks;
@@ -675,10 +705,10 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (task) => {
             }
         }
     }
-    consultedTasks = await Task.find(keySearch).sort({ 'createdAt': 'asc' })
+    consultedTasks = await Task(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'asc' })
         .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
 
-    var totalCount = await Task.count(keySearch);
+    var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
     var totalPages = Math.ceil(totalCount / perPage);
     return {
         "tasks": consultedTasks,
@@ -689,7 +719,7 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (task) => {
 /**
  * Lấy công việc thiết lập theo id người dùng
  */
-exports.getPaginatedTasksCreatedByUser = async (task) => {
+exports.getPaginatedTasksCreatedByUser = async (portal, task) => {
     var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, aPeriodOfTime } = task;
 
     var creatorTasks;
@@ -797,10 +827,10 @@ exports.getPaginatedTasksCreatedByUser = async (task) => {
         }
     }
 
-    creatorTasks = await Task.find(keySearch).sort({ 'createdAt': 'asc' })
+    creatorTasks = await Task(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'asc' })
         .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
 
-    var totalCount = await Task.count(keySearch);
+    var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
     var totalPages = Math.ceil(totalCount / perPage);
     return {
         "tasks": creatorTasks,
@@ -811,7 +841,7 @@ exports.getPaginatedTasksCreatedByUser = async (task) => {
 /**
  * Lấy công việc quan sát theo id người dùng
  */
-exports.getPaginatedTasksThatUserHasInformedRole = async (task) => {
+exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
     var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime } = task;
 
     var informedTasks;
@@ -947,11 +977,11 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (task) => {
             }
         }
     }
-    informedTasks = await Task.find(keySearch).sort({ 'createdAt': 'asc' })
+    informedTasks = await Task(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'asc' })
         .skip(perPage * (page - 1)).limit(perPage)
         .populate({ path: "organizationalUnit creator parent" });
 
-    var totalCount = await Task.count(keySearch);
+    var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
     var totalPages = Math.ceil(totalCount / perPage);
     return {
         "tasks": informedTasks,
@@ -962,7 +992,7 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (task) => {
 /**
  * Lấy công việc quan sát theo id người dùng
  */
-exports.getPaginatedTasksByUser = async (task) => {
+exports.getPaginatedTasksByUser = async (portal, task) => {
     var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime } = task;
 
     var tasks;
@@ -1102,11 +1132,11 @@ exports.getPaginatedTasksByUser = async (task) => {
             }
         }
     }
-    tasks = await Task.find(keySearch).sort({ 'createdAt': 'asc' })
+    tasks = await Task(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'asc' })
         .skip(perPage * (page - 1)).limit(perPage)
         .populate({ path: "organizationalUnit creator parent" });
 
-    var totalCount = await Task.countDocuments(keySearch);
+    var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
     var totalPages = Math.ceil(totalCount / perPage);
     return {
         "tasks": tasks,
@@ -1118,7 +1148,7 @@ exports.getPaginatedTasksByUser = async (task) => {
  * Lấy công việc theo id đơn vị
  * @task dữ liệu từ params
  */
-exports.getAllTaskOfOrganizationalUnitByMonth = async (task) => {
+exports.getAllTaskOfOrganizationalUnitByMonth = async (portal, task) => {
     var { organizationalUnitId, startDateAfter, endDateBefore } = task;
     var organizationUnitTasks;
     var keySearch = {};
@@ -1161,7 +1191,7 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (task) => {
             }
         }
     }
-    organizationUnitTasks = await Task.find(keySearch).sort({ 'createdAt': 'asc' })
+    organizationUnitTasks = await Task(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'asc' })
         .populate({ path: "organizationalUnit creator parent responsibleEmployees" });
 
     return {
@@ -1169,7 +1199,12 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (task) => {
     };
 }
 
-exports.sendEmailForCreateTask = async (task) => {
+/**
+ * Gửi email khi tạo mới công việc
+ * @param {*} portal id công ty
+ * @param {*} task công việc vừa tạo
+ */
+exports.sendEmailForCreateTask = async (portal, task) => {
     task = await task.populate("organizationalUnit creator parent").execPopulate();
 
     var transporter = nodemailer.createTransport({
@@ -1180,19 +1215,19 @@ exports.sendEmailForCreateTask = async (task) => {
     var email, userId, user, users, userIds;
 
     var resId = task.responsibleEmployees;  // lấy id người thực hiện
-    var res = await User.find({ _id: { $in: resId } });
+    var res = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: resId } });
     res = res.map(item => item.name);
     userIds = resId;
     var accId = task.accountableEmployees;  // lấy id người phê duyệt
-    var acc = await User.find({ _id: { $in: accId } });
+    var acc = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: accId } });
     userIds.push(...accId);
 
     var conId = task.consultedEmployees;  // lấy id người hỗ trợ
-    var con = await User.find({ _id: { $in: conId } })
+    var con = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: conId } })
     userIds.push(...conId);
 
     var infId = task.informedEmployees;  // lấy id người quan sát
-    var inf = await User.find({ _id: { $in: infId } })
+    var inf = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: infId } })
     userIds.push(...infId);  // lấy ra id của tất cả người dùng có nhiệm vụ
 
     // loại bỏ các id trùng nhau
@@ -1203,7 +1238,7 @@ exports.sendEmailForCreateTask = async (task) => {
             i--;
         }
     }
-    user = await User.find({
+    user = await User(connect(DB_CONNECTION, portal)).find({
         _id: { $in: userIds }
     })
 
@@ -1211,7 +1246,7 @@ exports.sendEmailForCreateTask = async (task) => {
     email.push("trinhhong102@gmail.com");
     var html = `<p>Bạn được giao nhiệm vụ trong công việc:  <a href="${process.env.WEBSITE}/task?taskId=${task._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${task._id} </a></p> ` +
         `<h3>Thông tin công việc</h3>` +
-        `<p>Tên công việc : <strong> ${task.name}</strong></p>` +
+        `<p>Tên công việc : <strong>${task.name}</strong></p>` +
         `<p>Mô tả : ${task.description}</p>` +
         `<p>Người thực hiện</p> ` +
         `<ul>${res.map((item) => {
@@ -1241,11 +1276,11 @@ exports.sendEmailForCreateTask = async (task) => {
 /**
  * Tạo công việc mới
  */
-exports.createTask = async (task) => {
+exports.createTask = async (portal, task) => {
     // Lấy thông tin công việc cha
     var level = 1;
     if (mongoose.Types.ObjectId.isValid(task.parent)) {
-        var parent = await Task.findById(task.parent);
+        var parent = await Task(connect(DB_CONNECTION, portal)).findById(task.parent);
         if (parent) level = parent.level + 1;
     }
 
@@ -1257,7 +1292,7 @@ exports.createTask = async (task) => {
 
     let taskTemplate, cloneActions = [];
     if (task.taskTemplate !== "") {
-        taskTemplate = await TaskTemplate.findById(task.taskTemplate);
+        taskTemplate = await TaskTemplate(connect(DB_CONNECTION, portal)).findById(task.taskTemplate);
         var taskActions = taskTemplate.taskActions;
 
         for (let i in taskActions) {
@@ -1276,7 +1311,7 @@ exports.createTask = async (task) => {
         // formula = "progress / (dayUsed / totalDay)"; // default
         formula = "progress / (dayUsed / totalDay) - 0.5 * (10 - (averageActionRating)) * 10"
     }
-    var task = await Task.create({ //Tạo dữ liệu mẫu công việc
+    var task = await Task(connect(DB_CONNECTION, portal)).create({ //Tạo dữ liệu mẫu công việc
         organizationalUnit: task.organizationalUnit,
         creator: task.creator, //id của người tạo
         name: task.name,
@@ -1298,12 +1333,12 @@ exports.createTask = async (task) => {
     });
 
     if (task.taskTemplate !== null) {
-        await TaskTemplate.findByIdAndUpdate(
+        await TaskTemplate(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
             task.taskTemplate, { $inc: { 'numberOfUse': 1 } }, { new: true }
         );
     }
 
-    let mail = await this.sendEmailForCreateTask(task);
+    let mail = await this.sendEmailForCreateTask(portal, task);
 
     return { task: task, user: mail.user, email: mail.email, html: mail.html };
 }
@@ -1311,17 +1346,17 @@ exports.createTask = async (task) => {
 /**
  * Xóa công việc
  */
-exports.deleteTask = async (id) => {
+exports.deleteTask = async (portal, id) => {
     //req.params.id
-    var task = await Task.findByIdAndDelete(id); // xóa mẫu công việc theo id
+    var task = await Task(connect(DB_CONNECTION, portal)).findByIdAndDelete(id); // xóa mẫu công việc theo id
     return task;
 }
 
 /**
  * get subtask
  */
-exports.getSubTask = async (taskId) => {
-    var task = await Task.find({
+exports.getSubTask = async (portal, taskId) => {
+    var task = await Task(connect(DB_CONNECTION, portal)).find({
         parent: taskId
     }).sort("createdAt")
 
@@ -1333,10 +1368,10 @@ exports.getSubTask = async (taskId) => {
  * @param {*} data 
  */
 
-exports.getTasksByUser = async (data) => {
+exports.getTasksByUser = async (portal, data) => {
     var tasks = [];
     if (data.data == "user") {
-        tasks = await Task.find({
+        tasks = await Task(connect(DB_CONNECTION, portal)).find({
             $or: [
                 { responsibleEmployees: data.userId },
                 { accountableEmployees: data.userId },
@@ -1349,8 +1384,8 @@ exports.getTasksByUser = async (data) => {
 
     if (data.data == "organizationUnit") {
         for (let i in data.organizationUnitId) {
-            var organizationalUnit = await OrganizationalUnit.findOne({ _id: data.organizationUnitId[i] })
-            var test = await Task.find(
+            var organizationalUnit = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findOne({ _id: data.organizationUnitId[i] })
+            var test = await Task(connect(DB_CONNECTION, portal)).find(
                 { organizationalUnit: organizationalUnit._id, status: "inprocess" },
             )
 
@@ -1398,7 +1433,7 @@ exports.getTasksByUser = async (data) => {
  * @param {*} organizationalUnitId 
  * @param {*} month 
  */
-exports.getAllTaskOfOrganizationalUnit = async (roleId, organizationalUnitId, month) => {
+exports.getAllTaskOfOrganizationalUnit = async (portal, roleId, organizationalUnitId, month) => {
     let organizationalUnit, tasksOfOrganizationalUnit;
     let now, currentYear, currentMonth, endOfCurrentMonth, endOfLastMonth;
 
@@ -1417,7 +1452,7 @@ exports.getAllTaskOfOrganizationalUnit = async (roleId, organizationalUnitId, mo
     }
 
     if (!organizationalUnitId) {
-        organizationalUnit = await OrganizationalUnit.findOne({
+        organizationalUnit = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findOne({
             $or: [
                 { 'deans': roleId },
                 { 'viceDeans': roleId },
@@ -1425,11 +1460,11 @@ exports.getAllTaskOfOrganizationalUnit = async (roleId, organizationalUnitId, mo
             ]
         });
     } else {
-        organizationalUnit = await OrganizationalUnit.findOne({ '_id': organizationalUnitId });
+        organizationalUnit = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findOne({ '_id': organizationalUnitId });
     }
 
     if (organizationalUnit) {
-        tasksOfOrganizationalUnit = await Task.aggregate([
+        tasksOfOrganizationalUnit = await Task(connect(DB_CONNECTION, portal)).aggregate([
             { $match: { 'organizationalUnit': organizationalUnit._id } },
             {
                 $match: {
@@ -1453,7 +1488,7 @@ exports.getAllTaskOfOrganizationalUnit = async (roleId, organizationalUnitId, mo
 
             {
                 $lookup: {
-                    from: "organizational_units",
+                    from: "organizationalunits",
                     localField: "organizationalUnit",
                     foreignField: "_id",
                     as: "detailOrganizationalUnit"
@@ -1537,15 +1572,15 @@ exports.getAllTaskOfOrganizationalUnit = async (roleId, organizationalUnitId, mo
  * @param {*} organizationalUnitId 
  * @param {*} month 
  */
-exports.getAllTaskOfChildrenOrganizationalUnit = async (companyId, roleId, month, organizationalUnitId) => {
+exports.getAllTaskOfChildrenOrganizationalUnit = async (portal, companyId, roleId, month, organizationalUnitId) => { 
 
     let tasksOfChildrenOrganizationalUnit = [], childrenOrganizationalUnits;
 
-    childrenOrganizationalUnits = await overviewService.getAllChildrenOrganizational(companyId, roleId, organizationalUnitId);
+    childrenOrganizationalUnits = await overviewService.getAllChildrenOrganizational(portal, companyId, roleId, organizationalUnitId);
 
     if (childrenOrganizationalUnits) {
         for (let i = 0; i < childrenOrganizationalUnits.length; i++) {
-            tasksOfChildrenOrganizationalUnit.push(await this.getAllTaskOfOrganizationalUnit(roleId, childrenOrganizationalUnits[i].id, month));
+            tasksOfChildrenOrganizationalUnit.push(await this.getAllTaskOfOrganizationalUnit(portal, roleId, childrenOrganizationalUnits[i].id, month));
             tasksOfChildrenOrganizationalUnit[i].unshift({ 'name': childrenOrganizationalUnits[i].name, 'deg': childrenOrganizationalUnits[i].deg })
         }
     }
@@ -1553,222 +1588,201 @@ exports.getAllTaskOfChildrenOrganizationalUnit = async (companyId, roleId, month
     return tasksOfChildrenOrganizationalUnit;
 }
 
-exports.sendEmailCheckTaskLastMonth = async () => {  
-    // let today = new Date();
-    // let day = today.getDate();
-    // let month = today.getMonth()+1;
-    // let daySend = 30;
-    // switch (month) {
-    //     case 1:
-    //     case 3:
-    //     case 5:
-    //     case 7:
-    //     case 8:
-    //     case 10:
-    //     case 12:
-    //         daySend = 31;
-    //         break;
-    //     case 2:
-    //         daySend = 28;
-    //         break;
-    // }
-    // if (daySend === day) {
-        // xu ly gui email
-        console.log("Đến ngày gửi email");
-        let company = await Company.find({});
-        company = company.map(x => x._id);
-        let consultedTasks = [], informedTasks = [], responsibleTasks = [], accountedTasks = [];
-        let taskExpire = [], taskDeadlinecoming = [];
-        let currentMonth = new Date().getMonth() + 1;
-        let currentYear = new Date().getFullYear();
-        for (let i in company) {
-            
-            let user = await User.find({ company: company[i] });  // lay ra tat ca nguoi dung trong tung cong ty
-            let userId = user.map(x => x._id);
-            let email = user.map(x => x.email);
+exports.sendEmailCheckTaskLastMonth = async () => {
+    let company = await Company(connect(DB_CONNECTION, portal)).find({});
+    company = company.map(x => x._id);
+    let consultedTasks = [], informedTasks = [], responsibleTasks = [], accountedTasks = [];
+    let taskExpire = [], taskDeadlinecoming = [];
+    let currentMonth = new Date().getMonth() + 1;
+    let currentYear = new Date().getFullYear();
+    for (let i in company) {
 
-            for (let j in userId) {
-                let flag = false;
-                let tasks = { "data": "user", "userId": userId[j] };
-                let tasksByUser = await this.getTasksByUser(tasks); // laay ra tat ca cong viec cua nguoi dung
-                tasks = { "organizationalUnit": "[]", "number": 1, "perPage": 1000, "status": "[]", "priority": "[]", "special": "[]", "name": null, "startDate": null, "endDate": null, "startDateAfter": null, "endDateBefore": null, "aPeriodOfTime": false, "user": userId[j] }
+        let user = await User(connect(DB_CONNECTION, portal)).find({ company: company[i] });  // lay ra tat ca nguoi dung trong tung cong ty
+        let userId = user.map(x => x._id);
+        let email = user.map(x => x.email);
 
-                informedTasks = await this.getPaginatedTasksThatUserHasInformedRole(tasks);
-                // informedTasks = await Task.find({informedEmployees: userId[j] , isArchived: false}).populate({ path: "organizationalUnit creator parent" });
-                consultedTasks = await this.getPaginatedTasksThatUserHasConsultedRole(tasks);
-                responsibleTasks = await this.getPaginatedTasksThatUserHasResponsibleRole(tasks);
-                accountedTasks = await this.getPaginatedTasksThatUserHasAccountableRole(tasks);
+        for (let j in userId) {
+            let flag = false;
+            let tasks = { "data": "user", "userId": userId[j] };
+            let tasksByUser = await this.getTasksByUser(portal, tasks); // laay ra tat ca cong viec cua nguoi dung
+            tasks = { "organizationalUnit": "[]", "number": 1, "perPage": 1000, "status": "[]", "priority": "[]", "special": "[]", "name": null, "startDate": null, "endDate": null, "startDateAfter": null, "endDateBefore": null, "aPeriodOfTime": false, "user": userId[j] }
 
-                // xu ly voi moi nguoi dung
-                let infTasks = informedTasks && informedTasks.tasks;
-                let accTasks = accountedTasks && accountedTasks.tasks;
-                let resTasks = responsibleTasks && responsibleTasks.tasks;
-                let conTasks = consultedTasks && consultedTasks.tasks;
-                let allTasks = [], notLinkedTasks = [], taskList;
+            informedTasks = await this.getPaginatedTasksThatUserHasInformedRole(portal, tasks);
+            // informedTasks = await Task(connect(DB_CONNECTION, portal)).find({informedEmployees: userId[j] , isArchived: false}).populate({ path: "organizationalUnit creator parent" });
+            consultedTasks = await this.getPaginatedTasksThatUserHasConsultedRole(portal, tasks);
+            responsibleTasks = await this.getPaginatedTasksThatUserHasResponsibleRole(portal, tasks);
+            accountedTasks = await this.getPaginatedTasksThatUserHasAccountableRole(portal, tasks);
 
-                // xu ly task not link
-                if (accTasks && resTasks && infTasks && conTasks) {
-                    taskList = allTasks.concat(accTasks, resTasks, conTasks, infTasks);
+            // xu ly voi moi nguoi dung
+            let infTasks = informedTasks && informedTasks.tasks;
+            let accTasks = accountedTasks && accountedTasks.tasks;
+            let resTasks = responsibleTasks && responsibleTasks.tasks;
+            let conTasks = consultedTasks && consultedTasks.tasks;
+            let allTasks = [], notLinkedTasks = [], taskList;
+
+            // xu ly task not link
+            if (accTasks && resTasks && infTasks && conTasks) {
+                taskList = allTasks.concat(accTasks, resTasks, conTasks, infTasks);
+            }
+            if (taskList) {
+                let inprocessTask = taskList.filter(task => task.status === "inprocess");
+
+                let distinctTasks = [];
+                for (let k in inprocessTask) {     // lọc task trùng nhau
+                    let check = false;
+                    for (let z in distinctTasks) {
+
+                        if (JSON.stringify(inprocessTask[k]._id) === JSON.stringify(distinctTasks[z]._id)) {
+                            check = true
+                            break;
+                        }
+                    }
+                    if (!check) distinctTasks.push(inprocessTask[k])
                 }
-                if (taskList) {
-                    let inprocessTask = taskList.filter(task => task.status === "inprocess");
 
-                    let distinctTasks = [];
-                    for (let k in inprocessTask) {     // lọc task trùng nhau
-                        let check = false;
-                        for (let z in distinctTasks) {
+                distinctTasks.length && distinctTasks.map(x => {
+                    let evaluations;
+                    let currentEvaluate = [];
 
-                            if (JSON.stringify(inprocessTask[k]._id) === JSON.stringify(distinctTasks[z]._id)) {
-                                check = true
-                                break;
+                    evaluations = x.evaluations.length && x.evaluations;
+                    if (evaluations) {
+                        for (let i in evaluations) {
+                            let month = evaluations[i].date.slice(5, 7);
+                            let year = evaluations[i].date.slice(0, 4);
+
+                            if (month == currentMonth && year == currentYear) {
+                                currentEvaluate.push(evaluations[i]);
                             }
                         }
-                        if (!check) distinctTasks.push(inprocessTask[k])
                     }
 
-                    distinctTasks.length && distinctTasks.map(x => {
-                        let evaluations;
-                        let currentEvaluate = [];
-
-                        evaluations = x.evaluations.length && x.evaluations;
-                        if (evaluations) {
-                            for (let i in evaluations) {
-                                let month = evaluations[i].date.getMonth() + 1;
-                                let year = evaluations[i].date.getFullYear();
-                                
-                                if (month == currentMonth && year == currentYear) {
-                                    currentEvaluate.push(evaluations[i]);
-                                }
-                            }
-                        }
-
-                        if (currentEvaluate.length === 0) {
-                            notLinkedTasks.push(x);
-                            flag = true;
-                        } else {
-                            let break1 = false;
-                            let add = true;
-                            if (currentEvaluate.length !== 0) {
-                                for (let i in currentEvaluate) {
-                                    if (currentEvaluate[i].results.length !== 0) {
-                                        for (let j in currentEvaluate[i].results) {
-                                            let res = currentEvaluate[i].results[j];
-                                            console.log(typeof res.employee);
-                                            if (res.employee === userId[j]) {
-                                                add = false;
-                                                if (res.kpis.length === 0) {
-                                                    notLinkedTasks.push(x);
-                                                    break1 = true
-                                                }
-                                            };
-                                            if (break1) break;
-                                        }
+                    if (currentEvaluate.length === 0) {
+                        notLinkedTasks.push(x);
+                        flag = true;
+                    } else {
+                        let break1 = false;
+                        let add = true;
+                        if (currentEvaluate.length !== 0) {
+                            for (let i in currentEvaluate) {
+                                if (currentEvaluate[i].results.length !== 0) {
+                                    for (let j in currentEvaluate[i].results) {
+                                        let res = currentEvaluate[i].results[j];
+                                        console.log(typeof res.employee);
+                                        if (res.employee === userId[j]) {
+                                            add = false;
+                                            if (res.kpis.length === 0) {
+                                                notLinkedTasks.push(x);
+                                                break1 = true
+                                            }
+                                        };
                                         if (break1) break;
-                                        if (add) {
-                                            notLinkedTasks.push(x);
-                                            flag = true;
-                                        }
                                     }
-                                }
-                            }
-                        }
-                    })
-                }
-
-
-                // xu ly Action not evaluated
-                var TaskHasActionsAccountable = [];
-                var TaskHasActionsResponsible = [];
-
-                if (accTasks) {
-                    let inprocessAccountableTask = accTasks.filter(task => task.status === "inprocess")
-                    inprocessAccountableTask.length && inprocessAccountableTask.map(x => {
-                        let taskActions;
-
-                        taskActions = x.taskActions.length && x.taskActions;
-                        if (taskActions.length !== 0) {
-                            for (let i in taskActions) {
-                                let month = taskActions[i].createdAt;
-                                let year = taskActions[i].createdAt;
-                                month = JSON.stringify(month);
-                                year = JSON.stringify(year);
-                                month = Number(month.slice(6, 8));
-                                year = Number(year.slice(1, 5));
-                                if (month === currentMonth && year === currentYear) {
-                                    if (taskActions[i].rating == -1) {
-                                        TaskHasActionsAccountable.push(x);
+                                    if (break1) break;
+                                    if (add) {
+                                        notLinkedTasks.push(x);
                                         flag = true;
-                                        break;
                                     }
                                 }
                             }
                         }
+                    }
+                })
+            }
 
-                    })
-                }
-                if (resTasks) {
-                    let inprocessResponsibleTasks = resTasks.filter(task => task.status === "inprocess")
-                    inprocessResponsibleTasks.length && inprocessResponsibleTasks.map(x => {
-                        let taskActions;
 
-                        taskActions = x.taskActions.length && x.taskActions;
-                        if (taskActions.length !== 0) {
-                            for (let i in taskActions) {
-                                let month = taskActions[i].createdAt;
-                                let year = taskActions[i].createdAt;
-                                month = JSON.stringify(month);
-                                year = JSON.stringify(year);
-                                month = Number(month.slice(6, 8));
-                                year = Number(year.slice(1, 5));
-                                if (month == currentMonth && year == currentYear) {
-                                    if (taskActions[i].rating == -1) {
-                                        TaskHasActionsResponsible.push(x);
-                                        flag = true;
-                                        break;
-                                    }
+            // xu ly Action not evaluated
+            var TaskHasActionsAccountable = [];
+            var TaskHasActionsResponsible = [];
+
+            if (accTasks) {
+                let inprocessAccountableTask = accTasks.filter(task => task.status === "inprocess")
+                inprocessAccountableTask.length && inprocessAccountableTask.map(x => {
+                    let taskActions;
+
+                    taskActions = x.taskActions.length && x.taskActions;
+                    if (taskActions.length !== 0) {
+                        for (let i in taskActions) {
+                            let month = taskActions[i].createdAt;
+                            let year = taskActions[i].createdAt;
+                            month = JSON.stringify(month);
+                            year = JSON.stringify(year);
+                            month = Number(month.slice(6, 8));
+                            year = Number(year.slice(1, 5));
+                            if (month === currentMonth && year === currentYear) {
+                                if (taskActions[i].rating == -1) {
+                                    TaskHasActionsAccountable.push(x);
+                                    flag = true;
+                                    break;
                                 }
                             }
                         }
+                    }
 
-                    })
-                }
-                let taskHasActions = [];
-                taskHasActions = taskHasActions.concat(TaskHasActionsAccountable, TaskHasActionsResponsible);
-                if (tasksByUser.expire.length !== 0) {
-                    flag = true;
-                }
-                if (tasksByUser.deadlineincoming.length !== 0) {
-                    flag = true;
-                }
-                if (flag) {  // gui email
-                    let userEmail = [email[j]];
-                    userEmail.push("trinhhong102@gmail.com");
-                    let html = `<h1>Thông báo danh sách công việc tháng ${new Date().getMonth()+1} </h1> ` +
+                })
+            }
+            if (resTasks) {
+                let inprocessResponsibleTasks = resTasks.filter(task => task.status === "inprocess")
+                inprocessResponsibleTasks.length && inprocessResponsibleTasks.map(x => {
+                    let taskActions;
+
+                    taskActions = x.taskActions.length && x.taskActions;
+                    if (taskActions.length !== 0) {
+                        for (let i in taskActions) {
+                            let month = taskActions[i].createdAt;
+                            let year = taskActions[i].createdAt;
+                            month = JSON.stringify(month);
+                            year = JSON.stringify(year);
+                            month = Number(month.slice(6, 8));
+                            year = Number(year.slice(1, 5));
+                            if (month == currentMonth && year == currentYear) {
+                                if (taskActions[i].rating == -1) {
+                                    TaskHasActionsResponsible.push(x);
+                                    flag = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                })
+            }
+            let taskHasActions = [];
+            taskHasActions = taskHasActions.concat(TaskHasActionsAccountable, TaskHasActionsResponsible);
+            if (tasksByUser.expire.length !== 0) {
+                flag = true;
+            }
+            if (tasksByUser.deadlineincoming.length !== 0) {
+                flag = true;
+            }
+            if (flag) {  // gui email
+                let userEmail = [email[j]];
+                userEmail.push("trinhhong102@gmail.com");
+                let html = `<h1>Thông báo danh sách công việc tháng ${new Date().getMonth() + 1} </h1> ` +
                     `<h3>Thông tin công việc</h3>` +
                     `${tasksByUser.expire.length > 0 ? `<p>Công việc quá hạn</p> ` +
-                    `<ul>${tasksByUser.expire.map((item) => {
-                        return `<li><a href="${process.env.WEBSITE}/task?taskId=${item.task._id}" target="_blank">${item.task.name}</a></li>`
-                    })}
-                                </ul>` : '' }` +
+                        `<ul>${tasksByUser.expire.map((item) => {
+                            return `<li><a href="${process.env.WEBSITE}/task?taskId=${item.task._id}" target="_blank">${item.task.name}</a></li>`
+                        })}
+                                </ul>` : ''}` +
                     `${tasksByUser.deadlineincoming.length > 0 ? `<p>Công việc sắp hết hạn</p> ` +
-                    `<ul>${tasksByUser.deadlineincoming.map((item) => {
-                        return `<li><a href="${process.env.WEBSITE}/task?taskId=${item.task._id}" target="_blank">${item.task.name}</a></li>`
-                    })}
-                                </ul>` : "" }` +
+                        `<ul>${tasksByUser.deadlineincoming.map((item) => {
+                            return `<li><a href="${process.env.WEBSITE}/task?taskId=${item.task._id}" target="_blank">${item.task.name}</a></li>`
+                        })}
+                                </ul>` : ""}` +
                     `${notLinkedTasks.length > 0 ? `<p>Công việc chưa được liên kết KPI tháng</p> ` +
-                    `<ul>${notLinkedTasks.map((item) => {
-                        return `<li><a href="${process.env.WEBSITE}/task?taskId=${item._id}" target="_blank">${item.name}</a></li>`
-                    })}
-                                </ul>` : "" }` +
+                        `<ul>${notLinkedTasks.map((item) => {
+                            return `<li><a href="${process.env.WEBSITE}/task?taskId=${item._id}" target="_blank">${item.name}</a></li>`
+                        })}
+                                </ul>` : ""}` +
                     `${taskHasActions.length > 0 ? `<p>Công việc có hoạt động chưa đánh giá</p> ` +
-                    `<ul>${taskHasActions.map((item) => {
-                        return `<li><a href="${process.env.WEBSITE}/task?taskId=${item._id}" target="_blank">${item.name}</a></li>`
-                    })}
-                                </ul>` : "" }`
+                        `<ul>${taskHasActions.map((item) => {
+                            return `<li><a href="${process.env.WEBSITE}/task?taskId=${item._id}" target="_blank">${item.name}</a></li>`
+                        })}
+                                </ul>` : ""}`
                     ;
-                    sendEmail(userEmail, "Thông báo danh sách công việc", '', html);
-               }
+                sendEmail(userEmail, "Thông báo danh sách công việc", '', html);
             }
         }
+    }
     // }
 }

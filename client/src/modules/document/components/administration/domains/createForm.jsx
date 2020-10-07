@@ -7,7 +7,6 @@ import { DocumentActions } from '../../../redux/actions';
 class CreateForm extends Component {
     constructor(props) {
         super(props);
-        console.log('cons', this.props.domainParent);
         this.state = {
             domainParent: this.props.domainParent,
         }
@@ -28,19 +27,18 @@ class CreateForm extends Component {
     }
 
     handleParent = (value) => {
-        console.log("domain parent: ", value[0])
         this.setState({ domainParent: value[0] });
-    }; 
+    };
 
-    validateName = (value, willUpdateState)=>{
+    validateName = (value, willUpdateState) => {
         let msg = undefined;
-        const {translate} = this.props;
-        if(!value){
+        const { translate } = this.props;
+        if (!value) {
             msg = translate('document.no_blank_name');
         }
-        if(willUpdateState){
-            this.setState(state=>{
-                return{
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
                     ...state,
                     domainName: value,
                     errorName: msg,
@@ -49,18 +47,17 @@ class CreateForm extends Component {
         }
         return msg === undefined;
     }
-    handleValidateName = (e)=>{
+    handleValidateName = (e) => {
         const value = e.target.value.trim();
         this.validateName(value, true);
     }
-    
-    isValidateForm = ()=>{
+
+    isValidateForm = () => {
         return this.validateName(this.state.domainName, false);
     }
 
     save = () => {
-        const {domainName, domainDesription, domainParent} = this.state;
-        console.log("domains", domainName, domainDesription, domainParent)
+        const { domainName, domainDesription, domainParent } = this.state;
         this.props.createDocumentDomain({
             name: domainName,
             description: domainDesription,
@@ -68,13 +65,13 @@ class CreateForm extends Component {
         });
     }
 
-    static getDerivedStateFromProps(nextProps, prevState){
-        if (nextProps.domainParent !== prevState.domainParent && nextProps.domainParent &&nextProps.domainParent.length) {
-            let dm = nextProps.domainParent;
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.domainParent !== prevState.domainParent && nextProps.domainParent && nextProps.domainParent.length) {
+
             return {
                 ...prevState,
-                domainParent: dm,
-            } 
+                domainParent: nextProps.domainParent,
+            }
         } else {
             return null;
         }
@@ -84,40 +81,40 @@ class CreateForm extends Component {
         const { translate, documents } = this.props;
         const { list } = documents.administration.domains;
         const { domainParent, errorName } = this.state;
-        return ( 
+        return (
             <React.Fragment>
                 <DialogModal
                     modalID="modal-create-document-domain"
                     formID="form-create-document-domain"
                     title={translate('document.administration.domains.add')}
-                    disableSubmit = {!this.isValidateForm()}
+                    disableSubmit={!this.isValidateForm()}
                     func={this.save}
                 >
                     <form id="form-create-document-domain">
-                            <div className={`form-group ${!errorName ? "" : "has-error"}`}>
-                            <label>{ translate('document.administration.domains.name') }<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" onChange={this.handleValidateName}/>
-                            <ErrorLabel content ={errorName}/>
+                        <div className={`form-group ${!errorName ? "" : "has-error"}`}>
+                            <label>{translate('document.administration.domains.name')}<span className="text-red">*</span></label>
+                            <input type="text" className="form-control" onChange={this.handleValidateName} />
+                            <ErrorLabel content={errorName} />
                         </div>
                         <div className="form-group">
-                            <label>{ translate('document.administration.domains.parent') }</label>
-                            <TreeSelect data={list} value={!domainParent ? "" : domainParent} handleChange={this.handleParent} mode="radioSelect"/>
+                            <label>{translate('document.administration.domains.parent')}</label>
+                            <TreeSelect data={list} value={!domainParent ? "" : domainParent} handleChange={this.handleParent} mode="radioSelect" />
                         </div>
                         <div className="form-group">
-                            <label>{ translate('document.administration.domains.description') }</label>
-                            <textarea style={{minHeight: '100px'}} type="text" className="form-control" onChange={this.handleDescription}/>
+                            <label>{translate('document.administration.domains.description')}</label>
+                            <textarea style={{ minHeight: '100px' }} type="text" className="form-control" onChange={this.handleDescription} />
                         </div>
                     </form>
                 </DialogModal>
             </React.Fragment>
-         );
+        );
     }
 }
- 
+
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
     createDocumentDomain: DocumentActions.createDocumentDomain
 }
 
-export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(CreateForm) );
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CreateForm));

@@ -1,13 +1,17 @@
 const {
     WorkPlan
-} = require('../../../models').schema;
+} = require(`${SERVER_MODELS_DIR}`);
+
+const {
+    connect
+} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 /**
  * Lấy danh sách lịch làm việc
  * @company : Id công ty
  */
-exports.getAllWorkPlans = async (company) => {
-    let data = await WorkPlan.findOne({
+exports.getAllWorkPlans = async (portal,company) => {
+    let data = await WorkPlan(connect(DB_CONNECTION, portal)).findOne({
         company: company
     }).sort({
         'workPlans.startDate': 'ASC'
@@ -23,10 +27,10 @@ exports.getAllWorkPlans = async (company) => {
  * @param {*} year : Năm
  * @param {*} company : Id công ty
  */
-exports.getWorkPlansOfYear = async (company, year) => {
+exports.getWorkPlansOfYear = async (portal,company, year) => {
     let firstDay = new Date(year, 0, 1);
     let lastDay = new Date(Number(year) + 1, 0, 1);
-    let data = await WorkPlan.findOne({
+    let data = await WorkPlan(connect(DB_CONNECTION, portal)).findOne({
         company: company,
         'workPlans.startDate': {
             "$gt": firstDay,
@@ -46,18 +50,18 @@ exports.getWorkPlansOfYear = async (company, year) => {
  * @data : dữ liệu lịch làm việc cần thêm
  * @company : id công ty cần thêm
  */
-exports.createWorkPlan = async (data, company) => {
+exports.createWorkPlan = async (portal,data, company) => {
     let newWorkPlan = {
         type: data.type,
         startDate: data.startDate,
         endDate: data.endDate,
         description: data.description,
     }
-    let workPlan = await WorkPlan.findOne({
+    let workPlan = await WorkPlan(connect(DB_CONNECTION, portal)).findOne({
         company: company,
     });
     if (workPlan === null) {
-        workPlan = await WorkPlan.create({
+        workPlan = await WorkPlan(connect(DB_CONNECTION, portal)).create({
             company: company,
             maximumNumberOfLeaveDays: 0,
             workPlans: [],
@@ -72,8 +76,8 @@ exports.createWorkPlan = async (data, company) => {
  * Xoá thông tin lịch làm việc
  * @id : id thông tin lịch làm việc cần xoá
  */
-exports.deleteWorkPlan = async (id, company) => {
-    let workPlan = await WorkPlan.findOne({
+exports.deleteWorkPlan = async (portal,id, company) => {
+    let workPlan = await WorkPlan(connect(DB_CONNECTION, portal)).findOne({
         company: company,
     });
     let deleteWorkPlan = workPlan.workPlans.find(x => x._id.toString() === id);
@@ -87,8 +91,8 @@ exports.deleteWorkPlan = async (id, company) => {
  * @id : id thông tin lịch làm việc cần chỉnh sửa
  * @data : dữ liệu chỉnh sửa thông tin lịch làm việc
  */
-exports.updateWorkPlan = async (id, data, company) => {
-    let workPlan = await WorkPlan.findOne({
+exports.updateWorkPlan = async (portal,id, data, company) => {
+    let workPlan = await WorkPlan(connect(DB_CONNECTION, portal)).findOne({
         company: company
     });
     workPlan.workPlans = workPlan.workPlans.map(x => {
@@ -110,12 +114,12 @@ exports.updateWorkPlan = async (id, data, company) => {
  * Cập nhật tổng số ngày nghỉ phép trong năm
  * @param {*} maximumNumberOfLeaveDays : Tổng số ngày nghỉ phép trong năm 
  */
-exports.updateNumberDateLeaveOfYear = async (maximumNumberOfLeaveDays, company) => {
-    let workPlan = await WorkPlan.findOne({
+exports.updateNumberDateLeaveOfYear = async (portal,maximumNumberOfLeaveDays, company) => {
+    let workPlan = await WorkPlan(connect(DB_CONNECTION, portal)).findOne({
         company: company
     });
     if (workPlan === null) {
-        workPlan = await WorkPlan.create({
+        workPlan = await WorkPlan(connect(DB_CONNECTION, portal)).create({
             company: company,
             maximumNumberOfLeaveDays: 0,
             workPlans: [],
@@ -150,12 +154,12 @@ exports.formatDate = (date) => {
  * @param {*} data : Dữ liệu import
  * @param {*} company : Id công ty
  */
-exports.importWorkPlans = async (data, company) => {
-    let workPlan = await WorkPlan.findOne({
+exports.importWorkPlans = async (portal,data, company) => {
+    let workPlan = await WorkPlan(connect(DB_CONNECTION, portal)).findOne({
         company: company,
     });
     if (workPlan === null) {
-        workPlan = await WorkPlan.create({
+        workPlan = await WorkPlan(connect(DB_CONNECTION, portal)).create({
             company: company,
             maximumNumberOfLeaveDays: 0,
             workPlans: [],

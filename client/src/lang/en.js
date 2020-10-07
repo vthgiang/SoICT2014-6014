@@ -32,6 +32,7 @@ export default {
             no_data: 'No data',
             success: 'Successfully',
             error: 'Error',
+            new_notification: 'You have new notification!',
             auth_alert: {
                 title: 'Current Session invalid. Please log in again',
                 reason: 'Reasons maybe:',
@@ -763,8 +764,14 @@ export default {
             task_report: 'Manage task reports',
 
             //QUẢN LÝ ĐƠN HÀNG
-            manage_orders: "Manage Orders",
-            manage_list_orders: "Manage List Orders",
+            manage_orders: 'Manage Order',
+            manage_sales_order: 'Sales Order',
+            manage_manufacturing_order: 'Manufacturing Order',
+            manage_purchase_order: 'PurchaseOrder',
+            manage_quotation: 'Quotation',
+            manage_discount: 'Discount',
+            manage_tax: 'Tax',
+            manage_sla: 'Service Level Agreement',
 
             //QUẢN LÝ KẾ HOẠCH SẢN XUẤT
             manage_plans: "Manage Plans",
@@ -773,6 +780,18 @@ export default {
             manage_examples: "CRUD example",
             manage_examples_1: "CRUD by model 1",
             manage_examples_2: "CRUD by model 2",
+
+            // Quản lý sản xuất
+            manage_manufacturing: "Quản lý sản xuất",
+            manage_manufacturing_plan: "Quản lý kế hoạch sản xuất",
+            manage_manufacturing_command: "Quản lý lệnh sản xuất",
+            manage_manufacturing_process: "Quản lý tiến độ sản xuất",
+            manage_manufacturing_schedule: "Quản lý lịch sản xuất",
+            manage_purchasing_request: "Quản lý phiếu mua hàng",
+            track_order: "Theo dõi đơn hàng",
+            analysis_manufacturing_performance: "Phân tích hiệu suất sản xuất",
+            manage_manufacturing_works: "Quản lý nhà máy sản xuất",
+            manage_manufacturing_mill: "Quản lý xưởng sản xuất"
         },
 
         manage_system: {
@@ -1754,6 +1773,7 @@ export default {
                 action: 'Action',
                 asset_value: 'Asset value',
                 disposal_date: 'Disposal date',
+                not_disposal: 'Not disposal yet',
 
 
                 general_information: 'General information',
@@ -1788,6 +1808,8 @@ export default {
                 reported_by: 'Announcer',
                 incident_type: 'Incident type',
                 date_incident: 'Date of incident',
+                select_incident_type: 'Select incident type',
+                select_all_incident_type: 'Select all incident types',
 
                 disposal_date: 'Disposal date',
                 disposal_type: 'Disposal type',
@@ -1798,6 +1820,14 @@ export default {
                 file_name: 'File name',
                 number: 'Amount',
                 attached_file: 'Attached files',
+
+                not_for_registering: 'Not for registering',
+                register_by_hour: 'Register by hour',
+                register_for_long_term: 'Register for long term',
+
+                create_reception_date: 'Reception date',
+                select_reception_type: 'Select reception type',
+                select_all_reception_type: 'Select all reception types',
             },
 
             // Dashboard
@@ -2692,7 +2722,7 @@ export default {
                         initialize_kpi_newmonth: 'Initialize KPI new month',
                         request_approval: 'Request for approval',
                         cancel_request_approval: 'Cancel request for approval',
-                        not_initialize_organiztional_unit_kpi: 'Cannot initialize kpi on this month bacause your unit has not initialized kpi on this month yet, please contact the manager of your unit',
+                        not_initialize_organiztional_unit_kpi: 'Your unit has not initialized kpi on this month yet, please contact the manager of your unit',
                         not_activate_organiztional_unit_kpi: 'Your unit has not activated kpi on this month yet, please contact the manager of your unit',
 
                         // Nhóm dành cho các trạng thái tập KPI
@@ -2759,6 +2789,10 @@ export default {
                             edit: 'Edit',
                             content: 'This is the default target (if necessary, weights can be corrected)',
                             delete: 'Delete'
+                        },
+                        add_new_target: {
+                            approving: 'KPI is being approved, you can not create new target!',
+                            activated: 'KPI is being activated, you can not create new target!'
                         },
                         handle_populate_info_null: {
                             error_kpi_approver_null: 'Error! The approver of this KPI set is not exist or was deleted',

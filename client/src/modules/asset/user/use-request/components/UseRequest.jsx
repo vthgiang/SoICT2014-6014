@@ -47,7 +47,7 @@ class UseRequest extends Component {
         if (month.length < 2) {
             month = '0' + month;
         }
-            
+
         if (day.length < 2) {
             day = '0' + day;
         }
@@ -134,6 +134,17 @@ class UseRequest extends Component {
         this.props.searchRecommendDistributes(this.state);
     }
 
+    formatStatus(status) {
+        const { translate } = this.props;
+
+        switch (status) {
+            case 'approved': return translate('asset.usage.approved');
+            case 'waiting_for_approval': return translate('asset.usage.waiting_approval');
+            case 'disapproved': return translate('asset.usage.not_approved');
+            default: return 'Deleted';
+        }
+    }
+
     render() {
         const { translate, recommendDistribute, assetsManager, assetType, user, auth } = this.props;
         const { page, limit, currentRowEdit } = this.state;
@@ -150,7 +161,7 @@ class UseRequest extends Component {
         var pageTotal = ((recommendDistribute.totalList % limit) === 0) ?
             parseInt(recommendDistribute.totalList / limit) :
             parseInt((recommendDistribute.totalList / limit) + 1);
-        
+
         var currentPage = parseInt((page / limit) + 1);
 
         return (
@@ -247,7 +258,7 @@ class UseRequest extends Component {
                                             <td>{x.dateStartUse}</td>
                                             <td>{x.dateEndUse}</td>
                                             <td>{x.approver ? x.approver.name : 'User is deleted'}</td>
-                                            <td>{x.status}</td>
+                                            <td>{this.formatStatus(x.status)}</td>
                                             <td style={{ textAlign: "center" }}>
                                                 <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.asset_info.edit_usage_info')}><i className="material-icons">edit</i></a>
                                                 <DeleteNotification

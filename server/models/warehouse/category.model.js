@@ -27,4 +27,8 @@ const CategorySchema = new Schema ({
 
 CategorySchema.plugin(mongoosePaginate);
 
-module.exports = Category = mongoose.model("categories", CategorySchema);
+module.exports = (db) => {
+    if(!db.models.Category)
+        return db.model('Category', CategorySchema);
+    return db.models.Category;
+}
