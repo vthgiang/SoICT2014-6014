@@ -526,6 +526,7 @@ export function documents(state = initState, action) {
         case DocumentConstants.GET_DOCUMENT_ARCHIVE_SUCCESS:
         case DocumentConstants.CREATE_DOCUMENT_ARCHIVE_SUCCESS:
         case DocumentConstants.EDIT_DOCUMENT_ARCHIVE_SUCCESS:
+            console.log('iiiiiiiiiiiii', action.payload)
             return {
                 ...state,
                 isLoading: false,

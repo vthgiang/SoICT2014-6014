@@ -28,6 +28,11 @@ class ArchiveImportForm extends Component {
             importData: [],
         })
     }
+    /**
+     * 
+     * @param {*} value: mảng các object archive 
+     * @param {*} checkFileImport 
+     */
     handleImportExcel = (value, checkFileImport) => {
         let values = [];
         let showValues = [];
@@ -86,15 +91,6 @@ class ArchiveImportForm extends Component {
         this.props.importArchive(importShowData);
     }
 
-    // convertDataExport = (dataExport)=>{
-    //     for(let i  = 0; i < dataExport.dataSheets.length; i++){
-    //         for(let j = 0; j < dataExport.dataSheets[j].table.length; j++){
-    //             let datas = [];
-    //             let data = dataExport.dataSheets[i].table[j].data;
-    //             if(Array.isArray(data[0].))
-    //         }
-    //     }
-    // }
 
     render() {
         const { translate } = this.props;

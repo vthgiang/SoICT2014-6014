@@ -26,37 +26,37 @@ class EditForm extends Component {
 
     handleParent = (value) => {
         this.setState({ domainParent: value[0] });
-    }; 
+    };
 
-    validateName = async(value, willUpdateState)=>{
+    validateName = async (value, willUpdateState) => {
         let msg = undefined;
-        const {translate} = this.props;
-        if(!value){
+        const { translate } = this.props;
+        if (!value) {
             msg = translate('document.no_blank_name');
         }
-        if(willUpdateState){
-           await this.setState(state=>{
-                return{
+        if (willUpdateState) {
+            await this.setState(state => {
+                return {
                     ...state,
-                    domainName:value,
+                    domainName: value,
                     errorName: msg
                 }
             })
         }
-        
+
         return msg === undefined;
     }
 
-    handleValidateName = (e)=>{
+    handleValidateName = (e) => {
         const value = e.target.value.trim();
         this.validateName(value, true);
     }
-    isValidateForm =() =>{
+    isValidateForm = () => {
         return this.validateName(this.state.domainName, false);
     }
 
     save = () => {
-        const {domainId,  domainName, domainDescription, domainParent} = this.state;
+        const { domainId, domainName, domainDescription, domainParent } = this.state;
         this.props.editDocumentDomain(domainId, {
             name: domainName,
             description: domainDescription,
@@ -64,7 +64,7 @@ class EditForm extends Component {
         });
     }
 
-    static getDerivedStateFromProps(nextProps, prevState){
+    static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.domainId !== prevState.domainId) {
             return {
                 ...prevState,
@@ -72,8 +72,8 @@ class EditForm extends Component {
                 domainName: nextProps.domainName,
                 domainDescription: nextProps.domainDescription,
                 domainParent: nextProps.domainParent,
-                errorName : undefined,
-            } 
+                errorName: undefined,
+            }
         } else {
             return null;
         }
@@ -81,39 +81,39 @@ class EditForm extends Component {
 
     render() {
         const { translate, documents } = this.props;
-        const { tree,list } = documents.administration.domains;
-        const { domainId, domainName, domainDescription, domainParent, errorName } = this.state;
-        
-        return ( 
+        const { list } = documents.administration.domains;
+        const { domainName, domainDescription, domainParent, errorName } = this.state;
+
+        return (
             <div id="edit-document-domain">
                 <div className={`form-group ${errorName === undefined ? "" : "has-error"}`}>
-                    <label>{ translate('document.administration.domains.name') }<span className="text-red">*</span></label>
-                    <input type="text" className="form-control" onChange={this.handleValidateName} value={domainName}/>
-                    <ErrorLabel content = {errorName} />
+                    <label>{translate('document.administration.domains.name')}<span className="text-red">*</span></label>
+                    <input type="text" className="form-control" onChange={this.handleValidateName} value={domainName} />
+                    <ErrorLabel content={errorName} />
                 </div>
                 <div className="form-group">
-                    <label>{ translate('document.administration.domains.parent') }</label>
-                    <TreeSelect data={list} value={[domainParent]} handleChange={this.handleParent} mode="radioSelect"/>
+                    <label>{translate('document.administration.domains.parent')}</label>
+                    <TreeSelect data={list} value={[domainParent]} handleChange={this.handleParent} mode="radioSelect" />
                 </div>
                 <div className="form-group">
-                    <label>{ translate('document.administration.domains.description') }</label>
-                    <textarea style={{minHeight: '120px'}} type="text" className="form-control" onChange={this.handleDescription} value={domainDescription}/>
-                </div> 
+                    <label>{translate('document.administration.domains.description')}</label>
+                    <textarea style={{ minHeight: '120px' }} type="text" className="form-control" onChange={this.handleDescription} value={domainDescription} />
+                </div>
                 <div className="form-group">
-                    <button className="btn btn-success pull-right" style={{marginLeft: '5px'}} onClick={this.save}>{ translate('form.save') }</button>
-                    <button className="btn btn-danger" onClick={()=>{
+                    <button className="btn btn-success pull-right" style={{ marginLeft: '5px' }} onClick={this.save}>{translate('form.save')}</button>
+                    <button className="btn btn-danger" onClick={() => {
                         window.$(`#edit-document-domain`).slideUp()
-                    }}>{ translate('form.close') }</button>
-                </div>         
+                    }}>{translate('form.close')}</button>
+                </div>
             </div>
-         );
+        );
     }
 }
- 
+
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
     editDocumentDomain: DocumentActions.editDocumentDomain
 }
 
-export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(EditForm) );
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(EditForm));
