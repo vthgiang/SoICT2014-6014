@@ -46,7 +46,6 @@ class CrmCustomer extends Component {
         if (user.organizationalUnitsOfUser) {
             units = user.organizationalUnitsOfUser;
         }
-        console.log('list', list)
         return (
             <div className="box">
                 <div className="box-body qlcv">
