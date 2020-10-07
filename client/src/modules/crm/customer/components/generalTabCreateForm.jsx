@@ -10,13 +10,11 @@ class GeneralTabCreateForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            status: '0',
         }
     }
     render() {
-        const { translate, crm, user } = this.props;
-        const { groups } = crm;
-        const { id, newCustomer } = this.props;
+        const { translate, crm, user } = this.props; // state redux
+        const { id, newCustomer } = this.props; // Lấy giá trị từ props cha
 
         const { customerSource, code, name, company, companyEstablishmentDate, mobilephoneNumber, telephoneNumber
             , email, email2, address, address2, gender, birth, group, status, location, taxNumber, website, linkedIn,
@@ -32,11 +30,17 @@ class GeneralTabCreateForm extends Component {
 
         // Lấy danh sách nhóm khách hàng
         let listGroups;
-        if (groups.list && groups.list.length > 0) {
-            listGroups = groups.list.map(x => { return { value: x._id, text: x.name } })
-            listGroups.unshift({ value: '', text: 'Chọn nhóm khách hàng' });
+        if (crm.groups.list && crm.groups.list.length > 0) {
+            listGroups = crm.groups.list.map(o => ({ value: o._id, text: o.name }))
+            listGroups.unshift({ value: '', text: '---Chọn---' });
         }
 
+        // Lấy danh sách trạng thái khách hàng
+        let listStatus;
+        if (crm.status.list && crm.status.list.length > 0) {
+            listStatus = crm.status.list.map(o => ({ value: o._id, text: o.name }))
+            listStatus.unshift({ value: '', text: '---Chọn---' });
+        }
         return (
             <React.Fragment>
                 <div id={id} className="tab-pane active">
@@ -226,24 +230,20 @@ class GeneralTabCreateForm extends Component {
                         <div className="col-md-6">
                             <div className="form-group">
                                 <label>{translate('crm.customer.status')}</label>
-                                <SelectBox
-                                    id={`customer-status`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    items={
-                                        [
-                                            { value: '0', text: 'Khách hàng mới' },
-                                            { value: '1', text: 'Quan tâm đến sản phẩm ' },
-                                            { value: '2', text: 'Đã báo giá ' },
-                                            { value: '3', text: 'Đã mua sản phẩm ' },
-                                            { value: '4', text: 'Đã kí hợp đồng' },
-                                            { value: '5', text: 'Dừng liên hệ ' },
-                                        ]
-                                    }
-                                    value={status ? status : ''}
-                                    onChange={this.handleChangeCustomerStatus}
-                                    multiple={false}
-                                />
+                                {
+                                    listStatus &&
+                                    <SelectBox
+                                        id={`customer-status`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={
+                                            listStatus
+                                        }
+                                        value={status ? status : ''}
+                                        onChange={this.handleChangeCustomerStatus}
+                                        multiple={false}
+                                    />
+                                }
                             </div>
                         </div>
                     </div>

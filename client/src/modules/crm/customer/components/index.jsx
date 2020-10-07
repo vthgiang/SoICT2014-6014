@@ -4,6 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { CrmCustomerActions } from '../redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { CrmGroupActions } from '../../group/redux/actions';
+import { CrmStatusActions } from '../../status/redux/actions';
 import { DataTableSetting, PaginateBar, ConfirmNotification, SelectMulti } from '../../../../common-components';
 import CreateForm from './createForm';
 import InfoForm from './infoForm';
@@ -34,7 +35,7 @@ class CrmCustomer extends Component {
 
     render() {
         const { translate, crm, user } = this.props;
-        const { list } = crm.customers;
+        const { customers, groups, status } = crm;
         const { customer, importCustomer, limit, page, customerIdEdit } = this.state;
 
         let pageTotal = (crm.customers.totalDocs % limit === 0) ?
@@ -42,10 +43,24 @@ class CrmCustomer extends Component {
             parseInt((crm.customers.totalDocs / limit) + 1);
         let cr_page = parseInt((page / limit) + 1);
 
+        // Lấy danh sách đơn vị
         let units;
         if (user.organizationalUnitsOfUser) {
             units = user.organizationalUnitsOfUser;
         }
+
+        // Lấy danh sách nhóm khách hàng
+        let listGroups;
+        if (crm.groups.list && crm.groups.list.length > 0) {
+            listGroups = crm.groups.list.map(o => ({ value: o._id, text: o.name }))
+        }
+
+        // Lấy danh sách trạng thái khách hàng
+        let listStatus;
+        if (crm.status.list && crm.status.list.length > 0) {
+            listStatus = crm.status.list.map(o => ({ value: o._id, text: o.name }))
+        }
+
         return (
             <div className="box">
                 <div className="box-body qlcv">
@@ -92,28 +107,28 @@ class CrmCustomer extends Component {
 
                     <div className="form-inline" style={{ marginBottom: '2px' }}>
                         <div className="form-group">
-                            <label>Trạng thái</label>
-                            <SelectMulti id="multiSelectUnit12"
-                                items={[
-                                    { value: 0, text: 'Khách hàng mới' },
-                                    { value: 1, text: 'Quan tâm tới sản phẩm' },
-                                    { value: 2, text: 'Đã mua hàng' },
-                                ]}
-                                onChange={this.handleSelectOrganizationalUnit}
-                            >
-                            </SelectMulti>
+                            <label>{translate('crm.customer.status')}</label>
+                            {
+                                listStatus &&
+                                <SelectMulti id="multiSelectUnit12"
+                                    items={listStatus}
+                                    onChange={this.handleSelectOrganizationalUnit}
+                                    options={{ nonSelectedText: listStatus.length !== 0 ? translate('task.task_management.select_department') : "Chưa có trạng thái khách hàng", allSelectedText: translate(`task.task_management.select_all_department`) }}
+                                >
+                                </SelectMulti>
+                            }
                         </div>
                         <div className="form-group ">
-                            <label>Nhóm khách hàng</label>
-                            <SelectMulti id="multiSelectUnit13"
-                                items={[
-                                    { value: 0, text: 'Bắc' },
-                                    { value: 1, text: 'Trung' },
-                                    { value: 2, text: 'Nam' },
-                                ]}
-                                onChange={this.handleSelectOrganizationalUnit}
-                            >
-                            </SelectMulti>
+                            <label>{translate('crm.customer.group')}</label>
+                            {
+                                listGroups &&
+                                <SelectMulti id="multiSelectUnit13"
+                                    items={listGroups}
+                                    onChange={this.handleSelectOrganizationalUnit}
+                                    options={{ nonSelectedText: listGroups.length !== 0 ? translate('task.task_management.select_department') : "Chưa có nhóm khách hàng", allSelectedText: translate(`task.task_management.select_all_department`) }}
+                                >
+                                </SelectMulti>
+                            }
                         </div>
                     </div>
 
@@ -123,7 +138,7 @@ class CrmCustomer extends Component {
                             <button type="button" className="btn btn-success" onClick={this.search} title={translate('form.search')}>{translate('form.search')}</button>
                         </div>
                     </div>
-                    <table className="table table-hover table-striped table-bordered" id="table-manage-crm-customer">
+                    <table className="table table-hover table-striped table-bordered" id="table-manage-crm-customer" style={{ marginTop: '10px' }}>
                         <thead>
                             <tr>
                                 <th>{translate('crm.customer.code')}</th>
@@ -154,8 +169,8 @@ class CrmCustomer extends Component {
                         </thead>
                         <tbody>
                             {
-                                list && list.length > 0 ?
-                                    list.map(cus =>
+                                customers.list && customers.list.length > 0 ?
+                                    customers.list.map(cus =>
                                         <tr key={cus._id}>
                                             <td>{cus.code}</td>
                                             <td>{cus.name}</td>
@@ -177,12 +192,15 @@ class CrmCustomer extends Component {
                                                 />
                                             </td>
                                         </tr>
-                                    ) : crm.customers.isLoading ?
-                                        <tr><td colSpan={6}>{translate('general.loading')}</td></tr> :
-                                        <tr><td colSpan={6}>{translate('general.no_data')}</td></tr>
+                                    ) : null
                             }
                         </tbody>
                     </table>
+                    {
+                        customers.isLoading ?
+                            <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                            customers.list && customers.list.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                    }
 
                     {/* PaginateBar */}
                     <PaginateBar pageTotal={pageTotal} currentPage={cr_page} func={this.setPage} />
@@ -195,6 +213,7 @@ class CrmCustomer extends Component {
         this.props.getCustomers(this.state);
         this.props.getDepartment();
         this.props.getGroups({});
+        this.props.getStatus({});
     }
 
     handleInfo = async (customer) => {
@@ -233,7 +252,7 @@ class CrmCustomer extends Component {
 
         await this.setState({
             page: parseInt(page),
-        }, console.log('state', this.state));
+        });
         this.props.getCustomers(this.state);
     }
 
@@ -267,6 +286,7 @@ const mapDispatchToProps = {
     deleteCustomer: CrmCustomerActions.deleteCustomer,
 
     getGroups: CrmGroupActions.getGroups,
+    getStatus: CrmStatusActions.getStatus,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CrmCustomer));

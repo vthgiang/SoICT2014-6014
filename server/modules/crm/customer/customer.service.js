@@ -1,7 +1,6 @@
 const { Customer } = require(`${SERVER_MODELS_DIR}`);
 const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
-
 exports.createCustomer = async (portal, companyId, data, userId) => {
     let {
         owner, code, name, gender, avatar, company, taxNumber, customerSource, companyEstablishmentDate,
@@ -21,14 +20,15 @@ exports.createCustomer = async (portal, companyId, data, userId) => {
     }
 
     const newCustomer = await Customer(connect(DB_CONNECTION, portal)).create({
-        owner: '',
+        owner: owner,
         code: code,
         name: name,
-        // status: status,
+        status: status,
         creator: userId,
         gender: gender ? gender : '',
         taxNumber: taxNumber ? taxNumber : '',
         customerSource: customerSource ? customerSource : '',
+        company: company,
         companyEstablishmentDate: companyEstablishmentDate ? companyEstablishmentDate : null,
         birthDate: birthDate ? birthDate : null,
         telephoneNumber: telephoneNumber ? telephoneNumber : null,
@@ -92,11 +92,12 @@ exports.editCustomer = async (portal, companyId, id, data, userId) => {
             owner: owner,
             code: code,
             name: name,
-            // status: status,
+            status: status,
             creator: userId,
             gender: gender ? gender : '',
             taxNumber: taxNumber ? taxNumber : '',
             customerSource: customerSource ? customerSource : '',
+            company: company,
             companyEstablishmentDate: companyEstablishmentDate ? companyEstablishmentDate : null,
             birthDate: birthDate ? birthDate : null,
             telephoneNumber: telephoneNumber ? telephoneNumber : null,
