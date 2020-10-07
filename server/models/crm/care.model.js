@@ -9,7 +9,7 @@ const CareSchema = new Schema({
     },
     customer: { // khách hàng được chăm sóc
         type: Schema.Types.ObjectId,
-        ref: 'Lead',
+        ref: 'Customer',
         required: true,
     },
     caregiver: [{ //nhân viên chăm sóc khách hàng
@@ -36,6 +36,10 @@ const CareSchema = new Schema({
     },
     notes: { // Ghi chu
         type: String,
+    },
+    company: {
+        type: Schema.Types.ObjectId,
+        ref: 'Company',
     }
 }, {
     timestamps: true,

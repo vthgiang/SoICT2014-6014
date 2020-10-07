@@ -182,7 +182,7 @@ exports.searchAssetProfiles = async (portal, company, params) => {
     }
 
     // Lấy danh sách tài sản
-    let totalList = await Asset(connect(DB_CONNECTION, portal)).count(keySearch);
+    let totalList = await Asset(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
     let listAssets = await Asset(connect(DB_CONNECTION, portal)).find(keySearch).populate({ path: 'assetType' })
         .sort({ 'createdAt': 'desc' }).skip(params.page).limit(params.limit);
     return { data: listAssets, totalList }

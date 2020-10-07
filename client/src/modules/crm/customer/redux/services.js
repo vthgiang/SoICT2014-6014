@@ -10,38 +10,38 @@ export const CrmCustomerServices = {
 
 function getCustomers(params) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/crm/customer`,
+        url: `${process.env.REACT_APP_SERVER}/crm/customers`,
         method: 'GET',
         params,
-    }, false, true, 'customer');
+    }, false, true, 'crm.customer');
 }
 
 function createCustomer(data) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/crm/customer`,
+        url: `${process.env.REACT_APP_SERVER}/crm/customers`,
         method: 'POST',
         data,
-    }, true, true, 'customer');
+    }, true, true, 'crm.customer');
 }
 
 function getCustomer(id) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/crm/customer/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/crm/customers/${id}`,
         method: 'GET',
-    }, false, true, 'customer');
+    }, false, true, 'crm.customer');
 }
 
 function editCustomer(id, data) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/crm/customer/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/crm/customers/${id}`,
         method: 'PATCH',
         data,
-    }, true, true, 'customer');
+    }, true, true, 'crm.customer');
 }
 
 function deleteCustomer(id) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/crm/customer/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/crm/customers/${id}`,
         method: 'DELETE',
-    }, false, true, 'customer');
+    }, false, true, 'crm.customer');
 }

@@ -4,11 +4,6 @@ const mongoosePaginate = require('mongoose-paginate-v2');
 
 const BinLocationSchema = new Schema ({
 
-    company: {
-        type: Schema.Types.ObjectId,
-        ref: 'Company'
-    },
-
     parent: {
         type: Schema.Types.ObjectId,
         replies: this
@@ -17,6 +12,10 @@ const BinLocationSchema = new Schema ({
     child: {
         type: Schema.Types.ObjectId,
         replies: this
+    },
+
+    path: {
+        type: String
     },
 
     code: {
@@ -40,7 +39,7 @@ const BinLocationSchema = new Schema ({
 
     status: {
         type: String,
-        enum: [""]
+        enum: ["1", "2", "3", "4"]
     },
 
     users: [{

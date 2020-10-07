@@ -40,7 +40,7 @@ exports.createBackup = async(req, res) => {
 
 exports.deleteBackup = async(req, res) => {
     try {
-        const path = await SystemService.deleteBackup(req.portal, req.params.version);
+        const path = await SystemService.deleteBackup(req.params.version, req.portal);
         res.status(200).json({
             success: true,
             messages: ['delete_backup_success'],

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { configDomain, exportDomain } from './fileConfigurationImportDomain.js'
 import { DialogModal, ImportFileExcel, ShowImportData, ConFigImportFile, ExportExcel } from '../../../../../common-components';
-//import { taskTemplateActions } from '../redux/actions';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { AuthActions } from '../../../../auth/redux/actions';
@@ -87,7 +86,6 @@ class DomainImportForm extends Component {
         this.props.importDomain(importShowData);
     }
     render() {
-        const { translate } = this.props;
         let { limit, page, importData, rowError, configData, checkFileImport } = this.state;
 
         return (
@@ -104,7 +102,6 @@ class DomainImportForm extends Component {
                         <ConFigImportFile
                             id="import_taskTemplate_config"
                             configData={configData}
-                            // textareaRow={8}
                             scrollTable={false}
                             handleChangeConfig={this.handleChangeConfig}
                         />

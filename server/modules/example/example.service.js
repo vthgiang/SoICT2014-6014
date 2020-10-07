@@ -28,7 +28,7 @@ exports.getExamples = async (params, portal) => {
             }
         }
     }
-    let totalList = await Example(connect(DB_CONNECTION, portal)).count(keySearch);
+    let totalList = await Example(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
     let ExampleCollection = await Example(connect(DB_CONNECTION, portal)).find(keySearch)
         .skip(params.page * params.limit)
         .limit(params.limit);
@@ -46,7 +46,7 @@ exports.getOnlyExampleName = async (params, portal) => {
             }
         }
     }
-    let totalList = await Example(connect(DB_CONNECTION, portal)).count(keySearch);
+    let totalList = await Example(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
     let ExampleCollection = await Example(connect(DB_CONNECTION, portal)).find(keySearch, { exampleName: 1 })
         .skip(params.page * params.limit)
         .limit(params.limit);

@@ -65,11 +65,12 @@ import { categories } from "../modules/warehouse/category-management/redux/reduc
 import { goods } from "../modules/warehouse/good-management/redux/reducers";
 
 //crm
-import { customer } from "../modules/crm/customer/redux/reducers";
-import { group } from "../modules/crm/group/redux/reducers";
+import { customers } from "../modules/crm/customer/redux/reducers";
+import { groups } from "../modules/crm/group/redux/reducers";
+import { status } from "../modules/crm/status/redux/reducers";
+// import { care } from "../modules/crm/care/redux/reducers";
 
 //order
-import { order } from "../modules/order/redux/reducers";
 
 //plan
 import { plan } from "../modules/plan/redux/reducers";
@@ -158,11 +159,10 @@ const appReducer = combineReducers({
 
     // customer management
     crm: combineReducers({
-        customer, group
+        customers, groups, status
     }),
 
     //order
-    order,
 
     //plane
     plan,

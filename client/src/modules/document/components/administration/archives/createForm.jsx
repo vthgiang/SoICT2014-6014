@@ -79,7 +79,8 @@ class CreateForm extends Component {
     render() {
         const { translate, documents } = this.props;
         const { list } = documents.administration.archives;
-        const { archiveParent, errorName } = this.state;
+        let { archiveParent, errorName } = this.state;
+        archiveParent = archiveParent ? archiveParent : this.props.archiveParent;
         return (
             <React.Fragment>
                 <DialogModal

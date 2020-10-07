@@ -104,12 +104,20 @@ import PartnerManagement from '../modules/warehouse/partner-management/component
 import ProposalManagement from '../modules/warehouse/proposal-management/component';
 
 // Customer Management
+import CrmDashBoard from '../modules/crm/dashboard/components';
 import CrmCustomer from '../modules/crm/customer/components';
 import CrmGroup from '../modules/crm/group/components';
 // import CrmCare from '../modules/crm/care/components'
 
 //orders
-import OrderManagement from "../modules/order/components";
+import PurchaseOrder from '../modules/production/order/purchase-order/components';
+import SalesOrder from '../modules/production/order/sales-order/components'
+import ManufacturingOrder from '../modules/production/order/manufacturing-order/components';
+import Discount from '../modules/production/order/discount/components';
+import Quotation from '../modules/production/order/quotation/components';
+import Tax from '../modules/production/order/tax/components';
+import ServiceLevelAgreement from '../modules/production/order/service-level-agreement/components';
+
 
 // plans
 import PlanManagement from "../modules/plan/components";
@@ -129,6 +137,7 @@ import ManufacturingSchedule from "../modules/production/manufacturing/manufactu
 import ManufacturingWorks from "../modules/production/manufacturing/manufacturing-works/components";
 import PurchasingRequest from "../modules/production/manufacturing/purchasing-request/components";
 import TrackOrder from "../modules/production/manufacturing/track-order/components";
+import manufacturingOrder from '../modules/production/manufacturing/manufacturing-plan/components/manufacturing-order';
 
 class Routes extends Component {
 
@@ -1251,6 +1260,21 @@ class Routes extends Component {
                     {/* Customer Management */}
                     <PrivateRoute
                         isLoading={false}
+                        key={'crm_dashboard'}
+                        arrPage={[
+                            { link: '/crm/dashboard', name: 'crm_list.dashboard', icon: 'fa fa-dashboard' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/crm/dashboard'}
+                        path={'/crm/dashboard'}
+                        pageName={'crm_list.dashboard'}
+                        layout={Layout}
+                        component={CrmDashBoard}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
                         key={'crm_customer'}
                         arrPage={[
                             { link: '/crm/customer', name: 'crm_list.customer', icon: 'fa fa-users' }
@@ -1297,7 +1321,7 @@ class Routes extends Component {
                     {/* Orders Management */}
 
                     <PrivateRoute
-                        isLoading={this.props.order.isLoading}
+                        isLoading={false}
                         key={"/manage-sales-order"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1313,11 +1337,11 @@ class Routes extends Component {
                         path={"/manage-sales-order"}
                         pageName={"manage_sales_order"}
                         layout={Layout}
-                        component={OrderManagement}
+                        component={SalesOrder}
                     />
 
                     <PrivateRoute
-                        isLoading={this.props.order.isLoading}
+                        isLoading={false}
                         key={"/manage-manufacturing-order"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1333,11 +1357,11 @@ class Routes extends Component {
                         path={"/manage-manufacturing-order"}
                         pageName={"manage_manufacturing_order"}
                         layout={Layout}
-                        component={OrderManagement}
+                        component={ManufacturingOrder}
                     />
 
                     <PrivateRoute
-                        isLoading={this.props.order.isLoading}
+                        isLoading={false}
                         key={"/manage-purchase-order"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1353,11 +1377,11 @@ class Routes extends Component {
                         path={"/manage-purchase-order"}
                         pageName={"manage_purchase_order"}
                         layout={Layout}
-                        component={OrderManagement}
+                        component={PurchaseOrder}
                     />
 
                     <PrivateRoute
-                        isLoading={this.props.order.isLoading}
+                        isLoading={false}
                         key={"/manage-quotation"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1373,11 +1397,11 @@ class Routes extends Component {
                         path={"/manage-quotation"}
                         pageName={"manage_quotation"}
                         layout={Layout}
-                        component={OrderManagement}
+                        component={Quotation}
                     />
 
                     <PrivateRoute
-                        isLoading={this.props.order.isLoading}
+                        isLoading={false}
                         key={"/manage-discount"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1393,11 +1417,11 @@ class Routes extends Component {
                         path={"/manage-discount"}
                         pageName={"manage_discount"}
                         layout={Layout}
-                        component={OrderManagement}
+                        component={Discount}
                     />
 
                     <PrivateRoute
-                        isLoading={this.props.order.isLoading}
+                        isLoading={false}
                         key={"/manage-tax"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1413,11 +1437,11 @@ class Routes extends Component {
                         path={"/manage-tax"}
                         pageName={"manage_tax"}
                         layout={Layout}
-                        component={OrderManagement}
+                        component={Tax}
                     />
 
                     <PrivateRoute
-                        isLoading={this.props.order.isLoading}
+                        isLoading={false}
                         key={"/manage-sla"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1433,7 +1457,7 @@ class Routes extends Component {
                         path={"/manage-sla"}
                         pageName={"manage_sla"}
                         layout={Layout}
-                        component={OrderManagement}
+                        component={ServiceLevelAgreement}
                     />
 
                     {/* Plans Management */}

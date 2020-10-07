@@ -3,9 +3,9 @@ const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
 const StatusSchema = new Schema({
-    code: { // Mã trạng thái khách hàng
-        type: String,
-        required: true
+    creator: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
     },
     name: { // Tên trạng thái
         type: String,
@@ -14,6 +14,10 @@ const StatusSchema = new Schema({
     description: { // Mô tả trạng thái
         type: String
     },
+    company: {
+        type: Schema.Types.ObjectId,
+        ref: 'Company',
+    }
 }, {
     timestamps: true,
 });
