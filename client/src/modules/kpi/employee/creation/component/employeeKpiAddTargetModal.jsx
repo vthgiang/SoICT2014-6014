@@ -46,14 +46,14 @@ class ModalCreateEmployeeKpi extends Component {
         const { createKpiUnit } = this.props;
         if (createKpiUnit.currentKPI) currentOrganizationalKpiSet = createKpiUnit.currentKPI;
         if(this.state.parent === null){
-            if(currentOrganizationalKpiSet === null){
+            if(!currentOrganizationalKpiSet){
                 parent = null;
             }
             else{    
                 items = currentOrganizationalKpiSet.kpis.filter(item => item.type === 0).map(x => {//type !==0 thì đc. cái này để loại những mục tiêu mặc định?
                     return {value: x._id, text: x.name} });
 
-                parent = items[0].value;
+                parent = items && items[0] && items[0].value;
             }    
         }
         else{
