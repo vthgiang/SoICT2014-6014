@@ -1,0 +1,20 @@
+[{
+    "_id": "1",
+    "code": "DHSX_110",
+    "status": "Đã phê duyệt",
+     "type": "Đơn đề nghị",
+     "creator": " Nguyễn Văn A",
+     "deadline": "20/10/2020",
+     "approvers": [{
+         "_id": "1",
+         "name": "Trịnh Văn M",
+         "role": "Trưởng phòng kế hoạch"
+     }],
+     "description": "",
+     "priority": 1,
+     "salesOrders": [{
+         "_id": "1"
+     }]
+
+
+}]

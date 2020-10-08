@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { withTranslate } from  'react-redux-multilingual';
 import {PaginateBar,
   DataTableSetting,
   DeleteNotification, SelectBox} from '../../../../../common-components';
 
-import data from '../../dataTest/PurchaseOrderData.json'
-import PurchaseDetailForm from './purchaseOrderDetailForm';
-import PurchaseOrderCreateForm from './purchaseOrderCreateForm';
-import PurchaseOrderEditForm from './purchaseOrderEditForm';
+import { connect } from 'react-redux';
+import { withTranslate } from  'react-redux-multilingual';
+import dataManufacturing from '../../dataTest/manufacturingOrderData.json';
+import ManufacturingOrderCreateForm from './manufacturingOrderCreateForm';
+import dataSales from '../../dataTest/salesOrderData.json';
 
-class PurchaseOrderTable extends Component {
+class ManufacturingOrderTable extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -21,47 +20,11 @@ class PurchaseOrderTable extends Component {
 
   static getDerivedStateFromProps(props, state) {
     return {
-      list: data
+      list: dataManufacturing
     }
   }
 
-  handleShowDetailInfo = (data) => {
-    this.setState(state => {
-      return {
-        ...state,
-        currentRow: data
-      }
-    })
-    window.$('#modal-detail-material-purchase-order').modal('show');
-  }
-
-  deletePurchaseOrder = (_id) => {
-    let { list } = this.state;
-    list = list.filter((item) => item._id !== _id);
-   
-    this.setState(state => {
-      return {
-        ...state,
-        list
-      }
-    })
-
-    console.log("st", this.state);
-  }
-
-  handleEdit = (data) => {
-    console.log("dd", data);
-    this.setState(state => {
-      return {
-        ...state,
-        editRow: data
-      }
-    })
-    window.$('#modal-edit-material-purchase-order').modal('show');
-  }
-
   render() {
-    
     let {list, limit, page} = this.state;
     console.log("sss", this.state.editRow);
 
@@ -72,27 +35,15 @@ class PurchaseOrderTable extends Component {
         list.length % limit === 0
           ? parseInt(list.length / limit)
           : parseInt(list.length / limit + 1);
-    
+
     return (
-      <React.Fragment>
+         <React.Fragment>
         <div className="box-body qlcv">
-        <PurchaseOrderCreateForm/>
-        {
-          this.state.currentRow && 
-          <PurchaseDetailForm 
-            data={this.state.currentRow}
-          />
-        }
-        {
-          this.state.editRow && 
-          <PurchaseOrderEditForm
-            data={this.state.editRow}
-          />
-        }
+        <ManufacturingOrderCreateForm />
           <div className="form-inline">
             <div className="form-group">
               <label className="form-control-static">
-               Tìm mã đơn mua
+               Tìm mã đơn
               </label>
               <input
                 type="text"
@@ -112,10 +63,21 @@ class PurchaseOrderTable extends Component {
                 items={[
                   { value: 'Chờ phê duyệt', text:'Chờ phê duyệt'},
                   { value: 'Đã phê duyệt', text: 'Đã phê duyệt'},
-                  { value: 'Đã phê duyệt', text: 'Đã phê duyệt'},
-                  { value: 'Đang mua hàng', text: 'Đang mua hàng'},
-                  { value: 'Đã hoàn thành', text: 'Đã hoàn thành'},
+                  { value: 'Đang sản xuất', text: 'Đang sản xuất'},
                   { value: 'Đã nhập kho', text: 'Đã nhập kho'}
+                ]}
+                onChange={this.handleStatusChange}
+              />
+          </div>
+          <div className="form-group">
+              <label className="form-control-static">Loại đơn</label>
+              <SelectBox
+                id={`select-filter-status-material-purchase-order`}
+                className="form-control select2"
+                style={{ width: "100%" }}
+                items={[
+                  { value: 'Đơn đề nghị', text:'Đơn đề nghị'},
+                  { value: 'Đơn sản xuất', text: 'Đơn sản xuất'}
                 ]}
                 onChange={this.handleStatusChange}
               />
@@ -140,7 +102,8 @@ class PurchaseOrderTable extends Component {
               <tr>
                 <th>STT</th>
                 <th>Mã đơn</th>
-                <th>Nội dung mua hàng</th>
+                <th>Loại đơn</th>
+                <th>Hạn hoàn thành</th>
                 <th>Trạng thái</th>
                 <th>Người tạo</th>
                 <th style={{ width: "120px", textAlign: "center" }}>
@@ -167,7 +130,8 @@ class PurchaseOrderTable extends Component {
                   <tr key={index}>
                     <td>{index + 1 + (page - 1) * limit}</td>
                     <td>{item.code}</td>
-                    <td>{item.description}</td>
+                    <td>{item.type}</td>
+                    <td>{item.deadline}</td>
                     <td>{item.status}</td>
                     <td>{item.creator}</td>
                     <td style={{ textAlign: "center" }}>
@@ -205,4 +169,4 @@ class PurchaseOrderTable extends Component {
   }
 }
 
-export default connect(null, null)(withTranslate(PurchaseOrderTable));
+export default connect(null, null)(withTranslate(ManufacturingOrderTable));

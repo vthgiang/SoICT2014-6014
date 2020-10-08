@@ -18,8 +18,8 @@ class PurchaseDetailForm extends Component {
   }
 
   render() {
-    console.log(this.props.data);
     const {data} = this.props;
+
     return (
       <React.Fragment>
 
@@ -109,7 +109,7 @@ class PurchaseDetailForm extends Component {
                           <th title={'Thanh toán lúc'}>Thanh toán lúc</th>
                         </tr>
                         </thead>
-                        <tbody id={`good-edit-manage-by-stock`}>
+                        <tbody id={`good-edit-manage-by-purchase-order`}>
                           {
                             data.payments.map((item, index) =>
                               <tr key={index}>
@@ -135,13 +135,15 @@ class PurchaseDetailForm extends Component {
                     <tr>
                       <th title={'Tên nguyên vật liệu'}>Tên nguyên vật liệu</th>
                       <th title={'Giá (vnđ)'}>Giá</th>
-                      <th title={'Số lượng'}>Số lượng</th>
+                      <th title={'Số lượng'}>Số lượng bán</th>
+                      <th title={'Số lượng'}>Khuyến mãi</th>
+                      <th title={'Số lượng'}>Thực xuất</th>
                       <th title={'Đơn vị tính'}>Đơn vị tính</th>
                       <th title={'Quy tắc đổi trả'}>Quy tắc đổi trả</th>
                       <th title={'Cam kết chất lượng'}>Cam kết chất lượng</th>
                     </tr>
                   </thead>
-                  <tbody id={`good-edit-manage-by-stock`}>
+                  <tbody id={`good-edit-manage-by-purchase-order`}>
                     {
                       (data.goods.length === 0) ? <tr><td colSpan={6}><center>{'Chưa có thông tin nguyên vật liệu'}</center></td></tr> :
                       data.goods.map((item, index) =>
