@@ -16,9 +16,9 @@ class GeneralTabEditForm extends Component {
 
     render() {
         const { translate, crm, user } = this.props;
-        const { editingCustomer } = this.props;
-        const { groups } = crm;
-        const { customerCodeError, customerNameError, customerTaxNumberError } = this.state;
+        const { editingCustomer, id } = this.props;
+        const { owner, group, status, gender, location, customerCodeError, customerNameError, customerTaxNumberError } = this.state;
+        // console.log('this.state', this.state)
 
         // Lấy thành viên trong đơn vị
         let unitMembers = [];
@@ -28,13 +28,20 @@ class GeneralTabEditForm extends Component {
 
         // Lấy danh sách nhóm khách hàng
         let listGroups;
-        if (groups.list && groups.list.length > 0) {
-            listGroups = groups.list.map(x => { return { value: x._id, text: x.name } })
-            listGroups.unshift({ value: '', text: 'Chọn nhóm khách hàng' });
+        if (crm.groups.list && crm.groups.list.length > 0) {
+            listGroups = crm.groups.list.map(x => { return { value: x._id, text: x.name } })
+            listGroups.unshift({ value: '', text: '---Chọn---' });
+        }
+
+        // Lấy danh sách trạng thái khách hàng
+        let listStatus;
+        if (crm.status.list && crm.status.list.length > 0) {
+            listStatus = crm.status.list.map(o => ({ value: o._id, text: o.name }))
+            listStatus.unshift({ value: '', text: '---Chọn---' });
         }
         return (
             <React.Fragment>
-                <div id="Customer-general" className="tab-pane active">
+                <div id={id} className="tab-pane active">
                     <div className="row">
                         {/* Người quản lý khách hàng*/}
                         <div className="col-md-6">
@@ -46,7 +53,7 @@ class GeneralTabEditForm extends Component {
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         items={unitMembers}
-                                        value={editingCustomer.owner ? editingCustomer.owner : []}
+                                        value={owner}
                                         onChange={this.handleChangeCustomerOwner}
                                         multiple={true}
                                     />
@@ -176,7 +183,7 @@ class GeneralTabEditForm extends Component {
                                             { value: 1, text: 'Nữ' },
                                         ]
                                     }
-                                    value={editingCustomer.gender ? editingCustomer.gender : ''}
+                                    value={gender}
                                     onChange={this.handleChangeCustomerGender}
                                     multiple={false}
                                 />
@@ -211,7 +218,7 @@ class GeneralTabEditForm extends Component {
                                         items={
                                             listGroups
                                         }
-                                        value={editingCustomer.group ? editingCustomer.group : ''}
+                                        value={group}
                                         onChange={this.handleChangeCustomerGroup}
                                         multiple={false}
                                     />
@@ -223,24 +230,18 @@ class GeneralTabEditForm extends Component {
                         <div className="col-md-6">
                             <div className="form-group">
                                 <label>{translate('crm.customer.status')}</label>
-                                <SelectBox
-                                    id={`customer-status-edit-form`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    items={
-                                        [
-                                            { value: 0, text: 'Khách hàng mới' },
-                                            { value: 1, text: 'Quan tâm đến sản phẩm ' },
-                                            { value: 2, text: 'Đã báo giá ' },
-                                            { value: 3, text: 'Đã mua sản phẩm ' },
-                                            { value: 4, text: 'Đã kí hợp đồng' },
-                                            { value: 5, text: 'Dừng liên hệ ' },
-                                        ]
-                                    }
-                                    value={editingCustomer.status ? editingCustomer.status : ''}
-                                    onChange={this.handleChangeCustomerGender}
-                                    multiple={false}
-                                />
+                                {
+                                    listStatus &&
+                                    <SelectBox
+                                        id={`customer-status-edit-form`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={listStatus}
+                                        value={status}
+                                        onChange={this.handleChangeCustomerStatus}
+                                        multiple={false}
+                                    />
+                                }
                             </div>
                         </div>
                     </div>
@@ -251,17 +252,17 @@ class GeneralTabEditForm extends Component {
                             <div className="form-group">
                                 <label>{translate('crm.customer.location')}  </label>
                                 <SelectBox
-                                    id={`customer-gender-edit-form`}
+                                    id={`customer-location-edit-form`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={
                                         [
                                             { value: 0, text: 'Bắc' },
                                             { value: 1, text: 'Trung ' },
-                                            { value: 2, text: 'Name ' },
+                                            { value: 2, text: 'Nam ' },
                                         ]
                                     }
-                                    value={editingCustomer.location ? editingCustomer.location : ''}
+                                    value={location}
                                     onChange={this.handleChangeCustomerLocation}
                                     multiple={false}
                                 />
@@ -298,6 +299,24 @@ class GeneralTabEditForm extends Component {
                 </div>
             </React.Fragment>
         );
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        let { editingCustomer } = props;
+        if (props.customerIdEdit != state.customerIdEdit) {
+            return {
+                ...state,
+                id: props.id,
+                customerIdEdit: props.customerIdEdit,
+                owner: editingCustomer.owner,
+                location: editingCustomer.location ? editingCustomer.location : '',
+                status: editingCustomer.status ? editingCustomer.status : '',
+                group: editingCustomer.group ? editingCustomer.group : '',
+                gender: editingCustomer.gender ? editingCustomer.gender : '',
+            }
+        } else {
+            return null;
+        }
     }
 
     handleChangeCustomerOwner = (value) => {
@@ -455,6 +474,15 @@ class GeneralTabEditForm extends Component {
             group: value[0],
         });
         callBackFromParentEditForm('group', value[0]);
+    }
+
+    handleChangeCustomerStatus = (value) => {
+        const { callBackFromParentEditForm } = this.props;
+
+        this.setState({
+            status: value[0],
+        });
+        callBackFromParentEditForm('status', value[0]);
     }
 
     handleChangeCustomerLocation = (value) => {
