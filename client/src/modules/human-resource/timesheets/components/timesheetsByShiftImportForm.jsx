@@ -141,7 +141,7 @@ class TimesheetsByShiftImportForm extends Component {
                             totalHours = totalHours + y;
                         })
                     };
-                    if (x.totalHours) {
+                    if (x.totalHoursOff) {
                         totalHoursOff = (x.totalHoursOff);
                     } else {
                         timekeepingByHours.forEach((y, indexs) => {

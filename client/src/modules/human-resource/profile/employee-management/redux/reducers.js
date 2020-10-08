@@ -12,6 +12,7 @@ const initState = {
     totalAllEmployee: 0,
 
     arrMonth: [],
+    totalEmployees: [],
     listEmployeesHaveStartingDateOfNumberMonth: [],
     listEmployeesHaveLeavingDateOfNumberMonth: [],
     listEmployees: [],
@@ -43,6 +44,7 @@ export function employeesManager(state = initState, action) {
                 return {
                     ...state,
                     arrMonth: action.payload.arrMonth,
+                    totalEmployees: action.payload.totalEmployees,
                     listEmployeesHaveStartingDateOfNumberMonth: action.payload.listEmployeesHaveStartingDateOfNumberMonth,
                     listEmployeesHaveLeavingDateOfNumberMonth: action.payload.listEmployeesHaveLeavingDateOfNumberMonth,
                     isLoading: false
