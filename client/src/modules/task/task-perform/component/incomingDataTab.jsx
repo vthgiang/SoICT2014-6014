@@ -24,7 +24,7 @@ class IncomingDataTab extends Component {
     }
     isImage = (src) => {
         let string = src.split(".")
-        let image = ['jpg', 'jpeg', 'png', 'psd', 'pdf', 'tiff', 'gif']
+        let image = ['jpg', 'jpeg', 'png', 'tiff', 'gif']
         if (image.indexOf(string[string.length - 1]) !== -1) {
             return true;
         } else {
