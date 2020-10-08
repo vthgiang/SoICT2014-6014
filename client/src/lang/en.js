@@ -1811,6 +1811,8 @@ export default {
                 number: 'Amount',
                 attached_file: 'Attached files',
 
+                select_role_to_use: 'Select type to use',
+                select_all_roles_to_use: 'Select all types',
                 not_for_registering: 'Not for registering',
                 register_by_hour: 'Register by hour',
                 register_for_long_term: 'Register for long term',
@@ -2779,6 +2781,10 @@ export default {
                             edit: 'Edit',
                             content: 'This is the default target (if necessary, weights can be corrected)',
                             delete: 'Delete'
+                        },
+                        add_new_target: {
+                            approving: 'KPI is being approved, you can not create new target!',
+                            activated: 'KPI is being activated, you can not create new target!'
                         },
                         handle_populate_info_null: {
                             error_kpi_approver_null: 'Error! The approver of this KPI set is not exist or was deleted',

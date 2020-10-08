@@ -249,11 +249,11 @@ exports.updateEmployeeKpiSetStatus = async (portal, id, statusId) => {
 }
 
 /* Chỉnh sửa thông tin chung của KPI cá nhân */
-exports.editEmployeeKpiSet = async (portal, strDate, id) => {
+exports.editEmployeeKpiSet = async (portal, strDate, approver, id) => {
     let arr = strDate.split("-");
     let date = new Date(arr[1], arr[0], 0)
     let employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
-        .findByIdAndUpdate(id, { $set: { date: date } }, { new: true })
+        .findByIdAndUpdate(id, { $set: { date: date, approver: approver._id } }, { new: true })
 
     employeeKpiSet = employeeKpiSet && await employeeKpiSet
         .populate("organizationalUnit creator approver ")
@@ -261,7 +261,9 @@ exports.editEmployeeKpiSet = async (portal, strDate, id) => {
         .populate([
             { path: 'comments.creator', select: 'name email avatar ' },
             { path: 'comments.comments.creator', select: 'name email avatar' }
-        ]);
+        ])
+        .execPopulate();
+
     return employeeKpiSet;
 }
 

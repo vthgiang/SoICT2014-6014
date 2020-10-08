@@ -1861,6 +1861,8 @@ export default {
                 number: 'Số lượng',
                 attached_file: 'File đính kèm',
 
+                select_role_to_use: 'Chọn loại sử dụng',
+                select_all_roles_to_use: 'Chọn tất cả loại sử dụng',
                 not_for_registering: 'Không được đăng ký sử dụng',
                 register_by_hour: 'Đăng ký sử dụng theo giờ',
                 register_for_long_term: 'Đăng ký sử dụng lâu dài',
@@ -2838,6 +2840,10 @@ export default {
                             kpi_target: 'Bạn chắc chắn muốn xóa mục tiêu KPI này?',
                             approving: 'KPI đang được phê duyệt, bạn không thể xóa!',
                             activated: 'KPI đã được kích hoạt, bạn không thể xóa!'
+                        },
+                        add_new_target: {
+                            approving: 'KPI đang được phê duyệt, bạn không thể thêm mới!',
+                            activated: 'KPI đã được kích hoạt, bạn không thể thêm mới!',
                         },
                         handle_populate_info_null: {
                             error_kpi_approver_null: 'Người phê duyệt tập KPI này không tồn tại hoặc đã bị xóa',
