@@ -1,22 +1,20 @@
-/* Biểu đồ xu hướng nghỉ phép của nhân viên */
+/* Biểu đồ xu làm thêm giờ của nhân viên */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { AnnualLeaveActions } from '../../annual-leave/redux/actions';
 import { SelectMulti, SelectBox, DatePicker } from '../../../../common-components';
+import { TimesheetsActions } from '../../timesheets/redux/actions';
 
 import c3 from 'c3';
 import 'c3/c3.css';
 
-class AnnualLeaveTrendsChart extends Component {
+class TrendOfOvertime extends Component {
     constructor(props) {
         super(props);
         let startDate = ['01', new Date().getFullYear()].join('-');
         this.state = {
             lineChart: true,
-            numberMonth: 12,
-            numberMonthShow: 12,
             startDate: startDate,
             startDateShow: startDate,
             endDate: this.formatDate(Date.now(), true),
@@ -57,7 +55,7 @@ class AnnualLeaveTrendsChart extends Component {
         let arrEnd = endDate.split('-');
         let endDateNew = [arrEnd[1], arrEnd[0]].join('-');
 
-        this.props.getAnnualLeave({ organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew })
+        this.props.getTimesheets({ organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew })
     }
 
     /**
@@ -120,23 +118,23 @@ class AnnualLeaveTrendsChart extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (!prevState.arrMonth || nextProps.annualLeave.arrMonth.length !== prevState.arrMonth.length ||
-            !AnnualLeaveTrendsChart.isEqual(nextProps.annualLeave.listAnnualLeaveOfNumberMonth, prevState.listAnnualLeaveOfNumberMonth)) {
+        if (!prevState.arrMonth || nextProps.timesheets.arrMonth.length !== prevState.arrMonth.length ||
+            !TrendOfOvertime.isEqual(nextProps.timesheets.listOvertimeOfUnitsByStartDateAndEndDate, prevState.listOvertimeOfUnitsByStartDateAndEndDate)) {
             return {
                 ...prevState,
                 nameChart: nextProps.nameChart,
                 nameData1: nextProps.nameData1,
-                arrMonth: nextProps.annualLeave.arrMonth,
-                listAnnualLeaveOfNumberMonth: nextProps.annualLeave.listAnnualLeaveOfNumberMonth,
+                arrMonth: nextProps.timesheets.arrMonth,
+                listOvertimeOfUnitsByStartDateAndEndDate: nextProps.timesheets.listOvertimeOfUnitsByStartDateAndEndDate,
             }
         }
         return null;
 
     }
     shouldComponentUpdate(nextProps, nextState) {
-        if (nextProps.annualLeave.arrMonth.length !== this.state.arrMonth.length ||
+        if (nextProps.timesheets.arrMonth.length !== this.state.arrMonth.length ||
             nextState.lineChart !== this.state.lineChart ||
-            !AnnualLeaveTrendsChart.isEqual(nextProps.annualLeave.listAnnualLeaveOfNumberMonth, this.state.listAnnualLeaveOfNumberMonth) ||
+            !TrendOfOvertime.isEqual(nextProps.timesheets.listOvertimeOfUnitsByStartDateAndEndDate, this.state.listOvertimeOfUnitsByStartDateAndEndDate) ||
             JSON.stringify(nextState.organizationalUnitsSearch) !== JSON.stringify(this.state.organizationalUnitsSearch)) {
             return true;
         }
@@ -221,13 +219,13 @@ class AnnualLeaveTrendsChart extends Component {
         let arrEnd = endDate.split('-');
         let endDateNew = [arrEnd[1], arrEnd[0]].join('-');
 
-        this.props.getAnnualLeave({ organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew, })
+        this.props.getTimesheets({ organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew, })
 
     }
 
     render() {
-        const { department, annualLeave, translate } = this.props;
-        const { lineChart, nameChart, numberMonth, nameData1, startDate, endDate, startDateShow, endDateShow, organizationalUnitsSearch } = this.state;
+        const { department, timesheets, translate } = this.props;
+        const { lineChart, nameChart, nameData1, startDate, endDate, startDateShow, endDateShow, organizationalUnitsSearch } = this.state;
 
         let organizationalUnitsName = [];
         if (organizationalUnitsSearch) {
@@ -235,21 +233,20 @@ class AnnualLeaveTrendsChart extends Component {
             organizationalUnitsName = organizationalUnitsName.map(x => x.name);
         }
 
-        if (annualLeave.arrMonth.length !== 0) {
-            let ratioX = ['x', ...annualLeave.arrMonth];
-            let listAnnualLeaveOfNumberMonth = annualLeave.listAnnualLeaveOfNumberMonth;
+        if (timesheets.arrMonth.length !== 0) {
+            let ratioX = ['x', ...timesheets.arrMonth];
+            let listOvertimeOfUnitsByStartDateAndEndDate = timesheets.listOvertimeOfUnitsByStartDateAndEndDate;
             let data1 = ['data1'];
-            annualLeave.arrMonth.forEach(x => {
-                let total = 0;
-                let date = new Date(x);
-                let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-                let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
-                listAnnualLeaveOfNumberMonth.forEach(y => {
-                    if (firstDay.getTime() < new Date(y.startDate).getTime() && new Date(y.startDate).getTime() <= lastDay.getTime()) {
-                        total += 1;
-                    }
+            timesheets.arrMonth.forEach(x => {
+                let overtime = 0;
+                listOvertimeOfUnitsByStartDateAndEndDate.forEach(y => {
+                    if (new Date(y.month).getTime() === new Date(x).getTime()) {
+                        if (y.totalHoursOff <= 0) {
+                            overtime = overtime + (0 - y.totalHoursOff);
+                        }
+                    };
                 })
-                data1 = [...data1, total]
+                data1 = [...data1, overtime]
             })
             this.renderChart({ nameData1, ratioX, data1, lineChart });
         }
@@ -264,7 +261,7 @@ class AnnualLeaveTrendsChart extends Component {
                             <div className="form-inline">
                                 <div className="form-group">
                                     <label className="form-control-static">{translate('kpi.evaluation.dashboard.organizational_unit')}</label>
-                                    <SelectMulti id="multiSelectUnits"
+                                    <SelectMulti id="multiSelectUnitsOvertime"
                                         items={department.list.map((p, i) => { return { value: p._id, text: p.name } })}
                                         options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
                                         onChange={this.handleSelectOrganizationalUnit}
@@ -280,7 +277,7 @@ class AnnualLeaveTrendsChart extends Component {
                                 <div className="form-group">
                                     <label className="form-control-static" >Từ tháng</label>
                                     <DatePicker
-                                        id="form-month-annual-leave"
+                                        id="form-month-overtime"
                                         dateFormat="month-year"
                                         deleteValue={false}
                                         value={startDate}
@@ -290,7 +287,7 @@ class AnnualLeaveTrendsChart extends Component {
                                 <div className='form-group'>
                                     <label className="form-control-static" >Đến tháng</label>
                                     <DatePicker
-                                        id="to-month-annual-leave"
+                                        id="to-month-overtime"
                                         dateFormat="month-year"
                                         deleteValue={false}
                                         value={endDate}
@@ -301,7 +298,7 @@ class AnnualLeaveTrendsChart extends Component {
 
                         </div>
                         <div className="dashboard_box_body">
-                            <p className="pull-left" style={{ marginBottom: 0 }}><b>ĐV tính: Số lần</b></p>
+                            <p className="pull-left" style={{ marginBottom: 0 }}><b>ĐV tính: Số giờ</b></p>
                             <div className="box-tools pull-right">
                                 <div className="btn-group pull-rigth">
                                     <button type="button" className={`btn btn-xs ${lineChart ? "active" : "btn-danger"}`} onClick={() => this.handleChangeViewChart(false)}>Bar chart</button>
@@ -318,13 +315,13 @@ class AnnualLeaveTrendsChart extends Component {
 }
 
 function mapState(state) {
-    const { employeesManager, annualLeave, department } = state;
-    return { employeesManager, annualLeave, department };
+    const { employeesManager, timesheets, department } = state;
+    return { employeesManager, timesheets, department };
 }
 
 const actionCreators = {
-    getAnnualLeave: AnnualLeaveActions.searchAnnualLeaves,
+    getTimesheets: TimesheetsActions.searchTimesheets,
 };
 
-const barChart = connect(mapState, actionCreators)(withTranslate(AnnualLeaveTrendsChart));
-export { barChart as AnnualLeaveTrendsChart };
+const trendOfOvertime = connect(mapState, actionCreators)(withTranslate(TrendOfOvertime));
+export { trendOfOvertime as TrendOfOvertime };

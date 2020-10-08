@@ -40,8 +40,8 @@ const {
     Category,
     Good,
 
-    CrmCustomer,
-    CrmGroup,
+    // CrmCustomer,
+    // CrmGroup,
 
 } = require('../models');
 
@@ -135,8 +135,8 @@ const initSampleCompanyDB = async () => {
         if (!db.models.Category) Category(db);
         if (!db.models.Good) Good(db);
 
-        if (!db.models.CrmCustomer) CrmCustomer(db);
-        if (!db.models.CrmGroup) CrmGroup(db);
+        // if (!db.models.CrmCustomer) CrmCustomer(db);
+        // if (!db.models.CrmGroup) CrmGroup(db);
 
         console.log("models_list", db.models);
     }
@@ -173,62 +173,77 @@ const initSampleCompanyDB = async () => {
             name: 'Super Admin VNIST',
             email: 'super.admin.vnist@gmail.com',
             password: hash,
+            company: vnist._id
         }, {
             name: 'Admin VNIST',
             email: 'admin.vnist@gmail.com',
             password: hash,
+            company: vnist._id
         }, {
             name: 'Nguyễn Văn An',
             email: 'nva.vnist@gmail.com',
             password: hash,
+            company: vnist._id
         }, {
             name: 'Trần Văn Bình',
             email: 'tvb.vnist@gmail.com',
             password: hash,
+            company: vnist._id
         }, {
             name: 'Vũ Thị Cúc',
             email: 'vtc.vnist@gmail.com',
             password: hash,
+            company: vnist._id
         }, {
             name: 'Nguyễn Văn Danh',
             email: 'nvd.vnist@gmail.com',
             password: hash,
+            company: vnist._id
         }, {
             name: 'Trần Thị Én',
             email: 'tte.vnist@gmail.com',
             password: hash,
+            company: vnist._id
         }, {
             name: 'Phạm Đình Phúc',
             email: 'pdp.vnist@gmail.com',
             password: hash,
+            company: vnist._id
         }, {
             name: 'Trần Minh Đức',
             email: 'tmd.vnist@gmail.com',
             password: hash,
+            company: vnist._id
         }, {
             name: 'Nguyễn Việt Anh',
             email: 'nguyenvietanh.vnist@gmail.com',
             password: hash,
+            company: vnist._id
         }, {
             name: 'Nguyễn Viết Thái',
             email: 'nguyenvietthai.vnist@gmail.com',
             password: hash,
+            company: vnist._id
         }, {
             name: 'Trần Mỹ Hạnh',
             email: 'tranmyhanh.vnist@gmail.com',
             password: hash,
+            company: vnist._id
         }, {
             name: 'Nguyễn Minh Thành',
             email: 'nguyenminhthanh.vnist@gmail.com',
             password: hash,
+            company: vnist._id
         }, {
             name: 'Nguyễn Gia Huy',
             email: 'nguyengiahuy.vnist@gmail.com',
             password: hash,
+            company: vnist._id
         }, {
             name: 'Trần Minh Anh',
             email: 'tranminhanh.vnist@gmail.com',
             password: hash,
+            company: vnist._id
         },
 
         /*
@@ -238,121 +253,145 @@ const initSampleCompanyDB = async () => {
             name: 'Lê Thống Nhất',
             email: 'lethongnhat.vnist@gmail.com',
             password: hash,
+            company: vnist._id
         },
         { // 16
             name: 'Nguyễn Văn thanh',
             email: 'nguyenvanthanh.vnist@gmail.com',
             password: hash,
+            company: vnist._id
         },
         { // 17
             name: 'Nguyễn Viết Đảng',
             email: 'nguyenvietdang.vnist@gmail.com',
             password: hash,
+            company: vnist._id
         },
         { // 18
             name: 'Đỗ Văn Dương',
             email: 'dovanduong.vnist@gmail.com',
             password: hash,
+            company: vnist._id
         },
         { // 19
             name: 'Đào Xuân Hướng',
             email: 'daoxuanhuong.vnist@gmail.com',
             password: hash,
+            company: vnist._id
         },
         { // 20
             name: 'Đào Quang Phương',
             email: 'daoquangphuong.vnist@gmail.com',
             password: hash,
+            company: vnist._id
         },
         { // 21
             name: 'Vũ Mạnh Cường',
             email: 'vumanhcuong.vnist@gmail.com',
             password: hash,
+            company: vnist._id
         },
         { // 22
             name: 'Trần Văn Cường',
             email: 'tranvancuong.vnist@gmail.com',
             password: hash,
+            company: vnist._id
         },
         { // 23
             name: 'Dương Thị Thanh Thuỳ',
             email: 'duongthithanhthuy.vnist@gmail.com',
             password: hash,
+            company: vnist._id
         },
         { // 24
             name: 'Nguyễn Thị huệ',
             email: 'nguyenthihue.vnist@gmail.com',
             password: hash,
+            company: vnist._id
         },
         { // 25
             name: 'Vũ Viết Xuân',
             email: 'vuvietxuan.vnist@gmail.com',
             password: hash,
+            company: vnist._id
         },
         { // 26
             name: 'Trần Thị Thu Phương',
             email: 'tranthithuphuong.vnist@gmail.com',
             password: hash,
+            company: vnist._id
         },
         { // 27
             name: 'Bùi Thị Mai',
             email: 'buithimai.vnist@gmail.com',
             password: hash,
+            company: vnist._id
         },
         { // 28
             name: 'Nguyễn Lương Thử',
             email: 'nguyenluongthu.vnist@gmail.com',
             password: hash,
+            company: vnist._id
         },
         { // 29
             name: 'Lưu Quang Ngọc',
             email: 'luuquangngoc.vnist@gmail.com',
             password: hash,
+            company: vnist._id
         },
         { // 30
             name: 'Hoàng Văn Tùng',
             email: 'hoangvantung.vnist@gmail.com',
             password: hash,
+            company: vnist._id
         },
         { // 31
             name: 'Nguyễn Văn Hải',
             email: 'nguyenvanhai.vnist@gmail.com',
             password: hash,
+            company: vnist._id
         },
         { // 32
             name: 'Trần Văn Sơn',
             email: 'tranvanson.vnist@gmail.com',
             password: hash,
+            company: vnist._id
         },
         { // 33
             name: 'Mai Thuỳ Dung',
             email: 'maithuydung.vnist@gmail.com',
             password: hash,
+            company: vnist._id
         },
         { // 34
             name: 'Nguyễn Thống Nhất',
             email: 'nguyenthongnhat.vnist@gmail.com',
             password: hash,
+            company: vnist._id
         },
         { // 35
             name: 'Trần Kim Cương',
             email: 'trankimcuong.vnist@gmail.com',
             password: hash,
+            company: vnist._id
         },
         { // 36
             name: 'Nguyễn Đình Thuận',
             email: 'nguyendinhthuan.vnist@gmail.com',
             password: hash,
+            company: vnist._id
         },
         { // 37
             name: 'Ngô Tri Dũng',
             email: 'ngotridung.vnist@gmail.com',
             password: hash,
+            company: vnist._id
         },
         { // 38
             name: 'Nguyễn Khắc Đại',
             email: 'nguyenkhacdai.vnist@gmail.com',
             password: hash,
+            company: vnist._id
         },
     ]);
 

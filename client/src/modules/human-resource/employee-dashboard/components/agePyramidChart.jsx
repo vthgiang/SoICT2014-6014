@@ -1,3 +1,4 @@
+/* Biểu đồ thể hiện đổ tuổi của nhân viên */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';

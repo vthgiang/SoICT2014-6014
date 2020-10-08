@@ -1,3 +1,4 @@
+/* Biểu đồ top 20 nhân sự có lương thưởng cao nhất */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';

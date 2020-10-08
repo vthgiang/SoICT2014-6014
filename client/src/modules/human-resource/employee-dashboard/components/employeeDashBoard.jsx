@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import {
     AgePyramidChart, HumanResourceChartBySalary, BarAndLineChart, MultipleBarChart, HighestSalaryChart, SalaryOfOrganizationalUnitsChart,
-    EmployeeDashBoardHeader, AnnualLeaveTrendsChart, HumanResourceIncreaseAndDecreaseChart, QualificationChart
+    EmployeeDashBoardHeader, AnnualLeaveTrendsChart, HumanResourceIncreaseAndDecreaseChart, QualificationChart, TrendOfOvertime
 } from './combinedContent';
 
 import './employeeDashBoard.css';
@@ -93,7 +93,10 @@ class DashBoardEmployees extends Component {
                         <HumanResourceIncreaseAndDecreaseChart nameData1='Tuyển mới' nameData2='Nghỉ làm' nameChart={'Tình hình tăng giảm nhân sự'} />
                     </div>
                     <div className=" col-lg-12 col-md-12 col-md-sm-12 col-xs-12">
-                        <AnnualLeaveTrendsChart nameData1='Số lượt nghỉ' nameChart={'Xu hướng nghỉ phép của nhân viên'} />
+                        <AnnualLeaveTrendsChart nameData1='Số lượt nghỉ' nameChart={'Xu hướng nghỉ phép'} />
+                    </div>
+                    <div className=" col-lg-12 col-md-12 col-md-sm-12 col-xs-12">
+                        <TrendOfOvertime nameData1='Số giờ tăng ca' nameChart={'Xu hướng tăng ca'} />
                     </div>
 
 

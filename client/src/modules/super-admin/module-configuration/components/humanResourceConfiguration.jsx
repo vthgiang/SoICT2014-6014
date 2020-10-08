@@ -126,7 +126,7 @@ class HumanResourceConfiguration extends Component {
                                 {/* Số giờ ca 1 */}
                                 <div className="form-inline">
                                     <div className="form-group">
-                                        <label style={{ width:200}}>{translate('module_configuration.shift1_time')}</label>
+                                        <label style={{ width: 200 }}>{translate('module_configuration.shift1_time')}</label>
                                         <input type="number" min='0' value={timekeepingByShift.shift1Time} className="form-control" name="shift1Time" onChange={this.handleShiftTimeChange} />
                                     </div>
                                 </div>
@@ -134,7 +134,7 @@ class HumanResourceConfiguration extends Component {
                                 {/* Số giờ ca 2 */}
                                 <div className="form-inline">
                                     <div className="form-group">
-                                        <label style={{ width:200}} >{translate('module_configuration.shift1_time')}</label>
+                                        <label style={{ width: 200 }} >{translate('module_configuration.shift2_time')}</label>
                                         <input type="number" min='0' value={timekeepingByShift.shift2Time} className="form-control" name="shift2Time" onChange={this.handleShiftTimeChange} />
                                     </div>
                                 </div>
@@ -142,7 +142,7 @@ class HumanResourceConfiguration extends Component {
                                 {/* Số giờ ca 3 */}
                                 <div className="form-inline">
                                     <div className="form-group">
-                                        <label style={{ width:200}} >{translate('module_configuration.shift1_time')}</label>
+                                        <label style={{ width: 200 }} >{translate('module_configuration.shift3_time')}</label>
                                         <input type="number" min='0' value={timekeepingByShift.shift3Time} className="form-control" name="shift3Time" onChange={this.handleShiftTimeChange} />
                                     </div>
                                 </div>

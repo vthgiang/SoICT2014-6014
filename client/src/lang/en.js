@@ -924,7 +924,7 @@ export default {
             contract_notice_time_title: 'Notice advance of contract expiration',
             shift1_time: 'Number hours of shift 1 (hour)',
             shift2_time: 'Number hours of shift 2 (hour)',
-            shift3_time: 'Number hours of shift 3 (hour)',
+            shift3_time: 'Number hours of overtime (hour)',
 
             shift: 'Timekeeping by shift',
             hours: 'Timekeeping by the hour',
@@ -1549,7 +1549,7 @@ export default {
                 shift_work: 'Shift work',
                 shifts1: 'Shifts 1',
                 shifts2: 'Shifts 2',
-                shifts2: 'Shifts 3',
+                shifts3: 'Overtime',
                 date_of_month: 'The days of the month',
 
                 // Nhóm dành cho action

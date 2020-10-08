@@ -1,3 +1,4 @@
+/* Xu hướng tăng giảm nhân sự của nhân viên */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
@@ -278,6 +279,20 @@ class HumanResourceIncreaseAndDecreaseChart extends Component {
                 <div className="box-body" >
                     <div className="qlcv" style={{ marginBottom: 15 }} >
                         <div className="form-inline" >
+                            <div className="form-group" >
+                                <label className="form-control-static" > {translate('kpi.evaluation.dashboard.organizational_unit')} </label>
+                                <SelectMulti id="multiSelectUnits-towBarChart"
+                                    items={department.list.map((p, i) => { return { value: p._id, text: p.name } })}
+                                    options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
+                                    onChange={this.handleSelectOrganizationalUnit} >
+                                </SelectMulti>
+                            </div>
+                            <div className="form-group" >
+                                <label></label>
+                                <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => this.handleSunmitSearch()} > {translate('general.search')} </button>
+                            </div>
+                        </div>
+                        <div className="form-inline" >
                             <div className="form-group">
                                 <label className="form-control-static" >Từ tháng</label>
                                 <DatePicker
@@ -299,23 +314,10 @@ class HumanResourceIncreaseAndDecreaseChart extends Component {
                                 />
                             </div>
                         </div>
-                        <div className="form-inline" >
-                            <div className="form-group" >
-                                <label className="form-control-static" > {translate('kpi.evaluation.dashboard.organizational_unit')} </label>
-                                <SelectMulti id="multiSelectUnits-towBarChart"
-                                    items={department.list.map((p, i) => { return { value: p._id, text: p.name } })}
-                                    options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
-                                    onChange={this.handleSelectOrganizationalUnit} >
-                                </SelectMulti>
-                            </div>
-                            <div className="form-group" >
-                                <label></label>
-                                <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => this.handleSunmitSearch()} > {translate('general.search')} </button>
-                            </div>
-                        </div>
+
                     </div>
                     <div className="dashboard_box_body" >
-                        <p className="pull-left" style={{ marginBottom: 0 }} > < b > ĐV tính: % </b></p >
+                        <p className="pull-left" style={{ marginBottom: 0 }} > < b > ĐV tính: Người </b></p >
                         <div className="box-tools pull-right" >
                             <div className="btn-group pull-rigth">
                                 <button type="button" className={`btn btn-xs ${lineChart ? "active" : "btn-danger"}`} onClick={() => this.handleChangeViewChart(false)}>Bar chart</button>
