@@ -49,8 +49,20 @@ const versionName = () => {
         minute = time.getMinutes(),
         second = time.getSeconds();
 
+    return  `${year}${month}${date}${hour}${minute}${second}`;
+}
 
-        return  `${year}${month}${date}${hour}${minute}${second}`;
+const checkDirectory = (path) => {
+    if (!fs.existsSync(path)) {
+        fs.mkdirSync(path, {
+            recursive: true
+        });
+        fs.appendFile(path+'/README.txt', 'init directory', err => { 
+            if(err) throw err;
+        });
+    };
+
+    return true;
 }
 
 /**
@@ -67,15 +79,16 @@ exports.restore = async (options) => {
     }
 
     const commandRestoreFile = (options) => {
-        if(options.db)
+        if(options.db){
             return {
-                delete: `${SERVER_DIR}/upload/private/${options.db}`,
-                new: `${SERVER_BACKUP_DIR}/${options.db}/${options.version}/upload`
+                delete: `rm -rf ${SERVER_DIR}/upload/private/${options.db}/* && rm -rf ${SERVER_DIR}/upload/avatars/${options.db}/*`,
+                new: `cp -r ${SERVER_BACKUP_DIR}/${options.db}/${options.version}/private/* ${SERVER_DIR}/upload/private/${options.db} && cp -r ${SERVER_BACKUP_DIR}/${options.db}/${options.version}/avatars/* ${SERVER_DIR}/upload/avatars/${options.db}`
             }
+        }
         else 
             return {
-                delete: `${SERVER_DIR}/upload}`,
-                new: `${SERVER_BACKUP_DIR}/all/${options.version}/upload` 
+                delete: `rm -rf ${SERVER_DIR}/upload}`,
+                new: `cp -r ${SERVER_BACKUP_DIR}/all/${options.version}/upload ${SERVER_DIR}` 
             }
     }
     
@@ -87,15 +100,9 @@ exports.restore = async (options) => {
 
     // 2.Restore file data ( image, video, file, doc, excel, v.v. )
     const command2 = commandRestoreFile(options);
-    if (fs.existsSync(command2.delete)) {
-        exec(`rm -rf ${command2.delete}`, function (err) { });
-        if(fs.existsSync(command2.new)){
-            if(options.db) 
-                exec(`cp -r ${command2.new} ${SERVER_DIR}/upload/private`, function (err) { });
-            else    
-                exec(`cp -r ${command2.new} ${SERVER_DIR}`, function (err) { });
-        }
-    }
+    exec(command2.delete, function (err) { 
+        exec(command2.new, function (err) { });
+    });
 }
 
 /**
@@ -106,11 +113,7 @@ exports.backup = async (options) => {
     const version = versionName();
     const dbBackupPath = (options) => {
         const path = `${SERVER_BACKUP_DIR}/${options.db}/${version}`;
-        if (!fs.existsSync(path)) {
-            fs.mkdirSync(path, {
-                recursive: true
-            });
-        };
+        checkDirectory(path);
     
         return path;
     }
@@ -139,9 +142,17 @@ exports.backup = async (options) => {
 
     const getCommandBackupFile = (options) => {
         if(options.db) {
-            return `cp -r "${SERVER_DIR}/upload/private/${options.db}" "${backupPath}/upload/private" && cp -r "${SERVER_DIR}/upload/avatars/${options.db}" "${backupPath}/upload/avatars"`;
+            checkDirectory(`${SERVER_DIR}/upload/private/${options.db}`);
+            checkDirectory(`${backupPath}/private`);
+            checkDirectory(`${SERVER_DIR}/upload/avatars/${options.db}`);
+            checkDirectory(`${backupPath}/avatars`);
+
+            return `cp -r ${SERVER_DIR}/upload/private/${options.db}/* ${backupPath}/private && cp -r ${SERVER_DIR}/upload/avatars/${options.db}/* ${backupPath}/avatars`;
         }else{
-            return `cp -r "${SERVER_DIR}/upload" "${SERVER_BACKUP_DIR}/all/${version}/upload"`;
+            checkDirectory(`${SERVER_DIR}/upload`);
+            checkDirectory(`${SERVER_BACKUP_DIR}/all/${version}/upload`);
+
+            return `cp -r ${SERVER_DIR}/upload ${SERVER_BACKUP_DIR}/all/${version}/upload`;
         }
     }
 
