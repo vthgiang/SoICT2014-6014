@@ -6,6 +6,8 @@ const initState = {
     isLoading: false,
     listTimesheets: [],
     totalList: 0,
+    arrMonth: [],
+    listOvertimeOfUnitsByStartDateAndEndDate: [],
 
     importTimesheets: [],
     importStatus: false,
@@ -24,13 +26,21 @@ export function timesheets(state = initState, action) {
                 isLoading: true
             };
         case TimesheetsConstants.GET_TIMESHEETS_SUCCESS:
-            return {
-                ...state,
-                isLoading: false,
+            if (action.payload.arrMonth) {
+                return {
+                    ...state,
+                    isLoading: false,
+                    arrMonth: action.payload.arrMonth,
+                    listOvertimeOfUnitsByStartDateAndEndDate: action.payload.listOvertimeOfUnitsByStartDateAndEndDate,
+                }
+            } else {
+                return {
+                    ...state,
+                    isLoading: false,
                     listTimesheets: action.payload.listTimesheets,
                     totalList: action.payload.totalList,
+                };
             };
-
         case TimesheetsConstants.CREATE_TIMESHEETS_SUCCESS:
             let listTimesheets;
             if (state.listTimesheets[0].month === action.payload.month) {

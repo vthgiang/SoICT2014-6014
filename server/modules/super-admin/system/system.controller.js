@@ -5,13 +5,15 @@ exports.getBackups = async(req, res) => {
     try {
         const backupedList = await SystemService.getBackups(req.portal);
 
+        Logger.info(req.user.email, 'get_backup_list_success', req.portal);
         res.status(200).json({
             success: true,
             messages: ['get_backup_list_success'],
             content: backupedList
         })
     } catch (error) {
-        console.log(error)
+      
+        Logger.error(req.user.email, 'get_backup_list_faile', req.portal);
         res.status(400).json({
             success: true,
             messages: Array.isArray(error) ? error : ['get_backup_list_faile'],
@@ -23,13 +25,16 @@ exports.getBackups = async(req, res) => {
 exports.createBackup = async(req, res) => {
     try {
         const backupInfo = await SystemService.createBackup(req.portal);
+
+        Logger.info(req.user.email, 'creat_backup_success', req.portal);
         res.status(200).json({
             success: true,
             messages: ['creat_backup_success'],
             content: backupInfo
         })
     } catch (error) {
-        console.log(error)
+        
+        Logger.error(req.user.email, 'create_backup_faile', req.portal);
         res.status(400).json({
             success: true,
             messages: Array.isArray(error) ? error : ['create_backup_faile'],
@@ -41,13 +46,16 @@ exports.createBackup = async(req, res) => {
 exports.deleteBackup = async(req, res) => {
     try {
         const path = await SystemService.deleteBackup(req.params.version, req.portal);
+
+        Logger.info(req.user.email, 'delete_backup_success', req.portal);
         res.status(200).json({
             success: true,
             messages: ['delete_backup_success'],
             content: path
         })
     } catch (error) {
-        console.log(error)
+        
+        Logger.error(req.user.email, 'delete_backup_faile', req.portal);
         res.status(400).json({
             success: true,
             messages: Array.isArray(error) ? error : ['delete_backup_faile'],
@@ -59,13 +67,16 @@ exports.deleteBackup = async(req, res) => {
 exports.restore = async(req, res) => {
     try {
         const restoreInfo = await SystemService.restore(req.portal, req.params.version);
+
+        Logger.info(req.user.email, 'restore_data_success', req.portal);
         res.status(200).json({
             success: true,
             messages: ['restore_data_success'],
             content: restoreInfo
         })
     } catch (error) {
-        console.log(error)
+        
+        Logger.error(req.user.email, 'restore_data_faile', req.portal);
         res.status(400).json({
             success: true,
             messages: Array.isArray(error) ? error : ['restore_data_faile'],

@@ -29,7 +29,7 @@ exports.getNumberAnnaulLeave = async (portal, email, year, company) => {
         let annulLeaves = await AnnualLeave(connect(DB_CONNECTION, portal)).find({
             company: company,
             employee: employee._id,
-            status: 'pass',
+            status: 'approved',
             startDate: {
                 "$gt": firstDay,
                 "$lte": lastDay
@@ -221,7 +221,7 @@ exports.getAnnualLeaveByStartDateAndEndDate = async (portal, organizationalUnits
         if (organizationalUnits) {
             let listAnnualLeaveOfNumberMonth = await AnnualLeave(connect(DB_CONNECTION, portal)).find({
                 company: company,
-                status: 'pass',
+                status: 'approved',
                 organizationalUnit: {
                     $in: organizationalUnits
                 },
@@ -238,7 +238,7 @@ exports.getAnnualLeaveByStartDateAndEndDate = async (portal, organizationalUnits
         } else {
             let listAnnualLeaveOfNumberMonth = await AnnualLeave(connect(DB_CONNECTION, portal)).find({
                 company: company,
-                status: 'pass',
+                status: 'approved',
                 "$or": querys
             }, {
                 startDate: 1,
