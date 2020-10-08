@@ -12,6 +12,9 @@ class EditForm extends Component {
         super(props);
         this.state = {
             documentVersionName: "",
+            page: 1,
+            limit: 5,
+
         }
     }
 
@@ -375,7 +378,7 @@ class EditForm extends Component {
             for (let i = 0; i < documentRelationshipDocuments.length; i++) {
                 formData.append('relationshipDocuments[]', documentRelationshipDocuments[i]);
                 let relationship = relationshipDocs.filter(item => item.id === documentRelationshipDocuments[i]);
-                newArray.push(relationship[0].text);
+                newArray.push(relationship[0].name);
 
             }
             description += newArray.join(" - ") + ".";
@@ -574,6 +577,7 @@ class EditForm extends Component {
         const categories = documents.administration.categories.list.map(category => { return { value: category._id, text: category.name } });
         const { list } = documents.administration.domains;
         const roleList = role.list.map(role => { return { value: role._id, text: role.name } });
+        console.log('-----------------', documents.administration.relationshipDocs)
         const relationshipDocs = documents.administration.relationshipDocs.paginate.map(doc => { return { value: doc._id, text: doc.name } });
         const archives = documents.administration.archives.list;
         let path = documentArchives ? this.findPath(archives, documentArchives) : "";
