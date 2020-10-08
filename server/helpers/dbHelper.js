@@ -52,15 +52,15 @@ const versionName = () => {
     return  `${year}${month}${date}${hour}${minute}${second}`;
 }
 
-const checkDirectory = (path) => {
+const checkDirectory = (path, description=undefined) => {
     if (!fs.existsSync(path)) {
         fs.mkdirSync(path, {
             recursive: true
         });
-        fs.appendFile(path+'/README.txt', 'init directory', err => { 
-            if(err) throw err;
-        });
     };
+    fs.appendFile(path+'/README.txt', description ? description :'init directory', err => { 
+        if(err) throw err;
+    });
 
     return true;
 }
@@ -87,7 +87,7 @@ exports.restore = async (options) => {
         }
         else 
             return {
-                delete: `rm -rf ${SERVER_DIR}/upload}`,
+                delete: `rm -rf ${SERVER_DIR}/upload`,
                 new: `cp -r ${SERVER_BACKUP_DIR}/all/${options.version}/upload ${SERVER_DIR}` 
             }
     }
@@ -118,7 +118,7 @@ exports.backup = async (options) => {
         return path;
     }
 
-    const backupPath = dbBackupPath(options);
+    const backupPath = options.db ? dbBackupPath(options) : null;
     const description = `Backup database ${options.db ? options.db : 'all'}`;
     const commandBackupDB = (options) => {
         if(options.db) {
@@ -127,10 +127,9 @@ exports.backup = async (options) => {
             });
             return `mongodump --host="${options.host}" --port="${options.port}" --out="${backupPath}/database" --db="${options.db}"`;
         }else{
-            fs.appendFile(`${SERVER_BACKUP_DIR}/all/${version}`+'/README.txt', description, err => { 
-                if(err) throw err;
-            });
-            return `mongodump --host="${options.host}" --port="${options.port}" --out="${SERVER_BACKUP_DIR}/all/${version}"`;
+            checkDirectory(`${SERVER_BACKUP_DIR}/all/${version}`, description);
+
+            return `mongodump --host="${options.host}" --port="${options.port}" --out="${SERVER_BACKUP_DIR}/all/${version}/database"`;
         }
     }
     const command = commandBackupDB(options);
@@ -152,14 +151,14 @@ exports.backup = async (options) => {
             checkDirectory(`${SERVER_DIR}/upload`);
             checkDirectory(`${SERVER_BACKUP_DIR}/all/${version}/upload`);
 
-            return `cp -r ${SERVER_DIR}/upload ${SERVER_BACKUP_DIR}/all/${version}/upload`;
+            return `cp -r ${SERVER_DIR}/upload/* ${SERVER_BACKUP_DIR}/all/${version}/upload`;
         }
     }
 
     // 2. Backup file dữ liệu trong thư mục upload
     const commandBackupFile  = getCommandBackupFile(options);
     await exec(commandBackupFile, (error, stdout, stderr) => {
-        if(error !== null) console.log(error);
+        if(error !== null) console.log("co loi roif", error);
     });
     const folderInfo = options.db ?
     fs.statSync(backupPath) :

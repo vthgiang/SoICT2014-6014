@@ -150,7 +150,7 @@ class SystemSetting extends Component {
     }
 
     componentDidMount(){
-        this.props.getRestoreData();
+        this.props.getBackups();
     }
 
     handleBackupType = (e) => {
@@ -212,7 +212,7 @@ function mapState(state) {
 const actions = {
     backup: SystemSettingActions.backup,
     deleteBackup: SystemSettingActions.deleteBackup,
-    getRestoreData: SystemSettingActions.getRestoreData,
+    getBackups: SystemSettingActions.getBackups,
     restore: SystemSettingActions.restore
 }
 
