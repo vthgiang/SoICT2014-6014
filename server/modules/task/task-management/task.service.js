@@ -1216,7 +1216,7 @@ exports.sendEmailForCreateTask = async (portal, task) => {
 
     var resId = task.responsibleEmployees;  // lấy id người thực hiện
     var res = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: resId } });
-    res = res.map(item => item.name);
+    // res = res.map(item => item.name);
     userIds = resId;
     var accId = task.accountableEmployees;  // lấy id người phê duyệt
     var acc = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: accId } });
@@ -1244,28 +1244,28 @@ exports.sendEmailForCreateTask = async (portal, task) => {
 
     email = user.map(item => item.email); // Lấy ra tất cả email của người dùng
     email.push("trinhhong102@gmail.com");
-    var html = `<p>Bạn được giao nhiệm vụ trong công việc:  <a href="${process.env.WEBSITE}/task?taskId=${task._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${task._id} </a></p> ` +
-        `<h3>Thông tin công việc</h3>` +
-        `<p>Tên công việc : <strong>${task.name}</strong></p>` +
+    var html = `<p>Bạn có công việc mới: <a href="${process.env.WEBSITE}/task?taskId=${task._id}" target="_blank"><strong>${task.name}</strong></a></p> ` +
+        `<h3>Nội dung công việc</h3>` +
+        // `<p>Tên công việc : <strong>${task.name}</strong></p>` +
         `<p>Mô tả : ${task.description}</p>` +
         `<p>Người thực hiện</p> ` +
         `<ul>${res.map((item) => {
-            return `<li>${item}</li>`
+            return `<li>${item.name} - ${item.email}</li>`
         })}
                     </ul>`+
         `<p>Người phê duyệt</p> ` +
         `<ul>${acc.map((item) => {
-            return `<li>${item.name}</li>`
+            return `<li>${item.name} - ${item.email}</li>`
         })}
                     </ul>` +
         `${con.length > 0 ? `<p>Người hỗ trợ</p> ` +
             `<ul>${con.map((item) => {
-                return `<li>${item.name}</li>`
+                return `<li>${item.name} - ${item.email}</li>`
             })}
                     </ul>` : ""}` +
         `${inf.length > 0 ? `<p>Người quan sát</p> ` +
             `<ul>${inf.map((item) => {
-                return `<li>${item.name}</li>`
+                return `<li>${item.name} - ${item.email}</li>`
             })}
                     </ul>` : ""}`
         ;
