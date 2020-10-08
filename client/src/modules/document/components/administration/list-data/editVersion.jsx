@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ButtonModal, DateTimeConverter, SelectBox, DatePicker, TreeSelect, ErrorLabel } from '../../../../../common-components';
+import { DialogModal, DatePicker, UploadFile } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
 import moment from 'moment';
 import { getStorage } from "../../../../../config";
@@ -33,32 +33,53 @@ class EditVersion extends Component {
         })
     }
     handleEffectiveDate = (value) => {
-        // this.validateEffectiveDate(value, true);
         this.setState(state => {
             return {
                 ...state,
                 effectiveDate: value,
-                // errorEffectiveDate: msg,
             }
         })
     }
 
     handleExpiredDate = (value) => {
-        //this.validateExpiredDate(value, true);
         this.setState(state => {
             return {
                 ...state,
                 expiredDate: value,
-                //  errorExpiredDate: msg,
             }
         })
     }
-    handleUploadFile = (e) => {
-        this.setState({ documentFile: e.target.files[0] });
+    handleUploadFile = (file) => {
+        file = file.map(x => {
+            return {
+                fileName: x.fileName,
+                url: x.urlFile,
+                fileUpload: x.fileUpload
+            }
+        })
+        this.setState(state => {
+            return {
+                ...state,
+                documentFile: file
+            }
+        });
     }
 
-    handleUploadFileScan = (e) => {
-        this.setState({ documentFileScan: e.target.files[0] });
+
+    handleUploadFileScan = (file) => {
+        file = file.map(x => {
+            return {
+                fileName: x.fileName,
+                url: x.urlFile,
+                fileUpload: x.fileUpload
+            }
+        })
+        this.setState(state => {
+            return {
+                ...state,
+                documentFileScan: file
+            }
+        });
     }
     /**
      * Function format dữ liệu Date thành string
@@ -155,7 +176,7 @@ class EditVersion extends Component {
     }
 
     render() {
-        const { translate, documents } = this.props;
+        const { translate } = this.props;
         const { versionId, versionName, issuingDate, effectiveDate, expiredDate } = this.state;
         return (
             <DialogModal
@@ -172,21 +193,13 @@ class EditVersion extends Component {
                     </div>
                     <div className="form-group">
                         <label>{translate('document.upload_file')}</label>
-                        <br />
-                        <div className="upload btn btn-primary">
-                            <i className="fa fa-folder"></i>
-                            {" " + translate('document.choose_file')}
-                            <input className="upload" type="file" name="file" onChange={this.handleUploadFile} />
-                        </div>
+                        <UploadFile onChange={this.handleUploadFile} />
+
                     </div>
                     <div className="form-group">
                         <label>{translate('document.upload_file_scan')}</label>
-                        <br />
-                        <div className="upload btn btn-primary">
-                            <i className="fa fa-folder"></i>
-                            {" " + translate('document.choose_file')}
-                            <input className="upload" type="file" name="file" onChange={this.handleUploadFileScan} />
-                        </div>
+                        <UploadFile onChange={this.handleUploadFileScan} />
+
                     </div>
                     <div className="form-group">
                         <label>{translate('document.doc_version.issuing_date')}</label>

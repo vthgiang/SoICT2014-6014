@@ -71,9 +71,10 @@ class Table extends Component {
 
     static getDerivedStateFromProps(nextProps, prevState) {
         const { data } = nextProps.documents.administration;
+
         if (prevState.currentRow) {
             const index = getIndex(data.paginate, prevState.currentRow._id);
-            if (data.paginate[index].versions.length !== prevState.currentRow.versions.length) {
+            if (index !== -1 && data.paginate[index].versions.length !== prevState.currentRow.versions.length) {
                 return {
                     ...prevState,
                     currentRow: data.paginate[index]
@@ -204,9 +205,8 @@ class Table extends Component {
         for (let i = 0; i < data.length; i++) {
             let element = {};
             let x = data[i];
-            let length = 0;
-            let domain = "";
-            let length_domains, length_archives, length_relationship, length_roles, length_versions, length_logs, length_views, length_downloads;
+            let length_domains, length_archives, length_relationship, length_roles, length_versions, length_logs,
+                length_views, length_downloads;
             if (x.domains && x.domains.length) {
                 element.domains = x.domains[0].name;
                 length_domains = x.domains.length;
@@ -283,7 +283,8 @@ class Table extends Component {
             element.relationshipDescription = x.relationshipDescription ? x.relationshipDescription : "";
             element.organizationUnitManager = x.organizationUnitManager ? x.organizationUnitManager.name : "";
             element.officialNumber = x.officialNumber ? x.officialNumber : "";
-            let max_length = Math.max(length_domains, length_archives, length_relationship, length_roles, length_versions, length_logs, length_views, length_downloads);
+            let max_length = Math.max(length_domains, length_archives, length_relationship,
+                length_roles, length_versions, length_logs, length_views, length_downloads);
 
             newData = [...newData, element];
             if (max_length > 1) {
@@ -385,14 +386,16 @@ class Table extends Component {
     }
     render() {
         const { translate } = this.props;
-        const docs = this.props.documents.administration.data;
         const { domains, categories, archives } = this.props.documents.administration;
-        const { paginate } = docs;
         const { isLoading } = this.props.documents;
+        const docs = this.props.documents.administration.data;
+
         const { currentRow, archive, domain, category } = this.state;
+        const { paginate } = docs;
+
         const listDomain = domains.list
-        const listCategory = this.convertData(categories.list)
         const listArchive = archives.list;
+        const listCategory = this.convertData(categories.list)
         let list = [];
         if (isLoading === false) {
             list = docs.paginate;
@@ -420,15 +423,15 @@ class Table extends Component {
                         documentName={currentRow.name}
                         documentDescription={currentRow.description}
                         documentCategory={currentRow.category ? currentRow.category._id : ""}
-                        documentDomains={currentRow.domains ? currentRow.domains.map(domain => domain._id) : ""}
-                        documentArchives={currentRow.archives ? currentRow.archives.map(archive => archive._id) : ""}
+                        documentDomains={currentRow.domains ? currentRow.domains.map(domain => domain._id) : []}
+                        documentArchives={currentRow.archives ? currentRow.archives.map(archive => archive._id) : []}
                         documentIssuingBody={currentRow.issuingBody}
                         documentOfficialNumber={currentRow.officialNumber}
                         documentSigner={currentRow.signer}
                         documentVersions={currentRow.versions}
 
                         documentRelationshipDescription={currentRow.relationshipDescription}
-                        documentRelationshipDocuments={currentRow.relationshipDocuments}
+                        documentRelationshipDocuments={currentRow.relationshipDocuments ? currentRow.relationshipDocuments.map(doc => doc._id) : []}
 
                         documentRoles={currentRow.roles}
 
@@ -560,11 +563,19 @@ class Table extends Component {
                                     <tr key={doc._id}>
                                         <td>{doc.name}</td>
                                         <td>{!doc.description ? doc.description : ""}</td>
-                                        <td><DateTimeConverter dateTime={doc.versions[doc.versions.length - 1].issuingDate} type="DD-MM-YYYY" /></td>
-                                        <td><DateTimeConverter dateTime={doc.versions[doc.versions.length - 1].effectiveDate} type="DD-MM-YYYY" /></td>
-                                        <td><DateTimeConverter dateTime={doc.versions[doc.versions.length - 1].expiredDate} type="DD-MM-YYYY" /></td>
-                                        <td><a href="#" onClick={() => this.requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}><u>{doc.versions[doc.versions.length - 1].file ? translate('document.download') : ""}</u></a></td>
-                                        <td><a href="#" onClick={() => this.requestDownloadDocumentFileScan(doc._id, "SCAN_" + doc.name, doc.versions.length - 1)}><u>{doc.versions[doc.versions.length - 1].scannedFileOfSignedDocument ? translate('document.download') : ""}</u></a></td>
+                                        <td><DateTimeConverter dateTime={doc.versions.length ? doc.versions[doc.versions.length - 1].issuingDate : null} type="DD-MM-YYYY" /></td>
+                                        <td><DateTimeConverter dateTime={doc.versions.length ? doc.versions[doc.versions.length - 1].effectiveDate : null} type="DD-MM-YYYY" /></td>
+                                        <td><DateTimeConverter dateTime={doc.versions.length ? doc.versions[doc.versions.length - 1].expiredDate : null} type="DD-MM-YYYY" /></td>
+                                        <td>
+                                            <a href="#" onClick={() => this.requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}>
+                                                <u>{doc.versions.length && doc.versions[doc.versions.length - 1].file ? translate('document.download') : ""}</u>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href="#" onClick={() => this.requestDownloadDocumentFileScan(doc._id, "SCAN_" + doc.name, doc.versions.length - 1)}>
+                                                <u>{doc.versions.length && doc.versions[doc.versions.length - 1].scannedFileOfSignedDocument ? translate('document.download') : ""}</u>
+                                            </a>
+                                        </td>
                                         <td>
                                             <a href="#modal-list-view" onClick={() => this.showDetailListView(doc)}>{doc.numberOfView}</a>
                                         </td>
@@ -572,9 +583,15 @@ class Table extends Component {
                                             <a href="#modal-list-download" onClick={() => this.showDetailListDownload(doc)}>{doc.numberOfDownload}</a>
                                         </td>
                                         <td>
-                                            <a className="text-green" title={translate('document.view')} onClick={() => this.toggleDocumentInformation(doc)}><i className="material-icons">visibility</i></a>
-                                            <a className="text-yellow" title={translate('document.edit')} onClick={() => this.toggleEditDocument(doc)}><i className="material-icons">edit</i></a>
-                                            <a className="text-red" title={translate('document.delete')} onClick={() => this.deleteDocument(doc._id, doc.name)}><i className="material-icons">delete</i></a>
+                                            <a className="text-green" title={translate('document.view')} onClick={() => this.toggleDocumentInformation(doc)}>
+                                                <i className="material-icons">visibility</i>
+                                            </a>
+                                            <a className="text-yellow" title={translate('document.edit')} onClick={() => this.toggleEditDocument(doc)}>
+                                                <i className="material-icons">edit</i>
+                                            </a>
+                                            <a className="text-red" title={translate('document.delete')} onClick={() => this.deleteDocument(doc._id, doc.name)}>
+                                                <i className="material-icons">delete</i>
+                                            </a>
                                         </td>
                                     </tr>) :
                                 isLoading ?
@@ -594,8 +611,6 @@ class Table extends Component {
         const data = {
             limit: this.state.limit,
             page: page,
-            // key: this.state.option,
-            // value: this.state.value,
             calledId: "paginate"
         };
         await this.props.getAllDocuments(data);
@@ -617,12 +632,6 @@ class Table extends Component {
             this.props.getAllDocuments(data);
         }
     }
-
-    // setOption = (title, option) => {
-    //     this.setState({
-    //         [title]: option
-    //     });
-    // }
 
     searchWithOption = async () => {
         let path = this.state.archive ? this.findPath(this.state.archive) : "";

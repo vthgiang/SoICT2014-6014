@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { AssetTypeActions } from '../../../admin/asset-type/redux/actions';
+import { ApiImage } from '../../../../../common-components';
 
 class GeneralTab extends Component {
     constructor(props) {
@@ -120,9 +121,11 @@ class GeneralTab extends Component {
                         {/* Anh tài sản */}
                         <div className="col-md-4 " style={{ textAlign: 'center', paddingLeft: '0px' }}>
                             <div>
-                                <a href={process.env.REACT_APP_SERVER + avatar} target="_blank">
+                                {/* <a href={process.env.REACT_APP_SERVER + avatar} target="_blank">
                                     <img className="attachment-img avarta" src={process.env.REACT_APP_SERVER + avatar} alt="Attachment" />
-                                </a>
+                                </a> */}
+                                {avatar && <ApiImage className="attachment-img avarta" id={`avater-imform-${id}`} src={`.${avatar}`} />}
+
                             </div>
                         </div>
 

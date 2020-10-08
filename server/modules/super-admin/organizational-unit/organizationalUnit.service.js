@@ -31,7 +31,7 @@ exports.getOrganizationalUnit = async (portal, id) => {
  * Lấy thông tin các đơn vị của công ty theo dạng CÂY 
  * @id id công ty
  */
-exports.getOrganizationalUnitsAsTree = async (portal, id) => {
+exports.getOrganizationalUnitsAsTree = async (portal, id=undefined) => {
     const data = await OrganizationalUnit(connect(DB_CONNECTION, portal))
         .find() // { company: id }
         .populate([
@@ -453,13 +453,13 @@ exports.deleteOrganizationalUnit = async (portal, departmentId) => {
 }
 
 exports.importOrganizationalUnits = async (portal, data) => {
-    let tree;
     let organizationalUnits = [];
     for (let i = 0; i < data.length; i++) {
         if (data[i].parent) {
             let parent = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findOne({ name: data[i].parent });
-            parent = parent._id;
-            data[i].parent = parent;
+            if(parent) {
+                data[i].parent = parent._id
+            }
         }
         let roles = await RoleService.createRolesForOrganizationalUnit(portal, data[i]);
         let organizationalUnit = await this.createOrganizationalUnit(
@@ -470,7 +470,8 @@ exports.importOrganizationalUnits = async (portal, data) => {
             roles.employees.map(em => em._id)
         );
         organizationalUnits = [...organizationalUnits, organizationalUnit];
-        tree = await this.getOrganizationalUnitsAsTree(portal, companyId);
     }
+    let tree = await this.getOrganizationalUnitsAsTree(portal);
+
     return { department: organizationalUnits, tree }
 }

@@ -185,27 +185,73 @@ const sampleData = {
                 code: "T001",
                 name: "Thuốc uống paracetamol",
                 baseUnit: "Gói",
-                packingRule: "1Thùngx5Hộpx10góix100g"
+                packingRule: "1Thùngx5Hộpx10góix100g",
+                materials: [{
+                    name: "Thước cất",
+                    code: "NC11219",
+                    baseUnit: "lít",
+                    quantity: 2,
+                }, {
+                    name: "Tinh dầu thô",
+                    code: "TDT1102",
+                    baseUnit: "lít",
+                    quantity: 2,
+                }, {
+                    name: "Hộp đựng paracetamol",
+                    code: "PKP11100",
+                    baseUnit: "hộp",
+                    quantity: 1,
+                }],
             },
-            quantity: 100
+            quantity: 100,
+            planedQuantity: 0
         }, {
             good: {
                 _id: 2,
                 code: "T003",
                 name: "Cốm dinh dưỡng W3Q",
                 baseUnit: "kg",
-                packingRule: "1Thùngx10hộpx1kg"
+                packingRule: "1Thùngx10hộpx1kg",
+                materials: [{
+                    name: "Dầu dừa",
+                    code: "NC11219",
+                    baseUnit: "lít",
+                    quantity: 2,
+                }, {
+                    name: "Bột lọc",
+                    code: "TDT1102",
+                    baseUnit: "lít",
+                    quantity: 2,
+                }],
             },
-            quantity: 200
+            quantity: 200,
+            planedQuantity: 0
         }, {
             good: {
                 _id: 3,
                 code: "T003",
                 name: "Thuốc uống bột nap",
                 baseUnit: "Gói",
-                packingRule: "1Thùngx20Hộpx10góix100g"
+                packingRule: "1Thùngx20Hộpx10góix100g",
+                materials: [{
+                    name: "Thước cất loại 1",
+                    code: "NC11219",
+                    baseUnit: "lít",
+                    quantity: 2,
+                }, {
+                    name: "Hoa thảo nguyên",
+                    code: "TDT1102",
+                    baseUnit: "lít",
+                    quantity: 2,
+                }, {
+                    name: "Hộp đựng cấp 1",
+                    code: "PKP11100",
+                    baseUnit: "hộp",
+                    quantity: 2,
+                }],
             },
-            quantity: 300
+            quantity: 300,
+            planedQuantity: 0
         }],
         description: "Đơn hàng sản xuất quan trọng phải lập ngay",
         status: "Đã lập kế hoạch",
@@ -227,27 +273,73 @@ const sampleData = {
                 code: "T003",
                 name: "Cốm dinh dưỡng W3Q",
                 baseUnit: "kg",
-                packingRule: "1Thùngx10hộpx1kg"
+                packingRule: "1Thùngx10hộpx1kg",
+                materials: [{
+                    name: "Thước cất",
+                    code: "NC11219",
+                    baseUnit: "lít",
+                    quantity: 2,
+                }, {
+                    name: "Tinh dầu thô",
+                    code: "TDT1102",
+                    baseUnit: "lít",
+                    quantity: 2,
+                }, {
+                    name: "Hộp đựng paracetamol",
+                    code: "PKP11100",
+                    baseUnit: "hộp",
+                    quantity: 1,
+                }],
             },
-            quantity: 200
+            quantity: 200,
+            planedQuantity: 0
         }, {
             good: {
                 _id: 3,
                 code: "T003",
                 name: "Thuốc uống bột nap",
                 baseUnit: "Gói",
-                packingRule: "1Thùngx20Hộpx10góix100g"
+                packingRule: "1Thùngx20Hộpx10góix100g",
+                materials: [{
+                    name: "Thước cất",
+                    code: "NC11219",
+                    baseUnit: "lít",
+                    quantity: 2,
+                }, {
+                    name: "Tinh dầu thô",
+                    code: "TDT1102",
+                    baseUnit: "lít",
+                    quantity: 2,
+                }],
             },
-            quantity: 300
+            quantity: 300,
+            planedQuantity: 0
         }, {
             good: {
                 _id: 4,
                 code: "T004",
-                name: "Thuốc uống tiêm lợn M3P",
+                name: "Thuốc tiêm lợn M3P",
                 baseUnit: "gam",
-                packingRule: "1Thùngx5Hộpx100g"
+                packingRule: "1Thùngx5Hộpx100g",
+                materials: [{
+                    name: "Thước cất",
+                    code: "NC11219",
+                    baseUnit: "lít",
+                    quantity: 2,
+                }, {
+                    name: "Tinh dầu thô",
+                    code: "TDT1102",
+                    baseUnit: "lít",
+                    quantity: 2,
+                }, {
+                    name: "Hộp đựng paracetamol",
+                    code: "PKP11100",
+                    baseUnit: "hộp",
+                    quantity: 1,
+                }],
             },
-            quantity: 400
+            quantity: 400,
+            planedQuantity: 0
         }],
         description: "Đơn hàng sản xuất cho khác hàng vip",
         status: "Đang lập kế hoạch",
@@ -258,43 +350,352 @@ const sampleData = {
         code: "DSX003",
         creator: {
             _id: "1",
-            name: "Phạm Đại Tài",
+            name: "Nguyễn Văn Thắng",
         },
         deadline: "18-06-2020",
         type: "1",
         priority: "Cao",
         goods: [{
             good: {
-                _id: 1,
+                _id: "1",
                 code: "T001",
                 name: "Thuốc uống paracetamol",
                 baseUnit: "Gói",
-                packingRule: "1Thùngx5Hộpx10góix100g"
+                packingRule: "1Thùngx5Hộpx10góix100g",
+                materials: [{
+                    name: "Bột thuốc trắng",
+                    code: "NC1120",
+                    baseUnit: "lít",
+                    quantity: 2,
+                }, {
+                    name: "Tinh dầu thô",
+                    code: "TDT1102",
+                    baseUnit: "lít",
+                    quantity: 2,
+                }, {
+                    name: "Hộp đựng paracetamol",
+                    code: "PKP11100",
+                    baseUnit: "hộp",
+                    quantity: 1,
+                }],
             },
-            quantity: 100
+            quantity: 100,
+            planedQuantity: 0
         }, {
             good: {
-                _id: 2,
+                _id: "2",
                 code: "T003",
                 name: "Cốm dinh dưỡng W3Q",
                 baseUnit: "kg",
-                packingRule: "1Thùngx10hộpx1kg"
+                packingRule: "1Thùngx10hộpx1kg",
+                materials: [{
+                    name: "Thước cất",
+                    code: "NC11219",
+                    baseUnit: "lít",
+                    quantity: 2,
+                }, {
+                    name: "Tinh dầu thô",
+                    code: "TDT1102",
+                    baseUnit: "lít",
+                    quantity: 2,
+                }, {
+                    name: "Hộp đựng paracetamol",
+                    code: "PKP11100",
+                    baseUnit: "hộp",
+                    quantity: 1,
+                }],
             },
-            quantity: 200
+            quantity: 200,
+            planedQuantity: 0
         }, {
             good: {
-                _id: 3,
+                _id: "3",
                 code: "T003",
                 name: "Thuốc uống bột nap",
                 baseUnit: "Gói",
-                packingRule: "1Thùngx20Hộpx10góix100g"
+                packingRule: "1Thùngx20Hộpx10góix100g",
+                materials: [{
+                    name: "Thước cất",
+                    code: "NC11219",
+                    baseUnit: "lít",
+                    quantity: 2,
+                }, {
+                    name: "Tinh dầu thô",
+                    code: "TDT1102",
+                    baseUnit: "lít",
+                    quantity: 2,
+                }, {
+                    name: "Hộp đựng paracetamol",
+                    code: "PKP11100",
+                    baseUnit: "hộp",
+                    quantity: 1,
+                }],
             },
-            quantity: 300
+            quantity: 300,
+            planedQuantity: 100
         }],
         description: "Đơn hàng sản xuất trực tiếp cho bên công ty VNIST",
         status: "Chưa lập kế hoạch",
         createdAt: "02-06-2020",
         updatedAt: ""
+    }],
+
+    manufacturingPlans: [{
+        _id: "1",
+        code: "KH 001",
+        manufacturingOrder: {
+            _id: "1",
+            code: "DSX001"
+        },
+        goods: [{
+            good: {
+                _id: "1",
+                code: "T001",
+                name: "Thuốc uống paracetamol",
+                baseUnit: "Gói",
+                packingRule: "1Thùngx5Hộpx10góix100g"
+            },
+            quantity: 1000,
+            orderedQuantity: 8000
+        }, {
+            good: {
+                _id: "2",
+                code: "T003",
+                name: "Cốm dinh dưỡng W3Q",
+                baseUnit: "kg",
+                packingRule: "1Thùngx10hộpx1kg"
+            },
+            quantity: 200,
+            orderedQuantity: 200
+        }, {
+            good: {
+                _id: "3",
+                code: "T003",
+                name: "Thuốc uống bột nap",
+                baseUnit: "Gói",
+                packingRule: "1Thùngx20Hộpx10góix100g"
+            },
+            quantity: 500,
+            orderedQuantity: 400
+        }],
+        creator: {
+            _id: "1",
+            name: "Nguyễn Anh Phương"
+        },
+        startDate: "07-10-2020",
+        endDate: "27-10-2020",
+        description: "Kế hoạch sản xuất tuần 3 và tuần 4 tháng 10",
+        logs: [{
+            creator: {
+                id: "1",
+                name: "Nguyễn Anh Phương"
+            },
+            createdAt: "06-10-2020",
+            title: "Sửa thuộc tính mặt hàng",
+            description: "Sửa số lượng thực tế sản xuất từ 400 thành 500 của mặt hàng T003"
+        }, {
+            creator: {
+                id: "1",
+                name: "Nguyễn Anh Phương"
+            },
+            createdAt: "06-10-2020",
+            title: "Sửa thuộc tính mặt hàng",
+            description: "Sửa số lượng thực tế sản xuất từ 400 thành 500"
+        }],
+        createdAt: "04-10-2020",
+        updatedAt: "06-10-2020",
+        status: "Đang thực hiện"
+    }, {
+        _id: "2",
+        code: "KH 002",
+        manufacturingOrder: {
+            _id: "1",
+            code: "DSX001"
+        },
+        goods: [{
+            good: {
+                _id: "1",
+                code: "T001",
+                name: "Thuốc uống paracetamol",
+                baseUnit: "Gói",
+                packingRule: "1Thùngx5Hộpx10góix100g"
+            },
+            quantity: 1000,
+            orderedQuantity: 8000
+        }, {
+            good: {
+                _id: "2",
+                code: "T003",
+                name: "Cốm dinh dưỡng W3Q",
+                baseUnit: "kg",
+                packingRule: "1Thùngx10hộpx1kg"
+            },
+            quantity: 200,
+            orderedQuantity: 200
+        }, {
+            good: {
+                _id: "3",
+                code: "T003",
+                name: "Thuốc uống bột nap",
+                baseUnit: "Gói",
+                packingRule: "1Thùngx20Hộpx10góix100g"
+            },
+            quantity: 500,
+            orderedQuantity: 400
+        }],
+        creator: {
+            _id: "1",
+            name: "Nguyễn Anh Phương"
+        },
+        startDate: "07-10-2020",
+        endDate: "27-10-2020",
+        description: "Kế hoạch sản xuất tuần 3 và tuần 4 tháng 10",
+        logs: [{
+            creator: {
+                id: "1",
+                name: "Nguyễn Anh Phương"
+            },
+            createdAt: "06-10-2020",
+            title: "Sửa thuộc tính mặt hàng",
+            description: "Sửa số lượng thực tế sản xuất từ 400 thành 500 của mặt hàng T003"
+        }, {
+            creator: {
+                id: "1",
+                name: "Nguyễn Anh Phương"
+            },
+            createdAt: "06-10-2020",
+            title: "Sửa thuộc tính mặt hàng",
+            description: "Sửa số lượng thực tế sản xuất từ 400 thành 500"
+        }],
+        createdAt: "04-10-2020",
+        updatedAt: "06-10-2020",
+        status: "Chưa được duyệt"
+    }, {
+        _id: "3",
+        code: "KH 003",
+        manufacturingOrder: {
+            _id: "2",
+            code: "DSX002"
+        },
+        goods: [{
+            good: {
+                _id: "1",
+                code: "T001",
+                name: "Thuốc uống paracetamol",
+                baseUnit: "Gói",
+                packingRule: "1Thùngx5Hộpx10góix100g"
+            },
+            quantity: 1000,
+            orderedQuantity: 8000
+        }, {
+            good: {
+                _id: "2",
+                code: "T003",
+                name: "Cốm dinh dưỡng W3Q",
+                baseUnit: "kg",
+                packingRule: "1Thùngx10hộpx1kg"
+            },
+            quantity: 200,
+            orderedQuantity: 200
+        }, {
+            good: {
+                _id: "3",
+                code: "T003",
+                name: "Thuốc uống bột nap",
+                baseUnit: "Gói",
+                packingRule: "1Thùngx20Hộpx10góix100g"
+            },
+            quantity: 500,
+            orderedQuantity: 400
+        }],
+        creator: {
+            _id: "1",
+            name: "Phạm Đạt Tài"
+        },
+        startDate: "07-10-2020",
+        endDate: "27-10-2020",
+        description: "Kế hoạch sản xuất tuần 3 và tuần 4 tháng 10",
+        logs: [{
+            creator: {
+                id: "1",
+                name: "Phạm Đạt Tài"
+            },
+            createdAt: "06-10-2020",
+            title: "Sửa thuộc tính mặt hàng",
+            description: "Sửa số lượng thực tế sản xuất từ 400 thành 500 của mặt hàng T003"
+        }, {
+            creator: {
+                id: "1",
+                name: "Phạm Đạt Tài"
+            },
+            createdAt: "06-10-2020",
+            title: "Sửa thuộc tính mặt hàng",
+            description: "Sửa số lượng thực tế sản xuất từ 400 thành 500"
+        }],
+        createdAt: "04-10-2020",
+        updatedAt: "06-10-2020",
+        status: "Đã hoàn thành"
+    }, {
+        _id: "4",
+        code: "KH 004",
+        goods: [{
+            good: {
+                _id: "1",
+                code: "T001",
+                name: "Thuốc uống paracetamol",
+                baseUnit: "Gói",
+                packingRule: "1Thùngx5Hộpx10góix100g"
+            },
+            quantity: 1000,
+            orderedQuantity: 8000
+        }, {
+            good: {
+                _id: "2",
+                code: "T003",
+                name: "Cốm dinh dưỡng W3Q",
+                baseUnit: "kg",
+                packingRule: "1Thùngx10hộpx1kg"
+            },
+            quantity: 200,
+            orderedQuantity: 200
+        }, {
+            good: {
+                _id: "3",
+                code: "T003",
+                name: "Thuốc uống bột nap",
+                baseUnit: "Gói",
+                packingRule: "1Thùngx20Hộpx10góix100g"
+            },
+            quantity: 500,
+            orderedQuantity: 400
+        }],
+        creator: {
+            _id: "1",
+            name: "Nguyễn Anh Phương"
+        },
+        startDate: "01-11-2020",
+        endDate: "08-11-2020",
+        description: "Kế hoạch sản xuất tuần 1 tháng 11 năm 2020",
+        logs: [{
+            creator: {
+                id: "1",
+                name: "Nguyễn Anh Phương"
+            },
+            createdAt: "06-10-2020",
+            title: "Sửa thuộc tính mặt hàng",
+            description: "Sửa số lượng thực tế sản xuất từ 400 thành 500 của mặt hàng T003"
+        }, {
+            creator: {
+                id: "1",
+                name: "Nguyễn Anh Phương"
+            },
+            createdAt: "06-10-2020",
+            title: "Sửa thuộc tính mặt hàng",
+            description: "Sửa số lượng thực tế sản xuất từ 500 thành 400 của mặt hàng T003"
+        }],
+        createdAt: "04-10-2020",
+        updatedAt: "06-10-2020",
+        status: "Đã hủy"
     }],
 }
 

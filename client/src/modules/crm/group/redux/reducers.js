@@ -20,7 +20,6 @@ export function groups(state = initState, action) {
 
     switch (action.type) {
         case CrmGroupConstants.GET_CRM_GROUPS_REQUEST:
-        case CrmGroupConstants.PAGINATE_CRM_GROUPS_REQUEST:
         case CrmGroupConstants.CREATE_CRM_GROUP_REQUEST:
         case CrmGroupConstants.GET_CRM_GROUP_REQUEST:
         case CrmGroupConstants.EDIT_CRM_GROUP_REQUEST:
@@ -32,7 +31,6 @@ export function groups(state = initState, action) {
             }
 
         case CrmGroupConstants.GET_CRM_GROUPS_FAILE:
-        case CrmGroupConstants.PAGINATE_CRM_GROUPS_FAILE:
         case CrmGroupConstants.CREATE_CRM_GROUP_FAILE:
         case CrmGroupConstants.GET_CRM_GROUP_FAILE:
         case CrmGroupConstants.EDIT_CRM_GROUP_FAILE:
@@ -54,7 +52,7 @@ export function groups(state = initState, action) {
         case CrmGroupConstants.GET_CRM_GROUP_SUCCESS:
             return {
                 ...state,
-                groupCustomerById: action.payload,
+                groupById: action.payload,
                 isLoading: false
             };
 
@@ -62,14 +60,6 @@ export function groups(state = initState, action) {
             return {
                 ...state,
                 list: [action.payload, ...state.list],
-                isLoading: false
-            };
-
-        case CrmGroupConstants.PAGINATE_CRM_GROUPS_SUCCESS:
-            return {
-                ...state,
-                listPaginate: action.payload.docs,
-                ...action.payload,
                 isLoading: false
             };
 

@@ -117,32 +117,32 @@ exports.showDocument = async (req, res) => {
 };
 
 exports.editDocument = async (req, res) => {
-    // try {
-    if (req.files && req.files.file) {
-        let pathFile = req.files.file[0].destination + '/' + req.files.file[0].filename;
-        req.body.file = pathFile;
-    }
-    if (req.files && req.files.fileScan) {
-        let pathFileScan = req.files.fileScan[0].destination + '/' + req.files.fileScan[0].filename;
-        req.body.scannedFileOfSignedDocument = pathFileScan;
-    }
-    const document = await DocumentServices.editDocument(req.params.id, req.body, req.query, req.portal);
+    try {
+        if (req.files && req.files.file) {
+            let pathFile = req.files.file[0].destination + '/' + req.files.file[0].filename;
+            req.body.file = pathFile;
+        }
+        if (req.files && req.files.fileScan) {
+            let pathFileScan = req.files.fileScan[0].destination + '/' + req.files.fileScan[0].filename;
+            req.body.scannedFileOfSignedDocument = pathFileScan;
+        }
+        const document = await DocumentServices.editDocument(req.params.id, req.body, req.query, req.portal);
 
-    await Logger.info(req.user.email, 'EDIT_DOCUMENT', req.portal);
-    res.status(200).json({
-        success: true,
-        messages: ['edit_document_success'],
-        content: document
-    });
-    // } catch (error) {
+        await Logger.info(req.user.email, 'EDIT_DOCUMENT', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['edit_document_success'],
+            content: document,
+        });
+    } catch (error) {
 
-    //     await Logger.error(req.user.email, 'EDIT_DOCUMENT', req.portal);
-    //     res.status(400).json({
-    //         success: false,
-    //         messages: Array.isArray(error) ? error : ['edit_document_faile'],
-    //         content: error
-    //     });
-    // }
+        await Logger.error(req.user.email, 'EDIT_DOCUMENT', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['edit_document_faile'],
+            content: error
+        });
+    }
 };
 
 exports.addDocumentLog = async (req, res) => {
@@ -546,7 +546,7 @@ exports.createDocumentArchive = async (req, res) => {
 
 exports.editDocumentArchive = async (req, res) => {
     try {
-        const archive = await DocumentServices.editDocumentArchive(req.params.id, req.body, req.portal);
+        const archive = await DocumentServices.editDocumentArchive(req.params.id, req.body, req.portal, req.user.company._id);
 
         await Logger.info(req.user.email, 'EDIT_DOCUMENT_ARCHIVE', req.portal);
         res.status(200).json({

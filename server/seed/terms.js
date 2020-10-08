@@ -929,7 +929,7 @@ const LINKS = [{
     components: getComponentsInLink('/manage-purchase-order'),
 },
 {
-    url: "/manage-quotation",
+    url: "/manage-quoter",
     description: "Báo giá",
     category: LINK_CATEGORY.ORDER.name,
     roles: [
@@ -939,7 +939,59 @@ const LINKS = [{
         ROOT_ROLES.VICE_DEAN.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
-    components: getComponentsInLink('/manage-quotation'),
+    components: getComponentsInLink('/manage-quoter'),
+},
+{
+    url: "/manage-sales-order-dashboard",
+    description: "Dashboard đơn kinh doanh",
+    category: LINK_CATEGORY.ORDER.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.DEAN.name,
+        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/manage-sales-order-dashboard'),
+},
+{
+    url: "/manage-manufacturing-order-dashboard",
+    description: "Dashboard đơn sản xuất",
+    category: LINK_CATEGORY.ORDER.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.DEAN.name,
+        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/manage-manufacturing-order-dashboard'),
+},
+{
+    url: "/manage-purchase-order-dashboard",
+    description: "Dashboard đơn mua nguyên vật liệu",
+    category: LINK_CATEGORY.ORDER.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.DEAN.name,
+        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/manage-purchase-order-dashboard'),
+},
+{
+    url: "/manage-quoter-dashboard",
+    description: "Dashboard đơn báo giá",
+    category: LINK_CATEGORY.ORDER.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.DEAN.name,
+        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/manage-quoter-dashboard'),
 },
 {
     url: "/manage-discount",
@@ -965,7 +1017,7 @@ const LINKS = [{
         ROOT_ROLES.VICE_DEAN.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
-    
+
     components: getComponentsInLink('/manage-tax'),
 },
 {
@@ -980,6 +1032,19 @@ const LINKS = [{
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/manage-sla'),
+},
+{
+    url: '/crm/dashboard',
+    description: `Bảng tin quản lý khách hàng`,
+    category: LINK_CATEGORY.CRM.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.DEAN.name,
+        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/crm/dashboard')
 },
 {
     url: '/crm/customer',
@@ -1018,19 +1083,6 @@ const LINKS = [{
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/crm/group')
-},
-{
-    url: '/crm/statistic',
-    description: `Thống kê`,
-    category: LINK_CATEGORY.CRM.name,
-    roles: [
-        ROOT_ROLES.SUPER_ADMIN.name,
-        ROOT_ROLES.ADMIN.name,
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
-        ROOT_ROLES.EMPLOYEE.name,
-    ],
-    components: getComponentsInLink('/crm/statistic')
 },
 {
     url: '/crm/care',

@@ -173,7 +173,7 @@ class ModalEditEmployeeKpi extends Component {
     render() {
         var currentOrganizationalUnitKPI, items;
         const { createKpiUnit, translate } = this.props;
-        const { _id, name, weight, criteria, errorOnName, errorOnCriteria, errorOnWeight, editing } = this.state;
+        const { _id, name, weight, criteria, errorOnName, errorOnCriteria, errorOnWeight, editing, parent } = this.state;
 
         if (createKpiUnit.currentKPI) currentOrganizationalUnitKPI = createKpiUnit.currentKPI;
         
@@ -217,7 +217,7 @@ class ModalEditEmployeeKpi extends Component {
                                             items={items}
                                             onChange={this.handleParentChange}
                                             multiple={false}
-                                            value={items[0]}
+                                            value={parent ? parent : ""}
                                         />
                                     </div>
                             }

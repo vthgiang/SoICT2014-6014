@@ -256,8 +256,6 @@ exports.editDocument = async (id, data, query = undefined, portal) => {
             doc.roles = data.roles
         }
 
-        // if (data.archivedRecordPlaceInfo !== 'undefined' && data.archivedRecordPlaceInfo !== undefined)
-        //     doc.archivedRecordPlaceInfo = data.archivedRecordPlaceInfo
         if (data.archivedRecordPlaceOrganizationalUnit && data.archivedRecordPlaceOrganizationalUnit !== "[object Object]") {
             doc.archivedRecordPlaceOrganizationalUnit = data.archivedRecordPlaceOrganizationalUnit
         }
@@ -265,7 +263,6 @@ exports.editDocument = async (id, data, query = undefined, portal) => {
             doc.archivedRecordPlaceManager = data.archivedRecordPlaceManager
 
         await doc.save();
-        //let docs = doc.logs;
         return doc;
     }
 }
@@ -559,17 +556,7 @@ exports.getDocumentsThatRoleCanView = async (portal, query, company) => {
         return await Document(connect(DB_CONNECTION, portal)).find({
             company,
             roles: { $in: roleArr }
-        }).populate([
-            { path: 'category', select: 'name id' },
-            { path: 'domains', select: 'name id' },
-            { path: 'archives', select: 'name id path' },
-            { path: 'relationshipDocuments', select: 'name id' },
-            { path: 'views.viewer', select: 'name id' },
-            { path: "downloads.downloader", select: 'name id' },
-            { path: "archivedRecordPlaceOrganizationalUnit", select: "name id" },
-            { path: "logs.creator", select: 'name id' },
-            { path: "relationshipDocuments", select: "name id" },
-        ]);
+        }).select("id name archives category domains numberOfDownload numberOfView ");
     } else {
 
         let option = {
@@ -821,24 +808,25 @@ exports.deleteManyDocumentArchive = async (array, portal, company) => {
     return await this.getDocumentArchives(portal, company);
 }
 
-exports.editDocumentArchive = async (id, data, portal) => {
+exports.editDocumentArchive = async (id, data, portal, company) => {
+    console.log('aaaaaaaaa', data)
     const archive = await DocumentArchive(connect(DB_CONNECTION, portal)).findById(id);
     let array = data.array;
     archive.name = data.name;
     archive.description = data.description;
     archive.parent = ObjectId.isValid(data.parent) ? data.parent : undefined
-    archive.path = await findPath(data)
+    archive.path = await findPath(data, portal)
     await archive.save();
     for (let i = 0; i < array.length; i++) {
 
         const archive = await DocumentArchive(connect(DB_CONNECTION, portal)).findById(array[i]);
-        archive.path = await findPath(archive);
+        archive.path = await findPath(archive, portal);
         await archive.save();
     }
-    const document = await this.getDocumentArchives(portal)
+    const document = await this.getDocumentArchives(portal, company)
     return document;
 }
-async function findPath(data) {
+async function findPath(data, portal) {
     let path = "";
     let arrayParent = [];
     arrayParent.push(data.name);

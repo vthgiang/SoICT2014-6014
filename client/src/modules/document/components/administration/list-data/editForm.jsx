@@ -12,6 +12,9 @@ class EditForm extends Component {
         super(props);
         this.state = {
             documentVersionName: "",
+            page: 1,
+            limit: 5,
+
         }
     }
 
@@ -114,45 +117,37 @@ class EditForm extends Component {
 
     handleVersionName = (e) => {
         const value = e.target.value;
-        // this.validateVersionName(value, true);
         this.setState(state => {
             return {
                 ...state,
                 documentVersionName: value,
-                // errorVersionName: msg,
             }
         })
     }
 
     handleIssuingDate = (value) => {
-        // this.validateIssuingDate(value, true);
         this.setState(state => {
             return {
                 ...state,
                 documentIssuingDate: value,
-                //  errorIssuingDate: msg,
             }
         })
     }
 
     handleEffectiveDate = (value) => {
-        // this.validateEffectiveDate(value, true);
         this.setState(state => {
             return {
                 ...state,
                 documentEffectiveDate: value,
-                // errorEffectiveDate: msg,
             }
         })
     }
 
     handleExpiredDate = (value) => {
-        //this.validateExpiredDate(value, true);
         this.setState(state => {
             return {
                 ...state,
                 documentExpiredDate: value,
-                //  errorExpiredDate: msg,
             }
         })
     }
@@ -225,26 +220,6 @@ class EditForm extends Component {
         }
         return msg === undefined;
     }
-
-
-    validateIssuingBody = (value, willUpdateState) => {
-        let msg = undefined;
-        let val = value;
-        const { translate } = this.props;
-        if (!val.trim()) {
-            msg = translate('document.doc_version.no_blank_issuingbody');
-        }
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    documentIssuingBody: value,
-                    errorIssuingBody: msg,
-                }
-            })
-        }
-        return msg === undefined;
-    }
     validateVersionName = (value, willUpdateState) => {
         let msg = undefined;
         const { translate } = this.props;
@@ -263,131 +238,7 @@ class EditForm extends Component {
         }
         return msg === undefined;
     }
-    validateOfficialNumber = (value, willUpdateState) => {
-        const regex = /\d/g
-        let msg = undefined;
-        let val = value.trim();
-        const { translate } = this.props;
-        if (!val) {
-            msg = translate('document.doc_version.no_blank_official_number');
-        }
-        else if (!regex.test(val)) {
-            msg = translate('document.doc_version.error_office_number');
-        }
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    documentOfficialNumber: value,
-                    errorOfficialNumber: msg,
-                }
-            })
-        }
-        return msg === undefined;
-    }
-    validateIssuingDate = (value, willUpdateState) => {
-        let msg = undefined;
-        const { translate } = this.props;
-        if (!value) {
-            msg = translate('document.doc_version.no_blank_issuingdate');
-        }
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    documentIssuingDate: value,
-                    errorIssuingDate: msg,
-                }
-            })
-        }
-        return msg === undefined;
-    }
-    validateEffectiveDate = (value, willUpdateState) => {
-        let msg = undefined;
-        const { translate } = this.props;
-        if (!value) {
-            msg = translate('document.doc_version.no_blank_effectivedate');
-        }
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    documentEffectiveDate: value,
-                    errorEffectiveDate: msg,
-                }
-            })
-        }
-        return msg === undefined;
-    }
-    validateExpiredDate = (value, willUpdateState) => {
-        let msg = undefined;
-        const { translate } = this.props;
-        if (!value) {
-            msg = translate('document.doc_version.no_blank_expired_date');
-        }
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    documentExpiredDate: value,
-                    errorExpiredDate: msg,
-                }
-            })
-        }
-        return msg === undefined;
-    }
-    validateSinger = (value, willUpdateState) => {
-        let msg = undefined;
-        let val = value.trim();
-        const { translate } = this.props;
-        if (!val) {
-            msg = translate('document.doc_version.no_blank_signer');
-        }
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    documentSigner: value,
-                    errorSigner: msg,
-                }
-            })
-        }
-        return msg === undefined;
-    }
-    validateDocumentFile = (value, willUpdateState) => {
-        let msg = undefined;
-        const { translate } = this.props;
-        if (!value) {
-            msg = translate('document.doc_version.no_blank_file');
-        }
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    documentFile: value,
-                    errorDocumentFile: msg,
-                }
-            })
-        }
-        return this.state.documentFile === undefined;
-    }
-    validateDocumentFileScan = (value, willUpdateState) => {
-        let msg = undefined;
-        const { translate } = this.props;
-        if (!value) {
-            msg = translate('document.doc_version.no_blank_file_scan');
-        }
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    documentFileScan: value,
-                    errorDocumentFileScan: msg,
-                }
-            })
-        }
-        return this.state.documentFileScan === undefined;
-    }
+
 
     isValidateForm = () => {
         return this.validateName(this.state.documentName, false)
@@ -427,19 +278,17 @@ class EditForm extends Component {
             documentRelationshipDocuments,
             documentRoles,
             documentArchivedRecordPlaceOrganizationalUnit,
-            documentArchivedRecordPlaceManager,
         } = this.state;
         const { role, documents, department } = this.props;
         const categories = documents.administration.categories.list.map(category => { return { value: category._id, text: category.name } });
         const { list } = documents.administration.domains;
         const roleList = role.list.map(role => { return { value: role._id, text: role.name } });
-        const relationshipDocs = documents.administration.data.list.filter(doc => doc._id !== documentId).map(doc => { return { value: doc._id, text: doc.name } })
+        const relationshipDocs = documents.administration.data.list
         const archives = documents.administration.archives.list;
         let title = "";
         let description = "";
         const formData = new FormData();
         formData.append('name', documentName);
-
         if (documentName !== this.props.documentName) {
             if (!title.includes("Chỉnh sửa thông tin văn bản.")) {
                 title = (title + " Chỉnh sửa thông tin văn bản ");
@@ -528,8 +377,8 @@ class EditForm extends Component {
             let newArray = [];
             for (let i = 0; i < documentRelationshipDocuments.length; i++) {
                 formData.append('relationshipDocuments[]', documentRelationshipDocuments[i]);
-                let relationship = relationshipDocs.filter(item => item.value === documentRelationshipDocuments[i]);
-                newArray.push(relationship[0].text);
+                let relationship = relationshipDocs.filter(item => item.id === documentRelationshipDocuments[i]);
+                newArray.push(relationship[0].name);
 
             }
             description += newArray.join(" - ") + ".";
@@ -643,16 +492,7 @@ class EditForm extends Component {
                 documentArchivedRecordPlaceManager: nextProps.documentArchivedRecordPlaceManager,
 
                 errorName: undefined,
-                errorIssuingBody: undefined,
-                errorOfficialNumber: undefined,
-                errorSigner: undefined,
-                errorVersionName: undefined,
-                errorDocumentFile: undefined,
-                errorDocumentFileScan: undefined,
-                errorIssuingDate: undefined,
-                errorEffectiveDate: undefined,
-                errorExpiredDate: undefined,
-                errorCategory: undefined
+
             }
         } else if (nextProps.documentVersions.length !== prevState.documentVersions.length) {
             return {
@@ -703,6 +543,15 @@ class EditForm extends Component {
             }
         })
     }
+    onSearch = async (name) => {
+
+        await this.props.getAllDocuments({ page: this.state.page, limit: this.state.limit, name: name, calledId: "relationshipDocs" });
+        this.setState(state => {
+            return {
+                ...state,
+            }
+        });
+    }
 
     updateDocumentVersions = async (version) => {
         let { documentVersions } = this.state;
@@ -723,12 +572,13 @@ class EditForm extends Component {
             documentRoles, documentArchives,
             documentArchivedRecordPlaceOrganizationalUnit, currentVersion,
         } = this.state;
-        const { errorName, errorIssuingBody, errorOfficialNumber, errorSigner, errorVersionName, errorDocumentFile, errorDocumentFileScan, } = this.state;
+        const { errorName } = this.state;
         const { translate, role, documents, department } = this.props;
         const categories = documents.administration.categories.list.map(category => { return { value: category._id, text: category.name } });
         const { list } = documents.administration.domains;
         const roleList = role.list.map(role => { return { value: role._id, text: role.name } });
-        const relationshipDocs = documents.administration.data.list.filter(doc => doc._id !== documentId).map(doc => { return { value: doc._id, text: doc.name } })
+        console.log('-----------------', documents.administration.relationshipDocs)
+        const relationshipDocs = documents.administration.relationshipDocs.paginate.map(doc => { return { value: doc._id, text: doc.name } });
         const archives = documents.administration.archives.list;
         let path = documentArchives ? this.findPath(archives, documentArchives) : "";
         return (
@@ -771,20 +621,17 @@ class EditForm extends Component {
                                                 <input type="text" className="form-control" value={documentName} onChange={this.handleName} />
                                                 <ErrorLabel content={errorName} />
                                             </div>
-                                            <div className={`form-group ${!errorIssuingBody ? "" : "has-error"}`}>
+                                            <div className="form-group">
                                                 <label>{translate('document.doc_version.issuing_body')}</label>
                                                 <input type="text" className="form-control" onChange={this.handleIssuingBody} value={documentIssuingBody} />
-                                                <ErrorLabel content={errorIssuingBody} />
                                             </div>
-                                            <div className={`form-group ${!errorOfficialNumber ? "" : "has-error"}`}>
+                                            <div className="form-group">
                                                 <label>{translate('document.doc_version.official_number')}</label>
                                                 <input type="text" className="form-control" onChange={this.handleOfficialNumber} value={documentOfficialNumber} />
-                                                <ErrorLabel content={errorOfficialNumber} />
                                             </div>
-                                            <div className={`form-group ${!errorSigner ? "" : "has-error"}`}>
+                                            <div className="form-group">
                                                 <label>{translate('document.doc_version.signer')}</label>
                                                 <input type="text" className="form-control" onChange={this.handleSigner} value={documentSigner} />
-                                                <ErrorLabel content={errorSigner} />
                                             </div>
                                         </div>
                                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
@@ -836,22 +683,10 @@ class EditForm extends Component {
                                                     <div className="form-group">
                                                         <label>{translate('document.upload_file')}</label>
                                                         <UploadFile multiple={true} onChange={this.handleUploadFile} />
-                                                        {/* <br />
-                                                        <div className="upload btn btn-primary">
-                                                            <i className="fa fa-folder"></i>
-                                                            {" " + translate('document.choose_file')}
-                                                            <input className="upload" type="file" name="file" onChange={this.handleUploadFile} />
-                                                        </div> */}
                                                     </div>
                                                     <div className="form-group">
                                                         <label>{translate('document.upload_file_scan')}</label>
                                                         <UploadFile multiple={true} onChange={this.handleUploadFileScan} />
-                                                        {/* <br />
-                                                        <div className="upload btn btn-primary">
-                                                            <i className="fa fa-folder"></i>
-                                                            {" " + translate('document.choose_file')}
-                                                            <input className="upload" type="file" name="file" onChange={this.handleUploadFileScan} />
-                                                        </div> */}
                                                     </div>
                                                     <div className="form-group">
                                                         <label>{translate('document.doc_version.issuing_date')}</label>
@@ -930,6 +765,7 @@ class EditForm extends Component {
                                                     onChange={this.handleRelationshipDocuments}
                                                     value={documentRelationshipDocuments}
                                                     multiple={true}
+                                                    onSearch={this.onSearch}
                                                 />
                                             </div>
                                             <div className="form-group">
@@ -988,6 +824,7 @@ class EditForm extends Component {
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
+    getAllDocuments: DocumentActions.getDocuments,
     editDocument: DocumentActions.editDocument,
     downloadDocumentFile: DocumentActions.downloadDocumentFile,
     downloadDocumentFileScan: DocumentActions.downloadDocumentFileScan

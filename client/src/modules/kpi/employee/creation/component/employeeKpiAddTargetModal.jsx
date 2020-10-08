@@ -46,14 +46,14 @@ class ModalCreateEmployeeKpi extends Component {
         const { createKpiUnit } = this.props;
         if (createKpiUnit.currentKPI) currentOrganizationalKpiSet = createKpiUnit.currentKPI;
         if(this.state.parent === null){
-            if(currentOrganizationalKpiSet === null){
+            if(!currentOrganizationalKpiSet){
                 parent = null;
             }
             else{    
                 items = currentOrganizationalKpiSet.kpis.filter(item => item.type === 0).map(x => {//type !==0 thì đc. cái này để loại những mục tiêu mặc định?
                     return {value: x._id, text: x.name} });
 
-                parent = items[0].value;
+                parent = items && items[0] && items[0].value;
             }    
         }
         else{
@@ -165,7 +165,7 @@ class ModalCreateEmployeeKpi extends Component {
     }
     
     render() {
-        const { adding, name, weight, criteria, errorOnName, errorOnCriteria, errorOnWeight} = this.state;
+        const { adding, name, weight, criteria, errorOnName, errorOnCriteria, errorOnWeight, parent} = this.state;
         const { createKpiUnit, translate } = this.props;
         var currentOrganizationalUnitKpiSet;
 
@@ -212,7 +212,7 @@ class ModalCreateEmployeeKpi extends Component {
                                         items = {items}
                                         onChange={this.handleParentChange}
                                         multiple={false}
-                                        value={items[0]}
+                                        value={parent ? parent : ""}
                                     />
                                 
                             </div>}

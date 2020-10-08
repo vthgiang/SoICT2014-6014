@@ -1,26 +1,54 @@
 import React, { Component } from 'react';
 import sampleData from '../../../sampleData';
 import { DataTableSetting, DatePicker, DeleteNotification, SelectMulti } from "../../../../../../common-components";
+import ManufacturingOrderDetailInfo from './manufacturingOrderDetailInfo';
+import ManufacturingPlanCreateForm from '../manufacturing-plan/create-plan/manufacturingPlanCreateForm';
 class ManufacturingOrderManagement extends Component {
     constructor(props) {
         super(props);
         this.state = {}
     }
 
-    handleStatusChange = async (value) => {
-        this.setState(state => {
+    // handleChangeValue = async (value) => {
+    //     this.setState(state => {
+    //         return {
+    //             ...state,
+    //             value: value
+    //         }
+    //     })
+    // }
+
+    handleShowDetailInfo = async (id) => {
+        await this.setState((state) => {
             return {
                 ...state,
-                status: value
+                manufacturingOrderId: id
             }
-        })
+        });
+        window.$(`#modal-detail-info-manufacturing-order`).modal('show');
+    }
+
+    handleShowPlanCreateForm = async (id) => {
+        await this.setState((state) => {
+            return {
+                ...state,
+                manufacturingPlanCreatedOrderId: id
+            }
+        });
+        window.$(`#modal-create-manufacturing-plan`).modal('show');
     }
 
     render() {
         const { manufacturingOrders } = sampleData;
         return (
             <React.Fragment>
+                {
+                    <ManufacturingOrderDetailInfo manufacturingOrderId={this.state.manufacturingOrderId} />
+                }
                 <div className="box-body qlcv">
+                    {
+                        <ManufacturingPlanCreateForm manufacturingOrderId={this.state.manufacturingPlanCreatedOrderId} />
+                    }
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">Mã đơn sản xuất</label>
@@ -38,10 +66,10 @@ class ManufacturingOrderManagement extends Component {
                                     { value: '1', text: "Rất cao" },
                                     { value: '2', text: "Cao" },
                                     { value: '3', text: "Bình thường" },
-                                    { value: '3', text: "Thấp" },
-                                    { value: '3', text: "Rất thấp" },
+                                    { value: '4', text: "Thấp" },
+                                    { value: '5', text: "Rất thấp" },
                                 ]}
-                                onChange={this.handleStatusChange}
+                            // onChange={this.handleChangeValue}
                             />
                         </div>
                     </div>
@@ -54,6 +82,22 @@ class ManufacturingOrderManagement extends Component {
                                 // value={startValue}
                                 // onChange={this.handleChangeDateAfter}
                                 disabled={false}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label className="form-control-static">Trạng thái</label>
+                            <SelectMulti
+                                id={`select-multi-status`}
+                                multiple="multiple"
+                                options={{ nonSelectedText: "Chọn trạng thái", allSelectedText: "Chọn tất cả" }}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={[
+                                    { status: '1', text: "Chưa lập kế hoạch" },
+                                    { status: '2', text: "Đang lập kế hoạch" },
+                                    { status: '3', text: "Đã lập kế hoạch" },
+                                ]}
+                            // onChange={this.handleStatusChange}
                             />
                         </div>
                         <div className="form-group">
@@ -109,7 +153,7 @@ class ManufacturingOrderManagement extends Component {
                                             <a className="edit text-yellow" style={{ width: '5px' }} title="Sửa đơn sản xuất"><i className="material-icons">edit</i></a>
                                             {
                                                 manufacturingOrder.status !== "Đã lập kế hoạch" &&
-                                                <a className="edit text-red" style={{ width: '5px' }} title="Lập kế hoạch"><i className="material-icons">add</i></a>
+                                                <a className="edit text-red" style={{ width: '5px' }} title="Lập kế hoạch" onClick={() => this.handleShowPlanCreateForm(manufacturingOrder._id)}><i className="material-icons">add</i></a>
                                             }
                                         </td>
                                     </tr>

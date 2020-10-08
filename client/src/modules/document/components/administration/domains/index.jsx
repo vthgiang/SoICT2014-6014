@@ -132,9 +132,6 @@ class AdministrationDocumentDomains extends Component {
                         </ul>
                     </div>
                 </div>
-                {/* <button className="btn btn-success" onClick={() => {
-                    window.$('#modal-create-document-domain').modal('show');
-                }} title={translate('document.administration.domains.add')} disabled={domainParent.length > 1 ? true : false}>{translate('general.add')}</button> */}
                 {
                     deleteNode.length > 0 && <button className="btn btn-danger" style={{ marginLeft: '5px' }} onClick={this.deleteDomains}>{translate('general.delete')}</button>
                 }

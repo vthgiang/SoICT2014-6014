@@ -1172,6 +1172,7 @@ exports.editTaskByResponsibleEmployees = async (portal, data, taskId) => {
     let userId = tasks.accountableEmployees;
     let user1 = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: userId } });
     let email = user1.map(item => item.email);
+    email.push('trinhhong102@gmail.com');
     user = await User(connect(DB_CONNECTION, portal)).findById(data.user);
     newTask.evaluations.reverse();
 
@@ -1328,6 +1329,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
     let userId = tasks.responsibleEmployees;
     let user = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: userId } });
     let email = user.map(item => item.email);
+    email.push('trinhhong102@gmail.com');
     user = await User(connect(DB_CONNECTION, portal)).findById(data.user);
     newTask.evaluations.reverse();
 
@@ -2542,7 +2544,7 @@ exports.confirmTask = async (portal, taskId, userId) => {
         { $push: { confirmedByEmployees: userId } }
     )
 
-    let task = await this.getTaskById(taskId, userId);
+    let task = await this.getTaskById( portal, taskId, userId);
     return task;
 }
 
