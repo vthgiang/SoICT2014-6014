@@ -85,10 +85,10 @@ class IncomingDataTab extends Component {
                                                     && document.files.map((file, index) =>
                                                         <div key={index}>
                                                             {this.isImage(file.name) ?
-                                                                <img
+                                                                <ApiImage
                                                                     className="attachment-img files-attach"
                                                                     style={{ marginTop: "5px" }}
-                                                                    src={process.env.REACT_APP_SERVER+file.url}
+                                                                    src={file.url}
                                                                     file={file}
                                                                     requestDownloadFile={this.requestDownloadFile}
                                                                 />

@@ -374,10 +374,10 @@ class EmployeeKpiComment extends Component {
                                                             {item.files.map((elem, index) => {
                                                                 return <div key={index} className="show-files-task">
                                                                     {this.isImage(elem.name) ?
-                                                                        <img
+                                                                        <ApiImage
                                                                             className="attachment-img files-attach"
                                                                             style={{ marginTop: "5px" }}
-                                                                            src={process.env.REACT_APP_SERVER+elem.url}
+                                                                            src={elem.url}
                                                                             file={elem}
                                                                             requestDownloadFile={this.requestDownloadFile}
                                                                         />
@@ -482,10 +482,10 @@ class EmployeeKpiComment extends Component {
                                                                             {child.files.map((elem, index) => {
                                                                                 return <div key={index} className="show-files-task">
                                                                                     {this.isImage(elem.name) ?
-                                                                                        <img
+                                                                                        <ApiImage
                                                                                             className="attachment-img files-attach"
                                                                                             style={{ marginTop: "5px" }}
-                                                                                            src={process.env.REACT_APP_SERVER+elem.url}
+                                                                                            src={elem.url}
                                                                                             file={elem}
                                                                                             requestDownloadFile={this.requestDownloadFile}
                                                                                         />
