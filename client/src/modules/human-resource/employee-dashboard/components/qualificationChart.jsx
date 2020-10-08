@@ -1,3 +1,4 @@
+/* Biểu đồ thể hiện trình độ học vấn của nhân viên trong công ty */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
