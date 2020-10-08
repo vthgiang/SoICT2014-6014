@@ -1861,6 +1861,8 @@ export default {
                 number: 'Số lượng',
                 attached_file: 'File đính kèm',
 
+                select_role_to_use: 'Chọn loại sử dụng',
+                select_all_roles_to_use: 'Chọn tất cả loại sử dụng',
                 not_for_registering: 'Không được đăng ký sử dụng',
                 register_by_hour: 'Đăng ký sử dụng theo giờ',
                 register_for_long_term: 'Đăng ký sử dụng lâu dài',

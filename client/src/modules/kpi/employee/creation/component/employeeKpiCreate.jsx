@@ -192,6 +192,18 @@ class CreateEmployeeKpiSet extends Component {
         });
     }
 
+    handleChangeDate = async (value) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                employeeKpiSet: {
+                    ...state.employeeKpiSet,
+                    date: value,
+                }
+            }
+        });
+    }
+
     /**Lưu thay đổi thời gian của tập KPI này */
     handleSaveEditEmployeeKpiSet = async (id, organizationUnit) => {
         let d = new Date(),
@@ -250,7 +262,7 @@ class CreateEmployeeKpiSet extends Component {
             month = '0' + month;
         if (day.length < 2)
             day = '0' + day;
-
+        
         return [month, year].join('-');
     }
 
@@ -573,7 +585,7 @@ class CreateEmployeeKpiSet extends Component {
                                             id="month"
                                             dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
                                             value={defaultTime}                 // giá trị mặc định cho datePicker    
-                                            onChange={this.formatDate}
+                                            onChange={this.handleChangeDate}
                                             disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
                                         />
                                     </div>

@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import ManufacturingPlanMangementTable from './manufacturingPlanManagementTable';
 
-class WorkSchedule extends Component {
+class ManufacturingPLanList extends Component {
     constructor(props) {
         super(props);
         this.state = {}
@@ -10,12 +11,13 @@ class WorkSchedule extends Component {
 
     render() {
         return (
-            <div className="box" style={{ minHeight: "450px" }}>
+            <div style={{ minHeight: "450px" }}>
                 <div className="box-body">
-                    Lich san xuat
+                    <ManufacturingPlanMangementTable />
                 </div>
             </div>
+
         );
     }
 }
-export default connect(null, null)(withTranslate(WorkSchedule));
+export default connect(null, null)(withTranslate(ManufacturingPLanList));
