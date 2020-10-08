@@ -276,8 +276,6 @@ class HumanResourceIncreaseAndDecreaseChart extends Component {
                 data1 = [...data1, total1];
                 data2 = [...data2, total2];
             })
-            console.log(data1);
-            console.log(data3);
             this.renderChart({ nameData1, nameData2, nameData3, ratioX, data1, data2, data3, lineChart });
         }
 

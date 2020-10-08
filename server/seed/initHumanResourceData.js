@@ -1593,7 +1593,7 @@ const initSampleCompanyDB = async () => {
 
         { // User 19
             avatar: "/upload/human-resource/avatars/avatar5.png",
-            fullName: "Đào Xuân Hướng'",
+            fullName: "Đào Xuân Hướng",
             employeeNumber: "MS202019",
             status: "active",
             company: vnist._id,
@@ -3828,7 +3828,7 @@ const initSampleCompanyDB = async () => {
         },
         {
             company: vnist._id,
-            employee: employees[3]._id,
+            employee: employees[4]._id,
             organizationalUnit: phongMaketing[0]._id,
             month: "2020-09",
             mainSalary: "15000000",
@@ -3841,7 +3841,7 @@ const initSampleCompanyDB = async () => {
 
         {
             company: vnist._id,
-            employee: employees[3]._id,
+            employee: employees[5]._id,
             organizationalUnit: phongMaketing[0]._id,
             month: "2020-09",
             mainSalary: "15000000",
@@ -3854,9 +3854,9 @@ const initSampleCompanyDB = async () => {
 
         {
             company: vnist._id,
-            employee: employees[3]._id,
+            employee: employees[6]._id,
             organizationalUnit: phongMaketing[0]._id,
-            month: "2020-08",
+            month: "2020-09",
             mainSalary: "18000000",
             unit: 'VND',
             bonus: [{
@@ -3867,7 +3867,7 @@ const initSampleCompanyDB = async () => {
 
         {
             company: vnist._id,
-            employee: employees[4]._id,
+            employee: employees[7]._id,
             organizationalUnit: phongMaketing[0]._id,
             month: "2020-09",
             mainSalary: "15000000",
@@ -3880,9 +3880,9 @@ const initSampleCompanyDB = async () => {
 
         {
             company: vnist._id,
-            employee: employees[4]._id,
+            employee: employees[8]._id,
             organizationalUnit: phongMaketing[0]._id,
-            month: "2020-08",
+            month: "2020-09",
             mainSalary: "15000000",
             unit: 'VND',
             bonus: [{
