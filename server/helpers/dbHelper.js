@@ -58,7 +58,7 @@ const checkDirectory = (path, description=undefined) => {
             recursive: true
         });
     };
-    fs.appendFile(path+'/README.txt', description ? description :'init directory', err => { 
+    fs.appendFile(path+'/README.txt', description ? description :'', err => { 
         if(err) throw err;
     });
 
