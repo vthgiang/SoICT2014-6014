@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { DialogModal, SelectBox, Errorstrong, ButtonModal } from '../../../../../common-components';
 import { translate } from 'react-redux-multilingual/lib/utils';
 
-class BookDetailForm extends Component {
+class IssueDetailForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -38,8 +38,8 @@ class BookDetailForm extends Component {
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID={`modal-detail-book`}
-                    formID={`form-detail-book`}
+                    modalID={`modal-detail-issue`}
+                    formID={`form-detail-issue`}
                     title={translate('manage_warehouse.bill_management.bill_detail')}
                     msg_success={translate('manage_warehouse.bin_location_management.add_success')}
                     msg_faile={translate('manage_warehouse.bin_location_management.add_faile')}
@@ -47,16 +47,16 @@ class BookDetailForm extends Component {
                     hasSaveButton={false}
                     hasNote={false}
                 >
-                    <form id={`form-detail-book`} >
+                    <form id={`form-detail-issue`} >
                         <div className="row">
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.bill_management.code')}:&emsp;</strong>
-                                    BR012
+                                    BI012
                                 </div>
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.bill_management.type')}:&emsp;</strong>
-                                    Nhập nguyên vật liệu
+                                    Xuất nguyên vật liệu
                                 </div>
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.bill_management.proposal')}:&emsp;</strong>
@@ -81,14 +81,14 @@ class BookDetailForm extends Component {
                                     05-10-2020 7:30
                                 </div>
                                 <div className="form-group">
-                                    <strong>{translate('manage_warehouse.bill_management.partner')}:&emsp;</strong>
+                                    <strong>{translate('manage_warehouse.bill_management.customer')}:&emsp;</strong>
                                     Công ty TNHH XYZ
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.bill_management.description')}:&emsp;</strong>
-                                    Nhập kho nguyên vật liệu
+                                    Xuất kho nguyên vật liệu
                                 </div>
                                 <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">{translate('manage_warehouse.bill_management.goods')}</legend>
@@ -149,4 +149,4 @@ class BookDetailForm extends Component {
     }
 }
 
-export default connect(null, null)(withTranslate(BookDetailForm));
+export default connect(null, null)(withTranslate(IssueDetailForm));

@@ -94,6 +94,7 @@ import EmployeeAssetManagement from '../modules/asset/user/asser-managed/compone
 import TaskReportManager from '../modules/report/task-report/components/taskReportManager';
 
 //warehouse
+import InventoryDashBoard from '../modules/warehouse/dashboard-inventory/component';
 import CategoryManagement from '../modules/warehouse/category-management/component';
 import GoodManagement from '../modules/warehouse/good-management/component';
 import StockManagement from '../modules/warehouse/stock-management/component';
@@ -1125,7 +1126,23 @@ class Routes extends Component {
 
                     <PrivateRoute
                         isLoading={false}
-                        key={'category-management'}
+                        key={'dashboard-inventory'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/dashboard-inventory', name: 'dashboard_inventory', icon: 'fa fa-dashboard' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/dashboard-inventory'}
+                        path={'/dashboard-inventory'}
+                        pageName={'dashboard_inventory'}
+                        layout={Layout}
+                        component={InventoryDashBoard}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={'dashboard-inventory'}
                         arrPage={[
                             { link: '/', name: 'home', icon: 'fa fa-home' },
                             { link: '/category-management', name: 'category_management', icon: 'fa fa-cubes' }

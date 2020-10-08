@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { DialogModal, SelectBox, Errorstrong, ButtonModal } from '../../../../../common-components';
 import { translate } from 'react-redux-multilingual/lib/utils';
 
-class BookDetailForm extends Component {
+class RotateDetailForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -38,8 +38,8 @@ class BookDetailForm extends Component {
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID={`modal-detail-book`}
-                    formID={`form-detail-book`}
+                    modalID={`modal-detail-rotate`}
+                    formID={`form-detail-rotate`}
                     title={translate('manage_warehouse.bill_management.bill_detail')}
                     msg_success={translate('manage_warehouse.bin_location_management.add_success')}
                     msg_faile={translate('manage_warehouse.bin_location_management.add_faile')}
@@ -47,7 +47,7 @@ class BookDetailForm extends Component {
                     hasSaveButton={false}
                     hasNote={false}
                 >
-                    <form id={`form-detail-book`} >
+                    <form id={`form-detail-rotate`} >
                         <div className="row">
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className="form-group">
@@ -149,4 +149,4 @@ class BookDetailForm extends Component {
     }
 }
 
-export default connect(null, null)(withTranslate(BookDetailForm));
+export default connect(null, null)(withTranslate(RotateDetailForm));
