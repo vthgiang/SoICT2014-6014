@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import IssueDetailForm from './issueDetailForm';
+import IssueCreateForm from './issueCreateForm';
 
 import { SelectMulti, DatePicker, DataTableSetting } from '../../../../../common-components/index';
 
@@ -11,6 +13,10 @@ class IssueManagementTable extends Component {
         this.state = {
 
         }
+    }
+
+    handleShowDetailInfo = async () => {
+        window.$('#modal-detail-issue').modal('show');
     }
 
     render() {
@@ -49,6 +55,7 @@ class IssueManagementTable extends Component {
                             description={this.state.currentRow.description}
                         />
                     } */}
+                    <IssueCreateForm />
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">{translate('manage_warehouse.bill_management.stock')}</label>
@@ -149,6 +156,7 @@ class IssueManagementTable extends Component {
                             <button type="button" className="btn btn-success" title={translate('manage_warehouse.bill_management.search')} onClick={this.handleSubmitSearch}>{translate('manage_warehouse.bill_management.search')}</button>
                         </div>
                     </div>
+                    <IssueDetailForm />
 
                         <table id={`good-table`} className="table table-striped table-bordered table-hover" style={{marginTop: '15px'}}>
                             <thead>

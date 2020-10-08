@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import TakeDetailForm from './takeDetailForm';
 
 import { SelectMulti, DatePicker, DataTableSetting } from '../../../../../common-components/index';
 
@@ -11,6 +12,10 @@ class TakeManagementTable extends Component {
         this.state = {
 
         }
+    }
+
+    handleShowDetailInfo = async () => {
+        window.$('#modal-detail-take').modal('show');
     }
 
     render() {
@@ -129,6 +134,7 @@ class TakeManagementTable extends Component {
                             <button type="button" className="btn btn-success" title={translate('manage_warehouse.bill_management.search')} onClick={this.handleSubmitSearch}>{translate('manage_warehouse.bill_management.search')}</button>
                         </div>
                     </div>
+                    <TakeDetailForm />
 
                         <table id={`good-table`} className="table table-striped table-bordered table-hover" style={{marginTop: '15px'}}>
                             <thead>

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import RotateDetailForm from './rotateDetailForm';
 
 import { SelectMulti, DatePicker, DataTableSetting } from '../../../../../common-components/index';
 
@@ -11,6 +12,10 @@ class RotateManagementTable extends Component {
         this.state = {
 
         }
+    }
+
+    handleShowDetailInfo = async () => {
+        window.$('#modal-detail-rotate').modal('show');
     }
 
     render() {
@@ -130,6 +135,7 @@ class RotateManagementTable extends Component {
                             <button type="button" className="btn btn-success" title={translate('manage_warehouse.bill_management.search')} onClick={this.handleSubmitSearch}>{translate('manage_warehouse.bill_management.search')}</button>
                         </div>
                     </div>
+                    <RotateDetailForm />
 
                         <table id={`good-table`} className="table table-striped table-bordered table-hover" style={{marginTop: '15px'}}>
                             <thead>

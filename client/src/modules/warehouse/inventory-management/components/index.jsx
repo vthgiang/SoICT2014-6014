@@ -139,7 +139,7 @@ class InventoryManagement extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                        <tr style={{backgroundColor: '#CCFFCC'}}>
+                                        <tr style={{backgroundColor: '#dddd'}}>
                                             <td>1</td>
                                             <td>ĐƯỜNG ACESULFAME K</td>
                                             <td>Thùng</td>
@@ -172,7 +172,7 @@ class InventoryManagement extends Component {
                                                 <a className="text-green" onClick={() => this.handleShowDetailLot()}><i className="material-icons">visibility</i></a>
                                             </td>
                                         </tr>
-                                        <tr style={{backgroundColor: '#CCFFCC'}}>
+                                        <tr style={{backgroundColor: '#dddd'}}>
                                             <td>2</td>
                                             <td>ACID CITRIC MONO</td>
                                             <td>Hộp</td>
@@ -194,7 +194,7 @@ class InventoryManagement extends Component {
                                                 <a className="text-green" onClick={() => this.handleShowDetailLot()}><i className="material-icons">visibility</i></a>
                                             </td>
                                         </tr>
-                                        <tr style={{backgroundColor: '#CCFFCC'}}>
+                                        <tr style={{backgroundColor: '#dddd'}}>
                                             <td>3</td>
                                             <td>ĐƯỜNG ACESULFAME K</td>
                                             <td>Thùng</td>

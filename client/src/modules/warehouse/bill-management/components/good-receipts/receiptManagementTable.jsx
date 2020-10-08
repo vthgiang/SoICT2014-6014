@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import ReceiptDetailForm from './receiptDetailForm';
 
 import { SelectMulti, DatePicker, DataTableSetting } from '../../../../../common-components/index';
 
@@ -11,6 +12,10 @@ class ReceiptManagementTable extends Component {
         this.state = {
 
         }
+    }
+
+    handleShowDetailInfo = async () => {
+        window.$('#modal-detail-receipt').modal('show');
     }
 
     render() {
@@ -149,6 +154,7 @@ class ReceiptManagementTable extends Component {
                             <button type="button" className="btn btn-success" title={translate('manage_warehouse.bill_management.search')} onClick={this.handleSubmitSearch}>{translate('manage_warehouse.bill_management.search')}</button>
                         </div>
                     </div>
+                    <ReceiptDetailForm />
 
                         <table id={`good-table`} className="table table-striped table-bordered table-hover" style={{marginTop: '15px'}}>
                             <thead>
