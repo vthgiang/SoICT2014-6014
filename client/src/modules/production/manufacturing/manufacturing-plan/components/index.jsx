@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { LazyLoadComponent, forceCheckOrVisible } from '../../../../../common-components';
 import ManufacturingOrderList from './manufacturing-order';
+import ManufacturingPLanList from './manufacturing-plan';
 class ManufacturingPlan extends Component {
     constructor(props) {
         super(props);
@@ -27,6 +28,7 @@ class ManufacturingPlan extends Component {
                     <div className="tab-pane" id="list-manufacturing-plan">
                         <LazyLoadComponent
                         >
+                            <ManufacturingPLanList />
                         </LazyLoadComponent>
                     </div>
                 </div>

@@ -1,30 +1,30 @@
 import React, { Component } from 'react';
-import { DialogModal } from '../../../../../common-components';
-import sampleData from '../../sampleData';
+import { DialogModal } from '../../../../../../common-components';
+import sampleData from '../../../sampleData';
 
 
 
-class PurchasingRequestDetailInfo extends Component {
+class ManufacturingOrderDetailInfo extends Component {
     constructor(props) {
         super(props);
         this.state = {};
     }
 
-    getPurchasingRequestById = (id) => {
-        let { purchasingRequests } = sampleData;
-        let purchasingRequest = purchasingRequests.filter((a) => a._id === id);
+    getManufacturingOrderById = (id) => {
+        let { manufacturingOrders } = sampleData;
+        let manufacturingOrder = manufacturingOrders.filter((a) => a._id === id);
         // let materialRequests = purchasingRequest[0].materials;
         // console.log(materialRequests)
-        return purchasingRequest[0];
+        return manufacturingOrder[0];
     }
 
 
     shouldComponentUpdate(nextProps) {
-        if (nextProps.purchasingRequestId !== this.props.purchasingRequestId) {
+        if (nextProps.manufacturingOrderId !== this.props.manufacturingOrderId) {
             this.setState((state) => {
                 return {
                     ...state,
-                    purchasingRequest: this.getPurchasingRequestById(nextProps.purchasingRequestId)
+                    manufacturingOrder: this.getManufacturingOrderById(nextProps.manufacturingOrderId)
                 }
             })
             return false;
@@ -34,83 +34,84 @@ class PurchasingRequestDetailInfo extends Component {
 
     render() {
 
-        const { purchasingRequest } = this.state;
-        console.log(purchasingRequest);
-        let materials = [];
-        if (purchasingRequest) {
-            materials = purchasingRequest.materials;
+        const { manufacturingOrder } = this.state;
+        let goods = [];
+        if (manufacturingOrder) {
+            goods = manufacturingOrder.goods;
         }
         return (
             <React.Fragment>
                 {
-                    purchasingRequest !== undefined &&
+                    manufacturingOrder !== undefined &&
                     <DialogModal
-                        modalID={`modal-detail-info-purchasing-request`} isLoading={false}
-                        title="Chi tiết phiếu đề nghị"
-                        formID={`form-detail-purchasing-request`}
+                        modalID={`modal-detail-info-manufacturing-order`} isLoading={false}
+                        title="Chi tiết đơn sản xuất"
+                        formID={`form-detail-manufacturing-order`}
                         size={75}
                         maxWidth={600}
                         hasSaveButton={false}
                         hasNote={false}
                     >
-                        <form id={`form-detail-purchasing-request`}>
+                        <form id={`form-detail-manufacturing-order`}>
                             <div className="row">
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <div className="form-group">
-                                        <strong>Mã phiếu đề nghị:&emsp;</strong>
-                                        {purchasingRequest.code}
+                                        <strong>Mã đơn sản xuất:&emsp;</strong>
+                                        {manufacturingOrder.code}
                                     </div>
                                     <div className="form-group">
                                         <strong>Người tạo:&emsp;</strong>
-                                        {purchasingRequest.creator.name}
+                                        {manufacturingOrder.creator.name}
                                     </div>
                                     <div className="form-group">
                                         <strong>Ngày tạo:&emsp;</strong>
-                                        {purchasingRequest.createdAt}
+                                        {manufacturingOrder.createdAt}
                                     </div>
                                     <div className="form-group">
-                                        <strong>Ngày dự kiến nhận hàng:&emsp;</strong>
-                                        {purchasingRequest.intendReceiveTime}
+                                        <strong>Ngày dự kiến hoàn thành:&emsp;</strong>
+                                        {manufacturingOrder.deadline}
                                     </div>
                                 </div>
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <div className="form-group">
-                                        <strong>Mục đích:&emsp;</strong>
-                                        {purchasingRequest.purpose}
+                                        <strong>Độ ưu tiên:&emsp;</strong>
+                                        {manufacturingOrder.priority}
                                     </div>
                                     <div className="form-group">
                                         <strong>Mô tả:&emsp;</strong>
-                                        {purchasingRequest.description}
+                                        {manufacturingOrder.description}
                                     </div>
                                     <div className="form-group">
                                         <strong>Trạng thái:&emsp;</strong>
-                                        {purchasingRequest.status ? "Đang được xử lý" : "Chưa được xử lý"}
+                                        {manufacturingOrder.status}
                                     </div>
                                 </div>
                             </div>
                             <div className="row">
                                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                     <fieldset className="scheduler-border">
-                                        <legend className="scheduler-border">Chi tiết nguyên vật liệu</legend>
-                                        <table id="manufacturing-works-table" className="table table-striped table-bordered table-hover">
+                                        <legend className="scheduler-border">Chi tiết mặt hàng</legend>
+                                        <table id="manufacturing-order-table" className="table table-striped table-bordered table-hover">
                                             <thead>
                                                 <tr>
                                                     <th>STT</th>
                                                     <th>Mã mặt hàng</th>
                                                     <th>Tên mặt hàng</th>
-                                                    <th>Số lượng</th>
                                                     <th>Đơn vị tính</th>
+                                                    <th>Số lượng</th>
+                                                    <th>Quy cách đóng gói</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {(materials && materials.length !== 0) &&
-                                                    materials.map((material, index) => (
+                                                {(goods && goods.length !== 0) &&
+                                                    goods.map((good, index) => (
                                                         <tr key={index}>
                                                             <td>{index + 1}</td>
-                                                            <td>{material.code}</td>
-                                                            <td>{material.name}</td>
-                                                            <td>{material.quantity}</td>
-                                                            <td>{material.baseUnit}</td>
+                                                            <td>{good.good.code}</td>
+                                                            <td>{good.good.name}</td>
+                                                            <td>{good.good.baseUnit}</td>
+                                                            <td>{good.quantity}</td>
+                                                            <td>{good.good.packingRule}</td>
                                                         </tr>
                                                     ))
                                                 }
@@ -127,4 +128,4 @@ class PurchasingRequestDetailInfo extends Component {
     }
 }
 
-export default PurchasingRequestDetailInfo;
+export default ManufacturingOrderDetailInfo;

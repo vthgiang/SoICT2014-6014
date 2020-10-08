@@ -55,6 +55,10 @@ class PurchasingRequestCreateForm extends Component {
                             <input type="text" className="form-control"></input>
                         </div>
                         <div className="form-group">
+                            <label>Mã kế hoạch<span className="text-red">*</span></label>
+                            <input type="text" className="form-control"></input>
+                        </div>
+                        <div className="form-group">
                             <label>Mục đích</label>
                             <input type="text" className="form-control"></input>
                         </div>
@@ -110,7 +114,7 @@ class PurchasingRequestCreateForm extends Component {
                                                                     { value: '4', text: "Vỏ cây" },
                                                                 ]}
                                                                 onChange={this.handleChangeStatus}
-                                                                multiple={true}
+                                                                multiple={false}
                                                             />
                                                         </td>
                                                         <td><input className="form-control" type="text" value={good.name} name="nameField" style={{ width: "100%" }} /></td>
