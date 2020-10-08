@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { DialogModal, SelectBox, ErrorLabel, ButtonModal } from '../../../../../common-components'
+import { DialogModal, SelectBox, ButtonModal } from '../../../../../common-components'
 
 class PurchaseOrderCreateForm extends Component {
   constructor(props) {
@@ -8,7 +8,7 @@ class PurchaseOrderCreateForm extends Component {
       description: "",
       stock: "",
       responsible: "",
-      goods: "",
+      goods: [],
       returnRule: "",
       serviceLevelAgreement: "",
       partner: "",
@@ -23,8 +23,8 @@ class PurchaseOrderCreateForm extends Component {
 
   format_curency(x) {
       x = x.toString();
-    var pattern = /(-?\d+)(\d{3})/;
-    while (pattern.test(x))
+      var pattern = /(-?\d+)(\d{3})/;
+      while (pattern.test(x))
       x = x.replace(pattern, "$1,$2");
     return x;
   }
@@ -64,11 +64,56 @@ class PurchaseOrderCreateForm extends Component {
       serviceLevelAgreementOfGood: e.target.value
     })
   }
+
+  isGoodsValidated = () =>{
+    let {returnRuleOfGood, serviceLevelAgreementOfGood, nameOfGood, 
+      baseUnitOfGood, priceOfGood, quantityOfGood} = this.state;
+    if (returnRuleOfGood && serviceLevelAgreementOfGood && nameOfGood && 
+      baseUnitOfGood && priceOfGood && quantityOfGood){
+        return true;
+    }
+    return false;
+  }
+
+  handleAddGood = () => {
+    let {returnRuleOfGood, serviceLevelAgreementOfGood, nameOfGood, 
+      baseUnitOfGood, priceOfGood, quantityOfGood, goods} = this.state;
+    let good = {};
+    good.name = nameOfGood;
+    good.price = priceOfGood;
+    good.quantity = quantityOfGood;
+    good.baseUnit = baseUnitOfGood;
+    good.returnRule = returnRuleOfGood;
+    good.serviceLevelAgreement = serviceLevelAgreementOfGood;
+
+    goods.push(good);
+    this.setState({
+      goods,
+      returnRuleOfGood: "",
+      serviceLevelAgreementOfGood: "",
+      nameOfGood: "", 
+      baseUnitOfGood: "",
+      priceOfGood: null,
+      quantityOfGood: null
+    })
+
+  }
+
+  handleClearGood = (e) => {
+    this.setState({
+      returnRuleOfGood: "",
+      serviceLevelAgreementOfGood: "",
+      nameOfGood: "", 
+      baseUnitOfGood: "",
+      priceOfGood: null,
+      quantityOfGood: null
+    })
+  }
   
   render() {
     let {description, stock, responsible, goods, returnRule, serviceLevelAgreement, partner,
       returnRuleOfGood, serviceLevelAgreementOfGood, nameOfGood, baseUnitOfGood, priceOfGood, quantityOfGood } = this.state;
-    console.log("state:", this.state);
+
     return (
       <React.Fragment>
         <ButtonModal modalID={`modal-create-material-purchase-order`} button_name={'Thêm mới đơn mua NVL'} title={'Thêm mới đơn mua NVL'} />
@@ -201,16 +246,23 @@ class PurchaseOrderCreateForm extends Component {
                       <textarea type="text" className="form-control" value={serviceLevelAgreementOfGood} onChange={this.handleServiceLevelAgreementOfGoodChange}/>
                     </div>
                   </div>
+                  <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <div className={"pull-right"} style={{ padding: 10 }}>
+                      <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isGoodsValidated()} onClick={this.handleAddGood} >Thêm mới</button>
+                      <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearGood}>Xóa trắng</button>
+                    </div>
+                    </div>
                   {/* Hiển thị bảng */}
                   <table className="table table-bordered">
                     <thead>
                       <tr>
                         <th title={'Tên nguyên vật liệu'}>Tên nguyên vật liệu</th>
-                        <th title={'Giá (vnđ)'}>Giá</th>
+                        <th title={'Giá (vnđ)'}>Giá (vnđ)</th>
                         <th title={'Số lượng'}>Số lượng</th>
                         <th title={'Đơn vị tính'}>Đơn vị tính</th>
                         <th title={'Quy tắc đổi trả'}>Quy tắc đổi trả</th>
                         <th title={'Cam kết chất lượng'}>Cam kết chất lượng</th>
+                        <th title={'Hành động'}>Hành động</th>
                       </tr>
                     </thead>
                     <tbody id={`good-edit-manage-by-stock`}>
@@ -220,10 +272,18 @@ class PurchaseOrderCreateForm extends Component {
                           <tr key={index}>
                             <td>{item.name}</td>
                             <td>{this.format_curency(item.price)}</td>
-                            <td>{item.quantity}</td>
+                            <td>{this.format_curency(item.quantity)}</td>
                             <td>{item.baseUnit}</td>
                             <td>{item.returnRule}</td>
                             <td>{item.serviceLevelAgreement}</td>
+                            <td>
+                              <a className="edit text-yellow">
+                                <i className="material-icons">edit</i>
+                              </a>
+                              <a className="edit text-red">
+                                <i className="material-icons">delete</i>
+                              </a>
+                            </td>
                           </tr>
                         )
                       }

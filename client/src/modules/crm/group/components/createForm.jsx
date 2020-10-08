@@ -113,8 +113,7 @@ class CreateGroupForm extends Component {
     }
 
     isFormValidated = () => {
-        const { newCustomerGroup } = this.state;
-        const { code, name } = newCustomerGroup;
+        const { code, name } = this.state.newCustomerGroup;
         const { translate } = this.props;
 
         if (!ValidationHelper.validateName(translate, code).status

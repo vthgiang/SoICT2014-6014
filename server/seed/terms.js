@@ -944,7 +944,7 @@ const LINKS = [{
         ROOT_ROLES.VICE_DEAN.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
-    
+
     components: getComponentsInLink('/manage-tax'),
 },
 {
@@ -959,6 +959,19 @@ const LINKS = [{
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/manage-sla'),
+},
+{
+    url: '/crm/dashboard',
+    description: `Bảng tin quản lý khách hàng`,
+    category: LINK_CATEGORY.CRM.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.DEAN.name,
+        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/crm/dashboard')
 },
 {
     url: '/crm/customer',
@@ -997,19 +1010,6 @@ const LINKS = [{
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/crm/group')
-},
-{
-    url: '/crm/statistic',
-    description: `Thống kê`,
-    category: LINK_CATEGORY.CRM.name,
-    roles: [
-        ROOT_ROLES.SUPER_ADMIN.name,
-        ROOT_ROLES.ADMIN.name,
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
-        ROOT_ROLES.EMPLOYEE.name,
-    ],
-    components: getComponentsInLink('/crm/statistic')
 },
 {
     url: '/crm/care',

@@ -123,6 +123,7 @@ class SideBar extends Component {
                                 name: 'menu.customer_Management',
                                 icon: 'fa fa-users',
                                 list: [
+                                    { name: 'menu.crm_list.dashboard', icon: 'fa fa-dashboard', path: '/crm/dashboard' },
                                     { name: 'menu.crm_list.customer', icon: 'fa fa-circle-o', path: '/crm/customer' },
                                     { name: 'menu.crm_list.lead', icon: 'fa fa-circle-o', path: '/crm/lead' },
                                     { name: 'menu.crm_list.care', icon: 'fa fa-circle-o', path: '/crm/care' },

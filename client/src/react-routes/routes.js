@@ -104,6 +104,7 @@ import PartnerManagement from '../modules/warehouse/partner-management/component
 import ProposalManagement from '../modules/warehouse/proposal-management/component';
 
 // Customer Management
+import CrmDashBoard from '../modules/crm/dashboard/components';
 import CrmCustomer from '../modules/crm/customer/components';
 import CrmGroup from '../modules/crm/group/components';
 // import CrmCare from '../modules/crm/care/components'
@@ -115,7 +116,7 @@ import ManufacturingOrder from '../modules/production/order/manufacturing-order/
 import Discount from '../modules/production/order/discount/components';
 import Quotation from '../modules/production/order/quotation/components';
 import Tax from '../modules/production/order/tax/components';
-import ServiceLevelAgreement from '../modules/production/order/serviceLevelAgreement/components';
+import ServiceLevelAgreement from '../modules/production/order/service-level-agreement/components';
 
 
 // plans
@@ -1257,6 +1258,21 @@ class Routes extends Component {
                     />
 
                     {/* Customer Management */}
+                    <PrivateRoute
+                        isLoading={false}
+                        key={'crm_dashboard'}
+                        arrPage={[
+                            { link: '/crm/dashboard', name: 'crm_list.dashboard', icon: 'fa fa-dashboard' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/crm/dashboard'}
+                        path={'/crm/dashboard'}
+                        pageName={'crm_list.dashboard'}
+                        layout={Layout}
+                        component={CrmDashBoard}
+                    />
+
                     <PrivateRoute
                         isLoading={false}
                         key={'crm_customer'}

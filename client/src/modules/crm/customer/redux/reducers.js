@@ -35,7 +35,6 @@ export function customers(state = initState, action) {
         case CrmCustomerConstants.GET_CRM_CUSTOMER_FAILE:
         case CrmCustomerConstants.EDIT_CRM_CUSTOMER_FAILE:
         case CrmCustomerConstants.DELETE_CRM_CUSTOMER_FAILE:
-
             return {
                 ...state,
                 isLoading: false
@@ -59,7 +58,7 @@ export function customers(state = initState, action) {
         case CrmCustomerConstants.CREATE_CRM_CUSTOMER_SUCCESS:
             return {
                 ...state,
-                list: [action.payload, ...state.customers.list],
+                list: [action.payload, ...state.list],
                 isLoading: false
             };
 

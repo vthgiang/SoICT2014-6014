@@ -192,6 +192,18 @@ class CreateEmployeeKpiSet extends Component {
         });
     }
 
+    handleChangeDate = async (value) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                employeeKpiSet: {
+                    ...state.employeeKpiSet,
+                    date: value,
+                }
+            }
+        });
+    }
+
     /**Lưu thay đổi thời gian của tập KPI này */
     handleSaveEditEmployeeKpiSet = async (id, organizationUnit) => {
         let d = new Date(),
@@ -250,7 +262,7 @@ class CreateEmployeeKpiSet extends Component {
             month = '0' + month;
         if (day.length < 2)
             day = '0' + day;
-
+        
         return [month, year].join('-');
     }
 
@@ -260,14 +272,14 @@ class CreateEmployeeKpiSet extends Component {
             window.$(`#createEmployeeKpi`).modal("show");
         } else if (employeeKpiStatus === 1) {
             Swal.fire({
-                title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.edit_target.approving'),
+                title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.add_new_target.approving'),
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
             })
         } else {
             Swal.fire({
-                title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.edit_target.activated'),
+                title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.add_new_target.activated'),
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
@@ -483,12 +495,12 @@ class CreateEmployeeKpiSet extends Component {
                             employeeKpi={employeeKpi}
                         />
 
-                        {/**Khi đã khởi tạo tập KPI */}
+                        {/* Khi đã khởi tạo tập KPI */}
                         {currentKPI ?
                             <div className="col-xs-12 col-sm-12">
                                 <div style={{ marginLeft: "-10px", marginBottom: "10px" }}>
 
-                                    {/**Chỉnh sửa thông tin của tập KPI này */}
+                                    {/* Chỉnh sửa thông tin của tập KPI này */}
                                     {editing ?
                                         <React.Fragment>
                                             <a className="btn btn-app" onClick={() => this.handleSaveEditEmployeeKpiSet(currentKPI._id, currentUnit && currentUnit[0]._id)} title="Lưu thông tin chỉnh sửa">
@@ -503,24 +515,29 @@ class CreateEmployeeKpiSet extends Component {
                                         </a>
                                     }
 
-                                    {/**Xóa tập KPI này */}
+                                    {/* Xóa tập KPI này */}
                                     <a className="btn btn-app" onClick={this.checkOrganizationalUnitKpi(currentKPIUnit) ? () => this.handleDeleteEmployeeKpiSet(currentKPI._id, currentKPI.status) : () => this.handleStartOrganizationalUnitKpi(currentKPIUnit)} title="Xóa KPI tháng">
                                         <i className="fa fa-trash" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.general_information.delete')}
                                     </a>
 
-                                    {/**Thêm KPI cá nhân */}
+                                    {/* Thêm KPI cá nhân */}
                                     <a
                                         className="btn btn-app"
                                         data-toggle="modal"
                                         data-backdrop="static"
                                         data-keyboard="false"
-                                        onClick={this.checkOrganizationalUnitKpi(currentKPIUnit) ? () => this.handleCreateEmployeeKpi(currentKPI.status) : () => this.handleStartOrganizationalUnitKpi(currentKPIUnit)}
+                                        onClick={
+                                            this.checkOrganizationalUnitKpi(currentKPIUnit) ?
+                                                () => this.handleCreateEmployeeKpi(currentKPI.status) :
+                                                () => this.handleStartOrganizationalUnitKpi(currentKPIUnit)
+                                        }
                                     >
                                         <i className="fa fa-plus-circle" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.add_target')}
                                     </a>
+                                    
                                     <ModalCreateEmployeeKpi employeeKpiSet={currentKPI._id} organizationalUnit={currentUnit && currentUnit[0]} />
 
-                                    {/**Yêu cầu phê duyệt tập KPI này */}
+                                    {/* Yêu cầu phê duyệt tập KPI này */}
                                     {currentKPI.status === 0 ?
                                         <a className="btn btn-app" onClick={this.checkOrganizationalUnitKpi(currentKPIUnit) ? () => this.handleRequestApproveEmployeeKpiSet(currentKPI) : () => this.handleStartOrganizationalUnitKpi(currentKPIUnit)}>
                                             <i className="fa fa-external-link-square" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.request_approval')}
@@ -533,12 +550,12 @@ class CreateEmployeeKpiSet extends Component {
 
                                 <div className="" style={{ marginBottom: "10px" }}>
                                     <h4 style={{ display: "inline", fontWeight: "600" }}>
-                                        {/**Tên đơn vị */}
+                                        {/* Tên đơn vị */}
                                         {translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.general_information.general_information')} {this.formatDate(currentKPI.date)} ({currentKPI.organizationalUnit.name ? currentKPI.organizationalUnit.name : translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.handle_populate_info_null.error_kpi_organizational_unit_null')})
                                     </h4>
                                 </div>
 
-                                {/**Khi edit tập KPI này */}
+                                {/* Khi edit tập KPI này */}
                                 {editing ? deans &&
                                     <div className="col-sm-6 col-xs-12 form-group">
                                         <label>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.approver')}</label>
@@ -553,7 +570,7 @@ class CreateEmployeeKpiSet extends Component {
                                         />
                                     </div>
                                     : <div className="form-group">
-                                        {/**Tên người phê duyệt */}
+                                        {/* Tên người phê duyệt */}
                                         <span style={{ fontWeight: "600" }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.approver')}: </span>
                                         <span>{currentKPI.approver.name ? currentKPI.approver.name : translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.handle_populate_info_null.error_kpi_approver_null')}</span>
                                     </div>
@@ -568,7 +585,7 @@ class CreateEmployeeKpiSet extends Component {
                                             id="month"
                                             dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
                                             value={defaultTime}                 // giá trị mặc định cho datePicker    
-                                            onChange={this.formatDate}
+                                            onChange={this.handleChangeDate}
                                             disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
                                         />
                                     </div>
@@ -588,7 +605,7 @@ class CreateEmployeeKpiSet extends Component {
                                     </div>
                                 }
 
-                                {/**Danh sách các mục tiêu */}
+                                {/* Danh sách các mục tiêu */}
                                 <div>
                                     {(typeof currentKPI !== 'undefined' && currentKPI !== null) &&
                                         <h4 style={{ display: "inline-block", fontWeight: "600", marginTop: "20px" }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.target_list')}</h4>

@@ -1,7 +1,6 @@
 const { Customer } = require(`${SERVER_MODELS_DIR}`);
 const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
-
 exports.createCustomer = async (portal, companyId, data, userId) => {
     let {
         owner, code, name, gender, avatar, company, taxNumber, customerSource, companyEstablishmentDate,
@@ -21,21 +20,22 @@ exports.createCustomer = async (portal, companyId, data, userId) => {
     }
 
     const newCustomer = await Customer(connect(DB_CONNECTION, portal)).create({
-        owner: '',
+        owner: owner,
         code: code,
         name: name,
-        // status: status,
+        status: status ? status : null,
         creator: userId,
         gender: gender ? gender : '',
         taxNumber: taxNumber ? taxNumber : '',
         customerSource: customerSource ? customerSource : '',
+        company: company,
         companyEstablishmentDate: companyEstablishmentDate ? companyEstablishmentDate : null,
         birthDate: birthDate ? birthDate : null,
         telephoneNumber: telephoneNumber ? telephoneNumber : null,
         mobilephoneNumber: mobilephoneNumber ? mobilephoneNumber : null,
         email: email ? email : '',
         email2: email2 ? email2 : '',
-        group: group,
+        group: group ? group : null,
         address: address ? address : '',
         address2: address2 ? address2 : '',
         location: location ? location : null,
@@ -43,7 +43,10 @@ exports.createCustomer = async (portal, companyId, data, userId) => {
         linkedIn: linkedIn ? linkedIn : ''
     });
 
-    const getNewCustomer = await Customer(connect(DB_CONNECTION, portal)).findById(newCustomer._id);
+    const getNewCustomer = await Customer(connect(DB_CONNECTION, portal)).findById(newCustomer._id)
+        .populate({ path: 'group', select: '_id name' })
+        .populate({ path: 'status', select: '_id name' })
+        .populate({ path: 'owner', select: '_id name' });;
     return getNewCustomer;
 }
 
@@ -92,11 +95,12 @@ exports.editCustomer = async (portal, companyId, id, data, userId) => {
             owner: owner,
             code: code,
             name: name,
-            // status: status,
+            status: status,
             creator: userId,
             gender: gender ? gender : '',
             taxNumber: taxNumber ? taxNumber : '',
             customerSource: customerSource ? customerSource : '',
+            company: company,
             companyEstablishmentDate: companyEstablishmentDate ? companyEstablishmentDate : null,
             birthDate: birthDate ? birthDate : null,
             telephoneNumber: telephoneNumber ? telephoneNumber : null,

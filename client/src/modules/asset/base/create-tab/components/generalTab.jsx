@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DatePicker, ErrorLabel, SelectBox, TreeSelect, SelectMulti } from '../../../../../common-components';
+import { DatePicker, ErrorLabel, SelectBox, TreeSelect, SelectMulti, ApiImage } from '../../../../../common-components';
 
 import "./addAsset.css";
 import { AssetCreateValidator } from './combinedContent';
@@ -563,9 +563,10 @@ class GeneralTab extends Component {
                     {/* Ảnh tài sản */}
                     <div className="col-md-4" style={{ textAlign: 'center', paddingLeft: '0px' }}>
                         <div>
-                            <a href={img} target="_blank">
+                            {/* <a href={img} target="_blank">
                                 <img className="attachment-img avarta" src={img} alt="Attachment" />
-                            </a>
+                            </a> */}
+                            {img && <ApiImage className="attachment-img avarta" id={`avater-imform-${id}`} src={img} />}
                         </div>
                         <div className="upload btn btn-default ">
                             {translate('manage_asset.upload')}
@@ -725,10 +726,10 @@ class GeneralTab extends Component {
                                         style={{ width: "100%" }}
                                         value={typeRegisterForUse}
                                         items={[
-                                            { value: '', text: '---Chọn quyền sử dụng---' },
-                                            { value: 1, text: 'Không được đăng ký sử dụng' },
-                                            { value: 2, text: 'Đăng ký sử dụng theo giờ' },
-                                            { value: 3, text: 'Đăng ký sử dụng lâu dài' },
+                                            { value: '', text: translate('asset.general_information.select_role_to_use') },
+                                            { value: 1, text: translate('asset.general_information.not_for_registering') },
+                                            { value: 2, text: translate('asset.general_information.register_by_hour') },
+                                            { value: 3, text: translate('asset.general_information.register_for_long_term') },
                                         ]}
                                         onChange={this.handleTypeRegisterForUseChange}
                                     />

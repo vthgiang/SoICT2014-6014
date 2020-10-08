@@ -27,7 +27,6 @@ class PurchasingRequestDetailInfo extends Component {
                     purchasingRequest: this.getPurchasingRequestById(nextProps.purchasingRequestId)
                 }
             })
-            console.log("heeee")
             return false;
         }
         return true;
