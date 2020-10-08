@@ -6,7 +6,7 @@ import {PaginateBar,
   DeleteNotification, SelectBox} from '../../../../../common-components';
 
 import data from '../../dataTest/PurchaseOrderData.json'
-import PurchaseDetailForm from './purchaseDetailForm';
+import PurchaseDetailForm from './purchaseOrderDetailForm';
 import PurchaseOrderCreateForm from './purchaseOrderCreateForm';
 import PurchaseOrderEditForm from './purchaseOrderEditForm';
 
@@ -75,7 +75,6 @@ class PurchaseOrderTable extends Component {
     
     return (
       <React.Fragment>
-        <div className="box">
         <div className="box-body qlcv">
         <PurchaseOrderCreateForm/>
         {
@@ -128,7 +127,7 @@ class PurchaseOrderTable extends Component {
                 title="Lọc"
                 onClick={this.handleSubmitSearch}
               >
-                Lọc
+                Tìm kiếm
               </button>
             </div>
           </div>
@@ -200,7 +199,6 @@ class PurchaseOrderTable extends Component {
             currentPage={page}
             func={this.setPage}
           />
-        </div>
         </div>
       </React.Fragment>
     );

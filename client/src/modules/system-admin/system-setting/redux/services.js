@@ -3,14 +3,14 @@ import { sendRequest } from '../../../../helpers/requestHelper';
 export const SystemSettingServices = {
     backup,
     deleteBackup,
-    getRestoreData,
+    getBackups,
     restore
 };
 
 function backup(params=undefined, data=undefined) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/system-admin/system-setting/backup`,
-        method: 'PATCH',
+        method: 'POST',
         params,
         data,
     }, true, true, 'system_admin.company');
@@ -23,9 +23,9 @@ function deleteBackup(version) {
     }, true, true, 'system_admin.company');
 }
 
-function getRestoreData() {
+function getBackups() {
     return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/system-admin/system-setting/restore-data`,
+        url: `${process.env.REACT_APP_SERVER}/system-admin/system-setting/backup`,
         method: 'GET'
     }, false, true, 'system_admin.company');
 }

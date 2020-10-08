@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class Quotation extends Component {
+class Quoter extends Component {
   constructor(props) {
     super(props);
     this.state = {}
@@ -9,11 +9,11 @@ class Quotation extends Component {
     return (
       <div className="box" style={{ minHeight: "450px" }}>
         <div className="box-body">
-          Quotation
+          Quoter
         </div>
       </div>
     );
   }
 }
 
-export default Quotation;
+export default Quoter;

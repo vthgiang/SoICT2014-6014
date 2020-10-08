@@ -4,7 +4,7 @@ import { SystemSettingConstants } from "./constants";
 export const SystemSettingActions = {
     backup,
     deleteBackup,
-    getRestoreData,
+    getBackups,
     restore
 }
 
@@ -67,11 +67,11 @@ function deleteBackup(version) {
     }
 }
 
-function getRestoreData() {
+function getBackups() {
     return dispatch => {
         dispatch({ type: SystemSettingConstants.GET_RESTORE_DATA_REQUEST });
 
-        SystemSettingServices.getRestoreData()
+        SystemSettingServices.getBackups()
             .then(res => {
                 dispatch({
                     type: SystemSettingConstants.GET_RESTORE_DATA_SUCCESS,

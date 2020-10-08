@@ -67,11 +67,11 @@ class UserDocumentsData extends Component {
     static getDerivedStateFromProps(nextProps, prevState) {
         const { data } = nextProps.documents.user;
         if (prevState.currentRow) {
-            const index = getIndex(data.list, prevState.currentRow._id);
-            if (data.list[index].versions.length !== prevState.currentRow.versions.length) {
+            const index = getIndex(data.paginate, prevState.currentRow._id);
+            if (data.paginate[index].versions.length !== prevState.currentRow.versions.length) {
                 return {
                     ...prevState,
-                    currentRow: data.list[index]
+                    currentRow: data.paginate[index]
                 }
             }
             else return null;
@@ -345,7 +345,7 @@ class UserDocumentsData extends Component {
         const listArchive = archives.list;
         let list = [];
         if (isLoading === false) {
-            list = docs.list;
+            list = docs.paginate;
         }
 
         let exportData = this.convertDataToExportData(list);

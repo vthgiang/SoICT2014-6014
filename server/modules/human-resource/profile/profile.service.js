@@ -406,8 +406,9 @@ exports.getEmployeesByStartingAndLeaving = async (portal, organizationalUnits, s
             }
         }
         let querysStartingDate = [],
-            querysLeavingDate = [];
-        arrMonth.forEach(x => {
+            querysLeavingDate = [],
+            totalEmployees = [];
+        for (let x of arrMonth) {
             let date = new Date(x);
             let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
             let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
@@ -422,8 +423,15 @@ exports.getEmployeesByStartingAndLeaving = async (portal, organizationalUnits, s
                         "$gt": firstDay,
                         "$lte": lastDay
                     }
-                }]
-        })
+                }];
+            let total = await Employee(connect(DB_CONNECTION, portal)).countDocuments({
+                status: "active",
+                startingDate: {
+                    "$lt": lastDay,
+                }
+            });
+            totalEmployees = [...totalEmployees, total]
+        };
 
         if (organizationalUnits) {
             let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(portal, organizationalUnits, undefined);
@@ -453,7 +461,8 @@ exports.getEmployeesByStartingAndLeaving = async (portal, organizationalUnits, s
             return {
                 arrMonth,
                 listEmployeesHaveStartingDateOfNumberMonth,
-                listEmployeesHaveLeavingDateOfNumberMonth
+                listEmployeesHaveLeavingDateOfNumberMonth,
+                totalEmployees
             }
         } else {
             let listEmployeesHaveStartingDateOfNumberMonth = await Employee(connect(DB_CONNECTION, portal)).find({
@@ -475,6 +484,7 @@ exports.getEmployeesByStartingAndLeaving = async (portal, organizationalUnits, s
 
             return {
                 arrMonth,
+                totalEmployees,
                 listEmployeesHaveStartingDateOfNumberMonth,
                 listEmployeesHaveLeavingDateOfNumberMonth
             }
@@ -1153,7 +1163,7 @@ exports.formatDate = (date, monthDay = true) => {
  * @param {*} portal : Tên ngắn công ty
  */
 exports.createNotificationForEmployeesHaveBrithdayCurrent = async (portal) => {
-    
+
     let employees = await Employee(connect(DB_CONNECTION, portal)).find({}, {
         birthdate: 1,
         emailInCompany: 1

@@ -217,6 +217,24 @@ class EditForm extends Component {
         }
         return msg === undefined;
     }
+    validateVersionName = (value, willUpdateState) => {
+        let msg = undefined;
+        const { translate } = this.props;
+        let val = value.trim();
+        if (!val) {
+            msg = translate('document.doc_version.no_blank_version_name');
+        }
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    documentVersionName: value,
+                    errorVersionName: msg,
+                }
+            })
+        }
+        return msg === undefined;
+    }
 
 
     isValidateForm = () => {
@@ -263,14 +281,11 @@ class EditForm extends Component {
         const { list } = documents.administration.domains;
         const roleList = role.list.map(role => { return { value: role._id, text: role.name } });
         const relationshipDocs = documents.administration.data.list
-            .filter(doc => doc._id !== documentId)
-            .map(doc => { return { value: doc._id, text: doc.name } })
         const archives = documents.administration.archives.list;
         let title = "";
         let description = "";
         const formData = new FormData();
         formData.append('name', documentName);
-
         if (documentName !== this.props.documentName) {
             if (!title.includes("Chỉnh sửa thông tin văn bản.")) {
                 title = (title + " Chỉnh sửa thông tin văn bản ");
@@ -359,7 +374,7 @@ class EditForm extends Component {
             let newArray = [];
             for (let i = 0; i < documentRelationshipDocuments.length; i++) {
                 formData.append('relationshipDocuments[]', documentRelationshipDocuments[i]);
-                let relationship = relationshipDocs.filter(item => item.value === documentRelationshipDocuments[i]);
+                let relationship = relationshipDocs.filter(item => item.id === documentRelationshipDocuments[i]);
                 newArray.push(relationship[0].text);
 
             }

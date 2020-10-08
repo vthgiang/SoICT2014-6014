@@ -9,21 +9,20 @@ import ValidationHelper from '../../../../helpers/validationHelper';
 class GeneralTabCreateForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-        }
+        this.state = {}
     }
     render() {
         const { translate, crm, user } = this.props; // state redux
-        const { id, newCustomer } = this.props; // Lấy giá trị từ props cha
+        const { id } = this.props; // Lấy giá trị từ props cha
 
-        const { customerSource, code, name, company, companyEstablishmentDate, mobilephoneNumber, telephoneNumber
+        const { owner, customerSource, code, name, company, companyEstablishmentDate, mobilephoneNumber, telephoneNumber
             , email, email2, address, address2, gender, birth, group, status, location, taxNumber, website, linkedIn,
         } = this.state;
 
         const { customerNameError, customerCodeError, customerTaxNumberError } = this.state;
 
         // Lấy danh sách người trong phòng ban hiện tại và con
-        let unitMembers = [];
+        let unitMembers;
         if (user.usersOfChildrenOrganizationalUnit) {
             unitMembers = getEmployeeSelectBoxItems(user.usersOfChildrenOrganizationalUnit);
         }
@@ -41,6 +40,7 @@ class GeneralTabCreateForm extends Component {
             listStatus = crm.status.list.map(o => ({ value: o._id, text: o.name }))
             listStatus.unshift({ value: '', text: '---Chọn---' });
         }
+
         return (
             <React.Fragment>
                 <div id={id} className="tab-pane active">
@@ -52,11 +52,11 @@ class GeneralTabCreateForm extends Component {
                                 {
                                     unitMembers &&
                                     <SelectBox
-                                        id={`customer-ownwe`}
+                                        id={`customer-owner`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         items={unitMembers}
-                                        value={newCustomer.owner ? newCustomer.owner : []}
+                                        value={owner}
                                         onChange={this.handleChangeCustomerOwner}
                                         multiple={true}
                                     />
@@ -302,6 +302,18 @@ class GeneralTabCreateForm extends Component {
                 </div>
             </React.Fragment>
         );
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        if (props.id != state.id) {
+            return {
+                ...state,
+                id: props.id,
+                owner: props.newCustomer.owner
+            }
+        } else {
+            return null;
+        }
     }
 
     handleChangeCustomerOwner = (value) => {

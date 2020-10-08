@@ -20,7 +20,7 @@ class CrmCustomerEdit extends Component {
 
     render() {
         const { translate, crm, user } = this.props;
-        const { editingCustomer } = this.state;
+        const { editingCustomer, customerIdEdit, dataStatus } = this.state;
         const { groups } = crm;
 
         // Lấy thành viên trong đơn vị
@@ -33,8 +33,9 @@ class CrmCustomerEdit extends Component {
         let listGroups;
         if (groups.list && groups.list.length > 0) {
             listGroups = groups.list.map(x => { return { value: x._id, text: x.name } })
-            listGroups.unshift({ value: '', text: 'Chọn nhóm khách hàng' });
+            listGroups.unshift({ value: '', text: '---chọn---' });
         }
+
         return (
             <React.Fragment>
                 <DialogModal
@@ -53,11 +54,15 @@ class CrmCustomerEdit extends Component {
                         </ul>
                         <div className="tab-content">
                             {/* Tab thông tin chung */}
-                            <GeneralTabEditForm
-                                id={"customer-general-edit-form"}
-                                callBackFromParentEditForm={this.myCallBack}
-                                editingCustomer={editingCustomer}
-                            />
+                            {
+                                editingCustomer && dataStatus === 3 &&
+                                <GeneralTabEditForm
+                                    id={"customer-general-edit-form"}
+                                    callBackFromParentEditForm={this.myCallBack}
+                                    editingCustomer={editingCustomer}
+                                    customerIdEdit={customerIdEdit}
+                                />
+                            }
 
                             {/* Tab file liên quan đến khách hàng */}
                             <div id="Customer-fileAttachment" className="tab-pane">
@@ -135,7 +140,7 @@ class CrmCustomerEdit extends Component {
             let customer = nextProps.crm.customers.customerById;
             editingCustomer = {
                 ...editingCustomer,
-                owner: customer && customer.owner.map(o => o._id),
+                owner: customer.owner ? customer.owner.map(o => o._id) : [],
                 code: customer && customer.code,
                 name: customer && customer.name,
                 company: customer && customer.company,
@@ -149,7 +154,8 @@ class CrmCustomerEdit extends Component {
                 mobilephoneNumber: customer && customer.mobilephoneNumber,
                 email: customer && customer.email,
                 email2: customer && customer.email2,
-                group: customer && customer.group,
+                status: customer.status && customer.status._id,
+                group: customer.group && customer.group._id,
                 address: customer && customer.address,
                 address2: customer && customer.address2,
                 location: customer && customer.location,
