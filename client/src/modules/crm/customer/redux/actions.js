@@ -28,6 +28,7 @@ function createCustomer(data) {
         dispatch({ type: CrmCustomerConstants.CREATE_CRM_CUSTOMER_REQUEST });
         CrmCustomerServices.createCustomer(data)
             .then(res => {
+                console.log('res', res)
                 dispatch({
                     type: CrmCustomerConstants.CREATE_CRM_CUSTOMER_SUCCESS,
                     payload: res.data.content
