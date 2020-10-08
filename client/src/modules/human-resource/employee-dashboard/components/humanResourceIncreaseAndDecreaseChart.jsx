@@ -127,6 +127,7 @@ class HumanResourceIncreaseAndDecreaseChart extends Component {
                 nameChart: nextProps.nameChart,
                 nameData1: nextProps.nameData1,
                 nameData2: nextProps.nameData2,
+                nameData3: nextProps.nameData3,
                 arrMonth: nextProps.employeesManager.arrMonth,
                 listEmployeesHaveStartingDateOfNumberMonth: nextProps.employeesManager.listEmployeesHaveStartingDateOfNumberMonth,
                 listEmployeesHaveLeavingDateOfNumberMonth: nextProps.employeesManager.listEmployeesHaveLeavingDateOfNumberMonth
@@ -176,6 +177,12 @@ class HumanResourceIncreaseAndDecreaseChart extends Component {
                 names: {
                     data1: data.nameData1,
                     data2: data.nameData2,
+                    data3: data.nameData3,
+                },
+                colors: {
+                    data1: '#2ca02c',
+                    data2: '#ff7f0e',
+                    data3: '#1f77b4'
                 },
             },
             bar: {
@@ -203,14 +210,14 @@ class HumanResourceIncreaseAndDecreaseChart extends Component {
 
         setTimeout(function () {
             chart.load({
-                columns: [data.ratioX, ['data1', ...fakeData1],
+                columns: [data.ratioX, data.data3, ['data1', ...fakeData1],
                 ['data2', ...fakeData2]
                 ],
             });
         }, 100);
         setTimeout(function () {
             chart.load({
-                columns: [data.ratioX, ['data1', ...data.data1],
+                columns: [data.ratioX, data.data3, ['data1', ...data.data1],
                 ['data2', ...data.data2]
                 ],
             });
@@ -238,7 +245,7 @@ class HumanResourceIncreaseAndDecreaseChart extends Component {
     render() {
         const { department, employeesManager, translate } = this.props;
 
-        const { lineChart, nameChart, nameData1, nameData2, startDate, endDate, startDateShow, endDateShow, organizationalUnitsSearch } = this.state;
+        const { lineChart, nameChart, nameData1, nameData2, nameData3, startDate, endDate, startDateShow, endDateShow, organizationalUnitsSearch } = this.state;
 
         let organizationalUnitsName = [];
         if (organizationalUnitsSearch) {
@@ -250,7 +257,7 @@ class HumanResourceIncreaseAndDecreaseChart extends Component {
             let ratioX = ['x', ...employeesManager.arrMonth];
             let listEmployeesHaveStartingDateOfNumberMonth = employeesManager.listEmployeesHaveStartingDateOfNumberMonth;
             let listEmployeesHaveLeavingDateOfNumberMonth = employeesManager.listEmployeesHaveLeavingDateOfNumberMonth;
-            let data1 = ['data1'], data2 = ['data2'];
+            let data1 = ['data1'], data2 = ['data2'], data3 = ["data3", ...employeesManager.totalEmployees];
             employeesManager.arrMonth.forEach(x => {
                 let date = new Date(x);
                 let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
@@ -269,7 +276,9 @@ class HumanResourceIncreaseAndDecreaseChart extends Component {
                 data1 = [...data1, total1];
                 data2 = [...data2, total2];
             })
-            this.renderChart({ nameData1, nameData2, ratioX, data1, data2, lineChart });
+            console.log(data1);
+            console.log(data3);
+            this.renderChart({ nameData1, nameData2, nameData3, ratioX, data1, data2, data3, lineChart });
         }
 
         return (

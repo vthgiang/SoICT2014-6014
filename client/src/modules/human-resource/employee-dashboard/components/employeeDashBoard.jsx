@@ -90,7 +90,7 @@ class DashBoardEmployees extends Component {
                     </div>
 
                     <div className=" col-lg-12 col-md-12 col-md-sm-12 col-xs-12">
-                        <HumanResourceIncreaseAndDecreaseChart nameData1='Tuyển mới' nameData2='Nghỉ làm' nameChart={'Tình hình tăng giảm nhân sự'} />
+                        <HumanResourceIncreaseAndDecreaseChart nameData1='Tuyển mới' nameData2='Nghỉ làm' nameData3='Tổng nhân sự' nameChart={'Tình hình tăng giảm nhân sự'} />
                     </div>
                     <div className=" col-lg-12 col-md-12 col-md-sm-12 col-xs-12">
                         <AnnualLeaveTrendsChart nameData1='Số lượt nghỉ' nameChart={'Xu hướng nghỉ phép'} />
