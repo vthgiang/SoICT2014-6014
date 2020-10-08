@@ -217,6 +217,24 @@ class EditForm extends Component {
         }
         return msg === undefined;
     }
+    validateVersionName = (value, willUpdateState) => {
+        let msg = undefined;
+        const { translate } = this.props;
+        let val = value.trim();
+        if (!val) {
+            msg = translate('document.doc_version.no_blank_version_name');
+        }
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    documentVersionName: value,
+                    errorVersionName: msg,
+                }
+            })
+        }
+        return msg === undefined;
+    }
 
 
     isValidateForm = () => {
@@ -270,7 +288,7 @@ class EditForm extends Component {
         let description = "";
         const formData = new FormData();
         formData.append('name', documentName);
-
+        console.log('---------------------', relationshipDocs, documents.administration.data.list)
         if (documentName !== this.props.documentName) {
             if (!title.includes("Chỉnh sửa thông tin văn bản.")) {
                 title = (title + " Chỉnh sửa thông tin văn bản ");
@@ -562,6 +580,8 @@ class EditForm extends Component {
         const relationshipDocs = documents.administration.relationshipDocs.paginate.map(doc => { return { value: doc._id, text: doc.name } });
         const archives = documents.administration.archives.list;
         let path = documentArchives ? this.findPath(archives, documentArchives) : "";
+
+        console.log('ttttttttttttttttttt', documents.administration.data.list);
         return (
             <React.Fragment>
                 <DialogModal
