@@ -5,7 +5,6 @@ import { withTranslate } from 'react-redux-multilingual';
 import { EmployeeManagerActions } from '../../profile/employee-management/redux/actions';
 import { AnnualLeaveActions } from '../../annual-leave/redux/actions';
 import { DisciplineActions } from '../../commendation-discipline/redux/actions';
-import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 import { SalaryActions } from '../../salary/redux/actions';
 
 import { SelectMulti, DatePicker } from '../../../../common-components';
@@ -46,7 +45,6 @@ class EmployeeDashBoardHeader extends Component {
 
     componentDidMount() {
         const { organizationalUnits, month } = this.state;
-        this.props.getDepartment();
         this.props.getAllEmployee({ organizationalUnits: organizationalUnits, status: 'active' });
         this.props.searchAnnualLeaves({ organizationalUnits: organizationalUnits, month: month });
         this.props.getListPraise({ organizationalUnits: organizationalUnits, month: month });
@@ -190,7 +188,6 @@ function mapState(state) {
 }
 
 const actionCreators = {
-    getDepartment: DepartmentActions.get,
     getAllEmployee: EmployeeManagerActions.getAllEmployee,
     searchAnnualLeaves: AnnualLeaveActions.searchAnnualLeaves,
     getListPraise: DisciplineActions.getListPraise,
