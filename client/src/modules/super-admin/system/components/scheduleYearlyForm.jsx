@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import {SelectBox} from '../../../../common-components';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { SystemSettingActions } from '../redux/actions';
-import { startOfDay } from '@fullcalendar/react';
+import { SystemActions } from '../redux/actions';
 
 class ScheduleYearlyForm extends Component {
     constructor(props) {
         super(props);
         this.state = { 
+            config: {},
             month: '12',
             date: '15',
             hour: '2',
@@ -16,6 +16,21 @@ class ScheduleYearlyForm extends Component {
             second: '0'
          }
     }
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if(nextProps.system.backup.config && JSON.stringify(nextProps.system.backup.config) !== JSON.stringify(prevState.config)){
+            return {
+                ...prevState,
+                config: nextProps.system.backup.config,
+                month: nextProps.system.backup.config.time.month,
+                date: nextProps.system.backup.config.time.date,
+                hour: nextProps.system.backup.config.time.hour,
+                minute: nextProps.system.backup.config.time.minute,
+                second: nextProps.system.backup.config.time.second,
+            }
+        }else return null;
+    }
+
     render() { 
         const {month, date, hour, minute, second} = this.state;
         const {translate} = this.props;
@@ -218,11 +233,11 @@ class ScheduleYearlyForm extends Component {
     }
 
     save = () => {
-        const {schedule} = this.props;
+        const {limit, schedule} = this.props;
         const {month, date, hour, minute, second} = this.state;
 
-        return this.props.backup({auto: 'on', schedule},{
-            month, date, hour, minute, second
+        return this.props.configBackup({auto: 'on', schedule},{
+            limit, month, date, hour, minute, second
         })
     }
 }
@@ -231,4 +246,8 @@ function mapState(state) {
     return state;
 }
 
-export default connect(mapState, null)(withTranslate(ScheduleYearlyForm));
+const dispatchStateToProps = {
+    configBackup: SystemActions.configBackup
+}
+
+export default connect(mapState, dispatchStateToProps)(withTranslate(ScheduleYearlyForm));

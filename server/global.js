@@ -64,13 +64,15 @@ module.exports = async(server) => {
             auto: backupMongo[i].backup.auto,
             limit: backupMongo[i].backup.limit,
             time: backupMongo[i].backup.time,
-            job: new CronJob(timeConfig, function(){
-                backup({
+            job: new CronJob({
+                cronTime: timeConfig,
+                onTick: () => backup({
                     host: process.env.DB_HOST,
                     port: process.env.DB_PORT,
                     db: backupMongo[i].db !== 'all' ? backupMongo[i].db : undefined
-                }, backupMongo[i].backup.limit ? backupMongo[i].backup.limit : 10)
-            }, null, false, 'Asia/Ho_Chi_Minh')
+                }),
+                timezone: 'Asia/Ho_Chi_Minh'
+            })
         }
     }
     for(const [db] of Object.entries(BACKUP)){

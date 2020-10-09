@@ -94,7 +94,8 @@ exports.restore = async (options) => {
  * Sao lưu dữ liệu
  * @param options các option cho việc sao lưu { host, port, db, version }
  */
-exports.backup = async (options, limit=undefined) => {
+exports.backup = async (options) => {
+    let limit = options.db ? BACKUP[options.db].limit : BACKUP['all'].limit;
     const version = versionName();
     const dbBackupPath = (options) => {
         const path = `${SERVER_BACKUP_DIR}/${options.db}/${version}`;

@@ -10,6 +10,11 @@ const ConfiguraionSchema = new Schema({
             type: Boolean,
             default: false
         },
+        type: {
+            type: String,
+            enum: ['weekly', 'monthly', 'yearly'],
+            default: 'monthly'
+        },
         time: {
             second: {
                 type: String,
