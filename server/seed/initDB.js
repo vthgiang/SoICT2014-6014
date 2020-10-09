@@ -43,7 +43,7 @@ const initDB = async() => {
     systemDB.dropDatabase(); 
     await Configuration(systemDB).insertMany([
         {
-            db: 'all',
+            name: 'all',
             backup: {
                 time: {
                     second: '0',

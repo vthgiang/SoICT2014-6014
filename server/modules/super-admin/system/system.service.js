@@ -28,7 +28,7 @@ exports.getBackups = async(portal) => {
 }
 
 exports.getConfigBackup = async(portal) => {
-    return await Configuration(connect(DB_CONNECTION, process.env.DB_NAME)).findOne({db: portal});
+    return await Configuration(connect(DB_CONNECTION, process.env.DB_NAME)).findOne({name: portal});
 }
 
 exports.createBackup = async(portal) => {
@@ -41,7 +41,7 @@ exports.createBackup = async(portal) => {
 
 exports.configBackup = async(portal, query, data) => {
     const {auto, schedule} = query;
-    let configDB = await Configuration(connect(DB_CONNECTION, process.env.DB_NAME)).findOne({db: portal});
+    let configDB = await Configuration(connect(DB_CONNECTION, process.env.DB_NAME)).findOne({name: portal});
 
     switch(auto) {
         case 'on':

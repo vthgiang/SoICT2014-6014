@@ -30,7 +30,7 @@ exports.getBackups = async() => {
 
 exports.configBackup = async(query, data) => {
     const {auto, schedule} = query;
-    let configDB = await Configuration(connect(DB_CONNECTION, process.env.DB_NAME)).findOne({db: 'all'});
+    let configDB = await Configuration(connect(DB_CONNECTION, process.env.DB_NAME)).findOne({name: 'all'});
 
     switch(auto) {
         case 'on':
@@ -111,7 +111,7 @@ exports.configBackup = async(query, data) => {
 
 exports.getConfigBackup = async() => {
     console.log("get config backup system admin")
-    return await Configuration(connect(DB_CONNECTION, process.env.DB_NAME)).findOne({db: 'all'});
+    return await Configuration(connect(DB_CONNECTION, process.env.DB_NAME)).findOne({name: 'all'});
 }
 
 exports.createBackup = async () => {

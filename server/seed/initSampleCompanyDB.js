@@ -75,7 +75,7 @@ const initSampleCompanyDB = async () => {
     console.log("DB system connected");
     await Configuration(systemDB).insertMany([
         {
-            db: 'vnist',
+            name: 'vnist',
             backup: {
                 time: {
                     second: '0',
