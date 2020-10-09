@@ -51,6 +51,7 @@ class EmployeeDashBoardHeader extends Component {
         this.props.searchAnnualLeaves({ organizationalUnits: organizationalUnits, month: month });
         this.props.getListPraise({ organizationalUnits: organizationalUnits, month: month });
         this.props.getListDiscipline({ organizationalUnits: organizationalUnits, month: month });
+
         this.props.searchSalary({ callApiDashboard: true, organizationalUnits: organizationalUnits, month: month });
         this.props.searchSalary({ callApiDashboard: true, month: month });
     }
@@ -86,7 +87,8 @@ class EmployeeDashBoardHeader extends Component {
 
         this.setState({
             arrUnitShow: organizationalUnits
-        })
+        });
+
         this.props.getAllEmployee({ organizationalUnits: organizationalUnits, status: 'active' });
         this.props.searchAnnualLeaves({ organizationalUnits: organizationalUnits, month: month });
         this.props.getListPraise({ organizationalUnits: organizationalUnits, month: month });
