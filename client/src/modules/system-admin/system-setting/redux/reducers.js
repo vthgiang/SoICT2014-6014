@@ -12,121 +12,85 @@ var findVersion = (arrayVersion, version) => {
 
 const initState = {
     backup: {
-        isLoading: false
-    },
-    restore: {
         list: [],
-        isLoading: false
-    }
+        config: {}
+    },
+    isLoading: false
 }
 
 export function systemSetting(state = initState, action) {
     var index = -1;
     switch (action.type) {
-
-        case SystemSettingConstants.SET_SCHEDULE_BACKUP_AUTOMATIC_REQUEST:
+        case SystemSettingConstants.GET_BACKUPS_REQUEST:
+        case SystemSettingConstants.GET_CONFIG_BACKUP_REQUEST:
+        case SystemSettingConstants.CREATE_BACKUP_REQUEST:
+        case SystemSettingConstants.CONFIG_BACKUP_REQUEST:
+        case SystemSettingConstants.DELETE_BACKUP_REQUEST:
+        case SystemSettingConstants.RESTORE_REQUEST:
             return {
                 ...state,
                 isLoading: true
             }
-
-        case SystemSettingConstants.SET_SCHEDULE_BACKUP_AUTOMATIC_SUCCESS:
+        
+        case SystemSettingConstants.GET_BACKUPS_FAILE:        
+        case SystemSettingConstants.GET_CONFIG_BACKUP_FAILE:
+        case SystemSettingConstants.CONFIG_BACKUP_FAILE:
+        case SystemSettingConstants.CREATE_BACKUP_FAILE:
+        case SystemSettingConstants.DELETE_BACKUP_FAILE:
+        case SystemSettingConstants.RESTORE_FAILE:
             return {
                 ...state,
                 isLoading: false
-            };
+            }
 
-        case SystemSettingConstants.SET_SCHEDULE_BACKUP_AUTOMATIC_FAILE:
+        case SystemSettingConstants.GET_BACKUPS_SUCCESS:
+            return {
+                ...state,
+                backup: {
+                    ...state.backup,
+                    list: action.payload
+                },
+                isLoading: false
+            }
+
+        case SystemSettingConstants.GET_CONFIG_BACKUP_SUCCESS:
+
+            state.backup.config = action.payload;
             return {
                 ...state,
                 isLoading: false
-            };
-
-        case SystemSettingConstants.CREATE_BACKUP_REQUEST:
-            return {
-                ...state,
-                restore: {
-                    ...state.restore,
-                    isLoading: true
-                }
             }
 
         case SystemSettingConstants.CREATE_BACKUP_SUCCESS:
             return {
                 ...state,
-                restore: {
-                    ...state.restore,
-                    list: [action.payload, ...state.restore.list],
-                    isLoading: false
-                }
+                backup: {
+                    ...state.backup,
+                    list: [
+                        action.payload,
+                        ...state.backup.list
+                    ]
+                },
+                isLoading: false
             }
 
-        case SystemSettingConstants.CREATE_BACKUP_FAILE:
+        case SystemSettingConstants.CONFIG_BACKUP_SUCCESS:
             return {
                 ...state,
-                restore: {
-                    ...state.restore,
-                    isLoading: false
-                }
-            }
-
-        case SystemSettingConstants.GET_RESTORE_DATA_REQUEST:
-            return {
-                ...state,
-                restore: {
-                    ...state.restore,
-                    isLoading: true
-                }
-            }
-
-        case SystemSettingConstants.GET_RESTORE_DATA_FAILE:
-            return {
-                ...state,
-                restoreDB: {
-                    ...state.restore,
-                    isLoading: false
-                }
-            }
-
-        case SystemSettingConstants.GET_RESTORE_DATA_SUCCESS:
-            return {
-                ...state,
-                restore: {
-                    ...state.restore,
-                    list: action.payload,
-                    isLoading: false
-                }
-            }
-
-        case SystemSettingConstants.DELETE_BACKUP_REQUEST:
-            return {
-                ...state,
-                restore: {
-                    ...state.restore,
-                    isLoading: true
-                }
-            }
-        
-        case SystemSettingConstants.DELETE_BACKUP_FAILE:
-            return {
-                ...state,
-                restore: {
-                    ...state.restore,
-                    isLoading: false
-                }
+                isLoading: false
             }
 
         case SystemSettingConstants.DELETE_BACKUP_SUCCESS:
-            index = findVersion(state.restore.list, action.payload);
+            index = findVersion(state.backup.list, action.payload);
             if(index !== -1){
-                state.restore.list.splice(index, 1);
+                state.backup.list.splice(index, 1);
             }
             return {
                 ...state,
-                restore: {
-                    ...state.restore,
-                    isLoading: false
-                }
+                backup: {
+                    ...state.backup
+                },
+                isLoading: false
             }
 
         default:

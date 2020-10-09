@@ -10,11 +10,23 @@ import { SystemActions } from '../redux/actions';
 class SystemManagement extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            autoBackup: 'on',
-            schedule: 'monthly',
+        this.state = {  
+            config: {},
+            schedule: 'weekly',
             limit: 10
         }
+    }
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if(nextProps.system.backup.config && JSON.stringify(nextProps.system.backup.config) !== JSON.stringify(prevState.config)){
+            return {
+                ...prevState,
+                config: nextProps.system.backup.config,
+                autoBackup: nextProps.system.backup.config.auto ? 'on' : 'off',
+                schedule: nextProps.system.backup.config.type,
+                limit: nextProps.system.backup.config.limit
+            }
+        }else return null;
     }
 
     render() {
@@ -24,72 +36,7 @@ class SystemManagement extends Component {
         return (
             <React.Fragment>
                 <div className="row">
-                    <div className="col-xs-12 col-sm-5 col-md-5 col-lg-5">
-                        <div className="box box-default">
-                            <div className="box-header with-border">
-                                <h4><b>{translate('system_admin.system_setting.backup.config')}</b></h4>
-                            </div>
-                            <div className="box-body">
-                                <React.Fragment>
-                                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                        <div className="form-group">
-                                            <label>{translate('system_admin.system_setting.backup.automatic')}</label>
-                                            <SelectBox
-                                                id="select-backup-status"
-                                                className="form-control select2"
-                                                style={{ width: "100%" }}
-                                                items={[
-                                                    {value: 'on', text: translate('system_admin.system_setting.backup.on')},
-                                                    {value: 'off', text: translate('system_admin.system_setting.backup.off')}
-                                                ]}
-                                                value={autoBackup}
-                                                onChange={this.handleBackupAutoStatus}
-                                                multiple={false}
-                                            />
-                                        </div>
-                                    </div>
-                                    {
-                                        autoBackup === 'on' ?
-                                        <React.Fragment>
-                                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                                <div className="form-group">
-                                                    <label>{translate('system_admin.system_setting.backup.limit')}</label>
-                                                    <input className="form-control" type="number" min={0} onChange={this.handleBackupLimit} value={limit}/>
-                                                </div>
-                                            </div>
-                                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                                <div className="form-group">
-                                                    <label>{translate('system_admin.system_setting.backup.period')}</label>
-                                                    <SelectBox
-                                                        id="select-backup-time-schedule"
-                                                        className="form-control select2"
-                                                        style={{ width: "100%" }}
-                                                        items={[
-                                                            {value: 'weekly', text: translate('system_admin.system_setting.backup.weekly')},
-                                                            {value: 'monthly', text: translate('system_admin.system_setting.backup.monthly')},
-                                                            {value: 'yearly', text: translate('system_admin.system_setting.backup.yearly')},
-                                                        ]}
-                                                        value={schedule}
-                                                        onChange={this.handleSchedule}
-                                                        multiple={false}
-                                                    />
-                                                </div>
-                                            </div>
-                                        </React.Fragment> :
-                                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                            <button className="btn btn-success" onClick={()=>this.props.backup({auto: 'off'})}>{translate('system_admin.system_setting.backup.save')}</button>
-                                        </div>
-                                    }
-                                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                        {
-                                            autoBackup === 'on' && this.renderScheduleForm()
-                                        }
-                                    </div>
-                                </React.Fragment>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-xs-12 col-sm-7 col-md-7 col-lg-7">
+                <div className="col-xs-12 col-sm-7 col-md-7 col-lg-7">
                         <div className="box box-default">
                             <div className="box-header with-border">
                                 <button className="btn btn-success pull-right"onClick={this.createBackup} title={translate('system_admin.system_setting.backup.backup_button')}>             
@@ -139,6 +86,74 @@ class SystemManagement extends Component {
                             </div>
                         </div>
                     </div>
+                    <div className="col-xs-12 col-sm-5 col-md-5 col-lg-5">
+                        <div className="box box-default">
+                            <div className="box-header with-border text-center">
+                                <b style={{ fontSize: '24px' }}>{translate('system_admin.system_setting.backup.config')}</b>
+                            </div>
+                            <div className="box-body">
+                                {
+                                    autoBackup ? 
+                                    <React.Fragment>
+                                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                            <div className="form-group">
+                                                <label>{translate('system_admin.system_setting.backup.automatic')}</label>
+                                                <SelectBox
+                                                    id="select-backup-status"
+                                                    className="form-control select2"
+                                                    style={{ width: "100%" }}
+                                                    items={[
+                                                        {value: 'on', text: translate('system_admin.system_setting.backup.on')},
+                                                        {value: 'off', text: translate('system_admin.system_setting.backup.off')}
+                                                    ]}
+                                                    value={autoBackup}
+                                                    onChange={this.handleBackupAutoStatus}
+                                                    multiple={false}
+                                                />
+                                            </div>
+                                        </div>
+                                        {
+                                            autoBackup === 'on' ?
+                                            <React.Fragment>
+                                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                                    <div className="form-group">
+                                                        <label>{translate('system_admin.system_setting.backup.limit')}</label>
+                                                        <input className="form-control" type="number" min={0} onChange={this.handleBackupLimit} value={limit}/>
+                                                    </div>
+                                                </div>
+                                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                                    <div className="form-group">
+                                                        <label>{translate('system_admin.system_setting.backup.period')}</label>
+                                                        <SelectBox
+                                                            id="select-backup-time-schedule"
+                                                            className="form-control select2"
+                                                            style={{ width: "100%" }}
+                                                            items={[
+                                                                {value: 'weekly', text: translate('system_admin.system_setting.backup.weekly')},
+                                                                {value: 'monthly', text: translate('system_admin.system_setting.backup.monthly')},
+                                                                {value: 'yearly', text: translate('system_admin.system_setting.backup.yearly')},
+                                                            ]}
+                                                            value={schedule}
+                                                            onChange={this.handleSchedule}
+                                                            multiple={false}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </React.Fragment> :
+                                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                                <button className="btn btn-success" onClick={()=>this.props.configBackup({auto: 'off'})}>{translate('system_admin.system_setting.backup.save')}</button>
+                                            </div>
+                                        }
+                                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                            {
+                                                autoBackup === 'on' && this.renderScheduleForm()
+                                            }
+                                        </div>
+                                    </React.Fragment> : null
+                                }
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
             </React.Fragment>
@@ -148,6 +163,7 @@ class SystemManagement extends Component {
 
     componentDidMount() {
         this.props.getBackups();
+        this.props.getConfigBackup();
     }
 
     handleBackupType = (e) => {
@@ -214,7 +230,9 @@ function mapState(state) {
 
 const dispatchStateToProps = {
     getBackups: SystemActions.getBackups,
+    getConfigBackup: SystemActions.getConfigBackup,
     createBackup: SystemActions.createBackup,
+    configBackup: SystemActions.configBackup,
     deleteBackup: SystemActions.deleteBackup,
     restore: SystemActions.restore
 }

@@ -2,10 +2,19 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const ConfiguraionSchema = new Schema({
-    database: {
+    name: {
         type: String
     },
     backup: {
+        auto: {
+            type: Boolean,
+            default: false
+        },
+        type: {
+            type: String,
+            enum: ['weekly', 'monthly', 'yearly'],
+            default: 'monthly'
+        },
         time: {
             second: {
                 type: String,

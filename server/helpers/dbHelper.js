@@ -1,44 +1,5 @@
-const mongoose = require('mongoose');
 const exec = require('child_process').exec;
 const fs = require('fs');
-
-exports.initConnect = (dbName) => {
-    return mongoose.createConnection(
-        `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/${dbName}`,
-        process.env.DB_AUTHENTICATION === "true" ? 
-        {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            useCreateIndex: true,
-            useFindAndModify: false,
-            user: process.env.DB_USERNAME,
-            pass: process.env.DB_PASSWORD,
-        } : {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            useCreateIndex: true,
-            useFindAndModify: false,
-        }
-    );
-}
-
-exports.connect = (db, portal) => {
-    if(db.name !== portal){
-        return db.useDb(portal, { useCache: true });
-    }else{
-        return db;
-    }
-}
-
-exports.initModels = (db, models) => {
-    /**
-     * db: 1 kết nối đến cơ sở dữ liệu nào đó 
-     * models: các models được khai báo trong thư mục models
-     */
-    for (const [key, model] of Object.entries(models)) {
-        if(!db.models[key]) model(db)
-    }
-}
 
 const versionName = () => {
     const time = new Date(),
@@ -49,7 +10,7 @@ const versionName = () => {
         minute = time.getMinutes(),
         second = time.getSeconds();
 
-    return  `${year}${month}${date}${hour}${minute}${second}`;
+    return  `${year}.${month}.${date}.${hour}.${minute}.${second}`;
 }
 
 const checkDirectory = (path, description=undefined) => {
@@ -66,8 +27,32 @@ const checkDirectory = (path, description=undefined) => {
 }
 
 /**
- * Restore data
- * @options option to restore { host, port, db, version }
+ * Hàm kiểm tra và chuyển kết nối cơ sở dữ liệu
+ * @param {*} db kết nối đang được sử dụng đến cơ sở dữ liệu 
+ * @param {*} portal db muốn chuyển
+ */
+exports.connect = (db, portal) => {
+    if(db.name !== portal){
+        return db.useDb(portal, { useCache: true });
+    }else{
+        return db;
+    }
+}
+
+/**
+ * Hàm khởi tạo models nếu chưa tồn tại
+ * @param {*} db kết nối đến cơ sở dữ liệu nào đó 
+ * @param {*} models các models được khai báo trong thư mục models
+ */
+exports.initModels = (db, models) => {
+    for (const [key, model] of Object.entries(models)) {
+        if(!db.models[key]) model(db)
+    }
+}
+
+/**
+ * Khôi phục dữ liệu
+ * @param {*} options Tùy chọn khôi phục dữ liệu { host, port, db, version }
  */
 exports.restore = async (options) => {
     const commandRestoreDB = (options) => {
@@ -92,13 +77,13 @@ exports.restore = async (options) => {
             }
     }
     
-    // 1. Restore database
+    // 1. Khôi phục databse
     const command = commandRestoreDB(options);
     await exec(command, (error, stdout, stderr) => {
         if(error !== null) console.log(error);
     })
 
-    // 2.Restore file data ( image, video, file, doc, excel, v.v. )
+    // 2.Khôi phục các file ( image, video, file, doc, excel, v.v. )
     const command2 = commandRestoreFile(options);
     exec(command2.delete, function (err) { 
         exec(command2.new, function (err) { });
@@ -106,10 +91,11 @@ exports.restore = async (options) => {
 }
 
 /**
- * Backup data
- * @options option to restore { host, port, db, version }
+ * Sao lưu dữ liệu
+ * @param options các option cho việc sao lưu { host, port, db, version }
  */
 exports.backup = async (options) => {
+    let limit = options.db ? BACKUP[options.db].limit : BACKUP['all'].limit;
     const version = versionName();
     const dbBackupPath = (options) => {
         const path = `${SERVER_BACKUP_DIR}/${options.db}/${version}`;
@@ -163,6 +149,36 @@ exports.backup = async (options) => {
     const folderInfo = options.db ?
     fs.statSync(backupPath) :
     fs.statSync(`${SERVER_BACKUP_DIR}/all/${version}`);
+
+    // 3. Kiểm tra giới hạn số lượng backup
+    if(limit){
+        const list = options.db ? fs.readdirSync(`${SERVER_BACKUP_DIR}/${options.db}`) : fs.readdirSync(`${SERVER_BACKUP_DIR}/all`);
+        const newList = list.map( folder => {
+            const folderInfo = options.db ? 
+                fs.statSync(`${SERVER_BACKUP_DIR}/${options.db}/${folder}`) : 
+                fs.statSync(`${SERVER_BACKUP_DIR}/all/${folder}`);
+            return {
+                version: folder,
+                createdAt: folderInfo.ctime
+            }
+        });
+        newList.sort(function(a, b){
+            const dateA = new Date(a.createdAt);
+            const dateB = new Date(b.createdAt);
+            if(dateA > dateB) return -1;
+            if(dateA < dateB) return 1;
+            return 0;
+        });
+        if(limit > 0 && newList.length > limit){
+            for (let i = 0; i < newList.length; i++) {
+                if(i > limit - 1){ //phiên bản cũ vượt quá số lượng backup lưu trữ (limit)
+                    // xóa version backup cũ
+                    if(options.db) exec(`rm -rf ${SERVER_BACKUP_DIR}/${options.db}/${newList[i].version}`, function (err) { }); 
+                    else exec(`rm -rf ${SERVER_BACKUP_DIR}/all/${newList[i].version}`, function (err) { }); 
+                }
+            }
+        }
+    }
 
     return {
         version,

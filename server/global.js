@@ -1,7 +1,10 @@
 const mongoose = require('mongoose');
-const {initModels} = require('./helpers/dbHelper');
+const { initModels, connect, autoRun, backup } = require('./helpers/dbHelper');
+const models = require('./models');
+const { Configuration } = models;
+const CronJob = require('cron').CronJob;
 
-module.exports = (server) => {
+module.exports = async(server) => {
     // Socket.io realtime 
     global.CONNECTED_CLIENTS = [];
 
@@ -29,10 +32,8 @@ module.exports = (server) => {
         SOCKET_IO.clients((error, clients) => console.log("Clients", clients))
     });
 
-
     global.SERVER_DIR = __dirname;
     global.SERVER_BACKUP_DIR = __dirname + "/../backup";
-
     global.SERVER_MODELS_DIR = SERVER_DIR + "/models";
     global.SERVER_MODULES_DIR = SERVER_DIR + "/modules";
     global.SERVER_HELPERS_DIR = SERVER_DIR + "/helpers";
@@ -41,49 +42,42 @@ module.exports = (server) => {
     global.SERVER_LOGS_DIR = SERVER_DIR + "/logs";
 
     global.DB_CONNECTION = mongoose.createConnection(
-        process.env.DATABASE || `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/${process.env.DB_NAME}`,
-        process.env.DB_AUTHENTICATION === "true" ? 
+        `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/${process.env.DB_NAME}`,
         {
             useNewUrlParser: true,
             useUnifiedTopology: true,
             useCreateIndex: true,
             useFindAndModify: false,
-            user: process.env.DB_USERNAME,
-            pass: process.env.DB_PASSWORD,
-        } : {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            useCreateIndex: true,
-            useFindAndModify: false,
+            user: process.env.DB_AUTHENTICATION === "true" ? process.env.DB_USERNAME : undefined,
+            pass: process.env.DB_AUTHENTICATION === "true" ? process.env.DB_PASSWORD : undefined,
         }
     );
-    initModels(DB_CONNECTION, require('./models'));
+    initModels(DB_CONNECTION, models);
 
-    // Init backup automatic
-    global.SERVER_BACKUP_TIME = '0 0 2 1 * *';
-    global.SERVER_BACKUP_LIMIT = 10;
-    global.AUTO_BACKUP_DATABASE = require(SERVER_MODULES_DIR+'/scheduler/scheduler.service').backupAutomatic;
-    AUTO_BACKUP_DATABASE.start();
-
-    // Set time backup automatic from MongoDB
-    // const {time} = require('cron');
-    // const {Configuration} = require(SERVER_MODELS_DIR).schema;
-    // Configuration.findOne({database: process.env.DB_NAME}).then(res => {
-    //     if(res !== null) {
-    //         const configSecond = res.backup.time.second;
-    //         const configMinute = res.backup.time.minute;
-    //         const configHour = res.backup.time.hour;
-    //         const configDate = res.backup.time.date;
-    //         const configMonth = res.backup.time.month;
-    //         const configDay = res.backup.time.day;
-    //         const serverBackupTime = `${configSecond} ${configMinute} ${configHour} ${configDate} ${configMonth} ${configDay}`
-
-    //         SERVER_BACKUP_TIME = serverBackupTime;
-    //         SERVER_BACKUP_LIMIT = res.backup.limit;
-    //         AUTO_BACKUP_DATABASE.setTime(time(SERVER_BACKUP_TIME));
-    //         AUTO_BACKUP_DATABASE.start();
-    //     }
-    // }).catch(err => console.log("message: ", err));
+    // Init backupt for many company
+    const backupMongo = await Configuration(connect(DB_CONNECTION, process.env.DB_NAME)).find();
+    global.BACKUP = {};
+    for (let i = 0; i < backupMongo.length; i++) {
+        let {time} = backupMongo[i].backup;
+        let timeConfig = `${time.second} ${time.minute} ${time.hour} ${time.date} ${time.month} ${time.day}`
+        BACKUP[backupMongo[i].name] = {
+            auto: backupMongo[i].backup.auto,
+            limit: backupMongo[i].backup.limit,
+            time: backupMongo[i].backup.time,
+            job: new CronJob({
+                cronTime: timeConfig,
+                onTick: () => backup({
+                    host: process.env.DB_HOST,
+                    port: process.env.DB_PORT,
+                    db: backupMongo[i].name !== 'all' ? backupMongo[i].name : undefined
+                }),
+                timezone: 'Asia/Ho_Chi_Minh'
+            })
+        }
+    }
+    for(const [db] of Object.entries(BACKUP)){
+        if(BACKUP[db].auto) BACKUP[db].job.start();
+    }
 
     // global.AUTO_SENDEMAIL_TASK = require(SERVER_MODULES_DIR+'/scheduler/scheduler.service').sendEmailTaskAutomatic ;
     // AUTO_SENDEMAIL_TASK.start();

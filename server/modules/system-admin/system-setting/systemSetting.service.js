@@ -28,84 +28,97 @@ exports.getBackups = async() => {
     return backupedList;
 }
 
-exports.createBackup = async (data, params) => {
+exports.configBackup = async(query, data) => {
+    const {auto, schedule} = query;
+    let configDB = await Configuration(connect(DB_CONNECTION, process.env.DB_NAME)).findOne({name: 'all'});
+
+    switch(auto) {
+        case 'on':
+            switch(schedule) {
+                case 'weekly':
+                    let timeWeekly = `${data.second} ${data.minute} ${data.hour} * * ${data.day}`;
+
+                    if(configDB !== null){
+                        configDB.backup.time.second = data.second;
+                        configDB.backup.time.minute = data.minute;
+                        configDB.backup.time.hour = data.hour;
+                        configDB.backup.time.date = '*';
+                        configDB.backup.time.month = '*';
+                        configDB.backup.time.day = data.day;
+                        configDB.backup.auto = true;
+                        configDB.backup.type = schedule;
+                        configDB.backup.limit = data.limit;
+                        await configDB.save();
+                    }
+
+                    BACKUP['all'].limit = data.limit;
+                    BACKUP['all'].job.setTime(time(timeWeekly));
+                    break;
+
+                case 'monthly':
+                    let timeMonthly = `${data.second} ${data.minute} ${data.hour} ${data.date} * *`;
+
+                    if(configDB !== null){
+                        configDB.backup.time.second = data.second;
+                        configDB.backup.time.minute = data.minute;
+                        configDB.backup.time.hour = data.hour;
+                        configDB.backup.time.date = data.date;
+                        configDB.backup.time.month = '*';
+                        configDB.backup.time.day = '*';
+                        configDB.backup.auto = true;
+                        configDB.backup.type = schedule;
+                        configDB.backup.limit = data.limit;
+                        await configDB.save();
+                    }
+
+                    BACKUP['all'].limit = data.limit;
+                    BACKUP['all'].job.setTime(time(timeMonthly));
+                    break;
+
+                case 'yearly':
+                    let timeYearly = `${data.second} ${data.minute} ${data.hour} ${data.date} ${data.month} *`;
+
+                    if(configDB !== null){
+                        configDB.backup.time.second = data.second;
+                        configDB.backup.time.minute = data.minute;
+                        configDB.backup.time.hour = data.hour;
+                        configDB.backup.time.date = data.date;
+                        configDB.backup.time.month = data.month;
+                        configDB.backup.time.day = '*';
+                        configDB.backup.auto = true;
+                        configDB.backup.type = schedule;
+                        configDB.backup.limit = data.limit;
+                        await configDB.save();
+                    }
+
+                    BACKUP['all'].limit = data.limit;
+                    BACKUP['all'].job.setTime(time(timeYearly));
+                    break;
+
+                default:
+                    break;
+            }
+            BACKUP['all'].job.start();
+            break;
+            
+        default:
+            configDB.backup.auto = false;
+            await configDB.save();
+            BACKUP['all'].job.stop();
+            break;
+    }
+}
+
+exports.getConfigBackup = async() => {
+    console.log("get config backup system admin")
+    return await Configuration(connect(DB_CONNECTION, process.env.DB_NAME)).findOne({name: 'all'});
+}
+
+exports.createBackup = async () => {
     return await backup({
         host: process.env.DB_HOST,
         port: process.env.DB_PORT || '27017'
     });
-    // const {auto, schedule} = params;
-    // switch(auto) {
-    //     case 'on':
-    //         switch(schedule) {
-    //             case 'weekly':
-    //                 let timeWeekly = `${data.second} ${data.minute} ${data.hour} * * ${data.day}`;
-    //                 let dbWeekly = await Configuration(connect(DB_CONNECTION, process.env.DB_NAME)).findOne({database: process.env.DB_NAME});
-    //                 SERVER_BACKUP_LIMIT = data.limit;
-    //                 if(dbWeekly !== null){
-    //                     dbWeekly.backup.time.second = data.second;
-    //                     dbWeekly.backup.time.minute = data.minute;
-    //                     dbWeekly.backup.time.hour = data.hour;
-    //                     dbWeekly.backup.time.date = '*';
-    //                     dbWeekly.backup.time.month = '*';
-    //                     dbWeekly.backup.time.day = data.day;
-
-    //                     dbWeekly.backup.limit = data.limit;
-                        
-    //                     await dbWeekly.save();
-    //                 }
-    //                 await AUTO_BACKUP_DATABASE.setTime(time(timeWeekly));
-    //                 break;
-    //             case 'monthly':
-    //                 let timeMonthly = `${data.second} ${data.minute} ${data.hour} ${data.date} * *`;
-    //                 let dbMonthly = await Configuration.findOne({database: process.env.DB_NAME});
-    //                 SERVER_BACKUP_LIMIT = data.limit;
-    //                 if(dbMonthly !== null){
-    //                     dbMonthly.backup.time.second = data.second;
-    //                     dbMonthly.backup.time.minute = data.minute;
-    //                     dbMonthly.backup.time.hour = data.hour;
-    //                     dbMonthly.backup.time.date = data.date;
-    //                     dbMonthly.backup.time.month = '*';
-    //                     dbMonthly.backup.time.day = '*';
-
-    //                     dbMonthly.backup.limit = data.limit;
-    //                     await dbMonthly.save();
-    //                 }
-    //                 await AUTO_BACKUP_DATABASE.setTime(time(timeMonthly));
-    //                 break;
-    //             case 'yearly':
-    //                 let timeYearly = `${data.second} ${data.minute} ${data.hour} ${data.date} ${data.month} *`;
-    //                 let dbYearly = await Configuration.findOne({database: process.env.DB_NAME});
-    //                 SERVER_BACKUP_LIMIT = data.limit;
-    //                 if(dbYearly !== null){
-    //                     dbYearly.backup.time.second = data.data.second;
-    //                     dbYearly.backup.time.minute = data.data.minute;
-    //                     dbYearly.backup.time.hour = data.data.hour;
-    //                     dbYearly.backup.time.date = data.data.date;
-    //                     dbYearly.backup.time.month = data.data.month;
-    //                     dbYearly.backup.time.day = '*';
-
-    //                     dbYearly.backup.limit = data.limit;
-    //                     await dbYearly.save();
-    //                 }
-    //                 await AUTO_BACKUP_DATABASE.setTime(time(timeYearly));
-    //                 break;
-    //             default:
-    //                 break;
-    //         }
-    //         await AUTO_BACKUP_DATABASE.start();
-    //         break;
-            
-    //     case 'off':
-    //         await AUTO_BACKUP_DATABASE.stop();
-    //         break;
-
-    //     default:
-    //         return await backup({
-    //             host: process.env.DB_HOST,
-    //             port: process.env.DB_PORT || '27017'
-    //         });
-    // }
-    // return null;
 };
 
 exports.deleteBackup = async (version) => {

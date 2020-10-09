@@ -2,16 +2,31 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import {SelectBox} from '../../../../common-components';
+import { SystemActions } from '../redux/actions';
 
 class ScheduleWeeklyForm extends Component {
     constructor(props) {
         super(props);
         this.state = { 
+            config: {},
             day: '0',
             hour: '0',
             minute: '0',
             second: '0'
          }
+    }
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if(nextProps.system.backup.config && JSON.stringify(nextProps.system.backup.config) !== JSON.stringify(prevState.config)){
+            return {
+                ...prevState,
+                config: nextProps.system.backup.config,
+                day: nextProps.system.backup.config.time.day,
+                hour: nextProps.system.backup.config.time.hour,
+                minute: nextProps.system.backup.config.time.minute,
+                second: nextProps.system.backup.config.time.second,
+            }
+        }else return null;
     }
 
     render() { 
@@ -161,15 +176,18 @@ class ScheduleWeeklyForm extends Component {
         const {schedule, limit} = this.props;
         const {day, hour, minute, second} = this.state;
 
-        return this.props.backup({auto: 'on', schedule},{
-            limit,
-            day, hour, minute, second
+        return this.props.configBackup({auto: 'on', schedule},{
+            limit, day, hour, minute, second
         })
     }
 }
  
-function mapState(state) {
+const mapState = (state) => {
     return state;
 }
 
-export default connect(mapState, null)(withTranslate(ScheduleWeeklyForm));
+const dispatchStateToProps = {
+    configBackup: SystemActions.configBackup
+}
+
+export default connect(mapState, dispatchStateToProps)(withTranslate(ScheduleWeeklyForm));

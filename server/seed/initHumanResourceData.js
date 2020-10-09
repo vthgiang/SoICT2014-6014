@@ -55,7 +55,7 @@ const initSampleCompanyDB = async () => {
      * 1. Tạo kết nối đến csdl của hệ thống và công ty VNIST
      */
     const systemDB = mongoose.createConnection(
-        process.env.DATABASE || `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/${process.env.DB_NAME}`,
+        `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/${process.env.DB_NAME}`,
         process.env.DB_AUTHENTICATION === 'true' ? {
             useNewUrlParser: true,
             useUnifiedTopology: true,
