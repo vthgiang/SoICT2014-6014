@@ -138,7 +138,7 @@ class OutgoingDataTab extends Component {
     }
     isImage = (src) => {
         let string = src.split(".")
-        let image = ['jpg', 'jpeg', 'png', 'psd', 'pdf', 'tiff', 'gif']
+        let image = ['jpg', 'jpeg', 'png', 'tiff', 'gif']
         if (image.indexOf(string[string.length - 1]) !== -1) {
             return true;
         } else {
@@ -203,10 +203,10 @@ class OutgoingDataTab extends Component {
                                                 && document.files.map((file, index) =>
                                                     <div key={index}>
                                                         {this.isImage(file.name) ?
-                                                            <img
+                                                            <ApiImage
                                                                 className="attachment-img files-attach"
                                                                 style={{ marginTop: "5px" }}
-                                                                src={process.env.REACT_APP_SERVER+file.url}
+                                                                src={file.url}
                                                                 file={file}
                                                                 requestDownloadFile={this.requestDownloadFile}
                                                             />

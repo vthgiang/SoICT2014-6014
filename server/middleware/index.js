@@ -163,7 +163,7 @@ exports.uploadFile = (arrData, type) => {
                         fs.mkdirSync(dir2, {
                             recursive: true
                         });
-                        fs.appendFile(dir2+'/README.txt', 'init directory', err => { 
+                        fs.appendFile(dir2+'/README.txt', '', err => { 
                             if(err) throw err;
                         });
                     }
@@ -174,7 +174,7 @@ exports.uploadFile = (arrData, type) => {
                         fs.mkdirSync(dir, {
                             recursive: true
                         });
-                        fs.appendFile(dir+'/README.txt', 'init directory', err => { 
+                        fs.appendFile(dir+'/README.txt', '', err => { 
                             if(err) throw err;
                         });
                     }

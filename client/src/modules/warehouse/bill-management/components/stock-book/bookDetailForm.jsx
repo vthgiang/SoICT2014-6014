@@ -40,7 +40,7 @@ class BookDetailForm extends Component {
                 <DialogModal
                     modalID={`modal-detail-book`}
                     formID={`form-detail-book`}
-                    title={translate('manage_warehouse.inventory_management.lot_detail')}
+                    title={translate('manage_warehouse.bill_management.bill_detail')}
                     msg_success={translate('manage_warehouse.bin_location_management.add_success')}
                     msg_faile={translate('manage_warehouse.bin_location_management.add_faile')}
                     size={75}
@@ -51,106 +51,91 @@ class BookDetailForm extends Component {
                         <div className="row">
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className="form-group">
-                                    <strong>{translate('manage_warehouse.inventory_management.lot_code')}:&emsp;</strong>
-                                    L0012
+                                    <strong>{translate('manage_warehouse.bill_management.code')}:&emsp;</strong>
+                                    BR012
                                 </div>
                                 <div className="form-group">
-                                    <strong>{translate('manage_warehouse.inventory_management.unit')}:&emsp;</strong>
-                                    thùng
+                                    <strong>{translate('manage_warehouse.bill_management.type')}:&emsp;</strong>
+                                    Nhập nguyên vật liệu
                                 </div>
                                 <div className="form-group">
-                                    <strong>{translate('manage_warehouse.inventory_management.stock')}:&emsp;</strong>
-                                    Tất cả kho
+                                    <strong>{translate('manage_warehouse.bill_management.proposal')}:&emsp;</strong>
+                                    <a href="#">BP023</a>
                                 </div>
                                 <div className="form-group">
-                                    <strong>{translate('manage_warehouse.inventory_management.from_to')}:&emsp;</strong>
-                                    Lô sản xuất <a href="#">SX001</a>
+                                    <strong>{translate('manage_warehouse.bill_management.stock')}:&emsp;</strong>
+                                    Tạ Quang Bửu
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className="form-group">
-                                    <strong>{translate('manage_warehouse.inventory_management.original_quantity')}:&emsp;</strong>
-                                    100
+                                    <strong>{translate('manage_warehouse.bill_management.creator')}:&emsp;</strong>
+                                    Nguyễn Văn Thắng
                                 </div>
                                 <div className="form-group">
-                                    <strong>{translate('manage_warehouse.inventory_management.quantity')}:&emsp;</strong>
-                                    50
+                                    <strong>{translate('manage_warehouse.bill_management.approved')}:&emsp;</strong>
+                                    Vũ Thị Hương Giang
                                 </div>
                                 <div className="form-group">
-                                    <strong>{translate('manage_warehouse.inventory_management.date')}:&emsp;</strong>
-                                    20-10-2020
+                                    <strong>{translate('manage_warehouse.bill_management.date')}:&emsp;</strong>
+                                    05-10-2020 7:30
                                 </div>
                                 <div className="form-group">
-                                    <strong>{translate('manage_warehouse.inventory_management.bin')}:&emsp;</strong>
-                                    B1-T1-101(30), B1-T1-102(20)
+                                    <strong>{translate('manage_warehouse.bill_management.partner')}:&emsp;</strong>
+                                    Công ty TNHH XYZ
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <div className="form-group">
-                                    <strong>{translate('manage_warehouse.inventory_management.description')}:&emsp;</strong>
-                                    Sản phẩm dùng cho abc
+                                    <strong>{translate('manage_warehouse.bill_management.description')}:&emsp;</strong>
+                                    Nhập kho nguyên vật liệu
                                 </div>
                                 <fieldset className="scheduler-border">
-                                    <legend className="scheduler-border">{translate('manage_warehouse.inventory_management.history')}</legend>
+                                    <legend className="scheduler-border">{translate('manage_warehouse.bill_management.goods')}</legend>
 
                                     <table className="table table-bordered">
                                         <thead>
                                             <tr>
-                                                <th style={{width: "5%"}} title={translate('manage_warehouse.inventory_management.index')}>{translate('manage_warehouse.inventory_management.index')}</th>
-                                                <th title={translate('manage_warehouse.inventory_management.date_month')}>{translate('manage_warehouse.inventory_management.date_month')}</th>
-                                                <th title={translate('manage_warehouse.inventory_management.status')}>{translate('manage_warehouse.inventory_management.status')}</th>
-                                                <th title={translate('manage_warehouse.inventory_management.number')}>{translate('manage_warehouse.inventory_management.number')}</th>
-                                                <th title={translate('manage_warehouse.inventory_management.quantity')}>{translate('manage_warehouse.inventory_management.quantity')}</th>
-                                                <th title={translate('manage_warehouse.inventory_management.stock')}>{translate('manage_warehouse.inventory_management.stock')}</th>
-                                                <th title={translate('manage_warehouse.inventory_management.bin')}>{translate('manage_warehouse.inventory_management.bin')}</th>
-                                                <th title={translate('manage_warehouse.inventory_management.partner')}>{translate('manage_warehouse.inventory_management.partner')}</th>
-                                                <th title={translate('manage_warehouse.inventory_management.note')}>{translate('manage_warehouse.inventory_management.note')}</th>
+                                                <th style={{width: "5%"}} title={translate('manage_warehouse.bill_management.index')}>{translate('manage_warehouse.bill_management.index')}</th>
+                                                <th title={translate('manage_warehouse.bill_management.code')}>{translate('manage_warehouse.bill_management.code')}</th>
+                                                <th title={translate('manage_warehouse.bill_management.good_name')}>{translate('manage_warehouse.bill_management.good_name')}</th>
+                                                <th title={translate('manage_warehouse.bill_management.unit')}>{translate('manage_warehouse.bill_management.unit')}</th>
+                                                <th title={translate('manage_warehouse.bill_management.number')}>{translate('manage_warehouse.bill_management.number')}</th>
+                                                <th title={translate('manage_warehouse.bill_management.note')}>{translate('manage_warehouse.bill_management.note')}</th>
                                             </tr>
                                         </thead>
                                         <tbody id={`good-edit-manage-by-archive`}>
                                                     <tr>
                                                         <td>1</td>
-                                                        <td>5-10-2020 7:30</td>
-                                                        <td>Nhập thành phẩm</td>
+                                                        <td>MT001</td>
+                                                        <td>Jucca Nước</td>
+                                                        <td>ml</td>
                                                         <td>200</td>
-                                                        <td>200</td>
-                                                        <td>Tạ Quang Bửu</td>
-                                                        <td><p>B1-T1-101(100)</p><p>B1-T1-102(100)</p></td>
-                                                        <td>Xưởng sx A</td>
-                                                        <td>Nhập sản phẩm vào kho</td>
+                                                        <td></td>
                                                     </tr>
                                                     <tr>
                                                         <td>2</td>
-                                                        <td>5-10-2020 7:30</td>
-                                                        <td>Xuất thành phẩm</td>
+                                                        <td>MT002</td>
+                                                        <td>Propylen Glycon</td>
+                                                        <td>kg</td>
                                                         <td>60</td>
-                                                        <td>140</td>
-                                                        <td>Tạ Quang Bửu</td>
-                                                        <td><p>B1-T1-101(60)</p></td>
-                                                        <td>Công ty TNHH ABC</td>
-                                                        <td>Xuất bán sản phẩm</td>
+                                                        <td></td>
                                                     </tr>
                                                     <tr>
                                                         <td>3</td>
-                                                        <td>5-10-2020 7:30</td>
-                                                        <td>Luân chuyển đi</td>
-                                                        <td>60</td>
-                                                        <td>80</td>
-                                                        <td>Tạ Quang Bửu</td>
-                                                        <td><p>B1-T1-101(60)</p><p>B1-T1-102(20)</p></td>
-                                                        <td>Kho Trần Đại Nghĩa</td>
-                                                        <td>Luân chuyển sang kho khác</td>
+                                                        <td>EQ001</td>
+                                                        <td>Máy nén</td>
+                                                        <td>Chiếc</td>
+                                                        <td>10</td>
+                                                        <td></td>
                                                     </tr>
                                                     <tr>
                                                         <td>4</td>
-                                                        <td>5-10-2020 7:30</td>
-                                                        <td>Tiêu hủy</td>
+                                                        <td>PR001</td>
+                                                        <td>ĐƯỜNG ACESULFAME K</td>
+                                                        <td>Thùng</td>
                                                         <td>30</td>
-                                                        <td>50</td>
-                                                        <td>Tạ Quang Bửu</td>
-                                                        <td><p>B1-T1-102(30)</p></td>
                                                         <td></td>
-                                                        <td>Bị hỏng do bảo quản</td>
                                                     </tr>
                                         </tbody>
                                     </table>

@@ -333,7 +333,7 @@ class CommentInProcess extends Component {
     }
     isImage = (src) => {
         let string = src.split(".")
-        let image = ['jpg', 'jpeg', 'png', 'psd', 'pdf', 'tiff', 'gif']
+        let image = ['jpg', 'jpeg', 'png', 'tiff', 'gif']
         if (image.indexOf(string[string.length - 1]) !== -1) {
             return true;
         } else {
@@ -392,10 +392,10 @@ class CommentInProcess extends Component {
                                                          {item.files.map((elem, index) => {
                                                              return <div key={index} className="show-files-task">
                                                                  {this.isImage(elem.name) ?
-                                                                     <img
+                                                                     <ApiImage
                                                                          className="attachment-img files-attach"
                                                                          style={{ marginTop: "5px" }}
-                                                                         src={process.env.REACT_APP_SERVER+elem.url}
+                                                                         src={elem.url}
                                                                          file={elem}
                                                                          requestDownloadFile={this.requestDownloadFile}
                                                                      />
@@ -503,10 +503,10 @@ class CommentInProcess extends Component {
                                                                             {child.files.map((elem, index) => {
                                                                                 return <div key={index} className="show-files-task">
                                                                                     {this.isImage(elem.name) ?
-                                                                                        <img
+                                                                                        <ApiImage
                                                                                             className="attachment-img files-attach"
                                                                                             style={{ marginTop: "5px" }}
-                                                                                            src={process.env.REACT_APP_SERVER+elem.url}
+                                                                                            src={elem.url}
                                                                                             file={elem}
                                                                                             requestDownloadFile={this.requestDownloadFile}
                                                                                         />
@@ -528,12 +528,11 @@ class CommentInProcess extends Component {
                                                     <React.Fragment>
                                                         <div>
                                                             <ContentMaker
-                                                                inputCssClass="text-input-level1" controlCssClass="tool-level2 row"
+                                                                inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
                                                                 onFilesChange={this.onEditFileChildComment}
                                                                 onFilesError={this.onFilesError}
                                                                 files={newChildCommentEdited.files}
                                                                 defaultValue={child.description}
-                                                                styletext={{ marginLeft: "40px", width: "94%" }}
                                                                 submitButtonText={translate("task.task_perform.save_edit")}
                                                                 cancelButtonText={translate("task.task_perform.cancel")}
                                                                 handleEdit={(e) => this.handleEditChildComment(e)}
