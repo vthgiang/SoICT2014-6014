@@ -37,6 +37,9 @@ class HighestSalaryChart extends Component {
                 hide: true,
                 type: 'bar',
             },
+            size: {
+                height: 400
+            },
             axis: {
                 rotated: true,
                 x: {
@@ -149,12 +152,12 @@ class HighestSalaryChart extends Component {
 
         return (
             <React.Fragment>
-                <div className="box">
+                <div className="box box-solid">
                     <div className="box-header with-border">
                         <h3 className="box-title">{`Top 20 nhân sự của ${(!organizationalUnits || organizationalUnits.length === department.list.length) ? "công ty" : organizationalUnitsName.join(', ')} nhận lương thưởng cao nhất ${monthShow} `}</h3>
                     </div>
                     <div className="box-body">
-                        <div className="dashboard_box_body">
+                        <div style={{ height: 420 }}>
                             <p className="pull-right" style={{ marginBottom: 0 }} > < b > ĐV tính: {data[0] && data[0].unit === 'VND' ? '1000VND' : "USD"}</b></p >
                             <div ref="rotateChart"></div>
                         </div>

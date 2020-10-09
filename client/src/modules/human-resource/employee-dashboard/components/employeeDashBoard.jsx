@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
+import { LazyLoadComponent, forceCheckOrVisible } from '../../../../common-components';
+
 import {
+    TabHumanResource, TabSalary, TabAnualLeave,
     AgePyramidChart, HumanResourceChartBySalary, BarAndLineChart, MultipleBarChart, HighestSalaryChart, SalaryOfOrganizationalUnitsChart,
     EmployeeDashBoardHeader, AnnualLeaveTrendsChart, HumanResourceIncreaseAndDecreaseChart, QualificationChart, TrendOfOvertime
 } from './combinedContent';
@@ -70,40 +73,58 @@ class DashBoardEmployees extends Component {
         return (
             <div className="qlcv">
                 <EmployeeDashBoardHeader handleSelectOrganizationalUnit={this.handleSelectOrganizationalUnit} handleMonthChange={this.handleMonthChange} />
-                <div className="row">
-                    <div className=" col-lg-12 col-md-12 col-md-sm-12 col-xs-12">
-                        <AgePyramidChart organizationalUnits={organizationalUnits} actionSearch={actionSearch} />
-                    </div>
+                <AgePyramidChart organizationalUnits={organizationalUnits} actionSearch={actionSearch} />
+                <div className="nav-tabs-custom">
+                    <ul className="nav nav-tabs">
+                        <li className="active"><a href="#human-resource" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Thống kê nhân sự</a></li>
+                        <li><a href="#annualLeave" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Thống kê nghỉ phép</a></li>
+                        <li><a href="#salary" data-toggle="tab">Thống kê lương thưởng</a></li>
+                    </ul>
+                    <div className="tab-content ">
+                        {/* Tab Nhân sự */}
+                        <div className="tab-pane active" id="human-resource">
+                            <LazyLoadComponent>
+                                <TabHumanResource organizationalUnits={organizationalUnits} monthShow={month} actionSearch={actionSearch} />
+                            </LazyLoadComponent>
+                        </div>
 
-                    <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
-                        <HumanResourceChartBySalary organizationalUnits={organizationalUnits} monthShow={month} handleMonthChange={this.handleMonthChange} />
-                    </div>
-                    <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
-                        <HighestSalaryChart organizationalUnits={organizationalUnits} monthShow={month} handleMonthChange={this.handleMonthChange} />
-                    </div>
+                        {/* Tab nghỉ phép */}
+                        <div className="tab-pane" id="annualLeave">
+                            <LazyLoadComponent>
+                                <TabAnualLeave />
+                            </LazyLoadComponent>
+                        </div>
 
-                    <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
-                        <SalaryOfOrganizationalUnitsChart organizationalUnits={organizationalUnits} monthShow={month} handleMonthChange={this.handleMonthChange} />
+                        {/* tab lương thưởng */}
+                        <div className="tab-pane" id="salary">
+                            <TabSalary organizationalUnits={organizationalUnits} monthShow={month} />
+                        </div>
                     </div>
-                    <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
-                        <QualificationChart organizationalUnits={organizationalUnits} actionSearch={actionSearch} />
-                    </div>
-
-                    <div className=" col-lg-12 col-md-12 col-md-sm-12 col-xs-12">
-                        <HumanResourceIncreaseAndDecreaseChart nameData1='Tuyển mới' nameData2='Nghỉ làm' nameData3='Tổng nhân sự' nameChart={'Tình hình tăng giảm nhân sự'} />
-                    </div>
-                    <div className=" col-lg-12 col-md-12 col-md-sm-12 col-xs-12">
-                        <AnnualLeaveTrendsChart nameData1='Số lượt nghỉ' nameChart={'Xu hướng nghỉ phép'} />
-                    </div>
-                    <div className=" col-lg-12 col-md-12 col-md-sm-12 col-xs-12">
-                        <TrendOfOvertime nameData1='Số giờ tăng ca' nameChart={'Xu hướng tăng ca'} />
-                    </div>
-
-
+                </div>
 
 
 
-                    {/* <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
+                {/* <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
+                    <HighestSalaryChart organizationalUnits={organizationalUnits} monthShow={month} handleMonthChange={this.handleMonthChange} />
+                </div>
+
+                <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
+                    <SalaryOfOrganizationalUnitsChart organizationalUnits={organizationalUnits} monthShow={month} handleMonthChange={this.handleMonthChange} />
+                </div>
+
+                <div className=" col-lg-12 col-md-12 col-md-sm-12 col-xs-12">
+                    <AnnualLeaveTrendsChart nameData1='Số lượt nghỉ' nameChart={'Xu hướng nghỉ phép'} />
+                </div>
+                <div className=" col-lg-12 col-md-12 col-md-sm-12 col-xs-12">
+                    <TrendOfOvertime nameData1='Số giờ tăng ca' nameChart={'Xu hướng tăng ca'} />
+                </div> */}
+
+
+
+
+
+
+                {/* <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
                         <BarAndLineChart nameData1='% Tổng lương' nameData2='% Mục tiêu' nameChart={'Tỷ lệ % quỹ lương công ty/doanh thu 12 tháng gần nhất'} />
                     </div>
                     <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
@@ -118,7 +139,6 @@ class DashBoardEmployees extends Component {
                     <div className=" col-lg-12 col-md-12 col-md-sm-12 col-xs-12">
                         <MultipleBarChart nameData1='% Kinh doanh' nameData2='% Sản xuất' nameData3='% Quản trị' nameChart={'Tỷ lệ % quỹ lương các khối chức năng/doanh thu 12 tháng gần nhất'} />
                     </div> */}
-                </div>
             </div >
         );
     }

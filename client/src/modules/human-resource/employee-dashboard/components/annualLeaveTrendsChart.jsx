@@ -255,7 +255,7 @@ class AnnualLeaveTrendsChart extends Component {
         }
         return (
             <React.Fragment>
-                <div className="box">
+                <div className="box box-solid">
                     <div className="box-header with-border">
                         <h3 className="box-title">{`${nameChart} của ${(organizationalUnitsName.length === 0 || organizationalUnitsName.length === department.list.length) ? "công ty" : organizationalUnitsName.join(', ')} ${startDateShow}`}<i className="fa fa-fw fa-caret-right"></i>{endDateShow}</h3>
                     </div>
