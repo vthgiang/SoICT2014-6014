@@ -1,14 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import BillDashboardHeader from './billDashboardHeader';
+import GoodIssueReceiptByGood from './goodIssueReceiptByGood';
 
-import InventoryDashboardHeader from './inventoryDashboardHeader';
-import QuantityInventoryDashboard from './quantityInventoryDashboard';
-import QuantityExpirationDate from './quantityExpirationDate';
-import QuantityExpiratedDate from './quantityExpiratedDate';
-import NormDasdboard from './normDasdboard';
-
-class DashBoardInventories extends Component {
+class DashBoardBills extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -67,13 +63,13 @@ class DashBoardInventories extends Component {
 
         return (
             <div className="qlcv">
-                <InventoryDashboardHeader handleSelectOrganizationalUnit={this.handleSelectOrganizationalUnit} handleMonthChange={this.handleMonthChange} />
+                <BillDashboardHeader handleSelectOrganizationalUnit={this.handleSelectOrganizationalUnit} handleMonthChange={this.handleMonthChange} />
                 <div className="row">
                     <div className=" col-lg-12 col-md-12 col-md-sm-12 col-xs-12">
-                        <QuantityInventoryDashboard  actionSearch={actionSearch} />
+                        <GoodIssueReceiptByGood actionSearch={actionSearch} />
                     </div>
 
-                    <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
+                    {/* <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
                         <QuantityExpirationDate handleMonthChange={this.handleMonthChange} />
                     </div>
                     <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
@@ -83,7 +79,7 @@ class DashBoardInventories extends Component {
                     <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
                         <NormDasdboard handleMonthChange={this.handleMonthChange} />
                     </div>
-                    {/* <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
+                    <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
                         <QualificationChart organizationalUnits={organizationalUnits} actionSearch={actionSearch} />
                     </div>
 
@@ -99,4 +95,4 @@ class DashBoardInventories extends Component {
     }
 };
 
-export default connect(null, null)(withTranslate(DashBoardInventories));
+export default connect(null, null)(withTranslate(DashBoardBills));
