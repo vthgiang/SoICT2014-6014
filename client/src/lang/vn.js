@@ -740,7 +740,8 @@ export default {
             training_plan: 'Quản lý khoá đào tạo',
 
             manage_warehouse: 'Quản lý kho',
-            dashboard_material: "Bảng tin quản lý vật tư",
+            dashboard_bill: 'Bảng tin quản lý các phiếu',
+            dashboard_inventory: 'Bảng tin quản lý hàng tồn',
             stock_management: 'Quản lý thông tin kho',
             bin_location_management: 'Quản lý thông tin lưu kho',
             category_management: 'Quản lý danh mục hàng hóa',
@@ -814,7 +815,11 @@ export default {
             manage_sales_order: 'Đơn hàng kinh doanh',
             manage_manufacturing_order: 'Đơn hàng sản xuất',
             manage_purchase_order: 'Đơn mua hàng',
-            manage_quotation: 'Báo giá',
+            manage_quoter_dashboard: 'Dashboard báo giá',
+            manage_sales_order_dashboard: 'Dashboard đơn kinh doanh',
+            manage_purchase_order_dashboard: 'Dashboard đơn mua NVL',
+            manage_manufacturing_order_dashboard: 'Dashboard đơn sản xuất',
+            manage_quoter: 'Báo giá',
             manage_discount: 'Giảm giá',
             manage_tax: 'Thuế',
             manage_sla: 'Cam kết chất lượng',
@@ -964,6 +969,17 @@ export default {
 
         // Modules cấu hình các chức năng
         module_configuration: {
+            timekeeping_type: 'Kiểu chấm công',
+            contract_notice_time: 'Báo hết hạn hợp đồng (ngày)',
+            contract_notice_time_title: 'Báo trước hết hạn hợp đồng',
+            shift1_time: 'Số giờ ca 1 (giờ)',
+            shift2_time: 'Số giờ ca 2 (giờ)',
+            shift3_time: 'Số giờ tăng ca (giờ)',
+
+            shift: 'Chấm công theo ca',
+            hours: 'Chấm công theo giờ',
+            shift_and_hour: 'Chấm công theo ca và giờ',
+
 
             // Thông điệp trả về từ server
             get_configuration_success: 'Lấy thông tin cấu hình thành công',
@@ -1582,7 +1598,7 @@ export default {
                 shift_work: 'Ca làm việc',
                 shifts1: 'Ca 1',
                 shifts2: 'Ca 2',
-                shifts3: 'Ca 3',
+                shifts3: 'Tăng ca',
                 date_of_month: 'Các ngày trong tháng',
 
                 // Nhóm dành cho action
@@ -3299,7 +3315,10 @@ export default {
         },
 
         manage_warehouse: {
-            dashboard_material: {
+            dashboard_bill: {
+                
+            },
+            dashboard_inventory: {
 
             },
             category_management: {
@@ -3484,7 +3503,22 @@ export default {
                 customer: 'Khách hàng',
                 supplier: 'Nhà cung cấp',
                 issued: 'Đơn đã xuất',
-                partner: 'Đối tác'
+                partner: 'Đối tác',
+                bill_detail: 'Chi tiết đơn hàng',
+                approved: 'Người duyệt',
+                goods: 'Danh sách hàng hóa',
+                good_name: 'Tên hàng hóa',
+                good_code: 'Mã hàng hóa',
+                number: 'Số lượng',
+                unit: 'Đơn vị tính',
+                note: 'Ghi chú',
+                issued_quantity: 'Số lượng xuất',
+                return_quantity: 'Số lượng trả lại',
+                real_quantity: 'Số lượng thực tế',
+                lot: 'Lô hàng',
+                difference: 'Chênh lệch',
+                receiver: 'Người nhận hàng',
+                choose_good: 'Chọn hàng hóa'
             },
             inventory_management: {
                 product: 'Sản phẩm',
@@ -3516,7 +3550,8 @@ export default {
                 partner: 'Đối tác',
                 from_to: 'Nhập từ',
                 status: 'Trạng thái',
-                note: 'Ghi chú'
+                note: 'Ghi chú',
+                bill: 'Mã phiếu',
             }
         },
 

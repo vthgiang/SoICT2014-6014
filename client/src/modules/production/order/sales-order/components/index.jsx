@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import SalesOrderTable from './salesOrderTable';
 
 class SalesOrder extends Component {
   constructor(props) {
@@ -9,7 +10,7 @@ class SalesOrder extends Component {
     return (
       <div className="box" style={{ minHeight: "450px" }}>
         <div className="box-body">
-          Sales Order
+          <SalesOrderTable/>
         </div>
       </div>
     );

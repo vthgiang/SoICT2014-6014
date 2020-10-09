@@ -23,7 +23,7 @@ exports.createCustomer = async (portal, companyId, data, userId) => {
         owner: owner,
         code: code,
         name: name,
-        status: status,
+        status: status ? status : null,
         creator: userId,
         gender: gender ? gender : '',
         taxNumber: taxNumber ? taxNumber : '',
@@ -35,7 +35,7 @@ exports.createCustomer = async (portal, companyId, data, userId) => {
         mobilephoneNumber: mobilephoneNumber ? mobilephoneNumber : null,
         email: email ? email : '',
         email2: email2 ? email2 : '',
-        group: group,
+        group: group ? group : null,
         address: address ? address : '',
         address2: address2 ? address2 : '',
         location: location ? location : null,
@@ -43,7 +43,10 @@ exports.createCustomer = async (portal, companyId, data, userId) => {
         linkedIn: linkedIn ? linkedIn : ''
     });
 
-    const getNewCustomer = await Customer(connect(DB_CONNECTION, portal)).findById(newCustomer._id);
+    const getNewCustomer = await Customer(connect(DB_CONNECTION, portal)).findById(newCustomer._id)
+        .populate({ path: 'group', select: '_id name' })
+        .populate({ path: 'status', select: '_id name' })
+        .populate({ path: 'owner', select: '_id name' });;
     return getNewCustomer;
 }
 

@@ -23,7 +23,6 @@ class SystemSetting extends Component {
         const { translate } = this.props;
         const {backup, restore} = this.props.systemSetting;
         const {schedule, autoBackup, limit} = this.state;
-        console.log("processENV", process.env)
         
         return ( 
             <React.Fragment>
@@ -150,7 +149,7 @@ class SystemSetting extends Component {
     }
 
     componentDidMount(){
-        this.props.getRestoreData();
+        this.props.getBackups();
     }
 
     handleBackupType = (e) => {
@@ -212,7 +211,7 @@ function mapState(state) {
 const actions = {
     backup: SystemSettingActions.backup,
     deleteBackup: SystemSettingActions.deleteBackup,
-    getRestoreData: SystemSettingActions.getRestoreData,
+    getBackups: SystemSettingActions.getBackups,
     restore: SystemSettingActions.restore
 }
 

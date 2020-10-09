@@ -803,7 +803,7 @@ class ActionTab extends Component {
     }
     isImage = (src) => {
         let string = src.split(".")
-        let image = ['jpg', 'jpeg', 'png', 'psd', 'pdf', 'tiff', 'gif']
+        let image = ['jpg', 'jpeg', 'png', 'tiff', 'gif']
         if (image.indexOf(string[string.length - 1]) !== -1) {
             return true;
         } else {
@@ -1000,10 +1000,10 @@ class ActionTab extends Component {
                                                                 {item.files.map((elem, index) => {
                                                                     return <div key={index} className="show-files-task">
                                                                         {this.isImage(elem.name) ?
-                                                                            <img
+                                                                            <ApiImage
                                                                                 className="attachment-img files-attach"
                                                                                 style={{ marginTop: "5px" }}
-                                                                                src={process.env.REACT_APP_SERVER+elem.url}
+                                                                                src={elem.url}
                                                                                 file={elem}
                                                                                 requestDownloadFile={this.requestDownloadFile}
                                                                             />
@@ -1082,17 +1082,20 @@ class ActionTab extends Component {
                                                                     </div>
                                                                     <ul className="list-inline tool-level2">
                                                                         <li><span className="text-sm">{<DateTimeConverter dateTime={child.createdAt} />}</span></li>
-                                                                        <li style={{ display: "inline-table" }}>
-                                                                            <div><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => this.handleShowFile(child._id)}><b><i className="fa fa-paperclip" aria-hidden="true"> {translate("task.task_perform.file_attach")} ({child.files && child.files.length})</i></b></a></div></li>
+                                                                        {child.files && child.files.length>0 &&
+                                                                            <li style={{ display: "inline-table" }}>
+                                                                                <div><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => this.handleShowFile(child._id)}><b><i className="fa fa-paperclip" aria-hidden="true"> {translate("task.task_perform.file_attach")} ({child.files && child.files.length})</i></b></a></div>
+                                                                            </li>
+                                                                        }
                                                                         {showFile.some(obj => obj === child._id) &&
                                                                             <li style={{ display: "inline-table" }}>
                                                                                 {child.files.map((elem, index) => {
                                                                                     return <div key={index} className="show-files-task">
                                                                                         {this.isImage(elem.name) ?
-                                                                                            <img
+                                                                                            <ApiImage
                                                                                                 className="attachment-img files-attach"
                                                                                                 style={{ marginTop: "5px" }}
-                                                                                                src={process.env.REACT_APP_SERVER+elem.url}
+                                                                                                src={elem.url}
                                                                                                 file={elem}
                                                                                                 requestDownloadFile={this.requestDownloadFile}
                                                                                             />
@@ -1112,12 +1115,11 @@ class ActionTab extends Component {
                                                                 <React.Fragment>
                                                                     <div>
                                                                         <ContentMaker
-                                                                            inputCssClass="text-input-level1" controlCssClass="tool-level2 row"
+                                                                            inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
                                                                             onFilesChange={this.onEditCommentOfActionFilesChange}
                                                                             onFilesError={this.onFilesError}
                                                                             files={newCommentOfActionEdited.files}
                                                                             defaultValue={child.description}
-                                                                            styletext={{ marginLeft: "40px", width: "94%" }}
                                                                             submitButtonText={translate("task.task_perform.save_edit")}
                                                                             cancelButtonText={translate("task.task_perform.cancel")}
                                                                             handleEdit={(e) => this.handleEditActionComment(e)}
@@ -1239,10 +1241,10 @@ class ActionTab extends Component {
                                                                     <li style={{ display: "inline-table" }}>{item.files.map((elem, index) => {
                                                                         return <div key={index} className="show-files-task">
                                                                             {this.isImage(elem.name) ?
-                                                                                <img
+                                                                                <ApiImage
                                                                                     className="attachment-img files-attach"
                                                                                     style={{ marginTop: "5px" }}
-                                                                                    src={process.env.REACT_APP_SERVER+elem.url}
+                                                                                    src={elem.url}
                                                                                     file={elem}
                                                                                     requestDownloadFile={this.requestDownloadFile}
                                                                                 />
@@ -1333,10 +1335,10 @@ class ActionTab extends Component {
                                                                                         {child.files.map((elem, index) => {
                                                                                             return <div key={index} className="show-files-task">
                                                                                                 {this.isImage(elem.name) ?
-                                                                                                    <img
+                                                                                                    <ApiImage
                                                                                                         className="attachment-img files-attach"
                                                                                                         style={{ marginTop: "5px" }}
-                                                                                                        src={process.env.REACT_APP_SERVER+elem.url}
+                                                                                                        src={elem.url}
                                                                                                         file={elem}
                                                                                                         requestDownloadFile={this.requestDownloadFile}
                                                                                                     />
@@ -1357,10 +1359,9 @@ class ActionTab extends Component {
                                                                 <React.Fragment>
                                                                     <div>
                                                                         <ContentMaker
-                                                                            inputCssClass="text-input-level1" controlCssClass="tool-level2 row"
+                                                                            inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
                                                                             onFilesChange={this.onEditCommentOfTaskCommentFilesChange}
                                                                             onFilesError={this.onFilesError}
-                                                                            styletext={{ marginLeft: "40px", width: "94%" }}
                                                                             files={newCommentOfTaskCommentEdited.files}
                                                                             defaultValue={child.description}
                                                                             submitButtonText={translate("task.task_perform.save_edit")}
@@ -1478,10 +1479,10 @@ class ActionTab extends Component {
                                                                         return (
                                                                             <div key={index} className="show-files-task">
                                                                                 {this.isImage(elem.name) ?
-                                                                                    <img
+                                                                                    <ApiImage
                                                                                         className="attachment-img files-attach"
                                                                                         style={{ marginTop: "5px" }}
-                                                                                        src={process.env.REACT_APP_SERVER+elem.url}
+                                                                                        src={elem.url}
                                                                                         file={elem}
                                                                                         requestDownloadFile={this.requestDownloadFile}
                                                                                     />
@@ -1503,7 +1504,6 @@ class ActionTab extends Component {
                                                         <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
                                                             <ContentMaker
                                                                 inputCssClass="text-input-level1" controlCssClass="tool-level2 row"
-                                                                // styletext={{ marginTop: "15px" }}
                                                                 onFilesChange={this.onEditFileTask}
                                                                 onFilesError={this.onFilesError}
                                                                 files={fileTaskEdited.files}
