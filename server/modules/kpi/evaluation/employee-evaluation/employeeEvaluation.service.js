@@ -21,20 +21,16 @@ exports.getEmployeeKPISets = async (portal, data) => {
     
     let keySearch;
     let employeeKpiSets;
-    let startDate;
-    let endDate;
     let startdate = null;
     let enddate = null;
     let status = null;
     let user = data.user ? data.user : [0];
 
     if (data.startDate) {
-        startDate = data.startDate.split("-");
-        startdate = new Date(startDate[1], startDate[0], 0);
+        startdate = new Date(data.startDate);
     }
     if (data.endDate) {
-        endDate = data.endDate.split("-");
-        enddate = new Date(endDate[1], endDate[0], 28);
+        enddate = new Date(data.endDate);
     }
     if (data.status) status = parseInt(data.status);
 
@@ -54,7 +50,7 @@ exports.getEmployeeKPISets = async (portal, data) => {
             }
         }
     }
-    if (status !== -1 && status && status !== 5) {
+    if (status !== -1 && status && status !== 5 || status === 0) {
         keySearch = {
             ...keySearch,
             status: {
