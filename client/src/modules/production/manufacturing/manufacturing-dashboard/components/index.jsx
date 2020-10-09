@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-class ManufacturingSchedule extends Component {
+class ManufacturingDashboard extends Component {
     constructor(props) {
         super(props);
         this.state = {}
@@ -12,9 +12,10 @@ class ManufacturingSchedule extends Component {
         return (
             <div className="box" style={{ minHeight: "450px" }}>
                 <div className="box-body">
+                    This is dashboard
                 </div>
             </div>
         );
     }
 }
-export default connect(null, null)(withTranslate(ManufacturingSchedule));
+export default connect(null, null)(withTranslate(ManufacturingDashboard));

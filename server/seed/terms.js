@@ -1114,8 +1114,8 @@ const LINKS = [{
     components: getComponentsInLink('/manage-purchasing-request'),
 },
 {
-    url: "/track-order",
-    description: "Theo dõi đơn hàng",
+    url: "/manufacturing-dashboard",
+    description: "Dashboard Quản lý sản xuất",
     category: LINK_CATEGORY.MANUFACTURING.name,
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,

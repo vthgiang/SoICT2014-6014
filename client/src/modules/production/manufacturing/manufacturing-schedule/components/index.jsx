@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-class WorkSchedule extends Component {
+class ManufacturingSchedule extends Component {
     constructor(props) {
         super(props);
         this.state = {}
@@ -18,4 +18,4 @@ class WorkSchedule extends Component {
         );
     }
 }
-export default connect(null, null)(withTranslate(WorkSchedule));
+export default connect(null, null)(withTranslate(ManufacturingSchedule));
