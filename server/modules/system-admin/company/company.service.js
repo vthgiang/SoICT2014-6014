@@ -75,8 +75,8 @@ exports.createCompany = async (data) => {
 }
 
 exports.initConfigBackup = async(companyShortName) => {
-    return await Configuration(connect(DB_CONNECTION, process.env.DB_NAME)).insertMany([
-        {
+    return await Configuration(connect(DB_CONNECTION, process.env.DB_NAME))
+        .create({
             name: companyShortName,
             backup: {
                 time: {
@@ -89,8 +89,7 @@ exports.initConfigBackup = async(companyShortName) => {
                 },
                 limit: 10
             }
-        }
-    ]);
+        });
 }
 
 /**
