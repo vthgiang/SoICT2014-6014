@@ -32,7 +32,7 @@ class HumanResourceChartBySalary extends Component {
             } else return x / 2
         });
 
-        this.removePreviousChart();
+        // this.removePreviousChart();
         let chart = c3.generate({
             bindto: this.refs.rotateChart,
             data: {
@@ -194,7 +194,7 @@ class HumanResourceChartBySalary extends Component {
 
         return (
             <React.Fragment>
-                <div className="box">
+                <div className="box box-solid">
                     <div className="box-header with-border">
                         <h3 className="box-title">{`Biểu đồ nhân sự của ${(!organizationalUnits || organizationalUnits.length === department.list.length) ? "công ty" : organizationalUnitsName.join(', ')} phân theo dải lương ${monthShow}`}</h3>
                     </div>

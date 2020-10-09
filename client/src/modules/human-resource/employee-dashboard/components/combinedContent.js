@@ -10,3 +10,6 @@ export * from './highestSalaryChart';
 export * from './qualificationChart';
 export * from './salaryOfOrganizationalUnitsChart';
 export * from './trendOfOvertime';
+export * from './tabHumanResource';
+export * from './tabSalary';
+export * from './tabAnualLeave';
