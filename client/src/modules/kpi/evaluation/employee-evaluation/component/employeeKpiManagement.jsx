@@ -12,35 +12,42 @@ import getEmployeeSelectBoxItems from '../../../../task/organizationalUnitHelper
 import { withTranslate } from 'react-redux-multilingual';
 
 class EmployeeKpiManagement extends Component {
+
     constructor(props) {
         super(props);
+
         this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
+
+        let currentDate = new Date();
+        let currentYear = currentDate.getFullYear();
+        let currentMonth = currentDate.getMonth();
+
         this.state = {
             commenting: false,
             user: '',
             status: -1,
-            startDate: null,
-            endDate: null,
+            startDate: currentMonth === 0 ? (currentYear - 1) + '-' + 12 : currentYear + '-' + currentMonth,
+            endDate: (currentMonth > 10) ? ((currentYear + 1) + '-' + (currentMonth - 10)) : (currentYear + '-' + (currentMonth + 2)),
             infosearch: {
                 role: localStorage.getItem("currentRole"),
                 user: '',
                 status: -1,
-                startDate: null,
-                endDate: null
+                startDate: currentMonth === 0 ? (currentYear - 1) + '-' + 12 : currentYear + '-' + currentMonth,
+                endDate: (currentMonth > 10) ? ((currentYear + 1) + '-' + (currentMonth - 10)) : (currentYear + '-' + (currentMonth + 2)),
             },
             showApproveModal: null,
             showEvaluateModal: null,
             dataStatus : this.DATA_STATUS.NOT_AVAILABLE
         };
     }
-    componentDidMount() {
+
+    componentDidMount () {
         const { infosearch } = this.state;
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
         this.props.getEmployeeKPISets(infosearch);
     }
 
-    shouldComponentUpdate=(nextProps, nextStates)=>
-    {
+    shouldComponentUpdate = (nextProps, nextStates) => {
         const { dataStatus } =this.state;
         if (dataStatus === this.DATA_STATUS.QUERYING)
         {
@@ -62,7 +69,7 @@ class EmployeeKpiManagement extends Component {
         return true;
     }
 
-    formatDateBack(date) {
+    formatDateBack (date) {
         let d = new Date(date), month, day, year;
         if (d.getMonth() === 0) {
             month = '' + 12;
@@ -80,7 +87,8 @@ class EmployeeKpiManagement extends Component {
 
         return [month, year].join('-');
     }
-    formatDate(date) {
+
+    formatDate (date) {
         let d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -92,7 +100,8 @@ class EmployeeKpiManagement extends Component {
             day = '0' + day;
 
         return [month, year].join('-');
-    }
+    } 
+
     checkStatusKPI = (status) => {
         if (status === 0) {
             return "Đang thiết lập";
@@ -103,22 +112,28 @@ class EmployeeKpiManagement extends Component {
         }
     }
     handleStartDateChange = (value) => {
+        let month = value.slice(3, 7) + '-' + value.slice(0, 2);
         this.setState(state => {
             return {
                 ...state,
-                startDate: value,
-                infosearch: {
-                    ...state.infosearch,  
-                },
+                startDate: month
             }
         });
 
     }
     handleEndDateChange = (value) => {
+        let month;
+
+        if (value.slice(0, 2) < 12) {
+            month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)) + 1);
+        } else {
+            month = (new Number(value.slice(3, 7)) + 1) + '-' + '1';
+        }
+        
         this.setState(state => {
             return {
                 ...state,
-                endDate: value,
+                endDate: month,
             }
         });
 
@@ -142,7 +157,9 @@ class EmployeeKpiManagement extends Component {
     }
 
     handleSearchData = async () => {
-        const { startDate, endDate, user, status, infosearch } = this.state;
+        const { translate } = this.props;
+        const { startDate, endDate, user, status } = this.state;
+
         if (startDate === "") startDate = null;
         if (endDate === "") endDate = null;
         await this.setState(state => {
@@ -160,20 +177,15 @@ class EmployeeKpiManagement extends Component {
             }
         })
 
-        let start_Date, end_Date;
         let startdate = null, enddate = null;
-
-        if (infosearch.startDate !== null) {
-            start_Date = infosearch.startDate.split("-");
-            startdate = new Date(start_Date[1], start_Date[0], 0);
+        if (startDate) {
+            startdate = new Date(startDate);
         }
-        if (infosearch.endDate !== null) {
-            end_Date = infosearch.endDate.split("-");
-            enddate = new Date(end_Date[1], end_Date[0], 28);
+        if (endDate) {
+            enddate = new Date(endDate);
         }
-        const { translate } = this.props;
 
-        if (startdate && enddate && Date.parse(startdate) > Date.parse(enddate)) {
+        if (startdate && enddate && startdate.getTime() >= Date.parse(enddate)) {
             Swal.fire({
                 title: translate('kpi.evaluation.employee_evaluation.wrong_time'),
                 type: 'warning',
@@ -182,10 +194,11 @@ class EmployeeKpiManagement extends Component {
             })
         }
         else {
-            console.log("\n\n\n\n\n\n\n",infosearch)
+            let { infosearch } = this.state;
             this.props.getEmployeeKPISets(infosearch);
         }
     }
+
     handleShowApproveModal = async (id) => {
         await this.setState(state => {
             return {
@@ -195,6 +208,7 @@ class EmployeeKpiManagement extends Component {
         })
         window.$(`modal-approve-KPI-member`).modal('show');
     }
+
     showEvaluateModal = async (item) => {
         await this.setState(state => {
             return {
@@ -205,7 +219,6 @@ class EmployeeKpiManagement extends Component {
         window.$(`employee-kpi-evaluation-modal`).modal('show');
     }
 
-    
     handleExportTotalData = ()=>{
         let kpimember;
         const { kpimembers } =this.props;
@@ -364,7 +377,6 @@ class EmployeeKpiManagement extends Component {
             
             listTasks =kpimembers.tasksList;
             listKpis =kpimembers.kpimembers;
-            console.log("\n\n\n\n\n\n\n",listTasks)
         }
         if(managerKpiUnit)
         {
@@ -464,7 +476,6 @@ class EmployeeKpiManagement extends Component {
                 }
                 convertedData.push(temp);
             }       
-            console.log("\n\n\n\n\n\n\n1111111111",convertedData)
             //Convert xong, push data theo form data của component ExportExcel
             let dataSheets =[],sheetInfo =[];
             for(let i=0;i<listKpiUnit.length;i++)
@@ -666,6 +677,23 @@ class EmployeeKpiManagement extends Component {
             exportData = this.convertDataToExportData(kpimember,userdepartments.department);            
         }
        
+        let startDateDefault, endDateDefault;
+        let d = new Date(),
+            endmonth = d.getMonth(),
+            month = '' + (d.getMonth() + 1),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (endmonth == 0) {
+            endmonth = 12;
+            startDateDefault = [endmonth, year-1].join('-');
+        } else if (endmonth < 10) {
+            endmonth = '0' + endmonth;
+            startDateDefault = [endmonth, year].join('-');
+        } else startDateDefault = [endmonth, year].join('-');
+        endDateDefault = [month, year].join('-');
+
         return (
             <React.Fragment>
                 <div className="box">
@@ -706,7 +734,7 @@ class EmployeeKpiManagement extends Component {
                                 <label>{translate('kpi.evaluation.employee_evaluation.from')}:</label>
                                 <DatePicker
                                     id='start_date'
-                                    value={startDate}
+                                    value={startDateDefault}
                                     onChange={this.handleStartDateChange}
                                     dateFormat="month-year"
                                 />
@@ -715,7 +743,7 @@ class EmployeeKpiManagement extends Component {
                                 <label>{translate('kpi.evaluation.employee_evaluation.to')}:</label>
                                 <DatePicker
                                     id='end_date'
-                                    value={endDate}
+                                    value={endDateDefault}
                                     onChange={this.handleEndDateChange}
                                     dateFormat="month-year"
                                 />

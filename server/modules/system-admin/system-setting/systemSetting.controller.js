@@ -11,7 +11,7 @@ exports.getBackups = async(req, res) => {
             messages: ['get_backups_success'],
             content
         });
-    } catch (error) {console.log(error)
+    } catch (error) {
 
         Logger.error(req.user.email, 'get_backups_faile');
         res.status(400).json({
@@ -25,7 +25,7 @@ exports.getBackups = async(req, res) => {
 exports.getConfigBackup = async(req, res) => {
     try {
         const content = await SystemSettingServices.getConfigBackup();
-        console.log("SYSTEM CONFIG", content)
+
         Logger.info(req.user.email, 'get_config_backup_success');
         res.status(200).json({
             success: true,
