@@ -2,10 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { LazyLoadComponent } from '../../../../common-components';
-
 import { HighestSalaryChart, SalaryOfOrganizationalUnitsChart } from './combinedContent';
-import './employeeDashBoard.css';
 
 class TabSalary extends Component {
     constructor(props) {

@@ -144,6 +144,7 @@ exports.getAllOrganizationalUnitKpiSetByTimeOfChildUnit = async (portal, company
         childOrganizationalUnitKpiSets.push(await this.getAllOrganizationalUnitKpiSetByTime(portal, null, childrenOrganizationalUnits[i].id, query.startDate, query.endDate));
         childOrganizationalUnitKpiSets[i].unshift({ 'name': childrenOrganizationalUnits[i].name })
     }
+    console.log(childOrganizationalUnitKpiSets);
 
     return childOrganizationalUnitKpiSets;
 }

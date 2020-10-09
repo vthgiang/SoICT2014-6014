@@ -8,8 +8,6 @@ import {
     HumanResourceChartBySalary, HumanResourceIncreaseAndDecreaseChart, QualificationChart
 } from './combinedContent';
 
-import './employeeDashBoard.css';
-
 class TabHumanResource extends Component {
     constructor(props) {
         super(props);
@@ -19,7 +17,7 @@ class TabHumanResource extends Component {
         const { organizationalUnits, actionSearch, monthShow } = this.props;
         return (
             <div className="row qlcv">
-                <div class="col-lg-12 col-md-12 col-md-sm-12 col-xs-12">
+                <div className="col-lg-12 col-md-12 col-md-sm-12 col-xs-12">
                     <div className='row'>
                         <LazyLoadComponent>
                             <div className="col-lg-6 col-md-6 col-md-sm-12 col-xs-12">

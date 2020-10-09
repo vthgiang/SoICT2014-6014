@@ -14,7 +14,7 @@ class TrendOfOvertime extends Component {
         super(props);
         let startDate = ['01', new Date().getFullYear()].join('-');
         this.state = {
-            lineChart: true,
+            lineChart: false,
             startDate: startDate,
             startDateShow: startDate,
             endDate: this.formatDate(Date.now(), true),
@@ -173,9 +173,6 @@ class TrendOfOvertime extends Component {
                 names: {
                     data1: data.nameData1,
                 },
-                colors: {
-                    data1: '#ff7f0e',
-                },
             },
             axis: {
                 x: {
@@ -198,6 +195,7 @@ class TrendOfOvertime extends Component {
                 columns: [data.ratioX, ['data1', ...fakeData1]],
             });
         }, 100);
+
         setTimeout(function () {
             chart.load({
                 columns: [data.ratioX, ['data1', ...data.data1]],

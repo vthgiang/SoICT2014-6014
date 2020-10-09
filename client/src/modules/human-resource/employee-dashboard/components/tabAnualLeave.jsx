@@ -5,7 +5,6 @@ import { withTranslate } from 'react-redux-multilingual';
 import { LazyLoadComponent } from '../../../../common-components';
 
 import { TrendOfOvertime, AnnualLeaveTrendsChart } from './combinedContent';
-import './employeeDashBoard.css';
 
 class TabAnualLeave extends Component {
     constructor(props) {
