@@ -2,10 +2,14 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const ConfiguraionSchema = new Schema({
-    database: {
+    db: {
         type: String
     },
     backup: {
+        auto: {
+            type: Boolean,
+            default: false
+        },
         time: {
             second: {
                 type: String,

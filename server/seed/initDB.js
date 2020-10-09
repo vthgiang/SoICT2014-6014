@@ -1,10 +1,19 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const Terms = require('./terms');
-
+const models = require('../models');
 const { 
-    User, UserRole, RoleType, Role, Link, Privilege, RootRole, SystemComponent, SystemLink
-} = require('../models');
+    User, 
+    UserRole, 
+    RoleType, 
+    Role, 
+    Link, 
+    Privilege, 
+    RootRole, 
+    SystemComponent, 
+    SystemLink, 
+    Configuration
+} = models;
 
 require('dotenv').config();
 
@@ -15,30 +24,39 @@ const initDB = async() => {
      * 1. Tạo kết nối đến cơ sở dữ liệu
      */
     const systemDB = mongoose.createConnection(
-        process.env.DATABASE || `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/${process.env.DB_NAME}`,
-        process.env.DB_AUTHENTICATION === 'true' ?
+        `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/${process.env.DB_NAME}`,
         {
             useNewUrlParser: true,
             useUnifiedTopology: true,
             useCreateIndex: true,
             useFindAndModify: false,
-            user: process.env.DB_USERNAME,
-            pass: process.env.DB_PASSWORD
-        }:{
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            useCreateIndex: true,
-            useFindAndModify: false,
+            user: process.env.DB_AUTHENTICATION === "true" ? process.env.DB_USERNAME : undefined,
+            pass: process.env.DB_AUTHENTICATION === "true" ? process.env.DB_PASSWORD : undefined,
         }
     );
     if(!systemDB) throw('DB cannot connect');
 	console.log("DB connected");
 
 	/**
-	 * 2. Xóa dữ liệu db cũ
+	 * 2. Xóa dữ liệu db cũ và khởi tạo dữ liệu config 
 	 */
-	systemDB.dropDatabase(); 
-
+    systemDB.dropDatabase(); 
+    await Configuration(systemDB).insertMany([
+        {
+            db: 'all',
+            backup: {
+                time: {
+                    second: '0',
+                    minute: '0',
+                    hour: '2',
+                    date: '1',
+                    month: '*',
+                    day: '*'
+                },
+                limit: 10
+            }
+        }
+    ]);
 
 	/**
 	 * 3. Tạo các Role Type
