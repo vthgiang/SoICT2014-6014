@@ -157,6 +157,7 @@ class EditForm extends Component {
             return {
                 ...prevState,
                 domainId: nextProps.domainId,
+                domainChild: nextProps.domainChild,
                 domainCode: nextProps.domainCode,
                 domainName: nextProps.domainName,
                 domainDescription: nextProps.domainDescription,
@@ -172,11 +173,19 @@ class EditForm extends Component {
     render() {
         const { translate, assetType } = this.props;
         const { tree, list } = assetType.administration.types;
-        const { domainId, domainCode, domainName, domainDescription, domainParent, errorName, defaultInfo, errorOnNameField, errorPosition } = this.state;
+        const { domainId, domainChild, domainCode, domainName, domainDescription, domainParent, errorName, defaultInfo, errorOnNameField, errorPosition } = this.state;
 
-        let dataList = []
+        let cannotChoose = [domainId];
+        let dataList = [];
+
+        if (domainChild.length) {
+            for (let i in domainChild) {
+                cannotChoose.push(domainChild[i]);
+            }
+        }
+
         for (let i in list) {
-            if (domainId != list[i]._id) {
+            if (cannotChoose.indexOf(list[i]._id) < 0) {
                 dataList.push({
                     ...list[i],
                     id: list[i]._id,
