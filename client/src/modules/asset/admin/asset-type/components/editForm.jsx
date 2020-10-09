@@ -174,13 +174,16 @@ class EditForm extends Component {
         const { tree, list } = assetType.administration.types;
         const { domainId, domainCode, domainName, domainDescription, domainParent, errorName, defaultInfo, errorOnNameField, errorPosition } = this.state;
 
-        let dataList = list.map(node => {
-            return {
-                ...node,
-                id: node._id,
-                name: node.typeName,
+        let dataList = []
+        for (let i in list) {
+            if (domainId != list[i]._id) {
+                dataList.push({
+                    ...list[i],
+                    id: list[i]._id,
+                    name: list[i].typeName
+                })
             }
-        })
+        }
 
         return (
             <div id="edit-asset-type">
