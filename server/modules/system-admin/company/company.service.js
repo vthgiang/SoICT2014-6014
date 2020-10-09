@@ -1,7 +1,7 @@
 const {
     Company, Link, SystemLink, Component,
     SystemComponent, Privilege, Role, RootRole,
-    RoleType, User, UserRole, ImportConfiguraion
+    RoleType, User, UserRole, ImportConfiguraion, Configuration
 } = require(`${SERVER_MODELS_DIR}`);
 
 const bcrypt = require("bcryptjs");
@@ -72,6 +72,25 @@ exports.createCompany = async (data) => {
             description: data.description,
             shortName: data.shortName
         });
+}
+
+exports.initConfigBackup = async(companyShortName) => {
+    return await Configuration(connect(DB_CONNECTION, process.env.DB_NAME)).insertMany([
+        {
+            name: companyShortName,
+            backup: {
+                time: {
+                    second: '0',
+                    minute: '0',
+                    hour: '2',
+                    date: '1',
+                    month: '*',
+                    day: '*'
+                },
+                limit: 10
+            }
+        }
+    ]);
 }
 
 /**
