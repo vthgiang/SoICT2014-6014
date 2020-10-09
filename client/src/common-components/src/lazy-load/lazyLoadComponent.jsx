@@ -24,7 +24,6 @@ class LazyLoadComponent extends Component {
 
     render() {
         const {
-            key = "lazy-load",
             height = 200,
             unmountIfInvisible = false,
             scroll = true,
@@ -40,7 +39,6 @@ class LazyLoadComponent extends Component {
 
         return (
             <LazyLoad
-                key={key}
                 height={height}
                 unmountIfInvisible={unmountIfInvisible}
                 placeholder={this.placeHolder()}
