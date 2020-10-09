@@ -43,9 +43,15 @@ class QuantityInventoryDashboard extends Component {
                 x : 'x',
                 columns: [
                     ['x', 'Máy tính', 'Bàn học', 'Điện thoại', 'Chuột', 'Cặp sách', 'Bình nước', 'Sách vở', 'Bút'],
-                    ['Số lượng', 10, 20, 140, 200, 1000, 228, 90, 2000, 1300],
+                    ['Lê Thanh Nghị', 100, 200, 140, 200, 600, 228, 600, 200, 130],
+                    ['Tạ Quang Bửu', 300, 150, 140, 200, 500, 228, 290, 200, 130],
+                    ['Trần Đại Nghĩa', 100, 200, 140, 200, 600, 228, 700, 200, 130],
+                    ['Đại Cồ Việt', 300, 150, 140, 200, 500, 228, 290, 200, 130],
                 ],
-                type: 'bar'
+                type: 'bar',
+                groups: [
+                    ['Trần Đại Nghĩa','Tạ Quang Bửu', 'Lê Thanh Nghị', 'Đại Cồ Việt']
+                ]
             },
             axis: {
                 x: {
@@ -54,7 +60,7 @@ class QuantityInventoryDashboard extends Component {
                         rotate: 75,
                         multiline: false
                     },
-                    height: 130
+                    height: 100
                 }
             }
         });

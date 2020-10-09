@@ -7,7 +7,7 @@ import 'c3/c3.css';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { SelectMulti, DatePicker, SelectBox } from '../../../../common-components';
 
-class QuantityExpirationDate extends Component {
+class NormDasdboard extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -43,9 +43,15 @@ class QuantityExpirationDate extends Component {
                 x : 'x',
                 columns: [
                     ['x', 'Máy tính', 'Bàn học', 'Điện thoại', 'Chuột', 'Cặp sách', 'Bình nước', 'Sách vở', 'Bút'],
-                    ['Số lượng', 10, 20, 30, 20, 10, 22, 50, 60, 20],
+                    ['Lê Thanh Nghị', 10, -20, 10, 20, -0, 0, 0, 30, 0],
+                    ['Tạ Quang Bửu', 10, 0, 10, 0, -10, 22, 50, 0, 20],
+                    ['Trần Đại Nghĩa', 0, -20, 0, 20, -0, 0, 0, 0, 20],
+                    ['Đại Cồ Việt', 10, -0, 10, 0, -10, 0, 0, 0, 20],
                 ],
-                type: 'bar'
+                type: 'bar',
+                groups: [
+                    ['Trần Đại Nghĩa','Tạ Quang Bửu', 'Lê Thanh Nghị', 'Đại Cồ Việt']
+                ]
             },
             axis: {
                 x: {
@@ -69,17 +75,8 @@ class QuantityExpirationDate extends Component {
                     <div className="box-header with-border">
                         <i className="fa fa-bar-chart-o" />
                         <h3 className="box-title">
-                            Số lượng mặt hàng tồn kho sắp hết hạn sử dụng
+                            Số lượng mặt hàng vượt định mức
                         </h3>
-                        <div className="form-group" style={{width: '100%', display: 'flex', margin: '10px'}}>
-                            <label style={{marginRight: '10px'}} className="form-control-static">{translate('manage_warehouse.bill_management.to_date')}</label>
-                            <DatePicker
-                                id="purchase-month"
-                                dateFormat="month-year"
-                                value=""
-                                onChange={this.handlePurchaseMonthChange}
-                            />
-                        </div>
                         <div ref="quantityExpirationDate"></div>
                     </div>
                 </div>
@@ -88,4 +85,4 @@ class QuantityExpirationDate extends Component {
     }
 }
 
-export default withTranslate(QuantityExpirationDate);
+export default withTranslate(NormDasdboard);

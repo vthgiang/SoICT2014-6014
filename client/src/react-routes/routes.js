@@ -95,6 +95,7 @@ import TaskReportManager from '../modules/report/task-report/components/taskRepo
 
 //warehouse
 import InventoryDashBoard from '../modules/warehouse/dashboard-inventory/component';
+import BillDashBoard from '../modules/warehouse/dashboard-bill/component';
 import CategoryManagement from '../modules/warehouse/category-management/component';
 import GoodManagement from '../modules/warehouse/good-management/component';
 import StockManagement from '../modules/warehouse/stock-management/component';
@@ -1139,10 +1140,26 @@ class Routes extends Component {
                         layout={Layout}
                         component={InventoryDashBoard}
                     />
+                    
+                    <PrivateRoute
+                        isLoading={false}
+                        key={'dashboard-bill'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/dashboard-bill', name: 'dashboard_bill', icon: 'fa fa-dashboard' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/dashboard-bill'}
+                        path={'/dashboard-bill'}
+                        pageName={'dashboard_bill'}
+                        layout={Layout}
+                        component={BillDashBoard}
+                    />
 
                     <PrivateRoute
                         isLoading={false}
-                        key={'dashboard-inventory'}
+                        key={'category-management'}
                         arrPage={[
                             { link: '/', name: 'home', icon: 'fa fa-home' },
                             { link: '/category-management', name: 'category_management', icon: 'fa fa-cubes' }
