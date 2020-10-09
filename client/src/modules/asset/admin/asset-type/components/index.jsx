@@ -114,7 +114,6 @@ class AdministrationAssetTypes extends Component {
         const { list } = this.props.assetType.administration.types;
         const { domainParent, currentDomain, deleteNode } = this.state;
 
-        console.log('\n\n\n ***************', list);
         const dataTree = list.map(node => {
             return {
                 ...node,
@@ -137,15 +136,15 @@ class AdministrationAssetTypes extends Component {
                     }
 
                     {/* Xuất báo cáo */}
-                    <ExportExcel id="export-asset-type" exportData={exportData} style={{ marginLeft: '5px' }}/>
-                   
+                    <ExportExcel id="export-asset-type" exportData={exportData} style={{ marginLeft: '5px' }} />
+
                     {/* Thêm */}
                     <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title='Thêm'>{translate('task_template.add')}</button>
                     <ul className="dropdown-menu pull-right">
                         <li><a style={{ cursor: "pointer" }} onClick={() => { window.$('#modal-create-asset-type').modal('show') }}>{translate('task_template.add')}</a></li>
                         <li><a style={{ cursor: "pointer" }} onClick={() => { window.$('#import_asset_type').modal('show') }}>Thêm file</a></li>
                     </ul>
-                    <ImportAssetTypeModal/>
+                    <ImportAssetTypeModal />
                     <CreateAssetTypeModal domainParent={domainParent} />
                 </div>
 
