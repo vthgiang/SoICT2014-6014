@@ -246,9 +246,8 @@ exports.getTasksByKpiId = async (portal, data) => {
  */
 
 exports.setTaskImportanceLevel = async (portal, id, kpiType, data) => {
-    let date = new Date(data[0].date);
     for (const element of data) {
-        let setPoint = await updateTaskImportanceLevel(portal, element.taskId, element.employeeId, parseInt(element.point), element.date);
+        let setPoint = await updateTaskImportanceLevel(portal, element.taskId, element.employeeId, parseInt(element.point), element.date, element.role);
     };
     let key = {
         id: id,
@@ -256,13 +255,14 @@ exports.setTaskImportanceLevel = async (portal, id, kpiType, data) => {
         employeeId: data[0].employeeId,
         kpiType: kpiType
     }
-    let task = await getResultTaskByMonth(key);
+
+    let task = await getResultTaskByMonth(portal, key);
     let autoPoint = 0;
     let approvePoint = 0;
     let employPoint = 0;
     let sumTaskImportance = 0;
-    for (element of task) {
 
+    for (element of task) {
         autoPoint += element.results.automaticPoint * element.results.taskImportanceLevel;
         approvePoint += element.results.approvedPoint * element.results.taskImportanceLevel;
         employPoint += element.results.employeePoint * element.results.taskImportanceLevel;
@@ -327,7 +327,7 @@ exports.setTaskImportanceLevel = async (portal, id, kpiType, data) => {
 
 }
 
-async function updateTaskImportanceLevel(portal, taskId, employeeId, point, date) {
+async function updateTaskImportanceLevel(portal, taskId, employeeId, point, date, role) {
     var date = new Date(date);
     var year = date.getFullYear();
     var month = date.getMonth() + 1;
@@ -350,7 +350,7 @@ async function updateTaskImportanceLevel(portal, taskId, employeeId, point, date
         var setPoint = await Task(connect(DB_CONNECTION, portal))
             .findOneAndUpdate(
                 {
-                    "evaluations._id": task[0]._id
+                    "_id": taskId, "evaluations._id": task[0]._id
                 },
                 {
                     $set: { "evaluations.$.results.$[elem].taskImportanceLevel": point }
@@ -359,6 +359,7 @@ async function updateTaskImportanceLevel(portal, taskId, employeeId, point, date
                     arrayFilters: [
                         {
                             "elem.employee": employeeId,
+                            "elem.role": role
                         }
                     ]
                 }
@@ -366,6 +367,7 @@ async function updateTaskImportanceLevel(portal, taskId, employeeId, point, date
     }
     return setPoint;
 }
+
 exports.getTasksByListKpis = async (portal, data) =>
 {
     let listkpis =[],infosearch=[];
@@ -402,6 +404,7 @@ exports.getTasksByListKpis = async (portal, data) =>
     }
     return listTask;
 }
+
 async function getResultTaskByMonth(portal, data) {
     let date = new Date(data.date);
     let monthkpi = parseInt(date.getMonth() + 1);

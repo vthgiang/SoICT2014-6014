@@ -24,7 +24,7 @@ class EmployeeKpiManagement extends Component {
 
         this.state = {
             commenting: false,
-            user: '',
+            userId: '',
             status: -1,
             startDate: currentMonth === 0 ? (currentYear - 1) + '-' + 12 : currentYear + '-' + currentMonth,
             endDate: (currentMonth > 10) ? ((currentYear + 1) + '-' + (currentMonth - 10)) : (currentYear + '-' + (currentMonth + 2)),
@@ -138,16 +138,15 @@ class EmployeeKpiManagement extends Component {
         });
 
     }
-    handleEmployeeChange = (value) => {
-        this.setState(state => {
+    handleEmployeeChange = async (value) => {
+        await this.setState(state => {
             return {
                 ...state,
-                user: value
+                userId: value
             }
         });
     }
     handleStatusChange = (value) => {
-        if (value === -1) value = null;
         this.setState(state => {
             return {
                 ...state,
@@ -158,7 +157,7 @@ class EmployeeKpiManagement extends Component {
 
     handleSearchData = async () => {
         const { translate } = this.props;
-        const { startDate, endDate, user, status } = this.state;
+        const { startDate, endDate, userId, status } = this.state;
 
         if (startDate === "") startDate = null;
         if (endDate === "") endDate = null;
@@ -167,7 +166,7 @@ class EmployeeKpiManagement extends Component {
                 ...state,
                 infosearch: {
                     ...state.infosearch,
-                    user: user,
+                    user: userId,
                     status: status,
                     startDate: startDate,
                     endDate: endDate
@@ -662,7 +661,7 @@ class EmployeeKpiManagement extends Component {
     render() {
         const { user, kpimembers } = this.props;
         const { translate } = this.props;
-        const { status, startDate, endDate, kpiId, employeeKpiSet, perPage } = this.state;
+        const { status, startDate, endDate, kpiId, employeeKpiSet, perPage, userId } = this.state;
         let userdepartments, kpimember, unitMembers, exportData;
         if (user.userdepartments) userdepartments = user.userdepartments;
         if (kpimembers.kpimembers) {
@@ -706,17 +705,18 @@ class EmployeeKpiManagement extends Component {
                                 {unitMembers &&
                                     <SelectBox
                                         id={`employee-kpi-manage`}
-                                        className="form-control"
+                                        className="form-control select2"
                                         style={{ width: "100%" }}
                                         items={unitMembers}
                                         onChange={this.handleEmployeeChange}
-                                        value={user}
+                                        value={userId}
                                     />}
                             </div>
                             <div className="form-group">
                                 <label>{translate('kpi.evaluation.employee_evaluation.status')}:</label>
                                 <SelectBox
                                     id={`status-kpi`}
+                                    className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={[
                                         { value: -1, text: translate('kpi.evaluation.employee_evaluation.choose_status') },
@@ -808,7 +808,7 @@ class EmployeeKpiManagement extends Component {
                                             </td>
                                         </tr>
                                     ) : <tr>
-                                        <td colSpan={8}>
+                                        <td colSpan={10}>
                                             <center>{translate('kpi.evaluation.employee_evaluation.data_not_found')}</center>
                                         </td>
                                     </tr>}

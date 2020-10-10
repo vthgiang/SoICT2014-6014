@@ -121,6 +121,7 @@ class EmployeeKpiEvaluateModal extends Component {
                     date: date,
                     point: points[element.taskId],
                     type: type,
+                    role: element && element.results && element.results.role,
                     employeeId: employeeId
                 })
             });
@@ -235,6 +236,22 @@ class EmployeeKpiEvaluateModal extends Component {
 
     }
 
+    formatTaskStatus = (translate, status) => {
+        switch (status) {
+            case "inprocess":
+                return translate('task.task_management.inprocess');
+            case "wait_for_approval":
+                return translate('task.task_management.wait_for_approval');
+            case "finished":
+                return translate('task.task_management.finished');
+            case "delayed":
+                return translate('task.task_management.delayed');
+            case "canceled":
+                return translate('task.task_management.canceled');
+        }
+            
+    }
+
     render() {
         const { kpimembers } = this.props;
         const { translate, employeeKpiSet } = this.props;
@@ -344,12 +361,13 @@ class EmployeeKpiEvaluateModal extends Component {
                                                     <td><a style={{ cursor: 'pointer' }} onClick={() => this.handleClickTaskName(itemTask.taskId)}>{itemTask.name}</a></td>
                                                     <td>{this.formatDate(itemTask.startDate)}<br /> <i className="fa fa-angle-double-down"></i><br /> {this.formatDate(itemTask.endDate)}</td>
                                                     <td>{this.formatDate(itemTask.preEvaDate)}<br /> <i className="fa fa-angle-double-down"></i><br /> {this.formatDate(itemTask.date)}</td>
-                                                    <td>{itemTask.status}</td>
+                                                    <td>{this.formatTaskStatus(translate, itemTask.status)}</td>
                                                     <td>{itemTask.results.contribution}%</td>
                                                     <td>{itemTask.results.automaticPoint + '-' + itemTask.results.employeePoint + '-' + itemTask.results.approvedPoint}</td>
                                                     <td>
                                                         {points && tasks &&
                                                             <React.Fragment>
+                                                            {console.log("task", itemTask)}
                                                                 <input type="range"
                                                                     min='0'
                                                                     max='10'
