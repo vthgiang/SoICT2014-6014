@@ -4,12 +4,12 @@ const models = require('./models');
 const { Configuration } = models;
 const CronJob = require('cron').CronJob;
 
-module.exports = async(server) => {
+module.exports = async (server) => {
     // Socket.io realtime 
     global.CONNECTED_CLIENTS = [];
 
     global.SOCKET_IO = require('socket.io')(server);
-    SOCKET_IO.on('connection', function(socket){
+    SOCKET_IO.on('connection', function (socket) {
         // Client connected
         console.log("Client connected: ", socket.id, socket.handshake.query.userId);
         CONNECTED_CLIENTS.push({
@@ -18,7 +18,7 @@ module.exports = async(server) => {
         });
 
         // Client disconnected
-        socket.on('disconnect', function(){
+        socket.on('disconnect', function () {
             CONNECTED_CLIENTS = CONNECTED_CLIENTS.filter(client => client.socketId !== socket.id);
             console.log("Disconnected: ", socket.id, socket.handshake.query.userId, CONNECTED_CLIENTS);
         });
@@ -58,7 +58,7 @@ module.exports = async(server) => {
     const backupMongo = await Configuration(connect(DB_CONNECTION, process.env.DB_NAME)).find();
     global.BACKUP = {};
     for (let i = 0; i < backupMongo.length; i++) {
-        let {time} = backupMongo[i].backup;
+        let { time } = backupMongo[i].backup;
         let timeConfig = `${time.second} ${time.minute} ${time.hour} ${time.date} ${time.month} ${time.day}`
         BACKUP[backupMongo[i].name] = {
             auto: backupMongo[i].backup.auto,
@@ -75,17 +75,17 @@ module.exports = async(server) => {
             })
         }
     }
-    for(const [db] of Object.entries(BACKUP)){
-        if(BACKUP[db].auto) BACKUP[db].job.start();
+    for (const [db] of Object.entries(BACKUP)) {
+        if (BACKUP[db].auto) BACKUP[db].job.start();
     }
 
-    // global.AUTO_SENDEMAIL_TASK = require(SERVER_MODULES_DIR+'/scheduler/scheduler.service').sendEmailTaskAutomatic ;
-    // AUTO_SENDEMAIL_TASK.start();
+    global.AUTO_SENDEMAIL_TASK = require(SERVER_MODULES_DIR + '/scheduler/scheduler.service').sendEmailTaskAutomatic;
+    AUTO_SENDEMAIL_TASK.start();
 
-    global.AUTO_CREATE_NOTIFICATION_BIRTHDAY = require(SERVER_MODULES_DIR+'/scheduler/scheduler.service').createNotificationForEmployeesHaveBrithdayCurrent;
+    global.AUTO_CREATE_NOTIFICATION_BIRTHDAY = require(SERVER_MODULES_DIR + '/scheduler/scheduler.service').createNotificationForEmployeesHaveBrithdayCurrent;
     AUTO_CREATE_NOTIFICATION_BIRTHDAY.start();
 
-    global.AUTO_CREATE_NOTIFICATION_END_CONTRACT = require(SERVER_MODULES_DIR+'/scheduler/scheduler.service').createNotificationEndOfContract;
+    global.AUTO_CREATE_NOTIFICATION_END_CONTRACT = require(SERVER_MODULES_DIR + '/scheduler/scheduler.service').createNotificationEndOfContract;
     AUTO_CREATE_NOTIFICATION_END_CONTRACT.start();
 
     global.PORTAL = process.env.DB_NAME; // tên db cần kết nối

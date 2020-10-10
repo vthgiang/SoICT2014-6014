@@ -12,5 +12,7 @@ exports.createNotificationForEmployeesHaveBrithdayCurrent = new CronJob('0 0 8 *
 exports.createNotificationEndOfContract = new CronJob('0 0 8 * * *', async function () {
     EmployeeController.createNotificationEndOfContract();
 }, null, false, 'Asia/Ho_Chi_Minh');
-  
-// exports.sendEmailTaskAutomatic = new CronJob('0 0 8 * * 0', TaskManagementService.sendEmailCheckTaskLastMonth(), null, false, 'Asia/Ho_Chi_Minh');
+
+exports.sendEmailTaskAutomatic = new CronJob('0 0 8 * * 0', function () {
+    TaskManagementService.sendEmailCheckTaskLastMonth()
+}, null, false, 'Asia/Ho_Chi_Minh');
