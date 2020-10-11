@@ -169,6 +169,7 @@ class AdministrationAssetTypes extends Component {
                             {
                                 currentDomain &&
                                 <EditForm
+                                    domainChild={currentDomain.children_d}
                                     domainId={currentDomain.id}
                                     domainCode={currentDomain.original.typeNumber}
                                     domainName={currentDomain.text}

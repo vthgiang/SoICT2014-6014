@@ -49,15 +49,15 @@ class DomainOfTaskResultsChart extends Component {
         this.TYPEPOINT = { AUTOMAIC_POINT: 0, EMPLOYEE_POINT: 1, APPROVED_POINT: 2 };
         this.TYPEPOINT_SELECTBOX = [
             {
-                text: "AutomaticPoint",
+                text: translate('task.task_management.detail_auto_point'),
                 value: this.TYPEPOINT.AUTOMAIC_POINT
             },
             {
-                text: "EmployeePoint",
+                text: translate('task.task_management.detail_emp_point'),
                 value: this.TYPEPOINT.EMPLOYEE_POINT
             },
             {
-                text: "ApprovedPoint",
+                text: translate('task.task_management.detail_acc_point'),
                 value: this.TYPEPOINT.APPROVED_POINT
             }
         ];
