@@ -249,7 +249,6 @@ class EmployeeKpiEvaluateModal extends Component {
             case "canceled":
                 return translate('task.task_management.canceled');
         }
-            
     }
 
     render() {

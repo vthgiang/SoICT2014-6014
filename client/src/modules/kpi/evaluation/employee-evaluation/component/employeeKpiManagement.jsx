@@ -102,6 +102,21 @@ class EmployeeKpiManagement extends Component {
         return [month, year].join('-');
     } 
 
+    formatTaskStatus = (translate, status) => {
+        switch (status) {
+            case "inprocess":
+                return translate('task.task_management.inprocess');
+            case "wait_for_approval":
+                return translate('task.task_management.wait_for_approval');
+            case "finished":
+                return translate('task.task_management.finished');
+            case "delayed":
+                return translate('task.task_management.delayed');
+            case "canceled":
+                return translate('task.task_management.canceled');
+        }
+    }
+
     checkStatusKPI = (status) => {
         if (status === 0) {
             return "Đang thiết lập";
@@ -111,6 +126,7 @@ class EmployeeKpiManagement extends Component {
             return "Đã kích hoạt";
         }
     }
+
     handleStartDateChange = (value) => {
         let month = value.slice(3, 7) + '-' + value.slice(0, 2);
         this.setState(state => {
@@ -121,6 +137,7 @@ class EmployeeKpiManagement extends Component {
         });
 
     }
+
     handleEndDateChange = (value) => {
         let month;
 
@@ -138,6 +155,7 @@ class EmployeeKpiManagement extends Component {
         });
 
     }
+
     handleEmployeeChange = async (value) => {
         await this.setState(state => {
             return {
@@ -146,6 +164,7 @@ class EmployeeKpiManagement extends Component {
             }
         });
     }
+
     handleStatusChange = (value) => {
         this.setState(state => {
             return {
@@ -368,24 +387,24 @@ class EmployeeKpiManagement extends Component {
     }
 
     convertDataToExportTotalData =()=>{
-        const { kpimembers, managerKpiUnit,user } =this.props;
-        let listTasks,listKpis,data={},convertedData=[],listKpiUnit=[],unitName;
+        const { kpimembers, managerKpiUnit, user, translate } = this.props;
+        let listTasks, listKpis, data = {}, convertedData = [], listKpiUnit = [], unitName;
         
         if (user.userdepartments) {
             unitName = user.userdepartments.department;
         }
-        if(kpimembers.tasksList)
+        if (kpimembers.tasksList)
         {
             
             listTasks =kpimembers.tasksList;
             listKpis =kpimembers.kpimembers;
         }
-        if(managerKpiUnit)
+        if (managerKpiUnit)
         {
             listKpiUnit = managerKpiUnit.kpis;
         }
  
-        if(listTasks && listKpis && listKpiUnit && unitName)
+        if (listTasks && listKpis && listKpiUnit && unitName)
         {
             //Convert dữ liệu RAW
             for (let i = 0; i < listKpis.length; i++) {
@@ -425,7 +444,7 @@ class EmployeeKpiManagement extends Component {
                 });
 
                 let oneKpiSetTasks = listTasks[i].map((item, index) => {
-                    let oneKpiTasks = item.map((x,idx)=>{
+                    let oneKpiTasks = item.map((x,idx) => {
                         let name = x.name;
                         let startTaskD = new Date(x.startDate);
                         let endTaskD = new Date(x.endDate);
@@ -434,7 +453,7 @@ class EmployeeKpiManagement extends Component {
                         let automaticPoint = (x.results.automaticPoint === null) ? "Chưa đánh giá" : parseInt(x.results.automaticPoint);
                         let employeePoint = (x.results.employeePoint === null) ? "Chưa đánh giá" : parseInt(x.results.employeePoint);
                         let approverPoint = (x.results.approvedPoint === null) ? "Chưa đánh giá" : parseInt(x.results.approvedPoint);
-                        let status = x.status;
+                        let status = this.formatTaskStatus(translate, x.status);
                         let contributionPoint = parseInt(x.results.contribution);
                         let importantLevel = parseInt(x.results.taskImportanceLevel);
                         let progress = parseInt(x.progress);
