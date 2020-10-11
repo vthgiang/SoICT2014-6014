@@ -153,7 +153,7 @@ class AssetIsExpired extends Component {
                                             <td>{x.asset.managedBy && userlist.length && userlist.find(item => item._id === x.asset.managedBy) ? userlist.find(item => item._id === x.asset.managedBy).name : 'User is deleted'}</td>
                                             <td>{x.asset.assignedToUser ? (userlist.length && userlist.find(item => item._id === x.asset.assignedToUser) ? userlist.find(item => item._id === x.asset.assignedToUser).name : 'User is deleted') : ''}</td>
                                             <td>{x.asset.assignedToOrganizationalUnit ? x.asset.assignedToOrganizationalUnit : ''}</td>
-                                            <td>{x.asset.status}</td>
+                                            <td>{this.formatStatus(x.asset.status)}</td>
                                             <td>{x.day} {translate('annual_leave_personal.day')}</td>
                                         </tr>))
                                 }

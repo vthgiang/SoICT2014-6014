@@ -45,6 +45,22 @@ class DisposalTab extends Component {
         }
     }
 
+    convertDisposalType = (type) => {
+        const { translate } = this.props;
+
+        if (type === '1') {
+            return translate('asset.asset_info.destruction');
+        }
+        else if (type === '2') {
+            return translate('asset.asset_info.sale')
+        }
+        else if (type === '3') {
+            return translate('asset.asset_info.give')
+        }
+        else {
+            return 'Type is deleted'
+        }
+    }
 
     render() {
         const { id } = this.props;
@@ -52,7 +68,7 @@ class DisposalTab extends Component {
         const { disposalDate, disposalType, disposalCost, disposalDesc } = this.state;
 
         var formater = new Intl.NumberFormat();
-        
+
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
@@ -66,7 +82,7 @@ class DisposalTab extends Component {
                         </div>
                         <div className="form-group">
                             <strong>{translate('asset.general_information.disposal_type')}&emsp; </strong>
-                            {disposalType}
+                            {disposalType ? this.convertDisposalType(disposalType) : ''}
                         </div>
                         <div className="form-group">
                             <strong>{translate('asset.general_information.disposal_price')}&emsp; </strong>
