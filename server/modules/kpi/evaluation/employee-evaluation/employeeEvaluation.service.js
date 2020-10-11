@@ -426,7 +426,15 @@ async function getResultTaskByMonth(portal, data) {
             $unwind: "$evaluations"
         },
         {
-            $replaceRoot: { newRoot: { $mergeObjects: [{ name: "$name" }, { startDate: "$startDate" }, { taskId: "$_id" }, { priority: "$priority" }, { endDate: "$endDate" }, { taskId: "$_id" }, { status: "$status" }, "$evaluations"] } }
+            $lookup: {
+                from: "organizationalunits",
+                localField: "organizationalUnit",
+                foreignField: "_id",
+                as: "organizationalUnitDetail"
+            }
+        },
+        {
+            $replaceRoot: { newRoot: { $mergeObjects: [{ name: "$name" }, { startDate: "$startDate" }, { taskId: "$_id" }, { priority: "$priority" }, { endDate: "$endDate" }, { taskId: "$_id" }, { status: "$status" }, { unit: "$organizationalUnitDetail" }, "$evaluations"] } }
         },
         { $addFields: { "month": { $month: '$date' }, "year": { $year: '$date' } } },
         { $unwind: "$results" },
