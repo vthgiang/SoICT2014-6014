@@ -212,7 +212,6 @@ class UsageLogTab extends Component {
         const { translate, user, department } = this.props;
         const { assignedToOrganizationalUnit, assignedToUser, usageLogs, currentRow, typeRegisterForUse, managedBy } = this.state;
         var userlist = user.list, departmentlist = department.list;
-        console.log("typeRegister", typeRegisterForUse);
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body qlcv">

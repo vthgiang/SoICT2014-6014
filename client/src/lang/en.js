@@ -1864,6 +1864,8 @@ export default {
                 incident_asset: 'Statistics incident asset chart',
                 maintenance_asset: 'Statistics maintenance asset chart',
                 statistic_by: 'Statistic by',
+                expired: 'Exprired',
+                remaining_time: 'Remaining time',
             },
 
             //  Quản lý loại tài sản
@@ -1889,8 +1891,8 @@ export default {
                 field_name: 'Name of properties',
                 value: 'Value',
 
-                usage_logs: 'Allocation history - transfer - withdrawal',
-                maintainance_logs: 'Repair history - replacement - upgrade',
+                usage_logs: 'Usage log',
+                maintainance_logs: 'Maintainance logs',
                 incident_list: 'Asset incident list',
                 file_list: 'List of documents attached',
                 edit_document: 'Edit documents attached',

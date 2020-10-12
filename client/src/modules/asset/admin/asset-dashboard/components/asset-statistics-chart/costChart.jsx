@@ -60,17 +60,6 @@ class CostChart extends Component {
         return dataPieChart;
     }
 
-    // // Hàm xóa biểu đồ trước
-    // removePreviousChart() {
-    //     const chart = this.refs.chart;
-
-    //     if (chart) {
-    //         while (chart.hasChildNodes()) {
-    //             chart.removeChild(chart.lastChild);
-    //         }
-    //     } 
-    // }
-
     // Khởi tạo PieChart bằng C3
     pieChart = () => {
         let dataPieChart = this.setDataPieChart();
@@ -115,7 +104,6 @@ class CostChart extends Component {
         const { translate } = this.props;
         const { listAssets } = this.props;
 
-        console.log('call pie chart');
         this.pieChart();
 
         return (

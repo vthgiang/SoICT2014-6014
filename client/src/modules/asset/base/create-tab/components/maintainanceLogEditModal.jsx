@@ -155,7 +155,7 @@ class MaintainanceLogEditModal extends Component {
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let result = this.validateCreateDate(this.state.createDate, false) 
+        let result = this.validateCreateDate(this.state.createDate, false)
 
         return result;
     }
@@ -244,9 +244,9 @@ class MaintainanceLogEditModal extends Component {
                                 <div className="form-group">
                                     <label>{translate('asset.general_information.type')}</label>
                                     <select className="form-control" value={type} name="type" onChange={this.handleTypeChange}>
-                                        <option value="Sửa chữa">{translate('asset.asset_info.repair')}</option>
-                                        <option value="Thay thế">{translate('asset.asset_info.replace')}</option>
-                                        <option value="Nâng cấp">{translate('asset.asset_info.upgrade')}</option>
+                                        <option value="1">{translate('asset.asset_info.repair')}</option>
+                                        <option value="2">{translate('asset.asset_info.replace')}</option>
+                                        <option value="3">{translate('asset.asset_info.upgrade')}</option>
                                     </select>
                                 </div>
 
@@ -291,9 +291,9 @@ class MaintainanceLogEditModal extends Component {
                                 <div className="form-group">
                                     <label>{translate('asset.general_information.status')}</label>
                                     <select className="form-control" value={status} name="status" onChange={this.handleStatusChange}>
-                                        <option value="Đã thực hiện">{translate('asset.asset_info.made')}</option>
-                                        <option value="Đang thực hiện">{translate('asset.asset_info.processing')}</option>
-                                        <option value="Chưa thực hiện">{translate('asset.asset_info.unfulfilled')}</option>
+                                        <option value="1">{translate('asset.asset_info.made')}</option>
+                                        <option value="2">{translate('asset.asset_info.processing')}</option>
+                                        <option value="3">{translate('asset.asset_info.unfulfilled')}</option>
                                     </select>
                                 </div>
                             </div>
