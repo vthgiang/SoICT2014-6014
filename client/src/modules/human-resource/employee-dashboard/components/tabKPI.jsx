@@ -183,7 +183,7 @@ class TabKPI extends Component {
                 <div className="col-md-12">
                     <div className="box-solid">
                         <div className="box-header with-border">
-                            <h3 className="box-title">{translate('kpi.evaluation.dashboard.result_kpi_titile')}</h3>
+                            <h3 className="box-title">{`${translate('kpi.evaluation.dashboard.result_kpi_titile')} của ${(!organizationalUnits || organizationalUnits.length === department.list.length) ? "công ty" : organizationalUnitsName.join(', ')}`}</h3>
                             {resultsOfAllEmployeeKpiSetChartData && <ExportExcel type="link" id="export-all-employee-kpi-evaluate-result-dashboard" exportData={resultsOfAllEmployeeKpiSetChartData} style={{ marginTop: 5 }} />}
                         </div>
                         {/* /.box-header */}

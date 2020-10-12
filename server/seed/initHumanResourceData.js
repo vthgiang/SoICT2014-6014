@@ -1,3 +1,4 @@
+// Thêm nhiều dữ liệu mẫu để test chức năng quản lý nhân sự
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const Terms = require('./terms');
@@ -26,75 +27,63 @@ const {
     EducationProgram,
     Course,
 
-    Asset,
-    AssetType,
-    RecommendProcure,
-    RecommendDistribute,
-
-    Document,
-    DocumentArchive,
-    DocumentDomain,
-    DocumentCategory,
-
-    Stock,
-    Category,
-    Good,
-
-    // CrmCustomer,
-    // CrmGroup,
+    EmployeeKpi,
+    EmployeeKpiSet,
+    OrganizationalUnitKpi,
+    OrganizationalUnitKpiSet,
+    Task
 
 } = require('../models');
+
 
 require('dotenv').config();
 
 
-const initSampleCompanyDB = async () => {
-    console.log("Init sample company database, ...");
+const initHumanResourceData = async () => {
+    console.log("Add more human resource database, ...");
 
     /**
-     * 1. Tạo kết nối đến csdl của hệ thống và công ty VNIST
-     */
+    * 1. Tạo kết nối đến csdl của hệ thống và công ty VNIST
+    */
     const systemDB = mongoose.createConnection(
         `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/${process.env.DB_NAME}`,
-        process.env.DB_AUTHENTICATION === 'true' ? {
+        {
             useNewUrlParser: true,
             useUnifiedTopology: true,
             useCreateIndex: true,
             useFindAndModify: false,
-            user: process.env.DB_USERNAME,
-            pass: process.env.DB_PASSWORD
-        } : {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            useCreateIndex: true,
-            useFindAndModify: false,
+            user: process.env.DB_AUTHENTICATION === "true" ? process.env.DB_USERNAME : undefined,
+            pass: process.env.DB_AUTHENTICATION === "true" ? process.env.DB_PASSWORD : undefined,
         }
     );
-    if (!systemDB) throw ('DB system cannot connect');
-    console.log("DB system connected");
-
+    
     const vnistDB = mongoose.createConnection(
         `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/vnist`,
-        process.env.DB_AUTHENTICATION === 'true' ? {
+        process.env.DB_AUTHENTICATION === 'true' ?
+        {
             useNewUrlParser: true,
             useUnifiedTopology: true,
             useCreateIndex: true,
             useFindAndModify: false,
             user: process.env.DB_USERNAME,
             pass: process.env.DB_PASSWORD
-        } : {
+        }:{
             useNewUrlParser: true,
             useUnifiedTopology: true,
             useCreateIndex: true,
             useFindAndModify: false,
         }
     );
+
     if (!systemDB) throw ('DB vnist cannot connect');
     console.log("DB vnist connected");
 
+    if(!vnistDB) throw('DB vnist cannot connect');
+    console.log("DB vnist connected");
+
     /**
-     * 1.1 Khởi tạo model cho db
-     */
+    * 1.1 Khởi tạo model cho db
+    */
     const initModels = (db) => {
         console.log("models", db.models);
 
@@ -121,22 +110,12 @@ const initSampleCompanyDB = async () => {
         if (!db.models.EducationProgram) EducationProgram(db);
         if (!db.models.Course) Course(db);
 
-        if (!db.models.Asset) Asset(db);
-        if (!db.models.AssetType) AssetType(db);
-        if (!db.models.RecommendProcure) RecommendProcure(db);
-        if (!db.models.RecommendDistribute) RecommendDistribute(db);
 
-        if (!db.models.Document) Document(db);
-        if (!db.models.DocumentArchive) DocumentArchive(db);
-        if (!db.models.DocumentDomain) DocumentDomain(db);
-        if (!db.models.DocumentCategory) DocumentCategory(db);
-
-        if (!db.models.Stock) Stock(db);
-        if (!db.models.Category) Category(db);
-        if (!db.models.Good) Good(db);
-
-        // if (!db.models.CrmCustomer) CrmCustomer(db);
-        // if (!db.models.CrmGroup) CrmGroup(db);
+        if(!db.models.EmployeeKpi) EmployeeKpi(db);
+        if(!db.models.EmployeeKpiSet) EmployeeKpiSet(db);
+        if(!db.models.OrganizationalUnitKpi) OrganizationalUnitKpi(db);
+        if(!db.models.OrganizationalUnitKpiSet) OrganizationalUnitKpiSet(db);
+        if(!db.models.Task) Task(db);
 
         console.log("models_list", db.models);
     }
@@ -144,250 +123,159 @@ const initSampleCompanyDB = async () => {
     initModels(vnistDB);
     initModels(systemDB);
 
-
     /**
-     * 2. Xóa dữ liệu db cũ của công ty vnist
+     * 1.3. Lấy dữ liệu về công ty VNIST trong database của hệ thống
      */
-    vnistDB.dropDatabase();
-
-
-
-    /**
-     * 3. Khởi tạo dữ liệu về công ty VNIST trong database của hệ thống
-     */
-    const vnist = await Company(systemDB).create({
-        name: 'Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam',
+    const vnist = await Company(systemDB).findOne({
         shortName: 'vnist',
-        description: 'Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam'
     });
-    console.log(`Xong! Công ty [${vnist.name}] đã được tạo.`);
-
 
     /**
-     * 4. Tạo các tài khoản người dùng trong csdl của công ty VNIST
+     * 2. Thêm các tài khoản người dùng trong csdl của công ty VNIST
      */
     const salt = await bcrypt.genSaltSync(10);
     const hash = await bcrypt.hashSync('123456', salt);
 
-    const users = await User(vnistDB).insertMany([{
-            name: 'Super Admin VNIST',
-            email: 'super.admin.vnist@gmail.com',
-            password: hash,
-            company: vnist._id
-        }, {
-            name: 'Admin VNIST',
-            email: 'admin.vnist@gmail.com',
-            password: hash,
-            company: vnist._id
-        }, {
-            name: 'Nguyễn Văn An',
-            email: 'nva.vnist@gmail.com',
-            password: hash,
-            company: vnist._id
-        }, {
-            name: 'Trần Văn Bình',
-            email: 'tvb.vnist@gmail.com',
-            password: hash,
-            company: vnist._id
-        }, {
-            name: 'Vũ Thị Cúc',
-            email: 'vtc.vnist@gmail.com',
-            password: hash,
-            company: vnist._id
-        }, {
-            name: 'Nguyễn Văn Danh',
-            email: 'nvd.vnist@gmail.com',
-            password: hash,
-            company: vnist._id
-        }, {
-            name: 'Trần Thị Én',
-            email: 'tte.vnist@gmail.com',
-            password: hash,
-            company: vnist._id
-        }, {
-            name: 'Phạm Đình Phúc',
-            email: 'pdp.vnist@gmail.com',
-            password: hash,
-            company: vnist._id
-        }, {
-            name: 'Trần Minh Đức',
-            email: 'tmd.vnist@gmail.com',
-            password: hash,
-            company: vnist._id
-        }, {
-            name: 'Nguyễn Việt Anh',
-            email: 'nguyenvietanh.vnist@gmail.com',
-            password: hash,
-            company: vnist._id
-        }, {
-            name: 'Nguyễn Viết Thái',
-            email: 'nguyenvietthai.vnist@gmail.com',
-            password: hash,
-            company: vnist._id
-        }, {
-            name: 'Trần Mỹ Hạnh',
-            email: 'tranmyhanh.vnist@gmail.com',
-            password: hash,
-            company: vnist._id
-        }, {
-            name: 'Nguyễn Minh Thành',
-            email: 'nguyenminhthanh.vnist@gmail.com',
-            password: hash,
-            company: vnist._id
-        }, {
-            name: 'Nguyễn Gia Huy',
-            email: 'nguyengiahuy.vnist@gmail.com',
-            password: hash,
-            company: vnist._id
-        }, {
-            name: 'Trần Minh Anh',
-            email: 'tranminhanh.vnist@gmail.com',
-            password: hash,
-            company: vnist._id
-        },
-
-        /*
-         * Dữ liệu người dùng để test chức năng quản lý nhân sự
-         */
-        { // 15
+    const users = await User(vnistDB).insertMany([
+        { // 1
             name: 'Lê Thống Nhất',
             email: 'lethongnhat.vnist@gmail.com',
             password: hash,
             company: vnist._id
         },
-        { // 16
+        { // 2
             name: 'Nguyễn Văn thanh',
             email: 'nguyenvanthanh.vnist@gmail.com',
             password: hash,
             company: vnist._id
         },
-        { // 17
+        { // 3
             name: 'Nguyễn Viết Đảng',
             email: 'nguyenvietdang.vnist@gmail.com',
             password: hash,
             company: vnist._id
         },
-        { // 18
+        { // 4
             name: 'Đỗ Văn Dương',
             email: 'dovanduong.vnist@gmail.com',
             password: hash,
             company: vnist._id
         },
-        { // 19
+        { // 5
             name: 'Đào Xuân Hướng',
             email: 'daoxuanhuong.vnist@gmail.com',
             password: hash,
             company: vnist._id
         },
-        { // 20
+        { // 6
             name: 'Đào Quang Phương',
             email: 'daoquangphuong.vnist@gmail.com',
             password: hash,
             company: vnist._id
         },
-        { // 21
+        { // 7
             name: 'Vũ Mạnh Cường',
             email: 'vumanhcuong.vnist@gmail.com',
             password: hash,
             company: vnist._id
         },
-        { // 22
+        { // 8
             name: 'Trần Văn Cường',
             email: 'tranvancuong.vnist@gmail.com',
             password: hash,
             company: vnist._id
         },
-        { // 23
+        { // 9
             name: 'Dương Thị Thanh Thuỳ',
             email: 'duongthithanhthuy.vnist@gmail.com',
             password: hash,
             company: vnist._id
         },
-        { // 24
+        { // 10
             name: 'Nguyễn Thị huệ',
             email: 'nguyenthihue.vnist@gmail.com',
             password: hash,
             company: vnist._id
         },
-        { // 25
+        { // 11
             name: 'Vũ Viết Xuân',
             email: 'vuvietxuan.vnist@gmail.com',
             password: hash,
             company: vnist._id
         },
-        { // 26
+        { // 12
             name: 'Trần Thị Thu Phương',
             email: 'tranthithuphuong.vnist@gmail.com',
             password: hash,
             company: vnist._id
         },
-        { // 27
+        { // 13
             name: 'Bùi Thị Mai',
             email: 'buithimai.vnist@gmail.com',
             password: hash,
             company: vnist._id
         },
-        { // 28
+        { // 14
             name: 'Nguyễn Lương Thử',
             email: 'nguyenluongthu.vnist@gmail.com',
             password: hash,
             company: vnist._id
         },
-        { // 29
+        { // 15
             name: 'Lưu Quang Ngọc',
             email: 'luuquangngoc.vnist@gmail.com',
             password: hash,
             company: vnist._id
         },
-        { // 30
+        { // 16
             name: 'Hoàng Văn Tùng',
             email: 'hoangvantung.vnist@gmail.com',
             password: hash,
             company: vnist._id
         },
-        { // 31
+        { // 17
             name: 'Nguyễn Văn Hải',
             email: 'nguyenvanhai.vnist@gmail.com',
             password: hash,
             company: vnist._id
         },
-        { // 32
+        { // 18
             name: 'Trần Văn Sơn',
             email: 'tranvanson.vnist@gmail.com',
             password: hash,
             company: vnist._id
         },
-        { // 33
+        { // 19
             name: 'Mai Thuỳ Dung',
             email: 'maithuydung.vnist@gmail.com',
             password: hash,
             company: vnist._id
         },
-        { // 34
+        { // 20
             name: 'Nguyễn Thống Nhất',
             email: 'nguyenthongnhat.vnist@gmail.com',
             password: hash,
             company: vnist._id
         },
-        { // 35
+        { // 21
             name: 'Trần Kim Cương',
             email: 'trankimcuong.vnist@gmail.com',
             password: hash,
             company: vnist._id
         },
-        { // 36
+        { // 22
             name: 'Nguyễn Đình Thuận',
             email: 'nguyendinhthuan.vnist@gmail.com',
             password: hash,
             company: vnist._id
         },
-        { // 37
+        { // 23
             name: 'Ngô Tri Dũng',
             email: 'ngotridung.vnist@gmail.com',
             password: hash,
             company: vnist._id
         },
-        { // 38
+        { // 24
             name: 'Nguyễn Khắc Đại',
             email: 'nguyenkhacdai.vnist@gmail.com',
             password: hash,
@@ -397,84 +285,20 @@ const initSampleCompanyDB = async () => {
 
     console.log("Dữ liệu tài khoản người dùng cho công ty VNIST", users);
 
-    let vnistCom = await Company(systemDB).findById(vnist._id);
-    vnistCom.superAdmin = users[0]._id;
-    await vnistCom.save();
-
     /**
-     * 5. Tạo các role mặc định cho công ty vnist
+     * 3. Tạo thêm các role mặc định cho công ty vnist
      */
-    await RoleType(vnistDB).insertMany([{
-            name: Terms.ROLE_TYPES.ROOT
-        },
-        {
-            name: Terms.ROLE_TYPES.POSITION
-        },
-        {
-            name: Terms.ROLE_TYPES.COMPANY_DEFINED
-        }
-    ]);
-    const roleAbstract = await RoleType(vnistDB).findOne({
-        name: Terms.ROLE_TYPES.ROOT
-    });
     const roleChucDanh = await RoleType(vnistDB).findOne({
         name: Terms.ROLE_TYPES.POSITION
     });
-    const roleTuDinhNghia = await RoleType(vnistDB).findOne({
-        name: Terms.ROLE_TYPES.COMPANY_DEFINED
-    });
-    const roleAdmin = await Role(vnistDB).create({
-        name: Terms.ROOT_ROLES.ADMIN.name,
-        type: roleAbstract._id,
-    });
-    const roleSuperAdmin = await Role(vnistDB).create({
-        name: Terms.ROOT_ROLES.SUPER_ADMIN.name,
-        type: roleAbstract._id,
-        parents: [roleAdmin._id]
-    });
-    const roleDean = await Role(vnistDB).create({
+    const roleDean = await Role(vnistDB).findOne({
         name: Terms.ROOT_ROLES.DEAN.name,
-        type: roleAbstract._id,
     });
-    const roleViceDean = await Role(vnistDB).create({
+    const roleViceDean = await Role(vnistDB).findOne({
         name: Terms.ROOT_ROLES.VICE_DEAN.name,
-        type: roleAbstract._id,
     });
-    const roleEmployee = await Role(vnistDB).create({
+    const roleEmployee = await Role(vnistDB).findOne({
         name: Terms.ROOT_ROLES.EMPLOYEE.name,
-        type: roleAbstract._id,
-    });
-
-    const thanhVienBGĐ = await Role(vnistDB).create({
-        parents: [roleEmployee._id],
-        name: "Thành viên ban giám đốc",
-        type: roleChucDanh._id
-    });
-    const phoGiamDoc = await Role(vnistDB).create({
-        parents: [roleViceDean._id, thanhVienBGĐ._id],
-        name: "Phó giám đốc",
-        type: roleChucDanh._id
-    });
-    const giamDoc = await Role(vnistDB).create({
-        parents: [roleDean._id, thanhVienBGĐ._id, phoGiamDoc._id],
-        name: "Giám đốc",
-        type: roleChucDanh._id
-    });
-
-    const nvPhongHC = await Role(vnistDB).create({
-        parents: [roleEmployee._id],
-        name: "Nhân viên phòng kinh doanh",
-        type: roleChucDanh._id
-    });
-    const phoPhongHC = await Role(vnistDB).create({
-        parents: [roleViceDean._id, nvPhongHC._id],
-        name: "Phó phòng kinh doanh",
-        type: roleChucDanh._id
-    });
-    const truongPhongHC = await Role(vnistDB).create({
-        parents: [roleDean._id, nvPhongHC._id, phoPhongHC._id],
-        name: "Trưởng phòng kinh doanh",
-        type: roleChucDanh._id
     });
 
 
@@ -626,144 +450,104 @@ const initSampleCompanyDB = async () => {
 
 
     /**
-     * 6. Gán phân quyền cho các vị trí trong công ty
+     * 4. Gán phân quyền cho các vị trí trong công ty
      */
-    await UserRole(vnistDB).insertMany([{ // Gán tài khoản super.admin.vnist có role là Super Admin của công ty VNIST
-            userId: users[0]._id,
-            roleId: roleSuperAdmin._id
-        }, {
-            userId: users[1]._id, // Gán tài khoản admin.vnist có role là admin
-            roleId: roleAdmin._id
-        },
-
-        // Tiếp tục gán chức danh vai trò của phòng ban cho nhân viên:
-        { // Giám đốc Nguyễn Văn An
-            userId: users[2]._id,
-            roleId: giamDoc._id
-        }, { // Phó giám đốc Trần Văn Bình
-            userId: users[3]._id,
-            roleId: phoGiamDoc._id
-        }, { // Thành viên ban giám đốc Vũ Thị Cúc
-            userId: users[4]._id,
-            roleId: thanhVienBGĐ._id
-        }, { // Trưởng phòng kinh doanh Nguyễn Văn Danh
-            userId: users[5]._id,
-            roleId: truongPhongHC._id
-        }, { // Nguyễn Văn Danh cũng là thành viên ban giám đốc
-            userId: users[5]._id,
-            roleId: thanhVienBGĐ._id
-        }, { // Phó phòng kinh doanh Trần Thị Én
-            userId: users[6]._id,
-            roleId: phoPhongHC._id
-        }, { // Nhân viên phòng kinh doanh Phạm Đình Phúc
-            userId: users[7]._id,
-            roleId: nvPhongHC._id
-        }, { // Thành viên ban giám đốc Phạm Đình Phúc
-            userId: users[7]._id,
-            roleId: thanhVienBGĐ._id
-        },
-
-
-
-
-        /**
-         * Gán quyền chức dang vai trò của phòng ban cho nhân viên để test chức năng quản lý nhân sự
-         */
+    await UserRole(vnistDB).insertMany([
         { // Nhân viên phòng Maketing & NCPT sản phẩm
-            userId: users[15]._id,
+            userId: users[1]._id,
             roleId: nvPhongMaketing._id
         },
         { // Phó phòng Maketing & NCPT sản phẩm
-            userId: users[16]._id,
+            userId: users[2]._id,
             roleId: phoPhongMaketing._id
         },
         { // Trưởng phòng Maketing & NCPT sản phẩm
-            userId: users[17]._id,
+            userId: users[3]._id,
             roleId: truongPhongMaketing._id
         },
         { // Nhân viên phòng kiểm soát nội bộ
-            userId: users[18]._id,
+            userId: users[4]._id,
             roleId: nvPhongKS._id
         },
         { // Phó phòng kiểm soát nội bộ
-            userId: users[19]._id,
+            userId: users[5]._id,
             roleId: phoPhongKS._id
         },
         { // Trưởng phòng kiểm soát nội bộ
-            userId: users[20]._id,
+            userId: users[6]._id,
             roleId: truongPhongKS._id
         },
         { // Nhân viên phòng quản trị nhân sự
-            userId: users[21]._id,
+            userId: users[7]._id,
             roleId: nvPhongQTNS._id
         },
         { // Phó phòng quản trị nhân sự
-            userId: users[22]._id,
+            userId: users[8]._id,
             roleId: phoPhongQTNS._id
         },
         { // Trưởng phòng quản trị nhân sự
-            userId: users[23]._id,
+            userId: users[9]._id,
             roleId: truongPhongQTNS._id
         },
         { // Nhân viên phòng quản trị mục tiêu
-            userId: users[24]._id,
+            userId: users[10]._id,
             roleId: nvPhongQTMT._id
         },
         { // Phó phòng quản trị mục tiêu
-            userId: users[25]._id,
+            userId: users[11]._id,
             roleId: phoPhongQTMT._id
         },
         { // Trưởng phòng quản trị mục tiêu
-            userId: users[26]._id,
+            userId: users[12]._id,
             roleId: truongPhongQTMT._id
         },
         { // Nhân viên phòng quản trị hành chính nhân sự
-            userId: users[27]._id,
+            userId: users[13]._id,
             roleId: nvPhongQTHCNS._id
         },
 
         { // Phó phòng quản trị hành chính nhân sự
-            userId: users[28]._id,
+            userId: users[14]._id,
             roleId: phoPhongQTHCNS._id
         },
         { // TTrưởng phòng quản trị hành chính nhân sự
-            userId: users[29]._id,
+            userId: users[15]._id,
             roleId: truongPhongQTHCNS._id
         },
         { // Nhân viên phòng hậu cần - hỗ trợ
-            userId: users[30]._id,
+            userId: users[16]._id,
             roleId: nvPhongHCHT._id
         },
         { // Phó phòng hậu cần - hỗ trợ
-            userId: users[31]._id,
+            userId: users[17]._id,
             roleId: phoPhongHCHT._id
         },
         { // Trưởng phòng hậu cần - hỗ trợ
-            userId: users[32]._id,
+            userId: users[18]._id,
             roleId: truongPhongHCHT._id
         },
         { // Nhân viên phòng tài chính kế toán
-            userId: users[33]._id,
+            userId: users[19]._id,
             roleId: nvPhongTCKT._id
         },
         { // Phó phòng tài chính kế toán
-            userId: users[34]._id,
+            userId: users[20]._id,
             roleId: phoPhongTCKT._id
         },
         { // Trưởng phòng tài chính kế toán
-            userId: users[35]._id,
+            userId: users[21]._id,
             roleId: truongPhongTCKT._id
         },
         { // Nhân viên phòng kế toán doanh nghiệp
-            userId: users[36]._id,
+            userId: users[22]._id,
             roleId: nvPhongKTDN._id
         },
         { // Phó phòng kế toán doanh nghiệp
-            userId: users[37]._id,
+            userId: users[23]._id,
             roleId: phoPhongKTDN._id
         },
         { // Trưởng phòng kế toán doanh nghiệp
-            userId: users[38]._id,
+            userId: users[15]._id,
             roleId: truongPhongKTDN._id
         },
         { // Nhân viên phòng kế toán bán hàng
@@ -775,38 +559,22 @@ const initSampleCompanyDB = async () => {
             roleId: phoPhongKTBH._id
         },
         { // Trưởng phòng kế toán bán hàng
-            userId: users[37]._id,
+            userId: users[17]._id,
             roleId: truongPhongKTBH._id
         },
 
     ]);
 
     /**
-     * 7. Tạo dữ liệu các phòng ban cho công ty VNIST
+     * 5. Tạo thêm dữ liệu các phòng ban cho công ty VNIST
      */
-    const Directorate = await OrganizationalUnit(vnistDB).create({ // Khởi tạo ban giám đốc công ty
+    const Directorate = await OrganizationalUnit(vnistDB).findOne({ // Khởi tạo ban giám đốc công ty
         name: "Ban giám đốc",
-        description: "Ban giám đốc Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
-        deans: [giamDoc._id],
-        viceDeans: [phoGiamDoc._id],
-        employees: [thanhVienBGĐ._id],
-        parent: null
+    });
+    const departments = await OrganizationalUnit(vnistDB).findOne({
+        name: "Phòng kinh doanh",
     });
 
-    const departments = await OrganizationalUnit(vnistDB).insertMany([{
-        name: "Phòng kinh doanh",
-        description: "Phòng kinh doanh Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
-        deans: [truongPhongHC._id],
-        viceDeans: [phoPhongHC._id],
-        employees: [nvPhongHC._id],
-        parent: Directorate._id
-    }, ]);
-
-
-
-    /**
-     * Tạo dữ liệu phòng ban để test chức năng quản lý nhân sự
-     */
     const phongMaketing = await OrganizationalUnit(vnistDB).insertMany([{
         name: "Phòng Maketing & NCPT sản phẩm",
         description: "Phòng Maketing & NCPT sản phẩm Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
@@ -815,6 +583,7 @@ const initSampleCompanyDB = async () => {
         employees: [nvPhongMaketing._id],
         parent: Directorate._id
     }, ]);
+    console.log('***',phongMaketing);
 
     const phongKS = await OrganizationalUnit(vnistDB).insertMany([{
         name: "Phòng kiểm soát nội bộ",
@@ -888,350 +657,15 @@ const initSampleCompanyDB = async () => {
         parent: phongTCKT[0]._id
     }, ]);
 
-
-
     console.log("Đã tạo dữ liệu phòng ban: ", Directorate, departments);
-
-    /**
-     * 8. Tạo link cho các trang web của công ty VNIST
-     */
-    const createCompanyLinks = async (linkArr, roleArr) => {
-        let checkIndex = (link, arr) => {
-            let resIndex = -1;
-            arr.forEach((node, i) => {
-                if (node.url === link.url) {
-                    resIndex = i;
-                }
-            });
-
-            return resIndex;
-        }
-
-        let allLinks = await SystemLink(systemDB).find()
-            .populate({
-                path: 'roles'
-            });
-        let activeLinks = await SystemLink(systemDB).find({
-                _id: {
-                    $in: linkArr
-                }
-            })
-            .populate({
-                path: 'roles'
-            });
-
-        let dataLinks = allLinks.map(link => {
-            if (checkIndex(link, activeLinks) === -1)
-                return {
-                    url: link.url,
-                    category: link.category,
-                    description: link.description
-                }
-            else return {
-                url: link.url,
-                category: link.category,
-                description: link.description,
-                deleteSoft: false
-            }
-        })
-
-        let links = await Link(vnistDB).insertMany(dataLinks);
-
-        //Thêm phân quyền cho link
-        let dataPrivilege = [];
-        for (let i = 0; i < links.length; i++) {
-            let link = links[i];
-
-            for (let j = 0; j < allLinks.length; j++) {
-                let systemLink = allLinks[j];
-
-                if (link.url === systemLink.url) {
-                    for (let x = 0; x < systemLink.roles.length; x++) {
-                        let rootRole = systemLink.roles[x];
-
-                        for (let y = 0; y < roleArr.length; y++) {
-                            let role = roleArr[y];
-
-                            if (role.name === rootRole.name) {
-                                dataPrivilege.push({
-                                    resourceId: link._id,
-                                    resourceType: 'Link',
-                                    roleId: role._id
-                                });
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        await Privilege(vnistDB).insertMany(dataPrivilege);
-
-        return await Link(vnistDB).find()
-            .populate({
-                path: 'roles',
-                populate: {
-                    path: 'roleId'
-                }
-            });
-    }
-
-    const createCompanyComponents = async (linkArr) => {
-
-        let systemLinks = await SystemLink(systemDB).find({
-            _id: {
-                $in: linkArr
-            }
-        });
-
-        let dataSystemComponents = systemLinks.map(link => link.components);
-        dataSystemComponents = dataSystemComponents.reduce((arr1, arr2) => [...arr1, ...arr2]);
-        dataSystemComponents.filter((component, index) => dataSystemComponents.indexOf(component) === index);
-        const systemComponents = await SystemComponent(systemDB)
-            .find({
-                _id: {
-                    $in: dataSystemComponents
-                }
-            })
-            .populate({
-                path: 'roles'
-            });
-
-        for (let i = 0; i < systemComponents.length; i++) {
-            let sysLinks = await SystemLink(systemDB)
-                .find({
-                    _id: {
-                        $in: systemComponents[i].links
-                    }
-                });
-            let links = await Link(vnistDB).find({
-                url: sysLinks.map(link => link.url)
-            });
-            // Tạo component
-            let component = await Component(vnistDB).create({
-                name: systemComponents[i].name,
-                description: systemComponents[i].description,
-                links: links.map(link => link._id),
-                deleteSoft: false
-            })
-            for (let j = 0; j < links.length; j++) {
-                let updateLink = await Link(vnistDB).findById(links[j]._id);
-                updateLink.components.push(component._id);
-                await updateLink.save();
-            }
-            // Tạo phân quyền cho components
-            let roles = await Role(vnistDB).find({
-                name: {
-                    $in: systemComponents[i].roles.map(role => role.name)
-                }
-            });
-            let dataPrivileges = roles.map(role => {
-                return {
-                    resourceId: component._id,
-                    resourceType: 'Component',
-                    roleId: role._id
-                }
-            });
-            await Privilege(vnistDB).insertMany(dataPrivileges);
-        }
-
-        return await Component(vnistDB).find();
-    }
-    let linkArrData = await SystemLink(systemDB).find();
-    let linkArr = linkArrData.map(link => link._id);
-    let roleArr = [roleSuperAdmin, roleAdmin, roleDean, roleViceDean, roleEmployee];
-    await createCompanyLinks(linkArr, roleArr);
-    await createCompanyComponents(linkArr);
-
 
     /*---------------------------------------------------------------------------------------------
     -----------------------------------------------------------------------------------------------
         TẠO DỮ LIỆU NHÂN VIÊN CHO CÔNG TY VNIST
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
-    let employees = await Employee(vnistDB).insertMany([{
-            avatar: "/upload/human-resource/avatars/avatar5.png",
-            fullName: "Vũ Thị Cúc",
-            employeeNumber: "MS2015122",
-            status: "active",
-            company: vnist._id,
-            employeeTimesheetId: "123456",
-            gender: "female",
-            startingDate: new Date("2020-01-19"),
-            leavingDate: new Date("2020-08-19"),
-            birthdate: new Date("1998-02-17"),
-            birthplace: "Hải Phương - Hải Hậu - Nam Định",
-            identityCardNumber: 163414569,
-            identityCardDate: new Date("2015-10-20"),
-            identityCardAddress: "Nam Định",
-            emailInCompany: "vtc.vnist@gmail.com",
-            nationality: "Việt Nam",
-            atmNumber: "102298653",
-            bankName: "ViettinBank",
-            bankAddress: "Hai Bà Trưng",
-            ethnic: "Kinh",
-            religion: "Không",
-            maritalStatus: "single",
-            phoneNumber: 962586290,
-            personalEmail: "tranhungcuong703@gmail.com",
-            phoneNumber2: 9625845,
-            personalEmail2: "hungkaratedo03101998@gmail.com",
-            homePhone: 978590338,
-            emergencyContactPerson: "Nguyễn Văn Thái",
-            relationWithEmergencyContactPerson: "Em trai",
-            emergencyContactPersonPhoneNumber: 962586278,
-            emergencyContactPersonEmail: "cuong@gmail.com",
-            emergencyContactPersonHomePhone: 962586789,
-            emergencyContactPersonAddress: "Hải Phương - Hải Hậu - Nam Định",
-            permanentResidence: "Hải Phương - Hải Hậu - Nam Định",
-            permanentResidenceCountry: "Việt Nam",
-            permanentResidenceCity: "Nam Định",
-            permanentResidenceDistrict: "Hải Hậu",
-            permanentResidenceWard: "Hải Phương",
-            temporaryResidence: "số nhà 14 ngách 53/1 ngõ Trại Cá phường Trương Định",
-            temporaryResidenceCountry: "Việt Nam",
-            temporaryResidenceCity: "Hà Nội",
-            temporaryResidenceDistrict: "Hai Bà Trưng",
-            temporaryResidenceWard: "Bạch Mai",
-            educationalLevel: "12/12",
-            foreignLanguage: "500 Toeic",
-            professionalSkill: 'university',
-            healthInsuranceNumber: "N1236589",
-            healthInsuranceStartDate: new Date("2019-01-25"),
-            healthInsuranceEndDate: new Date("2020-02-16"),
-            socialInsuranceNumber: "XH1569874",
-            socialInsuranceDetails: [{
-                company: "Vnist",
-                position: "Nhân viên",
-                startDate: new Date("2020-01"),
-                endDate: new Date("2020-05")
-            }],
-            taxNumber: "12658974",
-            taxRepresentative: "Nguyễn Văn Hưng",
-            taxDateOfIssue: new Date("12/08/2019"),
-            taxAuthority: "Chi cục thuế Huyện Hải Hậu",
-            degrees: [{
-                name: "Bằng tốt nghiệp",
-                issuedBy: "Đại học Bách Khoa",
-                year: "2020",
-                degreeType: "good",
-            }],
-            certificates: [{
-                name: "PHP",
-                issuedBy: "Hà Nội",
-                startDate: new Date("2019-10-25"),
-                endDate: new Date("2020-10-25"),
-            }],
-            experiences: [{
-                startDate: new Date("2019-06"),
-                endDate: new Date("2020-02"),
-                company: "Vnist",
-                position: "Nhân viên"
-            }],
-            contractType: 'Phụ thuộc',
-            contractEndDate: new Date("2020-10-25"),
-            contracts: [{
-                name: "Thực tập",
-                contractType: "Phụ thuộc",
-                startDate: new Date("2019-10-25"),
-                endDate: new Date("2020-10-25"),
-            }],
-            archivedRecordNumber: "T3 - 123698",
-            files: [],
-        }, {
-            avatar: "/upload/human-resource/avatars/avatar5.png",
-            fullName: "Trần Văn Bình",
-            employeeNumber: "MS2015124",
-            status: "active",
-            company: vnist._id,
-            employeeTimesheetId: "123456",
-            gender: "male",
-            startingDate: new Date("2020-01-19"),
-            leavingDate: new Date("2020-06-19"),
-            birthdate: new Date("1998-02-17"),
-            birthplace: "Hải Phương - Hải Hậu - Nam Định",
-            identityCardNumber: 163414569,
-            identityCardDate: new Date("2015-10-20"),
-            identityCardAddress: "Nam Định",
-            emailInCompany: "tvb.vnist@gmail.com",
-            nationality: "Việt Nam",
-            atmNumber: "102298653",
-            bankName: "ViettinBank",
-            bankAddress: "Hai Bà Trưng",
-            ethnic: "Kinh",
-            religion: "Không",
-            maritalStatus: "single",
-            phoneNumber: 962586290,
-            personalEmail: "tranhungcuong703@gmail.com",
-            phoneNumber2: 9625845,
-            personalEmail2: "hungkaratedo03101998@gmail.com",
-            homePhone: 978590338,
-            emergencyContactPerson: "Nguyễn Văn Thái",
-            relationWithEmergencyContactPerson: "Em trai",
-            emergencyContactPersonPhoneNumber: 962586278,
-            emergencyContactPersonEmail: "cuong@gmail.com",
-            emergencyContactPersonHomePhone: 962586789,
-            emergencyContactPersonAddress: "Hải Phương - Hải Hậu - Nam Định",
-            permanentResidence: "Hải Phương - Hải Hậu - Nam Định",
-            permanentResidenceCountry: "Việt Nam",
-            permanentResidenceCity: "Nam Định",
-            permanentResidenceDistrict: "Hải Hậu",
-            permanentResidenceWard: "Hải Phương",
-            temporaryResidence: "số nhà 14 ngách 53/1 ngõ Trại Cá phường Trương Định",
-            temporaryResidenceCountry: "Việt Nam",
-            temporaryResidenceCity: "Hà Nội",
-            temporaryResidenceDistrict: "Hai Bà Trưng",
-            temporaryResidenceWard: "Bạch Mai",
-            educationalLevel: "12/12",
-            foreignLanguage: "500 Toeic",
-            professionalSkill: 'university',
-            healthInsuranceNumber: "N1236589",
-            healthInsuranceStartDate: new Date("2019-01-25"),
-            healthInsuranceEndDate: new Date("2020-02-16"),
-            socialInsuranceNumber: "XH1569874",
-            socialInsuranceDetails: [{
-                company: "Vnist",
-                position: "Nhân viên",
-                startDate: new Date("2020-01"),
-                endDate: new Date("2020-05")
-            }],
-            taxNumber: "12658974",
-            taxRepresentative: "Nguyễn Văn Hưng",
-            taxDateOfIssue: new Date("12/08/2019"),
-            taxAuthority: "Chi cục thuế Huyện Hải Hậu",
-            degrees: [{
-                name: "Bằng tốt nghiệp",
-                issuedBy: "Đại học Bách Khoa",
-                year: "2020",
-                degreeType: "good",
-            }],
-            certificates: [{
-                name: "PHP",
-                issuedBy: "Hà Nội",
-                startDate: new Date("2019-10-25"),
-                endDate: new Date("2020-10-25"),
-            }],
-            experiences: [{
-                startDate: new Date("2019-06"),
-                endDate: new Date("2020-02"),
-                company: "Vnist",
-                position: "Nhân viên"
-            }],
-            contractType: 'Phụ thuộc',
-            contractEndDate: new Date("2020-10-25"),
-            contracts: [{
-                name: "Thực tập",
-                contractType: "Phụ thuộc",
-                startDate: new Date("2019-10-25"),
-                endDate: new Date("2020-10-25"),
-            }],
-            archivedRecordNumber: "T3 - 123698",
-            files: [],
-        },
-
-        /**
-         * Thêm thông tin nhân viên để test dữ liệu quản lý nhân sự
-         */
-        { // user 15
+    let employees = await Employee(vnistDB).insertMany([
+        { // user 1
             avatar: "/upload/human-resource/avatars/avatar5.png",
             fullName: "Lê Thống Nhất",
             employeeNumber: "MS202015",
@@ -1321,7 +755,7 @@ const initSampleCompanyDB = async () => {
             files: [],
         },
 
-        { // user 16
+        { // user 2
             avatar: "/upload/human-resource/avatars/avatar5.png",
             fullName: "Nguyễn Văn Thanh",
             employeeNumber: "MS202016",
@@ -1411,7 +845,7 @@ const initSampleCompanyDB = async () => {
             files: [],
         },
 
-        { // user 17
+        { // user 3
             avatar: "/upload/human-resource/avatars/avatar5.png",
             fullName: "Nguyễn Viết Đảng",
             employeeNumber: "MS202017",
@@ -1501,7 +935,7 @@ const initSampleCompanyDB = async () => {
             files: [],
         },
 
-        { // user 18
+        { // user 4
             avatar: "/upload/human-resource/avatars/avatar5.png",
             fullName: "Đỗ Văn Dương",
             employeeNumber: "MS202018",
@@ -1591,7 +1025,7 @@ const initSampleCompanyDB = async () => {
             files: [],
         },
 
-        { // User 19
+        { // User 5
             avatar: "/upload/human-resource/avatars/avatar5.png",
             fullName: "Đào Xuân Hướng",
             employeeNumber: "MS202019",
@@ -1681,7 +1115,7 @@ const initSampleCompanyDB = async () => {
             files: [],
         },
 
-        { // User 20
+        { // User 6
             avatar: "/upload/human-resource/avatars/avatar5.png",
             fullName: "Đào Quang Phương",
             employeeNumber: "MS202020",
@@ -1771,7 +1205,7 @@ const initSampleCompanyDB = async () => {
             files: [],
         },
 
-        { // User 21
+        { // User 7
             avatar: "/upload/human-resource/avatars/avatar5.png",
             fullName: "Vũ Mạnh Cường",
             employeeNumber: "MS202021",
@@ -1861,7 +1295,7 @@ const initSampleCompanyDB = async () => {
             files: [],
         },
 
-        { // User 22
+        { // User 8
             avatar: "/upload/human-resource/avatars/avatar5.png",
             fullName: "Trần Văn Cường",
             employeeNumber: "MS202022",
@@ -1951,7 +1385,7 @@ const initSampleCompanyDB = async () => {
             files: [],
         },
 
-        { // User 23
+        { // User 9
             avatar: "/upload/human-resource/avatars/avatar5.png",
             fullName: "Dương Thị Thanh Thuỳ",
             employeeNumber: "MS202023",
@@ -2041,7 +1475,7 @@ const initSampleCompanyDB = async () => {
             files: [],
         },
 
-        { // User 24
+        { // User 10
             avatar: "/upload/human-resource/avatars/avatar5.png",
             fullName: "Nguyễn Thị huệ",
             employeeNumber: "MS202024",
@@ -2131,7 +1565,7 @@ const initSampleCompanyDB = async () => {
             files: [],
         },
 
-        { // User 25
+        { // User 11
             avatar: "/upload/human-resource/avatars/avatar5.png",
             fullName: "Vũ Viết Xuân",
             employeeNumber: "MS202025",
@@ -2221,7 +1655,7 @@ const initSampleCompanyDB = async () => {
             files: [],
         },
 
-        { // user 26
+        { // user 12
             avatar: "/upload/human-resource/avatars/avatar5.png",
             fullName: "Trần Thị Thu Phương",
             employeeNumber: "MS202026",
@@ -2311,7 +1745,7 @@ const initSampleCompanyDB = async () => {
             files: [],
         },
 
-        { // User 27
+        { // User 13
             avatar: "/upload/human-resource/avatars/avatar5.png",
             fullName: "Bùi Thị Mai",
             employeeNumber: "MS2015124",
@@ -2401,7 +1835,7 @@ const initSampleCompanyDB = async () => {
             files: [],
         },
 
-        { // user 28
+        { // user 14
             avatar: "/upload/human-resource/avatars/avatar5.png",
             fullName: "Nguyễn Lương Thử",
             employeeNumber: "MS2015124",
@@ -2491,7 +1925,7 @@ const initSampleCompanyDB = async () => {
             files: [],
         },
 
-        { // User 29
+        { // User 15
             avatar: "/upload/human-resource/avatars/avatar5.png",
             fullName: "Lưu Quang Ngọc",
             employeeNumber: "MS202029",
@@ -2581,7 +2015,7 @@ const initSampleCompanyDB = async () => {
             files: [],
         },
 
-        { // user 30
+        { // user 16
             avatar: "/upload/human-resource/avatars/avatar5.png",
             fullName: "Hoàng Văn Tùng",
             employeeNumber: "MS202030",
@@ -2671,7 +2105,7 @@ const initSampleCompanyDB = async () => {
             files: [],
         },
 
-        { // User 31
+        { // User 17
             avatar: "/upload/human-resource/avatars/avatar5.png",
             fullName: "Nguyễn Văn Hải",
             employeeNumber: "MS202031",
@@ -2761,7 +2195,7 @@ const initSampleCompanyDB = async () => {
             files: [],
         },
 
-        { // User 32
+        { // User 18
             avatar: "/upload/human-resource/avatars/avatar5.png",
             fullName: "Trần Văn Sơn",
             employeeNumber: "MS202032",
@@ -2851,7 +2285,7 @@ const initSampleCompanyDB = async () => {
             files: [],
         },
 
-        { // User 33
+        { // User 19
             avatar: "/upload/human-resource/avatars/avatar5.png",
             fullName: "Mai Thuỳ Dung",
             employeeNumber: "MS202033",
@@ -2941,7 +2375,7 @@ const initSampleCompanyDB = async () => {
             files: [],
         },
 
-        { // User 34 
+        { // User 20
             avatar: "/upload/human-resource/avatars/avatar5.png",
             fullName: "Nguyễn Thống Nhất",
             employeeNumber: "MS202034",
@@ -3031,7 +2465,7 @@ const initSampleCompanyDB = async () => {
             files: [],
         },
 
-        { // User 35
+        { // User 21
             avatar: "/upload/human-resource/avatars/avatar5.png",
             fullName: "Trần Kim Cương",
             employeeNumber: "MS202035",
@@ -3121,7 +2555,7 @@ const initSampleCompanyDB = async () => {
             files: [],
         },
 
-        { // User 36
+        { // User 22
             avatar: "/upload/human-resource/avatars/avatar5.png",
             fullName: "Nguyễn Đình Thuận",
             employeeNumber: "MS202036",
@@ -3211,7 +2645,7 @@ const initSampleCompanyDB = async () => {
             files: [],
         },
 
-        { // User 37
+        { // User 23
             avatar: "/upload/human-resource/avatars/avatar5.png",
             fullName: "Ngô Tri Dũng",
             employeeNumber: "MS202037",
@@ -3301,7 +2735,7 @@ const initSampleCompanyDB = async () => {
             files: [],
         },
 
-        { // User 38
+        { // User 24
             avatar: "/upload/human-resource/avatars/avatar5.png",
             fullName: "Nguyễn Khắc Đại",
             employeeNumber: "MS202038",
@@ -3393,101 +2827,7 @@ const initSampleCompanyDB = async () => {
 
 
 
-    ])
-    console.log("Khởi tạo dữ liệu nhân viên!");
-    var employee = await Employee(vnistDB).create({
-        avatar: "/upload/human-resource/avatars/avatar5.png",
-        fullName: "Nguyễn Văn An",
-        employeeNumber: "MS2015123",
-        status: "active",
-        company: vnist._id,
-        employeeTimesheetId: "123456",
-        gender: "male",
-        birthdate: new Date("1988-05-20"),
-        birthplace: "Hải Phương - Hải Hậu - Nam Định",
-        identityCardNumber: 163414569,
-        identityCardDate: new Date("2015-10-20"),
-        identityCardAddress: "Nam Định",
-        emailInCompany: "nva.vnist@gmail.com",
-        nationality: "Việt Nam",
-        atmNumber: "102298653",
-        bankName: "ViettinBank",
-        bankAddress: "Hai Bà Trưng",
-        ethnic: "Kinh",
-        religion: "Không",
-        maritalStatus: "single",
-        phoneNumber: 962586290,
-        personalEmail: "tranhungcuong703@gmail.com",
-        phoneNumber2: 9625845,
-        personalEmail2: "hungkaratedo03101998@gmail.com",
-        homePhone: 978590338,
-        emergencyContactPerson: "Nguyễn Văn Thái",
-        relationWithEmergencyContactPerson: "Em trai",
-        emergencyContactPersonPhoneNumber: 962586278,
-        emergencyContactPersonEmail: "cuong@gmail.com",
-        emergencyContactPersonHomePhone: 962586789,
-        emergencyContactPersonAddress: "Hải Phương - Hải Hậu - Nam Định",
-        permanentResidence: "Hải Phương - Hải Hậu - Nam Định",
-        permanentResidenceCountry: "Việt Nam",
-        permanentResidenceCity: "Nam Định",
-        permanentResidenceDistrict: "Hải Hậu",
-        permanentResidenceWard: "Hải Phương",
-        temporaryResidence: "số nhà 14 ngách 53/1 ngõ Trại Cá phường Trương Định",
-        temporaryResidenceCountry: "Việt Nam",
-        temporaryResidenceCity: "Hà Nội",
-        temporaryResidenceDistrict: "Hai Bà Trưng",
-        temporaryResidenceWard: "Bạch Mai",
-        educationalLevel: "12/12",
-        foreignLanguage: "500 Toeic",
-        professionalSkill: 'university',
-        healthInsuranceNumber: "N1236589",
-        healthInsuranceStartDate: new Date("2019-01-25"),
-        healthInsuranceEndDate: new Date("2020-02-16"),
-        socialInsuranceNumber: "XH1569874",
-        socialInsuranceDetails: [{
-            company: "Vnist",
-            position: "Nhân viên",
-            startDate: new Date("2020-01"),
-            endDate: new Date("2020-05")
-        }],
-        taxNumber: "12658974",
-        taxRepresentative: "Nguyễn Văn Hưng",
-        taxDateOfIssue: new Date("12/08/2019"),
-        taxAuthority: "Chi cục thuế Huyện Hải Hậu",
-        degrees: [{
-            name: "Bằng tốt nghiệp",
-            issuedBy: "Đại học Bách Khoa",
-            year: "2020",
-            degreeType: "good",
-        }],
-        certificates: [{
-            name: "PHP",
-            issuedBy: "Hà Nội",
-            startDate: new Date("2019-10-25"),
-            endDate: new Date("2020-10-25"),
-        }],
-        experiences: [{
-            startDate: new Date("2019-06"),
-            endDate: new Date("2020-02"),
-            company: "Vnist",
-            position: "Nhân viên"
-        }],
-        contractType: 'Phụ thuộc',
-        contractEndDate: new Date("2020-10-25"),
-        contracts: [{
-            name: "Thực tập",
-            contractType: "Phụ thuộc",
-            startDate: new Date("2019-10-25"),
-            endDate: new Date("2020-10-25"),
-        }],
-        archivedRecordNumber: "T3 - 123698",
-        files: [{
-            name: "Ảnh",
-            description: "Ảnh 3x4",
-            number: "1",
-            status: "submitted",
-        }],
-    });
+    ]);
     console.log(`Xong! Thông tin nhân viên đã được tạo`);
     //END
 
@@ -3497,23 +2837,8 @@ const initSampleCompanyDB = async () => {
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu nghỉ phép!");
-    await AnnualLeave(vnistDB).insertMany([{
-            company: vnist._id,
-            employee: employee._id,
-            organizationalUnit: Directorate._id,
-            startDate: "2020-09-06",
-            endDate: "2020-09-08",
-            status: "approved",
-            reason: "Về quê",
-        }, {
-            company: vnist._id,
-            employee: employee._id,
-            organizationalUnit: Directorate._id,
-            startDate: "2020-09-05",
-            endDate: "2020-09-10",
-            status: "waiting_for_approval",
-            reason: "Nghỉ tết"
-        }, {
+    await AnnualLeave(vnistDB).insertMany([
+        {
             company: vnist._id,
             employee: employees[3]._id,
             organizationalUnit: phongMaketing[0]._id,
@@ -3648,7 +2973,7 @@ const initSampleCompanyDB = async () => {
     console.log("Khởi tạo dữ liệu lương nhân viên!");
     await Salary(vnistDB).insertMany([{
             company: vnist._id,
-            employee: employee._id,
+            employee: employees[1]._id,
             month: "2019-08",
             organizationalUnit: Directorate._id,
             mainSalary: "21000000",
@@ -3659,7 +2984,7 @@ const initSampleCompanyDB = async () => {
             }],
         }, {
             company: vnist._id,
-            employee: employee._id,
+            employee: employees[1]._id,
             organizationalUnit: Directorate._id,
             month: "2019-09",
             mainSalary: "20000000",
@@ -3671,7 +2996,7 @@ const initSampleCompanyDB = async () => {
         },
         {
             company: vnist._id,
-            employee: employee._id,
+            employee: employees[1]._id,
             organizationalUnit: Directorate._id,
             month: "2019-10",
             mainSalary: "19000000",
@@ -3683,7 +3008,7 @@ const initSampleCompanyDB = async () => {
         },
         {
             company: vnist._id,
-            employee: employee._id,
+            employee: employees[1]._id,
             organizationalUnit: Directorate._id,
             month: "2019-11",
             mainSalary: "17000000",
@@ -3695,7 +3020,7 @@ const initSampleCompanyDB = async () => {
         },
         {
             company: vnist._id,
-            employee: employee._id,
+            employee: employees[1]._id,
             organizationalUnit: Directorate._id,
             month: "2019-12",
             mainSalary: "13000000",
@@ -3707,7 +3032,7 @@ const initSampleCompanyDB = async () => {
         },
         {
             company: vnist._id,
-            employee: employee._id,
+            employee: employees[1]._id,
             organizationalUnit: Directorate._id,
             month: "2020-01",
             mainSalary: "14000000",
@@ -3719,7 +3044,7 @@ const initSampleCompanyDB = async () => {
         },
         {
             company: vnist._id,
-            employee: employee._id,
+            employee: employees[1]._id,
             organizationalUnit: Directorate._id,
             month: "2020-02",
             mainSalary: "14000000",
@@ -3731,7 +3056,7 @@ const initSampleCompanyDB = async () => {
         },
         {
             company: vnist._id,
-            employee: employee._id,
+            employee: employees[1]._id,
             organizationalUnit: Directorate._id,
             month: "2020-03",
             mainSalary: "10000000",
@@ -3743,7 +3068,7 @@ const initSampleCompanyDB = async () => {
         },
         {
             company: vnist._id,
-            employee: employee._id,
+            employee: employees[1]._id,
             organizationalUnit: Directorate._id,
             month: "2020-04",
             mainSalary: "16000000",
@@ -3755,7 +3080,7 @@ const initSampleCompanyDB = async () => {
         },
         {
             company: vnist._id,
-            employee: employee._id,
+            employee: employees[1]._id,
             organizationalUnit: Directorate._id,
             month: "2020-05",
             mainSalary: "18000000",
@@ -3767,7 +3092,7 @@ const initSampleCompanyDB = async () => {
         },
         {
             company: vnist._id,
-            employee: employee._id,
+            employee: employees[1]._id,
             organizationalUnit: Directorate._id,
             month: "2020-06",
             mainSalary: "17000000",
@@ -3779,7 +3104,7 @@ const initSampleCompanyDB = async () => {
         },
         {
             company: vnist._id,
-            employee: employee._id,
+            employee: employees[1]._id,
             organizationalUnit: Directorate._id,
             month: "2020-07",
             mainSalary: "12000000",
@@ -3791,7 +3116,7 @@ const initSampleCompanyDB = async () => {
         },
         {
             company: vnist._id,
-            employee: employee._id,
+            employee: employees[1]._id,
             organizationalUnit: Directorate._id,
             month: "2020-08",
             mainSalary: "11000000",
@@ -3803,7 +3128,7 @@ const initSampleCompanyDB = async () => {
         },
         {
             company: vnist._id,
-            employee: employee._id,
+            employee: employees[1]._id,
             organizationalUnit: Directorate._id,
             month: "2020-09",
             mainSalary: "15000000",
@@ -3905,18 +3230,18 @@ const initSampleCompanyDB = async () => {
     console.log("Khởi tạo dữ liệu khen thưởng!");
     await Commendation(vnistDB).insertMany([{
             company: vnist._id,
-            employee: employee._id,
+            employee: employees[1]._id,
             decisionNumber: "123",
-            organizationalUnit: departments[0]._id,
+            organizationalUnit: departments._id,
             startDate: "2020-02-02",
             type: "Thưởng tiền",
             reason: "Vượt doanh số",
         },
         {
             company: vnist._id,
-            employee: employee._id,
+            employee: employees[1]._id,
             decisionNumber: "1234",
-            organizationalUnit: departments[0]._id,
+            organizationalUnit: departments._id,
             startDate: "2020-02-02",
             type: "Thưởng tiền",
             reason: "Vượt doanh số 500 triệu",
@@ -3968,18 +3293,18 @@ const initSampleCompanyDB = async () => {
     console.log("Khởi tạo dữ liệu kỷ luật!");
     await Discipline(vnistDB).insertMany([{
             company: vnist._id,
-            employee: employee._id,
+            employee: employees[1]._id,
             decisionNumber: "1456",
-            organizationalUnit: departments[0]._id,
+            organizationalUnit: departments._id,
             startDate: "2020-09-07",
             endDate: "2020-09-09",
             type: "Phạt tiền",
             reason: "Không làm đủ công",
         }, {
             company: vnist._id,
-            employee: employee._id,
+            employee: employees[1]._id,
             decisionNumber: "1457",
-            organizationalUnit: departments[0]._id,
+            organizationalUnit: departments._id,
             startDate: "2020-09-07",
             endDate: "2020-09-09",
             type: "Phạt tiền",
@@ -4046,27 +3371,27 @@ const initSampleCompanyDB = async () => {
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
 
-    console.log("Khởi tạo dữ liệu chương trình đào tạo bắt buộc!");
-    var educationProgram = await EducationProgram(vnistDB).insertMany([{
-        applyForOrganizationalUnits: [
-            departments[0]._id
-        ],
-        applyForPositions: [
-            nvPhongHC._id
-        ],
-        name: "An toan lao dong",
-        programId: "M123",
-    }, {
-        applyForOrganizationalUnits: [
-            departments[0]._id
-        ],
-        applyForPositions: [
-            nvPhongHC._id
-        ],
-        name: "kỹ năng giao tiếp",
-        programId: "M1234",
-    }])
-    console.log(`Xong! Thông tin chương trình đào tạo  đã được tạo`);
+    // console.log("Khởi tạo dữ liệu chương trình đào tạo bắt buộc!");
+    // var educationProgram = await EducationProgram(vnistDB).insertMany([{
+    //     applyForOrganizationalUnits: [
+    //         departments[0]._id
+    //     ],
+    //     applyForPositions: [
+    //         nvPhongHC._id
+    //     ],
+    //     name: "An toan lao dong",
+    //     programId: "M123",
+    // }, {
+    //     applyForOrganizationalUnits: [
+    //         departments[0]._id
+    //     ],
+    //     applyForPositions: [
+    //         nvPhongHC._id
+    //     ],
+    //     name: "kỹ năng giao tiếp",
+    //     programId: "M1234",
+    // }])
+    // console.log(`Xong! Thông tin chương trình đào tạo  đã được tạo`);
 
     /*---------------------------------------------------------------------------------------------
     -----------------------------------------------------------------------------------------------
@@ -4074,58 +3399,42 @@ const initSampleCompanyDB = async () => {
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
 
-    console.log("Khởi tạo dữ liệu khoá đào tạo bắt buộc!");
-    await Course(vnistDB).insertMany([{
-        company: vnist._id,
-        name: "An toàn lao động 1",
-        courseId: "LD1233",
-        offeredBy: "Vnists",
-        coursePlace: "P9.01",
-        startDate: "2020-02-16",
-        endDate: "2020-03-21",
-        cost: {
-            number: "1200000",
-            unit: 'VND'
-        },
-        lecturer: "Nguyễn B",
-        type: "external",
-        educationProgram: educationProgram[0]._id,
-        employeeCommitmentTime: "6",
-    }, {
-        company: vnist._id,
-        name: "An toàn lao động 2",
-        courseId: "LD123",
-        offeredBy: "Vnists",
-        coursePlace: "P9.01",
-        startDate: "2020-02-16",
-        endDate: "2020-03-21",
-        cost: {
-            number: "1200000",
-            unit: 'VND'
-        },
-        lecturer: "Nguyễn Văn B",
-        type: "internal",
-        educationProgram: educationProgram[1]._id,
-        employeeCommitmentTime: "6",
-    }])
+    // console.log("Khởi tạo dữ liệu khoá đào tạo bắt buộc!");
+    // await Course(vnistDB).insertMany([{
+    //     company: vnist._id,
+    //     name: "An toàn lao động 1",
+    //     courseId: "LD1233",
+    //     offeredBy: "Vnists",
+    //     coursePlace: "P9.01",
+    //     startDate: "2020-02-16",
+    //     endDate: "2020-03-21",
+    //     cost: {
+    //         number: "1200000",
+    //         unit: 'VND'
+    //     },
+    //     lecturer: "Nguyễn B",
+    //     type: "external",
+    //     educationProgram: educationProgram[0]._id,
+    //     employeeCommitmentTime: "6",
+    // }, {
+    //     company: vnist._id,
+    //     name: "An toàn lao động 2",
+    //     courseId: "LD123",
+    //     offeredBy: "Vnists",
+    //     coursePlace: "P9.01",
+    //     startDate: "2020-02-16",
+    //     endDate: "2020-03-21",
+    //     cost: {
+    //         number: "1200000",
+    //         unit: 'VND'
+    //     },
+    //     lecturer: "Nguyễn Văn B",
+    //     type: "internal",
+    //     educationProgram: educationProgram[1]._id,
+    //     employeeCommitmentTime: "6",
+    // }])
 
-    console.log(`Xong! Thông tin khoá đào tạo  đã được tạo`);
-
-    console.log("Khởi tạo dữ liệu cấu hình module quản lý nhân sự!");
-
-    await ModuleConfiguration(vnistDB).create({
-        humanResource: {
-            contractNoticeTime: 15,
-            timekeepingType: "shift",
-            timekeepingByShift: {
-                shift1Time: 4,
-                shift2Time: 4,
-                shift3Time: 4,
-            },
-        },
-    })
-
-    console.log(`Xong! thông tin cấu hình module quản lý nhân sự đã được tạo`);
+    // console.log(`Xong! Thông tin khoá đào tạo  đã được tạo`);
 
     /**
      * Ngắt kết nối db
@@ -4136,7 +3445,7 @@ const initSampleCompanyDB = async () => {
     console.log("End init sample company database!");
 }
 
-initSampleCompanyDB().catch(err => {
+initHumanResourceData().catch(err => {
     console.log(err);
     process.exit(0);
 })
