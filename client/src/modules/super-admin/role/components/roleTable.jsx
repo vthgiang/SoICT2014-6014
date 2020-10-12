@@ -16,7 +16,7 @@ class RoleTable extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            limit: 5,
+            limit: 10,
             page: 1,
             option: 'name', // Mặc định tìm kiếm theo tên
             value: ''
@@ -106,7 +106,7 @@ class RoleTable extends Component {
                 </table>
 
                 {/* PaginateBar */}
-                <PaginateBar pageTotal={role.totalPages} currentPage={role.page} func={this.setPage} />
+                <PaginateBar display={role.listPaginate.length} total={role.list.length} pageTotal={role.totalPages} currentPage={role.page} func={this.setPage} />
             </React.Fragment>
         );
     }

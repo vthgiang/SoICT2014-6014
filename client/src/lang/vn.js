@@ -7,6 +7,7 @@ export default {
          * @module_name phần tự định nghĩa ngôn ngữ riêng của từng module khác nhau
          *******************************************************/
         general: {
+            show: 'Hiển thị ',
             table: 'Bảng',
             scroll: 'Dùng thanh cuộn bảng',
             upload: 'Tải lên',
