@@ -235,7 +235,7 @@ const AssetSchema = new Schema({
             type: String,
             // required: true
         },
-        statusIncident: { //Nội dung
+        statusIncident: { // 1: cho xu ly || 2: da xu ly
             type: String,
             // required: true
         },

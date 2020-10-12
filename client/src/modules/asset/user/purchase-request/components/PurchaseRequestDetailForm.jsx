@@ -33,6 +33,7 @@ class PurchaseRequestDetailForm extends Component {
         }
     }
 
+
     render() {
         const { translate, recommendProcure } = this.props;
         const { recommendNumber, dateCreate, proponent, equipmentName, equipmentDescription, supplier, total, unit, estimatePrice, approver, status, note } = this.state;

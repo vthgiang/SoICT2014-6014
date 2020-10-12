@@ -220,8 +220,8 @@ class IncidentLogAddModal extends Component {
                             <div className="form-group">
                                 <label>{translate('asset.general_information.status')}</label>
                                 <select className="form-control" value={statusIncident} name="statusIncident" onChange={this.handleStatusIncidentChange}>
-                                    <option value="Chờ xử lý">{translate('asset.general_information.waiting')}</option>
-                                    <option value="Đã xử lý">{translate('asset.general_information.processed')}</option>
+                                    <option value="1">{translate('asset.general_information.waiting')}</option>
+                                    <option value="2">{translate('asset.general_information.processed')}</option>
                                 </select>
                             </div>
                         </div>

@@ -1636,7 +1636,7 @@ const initSampleCompanyDB = async () => {
             reportedBy: users[7],
             dateOfIncident: new Date("2020-06-24"),
             description: "",
-            statusIncident: "",
+            statusIncident: "2",
         }],
         //khấu hao
         cost: 50000000,
@@ -1646,7 +1646,7 @@ const initSampleCompanyDB = async () => {
         depreciationType: "straight_line", // thời gian trích khấu hao
         //thanh lý
         disposalDate: new Date("2020-06-20"),
-        disposalType: '',
+        disposalType: '1',
         disposalCost: 20000000,
         disposalDesc: '',
         //tài liệu đính kèm
@@ -1694,7 +1694,7 @@ const initSampleCompanyDB = async () => {
             reportedBy: users[8],
             dateOfIncident: new Date("2020-07-10"),
             description: "",
-            statusIncident: "",
+            statusIncident: "2",
         }],
         //khấu hao
         cost: 40000000,
@@ -1752,7 +1752,7 @@ const initSampleCompanyDB = async () => {
             reportedBy: users[7],
             dateOfIncident: new Date("2020-08-25"),
             description: "",
-            statusIncident: "",
+            statusIncident: "1",
         }],
         //khấu hao
         cost: 30000000,
@@ -1762,7 +1762,7 @@ const initSampleCompanyDB = async () => {
         depreciationType: "straight_line", // thời gian trích khấu hao
         //thanh lý
         disposalDate: null,
-        disposalType: "",
+        disposalType: "2",
         disposalCost: null,
         disposalDesc: "",
         //tài liệu đính kèm
@@ -1811,7 +1811,7 @@ const initSampleCompanyDB = async () => {
             reportedBy: users[7],
             dateOfIncident: new Date("2020-09-01"),
             description: "",
-            statusIncident: "",
+            statusIncident: "2",
         }],
         //khấu hao
         cost: 30000000,
@@ -1821,7 +1821,7 @@ const initSampleCompanyDB = async () => {
         depreciationType: "straight_line", // thời gian trích khấu hao
         //thanh lý
         disposalDate: null,
-        disposalType: "",
+        disposalType: "1",
         disposalCost: null,
         disposalDesc: "",
         //tài liệu đính kèm
@@ -1870,7 +1870,7 @@ const initSampleCompanyDB = async () => {
             reportedBy: users[7],
             dateOfIncident: new Date("2020-08-01"),
             description: "",
-            statusIncident: "",
+            statusIncident: "1",
         }],
         //khấu hao
         cost: 50000000,
@@ -1880,7 +1880,7 @@ const initSampleCompanyDB = async () => {
         depreciationType: "straight_line", // thời gian trích khấu hao
         //thanh lý
         disposalDate: null,
-        disposalType: "",
+        disposalType: "1",
         disposalCost: null,
         disposalDesc: "",
         //tài liệu đính kèm
@@ -1919,8 +1919,9 @@ const initSampleCompanyDB = async () => {
             dateOfIncident: new Date("2020-05-20"),
             description: "aaaaaa",
             incidentCode: "icd03",
-            statusIncident: "Chờ xử lý",
-            type: "broken",
+            statusIncident: "1",
+            type: "1",
+            statusIncident: "1",
             updatedAt: new Date("2020-05-20"),
         }],
         //khấu hao
@@ -1931,7 +1932,7 @@ const initSampleCompanyDB = async () => {
         depreciationType: "straight_line", // thời gian trích khấu hao
         //thanh lý
         disposalDate: null,
-        disposalType: "",
+        disposalType: "2",
         disposalCost: null,
         disposalDesc: "",
         //tài liệu đính kèm
@@ -1979,7 +1980,7 @@ const initSampleCompanyDB = async () => {
         depreciationType: "straight_line", // thời gian trích khấu hao
         //thanh lý
         disposalDate: null,
-        disposalType: '',
+        disposalType: '1',
         disposalCost: null,
         disposalDesc: '',
         //tài liệu đính kèm
@@ -2024,8 +2025,8 @@ const initSampleCompanyDB = async () => {
             dateOfIncident: new Date("2020-05-20"),
             description: "aaaaaa",
             incidentCode: "icd04",
-            statusIncident: "Chờ xử lý",
-            type: "Hỏng quạt",
+            statusIncident: "1",
+            type: "1",
             updatedAt: new Date("2020-05-20"),
         }],
         //khấu hao
@@ -2036,7 +2037,7 @@ const initSampleCompanyDB = async () => {
         depreciationType: "straight_line", // thời gian trích khấu hao
         //thanh lý
         disposalDate: null,
-        disposalType: '',
+        disposalType: '2',
         disposalCost: null,
         disposalDesc: '',
         //tài liệu đính kèm
@@ -2077,8 +2078,8 @@ const initSampleCompanyDB = async () => {
             dateOfIncident: new Date("2020-05-20"),
             description: "aaaaaa",
             incidentCode: "icd04",
-            statusIncident: "Chờ xử lý",
-            type: "Hỏng quạt",
+            statusIncident: "1",
+            type: "1",
             updatedAt: new Date("2020-05-20"),
         }],
         //khấu hao
@@ -2089,7 +2090,7 @@ const initSampleCompanyDB = async () => {
         depreciationType: "straight_line", // thời gian trích khấu hao
         //thanh lý
         disposalDate: null,
-        disposalType: '',
+        disposalType: '1',
         disposalCost: null,
         disposalDesc: '',
         //tài liệu đính kèm
@@ -2137,7 +2138,7 @@ const initSampleCompanyDB = async () => {
             depreciationType: "straight_line", // thời gian trích khấu hao
             //thanh lý
             disposalDate: null,
-            disposalType: '',
+            disposalType: '1',
             disposalCost: null,
             disposalDesc: '',
             //tài liệu đính kèm
@@ -2183,7 +2184,7 @@ const initSampleCompanyDB = async () => {
             depreciationType: "straight_line", // thời gian trích khấu hao
             //thanh lý
             disposalDate: null,
-            disposalType: '',
+            disposalType: '1',
             disposalCost: null,
             disposalDesc: '',
             //tài liệu đính kèm
@@ -2230,7 +2231,7 @@ const initSampleCompanyDB = async () => {
         depreciationType: "straight_line", // thời gian trích khấu hao
         //thanh lý
         disposalDate: new Date("2020-07-20"),
-        disposalType: '',
+        disposalType: '1',
         disposalCost: 12000000,
         disposalDesc: '',
         //tài liệu đính kèm
@@ -2275,7 +2276,7 @@ const initSampleCompanyDB = async () => {
         depreciationType: "straight_line", // thời gian trích khấu hao
         //thanh lý
         disposalDate: new Date("2020-07-20"),
-        disposalType: '',
+        disposalType: '1',
         disposalCost: 12000000,
         disposalDesc: '',
         //tài liệu đính kèm
@@ -2320,7 +2321,7 @@ const initSampleCompanyDB = async () => {
         depreciationType: "straight_line", // thời gian trích khấu hao
         //thanh lý
         disposalDate: null,
-        disposalType: '',
+        disposalType: '1',
         disposalCost: null,
         disposalDesc: '',
         //tài liệu đính kèm
@@ -2361,8 +2362,8 @@ const initSampleCompanyDB = async () => {
             dateOfIncident: new Date("2020-05-20"),
             description: "broken",
             incidentCode: "icd01",
-            statusIncident: "Chờ xử lý",
-            type: "broken",
+            statusIncident: "2",
+            type: "2",
             updatedAt: new Date("2020-05-20"),
         },
         {
@@ -2383,7 +2384,7 @@ const initSampleCompanyDB = async () => {
         depreciationType: "straight_line", // thời gian trích khấu hao
         //thanh lý
         disposalDate: null,
-        disposalType: '',
+        disposalType: '2',
         disposalCost: null,
         disposalDesc: '',
         //tài liệu đính kèm
@@ -2425,8 +2426,8 @@ const initSampleCompanyDB = async () => {
             dateOfIncident: new Date("2000-05-20"),
             description: "broken",
             incidentCode: "icd01",
-            statusIncident: "Chờ xử lý",
-            type: "broken",
+            statusIncident: "1",
+            type: "1",
             updatedAt: new Date("2000-05-20"),
         },
         {
@@ -2447,7 +2448,7 @@ const initSampleCompanyDB = async () => {
         depreciationType: "straight_line", // thời gian trích khấu hao
         //thanh lý
         disposalDate: null,
-        disposalType: '',
+        disposalType: '2',
         disposalCost: null,
         disposalDesc: '',
         //tài liệu đính kèm
@@ -2488,8 +2489,8 @@ const initSampleCompanyDB = async () => {
             dateOfIncident: new Date("2020-05-20"),
             description: "broken",
             incidentCode: "icd01",
-            statusIncident: "Chờ xử lý",
-            type: "broken",
+            statusIncident: "1",
+            type: "1",
             updatedAt: new Date("2020-05-20"),
         },
         {
@@ -2510,7 +2511,7 @@ const initSampleCompanyDB = async () => {
         depreciationType: "straight_line", // thời gian trích khấu hao
         //thanh lý
         disposalDate: null,
-        disposalType: '',
+        disposalType: '2',
         disposalCost: null,
         disposalDesc: '',
         //tài liệu đính kèm
