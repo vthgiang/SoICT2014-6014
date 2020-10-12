@@ -46,7 +46,10 @@ class ModalCopyKPIUnit extends Component {
     }
 
     handleSubmit = async (oldkpiunit, listkpi, idunit, kpiId) => {
+        const { kpiunit } = this.state;
+        const { translate } = this.props;
         let id = getStorage("userId");
+
         await this.setState(state => {
             return {
                 ...state,
@@ -58,11 +61,10 @@ class ModalCopyKPIUnit extends Component {
                 }
             }
         })
-        const { kpiunit } = this.state;
-        const { translate } = this.props;
+        
         let checkNewDate = this.state.NewDate;
         if (checkNewDate) {
-            var date = this.state.NewDate.split("-");
+            let date = this.state.NewDate.split("-");
             let check = 1;
             let nowDate = new Date();
 
@@ -134,7 +136,7 @@ class ModalCopyKPIUnit extends Component {
     }
 
     save = () => {
-        let {kpiId, listkpi, kpiunit, idunit } = this.props;
+        const { kpiId, listkpi, kpiunit, idunit } = this.props;
         this.handleSubmit(kpiunit, listkpi, idunit, kpiId)
     }
 

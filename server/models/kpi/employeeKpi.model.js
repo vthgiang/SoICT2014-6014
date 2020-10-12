@@ -1,8 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;;
 
-const OrganizationalUnitKpi = require('./organizationalUnitKpi.model');
-
 // Create Schema
 const EmployeeKpiSchema = new Schema({
     name: {
@@ -11,7 +9,7 @@ const EmployeeKpiSchema = new Schema({
     },
     parent: {
         type: Schema.Types.ObjectId,
-        ref: OrganizationalUnitKpi,
+        ref: 'OrganizationalUnitKpi',
     },
     weight: {
         type: Number,
@@ -50,4 +48,8 @@ const EmployeeKpiSchema = new Schema({
     timestamps :true
 });
 
-module.exports = EmployeeKpi = mongoose.model("employee_kpis", EmployeeKpiSchema);
+module.exports = (db) => {
+    if(!db.models.EmployeeKpi)
+        return db.model('EmployeeKpi', EmployeeKpiSchema);
+    return db.models.EmployeeKpi;
+}

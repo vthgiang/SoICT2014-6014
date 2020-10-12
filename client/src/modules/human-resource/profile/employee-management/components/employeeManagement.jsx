@@ -728,7 +728,7 @@ class EmployeeManagement extends Component {
                             columns: [
                                 { key: "STT", value: translate(`human_resource.stt`), width: 7 },
                                 { key: "month", value: translate('human_resource.month') },
-                                { key: "year", value: translate('human_resource.holiday.year') },
+                                { key: "year", value: translate('human_resource.work_plan.year') },
                                 { key: "employeeNumber", value: translate(`human_resource.profile.staff_number`) },
                                 { key: "fullName", value: translate(`human_resource.profile.full_name`), width: 20 },
                                 { key: "organizationalUnit", value: translate('human_resource.unit'), width: 25 },
@@ -953,7 +953,7 @@ class EmployeeManagement extends Component {
                                         <td>{this.formatDate(x.birthdate)}</td>
                                         <td>{this.formatDate(x.contractEndDate)}</td>
                                         <td>{x.contractType}</td>
-                                        <td>{translate(`human_resource.profile.${x.status}`)}</td>
+                                        <td style={{ color: x.status === "active" ? "#00a65a" : '#dd4b39' }}>{translate(`human_resource.profile.${x.status}`)}</td>
                                         <td>
                                             <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title={translate('human_resource.profile.employee_management.view_employee')}><i className="material-icons">view_list</i></a>
                                             <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.profile.employee_management.edit_employee')}><i className="material-icons">edit</i></a>

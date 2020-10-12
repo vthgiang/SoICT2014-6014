@@ -1,5 +1,5 @@
 const overviewService = require('./management.service');
-const { LogInfo, LogError } = require('../../../../logs');
+const Logger = require(`${SERVER_LOGS_DIR}`);
 
 
 /** Lấy tất cả tập kpi cá nhân của một nhân viên có trạng thái đã kết thúc */
@@ -10,16 +10,16 @@ exports.getAllKPIEmployeeSetsInOrganizationByMonth = async (req, res) => {
     }
     else {
         try {
-            let kpipersonals = await overviewService.getAllKPIEmployeeSetsInOrganizationByMonth(req.query);
+            let kpipersonals = await overviewService.getAllKPIEmployeeSetsInOrganizationByMonth(req.portal, req.query);
 
-            LogInfo(req.user.email, ` get all kpi personal `, req.user.company);
+            Logger.info(req.user.email, ` get all kpi personal `, req.portal);
             res.status(200).json({
                 success: true,
                 messages: ['get_kpi_employee_in_department_by_month_success'],
                 content: kpipersonals
             });
         } catch (error) {
-            LogError(req.user.email, ` get all kpi personal `, req.user.company);
+            Logger.error(req.user.email, ` get all kpi personal `, req.portal);
             res.status(400).json({
                 success: false,
                 messages: ['get_kpi_responsible_fail'],
@@ -34,15 +34,15 @@ exports.getAllKPIEmployeeSetsInOrganizationByMonth = async (req, res) => {
  */
 exports.copyKPI = async (req, res) => {
     try {
-        let kpipersonals = await overviewService.copyKPI(req.params.id, req.query);
-        LogInfo(req.user.email, ` get all kpi personal `, req.user.company);
+        let kpipersonals = await overviewService.copyKPI(req.portal, req.params.id, req.query);
+        Logger.info(req.user.email, ` get all kpi personal `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['copy_KPI_success'],
             content: kpipersonals
         });
     } catch (error) {
-        LogError(req.user.email, ` get all kpi personal `, req.user.company);
+        Logger.error(req.user.email, ` get all kpi personal `, req.portal);
         res.status(400).json({
             success: false,
             messages: ['copy_KPI_fail'],
@@ -57,16 +57,16 @@ exports.copyKPI = async (req, res) => {
  */
 exports.getAllEmployeeKpiInOrganizationalUnit = async (req, res) => {
     try {
-        let employeeKpis = await overviewService.getAllEmployeeKpiInOrganizationalUnit(req.query.roleId, req.query.organizationalUnitId, req.query.month);
+        let employeeKpis = await overviewService.getAllEmployeeKpiInOrganizationalUnit(req.portal, req.query.roleId, req.query.organizationalUnitId, req.query.month);
 
-        LogInfo(req.user.email, ' get all employee kpi in organizational unit ', req.user.company);
+        Logger.info(req.user.email, ' get all employee kpi in organizational unit ', req.portal);
         res.status(200).json({
             success: true,
             messages: ['get_all_employee_kpi_in_organizational_unit_success'],
             content: employeeKpis
         });
     } catch (error) {
-        LogError(req.user.email, ' get all employee kpi in organizational unit ', req.user.company);
+        Logger.error(req.user.email, ' get all employee kpi in organizational unit ', req.portal);
         res.status(400).json({
             success: false,
             messages: ['get_all_employee_kpi_in_organizational_unit_failure'],
@@ -81,16 +81,16 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (req, res) => {
  */
 exports.getAllEmployeeKpiSetInOrganizationalUnit = async (req, res) => {
     try {
-        let employeeKpiSets = await overviewService.getAllEmployeeKpiSetInOrganizationalUnit(req.query);
+        let employeeKpiSets = await overviewService.getAllEmployeeKpiSetInOrganizationalUnit(req.portal, req.query);
 
-        LogInfo(req.user.email, ' get all employee kpi set in organizational unit ', req.user.company);
+        Logger.info(req.user.email, ' get all employee kpi set in organizational unit ', req.portal);
         res.status(200).json({
             success: true,
             messages: ['get_all_employee_kpi_set_in_organizational_unit_success'],
             content: employeeKpiSets
         })
     } catch (error) {
-        LogError(req.user.email, ' get all employee kpi set in organizational unit ', req.user.company);
+        Logger.error(req.user.email, ' get all employee kpi set in organizational unit ', req.portal);
         res.status(400).json({
             success: false,
             messages: ['get_all_employee_kpi_set_in_organizational_unit_failure'],
@@ -104,16 +104,16 @@ exports.getAllEmployeeKpiSetInOrganizationalUnit = async (req, res) => {
  */
 exports.getAllEmployeeKpiInChildrenOrganizationalUnit = async (req, res) => {
     try {
-        let employeeKpisInChildrenOrganizationalUnit = await overviewService.getAllEmployeeKpiInChildrenOrganizationalUnit(req.user.company._id, req.query.roleId, req.query.month, req.query.organizationalUnitId);
+        let employeeKpisInChildrenOrganizationalUnit = await overviewService.getAllEmployeeKpiInChildrenOrganizationalUnit(req.portal, req.user.company._id, req.query.roleId, req.query.month, req.query.organizationalUnitId);
 
-        LogInfo(req.user.email, ' get all employee kpi set in organizational unit ', req.user.company);
+        Logger.info(req.user.email, ' get all employee kpi set in organizational unit ', req.portal);
         res.status(200).json({
             success: true,
             messages: ['get_all_employee_kpi_set_in_organizational_unit_success'],
             content: employeeKpisInChildrenOrganizationalUnit
         })
     } catch (error) {
-        LogError(req.user.email, ' get all employee kpi set in organizational unit ', req.user.company);
+        Logger.error(req.user.email, ' get all employee kpi set in organizational unit ', req.portal);
         res.status(400).json({
             success: false,
             messages: ['get_all_employee_kpi_set_in_organizational_unit_failure'],
@@ -128,16 +128,16 @@ exports.getAllEmployeeKpiInChildrenOrganizationalUnit = async (req, res) => {
  */
 exports.getChildTargetByParentId = async (req, res) => {
     try {
-        let childTarget = await overviewService.getChildTargetByParentId(req.query);
+        let childTarget = await overviewService.getChildTargetByParentId(req.portal, req.query);
 
-        LogInfo(req.user.email, ' get child target by parent id ', req.user.company)
+        Logger.info(req.user.email, ' get child target by parent id ', req.portal)
         res.status(200).json({
             success: true,
             messages: ['get_child_target_by_parent_id_success'],
             content: childTarget
         });
     } catch (error) {
-        LogError(req.user.email, ' get child target by parent id ', req.user.company)
+        Logger.error(req.user.email, ' get child target by parent id ', req.portal)
         res.status(400).json({
             success: false,
             messages: ['get_child_target_by_parent_id_fail'],

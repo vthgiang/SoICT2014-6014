@@ -1,8 +1,5 @@
 const CourseService = require('./course.service');
-const {
-    LogInfo,
-    LogError
-} = require('../../../logs');
+const Log = require(`${SERVER_LOGS_DIR}`);
 
 /**
  * Lấy danh sách khoá đào tạo
@@ -11,7 +8,7 @@ exports.searchCourses = async (req, res) => {
     try {
         let data = {};
         if (req.query.page === undefined && req.query.limit === undefined) {
-            data = await CourseService.getAllCourses(req.user.company._id, req.query.organizationalUnits, req.query.positions)
+            data = await CourseService.getAllCourses(req.portal, req.user.company._id, req.query.organizationalUnits, req.query.positions)
         } else {
             let params = {
                 courseId: req.query.courseId,
@@ -20,16 +17,16 @@ exports.searchCourses = async (req, res) => {
                 page: Number(req.query.page),
                 limit: Number(req.query.limit),
             }
-            data = await CourseService.searchCourses(params, req.user.company._id);
+            data = await CourseService.searchCourses(req.portal, params, req.user.company._id);
         }
-        await LogInfo(req.user.email, 'GET_LIST_COURSE', req.user.company);
+        await Log.info(req.user.email, 'GET_LIST_COURSE', req.portal);
         res.status(200).json({
             success: true,
             messages: ["get_list_course_success"],
             content: data
         });
     } catch (error) {
-        await LogError(req.user.email, 'GET_LIST_COURSE', req.user.company);
+        await Log.error(req.user.email, 'GET_LIST_COURSE', req.portal);
         res.status(400).json({
             success: false,
             messages: ["get_list_course_faile"],
@@ -47,7 +44,7 @@ exports.createCourse = async (req, res) => {
     try {
         // Kiểm tra dữ liệu truyền vào
         if (req.body.courseId.trim() === "") {
-            await LogError(req.user.email, 'CREATE_COURSE', req.user.company);
+            await Log.error(req.user.email, 'CREATE_COURSE', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["course_id_required"],
@@ -56,7 +53,7 @@ exports.createCourse = async (req, res) => {
                 }
             });
         } else if (req.body.name.trim() === "") {
-            await LogError(req.user.email, 'CREATE_COURSE', req.user.company);
+            await Log.error(req.user.email, 'CREATE_COURSE', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["name_required"],
@@ -65,7 +62,7 @@ exports.createCourse = async (req, res) => {
                 }
             });
         } else if (req.body.startDate.trim() === "") {
-            await LogError(req.user.email, 'CREATE_COURSE', req.user.company);
+            await Log.error(req.user.email, 'CREATE_COURSE', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["start_date_required"],
@@ -74,7 +71,7 @@ exports.createCourse = async (req, res) => {
                 }
             });
         } else if (req.body.endDate.trim() === "") {
-            await LogError(req.user.email, 'CREATE_COURSE', req.user.company);
+            await Log.error(req.user.email, 'CREATE_COURSE', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["end_date_required"],
@@ -83,7 +80,7 @@ exports.createCourse = async (req, res) => {
                 }
             });
         } else if (req.body.coursePlace.trim() === "") {
-            await LogError(req.user.email, 'CREATE_COURSE', req.user.company);
+            await Log.error(req.user.email, 'CREATE_COURSE', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["course_place_required"],
@@ -92,7 +89,7 @@ exports.createCourse = async (req, res) => {
                 }
             });
         } else if (req.body.offeredBy.trim() === "") {
-            await LogError(req.user.email, 'CREATE_COURSE', req.user.company);
+            await Log.error(req.user.email, 'CREATE_COURSE', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["offered_by_required"],
@@ -101,7 +98,7 @@ exports.createCourse = async (req, res) => {
                 }
             });
         } else if (req.body.type.trim() === "") {
-            await LogError(req.user.email, 'CREATE_COURSE', req.user.company);
+            await Log.error(req.user.email, 'CREATE_COURSE', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["type_required"],
@@ -110,7 +107,7 @@ exports.createCourse = async (req, res) => {
                 }
             });
         } else if (req.body.educationProgram.length === 0) {
-            await LogError(req.user.email, 'CREATE_COURSE', req.user.company);
+            await Log.error(req.user.email, 'CREATE_COURSE', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["education_program_required"],
@@ -119,7 +116,7 @@ exports.createCourse = async (req, res) => {
                 }
             });
         } else if (req.body.cost.trim() === "") {
-            await LogError(req.user.email, 'CREATE_COURSE', req.user.company);
+            await Log.error(req.user.email, 'CREATE_COURSE', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["cost_required"],
@@ -128,7 +125,7 @@ exports.createCourse = async (req, res) => {
                 }
             });
         } else if (req.body.employeeCommitmentTime.trim() === "") {
-            await LogError(req.user.email, 'CREATE_COURSE', req.user.company);
+            await Log.error(req.user.email, 'CREATE_COURSE', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["employee_commitment_time_required"],
@@ -138,9 +135,9 @@ exports.createCourse = async (req, res) => {
             });
         } else {
             // Kiểm tra sự trùng lặp mã khoá học
-            let data = await CourseService.createCourse(req.body, req.user.company._id);
+            let data = await CourseService.createCourse(req.portal, req.body, req.user.company._id);
             if (data === 'have_exist') {
-                await LogError(req.user.email, 'CREATE_COURSE', req.user.company);
+                await Log.error(req.user.email, 'CREATE_COURSE', req.portal);
                 res.status(400).json({
                     success: false,
                     messages: ["course_id_have_exist"],
@@ -149,7 +146,7 @@ exports.createCourse = async (req, res) => {
                     }
                 });
             }
-            await LogInfo(req.user.email, 'CREATE_COURSE', req.user.company);
+            await Log.info(req.user.email, 'CREATE_COURSE', req.portal);
             res.status(200).json({
                 success: true,
                 messages: ["create_course_success"],
@@ -158,7 +155,7 @@ exports.createCourse = async (req, res) => {
         }
 
     } catch (error) {
-        await LogError(req.user.email, 'CREATE_COURSE', req.user.company);
+        await Log.error(req.user.email, 'CREATE_COURSE', req.portal);
         res.status(400).json({
             success: false,
             messages: ["create_course_faile"],
@@ -174,15 +171,15 @@ exports.createCourse = async (req, res) => {
  */
 exports.deleteCourse = async (req, res) => {
     try {
-        let data = await CourseService.deleteCourse(req.params.id);
-        await LogInfo(req.user.email, 'DELETE_COURSE', req.user.company);
+        let data = await CourseService.deleteCourse(req.portal, req.params.id);
+        await Log.info(req.user.email, 'DELETE_COURSE', req.portal);
         res.status(200).json({
             success: true,
             messages: ["delete_course_success"],
             content: data
         });
     } catch (error) {
-        await LogError(req.user.email, 'DELETE_COURSE', req.user.company);
+        await Log.error(req.user.email, 'DELETE_COURSE', req.portal);
         res.status(400).json({
             success: false,
             messages: ["delete_course_faile"],
@@ -200,7 +197,7 @@ exports.updateCourse = async (req, res) => {
     try {
         // Kiểm tra dữ liệu truyền vào
         if (req.body.name.trim() === "") {
-            await LogError(req.user.email, 'EDIT_COURSE', req.user.company);
+            await Log.error(req.user.email, 'EDIT_COURSE', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["name_required"],
@@ -209,7 +206,7 @@ exports.updateCourse = async (req, res) => {
                 }
             });
         } else if (req.body.startDate.trim() === "") {
-            await LogError(req.user.email, 'EDIT_COURSE', req.user.company);
+            await Log.error(req.user.email, 'EDIT_COURSE', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["start_date_required"],
@@ -218,7 +215,7 @@ exports.updateCourse = async (req, res) => {
                 }
             });
         } else if (req.body.endDate.trim() === "") {
-            await LogError(req.user.email, 'EDIT_COURSE', req.user.company);
+            await Log.error(req.user.email, 'EDIT_COURSE', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["end_date_required"],
@@ -227,7 +224,7 @@ exports.updateCourse = async (req, res) => {
                 }
             });
         } else if (req.body.coursePlace.trim() === "") {
-            await LogError(req.user.email, 'EDIT_COURSE', req.user.company);
+            await Log.error(req.user.email, 'EDIT_COURSE', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["course_place_required"],
@@ -236,7 +233,7 @@ exports.updateCourse = async (req, res) => {
                 }
             });
         } else if (req.body.offeredBy.trim() === "") {
-            await LogError(req.user.email, 'EDIT_COURSE', req.user.company);
+            await Log.error(req.user.email, 'EDIT_COURSE', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["offered_by_required"],
@@ -245,7 +242,7 @@ exports.updateCourse = async (req, res) => {
                 }
             });
         } else if (req.body.type.trim() === "") {
-            await LogError(req.user.email, 'EDIT_COURSE', req.user.company);
+            await Log.error(req.user.email, 'EDIT_COURSE', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["type_required"],
@@ -254,7 +251,7 @@ exports.updateCourse = async (req, res) => {
                 }
             });
         } else if (req.body.educationProgram.length === 0) {
-            await LogError(req.user.email, 'EDIT_COURSE', req.user.company);
+            await Log.error(req.user.email, 'EDIT_COURSE', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["education_program_required"],
@@ -263,7 +260,7 @@ exports.updateCourse = async (req, res) => {
                 }
             });
         } else if (req.body.cost.trim() === "") {
-            await LogError(req.user.email, 'EDIT_COURSE', req.user.company);
+            await Log.error(req.user.email, 'EDIT_COURSE', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["cost_required"],
@@ -272,7 +269,7 @@ exports.updateCourse = async (req, res) => {
                 }
             });
         } else if (req.body.employeeCommitmentTime.trim() === "") {
-            await LogError(req.user.email, 'EDIT_COURSE', req.user.company);
+            await Log.error(req.user.email, 'EDIT_COURSE', req.portal);
             res.status(400).json({
                 success: false,
                 messages: ["employee_commitment_time_required"],
@@ -282,8 +279,8 @@ exports.updateCourse = async (req, res) => {
             });
         } else {
             // Cập nhật thông tin khoá học
-            let data = await CourseService.updateCourse(req.params.id, req.body);
-            await LogInfo(req.user.email, 'EDIT_COURSE', req.user.company);
+            let data = await CourseService.updateCourse(req.portal, req.params.id, req.body);
+            await Log.info(req.user.email, 'EDIT_COURSE', req.portal);
             res.status(200).json({
                 success: true,
                 messages: ["edit_course_success"],
@@ -291,7 +288,7 @@ exports.updateCourse = async (req, res) => {
             });
         }
     } catch (error) {
-        await LogError(req.user.email, 'EDIT_COURSE', req.user.company);
+        await Log.error(req.user.email, 'EDIT_COURSE', req.portal);
         res.status(400).json({
             success: false,
             messages: ["edit_course_faile"],

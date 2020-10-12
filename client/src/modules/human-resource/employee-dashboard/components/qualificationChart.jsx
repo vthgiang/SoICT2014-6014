@@ -1,3 +1,4 @@
+/* Biểu đồ thể hiện trình độ học vấn của nhân viên trong công ty */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
@@ -142,7 +143,7 @@ class QualificationChart extends Component {
 
         return (
             <React.Fragment>
-                <div className="box">
+                <div className="box box-solid">
                     <div className="box-header with-border">
                         <h3 className="box-title">
                             {`Trình độ chuyên môn của nhân sự ${(!organizationalUnits || organizationalUnits.length === department.list.length) ? "trong công ty" : organizationalUnitsName.join(', ')}`}

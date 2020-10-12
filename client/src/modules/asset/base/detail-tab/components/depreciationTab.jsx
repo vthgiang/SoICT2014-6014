@@ -80,7 +80,7 @@ class DepreciationTab extends Component {
     calculateDepreciation = (depreciationType, cost, usefulLife, estimatedTotalProduction, unitsProducedDuringTheYears, startDepreciation) => {
         let annualDepreciation, monthlyDepreciation, remainingValue = cost;
 
-        if (depreciationType === "Đường thẳng") { // Phương pháp khấu hao theo đường thẳng
+        if (depreciationType === "straight_line") { // Phương pháp khấu hao theo đường thẳng
             annualDepreciation = ((12 * cost) / usefulLife);
             monthlyDepreciation = cost / usefulLife;
             remainingValue = cost - (cost / usefulLife) * ((new Date().getFullYear() * 12 + new Date().getMonth()) - (new Date(startDepreciation).getFullYear() * 12 + new Date(startDepreciation).getMonth()));
@@ -144,6 +144,22 @@ class DepreciationTab extends Component {
         return [parseInt(annualDepreciation), parseInt(annualDepreciation / 12), parseInt(remainingValue)];
     }
 
+    formatDepreciationType = (type) => {
+        const { translate } = this.props;
+        if (type === 'straight_line') {
+            return translate('asset.depreciation.line');
+        }
+        else if (type === 'declining_balance') {
+            return translate('asset.depreciation.declining_balance')
+        }
+        else if (type === 'units_of_production') {
+            return translate('asset.depreciation.units_production')
+        }
+        else {
+            return 'Deleted'
+        }
+    }
+
     render() {
         const { id } = this.props;
         const { translate } = this.props;
@@ -188,7 +204,7 @@ class DepreciationTab extends Component {
                         </div>
                         <div className="form-group">
                             <strong>{translate('asset.general_information.depreciation_type')}&emsp; </strong>
-                            {depreciationType}
+                            {depreciationType ? this.formatDepreciationType(depreciationType) : ''}
                         </div>
                         <div className="form-group">
                             <strong>{translate('asset.asset_info.annual_depreciation')}&emsp; </strong>

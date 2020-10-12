@@ -1,35 +1,81 @@
 const SystemSettingServices = require('./systemSetting.service');
+const Logger = require(`${SERVER_LOGS_DIR}`);
 
-exports.getBackupSetting = async(req, res) => {
+exports.getBackups = async(req, res) => {
     try {
-        const content = await SystemSettingServices.getBackupSetting();
+        const content = await SystemSettingServices.getBackups();
         
-        // LogInfo(req.user.email, 'BACKUP_SCHEDULE');
+        Logger.info(req.user.email, 'get_backups_success');
         res.status(200).json({
             success: true,
-            messages: ['get_backup_setting_success'],
+            messages: ['get_backups_success'],
             content
         });
     } catch (error) {
+
+        Logger.error(req.user.email, 'get_backups_faile');
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['get_backup_setting_faile'],
+            messages: Array.isArray(error) ? error : ['get_backups_faile'],
             content: error
         });
     }
 }
 
-exports.backup = async(req, res) => {
+exports.getConfigBackup = async(req, res) => {
     try {
-        const content = await SystemSettingServices.backup(req.body, req.query);
+        const content = await SystemSettingServices.getConfigBackup();
+
+        Logger.info(req.user.email, 'get_config_backup_success');
+        res.status(200).json({
+            success: true,
+            messages: ['get_config_backup_success'],
+            content
+        });
+    } catch (error) {console.log(error)
+
+        Logger.error(req.user.email, 'get_config_backup_faile');
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['get_config_backup_faile'],
+            content: error
+        });
+    }
+}
+
+exports.configBackup = async(req, res) => {
+    try {
+        await SystemSettingServices.configBackup(req.query, req.body);
         
-        // LogInfo(req.user.email, 'BACKUP_SCHEDULE');
+        Logger.info(req.user.email, 'config_backup_success');
+        res.status(200).json({
+            success: true,
+            messages: ['config_backup_success']
+        });
+    } catch (error) {
+
+        Logger.eror(req.user.email, 'config_backup_faile');
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['config_backup_faile'],
+            content: error
+        });
+    }
+};
+
+exports.createBackup = async(req, res) => {
+    try {
+        const content = await SystemSettingServices.createBackup(req.body, req.query);
+        
+        Logger.info(req.user.email, 'backup_success');
         res.status(200).json({
             success: true,
             messages: ['backup_success'],
             content
         });
-    } catch (error) {
+    } catch (error) {console.log("Co", error)
+
+        Logger.error(req.user.email, 'backup_faile');
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['backup_faile'],
@@ -42,13 +88,15 @@ exports.deleteBackup = async(req, res) => {
     try {
         const content = await SystemSettingServices.deleteBackup(req.params.version);
         
-        // LogInfo(req.user.email, 'BACKUP_SCHEDULE');
+        Logger.info(req.user.email, 'delete_backup_success');
         res.status(200).json({
             success: true,
             messages: ['delete_backup_success'],
             content
         });
     } catch (error) {
+
+        Logger.error(req.user.email, 'delete_backup_faile');
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['delete_backup_faile'],
@@ -61,36 +109,17 @@ exports.restore = async(req, res) => {
     try {
         await SystemSettingServices.restore(req.query.backupVersion);
         
-        // LogInfo(req.user.email, 'BACKUP_SCHEDULE');
+        Logger.info(req.user.email, 'restore_success');
         res.status(200).json({
             success: true,
             messages: ['restore_success']
         });
     } catch (error) {
-        // LogError(req.user.email, 'BACKUP');
+
+        Logger.eror(req.user.email, 'restore_faile');
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['restore_faile'],
-            content: error
-        });
-    }
-};
-
-exports.getRestoreData = async(req, res) => {
-    try {
-        const data = await SystemSettingServices.getRestoreData();
-        
-        // LogInfo(req.user.email, 'BACKUP_SCHEDULE');
-        res.status(200).json({
-            success: true,
-            messages: ['get_restore_data_success'],
-            content: data
-        });
-    } catch (error) {
-        // LogError(req.user.email, 'BACKUP');
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['get_restore_data_faile'],
             content: error
         });
     }

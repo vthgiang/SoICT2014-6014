@@ -1,9 +1,11 @@
 const {
     Discipline,
     Employee
-} = require('../../../models').schema;
+} = require(`${SERVER_MODELS_DIR}`);
 
-const EmployeeService = require('../profile/profile.service');
+const {
+    connect
+} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 /**
  * Lấy tổng số thông tin khen thường theo đơn vị (phòng ban) và tháng 
@@ -11,7 +13,7 @@ const EmployeeService = require('../profile/profile.service');
  * @organizationalUnits : Array id đơn vị tìm kiếm
  * @month : Tháng tìm kiếm
  */
-exports.getTotalDiscipline = async (company, organizationalUnits, month) => {
+exports.getTotalDiscipline = async (portal, company, organizationalUnits, month) => {
     let keySearch = {
         company: company
     };
@@ -34,7 +36,7 @@ exports.getTotalDiscipline = async (company, organizationalUnits, month) => {
         let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
         let firstDayOfYear = new Date(date.getFullYear() - 1, 12, 1);
         let lastDayOfYear = new Date(date.getFullYear(), 12, 1);
-        totalListOfYear = await Discipline.count({
+        totalListOfYear = await Discipline(connect(DB_CONNECTION, portal)).countDocuments({
             ...keySearch,
             startDate: {
                 "$gt": firstDayOfYear,
@@ -52,7 +54,7 @@ exports.getTotalDiscipline = async (company, organizationalUnits, month) => {
         let date = new Date();
         let firstDayOfYear = new Date(date.getFullYear() - 1, 12, 1);
         let lastDayOfYear = new Date(date.getFullYear(), 12, 1);
-        totalListOfYear = await Discipline.count({
+        totalListOfYear = await Discipline(connect(DB_CONNECTION, portal)).countDocuments({
             ...keySearch,
             startDate: {
                 "$gt": firstDayOfYear,
@@ -68,7 +70,7 @@ exports.getTotalDiscipline = async (company, organizationalUnits, month) => {
         }
     }
 
-    let totalList = await Discipline.count(keySearch);
+    let totalList = await Discipline(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
     return {
         totalList,
         totalListOfYear
@@ -81,14 +83,14 @@ exports.getTotalDiscipline = async (company, organizationalUnits, month) => {
  * @params : dữ liệu key tìm kiếm
  * @company : Id công ty người tìm kiếm
  */
-exports.searchDisciplines = async (params, company) => {
+exports.searchDisciplines = async (portal, params, company) => {
     let keySearch = {
         company: company
     };
 
     // Bắt sựu kiện tìm kiếm them MSNV
     if (params.employeeNumber) {
-        let employee = await Employee.find({
+        let employee = await Employee(connect(DB_CONNECTION, portal)).find({
             employeeNumber: {
                 $regex: params.employeeNumber,
                 $options: "i"
@@ -145,14 +147,14 @@ exports.searchDisciplines = async (params, company) => {
     };
 
     // Lấy danh sách kỷ luật
-    let listDisciplines = await Discipline.find(keySearch).populate({
+    let listDisciplines = await Discipline(connect(DB_CONNECTION, portal)).find(keySearch).populate({
             path: 'employee',
             select: 'emailInCompany fullName employeeNumber'
         })
         .sort({
             'createAt': 'desc'
         }).skip(params.page).limit(params.limit);
-    let totalList = await Discipline.countDocuments(keySearch);
+    let totalList = await Discipline(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
 
     return {
         totalList,
@@ -166,8 +168,8 @@ exports.searchDisciplines = async (params, company) => {
  * @data : Dữ liệu kỷ luật cần tạo
  * @company : Id công ty người tạo
  */
-exports.createDiscipline = async (data, company) => {
-    let isDiscipline = await Discipline.findOne({
+exports.createDiscipline = async (portal, data, company) => {
+    let isDiscipline = await Discipline(connect(DB_CONNECTION, portal)).findOne({
         employee: data.employee,
         company: company,
         decisionNumber: data.decisionNumber
@@ -179,7 +181,7 @@ exports.createDiscipline = async (data, company) => {
         return "have_exist"
     } else {
         // Thêm kỷ luật vào database
-        let createDiscipline = await Discipline.create({
+        let createDiscipline = await Discipline(connect(DB_CONNECTION, portal)).create({
             employee: data.employee,
             company: company,
             decisionNumber: data.decisionNumber,
@@ -191,8 +193,8 @@ exports.createDiscipline = async (data, company) => {
         });
 
         // Lấy thông tin kỷ luật vừa tạo
-        return await Discipline.findOne({
-            _id: createDiscipline._id
+        return await Discipline(connect(DB_CONNECTION, portal)).findOne({
+            _id: createDiscipline(connect(DB_CONNECTION, portal))._id
         }).populate([{
             path: 'employee',
             select: 'emailInCompany fullName employeeNumber'
@@ -204,8 +206,8 @@ exports.createDiscipline = async (data, company) => {
  *  Xoá thông tin kỷ luật
  * @id : Id kỷ luật cần xoá
  */
-exports.deleteDiscipline = async (id) => {
-    return await Discipline.findOneAndDelete({
+exports.deleteDiscipline = async (portal, id) => {
+    return await Discipline(connect(DB_CONNECTION, portal)).findOneAndDelete({
         _id: id
     });
 }
@@ -216,8 +218,8 @@ exports.deleteDiscipline = async (id) => {
  * @data : Dữ liệu chỉnh sửa kỷ luật
  * @company : Id công ty người chỉnh sửa
  */
-exports.updateDiscipline = async (id, data) => {
-    let discipline = await Discipline.findById(id);
+exports.updateDiscipline = async (portal, id, data) => {
+    let discipline = await Discipline(connect(DB_CONNECTION, portal)).findById(id);
 
     discipline.organizationalUnit = data.organizationalUnit;
     discipline.startDate = data.startDate;
@@ -226,7 +228,7 @@ exports.updateDiscipline = async (id, data) => {
     discipline.reason = data.reason;
     await discipline.save();
 
-    return await Discipline.findOne({
+    return await Discipline(connect(DB_CONNECTION, portal)).findOne({
         _id: id
     }).populate([{
         path: 'employee',

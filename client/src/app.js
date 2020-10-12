@@ -4,20 +4,25 @@ import { createBrowserHistory } from 'history';
 import Routes from './react-routes/routes';
 import { IntlActions } from 'react-redux-multilingual';
 import store from './redux/store';
-
 import { PinnedPanel } from '../src/common-components';
 import TaskTimesheetLog from '../src/modules/task/task-perform/component/taskTimesheetLog';
 
+import AuthAlert from './modules/alert/components/authAlert';
+import { ToastContainer, toast } from 'react-toastify';
+
+import 'react-toastify/dist/ReactToastify.css';
 import './app.css'
 
 const history = createBrowserHistory();
 
 class App extends Component {
-    constructor(props) {
-        super(props);
+    constructor() {
+        super();
         this.state = { }
     }
     componentDidMount() {
+        console.log("didmount app.js");
+
         const lang = localStorage.getItem('lang');
         if(lang !== null){
             switch(lang){
@@ -38,13 +43,21 @@ class App extends Component {
     render() {
         return (
             <React.Fragment>
+                <AuthAlert />
+                <ToastContainer 
+                    enableMultiContainer={true}
+                    closeOnClick={true}
+                    draggable={false}
+                    containerId={'toast-notification'}
+                    position={toast.POSITION.TOP_RIGHT}
+                />
                 <Router history={history}>
                     <Routes/>
                 </Router>
                 <PinnedPanel>
                     <TaskTimesheetLog />
-                </PinnedPanel>
-            </React.Fragment>
+                </PinnedPanel> 
+            </React.Fragment >
         );
     }
 }

@@ -1,275 +1,193 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ButtonModal, SelectBox, DatePicker } from '../../../../common-components';
-import { CustomerActions } from '../redux/actions';
-import moment from 'moment';
+import { CrmCustomerActions } from '../redux/actions';
+import { DialogModal, SelectBox, DatePicker } from '../../../../common-components';
+import ValidationHelper from '../../../../helpers/validationHelper';
+import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
+
+import GeneralTabEditForm from './generalTabEditForm';
 
 class CrmCustomerEdit extends Component {
     constructor(props) {
         super(props);
+        this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
         this.state = {
-            customer: {},
-            birth: '',
-            sale: 'group'
+            dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
+            editingCustomer: {},
         }
     }
 
     render() {
-        const { translate, crm } = this.props;
-        const { _id, name, code, phone, email, group, sale, location, gender, address, birth } = this.state.customer;
+        const { translate, crm, user } = this.props;
+        const { editingCustomer, customerIdEdit, dataStatus } = this.state;
+        const { groups } = crm;
+
+        // Lấy thành viên trong đơn vị
+        let unitMembers = [];
+        if (user.usersOfChildrenOrganizationalUnit) {
+            unitMembers = getEmployeeSelectBoxItems(user.usersOfChildrenOrganizationalUnit);
+        }
+
+        // Lấy danh sách nhóm khách hàng
+        let listGroups;
+        if (groups.list && groups.list.length > 0) {
+            listGroups = groups.list.map(x => { return { value: x._id, text: x.name } })
+            listGroups.unshift({ value: '', text: '---chọn---' });
+        }
 
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID="modal-crm-customer-edit" isLoading={crm.customer.isLoading}
+                    modalID="modal-crm-customer-edit" isLoading={crm.customers.isLoading}
                     formID="form-crm-customer-edit"
-                    title={translate("crm.customer.add")}
+                    title={translate("crm.customer.edit")}
+                    size={75}
                     func={this.save}
+                    disableSubmit={!this.isFormValidated()}
                 >
-                    {/* Form thêm khách hàng mới */}
-                    <form id="form-crm-customer-edit">
-                        <div className="row">
-                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                <div className="form-group">
-                                    <label>{translate('crm.customer.name')}<span className="attention"> * </span></label>
-                                    <input type="text" className="form-control" onChange={this.handleName} value={name}/>
-                                </div>
-                                <div className="form-group">
-                                    <label>{translate('crm.customer.code')}<span className="attention"> * </span></label>
-                                    <input type="text" className="form-control" onChange={this.handleCode} value={code}/>
-                                </div>
-                                <div className="form-group">
-                                    <label>{translate('crm.customer.group')}</label>
-                                    <SelectBox
-                                        id={`select-crm-customer-edit-group-${_id}`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        items={
-                                            [].map(g => { return { value: g._id, text: g.name} })
-                                        }
-                                        value={group}
-                                        onChange={this.handleGroup}
-                                        multiple={false}
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label>{translate('crm.customer.location')}</label>
-                                    <SelectBox
-                                        id={`select-customer-edit-location-${_id}`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        items={[]}
-                                        value={location}
-                                        onChange={this.handleLocation}
-                                        multiple={false}
-                                    />
-                                </div>
-                            </div>
-                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                <div className="form-group">
-                                    <label>{translate('crm.customer.phone')}</label>
-                                    <input type="text" className="form-control" onChange={this.handlePhone} value={phone}/>
-                                </div>
-                                <div className="form-group">
-                                    <label>{translate('crm.customer.email')}</label>
-                                    <input type="text" className="form-control" onChange={this.handleEmail} value={email}/>
-                                </div>
-                                <div className="form-group">
-                                    <label>{translate('crm.customer.gender')}</label>
-                                    <SelectBox
-                                        id={`select-customer-edit-gender-${_id}`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        items={[
-                                            {value: 'Nam', text: 'Nam'},
-                                            {value: 'Nữ', text: 'Nữ'},
-                                            {value: 'Khác', text: 'Khác'},
-                                        ]}
-                                        value={gender}
-                                        onChange={this.handleGender}
-                                        multiple={false}
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label>{translate('crm.customer.birth')}</label>
-                                    <DatePicker
-                                        id={`create-customer-edit-birth-${_id}`}
-                                        value={moment(birth).format("DD-MM-YYYY")}
-                                        onChange={this.handleBirth}
-                                    />
-                                </div>
-                            </div>
-                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <div className="form-group">
-                                    <label>{translate('crm.customer.address')}</label>
-                                    <input type="text" className="form-control" onChange={this.handleAddress} value={address}/>
-                                </div>
+                    {/* Form chỉnh sửa khách hàng mới */}
+                    <div className="nav-tabs-custom">
+                        <ul className="nav nav-tabs">
+                            <li className="active"><a href="#customer-general-edit-form" data-toggle="tab" >Thông tin chung</a></li>
+                            <li><a href="#Customer-fileAttachment" data-toggle="tab">Tài liệu liên quan</a></li>
+                        </ul>
+                        <div className="tab-content">
+                            {/* Tab thông tin chung */}
+                            {
+                                editingCustomer && dataStatus === 3 &&
+                                <GeneralTabEditForm
+                                    id={"customer-general-edit-form"}
+                                    callBackFromParentEditForm={this.myCallBack}
+                                    editingCustomer={editingCustomer}
+                                    customerIdEdit={customerIdEdit}
+                                />
+                            }
+
+                            {/* Tab file liên quan đến khách hàng */}
+                            <div id="Customer-fileAttachment" className="tab-pane">
+
                             </div>
                         </div>
-                        
-                        <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">{translate('crm.customer.advance')}</legend>
-                            <div className="form-group">
-                                <label>{translate('crm.customer.carier')}</label>
-                                <input type="text" className="form-control"/>
-                            </div>
-                            <div className="form-group">
-                                <label>{translate('crm.customer.description')}</label>
-                                <input type="text" className="form-control"/>
-                            </div>
-                            <div className="form-group">
-                                <label>{translate('crm.customer.discount')}</label><br/>
-                                <div style={{padding: '10px', backgroundColor: '#F1F1F1', marginBottom: '5px'}}>
-                                    <div className="radio-inline">
-                                        <span>
-                                            <input type="radio" name={`sale-group`} value="group" onChange={this.hanldeSaleGroup}
-                                                checked={sale === "group" ? true : false} />{translate('crm.customer.by_group')}</span>
-                                    </div>
-                                    <div className="radio-inline">
-                                        <span>
-                                            <input type="radio" name={`sale-customer`} value="customer" onChange={this.hanldeSaleCustomer}
-                                                checked={sale !== "group" ? true : false} />{translate('crm.customer.by_customer')}</span>
-                                    </div>
-                                </div>
-                                <div id="create-sale-customer-option" style={{display: 'none'}}>
-                                    <div className="form-group">
-                                        <label>(%)</label>
-                                        <input type="number" className="form-control"/>
-                                    </div>
-                                    <div className="form-group">
-                                        <label>{translate('crm.customer.payment')}</label>
-                                        <SelectBox
-                                            id={`select-customer-sale-edit-${_id}`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            items={[
-                                                { value: 'cod', text: 'COD' },
-                                                { value: 'point', text: 'Thanh toán bằng điểm' },
-                                                { value: 'ck', text: 'Chuyển khoản' },
-                                                { value: 'tm', text: 'Tiền mặt' },
-                                                { value: 'qt', text: 'Quẹt thẻ' }
-                                            ]}
-                                            // onChange={this.handlePayment}
-                                            multiple={false}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </fieldset>
-                    </form>
+                    </div>
                 </DialogModal>
             </React.Fragment>
         );
     }
-    
-    convertBirth = (birth) => {
-        const date = new Date(birth);
-        return `${date.getDate()}-${date.getMonth()}-${date.getFullYear()}`;
-    }
 
-    handleName = (e) => {
-        const { value } = e.target;
+    myCallBack = (name, value) => {
+        const { editingCustomer } = this.state;
         this.setState({
-            name: value
-        });
-    }
-
-    handleCode = (e) => {
-        const { value } = e.target;
-        this.setState({
-            code: value
-        });
-    }
-
-    handlePhone = (e) => {
-        const { value } = e.target;
-        this.setState({
-            phone: value
-        });
-    }
-
-    handleGroup = (value) => {
-        this.setState({
-            group: value[0]
+            editingCustomer: {
+                ...editingCustomer,
+                [name]: value,
+            }
         })
     }
 
-    handleEmail = (e) => {
-        const {value} = e.target;
-        this.setState({
-            email: value
-        })
+
+    formatDate(date, monthYear = false) {
+        if (date) {
+            let d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+
+            if (month.length < 2) month = '0' + month;
+            if (day.length < 2) day = '0' + day;
+
+            if (monthYear === true) {
+                return [month, year].join('-');
+            } else return [day, month, year].join('-');
+        }
+        return date
     }
 
-    handleBirth = (value) => {
-        this.setState({
-            ...this.state,
-            birth: moment(value, "DD-MM-YYYY").format("MM-DD-YYYY")
-        });
+    isFormValidated = () => {
+        const { code, name, taxNumber } = this.state.editingCustomer;
+        const { translate } = this.props;
+
+        if (!ValidationHelper.validateName(translate, code).status
+            || !ValidationHelper.validateName(translate, name).status
+            || !ValidationHelper.validateInvalidCharacter(translate, taxNumber).status)
+            return false;
+        return true;
     }
 
-    handleGender = (value) => {
-        this.setState({
-            gender: value[0]
-        })
-    }
-
-    hanldeSaleGroup = (e) => {
-        const {value} = e.target;
-        this.setState({
-            sale: value
-        })
-        window.$('#create-sale-customer-option').hide();
-    }
-
-    hanldeSaleCustomer = (e) => {
-        const {value} = e.target;
-        this.setState({
-            sale: value
-        })
-        window.$('#create-sale-customer-option').show();
-    }
-
-    handleAddress = (e) => {
-        const {value} = e.target;
-        this.setState({
-            address: value
-        })
-    }
-
-    handleLocation = (value) => {
-        this.setState({
-            location: value[0]
-        })
-    }
 
     save = () => {
-        return this.props.create({
-            name: this.state.name,
-            code: this.state.code,
-            phone: this.state.phone
-        });
+        const { editingCustomer, customerIdEdit } = this.state;
+        if (this.isFormValidated) {
+            this.props.editCustomer(customerIdEdit, editingCustomer);
+        }
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.customer._id !== prevState.customer._id) {
+    static getDerivedStateFromProps(props, state) {
+        if (props.customerIdEdit !== state.customerIdEdit) {
+            props.getCustomer(props.customerIdEdit);
             return {
-                ...prevState,
-                customer: nextProps.customer
+                dataStatus: 1,
+                customerIdEdit: props.customerIdEdit,
             }
         } else {
             return null;
         }
     }
+
+    shouldComponentUpdate = (nextProps, nextState) => {
+        let { editingCustomer } = this.state;
+        if (this.state.dataStatus === this.DATA_STATUS.QUERYING && !nextProps.crm.customers.isLoading) {
+            let customer = nextProps.crm.customers.customerById;
+            editingCustomer = {
+                ...editingCustomer,
+                owner: customer.owner ? customer.owner.map(o => o._id) : [],
+                code: customer && customer.code,
+                name: customer && customer.name,
+                company: customer && customer.company,
+                creator: customer && customer.creator,
+                gender: customer && customer.gender,
+                taxNumber: customer && customer.taxNumber,
+                customerSource: customer && customer.customerSource,
+                companyEstablishmentDate: customer && this.formatDate(customer.companyEstablishmentDate),
+                birthDate: customer && this.formatDate(customer.birthDate),
+                telephoneNumber: customer && customer.telephoneNumber,
+                mobilephoneNumber: customer && customer.mobilephoneNumber,
+                email: customer && customer.email,
+                email2: customer && customer.email2,
+                status: customer.status && customer.status._id,
+                group: customer.group && customer.group._id,
+                address: customer && customer.address,
+                address2: customer && customer.address2,
+                location: customer && customer.location,
+                website: customer && customer.website,
+                linkedIn: customer && customer.linkedIn,
+            }
+            this.setState({
+                dataStatus: this.DATA_STATUS.AVAILABLE,
+                editingCustomer,
+            })
+            return false;
+        }
+
+        if (this.state.dataStatus === this.DATA_STATUS.AVAILABLE) {
+            this.setState({
+                dataStatus: this.DATA_STATUS.FINISHED,
+            });
+            return false;
+        }
+        return true;
+    }
 }
 
 function mapStateToProps(state) {
-    const { crm } = state;
-    return { crm };
+    const { crm, user, auth } = state;
+    return { crm, user, auth };
 }
 
 const mapDispatchToProps = {
+    getCustomer: CrmCustomerActions.getCustomer,
+    editCustomer: CrmCustomerActions.editCustomer,
+
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CrmCustomerEdit));

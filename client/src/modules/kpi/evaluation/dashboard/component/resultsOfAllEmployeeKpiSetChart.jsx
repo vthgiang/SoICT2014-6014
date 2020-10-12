@@ -111,6 +111,10 @@ class ResultsOfAllEmployeeKpiSetChart extends Component {
             return null;
         }
     }
+    
+    componentDidMount(){
+        this.props.getAllEmployeeKpiSetInOrganizationalUnitsByMonth(this.state.organizationalUnitIds, this.state.startMonth, this.state.endMonth);
+    }
 
     /** Select kind of point */
     handleSelectKindOfPoint = (value) => {

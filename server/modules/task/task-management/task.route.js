@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const TaskManagementController = require("./task.controller");
-const { auth } = require('../../../middleware/index');
+const { auth } = require(`${SERVER_MIDDLEWARE_DIR}`);
 
 router.get('/tasks', auth, TaskManagementController.getTasks);
 router.get('/tasks/:taskId/sub-tasks', auth, TaskManagementController.getSubTask);

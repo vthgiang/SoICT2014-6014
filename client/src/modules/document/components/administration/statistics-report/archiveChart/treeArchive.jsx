@@ -38,7 +38,7 @@ class TreeArchive extends Component {
         if (documents) {
             documents.map(doc => {
                 doc.archives.map(archive => {
-                    let idx = idArchive.indexOf(archive.id);
+                    let idx = idArchive.indexOf(archive);
                     countArchive[idx]++;
                 })
             })

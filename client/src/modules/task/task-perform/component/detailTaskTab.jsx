@@ -1026,6 +1026,7 @@ class DetailTaskTab extends Component {
                         codeInProcess={codeInProcess}
                         title={translate('task.task_perform.choose_following_task')}
                         perform='selectFollowingTask'
+                        refresh={this.refresh}
                     />
                 }
 

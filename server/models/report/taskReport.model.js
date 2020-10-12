@@ -1,19 +1,15 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const User = require('../auth/user.model')
-const Role = require('../auth/role.model');
-const OrganizationalUnit = require('../../models/super-admin/organizationalUnit.model');
-const TaskTemplate = require('../../models/task/taskTemplate.model');
 
 const TaskReportSchema = new Schema({
     organizationalUnit: {
         type: Schema.Types.ObjectId,
-        ref: OrganizationalUnit,
+        ref: 'OrganizationalUnit',
         required: true
     },
     taskTemplate: {
         type: Schema.Types.ObjectId,
-        ref: TaskTemplate,
+        ref: 'TaskTemplate',
         required: true
     },
     name: {
@@ -26,19 +22,19 @@ const TaskReportSchema = new Schema({
     },
     creator: {
         type: Schema.Types.ObjectId,
-        ref: User
+        ref: 'User'
     },
     readByEmployees: [{
         type: Schema.Types.ObjectId,
-        ref: Role,
+        ref: 'Role',
     }],
     responsibleEmployees: [{ //Người thực hiện
         type: Schema.Types.ObjectId,
-        ref: User,
+        ref: 'User',
     }],
     accountableEmployees: [{// Người phê duyệt
         type: Schema.Types.ObjectId,
-        ref: User,
+        ref: 'User',
     }],
     status: {// 0: tất cả, 1: Finished, 2: Inprocess.
         type: Number,
@@ -65,7 +61,7 @@ const TaskReportSchema = new Schema({
         },
         type: {
             type: String,
-            enum: ['Text', 'Boolean', 'Date', 'Number', 'SetOfValues'],
+            enum: ['text', 'boolean', 'date', 'number', 'set_of_values'],
         },
         filter: {
             type: String,
@@ -94,7 +90,7 @@ const TaskReportSchema = new Schema({
             type: String,
         }
     }],
-    dataForAxisXInChart: [{// Chiều dữ liệu được đưa vào biểu đồ
+    dataForAxisXInChart: [{// Chiều dữ liệu đưa vào biểu đồ
         id: {
             type: Number
         },
@@ -106,4 +102,8 @@ const TaskReportSchema = new Schema({
     timestamps: true
 });
 
-module.exports = TaskReport = mongoose.model("task_reports", TaskReportSchema);
+module.exports = (db) => {
+    if (!db.models.TaskReport)
+        return db.model('TaskReport', TaskReportSchema);
+    return db.models.TaskReport;
+}

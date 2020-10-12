@@ -1,16 +1,11 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const User = require('../auth/user.model');
-const EmployeeKpi = require('../kpi/employeeKpi.model');
-const OrganizationalUnit = require('../super-admin/organizationalUnit.model');
-const TaskTemplate = require('./taskTemplate.model');
-
 // Model quản lý thông tin của một công việc và liên kết với tài liệu, kết quả thực hiện công việc
 const TaskSchema = new Schema({
     process: {
         type: Schema.Types.ObjectId,
-        ref: 'task_processes',
+        ref: 'TaskProcess',
     },
     codeInProcess: {
         type: String,
@@ -18,7 +13,7 @@ const TaskSchema = new Schema({
     commentsInProcess:  [{ // Bình luận trong quy trình
         creator: {
             type: Schema.Types.ObjectId,
-            ref: User,
+            ref: 'User',
             required: true
         },
         description: {
@@ -44,7 +39,7 @@ const TaskSchema = new Schema({
         comments: [{  // Comments của comment
             creator: {
                 type: Schema.Types.ObjectId,
-                ref: User,
+                ref: 'User',
                 required: true
             },
             description: {
@@ -71,7 +66,6 @@ const TaskSchema = new Schema({
     }],
     numberOfDaysTaken: {
         type: Number,
-        default: 7,
     },
     followingTasks: [{
         task: {
@@ -98,12 +92,12 @@ const TaskSchema = new Schema({
     }],
     organizationalUnit: {
         type: Schema.Types.ObjectId,
-        ref: OrganizationalUnit,
+        ref: 'OrganizationalUnit',
         required: true
     },
     creator: {
         type: Schema.Types.ObjectId,
-        ref: User,
+        ref: 'User',
         required: true
     },
     name: {
@@ -139,7 +133,7 @@ const TaskSchema = new Schema({
     },
     taskTemplate: {
         type: Schema.Types.ObjectId,
-        ref: TaskTemplate,
+        ref: 'TaskTemplate',
     },
     parent: { // Công việc cha
         type: Schema.Types.ObjectId,
@@ -151,30 +145,30 @@ const TaskSchema = new Schema({
     },
     inactiveEmployees: [{ // Những người từng tham gia công việc nhưng không còn tham gia nữa
         type: Schema.Types.ObjectId,
-        ref: User,
+        ref: 'User',
         required: true
     }],
     responsibleEmployees: [{
         type: Schema.Types.ObjectId,
-        ref: User,
+        ref: 'User',
         required: true
     }],
     accountableEmployees: [{
         type: Schema.Types.ObjectId,
-        ref: User,
+        ref: 'User',
         required: true
     }],
     consultedEmployees: [{
         type: Schema.Types.ObjectId,
-        ref: User
+        ref: 'User'
     }],
     informedEmployees: [{
         type: Schema.Types.ObjectId,
-        ref: User
+        ref: 'User'
     }],
     confirmedByEmployees: [{
         type: Schema.Types.ObjectId,
-        ref: User
+        ref: 'User'
     }],
     evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
         date: { // Lưu ngày đánh giá. Khi muốn match công việc trong 1 KPI thì chỉ lấy tháng
@@ -187,12 +181,12 @@ const TaskSchema = new Schema({
         results: [{ // Kết quả thực hiện công việc trong tháng đánh giá nói trên
             employee: { // Người được đánh giá
                 type: Schema.Types.ObjectId,
-                ref: User,
+                ref: 'User',
                 required: true
             },
             organizationalUnit: {
                 type: Schema.Types.ObjectId,
-                ref: OrganizationalUnit,
+                ref: 'OrganizationalUnit',
             },
             role: { // người thực hiện: responsible, người hỗ trợ: consulted, người phê duyệt: accountable
                 type: String,
@@ -201,7 +195,7 @@ const TaskSchema = new Schema({
             },
             kpis: [{ // Các kpis của người thực hiện A đó. Phải chọn kpis lúc tạo công việc, và sang đầu tháng mới, nếu công việc chưa kết thúc thì phải chọn lại.
                 type: Schema.Types.ObjectId,
-                ref: EmployeeKpi,
+                ref: "EmployeeKpi",
                 required: true
             }],
             automaticPoint: { // Điểm hệ thống đánh giá
@@ -283,7 +277,7 @@ const TaskSchema = new Schema({
         },
         creator: {
             type: Schema.Types.ObjectId,
-            ref: User,
+            ref: 'User',
         },
         isOutput: {
             type: Boolean,
@@ -299,7 +293,7 @@ const TaskSchema = new Schema({
         contributions: [{
             employee: {
                 type: Schema.Types.ObjectId,
-                ref: User,
+                ref: 'User',
             },
             hoursSpent: {
                 type: Number
@@ -309,7 +303,7 @@ const TaskSchema = new Schema({
     timesheetLogs: [{
         creator: { // Người thực hiện nào tiến hành bấm giờ
             type: Schema.Types.ObjectId,
-            ref: User,
+            ref: 'User',
             required: true
         },
         startedAt: { // Lưu dạng miliseconds. Thời gian khi người dùng nhất nút bắt đầu bấm giờ
@@ -364,7 +358,7 @@ const TaskSchema = new Schema({
     taskActions: [{ // Khi task theo tempate nào đó, sẽ copy hết actions trong template vào đây
         creator: { // Trường này không bắt buộc. Khi người thực hiện task (loại task theo teamplate) xác nhận xong action thì mới điền id người đó vào trường này
             type: Schema.Types.ObjectId,
-            ref: User,
+            ref: 'User',
         },
         name: {
             type: String,
@@ -401,7 +395,7 @@ const TaskSchema = new Schema({
         evaluations: [{ // Đánh giá actions (Dù là người quản lý, phê duyệt, hỗ trợ, ai cũng có thể đánh giá, nhưng chỉ tính đánh gía của người phê duyệt)
             creator: {
                 type: Schema.Types.ObjectId,
-                ref: User,
+                ref: 'User',
                 required: true
             },
             createdAt: {
@@ -420,7 +414,7 @@ const TaskSchema = new Schema({
         comments: [{ // Comments của action
             creator: {
                 type: Schema.Types.ObjectId,
-                ref: User,
+                ref: 'User',
                 required: true
             },
             description: {
@@ -448,11 +442,19 @@ const TaskSchema = new Schema({
     taskComments: [{ // Trao đổi trong tasks
         creator: {
             type: Schema.Types.ObjectId,
-            ref: User,
+            ref: 'User',
             required: true
         },
         description: {
             type: String,
+        },
+        createdAt: {
+            type: Date,
+            default: Date.now
+        },
+        updatedAt: {
+            type: Date,
+            default: Date.now
         },
         createdAt: {
             type: Date,
@@ -474,7 +476,7 @@ const TaskSchema = new Schema({
         comments: [{  // Comments của comment
             creator: {
                 type: Schema.Types.ObjectId,
-                ref: User,
+                ref: 'User',
                 required: true
             },
             description: {
@@ -506,7 +508,7 @@ const TaskSchema = new Schema({
         },
         creator: {
             type: Schema.Types.ObjectId,
-            ref: User,
+            ref: 'User',
             required: true
         },
         title: {
@@ -520,7 +522,11 @@ const TaskSchema = new Schema({
     timestamps: true
 });
 
-module.exports = Task = mongoose.model("tasks", TaskSchema);
+module.exports = (db) => {
+    if(!db.models.Task)
+        return db.model('Task', TaskSchema);
+    return db.models.Task;
+}
 
 /*
 HƯỚNG DẪN:

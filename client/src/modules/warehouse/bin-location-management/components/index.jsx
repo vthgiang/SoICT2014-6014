@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import ArchiveManagement from '../components/archives';
+import BinManagement from '../components/bin-locations';
 
 import { LazyLoadComponent, forceCheckOrVisible } from '../../../../common-components/index';
 
@@ -28,12 +30,14 @@ class BinLocationManagement extends Component {
                     <div className="tab-pane active" id="bin-locations">
                         <LazyLoadComponent
                         >
+                        <ArchiveManagement />
                         </LazyLoadComponent>
                     </div>
 
                     <div className="tab-pane" id="bin-location-archives">
                         <LazyLoadComponent
                         >
+                        <BinManagement />
                         </LazyLoadComponent>
                     </div>
                 </div>

@@ -64,7 +64,7 @@ function templateImport(translate) {
                     },
                     {
                         key: "year",
-                        value: translate('human_resource.holiday.year'),
+                        value: translate('human_resource.work_plan.year'),
                         width: 10
                     },
                     {

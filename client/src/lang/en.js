@@ -32,6 +32,7 @@ export default {
             no_data: 'No data',
             success: 'Successfully',
             error: 'Error',
+            new_notification: 'You have new notification!',
             auth_alert: {
                 title: 'Current Session invalid. Please log in again',
                 reason: 'Reasons maybe:',
@@ -161,6 +162,11 @@ export default {
                 company_not_found: 'Company not found',
                 link_exist: 'Link exist',
                 component_exist: 'Component exist',
+
+                update_company_links_success: 'Update company link successfully',
+                update_company_links_faile: 'Update company link faile',
+                update_company_components_success: 'Update company component successfully',
+                update_company_components_faile: 'Update company component faile',
             },
 
             system_setting: {
@@ -285,6 +291,20 @@ export default {
             }
         },
         super_admin: {
+            system: {
+                restore_backup: 'Restore backup',
+                delete_backup: 'Delete backup',
+
+                get_backup_list_success: 'Get backup list successfully',
+                get_backup_list_faile: 'Get backup list faile',
+                create_backup_success: 'Create backup successfully',
+                create_backup_faile: 'Create backup faile',
+                delete_backup_success: 'Delete backup successfully',
+                delete_backup_faile: 'Delete backup faile',
+                restore_data_success: 'Restore data successfully',
+                restore_data_faile: 'Restore data faile',
+            },
+
             organization_unit: {
                 //Thông điệp trả về từ server
                 create_department_success: 'Create organizational unit success',
@@ -637,6 +657,7 @@ export default {
         menu: {
             home: 'Home Page',
             system_administration: 'System Administration',
+            manage_configuration: 'Configuration',
             manage_system: 'Backup and Restore',
             manage_company: 'Manage Company',
             manage_role: 'Manage Roles',
@@ -669,7 +690,7 @@ export default {
             account: 'Account',
             annual_leave_personal: 'Annual Leave',
             manage_unit: 'Manage Units',
-            manage_holiday: 'Manage Work Plan',
+            manage_work_plan: 'Manage Work Plan',
             add_employee: 'Add New Staffs',
             list_employee: 'Manage Staffs Information',
             detail_employee: 'Personal Information',
@@ -683,7 +704,6 @@ export default {
             training_plan: 'Manage Training Courses',
 
             manage_warehouse: 'Manage warehouses',
-            material_manager: 'Manage materials information',
             dashboard_material: "Dashboad manage materials",
 
             manage_kpi: 'Manage KPI',
@@ -744,8 +764,18 @@ export default {
             task_report: 'Manage task reports',
 
             //QUẢN LÝ ĐƠN HÀNG
-            manage_orders: "Manage Orders",
-            manage_list_orders: "Manage List Orders",
+            manage_orders: 'Manage Order',
+            manage_sales_order: 'Sales Order',
+            manage_manufacturing_order: 'Manufacturing Order',
+            manage_purchase_order: 'PurchaseOrder',
+            manage_quoter: 'Quoter',
+            manage_quoter_dashboard: 'Quoter Dashboard',
+            manage_sales_order_dashboard: 'Sales Order Dashboard',
+            manage_purchase_order_dashboard: 'Purchase Order Dashboard ',
+            manage_manufacturing_order_dashboard: 'Manufacturing Order Dashboard',
+            manage_discount: 'Discount',
+            manage_tax: 'Tax',
+            manage_sla: 'Service Level Agreement',
 
             //QUẢN LÝ KẾ HOẠCH SẢN XUẤT
             manage_plans: "Manage Plans",
@@ -754,6 +784,18 @@ export default {
             manage_examples: "CRUD example",
             manage_examples_1: "CRUD by model 1",
             manage_examples_2: "CRUD by model 2",
+
+            // Quản lý sản xuất
+            manage_manufacturing: "Quản lý sản xuất",
+            manage_manufacturing_plan: "Quản lý kế hoạch sản xuất",
+            manage_manufacturing_command: "Quản lý lệnh sản xuất",
+            manage_manufacturing_process: "Quản lý tiến độ sản xuất",
+            manage_manufacturing_schedule: "Quản lý lịch sản xuất",
+            manage_purchasing_request: "Quản lý phiếu mua hàng",
+            track_order: "Theo dõi đơn hàng",
+            analysis_manufacturing_performance: "Phân tích hiệu suất sản xuất",
+            manage_manufacturing_works: "Quản lý nhà máy sản xuất",
+            manage_manufacturing_mill: "Quản lý xưởng sản xuất"
         },
 
         manage_system: {
@@ -879,6 +921,26 @@ export default {
             edit_faile: 'Edit failed!',
         },
 
+        // Modules cấu hình các chức năng
+        module_configuration: {
+            timekeeping_type: 'Timekeeping type',
+            contract_notice_time: 'Notice of contract expiration (date)',
+            contract_notice_time_title: 'Notice advance of contract expiration',
+            shift1_time: 'Number hours of shift 1 (hour)',
+            shift2_time: 'Number hours of shift 2 (hour)',
+            shift3_time: 'Number hours of overtime (hour)',
+
+            shift: 'Timekeeping by shift',
+            hours: 'Timekeeping by the hour',
+            shift_and_hour: 'Timekeeping by shift and hour',
+
+            // Thông điệp trả về từ server
+            get_configuration_success: 'Get configuration success',
+            get_configuration_faile: 'Get configuration faile',
+            edit_configuration_success: 'Edit configuration success',
+            edit_configuration_faile: 'Edit configuration faile',
+        },
+
         // Module Quản lý nhân sự
         human_resource: {
             // Nhóm dùng chung cho module quản lý nhân sự
@@ -985,9 +1047,9 @@ export default {
 
                 // Nhóm dành cho trạng thái nghỉ phép 
                 status: {
-                    pass: 'Accepted',
-                    faile: 'Refused',
-                    process: 'Awaiting approval',
+                    approved: 'Approved',
+                    disapproved: 'Disapproved',
+                    waiting_for_approval: 'Waiting for approval',
                 },
 
                 // Nhóm dành cho action
@@ -1254,7 +1316,7 @@ export default {
                 add_default_title: 'Add the default document',
                 edit_file: 'Edit attached documents',
                 add_file: 'Add attached documents',
-                no_submitted: 'Not submitted',
+                not_submitted_yet: 'Not submitted',
                 submitted: 'Submitted',
                 returned: 'Returned',
                 no_files: 'No files yet',
@@ -1423,7 +1485,7 @@ export default {
             },
 
             // Quản lý kế hoạch làm việc (lịch nghỉ lễ tết)
-            holiday: {
+            work_plan: {
                 file_name_export: 'Work plan',
                 number_date_leave_of_year: 'Maximum number of leave days',
                 date_year: 'date/year',
@@ -1444,15 +1506,15 @@ export default {
                 },
 
                 // Nhóm thể loại kế hoạch làm Việc
-                holiday: 'Time off holidays, Tet holidays',
-                auto_leave: 'Time is allowed to take leave',
-                no_leave: 'Time is not allowed to take leave',
+                time_for_holiday: 'Time off holidays, Tet holidays',
+                time_allow_to_leave: 'Time is allowed to take leave',
+                time_not_allow_to_leave: 'Time is not allowed to take leave',
 
                 // Nhóm dành cho action
-                edit_holiday: 'Edit work schedule',
-                delete_holiday: 'Delete work schedule',
-                add_holiday: 'Add work schedule',
-                add_holiday_title: 'Add new work schedule',
+                edit_work_plan: 'Edit work schedule',
+                delete_work_plan: 'Delete work schedule',
+                add_work_plan: 'Add work schedule',
+                add_work_plan_title: 'Add new work schedule',
                 add_by_hand: 'Add one work schedule',
                 add_import: 'Import file excel',
                 accept_application: 'Accept leave application',
@@ -1463,19 +1525,19 @@ export default {
                 start_date_required: 'Start date required',
                 end_date_required: 'End date required',
                 reason_required: 'Description required',
-                holiday_duplicate_required: 'Time is overlapping',
+                work_plan_duplicate_required: 'Time is overlapping',
                 edit_number_date_leave_of_year_success: 'Change the number of days off in the year success',
 
-                get_holiday_success: 'Get work schedule success',
-                get_holiday_faile: 'Get work schedule faile',
-                create_holiday_success: 'Create work schedule success',
-                create_holiday_faile: 'Create work schedule faile',
-                delete_holiday_success: 'Delete work schedule success',
-                delete_holiday_faile: 'Delete work schedule faile',
-                edit_holiday_success: 'Edit work schedule success',
-                edit_holiday_faile: 'Edit work schedule faile',
-                import_holiday_success: 'Import work schedule success',
-                import_holiday_faile: 'Import work schedule faile',
+                get_work_plan_success: 'Get work schedule success',
+                get_work_plan_faile: 'Get work schedule faile',
+                create_work_plan_success: 'Create work schedule success',
+                create_work_plan_faile: 'Create work schedule faile',
+                delete_work_plan_success: 'Delete work schedule success',
+                delete_work_plan_faile: 'Delete work schedule faile',
+                edit_work_plan_success: 'Edit work schedule success',
+                edit_work_plan_faile: 'Edit work schedule faile',
+                import_work_plan_success: 'Import work schedule success',
+                import_work_plan_faile: 'Import work schedule faile',
 
             },
 
@@ -1485,11 +1547,13 @@ export default {
                 symbol: ' Symbol',
                 not_work: 'Not work',
                 do_work: 'Do work',
-                total_timesheets: 'Total work date',
+                total_timesheets: 'Total hours',
+                total_hours_off: 'Total hours off',
                 work_date_in_month: 'Work date in month',
                 shift_work: 'Shift work',
-                shifts1: 'shifts 1',
-                shifts2: 'shifts 2',
+                shifts1: 'Shifts 1',
+                shifts2: 'Shifts 2',
+                shifts3: 'Overtime',
                 date_of_month: 'The days of the month',
 
                 // Nhóm dành cho action
@@ -1556,6 +1620,7 @@ export default {
                 with_cost: 'with a cost of',
                 commitment_time: 'and commitment time',
                 month: 'months',
+                year: 'year',
                 staff: 'staff',
                 attend: 'involved',
 
@@ -1704,11 +1769,16 @@ export default {
                 manager: 'Manager',
                 user: 'User',
                 organization_unit: 'Organizaitonal Unit',
+                select_organization_unit: 'Select organization unit',
+                select_all_organization_unit: 'Select all',
                 handover_from_date: 'Handover from date',
                 handover_to_date: 'Handover to date',
                 status: 'Status',
                 action: 'Action',
                 asset_value: 'Asset value',
+                disposal_date: 'Disposal date',
+                not_disposal: 'Not disposal yet',
+
 
                 general_information: 'General information',
                 usage_information: 'Usage information',
@@ -1742,6 +1812,8 @@ export default {
                 reported_by: 'Announcer',
                 incident_type: 'Incident type',
                 date_incident: 'Date of incident',
+                select_incident_type: 'Select incident type',
+                select_all_incident_type: 'Select all incident types',
 
                 disposal_date: 'Disposal date',
                 disposal_type: 'Disposal type',
@@ -1752,6 +1824,16 @@ export default {
                 file_name: 'File name',
                 number: 'Amount',
                 attached_file: 'Attached files',
+
+                select_role_to_use: 'Select type to use',
+                select_all_roles_to_use: 'Select all types',
+                not_for_registering: 'Not for registering',
+                register_by_hour: 'Register by hour',
+                register_for_long_term: 'Register for long term',
+
+                create_reception_date: 'Reception date',
+                select_reception_type: 'Select reception type',
+                select_all_reception_type: 'Select all reception types',
             },
 
             // Dashboard
@@ -1782,6 +1864,8 @@ export default {
                 incident_asset: 'Statistics incident asset chart',
                 maintenance_asset: 'Statistics maintenance asset chart',
                 statistic_by: 'Statistic by',
+                expired: 'Exprired',
+                remaining_time: 'Remaining time',
             },
 
             //  Quản lý loại tài sản
@@ -1807,8 +1891,8 @@ export default {
                 field_name: 'Name of properties',
                 value: 'Value',
 
-                usage_logs: 'Allocation history - transfer - withdrawal',
-                maintainance_logs: 'Repair history - replacement - upgrade',
+                usage_logs: 'Usage log',
+                maintainance_logs: 'Maintainance logs',
                 incident_list: 'Asset incident list',
                 file_list: 'List of documents attached',
                 edit_document: 'Edit documents attached',
@@ -1900,6 +1984,7 @@ export default {
                 months_production: 'Product production in months',
                 production: 'Production',
                 select_depreciation_type: 'Select depreciation type',
+                select_all_depreciation_type: 'Select all',
                 line: 'Straight - line depreciation method',
                 declining_balance: 'Declining Balance depreciation method',
                 units_production: 'Unit of production method',
@@ -2153,9 +2238,9 @@ export default {
                 tasks_calendar: 'Tasks calendar',
                 model_detail_task_title: 'Detail task',
                 collaborative_tasks: 'Multiple employees',
-                in_time: 'In time',
-                delayed_time: 'Delayed',
-                not_achieved: 'Overdue',
+                in_time: 'In time ',
+                delayed_time: 'Delayed ',
+                not_achieved: 'Overdue ',
 
                 col_name: 'Name of task',
                 col_organization: 'Department',
@@ -2645,7 +2730,7 @@ export default {
                         initialize_kpi_newmonth: 'Initialize KPI new month',
                         request_approval: 'Request for approval',
                         cancel_request_approval: 'Cancel request for approval',
-                        not_initialize_organiztional_unit_kpi: 'Cannot initialize kpi on this month bacause your unit has not initialized kpi on this month yet, please contact the manager of your unit',
+                        not_initialize_organiztional_unit_kpi: 'Your unit has not initialized kpi on this month yet, please contact the manager of your unit',
                         not_activate_organiztional_unit_kpi: 'Your unit has not activated kpi on this month yet, please contact the manager of your unit',
 
                         // Nhóm dành cho các trạng thái tập KPI
@@ -2712,6 +2797,10 @@ export default {
                             edit: 'Edit',
                             content: 'This is the default target (if necessary, weights can be corrected)',
                             delete: 'Delete'
+                        },
+                        add_new_target: {
+                            approving: 'KPI is being approved, you can not create new target!',
+                            activated: 'KPI is being activated, you can not create new target!'
                         },
                         handle_populate_info_null: {
                             error_kpi_approver_null: 'Error! The approver of this KPI set is not exist or was deleted',
@@ -3164,28 +3253,6 @@ export default {
         },
 
         manage_warehouse: {
-            material_manager: {
-                index: 'Index',
-                add: 'Add material',
-                add_title: 'Add new material',
-                info: 'Material information',
-                edit: 'Edit material information',
-                delete: 'Delete material',
-                add_success: 'Add new material successfully',
-                add_faile: 'Add new material failed',
-                delete_success: 'Delete material successfully',
-                delete_faile: 'Delete material failed',
-                edit_success: 'Edit material successfully',
-                edit_faile: 'Edit material failed',
-                date: 'Date',
-                name: 'User name',
-                code: 'Code',
-                cost: 'Cost',
-                description: 'Description',
-                serial: 'Serial',
-                purchaseDate: 'Purchase date',
-                location: 'Location'
-            },
             dashboard_material: {
 
             }

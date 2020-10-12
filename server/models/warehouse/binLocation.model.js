@@ -4,11 +4,6 @@ const mongoosePaginate = require('mongoose-paginate-v2');
 
 const BinLocationSchema = new Schema ({
 
-    company: {
-        type: Schema.Types.ObjectId,
-        ref: "companies"
-    },
-
     parent: {
         type: Schema.Types.ObjectId,
         replies: this
@@ -17,6 +12,10 @@ const BinLocationSchema = new Schema ({
     child: {
         type: Schema.Types.ObjectId,
         replies: this
+    },
+
+    path: {
+        type: String
     },
 
     code: {
@@ -35,27 +34,27 @@ const BinLocationSchema = new Schema ({
 
     stock: {
         type: Schema.Types.ObjectId,
-        ref: "stocks"
+        ref: 'Stock'
     },
 
     status: {
         type: String,
-        enum: [""]
+        enum: ["1", "2", "3", "4"]
     },
 
     users: [{
         type: Schema.Types.ObjectId,
-        ref: "users"
+        ref: 'User'
     }],
 
     goods: [{
         type: Schema.Types.ObjectId,
-        ref: "goods"
+        ref: 'Good'
     }],
 
     enableGoods: [{
         type: Schema.Types.ObjectId,
-        ref: "goods"
+        ref: 'Good'
     }],
 
     capacity: {
@@ -73,4 +72,8 @@ const BinLocationSchema = new Schema ({
 
 BinLocationSchema.plugin(mongoosePaginate);
 
-module.exports = BinLocation = mongoose.model("binLocations", BinLocationSchema);
+module.exports = (db) =>{
+    if(!db.models.BinLocation)
+        return db.model('BinLocation', BinLocationSchema);
+    return db.models.BinLocation;
+}

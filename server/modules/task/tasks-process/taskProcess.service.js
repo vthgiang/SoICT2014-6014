@@ -1,6 +1,7 @@
-const { TaskProcess, ProcessTemplate } = require('../../../models').schema;
-const { User, Privilege, Role, Task } = require('../../../models/index').schema;
-const TaskService = require('../task-management/task.service');
+const { TaskProcess, ProcessTemplate, Privilege, Role, Task, UserRole } = require(`${SERVER_MODELS_DIR}`);
+
+const TaskService = require(`${SERVER_MODULES_DIR}/task/task-management/task.service`);
+const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 const nodemailer = require("nodemailer");
 const mongoose = require('mongoose');
 
@@ -8,12 +9,12 @@ const mongoose = require('mongoose');
  * Lấy tất cả xml diagram
  * @param {Object} query tham số query gửi đến
  */
-exports.getAllXmlDiagram = async (query) => {
+exports.getAllXmlDiagram = async (portal, query) => {
     let userId = query.userId;
     let name = query.name;
     let pageNumber = query.pageNumber;
     let noResultsPerPage = query.noResultsPerPage;
-    let roles = await UserRole.find({ userId: userId }).populate({ path: "roleId" });
+    let roles = await UserRole(connect(DB_CONNECTION, portal)).find({ userId: userId }).populate({ path: "roleId" });
     let newRoles = roles.map(role => role.roleId);
 
     // lấy tất cả các role con của role người dùng có
@@ -25,7 +26,7 @@ exports.getAllXmlDiagram = async (query) => {
     let taskProcesses = [];
     let roleId = allRole.map(function (el) { return mongoose.Types.ObjectId(el) });
 
-    var taskProcess = await ProcessTemplate.aggregate([
+    var taskProcess = await ProcessTemplate(connect(DB_CONNECTION, portal)).aggregate([
         { $match: { processName: { "$regex": name, "$options": "i" } } },
         {
             $lookup:
@@ -52,7 +53,7 @@ exports.getAllXmlDiagram = async (query) => {
                 as: "privileges"
             }
         },
-        { $unwind: "$privileges" },
+        // { $unwind: "$privileges" },
         {
             $facet: {
                 processes: [{ $sort: { 'createdAt': 1 } },
@@ -69,9 +70,9 @@ exports.getAllXmlDiagram = async (query) => {
     ])
 
     taskProcesses = taskProcess[0].processes;
-    await ProcessTemplate.populate(taskProcesses, { path: 'creator', model: User, select: 'name' });
-    await ProcessTemplate.populate(taskProcesses, { path: 'manager', model: Role, select: 'name' });
-    await ProcessTemplate.populate(taskProcesses, { path: 'viewer', model: Role, select: 'name' });
+    await ProcessTemplate(connect(DB_CONNECTION, portal)).populate(taskProcesses, { path: 'creator', select: 'name' });
+    await ProcessTemplate(connect(DB_CONNECTION, portal)).populate(taskProcesses, { path: 'manager', select: 'name' });
+    await ProcessTemplate(connect(DB_CONNECTION, portal)).populate(taskProcesses, { path: 'viewer', select: 'name' });
 
     let totalCount = 0;
     if (JSON.stringify(taskProcesses) !== JSON.stringify([])) {
@@ -87,8 +88,8 @@ exports.getAllXmlDiagram = async (query) => {
  * Lấy diagram theo id
  * @param {*} params 
  */
-exports.getXmlDiagramById = (params) => {
-    let data = ProcessTemplate.findById(params.diagramId);
+exports.getXmlDiagramById = (portal, params) => {
+    let data = ProcessTemplate(connect(DB_CONNECTION, portal)).findById(params.diagramId);
     return data
 }
 
@@ -96,7 +97,7 @@ exports.getXmlDiagramById = (params) => {
  * Tạo mới 1 xml diagram
  * @param {*} body dữ liệu diagram cần tạo
  */
-exports.createXmlDiagram = async (body) => {
+exports.createXmlDiagram = async (portal, body) => {
     let info = [];
     for (const x in body.info) {
         // if (Object.keys(body.info[x]).length > 4) {
@@ -124,7 +125,7 @@ exports.createXmlDiagram = async (body) => {
         // }
     }
     console.log(info)
-    let data = await ProcessTemplate.create({
+    let data = await ProcessTemplate(connect(DB_CONNECTION, portal)).create({
         xmlDiagram: body.xmlDiagram,
         processName: body.processName,
         processDescription: body.processDescription,
@@ -139,7 +140,7 @@ exports.createXmlDiagram = async (body) => {
     let roleId = [];
     let role, roleParent;
 
-    role = await Role.find({ _id: { $in: read } });
+    role = await Role(connect(DB_CONNECTION, portal)).find({ _id: { $in: read } });
     roleParent = role.map(item => item.parents);   // lấy ra các parent của các role
 
     let flag;
@@ -170,7 +171,7 @@ exports.createXmlDiagram = async (body) => {
         }
     }
     for (let i in roleId) {
-        await Privilege.create({
+        await Privilege(connect(DB_CONNECTION, portal)).create({
             roleId: roleId[i], //id của người cấp quyền xem
             resourceId: data._id,
             resourceType: "ProcessTemplate",
@@ -178,10 +179,9 @@ exports.createXmlDiagram = async (body) => {
         });
     }
 
-    data = await ProcessTemplate.findById(data._id).populate([{ path: 'creator', model: User, select: 'name' }, { path: 'manager', model: Role, select: 'name' }]);
+    data = await ProcessTemplate(connect(DB_CONNECTION, portal)).findById(data._id).populate([{ path: 'creator', select: 'name' }, { path: 'manager', select: 'name' } ]);
     return data;
 }
-
 
 
 /**
@@ -189,7 +189,7 @@ exports.createXmlDiagram = async (body) => {
  * @param {*} params 
  * @param {*} body dữ liệu gửi vào body từ client
  */
-exports.editXmlDiagram = async (params, body) => {
+exports.editXmlDiagram = async (portal, params, body) => {
     let info = [];
     for (let x in body.info) {
         if (Object.keys(body.info[x]).length > 4) {
@@ -214,7 +214,7 @@ exports.editXmlDiagram = async (params, body) => {
             info.push(body.info[x])
         }
     }
-    let data = await ProcessTemplate.findByIdAndUpdate(params.diagramId,
+    let data = await ProcessTemplate(connect(DB_CONNECTION, portal)).findByIdAndUpdate(params.diagramId,
         {
             $set: {
                 xmlDiagram: body.xmlDiagram,
@@ -234,8 +234,8 @@ exports.editXmlDiagram = async (params, body) => {
         pageNumber: body.pageNumber,
         noResultsPerPage: body.noResultsPerPage,
     }
-    let data1 = await this.getAllXmlDiagram(queryData);
-    // let data1 = await ProcessTemplate.find().populate({ path: 'creator', model: User, select: 'name' });
+    let data1 = await this.getAllXmlDiagram(portal, queryData);
+    // let data1 = await ProcessTemplate(connect(DB_CONNECTION, portal)).find().populate({ path: 'creator', select: 'name' });
     return data1;
 }
 
@@ -243,11 +243,11 @@ exports.editXmlDiagram = async (params, body) => {
  * Xóa diagram theo id { data: taskProcesses, pageTotal: totalPages };
  * @param {ObjectId} diagramId 
  */
-exports.deleteXmlDiagram = async (diagramId, query) => {
-    await ProcessTemplate.findOneAndDelete({
+exports.deleteXmlDiagram = async (portal, diagramId, query) => {
+    await ProcessTemplate(connect(DB_CONNECTION, portal)).findOneAndDelete({
         _id: diagramId,
     });
-    await Privilege.findOneAndDelete({ resourceId: diagramId, resourceType: "ProcessTemplate" })
+    await Privilege(connect(DB_CONNECTION, portal)).findOneAndDelete({ resourceId: diagramId, resourceType: "ProcessTemplate" })
 
     let queryData = {
         userId: query.userId,
@@ -257,7 +257,7 @@ exports.deleteXmlDiagram = async (diagramId, query) => {
         noResultsPerPage: query.noResultsPerPage,
     }
 
-    let data = await this.getAllXmlDiagram(queryData);
+    let data = await this.getAllXmlDiagram(portal, queryData);
     return data;
 }
 
@@ -278,7 +278,7 @@ isStartTask = (task) => {
  * @param {String} processId Id của quy trình
  * @param {Object} body dữ liệu từ body
  */
-exports.createTaskByProcess = async (processId, body) => {
+exports.createTaskByProcess = async (portal, processId, body) => {
     let data = body.taskList;
     let level;
 
@@ -287,7 +287,7 @@ exports.createTaskByProcess = async (processId, body) => {
     splitter = body.endDate.split("-");
     let endDateProcess = new Date(splitter[2], splitter[1] - 1, splitter[0]);
 
-    let newTaskProcess = await TaskProcess.create({
+    let newTaskProcess = await TaskProcess(connect(DB_CONNECTION, portal)).create({
         processTemplate: processId,
         xmlDiagram: body.xmlDiagram,
         processName: body.processName,
@@ -335,7 +335,7 @@ exports.createTaskByProcess = async (processId, body) => {
         }
 
         let process = taskProcessId;
-        let newTaskItem = await Task.create({
+        let newTaskItem = await Task(connect(DB_CONNECTION, portal)).create({
             process: process,
             codeInProcess: data[i].code,
             numberOfDaysTaken: data[i].numberOfDaysTaken,
@@ -361,7 +361,7 @@ exports.createTaskByProcess = async (processId, body) => {
             confirmedByEmployees: data[i].responsibleEmployees.concat(data[i].accountableEmployees).concat(data[i].consultedEmployees).includes(data[i].creator) ? data[i].creator : []
         });
 
-        let x = await TaskService.sendEmailFoCreateTask(newTaskItem);
+        let x = await TaskService.sendEmailForCreateTask(portal, newTaskItem);
 
         mailInfoArr.push(x);
         listTask.push(newTaskItem._id);
@@ -371,7 +371,7 @@ exports.createTaskByProcess = async (processId, body) => {
         let listFollowingTask = [];
         let listPreceedingTask = [];
         for (let i in data[x].followingTasks) {
-            let item = await Task.findOne({ process: taskProcessId, codeInProcess: data[x].followingTasks[i].task });
+            let item = await Task(connect(DB_CONNECTION, portal)).findOne({ process: taskProcessId, codeInProcess: data[x].followingTasks[i].task });
 
             if (item) {
                 if (item.status === "inprocess") {
@@ -391,7 +391,7 @@ exports.createTaskByProcess = async (processId, body) => {
             }
         }
         for (let i in data[x].preceedingTasks) {
-            let item = await Task.findOne({ process: taskProcessId, codeInProcess: data[x].preceedingTasks[i].task });
+            let item = await Task(connect(DB_CONNECTION, portal)).findOne({ process: taskProcessId, codeInProcess: data[x].preceedingTasks[i].task });
 
             if (item) {
                 listPreceedingTask.push({
@@ -402,7 +402,7 @@ exports.createTaskByProcess = async (processId, body) => {
 
         }
 
-        await Task.findOneAndUpdate(
+        await Task(connect(DB_CONNECTION, portal)).findOneAndUpdate(
             { process: taskProcessId, codeInProcess: data[x].code },
             {
                 $set: {
@@ -413,14 +413,14 @@ exports.createTaskByProcess = async (processId, body) => {
             { new: true }
         )
     }
-    await ProcessTemplate.findByIdAndUpdate(processId, { $inc: { 'numberOfUse': 1 } }, { new: true });
+    await ProcessTemplate(connect(DB_CONNECTION, portal)).findByIdAndUpdate(processId, { $inc: { 'numberOfUse': 1 } }, { new: true });
 
-    await TaskProcess.findByIdAndUpdate(taskProcessId, { $set: { tasks: listTask } }, { new: true });
+    await TaskProcess(connect(DB_CONNECTION, portal)).findByIdAndUpdate(taskProcessId, { $set: { tasks: listTask } }, { new: true });
 
-    let myProcess = await ProcessTemplate.find().populate([
-        { path: 'creator', model: User, select: 'name' },
-        { path: 'viewer', model: Role, select: 'name' },
-        { path: 'manager', model: Role, select: 'name' },
+    let myProcess = await ProcessTemplate(connect(DB_CONNECTION, portal)).find().populate([
+        { path: 'creator', select: 'name' },
+        { path: 'viewer', select: 'name' },
+        { path: 'manager', select: 'name' },
     ]);;
 
     return { process: myProcess, mailInfo: mailInfoArr }
@@ -430,14 +430,14 @@ exports.createTaskByProcess = async (processId, body) => {
  * lấy tất cả các quy trình công việc được tạo
  * @param {Object} query Dữ liệu query
  */
-exports.getAllTaskProcess = async (query) => {
+exports.getAllTaskProcess = async (portal, query) => {
     // let { name, noResultsPerPage, pageNumber } = query;
     let name = query.name;
     let noResultsPerPage = parseInt(query.noResultsPerPage);
     let pageNumber = parseInt(query.pageNumber);
     let userId = query.userId;
 
-    let data = await TaskProcess.find({
+    let data = await TaskProcess(connect(DB_CONNECTION, portal)).find({
         processName: { $regex: name, $options: 'i' },
         $or: [
             { viewer: { $in: [userId] } },
@@ -445,32 +445,32 @@ exports.getAllTaskProcess = async (query) => {
         ]
     }).skip(noResultsPerPage * (pageNumber - 1)).limit(noResultsPerPage)
         .populate([
-            { path: 'creator', model: User, select: 'name' },
-            // { path: 'viewer', model: User, select: 'name' },
-            { path: 'manager', model: User, select: 'name' },
+            { path: 'creator', select: 'name' },
+            // { path: 'viewer', select: 'name' },
+            { path: 'manager', select: 'name' },
             {
-                path: 'tasks', model: Task, populate: [
+                path: 'tasks', populate: [
                     { path: "parent", select: "name" },
                     { path: "taskTemplate", select: "formula" },
-                    { path: "organizationalUnit", model: OrganizationalUnit },
-                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
+                    { path: "organizationalUnit", },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", select: "name email _id" },
                     { path: "evaluations.results.employee", select: "name email _id" },
                     { path: "evaluations.results.organizationalUnit", select: "name _id" },
                     { path: "evaluations.results.kpis" },
-                    { path: "taskActions.creator", model: User, select: 'name email avatar' },
-                    { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
-                    { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
-                    { path: "taskComments.creator", model: User, select: 'name email avatar' },
-                    { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
-                    { path: "documents.creator", model: User, select: 'name email avatar' },
-                    { path: "process", model: TaskProcess },
+                    { path: "taskActions.creator", select: 'name email avatar' },
+                    { path: "taskActions.comments.creator", select: 'name email avatar' },
+                    { path: "taskActions.evaluations.creator", select: 'name email avatar ' },
+                    { path: "taskComments.creator", select: 'name email avatar' },
+                    { path: "taskComments.comments.creator", select: 'name email avatar' },
+                    { path: "documents.creator", select: 'name email avatar' },
+                    { path: "process" },
                 ]
             },
-            { path: 'processTemplate', model: ProcessTemplate, select: 'processName' },
+            { path: 'processTemplate', select: 'processName' },
         ]);
 
 
-    let totalCount = await TaskProcess.countDocuments({
+    let totalCount = await TaskProcess(connect(DB_CONNECTION, portal)).countDocuments({
         processName: { $regex: name, $options: 'i' },
         $or: [
             { viewer: { $in: [userId] } },
@@ -490,12 +490,12 @@ exports.getAllTaskProcess = async (query) => {
  * @param {String} params tham số 
  * @param {Object} body dữ liệu body
  */
-exports.updateDiagram = async (params, body) => {
-    let diagram = await TaskProcess.findByIdAndUpdate(params.processId,
+exports.updateDiagram = async (portal, params, body) => {
+    let diagram = await TaskProcess(connect(DB_CONNECTION, portal)).findByIdAndUpdate(params.processId,
         { $set: { xmlDiagram: body.diagram } },
         { new: true }
     )
-    let data = await TaskProcess.find({
+    let data = await TaskProcess(connect(DB_CONNECTION, portal)).find({
         processName: { $regex: name, $options: 'i' },
         $or: [
             { viewer: { $in: [userId] } },
@@ -503,32 +503,32 @@ exports.updateDiagram = async (params, body) => {
         ]
     }).skip(0).limit(5)
         .populate([
-            { path: 'creator', model: User, select: 'name' },
-            // { path: 'viewer', model: User, select: 'name' },
-            { path: 'manager', model: User, select: 'name' },
+            { path: 'creator', select: 'name' },
+            // { path: 'viewer', select: 'name' },
+            { path: 'manager', select: 'name' },
             {
-                path: 'tasks', model: Task, populate: [
+                path: 'tasks', populate: [
                     { path: "parent", select: "name" },
                     { path: "taskTemplate", select: "formula" },
-                    { path: "organizationalUnit", model: OrganizationalUnit },
-                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
+                    { path: "organizationalUnit", },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", select: "name email _id" },
                     { path: "evaluations.results.employee", select: "name email _id" },
                     { path: "evaluations.results.organizationalUnit", select: "name _id" },
                     { path: "evaluations.results.kpis" },
-                    { path: "taskActions.creator", model: User, select: 'name email avatar' },
-                    { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
-                    { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
-                    { path: "taskComments.creator", model: User, select: 'name email avatar' },
-                    { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
-                    { path: "documents.creator", model: User, select: 'name email avatar' },
-                    { path: "process", model: TaskProcess },
+                    { path: "taskActions.creator", select: 'name email avatar' },
+                    { path: "taskActions.comments.creator", select: 'name email avatar' },
+                    { path: "taskActions.evaluations.creator", select: 'name email avatar ' },
+                    { path: "taskComments.creator", select: 'name email avatar' },
+                    { path: "taskComments.comments.creator", select: 'name email avatar' },
+                    { path: "documents.creator", select: 'name email avatar' },
+                    { path: "process" },
                 ]
             },
-            { path: 'processTemplate', model: ProcessTemplate, select: 'processName' },
+            { path: 'processTemplate', select: 'processName' },
         ]);
 
 
-    let totalCount = await TaskProcess.countDocuments({
+    let totalCount = await TaskProcess(connect(DB_CONNECTION, portal)).countDocuments({
         processName: { $regex: name, $options: 'i' },
         $or: [
             { viewer: { $in: [userId] } },
@@ -546,7 +546,7 @@ exports.updateDiagram = async (params, body) => {
  * @param {String} params tham số 
  * @param {Object} body dữ liệu body
  */
-exports.editProcessInfo = async (params, body) => {
+exports.editProcessInfo = async (portal, params, body) => {
     let { processName, processDescription, status, startDate, endDate, viewer } = body;
 
     let splitterStartDate = startDate.split('-');
@@ -554,7 +554,7 @@ exports.editProcessInfo = async (params, body) => {
     let splitterEndDate = endDate.split('-');
     let end = new Date(splitterEndDate[2], splitterEndDate[1] - 1, splitterEndDate[0]);
 
-    let diagram = await TaskProcess.findByIdAndUpdate(params.processId,
+    let diagram = await TaskProcess(connect(DB_CONNECTION, portal)).findByIdAndUpdate(params.processId,
         {
             $set: {
                 processName: processName,
@@ -567,30 +567,30 @@ exports.editProcessInfo = async (params, body) => {
         },
         { new: true }
     )
-    let newProcess = await TaskProcess.findById(params.processId)
+    let newProcess = await TaskProcess(connect(DB_CONNECTION, portal)).findById(params.processId)
         .populate([
-            { path: 'creator', model: User, select: 'name' },
-            // { path: 'viewer', model: User, select: 'name' },
-            { path: 'manager', model: User, select: 'name' },
+            { path: 'creator', select: 'name' },
+            // { path: 'viewer', select: 'name' },
+            { path: 'manager', select: 'name' },
             {
-                path: 'tasks', model: Task, populate: [
+                path: 'tasks', populate: [
                     { path: "parent", select: "name" },
                     { path: "taskTemplate", select: "formula" },
-                    { path: "organizationalUnit", model: OrganizationalUnit },
-                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
+                    { path: "organizationalUnit", },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", select: "name email _id" },
                     { path: "evaluations.results.employee", select: "name email _id" },
                     { path: "evaluations.results.organizationalUnit", select: "name _id" },
                     { path: "evaluations.results.kpis" },
-                    { path: "taskActions.creator", model: User, select: 'name email avatar' },
-                    { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
-                    { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
-                    { path: "taskComments.creator", model: User, select: 'name email avatar' },
-                    { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
-                    { path: "documents.creator", model: User, select: 'name email avatar' },
-                    { path: "process", model: TaskProcess },
+                    { path: "taskActions.creator", select: 'name email avatar' },
+                    { path: "taskActions.comments.creator", select: 'name email avatar' },
+                    { path: "taskActions.evaluations.creator", select: 'name email avatar ' },
+                    { path: "taskComments.creator", select: 'name email avatar' },
+                    { path: "taskComments.comments.creator", select: 'name email avatar' },
+                    { path: "documents.creator", select: 'name email avatar' },
+                    { path: "process" },
                 ]
             },
-            { path: 'processTemplate', model: ProcessTemplate, select: 'processName' },
+            { path: 'processTemplate', select: 'processName' },
         ]);
     return newProcess
 }

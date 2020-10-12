@@ -1,16 +1,21 @@
-const EmployeeService = require('../profile/profile.service');
 const {
     Employee,
     AnnualLeave
-} = require('../../../models').schema;
+} = require(`${SERVER_MODELS_DIR}`);
+
+const {
+    connect
+} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+
+
 
 /**
  * Lấy số lượng ngày nghỉ phép đã được chấp nhận của nhân viên theo email và năm
  * @param {*} email : email công ty nhân viên
  * @param {*} company : Id công ty
  */
-exports.getNumberAnnaulLeave = async (email, year, company) => {
-    let employee = await Employee.findOne({
+exports.getNumberAnnaulLeave = async (portal, email, year, company) => {
+    let employee = await Employee(connect(DB_CONNECTION, portal)).findOne({
         company: company,
         emailInCompany: email
     }, {
@@ -21,17 +26,17 @@ exports.getNumberAnnaulLeave = async (email, year, company) => {
         let firstDay = new Date(year, 0, 1);
         let lastDay = new Date(Number(year) + 1, 0, 1);
 
-        let annulLeaves = await AnnualLeave.find({
+        let annulLeaves = await AnnualLeave(connect(DB_CONNECTION, portal)).find({
             company: company,
             employee: employee._id,
-            status: 'pass',
+            status: 'approved',
             startDate: {
                 "$gt": firstDay,
                 "$lte": lastDay
             }
         });
 
-        let listAnnualLeavesOfOneYear = await AnnualLeave.find({
+        let listAnnualLeavesOfOneYear = await AnnualLeave(connect(DB_CONNECTION, portal)).find({
             company: company,
             employee: employee._id,
             startDate: {
@@ -78,7 +83,7 @@ exports.getNumberAnnaulLeave = async (email, year, company) => {
  * @organizationalUnits : Array id đơn vị tìm kiếm
  * @month : Tháng tìm kiếm
  */
-exports.getTotalAnnualLeave = async (company, organizationalUnits, month) => {
+exports.getTotalAnnualLeave = async (portal, company, organizationalUnits, month) => {
     let keySearch = {
         company: company
     };
@@ -101,7 +106,7 @@ exports.getTotalAnnualLeave = async (company, organizationalUnits, month) => {
         let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
         let firstDayOfYear = new Date(date.getFullYear() - 1, 12, 1);
         let lastDayOfYear = new Date(date.getFullYear(), 12, 1);
-        totalListOfYear = await AnnualLeave.count({
+        totalListOfYear = await AnnualLeave(connect(DB_CONNECTION, portal)).countDocuments({
             ...keySearch,
             startDate: {
                 "$gt": firstDayOfYear,
@@ -126,7 +131,7 @@ exports.getTotalAnnualLeave = async (company, organizationalUnits, month) => {
         let date = new Date();
         let firstDayOfYear = new Date(date.getFullYear() - 1, 12, 1);
         let lastDayOfYear = new Date(date.getFullYear(), 12, 1);
-        totalListOfYear = await AnnualLeave.count({
+        totalListOfYear = await AnnualLeave(connect(DB_CONNECTION, portal)).countDocuments({
             ...keySearch,
             startDate: {
                 "$gt": firstDayOfYear,
@@ -142,7 +147,7 @@ exports.getTotalAnnualLeave = async (company, organizationalUnits, month) => {
         }
     };
 
-    let totalList = await AnnualLeave.count(keySearch);
+    let totalList = await AnnualLeave(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
     return {
         totalList,
         totalListOfYear
@@ -155,76 +160,95 @@ exports.getTotalAnnualLeave = async (company, organizationalUnits, month) => {
  * @param {*} numberMonth : Số tháng cần lấy thông tin nghỉ phép (6 hoặc 12)
  * @param {*} company : Id công ty
  */
-exports.getAnnualLeaveOfNumberMonth = async (organizationalUnits, numberMonth, company) => {
-    let currentMonth = new Date().getMonth();
-    let currentYear = new Date().getFullYear();
-    currentMonth = currentMonth + 1;
-    let arrMonth = [];
-    for (let i = 0; i < Number(numberMonth); i++) {
-        let month = currentMonth - i;
-        if (month > 0) {
-            if (month.toString().length === 1) {
-                month = `${currentYear}-0${month}-01`;
-                arrMonth = [...arrMonth, month];
-            } else {
-                month = `${currentYear}-${month}-01`;
-                arrMonth = [...arrMonth, month];
-            }
-        } else {
-            month = month + 12;
-            if (month.toString().length === 1) {
-                month = `${currentYear-1}-0${month}-01`;
-                arrMonth = [...arrMonth, month];
-            } else {
-                month = `${currentYear-1}-${month}-01`;
-                arrMonth = [...arrMonth, month];
-            }
-        }
-    }
-
-    let querys = [];
-    arrMonth.forEach(x => {
-        let date = new Date(x);
-        let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-        let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
-        querys = [...querys, {
-            startDate: {
-                "$gt": firstDay,
-                "$lte": lastDay
-            }
-        }]
-    })
-
-    if (organizationalUnits) {
-        let listAnnualLeaveOfNumberMonth = await AnnualLeave.find({
-            company: company,
-            status: 'pass',
-            organizationalUnit: {
-                $in: organizationalUnits
-            },
-            "$or": querys
-        }, {
-            startDate: 1,
-            endDate: 1
-        })
-
+exports.getAnnualLeaveByStartDateAndEndDate = async (portal, organizationalUnits, startDate, endDate, company) => {
+    if (new Date(startDate).getTime() > new Date(endDate).getTime()) {
         return {
-            listAnnualLeaveOfNumberMonth,
-            arrMonth
+            arrMonth: [],
+            listAnnualLeaveOfNumberMonth: [],
         }
     } else {
-        let listAnnualLeaveOfNumberMonth = await AnnualLeave.find({
-            company: company,
-            status: 'pass',
-            "$or": querys
-        }, {
-            startDate: 1,
-            endDate: 1
+        let endMonth = new Date(endDate).getMonth();
+        let endYear = new Date(endDate).getFullYear();
+        endMonth = endMonth + 1;
+        let arrMonth = [];
+        for (let i = 0;; i++) {
+            let month = endMonth - i;
+            if (month > 0) {
+                if (month.toString().length === 1) {
+                    month = `${endYear}-0${month}-01`;
+                    arrMonth = [...arrMonth, month];
+                } else {
+                    month = `${endYear}-${month}-01`;
+                    arrMonth = [...arrMonth, month];
+                }
+                if (`${startDate}-01` === month) {
+                    break;
+                }
+            } else {
+                let j = 1;
+                for (j;; j++) {
+                    month = month + 12;
+                    if (month > 0) {
+                        break;
+                    }
+                }
+                if (month.toString().length === 1) {
+                    month = `${endYear-j}-0${month}-01`;
+                    arrMonth = [...arrMonth, month];
+                } else {
+                    month = `${endYear-j}-${month}-01`;
+                    arrMonth = [...arrMonth, month];
+                }
+                if (`${startDate}-01` === month) {
+                    break;
+                }
+            }
+        }
+
+        let querys = [];
+        arrMonth.forEach(x => {
+            let date = new Date(x);
+            let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+            let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
+            querys = [...querys, {
+                startDate: {
+                    "$gt": firstDay,
+                    "$lte": lastDay
+                }
+            }]
         })
 
-        return {
-            listAnnualLeaveOfNumberMonth,
-            arrMonth
+        if (organizationalUnits) {
+            let listAnnualLeaveOfNumberMonth = await AnnualLeave(connect(DB_CONNECTION, portal)).find({
+                company: company,
+                status: 'approved',
+                organizationalUnit: {
+                    $in: organizationalUnits
+                },
+                "$or": querys
+            }, {
+                startDate: 1,
+                endDate: 1
+            })
+
+            return {
+                listAnnualLeaveOfNumberMonth,
+                arrMonth
+            }
+        } else {
+            let listAnnualLeaveOfNumberMonth = await AnnualLeave(connect(DB_CONNECTION, portal)).find({
+                company: company,
+                status: 'approved',
+                "$or": querys
+            }, {
+                startDate: 1,
+                endDate: 1
+            })
+
+            return {
+                listAnnualLeaveOfNumberMonth,
+                arrMonth
+            }
         }
     }
 }
@@ -236,14 +260,14 @@ exports.getAnnualLeaveOfNumberMonth = async (organizationalUnits, numberMonth, c
  * @params : Dữ liệu key tìm kiếm
  * @company : Id công ty người dùng
  */
-exports.searchAnnualLeaves = async (params, company) => {
+exports.searchAnnualLeaves = async (portal, params, company) => {
     let keySearch = {
         company: company
     };
 
     // Bắt sựu kiện tìm kiếm theo MSNV
     if (params.employeeNumber) {
-        let employee = await Employee.find({
+        let employee = await Employee(connect(DB_CONNECTION, portal)).find({
             employeeNumber: {
                 $regex: params.employeeNumber,
                 $options: "i"
@@ -307,14 +331,14 @@ exports.searchAnnualLeaves = async (params, company) => {
             }]
         }
     };
-    let listAnnualLeaves = await AnnualLeave.find(keySearch).populate({
+    let listAnnualLeaves = await AnnualLeave(connect(DB_CONNECTION, portal)).find(keySearch).populate({
             path: 'employee',
             select: 'emailInCompany fullName employeeNumber'
         })
         .sort({
             'createdAt': 'desc'
         }).skip(params.page).limit(params.limit);
-    let totalList = await AnnualLeave.countDocuments(keySearch);
+    let totalList = await AnnualLeave(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
 
     return {
         totalList,
@@ -327,9 +351,9 @@ exports.searchAnnualLeaves = async (params, company) => {
  * @data : dữ liệu nghỉ phép mới
  * @company : id công ty người tạo
  */
-exports.createAnnualLeave = async (data, company) => {
+exports.createAnnualLeave = async (portal, data, company) => {
     // Tạo mới thông tin nghỉ phép vào database
-    let createAnnualLeave = await AnnualLeave.create({
+    let createAnnualLeave = await AnnualLeave(connect(DB_CONNECTION, portal)).create({
         employee: data.employee,
         company: company,
         organizationalUnit: data.organizationalUnit,
@@ -339,7 +363,7 @@ exports.createAnnualLeave = async (data, company) => {
         reason: data.reason,
     });
 
-    return await AnnualLeave.findOne({
+    return await AnnualLeave(connect(DB_CONNECTION, portal)).findOne({
         _id: createAnnualLeave._id
     }).populate([{
         path: 'employee',
@@ -351,8 +375,8 @@ exports.createAnnualLeave = async (data, company) => {
  * Xoá thông tin nghỉ phép
  * @id : Id nghỉ phép muốn xoá
  */
-exports.deleteAnnualLeave = async (id) => {
-    return await AnnualLeave.findOneAndDelete({
+exports.deleteAnnualLeave = async (portal, id) => {
+    return await AnnualLeave(connect(DB_CONNECTION, portal)).findOneAndDelete({
         _id: id
     });
 }
@@ -362,8 +386,8 @@ exports.deleteAnnualLeave = async (id) => {
  * @id : Id nghỉ phép muốn chỉnh sửa
  * @data : Dữ liệu thay đổi
  */
-exports.updateAnnualLeave = async (id, data) => {
-    let annualLeave = await AnnualLeave.findById(id);
+exports.updateAnnualLeave = async (portal, id, data) => {
+    let annualLeave = await AnnualLeave(connect(DB_CONNECTION, portal)).findById(id);
 
     annualLeave.startDate = data.startDate;
     annualLeave.status = data.status;
@@ -371,7 +395,7 @@ exports.updateAnnualLeave = async (id, data) => {
     annualLeave.reason = data.reason;
     await annualLeave.save();
 
-    return await AnnualLeave.findOne({
+    return await AnnualLeave(connect(DB_CONNECTION, portal)).findOne({
         _id: id
     }).populate([{
         path: 'employee',

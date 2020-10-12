@@ -187,7 +187,7 @@ class AnnualLeaveManagement extends Component {
                     startDate: new Date(x.startDate),
                     endDate: new Date(x.endDate),
                     reason: x.reason,
-                    status: x.status === "pass" ? translate('human_resource.annual_leave.status.pass') : (x.status === "process" ? translate('human_resource.annual_leave.status.process') : translate('human_resource.annual_leave.status.faile'))
+                    status: x.status === "approved" ? translate('human_resource.annual_leave.status.approved') : (x.status === "waiting_for_approval" ? translate('human_resource.annual_leave.status.waiting_for_approval') : translate('human_resource.annual_leave.status.disapproved'))
                 };
 
             })
@@ -278,9 +278,9 @@ class AnnualLeaveManagement extends Component {
                                 options={{ nonSelectedText: translate('human_resource.non_status'), allSelectedText: translate('human_resource.all_status') }}
                                 onChange={this.handleStatusChange}
                                 items={[
-                                    { value: "pass", text: translate('human_resource.annual_leave.status.pass') },
-                                    { value: "process", text: translate('human_resource.annual_leave.status.process') },
-                                    { value: "faile", text: translate('human_resource.annual_leave.status.faile') }
+                                    { value: "approved", text: translate('human_resource.annual_leave.status.approved') },
+                                    { value: "waiting_for_approval", text: translate('human_resource.annual_leave.status.waiting_for_approval') },
+                                    { value: "disapproved", text: translate('human_resource.annual_leave.status.disapproved') }
                                 ]}
                             >
                             </SelectMulti>
@@ -330,7 +330,7 @@ class AnnualLeaveManagement extends Component {
                                             <td>{this.formatDate(x.endDate)}</td>
                                             <td>{organizationalUnit ? organizationalUnit.name : null}</td>
                                             <td>{x.reason}</td>
-                                            <td>{translate(`human_resource.annual_leave.status.${x.status}`)}</td>
+                                            <td style={{ color: x.status === "approved" ? "#00a65a" : (x.status === "waiting_for_approval" ? '#ff7f0e' : '#dd4b39') }}>{translate(`human_resource.annual_leave.status.${x.status}`)}</td>
                                             <td style={{ textAlign: "center" }}>
                                                 <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.annual_leave.edit_annual_leave')}><i className="material-icons">edit</i></a>
                                                 <DeleteNotification

@@ -512,15 +512,19 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
     }
 
     render() {
-        const { translate, dashboardEvaluationEmployeeKpiSet } = this.props;
-        const { details } = this.state;
-        let childrenOrganizationalUnit, childrenOrganizationalUnitLoading;
+        const { translate, dashboardEvaluationEmployeeKpiSet, createKpiUnit } = this.props;
+        const { details, month } = this.state;
+        let childrenOrganizationalUnit, childrenOrganizationalUnitLoading, currentKPI, organizationalUnitKpiLoading;
         let dataTree = this.setTreeData();
         let organizationalUnitSelectBox = this.setSelectBox();
 
         if (dashboardEvaluationEmployeeKpiSet) {
             childrenOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
             childrenOrganizationalUnitLoading = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnitLoading;
+        }
+        if (createKpiUnit) {
+            currentKPI = createKpiUnit.currentKPI;
+            organizationalUnitKpiLoading = createKpiUnit.organizationalUnitKpiLoading;
         }
 
         // Config select time
@@ -576,17 +580,23 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
 
                             <div className="row row-equal-height">
                                 <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{padding: 10}}>
-                                    <div className="description-box" style={{height: "100%"}}>
-                                        <h4 className="box-title">Cây KPI đơn vị</h4>
-                                        <div className="details-tree" id="details-tree">
-                                            <Tree 
-                                                id="tree-qlcv-document"
-                                                onChanged={this.onChanged} 
-                                                data={dataTree}
-                                                plugins={false}
-                                            />
-                                        </div>
-                                        <SlimScroll outerComponentId="details-tree" innerComponentId="tree-qlcv-document" innerComponentWidth={"100%"} activate={true} />
+                                    <div className="description-box" style={{ height: "100%" }}>
+                                        {currentKPI
+                                            ? <React.Fragment>
+                                                <h4 className="box-title">Cây KPI đơn vị tháng {month.slice(5, 7) + "-" + month.slice(0, 4)}</h4>
+                                                <div className="details-tree" id="details-tree">
+                                                    <Tree 
+                                                        id="tree-qlcv-document"
+                                                        onChanged={this.onChanged} 
+                                                        data={dataTree}
+                                                        plugins={false}
+                                                    />
+                                                </div>
+                                                <SlimScroll outerComponentId="details-tree" innerComponentId="tree-qlcv-document" innerComponentWidth={"100%"} activate={true} />
+                                            </React.Fragment>
+                                            : organizationalUnitKpiLoading
+                                            && <h4> Đơn vị chưa khởi tạo KPI tháng {month.slice(5, 7) + "-" + month.slice(0, 4)}</h4>
+                                        }
                                     </div>
                                 </div>
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
-import { DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
+import { DialogModal, ErrorLabel, SelectBox, ApiImage } from '../../../../common-components';
 import { UserActions } from '../redux/actions';
 import ValidationHelper from '../../../../helpers/validationHelper';
 

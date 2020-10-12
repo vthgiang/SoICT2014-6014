@@ -1,22 +1,26 @@
-const UserService = require('../../super-admin/user/user.service');
+const UserService = require(`${SERVER_MODULES_DIR}/super-admin/user/user.service`);
 const {
     Employee,
     Salary
-} = require('../../../models').schema;
+} = require(`${SERVER_MODELS_DIR}`);
+
+const {
+    connect
+} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 /**
  * Lấy danh sách các bảng lương của nhân viên
  * @params : Dữ liệu các key tìm kiếm
  * @company : Id công ty người tìm kiếm
  */
-exports.searchSalaries = async (params, company) => {
+exports.searchSalaries = async (portal, params, company) => {
     let keySearch = {
         company: company
     };
 
     // Bắt sựu kiện MSNV tìm kiếm khác undefined
     if (params.employeeNumber) {
-        let employee = await Employee.find({
+        let employee = await Employee(connect(DB_CONNECTION, portal)).find({
             employeeNumber: {
                 $regex: params.employeeNumber,
                 $options: "i"
@@ -40,7 +44,7 @@ exports.searchSalaries = async (params, company) => {
         }
     }
 
-    // Bắt sựu kiện đơn vị tìm kiếm khác undefined 
+    // Bắt sựu kiện tìm kiếm theo đơn vị
     if (params.organizationalUnits) {
         keySearch = {
             ...keySearch,
@@ -59,7 +63,7 @@ exports.searchSalaries = async (params, company) => {
     };
 
     // Lấy danh sách bảng lương
-    let listSalarys = await Salary.find(keySearch).populate({
+    let listSalarys = await Salary(connect(DB_CONNECTION, portal)).find(keySearch).populate({
             path: 'employee',
             select: 'emailInCompany fullName employeeNumber birthdate gender status'
         })
@@ -67,12 +71,33 @@ exports.searchSalaries = async (params, company) => {
             'createAt': 'desc'
         }).skip(params.page).limit(params.limit);
 
-    let totalList = await Salary.countDocuments(keySearch);
+    let totalList = await Salary(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
 
     return {
         totalList,
         listSalarys
     }
+}
+
+exports.getAllSalaryByMonthAndOrganizationalUnits = async (portal, organizationalUnits, month) => {
+    let keySearch = {
+        month: new Date(month)
+    };
+
+    // Bắt sựu kiện tìm kiếm theo đơn vị
+    if (organizationalUnits) {
+        keySearch = {
+            ...keySearch,
+            organizationalUnit: {
+                $in: organizationalUnits
+            }
+        };
+    }
+
+    return await Salary(connect(DB_CONNECTION, portal)).find(keySearch).populate({
+        path: 'employee',
+        select: 'emailInCompany fullName employeeNumber'
+    })
 }
 
 
@@ -81,9 +106,9 @@ exports.searchSalaries = async (params, company) => {
  *  @data : Dữ liệu bảng lương
  *  @company : Id công ty
  */
-exports.createSalary = async (data, company) => {
+exports.createSalary = async (portal, data, company) => {
     let month = new Date(data.month);
-    let isSalary = await Salary.findOne({
+    let isSalary = await Salary(connect(DB_CONNECTION, portal)).findOne({
         company: company,
         employee: data.employee,
         organizationalUnit: data.organizationalUnit,
@@ -95,7 +120,7 @@ exports.createSalary = async (data, company) => {
     if (isSalary !== null) {
         return "have_exist"
     } else {
-        let createSalary = await Salary.create({
+        let createSalary = await Salary(connect(DB_CONNECTION, portal)).create({
             company: company,
             employee: data.employee,
             organizationalUnit: data.organizationalUnit,
@@ -106,8 +131,8 @@ exports.createSalary = async (data, company) => {
         });
 
         // Lấy thông tin bảng lương vừa tạo
-        return await Salary.findOne({
-            _id: createSalary._id
+        return await Salary(connect(DB_CONNECTION, portal)).findOne({
+            _id: createSalary(connect(DB_CONNECTION, portal))._id
         }).populate([{
             path: 'employee',
             select: 'emailInCompany fullName employeeNumber birthdate gender status'
@@ -119,8 +144,8 @@ exports.createSalary = async (data, company) => {
  * Xoá bẳng lương
  * @id : Id bảng lương
  */
-exports.deleteSalary = async (id) => {
-    return await Salary.findOneAndDelete({
+exports.deleteSalary = async (portal, id) => {
+    return await Salary(connect(DB_CONNECTION, portal)).findOneAndDelete({
         _id: id
     });
 }
@@ -131,20 +156,20 @@ exports.deleteSalary = async (id) => {
  * @data : Dữ liệu thay đổi
  * @company : Id công ty
  */
-exports.updateSalary = async (id, data) => {
+exports.updateSalary = async (portal, id, data) => {
     let salaryChange = {
         mainSalary: data.mainSalary,
         unit: data.unit,
         bonus: data.bonus,
     };
-    await Salary.findOneAndUpdate({
+    await Salary(connect(DB_CONNECTION, portal)).findOneAndUpdate({
         _id: id
     }, {
         $set: salaryChange
     });
 
     // Lấy thông tin bảng lương vừa cập nhật
-    return await Salary.findOne({
+    return await Salary(connect(DB_CONNECTION, portal)).findOne({
         _id: id
     }).populate([{
         path: 'employee',
@@ -157,16 +182,16 @@ exports.updateSalary = async (id, data) => {
  * @param {*} data : Dữ liệu import
  * @param {*} company : Id công ty
  */
-exports.importSalaries = async (data, company) => {
-    let salaryExisted = await Salary.find({
+exports.importSalaries = async (portal, data, company) => {
+    let salaryExisted = await Salary(connect(DB_CONNECTION, portal)).find({
         company: company,
         month: data[0].month,
         organizationalUnit: data[0].organizationalUnit,
     });
 
-    let users = await UserService.getAllEmployeeOfUnitByIds([data[0].organizationalUnit]);
+    let users = await UserService.getAllEmployeeOfUnitByIds(portal, [data[0].organizationalUnit]);
     users = users.map(x => x.userId.email);
-    let employeeInfo = await Employee.find({
+    let employeeInfo = await Employee(connect(DB_CONNECTION, portal)).find({
         company: company,
         emailInCompany: {
             $in: users
@@ -194,7 +219,7 @@ exports.importSalaries = async (data, company) => {
             };
             if (salaryExisted.length !== 0) {
                 let monthSalary = new Date(x.month);
-                let salary = salaryExisted.filter(y => y.employee.toString() === employee[0]._id.toString() && monthSalary.toString() === y.month.toString());
+                let salary = salaryExisted.filter(y => y.employee.toString() === employee[0]._id.toString() && monthSalary(connect(DB_CONNECTION, portal)).toString() === y.month.toString());
                 if (salary.length !== 0) {
                     x = {
                         ...x,
@@ -214,6 +239,6 @@ exports.importSalaries = async (data, company) => {
             rowError
         }
     } else {
-        return await Salary.insertMany(data);
+        return await Salary(connect(DB_CONNECTION, portal)).insertMany(data);
     }
 }

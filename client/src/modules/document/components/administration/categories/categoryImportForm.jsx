@@ -29,7 +29,6 @@ class CategoryImportForm extends Component {
     }
 
     handleImportExcel = (value, checkFileImport) => {
-        console.log('vlueee', value, checkFileImport)
         let values = [];
         let showValues = [];
         let k = -1;
@@ -82,15 +81,12 @@ class CategoryImportForm extends Component {
 
     save = () => {
         let { importShowData } = this.state;
-        console.log(importShowData);
         this.props.importCategory(importShowData);
     }
 
     render() {
         const { translate } = this.props;
-        console.log('state', this.state);
         let { limit, page, importData, rowError, configData, checkFileImport } = this.state;
-        console.log('config', configData)
         return (
             <React.Fragment>
                 <DialogModal

@@ -1,20 +1,16 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const User = require('../auth/user.model');
-const Task = require('./task.model');
-
-
 // Model quản lý các hoạt động hoặc bình luận của một công việc
 const TaskCommentSchema = new Schema({
     task: {
         type: Schema.Types.ObjectId,
-        ref: Task,
+        ref: 'Task',
         required: true
     },
     creator: {
         type: Schema.Types.ObjectId,
-        ref: User,
+        ref: 'User',
         required: true
     },
     parent: {// Có thể là comment cha hoặc là action task
@@ -38,4 +34,8 @@ const TaskCommentSchema = new Schema({
     timestamps: true
 });
 
-module.exports = TaskComment = mongoose.model("task_comments", TaskCommentSchema);
+module.exports = (db) => {
+    if(!db.models.TaskComment)
+        return db.model('TaskComment', TaskCommentSchema);
+    return db.models.TaskComment;
+}

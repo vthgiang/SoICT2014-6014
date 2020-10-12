@@ -12,7 +12,7 @@ import { is } from 'bpmn-js/lib/util/ModelUtil';
 import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil'
 
 import ElementFactory from 'bpmn-js/lib/features/modeling/ElementFactory';
-import customModule from '../custom-task-process'
+import customModule from '../custom-task-process-template'
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
@@ -36,7 +36,7 @@ PaletteProvider.prototype.getPaletteEntries = function (element) {
 ElementFactory.prototype._getDefaultSize = function (semantic) {
 
 	if (is(semantic, 'bpmn:Task')) {
-		return { width: 160, height: 150 };
+		return { width: 160, height: 130 };
 	}
 
 	if (is(semantic, 'bpmn:Gateway')) {

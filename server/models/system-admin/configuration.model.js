@@ -1,11 +1,20 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const ConfiguraionSchema = new Schema({
-    database: {
+const ConfigurationSchema = new Schema({
+    name: {
         type: String
     },
     backup: {
+        auto: {
+            type: Boolean,
+            default: false
+        },
+        type: {
+            type: String,
+            enum: ['weekly', 'monthly', 'yearly'],
+            default: 'monthly'
+        },
         time: {
             second: {
                 type: String,
@@ -41,4 +50,8 @@ const ConfiguraionSchema = new Schema({
     timestamps: true
 });
 
-module.exports = Configuraion = mongoose.model("configuraions", ConfiguraionSchema);
+module.exports = (db) => {
+    if(!db.models.Configuraion)
+        return db.model('Configuration', ConfigurationSchema);
+    return db.models.Configuration;
+}

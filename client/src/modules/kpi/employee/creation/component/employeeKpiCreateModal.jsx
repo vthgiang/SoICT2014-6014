@@ -85,7 +85,6 @@ class ModalCreateEmployeeKpiSet extends Component {
 
     /**Gửi request khởi tạo tập KPI cá nhân mới */
     handleCreateEmployeeKpiSet = async () => {
-        const { employeeKpiSet } = this.state;
 
         let d = new Date(),
             month = '' + (d.getMonth() + 1),
@@ -114,12 +113,14 @@ class ModalCreateEmployeeKpiSet extends Component {
                 ...state,
                 employeeKpiSet: {
                     ...state.employeeKpiSet,
-                    organizationalUnit: this.props.organizationalUnit,
+                    organizationalUnit: this.props.organizationalUnit
                 }
             }
         })
-        
-        if(employeeKpiSet.organizationalUnit  && employeeKpiSet.date && employeeKpiSet.approver){//&& employeeKpiSet.creater
+
+        let { employeeKpiSet } = this.state;
+
+        if (employeeKpiSet.organizationalUnit && employeeKpiSet.date && employeeKpiSet.approver) {//&& employeeKpiSet.creator
             this.props.createEmployeeKpiSet(employeeKpiSet);
             window.$("#createEmployeeKpiSet").modal("hide");
         }
@@ -188,7 +189,7 @@ class ModalCreateEmployeeKpiSet extends Component {
                                         items={deans}
                                         multiple={false}
                                         onChange={this.handleApproverChange}
-                                        value={this.state.employeeKpiSet&&this.state.employeeKpiSet.approver}
+                                        value={this.state.employeeKpiSet ? this.state.employeeKpiSet.approver : ""}
                                     />
                                 </div>
                             }

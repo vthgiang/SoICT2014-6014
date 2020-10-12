@@ -1,106 +1,121 @@
 const CustomerService = require('./customer.service');
-const { LogInfo, LogError } = require(SERVER_LOGS_DIR);
+const Logger = require(`${SERVER_LOGS_DIR}`);
 
-exports.getCustomers = async(req, res) => {
+/**
+ * Lấy thông tin của tất cả khách hàng
+ * @param {*} req 
+ * @param {*} res 
+ */
+exports.getCustomers = async (req, res) => {
     try {
-        const customers = await CustomerService.getCustomers(req.user.company._id, req.query);
-
-        // LogInfo(req.user.email, 'GET_CUSTOMERS', req.user.company);
+        const customers = await CustomerService.getCustomers(req.portal, req.user.company._id, req.query);
+        await Logger.info(req.user.email, ' get_customers_success ', req.portal);
         res.status(200).json({
             success: true,
             messages: ['get_customers_success'],
             content: customers
-        });
-    } catch (error) {
-
-        // LogError(req.user.email, 'GET_CUSTOMERS', req.user.company);
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['get_customers_faile'],
-            content: error
         })
-    }
-};
-
-exports.createCustomer = async(req, res) => {
-    try {
-        const customer = await CustomerService.createCustomer(req.user.company._id, req.body);
-
-        LogInfo(req.user.email, 'CREATE_CUSTOMER', req.user.company);
-        res.status(200).json({
-            success: true,
-            messages: ['create_customer_success'],
-            content: customer
-        });
     } catch (error) {
-
-        LogError(req.user.email, 'CREATE_CUSTOMER', req.user.company);
+        await Logger.error(req.user.email, ' get_customers_faile ', req.portal);
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['create_customer_faile'],
-            content: error
-        })
-    }
-};
-
-exports.getCustomer = async (req, res) => {
-    try {
-        const customer = await CustomerService.createCustomer(req.params.id);
-
-        LogInfo(req.user.email, 'CREATE_CUSTOMER', req.user.company);
-        res.status(200).json({
-            success: true,
-            messages: ['create_customer_success'],
-            content: customer
-        });
-    } catch (error) {
-
-        LogError(req.user.email, 'CREATE_CUSTOMER', req.user.company);
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['create_customer_faile'],
+            messages: ['get_customers_faile'],
             content: error
         })
     }
 }
 
+/**
+ * Lấy thông tin của 1 khách hàng theo id
+ * @param {*} req 
+ * @param {*} res 
+ */
+exports.getCustomerById = async (req, res) => {
+    try {
+        const customer = await CustomerService.getCustomerById(req.portal, req.user.company._id, req.params.id);
+        await Logger.info(req.user.email, ' get_customer_success ', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['get_customer_success'],
+            content: customer
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, ' get_customer_faile ', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['get_customer_faile'],
+            content: error
+        })
+    }
+}
+
+/**
+ * Tạo mới một khách hàng
+ * @param {*} req 
+ * @param {*} res 
+ */
+exports.createCustomer = async (req, res) => {
+    try {
+        const newCustomer = await CustomerService.createCustomer(req.portal, req.user.company._id, req.body, req.user._id);
+        await Logger.info(req.user.email, ' create_customer_success ', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['create_customer_success'],
+            content: newCustomer
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, ' create_customer_faile ', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['create_customer_faile'],
+            content: error
+        })
+    }
+}
+
+/**
+ * Chỉnh sửa một khách hàng
+ * @param {*} req 
+ * @param {*} res 
+ */
 exports.editCustomer = async (req, res) => {
     try {
-        const customer = await CustomerService.createCustomer(req.params.id, req.body);
-
-        LogInfo(req.user.email, 'CREATE_CUSTOMER', req.user.company);
+        const customerUpdate = await CustomerService.editCustomer(req.portal, req.user.company._id, req.params.id, req.body, req.user._id);
+        await Logger.info(req.user.email, ' edit_customer_success ', req.portal);
         res.status(200).json({
             success: true,
-            messages: ['create_customer_success'],
-            content: customer
-        });
+            messages: ['edit_customer_success'],
+            content: customerUpdate
+        })
     } catch (error) {
-
-        LogError(req.user.email, 'CREATE_CUSTOMER', req.user.company);
+        await Logger.error(req.user.email, ' edit_customer_faile ', req.portal);
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['create_customer_faile'],
+            messages: ['edit_customer_faile'],
             content: error
         })
     }
 }
 
+/**
+ * Xóa một khách hàng
+ * @param {*} req 
+ * @param {*} res 
+ */
 exports.deleteCustomer = async (req, res) => {
     try {
-        const customer = await CustomerService.createCustomer(req.params.id);
-
-        LogInfo(req.user.email, 'CREATE_CUSTOMER', req.user.company);
+        const deleteCustomer = await CustomerService.deleteCustomer(req.portal, req.user.company._id, req.params.id);
+        await Logger.info(req.user.email, ' delete_customer_success ', req.portal);
         res.status(200).json({
             success: true,
-            messages: ['create_customer_success'],
-            content: customer
-        });
+            messages: ['delete_customer_success'],
+            content: deleteCustomer
+        })
     } catch (error) {
-
-        LogError(req.user.email, 'CREATE_CUSTOMER', req.user.company);
+        await Logger.error(req.user.email, ' delete_customer_faile ', req.portal);
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['create_customer_faile'],
+            messages: ['delete_customer_faile'],
             content: error
         })
     }

@@ -1,41 +1,55 @@
 import { sendRequest } from '../../../../helpers/requestHelper';
 
 export const SystemSettingServices = {
-    backup,
+    getBackups,
+    getConfigBackup,
+    createBackup,
+    configBackup,
     deleteBackup,
-    getRestoreData,
     restore
 };
 
-function backup(params=undefined, data=undefined) {
+function getBackups() {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/system-admin/system-setting/backup`,
+        method: 'GET'
+    }, false, true, 'super_admin.system');
+}
+
+function getConfigBackup() {
+    console.log("sdfsdf")
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/system-admin/system-setting/backup/config`,
+        method: 'GET'
+    }, false, true, 'super_admin.system');
+}
+
+function createBackup() {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/system-admin/system-setting/backup`,
+        method: 'POST'
+    }, true, true, 'super_admin.system');
+}
+
+function configBackup(params, data=undefined) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/system-admin/system-setting/backup/config`,
         method: 'PATCH',
         params,
-        data,
-    }, true, true, 'system_admin.company');
+        data
+    }, true, true, 'super_admin.system');
 }
 
 function deleteBackup(version) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/system-admin/system-setting/backup/${version}`,
         method: 'DELETE'
-    }, true, true, 'system_admin.company');
+    }, true, true, 'super_admin.system');
 }
 
-function getRestoreData() {
+function restore(version) {
     return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/system-admin/system-setting/restore-data`,
-        method: 'GET'
-    }, false, true, 'system_admin.company');
-}
-
-function restore(backupVersion) {
-    return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/system-admin/system-setting/restore`,
-        method: 'PATCH',
-        params: {
-            backupVersion
-        }
-    }, true, true, 'system_admin.company');
-}
+        url: `${process.env.REACT_APP_SERVER}/system-admin/system-setting/restore/${version}`,
+        method: 'PATCH'
+    }, true, true, 'super_admin.system');
+}    

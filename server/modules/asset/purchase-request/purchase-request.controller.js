@@ -1,27 +1,24 @@
 const RecommendProcureService = require('./purchase-request.service');
-const {
-    LogInfo,
-    LogError
-} = require('../../../logs');
+const Logger = require(`${SERVER_LOGS_DIR}`);
 
 /**
  * Lấy danh sách phiếu đề nghị mua sắm thiết bị
  */
-exports.searchRecommendProcures = async (req, res) => {
+exports.searchPurchaseRequests = async (req, res) => {
     try {
-        var listRecommendProcures = await RecommendProcureService.searchRecommendProcures(req.query, req.user.company._id);
-        await LogInfo(req.user.email, 'GET_RECOMMENDPROCURE', req.user.company);
+        var listRecommendProcures = await RecommendProcureService.searchPurchaseRequests(req.portal, req.user.company._id, req.query);
+        await Logger.info(req.user.email, 'GET_PURCHASE_REQUEST', req.portal);
         res.status(200).json({
             success: true,
-            messages: ["get_recommend_procure_success"],
+            messages: ["get_purchase_request_success"],
             content: listRecommendProcures
         });
     } catch (error) {
         console.log(error);
-        await LogError(req.user.email, 'GET_RECOMMENDPROCURE', req.user.company);
+        await Logger.error(req.user.email, 'GET_PURCHASE_REQUEST', req.portal);
         res.status(400).json({
             success: false,
-            messages: ["get_recommend_procure_faile"],
+            messages: ["get_purchase_request_faile"],
             content: {
                 error: error
             }
@@ -32,22 +29,22 @@ exports.searchRecommendProcures = async (req, res) => {
 /**
  * Tạo mới thông tin phiếu đề nghị mua sắm thiết bị
  */
-exports.createRecommendProcure = async (req, res) => {
+exports.createPurchaseRequest = async (req, res) => {
     try {
-        var newRecommendProcure = await RecommendProcureService.createRecommendProcure(req.body, req.user.company._id);
-        await LogInfo(req.user.email, 'CREATE_RECOMMENDPROCURE', req.user.company);
+        var newRecommendProcure = await RecommendProcureService.createPurchaseRequest(req.portal, req.user.company._id, req.body);
+        await Logger.info(req.user.email, 'CREATE_PURCHASE_REQUEST', req.portal);
         res.status(200).json({
             success: true,
-            messages: ["create_recommend_procure_success"],
+            messages: ["create_purchase_request_success"],
             content: newRecommendProcure
         });
-        
+
     } catch (error) {
         console.log(error);
-        await LogError(req.user.email, 'CREATE_RECOMMENDPROCURE', req.user.company);
+        await Logger.error(req.user.email, 'CREATE_PURCHASE_REQUEST', req.portal);
         res.status(400).json({
             success: false,
-            messages: "create_recommend_procure_faile",
+            messages: "create_purchase_request_faile",
             content: {
                 inputData: req.body
             }
@@ -58,20 +55,20 @@ exports.createRecommendProcure = async (req, res) => {
 /**
  * Xoá thông tin phiếu đề nghị mua sắm thiết bị
  */
-exports.deleteRecommendProcure = async (req, res) => {
+exports.deletePurchaseRequest = async (req, res) => {
     try {
-        var recommendprocureDelete = await RecommendProcureService.deleteRecommendProcure(req.params.id);
-        await LogInfo(req.user.email, 'DELETE_RECOMMENDPROCURE', req.user.company);
+        var recommendprocureDelete = await RecommendProcureService.deletePurchaseRequest(req.portal, req.params.id);
+        await Logger.info(req.user.email, 'DELETE_PURCHASE_REQUEST', req.portal);
         res.status(200).json({
             success: true,
-            messages: ["delete_recommend_procure_success"],
+            messages: ["delete_purchase_request_success"],
             content: recommendprocureDelete
         });
     } catch (error) {
-        await LogError(req.user.email, 'DELETE_RECOMMENDPROCURE', req.user.company);
+        await Logger.error(req.user.email, 'DELETE_PURCHASE_REQUEST', req.portal);
         res.status(400).json({
             success: false,
-            messages: ["delete_recommend_procure_success"],
+            messages: ["delete_purchase_request_success"],
             content: {
                 error: error
             }
@@ -82,21 +79,21 @@ exports.deleteRecommendProcure = async (req, res) => {
 /**
  * Cập nhật thông tin phiếu đề nghị mua sắm thiết bị
  */
-exports.updateRecommendProcure = async (req, res) => {
+exports.updatePurchaseRequest = async (req, res) => {
     try {
-        var recommendprocureUpdate = await RecommendProcureService.updateRecommendProcure(req.params.id, req.body);
-        await LogInfo(req.user.email, 'EDIT_RECOMMENDPROCURE', req.user.company);
+        var recommendprocureUpdate = await RecommendProcureService.updatePurchaseRequest(req.portal, req.params.id, req.body);
+        await Logger.info(req.user.email, 'EDIT_PURCHASE_REQUEST', req.portal);
         res.status(200).json({
             success: true,
-            messages: ["edit_recommend_procure_success"],
+            messages: ["edit_purchase_request_success"],
             content: recommendprocureUpdate
         });
-        
+
     } catch (error) {
-        await LogError(req.user.email, 'EDIT_RECOMMENDPROCURE', req.user.company);
+        await Logger.error(req.user.email, 'EDIT_PURCHASE_REQUEST', req.portal);
         res.status(400).json({
             success: false,
-            messages: ['edit_recommend_procure_faile'],
+            messages: ['edit_purchase_request_faile'],
             content: {
                 error: error
             }

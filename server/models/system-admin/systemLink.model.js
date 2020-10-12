@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
-// Create Schema
 const SystemLinkSchema = new Schema({
     url: {
         type: String,
@@ -13,11 +12,11 @@ const SystemLinkSchema = new Schema({
     },
     components: [{
         type: Schema.Types.ObjectId,
-        ref: 'system_components'
+        ref: 'SystemComponent'
     }],
     roles: [{
         type: Schema.Types.ObjectId,
-        ref: 'root_roles'
+        ref: 'RootRole'
     }],
     category: {
         type: String
@@ -29,4 +28,8 @@ const SystemLinkSchema = new Schema({
 
 SystemLinkSchema.plugin(mongoosePaginate);
 
-module.exports = SystemLink = mongoose.model("system_links", SystemLinkSchema);
+module.exports = (db) => {
+    if(!db.models.SystemLink)
+        return db.model('SystemLink', SystemLinkSchema);
+    return db.models.SystemLink;
+}

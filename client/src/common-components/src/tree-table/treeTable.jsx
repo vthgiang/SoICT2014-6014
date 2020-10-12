@@ -254,7 +254,7 @@ class TreeTable extends Component {
                     </tr>
                 </thead>
                 <tbody id="taskTable" className="task-table">
-                    {
+                    {   this.dataTreetable(column, data).length > 0 ?
                         this.dataTreetable(column, data).map((rows, index) => (
                             <tr key={index} data-id={rows._id} data-parent={rows.parent} data-level={rows.level}>
                                 {
@@ -285,7 +285,8 @@ class TreeTable extends Component {
                                     </td>
                                 }
                             </tr>
-                        ))
+                        )) :
+                        <tr><td colSpan={ column.length + 1 }><center>{translate('task_template.no_data')}</center></td></tr>
                     }
                 </tbody>
             </table >

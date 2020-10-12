@@ -10,9 +10,12 @@ class UploadFile extends Component {
 
     /** Bắt sự kiện thay đổi file đính kèm */
     handleUploadFile = (e) => {
-        const { multiple = false } = this.props;
+        const { multiple = false, importFile } = this.props;
         let fileList = e.target.files;
-        if (fileList) {
+        if (importFile) {
+            importFile(fileList);
+        };
+        if (fileList.length !== 0) {
             for (let i = 0; i < fileList.length; i++) {
                 let file = fileList[i];
                 if (file) {
@@ -33,6 +36,10 @@ class UploadFile extends Component {
                     };
                 }
             }
+        } else if (multiple === false) {
+            this.setState({
+                files: undefined
+            })
         }
     }
 
@@ -42,11 +49,15 @@ class UploadFile extends Component {
      */
     handleDeleteFile = (index) => {
         let { files } = this.state;
+        let { deleteValue = true } = this.props;
 
-        files.splice(index, 1);
-        this.setState({
-            files: files
-        })
+        if (deleteValue) {
+            files.splice(index, 1);
+            this.setState({
+                files: files
+            })
+        }
+
     };
 
     static isEqual = (items1, items2) => {
@@ -75,10 +86,10 @@ class UploadFile extends Component {
     };
 
     shouldComponentUpdate(nextProps, nextState) {
-        if (!UploadFile.isEqual(nextState.files, this.state.files)) {
+        if (!UploadFile.isEqual(nextState.files, this.state.files) && !nextProps.importFile) {
             this.props.onChange(nextState.files ? nextState.files : []);
         };
-        if (nextState.files && nextState.files.length === 0) {
+        if (nextState.files && nextState.files.length === 0 && !nextProps.importFile) {
             this.props.onChange(nextState.files ? nextState.files : []);
         }
         return true
@@ -87,17 +98,18 @@ class UploadFile extends Component {
     render() {
         const { translate } = this.props;
 
-        const { multiple = false } = this.props;
+        const { multiple = false, disabled = false, accept = '', deleteValue = true } = this.props;
 
         const { files } = this.state;
 
         return (
             <React.Fragment>
                 <div className="form-group">
-                    <div className="upload btn btn-primary">
+                    <div className="upload btn btn-primary" disabled={disabled} >
                         <i className="fa fa-folder"></i>
                         {" " + translate('document.choose_file')}
-                        <input className="upload" type="file" name="file" onChange={this.handleUploadFile} multiple={multiple} />
+                        <input className="upload" type="file" name="file" accept={accept} disabled={disabled} style={{ cursor: disabled ? "not-allowed" : 'pointer' }}
+                            onChange={this.handleUploadFile} multiple={multiple} />
                     </div>
                 </div>
                 {files && files.length ?
@@ -106,8 +118,13 @@ class UploadFile extends Component {
                             {files.map((child, index) => {
                                 return (
                                     <li key={index}>
-                                        <label className="delete-label-upfile-cmc"><a style={{ cursor: "pointer" }} title='Xóa file này'><i className="fa fa-times" id="delete-icon-upload-cmc"
-                                            onClick={(e) => this.handleDeleteFile(index)} /></a></label>
+                                        <label className="delete-label-upfile-cmc">
+                                            <a style={{ cursor: deleteValue ? "pointer" : 'text' }} title='Xóa file này'>
+                                                <i className="fa fa-times" id="delete-icon-upload-cmc"
+                                                    style={{ pointerEvents: deleteValue ? "" : "none" }}
+                                                    onClick={(e) => this.handleDeleteFile(index)} />
+                                            </a>
+                                        </label>
                                         <a className="file-name-upfile">{child.fileName}</a>
                                     </li>
                                 )

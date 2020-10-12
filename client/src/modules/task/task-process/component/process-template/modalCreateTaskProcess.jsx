@@ -24,7 +24,7 @@ import './processDiagram.css'
 ElementFactory.prototype._getDefaultSize = function (semantic) {
 
 	if (is(semantic, 'bpmn:Task')) {
-		return { width: 160, height: 150 };
+		return { width: 160, height: 130 };
 	}
 
 	if (is(semantic, 'bpmn:Gateway')) {
@@ -296,6 +296,7 @@ class ModalCreateTaskProcess extends Component {
 						...state.info[`${element.businessObject.id}`],
 						organizationalUnit: this.props.listOrganizationalUnit[0]?._id,
 					}
+					console.log('this.props.listOrganizationalUnit[0]?._id', this.props.listOrganizationalUnit[0]?._id);
 				}
 				return {
 					...state,

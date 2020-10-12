@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import './tooltip.css';
+import Tooltip from 'rc-tooltip';
+import 'rc-tooltip/assets/bootstrap.css';
+// import './tooltip.css';
 
 class ToolTip extends Component {
     constructor(props) {
@@ -10,15 +12,12 @@ class ToolTip extends Component {
     }
 
     componentDidMount = () => {
-        window.$(document).ready(function () {
-            window.$('[data-toggle="tooltip"]').tooltip();
-        });
+        window.$('[data-toggle="tooltip"]').tooltip();
     }
 
     displayDefault = (data) => {
-        let title = data.map(element => {
-            return `${element}`
-        })
+        let content = data.join(', ');
+        let title = <span>{content}</span>
         return <React.Fragment>
             {
                 data.map((element, index, arr) => {
@@ -34,22 +33,27 @@ class ToolTip extends Component {
             }
             {
                 data.length >= 4 &&
-                <a href="#" data-toggle="tooltip" data-placement="auto" title={title}>...</a>
+                // <a href="#" data-toggle="tooltip" data-placement="auto" title={title}>...</a>
+                <Tooltip placement="top" overlay={title}>
+                    <a style={{ cursor: "pointer" }}>...</a>
+                </Tooltip>
             }
         </React.Fragment>
     }
 
     displayTooltipForIcon = (data, icon) => {
-        let title = data.map(element => {
-            return `${element}`
-        })
+        // let title = data.map(element => {
+        //     return `${element}`
+        // })
+        let content = data.join(', ');
+        let title = <span>{content}</span>
 
         return <React.Fragment>
-
-            <a href="#" data-toggle="tooltip" data-placement="auto" title={title}>
-                <i className="material-icons">{icon}</i>
-            </a>
-
+            <Tooltip placement="topLeft" overlay={title}>
+                <a style={{ cursor: "pointer" }}>
+                    <i className="material-icons">{icon}</i>
+                </a>
+            </Tooltip>
         </React.Fragment>
     }
 

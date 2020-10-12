@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { configProcessTempalte, templateImportProcessTemplate } from './fileConfigurationImportProcessTemplate';
+import { configProcessTemplate, templateImportProcessTemplate } from './fileConfigurationImportProcessTemplate';
 import { DialogModal, ImportFileExcel, ShowImportData, ConFigImportFile, ExportExcel } from '../../../../../common-components';
 import { TaskProcessActions } from '../../redux/actions';
 import { connect } from 'react-redux';
@@ -10,7 +10,7 @@ class FormImportProcessTemplate extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            configData: configProcessTempalte,
+            configData: configProcessTemplate,
             // templateImportProcessTemplate: templateImportProcessTemplate,
             checkFileImport: true,
             rowError: [],
@@ -201,9 +201,15 @@ class FormImportProcessTemplate extends Component {
             for (let val = 0; val < dataExport.dataSheets[va].tables.length; val++) {
                 let datas = [];
                 let data = dataExport.dataSheets[va].tables[val].data;
-                if (Array.isArray(data[0].readByEmployees)) {
-                    for (let k = 0; k < data.length; k++) {
-                        let x = data[k];
+
+                for (let idx = 0; idx < data.length; idx++) {
+                    let dataItem = data[idx];
+                    let taskList = data[idx].tasks;
+                    let lengthOfTask = 0;
+                    let taskData = [];
+
+                    for (let k = 0; k < taskList?.length; k++) {
+                        let x = taskList[k];
                         let length = 0;
                         let actionName = [], actionDescription = [], mandatory = [];
 
@@ -231,29 +237,14 @@ class FormImportProcessTemplate extends Component {
                                 infomationDescription[i] = x.taskInformations[i].description;
                                 type[i] = x.taskInformations[i].type;
                                 filledByAccountableEmployeesOnly[i] = x.taskInformations[i].filledByAccountableEmployeesOnly;
-                                // if (x.taskInformations[i].filledByAccountableEmployeesOnly) {
-                                //     filledByAccountableEmployeesOnly[i] = "true";
-                                // } else {
-                                //     filledByAccountableEmployeesOnly[i] = "false";
-                                // }
                             }
                         }
-                        let numberOfUse = "Chưa sử dụng";
-                        if (x.numberOfUse !== 0) {
-                            numberOfUse = x.numberOfUse;
+                        let code = '';
+                        if (x.code !== 0) {
+                            code = x.code;
                         }
-                        let readByEmployees, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees;
-                        if (Array.isArray(x.readByEmployees)) {
-                            if (x.readByEmployees.length > length) {
-                                length = x.readByEmployees.length;
-                                console.log(length);
-                            }
-                            readByEmployees = x.readByEmployees;
-                        } else {
-                            length = 0;
-                            readByEmployees = [x.readByEmployees];
-                            console.log(readByEmployees);
-                        }
+                        let responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees;
+
                         if (Array.isArray(x.responsibleEmployees)) {
                             responsibleEmployees = x.responsibleEmployees.join(', ');
                         } else {
@@ -274,12 +265,37 @@ class FormImportProcessTemplate extends Component {
                         } else {
                             informedEmployees = x.informedEmployees;
                         }
+                        let generalData;
+                        if (k === 0) {
+                            generalData = {
+                                STT: idx + 1,
+                                processName: dataItem.processName,
+                                processDescription: dataItem.processDescription,
+                                manager: dataItem.manager,
+                                viewer: dataItem.viewer,
+                                xmlDiagram: dataItem.xmlDiagram,
+                            }
+                        } else {
+                            generalData = {
+                                STT: "",
+                                processName: "",
+                                processDescription: "",
+                                manager: "",
+                                viewer: "",
+                                xmlDiagram: "",
+                            }
+                        }
                         let out = {
-                            STT: k + 1,
-                            name: x.name,
-                            description: x.description,
-                            numberOfUse: numberOfUse,
-                            readByEmployees: readByEmployees[0],
+                            STT: generalData.STT,
+                            processName: generalData.processName,
+                            processDescription: generalData.processDescription,
+                            manager: generalData.manager,
+                            viewer: generalData.viewer,
+                            xmlDiagram: generalData.xmlDiagram,
+
+                            taskName: x.taskName,
+                            taskDescription: x.taskDescription,
+                            code: code,
                             responsibleEmployees: responsibleEmployees,
                             accountableEmployees: accountableEmployees,
                             consultedEmployees: consultedEmployees,
@@ -287,9 +303,11 @@ class FormImportProcessTemplate extends Component {
                             organizationalUnits: x.organizationalUnit,
                             priority: x.priority,
                             formula: x.formula,
+
                             actionName: actionName[0],
                             actionDescription: actionDescription[0],
                             mandatory: mandatory[0],
+
                             infomationName: infomationName[0],
                             infomationDescription: infomationDescription[0],
                             type: type[0],
@@ -302,11 +320,16 @@ class FormImportProcessTemplate extends Component {
                             for (let i = 1; i < length; i++) {
                                 out = {
                                     STT: "",
-                                    name: "",
-                                    description: "",
-                                    numberOfUse: "",
+                                    processName: "",
+                                    processDescription: "",
+                                    manager: "",
+                                    viewer: "",
+                                    xmlDiagram: "",
+
+                                    taskName: "",
+                                    taskDescription: "",
+                                    code: "",
                                     creator: "",
-                                    readByEmployees: readByEmployees[i],
                                     responsibleEmployees: "",
                                     accountableEmployees: "",
                                     consultedEmployees: "",
@@ -314,24 +337,31 @@ class FormImportProcessTemplate extends Component {
                                     organizationalUnits: "",
                                     priority: "",
                                     formula: "",
+
                                     actionName: actionName[i],
                                     actionDescription: actionDescription[i],
                                     mandatory: mandatory[i],
+
                                     infomationName: infomationName[i],
                                     infomationDescription: infomationDescription[i],
                                     type: type[i],
                                     filledByAccountableEmployeesOnly: filledByAccountableEmployeesOnly[i]
                                 };
+                                lengthOfTask = lengthOfTask + length;
                                 datas = [...datas, out];
                             }
+
                         }
                     }
                     dataExport.dataSheets[va].tables[val].data = datas;
+                    console.log('task Data\n\n\n', datas);
+
                 }
             }
         }
         return dataExport;
     }
+
     render() {
         const { translate } = this.props;
         let { limit, page, importData, rowError, configData, checkFileImport } = this.state;

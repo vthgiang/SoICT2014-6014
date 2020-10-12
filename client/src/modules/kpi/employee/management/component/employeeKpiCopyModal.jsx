@@ -51,18 +51,20 @@ class ModalCopyKPIPersonal extends Component {
 
     /**Gửi req khởi tạo KPI tháng mới từ KPi tháng này */
     handleSubmit = async (id, oldkpipersonal, listkpipersonal, idunit) => {
-        var idcreator = getStorage("userId");
+        const { kpipersonal } = this.state;
+        let idcreator = getStorage("userId");
+        
         await this.setState(state => {
             return {
                 ...state,
                 kpipersonal: {
                     ...state.kpipersonal,
-                    organizationalUnit: oldkpipersonal.organizationalUnit._id,
-                    kpis: oldkpipersonal.kpis
+                    organizationalUnit: oldkpipersonal && oldkpipersonal.organizationalUnit._id,
+                    kpis: oldkpipersonal && oldkpipersonal.kpis
                 }
             }
         })
-        var { kpipersonal } = this.state;
+        
         if (this.state.NewDate == undefined) {
             Swal.fire({
                 title: translate('kpi.organizational_unit.management.copy_modal.alert.check_new_date'),
@@ -72,9 +74,9 @@ class ModalCopyKPIPersonal extends Component {
                 confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
             })
         } else {
-            var date = this.state.NewDate.split("-");
-            var check = 1;
-            var nowDate = new Date();
+            let date = this.state.NewDate.split("-");
+            let check = 1;
+            let nowDate = new Date();
 
             for (let i in listkpipersonal) {
                 if (idunit == listkpipersonal[i].organizationalUnit._id) {
@@ -127,19 +129,22 @@ class ModalCopyKPIPersonal extends Component {
             }
         }
     }
+
+    save = () => {
+        const { listkpipersonal, kpipersonal } = this.props;
+        this.handleSubmit(kpipersonal._id, kpipersonal, listkpipersonal, kpipersonal.organizationalUnit._id);
+    }
     
     render() {
-        const { NewDate, errorOnDate } = this.state;
-        var { listkpipersonal, kpipersonal } = this.props;
+        const { NewDate } = this.state;
+        const { kpipersonal } = this.props;
         return (
             <DialogModal
                 modalID={`copy-old-kpi-to-new-time-${kpipersonal._id}`}
                 title={`${translate('kpi.organizational_unit.management.copy_modal.create')} ${this.formatDate(kpipersonal.date)}`}
                 size={10}
                 func={this.save}
-                closeOnSave={false}
             >
-
                 {/**Đơn vị của KPI tháng mới */}
                 <div className="form-group">
                     <label className="col-sm-5">{translate('kpi.organizational_unit.management.copy_modal.organizational_unit')}:</label>

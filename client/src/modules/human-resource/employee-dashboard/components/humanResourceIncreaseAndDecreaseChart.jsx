@@ -1,3 +1,4 @@
+/* Xu hướng tăng giảm nhân sự của nhân viên */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
@@ -126,6 +127,7 @@ class HumanResourceIncreaseAndDecreaseChart extends Component {
                 nameChart: nextProps.nameChart,
                 nameData1: nextProps.nameData1,
                 nameData2: nextProps.nameData2,
+                nameData3: nextProps.nameData3,
                 arrMonth: nextProps.employeesManager.arrMonth,
                 listEmployeesHaveStartingDateOfNumberMonth: nextProps.employeesManager.listEmployeesHaveStartingDateOfNumberMonth,
                 listEmployeesHaveLeavingDateOfNumberMonth: nextProps.employeesManager.listEmployeesHaveLeavingDateOfNumberMonth
@@ -175,6 +177,12 @@ class HumanResourceIncreaseAndDecreaseChart extends Component {
                 names: {
                     data1: data.nameData1,
                     data2: data.nameData2,
+                    data3: data.nameData3,
+                },
+                colors: {
+                    data1: '#2ca02c',
+                    data2: '#ff7f0e',
+                    data3: '#1f77b4'
                 },
             },
             bar: {
@@ -202,14 +210,14 @@ class HumanResourceIncreaseAndDecreaseChart extends Component {
 
         setTimeout(function () {
             chart.load({
-                columns: [data.ratioX, ['data1', ...fakeData1],
+                columns: [data.ratioX, data.data3, ['data1', ...fakeData1],
                 ['data2', ...fakeData2]
                 ],
             });
         }, 100);
         setTimeout(function () {
             chart.load({
-                columns: [data.ratioX, ['data1', ...data.data1],
+                columns: [data.ratioX, data.data3, ['data1', ...data.data1],
                 ['data2', ...data.data2]
                 ],
             });
@@ -237,7 +245,7 @@ class HumanResourceIncreaseAndDecreaseChart extends Component {
     render() {
         const { department, employeesManager, translate } = this.props;
 
-        const { lineChart, nameChart, nameData1, nameData2, startDate, endDate, startDateShow, endDateShow, organizationalUnitsSearch } = this.state;
+        const { lineChart, nameChart, nameData1, nameData2, nameData3, startDate, endDate, startDateShow, endDateShow, organizationalUnitsSearch } = this.state;
 
         let organizationalUnitsName = [];
         if (organizationalUnitsSearch) {
@@ -249,7 +257,7 @@ class HumanResourceIncreaseAndDecreaseChart extends Component {
             let ratioX = ['x', ...employeesManager.arrMonth];
             let listEmployeesHaveStartingDateOfNumberMonth = employeesManager.listEmployeesHaveStartingDateOfNumberMonth;
             let listEmployeesHaveLeavingDateOfNumberMonth = employeesManager.listEmployeesHaveLeavingDateOfNumberMonth;
-            let data1 = ['data1'], data2 = ['data2'];
+            let data1 = ['data1'], data2 = ['data2'], data3 = ["data3", ...employeesManager.totalEmployees];
             employeesManager.arrMonth.forEach(x => {
                 let date = new Date(x);
                 let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
@@ -268,15 +276,29 @@ class HumanResourceIncreaseAndDecreaseChart extends Component {
                 data1 = [...data1, total1];
                 data2 = [...data2, total2];
             })
-            this.renderChart({ nameData1, nameData2, ratioX, data1, data2, lineChart });
+            this.renderChart({ nameData1, nameData2, nameData3, ratioX, data1, data2, data3, lineChart });
         }
 
         return (
-            <div className="box" >
+            <div className="box box-solid" >
                 <div className="box-header with-border" >
                     <h3 className="box-title" > {`${nameChart} của ${(organizationalUnitsName.length === 0 || organizationalUnitsName.length === department.list.length) ? "công ty" : organizationalUnitsName.join(', ')} ${startDateShow}`}<i className="fa fa-fw fa-caret-right"></i>{endDateShow}</h3> </div>
                 <div className="box-body" >
                     <div className="qlcv" style={{ marginBottom: 15 }} >
+                        <div className="form-inline" >
+                            <div className="form-group" >
+                                <label className="form-control-static" > {translate('kpi.evaluation.dashboard.organizational_unit')} </label>
+                                <SelectMulti id="multiSelectUnits-towBarChart"
+                                    items={department.list.map((p, i) => { return { value: p._id, text: p.name } })}
+                                    options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
+                                    onChange={this.handleSelectOrganizationalUnit} >
+                                </SelectMulti>
+                            </div>
+                            <div className="form-group" >
+                                <label></label>
+                                <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => this.handleSunmitSearch()} > {translate('general.search')} </button>
+                            </div>
+                        </div>
                         <div className="form-inline" >
                             <div className="form-group">
                                 <label className="form-control-static" >Từ tháng</label>
@@ -299,23 +321,10 @@ class HumanResourceIncreaseAndDecreaseChart extends Component {
                                 />
                             </div>
                         </div>
-                        <div className="form-inline" >
-                            <div className="form-group" >
-                                <label className="form-control-static" > {translate('kpi.evaluation.dashboard.organizational_unit')} </label>
-                                <SelectMulti id="multiSelectUnits-towBarChart"
-                                    items={department.list.map((p, i) => { return { value: p._id, text: p.name } })}
-                                    options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
-                                    onChange={this.handleSelectOrganizationalUnit} >
-                                </SelectMulti>
-                            </div>
-                            <div className="form-group" >
-                                <label></label>
-                                <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => this.handleSunmitSearch()} > {translate('general.search')} </button>
-                            </div>
-                        </div>
+
                     </div>
                     <div className="dashboard_box_body" >
-                        <p className="pull-left" style={{ marginBottom: 0 }} > < b > ĐV tính: % </b></p >
+                        <p className="pull-left" style={{ marginBottom: 0 }} > < b > ĐV tính: Người </b></p >
                         <div className="box-tools pull-right" >
                             <div className="btn-group pull-rigth">
                                 <button type="button" className={`btn btn-xs ${lineChart ? "active" : "btn-danger"}`} onClick={() => this.handleChangeViewChart(false)}>Bar chart</button>

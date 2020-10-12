@@ -1,5 +1,5 @@
 const managerService = require('./management.service');
-const { LogInfo, LogError } = require('../../../../logs');
+const Logger = require(`${SERVER_LOGS_DIR}`);
 
 
 /**
@@ -9,15 +9,15 @@ const { LogInfo, LogError } = require('../../../../logs');
  */
 exports.copyKPI = async (req, res) => {
     try {
-        var kpiunit = await managerService.copyKPI(req.params.id, req.query);
-        LogInfo(req.user.email, ' copy kpi unit ',req.user.company)
+        let kpiunit = await managerService.copyKPI(req.portal, req.params.id, req.query);
+        Logger.info(req.user.email, ' copy kpi unit ', req.portal)
         res.status(200).json({
             success: true,
             messages: ['copy_kpi_unit_success'],
             content: kpiunit
         });
     } catch (error) {
-        LogError(req.user.email, ' copy kpi unit ',req.user.company)
+        Logger.error(req.user.email, ' copy kpi unit ', req.portal)
         res.status(400).json({
             success: false,
             messages: ['copy_kpi_unit_fail'],

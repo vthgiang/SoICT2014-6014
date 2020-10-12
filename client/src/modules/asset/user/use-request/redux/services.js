@@ -4,6 +4,7 @@ export const RecommendDistributeService = {
     createRecommendDistribute,
     updateRecommendDistribute,
     deleteRecommendDistribute,
+    getRecommendDistributeByAsset,
 }
 
 // Lấy danh sách phiếu đề nghị mua sắm thiết bị
@@ -48,4 +49,16 @@ function deleteRecommendDistribute(id) {
         url: `${process.env.REACT_APP_SERVER}/use-request/use-requests/${id}`,
         method: 'DELETE',
     }, true, true, 'asset.use_request');
+}
+
+// Lấy danh sách phiếu đề nghị cấp phát thiết bị theo tài sản
+function getRecommendDistributeByAsset(data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/use-request/use-requests`,
+        method: 'GET',
+        params: {
+            assetId: data,
+            getUseRequestByAssetId: true,
+        },
+    }, false, true, 'asset.use_request');
 }

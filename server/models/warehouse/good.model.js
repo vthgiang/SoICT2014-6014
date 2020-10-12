@@ -6,12 +6,12 @@ const GoodSchema = new Schema ({
 
     company: {
         type: Schema.Types.ObjectId,
-        ref: "companies"
+        ref: 'Company'
     },
 
     category: {
         type: Schema.Types.ObjectId,
-        ref: "categories"
+        ref: 'Category'
     },
 
     code: {
@@ -51,14 +51,15 @@ const GoodSchema = new Schema ({
     }],
 
     quantity: {
-        type: Number
+        type: Number,
+        default: 0
     },
 
     description: {
         type: String
     },
 
-    goods: [{
+    materials: [{
         
         good: {
             type: Schema.Types.ObjectId,
@@ -68,9 +69,18 @@ const GoodSchema = new Schema ({
         quantity: {
             type: Number
         }
-    }]
+    }],
+
+    creator: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    }
 });
 
 GoodSchema.plugin(mongoosePaginate);
 
-module.exports = Good = mongoose.model("goods", GoodSchema);
+module.exports = (db) => {
+    if(!db.models.Good)
+        return db.model('Good', GoodSchema);
+    return db.models.Good;
+}

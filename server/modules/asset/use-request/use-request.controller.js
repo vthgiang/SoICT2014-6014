@@ -1,29 +1,49 @@
 const RecommendDistributeService = require('./use-request.service');
-const {
-    LogInfo,
-    LogError
-} = require('../../../logs');
-const {
-    read
-} = require('fs');
+const Logger = require(`${SERVER_LOGS_DIR}`);
+const { read } = require('fs');
 
 /**
  * Lấy danh sách phiếu đề nghị mua sắm thiết bị
  */
-exports.searchRecommendDistributes = async (req, res) => {
+exports.searchUseRequests = async (req, res) => {
+    if (req.query.getUseRequestByAssetId) {
+        getUseRequestByAsset(req, res);
+    } else {
+        try {
+            var listRecommendDistributes = await RecommendDistributeService.searchUseRequests(req.portal, req.user.company._id, req.query);
+            await Logger.info(req.user.email, 'GET_USE_REQUEST', req.portal);
+            res.status(200).json({
+                success: true,
+                messages: ["get_use_request_success"],
+                content: listRecommendDistributes
+            });
+        } catch (error) {
+            await Logger.error(req.user.email, 'GET_USE_REQUEST', req.portal);
+            res.status(400).json({
+                success: false,
+                messages: ["get_use_request_faile"],
+                content: {
+                    error: error
+                }
+            });
+        }
+    }
+}
+
+getUseRequestByAsset = async (req, res) => {
     try {
-        var listRecommendDistributes = await RecommendDistributeService.searchRecommendDistributes(req.query, req.user.company._id);
-        await LogInfo(req.user.email, 'GET_RECOMMENDDISTRIBUTE', req.user.company);
+        var listRecommendDistributes = await RecommendDistributeService.getUseRequestByAsset(req.portal, req.query);
+        await Logger.info(req.user.email, 'GET_USE_REQUEST_BY_ASSET', req.portal);
         res.status(200).json({
             success: true,
-            messages: ["get_recommend_distribute_success"],
+            messages: ["get_use_request_by_asset_success"],
             content: listRecommendDistributes
         });
     } catch (error) {
-        await LogError(req.user.email, 'GET_RECOMMENDDISTRIBUTE', req.user.company);
+        await Logger.error(req.user.email, 'GET_USE_REQUEST_BY_ASSET', req.portal);
         res.status(400).json({
             success: false,
-            messages: ["get_recommend_distribute_faile"],
+            messages: ["get_use_request_by_asset_faile"],
             content: {
                 error: error
             }
@@ -31,25 +51,24 @@ exports.searchRecommendDistributes = async (req, res) => {
     }
 }
 
-
 /**
  * Tạo mới thông tin phiếu đề nghị mua sắm thiết bị
  */
-exports.createRecommendDistribute = async (req, res) => {
+exports.createUseRequest = async (req, res) => {
     try {
-        var newRecommendDistribute = await RecommendDistributeService.createRecommendDistribute(req.body, req.user.company._id);
-        await LogInfo(req.user.email, 'CREATE_RECOMMENDDISTRIBUTE', req.user.company);
+        var newRecommendDistribute = await RecommendDistributeService.createUseRequest(req.portal, req.user.company._id, req.body);
+        await Logger.info(req.user.email, 'CREATE_USE_REQUEST', req.portal);
         res.status(200).json({
             success: true,
-            messages: ["create_recommend_distribute_success"],
+            messages: ["create_use_request_success"],
             content: newRecommendDistribute
         });
-        
+
     } catch (error) {
-        await LogError(req.user.email, 'CREATE_RECOMMENDDISTRIBUTE', req.user.company);
+        await Logger.error(req.user.email, 'CREATE_USE_REQUEST', req.portal);
         res.status(400).json({
             success: false,
-            messages: "create_recommend_distribute_faile",
+            messages: "create_use_request_faile",
             content: {
                 inputData: req.body
             }
@@ -60,20 +79,20 @@ exports.createRecommendDistribute = async (req, res) => {
 /**
  * Xoá thông tin phiếu đề nghị mua sắm thiết bị
  */
-exports.deleteRecommendDistribute = async (req, res) => {
+exports.deleteUseRequest = async (req, res) => {
     try {
-        var recommenddistributeDelete = await RecommendDistributeService.deleteRecommendDistribute(req.params.id);
-        await LogInfo(req.user.email, 'DELETE_RECOMMENDDISTRIBUTE', req.user.company);
+        var recommenddistributeDelete = await RecommendDistributeService.deleteUseRequest(req.params.id);
+        await Logger.info(req.user.email, 'DELETE_USE_REQUEST', req.portal);
         res.status(200).json({
             success: true,
-            messages: ["delete_recommend_distribute_success"],
+            messages: ["delete_use_request_success"],
             content: recommenddistributeDelete
         });
     } catch (error) {
-        await LogError(req.user.email, 'DELETE_RECOMMENDDISTRIBUTE', req.user.company);
+        await Logger.error(req.user.email, 'DELETE_USE_REQUEST', req.portal);
         res.status(400).json({
             success: false,
-            messages: ["delete_recommend_distribute_success"],
+            messages: ["delete_use_request_success"],
             content: {
                 error: error
             }
@@ -84,21 +103,21 @@ exports.deleteRecommendDistribute = async (req, res) => {
 /**
  * Cập nhật thông tin phiếu đề nghị mua sắm thiết bị
  */
-exports.updateRecommendDistribute = async (req, res) => {
+exports.updateUseRequest = async (req, res) => {
     try {
-        var recommenddistributeUpdate = await RecommendDistributeService.updateRecommendDistribute(req.params.id, req.body);
-        await LogInfo(req.user.email, 'EDIT_RECOMMENDDISTRIBUTE', req.user.company);
+        var recommenddistributeUpdate = await RecommendDistributeService.updateUseRequest(req.portal, req.params.id, req.body);
+        await Logger.info(req.user.email, 'EDIT_USE_REQUEST', req.portal);
         res.status(200).json({
             success: true,
-            messages: ["edit_recommend_distribute_success"],
+            messages: ["edit_use_request_success"],
             content: recommenddistributeUpdate
         });
-        
+
     } catch (error) {
-        await LogError(req.user.email, 'EDIT_RECOMMENDDISTRIBUTE', req.user.company);
+        await Logger.error(req.user.email, 'EDIT_USE_REQUEST', req.portal);
         res.status(400).json({
             success: false,
-            messages: ['edit_recommend_distribute_faile'],
+            messages: ['edit_use_request_faile'],
             content: {
                 error: error
             }

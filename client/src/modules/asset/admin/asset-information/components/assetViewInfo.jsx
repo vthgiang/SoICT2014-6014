@@ -67,10 +67,10 @@ class AssetViewInfo extends Component {
             unitsProducedDuringTheYears, maintainanceLogs, usageLogs, incidentLogs, disposalDate, disposalType, disposalCost,
             disposalDesc, archivedRecordNumber, files
         } = this.props;
-        
+
         return (
             <React.Fragment>
-                <form className="form-group" id="form-view-asset" style={{ marginTop: "-15px" }}>
+                <form className="form-group" id="form-view-asset" >
                     <div className="nav-tabs-custom">
                         {/* Nav-tabs */}
                         <ul className="nav nav-tabs">

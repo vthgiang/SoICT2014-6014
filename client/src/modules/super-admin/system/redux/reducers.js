@@ -13,6 +13,7 @@ var findVersion = (arrayVersion, version) => {
 const initState = {
     backup: {
         list: [],
+        config: {}
     },
     isLoading: false
 }
@@ -21,7 +22,9 @@ export function system(state = initState, action) {
     var index = -1;
     switch (action.type) {
         case SystemConstants.GET_BACKUPS_REQUEST:
+        case SystemConstants.GET_CONFIG_BACKUP_REQUEST:
         case SystemConstants.CREATE_BACKUP_REQUEST:
+        case SystemConstants.CONFIG_BACKUP_REQUEST:
         case SystemConstants.DELETE_BACKUP_REQUEST:
         case SystemConstants.RESTORE_REQUEST:
             return {
@@ -29,7 +32,9 @@ export function system(state = initState, action) {
                 isLoading: true
             }
         
-        case SystemConstants.GET_BACKUPS_FAILE:
+        case SystemConstants.GET_BACKUPS_FAILE:        
+        case SystemConstants.GET_CONFIG_BACKUP_FAILE:
+        case SystemConstants.CONFIG_BACKUP_FAILE:
         case SystemConstants.CREATE_BACKUP_FAILE:
         case SystemConstants.DELETE_BACKUP_FAILE:
         case SystemConstants.RESTORE_SUCCESS:
@@ -43,8 +48,16 @@ export function system(state = initState, action) {
             return {
                 ...state,
                 backup: {
+                    ...state.backup,
                     list: action.payload
                 },
+                isLoading: false
+            }
+
+        case SystemConstants.GET_CONFIG_BACKUP_SUCCESS:
+            state.backup.config = action.payload;
+            return {
+                ...state,
                 isLoading: false
             }
 
@@ -52,11 +65,18 @@ export function system(state = initState, action) {
             return {
                 ...state,
                 backup: {
+                    ...state.backup,
                     list: [
                         action.payload,
                         ...state.backup.list
                     ]
                 },
+                isLoading: false
+            }
+
+        case SystemConstants.CONFIG_BACKUP_SUCCESS:
+            return {
+                ...state,
                 isLoading: false
             }
 

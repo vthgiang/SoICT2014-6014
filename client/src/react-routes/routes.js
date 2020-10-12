@@ -31,13 +31,14 @@ import ManageRole from '../modules/super-admin/role/components';
 import ManageLink from '../modules/super-admin/link/components';
 import ManageDepartment from '../modules/super-admin/organizational-unit/components';
 import ManageComponent from '../modules/super-admin/component/components';
+import ConfigurationManager from '../modules/super-admin/module-configuration/components';
 
 
 import AnnualLeaveManager from '../modules/human-resource/annual-leave/components';
 import { ManagerPraiseDiscipline } from '../modules/human-resource/commendation-discipline/components';
 import EmployeeDashBoard from '../modules/human-resource/employee-dashboard/components';
 import { DepartmentManage } from '../modules/human-resource/employee-in-organizational-unit/components/employeeInOrganizationalUnit';
-import { ManageHoliday } from '../modules/human-resource/holiday/components/holidayManagement';
+import { ManageWorkPlan } from '../modules/human-resource/work-plan/components/worksPlanManagement';
 import { EmployeeDetail, UpdateEmployee } from '../modules/human-resource/profile/employee-info/components/combinedContent';
 import EmpoyeeManager from '../modules/human-resource/profile/employee-management/components';
 import EmployeeCreate from '../modules/human-resource/profile/employee-create/components';
@@ -93,7 +94,8 @@ import EmployeeAssetManagement from '../modules/asset/user/asser-managed/compone
 import TaskReportManager from '../modules/report/task-report/components/taskReportManager';
 
 //warehouse
-import MaterialManager from '../modules/warehouse/material-manager/component';
+import InventoryDashBoard from '../modules/warehouse/dashboard-inventory/component';
+import BillDashBoard from '../modules/warehouse/dashboard-bill/component';
 import CategoryManagement from '../modules/warehouse/category-management/component';
 import GoodManagement from '../modules/warehouse/good-management/component';
 import StockManagement from '../modules/warehouse/stock-management/component';
@@ -104,11 +106,24 @@ import PartnerManagement from '../modules/warehouse/partner-management/component
 import ProposalManagement from '../modules/warehouse/proposal-management/component';
 
 // Customer Management
+import CrmDashBoard from '../modules/crm/dashboard/components';
 import CrmCustomer from '../modules/crm/customer/components';
 import CrmGroup from '../modules/crm/group/components';
+// import CrmCare from '../modules/crm/care/components'
 
 //orders
-import OrderManagement from "../modules/order/components";
+import PurchaseOrder from '../modules/production/order/purchase-order/components';
+import SalesOrder from '../modules/production/order/sales-order/components'
+import ManufacturingOrder from '../modules/production/order/manufacturing-order/components';
+import Discount from '../modules/production/order/discount/components';
+import Quoter from '../modules/production/order/quoter/components';
+import PurchaseOrderDashboard from '../modules/production/order/purchase-order-dashboard/components';
+import SalesOrderDashboard from '../modules/production/order/sales-order-dashboard/components';
+import ManufacturingOrderDashboard from '../modules/production/order/manufacturing-order-dashboard/components';
+import QuoterDashboard from '../modules/production/order/quoter-dashboard/components';
+import Tax from '../modules/production/order/tax/components';
+import ServiceLevelAgreement from '../modules/production/order/service-level-agreement/components';
+
 
 // plans
 import PlanManagement from "../modules/plan/components";
@@ -116,6 +131,20 @@ import PlanManagement from "../modules/plan/components";
 // Example
 import ExampleManagement1 from "../modules/example/example1/components";
 import ExampleManagement2 from "../modules/example/example2/components";
+
+// Manufacturing Managements
+
+import ManufacturingPlan from "../modules/production/manufacturing/manufacturing-plan/components";
+import ManufacturingCommand from "../modules/production/manufacturing/manufacturing-command/components";
+import ManufacturingMill from "../modules/production/manufacturing/manufacturing-mill/components";
+import ManufacturingPerformance from "../modules/production/manufacturing/manufacturing-performance/components";
+import ManufacturingProcess from "../modules/production/manufacturing/manufacturing-process/components";
+import ManufacturingSchedule from "../modules/production/manufacturing/manufacturing-schedule/components";
+import ManufacturingWorks from "../modules/production/manufacturing/manufacturing-works/components";
+import PurchasingRequest from "../modules/production/manufacturing/purchasing-request/components";
+import TrackOrder from "../modules/production/manufacturing/track-order/components";
+import manufacturingOrder from '../modules/production/manufacturing/manufacturing-plan/components/manufacturing-order';
+import purchaseOrderDetailForm from '../modules/production/order/purchase-order/components/purchaseOrderDetailForm';
 
 class Routes extends Component {
 
@@ -336,6 +365,22 @@ class Routes extends Component {
                         component={Document}
                     />
                     {/* Quan ly nhan su */}
+
+                    <PrivateRoute
+                        isLoading={this.props.annualLeave.isLoading}
+                        key={'manage_configuration'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/manage-configuration', name: 'manage_configuration', icon: 'fa fa-gear' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/manage-configuration'}
+                        path={'/manage-configuration'}
+                        pageName={'manage_configuration'}
+                        layout={Layout}
+                        component={ConfigurationManager}
+                    />
                     <PrivateRoute
                         isLoading={this.props.annualLeave.isLoading}
                         key={'leave_application'}
@@ -474,22 +519,22 @@ class Routes extends Component {
                         component={AnnualLeaveManager}
                     />
                     <PrivateRoute
-                        isLoading={this.props.holiday.isLoading}
-                        key={'manage_holiday'}
+                        isLoading={this.props.workPlan.isLoading}
+                        key={'manage_work_plan'}
                         arrPage={[
                             { link: '/', name: 'home', icon: 'fa fa-home' },
-                            { link: '/hr-manage-holiday', name: 'manage_holiday', icon: 'fa fa-calendar' }
+                            { link: '/hr-manage-work-plan', name: 'manage_work_plan', icon: 'fa fa-calendar' }
                         ]}
                         auth={auth}
                         exact={true}
-                        link={'/hr-manage-holiday'}
-                        path={'/hr-manage-holiday'}
-                        pageName={'manage_holiday'}
+                        link={'/hr-manage-work-plan'}
+                        path={'/hr-manage-work-plan'}
+                        pageName={'manage_work_plan'}
                         layout={Layout}
-                        component={ManageHoliday}
+                        component={ManageWorkPlan}
                     />
                     <PrivateRoute
-                        isLoading={this.props.holiday.isLoading}
+                        isLoading={this.props.workPlan.isLoading}
                         key={'annual_leave_personal'}
                         arrPage={[
                             { link: '/', name: 'home', icon: 'fa fa-home' },
@@ -1081,19 +1126,35 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={this.props.user.isLoading}
-                        key={'material-manager'}
+                        isLoading={false}
+                        key={'dashboard-inventory'}
                         arrPage={[
                             { link: '/', name: 'home', icon: 'fa fa-home' },
-                            { link: '/material-manager', name: 'material_manager', icon: 'fa fa-address-card' }
+                            { link: '/dashboard-inventory', name: 'dashboard_inventory', icon: 'fa fa-dashboard' }
                         ]}
                         auth={auth}
                         exact={true}
-                        link={'/material-manager'}
-                        path={'/material-manager'}
-                        pageName={'material_manager'}
+                        link={'/dashboard-inventory'}
+                        path={'/dashboard-inventory'}
+                        pageName={'dashboard_inventory'}
                         layout={Layout}
-                        component={MaterialManager}
+                        component={InventoryDashBoard}
+                    />
+                    
+                    <PrivateRoute
+                        isLoading={false}
+                        key={'dashboard-bill'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/dashboard-bill', name: 'dashboard_bill', icon: 'fa fa-dashboard' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/dashboard-bill'}
+                        path={'/dashboard-bill'}
+                        pageName={'dashboard_bill'}
+                        layout={Layout}
+                        component={BillDashBoard}
                     />
 
                     <PrivateRoute
@@ -1238,6 +1299,21 @@ class Routes extends Component {
                     {/* Customer Management */}
                     <PrivateRoute
                         isLoading={false}
+                        key={'crm_dashboard'}
+                        arrPage={[
+                            { link: '/crm/dashboard', name: 'crm_list.dashboard', icon: 'fa fa-dashboard' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/crm/dashboard'}
+                        path={'/crm/dashboard'}
+                        pageName={'crm_list.dashboard'}
+                        layout={Layout}
+                        component={CrmDashBoard}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
                         key={'crm_customer'}
                         arrPage={[
                             { link: '/crm/customer', name: 'crm_list.customer', icon: 'fa fa-users' }
@@ -1266,26 +1342,241 @@ class Routes extends Component {
                         component={CrmGroup}
                     />
 
+                    {/* <PrivateRoute
+                        isLoading={false}
+                        key={'customer-care'}
+                        arrPage={[
+                            { link: '/crm/care', name: 'crm_list.care', icon: 'fa fa-group' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/crm/care'}
+                        path={'/crm/care'}
+                        pageName={'crm_list.care'}
+                        layout={Layout}
+                        component={CrmCare}
+                    /> */}
+
                     {/* Orders Management */}
 
                     <PrivateRoute
-                        isLoading={this.props.order.isLoading}
-                        key={"manage-orders"}
+                        isLoading={false}
+                        key={"/manage-sales-order"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
                             {
-                                link: "/manage-orders",
-                                name: "manage_orders",
+                                link: "/manage-sales-order",
+                                name: "manage_sales_order",
                                 icon: "fa fa-address-card",
                             },
                         ]}
                         auth={auth}
                         exact={true}
-                        link={"/manage-orders"}
-                        path={"/manage-orders"}
-                        pageName={"manage-orders"}
+                        link={"/manage-sales-order"}
+                        path={"/manage-sales-order"}
+                        pageName={"manage_sales_order"}
                         layout={Layout}
-                        component={OrderManagement}
+                        component={SalesOrder}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"/manage-manufacturing-order"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-manufacturing-order",
+                                name: "manage_manufacturing_order",
+                                icon: "fa fa-address-card",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-manufacturing-order"}
+                        path={"/manage-manufacturing-order"}
+                        pageName={"manage_manufacturing_order"}
+                        layout={Layout}
+                        component={ManufacturingOrder}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"/manage-purchase-order"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-purchase-order",
+                                name: "manage_purchase_order",
+                                icon: "fa fa-address-card",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-purchase-order"}
+                        path={"/manage-purchase-order"}
+                        pageName={"manage_purchase_order"}
+                        layout={Layout}
+                        component={PurchaseOrder}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"/manage-quoter"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-quoter",
+                                name: "manage_quoter",
+                                icon: "fa fa-address-card",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-quoter"}
+                        path={"/manage-quoter"}
+                        pageName={"manage_quoter"}
+                        layout={Layout}
+                        component={Quoter}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"/manage-sales-order-dashboard"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-sales-order-dashboard",
+                                name: "manage_sales_order_dashboard",
+                                icon: "fa fa-address-card",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-sales-order-dashboard"}
+                        path={"/manage-sales-order-dashboard"}
+                        pageName={"manage_sales_order_dashboard"}
+                        layout={Layout}
+                        component={SalesOrderDashboard}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"/manage-manufacturing-order-dashboard"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-manufacturing-order-dashboard",
+                                name: "manage_manufacturing_order_dashboard",
+                                icon: "fa fa-address-card",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-manufacturing-order-dashboard"}
+                        path={"/manage-manufacturing-order-dashboard"}
+                        pageName={"manage_manufacturing_order_dashboard"}
+                        layout={Layout}
+                        component={PurchaseOrderDashboard}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"/manage-purchase-order-dashboard"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-purchase-order-dashboard",
+                                name: "manage_purchase_order_dashboard",
+                                icon: "fa fa-address-card",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-purchase-order-dashboard"}
+                        path={"/manage-purchase-order-dashboard"}
+                        pageName={"manage_purchase_order_dashboard"}
+                        layout={Layout}
+                        component={PurchaseOrderDashboard}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"/manage-quoter-dashboard"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-quoter-dashboard",
+                                name: "manage_quoter_dashboard",
+                                icon: "fa fa-address-card",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-quoter-dashboard"}
+                        path={"/manage-quoter-dashboard"}
+                        pageName={"manage_quoter_dashboard"}
+                        layout={Layout}
+                        component={QuoterDashboard}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"/manage-discount"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-discount",
+                                name: "manage_discount",
+                                icon: "fa fa-address-card",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-discount"}
+                        path={"/manage-discount"}
+                        pageName={"manage_discount"}
+                        layout={Layout}
+                        component={Discount}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"/manage-tax"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-tax",
+                                name: "manage_tax",
+                                icon: "fa fa-address-card",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-tax"}
+                        path={"/manage-tax"}
+                        pageName={"manage_tax"}
+                        layout={Layout}
+                        component={Tax}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"/manage-sla"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-sla",
+                                name: "manage_sla",
+                                icon: "fa fa-address-card",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-sla"}
+                        path={"/manage-sla"}
+                        pageName={"manage_sla"}
+                        layout={Layout}
+                        component={ServiceLevelAgreement}
                     />
 
                     {/* Plans Management */}
@@ -1312,7 +1603,7 @@ class Routes extends Component {
 
                     {/* Example Management */}
                     <PrivateRoute
-                        isLoading={false}
+                        isLoading={this.props.example1.isLoading}
                         key={"manage-examples-1"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1332,12 +1623,12 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={false}
+                        isLoading={this.props.example2.isLoading}
                         key={"manage-examples-2"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
                             {
-                                link: "/manage-examples-1",
+                                link: "/manage-examples-2",
                                 name: "manage_examples_2",
                                 icon: "fa fa-adjust",
                             },
@@ -1350,6 +1641,192 @@ class Routes extends Component {
                         layout={Layout}
                         component={ExampleManagement2}
                     />
+
+                    {/* Manufacturing-management */}
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"manage-manufacturing-plan"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-manufacturing-plan",
+                                name: "manage_manufacturing_plan",
+                                icon: "fa fa-file-o",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-manufacturing-plan"}
+                        path={"/manage-manufacturing-plan"}
+                        pageName={"manage_manufacturing_plan"}
+                        layout={Layout}
+                        component={ManufacturingPlan}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"manage-manufacturing-command"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-manufacturing-command",
+                                name: "manage_manufacturing_command",
+                                icon: "fa fa-gavel",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-manufacturing-command"}
+                        path={"/manage-manufacturing-command"}
+                        pageName={"manage_manufacturing_command"}
+                        layout={Layout}
+                        component={ManufacturingCommand}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"manage-manufacturing-process"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-manufacturing-process",
+                                name: "manage_manufacturing_process",
+                                icon: "fa fa-line-chart",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-manufacturing-process"}
+                        path={"/manage-manufacturing-process"}
+                        pageName={"manage_manufacturing_process"}
+                        layout={Layout}
+                        component={ManufacturingProcess}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"manage-manufacturing-schedule"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-manufacturing-schedule",
+                                name: "manage_manufacturing_schedule",
+                                icon: "fa fa-calendar",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-manufacturing-schedule"}
+                        path={"/manage-manufacturing-schedule"}
+                        pageName={"manage_manufacturing_schedule"}
+                        layout={Layout}
+                        component={ManufacturingSchedule}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"manage-purchasing-request"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-purchasing-request",
+                                name: "manage_purchasing_request",
+                                icon: "fa fa-file-text-o",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-purchasing-request"}
+                        path={"/manage-purchasing-request"}
+                        pageName={"manage_purchasing_request"}
+                        layout={Layout}
+                        component={PurchasingRequest}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"track-order"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/track-order",
+                                name: "track_order",
+                                icon: "fa fa-search",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/track-order"}
+                        path={"/track-order"}
+                        pageName={"track_order"}
+                        layout={Layout}
+                        component={TrackOrder}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"analysis-manufacturing-performance"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/analysis-manufacturing-performance",
+                                name: "analysis_manufacturing_performance",
+                                icon: "fa fa-bar-chart",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/analysis-manufacturing-performance"}
+                        path={"/analysis-manufacturing-performance"}
+                        pageName={"analysis_manufacturing_performance"}
+                        layout={Layout}
+                        component={ManufacturingPerformance}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"manage-manufacturing-works"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-manufacturing-works",
+                                name: "manage_manufacturing_works",
+                                icon: "fa fa-university",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-manufacturing-works"}
+                        path={"/manage-manufacturing-works"}
+                        pageName={"manage_manufacturing_works"}
+                        layout={Layout}
+                        component={ManufacturingWorks}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"manage-manufacturing-mill"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-manufacturing-mill",
+                                name: "manage_manufacturing_mill",
+                                icon: "fa fa-home",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-manufacturing-mill"}
+                        path={"/manage-manufacturing-mill"}
+                        pageName={"manage_manufacturing_mill"}
+                        layout={Layout}
+                        component={ManufacturingMill}
+                    />
+
+
+
+
 
                     {/* NOT FOUND */}
                     <Route component={NotFound}></Route>

@@ -1,1 +1,0 @@
-1. Module nay thuc hien chuc nang quan ly thong tin cac cong ty trong DB.

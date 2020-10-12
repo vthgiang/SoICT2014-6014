@@ -1,66 +1,129 @@
-const { CrmCustomer, CrmGroup } = require(SERVER_MODELS_DIR).schema;
+const { Customer } = require(`${SERVER_MODELS_DIR}`);
+const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
-exports.getCustomers = async (company, query) => {
-    var { page, limit } = query;
-    if(!company) throw['company_invalid'];
-    if (!page && !limit) {
+exports.createCustomer = async (portal, companyId, data, userId) => {
+    let {
+        owner, code, name, gender, avatar, company, taxNumber, customerSource, companyEstablishmentDate,
+        birthDate, telephoneNumber, mobilephoneNumber, email, email2, group, status, address, address2, location, website, linkedIn
+    } = data;
 
-        return await CrmCustomer
-            .find({ company })
-            .populate([
-                { path: 'group', model: CrmGroup }
-            ]);
-    } else {
-        const option = (query.key && query.value) ?
-            Object.assign({company}, {[`${query.key}`]: new RegExp(query.value, "i")}) :
-            {company};
-
-        return await CrmCustomer
-            .paginate( option , { 
-                page, 
-                limit,
-                populate: [
-                    { path: 'group', model: CrmGroup }
-                ]
-            });
+    //format birthDate
+    if (birthDate) {
+        let date = birthDate.split('-');
+        birthDate = [date[2], date[1], date[0]].join("-");
     }
+
+    // format companyEstablishmentDate
+    if (companyEstablishmentDate) {
+        let date = companyEstablishmentDate.split('-');
+        companyEstablishmentDate = [date[2], date[1], date[0]].join('-');
+    }
+
+    const newCustomer = await Customer(connect(DB_CONNECTION, portal)).create({
+        owner: owner,
+        code: code,
+        name: name,
+        status: status ? status : null,
+        creator: userId,
+        gender: gender ? gender : '',
+        taxNumber: taxNumber ? taxNumber : '',
+        customerSource: customerSource ? customerSource : '',
+        company: company,
+        companyEstablishmentDate: companyEstablishmentDate ? companyEstablishmentDate : null,
+        birthDate: birthDate ? birthDate : null,
+        telephoneNumber: telephoneNumber ? telephoneNumber : null,
+        mobilephoneNumber: mobilephoneNumber ? mobilephoneNumber : null,
+        email: email ? email : '',
+        email2: email2 ? email2 : '',
+        group: group ? group : null,
+        address: address ? address : '',
+        address2: address2 ? address2 : '',
+        location: location ? location : null,
+        website: website ? website : '',
+        linkedIn: linkedIn ? linkedIn : ''
+    });
+
+    const getNewCustomer = await Customer(connect(DB_CONNECTION, portal)).findById(newCustomer._id)
+        .populate({ path: 'group', select: '_id name' })
+        .populate({ path: 'status', select: '_id name' })
+        .populate({ path: 'owner', select: '_id name' });;
+    return getNewCustomer;
 }
 
-exports.createCustomer = async (data) => {
-    const company = await Company.findById(data.company);
-    if(company === null) throw ['company_not_found'];
+exports.getCustomers = async (portal, companyId, query) => {
+    const { page, limit } = query;
+    let keySearch = {};
+    const listDocsTotal = await Customer(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
 
-    return await CrmCustomer.create(data);
+    const customers = await Customer(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'desc' })
+        .skip(parseInt(page)).limit(parseInt(limit))
+        .populate({ path: 'group', select: '_id name' })
+        .populate({ path: 'status', select: '_id name' })
+        .populate({ path: 'owner', select: '_id name' });
+    return { listDocsTotal, customers };
+
 }
 
-exports.getCustomer = async (id) => {
-
-    return await CrmCustomer.findById(id)
-        .populate([
-            { path: 'group', model: CrmGroup }
-        ])
+exports.getCustomerById = async (portal, companyId, id) => {
+    const getCustomer = await Customer(connect(DB_CONNECTION, portal)).findById(id)
+        .populate({ path: 'group', select: '_id name' })
+        .populate({ path: 'status', select: '_id name' })
+        .populate({ path: 'owner', select: '_id name' });
+    return getCustomer;
 }
 
-exports.editCustomer = async (id, data) => {
-    const customer = await CrmCustomer.findById(id);
-    customer.name = data.name;
-    customer.code = data.code;
-    customer.phone = data.phone;
-    customer.address = data.address;
-    customer.location = data.location;
-    customer.email = data.email;
-    customer.group = data.group;
-    customer.birth = data.birth;
-    await customer.save();
+exports.editCustomer = async (portal, companyId, id, data, userId) => {
+    let {
+        owner, code, name, gender, avatar, company, taxNumber, customerSource, companyEstablishmentDate,
+        birthDate, telephoneNumber, mobilephoneNumber, email, email2, group, status, address, address2, location, website, linkedIn
+    } = data;
 
-    return await CrmCustomer.findById(id)
-        .populate([
-            { path: 'group', model: CrmGroup }
-        ]);
+    //format birthDate
+    if (birthDate) {
+        let date = birthDate.split('-');
+        birthDate = [date[2], date[1], date[0]].join("-");
+    }
+
+    // format companyEstablishmentDate
+    if (companyEstablishmentDate) {
+        let date = companyEstablishmentDate.split('-');
+        companyEstablishmentDate = [date[2], date[1], date[0]].join('-');
+    }
+
+    await Customer(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
+        $set: {
+            owner: owner,
+            code: code,
+            name: name,
+            status: status,
+            creator: userId,
+            gender: gender ? gender : '',
+            taxNumber: taxNumber ? taxNumber : '',
+            customerSource: customerSource ? customerSource : '',
+            company: company,
+            companyEstablishmentDate: companyEstablishmentDate ? companyEstablishmentDate : null,
+            birthDate: birthDate ? birthDate : null,
+            telephoneNumber: telephoneNumber ? telephoneNumber : null,
+            mobilephoneNumber: mobilephoneNumber ? mobilephoneNumber : null,
+            email: email ? email : '',
+            email2: email2 ? email2 : '',
+            group: group,
+            address: address ? address : '',
+            address2: address2 ? address2 : '',
+            location: location ? location : null,
+            website: website ? website : '',
+            linkedIn: linkedIn ? linkedIn : ''
+        }
+    }, { new: true });
+
+    return await Customer(connect(DB_CONNECTION, portal)).findOne({ _id: id })
+        .populate({ path: 'group', select: '_id name' })
+        .populate({ path: 'status', select: '_id name' })
+        .populate({ path: 'owner', select: '_id name' });
 }
 
-exports.deleteCustomer = async (id) => {
-    await CrmCustomer.deleteOne({_id: id});
 
-    return id;
+exports.deleteCustomer = async (portal, companyId, id) => {
+    let delCustomer = await Customer(connect(DB_CONNECTION, portal)).findOneAndDelete({ _id: id });
+    return delCustomer;
 }

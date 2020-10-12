@@ -1,13 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const CrmCustomerController = require('./customer.controller');
-const { auth } = require('../../../middleware');
+const { auth } = require(`${SERVER_MIDDLEWARE_DIR}`);
 
-router.post("/customer", auth, CrmCustomerController.getCustomers);
+const CustomerController = require('./customer.controller');
 
-router.get("/customer", auth, CrmCustomerController.getCustomers);
-router.get("/customer/:id", auth, CrmCustomerController.getCustomer);
-router.patch("/customer/:id", auth, CrmCustomerController.editCustomer);
-router.delete("/customer/:id", auth, CrmCustomerController.deleteCustomer);
+router.get('/', auth, CustomerController.getCustomers);
+router.get('/:id', auth, CustomerController.getCustomerById);
+router.post('/', auth, CustomerController.createCustomer);
+router.patch('/:id', auth, CustomerController.editCustomer);
+router.delete('/:id', auth, CustomerController.deleteCustomer);
 
 module.exports = router;

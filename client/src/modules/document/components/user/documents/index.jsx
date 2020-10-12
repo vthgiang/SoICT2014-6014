@@ -63,28 +63,15 @@ class UserDocumentsData extends Component {
     requestDownloadDocumentFileScan = (id, fileName, numberVersion) => {
         this.props.downloadDocumentFileScan(id, fileName, numberVersion);
     }
-    showDetailListView = async (data) => {
-        await this.setState({
-            currentRow: data,
-        });
-        window.$('#modal-list-view').modal('show');
-    }
-    showDetailListDownload = async (data) => {
-        await this.setState({
-            currentRow: data,
-        })
-        window.$('#modal-list-download').modal('show');
-    }
-
 
     static getDerivedStateFromProps(nextProps, prevState) {
         const { data } = nextProps.documents.user;
         if (prevState.currentRow) {
-            const index = getIndex(data.list, prevState.currentRow._id);
-            if (data.list[index].versions.length !== prevState.currentRow.versions.length) {
+            const index = getIndex(data.paginate, prevState.currentRow._id);
+            if (data.paginate[index].versions.length !== prevState.currentRow.versions.length) {
                 return {
                     ...prevState,
-                    currentRow: data.list[index]
+                    currentRow: data.paginate[index]
                 }
             }
             else return null;
@@ -358,7 +345,7 @@ class UserDocumentsData extends Component {
         const listArchive = archives.list;
         let list = [];
         if (isLoading === false) {
-            list = docs.list;
+            list = docs.paginate;
         }
 
         let exportData = this.convertDataToExportData(list);
@@ -465,8 +452,7 @@ class UserDocumentsData extends Component {
                                 <th>{translate('document.expired_date')}</th>
                                 <th>{translate('document.upload_file')}</th>
                                 <th>{translate('document.upload_file_scan')}</th>
-                                <th>{translate('document.views')}</th>
-                                <th>{translate('document.downloads')}</th>
+
                                 <th style={{ width: '120px', textAlign: 'center' }}>
                                     {translate('general.action')}
                                     <DataTableSetting
@@ -478,8 +464,7 @@ class UserDocumentsData extends Component {
                                             translate('document.expired_date'),
                                             translate('document.upload_file'),
                                             translate('document.upload_file_scan'),
-                                            translate('document.views'),
-                                            translate('document.downloads')
+
                                         ]}
                                         limit={this.state.limit}
                                         setLimit={this.setLimit}
@@ -501,12 +486,7 @@ class UserDocumentsData extends Component {
                                             <td><DateTimeConverter dateTime={doc.versions[doc.versions.length - 1].expiredDate} type="DD-MM-YYYY" /></td>
                                             <td><a href="#" onClick={() => this.requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}><u>{doc.versions[doc.versions.length - 1].file ? translate('document.download') : ""}</u></a></td>
                                             <td><a href="#" onClick={() => this.requestDownloadDocumentFileScan(doc._id, "SCAN_" + doc.name, doc.versions.length - 1)}><u>{doc.versions[doc.versions.length - 1].scannedFileOfSignedDocument ? translate('document.download') : ""}</u></a></td>
-                                            <td>
-                                                <a href="#modal-list-view" onClick={() => this.showDetailListView(doc)}>{doc.numberOfView}</a>
-                                            </td>
-                                            <td>
-                                                <a href="#modal-list-download" onClick={() => this.showDetailListDownload(doc)}>{doc.numberOfDownload}</a>
-                                            </td>
+
                                             <td>
                                                 <a className="text-green" title={translate('document.view')} onClick={() => this.toggleDocumentInformation(doc)}><i className="material-icons">visibility</i></a>
 

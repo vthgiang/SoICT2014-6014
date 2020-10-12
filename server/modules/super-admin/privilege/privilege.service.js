@@ -1,6 +1,4 @@
-const {Privilege} = require('../../../models').schema;
-const Link = require('../../../models/super-admin/link.model');
-const Role = require('../../../models/auth/role.model');
+const {Privilege, Link, Role} = require(`${SERVER_MODELS_DIR}`);
 
 /**
  * Thêm quyền truy cập tới Link cho một Role truyền vào

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
+import Swal from 'sweetalert2'
 import { ContentMaker, DialogModal, ApiImage } from '../../../../../common-components';
 import { getStorage } from '../../../../../config';
 
@@ -22,7 +22,6 @@ class Comment extends Component {
             editChildComment: '',
             showfile: [],
             deleteFile: '',
-            showModalDelete: '',
             comment: {
                 creator: idUser,
                 description: '',
@@ -256,10 +255,20 @@ class Comment extends Component {
         this.props.downloadFile(path, fileName)
     }
     handleDeleteFile = async (fileId, fileName, childCommentId, commentId, setKpiId, type) => {
+        let { translate } = this.props
+        Swal.fire({
+            html: `<div style="max-width: 100%; max-height: 100%" >${translate("task.task_perform.question_delete_file")} ${fileName} ? <div>`,
+            showCancelButton: true,
+            cancelButtonText: `Hủy bỏ`,
+            confirmButtonText: `Đồng ý`,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.save(setKpiId)
+            }
+        })
         await this.setState(state => {
             return {
                 ...state,
-                showModalDelete: commentId,
                 deleteFile: {
                     fileId: fileId,
                     commentId: commentId,
@@ -270,7 +279,6 @@ class Comment extends Component {
                 }
             }
         });
-        window.$(`#modal-confirm-deletefile-kpi`).modal('show');
     }
 
     onEditCommentFilesChange = (files) => {
@@ -298,7 +306,7 @@ class Comment extends Component {
     }
     isImage = (src) => {
         let string = src.split(".")
-        let image = ['jpg', 'jpeg', 'png', 'psd', 'pdf', 'tiff', 'gif']
+        let image = ['jpg', 'jpeg', 'png', 'tiff', 'gif']
         if (image.indexOf(string[string.length - 1]) !== -1) {
             return true;
         } else {
@@ -317,7 +325,7 @@ class Comment extends Component {
     render() {
         var comments
         var minRows = 3, maxRows = 20
-        const { editComment, editChildComment, showChildComment, currentUser, newCommentEdited, newChildCommentEdited, showModalDelete, deleteFile, childComment, showfile } = this.state
+        const { editComment, editChildComment, showChildComment, currentUser, newCommentEdited, newChildCommentEdited, deleteFile, childComment, showfile } = this.state
         const { auth, translate } = this.props
         const { currentKPI } = this.props
         comments = currentKPI?.comments
@@ -415,19 +423,6 @@ class Comment extends Component {
                                                         </div>
                                                     })}
                                                 </div>}
-                                            {showModalDelete === item._id &&
-                                                <DialogModal
-                                                    marginTop={"20vh"}
-                                                    size={50}
-                                                    maxWidth={100}
-                                                    modalID={`modal-confirm-deletefile-kpi`}
-                                                    formID={`from-confirm-deletefile-kpi`}
-                                                    isLoading={false}
-                                                    func={() => this.save(currentKPI._id)}
-                                                >
-                                                    {translate("task.task_perform.question_delete_file")} {deleteFile.fileName} ?
-                                            </DialogModal>
-                                            }
                                         </div>
                                     </React.Fragment>
                                 }
@@ -499,12 +494,11 @@ class Comment extends Component {
                                                     <React.Fragment>
                                                         <div>
                                                             <ContentMaker
-                                                                inputCssClass="text-input-level1" controlCssClass="tool-level2 row"
+                                                                inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
                                                                 onFilesChange={this.onEditFileChildComment}
                                                                 onFilesError={this.onFilesError}
                                                                 files={newChildCommentEdited.files}
                                                                 defaultValue={child.description}
-                                                                styletext={{ marginLeft: "40px", width: "94%" }}
                                                                 submitButtonText={translate("task.task_perform.save_edit")}
                                                                 cancelButtonText={translate("task.task_perform.cancel")}
                                                                 handleEdit={(e) => this.handleEditChildComment(e)}
@@ -525,20 +519,6 @@ class Comment extends Component {
                                                                         </div>
                                                                     })}
                                                                 </div>}
-                                                            {/* modal confirm delete file */}
-                                                            {showModalDelete === item._id &&
-                                                                <DialogModal
-                                                                    marginTop={"20vh"}
-                                                                    size={50}
-                                                                    maxWidth={100}
-                                                                    modalID={`modal-confirm-deletefile-kpi`}
-                                                                    formID={`from-confirm-deletefile`}
-                                                                    isLoading={false}
-                                                                    func={() => this.save(currentKPI._id)}
-                                                                >
-                                                                    {translate("task.task_perform.question_delete_file")} {deleteFile.fileName}?
-                                                                </DialogModal>
-                                                            }
                                                         </div>
                                                     </React.Fragment>
                                                 }
@@ -599,10 +579,10 @@ function mapState(state) {
     return { auth };
 }
 const actionCreators = {
+    createComment: createKpiSetActions.createComment,
     editComment: createKpiSetActions.editComment,
     deleteComment: createKpiSetActions.deleteComment,
     downloadFile: AuthActions.downloadFile,
-    createComment: createKpiSetActions.createComment,
     createChildComment: createKpiSetActions.createChildComment,
     editChildComment: createKpiSetActions.editChildComment,
     deleteChildComment: createKpiSetActions.deleteChildComment,

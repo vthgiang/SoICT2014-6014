@@ -1,24 +1,20 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const Company = require('../system-admin/company.model');
-const Employee = require('./employee.model');
-const OrganizationalUnit = require('../super-admin/organizationalUnit.model')
-
 // Tạo bảng datatbale lương nhân viên
 const SalarySchema = new Schema({
     company: {
         type: Schema.Types.ObjectId,
-        ref: Company
+        ref: "Company"
     },
     employee: {
         type: Schema.Types.ObjectId,
-        ref: Employee,
+        ref: 'Employee',
         required: true,
     },
     organizationalUnit: {
         type: Schema.Types.ObjectId,
-        ref: OrganizationalUnit,
+        ref: 'OrganizationalUnit',
         required: true,
     },
     month: {
@@ -43,4 +39,8 @@ const SalarySchema = new Schema({
     timestamps: true,
 });
 
-module.exports = Salary = mongoose.model("salaries", SalarySchema);
+module.exports = (db) => {
+    if (!db.models.Salary)
+        return db.model('Salary', SalarySchema);
+    return db.models.Salary;
+}

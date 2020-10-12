@@ -18,8 +18,11 @@ class CreateForm extends Component {
             documentEffectiveDate: "",
             documentExpiredDate: "",
             documentCategory: "",
+            page: 1,
+            limit: 5,
         }
     }
+
 
     handleName = (e) => {
         const value = e.target.value.trim();
@@ -31,7 +34,6 @@ class CreateForm extends Component {
     }
 
     handleDomains = value => {
-        console.log('valueeeee', value)
         this.setState({ documentDomains: value });
     }
     handleArchives = value => {
@@ -137,10 +139,6 @@ class CreateForm extends Component {
         this.setState({ documentRoles: value });
     }
 
-    // handleArchivedRecordPlaceInfo = (e) => {
-    //     const { value } = e.target;
-    //     this.setState({ documentArchivedRecordPlaceInfo: value });
-    // }
 
     handleArchivedRecordPlaceOrganizationalUnit = (value) => {
         this.setState({ documentArchivedRecordPlaceOrganizationalUnit: value });
@@ -151,29 +149,37 @@ class CreateForm extends Component {
         this.setState({ documentArchivedRecordPlaceManager: value });
     }
 
-    handleUploadFile = (e) => {
-        const value = e.target.files[0];
-        console.log('fileeeeeeeee', value);
-        // this.validateDocumentFile(value, true);
+
+    handleUploadFile = (file) => {
+        file = file.map(x => {
+            return {
+                fileName: x.fileName,
+                url: x.urlFile,
+                fileUpload: x.fileUpload
+            }
+        })
         this.setState(state => {
             return {
                 ...state,
-                documentFile: value,
-                // errorDocumentFile: msg,
+                documentFile: file
             }
-        })
+        });
     }
 
-    handleUploadFileScan = (e) => {
-        const value = e.target.files[0];
-        // this.validateDocumentFileScan(value, true);
+    handleUploadFileScan = (file) => {
+        file = file.map(x => {
+            return {
+                fileName: x.fileName,
+                url: x.urlFile,
+                fileUpload: x.fileUpload
+            }
+        })
         this.setState(state => {
             return {
                 ...state,
-                documentFileScan: value,
-                //errorDocumentFileScan: msg,
+                documentFileScan: file
             }
-        })
+        });
     }
     validateName = (value, willUpdateState) => {
         let msg = undefined;
@@ -374,15 +380,6 @@ class CreateForm extends Component {
     isValidateForm = () => {
         return this.validateName(this.state.documentName, false)
             && this.validateCategory(this.state.documentCategory, false);
-        // && this.validateVersionName(this.state.documentVersionName, false)
-        // && this.validateOfficialNumber(this.state.documentOfficialNumber, false)
-        // && this.validateIssuingDate(this.state.documentIssuingDate, false)
-        // && this.validateEffectiveDate(this.state.documentEffectiveDate, false)
-        // && this.validateExpiredDate(this.state.documentExpiredDate, false)
-        // && this.validateSinger(this.state.documentSigner, false)
-        // && this.validateDocumentFile(this.state.documentFile, false)
-        // && this.validateDocumentFileScan(this.state.documentFileScan, false)
-        // && this.validateIssuingBody(this.state.documentIssuingBody, false);
     }
 
 
@@ -405,11 +402,9 @@ class CreateForm extends Component {
             documentRelationshipDescription,
             documentRelationshipDocuments,
             documentRoles,
-            //documentArchivedRecordPlaceInfo,
             documentArchivedRecordPlaceOrganizationalUnit,
             documentArchivedRecordPlaceManager,
         } = this.state;
-        console.log('dateeee', documentIssuingDate)
         const formData = new FormData();
         formData.append('name', documentName);
         formData.append('category', documentCategory);
@@ -486,15 +481,27 @@ class CreateForm extends Component {
         event.preventDefault();
         window.$('#modal_import_file_document').modal('show');
     }
+    onSearch = async (name) => {
+
+        await this.props.getAllDocuments({ page: this.state.page, limit: this.state.limit, name: name, calledId: "relationshipDocs" });
+
+        this.setState(state => {
+            return {
+                ...state,
+            }
+        });
+    }
 
     render() {
         const { translate, role, documents, department } = this.props;
         const { list } = documents.administration.domains;
-        const { errorName, errorCategory, errorVersionName, documentArchives, documentDomains } = this.state;
+
+        const { errorName, errorCategory, errorVersionName, documentArchives, documentDomains, listDocumentRelationship } = this.state;
         const archives = documents.administration.archives.list;
+
         const categories = documents.administration.categories.list.map(category => { return { value: category._id, text: category.name } });
         const documentRoles = role.list.map(role => { return { value: role._id, text: role.name } });
-        const relationshipDocs = documents.administration.data.list.map(doc => { return { value: doc._id, text: doc.name } });
+        const relationshipDocs = documents.administration.relationshipDocs.paginate.map(doc => { return { value: doc._id, text: doc.name } });
         let path = documentArchives ? this.findPath(archives, documentArchives) : "";
         return (
             <React.Fragment>
@@ -504,12 +511,15 @@ class CreateForm extends Component {
                         <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('manage_user.add_title')}
                         >{translate('general.add')}</button>
                         <ul className="dropdown-menu pull-right">
-                            <li><a href="#modal-create-document" title="ImportForm" onClick={(event) => { this.handleAddDocument(event) }}>{translate('task_template.add')}</a></li>
-                            <li><a href="#modal_import_file_document" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>ImportFile</a></li>
+                            <li>
+                                <a href="#modal-create-document" title="ImportForm" onClick={(event) => { this.handleAddDocument(event) }}>{translate('task_template.add')}</a>
+                            </li>
+                            <li>
+                                <a href="#modal_import_file_document" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>ImportFile</a>
+                            </li>
                         </ul>
                     </div>
                 </div>
-                {/* <ButtonModal modalID="modal-create-document" button_name={translate('general.add')} title={translate('manage_user.add_title')} /> */}
                 <DocumentImportForm />
                 <DialogModal
                     modalID="modal-create-document"
@@ -547,7 +557,6 @@ class CreateForm extends Component {
                                             <div className="form-group">
                                                 <label>{translate('document.doc_version.signer')}</label>
                                                 <input type="text" className="form-control" onChange={this.handleSigner} placeholder={translate('document.doc_version.exp_signer')} />
-
                                             </div>
                                         </div>
                                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
@@ -585,22 +594,13 @@ class CreateForm extends Component {
                                             <div className="form-group">
                                                 <label>{translate('document.upload_file')}</label>
                                                 {/* <UploadFile /> */}
-                                                <br />
-                                                <div className="upload btn btn-primary">
-                                                    <i className="fa fa-folder"></i>
-                                                    {" " + translate('document.choose_file')}
-                                                    <input className="upload" type="file" name="file" onChange={this.handleUploadFile} />
-                                                    {/* <input type="file" style={{ height: 34, paddingTop: 2 }} className="form-control" name="file" onChange={this.handleChangeFile} /> */}
-                                                </div>
+                                                <UploadFile onChange={this.handleUploadFile} />
+
                                             </div>
                                             <div className="form-group">
                                                 <label>{translate('document.upload_file_scan')}</label>
-                                                <br />
-                                                <div className="upload btn btn-primary">
-                                                    <i className="fa fa-folder"></i>
-                                                    {" " + translate('document.choose_file')}
-                                                    <input className="upload" type="file" name="file" onChange={this.handleUploadFileScan} />
-                                                </div>
+                                                <UploadFile onChange={this.handleUploadFileScan} />
+
                                             </div>
                                             <div className="form-group">
                                                 <label>{translate('document.doc_version.issuing_date')}</label>
@@ -643,8 +643,10 @@ class CreateForm extends Component {
                                                     className="form-control select2"
                                                     style={{ width: "100%" }}
                                                     items={relationshipDocs}
+                                                    value={listDocumentRelationship}
                                                     onChange={this.handleRelationshipDocuments}
                                                     multiple={true}
+                                                    onSearch={this.onSearch}
                                                 />
                                             </div>
                                             <div className="form-group">
@@ -660,10 +662,6 @@ class CreateForm extends Component {
                                             </div>
                                         </div>
                                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                            {/* <div className="form-group">
-                                                <label>{translate('document.store.information')}</label>
-                                                <input type="text" className="form-control" onChange={this.handleArchivedRecordPlaceInfo} placeholder="VD: Tủ 301" />
-                                            </div> */}
                                             <div className="form-group">
                                                 <label>{translate('document.store.organizational_unit_manage')}</label>
                                                 <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
@@ -701,6 +699,7 @@ class CreateForm extends Component {
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
+    getAllDocuments: DocumentActions.getDocuments,
     createDocument: DocumentActions.createDocument
 }
 

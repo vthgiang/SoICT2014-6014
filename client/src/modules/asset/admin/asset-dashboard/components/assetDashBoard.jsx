@@ -116,6 +116,8 @@ class DashBoardAssets extends Component {
         })
 
         forceCheckOrVisible(true, false);
+
+        window.dispatchEvent(new Event('resize')); // Fix lỗi chart bị resize khi đổi tab
     }
 
     // Function format dữ liệu Date thành string
@@ -465,50 +467,38 @@ class DashBoardAssets extends Component {
             <div className="qlcv">
                 <div className="row" style={{ marginTop: 10 }}>
 
-                    {/* Tổng số tài sản */}
-                    {/* <div className="col-md-3 col-sm-6 col-xs-6">
-                        <div className="info-box with-border">
-                            <span className="info-box-icon bg-aqua"><i className="fa fa-users"></i></span>
-                            <div className="info-box-content">
-                                <span className="info-box-text">Tổng số tài sản</span>
-                                <span className="info-box-number">{listAssets.length ? listAssets.length : 0}</span>
-                                <a href="/manage-info-asset">Xem thêm <i className="fa fa-arrow-circle-right"></i></a>
-                            </div>
-                        </div>
-                    </div> */}
-
-                    {/* Sẵn sàng sử dụng */}
+                    {/* ready_to_use */}
                     <div className="col-md-3 col-sm-6 col-xs-6">
                         <div className="info-box">
                             <span className="info-box-icon bg-green"><i className="fa fa-check"></i></span>
                             <div className="info-box-content">
-                                <span className="info-box-text">Sẵn sàng sử dụng</span>
-                                <span className="info-box-number">{listAssets.length ? this.returnCountNumber(listAssets, 'Sẵn sàng sử dụng') : 0}</span>
-                                <a href="/manage-info-asset">Xem thêm <i className="fa fa-arrow-circle-right"></i></a>
+                                <span className="info-box-text">{translate('asset.general_information.ready_use')}</span>
+                                <span className="info-box-number">{listAssets.length ? this.returnCountNumber(listAssets, 'ready_to_use') : 0}</span>
+                                <a href="/manage-info-asset">{translate('asset.general_information.view_more')} <i className="fa fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
                     </div>
 
-                    {/* Đang sử dụng */}
+                    {/* in_use */}
                     <div className="col-md-3 col-sm-6 col-xs-6">
                         <div className="info-box">
                             <span className="info-box-icon bg-aqua"><i className="fa fa-play"></i></span>
                             <div className="info-box-content" style={{ paddingBottom: 0 }}>
-                                <span className="info-box-text">Đang sử dụng</span>
-                                <span className="info-box-number">{listAssets.length ? this.returnCountNumber(listAssets, 'Đang sử dụng') : 0}</span>
-                                <a href="/manage-info-asset">Xem thêm <i className="fa fa-arrow-circle-right"></i></a>
+                                <span className="info-box-text">{translate('asset.general_information.using')}</span>
+                                <span className="info-box-number">{listAssets.length ? this.returnCountNumber(listAssets, 'in_use') : 0}</span>
+                                <a href="/manage-info-asset">{translate('asset.general_information.view_more')} <i className="fa fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
                     </div>
 
-                    {/* Hỏng hóc */}
+                    {/* broken */}
                     <div className="col-md-3 col-sm-6 col-xs-6">
                         <div className="info-box">
                             <span className="info-box-icon bg-yellow"><i className="fa fa-warning"></i></span>
                             <div className="info-box-content" style={{ paddingBottom: 0 }}>
-                                <span className="info-box-text">Hỏng hóc</span>
-                                <span className="info-box-number">{listAssets.length ? this.returnCountNumber(listAssets, 'Hỏng hóc') : 0}</span>
-                                <a href="/manage-info-asset">Xem thêm <i className="fa  fa-arrow-circle-o-right"></i></a>
+                                <span className="info-box-text">{translate('asset.general_information.damaged')}</span>
+                                <span className="info-box-number">{listAssets.length ? this.returnCountNumber(listAssets, 'broken') : 0}</span>
+                                <a href="/manage-info-asset">{translate('asset.general_information.view_more')} <i className="fa  fa-arrow-circle-o-right"></i></a>
                             </div>
                         </div>
                     </div>
@@ -518,9 +508,9 @@ class DashBoardAssets extends Component {
                         <div className="info-box">
                             <span className="info-box-icon bg-red"><i className="fa fa-calendar-times-o"></i></span>
                             <div className="info-box-content" style={{ paddingBottom: 0 }}>
-                                <span className="info-box-text">Thanh lý</span>
-                                <span className="info-box-number">{listAssets.length ? this.returnCountNumber(listAssets, 'Thanh lý') : 0}</span>
-                                <a href="/manage-info-asset">Xem thêm <i className="fa  fa-arrow-circle-o-right"></i></a>
+                                <span className="info-box-text">{translate('asset.general_information.disposal')}</span>
+                                <span className="info-box-number">{listAssets.length ? this.returnCountNumber(listAssets, 'disposed') : 0}</span>
+                                <a href="/manage-info-asset">{translate('asset.general_information.view_more')} <i className="fa  fa-arrow-circle-o-right"></i></a>
                             </div>
                         </div>
                     </div>

@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
 import { withTranslate } from 'react-redux-multilingual';
+import Swal from 'sweetalert2'
 import Rating from 'react-rating';
 import moment from 'moment';
 import 'moment/locale/vi';
 import Files from 'react-files';
 import './actionTab.css';
 
-import { ContentMaker, DialogModal, DateTimeConverter, ApiImage } from '../../../../common-components';
+import { ContentMaker, DateTimeConverter, ApiImage } from '../../../../common-components';
 import { getStorage } from '../../../../config';
 
 import { performTaskAction } from '../redux/actions';
@@ -110,7 +110,6 @@ class ActionTab extends Component {
             maxRows: 25,
             showFile: [],
             descriptionFile: "",
-            showModalDelete: '',
             deleteFile: ''
         };
         this.hover = [];
@@ -140,7 +139,7 @@ class ActionTab extends Component {
             this.props.getTaskLog(nextProps.id);
             return true;
         }
-        if(nextProps.auth.user.avatar !== this.props.auth.user.avatar) {
+        if (nextProps.auth.user.avatar !== this.props.auth.user.avatar) {
             this.props.getTaskById(nextProps.id)
             return true;
         }
@@ -368,7 +367,8 @@ class ActionTab extends Component {
         })
         data.append("description", taskFiles.description)
         data.append("creator", creator);
-        if (taskFiles.files) {
+        if (taskFiles.files.length > 0) {
+            console.log(taskFiles.files)
             this.props.uploadFile(taskId, data);
         }
         // Reset state cho việc thêm mới bình luận
@@ -742,11 +742,20 @@ class ActionTab extends Component {
         }
     }
     handleDeleteFile = async (fileId, fileName, actionId, type) => {
-
+        let { performtasks, translate } = this.props
+        Swal.fire({
+            html: `<div style="max-width: 100%; max-height: 100%" >${translate("task.task_perform.question_delete_file")} ${fileName} ? <div>`,
+            showCancelButton: true,
+            cancelButtonText: `Hủy bỏ`,
+            confirmButtonText: `Đồng ý`,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.save(performtasks?.task?._id)
+            }
+        })
         await this.setState(state => {
             return {
                 ...state,
-                showModalDelete: actionId,
                 deleteFile: {
                     fileId: fileId,
                     actionId: actionId,
@@ -755,7 +764,7 @@ class ActionTab extends Component {
                 }
             }
         });
-        window.$(`#modal-confirm-deletefile`).modal('show');
+        // window.$(`#modal-confirm-deletefile`).modal('show');
     }
     save = (taskId) => {
         let { deleteFile } = this.state
@@ -794,7 +803,7 @@ class ActionTab extends Component {
     }
     isImage = (src) => {
         let string = src.split(".")
-        let image = ['jpg', 'jpeg', 'png', 'psd', 'pdf', 'tiff', 'gif']
+        let image = ['jpg', 'jpeg', 'png', 'tiff', 'gif']
         if (image.indexOf(string[string.length - 1]) !== -1) {
             return true;
         } else {
@@ -813,7 +822,7 @@ class ActionTab extends Component {
         const {
             showEvaluations, selected, comment, editComment, showChildComment, editAction, action,
             editTaskComment, showChildTaskComment, showEditTaskFile,
-            editCommentOfTaskComment, valueRating, currentUser, hover, showModalDelete, fileTaskEdited,
+            editCommentOfTaskComment, valueRating, currentUser, hover, fileTaskEdited,
             showFile, deleteFile, taskFiles, newActionEdited, newCommentOfActionEdited, newAction,
             newCommentOfAction, newTaskCommentEdited, newCommentOfTaskComment, newTaskComment, newCommentOfTaskCommentEdited
         } = this.state;
@@ -1037,19 +1046,6 @@ class ActionTab extends Component {
                                                                     </div>
                                                                 })}
                                                             </div>}
-                                                        {showModalDelete === item._id &&
-                                                            <DialogModal
-                                                                marginTop={"20vh"}
-                                                                size={50}
-                                                                maxWidth={100}
-                                                                modalID={`modal-confirm-deletefile`}
-                                                                formID={`from-confirm-deletefile`}
-                                                                isLoading={false}
-                                                                func={() => this.save(task._id)}
-                                                            >
-                                                                {translate("task.task_perform.question_delete_file")} {deleteFile.fileName} ?
-                                                            </DialogModal>
-                                                        }
                                                     </div>
                                                 </React.Fragment>
                                             }
@@ -1060,7 +1056,6 @@ class ActionTab extends Component {
                                                     {item.comments.map(child => {
                                                         return <div key={child._id}>
                                                             <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + child.creator?.avatar)} alt="User Image" />
-
                                                             {editComment !== child._id && // Khi đang edit thì nội dung cũ đi
                                                                 <div>
                                                                     <div className="content-level2">
@@ -1087,8 +1082,11 @@ class ActionTab extends Component {
                                                                     </div>
                                                                     <ul className="list-inline tool-level2">
                                                                         <li><span className="text-sm">{<DateTimeConverter dateTime={child.createdAt} />}</span></li>
-                                                                        <li style={{ display: "inline-table" }}>
-                                                                            <div><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => this.handleShowFile(child._id)}><b><i className="fa fa-paperclip" aria-hidden="true"> {translate("task.task_perform.file_attach")} ({child.files && child.files.length})</i></b></a></div></li>
+                                                                        {child.files && child.files.length>0 &&
+                                                                            <li style={{ display: "inline-table" }}>
+                                                                                <div><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => this.handleShowFile(child._id)}><b><i className="fa fa-paperclip" aria-hidden="true"> {translate("task.task_perform.file_attach")} ({child.files && child.files.length})</i></b></a></div>
+                                                                            </li>
+                                                                        }
                                                                         {showFile.some(obj => obj === child._id) &&
                                                                             <li style={{ display: "inline-table" }}>
                                                                                 {child.files.map((elem, index) => {
@@ -1117,12 +1115,11 @@ class ActionTab extends Component {
                                                                 <React.Fragment>
                                                                     <div>
                                                                         <ContentMaker
-                                                                            inputCssClass="text-input-level1" controlCssClass="tool-level2 row"
+                                                                            inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
                                                                             onFilesChange={this.onEditCommentOfActionFilesChange}
                                                                             onFilesError={this.onFilesError}
                                                                             files={newCommentOfActionEdited.files}
                                                                             defaultValue={child.description}
-                                                                            styletext={{ marginLeft: "40px", width: "94%" }}
                                                                             submitButtonText={translate("task.task_perform.save_edit")}
                                                                             cancelButtonText={translate("task.task_perform.cancel")}
                                                                             handleEdit={(e) => this.handleEditActionComment(e)}
@@ -1143,20 +1140,6 @@ class ActionTab extends Component {
                                                                                     </div>
                                                                                 })}
                                                                             </div>}
-                                                                        {/* modal confirm delete file */}
-                                                                        {showModalDelete === item._id &&
-                                                                            <DialogModal
-                                                                                marginTop={"20vh"}
-                                                                                size={50}
-                                                                                maxWidth={100}
-                                                                                modalID={`modal-confirm-deletefile`}
-                                                                                formID={`from-confirm-deletefile`}
-                                                                                isLoading={false}
-                                                                                func={() => this.save(task._id)}
-                                                                            >
-                                                                                {translate("task.task_perform.question_delete_file")} {deleteFile.fileName}?
-                                                                    </DialogModal>
-                                                                        }
                                                                     </div>
                                                                 </React.Fragment>
                                                             }
@@ -1169,6 +1152,7 @@ class ActionTab extends Component {
                                                         <img className="user-img-level2"
                                                             src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar"
                                                         />
+
                                                         <ContentMaker
                                                             inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
                                                             onFilesChange={this.onCommentFilesChange}
@@ -1306,20 +1290,6 @@ class ActionTab extends Component {
                                                                     </div>
                                                                 })}
                                                             </div>}
-                                                        {/* modal confirm delete file */}
-                                                        {showModalDelete === item._id &&
-                                                            <DialogModal
-                                                                marginTop={"20vh"}
-                                                                size={50}
-                                                                maxWidth={100}
-                                                                modalID={`modal-confirm-deletefile`}
-                                                                formID={`from-confirm-deletefile`}
-                                                                isLoading={false}
-                                                                func={() => this.save(task._id)}
-                                                            >
-                                                                {translate("task.task_perform.question_delete_file")} {deleteFile.fileName}?
-                                                    </DialogModal>
-                                                        }
                                                     </div>
                                                 </React.Fragment>
                                             }
@@ -1329,8 +1299,7 @@ class ActionTab extends Component {
                                                 <div className="comment-content-child">
                                                     {item.comments.map(child => {
                                                         return <div key={child._id}>
-                                                            <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + item.creator?.avatar)} alt="User Image" />
-
+                                                            <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + child.creator?.avatar)} alt="User Image" />
                                                             {editCommentOfTaskComment !== child._id && // Đang edit thì ẩn đi
                                                                 <div>
                                                                     <div className="content-level2">
@@ -1390,10 +1359,9 @@ class ActionTab extends Component {
                                                                 <React.Fragment>
                                                                     <div>
                                                                         <ContentMaker
-                                                                            inputCssClass="text-input-level1" controlCssClass="tool-level2 row"
+                                                                            inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
                                                                             onFilesChange={this.onEditCommentOfTaskCommentFilesChange}
                                                                             onFilesError={this.onFilesError}
-                                                                            styletext={{ marginLeft: "40px", width: "94%" }}
                                                                             files={newCommentOfTaskCommentEdited.files}
                                                                             defaultValue={child.description}
                                                                             submitButtonText={translate("task.task_perform.save_edit")}
@@ -1416,20 +1384,6 @@ class ActionTab extends Component {
                                                                                     </div>
                                                                                 })}
                                                                             </div>}
-                                                                        {/* modal confirm delete file */}
-                                                                        {showModalDelete === item._id &&
-                                                                            <DialogModal
-                                                                                marginTop={"20vh"}
-                                                                                size={50}
-                                                                                maxWidth={100}
-                                                                                modalID={`modal-confirm-deletefile`}
-                                                                                formID={`from-confirm-deletefile`}
-                                                                                isLoading={false}
-                                                                                func={() => this.save(task._id)}
-                                                                            >
-                                                                                {translate("task.task_perform.question_delete_file")} {deleteFile.fileName}?
-                                                                    </DialogModal>
-                                                                        }
                                                                     </div>
                                                                 </React.Fragment>
                                                             }
@@ -1439,7 +1393,7 @@ class ActionTab extends Component {
                                                     }
                                                     {/*Thêm bình luận cho bình luận */}
                                                     <div>
-                                                        <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
+                                                    <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
                                                         <ContentMaker
                                                             inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
                                                             onFilesChange={this.onCommentOfTaskCommentFilesChange}
@@ -1505,38 +1459,51 @@ class ActionTab extends Component {
                                                                 </ul>
                                                             </div>}
                                                         <div>
-                                                            <strong>{item.creator?.name} </strong>
+                                                            <ul className='list-inline list-name-document'>
+                                                                <li><strong>{item.creator?.name} </strong></li>
+                                                                <li><span className="text-sm">{<DateTimeConverter dateTime={item.createdAt} />}</span></li>
+                                                            </ul>
                                                             {item.description}
                                                         </div>
                                                         <div>
-                                                            {item.files.map((elem, index) => {
-                                                                return (
-                                                                    <div key={index} className="show-files-task">
-                                                                        {this.isImage(elem.name) ?
-                                                                            <ApiImage
-                                                                                className="attachment-img files-attach"
-                                                                                style={{ marginTop: "5px" }}
-                                                                                src={elem.url}
-                                                                                file={elem}
-                                                                                requestDownloadFile={this.requestDownloadFile}
-                                                                            />
-                                                                            :
-                                                                            <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
-                                                                        }
-
-                                                                    </div>
-                                                                )
-                                                            })}
+                                                            {showFile.some(obj => obj === item._id) ? 
+                                                                <a style={{cursor: 'pointer'}} onClick={() => { this.handleShowFile(item._id) }}>Ẩn bớt<i className='fa fa-angle-double-up'></i></a> 
+                                                                :
+                                                                <a style={{cursor: 'pointer'}} onClick={() => { this.handleShowFile(item._id) }}>Hiển thị {item?.files?.length} tài liệu &nbsp; <i className='fa fa-angle-double-down'></i> </a>
+                                                            }
                                                         </div>
+                                                        {showFile.some(obj => obj === item._id) &&
+                                                            <React.Fragment>
+                                                                <div>
+                                                                    {item.files.map((elem, index) => {
+                                                                        return (
+                                                                            <div key={index} className="show-files-task">
+                                                                                {this.isImage(elem.name) ?
+                                                                                    <ApiImage
+                                                                                        className="attachment-img files-attach"
+                                                                                        style={{ marginTop: "5px" }}
+                                                                                        src={elem.url}
+                                                                                        file={elem}
+                                                                                        requestDownloadFile={this.requestDownloadFile}
+                                                                                    />
+                                                                                    :
+                                                                                    <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
+                                                                                }
+
+                                                                            </div>
+                                                                        )
+                                                                    })}
+                                                                </div>
+                                                            </React.Fragment>
+                                                        }
                                                     </div>
                                                 }
                                                 {showEditTaskFile === item._id &&
                                                     <React.Fragment>
                                                         <div style={{ marginTop: '15px' }}>
-                                                            <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
+                                                        <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
                                                             <ContentMaker
                                                                 inputCssClass="text-input-level1" controlCssClass="tool-level2 row"
-                                                                // styletext={{ marginTop: "15px" }}
                                                                 onFilesChange={this.onEditFileTask}
                                                                 onFilesError={this.onFilesError}
                                                                 files={fileTaskEdited.files}
@@ -1560,19 +1527,6 @@ class ActionTab extends Component {
                                                                         </div>
                                                                     })}
                                                                 </div>}
-                                                            {showModalDelete === item._id &&
-                                                                <DialogModal
-                                                                    marginTop={"20vh"}
-                                                                    size={50}
-                                                                    maxWidth={100}
-                                                                    modalID={`modal-confirm-deletefile`}
-                                                                    formID={`from-confirm-deletefile`}
-                                                                    isLoading={false}
-                                                                    func={() => this.save(task._id)}
-                                                                >
-                                                                    {translate("task.task_perform.question_delete_file")} {deleteFile.fileName} ?
-                                                                </DialogModal>
-                                                            }
                                                         </div>
                                                     </React.Fragment>
                                                 }
@@ -1599,6 +1553,7 @@ class ActionTab extends Component {
 
                                             })
                                         }}
+                                        disableSubmit={true}
                                         onSubmit={(e) => { this.handleUploadFile(task._id, currentUser) }}
                                     />
                                 </div>

@@ -2,47 +2,52 @@ import { SystemSettingServices } from "./services";
 import { SystemSettingConstants } from "./constants";
 
 export const SystemSettingActions = {
-    backup,
+    getBackups,
+    getConfigBackup,
+    createBackup,
+    configBackup,
     deleteBackup,
-    getRestoreData,
     restore
 }
 
-function backup(params=undefined, data=undefined) {
-    if(params === undefined && data === undefined){
-        return dispatch => {
-            dispatch({ type: SystemSettingConstants.CREATE_BACKUP_REQUEST });
-            SystemSettingServices.backup()
+function getBackups() {
+    return dispatch => {
+        dispatch({ type: SystemSettingConstants.GET_BACKUPS_REQUEST });
+
+        SystemSettingServices.getBackups()
+        .then(res => {
+            dispatch({
+                type: SystemSettingConstants.GET_BACKUPS_SUCCESS,
+                payload: res.data.content
+            })
+        })
+        .catch(error => {
+            dispatch({
+                type: SystemSettingConstants.GET_BACKUPS_FAILE,
+                payload: error
+            }) 
+        })
+    }
+}
+
+function getConfigBackup() {
+    return dispatch => {
+        dispatch({ type: SystemSettingConstants.GET_CONFIG_BACKUP_REQUEST });
+        console.log("alaoaoala")
+        SystemSettingServices.getConfigBackup()
             .then(res => {
+                console.log("FSDFSDFSD", res.data.content.backup)
                 dispatch({
-                    type: SystemSettingConstants.CREATE_BACKUP_SUCCESS,
-                    payload: res.data.content
+                    type: SystemSettingConstants.GET_CONFIG_BACKUP_SUCCESS,
+                    payload: res.data.content.backup
                 })
             })
             .catch(error => {
                 dispatch({
-                    type: SystemSettingConstants.CREATE_BACKUP_FAILE,
+                    type: SystemSettingConstants.GET_CONFIG_BACKUP_FAILE,
                     payload: error
                 }) 
             })
-        }
-    } else {
-        return dispatch => {
-            dispatch({ type: SystemSettingConstants.SET_SCHEDULE_BACKUP_AUTOMATIC_REQUEST });
-            SystemSettingServices.backup(params, data)
-            .then(res => {
-                dispatch({
-                    type: SystemSettingConstants.SET_SCHEDULE_BACKUP_AUTOMATIC_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(error => {
-                dispatch({
-                    type: SystemSettingConstants.SET_SCHEDULE_BACKUP_AUTOMATIC_FAILE,
-                    payload: error
-                }) 
-            })
-        }
     }
 }
 
@@ -67,20 +72,41 @@ function deleteBackup(version) {
     }
 }
 
-function getRestoreData() {
+function createBackup() {
     return dispatch => {
-        dispatch({ type: SystemSettingConstants.GET_RESTORE_DATA_REQUEST });
+        dispatch({ type: SystemSettingConstants.CREATE_BACKUP_REQUEST });
 
-        SystemSettingServices.getRestoreData()
+        SystemSettingServices.createBackup()
             .then(res => {
                 dispatch({
-                    type: SystemSettingConstants.GET_RESTORE_DATA_SUCCESS,
+                    type: SystemSettingConstants.CREATE_BACKUP_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(error => {
                 dispatch({
-                    type: SystemSettingConstants.GET_RESTORE_DATA_FAILE,
+                    type: SystemSettingConstants.CREATE_BACKUP_FAILE,
+                    payload: error
+                })
+                
+            })
+    }
+}
+
+function configBackup(params, data=undefined) {
+    return dispatch => {
+        dispatch({ type: SystemSettingConstants.CONFIG_BACKUP_REQUEST });
+
+        SystemSettingServices.configBackup(params, data)
+            .then(res => {
+                dispatch({
+                    type: SystemSettingConstants.CONFIG_BACKUP_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: SystemSettingConstants.CONFIG_BACKUP_FAILE,
                     payload: error
                 })
                 

@@ -28,8 +28,12 @@ class ArchiveImportForm extends Component {
             importData: [],
         })
     }
+    /**
+     * 
+     * @param {*} value: mảng các object archive 
+     * @param {*} checkFileImport 
+     */
     handleImportExcel = (value, checkFileImport) => {
-        console.log('vlueee', value, checkFileImport)
         let values = [];
         let showValues = [];
         let k = -1;
@@ -84,25 +88,13 @@ class ArchiveImportForm extends Component {
 
     save = () => {
         let { importShowData } = this.state;
-        console.log(importShowData);
         this.props.importArchive(importShowData);
     }
 
-    // convertDataExport = (dataExport)=>{
-    //     for(let i  = 0; i < dataExport.dataSheets.length; i++){
-    //         for(let j = 0; j < dataExport.dataSheets[j].table.length; j++){
-    //             let datas = [];
-    //             let data = dataExport.dataSheets[i].table[j].data;
-    //             if(Array.isArray(data[0].))
-    //         }
-    //     }
-    // }
 
     render() {
         const { translate } = this.props;
         let { limit, page, importData, rowError, configData, checkFileImport } = this.state;
-        //let templateImportArchive = this.convertDataExport(exportArchive);
-        console.log('exporttt', exportArchive);
         return (
             <React.Fragment>
                 <DialogModal

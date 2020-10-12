@@ -1,30 +1,30 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import { getStorage } from '../../../../config';
 
 import { DataTableSetting, DeleteNotification, PaginateBar, DatePicker, SelectMulti, SlimScroll, ExportExcel } from '../../../../common-components';
 
-import { TimesheetsImportForm, TimesheetsCreateForm, TimesheetsEditForm } from './combinedContent';
+import { TimesheetsByShiftImportForm, TimesheetsCreateForm, TimesheetsEditForm } from './combinedContent';
 
 import { TimesheetsActions } from '../redux/actions';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
+import { ConfigurationActions } from '../../../super-admin//module-configuration/redux/actions';
 
 import './timesheet.css';
 
 class TimesheetsManagement extends Component {
     constructor(props) {
         super(props);
-
         let allDayOfMonth = this.getAllDayOfMonth(this.formatDate(Date.now(), true));
         let dateNow = new Date();
         let dayNow = dateNow.getDate();
-
         this.state = {
             allDayOfMonth: allDayOfMonth,
             dayNow: dayNow,
             month: this.formatDate(Date.now(), true),
             employeeNumber: "",
-            organizationalUnit: null,
+            organizationalUnits: null,
             page: 0,
             limit: 5,
         }
@@ -38,7 +38,7 @@ class TimesheetsManagement extends Component {
             let partMonth = this.state.month.split('-');
             monthSearch = [partMonth[1], partMonth[0]].join('-');
         }
-
+        this.props.getConfiguration();
         this.props.getDepartment();
         this.props.searchTimesheets({ ...this.state, month: monthSearch });
     }
@@ -49,7 +49,11 @@ class TimesheetsManagement extends Component {
     }
 
     /** Function bắt sự kiện import thông tin chấm công */
-    handleImport = () => {
+    handleImport = async () => {
+        await this.setState({
+            ...this.state,
+            importExcel: true
+        })
         window.$('#modal_import_file').modal('show');
     }
 
@@ -91,9 +95,13 @@ class TimesheetsManagement extends Component {
      * @param {*} month : Tháng
      */
     getAllDayOfMonth = (month) => {
+        const lang = getStorage("lang");
+        let arrayDay = [], days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        if (lang === 'vn') {
+            days = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7']
+        };
         let partMonth = month.split('-');
         let lastDayOfmonth = new Date(partMonth[1], partMonth[0], 0);
-        let arrayDay = [], days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
         for (let i = 1; i <= lastDayOfmonth.getDate(); i++) {
             let day = i;
             if (i.toString().length < 2)
@@ -124,7 +132,7 @@ class TimesheetsManagement extends Component {
         };
         this.setState({
             ...this.state,
-            organizationalUnit: value
+            organizationalUnits: value
         })
     }
 
@@ -198,63 +206,118 @@ class TimesheetsManagement extends Component {
      * Function chyển đổi dữ liệu chấm công thành dạng dữ liệu dùng export
      * @param {*} data : Dữ liệu chấm công
      */
-    convertDataToExportData = (data) => {
+    convertDataToExportData = (data, timekeepingType) => {
         const { translate } = this.props;
-        let dataExport = [];
-        data.map((x, index) => {
-            let total = 0;
-            let shifts1 = x.workSession1;
-            let shifts2 = x.workSession2;
-            let colShifts1 = {}, colShifts2 = {};
-            shifts1.forEach((y, key) => {
-                if (y === true) {
-                    colShifts1 = { ...colShifts1, [`date${key + 1}`]: 'X' };
-                    total += 1;
-                } else {
-                    colShifts1 = { ...colShifts1, [`date${key + 1}`]: '' }
-                }
-            })
-            shifts2.forEach((y, key) => {
-                if (y === true) {
-                    colShifts2 = { ...colShifts2, [`date${key + 1}`]: 'X' };
-                    total += 1;
-                } else {
-                    colShifts2 = { ...colShifts2, [`date${key + 1}`]: '' }
-                }
-            })
+        let dataExport = [], styleColumn, space = [];
+        if (timekeepingType === 'shift') {
+            space = [{ key: "space", value: "", width: '10' }];
+            styleColumn = {
+                STT: {
+                    vertical: 'middle',
+                    horizontal: 'center'
+                },
+                fullName: {
+                    vertical: 'middle',
+                    horizontal: 'center'
+                },
+                employeeNumber: {
+                    vertical: 'middle',
+                    horizontal: 'center'
+                },
+                totalHours: {
+                    vertical: 'middle',
+                    horizontal: 'center'
+                },
 
-            let row = [
-                {
-                    merges: { STT: 2, employeeNumber: 2, fullName: 2, total: 2 },
+            };
+            data.map((x, index) => {
+                let totalHours = x.totalHours;
+                let shifts1s = x.timekeepingByShift.shift1s;
+                let shifts2s = x.timekeepingByShift.shift2s;
+                let shifts3s = x.timekeepingByShift.shift3s;
+                let colShifts1 = {}, colShifts2 = {}, colShifts3 = {};
+                shifts1s.forEach((y, key) => {
+                    if (y === true) {
+                        colShifts1 = { ...colShifts1, [`date${key + 1}`]: 'X' };
+                    } else {
+                        colShifts1 = { ...colShifts1, [`date${key + 1}`]: '' }
+                    }
+                });
+                shifts2s.forEach((y, key) => {
+                    if (y === true) {
+                        colShifts2 = { ...colShifts2, [`date${key + 1}`]: 'X' };
+                    } else {
+                        colShifts2 = { ...colShifts2, [`date${key + 1}`]: '' }
+                    }
+                });
+                shifts3s.forEach((y, key) => {
+                    if (y === true) {
+                        colShifts3 = { ...colShifts3, [`date${key + 1}`]: 'X' };
+                    } else {
+                        colShifts3 = { ...colShifts3, [`date${key + 1}`]: '' }
+                    }
+                });
+
+                let row = [
+                    {
+                        merges: { STT: 3, employeeNumber: 3, fullName: 3, totalHours: 3 },
+                        STT: index + 1,
+                        fullName: x.employee ? x.employee.fullName : "",
+                        employeeNumber: x.employee ? x.employee.employeeNumber : "",
+                        space: translate('human_resource.timesheets.shifts1'),
+                        ...colShifts1,
+                        totalHours: totalHours,
+                    }, {
+                        STT: "",
+                        fullName: "",
+                        employeeNumber: "",
+                        space: translate('human_resource.timesheets.shifts2'),
+                        ...colShifts2,
+                        totalHours: "",
+                    }, {
+                        STT: "",
+                        fullName: "",
+                        employeeNumber: "",
+                        space: translate('human_resource.timesheets.shifts3'),
+                        ...colShifts3,
+                        totalHours: "",
+                    },
+                ]
+                dataExport = dataExport.concat(row);
+            });
+        };
+
+        if (timekeepingType === 'hours') {
+            dataExport = data.map((x, index) => {
+                let totalHours = x.totalHours;
+                let timekeepingByHours = x.timekeepingByHours;
+                let colName = {};
+                timekeepingByHours.forEach((y, key) => {
+                    colName = { ...colName, [`date${key + 1}`]: y !== 0 ? y : '' };
+                });
+
+                return {
                     STT: index + 1,
                     fullName: x.employee ? x.employee.fullName : "",
                     employeeNumber: x.employee ? x.employee.employeeNumber : "",
-                    space: translate('human_resource.timesheets.shifts1'),
-                    ...colShifts1,
-                    total: total / 2,
-                }, {
-                    STT: "",
-                    fullName: "",
-                    employeeNumber: "",
-                    space: translate('human_resource.timesheets.shifts2'),
-                    ...colShifts2,
-                    total: "",
-                },
-            ]
-            dataExport = dataExport.concat(row);
-        });
-
+                    ...colName,
+                    totalHours: totalHours,
+                }
+            })
+        }
 
         let addColumns = [];
         for (let n = 1; n <= 31; n++) {
             addColumns = [...addColumns, { key: `date${n}`, value: n, width: 4 }]
-        }
+        };
+
         let exportData = {
             fileName: translate('human_resource.timesheets.file_name_export'),
             dataSheets: [
                 {
                     sheetName: "Sheet1",
                     sheetTitle: translate('human_resource.timesheets.file_name_export'),
+                    sheetTitleWidth: 35,
                     tables: [
                         {
                             merges: [{
@@ -264,13 +327,14 @@ class TimesheetsManagement extends Component {
                                 colspan: 31
                             }],
                             rowHeader: 2,
+                            styleColumn: styleColumn,
                             columns: [
                                 { key: "STT", value: translate('human_resource.stt'), width: 7 },
                                 { key: "employeeNumber", value: translate('human_resource.staff_number') },
                                 { key: "fullName", value: translate('human_resource.staff_name'), width: 20 },
-                                { key: "space", value: "", width: '10' },
+                                ...space,
                                 ...addColumns,
-                                { key: "total", value: translate('human_resource.timesheets.total_timesheets') },
+                                { key: "totalHours", value: translate('human_resource.timesheets.total_timesheets') },
                             ],
                             data: dataExport
                         }
@@ -281,16 +345,23 @@ class TimesheetsManagement extends Component {
         return exportData
     }
 
-
     render() {
-        const { translate, timesheets, department } = this.props;
+        const { translate, timesheets, department, modelConfiguration } = this.props;
 
-        const { month, limit, page, allDayOfMonth, dayNow, organizationalUnit, currentRow } = this.state;
+        const { month, limit, page, allDayOfMonth, dayNow, organizationalUnits, currentRow, importExcel } = this.state;
 
-        let listTimesheets = [], exportData = [];
-        if (timesheets.isLoading === false) {
+        let timekeepingType, config, listTimesheets = [], exportData = [], humanResourceConfig = modelConfiguration.humanResourceConfig;
+
+        if (humanResourceConfig) {
+            timekeepingType = humanResourceConfig.timekeepingType;
+            if (timekeepingType === 'shift') {
+                config = humanResourceConfig.timekeepingByShift
+            }
+        }
+
+        if (timesheets.isLoading === false && timekeepingType) {
             listTimesheets = timesheets.listTimesheets;
-            exportData = this.convertDataToExportData(listTimesheets);
+            exportData = this.convertDataToExportData(listTimesheets, timekeepingType);
         }
 
         let pageTotal = (timesheets.totalList % limit === 0) ?
@@ -346,12 +417,15 @@ class TimesheetsManagement extends Component {
                             <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => this.handleSunmitSearch()} >{translate('general.search')}</button>
                         </div>
                     </div>
-
-                    <div className="form-inline">
-                        <label>{translate('human_resource.timesheets.symbol')}: &emsp; &emsp; </label><i style={{ color: "#08b30e", fontSize: 19 }} className="glyphicon glyphicon-ok"></i><span> -- {translate('human_resource.timesheets.do_work')} </span>
+                    {
+                        timekeepingType === 'shift' &&
+                        <div className="form-inline">
+                            <label>{translate('human_resource.timesheets.symbol')}: &emsp; &emsp; </label><i style={{ color: "#08b30e", fontSize: 19 }} className="glyphicon glyphicon-ok"></i><span> -- {translate('human_resource.timesheets.do_work')} </span>
                                             &emsp;&emsp;&emsp;<i style={{ color: "red", fontSize: 19 }} className="glyphicon glyphicon-remove"></i><span> -- {translate('human_resource.timesheets.not_work')}</span>
 
-                    </div>
+                        </div>
+                    }
+
 
                     <DataTableSetting
                         tableId="table-timesheets"
@@ -359,100 +433,188 @@ class TimesheetsManagement extends Component {
                         setLimit={this.setLimit}
                         hideColumnOption={false}
                     />
+                    {
+                        timekeepingType === 'shift' &&
+                        <div id="croll-table" className="form-inline">
+                            <div className="sticky col-lg-6 col-md-6 col-sm-7 col-xs-8 " style={{ padding: 0 }}>
+                                <table id="table-timesheets" className="keeping table table-bordered">
+                                    <thead>
+                                        <tr style={{ height: 58 }}>
+                                            <th>{translate('human_resource.staff_number')}</th>
+                                            <th>{translate('human_resource.staff_name')}</th>
+                                            <th>{translate('human_resource.timesheets.total_timesheets')}</th>
+                                            <th>{translate('general.action')}</th>
+                                            <th>{translate('human_resource.timesheets.shift_work')}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            listTimesheets.length !== 0 && listTimesheets.map((x, index) => (
+                                                <React.Fragment key={index}>
+                                                    <tr>
+                                                        <td rowSpan="3" style={{ paddingTop: 22 }}>{x.employee ? x.employee.employeeNumber : null}</td>
+                                                        <td rowSpan="3" style={{ paddingTop: 22 }}>{x.employee ? x.employee.fullName : null}</td>
+                                                        <td rowSpan="3" style={{ paddingTop: 22 }}> {x.totalHours}</td>
+                                                        <td rowSpan="3" style={{ paddingTop: 22, textAlign: "center" }}>
+                                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.timesheets.edit_timesheets')}><i className="material-icons">edit</i></a>
+                                                            <DeleteNotification
+                                                                content={translate('human_resource.timesheets.delete_timesheets')}
+                                                                data={{
+                                                                    id: x._id,
+                                                                    info: x.employee.employeeNumber + "- " + translate('human_resource.month') + ": " + month
+                                                                }}
+                                                                func={this.props.deleteTimesheets}
+                                                            />
 
-                    <div id="croll-table" className="form-inline">
-                        <div className="sticky col-lg-4 col-md-4 col-sm-6 col-xs-7 " style={{ padding: 0 }}>
-                            <table id="table-timesheets" className="keeping table table-bordered">
-                                <thead>
-                                    <tr style={{ height: 58 }}>
-                                        <th>{translate('human_resource.staff_number')}</th>
-                                        <th>{translate('human_resource.staff_name')}</th>
-                                        <th>{translate('general.action')}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        listTimesheets.length !== 0 && listTimesheets.map((x, index) => (
-                                            <tr key={index}>
-                                                <td style={{ paddingTop: 22 }}>{x.employee ? x.employee.employeeNumber : null}</td>
-                                                <td style={{ paddingTop: 22 }}>{x.employee ? x.employee.fullName : null}</td>
-                                                <td style={{ paddingTop: 22 }}>
-                                                    <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.timesheets.edit_timesheets')}><i className="material-icons">edit</i></a>
-                                                    <DeleteNotification
-                                                        content={translate('human_resource.timesheets.delete_timesheets')}
-                                                        data={{
-                                                            id: x._id,
-                                                            info: x.employee.employeeNumber + "- " + translate('human_resource.month') + ": " + month
-                                                        }}
-                                                        func={this.props.deleteTimesheets}
-                                                    />
+                                                        </td>
+                                                        <td>{translate('human_resource.timesheets.shifts1')}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>{translate('human_resource.timesheets.shifts2')}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>{translate('human_resource.timesheets.shifts3')}</td>
+                                                    </tr>
 
-                                                </td>
-                                            </tr>
-                                        ))
-                                    }
-                                </tbody>
+                                                </React.Fragment>
 
-                            </table>
+                                            ))
+                                        }
+                                    </tbody>
+
+                                </table>
+                            </div>
+                            <div className="col-lg-6 col-md-6 col-sm-5 col-xs-4" style={{ padding: 0 }}>
+                                <table id="timesheets" className="timekeeping table table-striped table-bordered table-hover" style={{ marginLeft: -1 }}>
+                                    <thead>
+                                        <tr style={{ height: 58 }}>
+                                            {allDayOfMonth.map((x, index) => (
+                                                <th key={index}>{x.day}&nbsp; {x.date}</th>
+                                            ))}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            listTimesheets.length !== 0 && listTimesheets.map((x, index) => {
+                                                let shift1s = x.timekeepingByShift.shift1s, shift2s = x.timekeepingByShift.shift2s, shift3s = x.timekeepingByShift.shift3s;
+                                                return (
+                                                    <React.Fragment key={index}>
+                                                        <tr>{
+                                                            allDayOfMonth.map((y, indexs) => (
+                                                                <td key={indexs}>
+                                                                    {shift1s[indexs] ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
+                                                                        (indexs < dayNow ? <i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i> : null)}
+                                                                </td>
+                                                            ))
+                                                        }
+                                                        </tr>
+                                                        <tr>{
+                                                            allDayOfMonth.map((y, indexs) => (
+                                                                <td key={indexs}>
+                                                                    {shift2s[indexs] === true ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
+                                                                        (indexs < dayNow ? <i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i> : null)}
+                                                                </td>
+                                                            ))
+                                                        }
+                                                        </tr>
+                                                        <tr>{
+                                                            allDayOfMonth.map((y, indexs) => (
+                                                                <td key={indexs}>
+                                                                    {shift3s[indexs] === true ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
+                                                                        (indexs < dayNow ? <i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i> : null)}
+                                                                </td>
+                                                            ))
+                                                        }
+                                                        </tr>
+                                                    </React.Fragment>
+                                                )
+                                            })
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                        <div className="col-lg-8 col-md-8 col-sm-6 col-xs-5" style={{ padding: 0 }}>
-                            <table id="timesheets" className="timekeeping table table-striped table-bordered table-hover" style={{ marginLeft: -1 }}>
+                    }
+                    {
+                        timekeepingType === 'hours' &&
+                        <div id="croll-table" className="row-equal-height form-inline">
+                            {/* <div className="sticky" style={{ padding: 0 }}> */}
+                            <table id="timesheets" className="table table-striped table-bordered table-hover">
                                 <thead>
-                                    <tr style={{ height: 58 }}>
+                                    <tr>
+                                        <th rowSpan="2" className="col-fixed" style={{ width: 120 }}>{translate('human_resource.staff_number')}</th>
+                                        <th rowSpan="2" className="col-fixed" style={{ width: 150 }}>{translate('human_resource.staff_name')}</th>
+                                        <th rowSpan="2" className="col-fixed" style={{ width: 100 }}>{translate('human_resource.timesheets.total_timesheets')}</th>
+                                        <th rowSpan="2" className="col-fixed" style={{ width: 120, textAlign: "center" }}>{translate('general.action')}</th>
+                                        <th colSpan={allDayOfMonth.length} className="col-fixed" style={{ width: 70 * allDayOfMonth.length, textAlign: 'left' }} >{translate('human_resource.timesheets.date_of_month')}</th>
+                                    </tr>
+                                    <tr>
                                         {allDayOfMonth.map((x, index) => (
-                                            <th key={index}>{x.day}&nbsp; {x.date}</th>
+                                            <th className="col-fixed" style={{ width: 70 }} key={index}>{`${x.date} - ${x.day}`}</th>
                                         ))}
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {
                                         listTimesheets.length !== 0 && listTimesheets.map((x, index) => {
-                                            let workSession1 = x.workSession1, workSession2 = x.workSession2;
+                                            let timekeepingByHours = x.timekeepingByHours;
                                             return (
-                                                <React.Fragment key={index}>
-                                                    <tr>{
+                                                <tr key={index}>
+                                                    <td>{x.employee ? x.employee.employeeNumber : null}</td>
+                                                    <td>{x.employee ? x.employee.fullName : null}</td>
+                                                    <td>{x.totalHours}</td>
+                                                    <td style={{ textAlign: "center" }}>
+                                                        <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.timesheets.edit_timesheets')}><i className="material-icons">edit</i></a>
+                                                        <DeleteNotification
+                                                            content={translate('human_resource.timesheets.delete_timesheets')}
+                                                            data={{
+                                                                id: x._id,
+                                                                info: x.employee.employeeNumber + "- " + translate('human_resource.month') + ": " + month
+                                                            }}
+                                                            func={this.props.deleteTimesheets}
+                                                        />
+
+                                                    </td>
+                                                    {
                                                         allDayOfMonth.map((y, indexs) => (
                                                             <td key={indexs}>
-                                                                {workSession1[indexs] ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
-                                                                    (indexs < dayNow - 1 ? <i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i> : null)}
+                                                                {timekeepingByHours[indexs] !== 0 ? timekeepingByHours[indexs] : null}
                                                             </td>
                                                         ))
                                                     }
-                                                    </tr>
-                                                    <tr>{
-                                                        allDayOfMonth.map((y, indexs) => (
-                                                            <td key={indexs}>
-                                                                {workSession2[indexs] === true ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
-                                                                    (indexs < dayNow - 1 ? <i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i> : null)}
-                                                            </td>
-                                                        ))
-                                                    }
-                                                    </tr>
-                                                </React.Fragment>
+                                                </tr>
                                             )
                                         })
                                     }
                                 </tbody>
                             </table>
                         </div>
-                    </div>
+                    }
+
                     <SlimScroll outerComponentId='croll-table' innerComponentId='timesheets' innerComponentWidth={1000} activate={true} />
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
                 </div>
                 {/* Form thêm mới thông tin chấm công */}
-                <TimesheetsCreateForm />
+                <TimesheetsCreateForm
+                    timekeepingType={timekeepingType}
+                />
 
-                {/* Form import chấm công */}
-                <TimesheetsImportForm />
+                {importExcel &&
+                    <TimesheetsByShiftImportForm
+                        timekeepingType={timekeepingType} />
+                }
 
                 {   /* Form chinh sửa thông tin chấm công */
                     currentRow &&
                     <TimesheetsEditForm
                         _id={currentRow._id}
+                        timekeepingType={timekeepingType}
                         employeeNumber={currentRow.employee ? `${currentRow.employee.employeeNumber} - ${currentRow.employee.fullName}` : null}
                         month={this.formatDate(currentRow.month, true)}
-                        workSession1={currentRow.workSession1}
-                        workSession2={currentRow.workSession2}
+                        shift1s={currentRow.timekeepingByShift.shift1s}
+                        shift2s={currentRow.timekeepingByShift.shift2s}
+                        shift3s={currentRow.timekeepingByShift.shift3s}
+                        timekeepingByHours={currentRow.timekeepingByHours}
                         allDayOfMonth={this.getAllDayOfMonth(this.formatDate(currentRow.month, true))}
                     />
                 }
@@ -462,14 +624,15 @@ class TimesheetsManagement extends Component {
 }
 
 function mapState(state) {
-    const { department, timesheets } = state;
-    return { department, timesheets };
+    const { department, timesheets, modelConfiguration } = state;
+    return { department, timesheets, modelConfiguration };
 };
 
 const actionCreators = {
     getDepartment: DepartmentActions.get,
     searchTimesheets: TimesheetsActions.searchTimesheets,
     deleteTimesheets: TimesheetsActions.deleteTimesheets,
+    getConfiguration: ConfigurationActions.getConfiguration,
 
 };
 
