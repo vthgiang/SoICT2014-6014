@@ -13,7 +13,7 @@ class ManageLink extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            limit: 5,
+            limit: 10,
             page: 1,
             option: "url", // Mặc định tìm kiếm theo tên
             value: ""
@@ -95,7 +95,7 @@ class ManageLink extends Component {
                         </table>
 
                         {/* PaginateBar */}
-                        <PaginateBar pageTotal={link.totalPages} currentPage={link.page} func={this.setPage} />
+                        <PaginateBar display={link.listPaginate.length} total={link.list.length}  pageTotal={link.totalPages} currentPage={link.page} func={this.setPage} />
                     </React.Fragment>
                 </div>
             </div>
