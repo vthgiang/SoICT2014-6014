@@ -44,7 +44,7 @@ const initSampleCompanyDB = async () => {
     console.log("DB system connected");
     await Configuration(systemDB).insertMany([
         {
-            name: 'viavet',
+            name: '_viavet',
             backup: {
                 time: {
                     second: '0',
@@ -60,7 +60,7 @@ const initSampleCompanyDB = async () => {
     ]);
 
     const viavetDB = mongoose.createConnection(
-        `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/viavet`,
+        `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/_viavet`,
         {
             useNewUrlParser: true,
             useUnifiedTopology: true,
@@ -83,7 +83,7 @@ const initSampleCompanyDB = async () => {
     /**
      * 2. Xóa dữ liệu db cũ của công ty viavet
      */
-    await Company(systemDB).deleteOne({ shortName: 'viavet' });
+    await Company(systemDB).deleteOne({ shortName: '_viavet' });
     viavetDB.dropDatabase();
 
 
@@ -93,7 +93,7 @@ const initSampleCompanyDB = async () => {
      */
     const viavet = await Company(systemDB).create({
         name: 'CÔNG TY CỔ PHẦN ĐẦU TƯ LIÊN DOANH VIỆT ANH',
-        shortName: 'viavet',
+        shortName: '_viavet',
         description: 'CÔNG TY CỔ PHẦN ĐẦU TƯ LIÊN DOANH VIỆT ANH'
     });
     console.log(`Xong! Công ty [${viavet.name}] đã được tạo.`);
