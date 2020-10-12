@@ -122,17 +122,17 @@ const initSampleCompanyDB = async () => {
     // BAN LÃNH ĐẠO 
     {
         name: 'Ngô Phương Loan',
-        email: 'ngophuongloan.viavet@gmail.com',
+        email: 'loanNP.viavet@gmail.com',
         password: hash,
         company: viavet._id
     }, {
         name: 'Trần Văn Dũng',
-        email: 'tranvandung.viavet@gmail.com',
+        email: 'DungTV.viavet@gmail.com',
         password: hash,
         company: viavet._id
     }, {
         name: 'Trần Phương Liên',
-        email: 'tranphuonglien.viavet@gmail.com',
+        email: 'LienTP.viavet@gmail.com',
         password: hash,
         company: viavet._id
     }, 
@@ -140,55 +140,55 @@ const initSampleCompanyDB = async () => {
     // PHÒNG KINH DOANH VIAVET
     {
         name: 'Trần Văn Vịnh',
-        email: 'tranvanvinh.viavet@gmail.com',
+        email: 'VinhTV.viavet@gmail.com',
         password: hash,
         company: viavet._id
     }, {
         name: 'Nguyễn Văn Long',
-        email: 'nguyenvanlong.viavet@gmail.com',
+        email: 'LongNV.viavet@gmail.com',
         password: hash,
         company: viavet._id
     }, {
         name: 'Ma Tiến Công',
-        email: 'matiencong.viavet@gmail.com',
+        email: 'CongMT.viavet@gmail.com',
         password: hash,
         company: viavet._id
     }, {
         name: 'Đoàn Ngọc Kiên',
-        email: 'doanngockien.viavet@gmail.com',
+        email: 'KienDN.viavet@gmail.com',
         password: hash,
         company: viavet._id
     }, {
         name: 'Lê Thành Lâm',
-        email: 'lethanhlam.viavet@gmail.com',
+        email: 'LamLT.viavet@gmail.com',
         password: hash,
         company: viavet._id
     }, {
         name: 'Phùng Thanh Sơn',
-        email: 'phungthanhson.viavet@gmail.com',
+        email: 'SonPT.viavet@gmail.com',
         password: hash,
         company: viavet._id
     }, 
     
     // PHÒNG KINH DOANH SANVFOVET
     {
-        name: 'ngô Văn Tuyền',
-        email: 'ngovantuyen.viavet@gmail.com',
+        name: 'Ngô Văn Tuyền',
+        email: 'TuyenNV.viavet@gmail.com',
         password: hash,
         company: viavet._id
     }, {
         name: 'Trần Văn Quang',
-        email: 'tranvanquang.viavet@gmail.com',
+        email: 'QuangTV.viavet@gmail.com',
         password: hash,
         company: viavet._id
     }, {
         name: 'Thach Minh Trí',
-        email: 'thachminhtri.viavet@gmail.com',
+        email: 'TriTM.viavet@gmail.com',
         password: hash,
         company: viavet._id
     }, {
         name: 'Nguyễn Văn Tròn',
-        email: 'nguyenvantron.viavet@gmail.com',
+        email: 'TronNV.viavet@gmail.com',
         password: hash,
         company: viavet._id
     }
@@ -196,22 +196,22 @@ const initSampleCompanyDB = async () => {
     // PHÒNG NHẬP KHẨU - KINH DOANH NGUYÊN LIỆU
     , {
         name: 'Trần Việt Anh',
-        email: 'tranvietanh.viavet@gmail.com',
+        email: 'AnhTV.viavet@gmail.com',
         password: hash,
         company: viavet._id
     }, {
         name: 'Nguyễn Trung Kiên',
-        email: 'nguyentrungkien.viavet@gmail.com',
+        email: 'KienNT.viavet@gmail.com',
         password: hash,
         company: viavet._id
     }, {
         name: 'Nguyễn Văn Thành',
-        email: 'nguyenvanthanh.viavet@gmail.com',
+        email: 'ThanhNV.viavet@gmail.com',
         password: hash,
         company: viavet._id
     }, {
         name: 'Trần Ngọc Tuấn',
-        email: 'tranngontuan.viavet@gmail.com',
+        email: 'TuanTN.viavet@gmail.com',
         password: hash,
         company: viavet._id
     }
@@ -219,12 +219,12 @@ const initSampleCompanyDB = async () => {
     // PHÒNG THƯƠNG MẠI QUỐC TẾ
     , {
         name: 'Lương Quốc Phong',
-        email: 'luongquocphong.viavet@gmail.com',
+        email: 'PhongLQ.viavet@gmail.com',
         password: hash,
         company: viavet._id
     }, {
         name: 'Trương Huy Tùng',
-        email: 'truonghuytung.viavet@gmail.com',
+        email: 'TungTH.viavet@gmail.com',
         password: hash,
         company: viavet._id
     }
@@ -232,22 +232,22 @@ const initSampleCompanyDB = async () => {
     // PHÒNG MARKETING
     , {
         name: 'Nguyễn Viết Đảng',
-        email: 'nguyenvietdang.viavet@gmail.com',
+        email: 'DangNV.viavet@gmail.com',
         password: hash,
         company: viavet._id
     }, {
         name: 'Nguyễn Thị Hằng',
-        email: 'nguyenthihang.viavet@gmail.com',
+        email: 'HangNT.viavet@gmail.com',
         password: hash,
         company: viavet._id
     }, {
         name: 'Phạm Viết Truyền',
-        email: 'phamviettruyen.viavet@gmail.com',
+        email: 'TruyenPV.viavet@gmail.com',
         password: hash,
         company: viavet._id
     }, {
         name: 'Nguyễn Quốc Doanh',
-        email: 'nguyenquocdoanh.viavet@gmail.com',
+        email: 'DoanhNQ.viavet@gmail.com',
         password: hash,
         company: viavet._id
     }
@@ -255,7 +255,7 @@ const initSampleCompanyDB = async () => {
     // BAN KINH DOANH DỰ ÁN
     , {
         name: 'Phạm Ngọc Khoan',
-        email: 'nguyenngockhoan.viavet@gmail.com',
+        email: 'KhoanPN.viavet@gmail.com',
         password: hash,
         company: viavet._id
     }, 
@@ -263,27 +263,27 @@ const initSampleCompanyDB = async () => {
     // PHÒNG HÀNH CHÍNH - QUẢN TRỊ
     {
         name: 'Phạm Minh Tuấn',
-        email: 'phamminhtuan.viavet@gmail.com',
+        email: 'TuanPM.viavet@gmail.com',
         password: hash,
         company: viavet._id
     }, {
         name: 'Trương Anh Tuấn',
-        email: 'truonganhtuan.viavet@gmail.com',
+        email: 'TuanTA.viavet@gmail.com',
         password: hash,
         company: viavet._id
     }, {
         name: 'Dương Thị Thanh Thùy',
-        email: 'duongthithanhthuy.viavet@gmail.com',
+        email: 'ThuyDTT.viavet@gmail.com',
         password: hash,
         company: viavet._id
     }, {
         name: 'Nguyễn Thị Huệ',
-        email: 'nguyenthihue.viavet@gmail.com',
+        email: 'HueNT.viavet@gmail.com',
         password: hash,
         company: viavet._id
     }, {
         name: 'Vũ Viết Xuân',
-        email: 'vuvietxuan.viavet@gmail.com',
+        email: 'XuanVV.viavet@gmail.com',
         password: hash,
         company: viavet._id
     }
@@ -291,17 +291,17 @@ const initSampleCompanyDB = async () => {
     // PHÒNG KẾ TÓAN DOANH NGHIỆP
     , {
         name: 'Hoàng Văn Tùng',
-        email: 'hoangvantung.viavet@gmail.com',
+        email: 'TungHV.viavet@gmail.com',
         password: hash,
         company: viavet._id
     }, {
         name: 'Nguyễn Văn Hải',
-        email: 'nguyenvanhai.viavet@gmail.com',
+        email: 'HaiNV.viavet@gmail.com',
         password: hash,
         company: viavet._id
     }, {
         name: 'Trần Văn Sơn A',
-        email: 'tranvansona.viavet@gmail.com',
+        email: 'SonTV.viavet@gmail.com',
         password: hash,
         company: viavet._id
     }
@@ -309,17 +309,17 @@ const initSampleCompanyDB = async () => {
     // PHÒNG KẾ TOÁN ADMIN
     , {
         name: 'Nguyễn Thống Nhất',
-        email: 'nguyenthongnhat.viavet@gmail.com',
+        email: 'NhatNT.viavet@gmail.com',
         password: hash,
         company: viavet._id
     }, {
         name: 'Trần Kim Cương',
-        email: 'trankimcuong.viavet@gmail.com',
+        email: 'CuongTK.viavet@gmail.com',
         password: hash,
         company: viavet._id
     }, {
         name: 'Nguyễn Đình Thuận',
-        email: 'nguyendinhthuan.viavet@gmail.com',
+        email: 'ThuanND.viavet@gmail.com',
         password: hash,
         company: viavet._id
     }
@@ -327,17 +327,17 @@ const initSampleCompanyDB = async () => {
     // TỔ HỖ TRỢ
     , {
         name: 'Trần Văn Trường',
-        email: 'tranvantruong.viavet@gmail.com',
+        email: 'TruongTV.viavet@gmail.com',
         password: hash,
         company: viavet._id
     }, {
         name: 'Ngô Văn Hậu',
-        email: 'ngovanhau.viavet@gmail.com',
+        email: 'HauNV.viavet@gmail.com',
         password: hash,
         company: viavet._id
     }, {
         name: 'Ngô Văn Tuấn',
-        email: 'ngovantuan.viavet@gmail.com',
+        email: 'TuanNV.viavet@gmail.com',
         password: hash,
         company: viavet._id
     }
