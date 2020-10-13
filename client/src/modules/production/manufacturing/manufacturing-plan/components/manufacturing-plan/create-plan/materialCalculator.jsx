@@ -14,7 +14,7 @@ class MaterialCalculator extends Component {
         let goods = manufacturingOrder.goods;
         return (
             <div id={id} className="tab-pane active">
-                <table id="manufacturing-material-bom-table" className="table table-striped table-bordered">
+                <table id="manufacturing-material-bom-table" className="table table-bordered">
                     <thead>
                         <tr>
                             <th rowSpan={2}>STT</th>
