@@ -231,14 +231,14 @@ class StockManagementTable extends Component {
                                         <td style={{textAlign: 'center'}}>
                                             <a className="text-green" onClick={() => this.handleShowDetailInfo(x)}><i className="material-icons">visibility</i></a>
                                             <a onClick={() => this.handleEdit(x)} href={`#${x._id}`} className="text-yellow" ><i className="material-icons">edit</i></a>
-                                            <DeleteNotification
+                                            {/* <DeleteNotification
                                                 content={translate('manage_warehouse.stock_management.delete_info')}
                                                 data={{
                                                     id: x._id,
                                                     info: x.code + " - " + x.name
                                                 }}
                                                 func={this.props.deleteStock}
-                                            />
+                                            /> */}
                                         </td>
                                     </tr>
                                 ))

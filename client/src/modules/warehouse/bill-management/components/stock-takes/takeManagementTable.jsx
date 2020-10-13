@@ -175,6 +175,8 @@ class TakeManagementTable extends Component {
                                             <td>Nhập kho nguyên vật liệu</td>
                                             <td style={{textAlign: 'center'}}>
                                                 <a className="text-green" onClick={() => this.handleShowDetailInfo()}><i className="material-icons">visibility</i></a>
+                                                <a onClick={() => this.handleEdit()} className="text-yellow" ><i className="material-icons">edit</i></a>
+                                                <a className="text-black" onClick={() => this.handleShow()}><i className="material-icons">print</i></a>
                                             </td>
                                         </tr>
                                         <tr>
@@ -187,6 +189,8 @@ class TakeManagementTable extends Component {
                                             <td>Xuất bán sản phẩm</td>
                                             <td style={{textAlign: 'center'}}>
                                                 <a className="text-green" onClick={() => this.handleShowDetailInfo()}><i className="material-icons">visibility</i></a>
+                                                <a onClick={() => this.handleEdit()} className="text-yellow" ><i className="material-icons">edit</i></a>
+                                                <a className="text-black" onClick={() => this.handleShow()}><i className="material-icons">print</i></a>
                                             </td>
                                         </tr>
                                         <tr>
@@ -199,6 +203,8 @@ class TakeManagementTable extends Component {
                                             <td>Xuất bán sản phẩm</td>
                                             <td style={{textAlign: 'center'}}>
                                                 <a className="text-green" onClick={() => this.handleShowDetailInfo()}><i className="material-icons">visibility</i></a>
+                                                <a onClick={() => this.handleEdit()} className="text-yellow" ><i className="material-icons">edit</i></a>
+                                                <a className="text-black" onClick={() => this.handleShow()}><i className="material-icons">print</i></a>
                                             </td>
                                         </tr>
                                         <tr>
@@ -211,6 +217,8 @@ class TakeManagementTable extends Component {
                                             <td>Xuất bán sản phẩm</td>
                                             <td style={{textAlign: 'center'}}>
                                                 <a className="text-green" onClick={() => this.handleShowDetailInfo()}><i className="material-icons">visibility</i></a>
+                                                <a onClick={() => this.handleEdit()} className="text-yellow" ><i className="material-icons">edit</i></a>
+                                                <a className="text-black" onClick={() => this.handleShow()}><i className="material-icons">print</i></a>
                                             </td>
                                         </tr>
                             </tbody>
