@@ -71,13 +71,13 @@ class EmployeeDetailForm extends Component {
         return (
             <React.Fragment>
                 <DialogModal
-                    size='75' modalID={`modal-view-employee${_id}`} isLoading={employeesInfo.isLoading}
-                    formID={`form-view-employee${_id}`}
+                    size='75' modalID={`modal-detail-employee${_id}`} isLoading={employeesInfo.isLoading}
+                    formID={`form-detail-employee${_id}`}
                     title="Thông tin nhân viên"
                     hasSaveButton={false}
                     hasNote={false}
                 >
-                    <form className="form-group" id={`form-view-employee${_id}`} style={{ marginTop: "-15px" }}>
+                    <form className="form-group" id={`form-detail-employee${_id}`} style={{ marginTop: "-15px" }}>
                         {employees && employees.length !== 0 &&
                             employees.map((x, index) => (
                                 <div className="nav-tabs-custom row" key={index}>

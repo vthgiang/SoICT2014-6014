@@ -38,6 +38,32 @@ const {
 
 require('dotenv').config();
 
+const months = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+const days = ['10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28'];
+function randomDateOld(){
+    let date = `${Math.floor(Math.random()*40)+1960}-${months[Math.floor(Math.random()*12)]}-${days[Math.floor(Math.random()*19)]}`
+    return date;
+};
+function randomDateNew(){
+    let date = `${Math.floor(Math.random()*20)+2000}-${months[Math.floor(Math.random()*12)]}-${days[Math.floor(Math.random()*19)]}`
+    return date;
+};
+
+const surnames = ['Trần', 'Nguyễn', 'Vũ', 'Mai', 'Ngô', 'Kim', 'Lê', 'Đỗ', 'Đào', 'Dương', 'Bùi', 'Lưu', 'Hoàng'];
+const middleNamesMale = ['Văn','Thống', 'Viết', 'Tri','Quang','Lương', 'Hoàng'];
+const namesMale =['Nam','Thái','Cường','Thành','An','Anh','Hải','Thuận','Tuấn', 'Thuấn', 'Khẩn','Thảo','Danh'];
+function randomDateNameMale(){
+    let name = `${surnames[Math.floor(Math.random()*13)]} ${middleNamesFemale[Math.floor(Math.random()*7)]} ${namesFemale[Math.floor(Math.random()*13)]}`;
+    return name
+};
+
+const middleNamesFemale = ['Thị','Thanh', 'Thu', 'Thuỳ'];
+const namesFemale =['Anh','Lan','Cúc','Oanh','Linh','Duyên','Hằng','Thu','Ngân', 'Phương', 'Phượng','Huệ','Mai','Ngọc'];
+function randomDateNameFemale(){
+    let name = `${surnames[Math.floor(Math.random()*13)]} ${middleNamesFemale[Math.floor(Math.random()*4)]} ${namesFemale[Math.floor(Math.random()*14)]}`;
+    return name
+}
+
 
 const initHumanResourceData = async () => {
     console.log("Add more human resource database, ...");

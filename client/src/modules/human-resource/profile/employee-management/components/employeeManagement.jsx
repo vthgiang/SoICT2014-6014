@@ -91,7 +91,7 @@ class EmployeeManagement extends Component {
                 currentRowView: value
             }
         });
-        window.$(`#modal-view-employee${value._id}`).modal('show');
+        window.$(`#modal-detail-employee${value._id}`).modal('show');
     }
 
     /**
