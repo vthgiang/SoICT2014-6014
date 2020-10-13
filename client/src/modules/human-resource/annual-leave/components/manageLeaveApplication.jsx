@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { DatePicker, PaginateBar, DataTableSetting, SelectMulti } from '../../../../common-components';
+import { EmployeeViewForm } from '../../profile/employee-management/components/combinedContent';
 
 import { AnnualLeaveActions } from '../redux/actions';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
@@ -66,6 +67,20 @@ class ManageLeaveApplication extends Component {
         }
         return date;
     };
+
+    /**
+     *  Bắt sự kiện click xem thông tin nhân viên
+     * @param {*} value : Thông tin nhân viên muốn xem
+     */
+    handleView = async (value) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                currentRowView: value
+            }
+        });
+        window.$(`#modal-view-employee${value._id}`).modal('show');
+    }
 
     /**
      * Function lưu giá trị tháng vào state khi thay đổi
@@ -190,7 +205,7 @@ class ManageLeaveApplication extends Component {
 
     render() {
         const { translate, annualLeave } = this.props;
-        const { month, status, limit, page, currentRow } = this.state;
+        const { month, status, limit, page, currentRow, currentRowView } = this.state;
 
         let listAnnualLeaves = [];
         if (annualLeave.isLoading === false) {
@@ -266,7 +281,7 @@ class ManageLeaveApplication extends Component {
                             {listAnnualLeaves && listAnnualLeaves.length !== 0 &&
                                 listAnnualLeaves.map((x, index) => (
                                     <tr key={index}>
-                                        <td>{x.employee.employeeNumber}</td>
+                                        <td><a style={{ cursor: 'pointer' }} onClick={() => this.handleView(x.employee)}>{x.employee.employeeNumber}</a></td>
                                         <td>{x.employee.fullName}</td>
                                         <td>{this.formatDate(x.startDate)}</td>
                                         <td>{this.formatDate(x.endDate)}</td>
@@ -288,6 +303,11 @@ class ManageLeaveApplication extends Component {
                     }
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
                 </div>
+                {/* From xem thông tin nhân viên */
+                    <EmployeeViewForm
+                        _id={currentRowView ? currentRowView._id : ""}
+                    />
+                }
             </div >
         );
     }

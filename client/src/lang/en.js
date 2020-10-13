@@ -1445,6 +1445,7 @@ export default {
                     contract_lable: 'Contract expiration',
                     contract_lable_title: 'Contract expiration',
                     contract_type_title: 'Type of contract',
+                    employee_infor: 'Employee information',
 
                     // Nhóm dành cho action
                     view_employee: 'View employee',

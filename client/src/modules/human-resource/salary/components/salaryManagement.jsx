@@ -5,6 +5,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DataTableSetting, DeleteNotification, PaginateBar, DatePicker, SelectMulti, ExportExcel } from '../../../../common-components';
 
 import { SalaryCreateForm, SalaryEditForm, SalaryImportForm } from './combinedContent';
+import { EmployeeViewForm } from '../../profile/employee-management/components/combinedContent';
 
 import { SalaryActions } from '../redux/actions';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
@@ -55,6 +56,20 @@ class SalaryManagement extends Component {
     /** Function bắt sự kiện thêm lương nhân viên bằng tay */
     createSalary = () => {
         window.$('#modal-create-salary').modal('show');
+    }
+
+    /**
+     *  Bắt sự kiện click xem thông tin nhân viên
+     * @param {*} value : Thông tin nhân viên muốn xem
+     */
+    handleView = async (value) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                currentRowView: value
+            }
+        });
+        window.$(`#modal-view-employee${value._id}`).modal('show');
     }
 
     /** Function bắt sự kiện thêm lương nhân viên bằng import file */
@@ -243,7 +258,7 @@ class SalaryManagement extends Component {
     render() {
         const { translate, salary, department } = this.props;
 
-        const { limit, page, importSalary, currentRow } = this.state;
+        const { limit, page, importSalary, currentRow, currentRowView } = this.state;
 
         let formater = new Intl.NumberFormat();
         let { list } = department;
@@ -350,7 +365,7 @@ class SalaryManagement extends Component {
                                     let organizationalUnit = list.find(y => y._id === x.organizationalUnit);
                                     return (
                                         <tr key={index}>
-                                            <td>{x.employee ? x.employee.employeeNumber : null}</td>
+                                            <td><a style={{ cursor: 'pointer' }} onClick={() => this.handleView(x.employee)}>{x.employee ? x.employee.employeeNumber : null}</a></td>
                                             <td>{x.employee ? x.employee.fullName : null}</td>
                                             <td>{this.formatDate(x.month, true)}</td>
                                             <td>{formater.format(total)} {x.unit}</td>
@@ -394,6 +409,11 @@ class SalaryManagement extends Component {
                         month={this.formatDate(currentRow.month, true)}
                         mainSalary={currentRow.mainSalary}
                         bonus={currentRow.bonus}
+                    />
+                }
+                {/* From xem thông tin nhân viên */
+                    <EmployeeViewForm
+                        _id={currentRowView ? currentRowView._id : ""}
                     />
                 }
             </div>

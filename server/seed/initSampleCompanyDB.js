@@ -938,15 +938,18 @@ const initSampleCompanyDB = async () => {
 
     console.log("Khởi tạo dữ liệu chương trình đào tạo bắt buộc!");
     var educationProgram = await EducationProgram(vnistDB).insertMany([{
+        company: vnist._id,
         applyForOrganizationalUnits: [
             departments[0]._id
         ],
         applyForPositions: [
             nvPhongHC._id
         ],
+        
         name: "An toan lao dong",
         programId: "M123",
     }, {
+        company: vnist._id,
         applyForOrganizationalUnits: [
             departments[0]._id
         ],
