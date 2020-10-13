@@ -37,7 +37,7 @@ class TaskAddModal extends Component {
     }
 
     componentDidMount() {
-        this.props.getAllDepartment();
+        // this.props.getAllDepartment();
         // get id current role
         this.props.getTaskTemplateByUser("1", "0", "[]"); //pageNumber, noResultsPerPage, arrayUnit, name=""
         // Lấy tất cả nhân viên trong công ty
@@ -318,7 +318,7 @@ class TaskAddModal extends Component {
     }
 
     shouldComponentUpdate = (nextProps, nextState) => {
-        const { user } = this.props;
+        const { user, department } = this.props;
         const { newTask } = this.state;
 
         if (nextProps.parentTask !== this.props.parentTask) { // Khi đổi nhấn add new task sang nhấn add subtask hoặc ngược lại
@@ -335,15 +335,14 @@ class TaskAddModal extends Component {
         }
 
         // Khi truy vấn lấy các đơn vị của user đã có kết quả, và thuộc tính đơn vị của newTask chưa được thiết lập
-        if (newTask.organizationalUnit === "" && user.organizationalUnitsOfUser) {
+        if (newTask.organizationalUnit === "" && department.list.length !== 0) {
             // Tìm unit mà currentRole của user đang thuộc về
-
-            let defaultUnit = user.organizationalUnitsOfUser.find(item =>
-                item.dean === this.state.currentRole
-                || item.viceDean === this.state.currentRole
-                || item.employee === this.state.currentRole);
-            if (!defaultUnit && user.organizationalUnitsOfUser.length > 0) { // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
-                defaultUnit = user.organizationalUnitsOfUser[0]
+            let defaultUnit = department.list?.find(item => 
+                item.deans.find(x => x.id === this.state.currentRole )
+                || item.viceDeans.find(x => x.id === this.state.currentRole )
+                || item.employees.find(x => x.id === this.state.currentRole ));
+            if (!defaultUnit && department.list.length > 0) { // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
+                defaultUnit = department.list[0]
             }
 
             if (defaultUnit) {
@@ -361,6 +360,33 @@ class TaskAddModal extends Component {
             });
             return false; // Sẽ cập nhật lại state nên không cần render
         }
+
+        // if (newTask.organizationalUnit === "" && user.organizationalUnitsOfUser) {
+        //     // Tìm unit mà currentRole của user đang thuộc về
+
+        //     let defaultUnit = user.organizationalUnitsOfUser.find(item =>
+        //         item.dean === this.state.currentRole
+        //         || item.viceDean === this.state.currentRole
+        //         || item.employee === this.state.currentRole);
+        //     if (!defaultUnit && user.organizationalUnitsOfUser.length > 0) { // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
+        //         defaultUnit = user.organizationalUnitsOfUser[0]
+        //     }
+
+        //     if (defaultUnit) {
+        //         this.props.getChildrenOfOrganizationalUnits(defaultUnit._id);
+        //     }
+
+        //     this.setState(state => { // Khởi tạo giá trị cho organizationalUnit của newTask
+        //         return {
+        //             ...state,
+        //             newTask: {
+        //                 ...this.state.newTask,
+        //                 organizationalUnit: defaultUnit && defaultUnit._id,
+        //             }
+        //         };
+        //     });
+        //     return false; // Sẽ cập nhật lại state nên không cần render
+        // }
 
         return true;
     }
@@ -408,7 +434,7 @@ class TaskAddModal extends Component {
             let arr = tasks.listSearchTasks.map(x => { return { value: x._id, text: x.name } });
             listParentTask = [...listParentTask, ...arr];
         }
-
+console.log('ppppppppppppppppp\n\n\n\n', this.state);
         return (
             <React.Fragment>
                 <DialogModal

@@ -257,7 +257,7 @@ class EditTaskTemplate extends Component {
 
         if (willUpdateState) {
             this.state.editingTemplate.description = value;
-            this.state.editingTemplate.errorOnDescription = msg;
+            // this.state.editingTemplate.errorOnDescription = msg;
             this.setState(state => {
                 return {
                     ...state,
@@ -581,10 +581,10 @@ class EditTaskTemplate extends Component {
                     <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
 
                         {/**Mô tả mẫu công việc này */}
-                        <div className={`form-group ${this.state.editingTemplate.errorOnDescription === undefined ? "" : "has-error"}`} >
+                        <div className={`form-group `} >
                             <label className="control-label" htmlFor="inputDescriptionTaskTemplate">{translate('task_template.description')} <span style={{color: "red"}}>*</span></label>
                             <textarea rows={5} type="Description" className="form-control" id="inputDescriptionTaskTemplate" name="description" placeholder={translate('task_template.description')} value={editingTemplate.description} onChange={this.handleTaskTemplateDesc} />
-                            <ErrorLabel content={this.state.editingTemplate.errorOnDescription} />
+                            {/* <ErrorLabel content={this.state.editingTemplate.errorOnDescription} /> */}
                         </div>
                     </div>
                 </div>
