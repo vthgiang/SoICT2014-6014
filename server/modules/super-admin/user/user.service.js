@@ -1,4 +1,4 @@
-const { OrganizationalUnit, User, UserRole, Role } = require(`${SERVER_MODELS_DIR}`);
+const { OrganizationalUnit, User, UserRole, Role, Company } = require(`${SERVER_MODELS_DIR}`);
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const generator = require("generate-password");
@@ -17,9 +17,7 @@ exports.getUsers = async (portal, company, query) => {
     var departmentIds = query.departmentIds;
     var unitId = query.unitId;
 
-    var keySearch = {
-        company: company
-    };
+    var keySearch = {company};
     if (!page && !limit && !userRole && !departmentIds && !unitId) {
         if (name) {
             keySearch = {
@@ -40,7 +38,7 @@ exports.getUsers = async (portal, company, query) => {
                     }
                 },
                 {
-                    path: 'company'
+                    path: 'company', model: Company(connect(DB_CONNECTION, process.env.DB_NAME))
                 }
                 ]);
 
@@ -60,7 +58,7 @@ exports.getUsers = async (portal, company, query) => {
                     }
                 },
                 {
-                    path: 'company'
+                    path: 'company', model: Company(connect(DB_CONNECTION, process.env.DB_NAME))
                 }
                 ]);
         }
@@ -84,7 +82,7 @@ exports.getUsers = async (portal, company, query) => {
                     }
                 },
                 {
-                    path: 'company'
+                    path: 'company', model: Company(connect(DB_CONNECTION, process.env.DB_NAME))
                 }
                 ]
             });
@@ -312,6 +310,7 @@ exports.getOrganizationalUnitsOfUser = async (portal, userId) => {
  * @portal portal của db
  */
 exports.createUser = async (portal, data, company) => {
+    console.log("User", portal, data, company);
     var salt = bcrypt.genSaltSync(10);
     var password = generator.generate({
         length: 10,

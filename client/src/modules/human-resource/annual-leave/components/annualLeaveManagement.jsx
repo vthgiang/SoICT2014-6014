@@ -5,6 +5,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti, ExportExcel } from '../../../../common-components';
 
 import { AnnualLeaveCreateForm, AnnualLeaveEditForm } from './combinedContent';
+import { EmployeeViewForm } from '../../profile/employee-management/components/combinedContent';
 
 import { AnnualLeaveActions } from '../redux/actions';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
@@ -62,6 +63,20 @@ class AnnualLeaveManagement extends Component {
             }
         });
         window.$('#modal-edit-sabbtical').modal('show');
+    }
+
+    /**
+     *  Bắt sự kiện click xem thông tin nhân viên
+     * @param {*} value : Thông tin nhân viên muốn xem
+     */
+    handleView = async (value) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                currentRowView: value
+            }
+        });
+        window.$(`#modal-view-employee${value._id}`).modal('show');
     }
 
     /**
@@ -222,7 +237,7 @@ class AnnualLeaveManagement extends Component {
     render() {
         const { translate, annualLeave, department } = this.props;
 
-        const { month, limit, page, organizationalUnits, currentRow } = this.state;
+        const { month, limit, page, organizationalUnits, currentRow, currentRowView } = this.state;
 
         const { list } = department;
         let listAnnualLeaves = [], exportData = [];
@@ -324,7 +339,7 @@ class AnnualLeaveManagement extends Component {
                                     let organizationalUnit = department.list.find(y => y._id === x.organizationalUnit);
                                     return (
                                         <tr key={index}>
-                                            <td>{x.employee.employeeNumber}</td>
+                                            <td><a style={{ cursor: 'pointer' }} onClick={() => this.handleView(x.employee)}>{x.employee.employeeNumber}</a></td>
                                             <td>{x.employee.fullName}</td>
                                             <td>{this.formatDate(x.startDate)}</td>
                                             <td>{this.formatDate(x.endDate)}</td>
@@ -363,6 +378,12 @@ class AnnualLeaveManagement extends Component {
                         startDate={this.formatDate(currentRow.startDate)}
                         reason={currentRow.reason}
                         status={currentRow.status}
+                    />
+                }
+
+                {/* From xem thông tin nhân viên */
+                    <EmployeeViewForm
+                        _id={currentRowView ? currentRowView._id : ""}
                     />
                 }
             </div >

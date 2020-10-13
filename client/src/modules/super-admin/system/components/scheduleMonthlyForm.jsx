@@ -2,17 +2,32 @@ import React, { Component } from 'react';
 import {SelectBox} from '../../../../common-components';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { startOfDay } from '@fullcalendar/react';
+import { SystemActions } from '../redux/actions';
 class ScheduleMonthlyForm extends Component {
     constructor(props) {
         super(props);
         this.state = { 
+            config: {},
             date: '15',
             hour: '2',
             minute: '0',
             second: '0'
          }
     }
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if(nextProps.system.backup.config && JSON.stringify(nextProps.system.backup.config) !== JSON.stringify(prevState.config)){
+            return {
+                ...prevState,
+                config: nextProps.system.backup.config,
+                date: nextProps.system.backup.config.time.date,
+                hour: nextProps.system.backup.config.time.hour,
+                minute: nextProps.system.backup.config.time.minute,
+                second: nextProps.system.backup.config.time.second,
+            }
+        }else return null;
+    }
+
     render() { 
         const {date, hour, minute, second} = this.state;
         const {translate} = this.props;
@@ -181,11 +196,11 @@ class ScheduleMonthlyForm extends Component {
     }
 
     save = () => {
-        const {schedule} = this.props;
+        const {limit, schedule} = this.props;
         const {date, hour, minute, second} = this.state;
 
-        return this.props.backup({auto: 'on', schedule},{
-            date, hour, minute, second
+        return this.props.configBackup({auto: 'on', schedule},{
+           limit, date, hour, minute, second
         })
     }
 }
@@ -194,4 +209,8 @@ function mapState(state) {
     return state;
 }
 
-export default connect(mapState, null)(withTranslate(ScheduleMonthlyForm));
+const dispatchStateToProps = {
+    configBackup: SystemActions.configBackup
+}
+
+export default connect(mapState, dispatchStateToProps)(withTranslate(ScheduleMonthlyForm));

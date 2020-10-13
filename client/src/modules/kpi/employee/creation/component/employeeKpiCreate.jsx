@@ -25,11 +25,23 @@ class CreateEmployeeKpiSet extends Component {
         super(props);
         let idUser = getStorage("userId");
         translate = this.props.translate;
+
+        let d = new Date(),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+        let defaultTime = [month, year].join('-');
+
         this.state = {
             employeeKpiSet: {
                 creator: "",
                 organizationUnit: "",
-                date: "",
+                date: defaultTime,
                 approver: null
             },
             adding: false,
@@ -450,7 +462,7 @@ class CreateEmployeeKpiSet extends Component {
 
     render() {
         let unitList, currentUnit, currentKPI, currentKPIUnit, userdepartments;
-        const { editing, id, employeeKpi } = this.state;
+        const { editing, id, employeeKpi, employeeKpiSet } = this.state;
         const { createEmployeeKpiSet, user, translate, createKpiUnit } = this.props;
 
         if (user) {
@@ -473,18 +485,6 @@ class CreateEmployeeKpiSet extends Component {
             userdepartments = user.userdepartments;
             deans = getEmployeeSelectBoxItems([user.userdepartments], true, false, false);
         }
-
-
-        let d = new Date(),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-        let defaultTime = [month, year].join('-');
 
         return (
             <div className="box">
@@ -584,7 +584,7 @@ class CreateEmployeeKpiSet extends Component {
                                             style={{ width: "60%" }}
                                             id="month"
                                             dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                                            value={defaultTime}                 // giá trị mặc định cho datePicker    
+                                            value={employeeKpiSet && employeeKpiSet.date}                 // giá trị mặc định cho datePicker    
                                             onChange={this.handleChangeDate}
                                             disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
                                         />

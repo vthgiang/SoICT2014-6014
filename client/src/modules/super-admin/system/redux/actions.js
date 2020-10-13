@@ -3,7 +3,9 @@ import { SystemConstants } from "./constants";
 
 export const SystemActions = {
     getBackups,
+    getConfigBackup,
     createBackup,
+    configBackup,
     deleteBackup,
     restore
 }
@@ -21,6 +23,25 @@ function getBackups() {
         .catch(error => {
             dispatch({
                 type: SystemConstants.GET_BACKUPS_FAILE,
+                payload: error
+            }) 
+        })
+    }
+}
+
+function getConfigBackup() {
+    return dispatch => {
+        dispatch({ type: SystemConstants.GET_CONFIG_BACKUP_REQUEST });
+        SystemServices.getConfigBackup()
+        .then(res => {
+            dispatch({
+                type: SystemConstants.GET_CONFIG_BACKUP_SUCCESS,
+                payload: res.data.content.backup
+            })
+        })
+        .catch(error => {
+            dispatch({
+                type: SystemConstants.GET_CONFIG_BACKUP_FAILE,
                 payload: error
             }) 
         })
@@ -62,6 +83,27 @@ function createBackup() {
             .catch(error => {
                 dispatch({
                     type: SystemConstants.CREATE_BACKUP_FAILE,
+                    payload: error
+                })
+                
+            })
+    }
+}
+
+function configBackup(params, data=undefined) {
+    return dispatch => {
+        dispatch({ type: SystemConstants.CONFIG_BACKUP_REQUEST });
+
+        SystemServices.configBackup(params, data)
+            .then(res => {
+                dispatch({
+                    type: SystemConstants.CONFIG_BACKUP_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: SystemConstants.CONFIG_BACKUP_FAILE,
                     payload: error
                 })
                 

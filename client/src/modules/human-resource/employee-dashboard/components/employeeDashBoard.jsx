@@ -5,11 +5,10 @@ import { withTranslate } from 'react-redux-multilingual';
 import { LazyLoadComponent, forceCheckOrVisible } from '../../../../common-components';
 
 import {
-    TabHumanResource, TabSalary, TabAnualLeave,
-    AgePyramidChart, HumanResourceChartBySalary, BarAndLineChart, MultipleBarChart, HighestSalaryChart, SalaryOfOrganizationalUnitsChart,
-    EmployeeDashBoardHeader, AnnualLeaveTrendsChart, HumanResourceIncreaseAndDecreaseChart, QualificationChart, TrendOfOvertime
+    TabHumanResource, TabSalary, TabAnualLeave, TabKPI, AgePyramidChart, EmployeeDashBoardHeader,
 } from './combinedContent';
 
+import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 import './employeeDashBoard.css';
 
 class DashBoardEmployees extends Component {
@@ -21,6 +20,9 @@ class DashBoardEmployees extends Component {
             month: this.formatDate(Date.now(), true),
         }
     };
+    componentDidMount() {
+        this.props.getDepartment();
+    }
 
     /**
      * Function format dữ liệu Date thành string
@@ -46,6 +48,15 @@ class DashBoardEmployees extends Component {
         return date;
     };
 
+    /** Bắt sự kiện chuyển tab  */
+    handleNavTabs = (value) => {
+        if (!value) {
+            forceCheckOrVisible(true, false);
+        }
+
+        window.dispatchEvent(new Event('resize')); // Fix lỗi chart bị resize khi đổi tab
+    }
+
     /**
      * Bắt sự kiện thay đổi tháng
      * @param {*} value : Giá trị tháng chart nhân sự theo dải lương và chart top lương cao nhất
@@ -68,7 +79,11 @@ class DashBoardEmployees extends Component {
     };
 
     render() {
+        const { department } = this.props;
+
         const { organizationalUnits, actionSearch, month } = this.state;
+
+        let allOrganizationalUnits = department.list.map(x => x._id);
 
         return (
             <div className="qlcv">
@@ -76,9 +91,10 @@ class DashBoardEmployees extends Component {
                 <AgePyramidChart organizationalUnits={organizationalUnits} actionSearch={actionSearch} />
                 <div className="nav-tabs-custom">
                     <ul className="nav nav-tabs">
-                        <li className="active"><a href="#human-resource" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Thống kê nhân sự</a></li>
-                        <li><a href="#annualLeave" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Thống kê nghỉ phép</a></li>
-                        <li><a href="#salary" data-toggle="tab">Thống kê lương thưởng</a></li>
+                        <li className="active"><a href="#human-resource" data-toggle="tab" onClick={() => this.handleNavTabs()}>Tổng quan nhân sự</a></li>
+                        <li><a href="#annualLeave" data-toggle="tab" onClick={() => this.handleNavTabs()}>Nghỉ phép-Tăng ca</a></li>
+                        <li><a href="#salary" data-toggle="tab" onClick={() => this.handleNavTabs(true)}>Lương thưởng nhân viên</a></li>
+                        <li><a href="#kpi" data-toggle="tab" onClick={() => this.handleNavTabs()}>Năng lực nhân viên</a></li>
                     </ul>
                     <div className="tab-content ">
                         {/* Tab Nhân sự */}
@@ -95,29 +111,20 @@ class DashBoardEmployees extends Component {
                             </LazyLoadComponent>
                         </div>
 
-                        {/* tab lương thưởng */}
+                        {/* Tab lương thưởng */}
                         <div className="tab-pane" id="salary">
                             <TabSalary organizationalUnits={organizationalUnits} monthShow={month} />
                         </div>
+
+                        {/* Tab KPI */}
+                        <div className="tab-pane" id="kpi">
+                            <LazyLoadComponent>
+                                <TabKPI allOrganizationalUnits={allOrganizationalUnits} organizationalUnits={organizationalUnits} month={month} />
+
+                            </LazyLoadComponent>
+                        </div>
                     </div>
                 </div>
-
-
-
-                {/* <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
-                    <HighestSalaryChart organizationalUnits={organizationalUnits} monthShow={month} handleMonthChange={this.handleMonthChange} />
-                </div>
-
-                <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
-                    <SalaryOfOrganizationalUnitsChart organizationalUnits={organizationalUnits} monthShow={month} handleMonthChange={this.handleMonthChange} />
-                </div>
-
-                <div className=" col-lg-12 col-md-12 col-md-sm-12 col-xs-12">
-                    <AnnualLeaveTrendsChart nameData1='Số lượt nghỉ' nameChart={'Xu hướng nghỉ phép'} />
-                </div>
-                <div className=" col-lg-12 col-md-12 col-md-sm-12 col-xs-12">
-                    <TrendOfOvertime nameData1='Số giờ tăng ca' nameChart={'Xu hướng tăng ca'} />
-                </div> */}
 
 
 
@@ -144,9 +151,13 @@ class DashBoardEmployees extends Component {
     }
 };
 function mapState(state) {
-    const { employeesManager } = state;
-    return { employeesManager };
+    const { employeesManager, department } = state;
+    return { employeesManager, department };
 }
 
-const DashBoard = connect(mapState, null)(withTranslate(DashBoardEmployees));
+const actionCreators = {
+    getDepartment: DepartmentActions.get,
+};
+
+const DashBoard = connect(mapState, actionCreators)(withTranslate(DashBoardEmployees));
 export { DashBoard as DashBoardEmployees };

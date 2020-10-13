@@ -5,7 +5,11 @@ const SystemController = require('./system.controller');
 
 router.get("/backup", auth, SystemController.getBackups);
 
+router.get("/backup/config", auth, SystemController.getConfigBackup);
+
 router.post("/backup", auth, SystemController.createBackup);
+
+router.patch("/backup/config", auth, SystemController.configBackup);
 
 router.delete("/backup/:version", auth, SystemController.deleteBackup);
 

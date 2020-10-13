@@ -116,6 +116,8 @@ class DashBoardAssets extends Component {
         })
 
         forceCheckOrVisible(true, false);
+
+        window.dispatchEvent(new Event('resize')); // Fix lỗi chart bị resize khi đổi tab
     }
 
     // Function format dữ liệu Date thành string

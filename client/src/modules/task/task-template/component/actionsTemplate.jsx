@@ -8,6 +8,10 @@ import {ErrorLabel} from '../../../../common-components';
 import { TaskTemplateFormValidator} from './taskTemplateFormValidator';
 import './tasktemplate.css';
 
+import CKEditor from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import parse from 'html-react-parser';
+
 class ActionForm extends Component{
     constructor(props){
         super(props);
@@ -75,8 +79,7 @@ class ActionForm extends Component{
     **/
     isActionFormValidated = () => {
         let result = 
-        this.validateActionName(this.state.action.name, false) &&
-        this.validateActionDesc(this.state.action.description, false);
+        this.validateActionName(this.state.action.name, false)
         return result;
     }
 
@@ -99,23 +102,15 @@ class ActionForm extends Component{
         return msg == undefined;
     }
 
-    handleChangeActionDesc = (event) => {
-        let value = event.target.value;
-        this.validateActionDesc(value, true);
-    }
-
-    validateActionDesc = (value, willUpdateState=true) => {
-        let msg = TaskTemplateFormValidator.validateActionDescription(value);
-        if (willUpdateState){
-            this.state.action.description = value;
-            this.state.action.errorOnDescription = msg;
-            this.setState(state =>{
-                return{
-                    ...state,
-                };
-            });
-        }
-        return msg == undefined;
+    handleChangeActionDesc = (e, editor) => {
+        const description = editor.getData();
+        const {action} = this.state;
+            this.setState({
+                action: {
+                    ...action,
+                    description
+                }
+            })
     }
 
     handleChangeActionMandatory= (event) => {
@@ -176,7 +171,7 @@ class ActionForm extends Component{
                 ...state,
                 editAction: true,
                 indexAction: index,
-                action: Object.assign({}, action),
+                action: {...action},
             }
         });
     }
@@ -197,7 +192,7 @@ class ActionForm extends Component{
                 ...state,
                 taskActions:newTaskActions,            
                 editAction: false,
-                action: Object.assign({}, state.EMPTY_ACTION),
+                action: {...state.EMPTY_ACTION},
             }
         })
         this.props.onDataChange(this.state.taskActions);
@@ -240,10 +235,15 @@ class ActionForm extends Component{
                 {/**Mô tả hoạt động*/}
                 <div className={`form-group ${this.state.action.errorOnDescription===undefined?"":"has-error"}`} >
                     <label className="control-label">{translate('task_template.description')}*</label>
-                    <div>
+                    {/* <div>
                         <textarea type="text" className="form-control" name="description" placeholder={translate('task_template.description')} value={action.description} onChange={this.handleChangeActionDesc} />
                         <ErrorLabel content={this.state.action.errorOnDescription}/>
-                    </div>
+                    </div> */}
+                    <CKEditor
+                        editor={ ClassicEditor }
+                        onChange={this.handleChangeActionDesc}
+                        data={action.description}
+                    />
                 </div>
 
                 {/**Hoạt động này có bắt buộc không?*/}
@@ -267,14 +267,14 @@ class ActionForm extends Component{
                 </div>
 
                 {/**Table chứa các hoạt động sẵn có*/}
-                <table className="table table-bordered">
+                <table className="table table-hover table-striped table-bordered">
                     <thead>
                         <tr>
                             <th style={{ width: '50px' }} className="col-fixed">STT</th>
                             <th title="Tên hoạt động">{translate('task_template.action_name')}</th>
                             <th title="Mô tả">{translate('task_template.description')}</th>
-                            <th title="Bắt buộc">{translate('task_template.mandatory')}</th>
-                            <th title="Hành động">{translate('task_template.action')}</th>
+                            <th style={{ width: '60px' }} title="Bắt buộc">{translate('task_template.mandatory')}</th>
+                            <th style={{ width: '60px' }} title="Hành động">{translate('task_template.action')}</th>
                         </tr>
                     </thead>
                     <tbody id="actions">
@@ -284,7 +284,7 @@ class ActionForm extends Component{
                                     <tr key={`${this.state.keyPrefix}_${index}`}>
                                         <td>{index + 1}</td>
                                         <td>{item.name}</td>
-                                        <td>{item.description}</td>
+                                        <td><div>{parse(item.description)}</div></td>
                                         <td>{item.mandatory ? "Có" : "Không"}</td>
                                         {/**các button sửa, xóa 1 hoạt động */}
                                         <td>

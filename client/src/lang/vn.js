@@ -7,6 +7,7 @@ export default {
          * @module_name phần tự định nghĩa ngôn ngữ riêng của từng module khác nhau
          *******************************************************/
         general: {
+            show: 'Hiển thị ',
             table: 'Bảng',
             scroll: 'Dùng thanh cuộn bảng',
             upload: 'Tải lên',
@@ -1487,6 +1488,7 @@ export default {
                     contract_lable: 'Hết hạn hợp đồng',
                     contract_lable_title: 'Tháng hết hạn hợp đồng',
                     contract_type_title: 'Loại hợp đồng lao động',
+                    employee_infor: 'Thông tin nhân viên',
 
 
                     // Nhóm dành cho action
@@ -1916,6 +1918,10 @@ export default {
                 incident_asset: 'Thống kê sự cố tài sản',
                 maintenance_asset: 'Thống kê bảo trì tài sản',
                 statistic_by: 'Thống kê theo',
+                expired: 'Đã hết hạn',
+                remaining_time: 'Thời gian còn lại',
+
+
             },
 
             //  Quản lý loại tài sản
@@ -1941,8 +1947,8 @@ export default {
                 field_name: 'Tên thuộc tính',
                 value: 'Giá trị',
 
-                usage_logs: 'Lịch sử cấp phát - điều chuyển - thu hồi',
-                maintainance_logs: 'Lịch sử sửa chữa - thay thế - nâng cấp',
+                usage_logs: 'Lịch sử sử dụng',
+                maintainance_logs: 'Lịch sử bảo trì',
                 incident_list: 'Danh sách sự cố tài sản',
                 file_list: 'Danh sách tài liệu đính kèm',
                 edit_document: 'Chỉnh sửa tài liệu đính kèm',
@@ -3316,7 +3322,7 @@ export default {
 
         manage_warehouse: {
             dashboard_bill: {
-                
+
             },
             dashboard_inventory: {
 

@@ -5,22 +5,63 @@ exports.getBackups = async(req, res) => {
     try {
         const content = await SystemSettingServices.getBackups();
         
-        Logger.info(req.user.email, 'get_backup_success');
+        Logger.info(req.user.email, 'get_backups_success');
         res.status(200).json({
             success: true,
-            messages: ['get_backup_success'],
+            messages: ['get_backups_success'],
             content
         });
-    } catch (error) {console.log(error)
+    } catch (error) {
 
-        Logger.error(req.user.email, 'get_backup_faile');
+        Logger.error(req.user.email, 'get_backups_faile');
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['get_backup_faile'],
+            messages: Array.isArray(error) ? error : ['get_backups_faile'],
             content: error
         });
     }
 }
+
+exports.getConfigBackup = async(req, res) => {
+    try {
+        const content = await SystemSettingServices.getConfigBackup();
+
+        Logger.info(req.user.email, 'get_config_backup_success');
+        res.status(200).json({
+            success: true,
+            messages: ['get_config_backup_success'],
+            content
+        });
+    } catch (error) {console.log(error)
+
+        Logger.error(req.user.email, 'get_config_backup_faile');
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['get_config_backup_faile'],
+            content: error
+        });
+    }
+}
+
+exports.configBackup = async(req, res) => {
+    try {
+        await SystemSettingServices.configBackup(req.query, req.body);
+        
+        Logger.info(req.user.email, 'config_backup_success');
+        res.status(200).json({
+            success: true,
+            messages: ['config_backup_success']
+        });
+    } catch (error) {
+
+        Logger.eror(req.user.email, 'config_backup_faile');
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['config_backup_faile'],
+            content: error
+        });
+    }
+};
 
 exports.createBackup = async(req, res) => {
     try {
