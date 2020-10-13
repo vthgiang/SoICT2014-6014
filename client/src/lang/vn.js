@@ -1488,6 +1488,7 @@ export default {
                     contract_lable: 'Hết hạn hợp đồng',
                     contract_lable_title: 'Tháng hết hạn hợp đồng',
                     contract_type_title: 'Loại hợp đồng lao động',
+                    employee_infor: 'Thông tin nhân viên',
 
 
                     // Nhóm dành cho action

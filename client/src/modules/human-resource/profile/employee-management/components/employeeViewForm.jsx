@@ -64,7 +64,7 @@ class EmployeeViewForm extends Component {
                 <DialogModal
                     size='75' modalID={duplicate ? `modal-view-employee-${duplicate}${_id}` : `modal-view-employee${_id}`} isLoading={employeesInfo.isLoading}
                     formID={`form-view-employee${_id}`}
-                    title="Thông tin nhân viên"
+                    title={translate('human_resource.profile.employee_management.employee_infor')}
                     hasSaveButton={false}
                     hasNote={false}
                 >

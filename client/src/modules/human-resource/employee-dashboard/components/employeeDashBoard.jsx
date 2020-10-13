@@ -49,9 +49,10 @@ class DashBoardEmployees extends Component {
     };
 
     /** Bắt sự kiện chuyển tab  */
-    handleNavTabs = () => {
-
-        forceCheckOrVisible(true, false);
+    handleNavTabs = (value) => {
+        if (!value) {
+            forceCheckOrVisible(true, false);
+        }
 
         window.dispatchEvent(new Event('resize')); // Fix lỗi chart bị resize khi đổi tab
     }
@@ -90,10 +91,10 @@ class DashBoardEmployees extends Component {
                 <AgePyramidChart organizationalUnits={organizationalUnits} actionSearch={actionSearch} />
                 <div className="nav-tabs-custom">
                     <ul className="nav nav-tabs">
-                        <li className="active"><a href="#human-resource" data-toggle="tab" onClick={this.handleNavTabs}>Tổng quan nhân sự</a></li>
-                        <li><a href="#annualLeave" data-toggle="tab" onClick={this.handleNavTabs}>Nghỉ phép-Tăng ca</a></li>
-                        <li><a href="#salary" data-toggle="tab">Lương thưởng nhân viên</a></li>
-                        <li><a href="#kpi" data-toggle="tab" onClick={this.handleNavTabs}>Năng lực nhân viên</a></li>
+                        <li className="active"><a href="#human-resource" data-toggle="tab" onClick={() => this.handleNavTabs()}>Tổng quan nhân sự</a></li>
+                        <li><a href="#annualLeave" data-toggle="tab" onClick={() => this.handleNavTabs()}>Nghỉ phép-Tăng ca</a></li>
+                        <li><a href="#salary" data-toggle="tab" onClick={() => this.handleNavTabs(true)}>Lương thưởng nhân viên</a></li>
+                        <li><a href="#kpi" data-toggle="tab" onClick={() => this.handleNavTabs()}>Năng lực nhân viên</a></li>
                     </ul>
                     <div className="tab-content ">
                         {/* Tab Nhân sự */}

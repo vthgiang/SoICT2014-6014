@@ -73,7 +73,7 @@ class EmployeeDetailForm extends Component {
                 <DialogModal
                     size='75' modalID={`modal-detail-employee${_id}`} isLoading={employeesInfo.isLoading}
                     formID={`form-detail-employee${_id}`}
-                    title="Thông tin nhân viên"
+                    title={translate('human_resource.profile.employee_management.employee_infor')}
                     hasSaveButton={false}
                     hasNote={false}
                 >

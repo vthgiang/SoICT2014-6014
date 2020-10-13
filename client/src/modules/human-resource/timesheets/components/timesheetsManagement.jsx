@@ -518,7 +518,7 @@ class TimesheetsManagement extends Component {
                                                         <tr>{
                                                             allDayOfMonth.map((y, indexs) => (
                                                                 <td key={indexs}>
-                                                                    {shift1s[indexs] ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
+                                                                    {shift1s[indexs] && indexs < dayNow ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
                                                                         (indexs < dayNow ? <i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i> : null)}
                                                                 </td>
                                                             ))
@@ -527,7 +527,7 @@ class TimesheetsManagement extends Component {
                                                         <tr>{
                                                             allDayOfMonth.map((y, indexs) => (
                                                                 <td key={indexs}>
-                                                                    {shift2s[indexs] === true ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
+                                                                    {shift2s[indexs] === true && indexs < dayNow ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
                                                                         (indexs < dayNow ? <i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i> : null)}
                                                                 </td>
                                                             ))
@@ -536,7 +536,7 @@ class TimesheetsManagement extends Component {
                                                         <tr>{
                                                             allDayOfMonth.map((y, indexs) => (
                                                                 <td key={indexs}>
-                                                                    {shift3s[indexs] === true ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
+                                                                    {shift3s[indexs] === true && indexs < dayNow ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
                                                                         (indexs < dayNow ? <i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i> : null)}
                                                                 </td>
                                                             ))
