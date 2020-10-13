@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal } from '../../../../../common-components';
+import './quote.css';
 
-class SalesOrderDetailForm extends Component {
+class QuoteDetailForm extends Component {
   constructor(props) {
     super(props);
     
@@ -66,9 +67,9 @@ class SalesOrderDetailForm extends Component {
       <React.Fragment>
 
       <DialogModal
-          modalID="modal-detail-sales-order" isLoading={false}
-          formID="form-detail-sales-order"
-          title={'Thông tin đơn hàng'}
+          modalID="modal-detail-quote" isLoading={false}
+          formID="form-detail-quote"
+          title={'Chi tiết báo giá'}
           size='50'
           hasSaveButton={false}
           hasNote={false}
@@ -87,7 +88,7 @@ class SalesOrderDetailForm extends Component {
         </div>
 
         <div className={"col-xs-12 col-sm-12 col-md-12 col-lg-12"} style={{ borderWidth: '0px 1px 1px 1px', borderStyle: 'solid', display: 'flex', backgroundColor: '#dafafb', justifyContent: 'center', padding: '10px',}}>
-            <div style={{textTransform: 'uppercase', fontWeight: '600'}}>Thông tin đơn hàng</div>
+            <div style={{textTransform: 'uppercase', fontWeight: '600'}}>Bảng báo giá</div>
         </div>
 
         <div className={"col-xs-12 col-sm-12 col-md-12 col-lg-12"} style={{borderWidth: '0px 1px 1px 1px', borderStyle: 'solid', padding: '10px',}}>
@@ -112,44 +113,23 @@ class SalesOrderDetailForm extends Component {
                     <div className='quote-detail-info-left'>Điện thoại: </div>
                     <div className='quote-detail-info-right'>0987909385</div>
                 </div>
-                <div style={{display: 'flex'}}>
-                    <div className='quote-detail-info-left'>NV kinh doanh: </div>
-                    <div className='quote-detail-info-right'>Phạm Đại Tài</div>
-                </div>
-                <div style={{display: 'flex'}}>
-                    <div className='quote-detail-info-left'>Người phê duyệt: </div>
-                    <div className='quote-detail-info-right'>Nguyễn Văn Thắng</div>
-                </div>
             </div> 
             <div className={"col-xs-12 col-sm-12 col-md-6 col-lg-6"} style={{padding: '0px 0px 0px 10px'}}>
                 <div style={{display: 'flex'}}>
-                    <div className='quote-detail-info-left'>Mã đơn hàng: </div>
-                    <div className='quote-detail-info-right'>DH_1983</div>
+                    <div className='quote-detail-info-left'>Mã báo giá: </div>
+                    <div className='quote-detail-info-right'>QUOTE_1983</div>
                 </div>
                 <div style={{display: 'flex'}}>
-                    <div className='quote-detail-info-left'>Ngày tạo: </div>
+                    <div className='quote-detail-info-left'>NV báo giá: </div>
+                    <div className='quote-detail-info-right'>Phạm Đại Tài</div>
+                </div>
+                <div style={{display: 'flex'}}>
+                    <div className='quote-detail-info-left'>Ngày báo giá: </div>
                     <div className='quote-detail-info-right'>10/10/2020</div>
                 </div>
                 <div style={{display: 'flex'}}>
-                    <div className='quote-detail-info-left'>Dự kiến giao hàng: </div>
+                    <div className='quote-detail-info-left'>Hiệu lực đến: </div>
                     <div className='quote-detail-info-right'>15/10/2020</div>
-                </div>
-                <div style={{display: 'flex'}}>
-                    <div className='quote-detail-info-left'>Hạn chót giao hàng: </div>
-                    <div className='quote-detail-info-right'>18/10/2020</div>
-                </div>
-                <div style={{display: 'flex'}}>
-                    <div className='quote-detail-info-left'>Cam kết chất lượng: </div>
-                    <div className='quote-detail-info-right'>
-                        <ul>
-                            <li style={{cursor: 'pointer'}}>
-                                <a>Title cam kết 1 <i className="fa fa-arrow-circle-right"></i></a> 
-                            </li>
-                            <li style={{cursor: 'pointer'}}>
-                                <a>Title cam kết 2 <i className="fa fa-arrow-circle-right"></i></a> 
-                            </li>
-                        </ul>
-                    </div>
                 </div>
                 <div style={{display: 'flex'}}>
                     <div className='quote-detail-info-left'>Ghi chú: </div>
@@ -208,33 +188,20 @@ class SalesOrderDetailForm extends Component {
                         <td style={{fontWeight: 600}}>400,000 (vnđ)</td>
                         <td style={{fontWeight: 600}}>4,400,000 (vnđ)</td>
                         <td></td>
-                    </tr>
-                    <tr>
-                        <td colSpan={7} style={{fontWeight: 600}}><center>Đã thanh toán</center></td>
-                        <td></td>
-                        <td></td>
-                        <td style={{fontWeight: 600}}>3,200,000 (vnđ)</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td colSpan={7} style={{fontWeight: 600}}><center>Tổng dư nợ </center></td>
-                        <td></td>
-                        <td></td>
-                        <td style={{fontWeight: 600}}>15,600,000 (vnđ)</td>
-                        <td></td>
-                    </tr>
+                        </tr>
                 </tbody>
             </table>
         </div>
+
         <div className={"col-xs-12 col-sm-12 col-md-12 col-lg-12"} style={{padding: '0px 0px 0px 10px'}}>
-            <div className="info-box-content" title='Đơn báo giá' style={{position: 'absolute', right:'0px'}}>
-                <a href={`/manage-quoter`} target="_blank" >Đơn báo giá <i className="fa fa-arrow-circle-right"></i></a>
+            <div className="info-box-content" title='Đơn kinh doanh' style={{position: 'absolute', right:'0px'}}>
+                <a href={`/manage-sales-order`} target="_blank" >Đơn kinh doanh <i className="fa fa-arrow-circle-right"></i></a>
             </div>
         </div>
        
         <button className='btn btn-info print-quote' >
             <i className='fa  fa-print'></i> 
-            <span> In hóa đơn</span>
+            <span> In báo giá</span>
         </button>
         </div>
          
@@ -244,5 +211,4 @@ class SalesOrderDetailForm extends Component {
   }
 }
 
-
-export default SalesOrderDetailForm
+export default QuoteDetailForm;

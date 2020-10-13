@@ -100,7 +100,7 @@ class AssetByGroup extends Component {
                                 <div className="box-body qlcv">
                                     <ValuePieChart
                                         listAssets={listAssets}
-                                        assetType={assetType}
+                                        // assetType={assetType}
                                         setValueOfAsset={this.setValueOfAsset}
                                     />
                                 </div>

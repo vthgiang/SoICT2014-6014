@@ -1476,7 +1476,7 @@ class Routes extends Component {
                         path={"/manage-manufacturing-order-dashboard"}
                         pageName={"manage_manufacturing_order_dashboard"}
                         layout={Layout}
-                        component={PurchaseOrderDashboard}
+                        component={ManufacturingOrderDashboard}
                     />
 
                     <PrivateRoute

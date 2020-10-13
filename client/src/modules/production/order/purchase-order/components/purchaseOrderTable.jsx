@@ -50,7 +50,6 @@ class PurchaseOrderTable extends Component {
   }
 
   handleEdit = (data) => {
-    console.log("dd", data);
     this.setState(state => {
       return {
         ...state,
@@ -112,7 +111,6 @@ class PurchaseOrderTable extends Component {
                 items={[
                   { value: 'Chờ phê duyệt', text:'Chờ phê duyệt'},
                   { value: 'Đã phê duyệt', text: 'Đã phê duyệt'},
-                  { value: 'Đã phê duyệt', text: 'Đã phê duyệt'},
                   { value: 'Đang mua hàng', text: 'Đang mua hàng'},
                   { value: 'Đã hoàn thành', text: 'Đã hoàn thành'},
                   { value: 'Đã nhập kho', text: 'Đã nhập kho'}
@@ -140,7 +138,6 @@ class PurchaseOrderTable extends Component {
               <tr>
                 <th>STT</th>
                 <th>Mã đơn</th>
-                <th>Nội dung mua hàng</th>
                 <th>Trạng thái</th>
                 <th>Người tạo</th>
                 <th style={{ width: "120px", textAlign: "center" }}>
@@ -167,7 +164,6 @@ class PurchaseOrderTable extends Component {
                   <tr key={index}>
                     <td>{index + 1 + (page - 1) * limit}</td>
                     <td>{item.code}</td>
-                    <td>{item.description}</td>
                     <td>{item.status}</td>
                     <td>{item.creator}</td>
                     <td style={{ textAlign: "center" }}>
