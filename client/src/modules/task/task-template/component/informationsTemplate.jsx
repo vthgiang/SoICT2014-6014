@@ -9,6 +9,10 @@ import Sortable from 'sortablejs';
 import { TaskTemplateFormValidator} from './taskTemplateFormValidator';
 import './tasktemplate.css';
 
+import CKEditor from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import parse from 'html-react-parser';
+
 class InformationForm extends Component{
     constructor(props){
         super(props);
@@ -28,7 +32,7 @@ class InformationForm extends Component{
         };
        
         this.state={
-            information: Object.assign({}, this.EMPTY_INFORMATION),
+            information: {...this.EMPTY_INFORMATION},
             taskInformations: this.props.initialData,
             editInfo: false,
         }
@@ -63,11 +67,9 @@ class InformationForm extends Component{
                  * Kết quả: thứ tự trong State lưu một đằng, giao diện hiển thị thể hiện một nẻo
                  **/ 
                 set: (sortable) => {
-                    let state = this.state;
-                    state.keyPrefix = Math.random(); // force react to destroy children
-                    state.order = sortable.toArray();
                     this.setState({
-                        ...state
+                        keyPrefix: Math.random(), // force react to destroy children
+                        order: sortable.toArray()
                     })
                 } 
             }
@@ -75,14 +77,11 @@ class InformationForm extends Component{
     }
 
     /**Sửa thông tin trong bảng danh sách các thông tin */
-    handleEditInformation = async (information, index) => {
-        this.setState((state)=> {
-            return {
-                ...state,
-                editInfo: true,
-                indexInfo: index,
-                information: Object.assign({}, information),
-            }
+    handleEditInformation = (information, indexInfo) => {
+        this.setState({
+            editInfo: true,
+            indexInfo,
+            information
         });
     }
 
@@ -98,36 +97,27 @@ class InformationForm extends Component{
                 return (index === indexInfo) ? this.state.information : item;
             })
         }
-        await this.setState(state => {
-            return {
-                ...state,
+        await this.setState({
                 taskInformations: newTaskInformations,
                 editInfo: false,
-                information: Object.assign({}, this.EMPTY_INFORMATION),
-            }
+                information: {...this.EMPTY_INFORMATION},
         })
         this.props.onDataChange(this.state.taskInformations);
     }
 
     handleCancelEditInformation = (event) => {
         event.preventDefault(); // Ngăn không submit
-        this.setState(state => {
-            return {
-                ...state,
-                editInfo: false,
-                information: Object.assign({}, this.EMPTY_INFORMATION),
-            }
+        this.setState({
+            editInfo: false,
+            information: {...this.EMPTY_INFORMATION},
         });        
     }
     
     /**Xóa trắng các ô input */
     handleClearInformation = (event) => {
         event.preventDefault(); // Ngăn không submit
-        this.setState(state => {
-            return {
-                ...state,
-                information: Object.assign({}, this.EMPTY_INFORMATION),
-            }
+        this.setState({
+            information: {...this.EMPTY_INFORMATION}
         })
     }
 
@@ -138,12 +128,8 @@ class InformationForm extends Component{
         if (taskInformations) {
             newTaskInformations = taskInformations.filter((item, x) => index !== x);
         }
-        await this.setState(state => {
-            return {
-                ...state,                
-                taskInformations: newTaskInformations
-                
-            }
+        await this.setState({
+            taskInformations: newTaskInformations
         })
         this.props.onDataChange(this.state.taskInformations);
     }
@@ -169,7 +155,6 @@ class InformationForm extends Component{
     isInfoFormValidated = () => {
         let result = 
             this.validateInfoName(this.state.information.name, false) &&
-            this.validateInfoDesc(this.state.information.description, false) &&
             (this.state.information.type !== this.INFO_TYPE.SET ||
                 (this.state.information.type === this.INFO_TYPE.SET && 
                     this.validateInfoSetOfValues(this.state.information.extra, false))
@@ -196,23 +181,15 @@ class InformationForm extends Component{
         return msg == undefined;
     }
 
-    handleChangeInfoDesc = (event) => {
-        let value = event.target.value;
-        this.validateInfoDesc(value, true);
-    }
-    validateInfoDesc = (value, willUpdateState=true) => {
-        let msg = TaskTemplateFormValidator.validateInfoDescription(value);
-
-        if (willUpdateState){
-            this.state.information.description = value;
-            this.state.information.errorOnDescription = msg;
-            this.setState(state =>{
-                return{
-                    ...state,
-                };
-            });
-        }
-        return msg == undefined;
+    handleChangeInfoDesc = (event, editor) => {
+        const description = editor.getData();
+        const { information } = this.state;
+        this.setState({
+            information: {
+                ...information,
+                description
+            }
+        })
     }
 
     //function: show selection input
@@ -286,15 +263,16 @@ class InformationForm extends Component{
                 {/**Mô tả của trường thông tin */}
                 <div className={`form-group ${this.state.information.errorOnDescription===undefined?"":"has-error"}`} >
                     <label className="control-label" htmlFor="inputDescriptionInfo">{translate('task_template.description')}</label>
-                    <div>
-                        <textarea type="text" className="form-control" id="inputDescriptionInfo" name="description" placeholder={translate('task_template.description')} value={information.description} onChange={this.handleChangeInfoDesc} />
-                        <ErrorLabel content={this.state.information.errorOnDescription}/>
-                    </div>
+                    <CKEditor
+                        editor={ ClassicEditor }
+                        onChange={this.handleChangeInfoDesc}
+                        data={information.description}
+                    />
                 </div>
                 <div className="form-group" >
 
                     {/**Kiểu dữ liệu trường thông tin */}
-                    <label className=" control-label">{translate('task_template.datatypes')}:</label>
+                    <label className=" control-label">{translate('task_template.datatypes')}</label>
                     <div style={{ width: '100%' }}>
                         <select onChange={this.handleChangeInfoType} className="form-control" id="seltype" value={information.type} name="type" >
                             <option value={this.INFO_TYPE.TEXT}>{translate('task_template.text')}</option>
@@ -356,7 +334,7 @@ class InformationForm extends Component{
                                 <tr key={`${this.state.keyPrefix}_${index}`}>
                                     <td>p{index + 1}</td>
                                     <td>{item.name}</td>
-                                    <td>{item.description}</td>
+                                    <td><div>{parse(item.description)}</div></td>
                                     <td>{this.formatTypeInfo(item.type)}</td>
                                     <td>{item.filledByAccountableEmployeesOnly ? translate('general.yes') : translate('general.no')}</td>
                                     <td>

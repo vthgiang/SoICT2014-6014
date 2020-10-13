@@ -232,6 +232,7 @@ class EditTaskTemplate extends Component {
         this.props.isProcess && this.props.handleChangeName(value)
         this.validateTaskTemplateName(value, true);
     }
+
     validateTaskTemplateName = (value, willUpdateState = true) => {
         let msg = TaskTemplateFormValidator.validateTaskTemplateName(value);
 
@@ -252,6 +253,7 @@ class EditTaskTemplate extends Component {
         let value = event.target.value;
         this.validateTaskTemplateDesc(value, true);
     }
+
     validateTaskTemplateDesc = (value, willUpdateState = true) => {
         let msg = TaskTemplateFormValidator.validateTaskTemplateDescription(value);
 
@@ -277,12 +279,11 @@ class EditTaskTemplate extends Component {
         let msg = TaskTemplateFormValidator.validateTaskTemplateNumberOfDaysTaken(value);
 
         if (willUpdateState) {
-            this.state.editingTemplate.numberOfDaysTaken = value;
+            let {editingTemplate} = this.state;
+            editingTemplate.numberOfDaysTaken = value;
             // this.state.editingTemplate.errorOnNumberOfDaysTaken = msg;
-            this.setState(state => {
-                return {
-                    ...state,
-                };
+            this.setState({
+                editingTemplate
             });
         }
         this.props.onChangeTemplateData(this.state.editingTemplate);
@@ -293,30 +294,30 @@ class EditTaskTemplate extends Component {
         let value = event.target.value;
         this.validateTaskTemplateFormula(value, true);
     }
+
     validateTaskTemplateFormula = (value, willUpdateState = true) => {
         let msg = TaskTemplateFormValidator.validateTaskTemplateFormula(value);
 
         if (willUpdateState) {
-            this.state.editingTemplate.formula = value;
+            let {editingTemplate} = this.state;
+            editingTemplate.formula = value;
             // this.state.editingTemplate.errorOnFormula = msg;
-            this.setState(state => {
-                return {
-                    ...state,
-                };
+            this.setState({
+                editingTemplate
             });
         }
         this.props.onChangeTemplateData(this.state.editingTemplate);
         return msg == undefined;
     }
     handleChangeTaskPriority = (event) => {
-        this.state.editingTemplate.priority = event.target.value;
-        this.setState(state => {
-            return {
-                ...state,
-            };
+        let {editingTemplate} = this.state;
+        editingTemplate.priority = event.target.value;
+        this.setState({
+            editingTemplate
         });
         this.props.onChangeTemplateData(this.state.editingTemplate);
     }
+
     handleTaskTemplateUnit = (value) => {
         let singleValue = value[0]; // SelectBox một lựa chọn
         if (this.validateTaskTemplateUnit(singleValue, true)) {
@@ -332,6 +333,7 @@ class EditTaskTemplate extends Component {
             }
         }
     }
+
     validateTaskTemplateUnit = (value, willUpdateState = true) => {
         // let msg = TaskTemplateFormValidator.validateTaskTemplateUnit(value);
         let msg;
@@ -361,6 +363,7 @@ class EditTaskTemplate extends Component {
 
         this.validateTaskTemplateRead(value, true);
     }
+    
     validateTaskTemplateRead = (value, willUpdateState = true) => {
         let msg = TaskTemplateFormValidator.validateTaskTemplateRead(value);
 
@@ -388,6 +391,7 @@ class EditTaskTemplate extends Component {
         this.props.isProcess && this.props.handleChangeResponsible(value)
         this.props.onChangeTemplateData(this.state.editingTemplate);
     }
+
     handleTaskTemplateAccountable = (value) => {
         this.state.editingTemplate.accountableEmployees = value;
         this.setState(state => {
@@ -398,6 +402,7 @@ class EditTaskTemplate extends Component {
         this.props.isProcess && this.props.handleChangeAccountable(value)
         this.props.onChangeTemplateData(this.state.editingTemplate);
     }
+
     handleTaskTemplateConsult = (value) => {
         this.state.editingTemplate.consultedEmployees = value;
         this.setState(state => {
@@ -407,6 +412,7 @@ class EditTaskTemplate extends Component {
         });
         this.props.onChangeTemplateData(this.state.editingTemplate);
     }
+
     handleTaskTemplateInform = (value) => {
         this.state.editingTemplate.informedEmployees = value;
 

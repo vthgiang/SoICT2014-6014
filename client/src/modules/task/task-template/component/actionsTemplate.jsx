@@ -171,7 +171,7 @@ class ActionForm extends Component{
                 ...state,
                 editAction: true,
                 indexAction: index,
-                action: Object.assign({}, action),
+                action: {...action},
             }
         });
     }
@@ -192,7 +192,7 @@ class ActionForm extends Component{
                 ...state,
                 taskActions:newTaskActions,            
                 editAction: false,
-                action: Object.assign({}, state.EMPTY_ACTION),
+                action: {...state.EMPTY_ACTION},
             }
         })
         this.props.onDataChange(this.state.taskActions);
@@ -242,6 +242,7 @@ class ActionForm extends Component{
                     <CKEditor
                         editor={ ClassicEditor }
                         onChange={this.handleChangeActionDesc}
+                        data={action.description}
                     />
                 </div>
 
@@ -266,12 +267,12 @@ class ActionForm extends Component{
                 </div>
 
                 {/**Table chứa các hoạt động sẵn có*/}
-                <table className="table table-bordered">
+                <table className="table table-hover table-striped table-bordered">
                     <thead>
                         <tr>
                             <th style={{ width: '50px' }} className="col-fixed">STT</th>
                             <th title="Tên hoạt động">{translate('task_template.action_name')}</th>
-                            <th style={{ width: '65%' }} title="Mô tả">{translate('task_template.description')}</th>
+                            <th title="Mô tả">{translate('task_template.description')}</th>
                             <th title="Bắt buộc">{translate('task_template.mandatory')}</th>
                             <th title="Hành động">{translate('task_template.action')}</th>
                         </tr>
@@ -283,7 +284,7 @@ class ActionForm extends Component{
                                     <tr key={`${this.state.keyPrefix}_${index}`}>
                                         <td>{index + 1}</td>
                                         <td>{item.name}</td>
-                                        <td style={{ width: '65%' }} >{parse(item.description)}</td>
+                                        <td><div>{parse(item.description)}</div></td>
                                         <td>{item.mandatory ? "Có" : "Không"}</td>
                                         {/**các button sửa, xóa 1 hoạt động */}
                                         <td>
