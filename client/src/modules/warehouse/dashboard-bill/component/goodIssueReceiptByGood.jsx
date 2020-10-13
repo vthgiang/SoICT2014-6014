@@ -35,9 +35,10 @@ class GoodIssueReceiptByGood extends Component {
             data: {
                 x : 'x',
                 columns: [
-                    ['x', 'Máy tính', 'Bàn học', 'Điện thoại', 'Chuột', 'Cặp sách', 'Bình nước', 'Sách vở', 'Bút'],
+                    ['x', 'Albendazole', 'Afatinib', 'Zoledronic Acid', 'Abobotulinum', 'Acid Thioctic', 'Mometasone (bôi)', 'Capecitabine', 'Mytomycin C'],
                     ['Xuất kho', 100, 200, 140, 200, 600, 228, 600, 200, 130],
-                    ['Nhập kho', 300, 150, 140, 200, 500, 228, 290, 200, 130],
+                    ['Nhập kho', 300, 150, 340, 300, 500, 228, 290, 300, 100],
+                    ['Tồn kho', 400, 100, 540, 100, 200, 328, 190, 100, 700],
                 ],
                 type: barChart ? 'bar' : 'line',
             },
@@ -64,7 +65,7 @@ class GoodIssueReceiptByGood extends Component {
                     <div className="box-header with-border">
                         <i className="fa fa-bar-chart-o" />
                         <h3 className="box-title">
-                            Số lượng xuất, nhập theo từng mặt hàng
+                            Số lượng xuất, nhập, tồn trong tất cả các kho
                         </h3>
                             <div className="form-inline">
                                 <div className="form-group">
