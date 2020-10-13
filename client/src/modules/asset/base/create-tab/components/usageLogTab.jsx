@@ -191,7 +191,7 @@ class UsageLogTab extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id || nextProps.usageLogs !== prevState.usageLogs) {
+        if (nextProps.id !== prevState.id || nextProps.usageLogs !== prevState.usageLogs || nextProps.typeRegisterForUse !== prevState.typeRegisterForUse) {
             return {
                 ...prevState,
                 id: nextProps.id,
@@ -212,7 +212,6 @@ class UsageLogTab extends Component {
         const { translate, user, department } = this.props;
         const { assignedToOrganizationalUnit, assignedToUser, usageLogs, currentRow, typeRegisterForUse, managedBy } = this.state;
         var userlist = user.list, departmentlist = department.list;
-        console.log("typeRegister", typeRegisterForUse);
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body qlcv">
@@ -246,7 +245,7 @@ class UsageLogTab extends Component {
 
                         {/* Bảng thông tin sử dụng */}
                         {
-                            typeRegisterForUse !== 2 &&
+                            (typeRegisterForUse == 3 || typeRegisterForUse == 1) &&
                             <table className="table table-striped table-bordered table-hover">
                                 <thead>
                                     <tr>

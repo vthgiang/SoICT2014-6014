@@ -55,6 +55,14 @@ class ManufacturingOrderManagement extends Component {
                             <input type="text" className="form-control" name="code" onChange={this.handleChangeData} placeholder="DSX 001" autoComplete="off" />
                         </div>
                         <div className="form-group">
+                            <label className="form-control-static">Mã đơn kinh doanh</label>
+                            <input type="text" className="form-control" name="code" onChange={this.handleChangeData} placeholder="DKD 001" autoComplete="off" />
+                        </div>
+                        <div className="form-group">
+                            <label className="form-control-static">Mã phiếu đề nghị</label>
+                            <input type="text" className="form-control" name="code" onChange={this.handleChangeData} placeholder="PDN 001" autoComplete="off" />
+                        </div>
+                        <div className="form-group">
                             <label className="form-control-static">Độ ưu tiên</label>
                             <SelectMulti
                                 id={`select-multi-priority`}
@@ -147,7 +155,17 @@ class ManufacturingOrderManagement extends Component {
                                         <td>{manufacturingOrder.deadline}</td>
                                         <td>{manufacturingOrder.priority}</td>
                                         <td>{manufacturingOrder.description}</td>
-                                        <td>{manufacturingOrder.status}</td>
+                                        {
+                                            manufacturingOrder.status === "Đã lập kế hoạch"
+                                                ?
+                                                <td style={{ color: "green" }}>{manufacturingOrder.status}</td>
+                                                : manufacturingOrder.status === "Chưa lập kế hoạch"
+                                                    ?
+                                                    <td style={{ color: "red" }}>{manufacturingOrder.status}</td>
+                                                    :
+                                                    <td style={{ color: "blue" }}>{manufacturingOrder.status}</td>
+                                        }
+
                                         <td style={{ textAlign: "center" }}>
                                             <a className="edit text-green" style={{ width: '5px' }} title="Xem chi tiết đơn sản xuất" onClick={() => this.handleShowDetailInfo(manufacturingOrder._id)}><i className="material-icons">visibility</i></a>
                                             <a className="edit text-yellow" style={{ width: '5px' }} title="Sửa đơn sản xuất"><i className="material-icons">edit</i></a>

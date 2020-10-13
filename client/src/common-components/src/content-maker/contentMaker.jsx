@@ -48,7 +48,7 @@ class ContentMaker extends Component {
             files, onFilesChange, onFilesError, multiple = true, maxFiles = 10, maxFileSize = 10000000, minFileSize = 0, clickable = false,
             text, onTextChange, placeholder, minRows = 3, maxRows = 20,
             onSubmit, submitButtonText, disabledSubmit,
-            inputCssClass, controlCssClass, defaultValue, handleEdit, cancelButtonText, styletext, onKeyPress
+            inputCssClass, controlCssClass, defaultValue, handleEdit, cancelButtonText, onKeyPress
         } = this.props
 
         return (
@@ -73,7 +73,6 @@ class ContentMaker extends Component {
                             onDragLeave={this.handleDragLeave}
                             onDrop={this.handleDragLeave}
                             value={text}
-                            style={styletext}
                             defaultValue={defaultValue}
                             onChange={onTextChange}
                             onKeyPress={this.pressEnter}

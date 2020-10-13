@@ -1,3 +1,4 @@
+/* Biểu đồ xu hướng nghỉ phép của nhân viên */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
@@ -13,7 +14,7 @@ class AnnualLeaveTrendsChart extends Component {
         super(props);
         let startDate = ['01', new Date().getFullYear()].join('-');
         this.state = {
-            lineChart: false,
+            lineChart: true,
             numberMonth: 12,
             numberMonthShow: 12,
             startDate: startDate,
@@ -174,9 +175,6 @@ class AnnualLeaveTrendsChart extends Component {
                 names: {
                     data1: data.nameData1,
                 },
-                colors: {
-                    data1: '#ff7f0e',
-                },
             },
             axis: {
                 x: {
@@ -254,12 +252,27 @@ class AnnualLeaveTrendsChart extends Component {
         }
         return (
             <React.Fragment>
-                <div className="box">
+                <div className="box box-solid">
                     <div className="box-header with-border">
                         <h3 className="box-title">{`${nameChart} của ${(organizationalUnitsName.length === 0 || organizationalUnitsName.length === department.list.length) ? "công ty" : organizationalUnitsName.join(', ')} ${startDateShow}`}<i className="fa fa-fw fa-caret-right"></i>{endDateShow}</h3>
                     </div>
                     <div className="box-body">
                         <div className="qlcv" style={{ marginBottom: 15 }}>
+                            <div className="form-inline">
+                                <div className="form-group">
+                                    <label className="form-control-static">{translate('kpi.evaluation.dashboard.organizational_unit')}</label>
+                                    <SelectMulti id="multiSelectUnits"
+                                        items={department.list.map((p, i) => { return { value: p._id, text: p.name } })}
+                                        options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
+                                        onChange={this.handleSelectOrganizationalUnit}
+                                    >
+                                    </SelectMulti>
+                                </div>
+                                <div className="form-group">
+                                    <label></label>
+                                    <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => this.handleSunmitSearch()} >{translate('general.search')}</button>
+                                </div>
+                            </div>
                             <div className="form-inline" >
                                 <div className="form-group">
                                     <label className="form-control-static" >Từ tháng</label>
@@ -282,24 +295,10 @@ class AnnualLeaveTrendsChart extends Component {
                                     />
                                 </div>
                             </div>
-                            <div className="form-inline">
-                                <div className="form-group">
-                                    <label className="form-control-static">{translate('kpi.evaluation.dashboard.organizational_unit')}</label>
-                                    <SelectMulti id="multiSelectUnits"
-                                        items={department.list.map((p, i) => { return { value: p._id, text: p.name } })}
-                                        options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
-                                        onChange={this.handleSelectOrganizationalUnit}
-                                    >
-                                    </SelectMulti>
-                                </div>
-                                <div className="form-group">
-                                    <label></label>
-                                    <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => this.handleSunmitSearch()} >{translate('general.search')}</button>
-                                </div>
-                            </div>
+
                         </div>
                         <div className="dashboard_box_body">
-                            <p className="pull-left" style={{ marginBottom: 0 }}><b>ĐV tính: %</b></p>
+                            <p className="pull-left" style={{ marginBottom: 0 }}><b>ĐV tính: Số lần</b></p>
                             <div className="box-tools pull-right">
                                 <div className="btn-group pull-rigth">
                                     <button type="button" className={`btn btn-xs ${lineChart ? "active" : "btn-danger"}`} onClick={() => this.handleChangeViewChart(false)}>Bar chart</button>

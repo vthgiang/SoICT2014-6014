@@ -1,44 +1,5 @@
-const mongoose = require('mongoose');
 const exec = require('child_process').exec;
 const fs = require('fs');
-
-exports.initConnect = (dbName) => {
-    return mongoose.createConnection(
-        `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/${dbName}`,
-        process.env.DB_AUTHENTICATION === "true" ? 
-        {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            useCreateIndex: true,
-            useFindAndModify: false,
-            user: process.env.DB_USERNAME,
-            pass: process.env.DB_PASSWORD,
-        } : {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            useCreateIndex: true,
-            useFindAndModify: false,
-        }
-    );
-}
-
-exports.connect = (db, portal) => {
-    if(db.name !== portal){
-        return db.useDb(portal, { useCache: true });
-    }else{
-        return db;
-    }
-}
-
-exports.initModels = (db, models) => {
-    /**
-     * db: 1 kết nối đến cơ sở dữ liệu nào đó 
-     * models: các models được khai báo trong thư mục models
-     */
-    for (const [key, model] of Object.entries(models)) {
-        if(!db.models[key]) model(db)
-    }
-}
 
 const versionName = () => {
     const time = new Date(),
@@ -49,13 +10,49 @@ const versionName = () => {
         minute = time.getMinutes(),
         second = time.getSeconds();
 
+    return  `${year}.${month}.${date}.${hour}.${minute}.${second}`;
+}
 
-        return  `${year}${month}${date}${hour}${minute}${second}`;
+const checkDirectory = (path, description=undefined) => {
+    if (!fs.existsSync(path)) {
+        fs.mkdirSync(path, {
+            recursive: true
+        });
+    };
+    fs.appendFile(path+'/README.txt', description ? description :'', err => { 
+        if(err) throw err;
+    });
+
+    return true;
 }
 
 /**
- * Restore data
- * @options option to restore { host, port, db, version }
+ * Hàm kiểm tra và chuyển kết nối cơ sở dữ liệu
+ * @param {*} db kết nối đang được sử dụng đến cơ sở dữ liệu 
+ * @param {*} portal db muốn chuyển
+ */
+exports.connect = (db, portal) => {
+    if(db.name !== portal){
+        return db.useDb(portal, { useCache: true });
+    }else{
+        return db;
+    }
+}
+
+/**
+ * Hàm khởi tạo models nếu chưa tồn tại
+ * @param {*} db kết nối đến cơ sở dữ liệu nào đó 
+ * @param {*} models các models được khai báo trong thư mục models
+ */
+exports.initModels = (db, models) => {
+    for (const [key, model] of Object.entries(models)) {
+        if(!db.models[key]) model(db)
+    }
+}
+
+/**
+ * Khôi phục dữ liệu
+ * @param {*} options Tùy chọn khôi phục dữ liệu { host, port, db, version }
  */
 exports.restore = async (options) => {
     const commandRestoreDB = (options) => {
@@ -67,55 +64,47 @@ exports.restore = async (options) => {
     }
 
     const commandRestoreFile = (options) => {
-        if(options.db)
+        if(options.db){
             return {
-                delete: `${SERVER_DIR}/upload/private/${options.db}`,
-                new: `${SERVER_BACKUP_DIR}/${options.db}/${options.version}/upload`
+                delete: `rm -rf ${SERVER_DIR}/upload/private/${options.db}/* && rm -rf ${SERVER_DIR}/upload/avatars/${options.db}/*`,
+                new: `cp -r ${SERVER_BACKUP_DIR}/${options.db}/${options.version}/private/* ${SERVER_DIR}/upload/private/${options.db} && cp -r ${SERVER_BACKUP_DIR}/${options.db}/${options.version}/avatars/* ${SERVER_DIR}/upload/avatars/${options.db}`
             }
+        }
         else 
             return {
-                delete: `${SERVER_DIR}/upload}`,
-                new: `${SERVER_BACKUP_DIR}/all/${options.version}/upload` 
+                delete: `rm -rf ${SERVER_DIR}/upload`,
+                new: `cp -r ${SERVER_BACKUP_DIR}/all/${options.version}/upload ${SERVER_DIR}` 
             }
     }
     
-    // 1. Restore database
+    // 1. Khôi phục databse
     const command = commandRestoreDB(options);
     await exec(command, (error, stdout, stderr) => {
         if(error !== null) console.log(error);
     })
 
-    // 2.Restore file data ( image, video, file, doc, excel, v.v. )
+    // 2.Khôi phục các file ( image, video, file, doc, excel, v.v. )
     const command2 = commandRestoreFile(options);
-    if (fs.existsSync(command2.delete)) {
-        exec(`rm -rf ${command2.delete}`, function (err) { });
-        if(fs.existsSync(command2.new)){
-            if(options.db) 
-                exec(`cp -r ${command2.new} ${SERVER_DIR}/upload/private`, function (err) { });
-            else    
-                exec(`cp -r ${command2.new} ${SERVER_DIR}`, function (err) { });
-        }
-    }
+    exec(command2.delete, function (err) { 
+        exec(command2.new, function (err) { });
+    });
 }
 
 /**
- * Backup data
- * @options option to restore { host, port, db, version }
+ * Sao lưu dữ liệu
+ * @param options các option cho việc sao lưu { host, port, db, version }
  */
 exports.backup = async (options) => {
+    let limit = options.db ? BACKUP[options.db].limit : BACKUP['all'].limit;
     const version = versionName();
     const dbBackupPath = (options) => {
         const path = `${SERVER_BACKUP_DIR}/${options.db}/${version}`;
-        if (!fs.existsSync(path)) {
-            fs.mkdirSync(path, {
-                recursive: true
-            });
-        };
+        checkDirectory(path);
     
         return path;
     }
 
-    const backupPath = dbBackupPath(options);
+    const backupPath = options.db ? dbBackupPath(options) : null;
     const description = `Backup database ${options.db ? options.db : 'all'}`;
     const commandBackupDB = (options) => {
         if(options.db) {
@@ -124,10 +113,9 @@ exports.backup = async (options) => {
             });
             return `mongodump --host="${options.host}" --port="${options.port}" --out="${backupPath}/database" --db="${options.db}"`;
         }else{
-            fs.appendFile(`${SERVER_BACKUP_DIR}/all/${version}`+'/README.txt', description, err => { 
-                if(err) throw err;
-            });
-            return `mongodump --host="${options.host}" --port="${options.port}" --out="${SERVER_BACKUP_DIR}/all/${version}"`;
+            checkDirectory(`${SERVER_BACKUP_DIR}/all/${version}`, description);
+
+            return `mongodump --host="${options.host}" --port="${options.port}" --out="${SERVER_BACKUP_DIR}/all/${version}/database"`;
         }
     }
     const command = commandBackupDB(options);
@@ -139,20 +127,58 @@ exports.backup = async (options) => {
 
     const getCommandBackupFile = (options) => {
         if(options.db) {
-            return `cp -r "${SERVER_DIR}/upload/private/${options.db}" "${backupPath}/upload/private" && cp -r "${SERVER_DIR}/upload/avatars/${options.db}" "${backupPath}/upload/avatars"`;
+            checkDirectory(`${SERVER_DIR}/upload/private/${options.db}`);
+            checkDirectory(`${backupPath}/private`);
+            checkDirectory(`${SERVER_DIR}/upload/avatars/${options.db}`);
+            checkDirectory(`${backupPath}/avatars`);
+
+            return `cp -r ${SERVER_DIR}/upload/private/${options.db}/* ${backupPath}/private && cp -r ${SERVER_DIR}/upload/avatars/${options.db}/* ${backupPath}/avatars`;
         }else{
-            return `cp -r "${SERVER_DIR}/upload" "${SERVER_BACKUP_DIR}/all/${version}/upload"`;
+            checkDirectory(`${SERVER_DIR}/upload`);
+            checkDirectory(`${SERVER_BACKUP_DIR}/all/${version}/upload`);
+
+            return `cp -r ${SERVER_DIR}/upload/* ${SERVER_BACKUP_DIR}/all/${version}/upload`;
         }
     }
 
     // 2. Backup file dữ liệu trong thư mục upload
     const commandBackupFile  = getCommandBackupFile(options);
     await exec(commandBackupFile, (error, stdout, stderr) => {
-        if(error !== null) console.log(error);
+        if(error !== null) console.log("co loi roif", error);
     });
     const folderInfo = options.db ?
     fs.statSync(backupPath) :
     fs.statSync(`${SERVER_BACKUP_DIR}/all/${version}`);
+
+    // 3. Kiểm tra giới hạn số lượng backup
+    if(limit){
+        const list = options.db ? fs.readdirSync(`${SERVER_BACKUP_DIR}/${options.db}`) : fs.readdirSync(`${SERVER_BACKUP_DIR}/all`);
+        const newList = list.map( folder => {
+            const folderInfo = options.db ? 
+                fs.statSync(`${SERVER_BACKUP_DIR}/${options.db}/${folder}`) : 
+                fs.statSync(`${SERVER_BACKUP_DIR}/all/${folder}`);
+            return {
+                version: folder,
+                createdAt: folderInfo.ctime
+            }
+        });
+        newList.sort(function(a, b){
+            const dateA = new Date(a.createdAt);
+            const dateB = new Date(b.createdAt);
+            if(dateA > dateB) return -1;
+            if(dateA < dateB) return 1;
+            return 0;
+        });
+        if(limit > 0 && newList.length > limit){
+            for (let i = 0; i < newList.length; i++) {
+                if(i > limit - 1){ //phiên bản cũ vượt quá số lượng backup lưu trữ (limit)
+                    // xóa version backup cũ
+                    if(options.db) exec(`rm -rf ${SERVER_BACKUP_DIR}/${options.db}/${newList[i].version}`, function (err) { }); 
+                    else exec(`rm -rf ${SERVER_BACKUP_DIR}/all/${newList[i].version}`, function (err) { }); 
+                }
+            }
+        }
+    }
 
     return {
         version,

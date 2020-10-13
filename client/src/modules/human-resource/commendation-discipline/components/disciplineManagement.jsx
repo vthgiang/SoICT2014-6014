@@ -5,6 +5,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DataTableSetting, DeleteNotification, PaginateBar, SelectMulti, ExportExcel } from '../../../../common-components';
 
 import { DisciplineCreateForm, DisciplineEditForm } from './combinedContent';
+import { EmployeeViewForm } from '../../profile/employee-management/components/combinedContent';
 
 import { DisciplineActions } from '../redux/actions';
 
@@ -61,6 +62,20 @@ class DisciplineManager extends Component {
             } else return [day, month, year].join('-');
         }
         return date;
+    }
+
+    /**
+     *  Bắt sự kiện click xem thông tin nhân viên
+     * @param {*} value : Thông tin nhân viên muốn xem
+     */
+    handleView = async (value) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                currentRowView: value
+            }
+        });
+        window.$(`#modal-view-employee-displine${value._id}`).modal('show');
     }
 
     /**
@@ -183,7 +198,7 @@ class DisciplineManager extends Component {
 
         const { pageActive } = this.props;
 
-        const { limit, page, organizationalUnits, currentRow } = this.state;
+        const { limit, page, organizationalUnits, currentRow, currentRowView } = this.state;
 
         let { list } = department;
 
@@ -272,7 +287,7 @@ class DisciplineManager extends Component {
                                     let decisionUnit = department.list.find(y => y._id === x.organizationalUnit);
                                     return (
                                         <tr key={index}>
-                                            <td>{x.employee ? x.employee.employeeNumber : "Deleted"}</td>
+                                            <td><a style={{ cursor: 'pointer' }} onClick={() => this.handleView(x.employee)}>{x.employee ? x.employee.employeeNumber : "Deleted"}</a></td>
                                             <td>{x.employee ? x.employee.fullName : "Deleted"}</td>
                                             <td>{this.formatDate(x.startDate)}</td>
                                             <td>{this.formatDate(x.endDate)}</td>
@@ -312,6 +327,12 @@ class DisciplineManager extends Component {
                             endDate={this.formatDate(currentRow.endDate)}
                             type={currentRow.type}
                             reason={currentRow.reason}
+                        />
+                    }
+                    {/* From xem thông tin nhân viên */
+                        <EmployeeViewForm
+                            _id={currentRowView ? currentRowView._id : ""}
+                            duplicate={'displine'}
                         />
                     }
                 </div>

@@ -7,6 +7,7 @@ export default {
          * @module_name phần tự định nghĩa ngôn ngữ riêng của từng module khác nhau
          *******************************************************/
         general: {
+            show: 'Hiển thị ',
             table: 'Bảng',
             scroll: 'Dùng thanh cuộn bảng',
             upload: 'Tải lên',
@@ -740,7 +741,8 @@ export default {
             training_plan: 'Quản lý khoá đào tạo',
 
             manage_warehouse: 'Quản lý kho',
-            dashboard_material: "Bảng tin quản lý vật tư",
+            dashboard_bill: 'Bảng tin quản lý các phiếu',
+            dashboard_inventory: 'Bảng tin quản lý hàng tồn',
             stock_management: 'Quản lý thông tin kho',
             bin_location_management: 'Quản lý thông tin lưu kho',
             category_management: 'Quản lý danh mục hàng hóa',
@@ -814,7 +816,11 @@ export default {
             manage_sales_order: 'Đơn hàng kinh doanh',
             manage_manufacturing_order: 'Đơn hàng sản xuất',
             manage_purchase_order: 'Đơn mua hàng',
-            manage_quotation: 'Báo giá',
+            manage_quoter_dashboard: 'Dashboard kinh doanh',
+            manage_sales_order_dashboard: 'Dashboard đơn kinh doanh',
+            manage_purchase_order_dashboard: 'Dashboard đơn mua NVL',
+            manage_manufacturing_order_dashboard: 'Dashboard sản xuất',
+            manage_quoter: 'Báo giá',
             manage_discount: 'Giảm giá',
             manage_tax: 'Thuế',
             manage_sla: 'Cam kết chất lượng',
@@ -832,8 +838,8 @@ export default {
             manage_manufacturing_command: "Quản lý lệnh sản xuất",
             manage_manufacturing_process: "Quản lý tiến độ sản xuất",
             manage_manufacturing_schedule: "Quản lý lịch sản xuất",
-            manage_purchasing_request: "Quản lý phiếu mua hàng",
-            track_order: "Theo dõi đơn hàng",
+            manage_purchasing_request: "Quản lý phiếu mua NVL",
+            manufacturing_dashboard: "Dashboard Quản lý sản xuất",
             analysis_manufacturing_performance: "Phân tích hiệu suất sản xuất",
             manage_manufacturing_works: "Quản lý nhà máy sản xuất",
             manage_manufacturing_mill: "Quản lý xưởng sản xuất"
@@ -964,6 +970,17 @@ export default {
 
         // Modules cấu hình các chức năng
         module_configuration: {
+            timekeeping_type: 'Kiểu chấm công',
+            contract_notice_time: 'Báo hết hạn hợp đồng (ngày)',
+            contract_notice_time_title: 'Báo trước hết hạn hợp đồng',
+            shift1_time: 'Số giờ ca 1 (giờ)',
+            shift2_time: 'Số giờ ca 2 (giờ)',
+            shift3_time: 'Số giờ tăng ca (giờ)',
+
+            shift: 'Chấm công theo ca',
+            hours: 'Chấm công theo giờ',
+            shift_and_hour: 'Chấm công theo ca và giờ',
+
 
             // Thông điệp trả về từ server
             get_configuration_success: 'Lấy thông tin cấu hình thành công',
@@ -1471,6 +1488,7 @@ export default {
                     contract_lable: 'Hết hạn hợp đồng',
                     contract_lable_title: 'Tháng hết hạn hợp đồng',
                     contract_type_title: 'Loại hợp đồng lao động',
+                    employee_infor: 'Thông tin nhân viên',
 
 
                     // Nhóm dành cho action
@@ -1582,7 +1600,7 @@ export default {
                 shift_work: 'Ca làm việc',
                 shifts1: 'Ca 1',
                 shifts2: 'Ca 2',
-                shifts3: 'Ca 3',
+                shifts3: 'Tăng ca',
                 date_of_month: 'Các ngày trong tháng',
 
                 // Nhóm dành cho action
@@ -1900,6 +1918,10 @@ export default {
                 incident_asset: 'Thống kê sự cố tài sản',
                 maintenance_asset: 'Thống kê bảo trì tài sản',
                 statistic_by: 'Thống kê theo',
+                expired: 'Đã hết hạn',
+                remaining_time: 'Thời gian còn lại',
+
+
             },
 
             //  Quản lý loại tài sản
@@ -1925,8 +1947,8 @@ export default {
                 field_name: 'Tên thuộc tính',
                 value: 'Giá trị',
 
-                usage_logs: 'Lịch sử cấp phát - điều chuyển - thu hồi',
-                maintainance_logs: 'Lịch sử sửa chữa - thay thế - nâng cấp',
+                usage_logs: 'Lịch sử sử dụng',
+                maintainance_logs: 'Lịch sử bảo trì',
                 incident_list: 'Danh sách sự cố tài sản',
                 file_list: 'Danh sách tài liệu đính kèm',
                 edit_document: 'Chỉnh sửa tài liệu đính kèm',
@@ -3299,7 +3321,10 @@ export default {
         },
 
         manage_warehouse: {
-            dashboard_material: {
+            dashboard_bill: {
+
+            },
+            dashboard_inventory: {
 
             },
             category_management: {
@@ -3484,7 +3509,22 @@ export default {
                 customer: 'Khách hàng',
                 supplier: 'Nhà cung cấp',
                 issued: 'Đơn đã xuất',
-                partner: 'Đối tác'
+                partner: 'Đối tác',
+                bill_detail: 'Chi tiết đơn hàng',
+                approved: 'Người duyệt',
+                goods: 'Danh sách hàng hóa',
+                good_name: 'Tên hàng hóa',
+                good_code: 'Mã hàng hóa',
+                number: 'Số lượng',
+                unit: 'Đơn vị tính',
+                note: 'Ghi chú',
+                issued_quantity: 'Số lượng xuất',
+                return_quantity: 'Số lượng trả lại',
+                real_quantity: 'Số lượng thực tế',
+                lot: 'Lô hàng',
+                difference: 'Chênh lệch',
+                receiver: 'Người nhận hàng',
+                choose_good: 'Chọn hàng hóa'
             },
             inventory_management: {
                 product: 'Sản phẩm',
@@ -3516,7 +3556,8 @@ export default {
                 partner: 'Đối tác',
                 from_to: 'Nhập từ',
                 status: 'Trạng thái',
-                note: 'Ghi chú'
+                note: 'Ghi chú',
+                bill: 'Mã phiếu',
             }
         },
 

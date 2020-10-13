@@ -12,44 +12,51 @@ import getEmployeeSelectBoxItems from '../../../../task/organizationalUnitHelper
 import { withTranslate } from 'react-redux-multilingual';
 
 class EmployeeKpiManagement extends Component {
+
     constructor(props) {
         super(props);
+
         this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
+
+        let currentDate = new Date();
+        let currentYear = currentDate.getFullYear();
+        let currentMonth = currentDate.getMonth();
+
         this.state = {
             commenting: false,
-            user: '',
+            userId: '',
             status: -1,
-            startDate: null,
-            endDate: null,
+            startDate: currentMonth === 0 ? (currentYear - 1) + '-' + 12 : currentYear + '-' + currentMonth,
+            endDate: (currentMonth > 10) ? ((currentYear + 1) + '-' + (currentMonth - 10)) : (currentYear + '-' + (currentMonth + 2)),
             infosearch: {
                 role: localStorage.getItem("currentRole"),
                 user: '',
                 status: -1,
-                startDate: null,
-                endDate: null
+                startDate: currentMonth === 0 ? (currentYear - 1) + '-' + 12 : currentYear + '-' + currentMonth,
+                endDate: (currentMonth > 10) ? ((currentYear + 1) + '-' + (currentMonth - 10)) : (currentYear + '-' + (currentMonth + 2)),
             },
             showApproveModal: null,
             showEvaluateModal: null,
             dataStatus : this.DATA_STATUS.NOT_AVAILABLE
         };
     }
-    componentDidMount() {
+
+    componentDidMount () {
         const { infosearch } = this.state;
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
         this.props.getEmployeeKPISets(infosearch);
     }
 
-    shouldComponentUpdate=(nextProps, nextStates)=>
-    {
+    shouldComponentUpdate = (nextProps, nextStates) => {
         const { dataStatus } =this.state;
         if (dataStatus === this.DATA_STATUS.QUERYING)
         {
             if (!nextProps.kpimembers.tasksList) {
-                
                 return false;
             } else {
-                let exportData=this.convertDataToExportTotalData();
-                if(exportData)ExportExcel.export(exportData)
+                let exportData = this.convertDataToExportTotalData();
+                if (exportData) ExportExcel.export(exportData);
+
                 this.setState(state => {
                     return {
                         ...state,
@@ -62,7 +69,7 @@ class EmployeeKpiManagement extends Component {
         return true;
     }
 
-    formatDateBack(date) {
+    formatDateBack (date) {
         let d = new Date(date), month, day, year;
         if (d.getMonth() === 0) {
             month = '' + 12;
@@ -80,7 +87,8 @@ class EmployeeKpiManagement extends Component {
 
         return [month, year].join('-');
     }
-    formatDate(date) {
+
+    formatDate (date) {
         let d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -92,7 +100,23 @@ class EmployeeKpiManagement extends Component {
             day = '0' + day;
 
         return [month, year].join('-');
+    } 
+
+    formatTaskStatus = (translate, status) => {
+        switch (status) {
+            case "inprocess":
+                return translate('task.task_management.inprocess');
+            case "wait_for_approval":
+                return translate('task.task_management.wait_for_approval');
+            case "finished":
+                return translate('task.task_management.finished');
+            case "delayed":
+                return translate('task.task_management.delayed');
+            case "canceled":
+                return translate('task.task_management.canceled');
+        }
     }
+
     checkStatusKPI = (status) => {
         if (status === 0) {
             return "Đang thiết lập";
@@ -102,37 +126,46 @@ class EmployeeKpiManagement extends Component {
             return "Đã kích hoạt";
         }
     }
+
     handleStartDateChange = (value) => {
+        let month = value.slice(3, 7) + '-' + value.slice(0, 2);
         this.setState(state => {
             return {
                 ...state,
-                startDate: value,
-                infosearch: {
-                    ...state.infosearch,  
-                },
+                startDate: month
             }
         });
 
     }
+
     handleEndDateChange = (value) => {
+        let month;
+
+        if (value.slice(0, 2) < 12) {
+            month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)) + 1);
+        } else {
+            month = (new Number(value.slice(3, 7)) + 1) + '-' + '1';
+        }
+        
         this.setState(state => {
             return {
                 ...state,
-                endDate: value,
+                endDate: month,
             }
         });
 
     }
-    handleEmployeeChange = (value) => {
-        this.setState(state => {
+
+    handleEmployeeChange = async (value) => {
+        await this.setState(state => {
             return {
                 ...state,
-                user: value
+                userId: value
             }
         });
     }
+
     handleStatusChange = (value) => {
-        if (value === -1) value = null;
         this.setState(state => {
             return {
                 ...state,
@@ -142,7 +175,9 @@ class EmployeeKpiManagement extends Component {
     }
 
     handleSearchData = async () => {
-        const { startDate, endDate, user, status, infosearch } = this.state;
+        const { translate } = this.props;
+        const { startDate, endDate, userId, status } = this.state;
+
         if (startDate === "") startDate = null;
         if (endDate === "") endDate = null;
         await this.setState(state => {
@@ -150,7 +185,7 @@ class EmployeeKpiManagement extends Component {
                 ...state,
                 infosearch: {
                     ...state.infosearch,
-                    user: user,
+                    user: userId,
                     status: status,
                     startDate: startDate,
                     endDate: endDate
@@ -160,20 +195,15 @@ class EmployeeKpiManagement extends Component {
             }
         })
 
-        let start_Date, end_Date;
         let startdate = null, enddate = null;
-
-        if (infosearch.startDate !== null) {
-            start_Date = infosearch.startDate.split("-");
-            startdate = new Date(start_Date[1], start_Date[0], 0);
+        if (startDate) {
+            startdate = new Date(startDate);
         }
-        if (infosearch.endDate !== null) {
-            end_Date = infosearch.endDate.split("-");
-            enddate = new Date(end_Date[1], end_Date[0], 28);
+        if (endDate) {
+            enddate = new Date(endDate);
         }
-        const { translate } = this.props;
 
-        if (startdate && enddate && Date.parse(startdate) > Date.parse(enddate)) {
+        if (startdate && enddate && startdate.getTime() >= Date.parse(enddate)) {
             Swal.fire({
                 title: translate('kpi.evaluation.employee_evaluation.wrong_time'),
                 type: 'warning',
@@ -182,10 +212,11 @@ class EmployeeKpiManagement extends Component {
             })
         }
         else {
-            console.log("\n\n\n\n\n\n\n",infosearch)
+            let { infosearch } = this.state;
             this.props.getEmployeeKPISets(infosearch);
         }
     }
+
     handleShowApproveModal = async (id) => {
         await this.setState(state => {
             return {
@@ -195,6 +226,7 @@ class EmployeeKpiManagement extends Component {
         })
         window.$(`modal-approve-KPI-member`).modal('show');
     }
+
     showEvaluateModal = async (item) => {
         await this.setState(state => {
             return {
@@ -205,10 +237,9 @@ class EmployeeKpiManagement extends Component {
         window.$(`employee-kpi-evaluation-modal`).modal('show');
     }
 
-    
-    handleExportTotalData = ()=>{
+    handleExportTotalData = () => {
         let kpimember;
-        const { kpimembers } =this.props;
+        const { kpimembers } = this.props;
         if(kpimembers.kpimembers)
         {
             kpimember = kpimembers.kpimembers
@@ -217,10 +248,13 @@ class EmployeeKpiManagement extends Component {
             return item._id;
         })
         this.props.getTaskByListKpis(data);
-        this.props.getAllKPIUnit({role: localStorage.getItem("currentRole"),
-        status: -1,
-        startDate: null,
-        endDate: null})
+        this.props.getAllKPIUnit({
+            role: localStorage.getItem("currentRole"),
+            status: -1,
+            startDate: null,
+            endDate: null
+        })
+        
         this.setState(state => {
             return {
                 ...state,
@@ -247,7 +281,7 @@ class EmployeeKpiManagement extends Component {
             {
                 let numberRowToMerge =parseInt(tasks[k].length);
                 numTask+=numberRowToMerge;
-                let task = tasks[k];              
+                let task = tasks[k];   
                 //khi 1 Kpis chưa có công việc nào hoặc chỉ có 1 công việc
                 if(numberRowToMerge < 2)
                 {
@@ -260,7 +294,7 @@ class EmployeeKpiManagement extends Component {
                         kpiApprovedPoint :kpis[k].approverPoint,
                         kpiStatus : kpis[k].status,
                         taskName : task[0] ? (task[0].name):"",
-                        unit: task[0] ?(task[0].unit):"",
+                        unit: task[0] ? (task[0].unit) : "",
                         importantLevel: task[0] ?task[0].importantLevel:"",
                         contributionPoint: task[0] ?task[0].contributionPoint:"",
                         automaticPoint: task[0] ?task[0].automaticPoint:"",
@@ -353,33 +387,32 @@ class EmployeeKpiManagement extends Component {
     }
 
     convertDataToExportTotalData =()=>{
-        const { kpimembers, managerKpiUnit,user } =this.props;
-        let listTasks,listKpis,data={},convertedData=[],listKpiUnit=[],unitName;
+        const { kpimembers, managerKpiUnit, user, translate } = this.props;
+        let listTasks, listKpis, data = {}, convertedData = [], listKpiUnit = [], unitName;
         
         if (user.userdepartments) {
             unitName = user.userdepartments.department;
         }
-        if(kpimembers.tasksList)
+        if (kpimembers.tasksList)
         {
             
             listTasks =kpimembers.tasksList;
             listKpis =kpimembers.kpimembers;
-            console.log("\n\n\n\n\n\n\n",listTasks)
         }
-        if(managerKpiUnit)
+        if (managerKpiUnit)
         {
             listKpiUnit = managerKpiUnit.kpis;
         }
-
-        if(listTasks&&listKpis&&listKpiUnit&&unitName)
+ 
+        if (listTasks && listKpis && listKpiUnit && unitName)
         {
             //Convert dữ liệu RAW
-            for(let i=0;i<listKpis.length;i++){
+            for (let i = 0; i < listKpis.length; i++) {
                 let d = new Date(listKpis[i].date),
                     month = (d.getMonth()+1),
                     year = d.getFullYear(),
                     date = month+"-"+year;
-                if(!data.hasOwnProperty(date))
+                if (!data.hasOwnProperty(date))
                 {
                     data[date]=[]
                 }
@@ -394,23 +427,24 @@ class EmployeeKpiManagement extends Component {
                     let employeePoint = (x.employeePoint === null) ? "Chưa đánh giá" : parseInt(x.employeePoint);
                     let approverPoint = (x.approvedPoint === null) ? "Chưa đánh giá" : parseInt(x.approvedPoint);
                     let status = this.checkStatusKPI(x.status);
-                    let criteria =x.criteria;
-                    let weight =x.weight;
+                    let criteria = x.criteria;
+                    let weight = x.weight;
                     
                     return {
                         STT: index + 1,
                         name: name,
-                        criteria:criteria,
+                        criteria: criteria,
                         automaticPoint: automaticPoint,
                         status: status,
                         employeePoint: employeePoint,
                         approverPoint: approverPoint,
-                        createdAt:createdAt,
-                        weight:weight,
+                        createdAt: createdAt,
+                        weight: weight,
                     }
                 });
-                let oneKpiSetTasks = listTasks[i].map((item,index)=>{
-                    let oneKpiTasks = item.map((x,idx)=>{
+
+                let oneKpiSetTasks = listTasks[i].map((item, index) => {
+                    let oneKpiTasks = item.map((x,idx) => {
                         let name = x.name;
                         let startTaskD = new Date(x.startDate);
                         let endTaskD = new Date(x.endDate);
@@ -419,11 +453,11 @@ class EmployeeKpiManagement extends Component {
                         let automaticPoint = (x.results.automaticPoint === null) ? "Chưa đánh giá" : parseInt(x.results.automaticPoint);
                         let employeePoint = (x.results.employeePoint === null) ? "Chưa đánh giá" : parseInt(x.results.employeePoint);
                         let approverPoint = (x.results.approvedPoint === null) ? "Chưa đánh giá" : parseInt(x.results.approvedPoint);
-                        let status = x.status;
+                        let status = this.formatTaskStatus(translate, x.status);
                         let contributionPoint = parseInt(x.results.contribution);
                         let importantLevel = parseInt(x.results.taskImportanceLevel);
                         let progress = parseInt(x.progress);
-                        let unit = x.results.organizationalUnit.name;
+                        let unit = x.unit && x.unit[0] && x.unit[0].name;
 
                         return {
                             STT: idx + 1,
@@ -438,8 +472,8 @@ class EmployeeKpiManagement extends Component {
                             endApproveDate: endApproveD,
                             contributionPoint: contributionPoint,
                             importantLevel: importantLevel,
-                            progress : progress,
-                            unit:unit
+                            progress: progress,
+                            unit: unit
                         };
                     })
                     return oneKpiTasks;
@@ -464,19 +498,19 @@ class EmployeeKpiManagement extends Component {
                 }
                 convertedData.push(temp);
             }       
-            console.log("\n\n\n\n\n\n\n1111111111",convertedData)
+
             //Convert xong, push data theo form data của component ExportExcel
             let dataSheets =[],sheetInfo =[];
             for(let i=0;i<listKpiUnit.length;i++)
             {
                 let d = new Date(listKpiUnit[i].date),
-                    time = (d.getMonth()+1)+"-"+(d.getFullYear());
-                let employeeNumber = parseInt(listKpiUnit[i].organizationalUnit.deans.length)+parseInt(listKpiUnit[i].organizationalUnit.viceDeans.length)+parseInt(listKpiUnit[i].organizationalUnit.employees.length);
+                    time = (d.getMonth()+1) + "-" + (d.getFullYear());
+                let employeeNumber = parseInt(listKpiUnit[i].organizationalUnit.deans.length) + parseInt(listKpiUnit[i].organizationalUnit.viceDeans.length) + parseInt(listKpiUnit[i].organizationalUnit.employees.length);
                 let kpisUnitNumber = listKpiUnit[i].kpis.length;
                 let automaticPoint = (listKpiUnit[i].automaticPoint === null) ? "Chưa đánh giá" : parseInt(listKpiUnit[i].automaticPoint);
                 let employeePoint = (listKpiUnit[i].employeePoint === null) ? "Chưa đánh giá" : parseInt(listKpiUnit[i].employeePoint);
                 let approverPoint = (listKpiUnit[i].approvedPoint === null) ? "Chưa đánh giá" : parseInt(listKpiUnit[i].approvedPoint);
-                if(time === (convertedData[i].time))
+                if (time === (convertedData[i].time))
                 {
                     let info = {
                         employeeNumber,
@@ -488,19 +522,19 @@ class EmployeeKpiManagement extends Component {
                     sheetInfo.push(info);
                 }
             }
-            for(let i=0;i<convertedData.length;i++)
+            for(let i = 0; i < convertedData.length; i++)
             {
                 let tablesData = this.pushDataIntoTable(convertedData[i]);
-                let temp={
+                let temp = {
                     sheetName : convertedData[i].time,
-                    sheetTitle:"Báo cáo tổng hợp " +unitName+ " tháng "+ convertedData[i].time,
-                    tables:tablesData.tables,
+                    sheetTitle:"Báo cáo tổng hợp " + unitName + " tháng " + convertedData[i].time,
+                    tables: tablesData.tables,
                     names : tablesData.names,
-                    kpiSetEmployeePoint:tablesData.kpiSetEmployeePoint,
-                    kpiSetAutomaticPoint:tablesData.kpiSetAutomaticPoint,
-                    kpiSetApproverPoint:tablesData.kpiSetApproverPoint,
-                    kpiNum : tablesData.kpiNum,
-                    numTask : tablesData.numTask
+                    kpiSetEmployeePoint: tablesData.kpiSetEmployeePoint,
+                    kpiSetAutomaticPoint: tablesData.kpiSetAutomaticPoint,
+                    kpiSetApproverPoint: tablesData.kpiSetApproverPoint,
+                    kpiNum: tablesData.kpiNum,
+                    numTask: tablesData.numTask
                 }
                 dataSheets.push(temp);
             }
@@ -590,19 +624,19 @@ class EmployeeKpiManagement extends Component {
     }
 
     /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
-    convertDataToExportData = (data,unitName) => {
+    convertDataToExportData = (data, unitName) => {
         let fileName = "Bảng theo dõi KPI nhân viên "+ (unitName?unitName:"");
         if (data) {           
             data = data.map((x, index) => {
                
                 let fullName =x.creator.name;
                 let email = x.creator.email;
-                let automaticPoint = (x.automaticPoint === null)?"Chưa đánh giá":parseInt(x.automaticPoint);
-                let employeePoint = (x.employeePoint === null)?"Chưa đánh giá":parseInt(x.employeePoint);
-                let approverPoint =(x.approvedPoint===null)?"Chưa đánh giá":parseInt(x.approvedPoint);
+                let automaticPoint = (x.automaticPoint === null) ? "Chưa đánh giá" : parseInt(x.automaticPoint);
+                let employeePoint = (x.employeePoint === null) ? "Chưa đánh giá" : parseInt(x.employeePoint);
+                let approverPoint = (x.approvedPoint===null) ? "Chưa đánh giá" : parseInt(x.approvedPoint);
                 let time = new Date(x.date)
                 let status = this.checkStatusKPI(x.status);
-                let numberTarget =parseInt(x.kpis.length);               
+                let numberTarget = parseInt(x.kpis.length);               
 
                 return {
                     STT: index + 1,
@@ -651,7 +685,7 @@ class EmployeeKpiManagement extends Component {
     render() {
         const { user, kpimembers } = this.props;
         const { translate } = this.props;
-        const { status, startDate, endDate, kpiId, employeeKpiSet, perPage } = this.state;
+        const { status, startDate, endDate, kpiId, employeeKpiSet, perPage, userId } = this.state;
         let userdepartments, kpimember, unitMembers, exportData;
         if (user.userdepartments) userdepartments = user.userdepartments;
         if (kpimembers.kpimembers) {
@@ -666,6 +700,23 @@ class EmployeeKpiManagement extends Component {
             exportData = this.convertDataToExportData(kpimember,userdepartments.department);            
         }
        
+        let startDateDefault, endDateDefault;
+        let d = new Date(),
+            endmonth = d.getMonth(),
+            month = '' + (d.getMonth() + 1),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (endmonth == 0) {
+            endmonth = 12;
+            startDateDefault = [endmonth, year-1].join('-');
+        } else if (endmonth < 10) {
+            endmonth = '0' + endmonth;
+            startDateDefault = [endmonth, year].join('-');
+        } else startDateDefault = [endmonth, year].join('-');
+        endDateDefault = [month, year].join('-');
+
         return (
             <React.Fragment>
                 <div className="box">
@@ -678,17 +729,18 @@ class EmployeeKpiManagement extends Component {
                                 {unitMembers &&
                                     <SelectBox
                                         id={`employee-kpi-manage`}
-                                        className="form-control"
+                                        className="form-control select2"
                                         style={{ width: "100%" }}
                                         items={unitMembers}
                                         onChange={this.handleEmployeeChange}
-                                        value={user}
+                                        value={userId}
                                     />}
                             </div>
                             <div className="form-group">
                                 <label>{translate('kpi.evaluation.employee_evaluation.status')}:</label>
                                 <SelectBox
                                     id={`status-kpi`}
+                                    className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={[
                                         { value: -1, text: translate('kpi.evaluation.employee_evaluation.choose_status') },
@@ -706,7 +758,7 @@ class EmployeeKpiManagement extends Component {
                                 <label>{translate('kpi.evaluation.employee_evaluation.from')}:</label>
                                 <DatePicker
                                     id='start_date'
-                                    value={startDate}
+                                    value={startDateDefault}
                                     onChange={this.handleStartDateChange}
                                     dateFormat="month-year"
                                 />
@@ -715,7 +767,7 @@ class EmployeeKpiManagement extends Component {
                                 <label>{translate('kpi.evaluation.employee_evaluation.to')}:</label>
                                 <DatePicker
                                     id='end_date'
-                                    value={endDate}
+                                    value={endDateDefault}
                                     onChange={this.handleEndDateChange}
                                     dateFormat="month-year"
                                 />
@@ -780,7 +832,7 @@ class EmployeeKpiManagement extends Component {
                                             </td>
                                         </tr>
                                     ) : <tr>
-                                        <td colSpan={8}>
+                                        <td colSpan={10}>
                                             <center>{translate('kpi.evaluation.employee_evaluation.data_not_found')}</center>
                                         </td>
                                     </tr>}

@@ -35,22 +35,22 @@ PaletteProvider.prototype.getPaletteEntries = function (element) {
 // custom element
 ElementFactory.prototype._getDefaultSize = function (semantic) {
 
-	if (is(semantic, 'bpmn:Task')) {
-		return { width: 160, height: 130 };
-	}
+    if (is(semantic, 'bpmn:Task')) {
+        return { width: 160, height: 130 };
+    }
 
-	if (is(semantic, 'bpmn:Gateway')) {
-		return { width: 50, height: 50 };
-	}
+    if (is(semantic, 'bpmn:Gateway')) {
+        return { width: 50, height: 50 };
+    }
 
-	if (is(semantic, 'bpmn:Event')) {
-		return { width: 36, height: 36 };
-	}
+    if (is(semantic, 'bpmn:Event')) {
+        return { width: 36, height: 36 };
+    }
 
-	if (is(semantic, 'bpmn:TextAnnotation')) {
-		return { width: 100, height: 30 };
-	}
-	return { width: 100, height: 80 };
+    if (is(semantic, 'bpmn:TextAnnotation')) {
+        return { width: 100, height: 30 };
+    }
+    return { width: 100, height: 80 };
 
 };
 
@@ -144,8 +144,8 @@ class ModalEditTaskProcess extends Component {
                 info: info,
                 processDescription: nextProps.data.processDescription ? nextProps.data.processDescription : '',
                 processName: nextProps.data.processName ? nextProps.data.processName : '',
-                viewer: nextProps.data.viewer ? nextProps.data.viewer.map(x=>x._id) : [],
-                manager: nextProps.data.manager ? nextProps.data.manager.map(x=>x._id) : [],
+                viewer: nextProps.data.viewer ? nextProps.data.viewer.map(x => x._id) : [],
+                manager: nextProps.data.manager ? nextProps.data.manager.map(x => x._id) : [],
                 xmlDiagram: nextProps.data.xmlDiagram,
                 errorOnProcessName: undefined,
                 errorOnProcessDescription: undefined,
@@ -558,6 +558,18 @@ class ModalEditTaskProcess extends Component {
         let elementList = this.modeler.get('elementRegistry')._elements;
         let check = true; // valid
         let hasStart = false, hasEnd = false;
+
+		let validateTasks = true;
+		let { info } = this.state;
+
+		for (let i in info) {
+			let taskItem = info[i];
+			if (!taskItem.name || (taskItem.organizationalUnit.trim() === '' || taskItem.name?.trim() === '')) {
+                console.log('-------');
+				validateTasks = false;
+			}
+		}
+
         for (let i in elementList) {
             let e = elementList[i].element;
             if (e.type === "bpmn:StartEvent") {
@@ -585,7 +597,7 @@ class ModalEditTaskProcess extends Component {
         if (!hasStart || !hasEnd) {
             check = false;
         }
-        return check
+        return check && validateTasks
             && this.state.errorOnManager === undefined && this.state.errorOnProcessDescription === undefined
             && this.state.errorOnProcessName === undefined && this.state.errorOnViewer === undefined;
     }
@@ -677,7 +689,7 @@ class ModalEditTaskProcess extends Component {
 
                         <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none", marginBottom: 0 }}>
                             <ul className="nav nav-tabs">
-                                 {/* Nút tab Thông tin quy trình */}
+                                {/* Nút tab Thông tin quy trình */}
                                 <li className="active"><a href="#info-edit" onClick={() => this.handleChangeContent("info")} data-toggle="tab">{translate("task.task_process.process_information")}</a></li>
                                 {/* Nút tab quy trình - công việc */}
                                 <li><a href="#process-edit" onClick={() => this.handleChangeContent("process")} data-toggle="tab">{translate("task.task_process.task_process")}</a></li>
@@ -689,7 +701,7 @@ class ModalEditTaskProcess extends Component {
                                         <div className='col-md-6'>
                                             {/* Tên quy trình */}
                                             <div className={`form-group ${this.state.errorOnProcessName === undefined ? "" : "has-error"}`}>
-                                                <label className={`control-label`}>{translate("task.task_process.process_name")} <span style={{color: "red"}}>*</span></label>
+                                                <label className={`control-label`}>{translate("task.task_process.process_name")} <span style={{ color: "red" }}>*</span></label>
                                                 <input type="text"
                                                     value={processName}
                                                     className="form-control" placeholder={translate("task.task_process.process_name")}
@@ -700,7 +712,7 @@ class ModalEditTaskProcess extends Component {
 
                                             {/* Mô tả quy trình */}
                                             <div className={`form-group ${this.state.errorOnProcessDescription === undefined ? "" : "has-error"}`}>
-                                                <label className="control-label">{translate("task.task_process.process_description")} <span style={{color: "red"}}>*</span></label>
+                                                <label className="control-label">{translate("task.task_process.process_description")} <span style={{ color: "red" }}>*</span></label>
                                                 <textarea type="text" rows={4}
                                                     value={processDescription}
                                                     className="form-control" placeholder="Mô tả công việc"
@@ -711,7 +723,7 @@ class ModalEditTaskProcess extends Component {
 
                                             {/* Người xem quy trình */}
                                             <div className={`form-group ${this.state.errorOnViewer === undefined ? "" : "has-error"}`}>
-                                                <label className="control-label">{translate("task.task_process.viewer")} <span style={{color: "red"}}>*</span></label>
+                                                <label className="control-label">{translate("task.task_process.viewer")} <span style={{ color: "red" }}>*</span></label>
                                                 {
                                                     <SelectBox
                                                         id={`select-viewer-employee-edit-${idProcess}`}
@@ -728,7 +740,7 @@ class ModalEditTaskProcess extends Component {
 
                                             {/* Người quản lý quy trình */}
                                             <div className={`form-group ${this.state.errorOnManager === undefined ? "" : "has-error"}`}>
-                                                <label className="control-label" >{translate("task.task_process.manager")} <span style={{color: "red"}}>*</span></label>
+                                                <label className="control-label" >{translate("task.task_process.manager")} <span style={{ color: "red" }}>*</span></label>
                                                 {
                                                     <SelectBox
                                                         id={`select-manager-employee-edit-${idProcess}`}

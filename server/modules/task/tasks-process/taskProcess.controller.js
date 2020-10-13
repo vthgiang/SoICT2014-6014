@@ -85,7 +85,7 @@ exports.createXmlDiagram = async (req, res) => {
  * chỉnh sửa mới diagram
  */
 exports.editXmlDiagram = async (req, res) => {
-	try {
+	// try {
 		var data = await TaskProcessService.editXmlDiagram(req.portal, req.params, req.body);
 		await Logger.info(req.user.email, `edit xml diagram `, req.portal);
 		res.status(200).json({
@@ -93,14 +93,14 @@ exports.editXmlDiagram = async (req, res) => {
 			messages: ['edit_success'],
 			content: data
 		});
-	} catch (error) {
-		await Logger.error(req.user.email, `edit xml diagram `, req.portal);
-		res.status(400).json({
-			success: false,
-			messages: ['edit_fail'],
-			content: error
-		});
-	}
+	// } catch (error) {
+	// 	await Logger.error(req.user.email, `edit xml diagram `, req.portal);
+	// 	res.status(400).json({
+	// 		success: false,
+	// 		messages: ['edit_fail'],
+	// 		content: error
+	// 	});
+	// }
 }
 
 /**

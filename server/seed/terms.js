@@ -788,6 +788,27 @@ const LINKS = [{
     ],
     components: getComponentsInLink('/task-report')
 },
+
+{
+    url: '/dashboard-inventory',
+    description: 'Bảng tin quản lý hàng tồn',
+    category: LINK_CATEGORY.WAREHOUSE.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+    ],
+    components: getComponentsInLink('/dashboard-inventory')
+},
+{
+    url: '/dashboard-bill',
+    description: 'Bảng tin quản lý các phiếu',
+    category: LINK_CATEGORY.WAREHOUSE.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+    ],
+    components: getComponentsInLink('/dashboard-bill')
+},
 {
     url: '/stock-management',
     description: 'Quản lý thông tin kho',
@@ -908,7 +929,7 @@ const LINKS = [{
     components: getComponentsInLink('/manage-purchase-order'),
 },
 {
-    url: "/manage-quotation",
+    url: "/manage-quoter",
     description: "Báo giá",
     category: LINK_CATEGORY.ORDER.name,
     roles: [
@@ -918,7 +939,59 @@ const LINKS = [{
         ROOT_ROLES.VICE_DEAN.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
-    components: getComponentsInLink('/manage-quotation'),
+    components: getComponentsInLink('/manage-quoter'),
+},
+{
+    url: "/manage-sales-order-dashboard",
+    description: "Dashboard đơn kinh doanh",
+    category: LINK_CATEGORY.ORDER.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.DEAN.name,
+        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/manage-sales-order-dashboard'),
+},
+{
+    url: "/manage-manufacturing-order-dashboard",
+    description: "Dashboard đơn sản xuất",
+    category: LINK_CATEGORY.ORDER.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.DEAN.name,
+        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/manage-manufacturing-order-dashboard'),
+},
+{
+    url: "/manage-purchase-order-dashboard",
+    description: "Dashboard đơn mua nguyên vật liệu",
+    category: LINK_CATEGORY.ORDER.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.DEAN.name,
+        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/manage-purchase-order-dashboard'),
+},
+{
+    url: "/manage-quoter-dashboard",
+    description: "Dashboard đơn báo giá",
+    category: LINK_CATEGORY.ORDER.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.DEAN.name,
+        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/manage-quoter-dashboard'),
 },
 {
     url: "/manage-discount",
@@ -1114,8 +1187,8 @@ const LINKS = [{
     components: getComponentsInLink('/manage-purchasing-request'),
 },
 {
-    url: "/track-order",
-    description: "Theo dõi đơn hàng",
+    url: "/manufacturing-dashboard",
+    description: "Dashboard Quản lý sản xuất",
     category: LINK_CATEGORY.MANUFACTURING.name,
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,

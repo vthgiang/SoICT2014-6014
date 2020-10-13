@@ -255,7 +255,7 @@ class ProcessTemplate extends Component {
                                         <td>{item.processName}</td>
                                         <td>{item.processDescription}</td>
                                         <td>{item.tasks.length}</td>
-										<td>{(item.manager && item.manager.length !== 0) && item.manager.map(x => x.name + ', ')}</td>
+										<td>{(item.manager && item.manager.length !== 0) && item.manager.map(x => x.name).join(', ')}</td>
                                         <td>{item.creator?.name}</td>
                                         <td>
                                             <a onClick={() => { this.viewProcess(item) }} title={translate('task.task_template.view_task_process_template')}>

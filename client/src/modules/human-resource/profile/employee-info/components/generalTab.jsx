@@ -121,7 +121,7 @@ class GeneralTab extends Component {
                             {/* Trạng thái*/}
                             <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                 <strong>{translate('general.status')}&emsp; </strong>
-                                {status}
+                                {translate(`human_resource.profile.${status}`)}
                             </div>
                             {/* Chức vụ */}
                             <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">

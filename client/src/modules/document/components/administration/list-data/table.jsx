@@ -71,9 +71,10 @@ class Table extends Component {
 
     static getDerivedStateFromProps(nextProps, prevState) {
         const { data } = nextProps.documents.administration;
+
         if (prevState.currentRow) {
             const index = getIndex(data.paginate, prevState.currentRow._id);
-            if (data.paginate[index].versions.length !== prevState.currentRow.versions.length) {
+            if (index !== -1 && data.paginate[index].versions.length !== prevState.currentRow.versions.length) {
                 return {
                     ...prevState,
                     currentRow: data.paginate[index]
@@ -395,7 +396,6 @@ class Table extends Component {
         const listDomain = domains.list
         const listArchive = archives.list;
         const listCategory = this.convertData(categories.list)
-
         let list = [];
         if (isLoading === false) {
             list = docs.paginate;
@@ -423,15 +423,15 @@ class Table extends Component {
                         documentName={currentRow.name}
                         documentDescription={currentRow.description}
                         documentCategory={currentRow.category ? currentRow.category._id : ""}
-                        documentDomains={currentRow.domains ? currentRow.domains.map(domain => domain._id) : ""}
-                        documentArchives={currentRow.archives ? currentRow.archives.map(archive => archive._id) : ""}
+                        documentDomains={currentRow.domains ? currentRow.domains.map(domain => domain._id) : []}
+                        documentArchives={currentRow.archives ? currentRow.archives.map(archive => archive._id) : []}
                         documentIssuingBody={currentRow.issuingBody}
                         documentOfficialNumber={currentRow.officialNumber}
                         documentSigner={currentRow.signer}
                         documentVersions={currentRow.versions}
 
                         documentRelationshipDescription={currentRow.relationshipDescription}
-                        documentRelationshipDocuments={currentRow.relationshipDocuments}
+                        documentRelationshipDocuments={currentRow.relationshipDocuments ? currentRow.relationshipDocuments.map(doc => doc._id) : []}
 
                         documentRoles={currentRow.roles}
 
@@ -563,17 +563,17 @@ class Table extends Component {
                                     <tr key={doc._id}>
                                         <td>{doc.name}</td>
                                         <td>{!doc.description ? doc.description : ""}</td>
-                                        <td><DateTimeConverter dateTime={doc.versions[doc.versions.length - 1].issuingDate} type="DD-MM-YYYY" /></td>
-                                        <td><DateTimeConverter dateTime={doc.versions[doc.versions.length - 1].effectiveDate} type="DD-MM-YYYY" /></td>
-                                        <td><DateTimeConverter dateTime={doc.versions[doc.versions.length - 1].expiredDate} type="DD-MM-YYYY" /></td>
+                                        <td><DateTimeConverter dateTime={doc.versions.length ? doc.versions[doc.versions.length - 1].issuingDate : null} type="DD-MM-YYYY" /></td>
+                                        <td><DateTimeConverter dateTime={doc.versions.length ? doc.versions[doc.versions.length - 1].effectiveDate : null} type="DD-MM-YYYY" /></td>
+                                        <td><DateTimeConverter dateTime={doc.versions.length ? doc.versions[doc.versions.length - 1].expiredDate : null} type="DD-MM-YYYY" /></td>
                                         <td>
                                             <a href="#" onClick={() => this.requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}>
-                                                <u>{doc.versions[doc.versions.length - 1].file ? translate('document.download') : ""}</u>
+                                                <u>{doc.versions.length && doc.versions[doc.versions.length - 1].file ? translate('document.download') : ""}</u>
                                             </a>
                                         </td>
                                         <td>
                                             <a href="#" onClick={() => this.requestDownloadDocumentFileScan(doc._id, "SCAN_" + doc.name, doc.versions.length - 1)}>
-                                                <u>{doc.versions[doc.versions.length - 1].scannedFileOfSignedDocument ? translate('document.download') : ""}</u>
+                                                <u>{doc.versions.length && doc.versions[doc.versions.length - 1].scannedFileOfSignedDocument ? translate('document.download') : ""}</u>
                                             </a>
                                         </td>
                                         <td>

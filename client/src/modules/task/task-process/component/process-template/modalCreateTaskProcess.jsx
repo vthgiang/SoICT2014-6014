@@ -500,6 +500,16 @@ class ModalCreateTaskProcess extends Component {
 		let check = true; // valid
 		let hasStart = false, hasEnd = false
 
+		let validateTasks = true;
+		let { info } = this.state;
+
+		for (let i in info) {
+			let taskItem = info[i];
+			if (!taskItem.name || (taskItem.organizationalUnit.trim() === '' || taskItem.name?.trim() === '')) {
+				validateTasks = false;
+			}
+		}
+
 		for (let i in elementList) {
 
 			let e = elementList[i].element;
@@ -528,7 +538,7 @@ class ModalCreateTaskProcess extends Component {
 		if (!hasStart || !hasEnd) {
 			check = false;
 		}
-		return check && this.state.manager.length !== 0 && this.state.viewer.length !== 0 
+		return check && this.state.manager.length !== 0 && this.state.viewer.length !== 0 && validateTasks
 			&& this.state.processDescription.trim() !== '' && this.state.processName.trim() !== ''
 			&& this.state.errorOnManager === undefined && this.state.errorOnProcessDescription === undefined
 			&& this.state.errorOnProcessName === undefined && this.state.errorOnViewer === undefined;
@@ -537,7 +547,7 @@ class ModalCreateTaskProcess extends Component {
 	// hàm lưu
 	save = async () => {
 		let elementList = this.modeler.get('elementRegistry')._elements
-		let { info } = this.state;
+		// let { info } = this.state;
 		let { department } = this.props;
 		let xmlStr;
 		this.modeler.saveXML({ format: true }, function (err, xml) {
@@ -545,6 +555,7 @@ class ModalCreateTaskProcess extends Component {
 		});
 
 		await this.setState(state => {
+			let { info } = state;
 			for (let j in info) {
 				if (Object.keys(info[j]).length !== 0) {
 					info[j].followingTasks = [];
@@ -582,7 +593,7 @@ class ModalCreateTaskProcess extends Component {
 			}
 		})
 
-		console.log('infooo', info);
+		console.log('infooo', this.state.info);
 
 		let data = {
 			info: this.state.info,
@@ -662,7 +673,7 @@ class ModalCreateTaskProcess extends Component {
 											<div className='col-md-6'>
 												{/* tên quy trình */}
 												<div className={`form-group ${this.state.errorOnProcessName === undefined ? "" : "has-error"}`}>
-													<label className={`control-label`}>{translate("task.task_process.process_name")} <span style={{color: "red"}}>*</span></label>
+													<label className={`control-label`}>{translate("task.task_process.process_name")} <span style={{ color: "red" }}>*</span></label>
 													<input type="text"
 														value={processName}
 														className="form-control" placeholder={translate("task.task_process.process_name")}
@@ -673,7 +684,7 @@ class ModalCreateTaskProcess extends Component {
 
 												{/* Mô tả quy trình */}
 												<div className={`form-group ${this.state.errorOnProcessDescription === undefined ? "" : "has-error"}`}>
-													<label className="control-label">{translate("task.task_process.process_description")} <span style={{color: "red"}}>*</span></label>
+													<label className="control-label">{translate("task.task_process.process_description")} <span style={{ color: "red" }}>*</span></label>
 													<textarea type="text" rows={4}
 														value={processDescription}
 														className="form-control" placeholder={translate("task.task_process.process_description")}
@@ -685,7 +696,7 @@ class ModalCreateTaskProcess extends Component {
 
 												<div className={`form-group ${this.state.errorOnViewer === undefined ? "" : "has-error"}`}>
 													{/* Người được xem mẫu quy trình */}
-													<label className="control-label">{translate("task.task_process.viewer")} <span style={{color: "red"}}>*</span></label>
+													<label className="control-label">{translate("task.task_process.viewer")} <span style={{ color: "red" }}>*</span></label>
 													{
 														<SelectBox
 															id={`select-viewer-employee-create-${indexRenderer}`}
@@ -703,7 +714,7 @@ class ModalCreateTaskProcess extends Component {
 
 												<div className={`form-group ${this.state.errorOnManager === undefined ? "" : "has-error"}`}>
 													{/* Người quản lý mẫu quy trình */}
-													<label className="control-label" >{translate("task.task_process.manager")} <span style={{color: "red"}}>*</span></label>
+													<label className="control-label" >{translate("task.task_process.manager")} <span style={{ color: "red" }}>*</span></label>
 													{
 														<SelectBox
 															id={`select-manager-employee-create-${indexRenderer}`}

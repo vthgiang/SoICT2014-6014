@@ -14,7 +14,6 @@ class Notification extends Component {
     }
 
     _contentNotification = (data) => {
-        console.log("dữ liệu của thông báo: ", data)
         const {translate} = this.props;
         return (
             <React.Fragment>
