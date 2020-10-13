@@ -196,10 +196,10 @@ class ViewTaskTemplate extends Component {
                                         taskTemplate?.taskActions.map((item, index) =>
                                             <div className="task-item" key={index}>
                                                 <p>
-                                                    <b class="number">{index+1}</b>
-                                                    <span class="content">{item.name}</span>
+                                                    <b className="number">{index+1}</b>
+                                                    <span className="content">{item.name}</span>
                                                     {
-                                                        item.mandatory && <span class="note">{translate('task_template.mandatory')}</span>
+                                                        item.mandatory && <span className="note">{translate('task_template.mandatory')}</span>
                                                     }
                                                 </p>
                                                 <div>{parse(item.description)}</div>
@@ -222,7 +222,15 @@ class ViewTaskTemplate extends Component {
                                         <div><strong>{translate('task_template.no_data')}</strong></div> :
                                         taskTemplate?.taskInformations.map((item, index) =>
                                             <React.Fragment key={index}>
-                                                <div><strong>{item.code} - {item.name} - Kiểu {this.formatTypeInfo(item.type)} {item.filledByAccountableEmployeesOnly ? ` - ${translate('task_template.manager_fill')}` : ""}:</strong><span>{item.description}</span></div>
+                                                <div className="task-item-info">
+                                                    <p>
+                                                        <b className="code">{item.code}</b>
+                                                        <i className="type">{this.formatTypeInfo(item.type)}</i>
+                                                        <span className="content">{item.name}</span>
+                                                        {item.filledByAccountableEmployeesOnly && <span className="note">{translate('task_template.manager_fill')}</span>}
+                                                    </p>
+                                                    <div>{parse(item.description)}</div>
+                                                </div>
                                             </React.Fragment>
                                         )
                                 }
