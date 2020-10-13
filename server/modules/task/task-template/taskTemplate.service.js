@@ -18,8 +18,8 @@ exports.getAllTaskTemplates = async (portal, query) => {
         return tasks;
     }else if(query.userId){
         let id = query.userId, 
-        pageNumber = query.pageNumber, 
-        noResultsPerPage = query.noResultsPerPage, 
+        pageNumber = Number(query.pageNumber), 
+        noResultsPerPage = Number(query.noResultsPerPage), 
         organizationalUnit = query.arrayUnit, 
         name = query.name;
 
