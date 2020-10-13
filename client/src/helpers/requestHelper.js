@@ -76,7 +76,6 @@ export function sendRequest(options, showSuccessAlert = false, showFailAlert = t
     }).catch(err => {
         const messages = Array.isArray(err.response.data.messages) ? err.response.data.messages : [err.response.data.messages];
 
-        console.log("error: ", err)
         if (messages) {
             if (checkErrorAuth(messages[0]))
                 showAuthResponseAlertAndRedirectToLoginPage();
