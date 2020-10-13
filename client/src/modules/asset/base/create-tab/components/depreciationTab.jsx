@@ -396,7 +396,7 @@ class DepreciationTab extends Component {
                                 style={{ width: "100%" }}
                                 value={depreciationType}
                                 items={[
-                                    { value: '', text: `---${translate('asset.depreciation.select_depreciation_type')}---` },
+                                    { value: '', text: translate('asset.depreciation.select_depreciation_type') },
                                     { value: 'straight_line', text: translate('asset.depreciation.line') },
                                     { value: 'declining_balance', text: translate('asset.depreciation.declining_balance') },
                                     { value: 'units_of_production', text: translate('asset.depreciation.units_production') },

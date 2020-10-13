@@ -7,6 +7,7 @@ export default {
          * @module_name phần tự định nghĩa ngôn ngữ riêng của từng module khác nhau
          *******************************************************/
         general: {
+            show: 'Show ',
             table: 'Table',
             scroll: 'Scroll bar',
             upload: 'Upload',
@@ -792,7 +793,7 @@ export default {
             manage_manufacturing_process: "Quản lý tiến độ sản xuất",
             manage_manufacturing_schedule: "Quản lý lịch sản xuất",
             manage_purchasing_request: "Quản lý phiếu mua hàng",
-            track_order: "Theo dõi đơn hàng",
+            manufacturing_dashboard: "Dashboard Quản lý sản xuất",
             analysis_manufacturing_performance: "Phân tích hiệu suất sản xuất",
             manage_manufacturing_works: "Quản lý nhà máy sản xuất",
             manage_manufacturing_mill: "Quản lý xưởng sản xuất"
@@ -1444,6 +1445,7 @@ export default {
                     contract_lable: 'Contract expiration',
                     contract_lable_title: 'Contract expiration',
                     contract_type_title: 'Type of contract',
+                    employee_infor: 'Employee information',
 
                     // Nhóm dành cho action
                     view_employee: 'View employee',
@@ -1864,6 +1866,8 @@ export default {
                 incident_asset: 'Statistics incident asset chart',
                 maintenance_asset: 'Statistics maintenance asset chart',
                 statistic_by: 'Statistic by',
+                expired: 'Exprired',
+                remaining_time: 'Remaining time',
             },
 
             //  Quản lý loại tài sản
@@ -1889,8 +1893,8 @@ export default {
                 field_name: 'Name of properties',
                 value: 'Value',
 
-                usage_logs: 'Allocation history - transfer - withdrawal',
-                maintainance_logs: 'Repair history - replacement - upgrade',
+                usage_logs: 'Usage log',
+                maintainance_logs: 'Maintainance logs',
                 incident_list: 'Asset incident list',
                 file_list: 'List of documents attached',
                 edit_document: 'Edit documents attached',

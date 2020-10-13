@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const ConfiguraionSchema = new Schema({
+const ConfigurationSchema = new Schema({
     name: {
         type: String
     },
@@ -52,6 +52,6 @@ const ConfiguraionSchema = new Schema({
 
 module.exports = (db) => {
     if(!db.models.Configuraion)
-        return db.model('Configuraion', ConfiguraionSchema);
-    return db.models.Configuraion;
+        return db.model('Configuration', ConfigurationSchema);
+    return db.models.Configuration;
 }

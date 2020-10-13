@@ -216,7 +216,7 @@ class EditForm extends Component {
 
                 {/* Mô tả */}
                 <div className="form-group">
-                    <label>{translate('asset.general_information.description')}<span className="text-red">*</span></label>
+                    <label>{translate('asset.general_information.description')}</label>
                     <textarea style={{ minHeight: '120px' }} type="text" className="form-control" onChange={this.handleDescription} value={domainDescription} />
                 </div>
 

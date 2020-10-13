@@ -57,6 +57,18 @@ class AssetIsExpired extends Component {
         }
     }
 
+    formatStatus = (status) => {
+        const { translate } = this.props;
+        switch (status) {
+            case 'ready_to_use': return translate('asset.general_information.ready_use');
+            case 'in_use': return translate('asset.general_information.using');
+            case 'broken': return translate('asset.general_information.damaged');
+            case 'lost': return translate('asset.general_information.lost');
+            case 'disposed': return translate('asset.general_information.disposal');
+            default: return 'Deleted'
+        }
+    }
+
 
     render() {
         const { translate } = this.props;
@@ -81,7 +93,7 @@ class AssetIsExpired extends Component {
                     day = nowDate - ExpiryDateAssets;
                     let data = {
                         asset: listAssets[i],
-                        day: "Đã hết hạn"
+                        day: translate('asset.dashboard.expired')
                     }
                     ExpiryDateAssets.push(data);
                 } else {
@@ -107,10 +119,8 @@ class AssetIsExpired extends Component {
                 setAssetIsExpiredExportData(ExpiryDateAssets, assettypelist, userlist, false);
             } else if (willExpiryDateAssets && willExpiryDateAssets.length !== 0) {
                 setAssetIsExpiredExportData(willExpiryDateAssets, assettypelist, userlist, true);
-
             }
         }
-        console.log('will', ExpiryDateAssets);
 
         return (
             <React.Fragment>
@@ -129,7 +139,7 @@ class AssetIsExpired extends Component {
                                     <th style={{ width: "10%" }}>{translate('asset.general_information.user')}</th>
                                     <th style={{ width: "10%" }}>{translate('asset.general_information.organization_unit')}</th>
                                     <th style={{ width: "10%" }}>{translate('asset.general_information.status')}</th>
-                                    <th style={{ width: '120px', textAlign: 'center' }}>Thời gian còn lại</th>
+                                    <th style={{ width: '120px', textAlign: 'center' }}>{translate('asset.dashboard.remaining_time')}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -143,8 +153,8 @@ class AssetIsExpired extends Component {
                                             <td>{x.asset.managedBy && userlist.length && userlist.find(item => item._id === x.asset.managedBy) ? userlist.find(item => item._id === x.asset.managedBy).name : 'User is deleted'}</td>
                                             <td>{x.asset.assignedToUser ? (userlist.length && userlist.find(item => item._id === x.asset.assignedToUser) ? userlist.find(item => item._id === x.asset.assignedToUser).name : 'User is deleted') : ''}</td>
                                             <td>{x.asset.assignedToOrganizationalUnit ? x.asset.assignedToOrganizationalUnit : ''}</td>
-                                            <td>{x.asset.status}</td>
-                                            <td>{x.day} ngày</td>
+                                            <td>{this.formatStatus(x.asset.status)}</td>
+                                            <td>{x.day} {translate('annual_leave_personal.day')}</td>
                                         </tr>))
                                 }
                                 {(ExpiryDateAssets && ExpiryDateAssets.length !== 0) &&
@@ -157,12 +167,12 @@ class AssetIsExpired extends Component {
                                             <td>{x.asset.managedBy && userlist.length && userlist.find(item => item._id === x.asset.managedBy) ? userlist.find(item => item._id === x.asset.managedBy).name : 'User is deleted'}</td>
                                             <td>{x.asset.assignedToUser ? (userlist.length && userlist.find(item => item._id === x.asset.assignedToUser) ? userlist.find(item => item._id === x.asset.assignedToUser).name : 'User is deleted') : ''}</td>
                                             <td>{x.asset.assignedToOrganizationalUnit ? x.asset.assignedToOrganizationalUnit : ''}</td>
-                                            <td>{x.asset.status}</td>
+                                            <td>{this.formatStatus(x.asset.status)}</td>
                                             <td>{x.day}</td>
                                         </tr>))
                                 }
                             </tbody>
-                        </table> : "Không có tài sản nào sắp hết hạn"
+                        </table> : translate('general.no_data')
                     }
 
                 </div>

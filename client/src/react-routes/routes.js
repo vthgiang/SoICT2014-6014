@@ -142,7 +142,7 @@ import ManufacturingProcess from "../modules/production/manufacturing/manufactur
 import ManufacturingSchedule from "../modules/production/manufacturing/manufacturing-schedule/components";
 import ManufacturingWorks from "../modules/production/manufacturing/manufacturing-works/components";
 import PurchasingRequest from "../modules/production/manufacturing/purchasing-request/components";
-import TrackOrder from "../modules/production/manufacturing/track-order/components";
+import ManufacturingDashboard from "../modules/production/manufacturing/manufacturing-dashboard/components";
 import manufacturingOrder from '../modules/production/manufacturing/manufacturing-plan/components/manufacturing-order';
 import purchaseOrderDetailForm from '../modules/production/order/purchase-order/components/purchaseOrderDetailForm';
 
@@ -1746,22 +1746,22 @@ class Routes extends Component {
 
                     <PrivateRoute
                         isLoading={false}
-                        key={"track-order"}
+                        key={"manufacturing-dashboard"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
                             {
-                                link: "/track-order",
-                                name: "track_order",
-                                icon: "fa fa-search",
+                                link: "/manufacturing-dashboard",
+                                name: "manufacturing_dashboard",
+                                icon: "fa fa-dashboard",
                             },
                         ]}
                         auth={auth}
                         exact={true}
-                        link={"/track-order"}
-                        path={"/track-order"}
-                        pageName={"track_order"}
+                        link={"/manufacturing-dashboard"}
+                        path={"/manufacturing-dashboard"}
+                        pageName={"manufacturing_dashboard"}
                         layout={Layout}
-                        component={TrackOrder}
+                        component={ManufacturingDashboard}
                     />
 
                     <PrivateRoute

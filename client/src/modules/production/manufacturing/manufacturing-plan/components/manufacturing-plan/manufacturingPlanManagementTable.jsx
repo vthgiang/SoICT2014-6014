@@ -50,6 +50,7 @@ class ManufacturingPlanManagementTable extends Component {
                                 disabled={false}
                             />
                         </div>
+
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
@@ -73,6 +74,24 @@ class ManufacturingPlanManagementTable extends Component {
                             <input type="text" className="form-control" name="code" onChange={this.handleChangeData} placeholder="LSX001" autoComplete="off" />
                         </div>
                         <div className="form-group">
+                            <label className="form-control-static">Ngày tạo</label>
+                            <DatePicker
+                                id={`maintain_after_2`}
+                                // dateFormat={dateFormat}
+                                // value={startValue}
+                                // onChange={this.handleChangeDateAfter}
+                                disabled={false}
+                            />
+                        </div>
+
+
+                    </div>
+                    <div className="form-inline">
+                        <div className="form-group">
+                            <label className="form-control-static">Mã đơn kinh doanh</label>
+                            <input type="text" className="form-control" name="code" onChange={this.handleChangeData} placeholder="DKD001" autoComplete="off" />
+                        </div>
+                        <div className="form-group">
                             <label className="form-control-static">Tình trạng</label>
                             <SelectMulti
                                 id={`select-multi-process`}
@@ -90,17 +109,12 @@ class ManufacturingPlanManagementTable extends Component {
                             // onChange={this.handleChangeValue}
                             />
                         </div>
+
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className="form-control-static">Ngày tạo</label>
-                            <DatePicker
-                                id={`maintain_after_2`}
-                                // dateFormat={dateFormat}
-                                // value={startValue}
-                                // onChange={this.handleChangeDateAfter}
-                                disabled={false}
-                            />
+                            <label className="form-control-static">Mã phiếu đề nghị</label>
+                            <input type="text" className="form-control" name="code" onChange={this.handleChangeData} placeholder="PDN001" autoComplete="off" />
                         </div>
                         <div className="form-group">
                             <label></label>

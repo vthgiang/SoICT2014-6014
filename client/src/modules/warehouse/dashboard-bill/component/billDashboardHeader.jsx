@@ -71,7 +71,7 @@ class BillDashboardHeader extends Component {
                                 { value: '3', text: 'Đại Cồ Việt'},
                                 { value: '4', text: 'Lê Thanh Nghị'}
                             ]}
-                            options={{ nonSelectedText: "Tất cả kho", allSelectedText: "Tất cả kho" }}
+                            options={{ nonSelectedText: "Tất cả kho(4)", allSelectedText: "Tất cả kho(4)" }}
                             onChange={this.handleSelectOrganizationalUnit}
                         >
                         </SelectMulti>

@@ -257,12 +257,13 @@ exports.createEmployee = async (req, res) => {
                 } else {
                     let data = await EmployeeService.createEmployee(req.portal, req.body, req.user.company._id, fileInfor);
                     let checkUser = await UserService.checkUserExited(req.portal, req.body.emailInCompany);
+                    console.log(checkUser);
                     if (checkUser === false) {
                         let userInfo = {
                             email: req.body.emailInCompany,
                             name: req.body.fullName
                         }
-                        await UserService.createUser(req.portal, userInfo);
+                        await UserService.createUser(req.portal, userInfo, req.user.company._id);
                     }
                     await Log.info(req.user.email, 'CREATE_EMPLOYEE', req.portal);
                     res.status(200).json({
@@ -440,7 +441,7 @@ exports.updateEmployeeInformation = async (req, res) => {
                     email: req.body.employee.emailInCompany,
                     name: req.body.employee.fullName
                 }
-                await UserService.createUser(req.portal, userInfo);
+                await UserService.createUser(req.portal, userInfo, req.user.company._id);
             }
             await Log.info(req.user.email, 'EDIT_EMPLOYEE', req.portal);
             res.status(200).json({
@@ -529,7 +530,7 @@ exports.importEmployees = async (req, res) => {
                             email: x.emailInCompany,
                             name: x.fullName
                         }
-                        await UserService.createUser(req.portal, userInfo);
+                        await UserService.createUser(req.portal, userInfo, req.user.company._id);
                     }
                 }
             }

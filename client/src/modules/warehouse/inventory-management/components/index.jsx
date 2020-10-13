@@ -148,6 +148,7 @@ class InventoryManagement extends Component {
                                             <td></td>
                                             <td style={{textAlign: 'center'}}>
                                                 <a className="text-green" onClick={() => this.handleShowDetailInfo()}><i className="material-icons">visibility</i></a>
+                                                <a onClick={() => this.handleEdit()} className="text-yellow" ><i className="material-icons">edit</i></a>
                                             </td>
                                         </tr>
                                         <tr>
@@ -159,6 +160,7 @@ class InventoryManagement extends Component {
                                             <td>20-10-2020</td>
                                             <td style={{textAlign: 'center'}}>
                                                 <a className="text-green" onClick={() => this.handleShowDetailLot()}><i className="material-icons">visibility</i></a>
+                                                <a onClick={() => this.handleEdit()} className="text-yellow" ><i className="material-icons">edit</i></a>
                                             </td>
                                         </tr>
                                         <tr>
@@ -170,6 +172,7 @@ class InventoryManagement extends Component {
                                             <td>30-10-2020</td>
                                             <td style={{textAlign: 'center'}}>
                                                 <a className="text-green" onClick={() => this.handleShowDetailLot()}><i className="material-icons">visibility</i></a>
+                                                <a onClick={() => this.handleEdit()} className="text-yellow" ><i className="material-icons">edit</i></a>
                                             </td>
                                         </tr>
                                         <tr style={{backgroundColor: '#dddd'}}>
@@ -181,6 +184,7 @@ class InventoryManagement extends Component {
                                             <td></td>
                                             <td style={{textAlign: 'center'}}>
                                                 <a className="text-green" onClick={() => this.handleShowDetailInfo()}><i className="material-icons">visibility</i></a>
+                                                <a onClick={() => this.handleEdit()} className="text-yellow" ><i className="material-icons">edit</i></a>
                                             </td>
                                         </tr>
                                         <tr>
@@ -192,6 +196,7 @@ class InventoryManagement extends Component {
                                             <td>20-10-2020</td>
                                             <td style={{textAlign: 'center'}}>
                                                 <a className="text-green" onClick={() => this.handleShowDetailLot()}><i className="material-icons">visibility</i></a>
+                                                <a onClick={() => this.handleEdit()} className="text-yellow" ><i className="material-icons">edit</i></a>
                                             </td>
                                         </tr>
                                         <tr style={{backgroundColor: '#dddd'}}>
@@ -203,6 +208,7 @@ class InventoryManagement extends Component {
                                             <td></td>
                                             <td style={{textAlign: 'center'}}>
                                                 <a className="text-green" onClick={() => this.handleShowDetailInfo()}><i className="material-icons">visibility</i></a>
+                                                <a onClick={() => this.handleEdit()} className="text-yellow" ><i className="material-icons">edit</i></a>
                                             </td>
                                         </tr>
                                         <tr>
@@ -214,6 +220,7 @@ class InventoryManagement extends Component {
                                             <td>20-10-2020</td>
                                             <td style={{textAlign: 'center'}}>
                                                 <a className="text-green" onClick={() => this.handleShowDetailLot()}><i className="material-icons">visibility</i></a>
+                                                <a onClick={() => this.handleEdit()} className="text-yellow" ><i className="material-icons">edit</i></a>
                                             </td>
                                         </tr>
                             </tbody>

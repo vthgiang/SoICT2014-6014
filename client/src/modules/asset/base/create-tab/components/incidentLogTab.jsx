@@ -101,6 +101,18 @@ class IncidentLogTab extends Component {
         else return 'Deleted';
     }
 
+    formatStatus = (status) => {
+        const { translate } = this.props;
+
+        if (status === '1') {
+            return translate('asset.general_information.waiting');
+        }
+        else if (status === '2') {
+            return translate('asset.general_information.processed');
+        }
+        else return 'Deleted';
+    }
+
     render() {
         const { id } = this.props;
         const { translate, user } = this.props;
@@ -140,7 +152,7 @@ class IncidentLogTab extends Component {
                                             <td>{x.reportedBy ? (userlist.length && userlist.filter(item => item._id === x.reportedBy).pop() ? userlist.filter(item => item._id === x.reportedBy).pop().name : 'User is deleted') : ''}</td>
                                             <td>{x.dateOfIncident ? this.formatDate(x.dateOfIncident) : ''}</td>
                                             <td>{x.description}</td>
-                                            <td>{x.statusIncident}</td>
+                                            <td>{this.formatStatus(x.statusIncident)}</td>
                                             <td>
                                                 <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.asset_info.edit_incident_info')}><i
                                                     className="material-icons">edit</i></a>

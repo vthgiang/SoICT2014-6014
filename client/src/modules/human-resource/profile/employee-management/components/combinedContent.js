@@ -4,3 +4,4 @@ export * from './employeeEditFrom';
 export * from './employeeManagement';
 export * from './employeeImportForm';
 export * from './employeeImportTab';
+export * from './employeeViewForm';

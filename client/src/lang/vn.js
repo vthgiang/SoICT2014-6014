@@ -7,6 +7,7 @@ export default {
          * @module_name phần tự định nghĩa ngôn ngữ riêng của từng module khác nhau
          *******************************************************/
         general: {
+            show: 'Hiển thị ',
             table: 'Bảng',
             scroll: 'Dùng thanh cuộn bảng',
             upload: 'Tải lên',
@@ -837,8 +838,8 @@ export default {
             manage_manufacturing_command: "Quản lý lệnh sản xuất",
             manage_manufacturing_process: "Quản lý tiến độ sản xuất",
             manage_manufacturing_schedule: "Quản lý lịch sản xuất",
-            manage_purchasing_request: "Quản lý phiếu mua hàng",
-            track_order: "Theo dõi đơn hàng",
+            manage_purchasing_request: "Quản lý phiếu mua NVL",
+            manufacturing_dashboard: "Dashboard Quản lý sản xuất",
             analysis_manufacturing_performance: "Phân tích hiệu suất sản xuất",
             manage_manufacturing_works: "Quản lý nhà máy sản xuất",
             manage_manufacturing_mill: "Quản lý xưởng sản xuất"
@@ -1487,6 +1488,7 @@ export default {
                     contract_lable: 'Hết hạn hợp đồng',
                     contract_lable_title: 'Tháng hết hạn hợp đồng',
                     contract_type_title: 'Loại hợp đồng lao động',
+                    employee_infor: 'Thông tin nhân viên',
 
 
                     // Nhóm dành cho action
@@ -1916,6 +1918,10 @@ export default {
                 incident_asset: 'Thống kê sự cố tài sản',
                 maintenance_asset: 'Thống kê bảo trì tài sản',
                 statistic_by: 'Thống kê theo',
+                expired: 'Đã hết hạn',
+                remaining_time: 'Thời gian còn lại',
+
+
             },
 
             //  Quản lý loại tài sản
@@ -1941,8 +1947,8 @@ export default {
                 field_name: 'Tên thuộc tính',
                 value: 'Giá trị',
 
-                usage_logs: 'Lịch sử cấp phát - điều chuyển - thu hồi',
-                maintainance_logs: 'Lịch sử sửa chữa - thay thế - nâng cấp',
+                usage_logs: 'Lịch sử sử dụng',
+                maintainance_logs: 'Lịch sử bảo trì',
                 incident_list: 'Danh sách sự cố tài sản',
                 file_list: 'Danh sách tài liệu đính kèm',
                 edit_document: 'Chỉnh sửa tài liệu đính kèm',
@@ -3316,7 +3322,7 @@ export default {
 
         manage_warehouse: {
             dashboard_bill: {
-                
+
             },
             dashboard_inventory: {
 

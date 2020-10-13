@@ -149,7 +149,7 @@ const sampleData = {
         intendReceiveTime: "17-03-2020",
         status: 1,
         materials: [{
-            name: "Thước cất",
+            name: "Nước cất",
             code: "NC11219",
             baseUnit: "lít",
             quantity: 200,
@@ -187,7 +187,7 @@ const sampleData = {
                 baseUnit: "Gói",
                 packingRule: "1Thùngx5Hộpx10góix100g",
                 materials: [{
-                    name: "Thước cất",
+                    name: "Nước cất",
                     code: "NC11219",
                     baseUnit: "lít",
                     quantity: 2,
@@ -234,7 +234,7 @@ const sampleData = {
                 baseUnit: "Gói",
                 packingRule: "1Thùngx20Hộpx10góix100g",
                 materials: [{
-                    name: "Thước cất loại 1",
+                    name: "Nước cất loại 1",
                     code: "NC11219",
                     baseUnit: "lít",
                     quantity: 2,
@@ -275,7 +275,7 @@ const sampleData = {
                 baseUnit: "kg",
                 packingRule: "1Thùngx10hộpx1kg",
                 materials: [{
-                    name: "Thước cất",
+                    name: "Nước cất",
                     code: "NC11219",
                     baseUnit: "lít",
                     quantity: 2,
@@ -301,7 +301,7 @@ const sampleData = {
                 baseUnit: "Gói",
                 packingRule: "1Thùngx20Hộpx10góix100g",
                 materials: [{
-                    name: "Thước cất",
+                    name: "Nước cất",
                     code: "NC11219",
                     baseUnit: "lít",
                     quantity: 2,
@@ -322,7 +322,7 @@ const sampleData = {
                 baseUnit: "gam",
                 packingRule: "1Thùngx5Hộpx100g",
                 materials: [{
-                    name: "Thước cất",
+                    name: "Nước cất",
                     code: "NC11219",
                     baseUnit: "lít",
                     quantity: 2,
@@ -342,7 +342,7 @@ const sampleData = {
             planedQuantity: 0
         }],
         description: "Đơn hàng sản xuất cho khác hàng vip",
-        status: "Đang lập kế hoạch",
+        status: "Chưa lập kế hoạch",
         createdAt: "03-06-2020",
         updatedAt: ""
     }, {
@@ -389,7 +389,7 @@ const sampleData = {
                 baseUnit: "kg",
                 packingRule: "1Thùngx10hộpx1kg",
                 materials: [{
-                    name: "Thước cất",
+                    name: "Nước cất",
                     code: "NC11219",
                     baseUnit: "lít",
                     quantity: 2,
@@ -415,7 +415,7 @@ const sampleData = {
                 baseUnit: "Gói",
                 packingRule: "1Thùngx20Hộpx10góix100g",
                 materials: [{
-                    name: "Thước cất",
+                    name: "Nước cất",
                     code: "NC11219",
                     baseUnit: "lít",
                     quantity: 2,
@@ -435,7 +435,7 @@ const sampleData = {
             planedQuantity: 100
         }],
         description: "Đơn hàng sản xuất trực tiếp cho bên công ty VNIST",
-        status: "Chưa lập kế hoạch",
+        status: "Đang lập kế hoạch",
         createdAt: "02-06-2020",
         updatedAt: ""
     }],
