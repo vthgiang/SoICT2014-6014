@@ -7,6 +7,7 @@ export default {
          * @module_name phần tự định nghĩa ngôn ngữ riêng của từng module khác nhau
          *******************************************************/
         general: {
+            show: 'Hiển thị ',
             table: 'Bảng',
             scroll: 'Dùng thanh cuộn bảng',
             upload: 'Tải lên',
@@ -1487,6 +1488,7 @@ export default {
                     contract_lable: 'Hết hạn hợp đồng',
                     contract_lable_title: 'Tháng hết hạn hợp đồng',
                     contract_type_title: 'Loại hợp đồng lao động',
+                    employee_infor: 'Thông tin nhân viên',
 
 
                     // Nhóm dành cho action

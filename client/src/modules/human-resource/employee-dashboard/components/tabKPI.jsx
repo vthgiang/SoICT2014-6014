@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { LazyLoadComponent, ExportExcel } from '../../../../common-components';
 import { ResultsOfAllOrganizationalUnitKpiChart } from '../../../kpi/organizational-unit/dashboard/component/resultsOfAllOrganizationalUnitKpiChart';
-
+import { ResultsOfAllEmployeeKpiSetChart } from '../../../kpi/evaluation/dashboard/component/resultsOfAllEmployeeKpiSetChart';
 import { DashboardEvaluationEmployeeKpiSetAction } from '../../../kpi/evaluation/dashboard/redux/actions';
 
 class TabKPI extends Component {
@@ -42,6 +42,7 @@ class TabKPI extends Component {
                 ...prevState,
                 organizationalUnits: nextProps.organizationalUnits,
                 month: nextProps.month,
+                allOrganizationalUnits: nextProps.allOrganizationalUnits,
             }
         };
 
@@ -57,6 +58,19 @@ class TabKPI extends Component {
             return {
                 ...state,
                 resultsOfAllOrganizationalUnitsKpiChartData: data
+            }
+        })
+    };
+
+    /**
+     * Function lấy lại kết quả KPI tất cả các nhân viên để export báo cáo
+     * @param {*} data 
+     */
+    handleResultsOfAllEmployeeKpiSetChartDataAvailable = (data) => {
+        this.setState(state => {
+            return {
+                ...state,
+                resultsOfAllEmployeeKpiSetChartData: data
             }
         })
     }
@@ -89,20 +103,22 @@ class TabKPI extends Component {
     render() {
         const { translate, department, dashboardEvaluationEmployeeKpiSet } = this.props;
 
-        const { month,organizationalUnits, numberOfExcellentEmployees, numberOfExcellent, resultsOfAllOrganizationalUnitsKpiChartData } = this.state;
+        const { month, organizationalUnits,allOrganizationalUnits, numberOfExcellentEmployees, numberOfExcellent,
+            resultsOfAllOrganizationalUnitsKpiChartData, resultsOfAllEmployeeKpiSetChartData } = this.state;
 
         let employeeKpiSets, lastMonthEmployeeKpiSets, organizationalUnitsName;
         if (organizationalUnits) {
             organizationalUnitsName = department.list.filter(x => organizationalUnits.includes(x._id));
             organizationalUnitsName = organizationalUnitsName.map(x => x.name);
         }
-        
+
         if (dashboardEvaluationEmployeeKpiSet) {
             employeeKpiSets = dashboardEvaluationEmployeeKpiSet.employeeKpiSets;
             lastMonthEmployeeKpiSets = employeeKpiSets && employeeKpiSets.filter(item => this.formatDate(item.date) == month);
             lastMonthEmployeeKpiSets && lastMonthEmployeeKpiSets.sort((a, b) => b.approvedPoint - a.approvedPoint);
             lastMonthEmployeeKpiSets = lastMonthEmployeeKpiSets && lastMonthEmployeeKpiSets.slice(0, numberOfExcellentEmployees);
         }
+        // let organizationalUnitIds;
 
         return (
             <div className="row qlcv">
@@ -162,7 +178,23 @@ class TabKPI extends Component {
                             </ul>
                         </div>
                     </div>
+                </div>
+                {/* Kết quả Kpi tất cả nhân viên */}
+                <div className="col-md-12">
+                    <div className="box-solid">
+                        <div className="box-header with-border">
+                            <h3 className="box-title">{`${translate('kpi.evaluation.dashboard.result_kpi_titile')} của ${(!organizationalUnits || organizationalUnits.length === department.list.length) ? "công ty" : organizationalUnitsName.join(', ')}`}</h3>
+                            {resultsOfAllEmployeeKpiSetChartData && <ExportExcel type="link" id="export-all-employee-kpi-evaluate-result-dashboard" exportData={resultsOfAllEmployeeKpiSetChartData} style={{ marginTop: 5 }} />}
+                        </div>
+                        {/* /.box-header */}
 
+                        <div className="box-body qlcv">
+                            <ResultsOfAllEmployeeKpiSetChart
+                                organizationalUnitIds={allOrganizationalUnits}
+                                onDataAvailable={this.handleResultsOfAllEmployeeKpiSetChartDataAvailable}
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
         );

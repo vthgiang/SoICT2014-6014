@@ -118,7 +118,7 @@ class TaskDashboard extends Component {
             month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)));
         }
 
-        monthtitle = value.slice(3, 7) + '-' + value.slice(0, 2);
+        monthtitle = value.slice(0, 2) + '-' + value.slice(3, 7)
 
         this.INFO_SEARCH.startMonth = month;
         this.INFO_SEARCH.startMonthTitle = monthtitle;

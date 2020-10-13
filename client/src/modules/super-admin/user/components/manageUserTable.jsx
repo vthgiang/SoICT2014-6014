@@ -15,7 +15,7 @@ class ManageUserTable extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            limit: 5,
+            limit: 10,
             page: 1,
             option: 'name', // Mặc định tìm kiếm theo tên
             value: ''
@@ -119,13 +119,14 @@ class ManageUserTable extends Component {
                     </tbody>
                 </table>
 
-                {user.isLoading ?
+                {
+                    user.isLoading ?
                     <div className="table-info-panel">{translate('confirm.loading')}</div> :
                     user.listPaginate && user.listPaginate.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                 }
 
                 {/* PaginateBar */}
-                <PaginateBar pageTotal={user.totalPages} currentPage={user.page} func={this.setPage} />
+                <PaginateBar display={user.listPaginate.length} total={user.list.length} pageTotal={user.totalPages} currentPage={user.page} func={this.setPage} />
             </React.Fragment>
         );
     }
