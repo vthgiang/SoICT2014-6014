@@ -7,7 +7,7 @@ import 'c3/c3.css';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { SelectMulti, DatePicker, SelectBox } from '../../../../common-components';
 
-class GoodIssueReceiptByGood extends Component {
+class TopIssueReceiptLeast extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -31,16 +31,14 @@ class GoodIssueReceiptByGood extends Component {
         let { translate } = this.props;
         const { barChart } = this.state;
         let chart = c3.generate({
-            bindto: this.refs.goodIssueReceipt,
+            bindto: this.refs.topIssueReceiptLeast,
             data: {
                 x : 'x',
                 columns: [
-                    ['x', 'Albendazole', 'Afatinib', 'Zoledronic Acid', 'Abobotulinum', 'Acid Thioctic', 'Mometasone (bôi)', 'Capecitabine', 'Mytomycin C'],
-                    ['Xuất kho', 100, 200, 140, 200, 600, 228, 600, 200, 130],
-                    ['Nhập kho', 300, 150, 340, 300, 500, 228, 290, 300, 100],
-                    ['Tồn kho', 400, 100, 540, 100, 200, 328, 190, 100, 700],
+                    ['x', 'Bút', 'Chuột', 'Bình nước', 'Sách vở', 'Điện thoại'],
+                    ['Số lượng', 600, 550, 450, 400, 200],
                 ],
-                type: barChart ? 'bar' : 'line',
+                type: 'bar',
             },
             axis: {
                 x: {
@@ -65,11 +63,24 @@ class GoodIssueReceiptByGood extends Component {
                     <div className="box-header with-border">
                         <i className="fa fa-bar-chart-o" />
                         <h3 className="box-title">
-                            Số lượng xuất, nhập, tồn trong tất cả các kho
+                            Tốp 5 mặt hàng nhập, xuất ít nhất
                         </h3>
                             <div className="form-inline">
                                 <div className="form-group">
-                                    <label className="form-control-static">{translate('manage_warehouse.bill_management.from_date')}</label>
+                                    <SelectBox 
+                                        id="multiSelectIssueReceiptLeast"
+                                        className="form-control select2"
+                                        items={[
+                                            { value: '1', text: 'Nhập'},
+                                            { value: '0', text: 'Xuất'},
+                                        ]}
+                                        onChange={this.handleSelectOrganizationalUnit}
+                                    />
+                                </div>
+                            </div>
+                            <div className="form-inline">
+                            <div className="form-group">
+                                    <label className="form-control-static">Từ</label>
                                     <DatePicker
                                         id="purchase-month"
                                         dateFormat="month-year"
@@ -78,7 +89,7 @@ class GoodIssueReceiptByGood extends Component {
                                     />
                                 </div>
                                 <div className="form-group">
-                                    <label className="form-control-static">{translate('manage_warehouse.bill_management.to_date')}</label>
+                                    <label className="form-control-static">Đến</label>
                                     <DatePicker
                                         id="purchase-month"
                                         dateFormat="month-year"
@@ -86,15 +97,12 @@ class GoodIssueReceiptByGood extends Component {
                                         onChange={this.handlePurchaseMonthChange}
                                     />
                                 </div>
-                            </div>
-                            {/* <div className="box-tools pull-right">
-                                <div className="btn-group pull-rigth">
-                                    <button type="button" className={`btn ${barChart === true ? 'btn-danger' : null}`} onClick={() => this.handleChangeViewChart(true)}>Bar chart</button>
-                                    <button type="button" className={`btn ${barChart === false ? 'btn-danger' : null}`} onClick={() => this.handleChangeViewChart(false)}>Line chart</button>
+                                <div className="form-group">
+                                    <button type="button" className="btn btn-success" title={translate('manage_warehouse.bill_management.search')} onClick={this.handleSubmitSearch}>{translate('manage_warehouse.bill_management.search')}</button>
                                 </div>
-                            </div> */}
+                            </div>
                         
-                        <div ref="goodIssueReceipt"></div>
+                        <div ref="topIssueReceiptLeast"></div>
                     </div>
                 </div>
             </React.Fragment>
@@ -102,4 +110,4 @@ class GoodIssueReceiptByGood extends Component {
     }
 }
 
-export default withTranslate(GoodIssueReceiptByGood);
+export default withTranslate(TopIssueReceiptLeast);

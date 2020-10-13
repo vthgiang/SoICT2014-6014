@@ -150,7 +150,21 @@ class ReceiptManagementTable extends Component {
                             />
                         </div>
                         <div className="form-group">
-                            <label></label>
+                            <label className="form-control-static">{translate('manage_warehouse.bill_management.status')}</label>
+                            <SelectMulti
+                                id={`select-multi-status-receipt`}
+                                multiple="multiple"
+                                options={{ nonSelectedText: "Chọn trạng thái", allSelectedText: "Chọn tất cả" }}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={[
+                                    { value: '2', text: "Đã hoàn thành "},
+                                    { value: '3', text: "Đã hủy"},
+                                ]}
+                                onChange={this.handleCategoryChange}
+                            />
+                        </div>
+                        <div className="form-group">
                             <button type="button" className="btn btn-success" title={translate('manage_warehouse.bill_management.search')} onClick={this.handleSubmitSearch}>{translate('manage_warehouse.bill_management.search')}</button>
                         </div>
                     </div>
@@ -162,8 +176,9 @@ class ReceiptManagementTable extends Component {
                                     <th style={{ width: '5%', textAlign: 'center', verticalAlign: 'middle' }}>{translate('manage_warehouse.bill_management.index')}</th>
                                     <th>{translate('manage_warehouse.bill_management.code')}</th>
                                     <th>{translate('manage_warehouse.bill_management.type')}</th>
-                                    <th>{translate('manage_warehouse.bill_management.creator')}</th>
                                     <th>{translate('manage_warehouse.bill_management.proposal')}</th> 
+                                    <th>{translate('manage_warehouse.bill_management.status')}</th> 
+                                    <th>{translate('manage_warehouse.bill_management.creator')}</th>
                                     <th>{translate('manage_warehouse.bill_management.date')}</th>
                                     <th>{translate('manage_warehouse.bill_management.stock')}</th>
                                     <th>{translate('manage_warehouse.bill_management.supplier')}</th>
@@ -174,8 +189,9 @@ class ReceiptManagementTable extends Component {
                                             columnArr={[
                                                 translate('manage_warehouse.bill_management.index'),
                                                 translate('manage_warehouse.bill_management.code'),
-                                                translate('manage_warehouse.bill_management.creator'),
                                                 translate('manage_warehouse.bill_management.proposal'),
+                                                translate('manage_warehouse.bill_management.status'),
+                                                translate('manage_warehouse.bill_management.creator'),
                                                 translate('manage_warehouse.bill_management.date'),
                                                 translate('manage_warehouse.bill_management.stock'),
                                                 translate('manage_warehouse.bill_management.supplier'),
@@ -193,56 +209,68 @@ class ReceiptManagementTable extends Component {
                                             <td>1</td>
                                             <td>BR012</td>
                                             <td>Phiếu nhập kho vật tư</td>
-                                            <td>Nguyễn Văn Thắng</td>
                                             <td>BP023</td>
+                                            <td>Đã hoàn thành</td>
+                                            <td>Nguyễn Văn Thắng</td>
                                             <td>05-10-2020</td>
                                             <td>Tạ Quang Bửu</td>
                                             <td>Công ty TNHH XYZ</td>
                                             <td>Nhập kho nguyên vật liệu</td>
                                             <td style={{textAlign: 'center'}}>
                                                 <a className="text-green" onClick={() => this.handleShowDetailInfo()}><i className="material-icons">visibility</i></a>
+                                                <a onClick={() => this.handleEdit()} className="text-yellow" ><i className="material-icons">edit</i></a>
+                                                <a className="text-black" onClick={() => this.handleShow()}><i className="material-icons">print</i></a>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>2</td>
                                             <td>BI025</td>
                                             <td>Phiếu nhập kho tài sản</td>
-                                            <td>Nguyễn Văn Thắng</td>
                                             <td>BP027</td>
+                                            <td>Đã hủy</td>
+                                            <td>Nguyễn Văn Thắng</td>
                                             <td>06-10-2020</td>
                                             <td>Đại Cồ Việt</td>
                                             <td>Công ty TNHH XYZ</td>
                                             <td>Xuất bán sản phẩm</td>
                                             <td style={{textAlign: 'center'}}>
                                                 <a className="text-green" onClick={() => this.handleShowDetailInfo()}><i className="material-icons">visibility</i></a>
+                                                <a onClick={() => this.handleEdit()} className="text-yellow" ><i className="material-icons">edit</i></a>
+                                                <a className="text-black" onClick={() => this.handleShow()}><i className="material-icons">print</i></a>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>3</td>
                                             <td>BI025</td>
                                             <td>Phiếu nhập kho sản phẩm</td>
-                                            <td>Phạm Đại Tài</td>
                                             <td>BP027</td>
+                                            <td>Đã hoàn thành</td>
+                                            <td>Phạm Đại Tài</td>
                                             <td>06-10-2020</td>
                                             <td>Đại Cồ Việt</td>
                                             <td>Công ty TNHH XYZ</td>
                                             <td>Xuất bán sản phẩm</td>
                                             <td style={{textAlign: 'center'}}>
                                                 <a className="text-green" onClick={() => this.handleShowDetailInfo()}><i className="material-icons">visibility</i></a>
+                                                <a onClick={() => this.handleEdit()} className="text-yellow" ><i className="material-icons">edit</i></a>
+                                                <a className="text-black" onClick={() => this.handleShow()}><i className="material-icons">print</i></a>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>4</td>
                                             <td>BI025</td>
                                             <td>Phiếu nhập kho sản phẩm</td>
-                                            <td>Nguyễn Anh Phương</td>
                                             <td>BP027</td>
+                                            <td>Đã hoàn thành</td>
+                                            <td>Nguyễn Anh Phương</td>
                                             <td>06-10-2020</td>
                                             <td>Tạ Quang Bửu</td>
                                             <td>Công ty TNHH XYZ</td>
                                             <td>Xuất bán sản phẩm</td>
                                             <td style={{textAlign: 'center'}}>
                                                 <a className="text-green" onClick={() => this.handleShowDetailInfo()}><i className="material-icons">visibility</i></a>
+                                                <a onClick={() => this.handleEdit()} className="text-yellow" ><i className="material-icons">edit</i></a>
+                                                <a className="text-black" onClick={() => this.handleShow()}><i className="material-icons">print</i></a>
                                             </td>
                                         </tr>
                             </tbody>
