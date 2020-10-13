@@ -35,7 +35,6 @@ class CrmCustomerCreate extends Component {
 
             this.setState({
                 newCustomer: {
-                    ...newCustomer,
                     owner: [auth.user._id],
                 },
             })
