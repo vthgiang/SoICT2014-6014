@@ -42,7 +42,7 @@ class QuantityExpirationDate extends Component {
             data: {
                 x : 'x',
                 columns: [
-                    ['x', 'Máy tính', 'Bàn học', 'Điện thoại', 'Chuột', 'Cặp sách', 'Bình nước', 'Sách vở', 'Bút'],
+                    ['x', 'Albendazole', 'Afatinib', 'Zoledronic Acid', 'Abobotulinum', 'Acid Thioctic', 'Mometasone (bôi)', 'Capecitabine', 'Mytomycin C'],
                     ['Số lượng', 10, 20, 30, 20, 10, 22, 50, 60, 20],
                 ],
                 type: 'bar'

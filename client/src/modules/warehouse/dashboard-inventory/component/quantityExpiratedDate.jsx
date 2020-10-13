@@ -37,8 +37,10 @@ class QuantityExpiratedDate extends Component {
             data: {
                 columns: [
                     ['Hư hỏng, hết hạn', 30],
-                    ['Đã bán', 120],
+                    ['Đã xuất kho', 120],
                     ['Đang lưu trữ', 90],
+                    ['Chuẩn bị nhập kho', 50],
+                    ['Chuẩn bị xuất kho', 80]
                 ],
                 type: 'pie',
             },
@@ -85,13 +87,13 @@ class QuantityExpiratedDate extends Component {
                             Xem chi tiết số lượng theo từng sản phẩm
                         </h3>
                         <div className="form-group" style={{width: '100%', margin: '10px'}}>
-                                <SelectBox id="multiSelectO"
+                                <SelectBox id="multiSelectqO"
                                     items={[
-                                        { value: '0', text: 'Propylen Glycon'},
-                                        { value: '1', text: 'Bàn ghế'},
-                                        { value: '2', text: 'Bút mực'},
-                                        { value: '3', text: 'Điện thoại'},
-                                        { value: '4', text: 'Bình nước'}
+                                        { value: '0', text: 'Albendazole'},
+                                        { value: '1', text: 'Afatinib'},
+                                        { value: '2', text: 'Zoledronic Acid'},
+                                        { value: '3', text: 'Abobotulinum'},
+                                        { value: '4', text: 'Acid Thioctic'}
                                     ]}
                                     onChange={this.handleSelectOrganizationalUnit}
                                 />
