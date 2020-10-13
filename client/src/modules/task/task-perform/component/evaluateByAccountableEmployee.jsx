@@ -156,6 +156,7 @@ class EvaluateByAccountableEmployee extends Component {
             newMonth += 12;
             dateOfPrevEval.setYear(dateOfPrevEval.getYear() - 1);
         }
+        dateOfPrevEval.setDate(15);
         dateOfPrevEval.setMonth(newMonth);
 
         let monthOfEval = dateOfEval.getMonth();
