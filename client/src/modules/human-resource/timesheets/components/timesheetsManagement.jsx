@@ -6,6 +6,7 @@ import { getStorage } from '../../../../config';
 import { DataTableSetting, DeleteNotification, PaginateBar, DatePicker, SelectMulti, SlimScroll, ExportExcel } from '../../../../common-components';
 
 import { TimesheetsByShiftImportForm, TimesheetsCreateForm, TimesheetsEditForm } from './combinedContent';
+import { EmployeeViewForm } from '../../profile/employee-management/components/combinedContent';
 
 import { TimesheetsActions } from '../redux/actions';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
@@ -47,6 +48,21 @@ class TimesheetsManagement extends Component {
     createTimesheets = () => {
         window.$('#modal-create-timesheets').modal('show');
     }
+
+    /**
+     *  Bắt sự kiện click xem thông tin nhân viên
+     * @param {*} value : Thông tin nhân viên muốn xem
+     */
+    handleView = async (value) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                currentRowView: value
+            }
+        });
+        window.$(`#modal-view-employee${value._id}`).modal('show');
+    }
+
 
     /** Function bắt sự kiện import thông tin chấm công */
     handleImport = async () => {
@@ -348,7 +364,7 @@ class TimesheetsManagement extends Component {
     render() {
         const { translate, timesheets, department, modelConfiguration } = this.props;
 
-        const { month, limit, page, allDayOfMonth, dayNow, organizationalUnits, currentRow, importExcel } = this.state;
+        const { month, limit, page, allDayOfMonth, dayNow, organizationalUnits, currentRowView, currentRow, importExcel } = this.state;
 
         let timekeepingType, config, listTimesheets = [], exportData = [], humanResourceConfig = modelConfiguration.humanResourceConfig;
 
@@ -452,7 +468,7 @@ class TimesheetsManagement extends Component {
                                             listTimesheets.length !== 0 && listTimesheets.map((x, index) => (
                                                 <React.Fragment key={index}>
                                                     <tr>
-                                                        <td rowSpan="3" style={{ paddingTop: 22 }}>{x.employee ? x.employee.employeeNumber : null}</td>
+                                                        <td rowSpan="3" style={{ paddingTop: 22 }}><a style={{ cursor: 'pointer' }} onClick={() => this.handleView(x.employee)}>{x.employee ? x.employee.employeeNumber : null}</a></td>
                                                         <td rowSpan="3" style={{ paddingTop: 22 }}>{x.employee ? x.employee.fullName : null}</td>
                                                         <td rowSpan="3" style={{ paddingTop: 22 }}> {x.totalHours}</td>
                                                         <td rowSpan="3" style={{ paddingTop: 22, textAlign: "center" }}>
@@ -502,7 +518,7 @@ class TimesheetsManagement extends Component {
                                                         <tr>{
                                                             allDayOfMonth.map((y, indexs) => (
                                                                 <td key={indexs}>
-                                                                    {shift1s[indexs] ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
+                                                                    {shift1s[indexs] && indexs < dayNow ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
                                                                         (indexs < dayNow ? <i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i> : null)}
                                                                 </td>
                                                             ))
@@ -511,7 +527,7 @@ class TimesheetsManagement extends Component {
                                                         <tr>{
                                                             allDayOfMonth.map((y, indexs) => (
                                                                 <td key={indexs}>
-                                                                    {shift2s[indexs] === true ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
+                                                                    {shift2s[indexs] === true && indexs < dayNow ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
                                                                         (indexs < dayNow ? <i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i> : null)}
                                                                 </td>
                                                             ))
@@ -520,7 +536,7 @@ class TimesheetsManagement extends Component {
                                                         <tr>{
                                                             allDayOfMonth.map((y, indexs) => (
                                                                 <td key={indexs}>
-                                                                    {shift3s[indexs] === true ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
+                                                                    {shift3s[indexs] === true && indexs < dayNow ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
                                                                         (indexs < dayNow ? <i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i> : null)}
                                                                 </td>
                                                             ))
@@ -616,6 +632,11 @@ class TimesheetsManagement extends Component {
                         shift3s={currentRow.timekeepingByShift.shift3s}
                         timekeepingByHours={currentRow.timekeepingByHours}
                         allDayOfMonth={this.getAllDayOfMonth(this.formatDate(currentRow.month, true))}
+                    />
+                }
+                {/* From xem thông tin nhân viên */
+                    <EmployeeViewForm
+                        _id={currentRowView ? currentRowView._id : ""}
                     />
                 }
             </div>

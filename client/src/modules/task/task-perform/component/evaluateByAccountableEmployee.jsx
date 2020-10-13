@@ -1211,9 +1211,24 @@ class EvaluateByAccountableEmployee extends Component {
         return [month, year].join('-');
     }
 
+    checkHasEval = (date, performtasks) => {
+        let splitter = date.split("-");
+        let dateOfEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+
+        let monthOfEval = dateOfEval.getMonth();
+        let yearOfEval = dateOfEval.getFullYear();
+
+        let taskId, evaluation;
+        taskId = performtasks.task?._id;
+        evaluation = performtasks.task?.evaluations.find(e => (monthOfEval === new Date(e.date).getMonth() && yearOfEval === new Date(e.date).getFullYear()));
+
+        if(evaluation) return true;
+        return false;
+    }
+
     // hàm delete 
     deleteEval = async () => {
-        let { translate } = this.props;
+        let { translate, date, performtasks } = this.props;
         Swal.fire({
             title: translate('task.task_management.delete_eval_title'),
             type: 'success',
@@ -1224,10 +1239,17 @@ class EvaluateByAccountableEmployee extends Component {
             cancelButtonText: translate('general.no'),
         }).then(async (res) => {
             if (res.value) {
+                let splitter = date.split("-");
+                let dateOfEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+
+                let monthOfEval = dateOfEval.getMonth();
+                let yearOfEval = dateOfEval.getFullYear();
+
                 // Xóa Evaluation
-                let taskId, evaluationId;
-                taskId = this.state.task._id;
-                evaluationId = this.props.id;
+                let taskId, evaluation, evaluationId;
+                taskId = performtasks.task?._id;
+                evaluation = performtasks.task?.evaluations.find(e => (monthOfEval === new Date(e.date).getMonth() && yearOfEval === new Date(e.date).getFullYear()));
+                evaluationId = evaluation?._id;
 
                 await this.props.deleteEvaluation(taskId, evaluationId);
                 this.props.addTaskLog({
@@ -1297,7 +1319,7 @@ class EvaluateByAccountableEmployee extends Component {
     }
 
     render() {
-        const { translate, user, KPIPersonalManager } = this.props;
+        const { translate, user, KPIPersonalManager, performtasks } = this.props;
         const { task, date, status, oldAutoPoint, autoPoint, errorOnDate, showAutoPointInfo, dentaDate, prevDate, info, results, empPoint, progress,
             errorInfo, errorApprovedPoint, errorContribute, errSumContribution, indexReRender, unit, kpi } = this.state;
         const { id, perform, role, hasAccountable } = this.props;
@@ -1350,8 +1372,8 @@ class EvaluateByAccountableEmployee extends Component {
                         {/* Nút lưu */}
                         {!(checkNoteMonth && (dentaDate > 7)) &&
                             <div className='pull-right'>
-                                {/* disabled={disabled || disableSubmit} */}
-                                {(id !== 'new' && role === "accountable") && <button style={{ marginRight: '5px' }} className="btn btn-danger" onClick={this.deleteEval}>{translate('task.task_management.delete_eval')}</button>}
+                                {/* disabled={disabled || disableSubmit} id !== 'new' && */}
+                                {(this.checkHasEval(date, performtasks) && role === "accountable") && <button style={{ marginRight: '5px' }} className="btn btn-danger" onClick={this.deleteEval}>{translate('task.task_management.delete_eval')}</button>}
                                 <button disabled={disabled || disableSubmit} className="btn btn-success" onClick={this.save}>{translate('task.task_management.btn_save_eval')}</button>
                             </div>
                         }

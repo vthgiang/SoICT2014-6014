@@ -9,6 +9,7 @@ import { performTaskAction } from "../../task-perform/redux/actions";
 import { SelectMulti, DataTableSetting, PaginateBar, TreeTable, SelectBox, DatePicker } from '../../../../common-components';
 import { getStorage } from '../../../../config';
 import Swal from 'sweetalert2';
+import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 
 class TaskManagement extends Component {
     constructor(props) {
@@ -40,6 +41,7 @@ class TaskManagement extends Component {
 
     componentDidMount() {
         this.props.getDepartment();
+        this.props.getAllDepartment();
         this.props.getResponsibleTaskByUser("[]", "1", "20", this.state.status, "[]", "[]", null, null, null, null, null);
     }
 
@@ -757,8 +759,8 @@ class TaskManagement extends Component {
 }
 
 function mapState(state) {
-    const { tasks, user } = state;
-    return { tasks, user };
+    const { tasks, user, department } = state;
+    return { tasks, user, department };
 }
 
 const actionCreators = {
@@ -773,6 +775,7 @@ const actionCreators = {
     getSubTask: taskManagementActions.getSubTask,
     startTimer: performTaskAction.startTimerTask,
     deleteTaskById: taskManagementActions._delete,
+    getAllDepartment: DepartmentActions.get,
 };
 const translateTaskManagement = connect(mapState, actionCreators)(withTranslate(TaskManagement));
 export { translateTaskManagement as TaskManagement };

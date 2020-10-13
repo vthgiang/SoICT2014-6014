@@ -173,7 +173,7 @@ class TaskProcessManagement extends Component {
 									return <tr key={key} >
 										<td>{item.processName}</td>
 										<td>{item.processDescription}</td>
-										<td>{(item.manager && item.manager.length !== 0) && item.manager.map(x => x.name + ', ')}</td>
+										<td>{(item.manager && item.manager.length !== 0) && item.manager.map(x => x.name).join(', ')}</td>
 										<td>{item.creator?.name}</td>
 										<td>
 											<a onClick={() => { this.viewProcess(item) }} title={translate('task.task_template.view_detail_of_this_task_template')}>

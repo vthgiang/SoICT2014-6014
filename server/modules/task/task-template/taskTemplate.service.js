@@ -293,7 +293,17 @@ exports.editTaskTemplate = async (portal, data, id) => {
                 responsibleEmployees: data.responsibleEmployees,
                 consultedEmployees: data.consultedEmployees,
                 organizationalUnit: data.organizationalUnit,
-                taskActions: data.taskActions
+                taskActions: data.taskActions,
+                taskInformations: data.taskInformations.map((item, key) => {
+                    return {
+                        code: "p" + parseInt(key + 1),
+                        name: item.name,
+                        description: item.description,
+                        filledByAccountableEmployeesOnly: item.filledByAccountableEmployeesOnly,
+                        type: item.type,
+                        extra: item.extra,
+                    }
+                })
             }
         },
         { new: true },
