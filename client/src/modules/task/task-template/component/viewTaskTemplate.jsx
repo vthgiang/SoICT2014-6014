@@ -194,7 +194,7 @@ class ViewTaskTemplate extends Component {
                                     (!taskTemplate?.taskActions || taskTemplate?.taskActions.length === 0) ?
                                         <div><strong>{translate('task_template.no_data')}</strong></div> :
                                         taskTemplate?.taskActions.map((item, index) =>
-                                            <div className="task-item">
+                                            <div className="task-item" key={index}>
                                                 <p>
                                                     <b class="number">{index+1}</b>
                                                     <span class="content">{item.name}</span>

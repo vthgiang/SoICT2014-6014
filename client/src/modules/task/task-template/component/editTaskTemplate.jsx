@@ -7,7 +7,7 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import { taskTemplateActions } from '../redux/actions';
 
 import { ActionForm } from '../component/actionsTemplate';
-import { DialogModal, SelectBox, ErrorLabel } from '../../../../common-components';
+import { SelectBox, ErrorLabel } from '../../../../common-components';
 
 import { TaskTemplateFormValidator } from './taskTemplateFormValidator';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
@@ -39,8 +39,6 @@ class EditTaskTemplate extends Component {
             },
             showMore: props.isProcess ? false : true,
         };
-
-        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     componentDidMount() {
@@ -206,13 +204,6 @@ class EditTaskTemplate extends Component {
         // return true;
     }
 
-    /**Gửi req sửa mẫu công việc này */
-    handleSubmit = async (event) => {
-        const { editingTemplate } = this.state;
-
-        this.props.editTaskTemplate(editingTemplate._id, editingTemplate);
-    }
-
     /**
      * Xử lý form lớn tasktemplate
      */
@@ -227,6 +218,7 @@ class EditTaskTemplate extends Component {
             this.validateTaskTemplateUnit(this.state.editingTemplate.organizationalUnit, false);
         return result;
     }
+
     handleTaskTemplateName = (event) => {
         let value = event.target.value;
         this.props.isProcess && this.props.handleChangeName(value)
@@ -258,12 +250,11 @@ class EditTaskTemplate extends Component {
         let msg = TaskTemplateFormValidator.validateTaskTemplateDescription(value);
 
         if (willUpdateState) {
-            this.state.editingTemplate.description = value;
+            let {editingTemplate} = this.state;
+            editingTemplate.description = value;
             // this.state.editingTemplate.errorOnDescription = msg;
-            this.setState(state => {
-                return {
-                    ...state,
-                };
+            this.setState({ 
+                editingTemplate 
             });
         }
         this.props.onChangeTemplateData(this.state.editingTemplate);
@@ -368,12 +359,11 @@ class EditTaskTemplate extends Component {
         let msg = TaskTemplateFormValidator.validateTaskTemplateRead(value);
 
         if (willUpdateState) {
-            this.state.editingTemplate.readByEmployees = value;
-            this.state.editingTemplate.errorOnRead = msg;
-            this.setState(state => {
-                return {
-                    ...state,
-                };
+            let {editingTemplate} = this.state; 
+            editingTemplate.readByEmployees = value;
+            editingTemplate.errorOnRead = msg;
+            this.setState({
+                editingTemplate
             });
         }
         this.props.onChangeTemplateData(this.state.editingTemplate);
@@ -381,45 +371,40 @@ class EditTaskTemplate extends Component {
     }
 
     handleTaskTemplateResponsible = (value) => {
-        this.state.editingTemplate.responsibleEmployees = value;
-
-        this.setState(state => {
-            return {
-                ...state,
-            };
+        let {editingTemplate} = this.state;
+        editingTemplate.responsibleEmployees = value;
+        this.setState({
+            editingTemplate
         });
         this.props.isProcess && this.props.handleChangeResponsible(value)
         this.props.onChangeTemplateData(this.state.editingTemplate);
     }
 
     handleTaskTemplateAccountable = (value) => {
-        this.state.editingTemplate.accountableEmployees = value;
-        this.setState(state => {
-            return {
-                ...state,
-            };
+        let {editingTemplate} = this.state;
+        editingTemplate.accountableEmployees = value;
+        this.setState({
+            editingTemplate
         });
         this.props.isProcess && this.props.handleChangeAccountable(value)
         this.props.onChangeTemplateData(this.state.editingTemplate);
     }
 
     handleTaskTemplateConsult = (value) => {
-        this.state.editingTemplate.consultedEmployees = value;
-        this.setState(state => {
-            return {
-                ...state,
-            };
+        let {editingTemplate} = this.state;
+        editingTemplate.consultedEmployees = value;
+        this.setState({
+            editingTemplate
         });
         this.props.onChangeTemplateData(this.state.editingTemplate);
     }
 
     handleTaskTemplateInform = (value) => {
-        this.state.editingTemplate.informedEmployees = value;
+        let {editingTemplate} = this.state;
+        editingTemplate.informedEmployees = value;
 
-        this.setState(state => {
-            return {
-                ...state,
-            };
+        this.setState({
+            editingTemplate
         });
         this.props.onChangeTemplateData(this.state.editingTemplate);
     }
