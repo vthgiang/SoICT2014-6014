@@ -236,12 +236,11 @@ class AddTaskTemplate extends Component {
         let msg = TaskTemplateFormValidator.validateTaskTemplateRead(value);
 
         if (willUpdateState) {
-            this.state.newTemplate.readByEmployees = value;
-            this.state.newTemplate.errorOnRead = msg;
-            this.setState(state => {
-                return {
-                    ...state,
-                };
+            let {newTemplate} = this.state;
+            newTemplate.readByEmployees = value;
+            newTemplate.errorOnRead = msg;
+            this.setState({
+                newTemplate
             });
         }
         this.props.onChangeTemplateData(this.state.newTemplate);
@@ -249,43 +248,39 @@ class AddTaskTemplate extends Component {
     }
 
     handleTaskTemplateResponsible = (value) => {
-        this.state.newTemplate.responsibleEmployees = value;
-        this.setState(state => {
-            return {
-                ...state,
-            };
+        let {newTemplate} = this.state;
+        newTemplate.responsibleEmployees = value;
+        this.setState({
+            newTemplate
         });
         this.props.isProcess && this.props.handleChangeResponsible(value)
         this.props.onChangeTemplateData(this.state.newTemplate);
     }
 
     handleTaskTemplateAccountable = async (value) => {
-        this.state.newTemplate.accountableEmployees = value;
-        await this.setState(state => {
-            return {
-                ...state,
-            };
+        let {newTemplate} = this.state;
+        newTemplate.accountableEmployees = value;
+        await this.setState({
+            newTemplate
         });
         this.props.isProcess && this.props.handleChangeAccountable(value)
         this.props.onChangeTemplateData(this.state.newTemplate);
     }
 
     handleTaskTemplateConsult = (value) => {
-        this.state.newTemplate.consultedEmployees = value;
-        this.setState(state => {
-            return {
-                ...state,
-            };
+        let {newTemplate} = this.state;
+        newTemplate.consultedEmployees = value;
+        this.setState({
+            newTemplate
         });
         this.props.onChangeTemplateData(this.state.newTemplate);
     }
 
     handleTaskTemplateInform = (value) => {
-        this.state.newTemplate.informedEmployees = value;
-        this.setState(state => {
-            return {
-                ...state,
-            };
+        let {newTemplate} = this.state;
+        newTemplate.informedEmployees = value;
+        this.setState({
+            newTemplate
         });
         this.props.onChangeTemplateData(this.state.newTemplate);
     }
