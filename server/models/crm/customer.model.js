@@ -71,10 +71,10 @@ const CustomerSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Group',
     },
-    status: { // Trạng thái khách hàng
+    status: [{
         type: Schema.Types.ObjectId,
         ref: 'Status'
-    },
+    }],
     isDeleted: { // Trạng thái kích hoạt khách hàng
         type: Boolean,
         // required: true,

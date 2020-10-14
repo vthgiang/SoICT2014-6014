@@ -116,11 +116,11 @@ class PurchaseOrderCreateForm extends Component {
 
     return (
       <React.Fragment>
-        <ButtonModal modalID={`modal-create-material-purchase-order`} button_name={'Thêm mới đơn mua NVL'} title={'Thêm mới đơn mua NVL'} />
+        <ButtonModal modalID={`modal-create-material-purchase-order`} button_name={'Đơn mua NVL mới'} title={'Thêm mới đơn mua NVL'} />
         <DialogModal
           modalID={`modal-create-material-purchase-order`} isLoading={false}
           formID={`form-create-material-purchase-order`}
-          title={'Thêm mới đơn mua nguyên vật liệu'}
+          title={'Đơn mua nguyên vật liệu'}
           msg_success={'Thêm mới thành công'}
           msg_faile={'Thêm mới không thành công'}
           // disableSubmit={!this.isFormValidated()}

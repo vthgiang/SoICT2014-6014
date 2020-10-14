@@ -135,9 +135,7 @@ class PurchaseDetailForm extends Component {
                     <tr>
                       <th title={'Tên nguyên vật liệu'}>Tên nguyên vật liệu</th>
                       <th title={'Giá (vnđ)'}>Giá</th>
-                      <th title={'Số lượng'}>Số lượng bán</th>
-                      <th title={'Số lượng'}>Khuyến mãi</th>
-                      <th title={'Số lượng'}>Thực xuất</th>
+                      <th title={'Số lượng'}>Số lượng</th>
                       <th title={'Đơn vị tính'}>Đơn vị tính</th>
                       <th title={'Quy tắc đổi trả'}>Quy tắc đổi trả</th>
                       <th title={'Cam kết chất lượng'}>Cam kết chất lượng</th>

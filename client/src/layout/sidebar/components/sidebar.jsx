@@ -211,8 +211,8 @@ class SideBar extends Component {
                                 icon: 'fa  fa-book',
                                 list: [
                                     { name: 'menu.manage_quoter_dashboard', icon: 'fa fa-dashboard', path: '/manage-quoter-dashboard' },
-                                    { name: 'menu.manage_sales_order_dashboard', icon: 'fa fa-dashboard', path: '/manage-sales-order-dashboard' },
-                                    { name: 'menu.manage_purchase_order_dashboard', icon: 'fa fa-dashboard', path: '/manage-purchase-order-dashboard' },
+                                    // { name: 'menu.manage_sales_order_dashboard', icon: 'fa fa-dashboard', path: '/manage-sales-order-dashboard' },
+                                    // { name: 'menu.manage_purchase_order_dashboard', icon: 'fa fa-dashboard', path: '/manage-purchase-order-dashboard' },
                                     { name: 'menu.manage_manufacturing_order_dashboard', icon: 'fa  fa-dashboard', path: '/manage-manufacturing-order-dashboard' },
                                     { name: 'menu.manage_quoter', icon: 'fa fa-tablet', path: '/manage-quoter' },
                                     { name: 'menu.manage_sales_order', icon: 'fa fa-dollar', path: '/manage-sales-order' },

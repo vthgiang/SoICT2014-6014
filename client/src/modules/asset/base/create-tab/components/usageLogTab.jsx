@@ -191,7 +191,7 @@ class UsageLogTab extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id || nextProps.usageLogs !== prevState.usageLogs) {
+        if (nextProps.id !== prevState.id || nextProps.usageLogs !== prevState.usageLogs || nextProps.typeRegisterForUse !== prevState.typeRegisterForUse) {
             return {
                 ...prevState,
                 id: nextProps.id,
@@ -245,7 +245,7 @@ class UsageLogTab extends Component {
 
                         {/* Bảng thông tin sử dụng */}
                         {
-                            typeRegisterForUse !== 2 &&
+                            (typeRegisterForUse == 3 || typeRegisterForUse == 1) &&
                             <table className="table table-striped table-bordered table-hover">
                                 <thead>
                                     <tr>
