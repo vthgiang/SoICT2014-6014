@@ -9,8 +9,7 @@ const Logger = require(`${SERVER_LOGS_DIR}`);
 exports.getAllTaskTemplates = async (req, res) => {
     try {
         let data = await TaskTemplateService.getAllTaskTemplates(req.portal, req.query, req.params);
-        console.log("orrgan", req.query.arrayUnit)
-        console.log('data', data);
+
         Logger.info(req.user.email, 'get_all_task_templates', req.portal);
         res.status(200).json({
             success: true,
@@ -36,6 +35,7 @@ exports.getAllTaskTemplates = async (req, res) => {
 exports.getTaskTemplate = async (req, res) => {
     try {
         let taskTemplate = await TaskTemplateService.getTaskTemplate(req.portal, req.params.id);
+
         await Logger.info(req.user.email, 'get_task_template', req.portal);
         res.status(200).json({
             success: true,
@@ -43,6 +43,7 @@ exports.getTaskTemplate = async (req, res) => {
             content: taskTemplate
         });
     } catch (error) {
+
         await Logger.error(req.user.email, 'get_task_template', req.portal);
         res.status(200).json({
             success: false,
@@ -138,6 +139,7 @@ exports.editTaskTemplate = async (req, res) => {
 exports.importTaskTemplate = async (req, res) => {
     try {
         var data = await TaskTemplateService.importTaskTemplate(req.portal, req.body, req.user._id);
+        
         await Logger.info(req.user.email, 'import_task_template', req.portal);
         res.status(200).json({
             success: true,
@@ -145,6 +147,7 @@ exports.importTaskTemplate = async (req, res) => {
             content: data
         });
     } catch (error) {
+
         await Logger.error(req.user.email, 'import_task_template', req.portal);
         res.status(400).json({
             success: false,
