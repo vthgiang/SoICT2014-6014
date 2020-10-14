@@ -10,6 +10,7 @@ exports.getAllTaskTemplates = async (req, res) => {
     try {
         let data = await TaskTemplateService.getAllTaskTemplates(req.portal, req.query, req.params);
         console.log("orrgan", req.query.arrayUnit)
+        console.log('data', data);
         Logger.info(req.user.email, 'get_all_task_templates', req.portal);
         res.status(200).json({
             success: true,
