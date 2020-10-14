@@ -7,6 +7,8 @@ const mongoose = require('mongoose');
  */
 exports.getAllTaskTemplates = async (portal, query) => {
     if(query.roleId){
+        // LẤY DANH SÁCH MẪU CÔNG VIỆC VỚI MỘT VAI TRÒ NÀO ĐÓ
+
         let role = await Role(connect(DB_CONNECTION, portal)).findById(query.roleId);
         let roles = [role._id, ...role.parents];
 
@@ -17,124 +19,40 @@ exports.getAllTaskTemplates = async (portal, query) => {
     
         return tasks;
     }else if(query.userId){
+        // LẤY DANH SÁCH TẤT CẢ CÁC MẪU CÔNG VIỆC MÀ NGƯỜI DÙNG CÓ QUYỀN XEM
+        
         let id = query.userId, 
         pageNumber = Number(query.pageNumber), 
         noResultsPerPage = Number(query.noResultsPerPage), 
         organizationalUnit = query.arrayUnit, 
         name = query.name;
 
-        // Lấy tất cả các role người dùng có
-        var roles = await UserRole(connect(DB_CONNECTION, portal)).find({ userId: id }).populate({ path: "roleId" });
-        var newRoles = roles.map(role => role.roleId);
-        // lấy tất cả các role con của role người dùng có
-        var allRole = [];
-        newRoles.map(item => {
-            allRole = allRole.concat(item._id); //thêm id role hiện tại vào 1 mảng
-            allRole = allRole.concat(item.parents); //thêm các role children vào mảng
-        })
-        var tasktemplates = [];
-        let roleId = allRole.map(function (el) { return mongoose.Types.ObjectId(el) });
-        if ((organizationalUnit === "[]") || (JSON.stringify(organizationalUnit) == JSON.stringify([]))) {
-            var tasktemplate = await TaskTemplate(connect(DB_CONNECTION, portal)).aggregate([
-                { $match: { name: { "$regex": name, "$options": "i" } } },
-                {
-                    $lookup:
-                    {
-                        from: "privileges",
-                        let: { id: "$_id" },
-                        pipeline: [
-                            {
-                                $match:
-                                {
-                                    $and: [{
-                                        $expr:
-                                        {
-                                            $and: [
-                                                { $eq: ["$resourceId", "$$id"] }
-                                            ]
-                                        }
-                                    },
-                                    {
-                                        roleId: { $in: roleId }
-                                    }]
-                                }
-                            }
-                        ],
-                        as: "creator organizationalUnit"
-                    }
-                },
-                { $unwind: "$creator organizationalUnit" },
-                {
-                    $facet: {
-                        tasks: [{ $sort: { 'createdAt': 1 } },
-                        ...noResultsPerPage === 0 ? [] : [{ $limit: noResultsPerPage * pageNumber }],
-                        ...noResultsPerPage === 0 ? [] : [{ $skip: noResultsPerPage * (pageNumber - 1) }]],
-                        totalCount: [
-                            {
-                                $count: 'count'
-                            }
-                        ]
-                    }
-                }
-            ])
-        } else {
-            unit = organizationalUnit.map(function (el) { return mongoose.Types.ObjectId(el) });
-            var tasktemplate = await TaskTemplate(connect(DB_CONNECTION, portal)).aggregate([
-                { $match: { $and: [{ name: { "$regex": name, "$options": "i" } }, { organizationalUnit: { $in: unit } }] } },
-                {
-                    $lookup:
-                    {
-                        from: "privileges",
-                        let: { id: "$_id" },
-                        pipeline: [
-                            {
-                                $match:
-                                {
-                                    $and: [{
-                                        $expr:
-                                        {
-                                            $and: [
-                                                { $eq: ["$resourceId", "$$id"] }
-                                            ]
-                                        }
-                                    },
-                                    {
-                                        roleId: { $in: roleId }
-                                    }]
-                                }
-                            }
-                        ],
-                        as: "creator organizationalUnit"
-                    }
-                },
-                { $unwind: "$creator organizationalUnit" },
-                {
-                    $facet: {
-                        tasks: [{ $sort: { 'createdAt': 1 } },
-                        ...noResultsPerPage === 0 ? [] : [{ $limit: noResultsPerPage * pageNumber }],
-                        ...noResultsPerPage === 0 ? [] : [{ $skip: noResultsPerPage * (pageNumber - 1) }]],
-                        totalCount: [
-                            {
-                                $count: 'count'
-                            }
-                        ]
-                    }
-                }
-            ])
-        }
-
-        tasktemplates = tasktemplate[0].tasks;
-        await TaskTemplate(connect(DB_CONNECTION, portal)).populate(tasktemplates, [
-            { path: "organizationalUnit", select: "name deans" },
-            { path: "readByEmployees", select: "name" },
-            { path: "creator responsibleEmployees accountableEmployees consultedEmployees informedEmployees", select: "name email" }]);
-        var totalCount = 0;
-        if (JSON.stringify(tasktemplates) !== JSON.stringify([])) {
-            totalCount = tasktemplate[0].totalCount[0].count;
-        }
-        var totalPages = Math.ceil(totalCount / noResultsPerPage);
-        return { taskTemplates: tasktemplates, pageTotal: totalPages };
+        // Danh sách các quyền của user - userRoles
+        let dataRoles = await UserRole(connect(DB_CONNECTION, portal))
+            .find({ userId: id })
+            .populate('roleId');
+        dataRoles = dataRoles.map(userRole => userRole.roleId);
+        let userRoles = dataRoles.reduce((arr, role) => [...arr, role._id, ...role.parents], [])
+        userRoles = userRoles.filter((role, index) => role.toString() === userRoles[index].toString());
+        let option = !organizationalUnit ?
+            { 
+                name: { "$regex": name, "$options": "i" } 
+            } : {
+                name: { "$regex": name, "$options": "i" },
+                organizationalUnit: { $in: organizationalUnit }
+            };
+        return await TaskTemplate(connect(DB_CONNECTION, portal))
+            .paginate( option , { 
+                pageNumber, 
+                noResultsPerPage,
+                populate: [
+                    { path: 'creator'},
+                    { path: 'organizationalUnit' }
+                ]
+            });
     }else{
+        // LẤY DANH SÁCH TẤT CẢ CÁC MẪU CÔNG VIỆC CÓ TRONG HỆ THỐNG CỦA CÔNG TY
+
         return await TaskTemplate(connect(DB_CONNECTION, portal)).find();
     }
 }

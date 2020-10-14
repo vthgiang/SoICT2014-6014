@@ -73,7 +73,7 @@ class ViewTaskTemplate extends Component {
                 <div className="row row-equal-height" style={{ marginTop: -25 }} >
                     <div className={`${isProcess ? "col-lg-12 col-sm-12" : "col-xs-12 col-sm-12 col-md-6 col-lg-6"}`} style={{ padding: 10 }}>
                         <div className="description-box" style={{ height: "100%" }}>
-                            <h4 class="title">
+                            <h4 className="title">
                                 {translate('task_template.general_information')}
                             </h4>
 
@@ -104,7 +104,7 @@ class ViewTaskTemplate extends Component {
 
                     <div className={`${isProcess ? "col-lg-12 col-sm-12" : "col-xs-12 col-sm-12 col-md-6 col-lg-6"}`} style={{ padding: 10 }} >
                         <div className="description-box" style={{ height: "100%" }}>
-                            <h4 class="title">
+                            <h4 className="title">
                                 {translate('task_template.roles')}
                             </h4>
                             <div>
@@ -184,7 +184,7 @@ class ViewTaskTemplate extends Component {
                 <div className="row row-equal-height">
                     <div className={`${isProcess ? "col-lg-12 col-sm-12" : "col-xs-12 col-sm-12 col-md-6 col-lg-6"}`} style={{ padding: 10 }} >
                         <div className="description-box" style={{ height: "100%" }}>
-                            <h4 class="title">
+                            <h4 className="title">
                                 {translate('task_template.activity_list')}
                             </h4>
 
@@ -211,7 +211,7 @@ class ViewTaskTemplate extends Component {
                     </div>
                     <div className={`${isProcess ? "col-lg-12 col-sm-12" : "col-xs-12 col-sm-12 col-md-6 col-lg-6"}`} style={{ padding: 10 }}>
                         <div className="description-box" style={{ height: "100%" }}>
-                            <h4 class="title">
+                            <h4 className="title">
                                 {translate('task_template.information_list')}
                             </h4>
 

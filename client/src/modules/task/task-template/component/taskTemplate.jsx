@@ -21,30 +21,173 @@ class TaskTemplate extends Component {
         this.state = {
             status: 'start',
             currentPage: 1,
-            perPage: 5,
+            perPage: 10,
             unit: [],
+            name: '',
             currentRole: localStorage.getItem("currentRole"),
         };
-        this.handleUpdateData = this.handleUpdateData.bind(this);
     }
 
     componentDidMount() {
+        let { currentPage, perPage, unit, name } = this.state;
         this.props.getDepartment();
-        //edit later
-        this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, "[]", "");
+        this.props.getTaskTemplateByUser(currentPage, perPage, unit, name);
+    }
+
+    render() {
+        const { translate, tasktemplates, user } = this.props;
+        const { currentPage } = this.state;
+
+
+        var listTaskTemplates, pageTotal, units = [], currentUnit;
+
+        if (tasktemplates.pageTotal) {
+            pageTotal = tasktemplates.pageTotal;
+        }
+        if (user.organizationalUnitsOfUser) {
+            units = user.organizationalUnitsOfUser;
+            currentUnit = units.filter(item =>
+                item.deans.includes(localStorage.getItem("currentRole"))
+                || item.viceDeans.includes(localStorage.getItem("currentRole"))
+                || item.employees.includes(localStorage.getItem("currentRole")));
+        }
+
+        if (tasktemplates.items) {
+            listTaskTemplates = tasktemplates.items;
+        }
+        let list = [];
+        if (tasktemplates.isLoading === false) {
+            list = tasktemplates.items;
+        }
+        let exportData = this.convertDataToExportData(list);
+
+        return (
+            <div className="box">
+                <div className="box-body qlcv" id="table-task-template">
+                    {<ModalViewTaskTemplate taskTemplateId={this.state.currentViewRow} />}
+                    {<ModalEditTaskTemplate taskTemplate={this.state.currentEditRow} taskTemplateId={this.state.currentEditRowId} />}
+
+                    {<TaskTemplateImportForm />}
+                    {<ExportExcel id="export-taskTemplate" exportData={exportData} style={{ marginLeft: 5 }} />}
+                    {/**Kiểm tra xem role hiện tại có quyền thêm mới mẫu công việc không(chỉ trưởng đơn vị) */}
+                    {this.checkHasComponent('create-task-template-button') &&
+                        <React.Fragment>
+                            <ModalAddTaskTemplate />
+                            <div className="form-inline">
+                                <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
+                                    <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title='Thêm'>{translate('task_template.add')}</button>
+                                    <ul className="dropdown-menu pull-right">
+                                        <li><a href="#modal-add-task-template" title="ImportForm" onClick={(event) => { this.handleAddTaskTemplate(event) }}>{translate('task_template.add')}</a></li>
+                                        <li><a href="#modal_import_file" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>Thêm file</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </React.Fragment>
+                    }
+
+                    {/**Các ô input để nhập điều kiện tìm mẫu công việc */}
+                    <div className="form-inline">
+                        <div className="form-group">
+                            <label className="form-control-static">{translate('task_template.name')}</label>
+                            <input className="form-control" type="text" placeholder={translate('task_template.search_by_name')}　onChange={this.handleChangeTaskTemplateName}/>
+                        </div>
+                    </div>
+
+                    <div className="form-inline">
+                        <div className="form-group">
+                            <label className="form-control-static">{translate('task_template.unit')}</label>
+                            {units &&
+                                <SelectMulti id="multiSelectUnit"
+                                    defaultValue={units.map(item => { return item._id })}
+                                    items={units.map(item => { return { value: item._id, text: item.name } })}
+                                    options={{ nonSelectedText: translate('task_template.select_all_units'), allSelectedText: "Tất cả các đơn vị" }}>
+                                </SelectMulti>
+                            }
+                            <button type="button" className="btn btn-success" title="Tìm tiếm mẫu công việc" onClick={this.handleUpdateData}>{translate('task_template.search')}</button>
+                        </div>
+                    </div>
+
+                    <DataTableSetting
+                        tableId="table-task-template"
+                        columnArr={[
+                            'Tên mẫu công việc',
+                            'Mô tả',
+                            'Số lần sử dụng',
+                            'Người tạo mẫu',
+                            'Đơn vị'
+                        ]}
+                        limit={this.state.perPage}
+                        setLimit={this.setLimit}
+                        hideColumnOption={true}
+                    />
+
+                    {/**Table chứa các mẫu công việc trong 1 trang */}
+                    <table className="table table-bordered table-striped table-hover" id="table-task-template">
+                        <thead>
+                            <tr>
+                                <th title={translate('task_template.tasktemplate_name')}>{translate('task_template.tasktemplate_name')}</th>
+                                <th title={translate('task_template.description')}>{translate('task_template.description')}</th>
+                                <th title={translate('task_template.count')}>{translate('task_template.count')}</th>
+                                <th title={translate('task_template.creator')}>{translate('task_template.creator')}</th>
+                                <th title={translate('task_template.unit')}>{translate('task_template.unit')}</th>
+                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
+                            </tr>
+                        </thead>
+                        <tbody className="task-table">
+                            {
+                                (typeof listTaskTemplates !== 'undefined' && listTaskTemplates.length !== 0) ?
+                                    listTaskTemplates.map(item => item &&
+                                        <tr key={item._id}>
+                                            <td title={item.name}>{item.name}</td>
+                                            <td title={item.description}>{item.description}</td>
+                                            <td title={item.numberOfUse}>{item.numberOfUse}</td>
+                                            <td title={item.creator && item.creator.name}>{item.creator ? item.creator.name : translate('task.task_template.error_task_template_creator_null')}</td>
+                                            <td title={item.organizationalUnit && item.organizationalUnit.name}>{item.organizationalUnit ? item.organizationalUnit.name : translate('task_template.error_task_template_organizational_unit_null')}</td>
+                                            <td>
+                                                <a href="#abc" onClick={() => this.handleView(item._id)} title={translate('task.task_template.view_detail_of_this_task_template')}>
+                                                    <i className="material-icons" style={!this.checkPermisson(currentUnit && currentUnit[0].deans, "") ? { paddingLeft: "35px" } : { paddingLeft: "0px" }}>view_list</i>
+                                                </a>
+
+                                                {/**Check quyền xem có được xóa hay sửa mẫu công việc không */}
+                                                {this.checkPermisson(item.organizationalUnit.deans, item.creator._id) &&
+                                                    <React.Fragment>
+                                                        <a href="cursor:{'pointer'}" onClick={() => this.handleEdit(item)} className="edit" title={translate('task_template.edit_this_task_template')}>
+                                                            <i className="material-icons">edit</i>
+                                                        </a>
+                                                        <a href="cursor:{'pointer'}" onClick={() => this.handleDelete(item._id, item.numberOfUse)} className="delete" title={translate('task_template.delete_this_task_template')}>
+                                                            <i className="material-icons"></i>
+                                                        </a>
+                                                    </React.Fragment>
+                                                }
+                                            </td>
+                                        </tr>
+                                    ) :
+                                    <tr><td colSpan={6}><center>{translate('task_template.no_data')}</center></td></tr>
+                            }
+                        </tbody>
+                    </table>
+                    <PaginateBar pageTotal={pageTotal} currentPage={currentPage} func={this.setPage} />
+                </div>
+            </div>
+        );
+    }
+
+    handleChangeTaskTemplateName = (e) => {
+        let {value} = e.target;
+        this.setState({
+            name: value
+        });
     }
 
     /**Cập nhật số dòng trên một trang hiển thị */
     setLimit = async (limit) => {
-        if (Number(limit) !== this.state.perPage) {
-            await this.setState(state => {
-                return {
-                    ...state,
-                    perPage: Number(limit),
-                    currentPage: 1
-                }
-            })
-            this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, "[]", this.name.value);
+        let {perPage, unit, name} = this.state;
+        if (Number(limit) !== perPage) {
+            this.setState({
+                perPage: limit,
+                currentPage: 1
+            });
+            this.props.getTaskTemplateByUser(1, limit, unit, this.name.value);
         }
     }
 
@@ -69,12 +212,9 @@ class TaskTemplate extends Component {
 
     /**Khi người dùng chuyển trang, update state số trang mới */
     updateCurrentPage = (number) => {
-        this.setState(state => {
-            return {
-                ...state,
-                currentPage: number
-            }
-        })
+        this.setState({
+            currentPage: number
+        });
     }
 
     /**Khi người dùng chuyển trang, update data của trang mới đó */
@@ -87,13 +227,11 @@ class TaskTemplate extends Component {
 
     /**Khi có hành động thay đổi data(thêm sửa xóa 1 mẫu công việc...), Hiển thị dữ liệu về trang 1 */
     handleUpdateData = () => {
+        let { perPage, name } = this.state;
         var test = window.$("#multiSelectUnit").val();
-        this.props.getTaskTemplateByUser(1, this.state.perPage, test, this.name.value);
-        this.setState(state => {
-            return {
-                ...state,
-                currentPage: 1
-            }
+        this.props.getTaskTemplateByUser(1, perPage, test, name);
+        this.setState({
+            urrentPage: 1
         })
     }
 
@@ -123,17 +261,6 @@ class TaskTemplate extends Component {
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: translate('task_template.confirm')
             })
-        }
-    }
-
-    handleSearchPage = async () => {
-        var newCurrentPage = this.newCurrentPage.value;
-
-        if (newCurrentPage) {
-            this.handleGetDataPagination(parseInt(newCurrentPage));
-            var element = document.getElementById("search-page");
-            element.classList.remove("in");
-            element.setAttribute("aria-expanded", "false");
         }
     }
 
@@ -312,7 +439,6 @@ class TaskTemplate extends Component {
                 }
             }
         }
-        console.log(datas);
         
         let exportData = {
             fileName: "Bảng thống kê mẫu công việc",
@@ -363,144 +489,6 @@ class TaskTemplate extends Component {
             ]
         }
         return exportData
-    }
-
-    render() {
-        const { translate, tasktemplates, user } = this.props;
-        const { currentPage } = this.state;
-
-
-        var listTaskTemplates, pageTotal, units = [], currentUnit;
-
-        if (tasktemplates.pageTotal) {
-            pageTotal = tasktemplates.pageTotal;
-        }
-        if (user.organizationalUnitsOfUser) {
-            units = user.organizationalUnitsOfUser;
-            currentUnit = units.filter(item =>
-                item.deans.includes(localStorage.getItem("currentRole"))
-                || item.viceDeans.includes(localStorage.getItem("currentRole"))
-                || item.employees.includes(localStorage.getItem("currentRole")));
-        }
-
-        if (tasktemplates.items) {
-            listTaskTemplates = tasktemplates.items;
-        }
-        let list = [];
-        if (tasktemplates.isLoading === false) {
-            list = tasktemplates.items;
-        }
-        let exportData = this.convertDataToExportData(list);
-
-        return (
-            <div className="box">
-                <div className="box-body qlcv" id="table-task-template">
-                    {<ModalViewTaskTemplate taskTemplateId={this.state.currentViewRow} />}
-                    {<ModalEditTaskTemplate taskTemplate={this.state.currentEditRow} taskTemplateId={this.state.currentEditRowId} />}
-
-                    {<TaskTemplateImportForm />}
-                    {<ExportExcel id="export-taskTemplate" exportData={exportData} style={{ marginLeft: 5 }} />}
-                    {/**Kiểm tra xem role hiện tại có quyền thêm mới mẫu công việc không(chỉ trưởng đơn vị) */}
-                    {this.checkHasComponent('create-task-template-button') &&
-                        <React.Fragment>
-                            <ModalAddTaskTemplate />
-                            <div className="form-inline">
-                                <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
-                                    <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title='Thêm'>{translate('task_template.add')}</button>
-                                    <ul className="dropdown-menu pull-right">
-                                        <li><a href="#modal-add-task-template" title="ImportForm" onClick={(event) => { this.handleAddTaskTemplate(event) }}>{translate('task_template.add')}</a></li>
-                                        <li><a href="#modal_import_file" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>Thêm file</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </React.Fragment>
-                    }
-
-                    {/**Các ô input để nhập điều kiện tìm mẫu công việc */}
-                    <div className="form-inline">
-                        <div className="form-group">
-                            <label className="form-control-static">{translate('task_template.name')}</label>
-                            <input className="form-control" type="text" placeholder={translate('task_template.search_by_name')} ref={input => this.name = input} />
-                        </div>
-                    </div>
-
-                    <div className="form-inline">
-                        <div className="form-group">
-                            <label className="form-control-static">{translate('task_template.unit')}</label>
-                            {units &&
-                                <SelectMulti id="multiSelectUnit"
-                                    defaultValue={units.map(item => { return item._id })}
-                                    items={units.map(item => { return { value: item._id, text: item.name } })}
-                                    options={{ nonSelectedText: translate('task_template.select_all_units'), allSelectedText: "Tất cả các đơn vị" }}>
-                                </SelectMulti>
-                            }
-                            <button type="button" className="btn btn-success" title="Tìm tiếm mẫu công việc" onClick={this.handleUpdateData}>{translate('task_template.search')}</button>
-                        </div>
-                    </div>
-
-                    <DataTableSetting
-                        tableId="table-task-template"
-                        columnArr={[
-                            'Tên mẫu công việc',
-                            'Mô tả',
-                            'Số lần sử dụng',
-                            'Người tạo mẫu',
-                            'Đơn vị'
-                        ]}
-                        limit={this.state.perPage}
-                        setLimit={this.setLimit}
-                        hideColumnOption={true}
-                    />
-
-                    {/**Table chứa các mẫu công việc trong 1 trang */}
-                    <table className="table table-bordered table-striped table-hover" id="table-task-template">
-                        <thead>
-                            <tr>
-                                <th title={translate('task_template.tasktemplate_name')}>{translate('task_template.tasktemplate_name')}</th>
-                                <th title={translate('task_template.description')}>{translate('task_template.description')}</th>
-                                <th title={translate('task_template.count')}>{translate('task_template.count')}</th>
-                                <th title={translate('task_template.creator')}>{translate('task_template.creator')}</th>
-                                <th title={translate('task_template.unit')}>{translate('task_template.unit')}</th>
-                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
-                            </tr>
-                        </thead>
-                        <tbody className="task-table">
-                            {
-                                (typeof listTaskTemplates !== 'undefined' && listTaskTemplates.length !== 0) ?
-                                    listTaskTemplates.map(item => item &&
-                                        <tr key={item._id}>
-                                            <td title={item.name}>{item.name}</td>
-                                            <td title={item.description}>{item.description}</td>
-                                            <td title={item.numberOfUse}>{item.numberOfUse}</td>
-                                            <td title={item.creator && item.creator.name}>{item.creator ? item.creator.name : translate('task.task_template.error_task_template_creator_null')}</td>
-                                            <td title={item.organizationalUnit && item.organizationalUnit.name}>{item.organizationalUnit ? item.organizationalUnit.name : translate('task_template.error_task_template_organizational_unit_null')}</td>
-                                            <td>
-                                                <a href="#abc" onClick={() => this.handleView(item._id)} title={translate('task.task_template.view_detail_of_this_task_template')}>
-                                                    <i className="material-icons" style={!this.checkPermisson(currentUnit && currentUnit[0].deans, "") ? { paddingLeft: "35px" } : { paddingLeft: "0px" }}>view_list</i>
-                                                </a>
-
-                                                {/**Check quyền xem có được xóa hay sửa mẫu công việc không */}
-                                                {this.checkPermisson(item.organizationalUnit.deans, item.creator._id) &&
-                                                    <React.Fragment>
-                                                        <a href="cursor:{'pointer'}" onClick={() => this.handleEdit(item)} className="edit" title={translate('task_template.edit_this_task_template')}>
-                                                            <i className="material-icons">edit</i>
-                                                        </a>
-                                                        <a href="cursor:{'pointer'}" onClick={() => this.handleDelete(item._id, item.numberOfUse)} className="delete" title={translate('task_template.delete_this_task_template')}>
-                                                            <i className="material-icons"></i>
-                                                        </a>
-                                                    </React.Fragment>
-                                                }
-                                            </td>
-                                        </tr>
-                                    ) :
-                                    <tr><td colSpan={6}><center>{translate('task_template.no_data')}</center></td></tr>
-                            }
-                        </tbody>
-                    </table>
-                    <PaginateBar pageTotal={pageTotal} currentPage={currentPage} func={this.setPage} />
-                </div>
-            </div>
-        );
     }
 }
 
