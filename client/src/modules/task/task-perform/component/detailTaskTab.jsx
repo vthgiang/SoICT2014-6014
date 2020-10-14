@@ -547,16 +547,22 @@ class DetailTaskTab extends Component {
                     newMonth += 12;
                     dateOfPrevEval.setYear(dateOfPrevEval.getYear() - 1);
                 }
+                dateOfPrevEval.setDate(15);
                 dateOfPrevEval.setMonth(newMonth);
 
                 let monthOfPrevEval = dateOfPrevEval.getMonth();
                 let yearOfPrevEval = dateOfPrevEval.getFullYear();
 
+                for(let i in evaluations){
+                    console.log('ffff',monthOfPrevEval, this.formatDate(evaluations[i].date),  new Date(evaluations[i].date), new Date(evaluations[i].date).getMonth() , yearOfPrevEval , new Date(evaluations[i].date).getFullYear());
+                }
                 prevEval = evaluations.find(e => (monthOfPrevEval === new Date(e.date).getMonth() && yearOfPrevEval === new Date(e.date).getFullYear()));
 
                 if (prevEval) {
                     prevDate = prevEval.date;
                 }
+
+                console.log('preeeDate======\n\n\n\n', prevDate, monthOfPrevEval, yearOfPrevEval, newMonth);
 
                 evalList.push({ ...evaluations[i], prevDate: prevDate })
             }

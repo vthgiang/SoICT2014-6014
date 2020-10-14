@@ -69,7 +69,7 @@ class FluctuatingProductLineChart extends Component {
                         </h3>
                         <div className="form-inline">
                             <div className="form-group">
-                                <label className="form-control-static">Sản phẩm</label>
+                                <label style={{ width: 'auto' }} >Sản phẩm</label>
                                 <SelectBox id="multiSelectO"
                                     items={[
                                         { value: '0', text: 'Tất cả' },
@@ -84,7 +84,7 @@ class FluctuatingProductLineChart extends Component {
                         </div>
                         <div className="form-inline">
                             <div className="form-group">
-                                <label className="form-control-static" style={{ width: 'auto' }} s>Xưởng</label>
+                                <label style={{ width: 'auto' }}>Xưởng</label>
                                 <SelectMulti id={`select-mill`} multiple="multiple"
                                     options={{ nonSelectedText: "Tất cả", allSelectedText: "Tất cả các xưởng" }}
                                     onChange={this.handleGroupChange}

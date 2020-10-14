@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import sampleData from '../../../sampleData';
 import { DataTableSetting, DatePicker, DeleteNotification, SelectMulti } from "../../../../../../common-components";
 import ManufacturingOrderDetailInfo from './manufacturingOrderDetailInfo';
-import ManufacturingPlanCreateForm from '../manufacturing-plan/create-plan/manufacturingPlanCreateForm';
+import ManufacturingPlanCreateForm from '../manufacturing-plan/create-order-plan/manufacturingPlanCreateForm';
 class ManufacturingOrderManagement extends Component {
     constructor(props) {
         super(props);

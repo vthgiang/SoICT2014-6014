@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { SelectBox, DatePicker, ErrorLabel } from '../../../../common-components';
 import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
-import { CrmGroupActions } from '../redux/actions';
 import ValidationHelper from '../../../../helpers/validationHelper';
+import './customer.css';
 
 class GeneralTabCreateForm extends Component {
     constructor(props) {
@@ -15,11 +15,12 @@ class GeneralTabCreateForm extends Component {
         const { translate, crm, user } = this.props; // state redux
         const { id } = this.props; // Lấy giá trị từ props cha
 
-        const { owner, customerSource, code, name, company, companyEstablishmentDate, mobilephoneNumber, telephoneNumber
+        const { listStatus, owner, customerSource, code, name, company, companyEstablishmentDate, mobilephoneNumber, telephoneNumber
             , email, email2, address, address2, gender, birth, group, status, location, taxNumber, website, linkedIn,
         } = this.state;
 
-        const { customerNameError, customerCodeError, customerTaxNumberError } = this.state;
+        const { customerNameError, customerCodeError, customerTaxNumberError, } = this.state;
+        let progressBarWidth;
 
         // Lấy danh sách người trong phòng ban hiện tại và con
         let unitMembers;
@@ -34,16 +35,38 @@ class GeneralTabCreateForm extends Component {
             listGroups.unshift({ value: '', text: '---Chọn---' });
         }
 
-        // Lấy danh sách trạng thái khách hàng
-        let listStatus;
-        if (crm.status.list && crm.status.list.length > 0) {
-            listStatus = crm.status.list.map(o => ({ value: o._id, text: o.name }))
-            listStatus.unshift({ value: '', text: '---Chọn---' });
+        // setting timeline customer status
+        if (listStatus) {
+            const totalItem = listStatus.length;
+            const numberOfActiveItems = listStatus.filter(o => o.active).length;
+            progressBarWidth = totalItem > 1 && numberOfActiveItems > 0 ? ((numberOfActiveItems - 1) / (totalItem - 1)) * 100 : 0;
         }
 
         return (
             <React.Fragment>
                 <div id={id} className="tab-pane active">
+
+                    {/* timeline trạng thái khách hàng */}
+                    <div className="row">
+                        <div className="col-md-12">
+                            <label>{translate('crm.customer.status')}<span className="text-red">*</span></label>
+                            <div className="timeline">
+                                <div className="timeline-progress" style={{ width: `${progressBarWidth}%` }}></div>
+                                <div className="timeline-items">
+                                    {
+                                        listStatus && listStatus.length > 0 &&
+                                        listStatus.map((o, index) => (
+                                            <div key={index} className={`timeline-item ${o.active ? 'active' : ''}`} onClick={() => this.handleChangeCustomerStatus(index)}>
+                                                <div className="timeline-contain">{o.name}</div>
+                                            </div>
+                                        ))
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
                     <div className="row">
                         {/* Người quản lý khách hàng*/}
                         <div className="col-md-6">
@@ -226,26 +249,6 @@ class GeneralTabCreateForm extends Component {
                             </div>
                         </div>
 
-                        {/* Trạng thái khách hàng */}
-                        <div className="col-md-6">
-                            <div className="form-group">
-                                <label>{translate('crm.customer.status')}</label>
-                                {
-                                    listStatus &&
-                                    <SelectBox
-                                        id={`customer-status`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        items={
-                                            listStatus
-                                        }
-                                        value={status ? status : ''}
-                                        onChange={this.handleChangeCustomerStatus}
-                                        multiple={false}
-                                    />
-                                }
-                            </div>
-                        </div>
                     </div>
 
                     <div className="row">
@@ -305,11 +308,13 @@ class GeneralTabCreateForm extends Component {
     }
 
     static getDerivedStateFromProps(props, state) {
-        if (props.id != state.id) {
+        const { status } = props.crm;
+        if (props.id != state.id && status.list && status.list.length > 0) {
             return {
                 ...state,
                 id: props.id,
-                owner: props.newCustomer.owner
+                owner: props.newCustomer.owner,
+                listStatus: status.list.map(o => ({ _id: o._id, name: o.name, active: o.active }))
             }
         } else {
             return null;
@@ -322,7 +327,7 @@ class GeneralTabCreateForm extends Component {
         this.setState({
             owner: value,
         });
-        callBackFromParentCreateForm('owner', value);
+        callBackFromParentCreateForm('owner', value); // Truyền giá trị về form cha
     }
 
 
@@ -473,13 +478,32 @@ class GeneralTabCreateForm extends Component {
         callBackFromParentCreateForm('group', value[0])
     }
 
-    handleChangeCustomerStatus = (value) => {
+    handleChangeCustomerStatus = (index) => {
+        const { listStatus } = this.state;
         const { callBackFromParentCreateForm } = this.props;
+        let getStatusActive = [];
+
+        listStatus.map((o, i) => {
+            if (i <= index) {
+                o.active = true;
+            } else {
+                o.active = false;
+            }
+            return o;
+        });
+
+        // lấy trạng thái khách hàng lưu vào db
+        listStatus.forEach(o => {
+            if (o.active) {
+                getStatusActive.push(o._id);
+            }
+        })
 
         this.setState({
-            status: value[0],
+            listStatus: listStatus,
         })
-        callBackFromParentCreateForm('status', value[0])
+
+        callBackFromParentCreateForm('status', getStatusActive)
     }
 
     handleChangeCustomerLocation = (value) => {
@@ -536,7 +560,6 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-    // createGroup: CrmGroupActions.createGroup
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(GeneralTabCreateForm));

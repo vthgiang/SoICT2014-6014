@@ -2,46 +2,26 @@ const { Customer } = require(`${SERVER_MODELS_DIR}`);
 const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 exports.createCustomer = async (portal, companyId, data, userId) => {
-    let {
-        owner, code, name, gender, avatar, company, taxNumber, customerSource, companyEstablishmentDate,
-        birthDate, telephoneNumber, mobilephoneNumber, email, email2, group, status, address, address2, location, website, linkedIn
-    } = data;
+    let {companyEstablishmentDate,birthDate} = data;
 
-    //format birthDate
+
+    //format birthDate yy-mm-dd
     if (birthDate) {
-        let date = birthDate.split('-');
+        const date = birthDate.split('-');
         birthDate = [date[2], date[1], date[0]].join("-");
+
+        data = { ...data, birthDate }; // merge giá trị mới của birthDate vào data
     }
 
-    // format companyEstablishmentDate
+    // format companyEstablishmentDate yy-mm-dd
     if (companyEstablishmentDate) {
-        let date = companyEstablishmentDate.split('-');
+        const date = companyEstablishmentDate.split('-');
         companyEstablishmentDate = [date[2], date[1], date[0]].join('-');
+
+        data = { ...data, companyEstablishmentDate }; // merge giá trị mới của companyEstablishmentDate vào data
     }
 
-    const newCustomer = await Customer(connect(DB_CONNECTION, portal)).create({
-        owner: owner,
-        code: code,
-        name: name,
-        status: status ? status : null,
-        creator: userId,
-        gender: gender ? gender : '',
-        taxNumber: taxNumber ? taxNumber : '',
-        customerSource: customerSource ? customerSource : '',
-        company: company,
-        companyEstablishmentDate: companyEstablishmentDate ? companyEstablishmentDate : null,
-        birthDate: birthDate ? birthDate : null,
-        telephoneNumber: telephoneNumber ? telephoneNumber : null,
-        mobilephoneNumber: mobilephoneNumber ? mobilephoneNumber : null,
-        email: email ? email : '',
-        email2: email2 ? email2 : '',
-        group: group ? group : null,
-        address: address ? address : '',
-        address2: address2 ? address2 : '',
-        location: location ? location : null,
-        website: website ? website : '',
-        linkedIn: linkedIn ? linkedIn : ''
-    });
+    const newCustomer = await Customer(connect(DB_CONNECTION, portal)).create(data);
 
     const getNewCustomer = await Customer(connect(DB_CONNECTION, portal)).findById(newCustomer._id)
         .populate({ path: 'group', select: '_id name' })
@@ -80,13 +60,13 @@ exports.editCustomer = async (portal, companyId, id, data, userId) => {
 
     //format birthDate
     if (birthDate) {
-        let date = birthDate.split('-');
+        const date = birthDate.split('-');
         birthDate = [date[2], date[1], date[0]].join("-");
     }
 
     // format companyEstablishmentDate
     if (companyEstablishmentDate) {
-        let date = companyEstablishmentDate.split('-');
+        const date = companyEstablishmentDate.split('-');
         companyEstablishmentDate = [date[2], date[1], date[0]].join('-');
     }
 
