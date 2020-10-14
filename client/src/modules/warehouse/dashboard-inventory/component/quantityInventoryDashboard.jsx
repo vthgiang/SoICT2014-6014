@@ -209,7 +209,6 @@ class QuantityInventoryDashboard extends Component {
                 parent: item.parent ? item.parent : null
             })
         })
-        console.log(typeArr);
         this.barChart();
         return (
             <React.Fragment>
@@ -219,17 +218,35 @@ class QuantityInventoryDashboard extends Component {
                         <h3 className="box-title">
                             Số lượng tồn kho theo từng mặt hàng
                         </h3>
-                        <div className="form-inline">
-                            <div className="form-group" style={{width: '20%'}}>
-                                <label>Chọn danh mục</label>
-                                <TreeSelect
+                        <div className="form-inline" style={{marginTop: '10px'}}>
+                            <div className="form-group" style={{display: 'flex', marginBottom: '10px', width: '20%'}}>
+                                    <label>Chọn danh mục</label>
+                                    <TreeSelect
                                     data={typeArr}
                                     value=""
                                     handleChange={this.handleAssetTypeChange}
                                     mode="hierarchical"
                                 />
-                                <label></label>
                             </div>
+                            <div className="form-group">
+                                    <label className="form-control-static">Từ ngày</label>
+                                    <DatePicker
+                                        id="purchase-month"
+                                        value=""
+                                        onChange={this.handlePurchaseMonthChange}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-control-static">Đến ngày</label>
+                                    <DatePicker
+                                        id="purchase-month"
+                                        value=""
+                                        onChange={this.handlePurchaseMonthChange}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <button type="button" className="btn btn-success" title={translate('manage_warehouse.bill_management.search')} onClick={this.handleSubmitSearch}>{translate('manage_warehouse.bill_management.search')}</button>
+                                </div>
                         </div>
                         <div ref="quantityInventoryDashboard"></div>
                         <div  style={{marginLeft: '70%'}}>
