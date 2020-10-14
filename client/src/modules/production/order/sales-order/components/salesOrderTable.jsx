@@ -14,7 +14,7 @@ class SalesOrderTable extends Component {
     this.state = {
       limit: 5,
       page: 1,
-      type: 'quotation'
+      type: 'sales'
     }
   }
 
@@ -71,10 +71,6 @@ class SalesOrderTable extends Component {
     return (
       <React.Fragment>
         <div className="nav-tabs-custom">
-          <ul className="nav nav-tabs">
-            <li className="active"><a href="#type-quotation-order" data-toggle="tab" onClick={this.handleTypeQuotationOrder}>Đơn báo giá</a></li>
-            <li><a href="#type-sales-order" data-toggle="tab" onClick={this.handleTypeSaleOrder}>Đơn kinh doanh</a></li>
-          </ul>
           <div className="box-body qlcv">
             {this.state.currentRow && 
             <SalesOrderDetailForm 
@@ -103,10 +99,9 @@ class SalesOrderTable extends Component {
                   className="form-control select2"
                   style={{ width: "100%" }}
                   items={[
-                    { value: 'Báo giá đến khách hàng', text: 'Báo giá đến khách hàng'},
                     { value: 'Chờ phê duyệt', text: 'Chờ phê duyệt'},
                     { value: 'Đã phê duyệt', text: 'Đã phê duyệt'},
-                    { value: 'Đang sản xuất', text: 'Đang sản xuất'},
+                    { value: 'Chờ lấy hàng', text: 'Chờ lấy hàng'},
                     { value: 'Đang giao hàng', text: 'Đang giao hàng'},
                     { value: 'Đã hoàn thành', text: 'Đã hoàn thành'},
                     { value: 'Hủy đơn', text: 'Hủy đơn'},
@@ -164,8 +159,8 @@ class SalesOrderTable extends Component {
                     <tr key={index}>
                       <td>{index + 1 + (page - 1) * limit}</td>
                       <td>{item.code}</td>
-                      <td>{priority[item.priority]}</td>
-                      <td>{item.status}</td>
+                      <td className={item.priority===1 ? 'text-primary' : 'text-danger'}>{priority[item.priority]}</td>
+                      <td className={item.status === "Đã hoàn thành" ? 'text-success' : 'text-warning'}>{item.status}</td>
                       <td>{item.creator}</td>
                       <td>{item.customer}</td>
                       <td>{item.deliveryStartDate}</td>

@@ -14,6 +14,10 @@ const StatusSchema = new Schema({
     description: { // Mô tả trạng thái
         type: String
     },
+    active: {
+        type:Boolean,
+        default: false,  
+    },
     company: {
         type: Schema.Types.ObjectId,
         ref: 'Company',

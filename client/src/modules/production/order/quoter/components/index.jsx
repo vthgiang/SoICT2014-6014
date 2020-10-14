@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import QuoteManageTable from './quoteManageTable';
 
 class Quoter extends Component {
   constructor(props) {
@@ -9,7 +10,7 @@ class Quoter extends Component {
     return (
       <div className="box" style={{ minHeight: "450px" }}>
         <div className="box-body">
-          Quoter
+          <QuoteManageTable/>
         </div>
       </div>
     );

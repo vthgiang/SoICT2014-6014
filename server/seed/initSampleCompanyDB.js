@@ -2845,27 +2845,33 @@ const initSampleCompanyDB = async () => {
     const customerStatusData = [{
         code: "ST001",
         name: "Khách hàng mới",
-        description: "Khách hàng mới toanh"
+        description: "Khách hàng mới toanh",
+        active: true,
     }, {
         code: "ST002",
-        name: "Quan tâm tới sản phẩm",
-        description: "Khách hàng hứng thú với sản phẩm của công ty"
+        name: "Quan tâm sản phẩm",
+        description: "Khách hàng hứng thú với sản phẩm của công ty",
+        active: false,
     }, {
         code: "ST003",
         name: "Đã báo giá",
-        description: "Khách hàng đã được báo giá"
+        description: "Khách hàng đã được báo giá",
+        active: false,
     }, {
         code: "ST004",
         name: "Đã mua sản phẩm",
-        description: "Khách hàng đã mua sản phẩm"
+        description: "Khách hàng đã mua sản phẩm",
+        active: false,
     }, {
         code: "ST005",
         name: "Đã kí hợp đồng",
-        description: "Khách hàng đã kỹ hợp đồng với công ty"
+        description: "Khách hàng đã kỹ hợp đồng với công ty",
+        active: false,
     }, {
         code: "ST006",
         name: "Dừng liên hệ",
-        description: "Không chơi với công ty mình nữa"
+        description: "Không chơi với công ty mình nữa",
+        active: false,
     }];
     await Status(vnistDB).insertMany(customerStatusData);
     console.log("Xong! Đã tạo mẫu dữ liệu trạng thái khách hàng")

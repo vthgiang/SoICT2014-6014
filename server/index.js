@@ -82,7 +82,11 @@ app.use("/crm/cares", require("./modules/crm/care/care.route"));
 app.use("/crm/groups", require("./modules/crm/group/group.route"));
 app.use("/crm/status", require("./modules/crm/status/status.route"));
 
+// production - manufaturing
+app.use("/manufacturing-mill", require("./modules/production/manufacturing/manufacturingMill/manufacturingMill.route"));
+
 app.use(router);
+
 
 /**
  * Server initial
