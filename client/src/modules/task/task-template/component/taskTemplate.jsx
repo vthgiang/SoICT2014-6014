@@ -374,19 +374,29 @@ class TaskTemplate extends Component {
                 }
                 let readByEmployees = [], responsibleEmployees = [], accountableEmployees = [], consultedEmployees = [], informedEmployees = [];
                 if (x.readByEmployees) {
-                    readByEmployees = x.readByEmployees.map(item => item.name);
+                    readByEmployees = x.readByEmployees.map(item => {
+                        if(item) return item.name
+                    });
                 }
                 if (x.responsibleEmployees) {
-                    responsibleEmployees = x.responsibleEmployees.map(item => item.name);
+                    responsibleEmployees = x.responsibleEmployees.map(item => {
+                        if(item) return item.name
+                    });
                 }
                 if (x.accountableEmployees) {
-                    accountableEmployees = x.accountableEmployees.map(item => item.name);
+                    accountableEmployees = x.accountableEmployees.map(item => {
+                        if(item) return item.name
+                    });
                 }
                 if (x.consultedEmployees) {
-                    consultedEmployees = x.consultedEmployees.map(item => item.name);
+                    consultedEmployees = x.consultedEmployees.map(item => {
+                        if(item) return item.name
+                    });
                 }
                 if (x.informedEmployees) {
-                    informedEmployees = x.informedEmployees.map(item => item.name);
+                    informedEmployees = x.informedEmployees.map(item => {
+                        if(item) return item.name
+                    });
                 }
                 let out = { STT: k + 1,
                     name: x.name,
