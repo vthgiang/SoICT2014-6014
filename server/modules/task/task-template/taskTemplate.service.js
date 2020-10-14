@@ -6,7 +6,27 @@ const mongoose = require('mongoose');
  * Lấy tất cả các mẫu công việc
  */
 exports.getAllTaskTemplates = async (portal, query) => {
-    if(query.roleId){
+    console.log('query', query);
+    if (query.pageNumber === '1' && query.noResultsPerPage === '0') {
+        // LẤY DANH SÁCH TẤT CẢ CÁC MẪU CÔNG VIỆC CÓ TRONG HỆ THỐNG CỦA CÔNG TY
+        let docs = await TaskTemplate(connect(DB_CONNECTION, portal)).find().populate([
+            { path: 'creator' },
+            { path: 'organizationalUnit' }
+        ]);
+        return {
+            docs: docs,
+            // totalDocs: 4,
+            // limit: 1000,
+            // totalPages: 1,
+            // page: 1,
+            // pagingCounter: 1,
+            // hasPrevPage: false,
+            // hasNextPage: false,
+            // prevPage: null,
+            // nextPage: null
+        }
+    }
+    if (query.roleId) {
         // LẤY DANH SÁCH MẪU CÔNG VIỆC VỚI MỘT VAI TRÒ NÀO ĐÓ
 
         let role = await Role(connect(DB_CONNECTION, portal)).findById(query.roleId);
@@ -16,16 +36,16 @@ exports.getAllTaskTemplates = async (portal, query) => {
             role: { $in: roles },
             resourceType: 'TaskTemplate'
         }).populate({ path: 'resource', populate: { path: 'creator' } });
-    
+
         return tasks;
-    }else if(query.userId){
+    } else if (query.userId) {
         // LẤY DANH SÁCH TẤT CẢ CÁC MẪU CÔNG VIỆC MÀ NGƯỜI DÙNG CÓ QUYỀN XEM
-        
-        let id = query.userId, 
-        pageNumber = Number(query.pageNumber), 
-        noResultsPerPage = Number(query.noResultsPerPage), 
-        organizationalUnit = query.arrayUnit, 
-        name = query.name;
+
+        let id = query.userId,
+            pageNumber = Number(query.pageNumber),
+            noResultsPerPage = Number(query.noResultsPerPage),
+            organizationalUnit = query.arrayUnit,
+            name = query.name;
 
         console.log("filter tasktemplate:", id, pageNumber, noResultsPerPage, organizationalUnit, name)
 
@@ -37,22 +57,22 @@ exports.getAllTaskTemplates = async (portal, query) => {
         let userRoles = dataRoles.reduce((arr, role) => [...arr, role._id, ...role.parents], [])
         userRoles = userRoles.filter((role, index) => role.toString() === userRoles[index].toString());
         let option = !organizationalUnit ?
-            { 
-                name: { "$regex": name, "$options": "i" } 
+            {
+                name: { "$regex": name, "$options": "i" }
             } : {
                 name: { "$regex": name, "$options": "i" },
                 organizationalUnit: { $in: organizationalUnit }
             };
         return await TaskTemplate(connect(DB_CONNECTION, portal))
-            .paginate( option , { 
-                page: pageNumber, 
+            .paginate(option, {
+                page: pageNumber,
                 limit: noResultsPerPage,
                 populate: [
-                    { path: 'creator'},
+                    { path: 'creator' },
                     { path: 'organizationalUnit' }
                 ]
             });
-    }else{
+    } else {
         // LẤY DANH SÁCH TẤT CẢ CÁC MẪU CÔNG VIỆC CÓ TRONG HỆ THỐNG CỦA CÔNG TY
 
         return await TaskTemplate(connect(DB_CONNECTION, portal)).find();

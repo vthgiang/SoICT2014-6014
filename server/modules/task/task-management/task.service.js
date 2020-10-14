@@ -268,7 +268,6 @@ exports.getTasksCreatedByUser = async (portal, id) => {
  * @task dữ liệu trong params
  */
 exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
-    console.log('tassskkk\n\n\n', task);
     var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime } = task;
 
     var responsibleTasks;

@@ -39,7 +39,7 @@ class TaskAddModal extends Component {
     componentDidMount() {
         // this.props.getAllDepartment();
         // get id current role
-        this.props.getTaskTemplateByUser("1", "0", "[]"); //pageNumber, noResultsPerPage, arrayUnit, name=""
+        this.props.getTaskTemplateByUser(1, 0, [], ""); //pageNumber, noResultsPerPage, arrayUnit, name=""
         // Lấy tất cả nhân viên trong công ty
         this.props.getAllUserOfCompany();
         this.props.getAllUserInAllUnitsOfCompany();
@@ -434,6 +434,8 @@ class TaskAddModal extends Component {
             let arr = tasks.listSearchTasks.map(x => { return { value: x._id, text: x.name } });
             listParentTask = [...listParentTask, ...arr];
         }
+
+        console.log('abccccc', listTaskTemplate);
 
         return (
             <React.Fragment>
