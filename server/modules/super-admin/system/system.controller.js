@@ -22,14 +22,35 @@ exports.getBackups = async(req, res) => {
     }
 };
 
+exports.getConfigBackup = async(req, res) => {
+    try {
+        const config = await SystemService.getConfigBackup(req.portal);
+
+        Logger.info(req.user.email, 'get_config_backup_success', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['get_config_backup_success'],
+            content: config
+        })
+    } catch (error) {
+      
+        Logger.error(req.user.email, 'get_config_backup_faile', req.portal);
+        res.status(400).json({
+            success: true,
+            messages: Array.isArray(error) ? error : ['get_config_backup_faile'],
+            content: error
+        })
+    }
+};
+
 exports.createBackup = async(req, res) => {
     try {
         const backupInfo = await SystemService.createBackup(req.portal);
 
-        Logger.info(req.user.email, 'creat_backup_success', req.portal);
+        Logger.info(req.user.email, 'create_backup_success', req.portal);
         res.status(200).json({
             success: true,
-            messages: ['creat_backup_success'],
+            messages: ['create_backup_success'],
             content: backupInfo
         })
     } catch (error) {
@@ -42,6 +63,27 @@ exports.createBackup = async(req, res) => {
         })
     }
 };
+
+exports.configBackup = async (req, res) => {
+    try {
+        const backupInfo = await SystemService.configBackup(req.portal, req.query, req.body);
+
+        Logger.info(req.user.email, 'config_backup_success', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['config_backup_success'],
+            content: backupInfo
+        })
+    } catch (error) {
+            console.log(error) 
+        Logger.error(req.user.email, 'config_backup_faile', req.portal);
+        res.status(400).json({
+            success: true,
+            messages: Array.isArray(error) ? error : ['config_backup_faile'],
+            content: error
+        })
+    }
+}
 
 exports.deleteBackup = async(req, res) => {
     try {

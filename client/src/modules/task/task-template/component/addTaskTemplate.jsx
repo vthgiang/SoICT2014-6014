@@ -125,7 +125,7 @@ class AddTaskTemplate extends Component {
 
         if (willUpdateState) {
             this.state.newTemplate.description = value;
-            this.state.newTemplate.errorOnDescription = msg;
+            // this.state.newTemplate.errorOnDescription = msg;
             this.setState(state => {
                 return {
                     ...state,
@@ -236,12 +236,11 @@ class AddTaskTemplate extends Component {
         let msg = TaskTemplateFormValidator.validateTaskTemplateRead(value);
 
         if (willUpdateState) {
-            this.state.newTemplate.readByEmployees = value;
-            this.state.newTemplate.errorOnRead = msg;
-            this.setState(state => {
-                return {
-                    ...state,
-                };
+            let {newTemplate} = this.state;
+            newTemplate.readByEmployees = value;
+            newTemplate.errorOnRead = msg;
+            this.setState({
+                newTemplate
             });
         }
         this.props.onChangeTemplateData(this.state.newTemplate);
@@ -249,43 +248,39 @@ class AddTaskTemplate extends Component {
     }
 
     handleTaskTemplateResponsible = (value) => {
-        this.state.newTemplate.responsibleEmployees = value;
-        this.setState(state => {
-            return {
-                ...state,
-            };
+        let {newTemplate} = this.state;
+        newTemplate.responsibleEmployees = value;
+        this.setState({
+            newTemplate
         });
         this.props.isProcess && this.props.handleChangeResponsible(value)
         this.props.onChangeTemplateData(this.state.newTemplate);
     }
 
     handleTaskTemplateAccountable = async (value) => {
-        this.state.newTemplate.accountableEmployees = value;
-        await this.setState(state => {
-            return {
-                ...state,
-            };
+        let {newTemplate} = this.state;
+        newTemplate.accountableEmployees = value;
+        await this.setState({
+            newTemplate
         });
         this.props.isProcess && this.props.handleChangeAccountable(value)
         this.props.onChangeTemplateData(this.state.newTemplate);
     }
 
     handleTaskTemplateConsult = (value) => {
-        this.state.newTemplate.consultedEmployees = value;
-        this.setState(state => {
-            return {
-                ...state,
-            };
+        let {newTemplate} = this.state;
+        newTemplate.consultedEmployees = value;
+        this.setState({
+            newTemplate
         });
         this.props.onChangeTemplateData(this.state.newTemplate);
     }
 
     handleTaskTemplateInform = (value) => {
-        this.state.newTemplate.informedEmployees = value;
-        this.setState(state => {
-            return {
-                ...state,
-            };
+        let {newTemplate} = this.state;
+        newTemplate.informedEmployees = value;
+        this.setState({
+            newTemplate
         });
         this.props.onChangeTemplateData(this.state.newTemplate);
     }
@@ -523,10 +518,11 @@ class AddTaskTemplate extends Component {
                     </div>
                     {/**Mô tả mẫu công việc */}
                     <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
-                        <div className={`form-group ${this.state.newTemplate.errorOnDescription === undefined ? "" : "has-error"}`} >
-                            <label className="control-label" htmlFor="inputDescriptionTaskTemplate" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.description')} <span style={{color: "red"}}>*</span></label>
+                        {/* <div className={`form-group ${this.state.newTemplate.errorOnDescription === undefined ? "" : "has-error"}`} > */}
+                        <div className={`form-group`} >
+                            <label className="control-label" htmlFor="inputDescriptionTaskTemplate" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.description')}</label>
                             <textarea rows={5} type="Description" className="form-control" id="inputDescriptionTaskTemplate" name="description" placeholder={translate('task_template.description')} value={newTemplate.description} onChange={this.handleTaskTemplateDesc} />
-                            <ErrorLabel content={this.state.newTemplate.errorOnDescription} />
+                            {/* <ErrorLabel content={this.state.newTemplate.errorOnDescription} /> */}
                         </div>
                     </div>
                 </div>

@@ -37,8 +37,6 @@ class ModalEditTaskTemplate extends Component {
             },
 
         };
-
-        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     shouldComponentUpdate ( nextProps, nextState) {
@@ -69,16 +67,12 @@ class ModalEditTaskTemplate extends Component {
         return true;
     }
 
-    /**Gửi req sửa mẫu công việc này */
-    handleSubmit = async (event) => {
+    handleSubmit = () => {
         const { editingTemplate } = this.state;
         console.log('editing', editingTemplate);
         this.props.editTaskTemplate(editingTemplate._id, editingTemplate);
     }
 
-    /**
-     * Xử lý form lớn tasktemplate
-     */
     isTaskTemplateFormValidated = () => {
         if (!this.state.editingTemplate._id)
             return false;
@@ -184,7 +178,6 @@ class ModalEditTaskTemplate extends Component {
         const { department, user, translate, tasktemplates } = this.props;
         const { taskTemplate, taskTemplateId } = this.props;
 
-        // console.log('readByEmployees', editingTemplate.readByEmployees)
         return (
             <DialogModal
                 modalID="modal-edit-task-template" isLoading={user.isLoading}

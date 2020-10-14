@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { DatePicker, SelectBox } from '../../../../../../../common-components';
 import { RoleActions } from '../../../../../../super-admin/role/redux/actions';
 
-class ManufacturingCommandAndResources extends Component {
+class ManufacturingCommandAndResources1 extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -171,4 +171,4 @@ class ManufacturingCommandAndResources extends Component {
     }
 }
 
-export default ManufacturingCommandAndResources;
+export default ManufacturingCommandAndResources1;

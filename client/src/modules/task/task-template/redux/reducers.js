@@ -44,10 +44,11 @@ export function tasktemplates(state = {}, action) {
                 isLoading: true
             };
         case taskTemplateConstants.GETTEMPLATE_BYUSER_SUCCESS:
-           return {
+            console.log("data tasktemplate: ", action.payload)
+            return {
                 ...state,
-                items: action.payload.content.taskTemplates,
-                pageTotal: action.payload.content.pageTotal,
+                items: action.payload.docs,
+                pageTotal: action.payload.totalPages,
                 isLoading: false
             };
         case taskTemplateConstants.GETTEMPLATE_BYUSER_FAILURE:

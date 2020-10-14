@@ -94,6 +94,8 @@ import EmployeeAssetManagement from '../modules/asset/user/asser-managed/compone
 import TaskReportManager from '../modules/report/task-report/components/taskReportManager';
 
 //warehouse
+import InventoryDashBoard from '../modules/warehouse/dashboard-inventory/component';
+import BillDashBoard from '../modules/warehouse/dashboard-bill/component';
 import CategoryManagement from '../modules/warehouse/category-management/component';
 import GoodManagement from '../modules/warehouse/good-management/component';
 import StockManagement from '../modules/warehouse/stock-management/component';
@@ -140,7 +142,7 @@ import ManufacturingProcess from "../modules/production/manufacturing/manufactur
 import ManufacturingSchedule from "../modules/production/manufacturing/manufacturing-schedule/components";
 import ManufacturingWorks from "../modules/production/manufacturing/manufacturing-works/components";
 import PurchasingRequest from "../modules/production/manufacturing/purchasing-request/components";
-import TrackOrder from "../modules/production/manufacturing/track-order/components";
+import ManufacturingDashboard from "../modules/production/manufacturing/manufacturing-dashboard/components";
 import manufacturingOrder from '../modules/production/manufacturing/manufacturing-plan/components/manufacturing-order';
 import purchaseOrderDetailForm from '../modules/production/order/purchase-order/components/purchaseOrderDetailForm';
 
@@ -1125,6 +1127,38 @@ class Routes extends Component {
 
                     <PrivateRoute
                         isLoading={false}
+                        key={'dashboard-inventory'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/dashboard-inventory', name: 'dashboard_inventory', icon: 'fa fa-dashboard' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/dashboard-inventory'}
+                        path={'/dashboard-inventory'}
+                        pageName={'dashboard_inventory'}
+                        layout={Layout}
+                        component={InventoryDashBoard}
+                    />
+                    
+                    <PrivateRoute
+                        isLoading={false}
+                        key={'dashboard-bill'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/dashboard-bill', name: 'dashboard_bill', icon: 'fa fa-dashboard' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/dashboard-bill'}
+                        path={'/dashboard-bill'}
+                        pageName={'dashboard_bill'}
+                        layout={Layout}
+                        component={BillDashBoard}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
                         key={'category-management'}
                         arrPage={[
                             { link: '/', name: 'home', icon: 'fa fa-home' },
@@ -1442,7 +1476,7 @@ class Routes extends Component {
                         path={"/manage-manufacturing-order-dashboard"}
                         pageName={"manage_manufacturing_order_dashboard"}
                         layout={Layout}
-                        component={PurchaseOrderDashboard}
+                        component={ManufacturingOrderDashboard}
                     />
 
                     <PrivateRoute
@@ -1712,22 +1746,22 @@ class Routes extends Component {
 
                     <PrivateRoute
                         isLoading={false}
-                        key={"track-order"}
+                        key={"manufacturing-dashboard"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
                             {
-                                link: "/track-order",
-                                name: "track_order",
-                                icon: "fa fa-search",
+                                link: "/manufacturing-dashboard",
+                                name: "manufacturing_dashboard",
+                                icon: "fa fa-dashboard",
                             },
                         ]}
                         auth={auth}
                         exact={true}
-                        link={"/track-order"}
-                        path={"/track-order"}
-                        pageName={"track_order"}
+                        link={"/manufacturing-dashboard"}
+                        path={"/manufacturing-dashboard"}
+                        pageName={"manufacturing_dashboard"}
                         layout={Layout}
-                        component={TrackOrder}
+                        component={ManufacturingDashboard}
                     />
 
                     <PrivateRoute

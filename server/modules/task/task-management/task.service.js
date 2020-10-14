@@ -1572,7 +1572,7 @@ exports.getAllTaskOfOrganizationalUnit = async (portal, roleId, organizationalUn
  * @param {*} organizationalUnitId 
  * @param {*} month 
  */
-exports.getAllTaskOfChildrenOrganizationalUnit = async (portal, companyId, roleId, month, organizationalUnitId) => { 
+exports.getAllTaskOfChildrenOrganizationalUnit = async (portal, companyId, roleId, month, organizationalUnitId) => {
 
     let tasksOfChildrenOrganizationalUnit = [], childrenOrganizationalUnits;
 
@@ -1589,14 +1589,14 @@ exports.getAllTaskOfChildrenOrganizationalUnit = async (portal, companyId, roleI
 }
 
 exports.sendEmailCheckTaskLastMonth = async () => {
-    let company = await Company(connect(DB_CONNECTION, portal)).find({});
+    let company = await Company(connect(DB_CONNECTION, process.env.DB_NAME)).find({});
     company = company.map(x => x._id);
     let consultedTasks = [], informedTasks = [], responsibleTasks = [], accountedTasks = [];
     let taskExpire = [], taskDeadlinecoming = [];
     let currentMonth = new Date().getMonth() + 1;
     let currentYear = new Date().getFullYear();
     for (let i in company) {
-
+        let portal = company.shortName;
         let user = await User(connect(DB_CONNECTION, portal)).find({ company: company[i] });  // lay ra tat ca nguoi dung trong tung cong ty
         let userId = user.map(x => x._id);
         let email = user.map(x => x.email);

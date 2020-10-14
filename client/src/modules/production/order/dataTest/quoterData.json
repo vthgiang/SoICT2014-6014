@@ -1,8 +1,8 @@
 [
     {
         "id": "1",
-        "code": "SALES_12030",
-        "status": "Báo giá đến khách hàng",
+        "code": "QUOTE_12030",
+        "status": "Chờ phản hồi",
         "type": "Đơn báo giá",
         "creator": " Nguyễn Phương Thảo",
         "approvers": [],
@@ -13,7 +13,8 @@
         "deliveryEndDate": "27/10/2020",
         "deliveryAt": "",
         "customer": "Nguyễn Văn A",
-        "andress": "Tạ Quang Bửu, Hai Bà Trưng, Hà Nội",
+        "company": "Công ty X",
+        "address": "Tạ Quang Bửu, Hai Bà Trưng, Hà Nội",
         "phone": "0123456789",
         "discounts": [{
             "code": "KM1",
@@ -108,8 +109,8 @@
     },
     {
         "_id": "2",
-        "code": "SALES_12045",
-        "status": "Chờ lấy hàng",
+        "code": "QUOTE_12045",
+        "status": "Đạt thỏa thuận",
         "type": "Đơn hàng kinh doanh",
         "creator": " Nguyễn Thị Tươi",
         "approvers": [{
@@ -124,7 +125,8 @@
         "deliveryEndDate": "27/10/2020",
         "deliveryAt": "",
         "customer": "Phạm Văn Bách",
-        "andress": "Tạ Quang Bửu, Hai Bà Trưng, Hà Nội",
+        "company": "Công ty Y",
+        "address": "Tạ Quang Bửu, Hai Bà Trưng, Hà Nội",
         "phone": "0123456789",
         "discounts": [{
             "code": "KM1",
@@ -239,8 +241,8 @@
     },
     {
         "id": "3",
-        "code": "SALES_12040",
-        "status": "Đã hoàn thành",
+        "code": "QUOTE_12040",
+        "status": "Đã hủy",
         "type": "Đơn hàng kinh doanh",
         "creator": " Nguyễn Phương Thảo",
         "approvers": [{
@@ -255,7 +257,8 @@
         "deliveryEndDate": "27/10/2020",
         "deliveryAt": "24/10/2020",
         "customer": "Nguyễn Văn A",
-        "andress": "Tạ Quang Bửu, Hai Bà Trưng, Hà Nội",
+        "company": "Công ty A",
+        "addressss": "Tạ Quang Bửu, Hai Bà Trưng, Hà Nội",
         "phone": "0123456789",
         "discounts": [{
             "code": "KM1",

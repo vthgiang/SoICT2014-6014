@@ -168,7 +168,6 @@ exports.getTasksByKpiId = async (req, res) => {
  * Lấy danh sách công việc theo list kpi set
  */
 getTasksByListKpiSet = async (req, res) => {
-    console.log("\n\n\n\n\n\n\n\n\n\n???",req.query)
     try {
         const kpimembers = await KPIMemberService.getTasksByListKpis(req.portal, req.query.listkpis);
         await Logger.info(req.user.email, `Get task by kpi set`, req.portal);

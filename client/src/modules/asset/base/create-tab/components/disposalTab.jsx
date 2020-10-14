@@ -138,9 +138,9 @@ class DisposalTab extends Component {
                                 value={disposalType}
                                 items={[
                                     { value: '', text: '---Chọn hình thức thanh lý---' },
-                                    { value: 'Tiêu hủy', text: translate('asset.asset_info.destruction') },
-                                    { value: 'Nhượng bán', text: translate('asset.asset_info.sale') },
-                                    { value: 'Tặng', text: translate('asset.asset_info.give') },
+                                    { value: '1', text: translate('asset.asset_info.destruction') },
+                                    { value: '2', text: translate('asset.asset_info.sale') },
+                                    { value: '3', text: translate('asset.asset_info.give') },
                                 ]}
                                 onChange={this.handleDisposalTypeChange}
                             />

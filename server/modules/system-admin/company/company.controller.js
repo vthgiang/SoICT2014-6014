@@ -58,6 +58,7 @@ exports.getCompany = async (req, res) => {
 exports.createCompany = async (req, res) => {
     try {
         const company = await CompanyServices.createCompany(req.body);
+        await CompanyServices.initConfigBackup(company.shortName);
         const abstractRoles = await CompanyServices.createCompanyRootRoles(company.shortName, company._id);
 
         await CompanyServices.createCompanySuperAdminAccount(company.shortName, req.body.email, company._id);
@@ -74,7 +75,7 @@ exports.createCompany = async (req, res) => {
             content: resCompany
         });
     } catch (error) {
- 
+
         Logger.error(req.user.email, 'create_company_faile');
         res.status(400).json({
             success: false,
@@ -93,7 +94,6 @@ exports.editCompany = async (req, res) => {
     try {
         const company = await CompanyServices.editCompany(req.params.companyId, req.body);
         await CompanyServices.editCompanySuperAdmin(company.shortName, req.body.email);
-
         const resCompany = await CompanyServices.getCompany(company._id);
 
         Logger.info(req.user.email, 'edit_company_success');

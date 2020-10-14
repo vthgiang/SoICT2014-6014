@@ -61,8 +61,8 @@ class EmployeeKpiEvaluationDashboard extends Component {
             role: localStorage.getItem("currentRole"),
             user: null,
             status: 5,
-            startDate: this.formatDate(Date.now()),
-            endDate: this.formatDate(new Date(currentYear, currentMonth - 11, 1))
+            startDate: currentMonth === 0 ? (currentYear - 1) + '-' + 12 : currentYear + '-' + ( currentMonth + 1 ),
+            endDate: (currentMonth > 10) ? ((currentYear + 1) + '-' + (currentMonth - 10)) : (currentYear + '-' + (currentMonth + 2))
         }
 
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));

@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { taskTemplateActions } from '../redux/actions';
-
-// import { taskTemplateActions } from '../redux/actions';
+import parse from 'html-react-parser';
 
 class ViewTaskTemplate extends Component {
     constructor(props) {
@@ -71,10 +70,10 @@ class ViewTaskTemplate extends Component {
         return (
             <React.Fragment>
                 {/* Modal Body */}
-                <div className="row row-equal-height" style={{ marginTop: -25 }}>
+                <div className="row row-equal-height" style={{ marginTop: -25 }} >
                     <div className={`${isProcess ? "col-lg-12 col-sm-12" : "col-xs-12 col-sm-12 col-md-6 col-lg-6"}`} style={{ padding: 10 }}>
                         <div className="description-box" style={{ height: "100%" }}>
-                            <h4>
+                            <h4 className="title">
                                 {translate('task_template.general_information')}
                             </h4>
 
@@ -105,7 +104,7 @@ class ViewTaskTemplate extends Component {
 
                     <div className={`${isProcess ? "col-lg-12 col-sm-12" : "col-xs-12 col-sm-12 col-md-6 col-lg-6"}`} style={{ padding: 10 }} >
                         <div className="description-box" style={{ height: "100%" }}>
-                            <h4>
+                            <h4 className="title">
                                 {translate('task_template.roles')}
                             </h4>
                             <div>
@@ -185,19 +184,26 @@ class ViewTaskTemplate extends Component {
                 <div className="row row-equal-height">
                     <div className={`${isProcess ? "col-lg-12 col-sm-12" : "col-xs-12 col-sm-12 col-md-6 col-lg-6"}`} style={{ padding: 10 }} >
                         <div className="description-box" style={{ height: "100%" }}>
-                            <h4>
+                            <h4 className="title">
                                 {translate('task_template.activity_list')}
                             </h4>
 
                             {/**Các hoạt động mẫu công việc */}
-                            <div>
+                            <div style={{ padding: '5px 30px' }}>
                                 {
                                     (!taskTemplate?.taskActions || taskTemplate?.taskActions.length === 0) ?
                                         <div><strong>{translate('task_template.no_data')}</strong></div> :
                                         taskTemplate?.taskActions.map((item, index) =>
-                                            <React.Fragment key={index}>
-                                                <div style={{ textAlign: 'left' }}><strong>{item.name} - {item.mandatory ? "" : translate('general.no')} {translate('task_template.mandatory')}:</strong><span>{item.description}</span></div>
-                                            </React.Fragment>
+                                            <div className="task-item" key={index}>
+                                                <p>
+                                                    <b className="number">{index+1}</b>
+                                                    <span className="content">{item.name}</span>
+                                                    {
+                                                        item.mandatory && <span className="note">{translate('task_template.mandatory')}</span>
+                                                    }
+                                                </p>
+                                                <div>{parse(item.description)}</div>
+                                            </div>
                                         )
                                 }
                             </div>
@@ -205,7 +211,7 @@ class ViewTaskTemplate extends Component {
                     </div>
                     <div className={`${isProcess ? "col-lg-12 col-sm-12" : "col-xs-12 col-sm-12 col-md-6 col-lg-6"}`} style={{ padding: 10 }}>
                         <div className="description-box" style={{ height: "100%" }}>
-                            <h4>
+                            <h4 className="title">
                                 {translate('task_template.information_list')}
                             </h4>
 
@@ -216,7 +222,15 @@ class ViewTaskTemplate extends Component {
                                         <div><strong>{translate('task_template.no_data')}</strong></div> :
                                         taskTemplate?.taskInformations.map((item, index) =>
                                             <React.Fragment key={index}>
-                                                <div><strong>{item.code} - {item.name} - Kiểu {this.formatTypeInfo(item.type)} {item.filledByAccountableEmployeesOnly ? ` - ${translate('task_template.manager_fill')}` : ""}:</strong><span>{item.description}</span></div>
+                                                <div className="task-item-info">
+                                                    <p>
+                                                        <b className="code">{item.code}</b>
+                                                        <i className="type">{this.formatTypeInfo(item.type)}</i>
+                                                        <span className="content">{item.name}</span>
+                                                        {item.filledByAccountableEmployeesOnly && <span className="note">{translate('task_template.manager_fill')}</span>}
+                                                    </p>
+                                                    <div>{parse(item.description)}</div>
+                                                </div>
                                             </React.Fragment>
                                         )
                                 }

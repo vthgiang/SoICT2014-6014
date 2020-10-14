@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from  'react-redux-multilingual';
 import dataManufacturing from '../../dataTest/manufacturingOrderData.json';
 import ManufacturingOrderCreateForm from './manufacturingOrderCreateForm';
-import dataSales from '../../dataTest/salesOrderData.json';
+import ManufacturingOrderDetailForm from './manufacturingOrderDetailForm';
 
 class ManufacturingOrderTable extends Component {
   constructor(props) {
@@ -22,6 +22,13 @@ class ManufacturingOrderTable extends Component {
     return {
       list: dataManufacturing
     }
+  }
+
+  handleShowDetailInfo = (data) => {
+    this.setState({
+      currentRow: data
+    })
+    window.$('#modal-show-detail-manufacturing-order').modal('show');
   }
 
   render() {
@@ -40,6 +47,9 @@ class ManufacturingOrderTable extends Component {
          <React.Fragment>
         <div className="box-body qlcv">
         <ManufacturingOrderCreateForm />
+        { this.state.currentRow ? (
+        <ManufacturingOrderDetailForm/>
+        ) : ''}
           <div className="form-inline">
             <div className="form-group">
               <label className="form-control-static">
