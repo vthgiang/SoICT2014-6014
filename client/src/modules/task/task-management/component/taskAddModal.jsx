@@ -43,7 +43,7 @@ class TaskAddModal extends Component {
         // Lấy tất cả nhân viên trong công ty
         this.props.getAllUserOfCompany();
         this.props.getAllUserInAllUnitsOfCompany();
-        this.props.getPaginateTasksByUser("[]", "1", "5", "[]", "[]", "[]", null, null, null, null, null, false, "listSearch");
+        this.props.getPaginateTasksByUser([], "1", "5", [], [], [], null, null, null, null, null, false, "listSearch");
     }
 
     handleSubmit = async (event) => {
@@ -249,7 +249,7 @@ class TaskAddModal extends Component {
 
     onSearch = async (txt) => {
 
-        await this.props.getPaginateTasksByUser("[]", "1", "5", "[]", "[]", "[]", txt, null, null, null, null, false, "listSearch");
+        await this.props.getPaginateTasksByUser([], "1", "5", [], [], [], txt, null, null, null, null, false, "listSearch");
 
         this.setState(state=>{
             state.newTask.parent = "";
@@ -434,7 +434,7 @@ class TaskAddModal extends Component {
             let arr = tasks.listSearchTasks.map(x => { return { value: x._id, text: x.name } });
             listParentTask = [...listParentTask, ...arr];
         }
-console.log('ppppppppppppppppp\n\n\n\n', this.state);
+
         return (
             <React.Fragment>
                 <DialogModal
