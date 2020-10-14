@@ -281,7 +281,6 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
         isArchived: false
     };
 
-    // if (organizationalUnit !== '[]') {
     if (organizationalUnit) {
         keySearch = {
             ...keySearch,
@@ -291,7 +290,6 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
         };
     }
 
-    // if (status !== '[]') {
     if (status) {
         keySearch = {
             ...keySearch,
@@ -301,7 +299,6 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
         };
     }
 
-    // if (priority !== '[]') {
     if (priority) {
         keySearch = {
             ...keySearch,
@@ -311,7 +308,6 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
         };
     }
 
-    // if (special !== '[]') {
     if (special) {
         for (var i = 0; i < special.length; i++) {
             if (special[i] === "Lưu trong kho") {

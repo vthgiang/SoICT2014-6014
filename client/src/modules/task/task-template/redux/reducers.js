@@ -139,7 +139,7 @@ export function tasktemplates(state = {}, action) {
         case taskTemplateConstants.DELETE_TEMPLATE_SUCCESS:
             return {
                 ...state,
-                items: state.items.filter(template => template !== null && template._id !== action.payload.id),
+                items: state.items.filter(template => template._id !== action.payload.id),
                 isLoading: false
             };
 
