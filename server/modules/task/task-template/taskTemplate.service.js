@@ -27,6 +27,8 @@ exports.getAllTaskTemplates = async (portal, query) => {
         organizationalUnit = query.arrayUnit, 
         name = query.name;
 
+        console.log("filter tasktemplate:", id, pageNumber, noResultsPerPage, organizationalUnit, name)
+
         // Danh sách các quyền của user - userRoles
         let dataRoles = await UserRole(connect(DB_CONNECTION, portal))
             .find({ userId: id })
@@ -43,8 +45,8 @@ exports.getAllTaskTemplates = async (portal, query) => {
             };
         return await TaskTemplate(connect(DB_CONNECTION, portal))
             .paginate( option , { 
-                pageNumber, 
-                noResultsPerPage,
+                page: pageNumber, 
+                limit: noResultsPerPage,
                 populate: [
                     { path: 'creator'},
                     { path: 'organizationalUnit' }
