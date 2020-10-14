@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { taskTemplateActions } from '../redux/actions';
 
@@ -78,8 +77,8 @@ class TaskTemplate extends Component {
                         />
                     }
 
-                    {<TaskTemplateImportForm />}
-                    {<ExportExcel id="export-taskTemplate" exportData={exportData} style={{ marginLeft: 5 }} />}
+                    <TaskTemplateImportForm />
+                    <ExportExcel id="export-taskTemplate" exportData={exportData} style={{ marginLeft: 5 }} />
                     {/**Kiểm tra xem role hiện tại có quyền thêm mới mẫu công việc không(chỉ trưởng đơn vị) */}
                     {this.checkHasComponent('create-task-template-button') &&
                         <React.Fragment>
