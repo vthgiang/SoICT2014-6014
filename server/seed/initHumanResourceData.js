@@ -64,6 +64,34 @@ function randomDateNameFemale(){
     let name = `${surnames[Math.floor(Math.random()*13)]} ${middleNamesFemale[Math.floor(Math.random()*4)]} ${namesFemale[Math.floor(Math.random()*14)]}`;
     return name
 }
+function removeVietnameseTones(str) {
+    str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g,"a"); 
+    str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g,"e"); 
+    str = str.replace(/ì|í|ị|ỉ|ĩ/g,"i"); 
+    str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g,"o"); 
+    str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g,"u"); 
+    str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g,"y"); 
+    str = str.replace(/đ/g,"d");
+    str = str.replace(/À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ/g, "A");
+    str = str.replace(/È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ/g, "E");
+    str = str.replace(/Ì|Í|Ị|Ỉ|Ĩ/g, "I");
+    str = str.replace(/Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ/g, "O");
+    str = str.replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, "U");
+    str = str.replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, "Y");
+    str = str.replace(/Đ/g, "D");
+    // Some system encode vietnamese combining accent as individual utf-8 characters
+    // Một vài bộ encode coi các dấu mũ, dấu chữ như một kí tự riêng biệt nên thêm hai dòng này
+    str = str.replace(/\u0300|\u0301|\u0303|\u0309|\u0323/g, ""); // ̀ ́ ̃ ̉ ̣  huyền, sắc, ngã, hỏi, nặng
+    str = str.replace(/\u02C6|\u0306|\u031B/g, ""); // ˆ ̆ ̛  Â, Ê, Ă, Ơ, Ư
+    // Remove extra spaces
+    // Bỏ các khoảng trắng liền nhau
+    str = str.replace(/ + /g," ");
+    str = str.trim();
+    // Remove punctuations
+    // Bỏ dấu câu, kí tự đặc biệt
+    str = str.replace(/!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g," ");
+    return str;
+}
 
 
 const initHumanResourceData = async () => {
@@ -170,7 +198,7 @@ const initHumanResourceData = async () => {
             let name = randomDateNameMale();
             usersFake = [...usersFake,{
                 name: name,
-                email: `${name}fake.vnist@gmail.com`,
+                email: `${removeVietnameseTones(name.replace(/ /g,''))}fake${i+1}.vnist@gmail.com`,
                 password: hash,
                 company: vnist._id
             }]
@@ -178,7 +206,7 @@ const initHumanResourceData = async () => {
             let name = randomDateNameFemale();
             usersFake = [...usersFake,{
                 name: name,
-                email: `${name}fake.vnist@gmail.com`,
+                email: `${removeVietnameseTones(name.replace(/ /g,''))}fake${i+1}.vnist@gmail.com`,
                 password: hash,
                 company: vnist._id
             }]
@@ -743,7 +771,7 @@ const initHumanResourceData = async () => {
             employeeTimesheetId: `CC${100 +index}`,
             gender: index<=100? "male": 'female',
             startingDate: new Date(`${index<70?"2019":(index>120)?'2020':"2018"}-${months[Math.floor(Math.random()*12)]}-${days[Math.floor(Math.random()*19)]}`),
-            leavingDate: 70<=index&&index<=120 ? new Date(`2020-${months[Math.floor(Math.random()*12)]}-${days[Math.floor(Math.random()*19)]}`) : null,
+            leavingDate: 70<=index && index<=120 ? new Date(`2020-${months[Math.floor(Math.random()*12)]}-${days[Math.floor(Math.random()*19)]}`) : null,
             birthdate: new Date(randomDateOld()),
             birthplace: "Hai Bà Trưng - Hà Nội",
             identityCardNumber: `${163412570+index}`,
@@ -758,14 +786,14 @@ const initHumanResourceData = async () => {
             religion: "Không",
             maritalStatus: maritalStatus[Math.floor(Math.random()*6)],
             phoneNumber: 962586290+index,
-            personalEmail: `${x.name}fake11@gmail.com`,
+            personalEmail: `${removeVietnameseTones(x.name.replace(/ /g,''))}fake11.vnist@gmail.com`,
             phoneNumber2: 9625845,
-            personalEmail2: `${x.name}fake12@gmail.com`,
+            personalEmail2: `${removeVietnameseTones(x.name.replace(/ /g,''))}fake12.vnist@gmail.com`,
             homePhone: 978590338+index,
             emergencyContactPerson: randomDateNameMale(),
             relationWithEmergencyContactPerson: "Em trai",
             emergencyContactPersonPhoneNumber: 962586278 + index,
-            emergencyContactPersonEmail: `${randomDateNameMale()}@gmail.com`,
+            emergencyContactPersonEmail: `${removeVietnameseTones(randomDateNameMale().replace(/ /g,''))}@gmail.com`,
             emergencyContactPersonHomePhone: 962586789+index,
             emergencyContactPersonAddress: "Tạ Quang Bửu - Hai Bà Trưng- Hà Nội",
             permanentResidence: `Số ${index} Tạ Quang Bửu - Hai Bà Trưng- Hà Nội`,

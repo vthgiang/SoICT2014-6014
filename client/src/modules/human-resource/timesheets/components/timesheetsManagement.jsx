@@ -591,7 +591,7 @@ class TimesheetsManagement extends Component {
                                             let timekeepingByHours = x.timekeepingByHours;
                                             return (
                                                 <tr key={index}>
-                                                    <td>{x.employee ? x.employee.employeeNumber : null}</td>
+                                                    <td><a style={{ cursor: 'pointer' }} onClick={() => this.handleView(x.employee)}>{x.employee ? x.employee.employeeNumber : null}</a></td>
                                                     <td>{x.employee ? x.employee.fullName : null}</td>
                                                     <td>{x.totalHours}</td>
                                                     <td style={{ textAlign: "center" }}>
