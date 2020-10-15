@@ -4,10 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import Sortable from 'sortablejs';
 import {ErrorLabel} from '../../../../common-components';
-
 import { TaskTemplateFormValidator} from './taskTemplateFormValidator';
-import './tasktemplate.css';
-
 import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import parse from 'html-react-parser';

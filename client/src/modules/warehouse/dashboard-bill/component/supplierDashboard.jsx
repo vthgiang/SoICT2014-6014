@@ -76,6 +76,25 @@ class SupplierDashboard extends Component {
                         <h3 className="box-title">
                             Xem số lượng phiếu nhập cho từng nhà cung cấp
                         </h3>
+                        <div className="form-inline" style={{marginTop: '10px'}}>
+                            <div className="form-group" style={{display: 'flex', marginBottom: '10px', width: '70%'}}>
+                                    <label>Nhóm nhà cung cấp</label>
+                                    <SelectMulti
+                                        id={`select-multi-supplier-dashboard`}
+                                        multiple="multiple"
+                                        options={{ nonSelectedText: "Tất cả", allSelectedText: "Tất cả" }}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={[
+                                            { value: '1', text: "Khách bán buôn"},
+                                            { value: '2', text: "Sỉ lẻ"},
+                                            { value: '3', text: "Nhà cung cấp Anh Đức"},
+                                            { value: '3', text: "Đai lý Việt Anh"},
+                                        ]}
+                                        onChange={this.handleCategoryChange}
+                                    />
+                                </div>
+                        </div>
                         <div className="form-inline">
                             <div className="form-group">
                                     <label className="form-control-static">Từ</label>

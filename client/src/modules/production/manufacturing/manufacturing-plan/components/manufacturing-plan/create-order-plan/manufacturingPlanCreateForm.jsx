@@ -51,7 +51,6 @@ class ManufacturingPlanCreateForm extends Component {
         }
         return (
             <React.Fragment>
-
                 <DialogModal
                     modalID="modal-create-manufacturing-plan" isLoading={false}
                     formID="form-create-manufacturing-plan"

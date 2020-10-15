@@ -8,6 +8,8 @@ const initState = {
     totalList: 0,
     arrMonth: [],
     listOvertimeOfUnitsByStartDateAndEndDate: [],
+    arrMonthById: [],
+    listTimesheetsByEmployeeIdAndTime: [],
 
     importTimesheets: [],
     importStatus: false,
@@ -26,7 +28,15 @@ export function timesheets(state = initState, action) {
                 isLoading: true
             };
         case TimesheetsConstants.GET_TIMESHEETS_SUCCESS:
-            if (action.payload.arrMonth) {
+            if(action.callApiByEmployeeId){
+                return {
+                    ...state,
+                    isLoading: false,
+                    arrMonthById: action.payload.arrMonth,
+                    listTimesheetsByEmployeeIdAndTime: action.payload.listTimesheetsByEmployeeIdAndTime,
+                }
+
+            } else if (action.payload.arrMonth) {
                 return {
                     ...state,
                     isLoading: false,

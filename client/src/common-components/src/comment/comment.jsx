@@ -5,6 +5,7 @@ import Swal from 'sweetalert2'
 import { ContentMaker, DialogModal, ApiImage } from '../../index';
 import { getStorage } from '../../../config';
 import moment from 'moment';
+import { AuthActions } from '../../../modules/auth/redux/actions';
 
 class Comment extends Component {
     constructor(props) {
@@ -154,10 +155,10 @@ class Comment extends Component {
             data.append("description", newCommentEdited.description)
         }
         if (newCommentEdited.description) {
-            this.props.editComment(dataId, commentId, data)
+            this.props.editComment(dataId, commentId, data, this.props.type)
         }
         if (newCommentEdited.description || newCommentEdited.files) {
-            this.props.editComment(dataId, commentId, data);
+            this.props.editComment(dataId, commentId, data, this.props.type);
         }
         await this.setState(state => {
             return {
@@ -185,7 +186,7 @@ class Comment extends Component {
         }
         data.append("creator", newChildCommentEdited.creator)
         if (newChildCommentEdited.description || newChildCommentEdited.files) {
-            this.props.editChildComment(dataId, commentId, childCommentId, data);
+            this.props.editChildComment(dataId, commentId, childCommentId, data, this.props.type);
         }
         await this.setState(state => {
             return {
@@ -209,7 +210,7 @@ class Comment extends Component {
             data.append("files", x);
         })
         if (comment.creator && comment.description) {
-            this.props.createComment(dataId, data);
+            this.props.createComment(dataId, data, this.props.type);
         }
         // Reset state cho việc thêm mới action
         await this.setState(state => {
@@ -232,7 +233,7 @@ class Comment extends Component {
             data.append("files", x);
         })
         if (childComment.creator && childComment.description) {
-            this.props.createChildComment(dataId, commentId, data);
+            this.props.createChildComment(dataId, commentId, data, this.props.type);
         }
         // Reset state cho việc thêm mới comment
         await this.setState(state => {
@@ -351,7 +352,7 @@ class Comment extends Component {
                                                     </span>
                                                     <ul className="dropdown-menu">
                                                         <li><a style={{ cursor: "pointer" }} onClick={() => this.handleEditComment(item._id)} >{translate('task.task_perform.edit_comment')}</a></li>
-                                                        <li><a style={{ cursor: "pointer" }} onClick={() => this.props.deleteComment(data._id, item._id)} >{translate('task.task_perform.delete_comment')}</a></li>
+                                                        <li><a style={{ cursor: "pointer" }} onClick={() => this.props.deleteComment(data._id, item._id, this.props.type)} >{translate('task.task_perform.delete_comment')}</a></li>
                                                     </ul>
                                                 </div>}
                                         </div>
@@ -426,7 +427,7 @@ class Comment extends Component {
                                         {item.comments.map(child => {
                                             return <div key={child._id}>
                                                 <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + item.creator?.avatar)} alt="User Image" />
-                                                
+
                                                 {editChildComment !== child._id && // Đang edit thì ẩn đi
                                                     <div>
                                                         <p className="content-level2">
@@ -448,7 +449,7 @@ class Comment extends Component {
                                                                     </span>
                                                                     <ul className="dropdown-menu">
                                                                         <li><a style={{ cursor: "pointer" }} onClick={() => this.handleEditChildComment(child._id)} >Sửa bình luận</a></li>
-                                                                        <li><a style={{ cursor: "pointer" }} onClick={() => this.props.deleteChildComment(data._id, item._id, child._id)} >Xóa bình luận</a></li>
+                                                                        <li><a style={{ cursor: "pointer" }} onClick={() => this.props.deleteChildComment(data._id, item._id, child._id, this.props.type)} >Xóa bình luận</a></li>
                                                                     </ul>
                                                                 </div>}
                                                         </p>
@@ -573,6 +574,7 @@ function mapState(state) {
     return { auth };
 }
 const actionCreators = {
+    downloadFile: AuthActions.downloadFile,
 };
 const comment = connect(mapState, actionCreators)(withTranslate(Comment));
 

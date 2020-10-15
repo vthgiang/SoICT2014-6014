@@ -81,10 +81,6 @@ export default class ValidationHelper {
         result = this.validateLength(translate, name, min, max);
         if(!result.status)
             return result;
-
-        result = this.validateInvalidCharacter(translate, name)
-        if(!result.status)
-            return result;
         
         return { status: true };
     }

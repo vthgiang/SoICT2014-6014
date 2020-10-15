@@ -467,12 +467,12 @@ export default {
             },
             relationship: {
                 title: 'Liên kết tài liệu',
-                description: 'Mô tả',
+                description: 'Mô tả các liên kết tới các tài liệu khác',
                 list: 'Các tài liệu liên kết'
             },
             store: {
                 title: 'Hồ sơ lưu trữ bản cứng',
-                information: 'Thông tin lưu trữ',
+                information: 'Vị trí lưu trữ',
                 organizational_unit_manage: 'Đơn vị quản lý',
                 select_organizational: 'Chọn đơn vị quản lý',
                 user_manage: 'Người quản lý',
@@ -544,6 +544,8 @@ export default {
                 location: 'Khu vực',
                 birth: 'Ngày sinh',
                 gender: 'Giới tính',
+                male: 'Nam',
+                female: 'Nữ',
                 liability: 'Công nợ',
                 taxNumber: 'Mã số thuế',
                 website: 'Website',
@@ -555,6 +557,7 @@ export default {
                 by_group: 'Theo nhóm khách hàng',
                 by_customer: 'Theo khách hàng',
                 payment: 'Hình thức thanh toán',
+                creator: 'Người tạo',
 
                 info: 'Thông tin chung',
                 contact: 'Thông tin liên hệ',

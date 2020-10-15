@@ -35,7 +35,7 @@ export const performTaskService = {
 
     addTaskLog,
     getTaskLog,
-   
+
     editTaskByAccountableEmployees,
     editTaskByResponsibleEmployees,
     editActivateOfTask,
@@ -64,6 +64,8 @@ export const performTaskService = {
     deleteChildComment,
     deleteFileComment,
     deleteFileChildComment,
+
+    getAllPreceedingTasks,
 };
 
 /**
@@ -656,7 +658,7 @@ function deleteChildComment(taskId, commentId, childCommentId) {
 /**
  * Delete file of comment
  */
-function deleteFileComment(fileId,commentId, taskId) {
+function deleteFileComment(fileId, commentId, taskId) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/performtask/process/tasks/${taskId}/comments/${commentId}/files/${fileId}`,
         method: 'PATCH',
@@ -670,4 +672,12 @@ function deleteFileChildComment(fileId, childCommentId, commentId, taskId) {
         url: `${process.env.REACT_APP_SERVER}/performtask/process/tasks/${taskId}/comments/${commentId}/child-comments/${childCommentId}/files/${fileId}`,
         method: 'PATCH',
     }, false, true)
+}
+
+function getAllPreceedingTasks(taskId) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/process/tasks/${taskId}`,
+        method: 'GET',
+        params: { preceedingTasks: true }
+    }, false, false)
 }

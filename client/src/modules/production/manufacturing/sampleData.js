@@ -697,6 +697,134 @@ const sampleData = {
         updatedAt: "06-10-2020",
         status: "Đã hủy"
     }],
+
+    manufacturingCommands: [{
+        _id: "1",
+        code: "LSX001",
+        manufacturingPlan: {
+            _id: "1",
+            code: "KH001"
+        },
+        startDate: "10/10/2020",
+        endDate: "20/10/2020",
+        startTurn: "1",
+        endTurn: "3",
+        good: {
+            _id: "1",
+            name: "penicillin",
+        },
+        quantity: 100,
+        manufacturingMill: {
+            _id: "1",
+            code: "XSX001",
+            name: "Nhà máy thuốc thú y"
+        },
+        creator: {
+            _id: 1,
+            name: "Nguyễn Anh Phương"
+        },
+        responsible: [{
+            _id: 2,
+            name: "Phạm Đại Tài"
+        },
+        {
+            _id: 3,
+            name: "Nguyễn Văn Thắng"
+        }],
+        accountable: [{
+            _id: 4,
+            name: "TS.Trịnh Tuấn Đạt"
+        }, {
+            _id: 5,
+            name: "TS. Vũ Thị Hương Giang"
+        }],
+        status: "Đúng tiến độ",
+        description: "Lệnh sản xuất tuần thứ 41",
+        createdAt: "10/10/2020",
+        updatedAt: "20/10/2020"
+    }, {
+        _id: "2",
+        code: "LSX002",
+        manufacturingPlan: {
+            _id: "1",
+            code: "KH001"
+        },
+        startDate: "11/10/2020",
+        endDate: "19/10/2020",
+        startTurn: "2",
+        endTurn: "3",
+        good: {
+            _id: "1",
+            name: "tiffy",
+        },
+        quantity: 90,
+        manufacturingMill: {
+            _id: "1",
+            code: "XSX001",
+            name: "Nhà máy thuốc thú y"
+        },
+        creator: {
+            _id: 1,
+            name: "Nguyễn Anh Phương"
+        },
+        responsible: [{
+            _id: 2,
+            name: "Nguyễn Văn Tùng"
+        },
+        {
+            _id: 3,
+            name: "Nguyễn Văn Thắng"
+        }],
+        accountable: [{
+            _id: 4,
+            name: "TS.Trịnh Tuấn Đạt"
+        }],
+        status: "Đã hoàn thành",
+        description: "Lệnh sản xuất tuần thứ 41",
+        createdAt: "10/10/2020",
+        updatedAt: "20/10/2020"
+    }, {
+        _id: "3",
+        code: "LSX003",
+        manufacturingPlan: {
+            _id: "1",
+            code: "KH001"
+        },
+        startDate: "11/10/2020",
+        endDate: "19/10/2020",
+        startTurn: "2",
+        endTurn: "3",
+        good: {
+            _id: "1",
+            name: "tiffy",
+        },
+        quantity: 90,
+        manufacturingMill: {
+            _id: "1",
+            code: "XSX001",
+            name: "Nhà máy thuốc thú y"
+        },
+        creator: {
+            _id: 1,
+            name: "Nguyễn Anh Phương"
+        },
+        responsible: [{
+            _id: 2,
+            name: "Nguyễn Văn Tùng"
+        },
+        {
+            _id: 3,
+            name: "Nguyễn Văn Thắng"
+        }],
+        accountable: [{
+            _id: 4,
+            name: "TS.Trịnh Tuấn Đạt"
+        }],
+        status: "Trễ tiến độ",
+        description: "Lệnh sản xuất tuần thứ 41",
+        createdAt: "10/10/2020",
+        updatedAt: "20/10/2020"
+    }]
 }
 
 export default sampleData;

@@ -15,6 +15,9 @@ class IncomingDataTab extends Component {
             showComment: ""
         }
     }
+    componentDidMount = () => {
+        this.props.getAllPreceedingTasks(this.props.taskId)
+    }
     showComment = async (taskId) => {
         if (this.state.showComment === taskId) {
             this.setState({ showComment: "" });
@@ -37,22 +40,19 @@ class IncomingDataTab extends Component {
     }
     render() {
         const { translate, performtasks } = this.props;
-        const { preceedingTasks } = this.props;
         const { showComment } = this.state;
-
         let listTask = [];
-        if (preceedingTasks) {
-            preceedingTasks.forEach(item => {
+        if (performtasks?.preceedingTasks) {
+            performtasks.preceedingTasks.forEach(item => {
                 listTask.push(item.task);
             })
         }
-
         return (
             <React.Fragment>
                 {
-                    listTask && listTask.map((task, key) =>
+                    listTask && listTask.map((task, index) =>
                         <React.Fragment>
-                            <div key={key} className="description-box incoming-content">
+                            <div key={index} className="description-box incoming-content">
                                 <h4>{task.name}</h4>
                                 {/** Danh sách thông tin */}
                                 <strong>{translate('task.task_process.information')}:</strong>
@@ -114,25 +114,21 @@ class IncomingDataTab extends Component {
                                     </a>
                                 </div>
                                 {showComment === task._id &&
-                                    <div style={{ marginTop: 10 }}>
-                                        <CommentInProcess
-                                            task={task}
-                                            inputAvatarCssClass="user-img-incoming-level1"
-                                        />
-                                        {/* <Comment
+                                    <div className='comment-process' style={{ marginTop: 10 }}>
+                                        <Comment
                                             data={task}
                                             comments={task.commentsInProcess}
                                             currentTask={performtasks?.task?._id}
-                                            createComment={(dataId, data) => this.props.createComment(dataId, data)}
-                                            editComment={(dataId, commentId, data) => this.props.editComment(dataId, commentId, data)}
-                                            deleteComment={(dataId, commentId) => this.props.deleteComment(dataId, commentId)}
-                                            createChildComment={(dataId, commentId, data) => this.props.createChildComment(dataId, commentId, data)}
-                                            editChildComment={(dataId, commentId, childCommentId, data) => this.props.editChildComment(dataId, commentId, childCommentId, data)}
-                                            deleteChildComment={(dataId, commentId, childCommentId) => this.props.deleteChildComment(dataId, commentId, childCommentId)}
-                                            deleteFileComment={(fileId, commentId, dataId) => this.props.deleteFileComment(fileId, commentId, dataId)}
-                                            deleteFileChildComment={(fileId, commentId, childCommentId, dataId) => this.props.deleteFileChildComment(fileId, commentId, childCommentId, dataId)}
-                                            downloadFile={(path, fileName) => this.props.downloadFile(path, fileName)}
-                                        /> */}
+                                            type= "incoming"
+                                            createComment={(dataId, data, type) => this.props.createComment(dataId, data, type)}
+                                            editComment={(dataId, commentId, data, type) => this.props.editComment(dataId, commentId, data, type)}
+                                            deleteComment={(dataId, commentId, type) => this.props.deleteComment(dataId, commentId, type)}
+                                            createChildComment={(dataId, commentId, data, type) => this.props.createChildComment(dataId, commentId, data, type)}
+                                            editChildComment={(dataId, commentId, childCommentId, data, type) => this.props.editChildComment(dataId, commentId, childCommentId, data, type)}
+                                            deleteChildComment={(dataId, commentId, childCommentId, type) => this.props.deleteChildComment(dataId, commentId, childCommentId, type)}
+                                            deleteFileComment={(fileId, commentId, dataId, type) => this.props.deleteFileComment(fileId, commentId, dataId, type)}
+                                            deleteFileChildComment={(fileId, commentId, childCommentId, dataId, type) => this.props.deleteFileChildComment(fileId, commentId, childCommentId, dataId, type)}
+                                        />
                                     </div>
                                 }
                             </div>
@@ -146,8 +142,8 @@ class IncomingDataTab extends Component {
 
 
 function mapState(state) {
-    const { } = state;
-    return {};
+    const { performtasks, translate } = state;
+    return { performtasks, translate };
 }
 const actions = {
     downloadFile: AuthActions.downloadFile,
@@ -158,7 +154,8 @@ const actions = {
     editChildComment: performTaskAction.editChildComment,
     deleteChildComment: performTaskAction.deleteChildComment,
     deleteFileComment: performTaskAction.deleteFileComment,
-    deleteFileChildComment: performTaskAction.deleteFileChildComment
+    deleteFileChildComment: performTaskAction.deleteFileChildComment,
+    getAllPreceedingTasks: performTaskAction.getAllPreceedingTasks,
 }
 
 const connectIncomingDataTab = connect(mapState, actions)(withTranslate(IncomingDataTab));

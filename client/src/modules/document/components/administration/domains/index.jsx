@@ -38,7 +38,7 @@ class AdministrationDocumentDomains extends Component {
     unCheckNode = (e, data) => {
         this.setState({
             domainParent: [...data.selected],
-            deleteNode: [...data.selected, ...data.node.children_d]
+            deleteNode: [...data.selected]
         })
     }
 
@@ -101,12 +101,26 @@ class AdministrationDocumentDomains extends Component {
         }
         return exportData;
     }
+    // tìm các node con cháu
+    findChildrenNode = (list, node) => {
+        let array = [];
+        let queue_children = [];
+        queue_children = [node];
+        while (queue_children.length > 0) {
+            let tmp = queue_children.shift();
+            array = [...array, tmp._id];
+            let children = list.filter(child => child.parent === tmp.id);
+            queue_children = queue_children.concat(children);
+        }
+        array.shift();
+        array.unshift(node.id);
+        return array;
+    }
     render() {
-        const { domainParent, deleteNode } = this.state;
+        const { domainParent, deleteNode, currentDomain } = this.state;
         const { translate } = this.props;
         const { list } = this.props.documents.administration.domains;
         const { documents } = this.props;
-
         const dataTree = list ? list.map(node => {
             return {
                 ...node,
@@ -120,6 +134,8 @@ class AdministrationDocumentDomains extends Component {
             dataExport = list;
         }
         let exportData = this.convertDataToExportData(dataExport);
+        let unChooseNode = currentDomain ? this.findChildrenNode(list, currentDomain) : [];
+       
         return (
             <React.Fragment>
                 <div className="form-inline">
@@ -159,6 +175,7 @@ class AdministrationDocumentDomains extends Component {
                                 domainName={this.state.currentDomain.text}
                                 domainDescription={this.state.currentDomain.original.description ? this.state.currentDomain.original.description : ""}
                                 domainParent={this.state.currentDomain.parent}
+                                unChooseNode={unChooseNode}
                             />
                         }
                     </div>

@@ -92,6 +92,49 @@ class SelectBox extends Component {
     }
 
 
+
+    getValue = () => { // Nếu không dùng onChange, có thể gọi phương thức này qua đối tượng ref để lấy các giá trị đã chọn
+        let value = [].filter.call(this.refs.select.options, o => o.selected).map(o => o.value);
+        return value;
+    }
+
+
+
+    static isEqual = (items1, items2) => {
+        if (!items1 || !items2) {
+            return false;
+        }
+        if (items1.length !== items2.length) {
+            return false;
+        }
+        for (let i = 0; i < items1.length; ++i) {
+            if (!(items1[i].value instanceof Array) && items1[i].value !== items2[i].value) { // Kiểu bình thường
+                return false;
+            } else if (items1[i].value instanceof Array && JSON.stringify(items1[i].value) !== JSON.stringify(items2[i].value)) { // Kiểu group
+                return false;
+            }
+        }
+        return true;
+    }
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (prevState.searching) {
+            return null;
+        }
+        if (nextProps.id !== prevState.id || !SelectBox.isEqual(nextProps.items, prevState.items) || nextProps.disabled !== prevState.disabled || (nextProps.value && nextProps.value !== prevState.value)) {
+            return {
+                value: prevState.innerChange ? prevState.value : nextProps.value, // Lưu value ban đầu vào state
+                innerChange: false,
+                id: nextProps.id,
+                items: nextProps.items,
+                disabled: nextProps.disabled !== undefined ? nextProps.disabled : false
+            }
+        } else {
+            return null;
+        }
+    }
+
+
     componentDidMount = () => {
         const { id, onChange, options = { minimumResultsForSearch: 1 }, multiple } = this.props;
         window.$("#" + id).select2(options);
@@ -113,11 +156,6 @@ class SelectBox extends Component {
         this.bindSelectBoxEvent();
     }
 
-
-    getValue = () => { // Nếu không dùng onChange, có thể gọi phương thức này qua đối tượng ref để lấy các giá trị đã chọn
-        let value = [].filter.call(this.refs.select.options, o => o.selected).map(o => o.value);
-        return value;
-    }
 
     componentDidUpdate() {
         const { id, multiple, options = { minimumResultsForSearch: 1 }, items } = this.props;
@@ -165,40 +203,6 @@ class SelectBox extends Component {
                 let searchBox = window.$(".select2-search.select2-search--dropdown").find('input.select2-search__field');
                 searchBox.val(searchText);
             }
-        }
-    }
-
-    static isEqual = (items1, items2) => {
-        if (!items1 || !items2) {
-            return false;
-        }
-        if (items1.length !== items2.length) {
-            return false;
-        }
-        for (let i = 0; i < items1.length; ++i) {
-            if (!(items1[i].value instanceof Array) && items1[i].value !== items2[i].value) { // Kiểu bình thường
-                return false;
-            } else if (items1[i].value instanceof Array && JSON.stringify(items1[i].value) !== JSON.stringify(items2[i].value)) { // Kiểu group
-                return false;
-            }
-        }
-        return true;
-    }
-
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (prevState.searching) {
-            return null;
-        }
-        if (nextProps.id !== prevState.id || !SelectBox.isEqual(nextProps.items, prevState.items) || nextProps.disabled !== prevState.disabled || (nextProps.value && nextProps.value !== prevState.value)) {
-            return {
-                value: prevState.innerChange ? prevState.value : nextProps.value, // Lưu value ban đầu vào state
-                innerChange: false,
-                id: nextProps.id,
-                items: nextProps.items,
-                disabled: nextProps.disabled !== undefined ? nextProps.disabled : false
-            }
-        } else {
-            return null;
         }
     }
 
