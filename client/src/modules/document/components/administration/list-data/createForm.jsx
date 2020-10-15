@@ -634,7 +634,7 @@ class CreateForm extends Component {
                                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                             <div className="form-group">
                                                 <label>{translate('document.relationship.description')}</label>
-                                                <textarea style={{ height: '34px' }} type="text" className="form-control" onChange={this.handleRelationshipDescription} />
+                                                <textarea style={{ height: 107 }} type="text" className="form-control" onChange={this.handleRelationshipDescription} />
                                             </div>
                                             <div className="form-group">
                                                 <label>{translate('document.relationship.list')}</label>
@@ -647,17 +647,6 @@ class CreateForm extends Component {
                                                     onChange={this.handleRelationshipDocuments}
                                                     multiple={true}
                                                     onSearch={this.onSearch}
-                                                />
-                                            </div>
-                                            <div className="form-group">
-                                                <label>{translate('document.roles')}</label>
-                                                <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                                    id="select-document-users-see-permission"
-                                                    className="form-control select2"
-                                                    style={{ width: "100%" }}
-                                                    items={documentRoles}
-                                                    onChange={this.handleRoles}
-                                                    multiple={true}
                                                 />
                                             </div>
                                         </div>
@@ -675,15 +664,23 @@ class CreateForm extends Component {
                                                 />
                                             </div>
                                             <div className="form-group">
-                                                <label>{translate('document.store.information')}</label>
-                                                <TreeSelect data={archives} handleChange={this.handleArchives} value={documentArchives} mode="hierarchical" />
+                                                <label>{translate('document.roles')}</label>
+                                                <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                                    id="select-document-users-see-permission"
+                                                    className="form-control select2"
+                                                    style={{ width: "100%" }}
+                                                    items={documentRoles}
+                                                    onChange={this.handleRoles}
+                                                    multiple={true}
+                                                />
                                             </div>
                                             <div className="form-group">
+                                                <label>{translate('document.store.information')}</label>
+                                                <TreeSelect data={archives} handleChange={this.handleArchives} value={documentArchives} mode="hierarchical" />
                                                 {path && path.length ? path.map(y =>
                                                     <div>{y}</div>
                                                 ) : null}
                                             </div>
-
                                         </div>
                                     </div>
                                 </div>
