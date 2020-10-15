@@ -5,6 +5,7 @@ import Swal from 'sweetalert2'
 import { ContentMaker, DialogModal, ApiImage } from '../../index';
 import { getStorage } from '../../../config';
 import moment from 'moment';
+import { AuthActions } from '../../../modules/auth/redux/actions';
 
 class Comment extends Component {
     constructor(props) {
@@ -448,7 +449,7 @@ class Comment extends Component {
                                                                     </span>
                                                                     <ul className="dropdown-menu">
                                                                         <li><a style={{ cursor: "pointer" }} onClick={() => this.handleEditChildComment(child._id)} >Sửa bình luận</a></li>
-                                                                        <li><a style={{ cursor: "pointer" }} onClick={() => this.props.deleteChildComment(data._id, item._id, child._id,this.props.type)} >Xóa bình luận</a></li>
+                                                                        <li><a style={{ cursor: "pointer" }} onClick={() => this.props.deleteChildComment(data._id, item._id, child._id, this.props.type)} >Xóa bình luận</a></li>
                                                                     </ul>
                                                                 </div>}
                                                         </p>
@@ -573,6 +574,7 @@ function mapState(state) {
     return { auth };
 }
 const actionCreators = {
+    downloadFile: AuthActions.downloadFile,
 };
 const comment = connect(mapState, actionCreators)(withTranslate(Comment));
 

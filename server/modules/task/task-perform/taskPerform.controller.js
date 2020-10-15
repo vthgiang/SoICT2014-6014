@@ -1133,7 +1133,7 @@ exports.createChildComment = async (req, res) => {
         res.status(200).json({
             success: true,
             messages: ['create_child_comment_success'],
-            content: comments
+            content: { task: comments, taskId: req.params.taskId }
         })
     } catch (error) {
         await Logger.error(req.user.email, ` create child comment kpi `, req.portal)
@@ -1164,7 +1164,7 @@ exports.editChildComment = async (req, res) => {
         res.status(200).json({
             success: true,
             messages: ['edit_comment_of_comment_success'],
-            content: comments
+            content: { task: comments, taskId: req.params.taskId }
         })
     } catch (error) {
         await Logger.error(req.user.email, ` edit comment of comment kpi `, req.portal)
@@ -1186,7 +1186,7 @@ exports.deleteChildComment = async (req, res) => {
         res.status(200).json({
             success: true,
             messages: ['delete_child_comment_success'],
-            content: comments
+            content: { task: comments, taskId: req.params.taskId }
         })
     } catch (error) {
         await Logger.error(req.user.email, ` delete child comment kpi `, req.portal)
@@ -1207,7 +1207,7 @@ exports.deleteFileComment = async (req, res) => {
         res.status(200).json({
             success: true,
             messages: ['delete_file_comment_success'],
-            content: comments
+            content: { task: comments, taskId: req.params.taskId }
         })
     } catch (error) {
         await Logger.error(req.user.email, ` delete file comment `, req.portal)
@@ -1228,7 +1228,7 @@ exports.deleteFileChildComment = async (req, res) => {
         res.status(200).json({
             success: true,
             messages: ['delete_file_comment_success'],
-            content: comments
+            content: { task: comments, taskId: req.params.taskId }
         })
     } catch (error) {
         await Logger.error(req.user.email, ` delete file child comment `, req.portal)

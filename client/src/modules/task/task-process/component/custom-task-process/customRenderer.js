@@ -43,7 +43,25 @@ export default class CustomRenderer extends BaseRenderer {
 
     drawShape(parentNode, element) {
         const shape = this.bpmnRenderer.drawShape(parentNode, element);
-
+        let responsible = element.businessObject.$attrs.responsibleName ? element.businessObject.$attrs.responsibleName.split(",") : ""
+        let responsibleName = ""
+        let i
+        for (i = 0; i < responsible.length; i++) {
+            if (i !== responsible.length - 1) {
+                responsibleName = responsibleName + responsible[i] + ", "
+            } else {
+                responsibleName = responsibleName + responsible[i]
+            }
+        }
+        let accountable = element.businessObject.$attrs.accountableName ? element.businessObject.$attrs.accountableName.split(",") : ""
+        let accountableName = ""
+        for (i = 0; i < accountable.length; i++) {
+            if (i !== accountable.length - 1) {
+                accountableName = accountableName + accountable[i] + ", "
+            } else {
+                accountableName = accountableName + accountable[i]
+            }
+        }
         if (element.type == 'bpmn:Task') {
             element.height = 130;
             element.width = 160;
@@ -85,7 +103,6 @@ export default class CustomRenderer extends BaseRenderer {
 
             att1 = document.createAttribute("style");        // Create a "href" attribute
             div1.setAttributeNode(att1);
-            let responsibleName = element.businessObject.$attrs.responsibleName
             div1.innerHTML = responsibleName ? responsibleName : "";
             foreignObject1.appendChild(div1);
 
@@ -96,15 +113,14 @@ export default class CustomRenderer extends BaseRenderer {
             div2.setAttributeNode(att2);
             att2 = document.createAttribute("style");        // Create a "href" attribute
             div2.setAttributeNode(att2);
-            let accountableName = element.businessObject.$attrs.accountableName
             div2.innerHTML = accountableName ? accountableName : "";
             foreignObject1.appendChild(div2);
             svgAppend(parentNode, foreignObject1);
 
 
             let progress = element.businessObject.$attrs.progress
-           
-                //Vẽ người thực hiện công việc
+
+            //Vẽ người thực hiện công việc
             let foreignObject2 = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
             foreignObject2.setAttribute('x', 120);
             foreignObject2.setAttribute('y', 110);
@@ -118,7 +134,7 @@ export default class CustomRenderer extends BaseRenderer {
 
             att3 = document.createAttribute("style");        // Create a "href" attribute
             div3.setAttributeNode(att3);
-            
+
             div3.innerHTML = progress ? progress + "%" : "0%";
             foreignObject2.appendChild(div3);
             svgAppend(parentNode, foreignObject2);
@@ -143,7 +159,7 @@ export default class CustomRenderer extends BaseRenderer {
             parentDiv.setAttributeNode(parentAtt);
             parentAtt = document.createAttribute("style");
             parentDiv.setAttributeNode(parentAtt);
-    
+
             //tao div con
             let div = document.createElement('div');
             let att = document.createAttribute("class");        // Create a "href" attribute
@@ -173,7 +189,6 @@ export default class CustomRenderer extends BaseRenderer {
             div1.setAttributeNode(att1);
             att1 = document.createAttribute("style");        // Create a "href" attribute
             div1.setAttributeNode(att1);
-            let responsibleName = element.businessObject.$attrs.responsibleName
             div1.innerHTML = responsibleName ? responsibleName : "";
             foreignObject1.appendChild(div1);
 
@@ -184,7 +199,6 @@ export default class CustomRenderer extends BaseRenderer {
             div2.setAttributeNode(att2);
             att2 = document.createAttribute("style");        // Create a "href" attribute
             div2.setAttributeNode(att2);
-            let accountableName = element.businessObject.$attrs.accountableName
             div2.innerHTML = accountableName ? accountableName : "";
             foreignObject1.appendChild(div2);
 

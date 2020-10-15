@@ -258,56 +258,36 @@ class ModalEditTaskProcess extends Component {
     // Cập nhật người thực hiện công việc trong quy trình
     handleChangeResponsible = async (value) => {
         const modeling = this.modeler.get('modeling');
-        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
-        let { user } = this.props
-        let responsibleName
-        let responsible = []
-        user.usercompanys.forEach(x => {
-            if (value.some(y => y === x._id)) {
-                responsible.push(x.name)
-            }
-        })
-        if (responsible.length > 2) {
-
-            responsibleName = responsible[0] + ", " + responsible[1] + "..."
-            modeling.updateProperties(element1, {
-                responsibleName: responsibleName
-            });
-
-        } else {
-
-            modeling.updateProperties(element1, {
-                responsibleName: responsible
-            });
-
-        }
+		let element1 = this.modeler.get('elementRegistry').get(this.state.id);
+		let { user } = this.props
+		let responsibleName
+		let responsible = []
+		user.usercompanys.forEach(x => {
+			if (value.some(y => y === x._id)) {
+				responsible.push(x.name)
+			}
+		})
+		modeling.updateProperties(element1, {
+			responsibleName: responsible
+		});
     }
 
     // Cập nhật người phê duyệt công việc trong quy trình
     handleChangeAccountable = async (value) => {
         const modeling = this.modeler.get('modeling');
-        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
-        let { user } = this.props
-        let accountableName
-        let accountable = []
+		let element1 = this.modeler.get('elementRegistry').get(this.state.id);
+		let { user } = this.props
+		let accountableName
+		let accountable = []
 
-        user.usercompanys.forEach(x => {
-            if (value.some(y => y === x._id)) {
-                accountable.push(x.name)
-            }
-        })
-
-        if (accountable.length > 2) {
-            accountableName = accountable[0] + ", " + accountable[1] + "..."
-            modeling.updateProperties(element1, {
-                accountableName: accountableName
-            });
-
-        } else {
-            modeling.updateProperties(element1, {
-                accountableName: accountable
-            });
-        }
+		user.usercompanys.forEach(x => {
+			if (value.some(y => y === x._id)) {
+				accountable.push(x.name)
+			}
+		})
+		modeling.updateProperties(element1, {
+			accountableName: accountable
+		});
     }
 
     // Các hàm  xử lý sự kiện của bpmn

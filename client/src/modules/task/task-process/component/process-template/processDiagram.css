@@ -267,3 +267,7 @@
     text-align: center;
     background-color: white;
 }
+
+.bpmn-icon-intermediate-event-none {
+    display: none !important;
+}

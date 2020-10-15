@@ -121,19 +121,25 @@ class ViewProcess extends Component {
             let modeling = this.modeling;
             let state = this.state;
             this.modeler.importXML(nextProps.data.xmlDiagram, function (err) {
-                // handle zoom fit
-                // let canvas = modeler.get('canvas');
-                // canvas.zoom('fit-viewport');
-
-                // change color for task
                 let infoTask = nextProps.data.tasks
                 let info = state.info;
 
                 if (infoTask) {
                     for (let i in infoTask) {
+                        let responsible = []
+                        let accountable = []
+                        infoTask[i].responsibleEmployees.forEach(x => {
+                           responsible.push(x.name)
+                        })
+                        infoTask[i].accountableEmployees.forEach(x => {
+                            accountable.push(x.name)
+                         })
                         let element1 = (Object.keys(modeler.get('elementRegistry')).length > 0) && modeler.get('elementRegistry').get(infoTask[i].codeInProcess);
                         element1 && modeling.updateProperties(element1, {
                             progress: infoTask[i].progress,
+                            shapeName: infoTask[i].name,
+                            // responsibleName: responsible,
+                            // accountableName: accountable
                         });
                         if (infoTask[i].status === "finished") {
                             element1 && modeling.setColor(element1, {
@@ -174,7 +180,6 @@ class ViewProcess extends Component {
 
     interactPopup = (event) => {
         var element = event.element;
-        console.log(element, this.state)
         let nameStr = element.type.split(':');
         this.setState(state => {
             if (element.type === 'bpmn:Task' || element.type === 'bpmn:ExclusiveGateway') {

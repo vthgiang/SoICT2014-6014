@@ -2907,7 +2907,7 @@ exports.createChildComment = async (portal, params, body, files) => {
             }
         }
     )
-    let comment = await Task(connect(DB_CONNECTION, portal)).findOne({ "_id": body.currentTask })
+    let comment = await Task(connect(DB_CONNECTION, portal)).findOne({ "_id": params.taskId })
         .populate([
             { path: "parent", select: "name" },
             { path: "taskTemplate", select: "formula" },
@@ -2998,7 +2998,7 @@ exports.editChildComment = async (portal, params, body, files) => {
     )
 
 
-    let comment = await Task(connect(DB_CONNECTION, portal)).findOne({ "_id": body.currentTask })
+    let comment = await Task(connect(DB_CONNECTION, portal)).findOne({ "_id": params.taskId })
         .populate([
             { path: "parent", select: "name" },
             { path: "taskTemplate", select: "formula" },
@@ -3079,7 +3079,7 @@ exports.deleteChildComment = async (portal, params) => {
             { path: 'commentsInProcess.comments.creator', select: 'name email avatar' }
         ])
 
-    return comment.commentsInProcess
+    return comment
 }
 
 /**
@@ -3107,7 +3107,7 @@ exports.deleteFileComment = async (portal, params) => {
         { path: "commentsInProcess.comments.creator", select: 'name email avatar' },
     ]);
 
-    return task.commentsInProcess;
+    return task;
 }
 
 /**
@@ -3139,7 +3139,7 @@ exports.deleteFileChildComment = async (portal, params) => {
         { path: "commentsInProcess.creator", select: 'name email avatar' },
         { path: "commentsInProcess.comments.creator", select: 'name email avatar' },
     ]);
-    return task.commentsInProcess;
+    return task;
 }
 
 exports.getAllPreceedingTasks = async (portal, params) => {

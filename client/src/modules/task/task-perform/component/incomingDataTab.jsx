@@ -50,9 +50,9 @@ class IncomingDataTab extends Component {
         return (
             <React.Fragment>
                 {
-                    listTask && listTask.map((task, key) =>
+                    listTask && listTask.map((task, index) =>
                         <React.Fragment>
-                            <div key={key} className="description-box incoming-content">
+                            <div key={index} className="description-box incoming-content">
                                 <h4>{task.name}</h4>
                                 {/** Danh sách thông tin */}
                                 <strong>{translate('task.task_process.information')}:</strong>
@@ -114,11 +114,7 @@ class IncomingDataTab extends Component {
                                     </a>
                                 </div>
                                 {showComment === task._id &&
-                                    <div style={{ marginTop: 10 }}>
-                                        {/* <CommentInProcess
-                                            task={task}
-                                            inputAvatarCssClass="user-img-incoming-level1"
-                                        /> */}
+                                    <div className='comment-process' style={{ marginTop: 10 }}>
                                         <Comment
                                             data={task}
                                             comments={task.commentsInProcess}
@@ -130,9 +126,8 @@ class IncomingDataTab extends Component {
                                             createChildComment={(dataId, commentId, data, type) => this.props.createChildComment(dataId, commentId, data, type)}
                                             editChildComment={(dataId, commentId, childCommentId, data, type) => this.props.editChildComment(dataId, commentId, childCommentId, data, type)}
                                             deleteChildComment={(dataId, commentId, childCommentId, type) => this.props.deleteChildComment(dataId, commentId, childCommentId, type)}
-                                            deleteFileComment={(fileId, commentId, dataId) => this.props.deleteFileComment(fileId, commentId, dataId)}
-                                            deleteFileChildComment={(fileId, commentId, childCommentId, dataId) => this.props.deleteFileChildComment(fileId, commentId, childCommentId, dataId)}
-                                            downloadFile={(path, fileName) => this.props.downloadFile(path, fileName)}
+                                            deleteFileComment={(fileId, commentId, dataId, type) => this.props.deleteFileComment(fileId, commentId, dataId, type)}
+                                            deleteFileChildComment={(fileId, commentId, childCommentId, dataId, type) => this.props.deleteFileChildComment(fileId, commentId, childCommentId, dataId, type)}
                                         />
                                     </div>
                                 }

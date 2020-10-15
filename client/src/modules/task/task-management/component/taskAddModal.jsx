@@ -435,7 +435,7 @@ class TaskAddModal extends Component {
             listParentTask = [...listParentTask, ...arr];
         }
 
-        console.log('abccccc', listTaskTemplate);
+        // console.log('abccccc', listTaskTemplate);
 
         return (
             <React.Fragment>

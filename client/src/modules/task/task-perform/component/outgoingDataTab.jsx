@@ -229,7 +229,7 @@ class OutgoingDataTab extends Component {
                         </div>
 
                         { /** Trao đổi */}
-                        <div className="description-box">
+                        <div>
                             <h4 style={{ marginBottom: "1.3em" }}>Trao đổi với các công việc khác về dữ liệu ra</h4>
                             {/* <CommentInProcess
                                 task={performtasks.task}
@@ -245,9 +245,8 @@ class OutgoingDataTab extends Component {
                                 createChildComment={(dataId, commentId, data, type) => this.props.createChildComment(dataId, commentId, data, type)}
                                 editChildComment={(dataId, commentId, childCommentId, data, type) => this.props.editChildComment(dataId, commentId, childCommentId, data, type)}
                                 deleteChildComment={(dataId, commentId, childCommentId, type) => this.props.deleteChildComment(dataId, commentId, childCommentId, type)}
-                                deleteFileComment={(fileId, commentId, dataId) => this.props.deleteFileComment(fileId, commentId, dataId)}
-                                deleteFileChildComment={(fileId, commentId, childCommentId, dataId) => this.props.deleteFileChildComment(fileId, commentId, childCommentId, dataId)}
-                                downloadFile={(path, fileName) => this.props.downloadFile(path, fileName)}
+                                deleteFileComment={(fileId, commentId, dataId, type) => this.props.deleteFileComment(fileId, commentId, dataId,type)}
+                                deleteFileChildComment={(fileId, commentId, childCommentId, dataId, type) => this.props.deleteFileChildComment(fileId, commentId, childCommentId, dataId, type)}
                             />
                         </div>
                     </React.Fragment>
