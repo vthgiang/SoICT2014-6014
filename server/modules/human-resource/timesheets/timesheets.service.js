@@ -9,6 +9,7 @@ const {
     connect
 } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
+
 /**
  * Lấy thông tin chấm công nhân viên
  * @params : Dữ liệu các key tìm kiếm
@@ -75,11 +76,91 @@ exports.searchTimesheets = async (portal, params, company) => {
     }
 }
 
+/**
+ * Function lấy thông tin chấm công theo id nhân viên trong 1 khoảng thời gian
+ * @param {*} portal : Tên ngắn của công ty
+ * @param {*} employeeId : Id nhân viên 
+ * @param {*} startDate : Thời gian bắt đầu
+ * @param {*} endDate : Thời gian kết thúc
+ * @param {*} company : Id công ty
+ */
+exports.getTimesheetsByEmployeeIDAndTime = async (portal, employeeId, startDate, endDate, company) => {
+    if (new Date(startDate).getTime() > new Date(endDate).getTime()) {
+        return {
+            arrMonth: [],
+            listTimesheetsByEmployeeIdAndTime: [],
+        }
+    } else {
+        let endMonth = new Date(endDate).getMonth();
+        let endYear = new Date(endDate).getFullYear();
+        endMonth = endMonth + 1;
+        let arrMonth = [];
+        for (let i = 0;; i++) {
+            let month = endMonth - i;
+            if (month > 0) {
+                if (month.toString().length === 1) {
+                    month = `${endYear}-0${month}-01`;
+                    arrMonth = [...arrMonth, month];
+                } else {
+                    month = `${endYear}-${month}-01`;
+                    arrMonth = [...arrMonth, month];
+                }
+                if (`${startDate}-01` === month) {
+                    break;
+                }
+            } else {
+                let j = 1;
+                for (j;; j++) {
+                    month = month + 12;
+                    if (month > 0) {
+                        break;
+                    }
+                }
+                if (month.toString().length === 1) {
+                    month = `${endYear-j}-0${month}-01`;
+                    arrMonth = [...arrMonth, month];
+                } else {
+                    month = `${endYear-j}-${month}-01`;
+                    arrMonth = [...arrMonth, month];
+                }
+                if (`${startDate}-01` === month) {
+                    break;
+                }
+            }
+        };
+        let arr = arrMonth.map(x => new Date(x));
+        let listTimesheetsByEmployeeIdAndTime = await Timesheet(connect(DB_CONNECTION, portal)).find({
+            employee: employeeId,
+            month: {
+                $in: arr
+            }
+        }, {
+            totalHoursOff: 1,
+            totalHours:1,
+            month: 1
+        });
+        return {
+            listTimesheetsByEmployeeIdAndTime,
+            arrMonth
+        }
+
+    }
+}
+
+/**
+ * Function lấy thời gian tăng ca theo đơn vị và khoảng thời gian
+ * @param {*} portal : Tên ngắn công ty
+ * @param {*} organizationalUnits : Array id đơn vị
+ * @param {*} startDate : Thời gian bắt đầu
+ * @param {*} endDate : Thời gian kết thúc
+ * @param {*} company : Id công ty
+ */
 exports.getOvertimeOfUnitsByStartDateAndEndDate = async (portal, organizationalUnits, startDate, endDate, company) => {
     if (new Date(startDate).getTime() > new Date(endDate).getTime()) {
         return {
             arrMonth: [],
             listOvertimeOfUnitsByStartDateAndEndDate: [],
+            
         }
     } else {
         let endMonth = new Date(endDate).getMonth();

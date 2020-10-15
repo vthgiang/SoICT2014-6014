@@ -45,7 +45,7 @@ class ModalViewTaskTemplate extends Component {
         );
     }
 }
-
+ 
 function mapState(state) {
     const { tasktemplates } = state;
     return { tasktemplates };

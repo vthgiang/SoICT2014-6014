@@ -128,7 +128,31 @@ class QuoteCreateForm extends Component {
           size='75'
           style={{backgroundColor: 'green'}}
         >
-          <form id={`form-create-sales-order`} >
+            <DialogModal
+            modalID="modal-create-quote-sla" isLoading={false}
+            formID="form-create-quote-sla"
+            title={'Chi tiết cam kết chất lượng'}
+            size='50'
+            hasSaveButton={false}
+            hasNote={false}
+            >
+            
+                <form id="form-create-quote-sla">
+                    <div style={{display:'flex', alignItems: 'center'}}>
+                        <i className="fa fa-check-square-o text-success"></i> 
+                        <div>
+                            Sản phẩm được sản xuất 100% đảm bảo tiêu chuẩn an toàn
+                        </div>
+                    </div>
+                    <div style={{display:'flex', alignItems: 'center'}}>
+                        <i className="fa fa-check-square-o text-success"></i> 
+                        <div>
+                            Sản phẩm đúng với cam kết trên bao bì
+                        </div>
+                    </div>
+                </form>
+            </DialogModal>
+          <form id={`form-create-quote`} >
             <div className="row row-equal-height" style={{ marginTop: -25 }}>
               <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8" style={{ padding: 10 }}>
                 <fieldset className="scheduler-border" style={{borderRadius: '4px'}}>
@@ -336,6 +360,22 @@ class QuoteCreateForm extends Component {
                             <input type="number" className="form-control" value={`6,500,000 vnđ`} disabled={true}/>
                         </div>
                         <div className="form-group">
+                            <label>Cam kế chất lượng<span className="attention"> * </span></label>
+                            <SelectBox
+                                id={`select-good-name-quote`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                value={goodName}
+                                items={[
+                                { value: 'Cam kết 1', text: 'Cam kết 1'},
+                                { value: 'Cam kết 2', text: 'Cam kết 2'}
+                                ]}
+                                // onChange={this.handleGoodCodeChange}
+                                multiple={false}
+                            />
+                        </div>
+
+                        <div className="form-group">
                             <label>Ghi chú<span className="attention"> * </span></label>
                             <input type="text" className="form-control" value={``} />
                         </div>
@@ -362,6 +402,7 @@ class QuoteCreateForm extends Component {
                             <th title={'Khuyến mãi'}>Khuyến mãi</th>
                             <th title={'Thuế'}>Thuế</th>
                             <th title={'Tổng tiền'}>Tổng tiền</th>
+                            <th>Cam kết chất lượng</th>
                             <th title={'Ghi chú'}>Ghi chú</th>
                             <th title={'Hành động'}>Hành động</th>
                         </tr>
@@ -378,6 +419,16 @@ class QuoteCreateForm extends Component {
                             <td>0 vnđ</td>
                             <td>350,000 vnđ (10%)</td>
                             <td>3,850,000 vnđ</td>
+                            <td>
+                                <div style={{display: 'flex'}}>
+                                    <a style={{cursor: 'pointer'}}
+                                    data-toggle="modal"
+                                    data-backdrop="static" href={'#modal-create-quote-sla'}>
+                                        Chi tiết 
+                                        <i className="fa fa-arrow-circle-right"></i>
+                                    </a>  
+                                </div>
+                            </td>
                             <td></td>
                             <td>
                               <a className="edit text-yellow">
@@ -393,7 +444,7 @@ class QuoteCreateForm extends Component {
                             <td style={{fontWeight: 600}}>0 (vnđ)</td>
                             <td style={{fontWeight: 600}}>400,000 (vnđ)</td>
                             <td style={{fontWeight: 600}}>4,400,000 (vnđ)</td>
-                            <td colSpan={2}></td>
+                            <td colSpan={3}></td>
                         </tr>
                     </tbody>
                   </table>
