@@ -469,8 +469,10 @@ exports.data = [
     { path: 'stocks/:id', method: 'DELETE', roles: ['Super Admin', 'Admin'] },
 
     { path: '/categories', method: 'GET', roles: ['Super Admin', 'Admin'] },
+    { path: '/categories/category-tree', method: 'GET', roles: ['Super Admin', 'Admin'] },
     { path: '/categories/by-type', method: 'GET', roles: ['Super Admin', 'Admin'] },
     { path: '/categories', method: 'POST', roles: ['Super Admin', 'Admin'] },
+    { path: '/categories/delete-many', method: 'POST', roles: ['Super Admin', 'Admin'] },
     { path: '/categories/:id', method: 'GET', roles: ['Super Admin', 'Admin'] },
     { path: '/categories/:id', method: 'PATCH', roles: ['Super Admin', 'Admin'] },
     { path: '/categories/:id', method: 'DELETE', roles: ['Super Admin', 'Admin'] },

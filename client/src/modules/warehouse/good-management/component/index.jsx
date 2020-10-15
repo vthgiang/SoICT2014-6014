@@ -218,8 +218,7 @@ class GoodManagement extends Component {
                     <li><a href="#good-equipments" data-toggle="tab" onClick={()=> this.handleEquipment()}>{translate('manage_warehouse.good_management.equipment')}</a></li>
                     <li><a href="#good-assets" data-toggle="tab" onClick={()=> this.handleAsset()}>{translate('manage_warehouse.good_management.asset')}</a></li>
                 </ul>
-                <div className="box">
-                    <div className="box-body qlcv">
+                <div className="box-body qlcv">
                     <GoodCreateForm type={ type } />
                     {
                         this.state.currentRow &&
@@ -349,7 +348,6 @@ class GoodManagement extends Component {
                         }
                         <PaginateBar pageTotal = {totalPages} currentPage = {page} func = {this.setPage} />
                     </div>
-                </div>
             </div>
         );
     }

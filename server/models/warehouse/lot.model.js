@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
-const ConsignmentSchema = new Schema ({
+const LotSchema = new Schema ({
 
     name: {
         type: String,
@@ -44,16 +44,11 @@ const ConsignmentSchema = new Schema ({
         type: Date,
     },
 
-    price: {
-        type: Number,
-        required: true
-    },
-
     description: {
         type: String
     },
 
-    consignmentLogs: [{
+    lotLogs: [{
 
         bill: {
             type: Schema.Types.ObjectId,
@@ -75,7 +70,18 @@ const ConsignmentSchema = new Schema ({
         timestamp: {
             type: Date,
             default: Date.now
-        }
+        },
+
+        binLocations: [{
+            binLocation: {
+                type: Schema.Types.ObjectId,
+                ref: 'BinLocation'
+            },
+
+            quantity: {
+                type: Number
+            }
+        }]
     }],
 
     logs: [{
@@ -100,10 +106,10 @@ const ConsignmentSchema = new Schema ({
     }]
 });
 
-ConsignmentSchema.plugin(mongoosePaginate);
+LotSchema.plugin(mongoosePaginate);
 
 module.exports = (db) => {
-    if(!db.models.Consignment)
-        return db.model('Consignment', ConsignmentSchema);
-    return db.models.Consignment;
+    if(!db.models.Lot)
+        return db.model('Lot', LotSchema);
+    return db.models.Lot;
 }
