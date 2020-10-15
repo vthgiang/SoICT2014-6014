@@ -148,10 +148,14 @@ export function tasktemplates(state = {}, action) {
                 isLoading: true
             };
         case taskTemplateConstants.IMPORT_TEMPLATE_SUCCESS:
+            let item = [...state.items];
+            for (let i in action.payload.content) {
+                item = [...item, action.payload.content[i]];
+            }
             return{
                 ...state,
                 isLoading: false,
-                items: [...state.items, action.payload.content[0]],
+                items: item,
             };
         case taskTemplateConstants.IMPORT_TEMPLATE_FAILURE:
             return{
