@@ -339,8 +339,8 @@ class EmployeeKpiApproveModal extends Component {
                     <div className="row" style={{ display: 'flex', flex: 'no-wrap', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                         <div className="col-xs-12 col-sm-12 col-md-6">
                             <Comment
-                                data={kpimembers.currentKPI}
-                                comments={kpimembers?.currentKPI?.comment}
+                                data={kpimembers?.currentKPI}
+                                comments={kpimembers?.currentKPI?.comments}
                                 createComment={(dataId, data) => this.props.createComment(dataId, data)}
                                 editComment={(dataId, commentId, data) => this.props.editComment(dataId, commentId, data)}
                                 deleteComment={(dataId, commentId) => this.props.deleteComment(dataId, commentId)}
@@ -349,7 +349,7 @@ class EmployeeKpiApproveModal extends Component {
                                 deleteChildComment={(dataId, commentId, childCommentId) => this.props.deleteChildComment(dataId, commentId, childCommentId)}
                                 deleteFileComment={(fileId, commentId, dataId) => this.props.deleteFileComment(fileId, commentId, dataId)}
                                 deleteFileChildComment={(fileId, commentId, childCommentId, dataId) => this.props.deleteFileChildComment(fileId, commentId, childCommentId, dataId)}
-                                downloadFile={(path, fileName) => this.props.downloadFile(path, fileName)}
+
                             />
                         </div>
                     </div>

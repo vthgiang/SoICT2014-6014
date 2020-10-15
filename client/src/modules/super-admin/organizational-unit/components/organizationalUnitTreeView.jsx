@@ -131,27 +131,55 @@ class DepartmentTreeView extends Component {
                 
             }
         }
+        let datas= [];
         if (listData.length !== 0){
-            data = listData.map((x, index) => {
+            for (let k = 0; k < listData.length; k++) {
+                let x = listData[k];
+                let length = 1;
                 let name = x.name;
                 let description = x.description;
                 let deans = x.deans.map( item => item.name);
+                console.log(deans);
+                if (deans.length > length) {
+                    length = deans.length;
+                }
                 let viceDeans = x.viceDeans.map( item => item.name);
+                if (viceDeans.length > length) {
+                    length = viceDeans.length;
+                }
                 let employees = x.employees.map( item => item.name);
+                if (employees.length > length) {
+                    length = employees.length;
+                }
                 let parent = "";
                 if (x.parentName){
                     parent = x.parentName;
                 }
-                return {
-                    STT: index + 1,
+                let out =  {
+                    STT: k + 1,
                     name: name,
                     description: description,
                     parent: parent,
-                    deans: deans.join(", "),
-                    viceDeans: viceDeans.join(", "),
-                    employees: employees.join(", ")
+                    deans: deans[0],
+                    viceDeans: viceDeans[0],
+                    employees: employees[0]
                 };
-            })
+                datas = [...datas, out];
+                if (length > 1) {
+                    for (let i = 1; i < length; i++) {
+                        out = {
+                            STT: "",
+                            name: "",
+                            description: "",
+                            parent: "",
+                            deans: deans[i],
+                            viceDeans: viceDeans[i],
+                            employees: employees[i]
+                        };
+                        datas = [...datas, out];
+                    }
+                }
+            }
         }
         let exportData = {
             fileName: "Bảng thống kê cơ cấu tổ chức",
@@ -170,7 +198,7 @@ class DepartmentTreeView extends Component {
                             { key: "viceDeans", value: "Tên các chức danh phó đơn vị"},
                             { key: "employees", value: "Tên các chức danh nhân viên đơn vị"}
                         ],
-                        data: data
+                        data: datas
                     }]
                 },
             ]

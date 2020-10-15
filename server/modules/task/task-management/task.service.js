@@ -281,7 +281,7 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
         isArchived: false
     };
 
-    if (organizationalUnit !== '[]') {
+    if (organizationalUnit) {
         keySearch = {
             ...keySearch,
             organizationalUnit: {
@@ -290,7 +290,7 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
         };
     }
 
-    if (status !== '[]') {
+    if (status) {
         keySearch = {
             ...keySearch,
             status: {
@@ -299,7 +299,7 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
         };
     }
 
-    if (priority !== '[]') {
+    if (priority) {
         keySearch = {
             ...keySearch,
             priority: {
@@ -308,7 +308,7 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
         };
     }
 
-    if (special !== '[]') {
+    if (special) {
         for (var i = 0; i < special.length; i++) {
             if (special[i] === "Lưu trong kho") {
                 keySearch = {
@@ -433,7 +433,7 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (portal, task) => {
         isArchived: false
     };
 
-    if (organizationalUnit !== '[]') {
+    if (organizationalUnit) {
         keySearch = {
             ...keySearch,
             organizationalUnit: {
@@ -442,7 +442,7 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (portal, task) => {
         };
     }
 
-    if (status !== '[]') {
+    if (status) {
         keySearch = {
             ...keySearch,
             status: {
@@ -451,7 +451,7 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (portal, task) => {
         };
     }
 
-    if (priority !== '[]') {
+    if (priority) {
         keySearch = {
             ...keySearch,
             priority: {
@@ -460,7 +460,7 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (portal, task) => {
         };
     }
 
-    if (special !== '[]') {
+    if (special) {
         for (var i = 0; i < special.length; i++) {
             if (special[i] === "Lưu trong kho") {
                 keySearch = {
@@ -583,7 +583,7 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (portal, task) => {
         isArchived: false
     };
 
-    if (organizationalUnit !== '[]') {
+    if (organizationalUnit) {
         keySearch = {
             ...keySearch,
             organizationalUnit: {
@@ -592,7 +592,7 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (portal, task) => {
         };
     }
 
-    if (status !== '[]') {
+    if (status) {
         keySearch = {
             ...keySearch,
             status: {
@@ -601,7 +601,7 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (portal, task) => {
         };
     }
 
-    if (priority !== '[]') {
+    if (priority) {
         keySearch = {
             ...keySearch,
             priority: {
@@ -610,7 +610,7 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (portal, task) => {
         };
     }
 
-    if (special !== '[]') {
+    if (special) {
         for (var i = 0; i < special.length; i++) {
             if (special[i] === "Lưu trong kho") {
                 keySearch = {
@@ -733,7 +733,7 @@ exports.getPaginatedTasksCreatedByUser = async (portal, task) => {
         isArchived: false
     };
 
-    if (organizationalUnit !== '[]') {
+    if (organizationalUnit) {
         keySearch = {
             ...keySearch,
             organizationalUnit: {
@@ -742,7 +742,7 @@ exports.getPaginatedTasksCreatedByUser = async (portal, task) => {
         };
     }
 
-    if (status !== '[]') {
+    if (status) {
         keySearch = {
             ...keySearch,
             status: {
@@ -751,7 +751,7 @@ exports.getPaginatedTasksCreatedByUser = async (portal, task) => {
         };
     }
 
-    if (priority !== '[]') {
+    if (priority) {
         keySearch = {
             ...keySearch,
             priority: {
@@ -760,7 +760,7 @@ exports.getPaginatedTasksCreatedByUser = async (portal, task) => {
         };
     }
 
-    if (special !== '[]') {
+    if (special) {
         for (var i = 0; i < special.length; i++) {
             if (special[i] === "Lưu trong kho") {
                 keySearch = {
@@ -855,7 +855,7 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
         isArchived: false
     };
 
-    if (organizationalUnit !== '[]') {
+    if (organizationalUnit) {
         keySearch = {
             ...keySearch,
             organizationalUnit: {
@@ -864,7 +864,7 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
         };
     }
 
-    if (status !== '[]') {
+    if (status) {
         keySearch = {
             ...keySearch,
             status: {
@@ -873,7 +873,7 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
         };
     }
 
-    if (priority !== '[]') {
+    if (priority) {
         keySearch = {
             ...keySearch,
             priority: {
@@ -882,7 +882,7 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
         };
     }
 
-    if (special !== '[]') {
+    if (special) {
         for (var i = 0; i < special.length; i++) {
             if (special[i] === "Lưu trong kho") {
                 keySearch = {
@@ -1010,7 +1010,7 @@ exports.getPaginatedTasksByUser = async (portal, task) => {
         isArchived: false
     };
 
-    if (organizationalUnit !== '[]') {
+    if (organizationalUnit) {
         keySearch = {
             ...keySearch,
             organizationalUnit: {
@@ -1019,7 +1019,7 @@ exports.getPaginatedTasksByUser = async (portal, task) => {
         };
     }
 
-    if (status !== '[]') {
+    if (status) {
         keySearch = {
             ...keySearch,
             status: {
@@ -1028,7 +1028,7 @@ exports.getPaginatedTasksByUser = async (portal, task) => {
         };
     }
 
-    if (priority !== '[]') {
+    if (priority) {
         keySearch = {
             ...keySearch,
             priority: {
@@ -1037,7 +1037,7 @@ exports.getPaginatedTasksByUser = async (portal, task) => {
         };
     }
 
-    if (special !== '[]') {
+    if (special) {
         for (var i = 0; i < special.length; i++) {
             if (special[i] === "Lưu trong kho") {
                 keySearch = {
@@ -1153,7 +1153,8 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (portal, task) => {
     var organizationUnitTasks;
     var keySearch = {};
 
-    if (organizationalUnitId !== '[]') {
+    if (organizationalUnitId) {
+    // if (organizationalUnitId !== '[]') {
         keySearch = {
             ...keySearch,
             organizationalUnit: {

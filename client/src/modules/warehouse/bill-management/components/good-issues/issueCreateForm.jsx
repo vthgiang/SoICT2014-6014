@@ -51,14 +51,14 @@ class IssueCreateForm extends Component {
         
                 <DialogModal
                     modalID={`modal-create-good-issue`}
-                    formID={`form-create-good-issue`}
+                    formID={`form-create-good-issue-2`}
                     title={translate('manage_warehouse.stock_management.add_title')}
                     msg_success={translate('manage_warehouse.stock_management.add_success')}
                     msg_faile={translate('manage_warehouse.stock_management.add_faile')}
                     size={75}
                 >
-                    <form id={`form-create-good-issue`}>
-                    <QuantityCreateForm style={{ zIndex: 0 }}/>
+                    <form id={`form-create-good-issue-2`}>
+                    <QuantityCreateForm />
                     <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
                                     <label>{translate('manage_warehouse.bill_management.code')}<span className="attention"> * </span></label>

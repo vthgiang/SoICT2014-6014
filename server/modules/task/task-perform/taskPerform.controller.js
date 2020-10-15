@@ -814,13 +814,13 @@ evaluateTaskByConsultedEmployees = async (req, res) => {
  */
 evaluateTaskByResponsibleEmployees = async (req, res) => {
     // try {
-        let task = await PerformTaskService.evaluateTaskByResponsibleEmployees(req.portal, req.body.data, req.params.taskId);
-        await Logger.info(req.user.email, ` edit task  `, req.portal);
-        res.status(200).json({
-            success: true,
-            messages: ['evaluate_task_success'],
-            content: task
-        })
+    let task = await PerformTaskService.evaluateTaskByResponsibleEmployees(req.portal, req.body.data, req.params.taskId);
+    await Logger.info(req.user.email, ` edit task  `, req.portal);
+    res.status(200).json({
+        success: true,
+        messages: ['evaluate_task_success'],
+        content: task
+    })
     // } catch (error) {
     //     await Logger.error(req.user.email, ` edit task `, req.portal);
     //     res.status(400).json({
@@ -931,16 +931,16 @@ editActivateOfTask = async (req, res) => {
         let data = await PerformTaskService.editActivateOfTask(req.portal, req.params.taskId, req.body);
         let task = data.task;
         let mails = data.mailInfo;
-		for (let i in mails) {
-			let task = mails[i].task;
-			let user = mails[i].user;
-			let email = mails[i].email;
-			let html = mails[i].html;
+        for (let i in mails) {
+            let task = mails[i].task;
+            let user = mails[i].user;
+            let email = mails[i].email;
+            let html = mails[i].html;
 
-			let mailData = { "organizationalUnits": task.organizationalUnit._id, "title": "Kích hoạt công việc", "level": "general", "content": html, "sender": task.organizationalUnit.name, "users": user };
-			NotificationServices.createNotification(req.portal, task.organizationalUnit.company, mailData,);
-			sendEmail(email, "Kích hoạt công việc hành công", '', html);
-		}
+            let mailData = { "organizationalUnits": task.organizationalUnit._id, "title": "Kích hoạt công việc", "level": "general", "content": html, "sender": task.organizationalUnit.name, "users": user };
+            NotificationServices.createNotification(req.portal, task.organizationalUnit.company, mailData,);
+            sendEmail(email, "Kích hoạt công việc hành công", '', html);
+        }
         await Logger.info(req.user.email, ` edit activate of task  `, req.portal);
         res.status(200).json({
             success: true,
@@ -1049,7 +1049,7 @@ exports.createComment = async (req, res) => {
         res.status(200).json({
             success: true,
             messages: ['create_comment_success'],
-            content: comments
+            content: { task: comments, taskId: req.params.taskId }
         })
     } catch (error) {
         await Logger.error(req.user.email, ` create comment kpi `, req.portal)
@@ -1081,7 +1081,7 @@ exports.editComment = async (req, res) => {
         res.status(200).json({
             success: true,
             messages: ['edit_comment_success'],
-            content: comments
+            content: { task: comments, taskId: req.params.taskId }
         })
     } catch (error) {
         await Logger.error(req.user.email, ` edit comment kpi `, req.portal)
@@ -1103,7 +1103,7 @@ exports.deleteComment = async (req, res) => {
         res.status(200).json({
             success: false,
             messages: ['delete_comment_success'],
-            content: comments
+            content: { task: comments, taskId: req.params.taskId }
         })
     } catch (error) {
         await Logger.error(req.user.email, ` delete comment kpi `, req.portal)
@@ -1133,7 +1133,7 @@ exports.createChildComment = async (req, res) => {
         res.status(200).json({
             success: true,
             messages: ['create_child_comment_success'],
-            content: comments
+            content: { task: comments, taskId: req.params.taskId }
         })
     } catch (error) {
         await Logger.error(req.user.email, ` create child comment kpi `, req.portal)
@@ -1164,7 +1164,7 @@ exports.editChildComment = async (req, res) => {
         res.status(200).json({
             success: true,
             messages: ['edit_comment_of_comment_success'],
-            content: comments
+            content: { task: comments, taskId: req.params.taskId }
         })
     } catch (error) {
         await Logger.error(req.user.email, ` edit comment of comment kpi `, req.portal)
@@ -1186,7 +1186,7 @@ exports.deleteChildComment = async (req, res) => {
         res.status(200).json({
             success: true,
             messages: ['delete_child_comment_success'],
-            content: comments
+            content: { task: comments, taskId: req.params.taskId }
         })
     } catch (error) {
         await Logger.error(req.user.email, ` delete child comment kpi `, req.portal)
@@ -1207,7 +1207,7 @@ exports.deleteFileComment = async (req, res) => {
         res.status(200).json({
             success: true,
             messages: ['delete_file_comment_success'],
-            content: comments
+            content: { task: comments, taskId: req.params.taskId }
         })
     } catch (error) {
         await Logger.error(req.user.email, ` delete file comment `, req.portal)
@@ -1228,13 +1228,35 @@ exports.deleteFileChildComment = async (req, res) => {
         res.status(200).json({
             success: true,
             messages: ['delete_file_comment_success'],
-            content: comments
+            content: { task: comments, taskId: req.params.taskId }
         })
     } catch (error) {
         await Logger.error(req.user.email, ` delete file child comment `, req.portal)
         res.status(400).json({
             success: true,
             messages: ['delete_file_comment_fail'],
+            content: error
+        })
+    }
+}
+
+/**
+ * Lấy tất cả preceeding task
+ */
+exports.getAllPreceedingTasks = async (req, res) => {
+    try {
+        let tasks = await PerformTaskService.getAllPreceedingTasks(req.portal, req.params);
+        await Logger.info(req.user.email, ` get all preceeding tasks  `, req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['get_all_preceeding_tasks_success'],
+            content: tasks
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, `get all preceeding tasks  `, req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['get_all_preceeding_tasks_fail'],
             content: error
         })
     }

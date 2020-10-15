@@ -67,7 +67,7 @@ module.exports = {
     Proposal: require('./warehouse/proposal.model'),
     Partner: require('./warehouse/partner.model'),
     Good: require('./warehouse/good.model'),
-    Consignment: require('./warehouse/consignment.model'),
+    Lot: require('./warehouse/lot.model'),
     Category: require('./warehouse/category.model'),
     Bill: require('./warehouse/bill.model'),
 

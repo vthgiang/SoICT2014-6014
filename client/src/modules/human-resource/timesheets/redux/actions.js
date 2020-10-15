@@ -27,7 +27,8 @@ function searchTimesheets(data) {
             .then(res => {
                 dispatch({
                     type: TimesheetsConstants.GET_TIMESHEETS_SUCCESS,
-                    payload: res.data.content
+                    payload: res.data.content,
+                    callApiByEmployeeId: data.callApiByEmployeeId,
                 })
             })
             .catch(err => {

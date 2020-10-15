@@ -53,8 +53,18 @@ const BinLocationSchema = new Schema ({
     }],
 
     enableGoods: [{
-        type: Schema.Types.ObjectId,
-        ref: 'Good'
+        good: {
+            type: Schema.Types.ObjectId,
+            ref: 'Good'
+        },
+
+        contained: {
+            type: Number
+        },
+
+        capacity: {
+            type: Number
+        }
     }],
 
     capacity: {

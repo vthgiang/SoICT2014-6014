@@ -5,15 +5,8 @@ import { connect } from 'react-redux';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { taskTemplateActions } from '../redux/actions';
-
-import { InformationForm } from '../component/informationsTemplate';
-import { ActionForm } from '../component/actionsTemplate';
-
-import { DialogModal, SelectBox, ErrorLabel } from '../../../../common-components';
-
-import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
+import { DialogModal } from '../../../../common-components';
 import { TaskTemplateFormValidator } from './taskTemplateFormValidator';
-import './tasktemplate.css';
 import { AddTaskTemplate } from './addTaskTemplate';
 
 class ModalAddTaskTemplate extends Component {
