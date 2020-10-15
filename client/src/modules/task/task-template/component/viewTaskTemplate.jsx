@@ -183,7 +183,7 @@ class ViewTaskTemplate extends Component {
 
                 <div className="row row-equal-height">
                     <div className={`${isProcess ? "col-lg-12 col-sm-12" : "col-xs-12 col-sm-12 col-md-6 col-lg-6"}`} style={{ padding: 10 }} >
-                        <div className="description-box" style={{ height: "100%" }}>
+                        <div className="description-box">
                             <h4 className="title">
                                 {translate('task_template.activity_list')}
                             </h4>
@@ -210,7 +210,7 @@ class ViewTaskTemplate extends Component {
                         </div>
                     </div>
                     <div className={`${isProcess ? "col-lg-12 col-sm-12" : "col-xs-12 col-sm-12 col-md-6 col-lg-6"}`} style={{ padding: 10 }}>
-                        <div className="description-box" style={{ height: "100%" }}>
+                        <div className="description-box">
                             <h4 className="title">
                                 {translate('task_template.information_list')}
                             </h4>
@@ -224,14 +224,14 @@ class ViewTaskTemplate extends Component {
                                             <div key={index} className="tt-information">
                                                 <p className="name">
                                                     {item.name}
-                                                    {
-                                                        item.filledByAccountableEmployeesOnly && 
-                                                        <sup className="note">{translate('task_template.manager_fill')}</sup>
-                                                    }
                                                 </p>
-                                                <p className="param"><i>{item.code}</i></p>
-                                                <p className="param"><i>{this.formatTypeInfo(item.type)}</i></p>
-                                                <div className="content">
+                                                <p className="param">@ {translate('task_template.code')}: <b>{item.code}</b></p>
+                                                <p className="param">@ {translate('task_template.datatypes')}: <b>{this.formatTypeInfo(item.type)}</b></p>
+                                                {
+                                                    item.filledByAccountableEmployeesOnly && 
+                                                    <p className="param">@ {translate('task_template.manager_fill')}</p>
+                                                }
+                                                <div>
                                                     {parse(item.description)}
                                                 </div>
                                             </div>

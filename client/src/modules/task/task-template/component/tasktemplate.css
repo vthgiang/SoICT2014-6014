@@ -76,10 +76,9 @@ div.tt-information > p.param {
     padding-left: 4px;
 }
 
-div.tt-information > div.content {
+div.tt-information > div {
     font-size: 14px;
     padding: 0px; 
-    margin-right: 20px;
-    margin-left: 20px;
+    margin: 0px 20px 20px 20px;
     border-bottom: 0.5px dotted gray;
 }
