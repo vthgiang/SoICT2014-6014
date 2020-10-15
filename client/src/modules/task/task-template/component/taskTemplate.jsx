@@ -4,15 +4,14 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { taskTemplateActions } from '../redux/actions';
-
 import { PaginateBar, SelectMulti, DataTableSetting } from '../../../../common-components';
 import { ExportExcel } from '../../../../common-components';
 import Swal from 'sweetalert2';
-
 import { ModalAddTaskTemplate } from './addTaskTemplateModal';
 import { ModalViewTaskTemplate } from './viewTaskTemplateModal';
 import { ModalEditTaskTemplate } from './editTaskTemplateModal';
 import { TaskTemplateImportForm } from './taskTemplateImportForm';
+import './tasktemplate.css';
 
 class TaskTemplate extends Component {
     constructor(props) {

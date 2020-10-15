@@ -115,7 +115,7 @@ class ViewTaskTemplate extends Component {
                                         <div>
                                             <ul>
                                                 {taskTemplate?.readByEmployees && taskTemplate?.readByEmployees.map((item, index) => {
-                                                    return <li key={index}>{item.name}</li>
+                                                    return <li key={index}>{item && item.name}</li>
                                                 })}
                                             </ul>
                                         </div>
@@ -128,7 +128,7 @@ class ViewTaskTemplate extends Component {
                                         <div>
                                             <ul>
                                                 {responsibleEmployees.map((item, index) => {
-                                                    return <li key={index}>{item.name}</li>
+                                                    return <li key={index}>{item && item.name}</li>
                                                 })}
                                             </ul>
                                         </div>
@@ -142,7 +142,7 @@ class ViewTaskTemplate extends Component {
                                         <div>
                                             <ul>
                                                 {accountableEmployees.map((item, index) => {
-                                                    return <li key={index}>{item.name}</li>
+                                                    return <li key={index}>{item && item.name}</li>
                                                 })}
                                             </ul>
                                         </div>
@@ -156,7 +156,7 @@ class ViewTaskTemplate extends Component {
                                         <div>
                                             <ul>
                                                 {taskTemplate?.consultedEmployees.map((item, index) => {
-                                                    return <li key={index}>{item.name}</li>
+                                                    return <li key={index}>{item && item.name}</li>
                                                 })}
                                             </ul>
                                         </div>
@@ -170,7 +170,7 @@ class ViewTaskTemplate extends Component {
                                         <div>
                                             <ul>
                                                 {taskTemplate?.informedEmployees.map((item, index) => {
-                                                    return <li key={index}>{item.name}</li>
+                                                    return <li key={index}>{item && item.name}</li>
                                                 })}
                                             </ul>
                                         </div>

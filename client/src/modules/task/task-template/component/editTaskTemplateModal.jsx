@@ -7,7 +7,6 @@ import { taskTemplateActions } from '../redux/actions';
 import { EditTaskTemplate } from './editTaskTemplate';
 import { DialogModal } from '../../../../common-components';
 import { TaskTemplateFormValidator } from './taskTemplateFormValidator';
-import './tasktemplate.css';
 
 class ModalEditTaskTemplate extends Component {
 

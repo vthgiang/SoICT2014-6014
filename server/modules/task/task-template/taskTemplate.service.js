@@ -6,7 +6,6 @@ const mongoose = require('mongoose');
  * Lấy tất cả các mẫu công việc
  */
 exports.getAllTaskTemplates = async (portal, query) => {
-    console.log('query', query);
     if (query.pageNumber === '1' && query.noResultsPerPage === '0') {
         // LẤY DANH SÁCH TẤT CẢ CÁC MẪU CÔNG VIỆC CÓ TRONG HỆ THỐNG CỦA CÔNG TY
         let docs = await TaskTemplate(connect(DB_CONNECTION, portal)).find().populate([
@@ -14,16 +13,7 @@ exports.getAllTaskTemplates = async (portal, query) => {
             { path: 'organizationalUnit' }
         ]);
         return {
-            docs: docs,
-            // totalDocs: 4,
-            // limit: 1000,
-            // totalPages: 1,
-            // page: 1,
-            // pagingCounter: 1,
-            // hasPrevPage: false,
-            // hasNextPage: false,
-            // prevPage: null,
-            // nextPage: null
+            docs: docs
         }
     }
     if (query.roleId) {
@@ -97,6 +87,10 @@ exports.getTaskTemplate = async (portal, id) => {
  * @body dữ liệu tạo mới mẫu công việc
  */
 exports.createTaskTemplate = async (portal, body) => {
+    //kiểm tra tên mẫu công việc đã tồn tại hay chưa ?
+    let checkTaskTemplate = await TaskTemplate(connect(DB_CONNECTION, portal)).findOne({ name: body.name });
+    if(checkTaskTemplate) throw ['task_template_name_exist'];
+
     // thêm quyền xem mẫu công việc cho trưởng đơn vị của công việc
     let units = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findById(body.organizationalUnit);
     let roleDeans = units.deans;
