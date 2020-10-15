@@ -1136,10 +1136,6 @@ class ActionTab extends Component {
                                                             src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar"
                                                         />
                                                         <ContentMaker
-<<<<<<< HEAD
-=======
-                                                            id={item.comments[0]._id}
->>>>>>> 6fd2d559dd548d4c5ed4f3f87b20693e758fbbb8
                                                             inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
                                                             onFilesChange={this.onCommentFilesChange}
                                                             onFilesError={this.onFilesError}
