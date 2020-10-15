@@ -6,7 +6,9 @@ import { DialogModal } from '../../../../../common-components';
 class SalesOrderDetailForm extends Component {
   constructor(props) {
     super(props);
-    
+    this.state ={
+        print: false
+    }
   }
 
   format_curency(x) {
@@ -15,8 +17,7 @@ class SalesOrderDetailForm extends Component {
   while (pattern.test(x))
     x = x.replace(pattern, "$1,$2");
   return x;
-  }
-  
+}
   render() {
     const {data, type} = this.props;
     const goodsData = data.goods.map((item)=>{
@@ -28,7 +29,7 @@ class SalesOrderDetailForm extends Component {
           }
         });
       }
-        if(!check){
+      if(!check){
           item.quantityDiscount = 0;
         }
       return item;
@@ -60,31 +61,57 @@ class SalesOrderDetailForm extends Component {
       })
     }
 
-    console.log("ddd",goodDataMerge);
+    
 
     return (
       <React.Fragment>
-
+        
       <DialogModal
           modalID="modal-detail-sales-order" isLoading={false}
           formID="form-detail-sales-order"
           title={'Thông tin đơn hàng'}
-          size='50'
+          size='75'
           hasSaveButton={false}
           hasNote={false}
       >
+            <DialogModal
+                modalID="modal-detail-sales-order-sla" isLoading={false}
+                formID="form-detail-sales-order-sla"
+                title={'Chi tiết cam kết chất lượng'}
+                size='50'
+                hasSaveButton={false}
+                hasNote={false}
+            >
+            
+                <form id="form-detail-sales-order-sla">
+                    <div style={{display:'flex', alignItems: 'center'}}>
+                        <i className="fa fa-check-square-o text-success"></i> 
+                        <div>
+                            Sản phẩm được sản xuất 100% đảm bảo tiêu chuẩn an toàn
+                        </div>
+                    </div>
+                    <div style={{display:'flex', alignItems: 'center'}}>
+                        <i className="fa fa-check-square-o text-success"></i> 
+                        <div>
+                            Sản phẩm đúng với cam kết trên bao bì
+                        </div>
+                    </div>
+                </form>
+            </DialogModal>
         <div className="row row-equal-height" style={{ marginTop: -25 }} >
-        <div className={"col-xs-12 col-sm-12 col-md-12 col-lg-12"} style={{ marginTop: '10px', borderWidth: '1px', borderStyle: 'solid', display: 'flex' }}>
-            <div style={{padding:'20px 30px 20px 20px', borderWidth: '0px 1px 0px 0px', borderStyle: 'solid', width: '23%', display:'flex', justifyContent:'center'}}>
-                <img src='https://bongluavang.vn/wp-content/uploads/2018/10/C%C3%B4ng-ty-CP-%C4%90%E1%BA%A7u-t%C6%B0-Li%C3%AAn-doanh-Vi%E1%BB%87t-Anh.png' style={{height: '60px', width:'60xp'}}/>
-            </div>
-            <div style={{padding:'20px', width: '77%', display:'flex', flexDirection: 'column', alignItems: 'center'}}>
-                <div style={{fontSize: '16px', textTransform: 'uppercase', fontWeight: '600'}}>Công ty cổ phần Việt Anh</div>
-                <div>Đc: Số 30, Tạ Quang Bửu, Bách Khoa, Hà Nội</div>
-                <div>Liên hệ: 0399678989</div>
-                <div>Mã số thuế: 1092842003</div>
-            </div>
-        </div>
+        {this.state.print ? 
+            (<div className={"col-xs-12 col-sm-12 col-md-12 col-lg-12"} style={{ marginTop: '10px', borderWidth: '1px', borderStyle: 'solid', display: 'flex' }}>
+                <div style={{padding:'20px 30px 20px 20px', borderWidth: '0px 1px 0px 0px', borderStyle: 'solid', width: '23%', display:'flex', justifyContent:'center'}}>
+                    <img src='https://bongluavang.vn/wp-content/uploads/2018/10/C%C3%B4ng-ty-CP-%C4%90%E1%BA%A7u-t%C6%B0-Li%C3%AAn-doanh-Vi%E1%BB%87t-Anh.png' style={{height: '60px', width:'60xp'}}/>
+                </div>
+                <div style={{padding:'20px', width: '77%', display:'flex', flexDirection: 'column', alignItems: 'center'}}>
+                    <div style={{fontSize: '16px', textTransform: 'uppercase', fontWeight: '600'}}>Công ty cổ phần Việt Anh</div>
+                    <div>Đc: Số 30, Tạ Quang Bửu, Bách Khoa, Hà Nội</div>
+                    <div>Liên hệ: 0399678989</div>
+                    <div>Mã số thuế: 1092842003</div>
+                </div>
+            </div>) : ''
+        }
 
         <div className={"col-xs-12 col-sm-12 col-md-12 col-lg-12"} style={{ borderWidth: '0px 1px 1px 1px', borderStyle: 'solid', display: 'flex', backgroundColor: '#dafafb', justifyContent: 'center', padding: '10px',}}>
             <div style={{textTransform: 'uppercase', fontWeight: '600'}}>Thông tin đơn hàng</div>
@@ -139,19 +166,6 @@ class SalesOrderDetailForm extends Component {
                     <div className='quote-detail-info-right'>18/10/2020</div>
                 </div>
                 <div style={{display: 'flex'}}>
-                    <div className='quote-detail-info-left'>Cam kết chất lượng: </div>
-                    <div className='quote-detail-info-right'>
-                        <ul>
-                            <li style={{cursor: 'pointer'}}>
-                                <a>Title cam kết 1 <i className="fa fa-arrow-circle-right"></i></a> 
-                            </li>
-                            <li style={{cursor: 'pointer'}}>
-                                <a>Title cam kết 2 <i className="fa fa-arrow-circle-right"></i></a> 
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div style={{display: 'flex'}}>
                     <div className='quote-detail-info-left'>Ghi chú: </div>
                     <div className='quote-detail-info-right'>Báo giá chỉ áp dụng với khách hàng nhận được báo giá này</div>
                 </div>
@@ -172,6 +186,7 @@ class SalesOrderDetailForm extends Component {
                         <th>Khuyến mãi</th>
                         <th>Thuế</th>
                         <th>Tổng tiền</th>
+                        <th>Cam kết chất lượng</th>
                         <th>Ghi chú</th>
                     </tr>
                 </thead>
@@ -187,6 +202,16 @@ class SalesOrderDetailForm extends Component {
                         <td>0 vnđ</td>
                         <td>350,000 vnđ (10%)</td>
                         <td>3,850,000 vnđ</td>
+                        <td>
+                            <div style={{display: 'flex'}}>
+                                <a style={{cursor: 'pointer'}}
+                                data-toggle="modal"
+                                data-backdrop="static" href={'#modal-detail-sales-order-sla'}>
+                                    Chi tiết 
+                                    <i className="fa fa-arrow-circle-right"></i>
+                                </a>  
+                            </div>
+                        </td>
                         <td></td>
                     </tr>
                     <tr>
@@ -200,6 +225,16 @@ class SalesOrderDetailForm extends Component {
                         <td>0 vnđ</td>
                         <td>50,000 vnđ (10%)</td>
                         <td>550,000 vnđ</td>
+                        <td>
+                            <div style={{display: 'flex'}}>
+                                <a style={{cursor: 'pointer'}}
+                                data-toggle="modal"
+                                data-backdrop="static" href={'#modal-detail-sales-order-sla'}>
+                                    Chi tiết 
+                                    <i className="fa fa-arrow-circle-right"></i>
+                                </a>  
+                            </div>
+                        </td>
                         <td></td>
                     </tr>
                     <tr>
@@ -208,6 +243,7 @@ class SalesOrderDetailForm extends Component {
                         <td style={{fontWeight: 600}}>400,000 (vnđ)</td>
                         <td style={{fontWeight: 600}}>4,400,000 (vnđ)</td>
                         <td></td>
+                        <td></td>
                     </tr>
                     <tr>
                         <td colSpan={7} style={{fontWeight: 600}}><center>Đã thanh toán</center></td>
@@ -215,12 +251,14 @@ class SalesOrderDetailForm extends Component {
                         <td></td>
                         <td style={{fontWeight: 600}}>3,200,000 (vnđ)</td>
                         <td></td>
+                        <td></td>
                     </tr>
                     <tr>
                         <td colSpan={7} style={{fontWeight: 600}}><center>Tổng dư nợ </center></td>
                         <td></td>
                         <td></td>
                         <td style={{fontWeight: 600}}>15,600,000 (vnđ)</td>
+                        <td></td>
                         <td></td>
                     </tr>
                 </tbody>
@@ -232,12 +270,16 @@ class SalesOrderDetailForm extends Component {
             </div>
         </div>
        
-        <button className='btn btn-info print-quote' >
-            <i className='fa  fa-print'></i> 
+        <button className='btn btn-info print-quote' onClick={()=>this.setState({print: true})}>
+            <i className='fa  fa-print'></i>
             <span> In hóa đơn</span>
         </button>
+
+        <button className='btn btn-info print-quote' style={{marginRight: '112px'}} onClick={()=>({})}>
+            <i className='fa  fa-print'></i>
+            <span>In phiếu xuất kho</span>
+        </button>
         </div>
-         
       </DialogModal>
     </React.Fragment>
     );

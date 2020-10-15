@@ -15,3 +15,70 @@ tbody#actions td:not(:last-child) {
 tbody#informations td:not(:last-child) {
     cursor: move;
 }
+
+/* phần task-template */
+div.task-item {
+    padding: 0px;
+    /* margin-bottom: 20px; */
+}
+
+div.task-item > p {
+    padding: 0px;
+    margin: 0px;
+}
+
+div.task-item > p > b.number {
+    padding: 4px 10px;
+    color: #fff;
+    background-color: #c1c1c1;
+    border-radius: 50%;
+    font-size: 16px;
+}
+
+div.task-item > p > span.content {
+    margin-left: 2px;
+    padding: 5px 0px 5px 5px;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+div.task-item > p > sup.note {
+    font-size: 12px;
+    font-weight: bold;
+    color: red;
+}
+
+div.task-item > div {
+    margin: 0px 0px 0px 13px;
+    padding: 5px 25px 20px 25px; 
+    border-left: 1px dotted #c1c1c1;
+}
+
+/* task-template-infomartion */
+div.tt-information > p.name {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0px;
+    padding: 0px;
+}
+
+div.tt-information > p.name > sup.note {
+    color: red;
+}
+
+div.tt-information > p.param {
+    margin: 0px;
+    margin-left: 20px;
+    font-size: 14px;
+    color: gray;
+    line-height: 1.4;
+    border-left: 5px solid #e1e1e1;
+    padding-left: 4px;
+}
+
+div.tt-information > div {
+    font-size: 14px;
+    padding: 0px; 
+    margin: 0px 20px 20px 20px;
+    border-bottom: 0.5px dotted gray;
+}

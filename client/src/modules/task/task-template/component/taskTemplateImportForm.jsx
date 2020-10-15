@@ -187,7 +187,6 @@ class TaskTemplateImportForm extends Component {
 
     save = () => {
         let { importShowData } = this.state;
-        console.log(importShowData);
         this.props.importTaskTemplate(importShowData);
     }
 
@@ -296,9 +295,7 @@ class TaskTemplateImportForm extends Component {
                             filledByAccountableEmployeesOnly: filledByAccountableEmployeesOnly[0]
                         }
                         datas = [...datas, out];
-                        console.log(out);
                         if (length > 1) {
-                            console.log(11111111111111111111111);
                             for (let i = 1; i < length; i++) {
                                 out = {
                                     STT: "",
@@ -336,7 +333,6 @@ class TaskTemplateImportForm extends Component {
         const { translate } = this.props;
         let { limit, page, importData, rowError, configData, checkFileImport } = this.state;
         let templateImportTaskTemplate2 = this.convertDataExport(templateImportTaskTemplate);
-        console.log('-----------------', templateImportTaskTemplate2, templateImportTaskTemplate);
         return (
             <React.Fragment>
                 <DialogModal
@@ -364,7 +360,7 @@ class TaskTemplateImportForm extends Component {
                             </div>
                             <div className="form-group col-md-4 col-xs-12">
                                 <label></label>
-                                <ExportExcel id="download_template_task_template" type='link' exportData={templateImportTaskTemplate}
+                                <ExportExcel id="download_template_task_template" type='link' exportData={templateImportTaskTemplate2}
                                     buttonName='Download file import mẫu' />
                             </div>
                             <div className="form-group col-md-12 col-xs-12">

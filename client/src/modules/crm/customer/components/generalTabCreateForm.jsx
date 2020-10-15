@@ -15,7 +15,7 @@ class GeneralTabCreateForm extends Component {
         const { translate, crm, user } = this.props; // state redux
         const { id } = this.props; // Lấy giá trị từ props cha
 
-        const { listStatus, owner, customerSource, code, name, company, companyEstablishmentDate, mobilephoneNumber, telephoneNumber
+        const { listStatus, owner, customerSource, code, name, company, represent, companyEstablishmentDate, mobilephoneNumber, telephoneNumber
             , email, email2, address, address2, gender, birth, group, status, location, taxNumber, website, linkedIn,
         } = this.state;
 
@@ -125,16 +125,12 @@ class GeneralTabCreateForm extends Component {
                             </div>
                         </div>
 
-                        {/* Ngày thành lập công ty */}
+                        {/* Người đại diện */}
                         <div className="col-md-6">
-                            <div className="form-group">
-                                <label>{translate('crm.customer.companyEstablishmentDate')}</label>
-                                <DatePicker
-                                    id="start-date-form-create"
-                                    value={companyEstablishmentDate ? companyEstablishmentDate : ''}
-                                    onChange={this.handleChangeCompanyEstablishmentDate}
-                                    disabled={false}
-                                />
+                            <div className={`form-group`}>
+                                <label>Người đại diện</label>
+                                <input type="Name" className="form-control" value={represent ? represent : ''} onChange={this.handleChangeRepresent} placeholder={'Người đại diện'} />
+                                <ErrorLabel content={customerNameError} />
                             </div>
                         </div>
                     </div>
@@ -144,20 +140,10 @@ class GeneralTabCreateForm extends Component {
                         <div className="col-md-6">
                             <div className={`form-group`}>
                                 <label>{translate('crm.customer.mobilephoneNumber')} </label>
-                                <input type="text" className="form-control" value={mobilephoneNumber ? mobilephoneNumber : ''} onChange={this.handleChangeMobilephoneNumber} placeholder={translate('crm.customer.mobilephoneNumber')} />
+                                <input type="number" className="form-control" value={mobilephoneNumber ? mobilephoneNumber : ''} onChange={this.handleChangeMobilephoneNumber} placeholder={translate('crm.customer.mobilephoneNumber')} />
                             </div>
                         </div>
 
-                        {/* Số điện thoại cố định */}
-                        <div className="col-md-6">
-                            <div className={`form-group`}>
-                                <label>{translate('crm.customer.telephoneNumber')} </label>
-                                <input type="text" className="form-control" value={telephoneNumber ? telephoneNumber : ''} onChange={this.handleChangeTelephoneNumber} placeholder={translate('crm.customer.telephoneNumber')} />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="row">
                         {/* Địa chỉ email*/}
                         <div className="col-md-6">
                             <div className={`form-group`}>
@@ -165,18 +151,10 @@ class GeneralTabCreateForm extends Component {
                                 <input type="email" className="form-control" value={email ? email : ''} onChange={this.handleChangeCustomerEmail} placeholder={translate('crm.customer.email')} />
                             </div>
                         </div>
-
-                        {/* Địa chỉ email phu*/}
-                        <div className="col-md-6">
-                            <div className={`form-group`}>
-                                <label>{translate('crm.customer.secondaryEmail')}</label>
-                                <input type="email" className="form-control" value={email2 ? email2 : ''} onChange={this.handleChangeCustomerEmail2} placeholder={translate('crm.customer.secondaryEmail')} />
-                            </div>
-                        </div>
                     </div>
 
                     <div className="row">
-                        {/* Địa chỉ 1 */}
+                        {/* Địa chỉ 1*/}
                         <div className="col-md-6">
                             <div className={`form-group`}>
                                 <label>{translate('crm.customer.address')}</label>
@@ -192,6 +170,26 @@ class GeneralTabCreateForm extends Component {
                             </div>
                         </div>
                     </div>
+
+                    <div className="row">
+                        {/* Số điện thoại cố định */}
+                        <div className="col-md-6">
+                            <div className={`form-group`}>
+                                <label>{translate('crm.customer.telephoneNumber')} </label>
+                                <input type="number" className="form-control" value={telephoneNumber ? telephoneNumber : ''} onChange={this.handleChangeTelephoneNumber} placeholder={translate('crm.customer.telephoneNumber')} />
+                            </div>
+                        </div>
+
+                        {/* Địa chỉ email phu*/}
+                        <div className="col-md-6">
+                            <div className={`form-group`}>
+                                <label>{translate('crm.customer.secondaryEmail')}</label>
+                                <input type="email" className="form-control" value={email2 ? email2 : ''} onChange={this.handleChangeCustomerEmail2} placeholder={translate('crm.customer.secondaryEmail')} />
+                            </div>
+                        </div>
+                    </div>
+
+
 
                     <div className="row">
                         {/* Giới tính */}
@@ -246,6 +244,20 @@ class GeneralTabCreateForm extends Component {
                                     onChange={this.handleChangeCustomerGroup}
                                     multiple={false}
                                 />}
+                            </div>
+                        </div>
+
+
+                        {/* Ngày thành lập công ty */}
+                        <div className="col-md-6">
+                            <div className="form-group">
+                                <label>{translate('crm.customer.companyEstablishmentDate')}</label>
+                                <DatePicker
+                                    id="start-date-form-create"
+                                    value={companyEstablishmentDate ? companyEstablishmentDate : ''}
+                                    onChange={this.handleChangeCompanyEstablishmentDate}
+                                    disabled={false}
+                                />
                             </div>
                         </div>
 
@@ -383,6 +395,16 @@ class GeneralTabCreateForm extends Component {
         callBackFromParentCreateForm('company', value)
     }
 
+    handleChangeRepresent = (e) => {
+        const { callBackFromParentCreateForm } = this.props;
+        const { value } = e.target;
+
+        this.setState({
+            represent: value,
+        })
+        callBackFromParentCreateForm('represent', value)
+    }
+
     handleChangeCompanyEstablishmentDate = (value) => {
         const { callBackFromParentCreateForm } = this.props;
 
@@ -510,7 +532,7 @@ class GeneralTabCreateForm extends Component {
         const { callBackFromParentCreateForm } = this.props;
 
         this.setState({
-            location: parseInt(value[0]),
+            location: value[0],
         })
         callBackFromParentCreateForm('location', parseInt(value[0]))
     }

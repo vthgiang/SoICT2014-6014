@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from  'react-redux-multilingual';
 import {PaginateBar,
     DataTableSetting,
-    DeleteNotification, SelectBox} from '../../../../../common-components';
+    DeleteNotification, SelectBox, DatePicker} from '../../../../../common-components';
 import data from '../../dataTest/salesOrderData.json';
 import SalesOrderDetailForm from './salesOrderDetailForm';
 import SalesOrderCreateForm from './salesOrderCreateForm';
@@ -47,6 +47,10 @@ class SalesOrderTable extends Component {
     window.$('#modal-detail-sales-order').modal('show');
   }
 
+  handleChangeDate = () =>{
+
+  }
+
 
   render() {
      let {list, limit, page, type} = this.state;
@@ -59,7 +63,7 @@ class SalesOrderTable extends Component {
           ? parseInt(list.length / limit)
           : parseInt(list.length / limit + 1);
 
-    const priority= ["Thấp", "Trung bình", "Cao", "Rất cao"];
+    const priority= ["Thấp", "Trung bình", "Cao", "Đặc biệt"];
 
     let listFilter = list.filter((item) => {
       if (type === "sales" && item.type === "Đơn hàng kinh doanh"){
@@ -70,7 +74,7 @@ class SalesOrderTable extends Component {
     })
     return (
       <React.Fragment>
-        <div className="nav-tabs-custom">
+        {/* <div className="nav-tabs-custom"> */}
           <div className="box-body qlcv">
             {this.state.currentRow && 
             <SalesOrderDetailForm 
@@ -109,7 +113,69 @@ class SalesOrderTable extends Component {
                   onChange={this.handleStatusChange}
                 />
             </div>
+            </div>
+            <div className="form-inline">
+            <div className="form-group">
+                <label className="form-control-static">Bắt đầu giao hàng từ</label>
+                <DatePicker
+                    id="monthEndInHome"
+                    dateFormat="month-year"
+                    value={"10-2020"}
+                    onChange={this.handleChangeDate}
+                    disabled={false}
+                />
+            </div>
+            <div className="form-group">
+                <label className="form-control-static">Đến</label>
+                <DatePicker
+                    id="monthEndInHome"
+                    dateFormat="month-year"
+                    value={"10-2020"}
+                    onChange={this.handleChangeDate}
+                    disabled={false}
+                />
+            </div>
+            </div>
+            <div className="form-inline">
+            <div className="form-group">
+                <label className="form-control-static">Hạn chót giao hàng</label>
+                <DatePicker
+                    id="monthEndInHome"
+                    dateFormat="month-year"
+                    value={"10-2020"}
+                    onChange={this.handleChangeDate}
+                    disabled={false}
+                />
+            </div>
+            <div className="form-group">
+                <label className="form-control-static">Đến</label>
+                <DatePicker
+                    id="monthEndInHome"
+                    dateFormat="month-year"
+                    value={"10-2020"}
+                    onChange={this.handleChangeDate}
+                    disabled={false}
+                />
+            </div>
+            </div>
+            <div className="form-inline">
+            <div className="form-group">
+                <label className="form-control-static">Độ ưu tiên</label>
+                <SelectBox
+                  id={`select-filter-status-material-purchase-order`}
+                  className="form-control select2"
+                  style={{ width: "100%" }}
+                  items={[
+                    { value: 'Thấp', text: 'Thấp'},
+                    { value: 'Trung bình', text: 'Trung bình'},
+                    { value: 'Cao', text: 'Cao'},
+                    { value: 'Đặc biệt', text: 'Đặc biệt'}
+                  ]}
+                  onChange={this.handleStatusChange}
+                />
+                </div>
               <div className="form-group">
+                   <label className="form-control-static"></label>
                 <button
                   type="button"
                   className="btn btn-success"
@@ -119,7 +185,9 @@ class SalesOrderTable extends Component {
                   Tìm kiếm
                 </button>
               </div>
+
             </div>
+
             <table
               id={`order-table-${type}`}
               className="table table-striped table-bordered table-hover"
@@ -228,7 +296,7 @@ class SalesOrderTable extends Component {
               func={this.setPage}
             />
           </div>
-        </div>
+        {/* </div> */}
       </React.Fragment>
     );
   }

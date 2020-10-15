@@ -2,18 +2,16 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { taskTemplateActions } from '../redux/actions';
-
 import { PaginateBar, SelectMulti, DataTableSetting } from '../../../../common-components';
 import { ExportExcel } from '../../../../common-components';
 import Swal from 'sweetalert2';
-
 import { ModalAddTaskTemplate } from './addTaskTemplateModal';
 import { ModalViewTaskTemplate } from './viewTaskTemplateModal';
 import { ModalEditTaskTemplate } from './editTaskTemplateModal';
 import { TaskTemplateImportForm } from './taskTemplateImportForm';
+import './tasktemplate.css';
 
 class TaskTemplate extends Component {
     constructor(props) {
@@ -36,7 +34,7 @@ class TaskTemplate extends Component {
 
     render() {
         const { translate, tasktemplates, user } = this.props;
-        const { currentPage } = this.state;
+        const { currentPage, currentEditRow, currentViewRow, currentEditRowId } = this.state;
 
 
         var listTaskTemplates, pageTotal, units = [], currentUnit;
@@ -64,11 +62,22 @@ class TaskTemplate extends Component {
         return (
             <div className="box">
                 <div className="box-body qlcv" id="table-task-template">
-                    {<ModalViewTaskTemplate taskTemplateId={this.state.currentViewRow} />}
-                    {<ModalEditTaskTemplate taskTemplate={this.state.currentEditRow} taskTemplateId={this.state.currentEditRowId} />}
+                    {
+                        currentViewRow && 
+                        <ModalViewTaskTemplate 
+                            taskTemplateId={currentViewRow} 
+                        />
+                    }
+                    {
+                        currentEditRow && 
+                        <ModalEditTaskTemplate 
+                            taskTemplate={currentEditRow} 
+                            taskTemplateId={currentEditRowId} 
+                        />
+                    }
 
-                    {<TaskTemplateImportForm />}
-                    {<ExportExcel id="export-taskTemplate" exportData={exportData} style={{ marginLeft: 5 }} />}
+                    <TaskTemplateImportForm />
+                    <ExportExcel id="export-taskTemplate" exportData={exportData} style={{ marginLeft: 5 }} />
                     {/**Kiểm tra xem role hiện tại có quyền thêm mới mẫu công việc không(chỉ trưởng đơn vị) */}
                     {this.checkHasComponent('create-task-template-button') &&
                         <React.Fragment>
@@ -180,14 +189,14 @@ class TaskTemplate extends Component {
     }
 
     /**Cập nhật số dòng trên một trang hiển thị */
-    setLimit = async (limit) => {
+    setLimit = (limit) => {
         let {perPage, unit, name} = this.state;
-        if (Number(limit) !== perPage) {
+        if (limit !== perPage) {
             this.setState({
                 perPage: limit,
                 currentPage: 1
             });
-            this.props.getTaskTemplateByUser(1, limit, unit, this.name.value);
+            this.props.getTaskTemplateByUser(1, limit, unit, name);
         }
     }
 
@@ -210,29 +219,26 @@ class TaskTemplate extends Component {
         }
     }
 
-    /**Khi người dùng chuyển trang, update state số trang mới */
-    updateCurrentPage = (number) => {
-        this.setState({
-            currentPage: number
-        });
-    }
-
     /**Khi người dùng chuyển trang, update data của trang mới đó */
-    handleGetDataPagination = async (index) => {
-        var test = window.$("#multiSelectUnit").val();
-        var oldCurrentPage = this.state.currentPage;
-        await this.updateCurrentPage(index);
-        if (oldCurrentPage !== index) this.props.getTaskTemplateByUser(index, this.state.perPage, test, this.name.value);
+    handleGetDataPagination = async (number) => {
+        let { currentPage, perPage, name } = this.state;
+        let units = window.$("#multiSelectUnit").val();
+        if (currentPage !== number){
+            this.setState({
+                currentPage: number
+            });
+            this.props.getTaskTemplateByUser(number, perPage, units, name);
+        }
     }
 
     /**Khi có hành động thay đổi data(thêm sửa xóa 1 mẫu công việc...), Hiển thị dữ liệu về trang 1 */
     handleUpdateData = () => {
         let { perPage, name } = this.state;
-        var test = window.$("#multiSelectUnit").val();
-        this.props.getTaskTemplateByUser(1, perPage, test, name);
-        this.setState({
-            urrentPage: 1
-        })
+        let units = window.$("#multiSelectUnit").val();
+        this.setState({ 
+            currentPage: 1
+        });
+        this.props.getTaskTemplateByUser(1, perPage, units, name);
     }
 
     /**Xoa tasktemplate theo id */
@@ -287,39 +293,31 @@ class TaskTemplate extends Component {
     }
 
     /**Hiển thị số thứ tự của trang đang xem ở paginate bar */
-    setPage = async (pageTotal) => {
-        var test = window.$("#multiSelectUnit").val();
-        var oldCurrentPage = this.state.currentPage;
-        await this.setState(state => {
-            return {
-                ...state,
-                currentPage: pageTotal
-            }
-        })
-        var newCurrentPage = this.state.currentPage;
-        if (oldCurrentPage !== newCurrentPage) this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, test, this.name.value);
+    setPage = async (number) => {
+        let {currentPage, perPage, name} = this.state;
+        let units = window.$("#multiSelectUnit").val();
+        if (currentPage !== number){
+            this.setState({
+                currentPage: number
+            });
+            this.props.getTaskTemplateByUser(number, perPage, units, name);
+        }
     }
 
     /**Mở modal xem thông tin chi tiết 1 mẫu công việc */
     handleView = async (taskTemplateId) => {
-        await this.setState(state => {
-            return {
-                ...state,
-                currentViewRow: taskTemplateId
-            }
-        })
+        await this.setState({
+            currentViewRow: taskTemplateId
+        });
         window.$('#modal-view-tasktemplate').modal('show');
     }
 
     /**Mở modal chỉnh sửa 1 mẫu công việc */
     handleEdit = async (taskTemplate) => {
-        await this.setState(state => {
-            return {
-                ...state,
+        await this.setState({
                 currentEditRow: taskTemplate,
                 currentEditRowId: taskTemplate._id,
-            }
-        })
+            });
         window.$('#modal-edit-task-template').modal('show');
     }
 
@@ -374,27 +372,30 @@ class TaskTemplate extends Component {
                     numberOfUse = x.numberOfUse;
                 }
                 let readByEmployees = [], responsibleEmployees = [], accountableEmployees = [], consultedEmployees = [], informedEmployees = [];
-                if (x.readByEmployees) {
+                
+                if (x.readByEmployees && x.readByEmployees[0]) {
                     readByEmployees = x.readByEmployees.map(item => item.name);
+                    if (length < readByEmployees.length) {
+                        length = readByEmployees.length
+                    }
                 }
-                if (x.responsibleEmployees) {
+                if (x.responsibleEmployees && x.responsibleEmployees[0]) {
                     responsibleEmployees = x.responsibleEmployees.map(item => item.name);
                 }
-                if (x.accountableEmployees) {
+                if (x.accountableEmployees && x.accountableEmployees[0]) {
                     accountableEmployees = x.accountableEmployees.map(item => item.name);
                 }
-                if (x.consultedEmployees) {
+                if (x.consultedEmployees && x.consultedEmployees[0]) {
                     consultedEmployees = x.consultedEmployees.map(item => item.name);
                 }
-                if (x.informedEmployees) {
+                if (x.informedEmployees && x.informedEmployees[0]) {
                     informedEmployees = x.informedEmployees.map(item => item.name);
                 }
                 let out = { STT: k + 1,
                     name: x.name,
                     description: x.description,
                     numberOfUse: numberOfUse,
-                    creator: x.creator.email,
-                    readByEmployees: readByEmployees.join(', '),
+                    readByEmployees: readByEmployees[0],
                     responsibleEmployees: responsibleEmployees.join(', '),
                     accountableEmployees: accountableEmployees.join(', '),
                     consultedEmployees: consultedEmployees.join(', '),
@@ -417,8 +418,7 @@ class TaskTemplate extends Component {
                             name: "",
                             description: "",
                             numberOfUse: "",
-                            creator: "",
-                            readByEmployees: "",
+                            readByEmployees: readByEmployees[i],
                             responsibleEmployees: "",
                             accountableEmployees: "",
                             consultedEmployees: "",
@@ -464,15 +464,15 @@ class TaskTemplate extends Component {
                                 { key: "STT", value: "STT" },
                                 { key: "name", value: "Tên mẫu" },
                                 { key: "description", value: "Mô tả" },
+                                { key: "organizationalUnits", value: "Đơn vị" },
                                 { key: "numberOfUse", value: "Số lần sử dụng" },
-                                { key: "creator", value: "Người tạo mẫu" },
+                                // { key: "creator", value: "Người tạo mẫu" },
                                 { key: "readByEmployees", value: "Người được xem" },
+                                { key: "priority", value: "Độ ưu tiên" },
                                 { key: "responsibleEmployees", value: "Người thực hiện" },
                                 { key: "accountableEmployees", value: "Người phê duyệt" },
                                 { key: "consultedEmployees", value: "Người hỗ trợ" },
                                 { key: "informedEmployees", value: "Người quan sát" },
-                                { key: "organizationalUnits", value: "Phòng ban" },
-                                { key: "priority", value: "Độ ưu tiên" },
                                 { key: "formula", value: "Công thức tính điểm" },
                                 { key: "actionName", value: "Tên hoạt động" },
                                 { key: "actionDescription", value: "Mô tả hoạt động" },

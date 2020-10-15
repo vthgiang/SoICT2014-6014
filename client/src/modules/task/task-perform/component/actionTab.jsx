@@ -19,6 +19,7 @@ import { SubTaskTab } from './subTaskTab';
 import { ViewProcess } from '../../task-process/component/task-process-management/viewProcess';
 import { IncomingDataTab } from './incomingDataTab';
 import { OutgoingDataTab } from './outgoingDataTab';
+import parse from 'html-react-parser';
 
 class ActionTab extends Component {
     constructor(props) {
@@ -44,8 +45,7 @@ class ActionTab extends Component {
             editTaskComment: "",
             editCommentOfTaskComment: "",
             pauseTimer: false,
-            showChildComment: "",
-            showChildTaskComment: "",
+            showChildComment: [],
             showEvaluations: [],
             newAction: {
                 creator: idUser,
@@ -124,7 +124,9 @@ class ActionTab extends Component {
         this.descriptionFile = []
 
     }
-
+    componentDidMount = () => {
+        this.props.getAllPreceedingTasks(this.props.id)
+    }
     shouldComponentUpdate = (nextProps, nextState) => {
         if (nextProps.id !== this.state.id) {
             this.setState(state => {
@@ -210,41 +212,23 @@ class ActionTab extends Component {
         })
     }
     handleShowChildComment = async (id) => {
-        let { showChildComment } = this.state;
-        if (showChildComment === id) {
-            await this.setState(state => {
+        let a;
+        if (this.state.showChildComment.some(obj => obj === id)) {
+            a = this.state.showChildComment.filter(x => x !== id);
+            this.setState(state => {
                 return {
                     ...state,
-                    showChildComment: ""
+                    showChildComment: a
                 }
             })
         } else {
-            await this.setState(state => {
+            this.setState(state => {
                 return {
                     ...state,
-                    showChildComment: id
+                    showChildComment: [...this.state.showChildComment, id]
                 }
             })
         }
-    }
-    handleShowChildTaskComment = async (id) => {
-        let { showChildTaskComment } = this.state;
-        if (showChildTaskComment === id) {
-            await this.setState(state => {
-                return {
-                    ...state,
-                    showChildTaskComment: ""
-                }
-            })
-        } else {
-            await this.setState(state => {
-                return {
-                    ...state,
-                    showChildTaskComment: id
-                }
-            })
-        }
-
     }
     handleEditCommentOfTaskComment = async (id) => {
         await this.setState(state => {
@@ -704,8 +688,9 @@ class ActionTab extends Component {
     }
     handleShowFile = (id) => {
         let a;
-        if (this.state.showFile.some(obj => obj === id)) {
-            a = this.state.showFile.filter(x => x !== id);
+        let { showFile } = this.state
+        if (showFile.some(obj => obj === id)) {
+            a = showFile.filter(x => x !== id);
             this.setState(state => {
                 return {
                     ...state,
@@ -821,7 +806,7 @@ class ActionTab extends Component {
         const subtasks = tasks.subtasks;
         const {
             showEvaluations, selected, comment, editComment, showChildComment, editAction, action,
-            editTaskComment, showChildTaskComment, showEditTaskFile,
+            editTaskComment, showEditTaskFile,
             editCommentOfTaskComment, valueRating, currentUser, hover, fileTaskEdited,
             showFile, deleteFile, taskFiles, newActionEdited, newCommentOfActionEdited, newAction,
             newCommentOfAction, newTaskCommentEdited, newCommentOfTaskComment, newTaskComment, newCommentOfTaskCommentEdited
@@ -882,10 +867,9 @@ class ActionTab extends Component {
                                                             item.name && <b>{item.name} </b>}
                                                         {item.description.split('\n').map((item, idx) => {
                                                             return (
-                                                                <span key={idx}>
-                                                                    {item}
-                                                                    <br />
-                                                                </span>
+                                                                <div key={idx}>
+                                                                    {parse(item)}
+                                                                </div>
                                                             );
                                                         })
                                                         }
@@ -911,7 +895,7 @@ class ActionTab extends Component {
                                                         {/* Các chức năng tương tác với action */}
                                                         {item.creator &&
                                                             <React.Fragment>
-                                                                {item.evaluations && item.evaluations.length > 0 && <li><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => { this.handleShowEvaluations(item._id) }}><i className="fa fa-thumbs-o-up margin-r-5"></i>{translate("task.task_perform.evaluation")} ({item.evaluations && item.evaluations.length})</a></li>}
+                                                                {item.evaluations && <li><a style={{ cursor: "pointer", pointerEvents: item.evaluations.length > 0 ? "" : "none" }} className="link-black text-sm" onClick={() => { this.handleShowEvaluations(item._id) }}><i className="fa fa-thumbs-o-up margin-r-5"></i>{translate("task.task_perform.evaluation")} ({item.evaluations && item.evaluations.length})</a></li>}
                                                                 {(role === "accountable" || role === "consulted" || role === "creator" || role === "informed") &&
                                                                     <li style={{ display: "inline-table" }} className="list-inline">
                                                                         {(
@@ -948,7 +932,6 @@ class ActionTab extends Component {
                                                     </ul>
                                                     <div className="tool-level1" style={{ paddingLeft: 5 }}>
                                                         {/* Các kết quả đánh giá của action */}
-
                                                         {showEvaluations.some(obj => obj === item._id) &&
                                                             <div style={{ marginBottom: "10px" }}>
                                                                 <ul className="list-inline">
@@ -1051,7 +1034,7 @@ class ActionTab extends Component {
                                             }
 
                                             {/* Hiển thị bình luận cho hoạt động */}
-                                            {showChildComment === item._id &&
+                                            {showChildComment.some(obj => obj === item._id) &&
                                                 <div>
                                                     {item.comments.map(child => {
                                                         return <div key={child._id}>
@@ -1082,7 +1065,7 @@ class ActionTab extends Component {
                                                                     </div>
                                                                     <ul className="list-inline tool-level2">
                                                                         <li><span className="text-sm">{<DateTimeConverter dateTime={child.createdAt} />}</span></li>
-                                                                        {child.files && child.files.length>0 &&
+                                                                        {child.files && child.files.length > 0 &&
                                                                             <li style={{ display: "inline-table" }}>
                                                                                 <div><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => this.handleShowFile(child._id)}><b><i className="fa fa-paperclip" aria-hidden="true"> {translate("task.task_perform.file_attach")} ({child.files && child.files.length})</i></b></a></div>
                                                                             </li>
@@ -1154,6 +1137,7 @@ class ActionTab extends Component {
                                                         />
 
                                                         <ContentMaker
+                                                            id={item.comments[0]._id}
                                                             inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
                                                             onFilesChange={this.onCommentFilesChange}
                                                             onFilesError={this.onFilesError}
@@ -1187,7 +1171,6 @@ class ActionTab extends Component {
                                         text={newAction.description}
                                         placeholder={translate("task.task_perform.enter_action")}
                                         submitButtonText={translate("task.task_perform.create_action")}
-                                        //onKeyPress = {this.pressEnter}
                                         onTextChange={(e) => {
                                             let value = e.target.value;
                                             this.setState(state => {
@@ -1232,7 +1215,7 @@ class ActionTab extends Component {
 
                                                     <ul className="list-inline tool-level1">
                                                         <li><span className="text-sm">{<DateTimeConverter dateTime={item.createdAt} />}</span></li>
-                                                        <li><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => this.handleShowChildTaskComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> {translate("task.task_perform.comment")} ({item.comments.length}) &nbsp;</a></li>
+                                                        <li><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> {translate("task.task_perform.comment")} ({item.comments.length}) &nbsp;</a></li>
                                                         {item.files.length > 0 &&
                                                             <React.Fragment>
                                                                 <li style={{ display: "inline-table" }}>
@@ -1295,7 +1278,7 @@ class ActionTab extends Component {
                                             }
 
                                             {/* Hiển thị bình luận cho bình luận */}
-                                            {showChildTaskComment === item._id &&
+                                            {showChildComment.some(x => x === item._id) &&
                                                 <div className="comment-content-child">
                                                     {item.comments.map(child => {
                                                         return <div key={child._id}>
@@ -1393,7 +1376,7 @@ class ActionTab extends Component {
                                                     }
                                                     {/*Thêm bình luận cho bình luận */}
                                                     <div>
-                                                    <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
+                                                        <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
                                                         <ContentMaker
                                                             inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
                                                             onFilesChange={this.onCommentOfTaskCommentFilesChange}
@@ -1466,10 +1449,10 @@ class ActionTab extends Component {
                                                             {item.description}
                                                         </div>
                                                         <div>
-                                                            {showFile.some(obj => obj === item._id) ? 
-                                                                <a style={{cursor: 'pointer'}} onClick={() => { this.handleShowFile(item._id) }}>Ẩn bớt<i className='fa fa-angle-double-up'></i></a> 
+                                                            {showFile.some(obj => obj === item._id) ?
+                                                                <a style={{ cursor: 'pointer' }} onClick={() => { this.handleShowFile(item._id) }}>Ẩn bớt<i className='fa fa-angle-double-up'></i></a>
                                                                 :
-                                                                <a style={{cursor: 'pointer'}} onClick={() => { this.handleShowFile(item._id) }}>Hiển thị {item?.files?.length} tài liệu &nbsp; <i className='fa fa-angle-double-down'></i> </a>
+                                                                <a style={{ cursor: 'pointer' }} onClick={() => { this.handleShowFile(item._id) }}>Hiển thị {item?.files?.length} tài liệu &nbsp; <i className='fa fa-angle-double-down'></i> </a>
                                                             }
                                                         </div>
                                                         {showFile.some(obj => obj === item._id) &&
@@ -1487,7 +1470,7 @@ class ActionTab extends Component {
                                                                                         requestDownloadFile={this.requestDownloadFile}
                                                                                     />
                                                                                     :
-                                                                                    <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
+                                                                                    <a style={{ cursor: "pointer", marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
                                                                                 }
 
                                                                             </div>
@@ -1501,7 +1484,7 @@ class ActionTab extends Component {
                                                 {showEditTaskFile === item._id &&
                                                     <React.Fragment>
                                                         <div style={{ marginTop: '15px' }}>
-                                                        <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
+                                                            <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
                                                             <ContentMaker
                                                                 inputCssClass="text-input-level1" controlCssClass="tool-level2 row"
                                                                 onFilesChange={this.onEditFileTask}
@@ -1594,7 +1577,6 @@ class ActionTab extends Component {
                         </div>
 
                         {/* Chuyển qua tab quy trình */}
-
                         <div className={selected === "process" ? "active tab-pane" : "tab-pane"} id="process">
                             {(task && task.process) &&
                                 <div>
@@ -1610,18 +1592,16 @@ class ActionTab extends Component {
                                             creator={task && task.process.creator}
                                         />
                                     }
-
                                 </div>
                             }
                         </div>
-
-
                         {/* Dữ liệu vào */}
                         <div className={selected === "incoming-data" ? "active tab-pane" : "tab-pane"} id="incoming-data">
                             {
                                 (task && task.process) &&
                                 <React.Fragment>
                                     <IncomingDataTab
+                                        taskId={task._id}
                                         preceedingTasks={task.preceedingTasks}
                                     />
 
@@ -1682,7 +1662,8 @@ const actionCreators = {
     getTaskLog: performTaskAction.getTaskLog,
     deleteFileTask: performTaskAction.deleteFileTask,
     deleteDocument: performTaskAction.deleteDocument,
-    editDocument: performTaskAction.editDocument
+    editDocument: performTaskAction.editDocument,
+    getAllPreceedingTasks: performTaskAction.getAllPreceedingTasks
 };
 
 const actionTab = connect(mapState, actionCreators)(withTranslate(ActionTab));

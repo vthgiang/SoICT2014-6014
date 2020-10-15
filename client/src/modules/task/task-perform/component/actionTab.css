@@ -329,3 +329,7 @@ to {transform:scale(1)}
 .list-name-document {
     margin-bottom: -5px;
 }
+
+.comment-process {
+    line-height: normal !important;
+}
