@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal } from '../../../../common-components';
-
 import { taskTemplateActions } from '../redux/actions';
 import { ViewTaskTemplate } from './viewTaskTemplate';
 
