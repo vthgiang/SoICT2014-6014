@@ -50,7 +50,6 @@ class ContentMaker extends Component {
             onSubmit, submitButtonText, disabledSubmit,
             inputCssClass, controlCssClass, defaultValue, handleEdit, cancelButtonText, styletext, onKeyPress, id
         } = this.props
-        console.log(id)
         return (
             <React.Fragment>
                 <Files
@@ -73,7 +72,6 @@ class ContentMaker extends Component {
                             onDragLeave={this.handleDragLeave}
                             onDrop={this.handleDragLeave}
                             value={text}
-                            style={styletext}
                             defaultValue={defaultValue}
                             onChange={onTextChange}
                             onKeyPress={this.pressEnter}

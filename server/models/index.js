@@ -92,4 +92,7 @@ module.exports = {
 
     // Example
     Example: require('./example/example.model'),
+
+    // production-manufacturing
+    ManufacturingMill: require('./production/manufacturing/manufacturingMill.model')
 }

@@ -14,7 +14,7 @@ class TableComponent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            limit: 5,
+            limit: 10,
             page: 1,
             option: 'name', // Mặc định tìm kiếm theo tên
             value: ''
@@ -103,7 +103,7 @@ class TableComponent extends Component {
                 </table>
 
                 {/* PaginateBar */}
-                <PaginateBar pageTotal={component.totalPages} currentPage={component.page} func={this.setPage} />
+                <PaginateBar display={component.listPaginate.length} total={component.list.length}  pageTotal={component.totalPages} currentPage={component.page} func={this.setPage} />
 
             </React.Fragment>
         );

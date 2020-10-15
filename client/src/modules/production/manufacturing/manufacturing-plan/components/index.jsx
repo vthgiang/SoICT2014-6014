@@ -14,21 +14,20 @@ class ManufacturingPlan extends Component {
         return (
             <div className="nav-tabs-custom">
                 <ul className="nav nav-tabs">
-                    <li className="active"><a href="#list-manufacturing-order" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Đơn hàng sản xuất</a></li>
-                    <li><a href="#list-manufacturing-plan" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Kế hoạch sản xuất</a></li>
+                    <li className="active"><a href="#list-manufacturing-plan" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Kế hoạch sản xuất</a></li>
+                    <li ><a href="#list-manufacturing-order" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Đơn hàng sản xuất</a></li>
                 </ul>
                 <div className="tab-content">
-                    <div className="tab-pane active" id="list-manufacturing-order">
-                        <LazyLoadComponent
-                        >
-                            <ManufacturingOrderList />
-                        </LazyLoadComponent>
-                    </div>
-
-                    <div className="tab-pane" id="list-manufacturing-plan">
+                    <div className="tab-pane active" id="list-manufacturing-plan">
                         <LazyLoadComponent
                         >
                             <ManufacturingPLanList />
+                        </LazyLoadComponent>
+                    </div>
+                    <div className="tab-pane" id="list-manufacturing-order">
+                        <LazyLoadComponent
+                        >
+                            <ManufacturingOrderList />
                         </LazyLoadComponent>
                     </div>
                 </div>

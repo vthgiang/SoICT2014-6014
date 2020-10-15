@@ -7,6 +7,7 @@ import ValidationHelper from '../../../../helpers/validationHelper';
 import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
 
 import GeneralTabEditForm from './generalTabEditForm';
+import './customer.css';
 
 class CrmCustomerEdit extends Component {
     constructor(props) {
@@ -20,7 +21,7 @@ class CrmCustomerEdit extends Component {
 
     render() {
         const { translate, crm, user } = this.props;
-        const { editingCustomer } = this.state;
+        const { editingCustomer, customerIdEdit, dataStatus } = this.state;
         const { groups } = crm;
 
         // Lấy thành viên trong đơn vị
@@ -33,8 +34,9 @@ class CrmCustomerEdit extends Component {
         let listGroups;
         if (groups.list && groups.list.length > 0) {
             listGroups = groups.list.map(x => { return { value: x._id, text: x.name } })
-            listGroups.unshift({ value: '', text: 'Chọn nhóm khách hàng' });
+            listGroups.unshift({ value: '', text: '---chọn---' });
         }
+
         return (
             <React.Fragment>
                 <DialogModal
@@ -53,11 +55,15 @@ class CrmCustomerEdit extends Component {
                         </ul>
                         <div className="tab-content">
                             {/* Tab thông tin chung */}
-                            <GeneralTabEditForm
-                                id={"customer-general-edit-form"}
-                                callBackFromParentEditForm={this.myCallBack}
-                                editingCustomer={editingCustomer}
-                            />
+                            {
+                                editingCustomer && dataStatus === 3 &&
+                                <GeneralTabEditForm
+                                    id={"customer-general-edit-form"}
+                                    callBackFromParentEditForm={this.myCallBack}
+                                    editingCustomer={editingCustomer}
+                                    customerIdEdit={customerIdEdit}
+                                />
+                            }
 
                             {/* Tab file liên quan đến khách hàng */}
                             <div id="Customer-fileAttachment" className="tab-pane">
@@ -78,24 +84,6 @@ class CrmCustomerEdit extends Component {
                 [name]: value,
             }
         })
-    }
-
-
-    formatDate(date, monthYear = false) {
-        if (date) {
-            let d = new Date(date),
-                month = '' + (d.getMonth() + 1),
-                day = '' + d.getDate(),
-                year = d.getFullYear();
-
-            if (month.length < 2) month = '0' + month;
-            if (day.length < 2) day = '0' + day;
-
-            if (monthYear === true) {
-                return [month, year].join('-');
-            } else return [day, month, year].join('-');
-        }
-        return date
     }
 
     isFormValidated = () => {
@@ -133,29 +121,8 @@ class CrmCustomerEdit extends Component {
         let { editingCustomer } = this.state;
         if (this.state.dataStatus === this.DATA_STATUS.QUERYING && !nextProps.crm.customers.isLoading) {
             let customer = nextProps.crm.customers.customerById;
-            editingCustomer = {
-                ...editingCustomer,
-                owner: customer && customer.owner.map(o => o._id),
-                code: customer && customer.code,
-                name: customer && customer.name,
-                company: customer && customer.company,
-                creator: customer && customer.creator,
-                gender: customer && customer.gender,
-                taxNumber: customer && customer.taxNumber,
-                customerSource: customer && customer.customerSource,
-                companyEstablishmentDate: customer && this.formatDate(customer.companyEstablishmentDate),
-                birthDate: customer && this.formatDate(customer.birthDate),
-                telephoneNumber: customer && customer.telephoneNumber,
-                mobilephoneNumber: customer && customer.mobilephoneNumber,
-                email: customer && customer.email,
-                email2: customer && customer.email2,
-                group: customer && customer.group,
-                address: customer && customer.address,
-                address2: customer && customer.address2,
-                location: customer && customer.location,
-                website: customer && customer.website,
-                linkedIn: customer && customer.linkedIn,
-            }
+            editingCustomer = { ...customer }
+
             this.setState({
                 dataStatus: this.DATA_STATUS.AVAILABLE,
                 editingCustomer,

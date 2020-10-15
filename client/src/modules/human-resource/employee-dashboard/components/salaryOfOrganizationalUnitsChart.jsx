@@ -1,3 +1,4 @@
+/* Biểu đồ thể hiện lương thưởng các đơn vị trong công ty */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
@@ -35,6 +36,9 @@ class SalaryOfOrganizationalUnitsChart extends Component {
                 columns: [],
                 hide: true,
                 type: 'bar',
+            },
+            size: {
+                height: 400
             },
             axis: {
                 rotated: true,
@@ -104,12 +108,12 @@ class SalaryOfOrganizationalUnitsChart extends Component {
 
         return (
             <React.Fragment>
-                <div className="box">
+                <div className="box box-solid">
                     <div className="box-header with-border">
                         <h3 className="box-title">{`Biểu đồ lương thưởng các đơn vị trong công ty ${monthShow} `}</h3>
                     </div>
                     <div className="box-body">
-                        <div className="dashboard_box_body">
+                        <div style={{ height: 420 }}>
                             <p className="pull-right" style={{ marginBottom: 0 }} > < b > ĐV tính: {data[0] && data[0].unit === 'VND' ? 'Triệu VND' : "1000USD"}</b></p >
                             <div ref="salaryChart"></div>
                         </div>

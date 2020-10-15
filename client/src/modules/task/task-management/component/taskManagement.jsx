@@ -9,6 +9,7 @@ import { performTaskAction } from "../../task-perform/redux/actions";
 import { SelectMulti, DataTableSetting, PaginateBar, TreeTable, SelectBox, DatePicker } from '../../../../common-components';
 import { getStorage } from '../../../../config';
 import Swal from 'sweetalert2';
+import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 
 class TaskManagement extends Component {
     constructor(props) {
@@ -19,10 +20,10 @@ class TaskManagement extends Component {
             currentPage: 1,
 
             currentTab: "responsible",
-            organizationalUnit: '[]',
+            organizationalUnit: [],
             status: ["inprocess", "wait_for_approval"],
-            priority: '[]',
-            special: '[]',
+            priority: [],
+            special: [],
             name: "",
             startDate: "",
             endDate: "",
@@ -40,7 +41,8 @@ class TaskManagement extends Component {
 
     componentDidMount() {
         this.props.getDepartment();
-        this.props.getResponsibleTaskByUser("[]", "1", "20", this.state.status, "[]", "[]", null, null, null, null, null);
+        this.props.getAllDepartment();
+        this.props.getResponsibleTaskByUser([], "1", "20", this.state.status, [], [], null, null, null, null, null);
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -398,9 +400,9 @@ class TaskManagement extends Component {
     }
 
     handleSelectOrganizationalUnit = (value) => {
-        if (value.length === 0) {
-            value = '[]';
-        }
+        // if (value.length === 0) {
+        //     value = '[]';
+        // }
 
         this.setState(state => {
             return {
@@ -411,9 +413,9 @@ class TaskManagement extends Component {
     }
 
     handleSelectStatus = (value) => {
-        if (value.length === 0) {
-            value = '[]';
-        }
+        // if (value.length === 0) {
+        //     value = '[]';
+        // }
 
         this.setState(state => {
             console.log('val-status', value);
@@ -425,9 +427,9 @@ class TaskManagement extends Component {
     }
 
     handleSelectPriority = (value) => {
-        if (value.length === 0) {
-            value = '[]';
-        }
+        // if (value.length === 0) {
+        //     value = '[]';
+        // }
 
         this.setState(state => {
             return {
@@ -438,9 +440,9 @@ class TaskManagement extends Component {
     }
 
     handleSelectSpecial = (value) => {
-        if (value.length === 0) {
-            value = '[]';
-        }
+        // if (value.length === 0) {
+        //     value = '[]';
+        // }
 
         this.setState(state => {
             return {
@@ -757,8 +759,8 @@ class TaskManagement extends Component {
 }
 
 function mapState(state) {
-    const { tasks, user } = state;
-    return { tasks, user };
+    const { tasks, user, department } = state;
+    return { tasks, user, department };
 }
 
 const actionCreators = {
@@ -773,6 +775,7 @@ const actionCreators = {
     getSubTask: taskManagementActions.getSubTask,
     startTimer: performTaskAction.startTimerTask,
     deleteTaskById: taskManagementActions._delete,
+    getAllDepartment: DepartmentActions.get,
 };
 const translateTaskManagement = connect(mapState, actionCreators)(withTranslate(TaskManagement));
 export { translateTaskManagement as TaskManagement };

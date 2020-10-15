@@ -1,3 +1,4 @@
+/* Biểu đồ thể hiện đổ tuổi của nhân viên */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
@@ -194,7 +195,7 @@ class AgePyramidChart extends Component {
         return (
             <React.Fragment>
                 <div ref="chart"></div>
-                <div className="box">
+                <div className="box box-primary">
                     <div className="box-header with-border">
                         <i className="fa fa-bar-chart-o" />
                         <h3 className="box-title">

@@ -40,11 +40,11 @@ class StautsChart extends Component {
         }
 
         dataPieChart = [
-            ["ready_to_use", numberOfReadyToUse],
-            ["in_use", numberOfInUse],
-            ["broken", numberOfBroken],
-            ["lost", numberOfLost],
-            ["disposed", numberOfDisposed],
+            [translate('asset.general_information.ready_use'), numberOfReadyToUse],
+            [translate('asset.general_information.using'), numberOfInUse],
+            [translate('asset.general_information.damaged'), numberOfBroken],
+            [translate('asset.general_information.lost'), numberOfLost],
+            [translate('asset.general_information.disposal'), numberOfDisposed],
         ];
 
         if (getAssetStatusData && listAssets) {
@@ -53,17 +53,6 @@ class StautsChart extends Component {
 
         return dataPieChart;
     }
-
-    // // Hàm xóa biểu đồ trước
-    // removePreviousChart() {
-    //     const chart = this.refs.chart;
-
-    //     if (chart) {
-    //         while (chart.hasChildNodes()) {
-    //             chart.removeChild(chart.lastChild);
-    //         }
-    //     } 
-    // }
 
     // Khởi tạo PieChart bằng C3
     pieChart = () => {
@@ -108,7 +97,6 @@ class StautsChart extends Component {
         const { translate } = this.props;
         const { listAssets } = this.props;
 
-        console.log('call pie chart');
         this.pieChart();
 
         return (

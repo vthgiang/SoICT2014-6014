@@ -35,7 +35,6 @@ class CrmCustomerCreate extends Component {
 
             this.setState({
                 newCustomer: {
-                    ...newCustomer,
                     owner: [auth.user._id],
                 },
             })
@@ -66,11 +65,14 @@ class CrmCustomerCreate extends Component {
                         </ul>
                         <div className="tab-content">
                             {/* Tab thông tin chung */}
-                            <GeneralTabCreateForm
-                                id={"customer-general"}
-                                callBackFromParentCreateForm={this.myCallBack}
-                                newCustomer={newCustomer}
-                            />
+                            {
+                                newCustomer && newCustomer.owner &&
+                                <GeneralTabCreateForm
+                                    id={"customer-general"}
+                                    callBackFromParentCreateForm={this.myCallBack}
+                                    newCustomer={newCustomer}
+                                />
+                            }
 
                             {/* Tab file liên quan đến khách hàng */}
                             <div id="Customer-fileAttachment" className="tab-pane">

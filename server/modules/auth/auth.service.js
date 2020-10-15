@@ -226,8 +226,7 @@ exports.changePassword = async (portal, id, password, new_password) => {
 exports.getLinksThatRoleCanAccess = async (portal, idRole) => {
     const role = await Role(connect(DB_CONNECTION, portal))
         .findById(idRole); //lay duoc role hien tai
-    let roles = [role._id];
-    roles = roles.concat(role.parents);
+    let roles = [role._id, ...role.parents];
     const privilege = await Privilege(connect(DB_CONNECTION, portal))
         .find({ 
             roleId: { $in: roles },

@@ -65,7 +65,7 @@ class EditForm extends Component {
         return null;
     }
     // tìm các node con cháu
-    addNode = (list, node) => {
+    findChildrenNode = (list, node) => {
         let array = [];
         let queue_children = [node];
         while (queue_children.length > 0) {
@@ -87,7 +87,7 @@ class EditForm extends Component {
         // find node child 
         let array = [];
         if (node) {
-            array = this.addNode(list, node);
+            array = this.findChildrenNode(list, node);
         }
 
         this.props.editDocumentArchive(archiveId, {
@@ -116,9 +116,15 @@ class EditForm extends Component {
 
     render() {
         const { translate, documents } = this.props;
-        const { tree, list } = documents.administration.archives;
-        const { archiveId, archiveName, archiveDescription, archiveParent, archivePath, errorName } = this.state;
-        const archives = documents.administration.archives.list;
+        const { list } = documents.administration.archives;
+        const { archiveName, archiveDescription, archiveParent, archivePath, errorName } = this.state;
+        const { unChooseNode } = this.props;
+        let listArchive = [];
+        for (let i in list) {
+            if (!unChooseNode.includes(list[i].id)) {
+                listArchive.push(list[i]);
+            }
+        }
         return (
             <div id="edit-document-archive">
                 <div className={`form-group ${errorName === undefined ? "" : "has-error"}`}>
@@ -128,10 +134,10 @@ class EditForm extends Component {
                 </div>
                 <div className="form-group">
                     <label>{translate('document.administration.archives.parent')}</label>
-                    <TreeSelect data={list} value={[archiveParent]} handleChange={this.handleParent} mode="radioSelect" />
+                    <TreeSelect data={listArchive} value={[archiveParent]} handleChange={this.handleParent} mode="radioSelect" />
                 </div>
                 <div className="form-group">
-                    <strong>{translate('document.administration.domains.path')}&emsp; </strong>
+                    <strong>{translate('document.administration.archives.path_detail')}&emsp; </strong>
                     {archivePath}
                 </div>
                 <div className="form-group">

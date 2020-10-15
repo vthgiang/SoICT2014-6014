@@ -20,8 +20,8 @@ exports.searchTimesheets = async (portal, params, company) => {
     };
 
     // Bắt sựu kiện đơn vị tìm kiếm khác undefined 
-    if (params.organizationalUnit) {
-        let emailInCompany = await EmployeeService.getEmployeeEmailsByOrganizationalUnitsAndPositions(portal, params.organizationalUnit, undefined);
+    if (params.organizationalUnits) {
+        let emailInCompany = await EmployeeService.getEmployeeEmailsByOrganizationalUnitsAndPositions(portal, params.organizationalUnits, undefined);
         keySearchEmployee = {
             ...keySearchEmployee,
             emailInCompany: {
@@ -75,6 +75,104 @@ exports.searchTimesheets = async (portal, params, company) => {
     }
 }
 
+exports.getOvertimeOfUnitsByStartDateAndEndDate = async (portal, organizationalUnits, startDate, endDate, company) => {
+    if (new Date(startDate).getTime() > new Date(endDate).getTime()) {
+        return {
+            arrMonth: [],
+            listOvertimeOfUnitsByStartDateAndEndDate: [],
+        }
+    } else {
+        let endMonth = new Date(endDate).getMonth();
+        let endYear = new Date(endDate).getFullYear();
+        endMonth = endMonth + 1;
+        let arrMonth = [];
+        for (let i = 0;; i++) {
+            let month = endMonth - i;
+            if (month > 0) {
+                if (month.toString().length === 1) {
+                    month = `${endYear}-0${month}-01`;
+                    arrMonth = [...arrMonth, month];
+                } else {
+                    month = `${endYear}-${month}-01`;
+                    arrMonth = [...arrMonth, month];
+                }
+                if (`${startDate}-01` === month) {
+                    break;
+                }
+            } else {
+                let j = 1;
+                for (j;; j++) {
+                    month = month + 12;
+                    if (month > 0) {
+                        break;
+                    }
+                }
+                if (month.toString().length === 1) {
+                    month = `${endYear-j}-0${month}-01`;
+                    arrMonth = [...arrMonth, month];
+                } else {
+                    month = `${endYear-j}-${month}-01`;
+                    arrMonth = [...arrMonth, month];
+                }
+                if (`${startDate}-01` === month) {
+                    break;
+                }
+            }
+        };
+        let arr = arrMonth.map(x => new Date(x));
+        if (organizationalUnits) {
+            let keySearchEmployee, keySearch = {
+                company: company,
+                month: {
+                    $in: arr
+                }
+            };
+            let emailInCompany = await EmployeeService.getEmployeeEmailsByOrganizationalUnitsAndPositions(portal, organizationalUnits, undefined);
+            keySearchEmployee = {
+                ...keySearchEmployee,
+                emailInCompany: {
+                    $in: emailInCompany
+                }
+            };
+            if (keySearchEmployee) {
+                let employeeInfo = await Employee(connect(DB_CONNECTION, portal)).find(keySearchEmployee, {
+                    _id: 1
+                });
+                let employee = employeeInfo.map(x => x._id);
+                if (employee.length !== 0) {
+                    keySearch = {
+                        ...keySearch,
+                        employee: {
+                            $in: employee
+                        }
+                    }
+                }
+            }
+            let listOvertimeOfUnitsByStartDateAndEndDate = await Timesheet(connect(DB_CONNECTION, portal)).find(keySearch, {
+                totalHoursOff: 1,
+                month: 1
+            });
+            return {
+                listOvertimeOfUnitsByStartDateAndEndDate,
+                arrMonth
+            }
+        } else {
+            let listOvertimeOfUnitsByStartDateAndEndDate = await Timesheet(connect(DB_CONNECTION, portal)).find({
+                month: {
+                    $in: arr
+                }
+            }, {
+                totalHoursOff: 1,
+                month: 1
+            });
+            return {
+                listOvertimeOfUnitsByStartDateAndEndDate,
+                arrMonth
+            }
+        }
+    }
+}
+
 /**
  * Tạo mới thông tin chấm công
  * @param {*} data : Dữ liệu chấm công
@@ -117,7 +215,13 @@ exports.createTimesheets = async (portal, data, company) => {
             let shift2s = timekeepingByShift.shift2s.map(x => x ? timeShift2 : 0);
             let shift3s = timekeepingByShift.shift3s.map(x => x ? timeShift3 : 0);
             let timekeepingByHours = shift1s.map((x, index) => x + shift2s[index] + shift3s[index]);
-            let totalHours = 0;
+            let totalHours = 0,
+                totalOverTimeHours = 0;
+            timekeepingByShift.shift3s.forEach(x => {
+                if (x) {
+                    totalOverTimeHours = totalOverTimeHours + timeShift3;
+                }
+            });
             timekeepingByHours.forEach(x => {
                 totalHours = totalHours + x;
             })
@@ -127,6 +231,7 @@ exports.createTimesheets = async (portal, data, company) => {
                 company: company,
                 month: month,
                 totalHours: totalHours,
+                totalHoursOff: 0 - totalOverTimeHours,
                 timekeepingByHours: timekeepingByHours,
                 timekeepingByShift: data.timekeepingByShift,
 
@@ -135,7 +240,7 @@ exports.createTimesheets = async (portal, data, company) => {
             let totalHours = 0;
             data.timekeepingByHours.forEach(x => {
                 totalHours = totalHours + parseInt(x);
-            })
+            });
 
             // Thêm thông tin chấm công
             createTimesheets = await Timesheet(connect(DB_CONNECTION, portal)).create({
@@ -143,6 +248,7 @@ exports.createTimesheets = async (portal, data, company) => {
                 company: company,
                 month: month,
                 totalHours: totalHours,
+                totalHoursOff: data.totalHoursOff,
                 timekeepingByHours: data.timekeepingByHours,
             });
         }
@@ -198,26 +304,34 @@ exports.updateTimesheets = async (portal, id, data) => {
         let shift2s = timekeepingByShift.shift2s.map(x => x ? timeShift2 : 0);
         let shift3s = timekeepingByShift.shift3s.map(x => x ? timeShift3 : 0);
         let timekeepingByHours = shift1s.map((x, index) => x + shift2s[index] + shift3s[index]);
-        let totalHours = 0;
+        let totalHours = 0,
+            totalOverTimeHours = 0;
         timekeepingByHours.forEach(x => {
             totalHours = totalHours + x;
-        })
+        });
+        timekeepingByShift.shift3s.forEach(x => {
+            if (x) {
+                totalOverTimeHours = totalOverTimeHours + timeShift3;
+            }
+        });
 
         // Cập nhật thông tin chấm công
         let infoTimesheets = await Timesheet(connect(DB_CONNECTION, portal)).findById(id);
         infoTimesheets.totalHours = totalHours;
+        infoTimesheets.totalHoursOff = 0 - totalOverTimeHours;
         infoTimesheets.timekeepingByShift = data.timekeepingByShift;
         infoTimesheets.timekeepingByHours = timekeepingByHours;
         await infoTimesheets.save();
+
     } else if (timekeepingType === "hours") {
         let totalHours = 0;
         data.timekeepingByHours.forEach(x => {
             totalHours = totalHours + parseInt(x);
         })
-
         // Cập nhật thông tin chấm công
         let infoTimesheets = await Timesheet(connect(DB_CONNECTION, portal)).findById(id);
         infoTimesheets.totalHours = totalHours;
+        infoTimesheets.totalHoursOff = data.totalHoursOff;
         infoTimesheets.timekeepingByHours = data.timekeepingByHours;
         await infoTimesheets.save();
     }
@@ -308,14 +422,21 @@ exports.importTimesheets = async (portal, data, company) => {
                 let shift2s = timekeepingByShift.shift2s.map(x => x ? timeShift2 : 0);
                 let shift3s = timekeepingByShift.shift3s.map(x => x ? timeShift3 : 0);
                 let timekeepingByHours = shift1s.map((x, index) => x + shift2s[index] + shift3s[index]);
-                let totalHours = 0;
+                let totalHours = 0,
+                    totalOverTimeHours = 0;
                 timekeepingByHours.forEach(x => {
                     totalHours = totalHours + x;
+                });
+                timekeepingByShift.shift3s.forEach(x => {
+                    if (x) {
+                        totalOverTimeHours = totalOverTimeHours + timeShift3;
+                    }
                 });
 
                 return {
                     ...y,
                     totalHours: totalHours,
+                    totalHoursOff: 0 - totalOverTimeHours,
                     timekeepingByHours: timekeepingByHours
                 }
             })

@@ -7,6 +7,7 @@ export default {
          * @module_name phần tự định nghĩa ngôn ngữ riêng của từng module khác nhau
          *******************************************************/
         general: {
+            show: 'Show ',
             table: 'Table',
             scroll: 'Scroll bar',
             upload: 'Upload',
@@ -768,7 +769,11 @@ export default {
             manage_sales_order: 'Sales Order',
             manage_manufacturing_order: 'Manufacturing Order',
             manage_purchase_order: 'PurchaseOrder',
-            manage_quotation: 'Quotation',
+            manage_quoter: 'Quoter',
+            manage_quoter_dashboard: 'Quoter Dashboard',
+            manage_sales_order_dashboard: 'Sales Order Dashboard',
+            manage_purchase_order_dashboard: 'Purchase Order Dashboard ',
+            manage_manufacturing_order_dashboard: 'Manufacturing Order Dashboard',
             manage_discount: 'Discount',
             manage_tax: 'Tax',
             manage_sla: 'Service Level Agreement',
@@ -788,7 +793,7 @@ export default {
             manage_manufacturing_process: "Quản lý tiến độ sản xuất",
             manage_manufacturing_schedule: "Quản lý lịch sản xuất",
             manage_purchasing_request: "Quản lý phiếu mua hàng",
-            track_order: "Theo dõi đơn hàng",
+            manufacturing_dashboard: "Dashboard Quản lý sản xuất",
             analysis_manufacturing_performance: "Phân tích hiệu suất sản xuất",
             manage_manufacturing_works: "Quản lý nhà máy sản xuất",
             manage_manufacturing_mill: "Quản lý xưởng sản xuất"
@@ -919,6 +924,16 @@ export default {
 
         // Modules cấu hình các chức năng
         module_configuration: {
+            timekeeping_type: 'Timekeeping type',
+            contract_notice_time: 'Notice of contract expiration (date)',
+            contract_notice_time_title: 'Notice advance of contract expiration',
+            shift1_time: 'Number hours of shift 1 (hour)',
+            shift2_time: 'Number hours of shift 2 (hour)',
+            shift3_time: 'Number hours of overtime (hour)',
+
+            shift: 'Timekeeping by shift',
+            hours: 'Timekeeping by the hour',
+            shift_and_hour: 'Timekeeping by shift and hour',
 
             // Thông điệp trả về từ server
             get_configuration_success: 'Get configuration success',
@@ -1430,6 +1445,7 @@ export default {
                     contract_lable: 'Contract expiration',
                     contract_lable_title: 'Contract expiration',
                     contract_type_title: 'Type of contract',
+                    employee_infor: 'Employee information',
 
                     // Nhóm dành cho action
                     view_employee: 'View employee',
@@ -1539,7 +1555,7 @@ export default {
                 shift_work: 'Shift work',
                 shifts1: 'Shifts 1',
                 shifts2: 'Shifts 2',
-                shifts2: 'Shifts 3',
+                shifts3: 'Overtime',
                 date_of_month: 'The days of the month',
 
                 // Nhóm dành cho action
@@ -1850,6 +1866,8 @@ export default {
                 incident_asset: 'Statistics incident asset chart',
                 maintenance_asset: 'Statistics maintenance asset chart',
                 statistic_by: 'Statistic by',
+                expired: 'Exprired',
+                remaining_time: 'Remaining time',
             },
 
             //  Quản lý loại tài sản
@@ -1875,8 +1893,8 @@ export default {
                 field_name: 'Name of properties',
                 value: 'Value',
 
-                usage_logs: 'Allocation history - transfer - withdrawal',
-                maintainance_logs: 'Repair history - replacement - upgrade',
+                usage_logs: 'Usage log',
+                maintainance_logs: 'Maintainance logs',
                 incident_list: 'Asset incident list',
                 file_list: 'List of documents attached',
                 edit_document: 'Edit documents attached',

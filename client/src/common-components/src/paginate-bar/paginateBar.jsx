@@ -39,7 +39,10 @@ class PaginateBar extends Component {
     }
 
     render() {
-        const { pageTotal, currentPage, translate, func, id = "search-page" } = this.props;
+        const { 
+            pageTotal, currentPage, translate, func, id = "search-page", 
+            total=undefined, display=undefined
+        } = this.props;
         var items = [];
 
         if (typeof pageTotal !== "undefined" && pageTotal > 5) {
@@ -75,19 +78,30 @@ class PaginateBar extends Component {
                 {
                     (pageTotal && pageTotal !== 0) ?
                         <div className="row" style={{ paddingRight: '15px' }}>
-                            <div className="pull-right">
-                                <ul className="pagination" style={{ marginTop: '20px' }}>
-                                    {currentPage !== 1 && <li><a href="#abc" onClick={() => func(currentPage - 1)}>{"<"}</a></li>}
-                                    {items}
-                                    {currentPage !== pageTotal && <li><a href="#abc" onClick={() => func(currentPage + 1)}>{">"}</a></li>}
-                                </ul>
-                                <div id={`paginate-${id}`} className="form-group collapse search-page">
-                                    <input className="form-control" type="number" min="1" max={pageTotal} name='page' onChange={this.inputChange} onKeyUp={this.handleEnterSetting} />
-                                    <button
-                                        type="button"
-                                        className="pull-right btn btn-success"
-                                        onClick={this.setPaginate}
-                                    >{translate('form.search')}</button>
+                            <div className="col-xs-12 col-sm-5 col-md-5 col-lg-5">
+                                {
+                                    display && total &&
+                                    <p className="pagination" style={{ border: '1px solid #dddddd', padding: '6px 12px', borderRadius: '5px' }}>
+                                        <b>{translate('general.show')}</b>
+                                        {`${display}/${total}`}
+                                    </p>
+                                }
+                            </div>
+                            <div className="col-xs-12 col-sm-7 col-md-7 col-lg-7">
+                                <div className="pull-right">
+                                    <ul className="pagination">
+                                        {currentPage !== 1 && <li><a href="#abc" onClick={() => func(currentPage - 1)}>{"<"}</a></li>}
+                                        {items}
+                                        {currentPage !== pageTotal && <li><a href="#abc" onClick={() => func(currentPage + 1)}>{">"}</a></li>}
+                                    </ul>
+                                    <div id={`paginate-${id}`} className="form-group collapse search-page">
+                                        <input className="form-control" type="number" min="1" max={pageTotal} name='page' onChange={this.inputChange} onKeyUp={this.handleEnterSetting} />
+                                        <button
+                                            type="button"
+                                            className="pull-right btn btn-success"
+                                            onClick={this.setPaginate}
+                                        >{translate('form.search')}</button>
+                                    </div>
                                 </div>
                             </div>
                         </div> : null

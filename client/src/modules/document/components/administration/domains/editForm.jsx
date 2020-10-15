@@ -82,8 +82,14 @@ class EditForm extends Component {
     render() {
         const { translate, documents } = this.props;
         const { list } = documents.administration.domains;
+        const { unChooseNode } = this.props;
         const { domainName, domainDescription, domainParent, errorName } = this.state;
-
+        let listDomain = [];
+        for (let i in list) {
+            if (!unChooseNode.includes(list[i].id)) {
+                listDomain.push(list[i]);
+            }
+        }
         return (
             <div id="edit-document-domain">
                 <div className={`form-group ${errorName === undefined ? "" : "has-error"}`}>
@@ -93,7 +99,7 @@ class EditForm extends Component {
                 </div>
                 <div className="form-group">
                     <label>{translate('document.administration.domains.parent')}</label>
-                    <TreeSelect data={list} value={[domainParent]} handleChange={this.handleParent} mode="radioSelect" />
+                    <TreeSelect data={listDomain} value={[domainParent]} handleChange={this.handleParent} mode="radioSelect" />
                 </div>
                 <div className="form-group">
                     <label>{translate('document.administration.domains.description')}</label>

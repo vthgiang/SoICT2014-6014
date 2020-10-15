@@ -64,7 +64,7 @@ class LotDetailForm extends Component {
                                 </div>
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.inventory_management.from_to')}:&emsp;</strong>
-                                    Lô sản xuất <a href="#">SX001</a>
+                                    <a href="#">SX001</a>
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
@@ -97,6 +97,7 @@ class LotDetailForm extends Component {
                                         <thead>
                                             <tr>
                                                 <th style={{width: "5%"}} title={translate('manage_warehouse.inventory_management.index')}>{translate('manage_warehouse.inventory_management.index')}</th>
+                                                <th title={translate('manage_warehouse.inventory_management.bill')}>{translate('manage_warehouse.inventory_management.bill')}</th>
                                                 <th title={translate('manage_warehouse.inventory_management.date_month')}>{translate('manage_warehouse.inventory_management.date_month')}</th>
                                                 <th title={translate('manage_warehouse.inventory_management.status')}>{translate('manage_warehouse.inventory_management.status')}</th>
                                                 <th title={translate('manage_warehouse.inventory_management.number')}>{translate('manage_warehouse.inventory_management.number')}</th>
@@ -110,6 +111,7 @@ class LotDetailForm extends Component {
                                         <tbody id={`good-edit-manage-by-archive`}>
                                                     <tr>
                                                         <td>1</td>
+                                                        <td><a href="#">BR001</a></td>
                                                         <td>5-10-2020 7:30</td>
                                                         <td>Nhập thành phẩm</td>
                                                         <td>200</td>
@@ -121,6 +123,7 @@ class LotDetailForm extends Component {
                                                     </tr>
                                                     <tr>
                                                         <td>2</td>
+                                                        <td><a href="#">BI002</a></td>
                                                         <td>5-10-2020 7:30</td>
                                                         <td>Xuất thành phẩm</td>
                                                         <td>60</td>
@@ -132,6 +135,7 @@ class LotDetailForm extends Component {
                                                     </tr>
                                                     <tr>
                                                         <td>3</td>
+                                                        <td><a href="#">SR001</a></td>
                                                         <td>5-10-2020 7:30</td>
                                                         <td>Luân chuyển đi</td>
                                                         <td>60</td>
@@ -143,6 +147,7 @@ class LotDetailForm extends Component {
                                                     </tr>
                                                     <tr>
                                                         <td>4</td>
+                                                        <td><a href="#">ST001</a></td>
                                                         <td>5-10-2020 7:30</td>
                                                         <td>Tiêu hủy</td>
                                                         <td>30</td>

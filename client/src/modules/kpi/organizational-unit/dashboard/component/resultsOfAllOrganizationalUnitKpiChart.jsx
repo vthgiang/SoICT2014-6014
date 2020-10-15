@@ -133,7 +133,7 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
         let startDate = new Date(this.INFO_SEARCH.startDate);
         let endDate = new Date(this.INFO_SEARCH.endDate);
         const { translate } = this.props;
-        if (startDate.getTime() >= endDate.getTime()) {
+        if (startDate && endDate && startDate.getTime() >= endDate.getTime()) {
             Swal.fire({
                 title: translate('kpi.organizational_unit.dashboard.alert_search.search'),
                 type: 'warning',

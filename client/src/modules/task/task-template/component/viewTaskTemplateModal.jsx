@@ -3,55 +3,35 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal } from '../../../../common-components';
-
 import { taskTemplateActions } from '../redux/actions';
 import { ViewTaskTemplate } from './viewTaskTemplate';
 
 class ModalViewTaskTemplate extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-        };
+        this.state = {};
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.taskTemplateId !== prevState.taskTemplateId) {
+    static getDerivedStateFromProps(props, state) {
+        if (props.taskTemplateId !== state.taskTemplateId) {
+            props.getTaskTemplate(props.taskTemplateId);
+
             return {
-                ...prevState,
-                taskTemplateId: nextProps.taskTemplateId,
+                ...state,
+                taskTemplateId: props.taskTemplateId
             }
         } else {
             return null;
         }
     }
 
-    shouldComponentUpdate = (nextProps, nextState) => {
-        if (nextProps.taskTemplateId !== this.state.taskTemplateId) {
-            this.props.getTaskTemplate(nextProps.taskTemplateId);
-            return false;
-        }
-        return true;
-    }
-
     render() {
-        const { tasktemplates, translate } = this.props;
-
-        let taskTemplate = {};
-        let priority = "";
-
-        if (tasktemplates.taskTemplate) {
-            taskTemplate = tasktemplates.taskTemplate;
-            switch (taskTemplate.priority) {
-                case 1: priority = translate('task_template.low'); break;
-                case 2: priority = translate('task_template.medium'); break;
-                case 3: priority = translate('task_template.high'); break;
-            }
-        }
+        const { taskTemplate } = this.props.tasktemplates;
 
         return (
             <React.Fragment>
                 <DialogModal
-                    size='75' modalID="modal-view-tasktemplate" isLoading={false}
+                    size='100' modalID="modal-view-tasktemplate" isLoading={false}
                     formID="form-view-tasktemplate"
                     title={taskTemplate && taskTemplate.name}
                     hasSaveButton={false}
@@ -59,8 +39,7 @@ class ModalViewTaskTemplate extends Component {
                    <ViewTaskTemplate
                     taskTemplate = {taskTemplate}
                     isProcess = {false}
-                   >
-                   </ViewTaskTemplate>
+                   />
                 </DialogModal>
             </React.Fragment>
         );

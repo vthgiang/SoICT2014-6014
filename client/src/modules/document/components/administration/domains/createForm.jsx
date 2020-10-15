@@ -70,7 +70,7 @@ class CreateForm extends Component {
 
             return {
                 ...prevState,
-                domainParent: nextProps.domainParent,
+                 domainParent: nextProps.domainParent,
             }
         } else {
             return null;

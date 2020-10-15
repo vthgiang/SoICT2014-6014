@@ -6,7 +6,7 @@ import {PaginateBar,
   DeleteNotification, SelectBox} from '../../../../../common-components';
 
 import data from '../../dataTest/PurchaseOrderData.json'
-import PurchaseDetailForm from './purchaseDetailForm';
+import PurchaseDetailForm from './purchaseOrderDetailForm';
 import PurchaseOrderCreateForm from './purchaseOrderCreateForm';
 import PurchaseOrderEditForm from './purchaseOrderEditForm';
 
@@ -50,7 +50,6 @@ class PurchaseOrderTable extends Component {
   }
 
   handleEdit = (data) => {
-    console.log("dd", data);
     this.setState(state => {
       return {
         ...state,
@@ -75,7 +74,6 @@ class PurchaseOrderTable extends Component {
     
     return (
       <React.Fragment>
-        <div className="box">
         <div className="box-body qlcv">
         <PurchaseOrderCreateForm/>
         {
@@ -113,7 +111,6 @@ class PurchaseOrderTable extends Component {
                 items={[
                   { value: 'Chờ phê duyệt', text:'Chờ phê duyệt'},
                   { value: 'Đã phê duyệt', text: 'Đã phê duyệt'},
-                  { value: 'Đã phê duyệt', text: 'Đã phê duyệt'},
                   { value: 'Đang mua hàng', text: 'Đang mua hàng'},
                   { value: 'Đã hoàn thành', text: 'Đã hoàn thành'},
                   { value: 'Đã nhập kho', text: 'Đã nhập kho'}
@@ -128,7 +125,7 @@ class PurchaseOrderTable extends Component {
                 title="Lọc"
                 onClick={this.handleSubmitSearch}
               >
-                Lọc
+                Tìm kiếm
               </button>
             </div>
           </div>
@@ -141,7 +138,6 @@ class PurchaseOrderTable extends Component {
               <tr>
                 <th>STT</th>
                 <th>Mã đơn</th>
-                <th>Nội dung mua hàng</th>
                 <th>Trạng thái</th>
                 <th>Người tạo</th>
                 <th style={{ width: "120px", textAlign: "center" }}>
@@ -168,7 +164,6 @@ class PurchaseOrderTable extends Component {
                   <tr key={index}>
                     <td>{index + 1 + (page - 1) * limit}</td>
                     <td>{item.code}</td>
-                    <td>{item.description}</td>
                     <td>{item.status}</td>
                     <td>{item.creator}</td>
                     <td style={{ textAlign: "center" }}>
@@ -200,7 +195,6 @@ class PurchaseOrderTable extends Component {
             currentPage={page}
             func={this.setPage}
           />
-        </div>
         </div>
       </React.Fragment>
     );

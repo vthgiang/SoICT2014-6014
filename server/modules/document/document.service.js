@@ -256,8 +256,6 @@ exports.editDocument = async (id, data, query = undefined, portal) => {
             doc.roles = data.roles
         }
 
-        // if (data.archivedRecordPlaceInfo !== 'undefined' && data.archivedRecordPlaceInfo !== undefined)
-        //     doc.archivedRecordPlaceInfo = data.archivedRecordPlaceInfo
         if (data.archivedRecordPlaceOrganizationalUnit && data.archivedRecordPlaceOrganizationalUnit !== "[object Object]") {
             doc.archivedRecordPlaceOrganizationalUnit = data.archivedRecordPlaceOrganizationalUnit
         }
@@ -265,7 +263,6 @@ exports.editDocument = async (id, data, query = undefined, portal) => {
             doc.archivedRecordPlaceManager = data.archivedRecordPlaceManager
 
         await doc.save();
-        //let docs = doc.logs;
         return doc;
     }
 }
@@ -559,17 +556,7 @@ exports.getDocumentsThatRoleCanView = async (portal, query, company) => {
         return await Document(connect(DB_CONNECTION, portal)).find({
             company,
             roles: { $in: roleArr }
-        }).populate([
-            { path: 'category', select: 'name id' },
-            { path: 'domains', select: 'name id' },
-            { path: 'archives', select: 'name id path' },
-            { path: 'relationshipDocuments', select: 'name id' },
-            { path: 'views.viewer', select: 'name id' },
-            { path: "downloads.downloader", select: 'name id' },
-            { path: "archivedRecordPlaceOrganizationalUnit", select: "name id" },
-            { path: "logs.creator", select: 'name id' },
-            { path: "relationshipDocuments", select: "name id" },
-        ]);
+        }).select("id name archives category domains numberOfDownload numberOfView ");
     } else {
 
         let option = {

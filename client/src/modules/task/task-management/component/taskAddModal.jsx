@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { getStorage } from '../../../../config';
 import { UserActions } from '../../../super-admin/user/redux/actions';
+import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions'
 import { managerKpiActions } from '../../../kpi/employee/management/redux/actions';
 import { taskTemplateActions } from '../../../task/task-template/redux/actions';
 import { taskManagementActions } from '../redux/actions';
@@ -36,12 +37,13 @@ class TaskAddModal extends Component {
     }
 
     componentDidMount() {
+        // this.props.getAllDepartment();
         // get id current role
-        this.props.getTaskTemplateByUser("1", "0", "[]"); //pageNumber, noResultsPerPage, arrayUnit, name=""
+        this.props.getTaskTemplateByUser(1, 0, [], ""); //pageNumber, noResultsPerPage, arrayUnit, name=""
         // Lấy tất cả nhân viên trong công ty
         this.props.getAllUserOfCompany();
         this.props.getAllUserInAllUnitsOfCompany();
-        this.props.getPaginateTasksByUser("[]", "1", "5", "[]", "[]", "[]", null, null, null, null, null, false, "listSearch");
+        this.props.getPaginateTasksByUser([], "1", "5", [], [], [], null, null, null, null, null, false, "listSearch");
     }
 
     handleSubmit = async (event) => {
@@ -247,7 +249,7 @@ class TaskAddModal extends Component {
 
     onSearch = async (txt) => {
 
-        await this.props.getPaginateTasksByUser("[]", "1", "5", "[]", "[]", "[]", txt, null, null, null, null, false, "listSearch");
+        await this.props.getPaginateTasksByUser([], "1", "5", [], [], [], txt, null, null, null, null, false, "listSearch");
 
         this.setState(state=>{
             state.newTask.parent = "";
@@ -316,7 +318,7 @@ class TaskAddModal extends Component {
     }
 
     shouldComponentUpdate = (nextProps, nextState) => {
-        const { user } = this.props;
+        const { user, department } = this.props;
         const { newTask } = this.state;
 
         if (nextProps.parentTask !== this.props.parentTask) { // Khi đổi nhấn add new task sang nhấn add subtask hoặc ngược lại
@@ -333,15 +335,14 @@ class TaskAddModal extends Component {
         }
 
         // Khi truy vấn lấy các đơn vị của user đã có kết quả, và thuộc tính đơn vị của newTask chưa được thiết lập
-        if (newTask.organizationalUnit === "" && user.organizationalUnitsOfUser) {
+        if (newTask.organizationalUnit === "" && department.list.length !== 0) {
             // Tìm unit mà currentRole của user đang thuộc về
-
-            let defaultUnit = user.organizationalUnitsOfUser.find(item =>
-                item.dean === this.state.currentRole
-                || item.viceDean === this.state.currentRole
-                || item.employee === this.state.currentRole);
-            if (!defaultUnit && user.organizationalUnitsOfUser.length > 0) { // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
-                defaultUnit = user.organizationalUnitsOfUser[0]
+            let defaultUnit = department.list?.find(item => 
+                item.deans.find(x => x.id === this.state.currentRole )
+                || item.viceDeans.find(x => x.id === this.state.currentRole )
+                || item.employees.find(x => x.id === this.state.currentRole ));
+            if (!defaultUnit && department.list.length > 0) { // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
+                defaultUnit = department.list[0]
             }
 
             if (defaultUnit) {
@@ -360,16 +361,43 @@ class TaskAddModal extends Component {
             return false; // Sẽ cập nhật lại state nên không cần render
         }
 
+        // if (newTask.organizationalUnit === "" && user.organizationalUnitsOfUser) {
+        //     // Tìm unit mà currentRole của user đang thuộc về
+
+        //     let defaultUnit = user.organizationalUnitsOfUser.find(item =>
+        //         item.dean === this.state.currentRole
+        //         || item.viceDean === this.state.currentRole
+        //         || item.employee === this.state.currentRole);
+        //     if (!defaultUnit && user.organizationalUnitsOfUser.length > 0) { // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
+        //         defaultUnit = user.organizationalUnitsOfUser[0]
+        //     }
+
+        //     if (defaultUnit) {
+        //         this.props.getChildrenOfOrganizationalUnits(defaultUnit._id);
+        //     }
+
+        //     this.setState(state => { // Khởi tạo giá trị cho organizationalUnit của newTask
+        //         return {
+        //             ...state,
+        //             newTask: {
+        //                 ...this.state.newTask,
+        //                 organizationalUnit: defaultUnit && defaultUnit._id,
+        //             }
+        //         };
+        //     });
+        //     return false; // Sẽ cập nhật lại state nên không cần render
+        // }
+
         return true;
     }
 
 
     render() {
         const { newTask } = this.state;
-        const { tasktemplates, user, KPIPersonalManager, translate, tasks } = this.props;
+        const { tasktemplates, user, KPIPersonalManager, translate, tasks, department } = this.props;
 
         let units, userdepartments, listTaskTemplate, listKPIPersonal, usercompanys;
-
+        let listDepartment = department?.list;
         let taskTemplate;
         if (tasktemplates.taskTemplate) {
             taskTemplate = tasktemplates.taskTemplate;
@@ -407,6 +435,8 @@ class TaskAddModal extends Component {
             listParentTask = [...listParentTask, ...arr];
         }
 
+        console.log('abccccc', listTaskTemplate);
+
         return (
             <React.Fragment>
                 <DialogModal
@@ -423,9 +453,9 @@ class TaskAddModal extends Component {
                             <div className={'form-group'}>
                                 <label className="control-label">{translate('task.task_management.unit_manage_task')}*</label>
 
-                                {units &&
+                                {listDepartment &&
                                     <select value={newTask.organizationalUnit} className="form-control" onChange={this.handleChangeTaskOrganizationalUnit}>
-                                        {units.map(x => {
+                                        {listDepartment.map(x => {
                                             return <option key={x._id} value={x._id}>{x.name}</option>
                                         })}
                                     </select>
@@ -521,12 +551,12 @@ class TaskAddModal extends Component {
                             <legend className="scheduler-border">{translate('task.task_management.add_raci')} (RACI)</legend>
                             <div className={`form-group ${newTask.errorOnResponsibleEmployees === undefined ? "" : "has-error"}`}>
                                 <label className="control-label">{translate('task.task_management.responsible')}*</label>
-                                {unitMembers &&
+                                {allUnitsMember &&
                                     <SelectBox
                                         id={`responsible-select-box${newTask.taskTemplate}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
-                                        items={unitMembers}
+                                        items={allUnitsMember}
                                         onChange={this.handleChangeTaskResponsibleEmployees}
                                         value={newTask.responsibleEmployees}
                                         multiple={true}
@@ -538,12 +568,12 @@ class TaskAddModal extends Component {
 
                             <div className={`form-group ${newTask.errorOnAccountableEmployees === undefined ? "" : "has-error"}`}>
                                 <label className="control-label">{translate('task.task_management.accountable')}*</label>
-                                {unitMembers &&
+                                {allUnitsMember &&
                                     <SelectBox
                                         id={`accounatable-select-box${newTask.taskTemplate}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
-                                        items={unitMembers}
+                                        items={allUnitsMember}
                                         onChange={this.handleChangeTaskAccountableEmployees}
                                         value={newTask.accountableEmployees}
                                         multiple={true}
@@ -592,8 +622,8 @@ class TaskAddModal extends Component {
 }
 
 function mapState(state) {
-    const { tasktemplates, tasks, user, KPIPersonalManager } = state;
-    return { tasktemplates, tasks, user, KPIPersonalManager };
+    const { tasktemplates, tasks, user, KPIPersonalManager, department } = state;
+    return { tasktemplates, tasks, user, KPIPersonalManager, department };
 }
 
 const actionCreators = {
@@ -601,6 +631,7 @@ const actionCreators = {
     getTaskTemplateByUser: taskTemplateActions.getAllTaskTemplateByUser,
     addTask: taskManagementActions.addTask,
     getDepartment: UserActions.getDepartmentOfUser,
+    getAllDepartment: DepartmentActions.get,
     getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
     getAllUserOfCompany: UserActions.getAllUserOfCompany,

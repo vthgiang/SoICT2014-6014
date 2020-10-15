@@ -149,29 +149,38 @@ exports.auth = this.authFunc();
  * @type: kiểu upload file (single, array, fields)
  */
 exports.uploadFile = (arrData, type) => {
+    const staticPath = [
+        "/avatars"
+    ];
     var name, arrFile;
     // Tạo folder chứa file khi chưa có folder
     const checkExistUploads = async(portal) => {
         if(portal !== undefined)
             return await arrData.forEach(x => {
-                let dir2 = `./upload/avatars/${portal}`;
-                if (!fs.existsSync(dir2)) {
-                    fs.mkdirSync(dir2, {
-                        recursive: true
-                    });
+                if(staticPath.indexOf(x.path) !== -1){
+                    let dir2 = `./upload/${x.path}/${portal}`;
+                    if (!fs.existsSync(dir2)) {
+                        fs.mkdirSync(dir2, {
+                            recursive: true
+                        });
+                        fs.appendFile(dir2+'/README.txt', '', err => { 
+                            if(err) throw err;
+                        });
+                    }
                 }
-                let dir = `./upload/private/${portal}${x.path}`;
-                if (!fs.existsSync(dir)) {
-                    fs.mkdirSync(dir, {
-                        recursive: true
-                    });
+                else {
+                    let dir = `./upload/private/${portal}${x.path}`;
+                    if (!fs.existsSync(dir)) {
+                        fs.mkdirSync(dir, {
+                            recursive: true
+                        });
+                        fs.appendFile(dir+'/README.txt', '', err => { 
+                            if(err) throw err;
+                        });
+                    }
                 }
             })
     }
-
-    const staticPath = [
-        "/avatars"
-    ];
 
     const getFile = multer({
         storage: multer.diskStorage({
