@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { ApiImage } from '../../../../common-components'
+import { ApiImage, Comment } from '../../../../common-components'
 import { withTranslate } from "react-redux-multilingual";
 import { AuthActions } from '../../../auth/redux/actions';
 import { performTaskAction } from '../redux/actions';
@@ -148,19 +148,20 @@ class OutgoingDataTab extends Component {
     render() {
         const { translate, performtasks } = this.props;
         const { task, isOutputInformation, isOutputDocument } = this.state;
+        let task1 = performtasks?.task
         return (
             <React.Fragment>
                 {
-                    task &&
+                    task1 &&
                     <React.Fragment>
                         <div className="description-box outgoing-content">
                             <h4>{translate('task.task_process.list_of_data_and_info')}</h4>
 
                             <strong>{translate('task.task_process.information')}:</strong>
                             { /** Danh sách thông tin */
-                                task.taskInformations
-                                    && task.taskInformations.length !== 0
-                                    ? task.taskInformations.map((info) =>
+                                task1.taskInformations
+                                    && task1.taskInformations.length !== 0
+                                    ? task1.taskInformations.map((info) =>
                                         <div>
                                             <label>
                                                 <input
@@ -181,9 +182,9 @@ class OutgoingDataTab extends Component {
                             <div style={{ marginTop: 10 }}></div>
                             <strong>{translate('task.task_process.document')}:</strong>
                             { /** Danh sách tài liệu */
-                                task.documents
-                                    && task.documents.length !== 0
-                                    ? task.documents.map((document, index) =>
+                                task1.documents
+                                    && task1.documents.length !== 0
+                                    ? task1.documents.map((document, index) =>
                                         <div key={index}>
                                             <div>
                                                 <label>
@@ -206,7 +207,7 @@ class OutgoingDataTab extends Component {
                                                             <img
                                                                 className="attachment-img files-attach"
                                                                 style={{ marginTop: "5px" }}
-                                                                src={process.env.REACT_APP_SERVER+file.url}
+                                                                src={process.env.REACT_APP_SERVER + file.url}
                                                                 file={file}
                                                                 requestDownloadFile={this.requestDownloadFile}
                                                             />
@@ -230,9 +231,23 @@ class OutgoingDataTab extends Component {
                         { /** Trao đổi */}
                         <div className="description-box">
                             <h4 style={{ marginBottom: "1.3em" }}>Trao đổi với các công việc khác về dữ liệu ra</h4>
-                            <CommentInProcess
+                            {/* <CommentInProcess
                                 task={performtasks.task}
                                 inputAvatarCssClass="user-img-outgoing-level1"
+                            /> */}
+                            <Comment
+                                data={task1}
+                                comments={task1.commentsInProcess}
+                                type="outgoing"
+                                createComment={(dataId, data, type) => this.props.createComment(dataId, data, type)}
+                                editComment={(dataId, commentId, data, type) => this.props.editComment(dataId, commentId, data, type)}
+                                deleteComment={(dataId, commentId, type) => this.props.deleteComment(dataId, commentId, type)}
+                                createChildComment={(dataId, commentId, data, type) => this.props.createChildComment(dataId, commentId, data, type)}
+                                editChildComment={(dataId, commentId, childCommentId, data, type) => this.props.editChildComment(dataId, commentId, childCommentId, data, type)}
+                                deleteChildComment={(dataId, commentId, childCommentId, type) => this.props.deleteChildComment(dataId, commentId, childCommentId, type)}
+                                deleteFileComment={(fileId, commentId, dataId) => this.props.deleteFileComment(fileId, commentId, dataId)}
+                                deleteFileChildComment={(fileId, commentId, childCommentId, dataId) => this.props.deleteFileChildComment(fileId, commentId, childCommentId, dataId)}
+                                downloadFile={(path, fileName) => this.props.downloadFile(path, fileName)}
                             />
                         </div>
                     </React.Fragment>
@@ -251,6 +266,14 @@ const actions = {
     editDocument: performTaskAction.editDocument,
     editInformationTask: performTaskAction.editInformationTask,
     downloadFile: AuthActions.downloadFile,
+    createComment: performTaskAction.createComment,
+    editComment: performTaskAction.editComment,
+    deleteComment: performTaskAction.deleteComment,
+    createChildComment: performTaskAction.createChildComment,
+    editChildComment: performTaskAction.editChildComment,
+    deleteChildComment: performTaskAction.deleteChildComment,
+    deleteFileComment: performTaskAction.deleteFileComment,
+    deleteFileChildComment: performTaskAction.deleteFileChildComment
 }
 
 const connectOutgoingDataTab = connect(mapState, actions)(withTranslate(OutgoingDataTab));

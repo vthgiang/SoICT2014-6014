@@ -65,6 +65,7 @@ export const performTaskAction = {
     deleteChildComment,
     deleteFileComment,
     deleteFileChildComment,
+    getAllPreceedingTasks,
 };
 
 
@@ -737,38 +738,57 @@ function confirmTask(taskId) {
     }
 }
 
-function createComment(taskId, data) {
-    return dispatch => {
-        dispatch({ type: performTaskConstants.CREATE_COMMENT_REQUEST });
-        performTaskService.createComment(taskId, data)
-            .then(res => {
-                dispatch({
-                    type: performTaskConstants.CREATE_COMMENT_SUCCESS,
-                    payload: res.data.content
+function createComment(taskId, data, type) {
+    if(type === "incoming") {
+        return dispatch => {
+            dispatch({ type: performTaskConstants.CREATE_COMMENT_PROCESS_INCOMING_REQUEST });
+            performTaskService.createComment(taskId, data)
+                .then(res => {
+                    dispatch({
+                        type: performTaskConstants.CREATE_COMMENT_PROCESS_INCOMING_SUCCESS,
+                        payload: res.data.content
+                    })
                 })
-            })
-            .catch(error => {
-                dispatch({
-                    type: performTaskConstants.CREATE_COMMENT_FAILURE,
-                    payload: error
+                .catch(error => {
+                    dispatch({
+                        type: performTaskConstants.CREATE_COMMENT_PROCESS_INCOMING_FAILURE,
+                        payload: error
+                    })
                 })
-            })
+        }
+    }else {
+        return dispatch => {
+            dispatch({ type: performTaskConstants.CREATE_COMMENT_PROCESS_REQUEST });
+            performTaskService.createComment(taskId, data)
+                .then(res => {
+                    dispatch({
+                        type: performTaskConstants.CREATE_COMMENT_PROCESS_SUCCESS,
+                        payload: res.data.content
+                    })
+                })
+                .catch(error => {
+                    dispatch({
+                        type: performTaskConstants.CREATE_COMMENT_PROCESS_FAILURE,
+                        payload: error
+                    })
+                })
+        }
     }
   }
   
   function editComment(taskId, commentId, data) {
     return dispatch => {
-        dispatch({ type: performTaskConstants.EDIT_COMMENT_REQUEST });
+        dispatch({ type: performTaskConstants.EDIT_COMMENT_PROCESS_REQUEST });
         performTaskService.editComment(taskId, commentId, data)
             .then(res => {
                 dispatch({
-                    type: performTaskConstants.EDIT_COMMENT_SUCCESS,
+                    type: performTaskConstants.EDIT_COMMENT_PROCESS_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(error => {
                 dispatch({
-                    type: performTaskConstants.EDIT_COMMENT_FAILURE,
+                    type: performTaskConstants.EDIT_COMMENT_PROCESS_FAILURE,
                     payload: error
                 })
             })
@@ -776,17 +796,17 @@ function createComment(taskId, data) {
   }
   function deleteComment(taskId, commentId) {
     return dispatch => {
-        dispatch({ type: performTaskConstants.DELETE_COMMENT_REQUEST });
+        dispatch({ type: performTaskConstants.DELETE_COMMENT_PROCESS_REQUEST });
         performTaskService.deleteComment(taskId, commentId)
             .then(res => {
                 dispatch({
-                    type: performTaskConstants.DELETE_COMMENT_SUCCESS,
+                    type: performTaskConstants.DELETE_COMMENT_PROCESS_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(error => {
                 dispatch({
-                    type: performTaskConstants.DELETE_COMMENT_FAILURE,
+                    type: performTaskConstants.DELETE_COMMENT_PROCESS_FAILURE,
                     payload: error
                 })
             })
@@ -870,19 +890,38 @@ function createComment(taskId, data) {
     }
   }
   
-  function deleteFileChildComment(fileId, childCommentId, commentId, taskId) {
+function deleteFileChildComment(fileId, childCommentId, commentId, taskId) {
+return dispatch => {
+    dispatch({ type: performTaskConstants.DELETE_FILE_CHILD_COMMENT_REQUEST });
+    performTaskService.deleteFileChildComment(fileId, childCommentId, commentId, taskId)
+        .then(res => {
+            dispatch({
+                type: performTaskConstants.DELETE_FILE_CHILD_COMMENT_SUCCESS,
+                payload: res.data.content
+            })
+        })
+        .catch(error => {
+            dispatch({
+                type: performTaskConstants.DELETE_FILE_CHILD_COMMENT_FAILURE,
+                payload: error
+            })
+        })
+}
+}
+
+function getAllPreceedingTasks(taskId) {
     return dispatch => {
-        dispatch({ type: performTaskConstants.DELETE_FILE_CHILD_COMMENT_REQUEST });
-        performTaskService.deleteFileChildComment(fileId, childCommentId, commentId, taskId)
+        dispatch({ type: performTaskConstants.GET_ALL_PRECEEDING_TASKS_REQUEST });
+        performTaskService.getAllPreceedingTasks(taskId)
             .then(res => {
                 dispatch({
-                    type: performTaskConstants.DELETE_FILE_CHILD_COMMENT_SUCCESS,
+                    type: performTaskConstants.GET_ALL_PRECEEDING_TASKS__SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(error => {
                 dispatch({
-                    type: performTaskConstants.DELETE_FILE_CHILD_COMMENT_FAILURE,
+                    type: performTaskConstants.GET_ALL_PRECEEDING_TASKS_FAILURE,
                     payload: error
                 })
             })

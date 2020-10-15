@@ -357,6 +357,7 @@ exports.data = [
     { path: '/performtask/tasks/:taskId/task-comments/:commentId/comments/files/:fileId', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
 
     //Comment in process
+    { path: '/performtask/process/tasks/:taskId', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/performtask/process/tasks/:taskId/comments', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/performtask/process/tasks/:taskId/comments/:commentId', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/performtask/process/tasks/:taskId/comments/:commentId', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee'] },

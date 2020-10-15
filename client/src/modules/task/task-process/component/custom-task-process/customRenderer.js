@@ -126,10 +126,6 @@ export default class CustomRenderer extends BaseRenderer {
         }
 
 
-
-
-
-
         if (element.type == 'bpmn:ExclusiveGateway') {
             //Vẽ tên của công việc lên shape
             let b = element.businessObject.$attrs.shapeName

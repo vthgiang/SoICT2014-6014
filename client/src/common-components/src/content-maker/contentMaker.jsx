@@ -48,9 +48,9 @@ class ContentMaker extends Component {
             files, onFilesChange, onFilesError, multiple = true, maxFiles = 10, maxFileSize = 10000000, minFileSize = 0, clickable = false,
             text, onTextChange, placeholder, minRows = 3, maxRows = 20,
             onSubmit, submitButtonText, disabledSubmit,
-            inputCssClass, controlCssClass, defaultValue, handleEdit, cancelButtonText, styletext, onKeyPress
+            inputCssClass, controlCssClass, defaultValue, handleEdit, cancelButtonText, styletext, onKeyPress, id
         } = this.props
-
+        console.log(id)
         return (
             <React.Fragment>
                 <Files
@@ -64,7 +64,7 @@ class ContentMaker extends Component {
                     minFileSize={minFileSize}
                     clickable={clickable}
                 >
-                    <div className={inputCssClass} style={{ position: "relative" }}>
+                    <div className={inputCssClass} style={{ position: "relative" }} id={id}>
                         <TextareaAutosize
                             placeholder={placeholder}
                             minRows={minRows}

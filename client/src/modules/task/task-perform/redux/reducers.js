@@ -613,17 +613,32 @@ export function performtasks(state = {}, action) {
                 isLoading: false,
                 error: action.error
             };
-        case performTaskConstants.CREATE_COMMENT_REQUEST:
+        case performTaskConstants.CREATE_COMMENT_PROCESS_REQUEST:
             return {
                 ...state,
                 adding: true
             }
-        case performTaskConstants.CREATE_COMMENT_SUCCESS:
+        case performTaskConstants.CREATE_COMMENT_PROCESS_SUCCESS:
             return {
                 ...state,
-                task: action.payload
+                task: action.payload.task
             }
-        case performTaskConstants.CREATE_COMMENT_FAILURE:
+        case performTaskConstants.CREATE_COMMENT_PROCESS_FAILURE:
+            return {
+                error: action.payload,
+            }
+        case performTaskConstants.CREATE_COMMENT_PROCESS_INCOMING_REQUEST:
+            return {
+                ...state,
+                adding: true
+            }
+        case performTaskConstants.CREATE_COMMENT_PROCESS_INCOMING_SUCCESS:
+            return {
+                ...state,
+                preceedingTasks: state.preceedingTasks.map(item =>
+                    item.task._id === action.payload.taskId ? { task: action.payload.task } : item)
+            }
+        case performTaskConstants.CREATE_COMMENT_PROCESS_INCOMING_FAILURE:
             return {
                 error: action.payload,
             }
@@ -642,33 +657,32 @@ export function performtasks(state = {}, action) {
                 ...state,
                 error: action.payload,
             }
-        case performTaskConstants.EDIT_COMMENT_REQUEST:
+        case performTaskConstants.EDIT_COMMENT_PROCESS_REQUEST:
             return {
                 ...state,
                 editing: true
             }
-        case performTaskConstants.EDIT_COMMENT_SUCCESS:
+        case performTaskConstants.EDIT_COMMENT_PROCESS_SUCCESS:
             return {
                 ...state,
-                task: action.payload
+                task: action.payload.task
             }
-        case performTaskConstants.EDIT_COMMENT_FAILURE:
+        case performTaskConstants.EDIT_COMMENT_PROCESS_FAILURE:
             return {
                 ...state,
                 error: action.payload,
             }
-        case performTaskConstants.DELETE_COMMENT_REQUEST:
+        case performTaskConstants.DELETE_COMMENT_PROCESS_REQUEST:
             return {
                 ...state,
                 editing: true
             }
-        case performTaskConstants.DELETE_COMMENT_SUCCESS:
-            var comment = { ...state.task, commentsInProcess: action.payload }
+        case performTaskConstants.DELETE_COMMENT_PROCESS_SUCCESS:
             return {
                 ...state,
-                task: comment
+                task: action.payload.task
             }
-        case performTaskConstants.DELETE_COMMENT_FAILURE:
+        case performTaskConstants.DELETE_COMMENT_PROCESS_FAILURE:
             return {
                 ...state,
                 error: action.payload,
@@ -710,7 +724,6 @@ export function performtasks(state = {}, action) {
                 deleting: true
             }
         case performTaskConstants.DELETE_FILE_COMMENT_SUCCESS:
-            console.log(action.payload)
             return {
                 ...state,
                 task: action.payload
@@ -726,7 +739,7 @@ export function performtasks(state = {}, action) {
                 deleting: true
             }
         case performTaskConstants.DELETE_FILE_CHILD_COMMENT_SUCCESS:
-            
+
             return {
                 ...state,
                 task: action.payload
@@ -736,6 +749,20 @@ export function performtasks(state = {}, action) {
                 ...state,
                 error: action.payload,
             }
+        case performTaskConstants.GET_ALL_PRECEEDING_TASKS_REQUEST:
+            return {
+                ...state,
+                editing: true
+            };
+        case performTaskConstants.GET_ALL_PRECEEDING_TASKS__SUCCESS:
+            return {
+                ...state,
+                preceedingTasks: action.payload
+            }
+        case performTaskConstants.GET_ALL_PRECEEDING_TASKS_FAILURE:
+            return {
+                error: action.error
+            };
         default:
             return state
     }

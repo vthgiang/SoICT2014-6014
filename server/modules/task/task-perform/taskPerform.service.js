@@ -2725,7 +2725,7 @@ exports.createComment = async (portal, params, body, files) => {
         { _id: params.taskId },
         { $push: { commentsInProcess: commentss } }, { new: true }
     )
-    let comment = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: body.currentTask })
+    let task = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: params.taskId })
         .populate([
             { path: "parent", select: "name" },
             { path: "taskTemplate", select: "formula" },
@@ -2773,7 +2773,7 @@ exports.createComment = async (portal, params, body, files) => {
                 }
             },
         ])
-    return comment;
+    return task;
 }
 
 
@@ -2797,7 +2797,7 @@ exports.editComment = async (portal, params, body, files) => {
             }
         }
     )
-    let comment = await Task(connect(DB_CONNECTION, portal)).findOne({ "_id": body.currentTask })
+    let comment = await Task(connect(DB_CONNECTION, portal)).findOne({ "_id": params.taskId })
         .populate([
             { path: "parent", select: "name" },
             { path: "taskTemplate", select: "formula" },
@@ -2885,7 +2885,7 @@ exports.deleteComment = async (portal, params) => {
             { path: 'commentsInProcess.creator', select: 'name email avatar ' },
             { path: 'commentsInProcess.comments.creator', select: 'name email avatar' }
         ])
-    return comment.commentsInProcess
+    return comment
 }
 
 /**
@@ -3084,7 +3084,6 @@ exports.deleteChildComment = async (portal, params) => {
  * Xóa file của bình luận
  */
 exports.deleteFileComment = async (portal, params) => {
-    console.log(params)
     let file = await Task(connect(DB_CONNECTION, portal)).aggregate([
         { $match: { "_id": mongoose.Types.ObjectId(params.taskId) } },
         { $unwind: "$commentsInProcess" },
@@ -3139,4 +3138,17 @@ exports.deleteFileChildComment = async (portal, params) => {
         { path: "commentsInProcess.comments.creator", select: 'name email avatar' },
     ]);
     return task.commentsInProcess;
+}
+
+exports.getAllPreceedingTasks = async (portal, params) => {
+    let task = await Task(connect(DB_CONNECTION, portal)).findOne({ "_id": params.taskId })
+    .populate([
+        {
+            path: "preceedingTasks.task", populate: [
+                { path: "commentsInProcess.creator", select: 'name email avatar' },
+                { path: "commentsInProcess.comments.creator", select: 'name email avatar' },
+            ]
+        },
+    ])
+    return task.preceedingTasks
 }
