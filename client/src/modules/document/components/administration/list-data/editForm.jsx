@@ -768,18 +768,6 @@ class EditForm extends Component {
                                                     onSearch={this.onSearch}
                                                 />
                                             </div>
-                                            <div className="form-group">
-                                                <label>{translate('document.roles')}</label>
-                                                <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                                    id={`select-edit-document-users-see-permission-${documentId}`}
-                                                    className="form-control select2"
-                                                    style={{ width: "100%" }}
-                                                    items={roleList}
-                                                    value={documentRoles}
-                                                    onChange={this.handleRoles}
-                                                    multiple={true}
-                                                />
-                                            </div>
                                         </div>
                                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                             <div className="form-group">
@@ -795,6 +783,18 @@ class EditForm extends Component {
                                                 />
                                             </div>
                                             <div className="form-group">
+                                                <label>{translate('document.roles')}</label>
+                                                <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                                    id={`select-edit-document-users-see-permission-${documentId}`}
+                                                    className="form-control select2"
+                                                    style={{ width: "100%" }}
+                                                    items={roleList}
+                                                    value={documentRoles}
+                                                    onChange={this.handleRoles}
+                                                    multiple={true}
+                                                />
+                                            </div>
+                                            <div className="form-group">
                                                 <label>{translate('document.store.information')}</label>
                                                 <TreeSelect
                                                     data={archives}
@@ -802,13 +802,10 @@ class EditForm extends Component {
                                                     handleChange={this.handleArchives}
                                                     mode="hierarchical"
                                                 />
-                                            </div>
-                                            <div className="form-group">
                                                 {path && path.length ? path.map(y =>
                                                     <div>{y}</div>
                                                 ) : null}
                                             </div>
-
                                         </div>
                                     </div>
                                 </div>
