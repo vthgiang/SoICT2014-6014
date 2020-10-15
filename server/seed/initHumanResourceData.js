@@ -733,6 +733,7 @@ const initHumanResourceData = async () => {
     const foreignLanguage =[600,650,700,750,800,850,900];
     const maritalStatus=['single', 'married'];
     usersFake.forEach((x, index)=>{
+        let contractEndDate = new Date(`${index<50?"2020":"2021"}-${months[Math.floor(Math.random()*12)]}-${days[Math.floor(Math.random()*19)]}`);
         staffFake = [...staffFake,{
             avatar: "/upload/human-resource/avatars/avatar5.png",
             fullName: x.name,
@@ -813,12 +814,12 @@ const initHumanResourceData = async () => {
                 position: "Nhân viên"
             }],
             contractType: 'Phụ thuộc',
-            contractEndDate: new Date("2020-10-25"),
+            contractEndDate: contractEndDate,
             contracts: [{
                 name: "Thực tập",
-                contractType: "Phụ thuộc",
-                startDate: new Date("2019-10-25"),
-                endDate: new Date("2020-10-25"),
+                contractType: `${index<50?"Phụ thuộc":(index>150?'Hợp đồng ngắn hạn hạn':'Hợp đồng dài hạn')}`,
+                startDate:  new Date(`2019-${months[Math.floor(Math.random()*12)]}-${days[Math.floor(Math.random()*19)]}`),
+                endDate: contractEndDate,
             }],
             archivedRecordNumber: `T3 - ${1234690+index}`,
             files: [],

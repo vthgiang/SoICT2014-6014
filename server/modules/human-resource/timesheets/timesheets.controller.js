@@ -6,7 +6,9 @@ const Log = require(`${SERVER_LOGS_DIR}`);
 exports.searchTimesheets = async (req, res) => {
     try {
         let data = {};
-        if (req.query.startDate && req.query.endDate) {
+        if(req.query.employeeId && req.query.startDate && req.query.endDate){
+            data = await TimesheetService.getTimesheetsByEmployeeIDAndTime(req.portal, req.query.employeeId, req.query.startDate, req.query.endDate, req.user.company._id)
+        } else if (req.query.startDate && req.query.endDate) {
             data = await TimesheetService.getOvertimeOfUnitsByStartDateAndEndDate(req.portal, req.query.organizationalUnits, req.query.startDate, req.query.endDate, req.user.company._id)
         } else if (req.query.page && req.query.limit) {
             let params = {

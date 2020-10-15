@@ -5,7 +5,7 @@ import { getStorage } from '../../../../config';
 
 import { DataTableSetting, DeleteNotification, PaginateBar, DatePicker, SelectMulti, SlimScroll, ExportExcel } from '../../../../common-components';
 
-import { TimesheetsByShiftImportForm, TimesheetsCreateForm, TimesheetsEditForm } from './combinedContent';
+import { TimesheetsByShiftImportForm, TimesheetsCreateForm, TimesheetsEditForm, TrendWorkOfEmployeeChart } from './combinedContent';
 import { EmployeeViewForm } from '../../profile/employee-management/components/combinedContent';
 
 import { TimesheetsActions } from '../redux/actions';
@@ -61,6 +61,20 @@ class TimesheetsManagement extends Component {
             }
         });
         window.$(`#modal-view-employee${value._id}`).modal('show');
+    }
+
+    /**
+     *  Bắt sự kiện click xem xu hướng làm việc của nhân viên
+     * @param {*} id : id nhân viên
+     */
+    handleViewChart = async (value) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                currentRowViewChart: value
+            }
+        });
+        window.$(`#modal-view-chart${value._id}`).modal('show');
     }
 
 
@@ -364,7 +378,7 @@ class TimesheetsManagement extends Component {
     render() {
         const { translate, timesheets, department, modelConfiguration } = this.props;
 
-        const { month, limit, page, allDayOfMonth, dayNow, organizationalUnits, currentRowView, currentRow, importExcel } = this.state;
+        const { month, limit, page, allDayOfMonth, dayNow, organizationalUnits, currentRowViewChart, currentRowView, currentRow, importExcel } = this.state;
 
         let timekeepingType, config, listTimesheets = [], exportData = [], humanResourceConfig = modelConfiguration.humanResourceConfig;
 
@@ -472,6 +486,7 @@ class TimesheetsManagement extends Component {
                                                         <td rowSpan="3" style={{ paddingTop: 22 }}>{x.employee ? x.employee.fullName : null}</td>
                                                         <td rowSpan="3" style={{ paddingTop: 22 }}> {x.totalHours}</td>
                                                         <td rowSpan="3" style={{ paddingTop: 22, textAlign: "center" }}>
+                                                            <a onClick={() => this.handleViewChart(x.employee)} style={{ width: '5px' }} title={`Xu hướng làm việc của ${x.employee ? x.employee.fullName : null}`}><i className="material-icons">insert_chart_outlined</i></a>
                                                             <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.timesheets.edit_timesheets')}><i className="material-icons">edit</i></a>
                                                             <DeleteNotification
                                                                 content={translate('human_resource.timesheets.delete_timesheets')}
@@ -580,6 +595,7 @@ class TimesheetsManagement extends Component {
                                                     <td>{x.employee ? x.employee.fullName : null}</td>
                                                     <td>{x.totalHours}</td>
                                                     <td style={{ textAlign: "center" }}>
+                                                        <a onClick={() => this.handleViewChart(x.employee)} style={{ width: '5px' }} title={`Xu hướng làm việc của ${x.employee ? x.employee.fullName : null}`}><i className="material-icons">insert_chart_outlined</i></a>
                                                         <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.timesheets.edit_timesheets')}><i className="material-icons">edit</i></a>
                                                         <DeleteNotification
                                                             content={translate('human_resource.timesheets.delete_timesheets')}
@@ -638,6 +654,10 @@ class TimesheetsManagement extends Component {
                     <EmployeeViewForm
                         _id={currentRowView ? currentRowView._id : ""}
                     />
+                }
+                {
+                    currentRowViewChart &&
+                    <TrendWorkOfEmployeeChart employeeId={currentRowViewChart ? currentRowViewChart._id : 'null'} nameChart={`Xu hướng làm việc của ${currentRowViewChart.fullName}`} nameData1='Tổng giờ làm' nameData2='Số giờ tăng ca' />
                 }
             </div>
         );

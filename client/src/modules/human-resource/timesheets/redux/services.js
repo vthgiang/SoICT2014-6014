@@ -18,6 +18,7 @@ function searchTimesheets(data) {
         url: `${ process.env.REACT_APP_SERVER }/timesheet/timesheets`,
         method: 'GET',
         params: {
+            employeeId: data.employeeId,
             organizationalUnits: data.organizationalUnits,
             employeeNumber: data.employeeNumber,
             startDate: data.startDate,
