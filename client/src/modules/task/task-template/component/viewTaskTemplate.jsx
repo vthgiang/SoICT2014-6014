@@ -193,17 +193,17 @@ class ViewTaskTemplate extends Component {
                                 {
                                     (!taskTemplate?.taskActions || taskTemplate?.taskActions.length === 0) ?
                                         <div><strong>{translate('task_template.no_data')}</strong></div> :
-                                        taskTemplate?.taskActions.map((item, index) =>
-                                            <div className="task-item" key={index}>
-                                                <p>
-                                                    <b className="number">{index+1}</b>
-                                                    <span className="content">{item.name}</span>
-                                                    {
-                                                        item.mandatory && <span className="note">{translate('task_template.mandatory')}</span>
-                                                    }
-                                                </p>
-                                                <div>{parse(item.description)}</div>
-                                            </div>
+                                        taskTemplate?.taskActions.map((item, index, array) =>
+                                        <div className="task-item" key={index}>
+                                            <p>
+                                                <b className="number">{index+1}</b>
+                                                <span className="content">{item.name}</span>
+                                                {
+                                                    item.mandatory && <sup className="note">{translate('task_template.mandatory')}</sup>
+                                                }
+                                            </p>
+                                            <div>{parse(item.description)}</div>
+                                        </div>
                                         )
                                 }
                             </div>
@@ -221,17 +221,20 @@ class ViewTaskTemplate extends Component {
                                     (!taskTemplate?.taskInformations || taskTemplate?.taskInformations.length === 0) ?
                                         <div><strong>{translate('task_template.no_data')}</strong></div> :
                                         taskTemplate?.taskInformations.map((item, index) =>
-                                            <React.Fragment key={index}>
-                                                <div className="task-item-info">
-                                                    <p>
-                                                        <b className="code">{item.code}</b>
-                                                        <i className="type">{this.formatTypeInfo(item.type)}</i>
-                                                        <span className="content">{item.name}</span>
-                                                        {item.filledByAccountableEmployeesOnly && <span className="note">{translate('task_template.manager_fill')}</span>}
-                                                    </p>
-                                                    <div>{parse(item.description)}</div>
+                                            <div key={index} className="tt-information">
+                                                <p className="name">
+                                                    {item.name}
+                                                    {
+                                                        item.filledByAccountableEmployeesOnly && 
+                                                        <sup className="note">{translate('task_template.manager_fill')}</sup>
+                                                    }
+                                                </p>
+                                                <p className="param"><i>{item.code}</i></p>
+                                                <p className="param"><i>{this.formatTypeInfo(item.type)}</i></p>
+                                                <div className="content">
+                                                    {parse(item.description)}
                                                 </div>
-                                            </React.Fragment>
+                                            </div>
                                         )
                                 }
                             </div>

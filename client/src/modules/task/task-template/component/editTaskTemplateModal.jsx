@@ -176,7 +176,11 @@ class ModalEditTaskTemplate extends Component {
                 size={100}
             >
                 <React.Fragment>
-                    <EditTaskTemplate isTaskTemplate={true} taskTemplate={editingTemplate} taskTemplateId={taskTemplateId} onChangeTemplateData={this.onChangeTemplateData} />
+                    <EditTaskTemplate 
+                        isTaskTemplate={true} 
+                        taskTemplate={editingTemplate} 
+                        taskTemplateId={taskTemplateId} onChangeTemplateData={this.onChangeTemplateData} 
+                    />
                 </React.Fragment>
             </DialogModal>
         );
