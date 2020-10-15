@@ -12,6 +12,7 @@ class ManufacturingPerformance extends Component {
         return (
             <div className="box" style={{ minHeight: "450px" }}>
                 <div className="box-body">
+                    <marquee>Chỉ số đánh giá hiệu suất sản xuất</marquee>
                 </div>
             </div>
         );
