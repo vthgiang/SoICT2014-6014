@@ -76,7 +76,7 @@ class EditForm extends Component {
         this.validateVersionName(value, true)
     }
     handleRelationshipDocuments = value => {
-        this.setState({ documentRelationshipDocuments: value });
+        this.setState({ relatedDocuments: value });
     }
 
     handleRoles = (value) => {
@@ -275,7 +275,7 @@ class EditForm extends Component {
             documentOfficialNumber,
             documentSigner,
             documentRelationshipDescription,
-            documentRelationshipDocuments,
+            relatedDocuments,
             documentRoles,
             documentArchivedRecordPlaceOrganizationalUnit,
         } = this.state;
@@ -369,15 +369,15 @@ class EditForm extends Component {
             description += "Mô tả liên kết tài liệu mới: ";
             formData.append('relationshipDescription', documentRelationshipDescription);
         }
-        if (!this.compareArray(documentRelationshipDocuments, this.props.documentRelationshipDocuments)) {
+        if (!this.compareArray(relatedDocuments, this.props.documentRelationshipDocuments)) {
             if (!title.includes("Chỉnh sửa mô tả liên kết.")) {
                 title += "Chỉnh sửa mô tả liên kết."
             }
             description += "Tài liệu liên kết mới: "
             let newArray = [];
-            for (let i = 0; i < documentRelationshipDocuments.length; i++) {
-                formData.append('relationshipDocuments[]', documentRelationshipDocuments[i]);
-                let relationship = relationshipDocs.filter(item => item.id === documentRelationshipDocuments[i]);
+            for (let i = 0; i < relatedDocuments.length; i++) {
+                formData.append('relationshipDocuments[]', relatedDocuments[i]);
+                let relationship = relationshipDocs.filter(item => item.id === relatedDocuments[i]);
                 newArray.push(relationship[0].name);
 
             }
@@ -483,7 +483,7 @@ class EditForm extends Component {
                 documentVersions: nextProps.documentVersions,
 
                 documentRelationshipDescription: nextProps.documentRelationshipDescription,
-                documentRelationshipDocuments: nextProps.documentRelationshipDocuments,
+                relatedDocuments: nextProps.documentRelationshipDocuments.map(item => item.id),
 
                 documentRoles: nextProps.documentRoles,
 
@@ -568,17 +568,29 @@ class EditForm extends Component {
         const {
             documentId, documentName, documentDescription, documentCategory, documentDomains,
             documentIssuingBody, documentOfficialNumber, documentSigner, documentVersions,
-            documentRelationshipDescription, documentRelationshipDocuments,
+            documentRelationshipDescription, relatedDocuments,
             documentRoles, documentArchives,
             documentArchivedRecordPlaceOrganizationalUnit, currentVersion,
         } = this.state;
         const { errorName } = this.state;
-        const { translate, role, documents, department } = this.props;
+        const { translate, role, documents, department, documentRelationshipDocuments } = this.props;
         const categories = documents.administration.categories.list.map(category => { return { value: category._id, text: category.name } });
         const { list } = documents.administration.domains;
         const roleList = role.list.map(role => { return { value: role._id, text: role.name } });
-        console.log('-----------------', documents.administration.relationshipDocs)
-        const relationshipDocs = documents.administration.relationshipDocs.paginate.map(doc => { return { value: doc._id, text: doc.name } });
+
+        let tmpMap = {};
+        let relationshipDocs = documents.administration.relationshipDocs.paginate.map(
+            doc => {
+                tmpMap[doc._id] = true;
+                return { value: doc._id, text: doc.name }
+            }
+        );
+        documentRelationshipDocuments.forEach(doc => {
+            if (!tmpMap[doc._id]) {
+                relationshipDocs.push({ value: doc._id, text: doc.name })
+            }
+        });
+
         const archives = documents.administration.archives.list;
         let path = documentArchives ? this.findPath(archives, documentArchives) : "";
         return (
@@ -753,7 +765,7 @@ class EditForm extends Component {
                                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                             <div className="form-group">
                                                 <label>{translate('document.relationship.description')}</label>
-                                                <textarea type="text" className="form-control" onChange={this.handleRelationshipDescription} value={documentRelationshipDescription} />
+                                                <textarea type="text" style={{ height: 107 }} className="form-control" onChange={this.handleRelationshipDescription} value={documentRelationshipDescription} />
                                             </div>
                                             <div className="form-group">
                                                 <label>{translate('document.relationship.list')}</label>
@@ -763,7 +775,7 @@ class EditForm extends Component {
                                                     style={{ width: "100%" }}
                                                     items={relationshipDocs}
                                                     onChange={this.handleRelationshipDocuments}
-                                                    value={documentRelationshipDocuments}
+                                                    value={relatedDocuments}
                                                     multiple={true}
                                                     onSearch={this.onSearch}
                                                 />
