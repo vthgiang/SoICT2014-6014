@@ -12,9 +12,11 @@ var findIndex = (array, id) => {
 
 const initState = {
     isLoading: false,
-    listCategories: [],
+    categoryToTree: {
+        list: [],
+        tree: [],
+    },
     listCategoriesByType: [],
-    listPaginate: [],
     totalDocs: 0,
     limit: 0,
     totalPages: 0,
@@ -30,12 +32,10 @@ const initState = {
 export function categories(state = initState, action){
 
     var index = -1;
-    var indexPaginate = -1;
 
     switch(action.type) {
-        case CategoryConstants.GETALL_CATEGORY_REQUEST:
+        case CategoryConstants.GETALL_CATEGORY_TREE_REQUEST:
         case CategoryConstants.GETALL_CATEGORY_BY_TYPE_REQUEST:
-        case CategoryConstants.PAGINATE_CATEGORY_REQUEST:
         case CategoryConstants.CREATE_CATEGORY_REQUEST:
         case CategoryConstants.UPDATE_CATEGORY_REQUEST:
         case CategoryConstants.DELETE_CATEGORY_REQUEST:
@@ -44,12 +44,12 @@ export function categories(state = initState, action){
                 isLoading: true
             };
 
-        case CategoryConstants.GETALL_CATEGORY_SUCCESS:
+        case CategoryConstants.GETALL_CATEGORY_TREE_SUCCESS:
             return {
                 ...state,
-                listCategories: action.payload,
+                categoryToTree: action.payload,
                 isLoading: false
-            };
+            }
 
         case CategoryConstants.GETALL_CATEGORY_BY_TYPE_SUCCESS:
             return {
@@ -57,47 +57,19 @@ export function categories(state = initState, action){
                 listCategoriesByType: action.payload ? action.payload : [],
                 isLoading: false
             };
-
-        case CategoryConstants.PAGINATE_CATEGORY_SUCCESS:
-            return {
-                ...state,
-                listPaginate: action.payload.docs,
-                totalDocs: action.payload.totalDocs,
-                limit: action.payload.limit,
-                totalPages: action.payload.totalPages,
-                page: action.payload.page,
-                pagingCounter: action.payload.pagingCounter,
-                hasPrevPage: action.payload.hasPrevPage,
-                hasNextPage: action.payload.hasNextPage,
-                prevPage: action.payload.prevPage,
-                nextPage: action.payload.nextPage,
-                isLoading: false
-            };
         
         case CategoryConstants.CREATE_CATEGORY_SUCCESS:
             return {
                 ...state,
-                listCategories: [
-                    ...state.listCategories,
-                    action.payload
-                ],
-                listPaginate: [
-                    ...state.listPaginate,
-                    action.payload
-                ],
+                categoryToTree: action.payload,
                 isLoading: false
             };
 
         case CategoryConstants.UPDATE_CATEGORY_SUCCESS:
-            index = findIndex(state.listCategories, action.payload._id);
-            indexPaginate = findIndex(state.listPaginate, action.payload._id)
+            index = findIndex(state.categoryToTree.list, action.payload._id);
 
             if(index !== -1){
-                state.listCategories[index] = action.payload;
-            }
-
-            if(indexPaginate !== -1){
-                state.listPaginate[indexPaginate] = action.payload;
+                state.categoryToTree.list[index] = action.payload;
             }
             return {
                 ...state,
@@ -105,23 +77,15 @@ export function categories(state = initState, action){
             }
 
         case CategoryConstants.DELETE_CATEGORY_SUCCESS:
-            index = findIndex(state.listCategories, action.payload);
-            indexPaginate = findIndex(state.listPaginate, action.payload);
-            if(index !== -1) {
-                state.listCategories.splice(index, 1);
-            }
-            if(indexPaginate !== -1){
-                state.listPaginate.splice(indexPaginate, 1);
-            }
             return {
                 ...state,
+                categoryToTree: action.payload,
                 isLoading: false
             }
 
-        case CategoryConstants.GETALL_CATEGORY_FAILURE:
+        case CategoryConstants.GETALL_CATEGORY_TREE_FAILURE:
         case CategoryConstants.GETALL_CATEGORY_BY_TYPE_FAILURE:
         case CategoryConstants.CREATE_CATEGORY_FAILURE:
-        case CategoryConstants.PAGINATE_CATEGORY_FAILURE:
         case CategoryConstants.UPDATE_CATEGORY_FAILURE:
         case CategoryConstants.DELETE_CATEGORY_FAILURE:
             return {

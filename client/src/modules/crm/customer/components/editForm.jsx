@@ -119,9 +119,34 @@ class CrmCustomerEdit extends Component {
 
     shouldComponentUpdate = (nextProps, nextState) => {
         let { editingCustomer } = this.state;
+
         if (this.state.dataStatus === this.DATA_STATUS.QUERYING && !nextProps.crm.customers.isLoading) {
             let customer = nextProps.crm.customers.customerById;
-            editingCustomer = { ...customer }
+            editingCustomer = {
+                owner: customer.owner ? customer.owner.map(o => o._id) : [],
+                code: customer.code ? customer.code : '',
+                name: customer.name ? customer.name : '',
+                company: customer.company ? customer.company : '',
+                represent: customer.represent ? customer.represent : '',
+                gender: customer.gender ? customer.gender : '',
+                taxNumber: customer.taxNumber ? customer.taxNumber : '',
+
+                customerSource: customer.customerSource ? customer.customerSource : '',
+                companyEstablishmentDate: customer.companyEstablishmentDate ? this.formatDate(customer.companyEstablishmentDate) : '',
+                birthDate: customer.birthDate ? this.formatDate(customer.birthDate) : '',
+                telephoneNumber: customer.telephoneNumber ? customer.telephoneNumber : '',
+                mobilephoneNumber: customer.mobilephoneNumber ? customer.mobilephoneNumber : '',
+                email: customer.email ? customer.email : '',
+                email2: customer.email2 ? customer.email2 : '',
+
+                status: customer.status ? customer.status.map(o => o._id) : '',
+                group: customer.group ? customer.group._id : '',
+                address: customer.address ? customer.address : '',
+                address2: customer.address2 ? customer.address2 : '',
+                location: customer.location ? customer.location : '',
+                website: customer.website ? customer.website : '',
+                linkedIn: customer.linkedIn ? customer.linkedIn : '',
+            }
 
             this.setState({
                 dataStatus: this.DATA_STATUS.AVAILABLE,
@@ -137,6 +162,29 @@ class CrmCustomerEdit extends Component {
             return false;
         }
         return true;
+    }
+
+    /**
+     * 
+     * @param {*} date 
+     * @param {*} monthYear 
+     */
+    formatDate(date, monthYear = false) {
+        if (date) {
+            let d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+
+            if (month.length < 2) month = '0' + month;
+            if (day.length < 2) day = '0' + day;
+
+            if (monthYear === true) {
+                return [month, year].join('-');
+            } else return [day, month, year].join('-');
+        } else {
+            return date
+        }
     }
 }
 

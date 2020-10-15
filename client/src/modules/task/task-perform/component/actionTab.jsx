@@ -19,6 +19,7 @@ import { SubTaskTab } from './subTaskTab';
 import { ViewProcess } from '../../task-process/component/task-process-management/viewProcess';
 import { IncomingDataTab } from './incomingDataTab';
 import { OutgoingDataTab } from './outgoingDataTab';
+import parse from 'html-react-parser';
 
 class ActionTab extends Component {
     constructor(props) {
@@ -866,10 +867,9 @@ class ActionTab extends Component {
                                                             item.name && <b>{item.name} </b>}
                                                         {item.description.split('\n').map((item, idx) => {
                                                             return (
-                                                                <span key={idx}>
-                                                                    {item}
-                                                                    <br />
-                                                                </span>
+                                                                <div key={idx}>
+                                                                    {parse(item)}
+                                                                </div>
                                                             );
                                                         })
                                                         }
@@ -1065,7 +1065,7 @@ class ActionTab extends Component {
                                                                     </div>
                                                                     <ul className="list-inline tool-level2">
                                                                         <li><span className="text-sm">{<DateTimeConverter dateTime={child.createdAt} />}</span></li>
-                                                                        {child.files && child.files.length>0 &&
+                                                                        {child.files && child.files.length > 0 &&
                                                                             <li style={{ display: "inline-table" }}>
                                                                                 <div><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => this.handleShowFile(child._id)}><b><i className="fa fa-paperclip" aria-hidden="true"> {translate("task.task_perform.file_attach")} ({child.files && child.files.length})</i></b></a></div>
                                                                             </li>
@@ -1136,6 +1136,10 @@ class ActionTab extends Component {
                                                             src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar"
                                                         />
                                                         <ContentMaker
+<<<<<<< HEAD
+=======
+                                                            id={item.comments[0]._id}
+>>>>>>> 6fd2d559dd548d4c5ed4f3f87b20693e758fbbb8
                                                             inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
                                                             onFilesChange={this.onCommentFilesChange}
                                                             onFilesError={this.onFilesError}
@@ -1468,7 +1472,7 @@ class ActionTab extends Component {
                                                                                         requestDownloadFile={this.requestDownloadFile}
                                                                                     />
                                                                                     :
-                                                                                    <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
+                                                                                    <a style={{ cursor: "pointer", marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
                                                                                 }
 
                                                                             </div>

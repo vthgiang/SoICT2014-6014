@@ -471,7 +471,7 @@ export default {
             },
             store: {
                 title: 'Store',
-                information: 'Information',
+                information: 'Archive Place',
                 organizational_unit_manage: 'Organizational Unit Management',
                 select_organizational: 'Select organizational unit',
                 user_manage: 'User management',

@@ -50,6 +50,12 @@ class FluctuatingProductLineChart extends Component {
                         multiline: false
                     },
                     height: 100
+                },
+                y: {
+                    label: {
+                        text: "Số lượng",
+                        position: "outer-middle"
+                    }
                 }
             }
         });

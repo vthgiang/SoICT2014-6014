@@ -391,7 +391,7 @@ class ManufacturingCommandAndResources extends Component {
                     </div>
 
                 }
-                <GoodIssue />
+                <GoodIssue style={{ zIndex: 0 }} />
 
             </div>
         );

@@ -25,7 +25,8 @@ class EditGroupForm extends Component {
                     modalID="modal-edit-group" isLoading={groups.isLoading}
                     formID="form-edit-group"
                     title="Chỉnh sửa nhóm khách hàng"
-                    func={this.save} size="50"
+                    func={this.save} size={50}
+                    disableSubmit={!this.isFormValidated()}
                 >
                     {/* Form thêm nhóm khách hàng mới */}
                     <form id="form-crm-group-edit">
@@ -166,7 +167,7 @@ class EditGroupForm extends Component {
 
     save = () => {
         const { editingGroup, groupIdEdit } = this.state;
-        if (this.isFormValidated()) {
+        if (this.isFormValidated) {
             this.props.editGroup(groupIdEdit, editingGroup);
         }
     }
