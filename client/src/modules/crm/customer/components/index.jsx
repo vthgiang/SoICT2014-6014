@@ -36,7 +36,7 @@ class CrmCustomer extends Component {
     render() {
         const { translate, crm, user } = this.props;
         const { customers, groups, status } = crm;
-        const { customer, importCustomer, limit, page, customerIdEdit } = this.state;
+        const { importCustomer, limit, page, customerIdEdit, customerId } = this.state;
 
         let pageTotal = (crm.customers.totalDocs % limit === 0) ?
             parseInt(crm.customers.totalDocs / limit) :
@@ -83,7 +83,8 @@ class CrmCustomer extends Component {
                     {/* form thêm mới khách hàng bằng tay */}
                     <CreateForm />
 
-                    {customer !== undefined && <InfoForm customer={customer} />}
+                    {customerId && <InfoForm customerId={customerId} />}
+
                     {customerIdEdit && <EditForm customerIdEdit={customerIdEdit} />}
 
                     {/* search form */}
@@ -216,8 +217,8 @@ class CrmCustomer extends Component {
         this.props.getStatus({});
     }
 
-    handleInfo = async (customer) => {
-        await this.setState({ customer });
+    handleInfo = async (id) => {
+        await this.setState({ customerId: id, });
         window.$('#modal-crm-customer-info').modal('show');
     }
 

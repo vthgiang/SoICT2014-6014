@@ -544,6 +544,8 @@ export default {
                 location: 'Khu vực',
                 birth: 'Ngày sinh',
                 gender: 'Giới tính',
+                male: 'Nam',
+                female:'Nữ',
                 liability: 'Công nợ',
                 taxNumber: 'Mã số thuế',
                 website: 'Website',
@@ -555,6 +557,7 @@ export default {
                 by_group: 'Theo nhóm khách hàng',
                 by_customer: 'Theo khách hàng',
                 payment: 'Hình thức thanh toán',
+                creator: 'Người tạo',
 
                 info: 'Thông tin chung',
                 contact: 'Thông tin liên hệ',
