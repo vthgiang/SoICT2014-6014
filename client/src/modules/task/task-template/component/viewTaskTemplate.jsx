@@ -73,7 +73,7 @@ class ViewTaskTemplate extends Component {
                 <div className="row row-equal-height" style={{ marginTop: -25 }} >
                     <div className={`${isProcess ? "col-lg-12 col-sm-12" : "col-xs-12 col-sm-12 col-md-6 col-lg-6"}`} style={{ padding: 10 }}>
                         <div className="description-box" style={{ height: "100%" }}>
-                            <h4 class="title">
+                            <h4 className="title">
                                 {translate('task_template.general_information')}
                             </h4>
 
@@ -104,7 +104,7 @@ class ViewTaskTemplate extends Component {
 
                     <div className={`${isProcess ? "col-lg-12 col-sm-12" : "col-xs-12 col-sm-12 col-md-6 col-lg-6"}`} style={{ padding: 10 }} >
                         <div className="description-box" style={{ height: "100%" }}>
-                            <h4 class="title">
+                            <h4 className="title">
                                 {translate('task_template.roles')}
                             </h4>
                             <div>
@@ -115,7 +115,7 @@ class ViewTaskTemplate extends Component {
                                         <div>
                                             <ul>
                                                 {taskTemplate?.readByEmployees && taskTemplate?.readByEmployees.map((item, index) => {
-                                                    return <li key={index}>{item.name}</li>
+                                                    return <li key={index}>{item && item.name}</li>
                                                 })}
                                             </ul>
                                         </div>
@@ -128,7 +128,7 @@ class ViewTaskTemplate extends Component {
                                         <div>
                                             <ul>
                                                 {responsibleEmployees.map((item, index) => {
-                                                    return <li key={index}>{item.name}</li>
+                                                    return <li key={index}>{item && item.name}</li>
                                                 })}
                                             </ul>
                                         </div>
@@ -142,7 +142,7 @@ class ViewTaskTemplate extends Component {
                                         <div>
                                             <ul>
                                                 {accountableEmployees.map((item, index) => {
-                                                    return <li key={index}>{item.name}</li>
+                                                    return <li key={index}>{item && item.name}</li>
                                                 })}
                                             </ul>
                                         </div>
@@ -156,7 +156,7 @@ class ViewTaskTemplate extends Component {
                                         <div>
                                             <ul>
                                                 {taskTemplate?.consultedEmployees.map((item, index) => {
-                                                    return <li key={index}>{item.name}</li>
+                                                    return <li key={index}>{item && item.name}</li>
                                                 })}
                                             </ul>
                                         </div>
@@ -170,7 +170,7 @@ class ViewTaskTemplate extends Component {
                                         <div>
                                             <ul>
                                                 {taskTemplate?.informedEmployees.map((item, index) => {
-                                                    return <li key={index}>{item.name}</li>
+                                                    return <li key={index}>{item && item.name}</li>
                                                 })}
                                             </ul>
                                         </div>
@@ -184,7 +184,7 @@ class ViewTaskTemplate extends Component {
                 <div className="row row-equal-height">
                     <div className={`${isProcess ? "col-lg-12 col-sm-12" : "col-xs-12 col-sm-12 col-md-6 col-lg-6"}`} style={{ padding: 10 }} >
                         <div className="description-box" style={{ height: "100%" }}>
-                            <h4 class="title">
+                            <h4 className="title">
                                 {translate('task_template.activity_list')}
                             </h4>
 
@@ -196,10 +196,10 @@ class ViewTaskTemplate extends Component {
                                         taskTemplate?.taskActions.map((item, index) =>
                                             <div className="task-item" key={index}>
                                                 <p>
-                                                    <b class="number">{index+1}</b>
-                                                    <span class="content">{item.name}</span>
+                                                    <b className="number">{index+1}</b>
+                                                    <span className="content">{item.name}</span>
                                                     {
-                                                        item.mandatory && <span class="note">{translate('task_template.mandatory')}</span>
+                                                        item.mandatory && <span className="note">{translate('task_template.mandatory')}</span>
                                                     }
                                                 </p>
                                                 <div>{parse(item.description)}</div>
@@ -211,7 +211,7 @@ class ViewTaskTemplate extends Component {
                     </div>
                     <div className={`${isProcess ? "col-lg-12 col-sm-12" : "col-xs-12 col-sm-12 col-md-6 col-lg-6"}`} style={{ padding: 10 }}>
                         <div className="description-box" style={{ height: "100%" }}>
-                            <h4 class="title">
+                            <h4 className="title">
                                 {translate('task_template.information_list')}
                             </h4>
 
@@ -222,7 +222,15 @@ class ViewTaskTemplate extends Component {
                                         <div><strong>{translate('task_template.no_data')}</strong></div> :
                                         taskTemplate?.taskInformations.map((item, index) =>
                                             <React.Fragment key={index}>
-                                                <div><strong>{item.code} - {item.name} - Kiểu {this.formatTypeInfo(item.type)} {item.filledByAccountableEmployeesOnly ? ` - ${translate('task_template.manager_fill')}` : ""}:</strong><span>{item.description}</span></div>
+                                                <div className="task-item-info">
+                                                    <p>
+                                                        <b className="code">{item.code}</b>
+                                                        <i className="type">{this.formatTypeInfo(item.type)}</i>
+                                                        <span className="content">{item.name}</span>
+                                                        {item.filledByAccountableEmployeesOnly && <span className="note">{translate('task_template.manager_fill')}</span>}
+                                                    </p>
+                                                    <div>{parse(item.description)}</div>
+                                                </div>
                                             </React.Fragment>
                                         )
                                 }

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import WorkSchedule from '../../../../manufacturing-schedule/components';
-
-class ManufacturingSchedule extends Component {
+import { UseRequestManager } from '../../../../../../asset/admin/use-request/components/UseRequestManager';
+class AssignMachineSchedule extends Component {
     constructor(props) {
         super(props);
         this.state = {}
@@ -11,11 +10,10 @@ class ManufacturingSchedule extends Component {
         const { id } = this.props;
         return (
             <div id={id} className="tab-pane">
-                <WorkSchedule />
+                <UseRequestManager />
             </div>
         );
     }
-
 }
 
-export default ManufacturingSchedule;
+export default AssignMachineSchedule;

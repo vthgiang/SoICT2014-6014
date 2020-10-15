@@ -7,6 +7,7 @@ import ValidationHelper from '../../../../helpers/validationHelper';
 import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
 
 import GeneralTabEditForm from './generalTabEditForm';
+import './customer.css';
 
 class CrmCustomerEdit extends Component {
     constructor(props) {
@@ -85,24 +86,6 @@ class CrmCustomerEdit extends Component {
         })
     }
 
-
-    formatDate(date, monthYear = false) {
-        if (date) {
-            let d = new Date(date),
-                month = '' + (d.getMonth() + 1),
-                day = '' + d.getDate(),
-                year = d.getFullYear();
-
-            if (month.length < 2) month = '0' + month;
-            if (day.length < 2) day = '0' + day;
-
-            if (monthYear === true) {
-                return [month, year].join('-');
-            } else return [day, month, year].join('-');
-        }
-        return date
-    }
-
     isFormValidated = () => {
         const { code, name, taxNumber } = this.state.editingCustomer;
         const { translate } = this.props;
@@ -138,30 +121,8 @@ class CrmCustomerEdit extends Component {
         let { editingCustomer } = this.state;
         if (this.state.dataStatus === this.DATA_STATUS.QUERYING && !nextProps.crm.customers.isLoading) {
             let customer = nextProps.crm.customers.customerById;
-            editingCustomer = {
-                ...editingCustomer,
-                owner: customer.owner ? customer.owner.map(o => o._id) : [],
-                code: customer && customer.code,
-                name: customer && customer.name,
-                company: customer && customer.company,
-                creator: customer && customer.creator,
-                gender: customer && customer.gender,
-                taxNumber: customer && customer.taxNumber,
-                customerSource: customer && customer.customerSource,
-                companyEstablishmentDate: customer && this.formatDate(customer.companyEstablishmentDate),
-                birthDate: customer && this.formatDate(customer.birthDate),
-                telephoneNumber: customer && customer.telephoneNumber,
-                mobilephoneNumber: customer && customer.mobilephoneNumber,
-                email: customer && customer.email,
-                email2: customer && customer.email2,
-                status: customer.status && customer.status._id,
-                group: customer.group && customer.group._id,
-                address: customer && customer.address,
-                address2: customer && customer.address2,
-                location: customer && customer.location,
-                website: customer && customer.website,
-                linkedIn: customer && customer.linkedIn,
-            }
+            editingCustomer = { ...customer }
+
             this.setState({
                 dataStatus: this.DATA_STATUS.AVAILABLE,
                 editingCustomer,

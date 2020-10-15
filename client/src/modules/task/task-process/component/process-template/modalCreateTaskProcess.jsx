@@ -547,7 +547,7 @@ class ModalCreateTaskProcess extends Component {
 	// hàm lưu
 	save = async () => {
 		let elementList = this.modeler.get('elementRegistry')._elements
-		let { info } = this.state;
+		// let { info } = this.state;
 		let { department } = this.props;
 		let xmlStr;
 		this.modeler.saveXML({ format: true }, function (err, xml) {
@@ -555,6 +555,7 @@ class ModalCreateTaskProcess extends Component {
 		});
 
 		await this.setState(state => {
+			let { info } = state;
 			for (let j in info) {
 				if (Object.keys(info[j]).length !== 0) {
 					info[j].followingTasks = [];
@@ -592,7 +593,7 @@ class ModalCreateTaskProcess extends Component {
 			}
 		})
 
-		console.log('infooo', info);
+		console.log('infooo', this.state.info);
 
 		let data = {
 			info: this.state.info,

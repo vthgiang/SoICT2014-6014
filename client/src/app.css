@@ -739,6 +739,7 @@ div.notification-title ::after {
 /* phần task-template */
 div.task-item {
     padding: 0px;
+    margin-bottom: 20px;
 }
 
 div.task-item > p {
@@ -766,11 +767,59 @@ div.task-item > p > span.note {
     color: #f1f1f1;
     border-radius: 5px;
     margin-left: 5px;
-    top: -30px;
 }
 
 div.task-item > div {
     margin: 0px 0px 0px 14px;
     padding: 5px 25px 20px 25px; 
     border-left: 1px double #c1c1c1;
+    border-bottom: 1px double #c1c1c1;
+}
+
+/* task-template-infomartion */
+div.task-item-info {
+    padding: 0px;
+    margin-bottom: 20px;
+}
+
+div.task-item-info > p {
+    padding: 0px;
+    margin: 0px;
+}
+
+div.task-item-info > p > b.code {
+    padding: 5px 10px;
+    background-color: #FFB03D;
+    border: 0.5px double gray;
+}
+
+div.task-item-info > p > i.type {
+    padding: 5px 10px;
+    background-color: #e2e2e2;
+    border: 0.5px double gray;
+    border-left: none;
+}
+
+div.task-item-info > p > span.content {
+    margin-left: 5px;
+    border: 0.2px solid gray;
+    padding: 5px 10px;
+    background-color: #fff;
+}
+
+div.task-item-info > p > span.note {
+    font-size: 11px;
+    font-weight: bold;
+    background-color: orange;
+    padding: 2px 8px;
+    color: #f1f1f1;
+    border-radius: 5px;
+    margin-left: 5px;
+}
+
+div.task-item-info > div {
+    margin: 0px;
+    padding: 10px; 
+    border-left: 1px solid #c1c1c1;
+    border-bottom: 1px solid #c1c1c1;
 }

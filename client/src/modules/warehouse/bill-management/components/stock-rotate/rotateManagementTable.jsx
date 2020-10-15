@@ -140,7 +140,7 @@ class RotateManagementTable extends Component {
                         <table id={`good-table`} className="table table-striped table-bordered table-hover" style={{marginTop: '15px'}}>
                             <thead>
                                 <tr>
-                                    <th style={{ width: '5%', textAlign: 'center', verticalAlign: 'middle' }}>{translate('manage_warehouse.bill_management.index')}</th>
+                                    <th rowSpan="2" style={{ width: '5%', textAlign: 'center', verticalAlign: 'middle' }}>{translate('manage_warehouse.bill_management.index')}</th>
                                     <th>{translate('manage_warehouse.bill_management.code')}</th>
                                     <th>{translate('manage_warehouse.bill_management.type')}</th>
                                     <th>{translate('manage_warehouse.bill_management.creator')}</th>
@@ -150,7 +150,7 @@ class RotateManagementTable extends Component {
                                     <th>{translate('manage_warehouse.bill_management.issue_stock')}</th>
                                     <th>{translate('manage_warehouse.bill_management.receipt_stock')}</th>
                                     <th>{translate('manage_warehouse.bill_management.description')}</th>
-                                    <th style={{ width: '120px', textAlign: 'center', verticalAlign: 'middle' }}>{translate('table.action')}
+                                    <th rowSpan="2" style={{ width: '120px', textAlign: 'center', verticalAlign: 'middle' }}>{translate('table.action')}
                                     <DataTableSetting
                                             tableId={`good-table`}
                                             columnArr={[
@@ -170,6 +170,17 @@ class RotateManagementTable extends Component {
                                         />
                                     </th>
                                 </tr>
+                                <tr>
+                                            <th style={{padding: '2px'}}><input style={{width: '100%'}} /></th>
+                                            <th style={{padding: '2px'}}><input style={{width: '100%'}} /></th>
+                                            <th style={{padding: '2px'}}><input style={{width: '100%'}} /></th>
+                                            <th style={{padding: '2px'}}><input style={{width: '100%'}} /></th>
+                                            <th style={{padding: '2px'}}><input style={{width: '100%'}} /></th>
+                                            <th style={{padding: '2px'}}><input style={{width: '100%'}} /></th>
+                                            <th style={{padding: '2px'}}><input style={{width: '100%'}} /></th>
+                                            <th style={{padding: '2px'}}><input style={{width: '100%'}} /></th>
+                                            <th style={{padding: '2px'}}><input style={{width: '100%'}} /></th>
+                                        </tr>
                             </thead>
                             <tbody>
                                         <tr>
@@ -185,6 +196,8 @@ class RotateManagementTable extends Component {
                                             <td>Nhập kho nguyên vật liệu</td>
                                             <td style={{textAlign: 'center'}}>
                                                 <a className="text-green" onClick={() => this.handleShowDetailInfo()}><i className="material-icons">visibility</i></a>
+                                                <a onClick={() => this.handleEdit()} className="text-yellow" ><i className="material-icons">edit</i></a>
+                                                <a className="text-black" onClick={() => this.handleShow()}><i className="material-icons">print</i></a>
                                             </td>
                                         </tr>
                                         <tr>
@@ -200,6 +213,8 @@ class RotateManagementTable extends Component {
                                             <td>Xuất bán sản phẩm</td>
                                             <td style={{textAlign: 'center'}}>
                                                 <a className="text-green" onClick={() => this.handleShowDetailInfo()}><i className="material-icons">visibility</i></a>
+                                                <a onClick={() => this.handleEdit()} className="text-yellow" ><i className="material-icons">edit</i></a>
+                                                <a className="text-black" onClick={() => this.handleShow()}><i className="material-icons">print</i></a>
                                             </td>
                                         </tr>
                                         <tr>
@@ -215,6 +230,8 @@ class RotateManagementTable extends Component {
                                             <td>Xuất bán sản phẩm</td>
                                             <td style={{textAlign: 'center'}}>
                                                 <a className="text-green" onClick={() => this.handleShowDetailInfo()}><i className="material-icons">visibility</i></a>
+                                                <a onClick={() => this.handleEdit()} className="text-yellow" ><i className="material-icons">edit</i></a>
+                                                <a className="text-black" onClick={() => this.handleShow()}><i className="material-icons">print</i></a>
                                             </td>
                                         </tr>
                                         <tr>
@@ -230,6 +247,8 @@ class RotateManagementTable extends Component {
                                             <td>Xuất bán sản phẩm</td>
                                             <td style={{textAlign: 'center'}}>
                                                 <a className="text-green" onClick={() => this.handleShowDetailInfo()}><i className="material-icons">visibility</i></a>
+                                                <a onClick={() => this.handleEdit()} className="text-yellow" ><i className="material-icons">edit</i></a>
+                                                <a className="text-black" onClick={() => this.handleShow()}><i className="material-icons">print</i></a>
                                             </td>
                                         </tr>
                             </tbody>

@@ -43,7 +43,7 @@ function getAllTaskTemplateByRole(id) {
 
 // get all task template by User
 // Để lấy tất cả kết quả: cho pageNumber=1, noResultsPerPage = 0
-function getAllTaskTemplateByUser(pageNumber, noResultsPerPage, arrayUnit="[]", name="") {
+function getAllTaskTemplateByUser(pageNumber, noResultsPerPage, arrayUnit, name) {
     var id = getStorage("userId");
 
     return sendRequest({

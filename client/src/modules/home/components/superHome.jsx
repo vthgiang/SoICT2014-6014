@@ -43,11 +43,11 @@ class SuperHome extends Component {
     }
 
     componentDidMount = async () => {
-        await this.props.getResponsibleTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null, false);
-        await this.props.getAccountableTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null, false);
-        await this.props.getConsultedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null, false);
-        await this.props.getInformedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null, false);
-        await this.props.getCreatorTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null, false);
+        await this.props.getResponsibleTaskByUser([], 1, 1000, [], [], [], null, null, null, null, null, false);
+        await this.props.getAccountableTaskByUser([], 1, 1000, [], [], [], null, null, null, null, null, false);
+        await this.props.getConsultedTaskByUser([], 1, 1000, [], [], [], null, null, null, null, null, false);
+        await this.props.getInformedTaskByUser([], 1, 1000, [], [], [], null, null, null, null, null, false);
+        await this.props.getCreatorTaskByUser([], 1, 1000, [], [], [], null, null, null, null, null, false);
 
         let data = {
             type: "user"
@@ -125,10 +125,10 @@ class SuperHome extends Component {
             })
             let { startMonth, endMonth } = this.state;
 
-            this.props.getResponsibleTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, startMonth, endMonth, null, null, true);
-            this.props.getAccountableTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, startMonth, endMonth, null, null, true);
-            this.props.getConsultedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, startMonth, endMonth, null, null, true);
-            this.props.getInformedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, startMonth, endMonth, null, null, true);
+            this.props.getResponsibleTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
+            this.props.getAccountableTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
+            this.props.getConsultedTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
+            this.props.getInformedTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
 
             let data = { type: "user" };
             this.props.getTaskByUser(data);

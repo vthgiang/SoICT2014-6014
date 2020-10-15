@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 // Model quản lý dữ liệu của một mẫu công việc
 const TaskTemplateSchema = new Schema({
@@ -112,6 +113,8 @@ const TaskTemplateSchema = new Schema({
 }, {
     timestamps: true
 });
+
+TaskTemplateSchema.plugin(mongoosePaginate);
 
 module.exports = (db) => {
     if(!db.models.TaskTemplate)

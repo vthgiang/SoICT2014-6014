@@ -9,11 +9,11 @@ class ManufacturingMillCreateForm extends Component {
     render() {
         return (
             <React.Fragment>
-                <ButtonModal modalID="modal-create-works" button_name="Thêm nhà máy" title="Thêm nhà máy" />
+                <ButtonModal modalID="modal-create-works" button_name="Thêm xưởng" title="Thêm xưởng" />
                 <DialogModal
                     modalID="modal-create-works" isLoading={false}
                     formID="form-create-works"
-                    title="Thêm nhà máy sản xuất"
+                    title="Thêm xưởng sản xuất"
                     // msg_success={translate('manage_plan.add_success')}
                     // msg_faile={translate('manage_plan.add_fail')}
                     // func={this.save}

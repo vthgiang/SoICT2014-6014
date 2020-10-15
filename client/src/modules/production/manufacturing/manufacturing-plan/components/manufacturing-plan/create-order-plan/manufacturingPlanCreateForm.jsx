@@ -3,7 +3,8 @@ import { ButtonModal, DatePicker, DialogModal } from '../../../../../../../commo
 import sampleData from '../../../../sampleData';
 import MaterialCalculator from './materialCalculator';
 import ManufacturingCommandAndResoures from './manufacturingCommandAndResources'
-import ManufacturingSchedule from './manufacturingSchedule';
+import ManufacturingMillSchedule from './manufacturingMillSchedule';
+import AssignMachineSchedule from './assignMachineSchedule';
 
 class ManufacturingPlanCreateForm extends Component {
     constructor(props) {
@@ -50,7 +51,6 @@ class ManufacturingPlanCreateForm extends Component {
         }
         return (
             <React.Fragment>
-
                 <DialogModal
                     modalID="modal-create-manufacturing-plan" isLoading={false}
                     formID="form-create-manufacturing-plan"
@@ -149,7 +149,8 @@ class ManufacturingPlanCreateForm extends Component {
                                         <ul className="nav nav-tabs">
                                             <li className="active"><a title="Định mức nguyên vật liệu" data-toggle="tab" href={`#material-calculator`}>Định mức nguyên vật liệu</a></li>
                                             <li><a title="Lệnh sản xuất và phân bổ nguồn lực" data-toggle="tab" href={`#manufaturing-command-and-resources`}>Lệnh sản xuất và phân bổ nguồn lực</a></li>
-                                            <li><a title="Lịch sản xuất" data-toggle="tab" href={`#manufacturing-schedule`}>Lịch sản xuất</a></li>
+                                            <li><a title="Lịch sản xuất" data-toggle="tab" href={`#manufacturing-mill-schedule`}>Lịch sản xuất</a></li>
+                                            <li><a title="Lịch sử dụng máy móc" data-toggle="tab" href={`#assign-machine-schedule`}>Lịch sử dụng máy móc</a></li>
                                         </ul>
 
                                         <div className="tab-content">
@@ -164,8 +165,11 @@ class ManufacturingPlanCreateForm extends Component {
                                                 manufacturingOrder={manufacturingOrder}
                                             />
                                             {/* Thông tin về lịch sản xuất */}
-                                            <ManufacturingSchedule
-                                                id={`manufacturing-schedule`}
+                                            <ManufacturingMillSchedule
+                                                id={`manufacturing-mill-schedule`}
+                                            />
+                                            <AssignMachineSchedule
+                                                id={`assign-machine-schedule`}
                                             />
                                         </div>
                                     </div>

@@ -13,8 +13,16 @@
      "description": "",
      "priority": 1,
      "salesOrders": [{
-         "_id": "1"
-     }]
-
+         "_id": "2"
+     }, {
+        "_id": "3"
+    }],
+    "good": [{
+        "name": "Thuốc úm gà",
+        "quantty": 1000
+    }, {
+        "name": "Thuốc thủy đậu",
+        "quantty": 500
+    }]
 
 }]

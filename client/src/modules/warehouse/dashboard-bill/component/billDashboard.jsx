@@ -3,6 +3,13 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import BillDashboardHeader from './billDashboardHeader';
 import GoodIssueReceiptByGood from './goodIssueReceiptByGood';
+import GoodIssueReceiptByTime from './goodIssueReceiptByTime';
+import TopIssueReceipt from './topIssueReceipt';
+import TopIssueReceiptLeast from './topIssueReceiptLeast';
+import SupplierDashboard from './supplierDashboard';
+import CustomerDashboard from './customerDashboard';
+import SupplierNumberDashboard from './supplierNumberDashboard';
+import CustomerNumberDashboard from './customerNumberDashboard';
 
 class DashBoardBills extends Component {
     constructor(props) {
@@ -68,22 +75,31 @@ class DashBoardBills extends Component {
                     <div className=" col-lg-12 col-md-12 col-md-sm-12 col-xs-12">
                         <GoodIssueReceiptByGood actionSearch={actionSearch} />
                     </div>
-
-                    {/* <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
-                        <QuantityExpirationDate handleMonthChange={this.handleMonthChange} />
-                    </div>
-                    <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
-                        <QuantityExpiratedDate handleMonthChange={this.handleMonthChange} />
-                    </div>
-
-                    <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
-                        <NormDasdboard handleMonthChange={this.handleMonthChange} />
-                    </div>
-                    <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
-                        <QualificationChart organizationalUnits={organizationalUnits} actionSearch={actionSearch} />
-                    </div>
-
                     <div className=" col-lg-12 col-md-12 col-md-sm-12 col-xs-12">
+                        <GoodIssueReceiptByTime />
+                    </div>
+
+                    <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
+                        <TopIssueReceipt handleMonthChange={this.handleMonthChange} />
+                    </div>
+                    <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
+                        <TopIssueReceiptLeast handleMonthChange={this.handleMonthChange} />
+                    </div>
+
+                    <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
+                        <CustomerDashboard handleMonthChange={this.handleMonthChange} />
+                    </div>
+                    <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
+                        <SupplierDashboard actionSearch={actionSearch} />
+                    </div>
+                    <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
+                        <CustomerNumberDashboard handleMonthChange={this.handleMonthChange} />
+                    </div>
+                    <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
+                        <SupplierNumberDashboard actionSearch={actionSearch} />
+                    </div>
+
+                    {/* <div className=" col-lg-12 col-md-12 col-md-sm-12 col-xs-12">
                         <HumanResourceIncreaseAndDecreaseChart nameData1='Tuyển mới' nameData2='Nghỉ làm' nameChart={'Tình hình tăng giảm nhân sự'} />
                     </div>
                     <div className=" col-lg-12 col-md-12 col-md-sm-12 col-xs-12">

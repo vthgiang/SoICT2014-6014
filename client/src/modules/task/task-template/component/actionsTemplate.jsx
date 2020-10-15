@@ -4,10 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import Sortable from 'sortablejs';
 import {ErrorLabel} from '../../../../common-components';
-
 import { TaskTemplateFormValidator} from './taskTemplateFormValidator';
-import './tasktemplate.css';
-
 import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import parse from 'html-react-parser';
@@ -273,8 +270,8 @@ class ActionForm extends Component{
                             <th style={{ width: '50px' }} className="col-fixed">STT</th>
                             <th title="Tên hoạt động">{translate('task_template.action_name')}</th>
                             <th title="Mô tả">{translate('task_template.description')}</th>
-                            <th title="Bắt buộc">{translate('task_template.mandatory')}</th>
-                            <th title="Hành động">{translate('task_template.action')}</th>
+                            <th style={{ width: '60px' }} title="Bắt buộc">{translate('task_template.mandatory')}</th>
+                            <th style={{ width: '60px' }} title="Hành động">{translate('task_template.action')}</th>
                         </tr>
                     </thead>
                     <tbody id="actions">

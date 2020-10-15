@@ -5,15 +5,11 @@ import { connect } from 'react-redux';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { taskTemplateActions } from '../redux/actions';
-
 import { InformationForm } from '../component/informationsTemplate';
 import { ActionForm } from '../component/actionsTemplate';
-
-import { DialogModal, SelectBox, ErrorLabel } from '../../../../common-components';
-
+import { SelectBox, ErrorLabel } from '../../../../common-components';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import { TaskTemplateFormValidator } from './taskTemplateFormValidator';
-import './tasktemplate.css';
 import { getStorage } from '../../../../config';
 
 class AddTaskTemplate extends Component {
@@ -236,12 +232,11 @@ class AddTaskTemplate extends Component {
         let msg = TaskTemplateFormValidator.validateTaskTemplateRead(value);
 
         if (willUpdateState) {
-            this.state.newTemplate.readByEmployees = value;
-            this.state.newTemplate.errorOnRead = msg;
-            this.setState(state => {
-                return {
-                    ...state,
-                };
+            let {newTemplate} = this.state;
+            newTemplate.readByEmployees = value;
+            newTemplate.errorOnRead = msg;
+            this.setState({
+                newTemplate
             });
         }
         this.props.onChangeTemplateData(this.state.newTemplate);
@@ -249,43 +244,39 @@ class AddTaskTemplate extends Component {
     }
 
     handleTaskTemplateResponsible = (value) => {
-        this.state.newTemplate.responsibleEmployees = value;
-        this.setState(state => {
-            return {
-                ...state,
-            };
+        let {newTemplate} = this.state;
+        newTemplate.responsibleEmployees = value;
+        this.setState({
+            newTemplate
         });
         this.props.isProcess && this.props.handleChangeResponsible(value)
         this.props.onChangeTemplateData(this.state.newTemplate);
     }
 
     handleTaskTemplateAccountable = async (value) => {
-        this.state.newTemplate.accountableEmployees = value;
-        await this.setState(state => {
-            return {
-                ...state,
-            };
+        let {newTemplate} = this.state;
+        newTemplate.accountableEmployees = value;
+        await this.setState({
+            newTemplate
         });
         this.props.isProcess && this.props.handleChangeAccountable(value)
         this.props.onChangeTemplateData(this.state.newTemplate);
     }
 
     handleTaskTemplateConsult = (value) => {
-        this.state.newTemplate.consultedEmployees = value;
-        this.setState(state => {
-            return {
-                ...state,
-            };
+        let {newTemplate} = this.state;
+        newTemplate.consultedEmployees = value;
+        this.setState({
+            newTemplate
         });
         this.props.onChangeTemplateData(this.state.newTemplate);
     }
 
     handleTaskTemplateInform = (value) => {
-        this.state.newTemplate.informedEmployees = value;
-        this.setState(state => {
-            return {
-                ...state,
-            };
+        let {newTemplate} = this.state;
+        newTemplate.informedEmployees = value;
+        this.setState({
+            newTemplate
         });
         this.props.onChangeTemplateData(this.state.newTemplate);
     }
