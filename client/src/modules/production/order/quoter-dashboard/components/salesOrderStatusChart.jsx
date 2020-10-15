@@ -1,14 +1,13 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
-import c3 from 'c3';
-import 'c3/c3.css';
+import c3 from "c3";
+import "c3/c3.css";
 
 class SalesOrderStatusChart extends Component {
     constructor(props) {
         super(props);
-        
     }
-    
+
     componentDidMount() {
         this.pieChart();
     }
@@ -24,7 +23,7 @@ class SalesOrderStatusChart extends Component {
             ["Hùy đơn", 437],
         ];
         return dataPieChart;
-    }
+    };
 
     removePreviousChart() {
         const chart = this.refs.amountPieChart;
@@ -37,7 +36,6 @@ class SalesOrderStatusChart extends Component {
 
     // Khởi tạo PieChart bằng C3
     pieChart = () => {
-
         let dataPieChart = this.setDataPieChart();
         this.removePreviousChart();
         let chart = c3.generate({
@@ -45,39 +43,46 @@ class SalesOrderStatusChart extends Component {
 
             data: {
                 columns: dataPieChart,
-                type: 'pie',
+                type: "pie",
             },
 
             pie: {
                 label: {
                     format: function (value, ratio, id) {
-                        return value + ' đơn';
-                    }
-                }
+                        return value + " đơn";
+                    },
+                },
             },
 
             tooltip: {
                 format: {
-                    title: function (d) { return d; },
+                    title: function (d) {
+                        return d;
+                    },
                     value: function (value) {
                         return value;
-                    }
-                }
+                    },
+                },
             },
 
             legend: {
-                show: true
-            }
+                show: true,
+            },
         });
-    }
-    
+    };
 
-  render() {
-    // this.pieChart();
-    return (
-        <section ref="amountPieChart"></section>
-    );
-  }
+    render() {
+        // this.pieChart();
+        return (
+            <div className="box">
+                <div className="box-header with-border">
+                    <i className="fa fa-bar-chart-o" />
+                    <h3 className="box-title">Trạng thái các đơn kinh doanh</h3>
+                    <div ref="amountPieChart"></div>
+                </div>
+            </div>
+        );
+    }
 }
 
 export default SalesOrderStatusChart;
