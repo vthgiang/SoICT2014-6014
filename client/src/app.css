@@ -108,7 +108,7 @@ a:hover, a:active, a:focus {
 /* CSS cho C3 Chart */
 .c3-tooltip-container {
     max-height: none !important;
-    width: 30%;
+    width: 30%;;
 }
 
 .c3-tooltip {
@@ -285,7 +285,7 @@ legend.legend-box-info {
 .description-box {
     background-color: #fff;
     box-shadow: none;
-    border: 1px solid #c1c1c1;
+    border: 1px solid #f4f4f4;
     padding: 8px 15px 15px 15px;
     line-height: 2.3;
     margin-top: 10px;
