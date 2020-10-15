@@ -173,7 +173,7 @@ class ReceiptManagementTable extends Component {
                         <table id={`good-table`} className="table table-striped table-bordered table-hover" style={{marginTop: '15px'}}>
                             <thead>
                                 <tr>
-                                    <th style={{ width: '5%', textAlign: 'center', verticalAlign: 'middle' }}>{translate('manage_warehouse.bill_management.index')}</th>
+                                    <th rowSpan="2" style={{ width: '5%', textAlign: 'center', verticalAlign: 'middle' }}>{translate('manage_warehouse.bill_management.index')}</th>
                                     <th>{translate('manage_warehouse.bill_management.code')}</th>
                                     <th>{translate('manage_warehouse.bill_management.type')}</th>
                                     <th>{translate('manage_warehouse.bill_management.proposal')}</th> 
@@ -183,7 +183,7 @@ class ReceiptManagementTable extends Component {
                                     <th>{translate('manage_warehouse.bill_management.stock')}</th>
                                     <th>{translate('manage_warehouse.bill_management.supplier')}</th>
                                     <th>{translate('manage_warehouse.bill_management.description')}</th>
-                                    <th style={{ width: '120px', textAlign: 'center', verticalAlign: 'middle' }}>{translate('table.action')}
+                                    <th rowSpan="2" style={{ width: '120px', textAlign: 'center', verticalAlign: 'middle' }}>{translate('table.action')}
                                     <DataTableSetting
                                             tableId={`good-table`}
                                             columnArr={[
@@ -203,6 +203,17 @@ class ReceiptManagementTable extends Component {
                                         />
                                     </th>
                                 </tr>
+                                <tr>
+                                            <th style={{padding: '2px'}}><input style={{width: '100%'}} /></th>
+                                            <th style={{padding: '2px'}}><input style={{width: '100%'}} /></th>
+                                            <th style={{padding: '2px'}}><input style={{width: '100%'}} /></th>
+                                            <th style={{padding: '2px'}}><input style={{width: '100%'}} /></th>
+                                            <th style={{padding: '2px'}}><input style={{width: '100%'}} /></th>
+                                            <th style={{padding: '2px'}}><input style={{width: '100%'}} /></th>
+                                            <th style={{padding: '2px'}}><input style={{width: '100%'}} /></th>
+                                            <th style={{padding: '2px'}}><input style={{width: '100%'}} /></th>
+                                            <th style={{padding: '2px'}}><input style={{width: '100%'}} /></th>
+                                        </tr>
                             </thead>
                             <tbody>
                                         <tr>

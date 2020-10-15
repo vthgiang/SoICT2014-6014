@@ -18,10 +18,12 @@ function getAll() {
         dispatch({ type: taskTemplateConstants.GETALL_TEMPLATE_REQUEST } );
 
         taskTemplateService.getAll()
-            .then(
-                res => dispatch({ type: taskTemplateConstants.GETALL_TEMPLATE_SUCCESS, payload: res.data }),
-                error => dispatch({ type: taskTemplateConstants.GETALL_TEMPLATE_FAILURE})
-            );
+            .then(res => dispatch({ 
+                type: taskTemplateConstants.GETALL_TEMPLATE_SUCCESS, payload: res.data.content
+            }))
+            .catch(err => dispatch({ 
+                type: taskTemplateConstants.GETALL_TEMPLATE_FAILURE
+            }))
     };
 }
 
@@ -43,10 +45,13 @@ function getAllTaskTemplateByUser(pageNumber, noResultsPerPage, arrayUnit, name=
     return dispatch => {
         dispatch({ type: taskTemplateConstants.GETTEMPLATE_BYUSER_REQUEST});
 
-        taskTemplateService.getAllTaskTemplateByUser(pageNumber, noResultsPerPage, arrayUnit, name).then(
-            res => dispatch({ type: taskTemplateConstants.GETTEMPLATE_BYUSER_SUCCESS, payload: res.data}),
-            error => dispatch({ type: taskTemplateConstants.GETTEMPLATE_BYUSER_FAILURE})
-        );
+        taskTemplateService.getAllTaskTemplateByUser(pageNumber, noResultsPerPage, arrayUnit, name)
+            .then(res => dispatch({ 
+                    type: taskTemplateConstants.GETTEMPLATE_BYUSER_SUCCESS, 
+                    payload: res.data.content
+                }))
+            .catch(error => dispatch({ type: taskTemplateConstants.GETTEMPLATE_BYUSER_FAILURE}))
+
     };
 }
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import sampleData from '../../../sampleData';
 import { DataTableSetting, DatePicker, DeleteNotification, SelectMulti } from "../../../../../../common-components";
-import ManufacturingPlanCreateForm from './create-plan/manufacturingPlanCreateForm';
+import NewPlanCreateForm from './create-new-plan/newPlanCreateForm';
 class ManufacturingPlanManagementTable extends Component {
     constructor(props) {
         super(props);
@@ -32,9 +32,7 @@ class ManufacturingPlanManagementTable extends Component {
         return (
             <React.Fragment>
                 <div className="box-body qlcv">
-                    {
-                        <ManufacturingPlanCreateForm />
-                    }
+                    <NewPlanCreateForm />
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">Mã kế hoạch</label>

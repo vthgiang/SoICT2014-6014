@@ -109,8 +109,23 @@ class AdministrationDocumentArchives extends Component {
         }
         return exportData;
     }
+    findChildrenNode = (list, node) => {
+        let array = [];
+        let queue_children = [];
+        queue_children = [node];
+        while (queue_children.length > 0) {
+            let tmp = queue_children.shift();
+            array = [...array, tmp._id];
+            let children = list.filter(child => child.parent === tmp.id);
+            queue_children = queue_children.concat(children);
+        }
+        array.shift();
+        array.unshift(node.id);
+        return array;
+    }
+
     render() {
-        const { archiveParent, deleteNode } = this.state;
+        const { archiveParent, deleteNode, currentArchive } = this.state;
         const { translate } = this.props;
         const { documents } = this.props;
         const { list, tree } = this.props.documents.administration.archives;
@@ -127,6 +142,8 @@ class AdministrationDocumentArchives extends Component {
                 parent: node.parent ? node.parent.toString() : "#"
             }
         })
+        let unChooseNode = currentArchive ? this.findChildrenNode(list, currentArchive) : [];
+        console.log('unchooseeee', unChooseNode);
         return (
             <React.Fragment>
 
@@ -170,7 +187,7 @@ class AdministrationDocumentArchives extends Component {
                                 archiveDescription={this.state.currentArchive.original.description ? this.state.currentArchive.original.description : ""}
                                 archiveParent={this.state.currentArchive.parent}
                                 archivePath={this.state.currentArchive.original.path}
-                                tree={tree}
+                                unChooseNode={unChooseNode}
                             />
                         }
                     </div>

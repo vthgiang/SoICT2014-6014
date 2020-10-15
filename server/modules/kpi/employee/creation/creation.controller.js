@@ -253,13 +253,12 @@ exports.createComment = async (req, res) => {
  * Tạo comment trong comment trong trang create KPI employee (tạo replied comment)
  */
 exports.createChildComment = async (req, res) => {
-    try {
+    // try {
         var files = [];
         if (req.files !== undefined) {
             req.files.forEach((elem, index) => {
                 var path = elem.destination + '/' + elem.filename;
                 files.push({ name: elem.originalname, url: path })
-
             })
         }
         var comments = await EmployeeKpiSetService.createChildComment(req.portal, req.params, req.body, files);
@@ -269,14 +268,14 @@ exports.createChildComment = async (req, res) => {
             messages: ['create_child_comment_success'],
             content: comments
         })
-    } catch (error) {
-        await Logger.error(req.user.email, ` create child comment kpi `, req.portal)
-        res.status(400).json({
-            success: false,
-            messages: ['create_child_comment_fail'],
-            content: error
-        });
-    }
+    // } catch (error) {
+    //     await Logger.error(req.user.email, ` create child comment kpi `, req.portal)
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: ['create_child_comment_fail'],
+    //         content: error
+    //     });
+    // }
 }
 
 /**

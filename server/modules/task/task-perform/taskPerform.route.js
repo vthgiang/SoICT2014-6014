@@ -60,6 +60,7 @@ router.delete('/tasks/:taskId/evaluations/:evaluationId', auth, PerformTaskContr
 
 
 //comments in process
+router.get('/process/tasks/:taskId', auth, PerformTaskController.getAllPreceedingTasks)
 router.post('/process/tasks/:taskId/comments', auth, uploadFile([{ name: 'files', path: '/files/taskprocess' }], 'array'), PerformTaskController.createComment)
 router.patch('/process/tasks/:taskId/comments/:commentId', auth, uploadFile([{ name: 'files', path: '/files/taskprocess' }], 'array'), PerformTaskController.editComment)
 router.delete('/process/tasks/:taskId/comments/:commentId', auth, PerformTaskController.deleteComment)

@@ -1,21 +1,21 @@
-.quote-detail-info-left{
+.quote-detail-info-left {
     font-weight: 600;
     width: 35%;
 }
 
-.quote-detail-info-right{
+.quote-detail-info-right {
     width: 65%;
-    white-space: nowrap; 
+    white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis; 
+    text-overflow: ellipsis;
 }
 
-.quote-detail-info-right:hover{
+.quote-detail-info-right:hover {
     overflow: visible;
     white-space: pre-wrap;
 }
 
-.print-quote{
+.print-quote {
     position: fixed;
     right: 80px;
     bottom: 15px;
@@ -23,6 +23,6 @@
     z-index: 10;
 }
 
-.print-quote:hover{
+.print-quote:hover {
     background-color: aqua;
 }
