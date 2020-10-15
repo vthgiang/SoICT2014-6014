@@ -128,6 +128,7 @@ class IncomingDataTab extends Component {
                                             deleteChildComment={(dataId, commentId, childCommentId, type) => this.props.deleteChildComment(dataId, commentId, childCommentId, type)}
                                             deleteFileComment={(fileId, commentId, dataId, type) => this.props.deleteFileComment(fileId, commentId, dataId, type)}
                                             deleteFileChildComment={(fileId, commentId, childCommentId, dataId, type) => this.props.deleteFileChildComment(fileId, commentId, childCommentId, dataId, type)}
+                                            downloadFile={(path, fileName) => this.props.downloadFile(path, fileName)}
                                         />
                                     </div>
                                 }
@@ -156,6 +157,7 @@ const actions = {
     deleteFileComment: performTaskAction.deleteFileComment,
     deleteFileChildComment: performTaskAction.deleteFileChildComment,
     getAllPreceedingTasks: performTaskAction.getAllPreceedingTasks,
+    downloadFile: AuthActions.downloadFile,
 }
 
 const connectIncomingDataTab = connect(mapState, actions)(withTranslate(IncomingDataTab));

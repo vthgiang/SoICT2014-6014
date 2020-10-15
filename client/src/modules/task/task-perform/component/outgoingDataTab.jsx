@@ -247,6 +247,7 @@ class OutgoingDataTab extends Component {
                                 deleteChildComment={(dataId, commentId, childCommentId, type) => this.props.deleteChildComment(dataId, commentId, childCommentId, type)}
                                 deleteFileComment={(fileId, commentId, dataId, type) => this.props.deleteFileComment(fileId, commentId, dataId,type)}
                                 deleteFileChildComment={(fileId, commentId, childCommentId, dataId, type) => this.props.deleteFileChildComment(fileId, commentId, childCommentId, dataId, type)}
+                                downloadFile={(path, fileName) => this.props.downloadFile(path, fileName)}
                             />
                         </div>
                     </React.Fragment>
@@ -272,7 +273,7 @@ const actions = {
     editChildComment: performTaskAction.editChildComment,
     deleteChildComment: performTaskAction.deleteChildComment,
     deleteFileComment: performTaskAction.deleteFileComment,
-    deleteFileChildComment: performTaskAction.deleteFileChildComment
+    deleteFileChildComment: performTaskAction.deleteFileChildComment,
 }
 
 const connectOutgoingDataTab = connect(mapState, actions)(withTranslate(OutgoingDataTab));

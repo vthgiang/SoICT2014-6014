@@ -349,7 +349,7 @@ class EmployeeKpiApproveModal extends Component {
                                 deleteChildComment={(dataId, commentId, childCommentId) => this.props.deleteChildComment(dataId, commentId, childCommentId)}
                                 deleteFileComment={(fileId, commentId, dataId) => this.props.deleteFileComment(fileId, commentId, dataId)}
                                 deleteFileChildComment={(fileId, commentId, childCommentId, dataId) => this.props.deleteFileChildComment(fileId, commentId, childCommentId, dataId)}
-
+                                downloadFile={(path, fileName) => this.props.downloadFile(path, fileName)}
                             />
                         </div>
                     </div>
