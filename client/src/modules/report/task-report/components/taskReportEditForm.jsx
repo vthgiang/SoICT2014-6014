@@ -171,7 +171,7 @@ class TaskReportEditForm extends Component {
         this.setState({
             editingReport: {
                 ...editingReport,
-                frequency: value,
+                frequency: value[0],
             }
         })
     }
