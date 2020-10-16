@@ -98,7 +98,7 @@ const CustomerSchema = new Schema({
             type: String
         }
     }],
-    statusHistorys: [{
+    statusHistories: [{
         oldValue: {
             type: Schema.Types.ObjectId,
             ref: 'Status'

@@ -61,8 +61,8 @@ class CrmCustomerEdit extends Component {
                 website: customer.website ? customer.website : '',
                 linkedIn: customer.linkedIn ? customer.linkedIn : '',
 
-                statusHistorys: customer.statusHistorys && customer.statusHistorys.length > 0 ?
-                    customer.statusHistorys.map(o => ({
+                statusHistories: customer.statusHistories && customer.statusHistories.length > 0 ?
+                    customer.statusHistories.map(o => ({
                         createdAt: o.createdAt,
                         oldValue: o.oldValue ? o.oldValue : null,
                         newValue: o.newValue,
@@ -137,22 +137,22 @@ class CrmCustomerEdit extends Component {
         const getStatus = editingCustomer.status;
 
         //lấy danh sách trạng thái khách hàng trước khi edit (lịch sử cũ)
-        let { statusHistorys } = editingCustomer;
+        let { statusHistories } = editingCustomer;
 
         const getDateTime = new Date();
 
-        if (getStatus && getStatus.length > 0 && statusHistorys && statusHistorys.length > 0) {
-            statusHistorys = [
-                ...statusHistorys,
+        if (getStatus && getStatus.length > 0 && statusHistories && statusHistories.length > 0) {
+            statusHistories = [
+                ...statusHistories,
                 {
-                    oldValue: statusHistorys[statusHistorys.length - 1].newValue._id,
+                    oldValue: statusHistories[statusHistories.length - 1].newValue._id,
                     newValue: getStatus[getStatus.length - 1],
                     createdAt: getDateTime,
                     createdBy: auth.user._id,
                 }
             ]
         }
-        editingCustomer = { ...editingCustomer, statusHistorys }
+        editingCustomer = { ...editingCustomer, statusHistories }
 
         if (this.isFormValidated) {
             this.props.editCustomer(customerIdEdit, editingCustomer);

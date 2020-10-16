@@ -58,18 +58,18 @@ class CrmCustomerCreate extends Component {
         const { auth } = this.props;
         let { newCustomer } = this.state;
         const getStatus = newCustomer.status;
-        const statusHistorys = [];
+        const statusHistories = [];
         const getDateTime = new Date();
 
         if (getStatus && getStatus.length > 0) {
-            statusHistorys.push({
+            statusHistories.push({
                 oldValue: null,
                 newValue: getStatus[getStatus.length - 1],
                 createdAt: getDateTime,
                 createdBy: auth.user._id,
             })
         }
-        newCustomer = { ...newCustomer, statusHistorys }
+        newCustomer = { ...newCustomer, statusHistories }
 
         if (this.isFormValidated) {
             this.props.createCustomer(newCustomer);

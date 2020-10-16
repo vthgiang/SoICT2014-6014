@@ -23,7 +23,7 @@ class HistoryTabInfoForm extends Component {
     }
 
     render() {
-        const { statusHistorys } = this.props.customerInfomation;
+        const { statusHistories } = this.props.customerInfomation;
         const { id } = this.props;
 
         return (
@@ -32,7 +32,7 @@ class HistoryTabInfoForm extends Component {
                     <h4>Lịch sử thay đổi trạng thái khách hàng</h4>
                     <div className="timeline-container" style={{ marginTop: '15px' }}>
                         {
-                            statusHistorys && statusHistorys.length > 0 ? statusHistorys.map((o, index) => (
+                            statusHistories && statusHistories.length > 0 ? statusHistories.map((o, index) => (
                                 <div key={index} className="timeline-history-item">
                                     <div className="timeline-history-item-content">
                                         <time>{this.formatDateTime(o.createdAt)}</time>
