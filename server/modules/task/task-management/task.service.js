@@ -1611,9 +1611,26 @@ exports.sendEmailCheckTaskLastMonth = async () => {
 
         for (let j in userId) {
             let flag = false;
-            let tasks = { "data": "user", "userId": userId[j] };
+            let tasks = { 
+                data: "user", 
+                userId: userId[j] 
+            };
             let tasksByUser = await this.getTasksByUser(portal, tasks); // laay ra tat ca cong viec cua nguoi dung
-            tasks = { "organizationalUnit": "[]", "number": 1, "perPage": 1000, "status": "[]", "priority": "[]", "special": "[]", "name": null, "startDate": null, "endDate": null, "startDateAfter": null, "endDateBefore": null, "aPeriodOfTime": false, "user": userId[j] }
+            tasks = { 
+                organizationalUnit: [], 
+                number: 1, 
+                perPage: 1000, 
+                status: [], 
+                priority: [], 
+                special: [], 
+                name: null, 
+                startDate: null, 
+                endDate: null, 
+                startDateAfter: null, 
+                endDateBefore: null, 
+                aPeriodOfTime: false, 
+                user: userId[j] 
+            }
 
             informedTasks = await this.getPaginatedTasksThatUserHasInformedRole(portal, tasks);
             // informedTasks = await Task(connect(DB_CONNECTION, portal)).find({informedEmployees: userId[j] , isArchived: false}).populate({ path: "organizationalUnit creator parent" });

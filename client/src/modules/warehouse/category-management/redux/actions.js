@@ -2,44 +2,28 @@ import { CategoryServices } from './services';
 import { CategoryConstants } from './constants';
 
 export const CategoryActions = {
-    getCategories,
+    getCategoryToTree,
     getCategoriesByType,
     createCategory,
     editCategory,
-    deleteCategory
+    deleteCategory,
 }
 
-function getCategories(data = undefined) {
-    if(data !== undefined){
-        return dispatch => {
-            dispatch({ type: CategoryConstants.PAGINATE_CATEGORY_REQUEST});
-            CategoryServices.getCategories(data)
-            .then(res => {
-                dispatch({
-                    type: CategoryConstants.PAGINATE_CATEGORY_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(err => {
-                dispatch({
-                    type: CategoryConstants.PAGINATE_CATEGORY_FAILURE,
-                    error: err
-                })
-            })
-        }
-    }
+function getCategoryToTree() {
     return dispatch => {
-        dispatch({ type: CategoryConstants.GETALL_CATEGORY_REQUEST});
-        CategoryServices.getCategories()
+        dispatch({
+            type: CategoryConstants.GETALL_CATEGORY_TREE_REQUEST
+        });
+        CategoryServices.getCategoryToTree()
         .then(res => {
             dispatch({
-                type: CategoryConstants.GETALL_CATEGORY_SUCCESS,
+                type: CategoryConstants.GETALL_CATEGORY_TREE_SUCCESS,
                 payload: res.data.content
             })
         })
         .catch(err => {
             dispatch({
-                type: CategoryConstants.GETALL_CATEGORY_FAILURE,
+                type: CategoryConstants.GETALL_CATEGORY_TREE_FAILURE,
                 error: err
             })
         })
@@ -107,23 +91,47 @@ function editCategory(id, data){
     }
 }
 
-function deleteCategory(id) {
+function deleteCategory(data, type = "single") {
     return dispatch => {
         dispatch({
             type: CategoryConstants.DELETE_CATEGORY_REQUEST
         });
-        CategoryServices.deleteCategory(id)
-        .then(res => {
-            dispatch({
-                type: CategoryConstants.DELETE_CATEGORY_SUCCESS,
-                payload: res.data.content
+        if(type !== "single"){
+            CategoryServices.deleteManyCategories(data)
+            .then(res => {
+                dispatch({
+                    type: CategoryConstants.DELETE_CATEGORY_SUCCESS,
+                    payload: {
+                        list: res.data.content.list,
+                        tree: res.data.content.tree
+                    }
+                })
             })
-        })
-        .catch(err => {
-            dispatch({
-                type: CategoryConstants.DELETE_CATEGORY_FAILURE,
-                error: err
+            .catch(err => {
+                dispatch({
+                    type: CategoryConstants.DELETE_CATEGORY_FAILURE,
+                    error: err
+                })
             })
-        })
+        }
+        else {
+           CategoryServices.deleteCategory(data)
+            .then(res => {
+                dispatch({
+                    type: CategoryConstants.DELETE_CATEGORY_SUCCESS,
+                    payload: {
+                        list: res.data.content.list,
+                        tree: res.data.content.tree
+                    }
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: CategoryConstants.DELETE_CATEGORY_FAILURE,
+                    error: err
+                })
+            }) 
+        }
+        
     }
 }

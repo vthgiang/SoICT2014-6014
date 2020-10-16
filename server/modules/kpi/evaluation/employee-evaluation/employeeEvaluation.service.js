@@ -192,7 +192,7 @@ exports.editKpi = async (portal, id, data) => {
     let target = await EmployeeKpi(connect(DB_CONNECTION, portal))
         .findByIdAndUpdate(id, { $set: objUpdate }, { new: true })
 
-    target = target && await target.populate("parent");
+    target = target && await target.populate("parent").execPopulate();
     return target;
 }
 

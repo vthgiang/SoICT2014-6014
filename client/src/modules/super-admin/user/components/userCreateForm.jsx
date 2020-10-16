@@ -31,28 +31,27 @@ class UserCreateForm extends Component {
 
     handleUserName = (e) => {
         let {value} = e.target;
-        this.setState({ userName: value });
-
         let {translate} = this.props;
         let {message} = ValidationHelper.validateName(translate, value, 6, 255);
-        this.setState({ userNameError: message})
+        this.setState({ 
+            userName: value,
+            userNameError: message
+        });
     }
 
     handleUserEmail = (e) => {
         let {value} = e.target;
-        this.setState({ userEmail: value });
-
         let {translate} = this.props;
         let {message} = ValidationHelper.validateEmail(translate, value);
-        this.setState({ userEmailError: message})
+        this.setState({ 
+            userEmail: value,
+            userEmailError: message
+        });
     }
 
     handleRolesChange = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                userRoles: value
-            }
+        this.setState({
+            userRoles: value
         });
     }
 
@@ -62,7 +61,7 @@ class UserCreateForm extends Component {
 
     render() {
         const { translate, role, user } = this.props;
-        const { userName, userEmail, userEmailError, userNameError } = this.state;
+        const { userEmailError, userNameError } = this.state;
 
         const items = role.list.filter(role => {
             return role && role.name !== 'Super Admin'

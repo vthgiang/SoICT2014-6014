@@ -31,7 +31,7 @@ class TaskReportEditForm extends Component {
         this.props.getAllUserOfCompany();
         // Lấy tất cả nhân viên trong công ty
         this.props.getAllUserInAllUnitsOfCompany();
-        this.props.getTaskTemplateByUser("1", "0", "[]");
+        this.props.getTaskTemplateByUser(1, 0, []);
         this.props.getRoleSameDepartment(localStorage.getItem("currentRole"));
     }
 

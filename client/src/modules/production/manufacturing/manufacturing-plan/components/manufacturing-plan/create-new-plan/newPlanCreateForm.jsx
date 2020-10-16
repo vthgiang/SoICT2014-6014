@@ -150,7 +150,7 @@ class NewPlanCreateForm extends Component {
                                                         (!products || products.length === 0)
                                                             ?
                                                             <tr>
-                                                                <td colSpan={7}>
+                                                                <td colSpan={8}>
                                                                     <center>Chưa thêm mặt hàng</center>
                                                                 </td>
                                                             </tr>

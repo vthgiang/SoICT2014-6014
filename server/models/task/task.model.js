@@ -10,7 +10,7 @@ const TaskSchema = new Schema({
     codeInProcess: {
         type: String,
     },
-    commentsInProcess:  [{ // Bình luận trong quy trình
+    commentsInProcess: [{ // Bình luận trong quy trình
         creator: {
             type: Schema.Types.ObjectId,
             ref: 'User',
@@ -95,6 +95,10 @@ const TaskSchema = new Schema({
         ref: 'OrganizationalUnit',
         required: true
     },
+    collaboratedWithOrganizationalUnits: [{
+        type: Schema.Types.ObjectId,
+        ref: 'OrganizationalUnit',
+    }],
     creator: {
         type: Schema.Types.ObjectId,
         ref: 'User',
@@ -148,21 +152,21 @@ const TaskSchema = new Schema({
         ref: 'User',
         required: true
     }],
-    responsibleEmployees: [{
+    responsibleEmployees: [{ //người thực hiện
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: true
     }],
-    accountableEmployees: [{
+    accountableEmployees: [{ //người phê duyệt
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: true
     }],
-    consultedEmployees: [{
+    consultedEmployees: [{ //người hỗ trợ
         type: Schema.Types.ObjectId,
         ref: 'User'
     }],
-    informedEmployees: [{
+    informedEmployees: [{ //người quan sát
         type: Schema.Types.ObjectId,
         ref: 'User'
     }],
@@ -523,7 +527,7 @@ const TaskSchema = new Schema({
 });
 
 module.exports = (db) => {
-    if(!db.models.Task)
+    if (!db.models.Task)
         return db.model('Task', TaskSchema);
     return db.models.Task;
 }

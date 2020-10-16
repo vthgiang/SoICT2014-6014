@@ -4,6 +4,11 @@ const mongoosePaginate = require('mongoose-paginate-v2');
 
 const CategorySchema = new Schema ({
 
+    parent: {
+        type: Schema.Types.ObjectId,
+        replies: this
+    },
+
     code: {
         type: String,
         required: true
@@ -16,8 +21,7 @@ const CategorySchema = new Schema ({
 
     type: {
         type: String,
-        enum: ["product", "material", "equipment", "asset"],
-        required: true
+        enum: ["product", "material", "equipment", "asset"]
     },
 
     description: {

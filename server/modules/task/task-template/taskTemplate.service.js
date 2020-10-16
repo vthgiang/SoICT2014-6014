@@ -47,9 +47,11 @@ exports.getAllTaskTemplates = async (portal, query) => {
         let userRoles = dataRoles.reduce((arr, role) => [...arr, role._id, ...role.parents], [])
         userRoles = userRoles.filter((role, index) => role.toString() === userRoles[index].toString());
         let option = !organizationalUnit ?
-            {
+            {   
+                readByEmployees: { $in: userRoles },
                 name: { "$regex": name, "$options": "i" }
             } : {
+                readByEmployees: { $in: userRoles },
                 name: { "$regex": name, "$options": "i" },
                 organizationalUnit: { $in: organizationalUnit }
             };

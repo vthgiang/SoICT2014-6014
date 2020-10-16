@@ -15,52 +15,130 @@ class DepartmentEditForm extends Component {
         }
     }
 
-    handleAddDean = (e) => {
+    handleAddDean = () => {
         this.setState({
             deans: [...this.state.deans, { name: "" }]
         });
     }
 
     handleChangeDean = (e, index) => {
-        this.state.deans[index].name = e.target.value;
-        this.setState({ deans: this.state.deans });
+        let {deans} = this.state;
+        deans[index].name = e.target.value;
+        this.setState({ deans });
     }
 
     handleRemoveDean = (index) => {
-        this.state.deans.splice(index, 1);
-        this.setState({ deans: this.state.deans });
+        let {deans} = this.state;
+        deans.splice(index, 1);
+        this.setState({ deans });
     }
 
-    handleAddViceDean = (e) => {
+    handleAddViceDean = () => {
         this.setState({
             viceDeans: [...this.state.viceDeans, { name: "" }]
         });
     }
 
     handleChangeViceDean = (e, index) => {
-        this.state.viceDeans[index].name = e.target.value;
-        this.setState({ viceDeans: this.state.viceDeans });
+        let {viceDeans} = this.state;
+        viceDeans[index].name = e.target.value;
+        this.setState({ viceDeans });
     }
 
     handleRemoveViceDean = (index) => {
-        this.state.viceDeans.splice(index, 1);
-        this.setState({ viceDeans: this.state.viceDeans });
+        let {viceDeans} = this.state;
+        viceDeans.splice(index, 1);
+        this.setState({ viceDeans });
     }
 
-    handleAddEmployee = (e) => {
+    handleAddEmployee = () => {
         this.setState({
             employees: [...this.state.employees, { name: "" }]
         });
     }
 
     handleChangeEmployee = (e, index) => {
-        this.state.employees[index].name = e.target.value;
-        this.setState({ employees: this.state.employees });
+        let {employees} = this.state;
+        employees[index].name = e.target.value;
+        this.setState({ employees });
     }
 
     handleRemoveEmployee = (index) => {
-        this.state.employees.splice(index, 1);
-        this.setState({ employees: this.state.employees });
+        let {employees} = this.state;
+        employees.splice(index, 1);
+        this.setState({ employees });
+    }
+
+    // Thiet lap cac gia tri tu props vao state
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.departmentId !== prevState.departmentId) {
+            return {
+                ...prevState,
+                departmentId: nextProps.departmentId,
+                departmentName: nextProps.departmentName,
+                departmentDescription: nextProps.departmentDescription,
+                departmentParent: nextProps.departmentParent,
+                deans: nextProps.deans,
+                viceDeans: nextProps.viceDeans,
+                employees: nextProps.employees,
+                departmentNameError: undefined,
+                departmentDescriptionError: undefined,
+                departmentDeanError: undefined,
+                departmentViceDeanError: undefined,
+                departmentEmployeeError: undefined,
+            }
+        } else {
+            return null;
+        }
+    }
+
+    isFormValidated = () => {
+        let {departmentName, departmentDescription} = this.state;
+        let {translate} = this.props;
+        if(!ValidationHelper.validateName(translate, departmentName).status || !ValidationHelper.validateDescription(translate, departmentDescription).status) return false;
+        return true;
+    }
+
+    save = () => {
+        const data = {
+            _id: this.state.departmentId,
+            name: this.state.departmentName,
+            description: this.state.departmentDescription,
+            parent: this.state.departmentParent,
+            deans: this.state.deans,
+            viceDeans: this.state.viceDeans,
+            employees: this.state.employees
+        };
+
+        if (this.isFormValidated()) {
+            return this.props.edit(data);
+        }
+    }
+
+    handleParent = (value) => {
+        this.setState({
+            departmentParent: value[0]
+        })
+    }
+
+    handleName = (e) => {
+        let {value} = e.target;
+        let {translate} = this.props;
+        let {message} = ValidationHelper.validateName(translate, value, 4, 255);
+        this.setState({ 
+            departmentName: value,
+            departmentNameError: message
+        });
+    }
+
+    handleDescription = (e) => {
+        let {value} = e.target;
+        let {translate} = this.props;
+        let {message} = ValidationHelper.validateDescription(translate, value);
+        this.setState({ 
+            departmentDescription: value,
+            departmentDescriptionError: message
+        });
     }
 
     render() {
@@ -74,12 +152,9 @@ class DepartmentEditForm extends Component {
             viceDeans,
             employees,
             departmentNameError,
-            departmentDescriptionError,
-            departmentDeanError,
-            departmentViceDeanError,
-            departmentEmployeeError,
+            departmentDescriptionError
         } = this.state;
-        console.log("state department:", this.state)
+
         return (
             <React.Fragment>
                 <DialogModal
@@ -243,79 +318,6 @@ class DepartmentEditForm extends Component {
                 </DialogModal>
             </React.Fragment>
         );
-    }
-
-    // Thiet lap cac gia tri tu props vao state
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.departmentId !== prevState.departmentId) {
-            return {
-                ...prevState,
-                departmentId: nextProps.departmentId,
-                departmentName: nextProps.departmentName,
-                departmentDescription: nextProps.departmentDescription,
-                departmentParent: nextProps.departmentParent,
-                deans: nextProps.deans,
-                viceDeans: nextProps.viceDeans,
-                employees: nextProps.employees,
-                departmentNameError: undefined,
-                departmentDescriptionError: undefined,
-                departmentDeanError: undefined,
-                departmentViceDeanError: undefined,
-                departmentEmployeeError: undefined,
-            }
-        } else {
-            return null;
-        }
-    }
-
-    isFormValidated = () => {
-        let {departmentName, departmentDescription} = this.state;
-        let {translate} = this.props;
-        if(!ValidationHelper.validateName(translate, departmentName).status || !ValidationHelper.validateDescription(translate, departmentDescription).status) return false;
-        return true;
-    }
-
-    save = () => {
-        const data = {
-            _id: this.state.departmentId,
-            name: this.state.departmentName,
-            description: this.state.departmentDescription,
-            parent: this.state.departmentParent,
-            deans: this.state.deans,
-            viceDeans: this.state.viceDeans,
-            employees: this.state.employees
-        };
-
-        if (this.isFormValidated()) {
-            return this.props.edit(data);
-        }
-    }
-
-    handleParent = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                departmentParent: value[0]
-            }
-        })
-    }
-
-    handleName = (e) => {
-        let {value} = e.target;
-        this.setState({ departmentName: value });
-
-        let {translate} = this.props;
-        let {message} = ValidationHelper.validateName(translate, value, 4, 255);
-        this.setState({ departmentNameError: message})
-    }
-
-    handleDescription = (e) => {
-        let {value} = e.target;
-        this.setState({ departmentDescription: value });
-
-        let {translate} = this.props;
-        let {message} = ValidationHelper.validateDescription(translate, value);
-        this.setState({ departmentDescriptionError: message})
     }
 }
 

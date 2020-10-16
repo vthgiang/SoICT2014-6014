@@ -13,6 +13,58 @@ class RoleCreateForm extends Component {
             roleParents: [],
         }
     }
+    
+    componentDidMount() {
+        this.props.get();
+    }
+
+    handleRoleName = (e) => {
+        let {value} = e.target;
+        let {translate} = this.props;
+        let {message} = ValidationHelper.validateName(translate, value, 4, 255);
+        this.setState({ 
+            roleName: value,
+            roleNameError: message
+        });
+    }
+
+    handleParents = (value) => {
+        this.setState({
+            roleParents: value
+        });
+    }
+
+    handleUsers = (value) => {
+        this.setState({
+            roleUsers: value
+        });
+    }
+
+    handleRoleUser = (e) => {
+        const { value } = e.target;
+        this.setState({
+            roleUsers: [value]
+        });
+    }
+
+    isFormValidated = () => {
+        let {roleName} = this.state;
+        let {translate} = this.props;
+        if(!ValidationHelper.validateName(translate, roleName).status) return false;
+        return true;
+    }
+
+    save = () => {
+        const data = {
+            name: this.state.roleName,
+            parents: this.state.roleParents,
+            users: this.state.roleUsers
+        }
+
+        if (this.isFormValidated()) {
+            return this.props.create(data);
+        }
+    }
 
     render() {
         const { translate, role, user } = this.props;
@@ -74,67 +126,6 @@ class RoleCreateForm extends Component {
             </React.Fragment>
         );
     }
-
-    componentDidMount() {
-        this.props.get();
-    }
-
-    handleRoleName = (e) => {
-        let {value} = e.target;
-        this.setState({ roleName: value });
-
-        let {translate} = this.props;
-        let {message} = ValidationHelper.validateName(translate, value, 4, 255);
-        this.setState({ roleNameError: message})
-    }
-
-    handleParents = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                roleParents: value
-            }
-        });
-    }
-
-    handleUsers = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                roleUsers: value
-            }
-        });
-    }
-
-    handleRoleUser = (e) => {
-        const { value } = e.target;
-        this.setState(state => {
-            return {
-                ...state,
-                roleUsers: [value]
-            }
-        });
-    }
-
-    isFormValidated = () => {
-        let {roleName} = this.state;
-        let {translate} = this.props;
-        if(!ValidationHelper.validateName(translate, roleName).status) return false;
-        return true;
-    }
-
-    save = () => {
-        const data = {
-            name: this.state.roleName,
-            parents: this.state.roleParents,
-            users: this.state.roleUsers
-        }
-
-        if (this.isFormValidated()) {
-            return this.props.create(data);
-        }
-    }
-
 }
 
 function mapStateToProps(state) {
