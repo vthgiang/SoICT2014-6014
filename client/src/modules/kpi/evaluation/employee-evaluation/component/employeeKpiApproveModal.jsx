@@ -1,17 +1,27 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
 import { kpiMemberActions } from '../redux/actions';
-import { DataTableSetting } from '../../../../../common-components';
-import { DialogModal, ErrorLabel, DatePicker, Comment } from '../../../../../common-components/index';
-import { withTranslate } from 'react-redux-multilingual';
-import { getStorage } from '../../../../../config';
 import { createKpiSetActions } from '../../../employee/creation/redux/actions';
 import { AuthActions } from '../../../../auth/redux/actions';
+
+import { DataTableSetting } from '../../../../../common-components';
+import { DialogModal, ErrorLabel, DatePicker, Comment } from '../../../../../common-components/index';
+
+import { withTranslate } from 'react-redux-multilingual';
+import { getStorage } from '../../../../../config';
+import Swal from 'sweetalert2';
+
 // import { Comment } from '../../../employee/creation/component/comment'
+var translate = '';
 class EmployeeKpiApproveModal extends Component {
+
     constructor(props) {
-        let idUser = getStorage("userId");
         super(props);
+
+        let idUser = getStorage("userId");
+        translate = this.props.translate;
+
         this.state = {
             currentUser: idUser,
             date: this.formatDateBack(Date.now()),
@@ -50,14 +60,23 @@ class EmployeeKpiApproveModal extends Component {
         return true;
     }
 
-    handleEdit = async (id) => {
-        await this.setState(state => {
-            return {
-                ...state,
-                editing: true,
-                edit: state.edit === id ? "" : id,
-            }
-        })
+    handleEdit = async (target) => {
+        if (target && target.status !== 1) {
+            await this.setState(state => {
+                return {
+                    ...state,
+                    editing: true,
+                    edit: target && state.edit === target._id ? "" : target._id,
+                }
+            })
+        } else {
+            Swal.fire({
+                title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.edit_target.activated'),
+                type: 'warning',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
+            })
+        }
     }
 
     handleSaveEdit = async (target) => {
@@ -159,10 +178,31 @@ class EmployeeKpiApproveModal extends Component {
         }
     }
 
-    handleEditStatusTarget = (event, id, status) => {
+    handleEditStatusTarget = async (event, id, status, listTarget) => {
         event.preventDefault();
-        if (id) {
-            this.props.editStatusKpi(id, status);
+
+        let totalWeight;
+        if (listTarget) {
+            totalWeight = listTarget.filter(item => item.status === 1 || item._id === id).map(item => parseInt(item.weight)).reduce((sum, number) => sum + number, 0);
+        }
+
+        if (totalWeight > 100 && listTarget) {
+            await this.setState(state => {
+                return {
+                    ...state,
+                    checkWeight: true
+                }
+            })
+        } else {
+            if (id) {
+                this.props.editStatusKpi(id, status);
+                await this.setState(state => {
+                    return {
+                        ...state,
+                        checkWeight: false
+                    }
+                })
+            }
         }
     }
 
@@ -177,6 +217,12 @@ class EmployeeKpiApproveModal extends Component {
             })
         } else {
             this.props.approveAllKpis(id);
+            await this.setState(state => {
+                return {
+                    ...state,
+                    checkWeight: false
+                }
+            })
         }
     }
 
@@ -197,7 +243,7 @@ class EmployeeKpiApproveModal extends Component {
         const { kpimembers } = this.props;
         const { translate } = this.props;
         const { errorOnDate, date, compare, edit, checkWeight, perPage } = this.state;
-        let kpimember, kpimembercmp, month;
+        let kpimember, kpimembercmp, month, totalWeight;
 
         if (kpimembers.currentKPI) {
             kpimember = kpimembers.currentKPI;
@@ -215,6 +261,8 @@ class EmployeeKpiApproveModal extends Component {
         }
         if (kpimembers.kpimember) kpimembercmp = kpimembers.kpimember;
 
+        totalWeight = kpimember && kpimember.kpis && kpimember.kpis.length !== 0
+            && kpimember.kpis.map(item => parseInt(item.weight)).reduce((sum, number) => sum + number, 0);
         return (
             <React.Fragment>
                 <DialogModal
@@ -226,9 +274,9 @@ class EmployeeKpiApproveModal extends Component {
                         <div className="form-inline pull-right">
                             {compare ?
                                 <button className=" btn btn-primary" onClick={() => this.handleCompare()}>{translate('kpi.evaluation.employee_evaluation.end_compare')}</button> :
-                                <button className=" btn btn-primary" onClick={() => this.handleCompare(kpimember.creator._id)}>{translate('kpi.evaluation.employee_evaluation.compare')}</button>
+                                <button className=" btn btn-primary" onClick={() => kpimember && kpimember.creator && this.handleCompare(kpimember.creator._id)}>{translate('kpi.evaluation.employee_evaluation.compare')}</button>
                             }
-                            <button className=" btn btn-success" onClick={() => this.handleApproveKPI(kpimember._id, kpimember.kpis)}>{translate('kpi.evaluation.employee_evaluation.approve_all')}</button>
+                            <button className=" btn btn-success" onClick={() => kpimember && this.handleApproveKPI(kpimember._id, kpimember.kpis)}>{translate('kpi.evaluation.employee_evaluation.approve_all')}</button>
                         </div>
                         <br />
                         {compare &&
@@ -278,7 +326,7 @@ class EmployeeKpiApproveModal extends Component {
                         }
                         <br></br>
                         <br></br>
-                        <label>{`${translate('kpi.evaluation.employee_evaluation.kpi_this_month')} ${kpimember && month[1]}`}</label>
+                        <label>{`${translate('kpi.evaluation.employee_evaluation.kpi_this_month')} ${kpimember && month[1]}/${kpimember && month[0]}`} ({totalWeight}/100)</label>
                         {checkWeight && <p className="text-danger" style={{ fontWeight: 900 }}>{translate('kpi.evaluation.employee_evaluation.unsuitable_weight')}</p>}
                         <table id="kpi-approve-table" className="table table-bordered table-striped table-hover">
                             <thead>
@@ -327,8 +375,8 @@ class EmployeeKpiApproveModal extends Component {
                                         <td>{item ? item.approvedPoint : "Deleted"}</td>
                                         <td>
                                             {edit === item._id ? <a style={{ cursor: 'pointer' }} className="approve" title={translate('kpi.evaluation.employee_evaluation.save_result')} onClick={() => this.handleSaveEdit(item)}><i className="material-icons">save</i></a>
-                                                : <a style={{ cursor: 'pointer' }} className="edit" title={translate('kpi.evaluation.employee_evaluation.edit_target')} onClick={() => this.handleEdit(item._id)}><i className="material-icons">edit</i></a>}
-                                            <a style={{ cursor: 'pointer' }} className="add_circle" title={translate('kpi.evaluation.employee_evaluation.pass')} onClick={(event) => this.handleEditStatusTarget(event, item._id, 1)}><i className="material-icons">check</i></a>
+                                                : <a style={{ cursor: 'pointer' }} className="edit" title={translate('kpi.evaluation.employee_evaluation.edit_target')} onClick={() => this.handleEdit(item)}><i className="material-icons">edit</i></a>}
+                                            <a style={{ cursor: 'pointer' }} className="add_circle" title={translate('kpi.evaluation.employee_evaluation.pass')} onClick={(event) => kpimember && this.handleEditStatusTarget(event, item._id, 1, kpimember.kpis)}><i className="material-icons">check</i></a>
                                             <a style={{ cursor: 'pointer' }} className="delete" title={translate('kpi.evaluation.employee_evaluation.fail')} onClick={(event) => this.handleEditStatusTarget(event, item._id, 0)}><i className="material-icons">clear</i></a>
                                         </td>
                                     </tr>
