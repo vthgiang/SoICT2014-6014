@@ -686,7 +686,7 @@ class DetailTaskTab extends Component {
                         {/** Nhắc nhở */}
                         {
                             task && warning &&
-                            <div className="description-box" style={{ border: "3px double #e8cbcb" }}>
+                            <div className="task-alert-detail">
                                 <h4>{translate('task.task_management.warning')}</h4>
 
                                 {/* Kích hoạt công việc phía sau trong quy trình */}
