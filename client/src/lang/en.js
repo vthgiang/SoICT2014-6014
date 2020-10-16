@@ -3367,6 +3367,16 @@ export default {
             edit_file: 'Edit attached documents',
             add_file: 'Add attached documents',
             upload: 'Upload',
+        },
+
+        // Quản lý sản xuất phần KHSX và LSX
+        manufacturing: {
+            manufacturing_works: {
+                name: "works name",
+                code: "works code",
+                search: "Search",
+                create_works: "Create works"
+            }
         }
     }
 }

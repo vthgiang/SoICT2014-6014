@@ -3683,5 +3683,23 @@ export default {
             add_file: 'Thêm tài liệu đính kèm',
             upload: 'Chọn ảnh'
         },
+
+        // Quản lý sản xuất phần KHSX và LSX
+        manufacturing: {
+            manufacturing_works: {
+                name: "Tên nhà máy",
+                code: "Mã nhà máy",
+                search: "Tìm kiếm",
+                create_works: "Tạo nhà máy",
+                index: "STT",
+                worksManager: "Giám đốc",
+                foreman: "Quản đốc",
+                mills: "Các xưởng",
+                phone: "Số điện thoại",
+                address: "Địa chỉ",
+                status: "Trạng thái",
+                description: "Mô tả"
+            }
+        }
     }
 }
