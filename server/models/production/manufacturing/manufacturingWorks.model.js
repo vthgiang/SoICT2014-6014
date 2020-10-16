@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const mongoosePaginate = require('mongoose-paginate-v2')
 
 // Bảng nhà máy sản xuất
 const ManufacturingWorksSchema = new Schema({
@@ -19,7 +20,7 @@ const ManufacturingWorksSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "User"
     },
-    manufacturingMill: [{ // Các xưởng của nhà máy
+    manufacturingMills: [{ // Các xưởng của nhà máy
         type: Schema.Types.ObjectId,
         ref: "ManufacturingMill"
     }],
@@ -40,6 +41,8 @@ const ManufacturingWorksSchema = new Schema({
 }, {
     timestamps: true
 });
+
+ManufacturingWorksSchema.plugin(mongoosePaginate);
 
 module.exports = (db) => {
     if (!db.models.ManufacturingWorks)

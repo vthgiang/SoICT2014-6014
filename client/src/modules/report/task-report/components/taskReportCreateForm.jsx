@@ -637,7 +637,7 @@ class TaskReportCreateForm extends Component {
 
 
     componentDidMount() {
-        this.props.getTaskTemplateByUser("1", "0", "[]");
+        this.props.getTaskTemplateByUser(1, 0, []);
         this.props.getDepartment();
         // Lấy tất cả nhân viên trong công ty
         this.props.getAllUserOfCompany();

@@ -850,26 +850,6 @@ const LINKS = [{
     components: getComponentsInLink('/good-management')
 },
 {
-    url: '/partner-management',
-    description: 'Quản lý thông tin đối tác',
-    category: LINK_CATEGORY.WAREHOUSE.name,
-    roles: [
-        ROOT_ROLES.SUPER_ADMIN.name,
-        ROOT_ROLES.ADMIN.name
-    ],
-    components: getComponentsInLink('/partner-management')
-},
-{
-    url: '/proposal-management',
-    description: 'Quản lý phiếu đề nghị',
-    category: LINK_CATEGORY.WAREHOUSE.name,
-    roles: [
-        ROOT_ROLES.SUPER_ADMIN.name,
-        ROOT_ROLES.ADMIN.name
-    ],
-    components: getComponentsInLink('/proposal-management')
-},
-{
     url: '/bill-management',
     description: 'Quản lý thông tin phiếu',
     category: LINK_CATEGORY.WAREHOUSE.name,

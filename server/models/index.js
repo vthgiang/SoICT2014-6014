@@ -67,7 +67,7 @@ module.exports = {
     Proposal: require('./warehouse/proposal.model'),
     Partner: require('./warehouse/partner.model'),
     Good: require('./warehouse/good.model'),
-    Consignment: require('./warehouse/consignment.model'),
+    Lot: require('./warehouse/lot.model'),
     Category: require('./warehouse/category.model'),
     Bill: require('./warehouse/bill.model'),
 
@@ -94,5 +94,9 @@ module.exports = {
     Example: require('./example/example.model'),
 
     // production-manufacturing
-    ManufacturingMill: require('./production/manufacturing/manufacturingMill.model')
+    ManufacturingMill: require('./production/manufacturing/manufacturingMill.model'),
+    ManufacturingWorks: require('./production/manufacturing/manufacturingWorks.model'),
+    ManufacturingPlan: require('./production/manufacturing/manufacturingPlan.model'),
+    ManufacturingCommand: require('./production/manufacturing/manufacturingCommand.model'),
+    PurchasingRequest: require('./production/manufacturing/purchasingRequest.model'),
 }

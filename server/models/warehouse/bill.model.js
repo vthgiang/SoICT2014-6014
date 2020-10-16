@@ -55,9 +55,9 @@ const BillSchema = new Schema ({
             ref: 'Good'
         },
 
-        consignment: {
+        lot: {
             type: Schema.Types.ObjectId,
-            ref: 'Consignment'
+            ref: 'Lot'
         },
 
         type: {
@@ -77,9 +77,9 @@ const BillSchema = new Schema ({
             ref: 'Good'
         },
 
-        consignment: {
+        lot: {
             type: Schema.Types.ObjectId,
-            ref: 'Consignment'
+            ref: 'Lot'
         },
 
         type: {
@@ -99,9 +99,9 @@ const BillSchema = new Schema ({
             ref: 'Good'
         },
 
-        consignment: {
+        lot: {
             type: Schema.Types.ObjectId,
-            ref: 'Consignment'
+            ref: 'Lot'
         },
 
         type: {
@@ -124,16 +124,16 @@ const BillSchema = new Schema ({
         }
     }],
 
-    StockTakes: [{
+    stockTakes: [{
 
         good: {
             type: Schema.Types.ObjectId,
             ref: 'Good'
         },
 
-        consignment: {
+        lot: {
             type: Schema.Types.ObjectId,
-            ref: 'Consignment'
+            ref: 'Lot'
         },
 
         type: {

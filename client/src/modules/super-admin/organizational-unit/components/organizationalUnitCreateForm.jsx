@@ -22,13 +22,15 @@ class DepartmentCreateForm extends Component {
     }
 
     handleChangeDean = (e, index) => {
-        this.state.deans[index] = e.target.value;
-        this.setState({ deans: this.state.deans });
+        let {deans} = this.state;
+        deans[index] = e.target.value;
+        this.setState({ deans });
     }
 
     handleRemoveDean = (index) => {
-        this.state.deans.splice(index, 1);
-        this.setState({ deans: this.state.deans });
+        let {deans} = this.state;
+        deans.splice(index, 1);
+        this.setState({ deans });
     }
 
     handleAddViceDean = (e) => {
@@ -38,13 +40,15 @@ class DepartmentCreateForm extends Component {
     }
 
     handleChangeViceDean = (e, index) => {
-        this.state.viceDeans[index] = e.target.value;
-        this.setState({ viceDeans: this.state.viceDeans });
+        let {viceDeans} = this.state;
+        viceDeans[index] = e.target.value;
+        this.setState({ viceDeans });
     }
 
     handleRemoveViceDean = (index) => {
-        this.state.viceDeans.splice(index, 1);
-        this.setState({ viceDeans: this.state.viceDeans });
+        let {viceDeans} = this.state;
+        viceDeans.splice(index, 1);
+        this.setState({ viceDeans });
     }
 
     handleAddEmployee = (e) => {
@@ -54,13 +58,67 @@ class DepartmentCreateForm extends Component {
     }
 
     handleChangeEmployee = (e, index) => {
-        this.state.employees[index] = e.target.value;
-        this.setState({ employees: this.state.employees });
+        let {employees} = this.state;
+        employees[index] = e.target.value;
+        this.setState({ employees });
     }
 
     handleRemoveEmployee = (index) => {
-        this.state.employees.splice(index, 1);
-        this.setState({ employees: this.state.employees });
+        let {employees} = this.state;
+        employees.splice(index, 1);
+        this.setState({ employees });
+    }
+
+    /**
+     * Validate form
+     */
+    isFormValidated = () => {
+        let {departmentName, departmentDescription} = this.state;
+        let {translate} = this.props;
+        if(!ValidationHelper.validateName(translate, departmentName).status || !ValidationHelper.validateDescription(translate, departmentDescription).status) return false;
+        return true;
+    }
+
+    /**
+     * Thực hiện thêm đơn vị mới
+     */
+    save = () => {
+        if (this.isFormValidated()) {
+            return this.props.create({
+                name: this.state.departmentName,
+                description: this.state.departmentDescription,
+                deans: this.state.deans,
+                viceDeans: this.state.viceDeans,
+                employees: this.state.employees,
+                parent: this.state.departmentParent
+            });
+        }
+    }
+
+    handleParent = (value) => {
+        this.setState({
+            departmentParent: value[0]
+        });
+    }
+
+    handleName = (e) => {
+        let {value} = e.target;
+        let {translate} = this.props;
+        let {message} = ValidationHelper.validateName(translate, value, 4, 255);
+        this.setState({ 
+            departmentName: value,
+            departmentNameError: message
+        });
+    }
+
+    handleDescription = (e) => {
+        let {value} = e.target;
+        let {translate} = this.props;
+        let {message} = ValidationHelper.validateDescription(translate, value);
+        this.setState({ 
+            departmentDescription: value,
+            departmentDescriptionError: message
+        });
     }
 
     render() {
@@ -231,60 +289,6 @@ class DepartmentCreateForm extends Component {
             </React.Fragment>
         );
     }
-
-    /**
-     * Validate form
-     */
-    isFormValidated = () => {
-        let {departmentName, departmentDescription} = this.state;
-        let {translate} = this.props;
-        if(!ValidationHelper.validateName(translate, departmentName).status || !ValidationHelper.validateDescription(translate, departmentDescription).status) return false;
-        return true;
-    }
-
-    /**
-     * Thực hiện thêm đơn vị mới
-     */
-    save = () => {
-        if (this.isFormValidated()) {
-            return this.props.create({
-                name: this.state.departmentName,
-                description: this.state.departmentDescription,
-                deans: this.state.deans,
-                viceDeans: this.state.viceDeans,
-                employees: this.state.employees,
-                parent: this.state.departmentParent
-            });
-        }
-    }
-
-    handleParent = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                departmentParent: value[0]
-            }
-        })
-    }
-
-    handleName = (e) => {
-        let {value} = e.target;
-        this.setState({ departmentName: value });
-
-        let {translate} = this.props;
-        let {message} = ValidationHelper.validateName(translate, value, 4, 255);
-        this.setState({ departmentNameError: message})
-    }
-
-    handleDescription = (e) => {
-        let {value} = e.target;
-        this.setState({ departmentDescription: value });
-
-        let {translate} = this.props;
-        let {message} = ValidationHelper.validateDescription(translate, value);
-        this.setState({ departmentDescriptionError: message})
-    }
-
 }
 
 function mapState(state) {

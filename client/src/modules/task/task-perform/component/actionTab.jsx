@@ -19,6 +19,7 @@ import { SubTaskTab } from './subTaskTab';
 import { ViewProcess } from '../../task-process/component/task-process-management/viewProcess';
 import { IncomingDataTab } from './incomingDataTab';
 import { OutgoingDataTab } from './outgoingDataTab';
+import parse from 'html-react-parser';
 
 class ActionTab extends Component {
     constructor(props) {
@@ -866,10 +867,9 @@ class ActionTab extends Component {
                                                             item.name && <b>{item.name} </b>}
                                                         {item.description.split('\n').map((item, idx) => {
                                                             return (
-                                                                <span key={idx}>
-                                                                    {item}
-                                                                    <br />
-                                                                </span>
+                                                                <div key={idx}>
+                                                                    {parse(item)}
+                                                                </div>
                                                             );
                                                         })
                                                         }
@@ -1135,9 +1135,7 @@ class ActionTab extends Component {
                                                         <img className="user-img-level2"
                                                             src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar"
                                                         />
-
                                                         <ContentMaker
-                                                            id={item.comments[0]._id}
                                                             inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
                                                             onFilesChange={this.onCommentFilesChange}
                                                             onFilesError={this.onFilesError}

@@ -372,37 +372,30 @@ class TaskTemplate extends Component {
                     numberOfUse = x.numberOfUse;
                 }
                 let readByEmployees = [], responsibleEmployees = [], accountableEmployees = [], consultedEmployees = [], informedEmployees = [];
-                if (x.readByEmployees) {
-                    readByEmployees = x.readByEmployees.map(item => {
-                        if(item) return item.name
-                    });
+                
+                if (x.readByEmployees && x.readByEmployees[0]) {
+                    readByEmployees = x.readByEmployees.map(item => item.name);
+                    if (length < readByEmployees.length) {
+                        length = readByEmployees.length
+                    }
                 }
-                if (x.responsibleEmployees) {
-                    responsibleEmployees = x.responsibleEmployees.map(item => {
-                        if(item) return item.name
-                    });
+                if (x.responsibleEmployees && x.responsibleEmployees[0]) {
+                    responsibleEmployees = x.responsibleEmployees.map(item => item.name);
                 }
-                if (x.accountableEmployees) {
-                    accountableEmployees = x.accountableEmployees.map(item => {
-                        if(item) return item.name
-                    });
+                if (x.accountableEmployees && x.accountableEmployees[0]) {
+                    accountableEmployees = x.accountableEmployees.map(item => item.name);
                 }
-                if (x.consultedEmployees) {
-                    consultedEmployees = x.consultedEmployees.map(item => {
-                        if(item) return item.name
-                    });
+                if (x.consultedEmployees && x.consultedEmployees[0]) {
+                    consultedEmployees = x.consultedEmployees.map(item => item.name);
                 }
-                if (x.informedEmployees) {
-                    informedEmployees = x.informedEmployees.map(item => {
-                        if(item) return item.name
-                    });
+                if (x.informedEmployees && x.informedEmployees[0]) {
+                    informedEmployees = x.informedEmployees.map(item => item.name);
                 }
                 let out = { STT: k + 1,
                     name: x.name,
                     description: x.description,
                     numberOfUse: numberOfUse,
-                    creator: x.creator.email,
-                    readByEmployees: readByEmployees.join(', '),
+                    readByEmployees: readByEmployees[0],
                     responsibleEmployees: responsibleEmployees.join(', '),
                     accountableEmployees: accountableEmployees.join(', '),
                     consultedEmployees: consultedEmployees.join(', '),
@@ -425,8 +418,7 @@ class TaskTemplate extends Component {
                             name: "",
                             description: "",
                             numberOfUse: "",
-                            creator: "",
-                            readByEmployees: "",
+                            readByEmployees: readByEmployees[i],
                             responsibleEmployees: "",
                             accountableEmployees: "",
                             consultedEmployees: "",
@@ -472,15 +464,15 @@ class TaskTemplate extends Component {
                                 { key: "STT", value: "STT" },
                                 { key: "name", value: "Tên mẫu" },
                                 { key: "description", value: "Mô tả" },
+                                { key: "organizationalUnits", value: "Đơn vị" },
                                 { key: "numberOfUse", value: "Số lần sử dụng" },
-                                { key: "creator", value: "Người tạo mẫu" },
+                                // { key: "creator", value: "Người tạo mẫu" },
                                 { key: "readByEmployees", value: "Người được xem" },
+                                { key: "priority", value: "Độ ưu tiên" },
                                 { key: "responsibleEmployees", value: "Người thực hiện" },
                                 { key: "accountableEmployees", value: "Người phê duyệt" },
                                 { key: "consultedEmployees", value: "Người hỗ trợ" },
                                 { key: "informedEmployees", value: "Người quan sát" },
-                                { key: "organizationalUnits", value: "Phòng ban" },
-                                { key: "priority", value: "Độ ưu tiên" },
                                 { key: "formula", value: "Công thức tính điểm" },
                                 { key: "actionName", value: "Tên hoạt động" },
                                 { key: "actionDescription", value: "Mô tả hoạt động" },

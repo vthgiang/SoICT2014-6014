@@ -38,6 +38,9 @@ const {
     DocumentCategory,
 
     Stock,
+    BinLocation,
+    Lot,
+    Bill,
     Category,
     Good,
 
@@ -150,6 +153,9 @@ const initSampleCompanyDB = async () => {
         if (!db.models.DocumentCategory) DocumentCategory(db);
 
         if (!db.models.Stock) Stock(db);
+        if (!db.models.BinLocation) BinLocation(db);
+        if (!db.models.Bill) Bill(db);
+        if (!db.models.Lot) Lot(db);
         if (!db.models.Category) Category(db);
         if (!db.models.Good) Good(db);
 
@@ -2605,34 +2611,94 @@ const initSampleCompanyDB = async () => {
         TẠO DỮ LIỆU DANH MỤC HÀNG HÓA
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
+    console.log("Khởi tạo dữ liệu danh mục hàng hóa cha");
+    var listCategoryParent = await Category(vnistDB).insertMany([{
+        name: "Sản phẩm",
+        code: "CT001",
+        parent: null,
+        description: "Những mặt hàng được sản xuất xong"
+    },
+    {
+        name: "Bán thành phẩm",
+        code: "CT002",
+        parent: null,
+        description: "Những mặt hàng chỉ mới hoàn thành một giai đoạn sản xuất"
+    },
+    {
+        name: "Nguyên vật liệu",
+        code: "CT003",
+        parent: null,
+        description: "Những mặt hàng phục vụ cho sản xuất tạo sản phẩm"
+    },
+    {
+        name: "Công cụ dụng cụ",
+        code: "CT004",
+        parent: null,
+        description: "Tư liệu sản xuất lao động tham gia vào nhiều chu trình sản xuất"
+    }
+
+    ]);
+
+    console.log("Khởi tạo dữ liệu danh mục hàng hóa cha");
+    var listCategoryChild = await Category(vnistDB).insertMany([{
+        name: "Dạng bột",
+        code: "CTP001",
+        parent: listCategoryParent[0]._id,
+        description: "Thuốc dạng bột"
+    },
+    {
+        name: "Dạng viên",
+        code: "CTP002",
+        parent: listCategoryParent[0]._id,
+        description: "Thuốc dạng viên"
+    },
+    {
+        name: "Dạng nước",
+        code: "CTP003",
+        parent: listCategoryParent[0]._id,
+        description: "Thuốc dạng nước"
+    },
+    {
+        name: "Dạng cốm",
+        code: "CTP004",
+        parent: listCategoryParent[0]._id,
+        description: "Thuốc dạng cốm"
+    }
+    ]);
+
     console.log("Khởi tạo dữ liệu danh mục hàng hóa");
     var listCategory = await Category(vnistDB).insertMany([{
         name: "Dạng bột",
         code: "CT001",
+        parent: null,
         type: "product",
         description: "Dạng bột"
     },
     {
         name: "Dạng viên",
         code: "CT002",
+        parent: null,
         type: "product",
         description: "Dạng viên viên"
     },
     {
         name: "NVL",
         code: "MT002",
+        parent: null,
         type: "material",
         description: "NVL"
     },
     {
         name: "Dùng cho đóng gói",
         code: "EQ002",
+        parent: null,
         type: "equipment",
         description: "NVL"
     },
     {
         name: "Tài sản",
         code: "AS002",
+        parent: null,
         type: "asset",
         description: "NVL"
     }

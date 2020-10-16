@@ -467,12 +467,12 @@ export default {
             },
             relationship: {
                 title: 'Liên kết tài liệu',
-                description: 'Mô tả',
+                description: 'Mô tả các liên kết tới các tài liệu khác',
                 list: 'Các tài liệu liên kết'
             },
             store: {
                 title: 'Hồ sơ lưu trữ bản cứng',
-                information: 'Thông tin lưu trữ',
+                information: 'Vị trí lưu trữ',
                 organizational_unit_manage: 'Đơn vị quản lý',
                 select_organizational: 'Chọn đơn vị quản lý',
                 user_manage: 'Người quản lý',
@@ -545,7 +545,7 @@ export default {
                 birth: 'Ngày sinh',
                 gender: 'Giới tính',
                 male: 'Nam',
-                female:'Nữ',
+                female: 'Nữ',
                 liability: 'Công nợ',
                 taxNumber: 'Mã số thuế',
                 website: 'Website',
@@ -2551,6 +2551,7 @@ export default {
                 stop_timer: "Dừng bấm giờ",
                 edit: "Chỉnh sửa",
                 delete: "Xóa",
+                actions_not_perform: 'Số hoạt động chưa thực hiện',
 
                 notice_end_task: 'Bạn có chắc chắn muốn kết thúc công việc này',
                 notice_change_activate_task: 'Bạn có chắc chắn muốn kích hoạt công việc này',
@@ -3683,5 +3684,23 @@ export default {
             add_file: 'Thêm tài liệu đính kèm',
             upload: 'Chọn ảnh'
         },
+
+        // Quản lý sản xuất phần KHSX và LSX
+        manufacturing: {
+            manufacturing_works: {
+                name: "Tên nhà máy",
+                code: "Mã nhà máy",
+                search: "Tìm kiếm",
+                create_works: "Tạo nhà máy",
+                index: "STT",
+                worksManager: "Giám đốc",
+                foreman: "Quản đốc",
+                mills: "Các xưởng",
+                phone: "Số điện thoại",
+                address: "Địa chỉ",
+                status: "Trạng thái",
+                description: "Mô tả"
+            }
+        }
     }
 }

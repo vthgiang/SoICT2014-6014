@@ -22,15 +22,73 @@ class ManageUserTable extends Component {
         }
     }
 
-    handleEdit = async (user) => {
-        await this.setState(state => {
-            return {
-                ...state,
-                currentRow: user
-            }
-        });
+    handleEdit = (user) => {
+        this.setState({
+            currentRow: user
+        }, () => window.$('#modal-edit-user').modal('show'));
+    }
+    
+    checkSuperRole = (roles) => {
+        var result = false;
+        if (roles !== undefined) {
+            roles.map(role => {
+                if (role.roleId.name === 'Super Admin') {
+                    result = true;
+                }
+                return true;
+            });
+        }
 
-        window.$('#modal-edit-user').modal('show');
+        return result;
+    }
+
+    setPage = (page) => {
+        this.setState({ page }, () => {
+            const data = {
+                limit: this.state.limit,
+                page: page,
+                key: this.state.option,
+                value: this.state.value
+            };
+    
+            this.props.getUser(data);
+        });
+    }
+
+    setLimit = (number) => {
+        if (this.state.limit !== number) {
+            this.setState({ limit: number }, () => {
+                const data = {
+                    limit: number,
+                    page: this.state.page,
+                    key: this.state.option,
+                    value: this.state.value
+                };
+    
+                this.props.getUser(data);
+            });
+        }
+    }
+
+    setOption = (title, option) => {
+        this.setState({
+            [title]: option
+        });
+    }
+
+    searchWithOption = () => {
+        const data = {
+            limit: this.state.limit,
+            page: 1,
+            key: this.state.option,
+            value: this.state.value
+        };
+        this.props.getUser(data);
+    }
+
+    componentDidMount() {
+        this.props.getUser();
+        this.props.getUser({ limit: this.state.limit, page: this.state.page });
     }
 
     render() {
@@ -130,70 +188,6 @@ class ManageUserTable extends Component {
             </React.Fragment>
         );
     }
-
-    checkSuperRole = (roles) => {
-        var result = false;
-        if (roles !== undefined) {
-            roles.map(role => {
-                if (role.roleId.name === 'Super Admin') {
-                    result = true;
-                }
-                return true;
-            });
-        }
-
-        return result;
-    }
-
-    setPage = async (page) => {
-        this.setState({ page });
-
-        const data = {
-            limit: this.state.limit,
-            page: page,
-            key: this.state.option,
-            value: this.state.value
-        };
-
-        await this.props.getUser(data);
-    }
-
-    setLimit = (number) => {
-        if (this.state.limit !== number) {
-            this.setState({ limit: number });
-
-            const data = {
-                limit: number,
-                page: this.state.page,
-                key: this.state.option,
-                value: this.state.value
-            };
-
-            this.props.getUser(data);
-        }
-    }
-
-    setOption = (title, option) => {
-        this.setState({
-            [title]: option
-        });
-    }
-
-    searchWithOption = async () => {
-        const data = {
-            limit: this.state.limit,
-            page: 1,
-            key: this.state.option,
-            value: this.state.value
-        };
-        await this.props.getUser(data);
-    }
-
-    componentDidMount() {
-        this.props.getUser();
-        this.props.getUser({ limit: this.state.limit, page: this.state.page });
-    }
-
 }
 
 function mapStateToProps(state) {

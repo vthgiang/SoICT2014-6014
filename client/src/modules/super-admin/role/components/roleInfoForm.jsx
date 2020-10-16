@@ -12,6 +12,72 @@ class RoleInfoForm extends Component {
         this.state = {}
     }
 
+    // Thiet lap cac gia tri tu props vao state
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.roleId !== prevState.roleId) {
+            return {
+                ...prevState,
+                roleId: nextProps.roleId,
+                roleName: nextProps.roleName,
+                roleType: nextProps.roleType,
+                roleParents: nextProps.roleParents,
+                roleUsers: nextProps.roleUsers,
+                roleNameError: undefined,
+            }
+        } else {
+            return null;
+        }
+    }
+
+    handleRoleName = (e) => {
+        let {value} = e.target;
+        let {translate} = this.props;
+        let {message} = ValidationHelper.validateName(translate, value, 4, 255);
+        this.setState({ 
+            roleName: value,
+            roleNameError: message 
+        });
+    }
+
+    handleParents = (value) => {
+        this.setState({
+            roleParents: value
+        });
+    }
+
+    handleUsers = (value) => {
+        this.setState({
+            roleUsers: value
+        });
+    }
+
+    handleRoleUser = (e) => {
+        const { value } = e.target;
+        this.setState({
+            roleUsers: [value]
+        });
+    }
+
+    isFormValidated = () => {
+        let {roleName} = this.state;
+        let {translate} = this.props;
+        if(!ValidationHelper.validateName(translate, roleName).status) return false;
+        return true;
+    }
+
+    save = () => {
+        const role = {
+            id: this.state.roleId,
+            name: this.state.roleName,
+            parents: this.state.roleParents,
+            users: this.state.roleUsers
+        };
+
+        if (this.isFormValidated()) {
+            return this.props.edit(role);
+        }
+    }
+
     render() {
         const { role, user, translate } = this.props;
         const { roleId, roleType, roleName, roleParents, roleUsers, roleNameError } = this.state;
@@ -75,80 +141,6 @@ class RoleInfoForm extends Component {
                 </DialogModal>
             </React.Fragment>
         );
-    }
-
-    // Thiet lap cac gia tri tu props vao state
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.roleId !== prevState.roleId) {
-            return {
-                ...prevState,
-                roleId: nextProps.roleId,
-                roleName: nextProps.roleName,
-                roleType: nextProps.roleType,
-                roleParents: nextProps.roleParents,
-                roleUsers: nextProps.roleUsers,
-                roleNameError: undefined,
-            }
-        } else {
-            return null;
-        }
-    }
-
-    handleRoleName = (e) => {
-        let {value} = e.target;
-        this.setState({ roleName: value });
-
-        let {translate} = this.props;
-        let {message} = ValidationHelper.validateName(translate, value, 4, 255);
-        this.setState({ roleNameError: message})
-    }
-
-    handleParents = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                roleParents: value
-            }
-        });
-    }
-
-    handleUsers = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                roleUsers: value
-            }
-        });
-    }
-
-    handleRoleUser = (e) => {
-        const { value } = e.target;
-        this.setState(state => {
-            return {
-                ...state,
-                roleUsers: [value]
-            }
-        });
-    }
-
-    isFormValidated = () => {
-        let {roleName} = this.state;
-        let {translate} = this.props;
-        if(!ValidationHelper.validateName(translate, roleName).status) return false;
-        return true;
-    }
-
-    save = () => {
-        const role = {
-            id: this.state.roleId,
-            name: this.state.roleName,
-            parents: this.state.roleParents,
-            users: this.state.roleUsers
-        };
-
-        if (this.isFormValidated()) {
-            return this.props.edit(role);
-        }
     }
 }
 
