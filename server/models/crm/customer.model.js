@@ -98,16 +98,17 @@ const CustomerSchema = new Schema({
             type: String
         }
     }],
-    history: [{
+    statusHistorys: [{
         oldValue: {
-            type: String
+            type: Schema.Types.ObjectId,
+            ref: 'Status'
         },
         newValue: {
-            type: String
+            type: Schema.Types.ObjectId,
+            ref: 'Status'
         },
         createdAt: {
             type: Date,
-            default: Date.now()
         },
         createdBy: {
             type: Schema.Types.ObjectId,

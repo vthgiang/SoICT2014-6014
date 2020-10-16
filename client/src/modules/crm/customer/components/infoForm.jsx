@@ -5,6 +5,7 @@ import { DialogModal, ApiImage, SelectBox, ErrorLabel, DateTimeConverter } from 
 import { convertJsonObjectToFormData } from '../../../../helpers/jsonObjectToFormDataObjectConverter';
 import { CrmCustomerActions } from '../redux/actions';
 import GeneralTabInfoForm from './generalTabInfoForm';
+import HistoryTabInfoForm from './historyTabInfoForm';
 import './customer.css'
 
 class CrmCustomerInformation extends Component {
@@ -16,6 +17,68 @@ class CrmCustomerInformation extends Component {
             defaultAvatar: '',
             customerInfomation: {}
         }
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        if (props.customerId != state.customerId) {
+            props.getCustomer(props.customerId);
+            return {
+                dataStatus: 1,
+                customerId: props.customerId,
+            }
+        } else {
+            return null;
+        }
+    }
+
+    shouldComponentUpdate = (nextProps, nextState) => {
+        let { dataStatus, customerInfomation } = this.state;
+
+        if (dataStatus === this.DATA_STATUS.QUERYING && !nextProps.crm.customers.isLoading) {
+            const getCustomer = nextProps.crm.customers.customerById;
+            customerInfomation = { ...getCustomer };
+
+            this.setState({
+                dataStatus: this.DATA_STATUS.AVAILABLE,
+                customerInfomation,
+            })
+            return false
+        }
+
+        if (dataStatus === this.DATA_STATUS.AVAILABLE) {
+            this.setState({
+                dataStatus: this.DATA_STATUS.FINISHED,
+            });
+            return false;
+        }
+        return true;
+    }
+
+    handleUpload = (e) => {
+        let { customerInfomation } = this.state;
+        const file = e.target.files[0];
+        if (file) {
+            let fileLoad = new FileReader();
+            fileLoad.readAsDataURL(file);
+            fileLoad.onload = () => {
+                this.setState({
+                    customerInfomation: {
+                        ...customerInfomation,
+                        avatar: fileLoad.result
+                    }
+                });
+            };
+        }
+
+    }
+
+    save = () => {
+        const { customerInfomation, customerId } = this.state;
+        // let formData = convertJsonObjectToFormData(customerInfomation);
+        let formData = new FormData();
+
+        formData.append('avatar', customerInfomation.avatar);
+        this.props.editCustomer(customerId, formData);
     }
 
     render() {
@@ -67,21 +130,23 @@ class CrmCustomerInformation extends Component {
 
                                     <hr style={{ borderTop: 'solid 1px #c3c7d0' }} />
 
-                                    <strong><i className="fa fa-user margin-r-5" /> {translate('crm.customer.name')}</strong>
-                                    <p className="text-muted">{customerInfomation.name ? customerInfomation.name : ''}</p>
+                                    <div>
+                                        <strong><i className="fa fa-user margin-r-5" /> {translate('crm.customer.name')}</strong>
+                                        <p className="text-muted">{customerInfomation.name ? customerInfomation.name : ''}</p>
 
 
-                                    <strong><i className="fa fa-barcode margin-r-5" /> {translate('crm.customer.code')}</strong>
-                                    <p className="text-muted">{customerInfomation.code ? customerInfomation.code : ''}</p>
+                                        <strong><i className="fa fa-barcode margin-r-5" /> {translate('crm.customer.code')}</strong>
+                                        <p className="text-muted">{customerInfomation.code ? customerInfomation.code : ''}</p>
 
-                                    <strong><i className="fa fa-phone margin-r-5" /> {translate('crm.customer.mobilephoneNumber')}</strong>
-                                    <p className="text-muted">{customerInfomation.mobilephoneNumber ? customerInfomation.mobilephoneNumber : ''}</p>
+                                        <strong><i className="fa fa-phone margin-r-5" /> {translate('crm.customer.mobilephoneNumber')}</strong>
+                                        <p className="text-muted">{customerInfomation.mobilephoneNumber ? customerInfomation.mobilephoneNumber : ''}</p>
 
-                                    <strong><i className="fa fa-envelope margin-r-5" /> {translate('crm.customer.email')}</strong>
-                                    <p className="text-muted">{customerInfomation.email ? customerInfomation.email : ''}</p>
+                                        <strong><i className="fa fa-envelope margin-r-5" /> {translate('crm.customer.email')}</strong>
+                                        <p className="text-muted">{customerInfomation.email ? customerInfomation.email : ''}</p>
 
-                                    <strong><i className="fa fa-map-marker margin-r-5" /> {translate('crm.customer.address')}</strong>
-                                    <p className="text-muted">{customerInfomation.address ? customerInfomation.address : ''}</p>
+                                        <strong><i className="fa fa-map-marker margin-r-5" /> {translate('crm.customer.address')}</strong>
+                                        <p className="text-muted">{customerInfomation.address ? customerInfomation.address : ''}</p>
+                                    </div>
                                 </div>
                             </div>
 
@@ -92,6 +157,7 @@ class CrmCustomerInformation extends Component {
                                         <li ><a href="#customer-info-history" data-toggle="tab">Lịch sử mua hàng</a></li>
                                         <li><a href="#sale" data-toggle="tab">Công nợ</a></li>
                                         <li><a href="#note" data-toggle="tab">Ghi chú</a></li>
+                                        <li><a href="#history" data-toggle="tab">Lịch sử thay đổi</a></li>
                                     </ul>
                                     <div className="tab-content">
                                         {/* Tab thông tin chi tiết */}
@@ -107,10 +173,10 @@ class CrmCustomerInformation extends Component {
 
                                         {/* Tab lịch sử mua hàng */}
                                         <div className="tab-pane" id="customer-info-history">
-                                            <p data-toggle="collapse" data-target="#showinfo1" aria-expanded="false" onclick="myFunction1()"><i
-                                                id="js--title1" class="fas fa-angle-up mr-2"></i> Thông tin hệ điều hành</p>
+                                            <p data-toggle="collapse" data-target="#showinfo1" aria-expanded="false" ><i
+                                                id="js--title1" className="fas fa-angle-up mr-2"></i> Thông tin hệ điều hành</p>
 
-                                            <div class="collapse" data-toggle="collapse " id="showinfo1">
+                                            <div className="collapse" data-toggle="collapse " id="showinfo1">
                                                 <p>mih tran</p>
                                             </div>
                                         </div>
@@ -143,6 +209,13 @@ class CrmCustomerInformation extends Component {
                                         <div className="tab-pane" id="note">
                                             Ghi chú
                                         </div>
+                                        {
+                                            customerInfomation && dataStatus === 3 &&
+                                            <HistoryTabInfoForm
+                                                id={'history'}
+                                                customerInfomation={customerInfomation}
+                                            />
+                                        }
                                     </div>
                                 </div>
                             </div>
@@ -152,68 +225,6 @@ class CrmCustomerInformation extends Component {
 
             </React.Fragment>
         );
-    }
-
-    static getDerivedStateFromProps(props, state) {
-        if (props.customerId != state.customerId) {
-            props.getCustomer(props.customerId);
-            return {
-                dataStatus: 1,
-                customerId: props.customerId,
-            }
-        } else {
-            return null;
-        }
-    }
-
-    shouldComponentUpdate = (nextProps, nextState) => {
-        let { dataStatus, customerInfomation } = this.state;
-        if (dataStatus === this.DATA_STATUS.QUERYING && !nextProps.crm.customers.isLoading) {
-            const getCustomer = nextProps.crm.customers.customerById;
-            customerInfomation = { ...getCustomer };
-
-            this.setState({
-                dataStatus: this.DATA_STATUS.AVAILABLE,
-                customerInfomation,
-            })
-            return false
-        }
-
-        if (dataStatus === this.DATA_STATUS.AVAILABLE) {
-            this.setState({
-                dataStatus: this.DATA_STATUS.FINISHED,
-            });
-            return false;
-        }
-        return true;
-    }
-
-    handleUpload = (e) => {
-        let { customerInfomation } = this.state;
-        const file = e.target.files[0];
-        if (file) {
-            let fileLoad = new FileReader();
-            fileLoad.readAsDataURL(file);
-            fileLoad.onload = () => {
-                this.setState({
-                    customerInfomation: {
-                        ...customerInfomation,
-                        avatar: fileLoad.result
-                    }
-                });
-            };
-        }
-
-    }
-
-    save = () => {
-        const { customerInfomation, customerId } = this.state;
-        // let formData = convertJsonObjectToFormData(customerInfomation);
-        let formData = new FormData();
-        console.log('customerInfomation', customerInfomation)
-
-        formData.append('avatar', customerInfomation.avatar);
-        this.props.editCustomer(customerId, formData);
     }
 }
 

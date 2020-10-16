@@ -176,7 +176,7 @@ class CrmCustomer extends Component {
                                             <td>{cus.code}</td>
                                             <td>{cus.name}</td>
                                             <td>{cus.group && cus.group.name ? cus.group.name : null}</td>
-                                            <td>{cus.status ? cus.status[cus.status.length - 1].name : null}</td>
+                                            <td>{cus.status && cus.status.length > 0 ? cus.status[cus.status.length - 1].name : null}</td>
                                             <td>{cus.owner && cus.owner.length > 0 ? cus.owner.map(o => o.name).join(', ') : null}</td>
                                             <td>{cus.mobilephoneNumber}</td>
                                             <td>{cus.address}</td>
