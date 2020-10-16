@@ -136,7 +136,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
     componentDidMount() {
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
         // unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime = false, calledId = null
-        this.props.getPaginateTasksByUser("[]", "1", "5", "[]", "[]", "[]", null, null, null, null, null, false, "listSearch");
+        this.props.getPaginateTasksByUser([], "1", "5", [], [], [], null, null, null, null, null, false, "listSearch");
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -707,7 +707,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
 
     onSearch = async (txt) => {
 
-        await this.props.getPaginateTasksByUser("[]", "1", "5", "[]", "[]", "[]", txt, null, null, null, null, false, "listSearch");
+        await this.props.getPaginateTasksByUser([], "1", "5", [], [], [], txt, null, null, null, null, false, "listSearch");
 
         await this.setState(state => {
             return {
