@@ -33,13 +33,8 @@ class ManageDepartment extends Component {
     }
 }
 
-function mapState(state) {
-    const { } = state;
-    return {};
-}
-
 const getState = {
     get: DepartmentActions.get,
 }
 
-export default connect(mapState, getState)(withTranslate(ManageDepartment)); 
+export default connect(null, getState)(withTranslate(ManageDepartment)); 
