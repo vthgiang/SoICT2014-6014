@@ -553,8 +553,8 @@ class DetailTaskTab extends Component {
                 let monthOfPrevEval = dateOfPrevEval.getMonth();
                 let yearOfPrevEval = dateOfPrevEval.getFullYear();
 
-                for(let i in evaluations){
-                    console.log('ffff',monthOfPrevEval, this.formatDate(evaluations[i].date),  new Date(evaluations[i].date), new Date(evaluations[i].date).getMonth() , yearOfPrevEval , new Date(evaluations[i].date).getFullYear());
+                for (let i in evaluations) {
+                    console.log('ffff', monthOfPrevEval, this.formatDate(evaluations[i].date), new Date(evaluations[i].date), new Date(evaluations[i].date).getMonth(), yearOfPrevEval, new Date(evaluations[i].date).getFullYear());
                 }
                 prevEval = evaluations.find(e => (monthOfPrevEval === new Date(e.date).getMonth() && yearOfPrevEval === new Date(e.date).getFullYear()));
 
@@ -686,7 +686,7 @@ class DetailTaskTab extends Component {
                         {/** Nhắc nhở */}
                         {
                             task && warning &&
-                            <div className="task-alert-detail">
+                            <div className="description-box alert">
                                 <h4>{translate('task.task_management.warning')}</h4>
 
                                 {/* Kích hoạt công việc phía sau trong quy trình */}

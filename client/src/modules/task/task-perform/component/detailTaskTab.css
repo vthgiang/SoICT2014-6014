@@ -1,19 +1,10 @@
-div.task-alert-detail {
+div.description-box.alert {
     background-color: rgb(255, 255, 236);
-    padding: 5px;
-    margin-top: 10px;
-    margin-bottom: 10px;
     border: 0.5px solid rgb(253, 255, 216);
     border-left: 5px solid rgb(158, 21, 21);
 }
 
-div.task-alert-detail > h4 {
+div.description-box.alert > h4 {
     font-weight: bold;
-    padding-bottom: 5px;
     color: rgb(158, 21, 21);
-    border-bottom: 1px double rgb(158, 21, 21);
-}
-
-div.task-alert-detail > div {
-    padding: 5px 2px;
 }
