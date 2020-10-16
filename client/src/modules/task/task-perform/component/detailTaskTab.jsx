@@ -12,7 +12,7 @@ import { EvaluationModal } from './evaluationModal';
 import { getStorage } from '../../../../config';
 import { SelectFollowingTaskModal } from './selectFollowingTaskModal';
 
-import { HoursSpentOfEmployeeChart } from './hoursSpentOfEmployeeChart';
+import { HoursSpentOfEmployeeChart } from './hourSpentNewVersion';
 
 import { withTranslate } from 'react-redux-multilingual';
 import './detailTaskTab.css';
@@ -597,11 +597,11 @@ class DetailTaskTab extends Component {
                     item.results.map(result => {
                         if (result.employee) {
                             if (!hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name]) {
-                                if (result.hoursSpent) {
-                                    hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name] = Number.parseFloat(result.hoursSpent / (1000 * 60 * 60)).toFixed(2);
+                                if (result.contribution) {
+                                    hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name] = Number.parseFloat(result.contribution / (1000 * 60 * 60)).toFixed(2);
                                 }
                             } else {
-                                hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name] = hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name] + result.hoursSpent ? Number.parseFloat(result.hoursSpent / (1000 * 60 * 60)).toFixed(2) : 0;
+                                hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name] = hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name] + result.contribution ? Number.parseFloat(result.contribution / (1000 * 60 * 60)).toFixed(2) : 0;
                             }
                         }
                     })
@@ -610,7 +610,7 @@ class DetailTaskTab extends Component {
                 }
             })
         }
-
+        console.log("hoursSpentOfEmployeeInEvaluation", hoursSpentOfEmployeeInEvaluation)
         return (
             <React.Fragment>
                 {(showToolbar) &&
