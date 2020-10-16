@@ -296,25 +296,18 @@ class DetailTaskTab extends Component {
     }
 
     checkEvaluationTaskAction = (task) => {
-        const { currentMonth, nextMonth } = this.state;
-
-        let taskActionNotEvaluate = [];
-
-        if (task) {
-            if (task.taskActions && task.taskActions.length !== 0) {
-                taskActionNotEvaluate = task.taskActions
-                    .filter(item => new Date(item.updatedAt) >= new Date(currentMonth) && new Date(item.updatedAt) < new Date(nextMonth))
-                    .map(item => {
-                        if (item.rating === -1) {
-                            return item;
-                        }
-                    })
+        if(task){
+            let {taskActions} = task;
+            if(taskActions) {
+                let rated = taskActions.filter(task => task.rating === -1);
+                return {
+                    checkEvaluationTaskAction: rated.length !== 0,
+                    numberOfTaskActionNotEvaluate: rated.length
+                }
             }
         }
-
         return {
-            checkEvaluationTaskAction: taskActionNotEvaluate.length !== 0,
-            numberOfTaskActionNotEvaluate: taskActionNotEvaluate.length
+            checkEvaluationTaskAction: false
         }
     }
 
@@ -492,6 +485,10 @@ class DetailTaskTab extends Component {
         return hours + ":" + minutes + ":" + seconds;
     }
 
+    getTaskActionsNotPerform = (taskActions) => {
+        return taskActions.filter(action => !action.creator).length;
+    }
+
     render() {
         const { tasks, performtasks, translate } = this.props;
         const { currentUser, roles, currentRole, collapseInfo, showEdit, showEndTask, showEvaluate } = this.state
@@ -507,7 +504,7 @@ class DetailTaskTab extends Component {
         if (isProcess) {
             task = this.props.task
         }
-        else if (performtasks) {
+        else if (Object.entries(performtasks).length > 0) {
             task = performtasks.task;
         }
 
@@ -553,17 +550,10 @@ class DetailTaskTab extends Component {
                 let monthOfPrevEval = dateOfPrevEval.getMonth();
                 let yearOfPrevEval = dateOfPrevEval.getFullYear();
 
-                for (let i in evaluations) {
-                    console.log('ffff', monthOfPrevEval, this.formatDate(evaluations[i].date), new Date(evaluations[i].date), new Date(evaluations[i].date).getMonth(), yearOfPrevEval, new Date(evaluations[i].date).getFullYear());
-                }
                 prevEval = evaluations.find(e => (monthOfPrevEval === new Date(e.date).getMonth() && yearOfPrevEval === new Date(e.date).getFullYear()));
-
                 if (prevEval) {
                     prevDate = prevEval.date;
                 }
-
-                console.log('preeeDate======\n\n\n\n', prevDate, monthOfPrevEval, yearOfPrevEval, newMonth);
-
                 evalList.push({ ...evaluations[i], prevDate: prevDate })
             }
         }
@@ -698,6 +688,15 @@ class DetailTaskTab extends Component {
                                         </a>
                                     </div>
                                 }
+
+                                {/* Số hoạt động chưa thực hiện */}         
+                                {
+                                    this.getTaskActionsNotPerform(task.taskActions) > 0 &&
+                                    <div>
+                                        <strong>{translate('task.task_perform.actions_not_perform')}</strong> 
+                                        <span className="text-red">{this.getTaskActionsNotPerform(task.taskActions)}</span>
+                                    </div> 
+                                }                      
 
                                 {/** Xác nhận công việc */}
                                 {

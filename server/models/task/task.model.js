@@ -152,21 +152,21 @@ const TaskSchema = new Schema({
         ref: 'User',
         required: true
     }],
-    responsibleEmployees: [{
+    responsibleEmployees: [{ //người thực hiện
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: true
     }],
-    accountableEmployees: [{
+    accountableEmployees: [{ //người phê duyệt
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: true
     }],
-    consultedEmployees: [{
+    consultedEmployees: [{ //người hỗ trợ
         type: Schema.Types.ObjectId,
         ref: 'User'
     }],
-    informedEmployees: [{
+    informedEmployees: [{ //người quan sát
         type: Schema.Types.ObjectId,
         ref: 'User'
     }],
