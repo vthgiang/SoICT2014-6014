@@ -2551,6 +2551,7 @@ export default {
                 stop_timer: "Dừng bấm giờ",
                 edit: "Chỉnh sửa",
                 delete: "Xóa",
+                actions_not_perform: 'Số hoạt động chưa thực hiện',
 
                 notice_end_task: 'Bạn có chắc chắn muốn kết thúc công việc này',
                 notice_change_activate_task: 'Bạn có chắc chắn muốn kích hoạt công việc này',

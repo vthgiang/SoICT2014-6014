@@ -25,90 +25,8 @@ class DepartmentTreeView extends Component {
         }
     }
 
-    render() {
-        const { translate, department } = this.props;
-        const { tree } = this.props.department;
-        const { currentRow } = this.state;
-        let data = [];
-        if (tree){
-            data = tree;
-        }
-        
-        let exportData = this.convertDataToExportData(data);
-
-        return (
-            <React.Fragment>
-                {<ExportExcel id="export-organizationalUnit" exportData={exportData} style={{ marginLeft: 5 }}/>}
-                {/* Button thêm mới một phòng ban */}
-                <DepartmentCreateForm />
-                <DepartmentImportForm />
-                <div className="form-inline">
-                    <div className="dropdown pull-right" >
-                        <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title='Thêm'>{translate('manage_department.add_title')}</button>
-                        <ul className="dropdown-menu pull-right">
-                            <li><a href="#modal-create-department" title={translate('manage_department.add_title')} onClick={(event) => { this.handleCreate(event) }}>{translate('manage_department.add_title')}</a></li>
-                            <li><a href="#modal_import_file" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>ImportFile</a></li>
-                        </ul>
-                    </div>
-                </div>
-
-                {/* Kiểm tra có dữ liệu về các đơn vị, phòng ban hay không */}
-                {
-                    department.list && department.list.length > 0 ?
-                        <React.Fragment >
-                            {/* <div className="pull-left">
-                                <i className="btn btn-sm btn-default fa fa-plus" onClick={this.zoomIn} title={translate('manage_department.zoom_in')}></i>
-                                <i className="btn btn-sm btn-default fa fa-minus" onClick={this.zoomOut} title={translate('manage_department.zoom_out')}></i>
-                            </div> */}
-                        </React.Fragment>
-                        : department.isLoading ?
-                            <p className="text-center">{translate('confirm.loading')}</p> :
-                            <p className="text-center">{translate('confirm.no_data')}</p>
-                }
-
-                {/* Hiển thị cơ cấu tổ chức của công ty */}
-                <div className="row">
-                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        {
-                            tree &&
-                            tree.map((tree, index) =>
-                                <div key={index} className="tf-tree example" style={{ textAlign: 'left', fontSize: this.state.zoom, marginTop: '50px' }}>
-                                    <ul>
-                                        {
-                                            this.displayTreeView(tree, translate)
-                                        }
-                                    </ul>
-                                </div>
-                            )
-                        }
-                    </div>
-                </div>
-
-                {/* Các form edit và thêm mới một phòng ban mới với phòng ban cha được chọn */}
-                {
-                    currentRow &&
-                    <React.Fragment>
-                        <DepartmentCreateWithParent
-                            departmentId={currentRow.id}
-                            departmentParent={currentRow.id}
-                        />
-                        <DepartmentEditForm
-                            departmentId={currentRow.id}
-                            departmentName={currentRow.name}
-                            departmentDescription={currentRow.description}
-                            departmentParent={currentRow.parent_id}
-                            deans={currentRow.deans}
-                            viceDeans={currentRow.viceDeans}
-                            employees={currentRow.employees}
-                        />
-                    </React.Fragment>
-                }
-            </React.Fragment>
-        );
-    }
-
-    // Cac ham xu ly du lieu voi modal
-    convertDataToExportData = (data) => {
+     // Cac ham xu ly du lieu voi modal
+     convertDataToExportData = (data) => {
         // chuyen du lieu cay ve du lieu bang
         let listData = [];
         if (data) {
@@ -205,22 +123,6 @@ class DepartmentTreeView extends Component {
         }
         return exportData
     }
-    // _duyet =  (tree, listData) => {
-    //     console.log(tree);
-    //     listData = [...listData, tree];
-    //     let data = this.state.data;
-    //     data = [...data, tree];
-    //     if (tree.children){
-    //         // listData = [...listData,tree];
-    //         for (let i = 0; i < tree.children.length; i++){
-    //             tree.children[i]["parentName"] = tree.name;
-    //             this._duyet(tree.children[i], listData);
-    //         }
-    //     } else {
-    //         // listData = [...listData,tree];
-    //         // return listData;
-    //     }
-    // }
 
     handleCreate = (event) => {
         event.preventDefault();
@@ -231,26 +133,17 @@ class DepartmentTreeView extends Component {
         event.preventDefault();
         window.$('#modal_import_file').modal('show');
     }
-    handleEdit = async (department) => {
-        await this.setState(state => {
-            return {
-                ...state,
-                currentRow: department
-            }
-        });
 
-        window.$('#modal-edit-department').modal('show');
+    handleEdit = (department) => {
+        this.setState({
+            currentRow: department
+        }, () => window.$('#modal-edit-department').modal('show'));
     }
 
-    handleCreateWithParent = async (department) => {
-        await this.setState(state => {
-            return {
-                ...state,
-                currentRow: department
-            }
-        });
-
-        window.$('#modal-create-department-with-parent').modal('show');
+    handleCreateWithParent = (department) => {
+        this.setState({
+            currentRow: department
+        }, () => window.$('#modal-create-department-with-parent').modal('show'));
     }
 
     toggleSetting = (id) => {
@@ -331,6 +224,87 @@ class DepartmentTreeView extends Component {
         }
     }
 
+    render() {
+        const { translate, department } = this.props;
+        const { tree } = this.props.department;
+        const { currentRow } = this.state;
+        let data = [];
+        if (tree){
+            data = tree;
+        }
+        
+        let exportData = this.convertDataToExportData(data);
+
+        return (
+            <React.Fragment>
+                {<ExportExcel id="export-organizationalUnit" exportData={exportData} style={{ marginLeft: 5 }}/>}
+                {/* Button thêm mới một phòng ban */}
+                <DepartmentCreateForm />
+                <DepartmentImportForm />
+                <div className="form-inline">
+                    <div className="dropdown pull-right" >
+                        <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title='Thêm'>{translate('manage_department.add_title')}</button>
+                        <ul className="dropdown-menu pull-right">
+                            <li><a href="#modal-create-department" title={translate('manage_department.add_title')} onClick={(event) => { this.handleCreate(event) }}>{translate('manage_department.add_title')}</a></li>
+                            <li><a href="#modal_import_file" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>ImportFile</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                {/* Kiểm tra có dữ liệu về các đơn vị, phòng ban hay không */}
+                {
+                    department.list && department.list.length > 0 ?
+                        <React.Fragment >
+                            <div className="pull-left">
+                                <i className="btn btn-sm btn-default fa fa-plus" onClick={this.zoomIn} title={translate('manage_department.zoom_in')}></i>
+                                <i className="btn btn-sm btn-default fa fa-minus" onClick={this.zoomOut} title={translate('manage_department.zoom_out')}></i>
+                            </div>
+                        </React.Fragment>
+                        : department.isLoading ?
+                            <p className="text-center">{translate('confirm.loading')}</p> :
+                            <p className="text-center">{translate('confirm.no_data')}</p>
+                }
+
+                {/* Hiển thị cơ cấu tổ chức của công ty */}
+                <div className="row">
+                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        {
+                            tree &&
+                            tree.map((tree, index) =>
+                                <div key={index} className="tf-tree example" style={{ textAlign: 'left', fontSize: this.state.zoom, marginTop: '50px' }}>
+                                    <ul>
+                                        {
+                                            this.displayTreeView(tree, translate)
+                                        }
+                                    </ul>
+                                </div>
+                            )
+                        }
+                    </div>
+                </div>
+
+                {/* Các form edit và thêm mới một phòng ban mới với phòng ban cha được chọn */}
+                {
+                    currentRow &&
+                    <React.Fragment>
+                        <DepartmentCreateWithParent
+                            departmentId={currentRow.id}
+                            departmentParent={currentRow.id}
+                        />
+                        <DepartmentEditForm
+                            departmentId={currentRow.id}
+                            departmentName={currentRow.name}
+                            departmentDescription={currentRow.description}
+                            departmentParent={currentRow.parent_id}
+                            deans={currentRow.deans}
+                            viceDeans={currentRow.viceDeans}
+                            employees={currentRow.employees}
+                        />
+                    </React.Fragment>
+                }
+            </React.Fragment>
+        );
+    }
 }
 
 function mapState(state) {

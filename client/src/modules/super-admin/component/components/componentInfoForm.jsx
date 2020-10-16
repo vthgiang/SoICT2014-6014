@@ -9,6 +9,65 @@ class ComponentInfoForm extends Component {
         super(props);
         this.state = {}
     }
+    
+    handleComponentDescription = (e) => {
+        let {value} = e.target;
+        let {translate} = this.props;
+        let {message} = ValidationHelper.validateDescription(translate, value);
+        this.setState({ 
+            componentDescription: value,
+            componentDescriptionError: message 
+        });
+    }
+
+    handleComponentLink = (value) => {
+        this.setState({
+            componentLink: value[0]
+        });
+    }
+
+    handleComponentRoles = (value) => {
+        this.setState({
+            componentRoles: value
+        });
+    }
+
+    save = () => {
+        const component = {
+            name: this.state.componentName,
+            description: this.state.componentDescription,
+            roles: this.state.componentRoles
+        };
+
+        if (this.isFormValidated()) {
+            return this.props.editComponent(this.state.componentId, component);
+        }
+    }
+
+    isFormValidated = () => {
+        let {componentDescription} = this.state;
+        let {translate} = this.props;
+        if(!ValidationHelper.validateDescription(translate, componentDescription).status) return false;
+        return true;
+    }
+
+
+    // Thiet lap cac gia tri tu props vao state
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.componentId !== prevState.componentId) {
+            return {
+                ...prevState,
+                componentId: nextProps.componentId,
+                componentName: nextProps.componentName,
+                componentLink: nextProps.componentLink,
+                componentDescription: nextProps.componentDescription,
+                componentRoles: nextProps.componentRoles,
+                componentDescriptionError: undefined,
+            }
+        } else {
+            return null;
+        }
+    }
 
     render() {
         const { translate, role, link } = this.props;
@@ -72,64 +131,6 @@ class ComponentInfoForm extends Component {
                 </DialogModal>
             </React.Fragment>
         );
-    }
-
-    handleComponentDescription = (e) => {
-        let {value} = e.target;
-        this.setState({ componentDescription: value });
-
-        let {translate} = this.props;
-        let {message} = ValidationHelper.validateDescription(translate, value);
-        this.setState({ componentDescriptionError: message})
-    }
-
-    handleComponentLink = (value) => {
-        this.setState({
-            componentLink: value[0]
-        });
-    }
-
-    handleComponentRoles = (value) => {
-        this.setState({
-            componentRoles: value
-        });
-    }
-
-    save = () => {
-        const component = {
-            name: this.state.componentName,
-            description: this.state.componentDescription,
-            roles: this.state.componentRoles
-        };
-
-        if (this.isFormValidated()) {
-            return this.props.editComponent(this.state.componentId, component);
-        }
-    }
-
-    isFormValidated = () => {
-        let {componentDescription} = this.state;
-        let {translate} = this.props;
-        if(!ValidationHelper.validateDescription(translate, componentDescription).status) return false;
-        return true;
-    }
-
-
-    // Thiet lap cac gia tri tu props vao state
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.componentId !== prevState.componentId) {
-            return {
-                ...prevState,
-                componentId: nextProps.componentId,
-                componentName: nextProps.componentName,
-                componentLink: nextProps.componentLink,
-                componentDescription: nextProps.componentDescription,
-                componentRoles: nextProps.componentRoles,
-                componentDescriptionError: undefined,
-            }
-        } else {
-            return null;
-        }
     }
 }
 

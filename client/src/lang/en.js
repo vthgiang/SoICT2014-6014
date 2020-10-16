@@ -2492,6 +2492,7 @@ export default {
                 stop_timer: "Stop timer",
                 edit: "Edit",
                 delete: "Delete",
+                actions_not_perform: 'Actions not perform',
 
                 notice_end_task: 'Are you sure to finish this task',
                 notice_change_activate_task: 'Are you sure to change activated of this task',
