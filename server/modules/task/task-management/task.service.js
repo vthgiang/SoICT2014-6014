@@ -1349,6 +1349,13 @@ exports.createTask = async (portal, task) => {
  */
 exports.deleteTask = async (portal, id) => {
     //req.params.id
+    let tasks = await Task(connect(DB_CONNECTION, portal)).findById(id);
+    if (tasks.taskTemplate !== null) {
+        await TaskTemplate(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
+            tasks.taskTemplate, { $inc: { 'numberOfUse': -1 } }, { new: true }
+        );
+    }
+
     var task = await Task(connect(DB_CONNECTION, portal)).findByIdAndDelete(id); // xóa mẫu công việc theo id
     return task;
 }
