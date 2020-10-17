@@ -13,51 +13,6 @@ class CreateGroupForm extends Component {
         }
     }
 
-    render() {
-        const { translate } = this.props;
-        const { groups } = this.props.crm;
-        const { groupNameError, groupCodeError } = this.state;
-
-        return (
-            <React.Fragment>
-                <ButtonModal modalID="modal-crm-group-create" button_name={translate('general.add')} title={translate('crm.group.add')} />
-                <DialogModal
-                    modalID="modal-crm-group-create" isLoading={groups.isLoading}
-                    formID="form-crm-group-create"
-                    title={translate('crm.group.add')}
-                    func={this.save}
-                    size={50}
-                    disableSubmit={!this.isFormValidated()}
-                >
-                    <form id="form-crm-group-create">
-                        {/* Mã nhóm khách hàng */}
-                        <div className={`form-group ${!groupCodeError ? "" : "has-error"}`}>
-                            <label>{translate('crm.group.code')}<span className="attention"> * </span></label>
-                            <input type="text" className="form-control" onChange={this.handleChangeGroupCode} />
-                            <ErrorLabel content={groupCodeError} />
-                        </div>
-                        {/* Tên nhóm khách hàng */}
-                        <div className={`form-group ${!groupNameError ? "" : "has-error"}`}>
-                            <label>{translate('crm.group.name')}<span className="attention"> * </span></label>
-                            <input type="text" className="form-control" onChange={this.handleChangeGroupName} />
-                            <ErrorLabel content={groupNameError} />
-                        </div>
-                        {/* Mô tả nhóm khách hàng */}
-                        <div className="form-group">
-                            <label>{translate('crm.group.description')}</label>
-                            <textarea type="text" className="form-control" onChange={this.handleChangeGroupDescription} />
-                        </div>
-                        {/* Ưu đãi kèm theo nhóm khách hàng */}
-                        <div className="form-group">
-                            <label>{translate('crm.group.promotion')}</label>
-                            <input type="text" className="form-control" onChange={this.handleChangeGroupPromotion} />
-                        </div>
-                    </form>
-                </DialogModal>
-            </React.Fragment>
-        );
-    }
-
     handleChangeGroupCode = (e) => {
         const { newCustomerGroup } = this.state;
         const { value } = e.target;
@@ -121,11 +76,57 @@ class CreateGroupForm extends Component {
             return false;
         return true;
     }
+
     save = () => {
         const { newCustomerGroup } = this.state;
         if (this.isFormValidated()) {
             this.props.createGroup(newCustomerGroup);
         }
+    }
+
+    render() {
+        const { translate } = this.props;
+        const { groups } = this.props.crm;
+        const { groupNameError, groupCodeError } = this.state;
+
+        return (
+            <React.Fragment>
+                <ButtonModal modalID="modal-crm-group-create" button_name={translate('general.add')} title={translate('crm.group.add')} />
+                <DialogModal
+                    modalID="modal-crm-group-create" isLoading={groups.isLoading}
+                    formID="form-crm-group-create"
+                    title={translate('crm.group.add')}
+                    func={this.save}
+                    size={50}
+                    disableSubmit={!this.isFormValidated()}
+                >
+                    <form id="form-crm-group-create">
+                        {/* Mã nhóm khách hàng */}
+                        <div className={`form-group ${!groupCodeError ? "" : "has-error"}`}>
+                            <label>{translate('crm.group.code')}<span className="attention"> * </span></label>
+                            <input type="text" className="form-control" onChange={this.handleChangeGroupCode} />
+                            <ErrorLabel content={groupCodeError} />
+                        </div>
+                        {/* Tên nhóm khách hàng */}
+                        <div className={`form-group ${!groupNameError ? "" : "has-error"}`}>
+                            <label>{translate('crm.group.name')}<span className="attention"> * </span></label>
+                            <input type="text" className="form-control" onChange={this.handleChangeGroupName} />
+                            <ErrorLabel content={groupNameError} />
+                        </div>
+                        {/* Mô tả nhóm khách hàng */}
+                        <div className="form-group">
+                            <label>{translate('crm.group.description')}</label>
+                            <textarea type="text" className="form-control" onChange={this.handleChangeGroupDescription} />
+                        </div>
+                        {/* Ưu đãi kèm theo nhóm khách hàng */}
+                        <div className="form-group">
+                            <label>{translate('crm.group.promotion')}</label>
+                            <input type="text" className="form-control" onChange={this.handleChangeGroupPromotion} />
+                        </div>
+                    </form>
+                </DialogModal>
+            </React.Fragment>
+        );
     }
 }
 

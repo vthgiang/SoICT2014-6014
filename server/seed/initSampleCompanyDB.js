@@ -2923,15 +2923,15 @@ const initSampleCompanyDB = async () => {
         name: "Đã báo giá",
         description: "Khách hàng đã được báo giá",
         active: false,
-    }, {
-        code: "ST004",
-        name: "Đã mua sản phẩm",
-        description: "Khách hàng đã mua sản phẩm",
-        active: false,
-    }, {
+    },{
         code: "ST005",
         name: "Đã kí hợp đồng",
         description: "Khách hàng đã kỹ hợp đồng với công ty",
+        active: false,
+    },{
+        code: "ST004",
+        name: "Đã mua sản phẩm",
+        description: "Khách hàng đã mua sản phẩm",
         active: false,
     }, {
         code: "ST006",

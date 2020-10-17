@@ -94,5 +94,9 @@ module.exports = {
     Example: require('./example/example.model'),
 
     // production-manufacturing
-    ManufacturingMill: require('./production/manufacturing/manufacturingMill.model')
+    ManufacturingMill: require('./production/manufacturing/manufacturingMill.model'),
+    ManufacturingWorks: require('./production/manufacturing/manufacturingWorks.model'),
+    ManufacturingPlan: require('./production/manufacturing/manufacturingPlan.model'),
+    ManufacturingCommand: require('./production/manufacturing/manufacturingCommand.model'),
+    PurchasingRequest: require('./production/manufacturing/purchasingRequest.model'),
 }

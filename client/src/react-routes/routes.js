@@ -107,7 +107,7 @@ import InventoryManagement from '../modules/warehouse/inventory-management/compo
 import CrmDashBoard from '../modules/crm/dashboard/components';
 import CrmCustomer from '../modules/crm/customer/components';
 import CrmGroup from '../modules/crm/group/components';
-// import CrmCare from '../modules/crm/care/components'
+import CrmCare from '../modules/crm/care/components'
 
 //orders
 import PurchaseOrder from '../modules/production/order/purchase-order/components';
@@ -1310,7 +1310,7 @@ class Routes extends Component {
                         component={CrmGroup}
                     />
 
-                    {/* <PrivateRoute
+                    <PrivateRoute
                         isLoading={false}
                         key={'customer-care'}
                         arrPage={[
@@ -1323,7 +1323,7 @@ class Routes extends Component {
                         pageName={'crm_list.care'}
                         layout={Layout}
                         component={CrmCare}
-                    /> */}
+                    />
 
                     {/* Orders Management */}
 
