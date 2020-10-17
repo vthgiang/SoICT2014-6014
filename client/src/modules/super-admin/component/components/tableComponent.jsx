@@ -28,6 +28,57 @@ class TableComponent extends Component {
         this.props.get({ type: "active", page, limit });
         this.props.getRoles();
     }
+    
+    setOption = (title, option) => {
+        this.setState({
+            [title]: option
+        });
+    }
+
+    searchWithOption = () => {
+        let {option, limit, value} = this.state;
+        const params = {
+            type: "active",
+            limit,
+            page: 1,
+            key: option,
+            value
+        };
+        this.props.get(params);
+    }
+
+    setPage = (page) => {
+        this.setState({ page });
+        let {option, limit, value} = this.state;
+        const params = {
+            type: "active",
+            limit,
+            page,
+            key: option,
+            value
+        };
+        this.props.get(params);
+    }
+
+    setLimit = (number) => {
+        this.setState({ limit: number });
+        let {option, value, page} = this.state;
+        const params = {
+            type: "active",
+            limit: number,
+            page,
+            key: option,
+            value
+        };
+        this.props.get(params);
+    }
+
+    // Cac ham xu ly du lieu voi modal
+    handleEdit = (component) => {
+        this.setState({
+            currentRow: component
+        }, () => window.$('#modal-edit-component').modal('show'));
+    }
 
     render() {
         const { component, translate } = this.props;
@@ -107,62 +158,6 @@ class TableComponent extends Component {
 
             </React.Fragment>
         );
-    }
-
-    setOption = (title, option) => {
-        this.setState({
-            [title]: option
-        });
-    }
-
-    searchWithOption = () => {
-        let {option, limit, value} = this.state;
-        const params = {
-            type: "active",
-            limit,
-            page: 1,
-            key: option,
-            value
-        };
-        this.props.get(params);
-    }
-
-    setPage = (page) => {
-        this.setState({ page });
-        let {option, limit, value} = this.state;
-        const params = {
-            type: "active",
-            limit,
-            page,
-            key: option,
-            value
-        };
-        this.props.get(params);
-    }
-
-    setLimit = (number) => {
-        this.setState({ limit: number });
-        let {option, value, page} = this.state;
-        const params = {
-            type: "active",
-            limit: number,
-            page,
-            key: option,
-            value
-        };
-        this.props.get(params);
-    }
-
-    // Cac ham xu ly du lieu voi modal
-    handleEdit = async (component) => {
-        await this.setState(state => {
-            return {
-                ...state,
-                currentRow: component
-            }
-        });
-
-        window.$('#modal-edit-component').modal('show');
     }
 }
 

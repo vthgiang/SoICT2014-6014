@@ -45,7 +45,8 @@ class TreeSelect extends Component {
     convertData = (array=[], value=[]) => {
         let data = [];
         for (let i = 0; i < array.length; i++) {
-            if(value.indexOf(array[i].id) > -1){
+            let index = array[i].id ? array[i].id : array[i]._id;
+            if(value.indexOf(index) > -1){
                 data.push({
                     ...array[i],
                     checked: true

@@ -7,7 +7,6 @@ import { LinkActions } from '../redux/actions';
 import { ToolTip, SearchBar, DataTableSetting, PaginateBar } from '../../../../common-components';
 
 import LinkInfoForm from './linkInfoForm';
-import { getStorage } from '../../../../config';
 
 class ManageLink extends Component {
     constructor(props) {
@@ -18,6 +17,63 @@ class ManageLink extends Component {
             option: "url", // Mặc định tìm kiếm theo tên
             value: ""
         }
+    }
+    
+    setOption = (title, option) => {
+        this.setState({
+            [title]: option
+        });
+    }
+
+    searchWithOption = () => {
+        let {page, option, value, limit} = this.state;
+        const params = {
+            type: "active",
+            limit,
+            page,
+            key: option,
+            value
+        };
+        this.props.getLinks(params);
+    }
+
+    setPage = (page) => {
+        this.setState({ page });
+        let {limit, option, value} = this.state;
+        const params = {
+            type: "active",
+            limit,
+            page,
+            key: option,
+            value
+        };
+        this.props.getLinks(params);
+    }
+
+    setLimit = (number) => {
+        this.setState({ limit: number });
+        let {page, option, value} = this.state;
+        const params = {
+            type: "active",
+            limit: number,
+            page,
+            key: option,
+            value
+        };
+        this.props.getLinks(params);
+    }
+
+    componentDidMount() {
+        let {page, limit} = this.state;
+        this.props.getLinks({type: "active"});
+        this.props.getLinks({type: "active", page, limit});
+    }
+
+    // Cac ham xu ly du lieu voi modal
+    handleEdit = (link) => {
+        this.setState({
+            currentRow: link
+        }, () => window.$('#modal-edit-link').modal('show'));
     }
 
     render() {
@@ -100,68 +156,6 @@ class ManageLink extends Component {
                 </div>
             </div>
         );
-    }
-
-    setOption = (title, option) => {
-        this.setState({
-            [title]: option
-        });
-    }
-
-    searchWithOption = () => {
-        let {page, option, value, limit} = this.state;
-        const params = {
-            type: "active",
-            limit,
-            page,
-            key: option,
-            value
-        };
-        this.props.getLinks(params);
-    }
-
-    setPage = (page) => {
-        this.setState({ page });
-        let {limit, option, value} = this.state;
-        const params = {
-            type: "active",
-            limit,
-            page,
-            key: option,
-            value
-        };
-        this.props.getLinks(params);
-    }
-
-    setLimit = (number) => {
-        this.setState({ limit: number });
-        let {page, option, value} = this.state;
-        const params = {
-            type: "active",
-            limit: number,
-            page,
-            key: option,
-            value
-        };
-        this.props.getLinks(params);
-    }
-
-    componentDidMount() {
-        let {page, limit} = this.state;
-        this.props.getLinks({type: "active"});
-        this.props.getLinks({type: "active", page, limit});
-    }
-
-    // Cac ham xu ly du lieu voi modal
-    handleEdit = async (link) => {
-        await this.setState(state => {
-            return {
-                ...state,
-                currentRow: link
-            }
-        });
-
-        window.$('#modal-edit-link').modal('show');
     }
 }
 

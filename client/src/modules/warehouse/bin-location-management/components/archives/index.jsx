@@ -11,10 +11,8 @@ class ArchiveManagement extends Component {
     
     render() {
         return (
-            <div className="box" style={{ minHeight: "450px" }}>
-                <div className="box-body">
-                    <ArchiveManagementTable />
-                </div>
+            <div className="box-body" style={{ minHeight: "450px" }}>
+                <ArchiveManagementTable />
             </div>
         );
     }

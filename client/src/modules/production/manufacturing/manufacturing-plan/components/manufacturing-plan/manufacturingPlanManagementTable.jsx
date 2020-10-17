@@ -123,16 +123,16 @@ class ManufacturingPlanManagementTable extends Component {
                     <table id="manufacturing-plan-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th>STT</th>
-                                <th>Mã kế hoạch</th>
-                                <th>Mã đơn sản xuất</th>
-                                <th>Người tạo</th>
-                                <th>Thời gian tạo</th>
-                                <th>Thời gian bắt đầu</th>
-                                <th>Thời gian dự kiến hoàn thành</th>
-                                <th>Mô tả</th>
-                                <th>Trạng thái</th>
-                                <th style={{ width: "120px", textAlign: "center" }}>Hành động
+                                <th rowSpan={2} style={{ verticalAlign: "middle" }}>STT</th>
+                                <th>Mã kế hoạch <div><i className="fa fa-sort-down"></i></div></th>
+                                <th>Mã đơn sản xuất  <div><i className="fa fa-sort-down"></i></div></th>
+                                <th>Người tạo <div><i className="fa fa-sort-down"></i></div></th>
+                                <th>Thời gian tạo <div><i className="fa fa-sort-down"></i></div></th>
+                                <th>Thời gian bắt đầu <div><i className="fa fa-sort-down"></i></div></th>
+                                <th>Thời gian dự kiến hoàn thành <div><i className="fa fa-sort-down"></i></div></th>
+                                <th>Mô tả <div><i className="fa fa-sort-down"></i></div></th>
+                                <th>Trạng thái <div><i className="fa fa-sort-down"></i></div></th>
+                                <th style={{ verticalAlign: "middle" }} rowSpan={2}>Hành động
                                     <DataTableSetting
                                         tableId="manufacturing-plan-table"
                                         columnArr={[
@@ -151,6 +151,16 @@ class ManufacturingPlanManagementTable extends Component {
                                         setLimit={this.setLimit}
                                     />
                                 </th>
+                            </tr>
+                            <tr>
+                                <th style={{ padding: '2px' }}><input style={{ width: '100%' }} /></th>
+                                <th style={{ padding: '2px' }}><input style={{ width: '100%' }} /></th>
+                                <th style={{ padding: '2px' }}><input style={{ width: '100%' }} /></th>
+                                <th style={{ padding: '2px' }}><input style={{ width: '100%' }} /></th>
+                                <th style={{ padding: '2px' }}><input style={{ width: '100%' }} /></th>
+                                <th style={{ padding: '2px' }}><input style={{ width: '100%' }} /></th>
+                                <th style={{ padding: '2px' }}><input style={{ width: '100%' }} /></th>
+                                <th style={{ padding: '2px' }}><input style={{ width: '100%' }} /></th>
                             </tr>
                         </thead>
                         <tbody>

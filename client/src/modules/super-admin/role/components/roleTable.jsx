@@ -22,6 +22,64 @@ class RoleTable extends Component {
             value: ''
         }
     }
+    
+    // Cac ham xu ly du lieu voi modal
+    handleEdit = (role) => {
+        this.setState({
+            currentRow: role
+        }, () => window.$('#modal-edit-role').modal('show'));
+    }
+
+    // Cac ham thiet lap va tim kiem gia tri
+    setOption = (title, option) => {
+        this.setState({
+            [title]: option
+        });
+    }
+
+    searchWithOption = () => {
+        const data = {
+            limit: this.state.limit,
+            page: 1,
+            key: this.state.option,
+            value: this.state.value
+        };
+        this.props.get(data);
+    }
+
+    setPage = (page) => {
+        this.setState({ page }, () => {
+            const data = {
+                limit: this.state.limit,
+                page: page,
+                key: this.state.option,
+                value: this.state.value
+            };
+            this.props.get(data);
+        });
+    }
+
+    setLimit = (number) => {
+        this.setState({ limit: number }, () => {
+            const data = {
+                limit: number,
+                page: this.state.page,
+                key: this.state.option,
+                value: this.state.value
+            };
+            this.props.get(data);
+        });
+    }
+
+    componentDidMount() {
+        this.props.get();
+        this.props.get({ page: this.state.page, limit: this.state.limit });
+        this.props.getUser();
+    }
+
+    deleteRole = (roleId) => {
+        this.props.destroy(roleId);
+    }
 
     render() {
         const { role, translate } = this.props;
@@ -110,68 +168,6 @@ class RoleTable extends Component {
             </React.Fragment>
         );
     }
-
-    // Cac ham xu ly du lieu voi modal
-    handleEdit = async (role) => {
-        await this.setState(state => {
-            return {
-                ...state,
-                currentRow: role
-            }
-        });
-
-        window.$('#modal-edit-role').modal('show');
-    }
-
-    // Cac ham thiet lap va tim kiem gia tri
-    setOption = (title, option) => {
-        this.setState({
-            [title]: option
-        });
-    }
-
-    searchWithOption = async () => {
-        const data = {
-            limit: this.state.limit,
-            page: 1,
-            key: this.state.option,
-            value: this.state.value
-        };
-        await this.props.get(data);
-    }
-
-    setPage = (page) => {
-        this.setState({ page });
-        const data = {
-            limit: this.state.limit,
-            page: page,
-            key: this.state.option,
-            value: this.state.value
-        };
-        this.props.get(data);
-    }
-
-    setLimit = (number) => {
-        this.setState({ limit: number });
-        const data = {
-            limit: number,
-            page: this.state.page,
-            key: this.state.option,
-            value: this.state.value
-        };
-        this.props.get(data);
-    }
-
-    componentDidMount() {
-        this.props.get();
-        this.props.get({ page: this.state.page, limit: this.state.limit });
-        this.props.getUser();
-    }
-
-    deleteRole = (roleId) => {
-        this.props.destroy(roleId);
-    }
-
 }
 
 function mapStateToProps(state) {

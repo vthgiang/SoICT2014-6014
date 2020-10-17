@@ -149,7 +149,7 @@ getPaginatedTasksThatUserHasResponsibleRole = async (req, res) => {
         };
         let responsibleTasks = await TaskManagementService.getPaginatedTasksThatUserHasResponsibleRole(req.portal, task);
 
-        await await Logger.info(req.user.email, 'paginated_task_that_user_has_responsible_role', req.portal)
+        await Logger.info(req.user.email, 'paginated_task_that_user_has_responsible_role', req.portal)
         res.status(200).json({
             success: true,
             messages: ['get_task_of_responsible_employee_success'],

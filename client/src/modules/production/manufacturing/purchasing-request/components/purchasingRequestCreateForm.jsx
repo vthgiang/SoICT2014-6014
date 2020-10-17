@@ -73,8 +73,12 @@ class PurchasingRequestCreateForm extends Component {
                             />
                         </div>
                         <div className="form-group">
-                            <label>Thông tin mặt hàng:<a style={{ cursor: "pointer" }} title='Thêm thông tin mặt hàng'><i className="fa fa-plus-square" style={{ color: "#00a65a", marginLeft: 5 }}
-                                onClick={this.handleAddGood} /></a></label>
+                            <label>Thông tin mặt hàng:
+                                <a style={{ cursor: "pointer" }} title='Thêm thông tin mặt hàng'>
+                                    <i className="fa fa-plus-square" style={{ color: "#00a65a", marginLeft: 5 }}
+                                        onClick={this.handleAddGood} />
+                                </a>
+                            </label>
                             <div className={`form-group`}>
                                 {/* Bảng thông tin chi tiết */}
                                 <table className="table">

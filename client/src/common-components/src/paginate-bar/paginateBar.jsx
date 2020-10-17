@@ -78,7 +78,7 @@ class PaginateBar extends Component {
                 {
                     (pageTotal && pageTotal !== 0) ?
                         <div className="row" style={{ paddingRight: '15px' }}>
-                            <div class="col-xs-12 col-sm-5 col-md-5 col-lg-5">
+                            <div className="col-xs-12 col-sm-5 col-md-5 col-lg-5">
                                 {
                                     display && total &&
                                     <p className="pagination" style={{ border: '1px solid #dddddd', padding: '6px 12px', borderRadius: '5px' }}>
@@ -87,7 +87,7 @@ class PaginateBar extends Component {
                                     </p>
                                 }
                             </div>
-                            <div class="col-xs-12 col-sm-7 col-md-7 col-lg-7">
+                            <div className="col-xs-12 col-sm-7 col-md-7 col-lg-7">
                                 <div className="pull-right">
                                     <ul className="pagination">
                                         {currentPage !== 1 && <li><a href="#abc" onClick={() => func(currentPage - 1)}>{"<"}</a></li>}

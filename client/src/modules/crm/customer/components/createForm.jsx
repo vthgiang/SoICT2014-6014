@@ -43,6 +43,39 @@ class CrmCustomerCreate extends Component {
         return true;
     }
 
+    isFormValidated = () => {
+        const { code, name, taxNumber } = this.state.newCustomer;
+        const { translate } = this.props;
+
+        if (!ValidationHelper.validateName(translate, code).status
+            || !ValidationHelper.validateName(translate, name).status
+            || !ValidationHelper.validateInvalidCharacter(translate, taxNumber).status)
+            return false;
+        return true;
+    }
+
+    save = () => {
+        const { auth } = this.props;
+        let { newCustomer } = this.state;
+        const getStatus = newCustomer.status;
+        const statusHistories = [];
+        const getDateTime = new Date();
+
+        if (getStatus && getStatus.length > 0) {
+            statusHistories.push({
+                oldValue: null,
+                newValue: getStatus[getStatus.length - 1],
+                createdAt: getDateTime,
+                createdBy: auth.user._id,
+            })
+        }
+        newCustomer = { ...newCustomer, statusHistories }
+
+        if (this.isFormValidated) {
+            this.props.createCustomer(newCustomer);
+        }
+    }
+
     render() {
         const { translate, crm } = this.props;
         const { newCustomer } = this.state;
@@ -94,24 +127,6 @@ class CrmCustomerCreate extends Component {
                 [name]: value,
             }
         })
-    }
-
-    isFormValidated = () => {
-        const { code, name, taxNumber } = this.state.newCustomer;
-        const { translate } = this.props;
-
-        if (!ValidationHelper.validateName(translate, code).status
-            || !ValidationHelper.validateName(translate, name).status
-            || !ValidationHelper.validateInvalidCharacter(translate, taxNumber).status)
-            return false;
-        return true;
-    }
-
-    save = () => {
-        const { newCustomer } = this.state;
-        if (this.isFormValidated) {
-            this.props.createCustomer(newCustomer);
-        }
     }
 }
 

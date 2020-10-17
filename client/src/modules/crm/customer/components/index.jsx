@@ -36,7 +36,7 @@ class CrmCustomer extends Component {
     render() {
         const { translate, crm, user } = this.props;
         const { customers, groups, status } = crm;
-        const { customer, importCustomer, limit, page, customerIdEdit } = this.state;
+        const { importCustomer, limit, page, customerIdEdit, customerId } = this.state;
 
         let pageTotal = (crm.customers.totalDocs % limit === 0) ?
             parseInt(crm.customers.totalDocs / limit) :
@@ -83,7 +83,8 @@ class CrmCustomer extends Component {
                     {/* form thêm mới khách hàng bằng tay */}
                     <CreateForm />
 
-                    {customer !== undefined && <InfoForm customer={customer} />}
+                    {customerId && <InfoForm customerId={customerId} />}
+
                     {customerIdEdit && <EditForm customerIdEdit={customerIdEdit} />}
 
                     {/* search form */}
@@ -175,7 +176,7 @@ class CrmCustomer extends Component {
                                             <td>{cus.code}</td>
                                             <td>{cus.name}</td>
                                             <td>{cus.group && cus.group.name ? cus.group.name : null}</td>
-                                            <td>{cus.status ? cus.status[cus.status.length - 1].name : null}</td>
+                                            <td>{cus.status && cus.status.length > 0 ? cus.status[cus.status.length - 1].name : null}</td>
                                             <td>{cus.owner && cus.owner.length > 0 ? cus.owner.map(o => o.name).join(', ') : null}</td>
                                             <td>{cus.mobilephoneNumber}</td>
                                             <td>{cus.address}</td>
@@ -216,8 +217,8 @@ class CrmCustomer extends Component {
         this.props.getStatus({});
     }
 
-    handleInfo = async (customer) => {
-        await this.setState({ customer });
+    handleInfo = async (id) => {
+        await this.setState({ customerId: id, });
         window.$('#modal-crm-customer-info').modal('show');
     }
 

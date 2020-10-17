@@ -92,11 +92,12 @@ class TaskReportCreateForm extends Component {
      * Hàm xử lý khi thay đổi đơn vị
      * @param {*} e 
      */
-    handleChangeReportOrganizationalUnit = async value => {
+    handleChangeReportOrganizationalUnit = value => {
         let { newReport } = this.state;
         value = value[0];
-        // this.props.getAllUserOfDepartment(value);
-        //this.props.getChildrenOfOrganizationalUnits(value);
+        // đổi người trong phòng ban khi đổi đơn vị
+        //  this.props.getAllUserOfDepartment(value);
+        //  this.props.getChildrenOfOrganizationalUnits(value);
         this.setState({
             newReport: {
                 ...newReport,
@@ -185,7 +186,6 @@ class TaskReportCreateForm extends Component {
         let { newReport, currentRole } = this.state;
 
         if (newReport.organizationalUnit === '' && user.organizationalUnitsOfUser) {
-            console.log('vao day');
             let defaultUnit = await user.organizationalUnitsOfUser.find(item =>
                 item.deans.toString() === currentRole
                 || item.viceDeans.toString() === currentRole
@@ -255,7 +255,7 @@ class TaskReportCreateForm extends Component {
         this.setState({
             newReport: {
                 ...newReport,
-                status: value,
+                status: value[0],
             }
         })
     }
@@ -270,7 +270,7 @@ class TaskReportCreateForm extends Component {
         this.setState({
             newReport: {
                 ...newReport,
-                frequency: value,
+                frequency: value[0],
             }
         })
     }
@@ -637,7 +637,7 @@ class TaskReportCreateForm extends Component {
 
 
     componentDidMount() {
-        this.props.getTaskTemplateByUser("1", "0", "[]");
+        this.props.getTaskTemplateByUser(1, 0, []);
         this.props.getDepartment();
         // Lấy tất cả nhân viên trong công ty
         this.props.getAllUserOfCompany();
@@ -694,7 +694,7 @@ class TaskReportCreateForm extends Component {
 
         // console.log('state', this.state);
         // console.log('====================')
-        // console.log('unitMembers', unitMembers);
+        console.log('newReport', newReport);
         return (
             <React.Fragment>
                 <DialogModal

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { withTranslate } from 'react-redux-multilingual';
 import { ButtonModal, DialogModal } from '../../../../../common-components';
 
 class ManufacturingWorksCreateForm extends Component {
@@ -7,9 +8,10 @@ class ManufacturingWorksCreateForm extends Component {
         this.state = {}
     }
     render() {
+        const { translate } = this.props;
         return (
             <React.Fragment>
-                <ButtonModal modalID="modal-create-works" button_name="Thêm nhà máy" title="Thêm nhà máy" />
+                <ButtonModal modalID="modal-create-works" button_name={translate('manufacturing.manufacturing_works.create_works')} title={translate('manufacturing.manufacturing_works.create_works')} />
                 <DialogModal
                     modalID="modal-create-works" isLoading={false}
                     formID="form-create-works"
@@ -65,4 +67,4 @@ class ManufacturingWorksCreateForm extends Component {
     }
 }
 
-export default ManufacturingWorksCreateForm;
+export default withTranslate(ManufacturingWorksCreateForm);

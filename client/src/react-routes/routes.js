@@ -102,14 +102,12 @@ import StockManagement from '../modules/warehouse/stock-management/component';
 import BinLocationManagement from '../modules/warehouse/bin-location-management/components';
 import BillManagement from '../modules/warehouse/bill-management/components';
 import InventoryManagement from '../modules/warehouse/inventory-management/components';
-import PartnerManagement from '../modules/warehouse/partner-management/component';
-import ProposalManagement from '../modules/warehouse/proposal-management/component';
 
 // Customer Management
 import CrmDashBoard from '../modules/crm/dashboard/components';
 import CrmCustomer from '../modules/crm/customer/components';
 import CrmGroup from '../modules/crm/group/components';
-// import CrmCare from '../modules/crm/care/components'
+import CrmCare from '../modules/crm/care/components'
 
 //orders
 import PurchaseOrder from '../modules/production/order/purchase-order/components';
@@ -1220,36 +1218,6 @@ class Routes extends Component {
                     />
                     <PrivateRoute
                         isLoading={false}
-                        key={'partner-management'}
-                        arrPage={[
-                            { link: '/', name: 'home', icon: 'fa fa-home' },
-                            { link: '/partner-management', name: 'partner_management', icon: 'fa fa-users' }
-                        ]}
-                        auth={auth}
-                        exact={true}
-                        link={'/partner-management'}
-                        path={'/partner-management'}
-                        pageName={'partner_management'}
-                        layout={Layout}
-                        component={PartnerManagement}
-                    />
-                    <PrivateRoute
-                        isLoading={false}
-                        key={'proposal-management'}
-                        arrPage={[
-                            { link: '/', name: 'home', icon: 'fa fa-home' },
-                            { link: '/proposal-management', name: 'proposal_management', icon: 'fa fa-envelope-o' }
-                        ]}
-                        auth={auth}
-                        exact={true}
-                        link={'/proposal-management'}
-                        path={'/proposal-management'}
-                        pageName={'proposal_management'}
-                        layout={Layout}
-                        component={ProposalManagement}
-                    />
-                    <PrivateRoute
-                        isLoading={false}
                         key={'inventory-management'}
                         arrPage={[
                             { link: '/', name: 'home', icon: 'fa fa-home' },
@@ -1342,7 +1310,7 @@ class Routes extends Component {
                         component={CrmGroup}
                     />
 
-                    {/* <PrivateRoute
+                    <PrivateRoute
                         isLoading={false}
                         key={'customer-care'}
                         arrPage={[
@@ -1355,7 +1323,7 @@ class Routes extends Component {
                         pageName={'crm_list.care'}
                         layout={Layout}
                         component={CrmCare}
-                    /> */}
+                    />
 
                     {/* Orders Management */}
 

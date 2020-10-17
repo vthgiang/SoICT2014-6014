@@ -20,12 +20,15 @@ const CustomerSchema = new Schema({
         ref: 'User',
     }],
     gender: { // Giới tính
-        type: String,
+        type: String, // 0: Nam, 1: Nữ
     },
     avatar: { // Ảnh đại diện khách hàng
         type: String,
     },
     company: {// Tên công ty
+        type: String,
+    },
+    represent: {
         type: String,
     },
     taxNumber: { // Mã số thuế
@@ -85,26 +88,27 @@ const CustomerSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'User'
         },
-        description: {
+        name: {
             type: String
         },
-        name: {
+        description: {
             type: String
         },
         url: {
             type: String
         }
     }],
-    history: [{
+    statusHistories: [{
         oldValue: {
-            type: String
+            type: Schema.Types.ObjectId,
+            ref: 'Status'
         },
         newValue: {
-            type: String
+            type: Schema.Types.ObjectId,
+            ref: 'Status'
         },
         createdAt: {
             type: Date,
-            default: Date.now()
         },
         createdBy: {
             type: Schema.Types.ObjectId,

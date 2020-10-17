@@ -6,7 +6,17 @@ const mongoose = require('mongoose');
  * Lấy tất cả các mẫu công việc
  */
 exports.getAllTaskTemplates = async (portal, query) => {
-    if(query.roleId){
+    if (query.pageNumber === '1' && query.noResultsPerPage === '0') {
+        // LẤY DANH SÁCH TẤT CẢ CÁC MẪU CÔNG VIỆC CÓ TRONG HỆ THỐNG CỦA CÔNG TY
+        let docs = await TaskTemplate(connect(DB_CONNECTION, portal)).find().populate([
+            { path: 'creator' },
+            { path: 'organizationalUnit' }
+        ]);
+        return {
+            docs: docs
+        }
+    }
+    if (query.roleId) {
         // LẤY DANH SÁCH MẪU CÔNG VIỆC VỚI MỘT VAI TRÒ NÀO ĐÓ
 
         let role = await Role(connect(DB_CONNECTION, portal)).findById(query.roleId);
@@ -16,16 +26,18 @@ exports.getAllTaskTemplates = async (portal, query) => {
             role: { $in: roles },
             resourceType: 'TaskTemplate'
         }).populate({ path: 'resource', populate: { path: 'creator' } });
-    
+
         return tasks;
-    }else if(query.userId){
+    } else if (query.userId) {
         // LẤY DANH SÁCH TẤT CẢ CÁC MẪU CÔNG VIỆC MÀ NGƯỜI DÙNG CÓ QUYỀN XEM
-        
-        let id = query.userId, 
-        pageNumber = Number(query.pageNumber), 
-        noResultsPerPage = Number(query.noResultsPerPage), 
-        organizationalUnit = query.arrayUnit, 
-        name = query.name;
+
+        let id = query.userId,
+            pageNumber = Number(query.pageNumber),
+            noResultsPerPage = Number(query.noResultsPerPage),
+            organizationalUnit = query.arrayUnit,
+            name = query.name;
+
+        console.log("filter tasktemplate:", id, pageNumber, noResultsPerPage, organizationalUnit, name)
 
         // Danh sách các quyền của user - userRoles
         let dataRoles = await UserRole(connect(DB_CONNECTION, portal))
@@ -35,22 +47,24 @@ exports.getAllTaskTemplates = async (portal, query) => {
         let userRoles = dataRoles.reduce((arr, role) => [...arr, role._id, ...role.parents], [])
         userRoles = userRoles.filter((role, index) => role.toString() === userRoles[index].toString());
         let option = !organizationalUnit ?
-            { 
-                name: { "$regex": name, "$options": "i" } 
+            {   
+                readByEmployees: { $in: userRoles },
+                name: { "$regex": name, "$options": "i" }
             } : {
+                readByEmployees: { $in: userRoles },
                 name: { "$regex": name, "$options": "i" },
                 organizationalUnit: { $in: organizationalUnit }
             };
         return await TaskTemplate(connect(DB_CONNECTION, portal))
-            .paginate( option , { 
-                pageNumber, 
-                noResultsPerPage,
+            .paginate(option, {
+                page: pageNumber,
+                limit: noResultsPerPage,
                 populate: [
-                    { path: 'creator'},
+                    { path: 'creator' },
                     { path: 'organizationalUnit' }
                 ]
             });
-    }else{
+    } else {
         // LẤY DANH SÁCH TẤT CẢ CÁC MẪU CÔNG VIỆC CÓ TRONG HỆ THỐNG CỦA CÔNG TY
 
         return await TaskTemplate(connect(DB_CONNECTION, portal)).find();
@@ -75,6 +89,10 @@ exports.getTaskTemplate = async (portal, id) => {
  * @body dữ liệu tạo mới mẫu công việc
  */
 exports.createTaskTemplate = async (portal, body) => {
+    //kiểm tra tên mẫu công việc đã tồn tại hay chưa ?
+    let checkTaskTemplate = await TaskTemplate(connect(DB_CONNECTION, portal)).findOne({ name: body.name });
+    if(checkTaskTemplate) throw ['task_template_name_exist'];
+
     // thêm quyền xem mẫu công việc cho trưởng đơn vị của công việc
     let units = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findById(body.organizationalUnit);
     let roleDeans = units.deans;
@@ -166,7 +184,6 @@ exports.createTaskTemplate = async (portal, body) => {
         });
     }
     tasktemplate = await tasktemplate.populate("organizationalUnit creator").execPopulate();
-    console.log(tasktemplate);
     return tasktemplate;
 }
 
@@ -278,10 +295,21 @@ exports.editTaskTemplate = async (portal, data, id) => {
 exports.importTaskTemplate = async (portal, data, id) => {
     let results = [];
     for (let i = 0; i < data.length; i++) {
+        data[i]["creator"] = id;
         // chuyen dia chi email sang id
         for (let j = 0; j < data[i].accountableEmployees.length; j++) {
-            let accountableEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ email: data[i].accountableEmployees[j] });
-            data[i].accountableEmployees[j] = String(accountableEmployees._id);
+            let accountableEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ name: data[i].accountableEmployees[j] });
+            if (accountableEmployees) {
+                data[i].accountableEmployees[j] = accountableEmployees._id;
+            } else {
+                accountableEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ email: data[i].accountableEmployees[j] });
+                if (accountableEmployees) {
+                    data[i].accountableEmployees[j] = accountableEmployees._id;
+                } else {
+                    data[i].accountableEmployees[j] = null;
+                }
+                
+            }
         };
         let read = [];
         for (let j = 0; j < data[i].readByEmployees.length; j++) {
@@ -291,48 +319,89 @@ exports.importTaskTemplate = async (portal, data, id) => {
         }
         data[i].readByEmployees = read;
         for (let j = 0; j < data[i].consultedEmployees.length; j++) {
-            let consultedEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ email: data[i].consultedEmployees[j] });
-            data[i].consultedEmployees[j] = String(consultedEmployees._id);
+            let consultedEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ name: data[i].consultedEmployees[j] });
+            if (consultedEmployees) {
+                data[i].consultedEmployees[j] = consultedEmployees._id;
+            } else {
+                consultedEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ email: data[i].consultedEmployees[j] });
+                if (consultedEmployees) {
+                    data[i].consultedEmployees[j] = consultedEmployees._id;
+                } else {
+                    data[i].consultedEmployees[j] = null;
+                }
+                
+            }
         };
         for (let j = 0; j < data[i].informedEmployees.length; j++) {
-            let informedEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ email: data[i].informedEmployees[j] });
-            data[i].informedEmployees[j] = String(informedEmployees._id);
+            let informedEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ name: data[i].informedEmployees[j] });
+            if (informedEmployees) {
+                data[i].informedEmployees[j] = informedEmployees._id;
+            } else {
+                informedEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ email: data[i].informedEmployees[j] });
+                if (informedEmployees) {
+                    data[i].informedEmployees[j] = informedEmployees._id;
+                } else {
+                    data[i].informedEmployees[j] = null;
+                }
+                
+            }
         };
         for (let j = 0; j < data[i].responsibleEmployees.length; j++) {
-            let responsibleEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ email: data[i].responsibleEmployees[j] });
-            data[i].responsibleEmployees[j] = String(responsibleEmployees._id);
+            let responsibleEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ name: data[i].responsibleEmployees[j] });
+            if (responsibleEmployees) {
+                data[i].responsibleEmployees[j] = responsibleEmployees._id;
+            } else {
+                responsibleEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ email: data[i].responsibleEmployees[j] });
+                if (responsibleEmployees) {
+                    data[i].responsibleEmployees[j] = responsibleEmployees._id;
+                } else {
+                    data[i].responsibleEmployees[j] = null;
+                }
+            }
         };
         // xu ly thong tin filledByAccountableEmployeesOnly 
         for (let j = 0; j < data[i].taskInformations.length; j++) {
             if (data[i].taskInformations[j][0]) {
                 // format thong tin "chi qua ly duoc dien"
-                data[i].taskInformations[j]["filledByAccountableEmployeesOnly"] = data[i].taskInformations[j][3];
+                data[i].taskInformations[j]["filledByAccountableEmployeesOnly"] = String(data[i].taskInformations[j][3]);
                 // formart thong tin kieu du lieu
                 data[i].taskInformations[j]["type"] = data[i].taskInformations[j][2].toLowerCase();
                 data[i].taskInformations[j]["name"] = data[i].taskInformations[j][0];
                 data[i].taskInformations[j]["description"] = data[i].taskInformations[j][1];
                 data[i].taskInformations[j]["extra"] = "";
             } else {
+                if (!data[i].taskInformations[j][0]) {
+                    data[i].taskInformations = [];
+                    break;
+                }
                 data[i].taskInformations.splice(j, 1);
                 j--;
             }
         }
+
         for (let j = 0; j < data[i].taskActions.length; j++) {
             if (data[i].taskActions[j][0]) {
-                data[i].taskActions[j]["mandatory"] = data[i].taskActions[j][2];
+                if (data[i].taskActions[j][2] === "Bắt buộc" || data[i].taskActions[j][2] === "true") {
+                    data[i].taskActions[j]["mandatory"] = true;
+                } else {
+                    data[i].taskActions[j]["mandatory"] = false;
+                }
                 data[i].taskActions[j]["name"] = data[i].taskActions[j][0];
                 data[i].taskActions[j]["description"] = data[i].taskActions[j][1];
             } else {
+                if (!data[i].taskActions[j][0]){
+                    data[i].taskActions = [];
+                    break;
+                }
                 data[i].taskActions.splice(j, 1);
                 j--;
             }
         }
         let unit = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findOne({ name: data[i].organizationalUnit });
         data[i].organizationalUnit = String(unit._id);
-        data[i].creator = id;
+        
         let result = await this.createTaskTemplate(portal, data[i]);
         results = [...results, result];
     };
-    console.log("results", results);
     return results;
 }

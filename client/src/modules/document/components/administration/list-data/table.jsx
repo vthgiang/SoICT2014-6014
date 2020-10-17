@@ -472,7 +472,7 @@ class Table extends Component {
                         documentVersions={currentRow.versions}
 
                         documentRelationshipDescription={currentRow.relationshipDescription}
-                        documentRelationshipDocuments={currentRow.relationshipDocuments ? currentRow.relationshipDocuments.map(doc => doc._id) : []}
+                        documentRelationshipDocuments={currentRow.relationshipDocuments ? currentRow.relationshipDocuments : []}
 
                         documentRoles={currentRow.roles}
 

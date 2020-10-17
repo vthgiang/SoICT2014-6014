@@ -410,7 +410,7 @@ exports.deleteComment = async (portal, params) => {
 /**
  *  thêm bình luận cua binh luan
  */
-exports.createChildComment = async (portal, arams, body, files) => {
+exports.createChildComment = async (portal, params, body, files) => {
     let commentss = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
         .updateOne(
             { "_id": params.kpiId, "comments._id": params.commentId },
