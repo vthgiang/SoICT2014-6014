@@ -773,7 +773,13 @@ class DetailTaskTab extends Component {
                                         if (info.type === "date") {
                                             return <div key={key}><strong>{info.name}:</strong> {info.value ? this.formatDate(info.value) : translate('task.task_management.detail_not_hasinfo')}</div>
                                         }
-                                        return <div key={key}><strong>{info.name}:</strong> {info.value ? info.value : translate('task.task_management.detail_not_hasinfo')}</div>
+                                        return <div key={key}>
+                                            <strong>{info.name}:</strong> 
+                                            {
+                                                info.value ? 
+                                                info.value : Number(info.value) === 0 ? info.value :
+                                                translate('task.task_management.detail_not_hasinfo')}
+                                        </div>
                                     })
                                 }
 
