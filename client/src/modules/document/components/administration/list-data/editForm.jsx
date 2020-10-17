@@ -563,6 +563,23 @@ class EditForm extends Component {
 
         this.setState({ documentVersions: documentVersions });
     }
+    formatDate(date, monthYear = false) {
+        if (date) {
+            let d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
+            if (monthYear === true) {
+                return [month, year].join('-');
+            } else return [day, month, year].join('-');
+        } else {
+            return date
+        }
+    }
 
     render() {
         const {
@@ -577,7 +594,6 @@ class EditForm extends Component {
         const categories = documents.administration.categories.list.map(category => { return { value: category._id, text: category.name } });
         const { list } = documents.administration.domains;
         const roleList = role.list.map(role => { return { value: role._id, text: role.name } });
-        console.log('-----------------', documents.administration.relationshipDocs)
         const relationshipDocs = documents.administration.relationshipDocs.paginate.map(doc => { return { value: doc._id, text: doc.name } });
         const archives = documents.administration.archives.list;
         let path = documentArchives ? this.findPath(archives, documentArchives) : "";
@@ -731,14 +747,26 @@ class EditForm extends Component {
                                                             documentVersions.map((version, i) => {
                                                                 return <tr key={i}>
                                                                     <td>{version.versionName}</td>
-                                                                    <td><DateTimeConverter dateTime={version.issuingDate} type="DD-MM-YYYY" /></td>
-                                                                    <td><DateTimeConverter dateTime={version.effectiveDate} type="DD-MM-YYYY" /></td>
-                                                                    <td><DateTimeConverter dateTime={version.expiredDate} type="DD-MM-YYYY" /></td>
-                                                                    <td><a href="#" onClick={() => this.requestDownloadDocumentFile(documentId, documentName, i)}><u>{version.file ? translate('document.download') : ""}</u></a></td>
-                                                                    <td><a href="#" onClick={() => this.requestDownloadDocumentFileScan(documentId, "SCAN_" + documentName, i)}><u>{version.scannedFileOfSignedDocument ? translate('document.download') : ""}</u></a></td>
+                                                                    <td>{this.formatDate(version.issuingDate)}</td>
+                                                                    <td>{this.formatDate(version.effectiveDate)}</td>
+                                                                    <td>{this.formatDate(version.expiredDate)}</td>
                                                                     <td>
-                                                                        <a className="text-yellow" title={translate('document.edit')} onClick={() => this.toggleEditVersion(version)}><i className="material-icons">edit</i></a>
-                                                                        <a className="text-red" title={translate('document.delete')} onClick={() => this.deleteDocumentVersion(documentId, version._id, version.versionName)}><i className="material-icons">delete</i></a>
+                                                                        <a href="#" onClick={() => this.requestDownloadDocumentFile(documentId, documentName, i)}>
+                                                                            <u>{version.file ? translate('document.download') : ""}</u>
+                                                                        </a>
+                                                                    </td>
+                                                                    <td>
+                                                                        <a href="#" onClick={() => this.requestDownloadDocumentFileScan(documentId, "SCAN_" + documentName, i)}>
+                                                                            <u>{version.scannedFileOfSignedDocument ? translate('document.download') : ""}</u>
+                                                                        </a>
+                                                                    </td>
+                                                                    <td>
+                                                                        <a className="text-yellow" title={translate('document.edit')} onClick={() => this.toggleEditVersion(version)}>
+                                                                            <i className="material-icons">edit</i>
+                                                                        </a>
+                                                                        <a className="text-red" title={translate('document.delete')} onClick={() => this.deleteDocumentVersion(documentId, version._id, version.versionName)}>
+                                                                            <i className="material-icons">delete</i>
+                                                                        </a>
                                                                     </td>
                                                                 </tr>
                                                             }) : <tr><td colSpan={7}>{translate('document.no_version')}</td></tr>
