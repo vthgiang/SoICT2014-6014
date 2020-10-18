@@ -15,6 +15,7 @@ exports.createManufacturingWorks = async (data, portal) => {
         foreman: data.foreman,
         phoneNumber: data.phoneNumber,
         address: data.address,
+        status: data.status,
         manufacturingMills: data.manufacturingMills,
         description: data.description
     });
