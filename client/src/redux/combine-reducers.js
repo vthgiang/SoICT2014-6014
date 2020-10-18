@@ -68,7 +68,7 @@ import { goods } from "../modules/warehouse/good-management/redux/reducers";
 import { customers } from "../modules/crm/customer/redux/reducers";
 import { groups } from "../modules/crm/group/redux/reducers";
 import { status } from "../modules/crm/status/redux/reducers";
-// import { care } from "../modules/crm/care/redux/reducers";
+import { cares } from "../modules/crm/care/redux/reducers";
 
 //order
 
@@ -162,7 +162,7 @@ const appReducer = combineReducers({
 
     // customer management
     crm: combineReducers({
-        customers, groups, status
+        customers, groups, status,cares,
     }),
 
     //order

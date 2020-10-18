@@ -384,6 +384,47 @@ class Table extends Component {
 
         return exportData
     }
+    setPage = async (page) => {
+        this.setState({ page });
+        const data = {
+            limit: this.state.limit,
+            page: page,
+            calledId: "paginate"
+        };
+        await this.props.getAllDocuments(data);
+    }
+
+    findPath = (select) => {
+        const archives = this.props.documents.administration.archives.list;
+        let paths = select.map(s => {
+            let archive = archives.filter(arch => arch._id === s);
+            return archive[0] ? archive[0].path : "";
+        })
+        return paths;
+
+    }
+    setLimit = (number) => {
+        if (this.state.limit !== number) {
+            this.setState({ limit: number });
+            const data = { limit: number, page: this.state.page, calledId: "paginate" };
+            this.props.getAllDocuments(data);
+        }
+    }
+
+    searchWithOption = async () => {
+        let path = this.state.archive ? this.findPath(this.state.archive) : "";
+        const data = {
+            limit: this.state.limit,
+            page: 1,
+            name: this.state.name,
+            category: this.state.category ? this.state.category[0] : "",
+            domains: this.state.domain ? this.state.domain : "",
+            archives: path && path.length ? path : "",
+            calledId: "paginate"
+        };
+        await this.props.getAllDocuments(data);
+    }
+
     render() {
         const { translate } = this.props;
         const { domains, categories, archives } = this.props.documents.administration;
@@ -562,10 +603,10 @@ class Table extends Component {
 
                                     <tr key={doc._id}>
                                         <td>{doc.name}</td>
-                                        <td>{!doc.description ? doc.description : ""}</td>
-                                        <td><DateTimeConverter dateTime={doc.versions.length ? doc.versions[doc.versions.length - 1].issuingDate : null} type="DD-MM-YYYY" /></td>
-                                        <td><DateTimeConverter dateTime={doc.versions.length ? doc.versions[doc.versions.length - 1].effectiveDate : null} type="DD-MM-YYYY" /></td>
-                                        <td><DateTimeConverter dateTime={doc.versions.length ? doc.versions[doc.versions.length - 1].expiredDate : null} type="DD-MM-YYYY" /></td>
+                                        <td>{doc.description ? doc.description : ""}</td>
+                                        <td>{doc.versions.length ? this.formatDate(doc.versions[doc.versions.length - 1].issuingDate) : null}</td>
+                                        <td>{doc.versions.length ? this.formatDate(doc.versions[doc.versions.length - 1].effectiveDate) : null}</td>
+                                        <td>{doc.versions.length ? this.formatDate(doc.versions[doc.versions.length - 1].expiredDate) : null}</td>
                                         <td>
                                             <a href="#" onClick={() => this.requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}>
                                                 <u>{doc.versions.length && doc.versions[doc.versions.length - 1].file ? translate('document.download') : ""}</u>
@@ -606,46 +647,7 @@ class Table extends Component {
         );
     }
 
-    setPage = async (page) => {
-        this.setState({ page });
-        const data = {
-            limit: this.state.limit,
-            page: page,
-            calledId: "paginate"
-        };
-        await this.props.getAllDocuments(data);
-    }
 
-    findPath = (select) => {
-        const archives = this.props.documents.administration.archives.list;
-        let paths = select.map(s => {
-            let archive = archives.filter(arch => arch._id === s);
-            return archive[0] ? archive[0].path : "";
-        })
-        return paths;
-
-    }
-    setLimit = (number) => {
-        if (this.state.limit !== number) {
-            this.setState({ limit: number });
-            const data = { limit: number, page: this.state.page, calledId: "paginate" };
-            this.props.getAllDocuments(data);
-        }
-    }
-
-    searchWithOption = async () => {
-        let path = this.state.archive ? this.findPath(this.state.archive) : "";
-        const data = {
-            limit: this.state.limit,
-            page: 1,
-            name: this.state.name,
-            category: this.state.category ? this.state.category[0] : "",
-            domains: this.state.domain ? this.state.domain : "",
-            archives: path && path.length ? path : "",
-            calledId: "paginate"
-        };
-        await this.props.getAllDocuments(data);
-    }
 }
 
 const mapStateToProps = state => state;

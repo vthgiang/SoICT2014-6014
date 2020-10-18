@@ -481,15 +481,24 @@ class UserDocumentsData extends Component {
                                         <tr key={doc._id}>
                                             <td>{doc.name}</td>
                                             <td>{doc.description ? doc.description : ""}</td>
-                                            <td><DateTimeConverter dateTime={doc.versions[doc.versions.length - 1].issuingDate} type="DD-MM-YYYY" /></td>
-                                            <td><DateTimeConverter dateTime={doc.versions[doc.versions.length - 1].effectiveDate} type="DD-MM-YYYY" /></td>
-                                            <td><DateTimeConverter dateTime={doc.versions[doc.versions.length - 1].expiredDate} type="DD-MM-YYYY" /></td>
-                                            <td><a href="#" onClick={() => this.requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}><u>{doc.versions[doc.versions.length - 1].file ? translate('document.download') : ""}</u></a></td>
-                                            <td><a href="#" onClick={() => this.requestDownloadDocumentFileScan(doc._id, "SCAN_" + doc.name, doc.versions.length - 1)}><u>{doc.versions[doc.versions.length - 1].scannedFileOfSignedDocument ? translate('document.download') : ""}</u></a></td>
+                                            <td>{doc.versions.length ? this.formatDate(doc.versions[doc.versions.length - 1].issuingDate) : null}</td>
+                                            <td>{doc.versions.length ? this.formatDate(doc.versions[doc.versions.length - 1].effectiveDate) : null}</td>
+                                            <td>{doc.versions.length ? this.formatDate(doc.versions[doc.versions.length - 1].expiredDate) : null}</td>
+                                            <td>
+                                                <a href="#" onClick={() => this.requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}>
+                                                    <u>{doc.versions[doc.versions.length - 1].file ? translate('document.download') : ""}</u>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="#" onClick={() => this.requestDownloadDocumentFileScan(doc._id, "SCAN_" + doc.name, doc.versions.length - 1)}>
+                                                    <u>{doc.versions[doc.versions.length - 1].scannedFileOfSignedDocument ? translate('document.download') : ""}</u>
+                                                </a>
+                                            </td>
 
                                             <td>
-                                                <a className="text-green" title={translate('document.view')} onClick={() => this.toggleDocumentInformation(doc)}><i className="material-icons">visibility</i></a>
-
+                                                <a className="text-green" title={translate('document.view')} onClick={() => this.toggleDocumentInformation(doc)}>
+                                                    <i className="material-icons">visibility</i>
+                                                </a>
                                             </td>
                                         </tr>) :
                                     isLoading ?

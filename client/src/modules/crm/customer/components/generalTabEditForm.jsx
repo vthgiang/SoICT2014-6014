@@ -13,6 +13,275 @@ class GeneralTabEditForm extends Component {
         }
     }
 
+    static getDerivedStateFromProps(props, state) {
+        const { status } = props.crm;
+        let listStatus = [...status.list];
+        let { editingCustomer } = props;
+
+        if (props.customerIdEdit != state.customerIdEdit && editingCustomer && status.list && status.list.length > 0) {
+            //timeline status
+            const statusActive = editingCustomer.status;// mảng gồm các id của trạng thái mà khách hàng có
+
+            listStatus.map(x => (
+                statusActive.map(y => {
+                    if (x._id === y)
+                        x.active = true;
+                    return x;
+                })
+            ))
+
+            return {
+                ...state,
+                id: props.id,
+                customerIdEdit: props.customerIdEdit,
+                listStatus,
+                ...editingCustomer,
+            }
+        } else {
+            return null;
+        }
+    }
+
+    handleChangeCustomerOwner = (value) => {
+        const { callBackFromParentEditForm } = this.props;
+
+        this.setState({
+            owner: value,
+        });
+        callBackFromParentEditForm('owner', value);
+    }
+
+    handleChangeCustomerSource = (e) => {
+        const { callBackFromParentEditForm } = this.props;
+        const { value } = e.target;
+
+        this.setState({
+            customerSource: value,
+        });
+        callBackFromParentEditForm('customerSource', value);
+    }
+
+    handleChangeCustomerCode = (e) => {
+        const { callBackFromParentEditForm } = this.props;
+        const { value } = e.target;
+        const { translate } = this.props;
+
+        this.setState({
+            code: value,
+        });
+
+        // validate mã khách hàng
+        let { message } = ValidationHelper.validateName(translate, value, 4, 255);
+        this.setState({ customerCodeError: message });
+
+        callBackFromParentEditForm('code', value);
+    }
+
+    handleChangeCustomerName = (e) => {
+        const { callBackFromParentEditForm } = this.props;
+        const { value } = e.target;
+        const { translate } = this.props;
+
+        this.setState({
+            name: value,
+        });
+
+        // validate tên khách hàng
+        let { message } = ValidationHelper.validateName(translate, value, 4, 255);
+        this.setState({ customerNameError: message });
+
+        callBackFromParentEditForm('name', value);
+    }
+
+    handleChangeCustomerCompany = (e) => {
+        const { callBackFromParentEditForm } = this.props;
+        const { value } = e.target;
+
+        this.setState({
+            company: value,
+        });
+        callBackFromParentEditForm('company', value);
+    }
+
+    handleChangeRepresent = (e) => {
+        const { callBackFromParentEditForm } = this.props;
+        const { value } = e.target;
+
+        this.setState({
+            represent: value,
+        });
+        callBackFromParentEditForm('represent', value);
+    }
+
+    handleChangeCompanyEstablishmentDate = (value) => {
+        const { callBackFromParentEditForm } = this.props;
+
+        this.setState({
+            companyEstablishmentDate: value,
+        });
+        callBackFromParentEditForm('companyEstablishmentDate', value);
+    }
+
+    handleChangeMobilephoneNumber = (e) => {
+        const { callBackFromParentEditForm } = this.props;
+        const { value } = e.target;
+
+        this.setState({
+            mobilephoneNumber: parseInt(value),
+        });
+        callBackFromParentEditForm('mobilephoneNumber', parseInt(value));
+    }
+
+    handleChangeTelephoneNumber = (e) => {
+        const { callBackFromParentEditForm } = this.props;
+        const { value } = e.target;
+
+        this.setState({
+            telephoneNumber: parseInt(value),
+        });
+        callBackFromParentEditForm('telephoneNumber', parseInt(value));
+    }
+
+    handleChangeCustomerEmail = (e) => {
+        const { callBackFromParentEditForm } = this.props;
+        const { value } = e.target;
+
+        this.setState({
+            email: value,
+        });
+        callBackFromParentEditForm('email', value);
+    }
+
+    handleChangeCustomerEmail2 = (e) => {
+        const { callBackFromParentEditForm } = this.props;
+        const { value } = e.target;
+
+        this.setState({
+            email2: value,
+        });
+        callBackFromParentEditForm('email2', value);
+    }
+
+    handleChangeCustomerAddress = (e) => {
+        const { callBackFromParentEditForm } = this.props;
+        const { value } = e.target;
+
+        this.setState({
+            address: value,
+        });
+        callBackFromParentEditForm('address', value);
+    }
+
+    handleChangeCustomerAddress2 = (e) => {
+        const { callBackFromParentEditForm } = this.props;
+        const { value } = e.target;
+
+        this.setState({
+            address2: value,
+        });
+        callBackFromParentEditForm('address2', value);
+    }
+
+    handleChangeCustomerGender = (value) => {
+        const { callBackFromParentEditForm } = this.props;
+
+        this.setState({
+            gender: value[0],
+        });
+        callBackFromParentEditForm('gender', value[0]);
+    }
+
+    handleChangeCustomerBirth = (value) => {
+        const { callBackFromParentEditForm } = this.props;
+
+        this.setState({
+            birthDate: value,
+        });
+        callBackFromParentEditForm('birthDate', value);
+    }
+
+    handleChangeCustomerGroup = (value) => {
+        const { callBackFromParentEditForm } = this.props;
+
+        this.setState({
+            group: value[0],
+        });
+        callBackFromParentEditForm('group', value[0]);
+    }
+
+    handleChangeCustomerStatus = (index) => {
+        const { callBackFromParentEditForm } = this.props;
+        let { listStatus } = this.state;
+        let getStatusActive = [];
+
+        listStatus.map((o, i) => {
+            if (i <= index) {
+                o.active = true;
+            } else {
+                o.active = false;
+            }
+            return o;
+        });
+
+        // lấy trạng thái khách hàng lưu vào db
+        listStatus.forEach(o => {
+            if (o.active) {
+                getStatusActive.push(o._id);
+            }
+        })
+        console.log('getStatusActive', getStatusActive)
+
+        this.setState({
+            listStatus: listStatus,
+        });
+        callBackFromParentEditForm('status', getStatusActive);
+    }
+
+    handleChangeCustomerLocation = (value) => {
+        const { callBackFromParentEditForm } = this.props;
+
+        this.setState({
+            status: parseInt(value[0]),
+        });
+        callBackFromParentEditForm('location', parseInt(value[0]));
+    }
+
+    handleChangeTaxNumber = (e) => {
+        const { callBackFromParentEditForm } = this.props;
+        const { value } = e.target;
+        const { translate } = this.props;
+
+        this.setState({
+            taxNumber: value,
+        });
+
+        // validate mã số thuế khách hàng
+        let { message } = ValidationHelper.validateInvalidCharacter(translate, value);
+        this.setState({ customerTaxNumberError: message });
+
+        callBackFromParentEditForm('taxNumber', value);
+    }
+
+    handleChangeWebsite = (e) => {
+        const { callBackFromParentEditForm } = this.props;
+        const { value } = e.target;
+
+        this.setState({
+            website: value,
+        });
+        callBackFromParentEditForm('website', value);
+    }
+
+    handleChangeLinkedIn = (e) => {
+        const { callBackFromParentEditForm } = this.props;
+        const { value } = e.target;
+
+        this.setState({
+            linkedIn: value,
+        });
+        callBackFromParentEditForm('linkedIn', value);
+    }
+
     render() {
         const { translate, crm, user } = this.props;
         const { id } = this.props;
@@ -40,8 +309,11 @@ class GeneralTabEditForm extends Component {
         if (listStatus) {
             const totalItem = listStatus.length;
             const numberOfActiveItems = listStatus.filter(o => o.active).length;
+            console.log('totalItem', totalItem, 'numberOfActiveItems', numberOfActiveItems);
             progressBarWidth = totalItem > 1 && numberOfActiveItems > 0 ? ((numberOfActiveItems - 1) / (totalItem - 1)) * 100 : 0;
         }
+
+        console.log('progressBarWidth', progressBarWidth)
 
         return (
             <React.Fragment>
@@ -315,275 +587,6 @@ class GeneralTabEditForm extends Component {
                 </div>
             </React.Fragment>
         );
-    }
-
-    static getDerivedStateFromProps(props, state) {
-        const { status } = props.crm;
-        let listStatus = status.list;
-        let { editingCustomer } = props;
-
-        if (props.customerIdEdit != state.customerIdEdit && editingCustomer && status.list && status.list.length > 0) {
-            //timeline status
-            const statusActive = editingCustomer.status;// mảng gồm các id của trạng thái mà khách hàng có
-
-            listStatus.map(x => (
-                statusActive.map(y => {
-                    if (x._id === y)
-                        x.active = true;
-                    return x;
-                })
-            ))
-
-            return {
-                ...state,
-                id: props.id,
-                customerIdEdit: props.customerIdEdit,
-                listStatus,
-                ...editingCustomer,
-            }
-        } else {
-            return null;
-        }
-    }
-
-    handleChangeCustomerOwner = (value) => {
-        const { callBackFromParentEditForm } = this.props;
-
-        this.setState({
-            owner: value,
-        });
-        callBackFromParentEditForm('owner', value);
-    }
-
-    handleChangeCustomerSource = (e) => {
-        const { callBackFromParentEditForm } = this.props;
-        const { value } = e.target;
-
-        this.setState({
-            customerSource: value,
-        });
-        callBackFromParentEditForm('customerSource', value);
-    }
-
-    handleChangeCustomerCode = (e) => {
-        const { callBackFromParentEditForm } = this.props;
-        const { value } = e.target;
-        const { translate } = this.props;
-
-        this.setState({
-            code: value,
-        });
-
-        // validate mã khách hàng
-        let { message } = ValidationHelper.validateName(translate, value, 4, 255);
-        this.setState({ customerCodeError: message });
-
-        callBackFromParentEditForm('code', value);
-    }
-
-    handleChangeCustomerName = (e) => {
-        const { callBackFromParentEditForm } = this.props;
-        const { value } = e.target;
-        const { translate } = this.props;
-
-        this.setState({
-            name: value,
-        });
-
-        // validate tên khách hàng
-        let { message } = ValidationHelper.validateName(translate, value, 4, 255);
-        this.setState({ customerNameError: message });
-
-        callBackFromParentEditForm('name', value);
-    }
-
-    handleChangeCustomerCompany = (e) => {
-        const { callBackFromParentEditForm } = this.props;
-        const { value } = e.target;
-
-        this.setState({
-            company: value,
-        });
-        callBackFromParentEditForm('company', value);
-    }
-
-    handleChangeRepresent = (e) => {
-        const { callBackFromParentEditForm } = this.props;
-        const { value } = e.target;
-
-        this.setState({
-            represent: value,
-        });
-        callBackFromParentEditForm('represent', value);
-    }
-
-    handleChangeCompanyEstablishmentDate = (value) => {
-        const { callBackFromParentEditForm } = this.props;
-
-        this.setState({
-            companyEstablishmentDate: value,
-        });
-        callBackFromParentEditForm('companyEstablishmentDate', value);
-    }
-
-    handleChangeMobilephoneNumber = (e) => {
-        const { callBackFromParentEditForm } = this.props;
-        const { value } = e.target;
-
-        this.setState({
-            mobilephoneNumber: parseInt(value),
-        });
-        callBackFromParentEditForm('mobilephoneNumber', parseInt(value));
-    }
-
-    handleChangeTelephoneNumber = (e) => {
-        const { callBackFromParentEditForm } = this.props;
-        const { value } = e.target;
-
-        this.setState({
-            telephoneNumber: parseInt(value),
-        });
-        callBackFromParentEditForm('telephoneNumber', parseInt(value));
-    }
-
-    handleChangeCustomerEmail = (e) => {
-        const { callBackFromParentEditForm } = this.props;
-        const { value } = e.target;
-
-        this.setState({
-            email: value,
-        });
-        callBackFromParentEditForm('email', value);
-    }
-
-    handleChangeCustomerEmail2 = (e) => {
-        const { callBackFromParentEditForm } = this.props;
-        const { value } = e.target;
-
-        this.setState({
-            email2: value,
-        });
-        callBackFromParentEditForm('email2', value);
-    }
-
-    handleChangeCustomerAddress = (e) => {
-        const { callBackFromParentEditForm } = this.props;
-        const { value } = e.target;
-
-        this.setState({
-            address: value,
-        });
-        callBackFromParentEditForm('address', value);
-    }
-
-    handleChangeCustomerAddress2 = (e) => {
-        const { callBackFromParentEditForm } = this.props;
-        const { value } = e.target;
-
-        this.setState({
-            address2: value,
-        });
-        callBackFromParentEditForm('address2', value);
-    }
-
-    handleChangeCustomerGender = (value) => {
-        const { callBackFromParentEditForm } = this.props;
-
-        this.setState({
-            gender: value[0],
-        });
-        callBackFromParentEditForm('gender', value[0]);
-    }
-
-    handleChangeCustomerBirth = (value) => {
-        const { callBackFromParentEditForm } = this.props;
-
-        this.setState({
-            birthDate: value,
-        });
-        callBackFromParentEditForm('birthDate', value);
-    }
-
-    handleChangeCustomerGroup = (value) => {
-        const { callBackFromParentEditForm } = this.props;
-
-        this.setState({
-            group: value[0],
-        });
-        callBackFromParentEditForm('group', value[0]);
-    }
-
-    handleChangeCustomerStatus = (index) => {
-        const { callBackFromParentEditForm } = this.props;
-        let { listStatus } = this.state;
-        let getStatusActive = [];
-
-        listStatus.map((o, i) => {
-            if (i <= index) {
-                o.active = true;
-            } else {
-                o.active = false;
-            }
-            return o;
-        });
-
-        // lấy trạng thái khách hàng lưu vào db
-        listStatus.forEach(o => {
-            if (o.active) {
-                getStatusActive.push(o._id);
-            }
-        })
-        console.log('getStatusActive', getStatusActive)
-
-        this.setState({
-            listStatus: listStatus,
-        });
-        callBackFromParentEditForm('status', getStatusActive);
-    }
-
-    handleChangeCustomerLocation = (value) => {
-        const { callBackFromParentEditForm } = this.props;
-
-        this.setState({
-            status: parseInt(value[0]),
-        });
-        callBackFromParentEditForm('location', parseInt(value[0]));
-    }
-
-    handleChangeTaxNumber = (e) => {
-        const { callBackFromParentEditForm } = this.props;
-        const { value } = e.target;
-        const { translate } = this.props;
-
-        this.setState({
-            taxNumber: value,
-        });
-
-        // validate mã số thuế khách hàng
-        let { message } = ValidationHelper.validateInvalidCharacter(translate, value);
-        this.setState({ customerTaxNumberError: message });
-
-        callBackFromParentEditForm('taxNumber', value);
-    }
-
-    handleChangeWebsite = (e) => {
-        const { callBackFromParentEditForm } = this.props;
-        const { value } = e.target;
-
-        this.setState({
-            website: value,
-        });
-        callBackFromParentEditForm('website', value);
-    }
-
-    handleChangeLinkedIn = (e) => {
-        const { callBackFromParentEditForm } = this.props;
-        const { value } = e.target;
-
-        this.setState({
-            linkedIn: value,
-        });
-        callBackFromParentEditForm('linkedIn', value);
     }
 }
 

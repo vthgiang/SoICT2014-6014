@@ -3,14 +3,14 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, DatePicker, UploadFile } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
-import moment from 'moment';
 import { getStorage } from "../../../../../config";
 
 class EditVersion extends Component {
     constructor(props) {
         super(props);
         this.state = {
-
+            documentFile: [],
+            documentFileScan: [],
         }
     }
 
@@ -132,12 +132,16 @@ class EditVersion extends Component {
             formData.append('expiredDate', expired_date);
             descriptions += "Ngày hết hạn " + expiredDate + ". ";
         }
-        if (documentFile) {
-            formData.append('file', documentFile);
+        if (documentFile && documentFile.length) {
+            documentFile.forEach(x => {
+                formData.append('file', x.fileUpload);
+            })
             descriptions += "Thêm file tài liệu. "
         }
-        if (documentFileScan) {
-            formData.append('fileScan', documentFileScan);
+        if (documentFileScan && documentFileScan.length) {
+            documentFileScan.forEach(x => {
+                formData.append('fileScan', x.fileUpload);
+            })
             descriptions += "Thêm file scan tài liệu";
         }
         formData.append('versionId', versionId);
@@ -145,15 +149,15 @@ class EditVersion extends Component {
         formData.append('creator', getStorage("userId"))
         formData.append('descriptions', descriptions);
         this.props.editDocument(documentId, formData, 'EDIT_VERSION');
-        this.props.updateDocumentVersions({
-            _id: versionId,
-            versionName: versionName,
-            issuingDate: issuingDate,
-            effectiveDate: effectiveDate,
-            expiredDate: expiredDate,
-            file: documentFile,
-            scannedFileOfSignedDocument: documentFileScan,
-        })
+        // this.props.updateDocumentVersions({
+        //     _id: versionId,
+        //     versionName: versionName,
+        //     issuingDate: issuingDate,
+        //     effectiveDate: effectiveDate,
+        //     expiredDate: expiredDate,
+        //     file: documentFile,
+        //     scannedFileOfSignedDocument: documentFileScan,
+        // })
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {

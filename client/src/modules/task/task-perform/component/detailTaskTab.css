@@ -8,3 +8,13 @@ div.description-box.alert > h4 {
     font-weight: bold;
     color: rgb(158, 21, 21);
 }
+
+div.description-box.alert > div > strong > a {
+    color: #000;
+    margin-left: 4px;
+}
+
+div.description-box.alert > div > strong > a:hover {
+    color: blue;
+    margin-left: 4px;
+}
