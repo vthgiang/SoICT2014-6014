@@ -6,6 +6,7 @@ import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../.
 import ManufacturingWorksCreateForm from './manufacturingWorksCreateForm';
 import ManufacturingWorksDetailForm from './manufacturingWorksDetailForm';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
+import ManufacturingWorksEditForm from './manufacturingWorksEditForm';
 class ManufacturingWorksManagementTable extends Component {
     constructor(props) {
         super(props);
@@ -82,6 +83,16 @@ class ManufacturingWorksManagementTable extends Component {
         window.$('#modal-detail-info-works').modal('show');
     }
 
+    handleEditWorks = async (works) => {
+        await this.setState((state) => {
+            return {
+                ...state,
+                currentRow: works
+            }
+        });
+        window.$('#modal-edit-works').modal('show');
+    }
+
     render() {
         const { translate } = this.props;
         const { manufacturingWorks } = this.props;
@@ -94,6 +105,20 @@ class ManufacturingWorksManagementTable extends Component {
             <React.Fragment>
                 {
                     <ManufacturingWorksDetailForm worksId={this.state.worksId} />
+                }
+                {  this.state.currentRow &&
+                    <ManufacturingWorksEditForm
+                        worksId={this.state.currentRow._id}
+                        code={this.state.currentRow.code}
+                        name={this.state.currentRow.name}
+                        worksManagerValue={this.state.currentRow.worksManager._id}
+                        foremanValue={this.state.currentRow.foreman._id}
+                        phoneNumber={this.state.currentRow.phoneNumber}
+                        address={this.state.currentRow.address}
+                        status={this.state.currentRow.status}
+                        description={this.state.currentRow.description}
+
+                    />
                 }
                 <div className="box-body qlcv">
                     <ManufacturingWorksCreateForm />
@@ -120,9 +145,10 @@ class ManufacturingWorksManagementTable extends Component {
                                 <th>{translate('manufacturing.manufacturing_works.name')}</th>
                                 <th>{translate('manufacturing.manufacturing_works.worksManager')}</th>
                                 <th>{translate('manufacturing.manufacturing_works.foreman')}</th>
-                                <th>{translate('manufacturing.manufacturing_works.mills')}</th>
+                                {/* <th>{translate('manufacturing.manufacturing_works.mills')}</th> */}
                                 <th>{translate('manufacturing.manufacturing_works.phone')}</th>
                                 <th>{translate('manufacturing.manufacturing_works.address')}</th>
+                                <th>{translate('manufacturing.manufacturing_works.description')}</th>
                                 <th>{translate('manufacturing.manufacturing_works.status')}</th>
                                 <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
                                     <DataTableSetting
@@ -136,6 +162,7 @@ class ManufacturingWorksManagementTable extends Component {
                                             translate('manufacturing.manufacturing_works.mills'),
                                             translate('manufacturing.manufacturing_works.phone'),
                                             translate('manufacturing.manufacturing_works.address'),
+                                            translate('manufacturing.manufacturing_works.description'),
                                             translate('manufacturing.manufacturing_works.status')
                                         ]}
                                         limit={this.state.limit}
@@ -154,13 +181,14 @@ class ManufacturingWorksManagementTable extends Component {
                                         <td>{works.name}</td>
                                         <td>{works.worksManager.name}</td>
                                         <td>{works.foreman.name}</td>
-                                        <td>{works.manufacturingMills.length > 0 && works.manufacturingMills.map((mill, index) => {
+                                        {/* <td>{works.manufacturingMills.length > 0 && works.manufacturingMills.map((mill, index) => {
                                             if (works.manufacturingMills.length !== index + 1)
                                                 return `${index + 1}. ${mill.name}\n`
                                             return `${index + 1}. ${mill.name}`
-                                        })}</td>
+                                        })}</td> */}
                                         <td>{works.phoneNumber}</td>
                                         <td>{works.address}</td>
+                                        <td>{works.description}</td>
                                         {
                                             works.status
                                                 ?
@@ -170,7 +198,7 @@ class ManufacturingWorksManagementTable extends Component {
                                         }
                                         <td style={{ textAlign: "center" }}>
                                             <a style={{ width: '5px' }} title={translate('manufacturing.manufacturing_works.works_detail')} onClick={() => { this.handleShowDetailWorks(works._id) }}><i className="material-icons">view_list</i></a>
-                                            <a className="edit text-yellow" style={{ width: '5px' }} title="Sửa nhà máy"><i className="material-icons">edit</i></a>
+                                            <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manufacturing.manufacturing_works.works_edit')} onClick={() => { this.handleEditWorks(works) }}><i className="material-icons">edit</i></a>
                                             {/* <DeleteNotification
                                                 content="Xóa nhà máy"
                                                 data={{

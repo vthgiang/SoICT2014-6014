@@ -42,7 +42,7 @@ class ManufacturingWorksCreateForm extends Component {
         if (usercompanys) {
             usercompanys.map((item) => {
                 listUsersArr.push({
-                    value: item.id,
+                    value: item._id,
                     text: item.name
                 });
             });
@@ -124,7 +124,7 @@ class ManufacturingWorksCreateForm extends Component {
     validateStatus = (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = this.props;
-        if (!value) {
+        if (value === "") {
             msg = translate('manufacturing.manufacturing_works.status_error')
         }
         if (willUpdateState) {
@@ -189,7 +189,7 @@ class ManufacturingWorksCreateForm extends Component {
                 <DialogModal
                     modalID="modal-create-works" isLoading={false}
                     formID="form-create-works"
-                    title="Thêm nhà máy sản xuất"
+                    title={translate('manufacturing.manufacturing_works.create_works')}
                     msg_success={translate('manufacturing.manufacturing_works.create_successfully')}
                     msg_faile={translate('manufacturing.manufacturing_works.create_failed')}
                     func={this.save}
@@ -199,7 +199,7 @@ class ManufacturingWorksCreateForm extends Component {
                 >
                     <form id="form-create-works">
                         <div className="form-group">
-                            <label>Mã nhà máy<span className="text-red">*</span></label>
+                            <label>{translate('manufacturing.manufacturing_works.code')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" value={code} disabled={true}></input>
                         </div>
                         <div className={`form-group ${!nameError ? "" : "has-error"}`}>

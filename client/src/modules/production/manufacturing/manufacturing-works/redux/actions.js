@@ -6,6 +6,7 @@ export const worksActions = {
     getAllManufacturingWorks,
     createManufacturingWorks,
     getDetailManufacturingWorks,
+    editManufacturingWorks
 }
 
 function getAllManufacturingWorks(queryData) {
@@ -68,6 +69,27 @@ function getDetailManufacturingWorks(id) {
                     type: worksConstants.GET_DETAIL_WORKS_FAILURE,
                     error
                 })
+            });
+    }
+}
+
+function editManufacturingWorks(id, data) {
+    return (dispatch) => {
+        dispatch({
+            type: worksConstants.UPDATE_WORKS_REQUEST
+        });
+        worksServices.editManufacturingWorks(id, data)
+            .then((res) => {
+                dispatch({
+                    type: worksConstants.UPDATE_WORKS_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch((error) => {
+                dispatch({
+                    type: worksConstants.UPDATE_WORKS_FAILURE,
+                    error
+                });
             });
     }
 }

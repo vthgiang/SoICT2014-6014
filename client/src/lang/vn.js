@@ -3706,7 +3706,7 @@ export default {
                 0: "Ngừng hoạt động",
                 choose_worksManager: "---Chọn giám đốc---",
                 worksManager_error: "Giám đốc không được để trống",
-                choose_foreman: "----Chọn quản đốc---",
+                choose_foreman: "---Chọn quản đốc---",
                 foreman_error: "Quản đốc không được để trống",
                 choose_status: "---Chọn trạng thái nhà máy---",
                 status_error: "Trạng thái nhà máy không được để trống",
@@ -3714,7 +3714,10 @@ export default {
                 create_failed: "Tạo nhà máy thất bại",
                 detail_works: "Xem chi tiết nhà máy",
                 created_at: "Ngày tạo",
-                list_mills: "Danh sách các xưởng"
+                list_mills: "Danh sách các xưởng",
+                works_edit: "Sửa thông tin nhà máy",
+                edit_successfully: "Sửa thông tin nhà máy thành công",
+                edit_failure: "Sửa thông tin nhà máy thất bại"
             }
         }
     }

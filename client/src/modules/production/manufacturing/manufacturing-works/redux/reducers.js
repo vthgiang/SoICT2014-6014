@@ -1,5 +1,15 @@
 import { worksConstants } from './constants';
 
+var findIndex = (array, id) => {
+    var result = -1;
+    array.forEach((value, index) => {
+        if (value._id === id) {
+            result = index;
+        }
+    });
+    return result;
+}
+
 const initState = {
     isLoading: false,
     listWorks: [],
@@ -16,10 +26,12 @@ const initState = {
 }
 
 export function manufacturingWorks(state = initState, action) {
+    let index = -1;
     switch (action.type) {
         case worksConstants.GET_ALL_WORKS_REQUEST:
         case worksConstants.CREATE_WORKS_REQUEST:
         case worksConstants.GET_DETAIL_WORKS_REQUEST:
+        case worksConstants.UPDATE_WORKS_FAILURE:
             return {
                 ...state,
                 isLoading: false
@@ -27,6 +39,7 @@ export function manufacturingWorks(state = initState, action) {
         case worksConstants.GET_ALL_WORKS_FAILURE:
         case worksConstants.CREATE_WORKS_FAILURE:
         case worksConstants.GET_DETAIL_WORKS_FAILURE:
+        case worksConstants.UPDATE_WORKS_FAILURE:
             return {
                 ...state,
                 isLoading: false,
@@ -61,6 +74,15 @@ export function manufacturingWorks(state = initState, action) {
             return {
                 ...state,
                 currentWorks: action.payload.manufacturingWorks,
+                isLoading: false
+            }
+        case worksConstants.UPDATE_WORKS_SUCCESS:
+            index = findIndex(state.listWorks, action.payload.manufacturingWorks._id);
+            if (index !== -1) {
+                state.listWorks[index] = action.payload.manufacturingWorks
+            }
+            return {
+                ...state,
                 isLoading: false
             }
         default:

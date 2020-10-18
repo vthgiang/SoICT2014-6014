@@ -3,7 +3,8 @@ import { sendRequest } from '../../../../../helpers/requestHelper';
 export const worksServices = {
     getAllManufacturingWorks,
     createManufacturingWorks,
-    getDetailManufacturingWorks
+    getDetailManufacturingWorks,
+    editManufacturingWorks
 }
 
 function getAllManufacturingWorks(queryData) {
@@ -41,4 +42,17 @@ function getDetailManufacturingWorks(id) {
         true,
         "manufacturing.manufacturing_works"
     )
-} 
+}
+
+function editManufacturingWorks(id, data) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/manufacturing-works/${id}`,
+            method: "PATCH",
+            data
+        },
+        true,
+        true,
+        "manufacturing.manufacturing_works"
+    )
+}
