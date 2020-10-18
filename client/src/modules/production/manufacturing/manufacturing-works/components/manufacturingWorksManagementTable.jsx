@@ -2,44 +2,111 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { worksActions } from '../redux/actions';
-import { DataTableSetting, DeleteNotification } from "../../../../../common-components";
+import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../../common-components";
 import ManufacturingWorksCreateForm from './manufacturingWorksCreateForm';
+import ManufacturingWorksDetailForm from './manufacturingWorksDetailForm';
+import { UserActions } from '../../../../super-admin/user/redux/actions';
 class ManufacturingWorksManagementTable extends Component {
     constructor(props) {
         super(props);
         this.state = {
             page: 1,
-            limit: 5
+            limit: 5,
+            code: '',
+            name: ''
         }
     }
 
     componentDidMount = () => {
         const { page, limit } = this.state;
         this.props.getAllManufacturingWorks({ page, limit });
+        this.props.getAllUserOfCompany();
+    }
+
+    setPage = async (page) => {
+        await this.setState({
+            page: page
+        });
+        const data = {
+            limit: this.state.limit,
+            page: page,
+        };
+        this.props.getAllManufacturingWorks(data);
+    }
+
+    setLimit = async (limit) => {
+        await this.setState({
+            limit: limit
+        });
+        const data = {
+            limit: limit,
+            page: this.state.page
+        }
+        this.props.getAllManufacturingWorks(data);
+    }
+
+    handleChangeWorksName = (e) => {
+        const { value } = e.target;
+        this.setState({
+            name: value
+        })
+    }
+
+    handleChangeWorksCode = (e) => {
+        const { value } = e.target;
+        this.setState({
+            code: value
+        })
+    }
+
+    handleSubmitSearch = async () => {
+        await this.setState({
+            page: 1
+        });
+        const data = {
+            page: this.state.page,
+            limit: this.state.limit,
+            code: this.state.code,
+            name: this.state.name
+        }
+        this.props.getAllManufacturingWorks(data);
+    }
+
+    handleShowDetailWorks = async (id) => {
+        await this.setState((state) => {
+            return {
+                ...state,
+                worksId: id
+            }
+        })
+        window.$('#modal-detail-info-works').modal('show');
     }
 
     render() {
         const { translate } = this.props;
         const { manufacturingWorks } = this.props;
+        const { totalPages, page } = manufacturingWorks;
         let listWorks = [];
         if (manufacturingWorks.isLoading === false) {
             listWorks = manufacturingWorks.listWorks;
         }
-        console.log(listWorks);
         return (
             <React.Fragment>
+                {
+                    <ManufacturingWorksDetailForm worksId={this.state.worksId} />
+                }
                 <div className="box-body qlcv">
                     <ManufacturingWorksCreateForm />
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">{translate('manufacturing.manufacturing_works.code')}</label>
-                            <input type="text" className="form-control" name="code" onChange={this.handleChangeData} placeholder="NMSX201015153823" autoComplete="off" />
+                            <input type="text" className="form-control" name="code" onChange={this.handleChangeWorksName} placeholder="NMSX201015153823" autoComplete="off" />
                         </div>
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">{translate('manufacturing.manufacturing_works.name')}</label>
-                            <input type="text" className="form-control" name="name" onChange={this.handleChangeData} placeholder="Nhà máy sản xuất thuốc Việt Anh I" autoComplete="off" />
+                            <input type="text" className="form-control" name="name" onChange={this.handleChangeWorksCode} placeholder="Nhà máy sản xuất thuốc Việt Anh I" autoComplete="off" />
                         </div>
                         <div className="form-group">
                             <button type="button" className="btn btn-success" title={translate('manufacturing.manufacturing_works.search')} onClick={this.handleSubmitSearch}>{translate('manufacturing.manufacturing_works.search')}</button>
@@ -80,37 +147,49 @@ class ManufacturingWorksManagementTable extends Component {
                         </thead>
                         <tbody>
                             {(listWorks && listWorks.length !== 0) &&
-                                listWorks.map((work, index) => (
+                                listWorks.map((works, index) => (
                                     <tr key={index}>
                                         <td>{index + 1}</td>
-                                        <td>{work.code}</td>
-                                        <td>{work.name}</td>
-                                        <td>{work.worksManager.name}</td>
-                                        <td>{work.foreman.name}</td>
-                                        <td>{work.manufacturingMills.length > 0 && work.manufacturingMills.map((mill, index) => {
-                                            if (work.manufacturingMills.length !== index + 1)
+                                        <td>{works.code}</td>
+                                        <td>{works.name}</td>
+                                        <td>{works.worksManager.name}</td>
+                                        <td>{works.foreman.name}</td>
+                                        <td>{works.manufacturingMills.length > 0 && works.manufacturingMills.map((mill, index) => {
+                                            if (works.manufacturingMills.length !== index + 1)
                                                 return `${index + 1}. ${mill.name}\n`
                                             return `${index + 1}. ${mill.name}`
                                         })}</td>
-                                        <td>{work.phoneNumber}</td>
-                                        <td>{work.address}</td>
-                                        <td>{work.status ? "Đang hoạt động" : "Dừng hoạt động"}</td>
+                                        <td>{works.phoneNumber}</td>
+                                        <td>{works.address}</td>
+                                        {
+                                            works.status
+                                                ?
+                                                <td style={{ color: "green" }}>{translate('manufacturing.manufacturing_works.1')}</td>
+                                                :
+                                                <td style={{ color: "orange" }}>{translate('manufacturing.manufacturing_works.0')}</td>
+                                        }
                                         <td style={{ textAlign: "center" }}>
+                                            <a style={{ width: '5px' }} title={translate('manufacturing.manufacturing_works.works_detail')} onClick={() => { this.handleShowDetailWorks(works._id) }}><i className="material-icons">view_list</i></a>
                                             <a className="edit text-yellow" style={{ width: '5px' }} title="Sửa nhà máy"><i className="material-icons">edit</i></a>
-                                            <DeleteNotification
+                                            {/* <DeleteNotification
                                                 content="Xóa nhà máy"
                                                 data={{
-                                                    id: work._id,
-                                                    info: work.code + " - " + work.name
+                                                    id: works._id,
+                                                    info: works.code + " - " + works.name
                                                 }}
-                                                func={this.props.deleteWork}
-                                            />
+                                                func={this.props.deleteWorks}
+                                            /> */}
                                         </td>
                                     </tr>
                                 ))
                             }
                         </tbody>
                     </table>
+                    {manufacturingWorks.isLoading ?
+                        <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                        (typeof listWorks === 'undefined' || listWorks.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                    }
+                    <PaginateBar pageTotal={totalPages ? totalPages : 0} currentPage={page} func={this.setPage} />
                 </div>
             </React.Fragment>
         );
@@ -125,6 +204,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     getAllManufacturingWorks: worksActions.getAllManufacturingWorks,
+    getAllUserOfCompany: UserActions.getAllUserOfCompany,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ManufacturingWorksManagementTable));

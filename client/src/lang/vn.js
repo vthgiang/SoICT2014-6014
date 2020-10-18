@@ -3699,7 +3699,22 @@ export default {
                 phone: "Số điện thoại",
                 address: "Địa chỉ",
                 status: "Trạng thái",
-                description: "Mô tả"
+                description: "Mô tả",
+                view_detail: "Xem chi tiết nhà máy",
+                edit: "Chỉnh sửa nhà máy",
+                1: "Đang hoạt động",
+                0: "Ngừng hoạt động",
+                choose_worksManager: "---Chọn giám đốc---",
+                worksManager_error: "Giám đốc không được để trống",
+                choose_foreman: "----Chọn quản đốc---",
+                foreman_error: "Quản đốc không được để trống",
+                choose_status: "---Chọn trạng thái nhà máy---",
+                status_error: "Trạng thái nhà máy không được để trống",
+                create_successfully: "Tạo nhà máy thành công",
+                create_failed: "Tạo nhà máy thất bại",
+                detail_works: "Xem chi tiết nhà máy",
+                created_at: "Ngày tạo",
+                list_mills: "Danh sách các xưởng"
             }
         }
     }
