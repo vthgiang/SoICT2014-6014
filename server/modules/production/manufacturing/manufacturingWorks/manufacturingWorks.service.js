@@ -27,7 +27,7 @@ exports.createManufacturingWorks = async (data, portal) => {
         }, {
             path: "foreman", select: "name"
         }, {
-            path: "manufacturingMills", select: "code name"
+            path: "manufacturingMills", select: "code name teamLeader description"
         }]);
 
     return { manufacturingWorks }
@@ -67,7 +67,7 @@ exports.getAllManufacturingWorks = async (query, portal) => {
             }, {
                 path: "foreman", select: "name"
             }, {
-                path: "manufacturingMills", select: "code name"
+                path: "manufacturingMills", select: "code name teamLeader description"
             }]);
         return { allManufacturingWorks }
     } else {
@@ -96,7 +96,7 @@ exports.getManufacturingWorksById = async (id, portal) => {
         }, {
             path: "foreman", select: "name"
         }, {
-            path: "manufacturingMills", select: "code name"
+            path: "manufacturingMills", select: "code name description"
         }]);
     if (!manufacturingWorks) {
         throw Error("ManufacturingWorks is not existing")
