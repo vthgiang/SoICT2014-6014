@@ -115,10 +115,8 @@ import SalesOrder from '../modules/production/order/sales-order/components'
 import ManufacturingOrder from '../modules/production/order/manufacturing-order/components';
 import Discount from '../modules/production/order/discount/components';
 import Quoter from '../modules/production/order/quoter/components';
-import PurchaseOrderDashboard from '../modules/production/order/purchase-order-dashboard/components';
-import SalesOrderDashboard from '../modules/production/order/sales-order-dashboard/components';
 import ManufacturingOrderDashboard from '../modules/production/order/manufacturing-order-dashboard/components';
-import QuoterDashboard from '../modules/production/order/quoter-dashboard/components';
+import SalesOrderDashboard from '../modules/production/order/sales-order-dashboard/components';
 import Tax from '../modules/production/order/tax/components';
 import ServiceLevelAgreement from '../modules/production/order/service-level-agreement/components';
 
@@ -1389,20 +1387,20 @@ class Routes extends Component {
 
                     <PrivateRoute
                         isLoading={false}
-                        key={"/manage-quoter"}
+                        key={"/manage-quote"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
                             {
-                                link: "/manage-quoter",
-                                name: "manage_quoter",
+                                link: "/manage-quote",
+                                name: "manage_quote",
                                 icon: "fa fa-address-card",
                             },
                         ]}
                         auth={auth}
                         exact={true}
-                        link={"/manage-quoter"}
-                        path={"/manage-quoter"}
-                        pageName={"manage_quoter"}
+                        link={"/manage-quote"}
+                        path={"/manage-quote"}
+                        pageName={"manage_quote"}
                         layout={Layout}
                         component={Quoter}
                     />
@@ -1445,46 +1443,6 @@ class Routes extends Component {
                         pageName={"manage_manufacturing_order_dashboard"}
                         layout={Layout}
                         component={ManufacturingOrderDashboard}
-                    />
-
-                    <PrivateRoute
-                        isLoading={false}
-                        key={"/manage-purchase-order-dashboard"}
-                        arrPage={[
-                            { link: "/", name: "home", icon: "fa fa-home" },
-                            {
-                                link: "/manage-purchase-order-dashboard",
-                                name: "manage_purchase_order_dashboard",
-                                icon: "fa fa-address-card",
-                            },
-                        ]}
-                        auth={auth}
-                        exact={true}
-                        link={"/manage-purchase-order-dashboard"}
-                        path={"/manage-purchase-order-dashboard"}
-                        pageName={"manage_purchase_order_dashboard"}
-                        layout={Layout}
-                        component={PurchaseOrderDashboard}
-                    />
-
-                    <PrivateRoute
-                        isLoading={false}
-                        key={"/manage-quoter-dashboard"}
-                        arrPage={[
-                            { link: "/", name: "home", icon: "fa fa-home" },
-                            {
-                                link: "/manage-quoter-dashboard",
-                                name: "manage_quoter_dashboard",
-                                icon: "fa fa-address-card",
-                            },
-                        ]}
-                        auth={auth}
-                        exact={true}
-                        link={"/manage-quoter-dashboard"}
-                        path={"/manage-quoter-dashboard"}
-                        pageName={"manage_quoter_dashboard"}
-                        layout={Layout}
-                        component={QuoterDashboard}
                     />
 
                     <PrivateRoute
