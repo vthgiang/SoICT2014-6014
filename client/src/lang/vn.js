@@ -820,8 +820,6 @@ export default {
             manage_manufacturing_order: 'Đơn hàng sản xuất',
             manage_purchase_order: 'Đơn mua hàng',
             manage_sales_order_dashboard: 'Dashboard kinh doanh',
-            manage_sales_order_dashboard: 'Dashboard đơn kinh doanh',
-            manage_purchase_order_dashboard: 'Dashboard đơn mua NVL',
             manage_manufacturing_order_dashboard: 'Dashboard sản xuất',
             manage_quote: 'Báo giá',
             manage_discount: 'Giảm giá',

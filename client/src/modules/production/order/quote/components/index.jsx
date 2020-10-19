@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import QuoteManageTable from "./quoteManageTable";
 
-class Quoter extends Component {
+class Quote extends Component {
     constructor(props) {
         super(props);
         this.state = {};
@@ -17,4 +17,4 @@ class Quoter extends Component {
     }
 }
 
-export default Quoter;
+export default Quote;

@@ -114,7 +114,7 @@ import PurchaseOrder from '../modules/production/order/purchase-order/components
 import SalesOrder from '../modules/production/order/sales-order/components'
 import ManufacturingOrder from '../modules/production/order/manufacturing-order/components';
 import Discount from '../modules/production/order/discount/components';
-import Quoter from '../modules/production/order/quoter/components';
+import Quote from '../modules/production/order/quote/components';
 import ManufacturingOrderDashboard from '../modules/production/order/manufacturing-order-dashboard/components';
 import SalesOrderDashboard from '../modules/production/order/sales-order-dashboard/components';
 import Tax from '../modules/production/order/tax/components';
@@ -1402,7 +1402,7 @@ class Routes extends Component {
                         path={"/manage-quote"}
                         pageName={"manage_quote"}
                         layout={Layout}
-                        component={Quoter}
+                        component={Quote}
                     />
 
                     <PrivateRoute
