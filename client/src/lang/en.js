@@ -697,6 +697,7 @@ export default {
             detail_employee: 'Personal Information',
             update_employee: 'Update Personal Information',
             dashboard_employee: 'DashBoard Manage Staffs ',
+            employee_capacity:'Employee capacity',
             discipline: 'Manage Commendation And Discipline',
             annual_leave: 'Manage Annual Leave',
             salary_employee: 'Manage Salary',
