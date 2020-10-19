@@ -237,6 +237,16 @@ const initSampleCompanyDB = async () => {
         password: hash,
         company: vnist._id
     }, {
+        name: 'Trần Bình Minh',
+        email: 'minhtb.vnist@gmail.com',
+        password: hash,
+        company: vnist._id
+    }, {
+        name: 'Nguyễn Thị Nhung',
+        email: 'nhungnt.vnist@gmail.com',
+        password: hash,
+        company: vnist._id
+    }, {
         name: 'Trần Minh Đức',
         email: 'tmd.vnist@gmail.com',
         password: hash,
@@ -385,6 +395,12 @@ const initSampleCompanyDB = async () => {
     }, { // Thành viên ban giám đốc Phạm Đình Phúc
         userId: users[7]._id,
         roleId: thanhVienBGĐ._id
+    }, {
+        userId: users[8]._id,
+        roleId: nvPhongHC._id
+    },{
+        userId: users[9]._id,
+        roleId: nvPhongHC._id
     }]);
 
     /**
@@ -2903,7 +2919,7 @@ const initSampleCompanyDB = async () => {
         code: "ĐLVA",
         description: "Đại lý việt anh cung cấp đồ nhựa",
     }];
-    await Group(vnistDB).insertMany(customerGroupData);
+    const groups = await Group(vnistDB).insertMany(customerGroupData);
     console.log("Xong! Đã tạo mẫu dữ liệu khách hàng")
 
     // ****************** Tạo mẫu dữ liệu trạng thái khách hàng********************
@@ -2939,7 +2955,7 @@ const initSampleCompanyDB = async () => {
         description: "Không chơi với công ty mình nữa",
         active: false,
     }];
-    await Status(vnistDB).insertMany(customerStatusData);
+    const status = await Status(vnistDB).insertMany(customerStatusData);
     console.log("Xong! Đã tạo mẫu dữ liệu trạng thái khách hàng")
 
      // ****************** Tạo mẫu dữ liệu hình thức chăm sóc khách hàng********************
@@ -2954,8 +2970,101 @@ const initSampleCompanyDB = async () => {
         name: "Gặp mặt trực tiếp",
         description: "Hẹn gặp khách hàng trực tiếp",
     }];
+    
     await CareType(vnistDB).insertMany(customerCareType);
     console.log("Xong! Đã tạo mẫu dữ liệu hình thức chăm sóc khách hàng")
+
+    // ****************** Tạo mẫu dữ liệu khách hàng********************
+    await Customer(vnistDB).insertMany([
+        {
+            creator: users[7]._id,
+            code: 'KH001',
+            name: 'Nguyễn Lệ Nhi',
+            owner: [users[5]._id],
+            gender: 'male',
+            company: 'VNIST',
+            represent: 'Nguyễn Thị Hương',
+            taxNumber: '1528946392',
+            customerSource: 'Facebook.com',
+            companyEstablishmentDate: new Date("2009-09-15"),
+            birthDate: new Date('1998-09-03'),
+            telephoneNumber: parseInt('02465756834'), 
+            mobilephoneNumber: parseInt('0385025851'),
+            email: 'nhinl.vnist@gmail.com',
+            address: 'Ngọc mỹ, Quốc Oai, Hà Nội',
+            location: parseInt('0'),
+            website: 'abcnddg.com',
+            group: groups[1]._id,
+            status: [
+                status[0]._id,
+                status[1]._id,
+                status[2]._id,
+                status[3]._id
+            ],
+            statusHistories: [
+                {
+                    oldValue: null,
+                    newValue: status[1]._id,
+                    createdAt: new Date("2020-10-10"),
+                    createdBy: users[5]._id,
+                },
+                {
+                    oldValue: status[1]._id,
+                    newValue: status[4]._id,
+                    createdAt: new Date("2020-10-14"),
+                    createdBy: users[5]._id,
+                },
+                {
+                    oldValue: status[4]._id,
+                    newValue: status[5]._id,
+                    createdAt: new Date("2020-10-17"),
+                    createdBy: users[5]._id,
+                }
+            ]
+        },
+        {
+            creator: users[7]._id,
+            code: 'KH002',
+            name: 'Công ty Việt Anh',
+            owner: [users[5]._id],
+            gender: '',
+            company: 'VIAVET',
+            represent: 'Trương Anh Tuấn',
+            taxNumber: '64673692',
+            customerSource: 'Youtube, facebook',
+            companyEstablishmentDate: new Date("2014-09-15"),
+            birthDate: null,
+            telephoneNumber: parseInt('024657589843'), 
+            mobilephoneNumber: parseInt('0345915454'),
+            email: 'TuanTA.viavet@gmail.com',
+            address: 'Thường tín, Hà Nội',
+            location: parseInt('0'),
+            website: 'vietanhviavet.com',
+            group: groups[2]._id,
+            status: [
+                status[0]._id,
+                status[1]._id,
+                status[2]._id,
+                status[3]._id,
+                status[4]._id,
+            ],
+            statusHistories: [
+                {
+                    oldValue: null,
+                    newValue: status[1]._id,
+                    createdAt: new Date("2020-09-15"),
+                    createdBy: users[5]._id,
+                },
+                {
+                    oldValue: status[1]._id,
+                    newValue: status[4]._id,
+                    createdAt: new Date("2020-10-10"),
+                    createdBy: users[6]._id,
+                },
+            ]
+        }
+    ])
+    console.log("Xong! Đã tạo mẫu dữ liệu khách hàng")
 
     /**
      * Ngắt kết nối db
