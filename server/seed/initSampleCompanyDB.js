@@ -2942,6 +2942,21 @@ const initSampleCompanyDB = async () => {
     await Status(vnistDB).insertMany(customerStatusData);
     console.log("Xong! Đã tạo mẫu dữ liệu trạng thái khách hàng")
 
+     // ****************** Tạo mẫu dữ liệu hình thức chăm sóc khách hàng********************
+    console.log("Tạo mẫu dữ liệu hình thức chăm sóc khách hàng");
+    const customerCareType = [{
+        name: "Gọi điện tư vấn",
+        description: "Gọi điện tư vấn",
+    }, {
+        name: "Gửi Email",
+        description: "Gửi Email giới thiệu ...",
+    }, {
+        name: "Gặp mặt trực tiếp",
+        description: "Hẹn gặp khách hàng trực tiếp",
+    }];
+    await CareType(vnistDB).insertMany(customerCareType);
+    console.log("Xong! Đã tạo mẫu dữ liệu hình thức chăm sóc khách hàng")
+
     /**
      * Ngắt kết nối db
      */

@@ -582,6 +582,18 @@ export default {
 
             },
             care: {
+                add: 'Thêm mới công việc',
+                
+                name: 'Tên công việc',
+                caregiver: 'Nhân viên phụ trách',
+                customer: 'Khách hàng được chăm sóc',
+                description: 'Mô tả công việc chăm sóc',
+                careType: 'Loại hình chăm sóc',
+                status: 'Trạng thái',
+                startDate: 'Ngày bắt đầu',
+                endDate: 'Ngày kết thúc',
+                notes: 'Ghi chú',
+                action: 'Hành động',
 
             },
             statistic: {
