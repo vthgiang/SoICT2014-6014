@@ -44,6 +44,9 @@ class QuantityExpiratedDate extends Component {
                 ],
                 type: 'pie',
             },
+            legend: {
+                position: 'right'
+            },
 
             pie: {
                 label: {

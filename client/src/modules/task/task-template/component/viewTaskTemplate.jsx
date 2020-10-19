@@ -59,7 +59,6 @@ class ViewTaskTemplate extends Component {
         let organizationalUnit = isProcess ? organizationalUnitProcess : taskTemplate?.organizationalUnit?.name
         let accountableEmployees = isProcess ? listUserAccountable : taskTemplate?.accountableEmployees
         let responsibleEmployees = isProcess ? listUserResponsible : taskTemplate?.responsibleEmployees
-        console.log(responsibleEmployees)
 
         switch (taskTemplate?.priority) {
             case 1: priority = translate('task_template.low'); break;
@@ -183,7 +182,7 @@ class ViewTaskTemplate extends Component {
 
                 <div className="row row-equal-height">
                     <div className={`${isProcess ? "col-lg-12 col-sm-12" : "col-xs-12 col-sm-12 col-md-6 col-lg-6"}`} style={{ padding: 10 }} >
-                        <div className="description-box" style={{ height: "100%" }}>
+                        <div className="description-box">
                             <h4 className="title">
                                 {translate('task_template.activity_list')}
                             </h4>
@@ -193,24 +192,24 @@ class ViewTaskTemplate extends Component {
                                 {
                                     (!taskTemplate?.taskActions || taskTemplate?.taskActions.length === 0) ?
                                         <div><strong>{translate('task_template.no_data')}</strong></div> :
-                                        taskTemplate?.taskActions.map((item, index) =>
-                                            <div className="task-item" key={index}>
-                                                <p>
-                                                    <b className="number">{index+1}</b>
-                                                    <span className="content">{item.name}</span>
-                                                    {
-                                                        item.mandatory && <span className="note">{translate('task_template.mandatory')}</span>
-                                                    }
-                                                </p>
-                                                <div>{parse(item.description)}</div>
-                                            </div>
+                                        taskTemplate?.taskActions.map((item, index, array) =>
+                                        <div className="task-item" key={index}>
+                                            <p>
+                                                <b className="number">{index+1}</b>
+                                                <span className="content">{item.name}</span>
+                                                {
+                                                    item.mandatory && <sup className="note">{translate('task_template.mandatory')}</sup>
+                                                }
+                                            </p>
+                                            <div>{parse(item.description)}</div>
+                                        </div>
                                         )
                                 }
                             </div>
                         </div>
                     </div>
                     <div className={`${isProcess ? "col-lg-12 col-sm-12" : "col-xs-12 col-sm-12 col-md-6 col-lg-6"}`} style={{ padding: 10 }}>
-                        <div className="description-box" style={{ height: "100%" }}>
+                        <div className="description-box">
                             <h4 className="title">
                                 {translate('task_template.information_list')}
                             </h4>
@@ -221,17 +220,20 @@ class ViewTaskTemplate extends Component {
                                     (!taskTemplate?.taskInformations || taskTemplate?.taskInformations.length === 0) ?
                                         <div><strong>{translate('task_template.no_data')}</strong></div> :
                                         taskTemplate?.taskInformations.map((item, index) =>
-                                            <React.Fragment key={index}>
-                                                <div className="task-item-info">
-                                                    <p>
-                                                        <b className="code">{item.code}</b>
-                                                        <i className="type">{this.formatTypeInfo(item.type)}</i>
-                                                        <span className="content">{item.name}</span>
-                                                        {item.filledByAccountableEmployeesOnly && <span className="note">{translate('task_template.manager_fill')}</span>}
-                                                    </p>
-                                                    <div>{parse(item.description)}</div>
+                                            <div key={index} className="tt-information">
+                                                <p className="name">
+                                                    {item.name}
+                                                </p>
+                                                <p className="param">@ {translate('task_template.code')}: <b>{item.code}</b></p>
+                                                <p className="param">@ {translate('task_template.datatypes')}: <b>{this.formatTypeInfo(item.type)}</b></p>
+                                                {
+                                                    item.filledByAccountableEmployeesOnly && 
+                                                    <p className="param">@ {translate('task_template.manager_fill')}</p>
+                                                }
+                                                <div>
+                                                    {parse(item.description)}
                                                 </div>
-                                            </React.Fragment>
+                                            </div>
                                         )
                                 }
                             </div>

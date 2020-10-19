@@ -11,11 +11,12 @@ class Home extends Component {
 
     render() {
         const { auth } = this.props;
-        if (!auth.user.company)
-            return <SystemHome />
-        else
-            return <SuperHome />
-
+        if(Object.entries(auth.user).length > 0){
+            if (!auth.user.company)
+                return <SystemHome />
+            else
+                return <SuperHome />
+        } else return null;
     }
 }
 

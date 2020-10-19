@@ -857,26 +857,6 @@ const LINKS = [{
     components: getComponentsInLink('/good-management')
 },
 {
-    url: '/partner-management',
-    description: 'Quản lý thông tin đối tác',
-    category: LINK_CATEGORY.WAREHOUSE.name,
-    roles: [
-        ROOT_ROLES.SUPER_ADMIN.name,
-        ROOT_ROLES.ADMIN.name
-    ],
-    components: getComponentsInLink('/partner-management')
-},
-{
-    url: '/proposal-management',
-    description: 'Quản lý phiếu đề nghị',
-    category: LINK_CATEGORY.WAREHOUSE.name,
-    roles: [
-        ROOT_ROLES.SUPER_ADMIN.name,
-        ROOT_ROLES.ADMIN.name
-    ],
-    components: getComponentsInLink('/proposal-management')
-},
-{
     url: '/bill-management',
     description: 'Quản lý thông tin phiếu',
     category: LINK_CATEGORY.WAREHOUSE.name,
@@ -936,7 +916,7 @@ const LINKS = [{
     components: getComponentsInLink('/manage-purchase-order'),
 },
 {
-    url: "/manage-quoter",
+    url: "/manage-quote",
     description: "Báo giá",
     category: LINK_CATEGORY.ORDER.name,
     roles: [
@@ -946,7 +926,7 @@ const LINKS = [{
         ROOT_ROLES.VICE_DEAN.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
-    components: getComponentsInLink('/manage-quoter'),
+    components: getComponentsInLink('/manage-quote'),
 },
 {
     url: "/manage-sales-order-dashboard",
@@ -973,32 +953,6 @@ const LINKS = [{
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/manage-manufacturing-order-dashboard'),
-},
-{
-    url: "/manage-purchase-order-dashboard",
-    description: "Dashboard đơn mua nguyên vật liệu",
-    category: LINK_CATEGORY.ORDER.name,
-    roles: [
-        ROOT_ROLES.SUPER_ADMIN.name,
-        ROOT_ROLES.ADMIN.name,
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
-        ROOT_ROLES.EMPLOYEE.name,
-    ],
-    components: getComponentsInLink('/manage-purchase-order-dashboard'),
-},
-{
-    url: "/manage-quoter-dashboard",
-    description: "Dashboard đơn báo giá",
-    category: LINK_CATEGORY.ORDER.name,
-    roles: [
-        ROOT_ROLES.SUPER_ADMIN.name,
-        ROOT_ROLES.ADMIN.name,
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
-        ROOT_ROLES.EMPLOYEE.name,
-    ],
-    components: getComponentsInLink('/manage-quoter-dashboard'),
 },
 {
     url: "/manage-discount",

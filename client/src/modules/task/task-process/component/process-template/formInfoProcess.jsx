@@ -23,7 +23,7 @@ class FormInfoProcess extends Component {
     }
 
     componentDidMount() {
-        this.props.getTaskTemplateByUser("1", "0", "[]");
+        this.props.getTaskTemplateByUser(1, 0, []);
     }
 
     shouldComponentUpdate(nextProps, nextState) {

@@ -11,10 +11,8 @@ class BinManagement extends Component {
     
     render() {
         return (
-            <div className="box" style={{ minHeight: "450px" }}>
-                <div className="box-body">
-                    <BinManagementTable />
-                </div>
+            <div className="box-body" style={{ minHeight: "450px" }}>
+                <BinManagementTable />
             </div>
         );
     }

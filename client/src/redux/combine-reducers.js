@@ -68,7 +68,7 @@ import { goods } from "../modules/warehouse/good-management/redux/reducers";
 import { customers } from "../modules/crm/customer/redux/reducers";
 import { groups } from "../modules/crm/group/redux/reducers";
 import { status } from "../modules/crm/status/redux/reducers";
-// import { care } from "../modules/crm/care/redux/reducers";
+import { cares } from "../modules/crm/care/redux/reducers";
 
 //order
 
@@ -81,6 +81,9 @@ import { example1 } from "../modules/example/example1/redux/reducers";
 
 //example2
 import { example2 } from "../modules/example/example2/redux/reducers";
+
+import { manufacturingWorks } from "../modules/production/manufacturing/manufacturing-works/redux/reducers";
+
 
 const appReducer = combineReducers({
     socket,
@@ -159,7 +162,7 @@ const appReducer = combineReducers({
 
     // customer management
     crm: combineReducers({
-        customers, groups, status
+        customers, groups, status,cares,
     }),
 
     //order
@@ -172,6 +175,10 @@ const appReducer = combineReducers({
 
     //example2
     example2,
+
+    // production - manufacturing works management
+
+    manufacturingWorks,
 
     Intl
 

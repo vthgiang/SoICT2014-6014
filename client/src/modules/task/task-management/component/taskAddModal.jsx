@@ -214,10 +214,10 @@ class TaskAddModal extends Component {
                         name: taskTemplate.name,
                         description: taskTemplate.description,
                         priority: taskTemplate.priority,
-                        responsibleEmployees: taskTemplate.responsibleEmployees.map(item => item._id),
-                        accountableEmployees: taskTemplate.accountableEmployees.map(item => item._id),
-                        consultedEmployees: taskTemplate.consultedEmployees.map(item => item._id),
-                        informedEmployees: taskTemplate.informedEmployees.map(item => item._id),
+                        responsibleEmployees: taskTemplate.responsibleEmployees,
+                        accountableEmployees: taskTemplate.accountableEmployees,
+                        consultedEmployees: taskTemplate.consultedEmployees,
+                        informedEmployees: taskTemplate.informedEmployees,
                         taskTemplate: taskTemplate._id,
                     }
                 };
@@ -228,7 +228,7 @@ class TaskAddModal extends Component {
 
     handleSelectedParent = async (value) => {
         let val = value[0];
-        
+
         await this.setState(state => {
             state.newTask.parent = val;
             return {
@@ -251,7 +251,7 @@ class TaskAddModal extends Component {
 
         await this.props.getPaginateTasksByUser([], "1", "5", [], [], [], txt, null, null, null, null, false, "listSearch");
 
-        this.setState(state=>{
+        this.setState(state => {
             state.newTask.parent = "";
             return {
                 ...state,
@@ -337,10 +337,10 @@ class TaskAddModal extends Component {
         // Khi truy vấn lấy các đơn vị của user đã có kết quả, và thuộc tính đơn vị của newTask chưa được thiết lập
         if (newTask.organizationalUnit === "" && department.list.length !== 0) {
             // Tìm unit mà currentRole của user đang thuộc về
-            let defaultUnit = department.list?.find(item => 
-                item.deans.find(x => x.id === this.state.currentRole )
-                || item.viceDeans.find(x => x.id === this.state.currentRole )
-                || item.employees.find(x => x.id === this.state.currentRole ));
+            let defaultUnit = department.list?.find(item =>
+                item.deans.find(x => x.id === this.state.currentRole)
+                || item.viceDeans.find(x => x.id === this.state.currentRole)
+                || item.employees.find(x => x.id === this.state.currentRole));
             if (!defaultUnit && department.list.length > 0) { // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
                 defaultUnit = department.list[0]
             }
@@ -429,13 +429,13 @@ class TaskAddModal extends Component {
         if (KPIPersonalManager.kpipersonals) listKPIPersonal = KPIPersonalManager.kpipersonals;
 
         let listParentTask = [{ value: "", text: `--${translate('task.task_management.add_parent_task')}--` }];
-        
+
         if (tasks.listSearchTasks) {
             let arr = tasks.listSearchTasks.map(x => { return { value: x._id, text: x.name } });
             listParentTask = [...listParentTask, ...arr];
         }
 
-        console.log('abccccc', listTaskTemplate);
+        // console.log('abccccc', listTaskTemplate);
 
         return (
             <React.Fragment>

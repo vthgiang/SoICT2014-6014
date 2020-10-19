@@ -171,17 +171,16 @@ class ModalEditEmployeeKpi extends Component {
     }
 
     render() {
-        var currentOrganizationalUnitKPI, items;
+        let currentOrganizationalUnitKPI, items;
         const { createKpiUnit, translate } = this.props;
         const { _id, name, weight, criteria, errorOnName, errorOnCriteria, errorOnWeight, editing, parent } = this.state;
 
         if (createKpiUnit.currentKPI) currentOrganizationalUnitKPI = createKpiUnit.currentKPI;
         
-        if(currentOrganizationalUnitKPI === undefined){
+        if (!currentOrganizationalUnitKPI) {
             items = [];
-        }
-        else{    
-            items = currentOrganizationalUnitKPI.kpis.filter(item => item.type === 0).map(x => {//type !==0 thì đc. cái này để loại những mục tiêu mặc định?
+        } else {    
+            items = currentOrganizationalUnitKPI.kpis.map(x => {//type !==0 thì đc. cái này để loại những mục tiêu mặc định?
             return {value: x._id, text: x.name} });
         }
         

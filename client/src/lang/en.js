@@ -471,7 +471,7 @@ export default {
             },
             store: {
                 title: 'Store',
-                information: 'Information',
+                information: 'Archive Place',
                 organizational_unit_manage: 'Organizational Unit Management',
                 select_organizational: 'Select organizational unit',
                 user_manage: 'User management',
@@ -769,11 +769,9 @@ export default {
             manage_orders: 'Manage Order',
             manage_sales_order: 'Sales Order',
             manage_manufacturing_order: 'Manufacturing Order',
-            manage_purchase_order: 'PurchaseOrder',
-            manage_quoter: 'Quoter',
-            manage_quoter_dashboard: 'Quoter Dashboard',
+            manage_purchase_order: 'Purchase Order',
+            manage_quote: 'Quote',
             manage_sales_order_dashboard: 'Sales Order Dashboard',
-            manage_purchase_order_dashboard: 'Purchase Order Dashboard ',
             manage_manufacturing_order_dashboard: 'Manufacturing Order Dashboard',
             manage_discount: 'Discount',
             manage_tax: 'Tax',
@@ -2493,6 +2491,7 @@ export default {
                 stop_timer: "Stop timer",
                 edit: "Edit",
                 delete: "Delete",
+                actions_not_perform: 'Actions not perform',
 
                 notice_end_task: 'Are you sure to finish this task',
                 notice_change_activate_task: 'Are you sure to change activated of this task',
@@ -3368,6 +3367,16 @@ export default {
             edit_file: 'Edit attached documents',
             add_file: 'Add attached documents',
             upload: 'Upload',
+        },
+
+        // Quản lý sản xuất phần KHSX và LSX
+        manufacturing: {
+            manufacturing_works: {
+                name: "works name",
+                code: "works code",
+                search: "Search",
+                create_works: "Create works"
+            }
         }
     }
 }

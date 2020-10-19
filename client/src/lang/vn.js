@@ -467,12 +467,12 @@ export default {
             },
             relationship: {
                 title: 'Liên kết tài liệu',
-                description: 'Mô tả',
+                description: 'Mô tả các liên kết tới các tài liệu khác',
                 list: 'Các tài liệu liên kết'
             },
             store: {
                 title: 'Hồ sơ lưu trữ bản cứng',
-                information: 'Thông tin lưu trữ',
+                information: 'Vị trí lưu trữ',
                 organizational_unit_manage: 'Đơn vị quản lý',
                 select_organizational: 'Chọn đơn vị quản lý',
                 user_manage: 'Người quản lý',
@@ -544,6 +544,8 @@ export default {
                 location: 'Khu vực',
                 birth: 'Ngày sinh',
                 gender: 'Giới tính',
+                male: 'Nam',
+                female: 'Nữ',
                 liability: 'Công nợ',
                 taxNumber: 'Mã số thuế',
                 website: 'Website',
@@ -555,6 +557,7 @@ export default {
                 by_group: 'Theo nhóm khách hàng',
                 by_customer: 'Theo khách hàng',
                 payment: 'Hình thức thanh toán',
+                creator: 'Người tạo',
 
                 info: 'Thông tin chung',
                 contact: 'Thông tin liên hệ',
@@ -817,11 +820,9 @@ export default {
             manage_sales_order: 'Đơn hàng kinh doanh',
             manage_manufacturing_order: 'Đơn hàng sản xuất',
             manage_purchase_order: 'Đơn mua hàng',
-            manage_quoter_dashboard: 'Dashboard kinh doanh',
-            manage_sales_order_dashboard: 'Dashboard đơn kinh doanh',
-            manage_purchase_order_dashboard: 'Dashboard đơn mua NVL',
+            manage_sales_order_dashboard: 'Dashboard kinh doanh',
             manage_manufacturing_order_dashboard: 'Dashboard sản xuất',
-            manage_quoter: 'Báo giá',
+            manage_quote: 'Báo giá',
             manage_discount: 'Giảm giá',
             manage_tax: 'Thuế',
             manage_sla: 'Cam kết chất lượng',
@@ -2549,6 +2550,7 @@ export default {
                 stop_timer: "Dừng bấm giờ",
                 edit: "Chỉnh sửa",
                 delete: "Xóa",
+                actions_not_perform: 'Số hoạt động chưa thực hiện',
 
                 notice_end_task: 'Bạn có chắc chắn muốn kết thúc công việc này',
                 notice_change_activate_task: 'Bạn có chắc chắn muốn kích hoạt công việc này',
@@ -3681,5 +3683,41 @@ export default {
             add_file: 'Thêm tài liệu đính kèm',
             upload: 'Chọn ảnh'
         },
+
+        // Quản lý sản xuất phần KHSX và LSX
+        manufacturing: {
+            manufacturing_works: {
+                name: "Tên nhà máy",
+                code: "Mã nhà máy",
+                search: "Tìm kiếm",
+                create_works: "Tạo nhà máy",
+                index: "STT",
+                worksManager: "Giám đốc",
+                foreman: "Quản đốc",
+                mills: "Các xưởng",
+                phone: "Số điện thoại",
+                address: "Địa chỉ",
+                status: "Trạng thái",
+                description: "Mô tả",
+                view_detail: "Xem chi tiết nhà máy",
+                edit: "Chỉnh sửa nhà máy",
+                1: "Đang hoạt động",
+                0: "Ngừng hoạt động",
+                choose_worksManager: "---Chọn giám đốc---",
+                worksManager_error: "Giám đốc không được để trống",
+                choose_foreman: "---Chọn quản đốc---",
+                foreman_error: "Quản đốc không được để trống",
+                choose_status: "---Chọn trạng thái nhà máy---",
+                status_error: "Trạng thái nhà máy không được để trống",
+                create_successfully: "Tạo nhà máy thành công",
+                create_failed: "Tạo nhà máy thất bại",
+                detail_works: "Xem chi tiết nhà máy",
+                created_at: "Ngày tạo",
+                list_mills: "Danh sách các xưởng",
+                works_edit: "Sửa thông tin nhà máy",
+                edit_successfully: "Sửa thông tin nhà máy thành công",
+                edit_failure: "Sửa thông tin nhà máy thất bại"
+            }
+        }
     }
 }

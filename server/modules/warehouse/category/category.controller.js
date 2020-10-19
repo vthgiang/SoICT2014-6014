@@ -20,6 +20,28 @@ exports.getCategories = async (req, res) => {
         });
     }
 }
+
+exports.getCategoryToTree = async (req, res) => {
+    try {
+        const categories = await CategoryService.getCategoryToTree(req.portal);
+
+        await Logger.info(req.user.email, 'GET_CATEGORIES', req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['get_category_success'],
+            content: categories
+        })
+    }
+    catch(error) {
+        await Logger.error(req.user.email, 'GET_CATEGORIES', req.portal)
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['get_category_failed'],
+            content: error
+        });
+    }
+}
+
 exports.getCategoriesByType = async (req, res) => {
     try {
         const categories = await CategoryService.getCategoriesByType(req.query, req.portal);
@@ -31,7 +53,7 @@ exports.getCategoriesByType = async (req, res) => {
         });
     }
     catch(error) {
-        await Logger(req.user.email, 'GET_CATEGORIES', req.portal)
+        await Logger.error(req.user.email, 'GET_CATEGORIES', req.portal)
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['get_category_faile'],
@@ -106,7 +128,28 @@ exports.deleteCategory = async (req, res) => {
             content: category
         });
     } catch(error) {
+        console.log(error);
         await Logger.error(req.user.email, 'DELETE_CATEGORY', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['delete_faile'],
+            content: error
+        })
+    }
+}
+
+exports.deleteManyCategories = async (req, res) => {
+    try {
+        const categories = await CategoryService.deleteManyCategories(req.body.array, req.portal);
+
+        await Logger.info(req.user.email, 'DELETE_MANY_CATEGORIES', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['delete_success'],
+            content: categories
+        });
+    }
+    catch(error) {
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['delete_faile'],
