@@ -7,8 +7,6 @@ import { RoleActions } from '../../../../super-admin/role/redux/actions';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import { getStorage } from '../../../../../config';
 import DocumentInformation from '../documents/documentInformation';
-import ListDownload from '../../administration/list-data/listDownload';
-import ListView from '../../administration/list-data/listView';
 
 
 const getIndex = (array, id) => {
@@ -55,18 +53,7 @@ class DocumentDownloaded extends Component {
             [title]: option
         });
     }
-    showDetailListView = async (data) => {
-        await this.setState({
-            currentRow: data,
-        });
-        window.$('#modal-list-view').modal('show');
-    }
-    showDetailListDownload = async (data) => {
-        await this.setState({
-            currentRow: data,
-        })
-        window.$('#modal-list-download').modal('show');
-    }
+
     findPath = (select) => {
         const archives = this.props.documents.administration.archives.list;
         let paths = select.map(s => {
@@ -400,23 +387,12 @@ class DocumentDownloaded extends Component {
         if (isLoading === false) {
             list = downloaded.list;
         }
-      
+
         let exportData = dataExport ? this.convertDataToExportData(dataExport) : "";
         return (
             <div className="qlcv">
                 <React.Fragment>
-                    {
-                        currentRow &&
-                        <ListView
-                            docs={currentRow}
-                        />
-                    }
-                    {
-                        currentRow &&
-                        <ListDownload
-                            docs={currentRow}
-                        />
-                    }
+
                     {
                         currentRow !== undefined &&
                         <DocumentInformation
@@ -505,8 +481,6 @@ class DocumentDownloaded extends Component {
                                 <th>{translate('document.expired_date')}</th>
                                 <th>{translate('document.upload_file')}</th>
                                 <th>{translate('document.upload_file_scan')}</th>
-                                <th>{translate('document.views')}</th>
-                                <th>{translate('document.downloads')}</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>
                                     {translate('general.action')}
                                     <DataTableSetting
@@ -517,9 +491,7 @@ class DocumentDownloaded extends Component {
                                             translate('document.effective_date'),
                                             translate('document.expired_date'),
                                             translate('document.upload_file'),
-                                            translate('document.upload_file_scan'),
-                                            translate('document.views'),
-                                            translate('document.downloads')
+                                            translate('document.upload_file_scan')
                                         ]}
                                         limit={this.state.limit}
                                         setLimit={this.setLimit}
@@ -536,19 +508,23 @@ class DocumentDownloaded extends Component {
                                         <tr key={doc._id}>
                                             <td>{doc.name}</td>
                                             <td>{doc.description}</td>
-                                            <td><DateTimeConverter dateTime={doc.versions[doc.versions.length - 1].issuingDate} type="DD-MM-YYYY" /></td>
-                                            <td><DateTimeConverter dateTime={doc.versions[doc.versions.length - 1].effectiveDate} type="DD-MM-YYYY" /></td>
-                                            <td><DateTimeConverter dateTime={doc.versions[doc.versions.length - 1].expiredDate} type="DD-MM-YYYY" /></td>
-                                            <td><a href="#" onClick={() => this.requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}><u>{translate('document.download')}</u></a></td>
-                                            <td><a href="#" onClick={() => this.requestDownloadDocumentFileScan(doc._id, "SCAN_" + doc.name, doc.versions.length - 1)}><u>{translate('document.download')}</u></a></td>
+                                            <td>{doc.versions.length ? this.formatDate(doc.versions[doc.versions.length - 1].issuingDate) : null}</td>
+                                            <td>{doc.versions.length ? this.formatDate(doc.versions[doc.versions.length - 1].effectiveDate) : null}</td>
+                                            <td>{doc.versions.length ? this.formatDate(doc.versions[doc.versions.length - 1].expiredDate) : null}</td>
                                             <td>
-                                                <a href="#modal-list-view" onClick={() => this.showDetailListView(doc)}>{doc.numberOfView}</a>
+                                                <a href="#" onClick={() => this.requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}>
+                                                    <u>{translate('document.download')}</u>
+                                                </a>
                                             </td>
                                             <td>
-                                                <a href="#modal-list-download" onClick={() => this.showDetailListDownload(doc)}>{doc.numberOfDownload}</a>
+                                                <a href="#" onClick={() => this.requestDownloadDocumentFileScan(doc._id, "SCAN_" + doc.name, doc.versions.length - 1)}>
+                                                    <u>{translate('document.download')}</u>
+                                                </a>
                                             </td>
-                                            <td style={{ width: '10px' }}>
-                                                <a className="text-green" title={translate('document.edit')} onClick={() => this.toggleDocumentInformation(doc)}><i className="material-icons">visibility</i></a>
+                                            <td>
+                                                <a className="text-green" title={translate('document.view')} onClick={() => this.toggleDocumentInformation(doc)}>
+                                                    <i className="material-icons">visibility</i>
+                                                </a>
                                             </td>
                                         </tr>) :
                                     isLoading ?

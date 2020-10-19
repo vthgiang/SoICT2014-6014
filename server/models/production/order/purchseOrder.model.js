@@ -2,9 +2,14 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const PurchaseOrderShema = new Schema({
-    status: {
+    code: {
         type: String,
-        enum: ["Chờ phê duyệt", "Đã hủy yêu cầu", "Đang mua hàng", "Hoàn thành", "Đã nhập hàng"],
+        unique: true,
+        required: true
+    },
+    status: {// 1: Chờ phê duyệt, 2: Đã phê duyệt, 3: Đang mua hàng, 4: Đã hoàn thành, 5: Đã hủy
+        type: Number,
+        enum: [ 1, 2 ,3, 4, 5 ],
         require: true
     },
     stock: {
@@ -25,7 +30,7 @@ const PurchaseOrderShema = new Schema({
         required: true,
     },
     goods: [{
-        _id: {
+        good: {
             type: Schema.Types.ObjectId,
             ref: 'Good',
             required: true
@@ -60,7 +65,7 @@ const PurchaseOrderShema = new Schema({
         type: String
     },
     approvers: [{
-        _id: {
+        approver: {
             type: Schema.Types.ObjectId,
             required: true
         }, 
@@ -90,6 +95,13 @@ const PurchaseOrderShema = new Schema({
         type: Date
     },
     updateAt: {
-        type: Date
+        type: Date,
+        default: Date.now()
     }
 })
+
+module.exports = (db) =>{
+    if (!db.models.PurchaseOrder) 
+        return db.model('PurchaseOrder', PurchaseOrderShema)
+    return db.models.PurchaseOrder
+}

@@ -5,7 +5,7 @@ import "c3/c3.css";
 
 import { DatePicker, SelectBox } from "../../../../../common-components";
 
-class QuoterSalesMappingAreaChart extends Component {
+class QuoteSalesMappingAreaChart extends Component {
     constructor(props) {
         super(props);
     }
@@ -144,4 +144,4 @@ class QuoterSalesMappingAreaChart extends Component {
     }
 }
 
-export default QuoterSalesMappingAreaChart;
+export default QuoteSalesMappingAreaChart;

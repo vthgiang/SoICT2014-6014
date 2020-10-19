@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import c3 from "c3";
 import "c3/c3.css";
 
-class QuoterSummaryChart extends Component {
+class QuoteSummaryChart extends Component {
     constructor(props) {
         super(props);
     }
@@ -83,4 +83,4 @@ class QuoterSummaryChart extends Component {
     }
 }
 
-export default QuoterSummaryChart;
+export default QuoteSummaryChart;
