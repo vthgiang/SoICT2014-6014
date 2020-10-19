@@ -122,6 +122,7 @@ class CalendarUsage extends Component {
   }
 
   handleDateSelect = async (selectInfo) => {
+    console.log("HDòng 125")
     // Reset lại dữ liệu của currentRow
     await this.setState(state => {
       return {
@@ -164,6 +165,8 @@ class CalendarUsage extends Component {
   }
 
   handleEventClick = async (clickInfo) => {
+    console.log("Dòng 168")
+    console.log("Dòng 169", this.state.currentEvent)
     await this.setState({
       clickInfo: clickInfo
     })
@@ -472,7 +475,7 @@ class CalendarUsage extends Component {
                 { selector: "#modal-edit-asset", eventName: "shown.bs.modal" },
               ]}
               initialView='timeGridWeek'
-              editable={true}
+              // editable={true}
               selectable={true}
               selectMirror={true}
               dayMaxEvents={true}

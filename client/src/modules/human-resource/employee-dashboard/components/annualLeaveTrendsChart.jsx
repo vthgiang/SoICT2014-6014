@@ -175,9 +175,6 @@ class AnnualLeaveTrendsChart extends Component {
                 names: {
                     data1: data.nameData1,
                 },
-                colors: {
-                    data1: '#ff7f0e',
-                },
             },
             axis: {
                 x: {

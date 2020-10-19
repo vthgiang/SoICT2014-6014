@@ -83,6 +83,7 @@ class HighestSalaryChart extends Component {
                         }
                     }
                 };
+                console.log(dataCovert);
                 let data = [];
                 dataCovert.forEach((x, index) => {
                     if (index < 20) {
@@ -90,7 +91,7 @@ class HighestSalaryChart extends Component {
                     }
                 });
                 let ratioX = data.map(x => x.employee ? x.employee.fullName : 'Deleted')
-                let data1 = data.map(x => dataCovert[0].unit === 'VND' ? dataCovert[0].total / 1000 : dataCovert[0].total);
+                let data1 = data.map(x => x.unit === 'VND' ? x.total / 1000 : x.total);
                 return {
                     nameData: 'Lương thưởng',
                     ratioX: ratioX,
@@ -132,7 +133,6 @@ class HighestSalaryChart extends Component {
                 return { ...x, total: total }
             })
         };
-
         let result = [];
         data.forEach(x => {
             let check;

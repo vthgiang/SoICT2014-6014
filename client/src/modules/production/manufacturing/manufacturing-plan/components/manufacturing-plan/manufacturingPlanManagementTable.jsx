@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import sampleData from '../../../sampleData';
 import { DataTableSetting, DatePicker, DeleteNotification, SelectMulti } from "../../../../../../common-components";
-import ManufacturingPlanCreateForm from './create-plan/manufacturingPlanCreateForm';
+import NewPlanCreateForm from './create-new-plan/newPlanCreateForm';
 class ManufacturingPlanManagementTable extends Component {
     constructor(props) {
         super(props);
@@ -32,9 +32,7 @@ class ManufacturingPlanManagementTable extends Component {
         return (
             <React.Fragment>
                 <div className="box-body qlcv">
-                    {
-                        <ManufacturingPlanCreateForm />
-                    }
+                    <NewPlanCreateForm />
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">Mã kế hoạch</label>
@@ -50,6 +48,7 @@ class ManufacturingPlanManagementTable extends Component {
                                 disabled={false}
                             />
                         </div>
+
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
@@ -73,6 +72,24 @@ class ManufacturingPlanManagementTable extends Component {
                             <input type="text" className="form-control" name="code" onChange={this.handleChangeData} placeholder="LSX001" autoComplete="off" />
                         </div>
                         <div className="form-group">
+                            <label className="form-control-static">Ngày tạo</label>
+                            <DatePicker
+                                id={`maintain_after_2`}
+                                // dateFormat={dateFormat}
+                                // value={startValue}
+                                // onChange={this.handleChangeDateAfter}
+                                disabled={false}
+                            />
+                        </div>
+
+
+                    </div>
+                    <div className="form-inline">
+                        <div className="form-group">
+                            <label className="form-control-static">Mã đơn kinh doanh</label>
+                            <input type="text" className="form-control" name="code" onChange={this.handleChangeData} placeholder="DKD001" autoComplete="off" />
+                        </div>
+                        <div className="form-group">
                             <label className="form-control-static">Tình trạng</label>
                             <SelectMulti
                                 id={`select-multi-process`}
@@ -90,17 +107,12 @@ class ManufacturingPlanManagementTable extends Component {
                             // onChange={this.handleChangeValue}
                             />
                         </div>
+
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className="form-control-static">Ngày tạo</label>
-                            <DatePicker
-                                id={`maintain_after_2`}
-                                // dateFormat={dateFormat}
-                                // value={startValue}
-                                // onChange={this.handleChangeDateAfter}
-                                disabled={false}
-                            />
+                            <label className="form-control-static">Mã phiếu đề nghị</label>
+                            <input type="text" className="form-control" name="code" onChange={this.handleChangeData} placeholder="PDN001" autoComplete="off" />
                         </div>
                         <div className="form-group">
                             <label></label>
@@ -111,16 +123,16 @@ class ManufacturingPlanManagementTable extends Component {
                     <table id="manufacturing-plan-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th>STT</th>
-                                <th>Mã kế hoạch</th>
-                                <th>Mã đơn sản xuất</th>
-                                <th>Người tạo</th>
-                                <th>Thời gian tạo</th>
-                                <th>Thời gian bắt đầu</th>
-                                <th>Thời gian dự kiến hoàn thành</th>
-                                <th>Mô tả</th>
-                                <th>Trạng thái</th>
-                                <th style={{ width: "120px", textAlign: "center" }}>Hành động
+                                <th rowSpan={2} style={{ verticalAlign: "middle" }}>STT</th>
+                                <th>Mã kế hoạch <div><i className="fa fa-sort-down"></i></div></th>
+                                <th>Mã đơn sản xuất  <div><i className="fa fa-sort-down"></i></div></th>
+                                <th>Người tạo <div><i className="fa fa-sort-down"></i></div></th>
+                                <th>Thời gian tạo <div><i className="fa fa-sort-down"></i></div></th>
+                                <th>Thời gian bắt đầu <div><i className="fa fa-sort-down"></i></div></th>
+                                <th>Thời gian dự kiến hoàn thành <div><i className="fa fa-sort-down"></i></div></th>
+                                <th>Mô tả <div><i className="fa fa-sort-down"></i></div></th>
+                                <th>Trạng thái <div><i className="fa fa-sort-down"></i></div></th>
+                                <th style={{ verticalAlign: "middle" }} rowSpan={2}>Hành động
                                     <DataTableSetting
                                         tableId="manufacturing-plan-table"
                                         columnArr={[
@@ -139,6 +151,16 @@ class ManufacturingPlanManagementTable extends Component {
                                         setLimit={this.setLimit}
                                     />
                                 </th>
+                            </tr>
+                            <tr>
+                                <th style={{ padding: '2px' }}><input style={{ width: '100%' }} /></th>
+                                <th style={{ padding: '2px' }}><input style={{ width: '100%' }} /></th>
+                                <th style={{ padding: '2px' }}><input style={{ width: '100%' }} /></th>
+                                <th style={{ padding: '2px' }}><input style={{ width: '100%' }} /></th>
+                                <th style={{ padding: '2px' }}><input style={{ width: '100%' }} /></th>
+                                <th style={{ padding: '2px' }}><input style={{ width: '100%' }} /></th>
+                                <th style={{ padding: '2px' }}><input style={{ width: '100%' }} /></th>
+                                <th style={{ padding: '2px' }}><input style={{ width: '100%' }} /></th>
                             </tr>
                         </thead>
                         <tbody>

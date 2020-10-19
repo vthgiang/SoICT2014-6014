@@ -1,12 +1,74 @@
 const { TaskTemplate, Privilege, Role, UserRole, OrganizationalUnit, User } = require(`${SERVER_MODELS_DIR}`);
 const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 const mongoose = require('mongoose');
+
 /**
  * Lấy tất cả các mẫu công việc
  */
-exports.getAllTaskTemplates = (portal, req, res) => {
-    var taskTemplates = TaskTemplate(connect(DB_CONNECTION, portal)).find()
-    return taskTemplates;
+exports.getAllTaskTemplates = async (portal, query) => {
+    if (query.pageNumber === '1' && query.noResultsPerPage === '0') {
+        // LẤY DANH SÁCH TẤT CẢ CÁC MẪU CÔNG VIỆC CÓ TRONG HỆ THỐNG CỦA CÔNG TY
+        let docs = await TaskTemplate(connect(DB_CONNECTION, portal)).find().populate([
+            { path: 'creator' },
+            { path: 'organizationalUnit' }
+        ]);
+        return {
+            docs: docs
+        }
+    }
+    if (query.roleId) {
+        // LẤY DANH SÁCH MẪU CÔNG VIỆC VỚI MỘT VAI TRÒ NÀO ĐÓ
+
+        let role = await Role(connect(DB_CONNECTION, portal)).findById(query.roleId);
+        let roles = [role._id, ...role.parents];
+
+        let tasks = await Privilege(connect(DB_CONNECTION, portal)).find({
+            role: { $in: roles },
+            resourceType: 'TaskTemplate'
+        }).populate({ path: 'resource', populate: { path: 'creator' } });
+
+        return tasks;
+    } else if (query.userId) {
+        // LẤY DANH SÁCH TẤT CẢ CÁC MẪU CÔNG VIỆC MÀ NGƯỜI DÙNG CÓ QUYỀN XEM
+
+        let id = query.userId,
+            pageNumber = Number(query.pageNumber),
+            noResultsPerPage = Number(query.noResultsPerPage),
+            organizationalUnit = query.arrayUnit,
+            name = query.name;
+
+        console.log("filter tasktemplate:", id, pageNumber, noResultsPerPage, organizationalUnit, name)
+
+        // Danh sách các quyền của user - userRoles
+        let dataRoles = await UserRole(connect(DB_CONNECTION, portal))
+            .find({ userId: id })
+            .populate('roleId');
+        dataRoles = dataRoles.map(userRole => userRole.roleId);
+        let userRoles = dataRoles.reduce((arr, role) => [...arr, role._id, ...role.parents], [])
+        userRoles = userRoles.filter((role, index) => role.toString() === userRoles[index].toString());
+        let option = !organizationalUnit ?
+            {   
+                readByEmployees: { $in: userRoles },
+                name: { "$regex": name, "$options": "i" }
+            } : {
+                readByEmployees: { $in: userRoles },
+                name: { "$regex": name, "$options": "i" },
+                organizationalUnit: { $in: organizationalUnit }
+            };
+        return await TaskTemplate(connect(DB_CONNECTION, portal))
+            .paginate(option, {
+                page: pageNumber,
+                limit: noResultsPerPage,
+                populate: [
+                    { path: 'creator' },
+                    { path: 'organizationalUnit' }
+                ]
+            });
+    } else {
+        // LẤY DANH SÁCH TẤT CẢ CÁC MẪU CÔNG VIỆC CÓ TRONG HỆ THỐNG CỦA CÔNG TY
+
+        return await TaskTemplate(connect(DB_CONNECTION, portal)).find();
+    }
 }
 
 /**
@@ -14,150 +76,12 @@ exports.getAllTaskTemplates = (portal, req, res) => {
  * @id id mẫu công việc
  */
 exports.getTaskTemplate = async (portal, id) => {
-    var taskTemplate = TaskTemplate(connect(DB_CONNECTION, portal)).findById(id).populate([
-        { path: "organizationalUnit", select: "name deans" },
-        { path: "readByEmployees", select: "name" },
-        { path: "creator responsibleEmployees accountableEmployees consultedEmployees informedEmployees", select: "name email" }]);
-    return taskTemplate;
-}
-
-/**
- * Lấy mẫu công việc theo chức danh
- * @id id role
- */
-exports.getTaskTemplatesOfUserRole = async (portal, id) => {
-
-    var roleId = await Role(connect(DB_CONNECTION, portal)).findById(id); //lấy id role hiện tại
-    var roles = [roleId._id]; //thêm id role hiện tại vào 1 mảng
-    roles = roles.concat(roleId.abstract); //thêm các role children vào mảng
-    var tasks = await Privilege(connect(DB_CONNECTION, portal)).find({
-        role: { $in: roles },
-        resource_type: 'TaskTemplate'
-    }).populate({ path: 'resource', populate: { path: 'creator' } });
-
-    return tasks;
-}
-
-/**
- * Lấy mẫu công việc theo user
- * @id id người dùng
- * @pageNumber trang muốn lấy
- * @noResultsPerPage giới hạn hiển thị trên 1 bảng
- * @organizationalUnit id phòng ban 
- * @name tên mẫu công việc truy vấn
- */
-exports.searchTaskTemplates = async (portal, id, pageNumber, noResultsPerPage, organizationalUnit, name = "") => {
-    // Lấy tất cả các role người dùng có
-    var roles = await UserRole(connect(DB_CONNECTION, portal)).find({ userId: id }).populate({ path: "roleId" });
-    var newRoles = roles.map(role => role.roleId);
-    // lấy tất cả các role con của role người dùng có
-    var allRole = [];
-    newRoles.map(item => {
-        allRole = allRole.concat(item._id); //thêm id role hiện tại vào 1 mảng
-        allRole = allRole.concat(item.parents); //thêm các role children vào mảng
-    })
-    var tasktemplates = [];
-    let roleId = allRole.map(function (el) { return mongoose.Types.ObjectId(el) });
-    if ((organizationalUnit === "[]") || (JSON.stringify(organizationalUnit) == JSON.stringify([]))) {
-        var tasktemplate = await TaskTemplate(connect(DB_CONNECTION, portal)).aggregate([
-            { $match: { name: { "$regex": name, "$options": "i" } } },
-            {
-                $lookup:
-                {
-                    from: "privileges",
-                    let: { id: "$_id" },
-                    pipeline: [
-                        {
-                            $match:
-                            {
-                                $and: [{
-                                    $expr:
-                                    {
-                                        $and: [
-                                            { $eq: ["$resourceId", "$$id"] }
-                                        ]
-                                    }
-                                },
-                                {
-                                    roleId: { $in: roleId }
-                                }]
-                            }
-                        }
-                    ],
-                    as: "creator organizationalUnit"
-                }
-            },
-            { $unwind: "$creator organizationalUnit" },
-            {
-                $facet: {
-                    tasks: [{ $sort: { 'createdAt': 1 } },
-                    ...noResultsPerPage === 0 ? [] : [{ $limit: noResultsPerPage * pageNumber }],
-                    ...noResultsPerPage === 0 ? [] : [{ $skip: noResultsPerPage * (pageNumber - 1) }]],
-                    totalCount: [
-                        {
-                            $count: 'count'
-                        }
-                    ]
-                }
-            }
-        ])
-    } else {
-        unit = organizationalUnit.map(function (el) { return mongoose.Types.ObjectId(el) });
-        var tasktemplate = await TaskTemplate(connect(DB_CONNECTION, portal)).aggregate([
-            { $match: { $and: [{ name: { "$regex": name, "$options": "i" } }, { organizationalUnit: { $in: unit } }] } },
-            {
-                $lookup:
-                {
-                    from: "privileges",
-                    let: { id: "$_id" },
-                    pipeline: [
-                        {
-                            $match:
-                            {
-                                $and: [{
-                                    $expr:
-                                    {
-                                        $and: [
-                                            { $eq: ["$resourceId", "$$id"] }
-                                        ]
-                                    }
-                                },
-                                {
-                                    roleId: { $in: roleId }
-                                }]
-                            }
-                        }
-                    ],
-                    as: "creator organizationalUnit"
-                }
-            },
-            { $unwind: "$creator organizationalUnit" },
-            {
-                $facet: {
-                    tasks: [{ $sort: { 'createdAt': 1 } },
-                    ...noResultsPerPage === 0 ? [] : [{ $limit: noResultsPerPage * pageNumber }],
-                    ...noResultsPerPage === 0 ? [] : [{ $skip: noResultsPerPage * (pageNumber - 1) }]],
-                    totalCount: [
-                        {
-                            $count: 'count'
-                        }
-                    ]
-                }
-            }
-        ])
-    }
-
-    tasktemplates = tasktemplate[0].tasks;
-    await TaskTemplate(connect(DB_CONNECTION, portal)).populate(tasktemplates, [
-        { path: "organizationalUnit", select: "name deans" },
-        { path: "readByEmployees", select: "name" },
-        { path: "creator responsibleEmployees accountableEmployees consultedEmployees informedEmployees", select: "name email" }]);
-    var totalCount = 0;
-    if (JSON.stringify(tasktemplates) !== JSON.stringify([])) {
-        totalCount = tasktemplate[0].totalCount[0].count;
-    }
-    var totalPages = Math.ceil(totalCount / noResultsPerPage);
-    return { taskTemplates: tasktemplates, pageTotal: totalPages };
+    return await TaskTemplate(connect(DB_CONNECTION, portal))
+        .findById(id)
+        .populate([
+            { path: "organizationalUnit", select: "name deans" },
+            { path: "readByEmployees", select: "name" },
+            { path: "creator responsibleEmployees accountableEmployees consultedEmployees informedEmployees", select: "name email" }]);
 }
 
 /**
@@ -165,6 +89,10 @@ exports.searchTaskTemplates = async (portal, id, pageNumber, noResultsPerPage, o
  * @body dữ liệu tạo mới mẫu công việc
  */
 exports.createTaskTemplate = async (portal, body) => {
+    //kiểm tra tên mẫu công việc đã tồn tại hay chưa ?
+    let checkTaskTemplate = await TaskTemplate(connect(DB_CONNECTION, portal)).findOne({ name: body.name });
+    if(checkTaskTemplate) throw ['task_template_name_exist'];
+
     // thêm quyền xem mẫu công việc cho trưởng đơn vị của công việc
     let units = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findById(body.organizationalUnit);
     let roleDeans = units.deans;
@@ -256,7 +184,6 @@ exports.createTaskTemplate = async (portal, body) => {
         });
     }
     tasktemplate = await tasktemplate.populate("organizationalUnit creator").execPopulate();
-    console.log(tasktemplate);
     return tasktemplate;
 }
 
@@ -293,7 +220,17 @@ exports.editTaskTemplate = async (portal, data, id) => {
                 responsibleEmployees: data.responsibleEmployees,
                 consultedEmployees: data.consultedEmployees,
                 organizationalUnit: data.organizationalUnit,
-                taskActions: data.taskActions
+                taskActions: data.taskActions,
+                taskInformations: data.taskInformations.map((item, key) => {
+                    return {
+                        code: "p" + parseInt(key + 1),
+                        name: item.name,
+                        description: item.description,
+                        filledByAccountableEmployeesOnly: item.filledByAccountableEmployeesOnly,
+                        type: item.type,
+                        extra: item.extra,
+                    }
+                })
             }
         },
         { new: true },
@@ -358,10 +295,21 @@ exports.editTaskTemplate = async (portal, data, id) => {
 exports.importTaskTemplate = async (portal, data, id) => {
     let results = [];
     for (let i = 0; i < data.length; i++) {
+        data[i]["creator"] = id;
         // chuyen dia chi email sang id
         for (let j = 0; j < data[i].accountableEmployees.length; j++) {
-            let accountableEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ email: data[i].accountableEmployees[j] });
-            data[i].accountableEmployees[j] = String(accountableEmployees._id);
+            let accountableEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ name: data[i].accountableEmployees[j] });
+            if (accountableEmployees) {
+                data[i].accountableEmployees[j] = accountableEmployees._id;
+            } else {
+                accountableEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ email: data[i].accountableEmployees[j] });
+                if (accountableEmployees) {
+                    data[i].accountableEmployees[j] = accountableEmployees._id;
+                } else {
+                    data[i].accountableEmployees[j] = null;
+                }
+                
+            }
         };
         let read = [];
         for (let j = 0; j < data[i].readByEmployees.length; j++) {
@@ -371,48 +319,89 @@ exports.importTaskTemplate = async (portal, data, id) => {
         }
         data[i].readByEmployees = read;
         for (let j = 0; j < data[i].consultedEmployees.length; j++) {
-            let consultedEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ email: data[i].consultedEmployees[j] });
-            data[i].consultedEmployees[j] = String(consultedEmployees._id);
+            let consultedEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ name: data[i].consultedEmployees[j] });
+            if (consultedEmployees) {
+                data[i].consultedEmployees[j] = consultedEmployees._id;
+            } else {
+                consultedEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ email: data[i].consultedEmployees[j] });
+                if (consultedEmployees) {
+                    data[i].consultedEmployees[j] = consultedEmployees._id;
+                } else {
+                    data[i].consultedEmployees[j] = null;
+                }
+                
+            }
         };
         for (let j = 0; j < data[i].informedEmployees.length; j++) {
-            let informedEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ email: data[i].informedEmployees[j] });
-            data[i].informedEmployees[j] = String(informedEmployees._id);
+            let informedEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ name: data[i].informedEmployees[j] });
+            if (informedEmployees) {
+                data[i].informedEmployees[j] = informedEmployees._id;
+            } else {
+                informedEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ email: data[i].informedEmployees[j] });
+                if (informedEmployees) {
+                    data[i].informedEmployees[j] = informedEmployees._id;
+                } else {
+                    data[i].informedEmployees[j] = null;
+                }
+                
+            }
         };
         for (let j = 0; j < data[i].responsibleEmployees.length; j++) {
-            let responsibleEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ email: data[i].responsibleEmployees[j] });
-            data[i].responsibleEmployees[j] = String(responsibleEmployees._id);
+            let responsibleEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ name: data[i].responsibleEmployees[j] });
+            if (responsibleEmployees) {
+                data[i].responsibleEmployees[j] = responsibleEmployees._id;
+            } else {
+                responsibleEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ email: data[i].responsibleEmployees[j] });
+                if (responsibleEmployees) {
+                    data[i].responsibleEmployees[j] = responsibleEmployees._id;
+                } else {
+                    data[i].responsibleEmployees[j] = null;
+                }
+            }
         };
         // xu ly thong tin filledByAccountableEmployeesOnly 
         for (let j = 0; j < data[i].taskInformations.length; j++) {
             if (data[i].taskInformations[j][0]) {
                 // format thong tin "chi qua ly duoc dien"
-                data[i].taskInformations[j]["filledByAccountableEmployeesOnly"] = data[i].taskInformations[j][3];
+                data[i].taskInformations[j]["filledByAccountableEmployeesOnly"] = String(data[i].taskInformations[j][3]);
                 // formart thong tin kieu du lieu
                 data[i].taskInformations[j]["type"] = data[i].taskInformations[j][2].toLowerCase();
                 data[i].taskInformations[j]["name"] = data[i].taskInformations[j][0];
                 data[i].taskInformations[j]["description"] = data[i].taskInformations[j][1];
                 data[i].taskInformations[j]["extra"] = "";
             } else {
+                if (!data[i].taskInformations[j][0]) {
+                    data[i].taskInformations = [];
+                    break;
+                }
                 data[i].taskInformations.splice(j, 1);
                 j--;
             }
         }
+
         for (let j = 0; j < data[i].taskActions.length; j++) {
             if (data[i].taskActions[j][0]) {
-                data[i].taskActions[j]["mandatory"] = data[i].taskActions[j][2];
+                if (data[i].taskActions[j][2] === "Bắt buộc" || data[i].taskActions[j][2] === "true") {
+                    data[i].taskActions[j]["mandatory"] = true;
+                } else {
+                    data[i].taskActions[j]["mandatory"] = false;
+                }
                 data[i].taskActions[j]["name"] = data[i].taskActions[j][0];
                 data[i].taskActions[j]["description"] = data[i].taskActions[j][1];
             } else {
+                if (!data[i].taskActions[j][0]){
+                    data[i].taskActions = [];
+                    break;
+                }
                 data[i].taskActions.splice(j, 1);
                 j--;
             }
         }
         let unit = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findOne({ name: data[i].organizationalUnit });
         data[i].organizationalUnit = String(unit._id);
-        data[i].creator = id;
+        
         let result = await this.createTaskTemplate(portal, data[i]);
         results = [...results, result];
     };
-    console.log("results", results);
     return results;
 }

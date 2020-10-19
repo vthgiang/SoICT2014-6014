@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
-import { DialogModal, ErrorLabel, SelectBox, ApiImage } from '../../../../common-components';
+import { DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
 import { UserActions } from '../redux/actions';
 import ValidationHelper from '../../../../helpers/validationHelper';
 
@@ -52,38 +52,34 @@ class UserEditForm extends Component {
 
     handleUserName = (e) => {
         let {value} = e.target;
-        this.setState({ userName: value });
-
         let {translate} = this.props;
         let {message} = ValidationHelper.validateName(translate, value, 6, 255);
-        this.setState({ userNameError: message})
+        this.setState({ 
+            userName: value,
+            userNameError: message
+        });
     }
 
     handleUserEmail = (e) => {
         let {value} = e.target;
-        this.setState({ userEmail: value });
-
         let {translate} = this.props;
         let {message} = ValidationHelper.validateEmail(translate, value);
-        this.setState({ userEmailError: message})
+        this.setState({ 
+            userEmail: value,
+            userEmailError: message
+        });
     }
 
     handleRolesChange = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                userRoles: value
-            }
+        this.setState({
+            userRoles: value
         });
     }
 
     handleUserActiveChange = (e) => {
         let value = e.target.value;
-        this.setState(state => {
-            return {
-                ...state,
-                userActive: value
-            }
+        this.setState({
+            userActive: value
         });
     }
 

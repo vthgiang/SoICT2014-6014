@@ -460,6 +460,8 @@ exports.importOrganizationalUnits = async (portal, data) => {
             if(parent) {
                 data[i].parent = parent._id
             }
+        } else {
+            data[i].parent = null;
         }
         let roles = await RoleService.createRolesForOrganizationalUnit(portal, data[i]);
         let organizationalUnit = await this.createOrganizationalUnit(
@@ -470,6 +472,7 @@ exports.importOrganizationalUnits = async (portal, data) => {
             roles.employees.map(em => em._id)
         );
         organizationalUnits = [...organizationalUnits, organizationalUnit];
+        await this.getOrganizationalUnitsAsTree(portal);
     }
     let tree = await this.getOrganizationalUnitsAsTree(portal);
 

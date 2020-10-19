@@ -36,7 +36,7 @@ function editGroup(id, data) {
         url: `${process.env.REACT_APP_SERVER}/crm/groups/${id}`,
         method: 'PATCH',
         data
-    }, false, true, 'crm.group');
+    }, true, true, 'crm.group');
 }
 
 function deleteGroup(id) {

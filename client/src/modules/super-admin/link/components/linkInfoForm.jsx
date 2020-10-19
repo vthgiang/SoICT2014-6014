@@ -30,25 +30,22 @@ class LinkInfoForm extends Component {
 
     handleLinkDescription = (e) => {
         let {value} = e.target;
-        this.setState({ linkDescription: value });
-
         let {translate} = this.props;
         let {message} = ValidationHelper.validateDescription(translate, value);
-        this.setState({ linkDescriptionError: message})
+        this.setState({ 
+            linkDescription: value,
+            linkDescriptionError: message
+        });
     }
-    
 
     handleLinkRoles = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                linkRoles: value
-            }
-        })
+        this.setState({
+            linkRoles: value
+        });
     }
 
     save = () => {
-        const { linkId, linkUrl, linkDescription, linkRoles, linkDescriptionError } = this.state;
+        const { linkId, linkUrl, linkDescription, linkRoles } = this.state;
 
         const link = {
             url: linkUrl,

@@ -119,12 +119,12 @@ exports.showDocument = async (req, res) => {
 exports.editDocument = async (req, res) => {
     try {
         if (req.files && req.files.file) {
-            let pathFile = req.files.file[0].destination + '/' + req.files.file[0].filename;
-            req.body.file = pathFile;
+            let pathFile = await req.files.file[0].destination + '/' + req.files.file[0].filename;
+            req.body.file = await pathFile;
         }
         if (req.files && req.files.fileScan) {
-            let pathFileScan = req.files.fileScan[0].destination + '/' + req.files.fileScan[0].filename;
-            req.body.scannedFileOfSignedDocument = pathFileScan;
+            let pathFileScan = await req.files.fileScan[0].destination + '/' + req.files.fileScan[0].filename;
+            req.body.fileScan = await pathFileScan;
         }
         const document = await DocumentServices.editDocument(req.params.id, req.body, req.query, req.portal);
 

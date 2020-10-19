@@ -1,18 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { taskTemplateActions } from '../redux/actions';
 import { EditTaskTemplate } from './editTaskTemplate';
-
-import { ActionForm } from '../component/actionsTemplate';
-import { DialogModal, SelectBox, ErrorLabel } from '../../../../common-components';
-
+import { DialogModal } from '../../../../common-components';
 import { TaskTemplateFormValidator } from './taskTemplateFormValidator';
-import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
-import './tasktemplate.css';
 
 class ModalEditTaskTemplate extends Component {
 
@@ -37,48 +31,39 @@ class ModalEditTaskTemplate extends Component {
             },
 
         };
-
-        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    shouldComponentUpdate ( nextProps, nextState) {
-        if(nextProps.taskTemplateId !== this.props.taskTemplateId) {
-            
-            this.setState({
-                taskTemplateId: nextProps.taskTemplateId,
-                taskTemplate: nextProps.taskTemplate,
+    static getDerivedStateFromProps(props, state) {
+        if(props.taskTemplateId !== state.taskTemplateId){
+            return {
+                ...state,
+                taskTemplateId: props.taskTemplateId,
+                taskTemplate: props.taskTemplate,
                 editingTemplate: {
-                    _id: nextProps.taskTemplate._id,
-                    organizationalUnit: nextProps.taskTemplate.organizationalUnit._id,
-                    name: nextProps.taskTemplate.name,
-                    readByEmployees: nextProps.taskTemplate.readByEmployees.map(item => item._id),
-                    responsibleEmployees: nextProps.taskTemplate.responsibleEmployees.map(item => item._id),
-                    accountableEmployees: nextProps.taskTemplate.accountableEmployees.map(item => item._id),
-                    consultedEmployees: nextProps.taskTemplate.consultedEmployees.map(item => item._id),
-                    informedEmployees: nextProps.taskTemplate.informedEmployees.map(item => item._id),
-                    description: nextProps.taskTemplate.description,
-                    formula: nextProps.taskTemplate.formula,
-                    priority: nextProps.taskTemplate.priority,
-                    taskActions: nextProps.taskTemplate.taskActions,
-                    taskInformations: nextProps.taskTemplate.taskInformations,
+                    _id: props.taskTemplate._id,
+                    organizationalUnit: props.taskTemplate.organizationalUnit._id,
+                    name: props.taskTemplate.name,
+                    readByEmployees: props.taskTemplate.readByEmployees,
+                    responsibleEmployees: props.taskTemplate.responsibleEmployees,
+                    accountableEmployees: props.taskTemplate.accountableEmployees,
+                    consultedEmployees: props.taskTemplate.consultedEmployees,
+                    informedEmployees: props.taskTemplate.informedEmployees,
+                    description: props.taskTemplate.description,
+                    formula: props.taskTemplate.formula,
+                    priority: props.taskTemplate.priority,
+                    taskActions: props.taskTemplate.taskActions,
+                    taskInformations: props.taskTemplate.taskInformations,
                 },
                 showActionForm: true,
-            });
-            return true;
-        }
-        return true;
+            }
+        }else return null;
     }
 
-    /**Gửi req sửa mẫu công việc này */
-    handleSubmit = async (event) => {
+    handleSubmit = () => {
         const { editingTemplate } = this.state;
-        console.log('editing', editingTemplate);
         this.props.editTaskTemplate(editingTemplate._id, editingTemplate);
     }
 
-    /**
-     * Xử lý form lớn tasktemplate
-     */
     isTaskTemplateFormValidated = () => {
         if (!this.state.editingTemplate._id)
             return false;
@@ -95,13 +80,12 @@ class ModalEditTaskTemplate extends Component {
         let msg = TaskTemplateFormValidator.validateTaskTemplateName(value);
 
         if (willUpdateState) {
-            this.state.editingTemplate.name = value;
-            this.state.editingTemplate.errorOnName = msg;
-            this.setState(state => {
-                return {
-                    ...state,
-                };
-            });
+            let {editingTemplate} = this.state;
+            editingTemplate.name = value;
+            editingTemplate.errorOnName = msg;
+            this.setState({
+                editingTemplate
+            })
         }
         return msg == undefined;
     }
@@ -110,13 +94,12 @@ class ModalEditTaskTemplate extends Component {
         let msg = TaskTemplateFormValidator.validateTaskTemplateDescription(value);
 
         if (willUpdateState) {
-            this.state.editingTemplate.description = value;
-            this.state.editingTemplate.errorOnDescription = msg;
-            this.setState(state => {
-                return {
-                    ...state,
-                };
-            });
+            let {editingTemplate} = this.state;
+            editingTemplate.description = value;
+            editingTemplate.errorOnDescription = msg;
+            this.setState({
+                editingTemplate
+            })
         }
         return msg == undefined;
     }
@@ -125,13 +108,12 @@ class ModalEditTaskTemplate extends Component {
         let msg = TaskTemplateFormValidator.validateTaskTemplateFormula(value);
 
         if (willUpdateState) {
-            this.state.editingTemplate.formula = value;
-            this.state.editingTemplate.errorOnFormula = msg;
-            this.setState(state => {
-                return {
-                    ...state,
-                };
-            });
+            let {editingTemplate} = this.state;
+            editingTemplate.formula = value;
+            editingTemplate.errorOnFormula = msg;
+            this.setState({
+                editingTemplate
+            })
         }
         return msg == undefined;
     }
@@ -163,13 +145,12 @@ class ModalEditTaskTemplate extends Component {
         let msg = TaskTemplateFormValidator.validateTaskTemplateRead(value);
 
         if (willUpdateState) {
-            this.state.editingTemplate.readByEmployees = value;
-            this.state.editingTemplate.errorOnRead = msg;
-            this.setState(state => {
-                return {
-                    ...state,
-                };
-            });
+            let {editingTemplate} = this.state;
+            editingTemplate.readByEmployees = value;
+            editingTemplate.errorOnRead = msg;
+            this.setState({
+                editingTemplate
+            })
         }
         return msg == undefined;
     }
@@ -182,9 +163,9 @@ class ModalEditTaskTemplate extends Component {
 
     render() {
         const { department, user, translate, tasktemplates } = this.props;
-        const { taskTemplate, taskTemplateId } = this.props;
+        const { editingTemplate, taskTemplateId } = this.state;
+        console.log("editingTemplate", editingTemplate)
 
-        // console.log('readByEmployees', editingTemplate.readByEmployees)
         return (
             <DialogModal
                 modalID="modal-edit-task-template" isLoading={user.isLoading}
@@ -195,7 +176,11 @@ class ModalEditTaskTemplate extends Component {
                 size={100}
             >
                 <React.Fragment>
-                    <EditTaskTemplate isTaskTemplate={true} taskTemplate={taskTemplate} taskTemplateId={taskTemplateId} onChangeTemplateData={this.onChangeTemplateData} />
+                    <EditTaskTemplate 
+                        isTaskTemplate={true} 
+                        taskTemplate={editingTemplate} 
+                        taskTemplateId={taskTemplateId} onChangeTemplateData={this.onChangeTemplateData} 
+                    />
                 </React.Fragment>
             </DialogModal>
         );

@@ -15,6 +15,7 @@ import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil'
 import ElementFactory from 'bpmn-js/lib/features/modeling/ElementFactory';
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
+import ContextPadProvider from 'bpmn-js/lib/features/context-pad/ContextPadProvider';
 import customModule from '../custom-task-process-template'
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
@@ -547,7 +548,7 @@ class ModalCreateTaskProcess extends Component {
 	// hàm lưu
 	save = async () => {
 		let elementList = this.modeler.get('elementRegistry')._elements
-		let { info } = this.state;
+		// let { info } = this.state;
 		let { department } = this.props;
 		let xmlStr;
 		this.modeler.saveXML({ format: true }, function (err, xml) {
@@ -555,6 +556,7 @@ class ModalCreateTaskProcess extends Component {
 		});
 
 		await this.setState(state => {
+			let { info } = state;
 			for (let j in info) {
 				if (Object.keys(info[j]).length !== 0) {
 					info[j].followingTasks = [];
@@ -592,7 +594,7 @@ class ModalCreateTaskProcess extends Component {
 			}
 		})
 
-		console.log('infooo', info);
+		console.log('infooo', this.state.info);
 
 		let data = {
 			info: this.state.info,

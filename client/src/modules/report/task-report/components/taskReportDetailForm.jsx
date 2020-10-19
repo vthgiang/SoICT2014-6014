@@ -248,9 +248,6 @@ class TaskReportDetailForm extends Component {
                             {/* Thống kê đến ngày */}
                             <div>
                                 <strong>Thời gian đánh giá công việc đến ngày:</strong>
-                                <ul>
-
-                                </ul>
                                 <span>{listTaskReportById && listTaskReportById.endDate && listTaskReportById.endDate.slice(0, 10)}</span>
                             </div>
 

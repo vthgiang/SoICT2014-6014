@@ -51,11 +51,11 @@ class TaskDashboard extends Component {
     }
 
     componentDidMount = async () => {
-        await this.props.getResponsibleTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null, false);
-        await this.props.getAccountableTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null, false);
-        await this.props.getConsultedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null, false);
-        await this.props.getInformedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null, false);
-        await this.props.getCreatorTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null, false);
+        await this.props.getResponsibleTaskByUser([], 1, 1000, [],  [], [], null, null, null, null, null, false);
+        await this.props.getAccountableTaskByUser([], 1, 1000, [],  [], [], null, null, null, null, null, false);
+        await this.props.getConsultedTaskByUser([], 1, 1000, [],  [], [], null, null, null, null, null, false);
+        await this.props.getInformedTaskByUser([], 1, 1000, [],  [], [], null, null, null, null, null, false);
+        await this.props.getCreatorTaskByUser([], 1, 1000, [],  [], [], null, null, null, null, null, false);
 
         let data = {
             type: "user"
@@ -119,7 +119,7 @@ class TaskDashboard extends Component {
             month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)));
         }
 
-        monthtitle = value.slice(3, 7) + '-' + value.slice(0, 2);
+        monthtitle = value.slice(0, 2) + '-' + value.slice(3, 7)
 
         this.INFO_SEARCH.startMonth = month;
         this.INFO_SEARCH.startMonthTitle = monthtitle;

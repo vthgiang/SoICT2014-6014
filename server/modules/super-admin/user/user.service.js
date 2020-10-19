@@ -144,7 +144,7 @@ exports.getAllEmployeeOfUnitByRole = async (portal, role) => {
 
     let employees;
     if (organizationalUnit) {
-        employee = await UserRole(connect(DB_CONNECTION, portal))
+        employees = await UserRole(connect(DB_CONNECTION, portal))
             .find({
                 roleId: {
                     $in: organizationalUnit.employees
@@ -310,6 +310,7 @@ exports.getOrganizationalUnitsOfUser = async (portal, userId) => {
  * @portal portal của db
  */
 exports.createUser = async (portal, data, company) => {
+    console.log("User", portal, data, company);
     var salt = bcrypt.genSaltSync(10);
     var password = generator.generate({
         length: 10,

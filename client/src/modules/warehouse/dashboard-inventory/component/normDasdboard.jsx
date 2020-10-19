@@ -42,11 +42,11 @@ class NormDasdboard extends Component {
             data: {
                 x : 'x',
                 columns: [
-                    ['x', 'Máy tính', 'Bàn học', 'Điện thoại', 'Chuột', 'Cặp sách', 'Bình nước', 'Sách vở', 'Bút'],
-                    ['Lê Thanh Nghị', 10, -20, 10, 20, -0, 0, 0, 30, 0],
-                    ['Tạ Quang Bửu', 10, 0, 10, 0, -10, 22, 50, 0, 20],
-                    ['Trần Đại Nghĩa', 0, -20, 0, 20, -0, 0, 0, 0, 20],
-                    ['Đại Cồ Việt', 10, -0, 10, 0, -10, 0, 0, 0, 20],
+                    ['x', 'Albendazole', 'Afatinib', 'Zoledronic Acid', 'Abobotulinum', 'Acid Thioctic', 'Mometasone (bôi)', 'Capecitabine', 'Mytomycin C'],
+                    ['Lê Thanh Nghị', 10, -20, 10, 20, -0, 0, 0, 30],
+                    ['Tạ Quang Bửu', 10, 0, -10, 0, -10, 22, 50, 0],
+                    ['Trần Đại Nghĩa', 0, -20, 0, 20, -0, 0, 0, 0],
+                    ['Đại Cồ Việt', -10, -0, 10, 0, -10, 0, 0, 0],
                 ],
                 type: 'bar',
                 groups: [
@@ -61,6 +61,11 @@ class NormDasdboard extends Component {
                         multiline: false
                     },
                     height: 100
+                }
+            },
+            grid: {
+                y: {
+                    lines: [{value: 0}]
                 }
             }
         });

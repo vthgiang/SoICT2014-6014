@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from  'react-redux-multilingual';
 import {PaginateBar,
     DataTableSetting,
-    DeleteNotification, SelectBox} from '../../../../../common-components';
+    DeleteNotification, SelectBox, DatePicker} from '../../../../../common-components';
 import data from '../../dataTest/salesOrderData.json';
 import SalesOrderDetailForm from './salesOrderDetailForm';
 import SalesOrderCreateForm from './salesOrderCreateForm';
@@ -14,7 +14,7 @@ class SalesOrderTable extends Component {
     this.state = {
       limit: 5,
       page: 1,
-      type: 'quotation'
+      type: 'sales'
     }
   }
 
@@ -47,6 +47,10 @@ class SalesOrderTable extends Component {
     window.$('#modal-detail-sales-order').modal('show');
   }
 
+  handleChangeDate = () =>{
+
+  }
+
 
   render() {
      let {list, limit, page, type} = this.state;
@@ -59,7 +63,7 @@ class SalesOrderTable extends Component {
           ? parseInt(list.length / limit)
           : parseInt(list.length / limit + 1);
 
-    const priority= ["Thấp", "Trung bình", "Cao", "Rất cao"];
+    const priority= ["Thấp", "Trung bình", "Cao", "Đặc biệt"];
 
     let listFilter = list.filter((item) => {
       if (type === "sales" && item.type === "Đơn hàng kinh doanh"){
@@ -70,11 +74,7 @@ class SalesOrderTable extends Component {
     })
     return (
       <React.Fragment>
-        <div className="nav-tabs-custom">
-          <ul className="nav nav-tabs">
-            <li className="active"><a href="#type-quotation-order" data-toggle="tab" onClick={this.handleTypeQuotationOrder}>Đơn báo giá</a></li>
-            <li><a href="#type-sales-order" data-toggle="tab" onClick={this.handleTypeSaleOrder}>Đơn kinh doanh</a></li>
-          </ul>
+        {/* <div className="nav-tabs-custom"> */}
           <div className="box-body qlcv">
             {this.state.currentRow && 
             <SalesOrderDetailForm 
@@ -103,10 +103,9 @@ class SalesOrderTable extends Component {
                   className="form-control select2"
                   style={{ width: "100%" }}
                   items={[
-                    { value: 'Báo giá đến khách hàng', text: 'Báo giá đến khách hàng'},
                     { value: 'Chờ phê duyệt', text: 'Chờ phê duyệt'},
                     { value: 'Đã phê duyệt', text: 'Đã phê duyệt'},
-                    { value: 'Đang sản xuất', text: 'Đang sản xuất'},
+                    { value: 'Chờ lấy hàng', text: 'Chờ lấy hàng'},
                     { value: 'Đang giao hàng', text: 'Đang giao hàng'},
                     { value: 'Đã hoàn thành', text: 'Đã hoàn thành'},
                     { value: 'Hủy đơn', text: 'Hủy đơn'},
@@ -114,7 +113,69 @@ class SalesOrderTable extends Component {
                   onChange={this.handleStatusChange}
                 />
             </div>
+            </div>
+            <div className="form-inline">
+            <div className="form-group">
+                <label className="form-control-static">Bắt đầu giao hàng từ</label>
+                <DatePicker
+                    id="monthEndInHome"
+                    dateFormat="month-year"
+                    value={"10-2020"}
+                    onChange={this.handleChangeDate}
+                    disabled={false}
+                />
+            </div>
+            <div className="form-group">
+                <label className="form-control-static">Đến</label>
+                <DatePicker
+                    id="monthEndInHome"
+                    dateFormat="month-year"
+                    value={"10-2020"}
+                    onChange={this.handleChangeDate}
+                    disabled={false}
+                />
+            </div>
+            </div>
+            <div className="form-inline">
+            <div className="form-group">
+                <label className="form-control-static">Hạn chót giao hàng</label>
+                <DatePicker
+                    id="monthEndInHome"
+                    dateFormat="month-year"
+                    value={"10-2020"}
+                    onChange={this.handleChangeDate}
+                    disabled={false}
+                />
+            </div>
+            <div className="form-group">
+                <label className="form-control-static">Đến</label>
+                <DatePicker
+                    id="monthEndInHome"
+                    dateFormat="month-year"
+                    value={"10-2020"}
+                    onChange={this.handleChangeDate}
+                    disabled={false}
+                />
+            </div>
+            </div>
+            <div className="form-inline">
+            <div className="form-group">
+                <label className="form-control-static">Độ ưu tiên</label>
+                <SelectBox
+                  id={`select-filter-status-material-purchase-order`}
+                  className="form-control select2"
+                  style={{ width: "100%" }}
+                  items={[
+                    { value: 'Thấp', text: 'Thấp'},
+                    { value: 'Trung bình', text: 'Trung bình'},
+                    { value: 'Cao', text: 'Cao'},
+                    { value: 'Đặc biệt', text: 'Đặc biệt'}
+                  ]}
+                  onChange={this.handleStatusChange}
+                />
+                </div>
               <div className="form-group">
+                   <label className="form-control-static"></label>
                 <button
                   type="button"
                   className="btn btn-success"
@@ -124,7 +185,9 @@ class SalesOrderTable extends Component {
                   Tìm kiếm
                 </button>
               </div>
+
             </div>
+
             <table
               id={`order-table-${type}`}
               className="table table-striped table-bordered table-hover"
@@ -164,8 +227,8 @@ class SalesOrderTable extends Component {
                     <tr key={index}>
                       <td>{index + 1 + (page - 1) * limit}</td>
                       <td>{item.code}</td>
-                      <td>{priority[item.priority]}</td>
-                      <td>{item.status}</td>
+                      <td className={item.priority===1 ? 'text-primary' : 'text-danger'}>{priority[item.priority]}</td>
+                      <td className={item.status === "Đã hoàn thành" ? 'text-success' : 'text-warning'}>{item.status}</td>
                       <td>{item.creator}</td>
                       <td>{item.customer}</td>
                       <td>{item.deliveryStartDate}</td>
@@ -233,7 +296,7 @@ class SalesOrderTable extends Component {
               func={this.setPage}
             />
           </div>
-        </div>
+        {/* </div> */}
       </React.Fragment>
     );
   }

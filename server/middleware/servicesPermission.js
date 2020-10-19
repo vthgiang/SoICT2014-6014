@@ -357,6 +357,7 @@ exports.data = [
     { path: '/performtask/tasks/:taskId/task-comments/:commentId/comments/files/:fileId', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
 
     //Comment in process
+    { path: '/performtask/process/tasks/:taskId', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/performtask/process/tasks/:taskId/comments', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/performtask/process/tasks/:taskId/comments/:commentId', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/performtask/process/tasks/:taskId/comments/:commentId', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee'] },
@@ -469,8 +470,10 @@ exports.data = [
     { path: 'stocks/:id', method: 'DELETE', roles: ['Super Admin', 'Admin'] },
 
     { path: '/categories', method: 'GET', roles: ['Super Admin', 'Admin'] },
+    { path: '/categories/category-tree', method: 'GET', roles: ['Super Admin', 'Admin'] },
     { path: '/categories/by-type', method: 'GET', roles: ['Super Admin', 'Admin'] },
     { path: '/categories', method: 'POST', roles: ['Super Admin', 'Admin'] },
+    { path: '/categories/delete-many', method: 'POST', roles: ['Super Admin', 'Admin'] },
     { path: '/categories/:id', method: 'GET', roles: ['Super Admin', 'Admin'] },
     { path: '/categories/:id', method: 'PATCH', roles: ['Super Admin', 'Admin'] },
     { path: '/categories/:id', method: 'DELETE', roles: ['Super Admin', 'Admin'] },
@@ -516,6 +519,12 @@ exports.data = [
     { path: '/crm/cares/:id', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/crm/cares/:id', method: 'PATCH', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/crm/cares/:id', method: 'DELETE', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+    
+    { path: '/crm/careTypes', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+    { path: '/crm/careTypes', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+    { path: '/crm/careTypes/:id', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+    { path: '/crm/careTypes/:id', method: 'PATCH', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+    { path: '/crm/careTypes/:id', method: 'DELETE', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
 
     { path: '/crm/status', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/crm/status', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },

@@ -471,7 +471,7 @@ export default {
             },
             store: {
                 title: 'Store',
-                information: 'Information',
+                information: 'Archive Place',
                 organizational_unit_manage: 'Organizational Unit Management',
                 select_organizational: 'Select organizational unit',
                 user_manage: 'User management',
@@ -697,6 +697,7 @@ export default {
             detail_employee: 'Personal Information',
             update_employee: 'Update Personal Information',
             dashboard_employee: 'DashBoard Manage Staffs ',
+            employee_capacity:'Employee capacity',
             discipline: 'Manage Commendation And Discipline',
             annual_leave: 'Manage Annual Leave',
             salary_employee: 'Manage Salary',
@@ -768,11 +769,9 @@ export default {
             manage_orders: 'Manage Order',
             manage_sales_order: 'Sales Order',
             manage_manufacturing_order: 'Manufacturing Order',
-            manage_purchase_order: 'PurchaseOrder',
-            manage_quoter: 'Quoter',
-            manage_quoter_dashboard: 'Quoter Dashboard',
+            manage_purchase_order: 'Purchase Order',
+            manage_quote: 'Quote',
             manage_sales_order_dashboard: 'Sales Order Dashboard',
-            manage_purchase_order_dashboard: 'Purchase Order Dashboard ',
             manage_manufacturing_order_dashboard: 'Manufacturing Order Dashboard',
             manage_discount: 'Discount',
             manage_tax: 'Tax',
@@ -793,7 +792,7 @@ export default {
             manage_manufacturing_process: "Quản lý tiến độ sản xuất",
             manage_manufacturing_schedule: "Quản lý lịch sản xuất",
             manage_purchasing_request: "Quản lý phiếu mua hàng",
-            track_order: "Theo dõi đơn hàng",
+            manufacturing_dashboard: "Dashboard Quản lý sản xuất",
             analysis_manufacturing_performance: "Phân tích hiệu suất sản xuất",
             manage_manufacturing_works: "Quản lý nhà máy sản xuất",
             manage_manufacturing_mill: "Quản lý xưởng sản xuất"
@@ -1445,6 +1444,7 @@ export default {
                     contract_lable: 'Contract expiration',
                     contract_lable_title: 'Contract expiration',
                     contract_type_title: 'Type of contract',
+                    employee_infor: 'Employee information',
 
                     // Nhóm dành cho action
                     view_employee: 'View employee',
@@ -2491,6 +2491,7 @@ export default {
                 stop_timer: "Stop timer",
                 edit: "Edit",
                 delete: "Delete",
+                actions_not_perform: 'Actions not perform',
 
                 notice_end_task: 'Are you sure to finish this task',
                 notice_change_activate_task: 'Are you sure to change activated of this task',
@@ -3366,6 +3367,16 @@ export default {
             edit_file: 'Edit attached documents',
             add_file: 'Add attached documents',
             upload: 'Upload',
+        },
+
+        // Quản lý sản xuất phần KHSX và LSX
+        manufacturing: {
+            manufacturing_works: {
+                name: "works name",
+                code: "works code",
+                search: "Search",
+                create_works: "Create works"
+            }
         }
     }
 }

@@ -108,7 +108,7 @@ a:hover, a:active, a:focus {
 /* CSS cho C3 Chart */
 .c3-tooltip-container {
     max-height: none !important;
-    width: 30%;
+    width: 30%;;
 }
 
 .c3-tooltip {
@@ -283,9 +283,10 @@ legend.legend-box-info {
 
 /* Description box */
 .description-box {
+    background-color: #fff;
     box-shadow: none;
     border: 1px solid #f4f4f4;
-    padding: 5px 10px 10px 10px;
+    padding: 8px 15px 15px 15px;
     line-height: 2.3;
     margin-top: 10px;
     margin-bottom: 10px;
@@ -312,7 +313,11 @@ legend.legend-box-info {
     margin-top: 0.5em;
 }
 
-
+.description-box > h4.title {
+    font: bold;
+    border-bottom: 1px solid gray;
+    padding-bottom: 4px;
+}
 
 
 
@@ -730,4 +735,3 @@ div.notification-title ::after {
     background-color: rgb(228, 190, 190);
     color: rgb(244, 233, 233);
 }
- 

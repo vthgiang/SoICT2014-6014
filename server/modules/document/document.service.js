@@ -125,6 +125,7 @@ exports.increaseNumberView = async (id, viewer, portal) => {
  * Tạo một tài liệu văn bản mới
  */
 exports.createDocument = async (portal, data, company) => {
+    console.log('dataaaaaa', data)
     const newDoc = {
         company,
         name: data.name,
@@ -145,10 +146,10 @@ exports.createDocument = async (portal, data, company) => {
             scannedFileOfSignedDocument: data.scannedFileOfSignedDocument,
         }],
         roles: data.roles,
+        relationshipDescription: data.relationshipDescription,
+        archivedRecordPlaceInfo: archivedRecordPlaceInfo,
+        archivedRecordPlaceOrganizationalUnit: data.archivedRecordPlaceOrganizationalUnit,
     }
-    if (data.relationshipDescription !== 'undefined') newDoc.relationshipDescription = data.relationshipDescription;
-    if (data.archivedRecordPlaceInfo !== 'undefined') newDoc.archivedRecordPlaceInfo = data.archivedRecordPlaceInfo;
-    if (data.archivedRecordPlaceOrganizationalUnit !== 'undefined') newDoc.archivedRecordPlaceOrganizationalUnit = data.archivedRecordPlaceOrganizationalUnit;
 
     const doc = await Document(connect(DB_CONNECTION, portal)).create(newDoc);
 
@@ -166,6 +167,7 @@ exports.createDocument = async (portal, data, company) => {
  */
 exports.editDocument = async (id, data, query = undefined, portal) => {
     // thêm lịch sử chỉnh sửa
+    console.log('dataaa', data);
     let { creator, title, descriptions } = data;
     let createdAt = Date.now();
     let log = {
@@ -202,7 +204,7 @@ exports.editDocument = async (id, data, query = undefined, portal) => {
                 doc.versions[index].effectiveDate = data.effectiveDate ? data.effectiveDate : doc.versions[index].effectiveDate;
                 doc.versions[index].expiredDate = data.expiredDate ? data.expiredDate : doc.versions[index].expiredDate;
                 doc.versions[index].file = data.file ? data.file : doc.versions[index].file;
-                doc.versions[index].scannedFileOfSignedDocument = data.scannedFileOfSignedDocument ? data.scannedFileOfSignedDocument : doc.versions[index].scannedFileOfSignedDocument;
+                doc.versions[index].scannedFileOfSignedDocument = data.fileScan ? data.fileScan : doc.versions[index].scannedFileOfSignedDocument;
                 await doc.save();
 
                 return doc;

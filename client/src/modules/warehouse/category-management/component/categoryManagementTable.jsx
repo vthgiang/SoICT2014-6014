@@ -22,6 +22,7 @@ class CategoryManagementTable extends Component {
     componentDidMount(){
         let { page, limit } = this.state;
         this.props.getCategories();
+        this.props.getCategoryToTree();
         this.props.getCategories({ page, limit });
     }
     
@@ -88,7 +89,8 @@ class CategoryManagementTable extends Component {
 
     render (){
         const { categories, translate } = this.props;
-        const { listPaginate, totalPages, page } = categories;
+        const { listPaginate, totalPages, page, categoryToTree } = categories;
+        console.log(categoryToTree);
 
         return (
             <div className="box">
@@ -206,6 +208,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     getCategories: CategoryActions.getCategories,
+    getCategoryToTree: CategoryActions.getCategoryToTree,
     getAllGoodsByCategory: GoodActions.getAllGoodsByCategory,
     deleteCategory: CategoryActions.deleteCategory
 }
