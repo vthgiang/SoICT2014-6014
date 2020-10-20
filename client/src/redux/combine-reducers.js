@@ -72,6 +72,8 @@ import { cares } from "../modules/crm/care/redux/reducers";
 
 //order
 
+import { quotes } from '../modules/production/order/quote/redux/reducers';
+
 //plan
 import { plan } from "../modules/plan/redux/reducers";
 
@@ -166,7 +168,7 @@ const appReducer = combineReducers({
     }),
 
     //order
-
+    quotes,
     //plane
     plan,
 

@@ -4,7 +4,7 @@ import c3 from "c3";
 import "c3/c3.css";
 
 import { DatePicker, SelectBox } from "../../../../../common-components";
-class SalesOfEmployee extends Component {
+class AverageQuoteToSales extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -21,26 +21,26 @@ class SalesOfEmployee extends Component {
             columns: this.state.typeChart
                 ? [
                       [
-                          "Doanh số bán hàng của nhân viên phòng kinh doanh 247",
-                          300,
-                          280,
-                          259,
-                          233,
-                          157,
-                          154,
-                          148,
-                          145,
-                          133,
+                          "Thời gian báo giá thành đơn trung bình của nhân viên phòng 247",
+                          8.34,
+                          10.23,
+                          29.34,
+                          23.65,
+                          15.26,
+                          14.79,
+                          14.13,
+                          15.95,
+                          13.26,
                       ],
                   ]
                 : [
                       [
-                          "Doanh số bán hàng của các phòng",
-                          300,
-                          280,
-                          259,
-                          233,
-                          157,
+                          "Thời gian báo giá thành đơn trung bình của các phòng",
+                          8.34,
+                          10.23,
+                          29.34,
+                          15.45,
+                          13.46,
                       ],
                   ],
             type: "bar",
@@ -49,7 +49,7 @@ class SalesOfEmployee extends Component {
     };
 
     removePreviousChart() {
-        const chart = this.refs.amountPieChart;
+        const chart = this.refs.verageQuoteToSales;
         if (chart) {
             while (chart.hasChildNodes()) {
                 chart.removeChild(chart.lastChild);
@@ -59,7 +59,7 @@ class SalesOfEmployee extends Component {
 
     handleChangeViewChart() {
         this.setState({
-            typeChart: !this.state.typeChart,
+            typeGood: !this.state.typeGood,
         });
     }
 
@@ -68,7 +68,7 @@ class SalesOfEmployee extends Component {
         let dataBarChart = this.setDataBarChart();
         this.removePreviousChart();
         let chart = c3.generate({
-            bindto: this.refs.salesOfEmployee,
+            bindto: this.refs.averageQuoteToSales,
 
             data: dataBarChart,
 
@@ -83,7 +83,7 @@ class SalesOfEmployee extends Component {
                 ? {
                       y: {
                           label: {
-                              text: "Triệu đồng",
+                              text: "Giờ",
                               position: "outer-middle",
                           },
                       },
@@ -105,7 +105,7 @@ class SalesOfEmployee extends Component {
                 : {
                       y: {
                           label: {
-                              text: "Triệu đồng",
+                              text: "Giờ",
                               position: "outer-middle",
                           },
                       },
@@ -138,6 +138,12 @@ class SalesOfEmployee extends Component {
         });
     };
 
+    handleChangeViewChart() {
+        this.setState({
+            typeChart: !this.state.typeChart,
+        });
+    }
+
     render() {
         this.barChart();
         return (
@@ -146,8 +152,8 @@ class SalesOfEmployee extends Component {
                     <i className="fa fa-bar-chart-o" />
                     <h3 className="box-title">
                         {this.state.typeChart
-                            ? "Doanh số bán hàng của nhân viên phòng kinh doanh 247"
-                            : "Doanh số bán hàng của các phòng"}
+                            ? "Thời gian báo giá thành đơn trung bình của nhân viêN phòng 247"
+                            : "Thời gian báo giá thành đơn trung bình của các phòng"}
                     </h3>
                     <div className="form-inline">
                         {this.state.typeChart ? (
@@ -241,11 +247,11 @@ class SalesOfEmployee extends Component {
                             </button>
                         </div>
                     </div>
-                    <div ref="salesOfEmployee"></div>
+                    <div ref="averageQuoteToSales"></div>
                 </div>
             </div>
         );
     }
 }
 
-export default SalesOfEmployee;
+export default AverageQuoteToSales;

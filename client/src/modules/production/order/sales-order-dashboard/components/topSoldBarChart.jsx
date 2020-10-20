@@ -126,6 +126,20 @@ class TopSoldBarChart extends Component {
                             />
                         </div>
                         <div className="form-group">
+                            <label className="form-control-static">
+                                Chọn Top
+                            </label>
+                            <input
+                                className="form-control"
+                                type="number"
+                                placeholder="Mặc định bằng 5"
+                                style={{ width: "175px" }}
+                            />
+                        </div>
+                        <div
+                            className="form-group"
+                            style={{ marginLeft: "20px" }}
+                        >
                             <button className="btn btn-success">
                                 Tìm kiếm
                             </button>

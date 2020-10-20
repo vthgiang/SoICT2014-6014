@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+const mongoosePaginate = require('mongoose-paginate-v2')
+
 const SalesOrderSchema = new Schema({
     code: {
         type: String,
@@ -179,6 +181,8 @@ const SalesOrderSchema = new Schema({
         default: Date.now()
     }
 })
+
+SalesOrderSchema.plugin(mongoosePaginate);
 
 module.exports = (db) => {
     if (!db.models.SalesOrder)
