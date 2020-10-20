@@ -24,7 +24,7 @@ const {
 require('dotenv').config();
 
 const initSampleCompanyDB = async () => {
-    console.log("Init sample VIAVET company database, ...");
+    console.log("Init sample VIAVET company database, please wait...\n\n");
 
     /**
      * 1. Tạo kết nối đến csdl của hệ thống và công ty viavet
@@ -40,24 +40,24 @@ const initSampleCompanyDB = async () => {
             pass: process.env.DB_AUTHENTICATION === "true" ? process.env.DB_PASSWORD : undefined,
         }
     );
-    if (!systemDB) throw ('DB system cannot connect');
-    console.log("DB system connected");
-    await Configuration(systemDB).insertMany([
-        {
-            name: '_viavet',
-            backup: {
-                time: {
-                    second: '0',
-                    minute: '0',
-                    hour: '2',
-                    date: '1',
-                    month: '*',
-                    day: '*'
-                },
-                limit: 10
-            }
+    if (!systemDB) throw (`Cannot connect to database [${process.env.DB_NAME}]. Try check connection config in file .env`);
+    await Company(systemDB).deleteOne({ shortName: '_viavet' });
+    await Configuration(systemDB).deleteOne({ name: '_viavet' });
+    await Configuration(systemDB).create({
+        name: '_viavet',
+        backup: {
+            time: {
+                second: '0',
+                minute: '0',
+                hour: '2',
+                date: '1',
+                month: '*',
+                day: '*'
+            },
+            limit: 10
         }
-    ]);
+    });
+    console.log("@Initial configuration complete.");
 
     const viavetDB = mongoose.createConnection(
         `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/_viavet`,
@@ -70,8 +70,7 @@ const initSampleCompanyDB = async () => {
             pass: process.env.DB_AUTHENTICATION === "true" ? process.env.DB_PASSWORD : undefined,
         }
     );
-    if (!systemDB) throw ('DB viavet cannot connect');
-    console.log("DB viavet connected");
+    if (!viavetDB) throw ('Cannot connect to database [viavet]. Try check connection config in file .env');
 
     /**
      * 1.1 Khởi tạo model cho db
@@ -83,9 +82,8 @@ const initSampleCompanyDB = async () => {
     /**
      * 2. Xóa dữ liệu db cũ của công ty viavet
      */
-    await Company(systemDB).deleteOne({ shortName: '_viavet' });
     viavetDB.dropDatabase();
-
+    console.log("@Setup new database.");
 
 
     /**
@@ -96,7 +94,7 @@ const initSampleCompanyDB = async () => {
         shortName: '_viavet',
         description: 'CÔNG TY CỔ PHẦN ĐẦU TƯ LIÊN DOANH VIỆT ANH'
     });
-    console.log(`Xong! Công ty [${viavet.name}] đã được tạo.`);
+    console.log(`@Created [${viavet.name}] company data.`);
 
 
     /**
@@ -342,7 +340,7 @@ const initSampleCompanyDB = async () => {
         company: viavet._id
     }
 ]);
-    console.log("Dữ liệu tài khoản người dùng cho công ty viavet", users);
+    console.log("@Created VIAVET USERS.");
 
     let viavetCom = await Company(systemDB).findById(viavet._id);
     viavetCom.superAdmin = users[0]._id;
@@ -365,6 +363,7 @@ const initSampleCompanyDB = async () => {
     const roleTuDinhNghia = await RoleType(viavetDB).findOne({
         name: Terms.ROLE_TYPES.COMPANY_DEFINED
     });
+    console.log("@Created VIAVET ROLETYPES.");
 
     /**
      * ------------------------------------------------------------
@@ -554,7 +553,7 @@ const initSampleCompanyDB = async () => {
         name: "Giám đốc quản trị",
         type: roleChucDanh._id
     });
-    console.log("Dữ liệu các phân quyền cho công ty viavet");
+    console.log("@Created VIAVET ROLES.");
 
 
     /**
@@ -618,7 +617,7 @@ const initSampleCompanyDB = async () => {
         employees: [nvHanhChinh._id, nvVanThu._id, nvVatTu._id, nvBepAn._id, nvBaoVe._id, nvTapVu._id],
         parent: pbGiamDoc._id
     });
-    console.log("Đã tạo dữ liệu phòng ban");
+    console.log("@Created VIAVET ORGANIZATIONAL_UNITS.");
 
     /**
      * 8. Tạo link cho các trang web của công ty viavet
@@ -696,6 +695,7 @@ const initSampleCompanyDB = async () => {
                 populate: { path: 'roleId' }
             });
     }
+    console.log("@Created VIAVET LINKS.");
 
     const createCompanyComponents = async (linkArr) => {
 
@@ -749,7 +749,7 @@ const initSampleCompanyDB = async () => {
     let roleArr = [roleSuperAdmin, roleAdmin, roleDean, roleViceDean, roleEmployee];
     await createCompanyLinks(linkArr, roleArr);
     await createCompanyComponents(linkArr);
-
+    console.log("@Created VIAVET COMPONENTS.");
 
     /**
      * Ngắt kết nối db
@@ -757,7 +757,7 @@ const initSampleCompanyDB = async () => {
     systemDB.close();
     viavetDB.close();
 
-    console.log("End init sample company database!");
+    console.log("\n\nDone. Initial database VIAVET successfully.");
 }
 
 initSampleCompanyDB().catch(err => {
