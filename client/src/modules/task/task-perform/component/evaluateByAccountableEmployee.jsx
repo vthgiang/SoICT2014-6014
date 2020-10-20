@@ -1518,15 +1518,16 @@ class EvaluateByAccountableEmployee extends Component {
                                         </div>
                                         <div>
                                             <strong>{translate('task.task_management.action_not_rating')}:&nbsp;&nbsp;</strong>
-                                            {actionsNotRating.length === 0 ? translate('task.task_management.no_action') :
-                                                actionsNotRating.length === 1 ? translate('task.task_management.no_action') :
-                                                    actionsNotRating.map((item, index) => {
-                                                        let seperator = index !== 0 ? ", " : "";
-                                                        return <span key={index}>
-                                                            {seperator}&nbsp;&nbsp;({index + 1}) 
+                                            {
+                                                actionsNotRating.length === 0 ? translate('task.task_management.no_action') :
+                                                actionsNotRating.map((item, index) => (
+                                                    <div>
+                                                        <span key={index}>
+                                                            ({index + 1})&nbsp;&nbsp;
                                                             <TextEditor data={item.description}/>
                                                         </span>
-                                                    })
+                                                    </div>
+                                                ))
                                             }
                                         </div>
                                     </div>
