@@ -144,7 +144,7 @@ exports.getAllEmployeeOfUnitByRole = async (portal, role) => {
 
     let employees;
     if (organizationalUnit) {
-        employee = await UserRole(connect(DB_CONNECTION, portal))
+        employees = await UserRole(connect(DB_CONNECTION, portal))
             .find({
                 roleId: {
                     $in: organizationalUnit.employees

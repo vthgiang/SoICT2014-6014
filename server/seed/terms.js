@@ -272,8 +272,15 @@ const LINKS = [{
     components: getComponentsInLink('/documents')
 },
 
-
-
+{
+    url: '/hr-employee-capacity',
+    description: 'Năng lực nhân viên',
+    category: LINK_CATEGORY.HUMAN_RESOURCE.name,
+    roles: [
+        ROOT_ROLES.ADMIN.name,
+    ],
+    components: getComponentsInLink('/hr-employee-capacity')
+},
 {
     url: '/hr-manage-work-plan',
     description: 'Quản lý kế hoạch làm việc',
@@ -294,7 +301,7 @@ const LINKS = [{
 },
 {
     url: '/hr-list-employee',
-    description: 'Danh sách nhân viên',
+    description: 'Quản lý thông tin nhân viên',
     category: LINK_CATEGORY.HUMAN_RESOURCE.name,
     roles: [
         ROOT_ROLES.ADMIN.name,

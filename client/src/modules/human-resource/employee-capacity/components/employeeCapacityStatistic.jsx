@@ -7,7 +7,7 @@ import { ResultsOfAllOrganizationalUnitKpiChart } from '../../../kpi/organizatio
 import { ResultsOfAllEmployeeKpiSetChart } from '../../../kpi/evaluation/dashboard/component/resultsOfAllEmployeeKpiSetChart';
 import { DashboardEvaluationEmployeeKpiSetAction } from '../../../kpi/evaluation/dashboard/redux/actions';
 
-class TabKPI extends Component {
+class EmployeeCapacityStatistic extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -36,7 +36,10 @@ class TabKPI extends Component {
             if (nextProps.month) {
                 let partMonth = nextProps.month.split('-');
                 monthNew = [partMonth[1], partMonth[0]].join('-');
-            }
+            };
+            console.log(nextProps.month);
+            console.log(nextProps.organizationalUnits);
+            console.log(nextProps.allOrganizationalUnits);
             nextProps.getAllEmployeeKpiSetOfUnitByIds((nextProps.organizationalUnits && nextProps.organizationalUnits.length !== 0) ? nextProps.organizationalUnits : nextProps.allOrganizationalUnits)
             return {
                 ...prevState,
@@ -103,7 +106,7 @@ class TabKPI extends Component {
     render() {
         const { translate, department, dashboardEvaluationEmployeeKpiSet } = this.props;
 
-        const { month, organizationalUnits,allOrganizationalUnits, numberOfExcellentEmployees, numberOfExcellent,
+        const { month, organizationalUnits, allOrganizationalUnits, numberOfExcellentEmployees, numberOfExcellent,
             resultsOfAllOrganizationalUnitsKpiChartData, resultsOfAllEmployeeKpiSetChartData } = this.state;
 
         let employeeKpiSets, lastMonthEmployeeKpiSets, organizationalUnitsName;
@@ -114,7 +117,7 @@ class TabKPI extends Component {
 
         if (dashboardEvaluationEmployeeKpiSet) {
             employeeKpiSets = dashboardEvaluationEmployeeKpiSet.employeeKpiSets;
-            lastMonthEmployeeKpiSets = employeeKpiSets && employeeKpiSets.filter(item => this.formatDate(item.date) == month);
+            lastMonthEmployeeKpiSets = employeeKpiSets && employeeKpiSets.filter(item => this.formatDate(item.date) == this.formatDate(month));
             lastMonthEmployeeKpiSets && lastMonthEmployeeKpiSets.sort((a, b) => b.approvedPoint - a.approvedPoint);
             lastMonthEmployeeKpiSets = lastMonthEmployeeKpiSets && lastMonthEmployeeKpiSets.slice(0, numberOfExcellentEmployees);
         }
@@ -140,7 +143,7 @@ class TabKPI extends Component {
                 <div className="col-md-12">
                     <div className="box box-solid">
                         <div className="box-header with-border">
-                            <h3 className="box-title">{`Top ${numberOfExcellentEmployees} ${translate('kpi.evaluation.dashboard.best_employee')} của ${(!organizationalUnits || organizationalUnits.length === department.list.length) ? "công ty" : organizationalUnitsName.join(', ')} ${month}`}</h3>
+                            <h3 className="box-title">{`Top ${numberOfExcellentEmployees} ${translate('kpi.evaluation.dashboard.best_employee')} của ${(!organizationalUnits || organizationalUnits.length === department.list.length) ? "công ty" : organizationalUnitsName.join(', ')} ${this.formatDate(month)}`}</h3>
                             <div className="box-tools pull-right">
                                 <button type="button" data-toggle="collapse" data-target="#setting-excellent" className="pull-right" style={{ border: "none", background: "none", padding: "0px" }}>
                                     <i className="fa fa-gear" style={{ fontSize: "19px" }}></i>
@@ -181,16 +184,15 @@ class TabKPI extends Component {
                 </div>
                 {/* Kết quả Kpi tất cả nhân viên */}
                 <div className="col-md-12">
-                    <div className="box-solid">
+                    <div className="box box-solid">
                         <div className="box-header with-border">
                             <h3 className="box-title">{`${translate('kpi.evaluation.dashboard.result_kpi_titile')} của ${(!organizationalUnits || organizationalUnits.length === department.list.length) ? "công ty" : organizationalUnitsName.join(', ')}`}</h3>
                             {resultsOfAllEmployeeKpiSetChartData && <ExportExcel type="link" id="export-all-employee-kpi-evaluate-result-dashboard" exportData={resultsOfAllEmployeeKpiSetChartData} style={{ marginTop: 5 }} />}
                         </div>
                         {/* /.box-header */}
-
                         <div className="box-body qlcv">
                             <ResultsOfAllEmployeeKpiSetChart
-                                organizationalUnitIds={allOrganizationalUnits}
+                                organizationalUnitIds={(organizationalUnits && organizationalUnits.length !== 0) ? organizationalUnits : allOrganizationalUnits}
                                 onDataAvailable={this.handleResultsOfAllEmployeeKpiSetChartDataAvailable}
                             />
                         </div>
@@ -210,5 +212,5 @@ const actionCreators = {
     getAllEmployeeKpiSetOfUnitByIds: DashboardEvaluationEmployeeKpiSetAction.getAllEmployeeKpiSetOfUnitByIds,
 };
 
-const tabKPI = connect(mapState, actionCreators)(withTranslate(TabKPI));
-export { tabKPI as TabKPI };
+const employeeCapacityStatistic = connect(mapState, actionCreators)(withTranslate(EmployeeCapacityStatistic));
+export { employeeCapacityStatistic as EmployeeCapacityStatistic };

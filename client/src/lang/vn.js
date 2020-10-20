@@ -582,6 +582,18 @@ export default {
 
             },
             care: {
+                add: 'Thêm mới công việc',
+                
+                name: 'Tên công việc',
+                caregiver: 'Nhân viên phụ trách',
+                customer: 'Khách hàng được chăm sóc',
+                description: 'Mô tả công việc chăm sóc',
+                careType: 'Loại hình chăm sóc',
+                status: 'Trạng thái',
+                startDate: 'Ngày bắt đầu',
+                endDate: 'Ngày kết thúc',
+                notes: 'Ghi chú',
+                action: 'Hành động',
 
             },
             statistic: {
@@ -736,6 +748,7 @@ export default {
             detail_employee: 'Thông tin cá nhân',
             update_employee: 'Cập nhật thông tin cá nhân',
             dashboard_employee: 'Bảng tin quản lý nhân sự',
+            employee_capacity:'Năng lực nhân viên',
             discipline: 'Quản lý khen thưởng - kỷ luật',
             annual_leave: 'Quản lý nghỉ phép',
             salary_employee: 'Quản lý lương nhân viên',

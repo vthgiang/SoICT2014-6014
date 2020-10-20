@@ -79,8 +79,10 @@ router.use("/documents", require("./modules/document/document.route"));
 // CRM
 app.use("/crm/customers", require("./modules/crm/customer/customer.route"));
 app.use("/crm/cares", require("./modules/crm/care/care.route"));
+app.use("/crm/careTypes", require("./modules/crm/careType/careType.route"));
 app.use("/crm/groups", require("./modules/crm/group/group.route"));
 app.use("/crm/status", require("./modules/crm/status/status.route"));
+
 
 // production - manufaturing
 app.use("/manufacturing-mill", require("./modules/production/manufacturing/manufacturingMill/manufacturingMill.route"));

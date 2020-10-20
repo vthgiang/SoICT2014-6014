@@ -63,11 +63,11 @@ class SideBar extends Component {
                                         </Link>
                                     </React.Fragment>
                                 ) : (
-                                    <p style={{ fontSize: "10px" }}>
-                                        <i className="fa fa-circle text-success"></i>{" "}
+                                        <p style={{ fontSize: "10px" }}>
+                                            <i className="fa fa-circle text-success"></i>{" "}
                                         Online{" "}
-                                    </p>
-                                )}
+                                        </p>
+                                    )}
                             </div>
                         </div>
                         <ul
@@ -401,59 +401,22 @@ class SideBar extends Component {
                             />
 
                             {/* Quản lý nhân sự */}
-                            <GroupItem
-                                groupItem={{
-                                    name: "menu.manage_employee",
-                                    icon: "fa fa-address-book",
-                                    list: [
-                                        {
-                                            name: "menu.dashboard_employee",
-                                            icon: "fa fa-dashboard",
-                                            path: "/hr-dashboard-employee",
-                                        },
-                                        {
-                                            name: "menu.manage_unit",
-                                            icon: "fa fa-sitemap",
-                                            path: "/hr-manage-department",
-                                        },
-                                        {
-                                            name: "menu.add_employee",
-                                            icon: "fa fa-user-plus",
-                                            path: "/hr-add-employee",
-                                        },
-                                        {
-                                            name: "menu.list_employee",
-                                            icon: "fa fa-address-card",
-                                            path: "/hr-list-employee",
-                                        },
-                                        {
-                                            name: "menu.salary_employee",
-                                            icon: "fa fa-line-chart",
-                                            path: "/hr-salary-employee",
-                                        },
-                                        {
-                                            name: "menu.time_keeping",
-                                            icon: "fa fa-calculator",
-                                            path: "/hr-time-keeping",
-                                        },
-                                        {
-                                            name: "menu.discipline",
-                                            icon: "fa fa-balance-scale",
-                                            path: "/hr-discipline",
-                                        },
-                                        {
-                                            name: "menu.annual_leave",
-                                            icon: "fa fa-calendar-times-o",
-                                            path: "/hr-annual-leave",
-                                        },
-                                        {
-                                            name: "menu.manage_work_plan",
-                                            icon: "fa fa-calendar",
-                                            path: "/hr-manage-work-plan",
-                                        },
-                                    ],
-                                }}
-                            />
+                            <GroupItem groupItem={{
+                                name: 'menu.manage_employee',
+                                icon: 'fa fa-address-book',
+                                list: [
+                                    { name: 'menu.dashboard_employee', icon: 'fa fa-dashboard', path: '/hr-dashboard-employee' },
+                                    { name: 'menu.employee_capacity', icon: 'fa fa-dashboard', path: '/hr-employee-capacity' },
+                                    { name: 'menu.manage_unit', icon: 'fa fa-sitemap', path: '/hr-manage-department' },
+                                    { name: 'menu.add_employee', icon: 'fa fa-user-plus', path: '/hr-add-employee' },
+                                    { name: 'menu.list_employee', icon: 'fa fa-address-card', path: '/hr-list-employee' },
+                                    { name: 'menu.salary_employee', icon: 'fa fa-line-chart', path: '/hr-salary-employee' },
+                                    { name: 'menu.time_keeping', icon: 'fa fa-calculator', path: '/hr-time-keeping' },
+                                    { name: 'menu.discipline', icon: 'fa fa-balance-scale', path: '/hr-discipline' },
+                                    { name: 'menu.annual_leave', icon: 'fa fa-calendar-times-o', path: '/hr-annual-leave' },
+                                    { name: 'menu.manage_work_plan', icon: 'fa fa-calendar', path: '/hr-manage-work-plan' },
+                                ]
+                            }} />
 
                             {/* Quản lý đào tạo */}
                             <GroupItem

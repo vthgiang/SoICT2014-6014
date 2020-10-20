@@ -46,6 +46,7 @@ import SalaryManager from '../modules/human-resource/salary/components';
 import TimesheetsManager from '../modules/human-resource/timesheets/components';
 import { AnnualLeave } from '../modules/human-resource/annual-leave/components/combinedContent';
 import { ManageLeaveApplication } from '../modules/human-resource/annual-leave/components/combinedContent';
+import { EmployeeCapacity } from '../modules/human-resource/employee-capacity/components';
 
 import { ListEducation } from '../modules/training/education-program/components/educationProgramList';
 import { TrainingPlan } from '../modules/training/course/components/course';
@@ -483,6 +484,21 @@ class Routes extends Component {
                         pageName={'dashboard_employee'}
                         layout={Layout}
                         component={EmployeeDashBoard}
+                    />
+                    <PrivateRoute
+                        isLoading={this.props.dashboardEvaluationEmployeeKpiSet.isLoading}
+                        key={'employee_capacity'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/hr-employee-capacity', name: 'employee_capacity', icon: 'fa fa-dashboard' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/hr-employee-capacity'}
+                        path={'/hr-employee-capacity'}
+                        pageName={'dashboard_employee'}
+                        layout={Layout}
+                        component={EmployeeCapacity}
                     />
                     <PrivateRoute
                         isLoading={this.props.discipline.isLoading}
