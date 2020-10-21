@@ -63,9 +63,9 @@ class TopIssueReceipt extends Component {
                     <div className="box-header with-border">
                         <i className="fa fa-bar-chart-o" />
                         <h3 className="box-title">
-                            Tốp 5 mặt hàng nhập, xuất nhiều nhất
+                            Tốp những mặt hàng nhập, xuất nhiều nhất
                         </h3>
-                            <div className="form-inline">
+                            <div className="form-inline" style={{display: 'flex', marginTop: '10px'}}>
                                 <div className="form-group">
                                     <SelectBox 
                                         id="multiSelectIssueReceipt"
@@ -73,6 +73,20 @@ class TopIssueReceipt extends Component {
                                         items={[
                                             { value: '1', text: 'Nhập'},
                                             { value: '0', text: 'Xuất'},
+                                        ]}
+                                        onChange={this.handleSelectOrganizationalUnit}
+                                    />
+                                </div>
+                                <div className="form-group" style={{display: 'flex'}}>
+                                    <label>Top</label>
+                                    <SelectBox 
+                                        id="multiSelectIssueRe"
+                                        className="form-control select2"
+                                        items={[
+                                            { value: '1', text: '5'},
+                                            { value: '2', text: '10'},
+                                            { value: '3', text: '15'},
+                                            { value: '4', text: '20'},
                                         ]}
                                         onChange={this.handleSelectOrganizationalUnit}
                                     />

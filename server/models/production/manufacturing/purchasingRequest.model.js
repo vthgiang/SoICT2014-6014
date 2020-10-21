@@ -14,15 +14,6 @@ const PurchasingRequestSchema = new Schema({
     purpose: { // Mục đích tạo
         type: String
     },
-    approvers: [{ // Danh sách người phê duyệt
-        approver: { // Người phê duyệt
-            type: Schema.Types.ObjectId,
-            ref: "User"
-        },
-        approveredTime: { // Thời gian phê duyệt
-            type: Date
-        }
-    }],
     materials: [{ // Danh sách nguyên vật liệu
         good: { // Nguyên vật liệu
             type: Schema.Types.ObjectId,
@@ -34,6 +25,10 @@ const PurchasingRequestSchema = new Schema({
     }],
     intendReceiveTime: { // Thời gian dự kiến nhận
         type: Date
+    },
+    manufacturingPlan: {// Kế hoạch sản xuất
+        type: Schema.Types.ObjectId,
+        ref: "ManufacturingPlan"
     },
     status: { // Trạng thái phiếu đề nghị mua nguyên vật liệu: 0. Chưa được duyệt xong || 1. Đã được duyệt xong
         type: Number,

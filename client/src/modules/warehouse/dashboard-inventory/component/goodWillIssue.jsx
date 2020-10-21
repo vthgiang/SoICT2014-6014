@@ -66,7 +66,7 @@ class GoodWillIssue extends Component {
                         </h3>
                         <div className="form-inline" style={{marginTop: '10px'}}>
                             <div className="form-group" style={{display: 'flex', marginBottom: '10px'}}>
-                                    <label>Chọn mặt hàng</label>
+                                    <label>Mặt hàng</label>
                                     <SelectBox 
                                         id="multiSelectOrgani"
                                         className="form-control select2"

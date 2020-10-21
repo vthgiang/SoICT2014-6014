@@ -25,12 +25,10 @@ class SupplierDashboard extends Component {
 
             data: {
                 columns: [
-                    ['Công ty TNHH ABC', 30],
-                    ['Công ty B', 50],
-                    ['Công ty C', 90],
-                    ['Công ty D', 20],
-                    ['Công ty E', 60],
-                    ['Công ty F', 30],
+                    ['Khách bán buôn', 30],
+                    ['Sỉ lẻ', 50],
+                    ['Nhà cung cấp Đức Anh', 90],
+                    ['Đại lý Việt Anh', 20],
                 ],
                 type: 'pie',
             },
@@ -74,9 +72,9 @@ class SupplierDashboard extends Component {
                     <div className="box-header with-border">
                         <i className="fa fa-bar-chart-o" />
                         <h3 className="box-title">
-                            Xem số lượng phiếu nhập cho từng nhà cung cấp
+                            Xem số lượng phiếu nhập cho từng nhóm nhà cung cấp
                         </h3>
-                        <div className="form-inline" style={{marginTop: '10px'}}>
+                        {/* <div className="form-inline" style={{marginTop: '10px'}}>
                             <div className="form-group" style={{display: 'flex', marginBottom: '10px', width: '70%'}}>
                                     <label>Nhóm nhà cung cấp</label>
                                     <SelectMulti
@@ -94,7 +92,7 @@ class SupplierDashboard extends Component {
                                         onChange={this.handleCategoryChange}
                                     />
                                 </div>
-                        </div>
+                        </div> */}
                         <div className="form-inline">
                             <div className="form-group">
                                     <label className="form-control-static">Từ</label>

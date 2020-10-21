@@ -9,6 +9,8 @@ import QuantityExpiratedDate from './quantityExpiratedDate';
 import NormDasdboard from './normDasdboard';
 import GoodWillIssue from './goodWillIssue';
 import GoodWillReceipt from './goodWillReceipt';
+import QuantityNorm from './quantityNorm';
+import QuantityInventoryByTime from './quantityInventorybyTime';
 
 class DashBoardInventories extends Component {
     constructor(props) {
@@ -73,6 +75,12 @@ class DashBoardInventories extends Component {
                 <div className="row">
                     <div className=" col-lg-12 col-md-12 col-md-sm-12 col-xs-12">
                         <QuantityInventoryDashboard  actionSearch={actionSearch} />
+                    </div>
+                    <div className=" col-lg-12 col-md-12 col-md-sm-12 col-xs-12">
+                        <QuantityNorm  actionSearch={actionSearch} />
+                    </div>
+                    <div className=" col-lg-12 col-md-12 col-md-sm-12 col-xs-12">
+                        <QuantityInventoryByTime  actionSearch={actionSearch} />
                     </div>
                     <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
                         <GoodWillIssue  actionSearch={actionSearch} />

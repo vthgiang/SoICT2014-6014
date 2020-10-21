@@ -9,10 +9,10 @@ const BinLocationSchema = new Schema ({
         replies: this
     },
 
-    child: {
+    child: [{
         type: Schema.Types.ObjectId,
         replies: this
-    },
+    }],
 
     path: {
         type: String
@@ -39,7 +39,7 @@ const BinLocationSchema = new Schema ({
 
     status: {
         type: String,
-        enum: ["1", "2", "3", "4"]
+        enum: ["1", "2", "3", "4", "5"]
     },
 
     users: [{
@@ -47,10 +47,15 @@ const BinLocationSchema = new Schema ({
         ref: 'User'
     }],
 
-    goods: [{
+    // goods: [{
+    //     type: Schema.Types.ObjectId,
+    //     ref: 'Good'
+    // }],
+
+    department: {
         type: Schema.Types.ObjectId,
-        ref: 'Good'
-    }],
+        ref: 'OrganizationalUnit'
+    },
 
     enableGoods: [{
         good: {
@@ -59,20 +64,24 @@ const BinLocationSchema = new Schema ({
         },
 
         contained: {
-            type: Number
+            type: Number,
+            default: 0
         },
 
         capacity: {
-            type: Number
+            type: Number,
+            default: 0
         }
     }],
 
     capacity: {
-        type: Number
+        type: Number,
+        default: 0
     },
 
     contained: {
-        type: Number
+        type: Number,
+        default: 0
     },
 
     unit: {

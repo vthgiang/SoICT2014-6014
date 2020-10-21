@@ -13,7 +13,9 @@ class CategoryManagement extends Component {
     render() {
         return (
             <div className="box" style={{ minHeight: "450px" }}>
-                <CategoryManagementTree />
+                <div className="box-body">
+                    <CategoryManagementTree />
+                </div>
             </div>
         );
     }

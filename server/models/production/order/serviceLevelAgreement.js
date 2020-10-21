@@ -24,14 +24,9 @@ const ServiceLevelAgreementSchema = new Schema({
     status: {
         type: Boolean,
         required: true
-    },
-    createAt: {
-        type: Date
-    },
-    updateAt: {
-        type: Date,
-        default: Date.now()
     }
+}, {
+    timestamps: true,
 })
 
 module.exports = (db) =>{

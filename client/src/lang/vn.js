@@ -3456,12 +3456,32 @@ export default {
 
             },
             bin_location_management: {
+                product: 'Sản phẩm',
+                material: 'Nguyên vật liệu',
+                equipment: 'Công cụ dụng cụ',
+                asset: 'Tài sản',
                 bin_location: 'Nơi lưu trữ',
                 archive: 'Danh mục lưu trữ',
-                1: 'Sẵn sàng sử dụng',
-                2: 'Đang sử dụng',
-                3: 'Đang sử chữa',
-                4: 'Không sử dụng',
+                1: {
+                    status: "Sẵn sàng sử dụng",
+                    color:  "green"
+                },
+                2: {
+                    status: 'Đang sử dụng',
+                    color: 'red'
+                },
+                3: {
+                    status: 'Đang sửa chữa',
+                    color: 'blue'
+                },
+                4: {
+                    status: 'Không sử dụng',
+                    color: 'red'
+                },
+                5: {
+                    status: 'Đã đầy',
+                    color: 'red'
+                },
                 index: 'STT',
                 add: 'Thêm mới',
                 add_title: 'Thêm danh mục mới',
@@ -3498,7 +3518,8 @@ export default {
                 validate_status: 'Bạn cần chọn kiểu kho',
                 delete_info: 'Bạn có muốn xóa kho',
                 max_quantity: 'Định mức tối đa',
-                min_quantity: 'Định mức tối thiểu'
+                min_quantity: 'Định mức tối thiểu',
+                stock: 'Kho',
             },
             bill_management: {
                 stock_book: 'Sổ kho',
@@ -3579,24 +3600,7 @@ export default {
 
         //manager order
         manage_order: {
-            index: "Số thứ tự",
-            add_order: "Thêm đơn hàng",
-            add_title: "Thêm mới đơn hàng",
-            edit_title: "Chỉnh sửa đơn hàng",
-            add_success: "Thêm đơn hàng thành công",
-            add_failure: "Đơn hàng không hợp lệ",
-            edit_success: "Đơn hàng đã được cập nhật",
-            edit_failure: "Xảy ra lỗi trong cập nhật đơn hàng",
-            delete_success: "Đơn hàng đã được xóa",
-            delete_failure: "Chưa thể xóa đơn hàng",
-            get_success: "Đã lấy dữ liệu",
-            get_failure: "Không lấy được dữ liệu",
-            code: "Mã đơn hàng",
-            quantity: "Số lượng",
-            amount: "Tổng tiền",
-            code_placeholder: "Nhập vào mã đơn hàng",
-            edit_order: "Chỉnh sửa đơn hàng",
-            delete_order: "Xóa đơn hàng",
+            quote_add_success: "Báo giá đã được tạo"
         },
 
         report_manager: {

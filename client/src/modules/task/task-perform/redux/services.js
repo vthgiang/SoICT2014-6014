@@ -1,5 +1,3 @@
-import { handleResponse } from '../../../../helpers/handleResponse';
-import { AuthenticateHeader } from '../../../../config';
 import {
     getStorage
 } from '../../../../config';

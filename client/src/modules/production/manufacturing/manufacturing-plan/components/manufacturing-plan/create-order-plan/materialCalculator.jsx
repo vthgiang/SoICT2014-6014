@@ -23,7 +23,6 @@ class MaterialCalculator extends Component {
                             <th rowSpan={2}>Đơn vị tính</th>
                             <th rowSpan={2}>Quy tắc đóng gói</th>
                             <th rowSpan={2}>Cần sản xuất</th>
-                            <th rowSpan={2}>Sản xuất theo kế hoạch</th>
                             <th colSpan={7}>Định mức nguyên vật liệu</th>
                         </tr>
                         <tr>
@@ -48,9 +47,6 @@ class MaterialCalculator extends Component {
                                             <td rowSpan={good.good.materials.length}>{good.good.baseUnit}</td>
                                             <td rowSpan={good.good.materials.length}>{good.good.packingRule}</td>
                                             <td rowSpan={good.good.materials.length}>{good.quantity - good.planedQuantity}</td>
-                                            <td rowSpan={good.good.materials.length}>
-                                                <input type="number" className="form-control" onChange={this.handleChangeData} value={good.quantity - good.planedQuantity} autoComplete="off" />
-                                            </td>
                                             <td>{i + 1}</td>
                                             <td>{material.code}</td>
                                             <td>{material.name}</td>
