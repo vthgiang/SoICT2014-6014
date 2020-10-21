@@ -31,21 +31,21 @@ class ModalViewTaskTemplate extends Component {
         return (
             <React.Fragment>
                 <DialogModal
-                    size='100' modalID="modal-view-tasktemplate" isLoading={false}
+                    size='75' modalID="modal-view-tasktemplate" isLoading={false}
                     formID="form-view-tasktemplate"
                     title={taskTemplate && taskTemplate.name}
                     hasSaveButton={false}
                 >
-                   <ViewTaskTemplate
-                    taskTemplate = {taskTemplate}
-                    isProcess = {false}
-                   />
+                    <ViewTaskTemplate
+                        taskTemplate={taskTemplate}
+                        isProcess={false}
+                    />
                 </DialogModal>
             </React.Fragment>
         );
     }
 }
- 
+
 function mapState(state) {
     const { tasktemplates } = state;
     return { tasktemplates };

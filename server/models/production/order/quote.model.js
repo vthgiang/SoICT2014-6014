@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const QuoteSchema = Schema({
     code: {
@@ -77,7 +78,7 @@ const QuoteSchema = Schema({
         type: Schema.Types.ObjectId,
         required: true
     }],
-    totalDiscounts: [{
+    totalDiscounts: {
         money: {
             type: Number
         },
@@ -103,7 +104,7 @@ const QuoteSchema = Schema({
         coin: {
             type: Number
         }
-    }],
+    },
     amount: {
         type: Number,
         required: true
@@ -127,6 +128,8 @@ const QuoteSchema = Schema({
         default: Date.now()
     }
 })
+
+QuoteSchema.plugin(mongoosePaginate);
 
 module.exports = (db) =>{
     if(!db.models.Quote)

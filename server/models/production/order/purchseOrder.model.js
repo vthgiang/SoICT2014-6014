@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const PurchaseOrderShema = new Schema({
     code: {
@@ -99,6 +100,8 @@ const PurchaseOrderShema = new Schema({
         default: Date.now()
     }
 })
+
+PurchaseOrderShema.plugin(mongoosePaginate);
 
 module.exports = (db) =>{
     if (!db.models.PurchaseOrder) 
