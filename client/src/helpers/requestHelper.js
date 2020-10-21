@@ -3,18 +3,20 @@ import { getStorage, clearStorage } from '../config';
 import ServerResponseAlert from '../modules/alert/components/serverResponseAlert';
 import { toast } from 'react-toastify';
 import React from 'react';
-import getBrowserFingerprint from 'get-browser-fingerprint';
+import FingerprintJS from '@fingerprintjs/fingerprintjs';
 
-const AuthenticateHeader = (name = 'jwt',) => {
-    const token = getStorage(name);
-    const currentRole = getStorage("currentRole");
-    const fingerprint = getBrowserFingerprint();
+const AuthenticateHeader = async() => {
+    const token = getStorage('jwt');
+    const currentRole = getStorage('currentRole');
+    const fpAgent = await FingerprintJS.load();
+    const result = await fpAgent.get();
+    const fingerprint = result.visitorId;
 
     return {
         'current-page': window.location.pathname,
         'auth-token': token,
         'current-role': currentRole,
-        'fingerprint': fingerprint,
+        'fingerprint': fingerprint.toString(),
         'Content-Type': 'application/json'
     }
 }
@@ -49,7 +51,7 @@ const showAuthResponseAlertAndRedirectToLoginPage = async () => {
  * @method : phương thức gọi
  * @data : data truyền đi - có thể có hoặc không
  */
-export function sendRequest(options, showSuccessAlert = false, showFailAlert = true, module, successTitle = 'general.success', errorTitle = 'general.error') {
+export async function sendRequest(options, showSuccessAlert = false, showFailAlert = true, module, successTitle = 'general.success', errorTitle = 'general.error') {
 
     const requestOptions = {
         url: options.url,
@@ -57,7 +59,7 @@ export function sendRequest(options, showSuccessAlert = false, showFailAlert = t
         data: options.data,
         params: options.params,
         responseType: options.responseType,
-        headers: AuthenticateHeader()
+        headers: await AuthenticateHeader()
     };
 
 
