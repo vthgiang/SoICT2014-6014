@@ -582,6 +582,18 @@ export default {
 
             },
             care: {
+                add: 'Thêm mới công việc',
+                
+                name: 'Tên công việc',
+                caregiver: 'Nhân viên phụ trách',
+                customer: 'Khách hàng được chăm sóc',
+                description: 'Mô tả công việc chăm sóc',
+                careType: 'Loại hình chăm sóc',
+                status: 'Trạng thái',
+                startDate: 'Ngày bắt đầu',
+                endDate: 'Ngày kết thúc',
+                notes: 'Ghi chú',
+                action: 'Hành động',
 
             },
             statistic: {
@@ -736,6 +748,7 @@ export default {
             detail_employee: 'Thông tin cá nhân',
             update_employee: 'Cập nhật thông tin cá nhân',
             dashboard_employee: 'Bảng tin quản lý nhân sự',
+            employee_capacity:'Năng lực nhân viên',
             discipline: 'Quản lý khen thưởng - kỷ luật',
             annual_leave: 'Quản lý nghỉ phép',
             salary_employee: 'Quản lý lương nhân viên',
@@ -819,11 +832,9 @@ export default {
             manage_sales_order: 'Đơn hàng kinh doanh',
             manage_manufacturing_order: 'Đơn hàng sản xuất',
             manage_purchase_order: 'Đơn mua hàng',
-            manage_quoter_dashboard: 'Dashboard kinh doanh',
-            manage_sales_order_dashboard: 'Dashboard đơn kinh doanh',
-            manage_purchase_order_dashboard: 'Dashboard đơn mua NVL',
+            manage_sales_order_dashboard: 'Dashboard kinh doanh',
             manage_manufacturing_order_dashboard: 'Dashboard sản xuất',
-            manage_quoter: 'Báo giá',
+            manage_quote: 'Báo giá',
             manage_discount: 'Giảm giá',
             manage_tax: 'Thuế',
             manage_sla: 'Cam kết chất lượng',
@@ -3568,24 +3579,7 @@ export default {
 
         //manager order
         manage_order: {
-            index: "Số thứ tự",
-            add_order: "Thêm đơn hàng",
-            add_title: "Thêm mới đơn hàng",
-            edit_title: "Chỉnh sửa đơn hàng",
-            add_success: "Thêm đơn hàng thành công",
-            add_failure: "Đơn hàng không hợp lệ",
-            edit_success: "Đơn hàng đã được cập nhật",
-            edit_failure: "Xảy ra lỗi trong cập nhật đơn hàng",
-            delete_success: "Đơn hàng đã được xóa",
-            delete_failure: "Chưa thể xóa đơn hàng",
-            get_success: "Đã lấy dữ liệu",
-            get_failure: "Không lấy được dữ liệu",
-            code: "Mã đơn hàng",
-            quantity: "Số lượng",
-            amount: "Tổng tiền",
-            code_placeholder: "Nhập vào mã đơn hàng",
-            edit_order: "Chỉnh sửa đơn hàng",
-            delete_order: "Xóa đơn hàng",
+            quote_add_success: "Báo giá đã được tạo"
         },
 
         report_manager: {
@@ -3699,7 +3693,25 @@ export default {
                 phone: "Số điện thoại",
                 address: "Địa chỉ",
                 status: "Trạng thái",
-                description: "Mô tả"
+                description: "Mô tả",
+                view_detail: "Xem chi tiết nhà máy",
+                edit: "Chỉnh sửa nhà máy",
+                1: "Đang hoạt động",
+                0: "Ngừng hoạt động",
+                choose_worksManager: "---Chọn giám đốc---",
+                worksManager_error: "Giám đốc không được để trống",
+                choose_foreman: "---Chọn quản đốc---",
+                foreman_error: "Quản đốc không được để trống",
+                choose_status: "---Chọn trạng thái nhà máy---",
+                status_error: "Trạng thái nhà máy không được để trống",
+                create_successfully: "Tạo nhà máy thành công",
+                create_failed: "Tạo nhà máy thất bại",
+                detail_works: "Xem chi tiết nhà máy",
+                created_at: "Ngày tạo",
+                list_mills: "Danh sách các xưởng",
+                works_edit: "Sửa thông tin nhà máy",
+                edit_successfully: "Sửa thông tin nhà máy thành công",
+                edit_failure: "Sửa thông tin nhà máy thất bại"
             }
         }
     }

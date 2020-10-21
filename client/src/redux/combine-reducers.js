@@ -69,8 +69,11 @@ import { customers } from "../modules/crm/customer/redux/reducers";
 import { groups } from "../modules/crm/group/redux/reducers";
 import { status } from "../modules/crm/status/redux/reducers";
 import { cares } from "../modules/crm/care/redux/reducers";
+import { careTypes } from "../modules/crm/careType/redux/reducers";
 
 //order
+
+import { quotes } from '../modules/production/order/quote/redux/reducers';
 
 //plan
 import { plan } from "../modules/plan/redux/reducers";
@@ -162,11 +165,11 @@ const appReducer = combineReducers({
 
     // customer management
     crm: combineReducers({
-        customers, groups, status,cares,
+        customers, groups, status,cares, careTypes
     }),
 
     //order
-
+    quotes,
     //plane
     plan,
 

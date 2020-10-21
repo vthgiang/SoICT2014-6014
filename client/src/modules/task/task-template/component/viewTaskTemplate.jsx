@@ -72,7 +72,7 @@ class ViewTaskTemplate extends Component {
                 <div className="row row-equal-height" style={{ marginTop: -25 }} >
                     <div className={`${isProcess ? "col-lg-12 col-sm-12" : "col-xs-12 col-sm-12 col-md-6 col-lg-6"}`} style={{ padding: 10 }}>
                         <div className="description-box" style={{ height: "100%" }}>
-                            <h4 className="title">
+                            <h4>
                                 {translate('task_template.general_information')}
                             </h4>
 
@@ -103,7 +103,7 @@ class ViewTaskTemplate extends Component {
 
                     <div className={`${isProcess ? "col-lg-12 col-sm-12" : "col-xs-12 col-sm-12 col-md-6 col-lg-6"}`} style={{ padding: 10 }} >
                         <div className="description-box" style={{ height: "100%" }}>
-                            <h4 className="title">
+                            <h4>
                                 {translate('task_template.roles')}
                             </h4>
                             <div>
@@ -183,7 +183,7 @@ class ViewTaskTemplate extends Component {
                 <div className="row row-equal-height">
                     <div className={`${isProcess ? "col-lg-12 col-sm-12" : "col-xs-12 col-sm-12 col-md-6 col-lg-6"}`} style={{ padding: 10 }} >
                         <div className="description-box">
-                            <h4 className="title">
+                            <h4>
                                 {translate('task_template.activity_list')}
                             </h4>
 
@@ -193,16 +193,18 @@ class ViewTaskTemplate extends Component {
                                     (!taskTemplate?.taskActions || taskTemplate?.taskActions.length === 0) ?
                                         <div><strong>{translate('task_template.no_data')}</strong></div> :
                                         taskTemplate?.taskActions.map((item, index, array) =>
-                                        <div className="task-item" key={index}>
-                                            <p>
-                                                <b className="number">{index+1}</b>
-                                                <span className="content">{item.name}</span>
-                                                {
-                                                    item.mandatory && <sup className="note">{translate('task_template.mandatory')}</sup>
-                                                }
-                                            </p>
-                                            <div>{parse(item.description)}</div>
-                                        </div>
+                                            <div className="task-item" key={index}>
+                                                <p>
+                                                    <b className="number">{index + 1}</b>
+                                                    <span className="content">
+                                                        {item.name}
+                                                        {
+                                                            item.mandatory && <span className="note">{translate('task_template.mandatory')}</span>
+                                                        }
+                                                    </span>
+                                                </p>
+                                                <div>{parse(item.description)}</div>
+                                            </div>
                                         )
                                 }
                             </div>
@@ -210,7 +212,7 @@ class ViewTaskTemplate extends Component {
                     </div>
                     <div className={`${isProcess ? "col-lg-12 col-sm-12" : "col-xs-12 col-sm-12 col-md-6 col-lg-6"}`} style={{ padding: 10 }}>
                         <div className="description-box">
-                            <h4 className="title">
+                            <h4>
                                 {translate('task_template.information_list')}
                             </h4>
 
@@ -220,19 +222,16 @@ class ViewTaskTemplate extends Component {
                                     (!taskTemplate?.taskInformations || taskTemplate?.taskInformations.length === 0) ?
                                         <div><strong>{translate('task_template.no_data')}</strong></div> :
                                         taskTemplate?.taskInformations.map((item, index) =>
-                                            <div key={index} className="tt-information">
-                                                <p className="name">
+                                            <div key={index}>
+                                                <strong>
                                                     {item.name}
-                                                </p>
-                                                <p className="param">@ {translate('task_template.code')}: <b>{item.code}</b></p>
-                                                <p className="param">@ {translate('task_template.datatypes')}: <b>{this.formatTypeInfo(item.type)}</b></p>
-                                                {
-                                                    item.filledByAccountableEmployeesOnly && 
-                                                    <p className="param">@ {translate('task_template.manager_fill')}</p>
-                                                }
-                                                <div>
-                                                    {parse(item.description)}
-                                                </div>
+                                                </strong>
+                                                <ul>
+                                                    <li><strong>{translate('task_template.code')}:</strong> {item.code}</li>
+                                                    <li><strong>{translate('task_template.datatypes')}:</strong> {this.formatTypeInfo(item.type)}</li>
+                                                    {item.filledByAccountableEmployeesOnly && <li>{translate('task_template.manager_fill')}</li>}
+                                                    <li><strong>{translate('task_template.description')}:</strong> <div style={{ display: "inline-block" }}>{parse(item.description)}</div></li>
+                                                </ul>
                                             </div>
                                         )
                                 }

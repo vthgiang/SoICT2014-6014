@@ -697,6 +697,7 @@ export default {
             detail_employee: 'Personal Information',
             update_employee: 'Update Personal Information',
             dashboard_employee: 'DashBoard Manage Staffs ',
+            employee_capacity:'Employee capacity',
             discipline: 'Manage Commendation And Discipline',
             annual_leave: 'Manage Annual Leave',
             salary_employee: 'Manage Salary',
@@ -768,11 +769,9 @@ export default {
             manage_orders: 'Manage Order',
             manage_sales_order: 'Sales Order',
             manage_manufacturing_order: 'Manufacturing Order',
-            manage_purchase_order: 'PurchaseOrder',
-            manage_quoter: 'Quoter',
-            manage_quoter_dashboard: 'Quoter Dashboard',
+            manage_purchase_order: 'Purchase Order',
+            manage_quote: 'Quote',
             manage_sales_order_dashboard: 'Sales Order Dashboard',
-            manage_purchase_order_dashboard: 'Purchase Order Dashboard ',
             manage_manufacturing_order_dashboard: 'Manufacturing Order Dashboard',
             manage_discount: 'Discount',
             manage_tax: 'Tax',
@@ -3263,24 +3262,7 @@ export default {
 
         // manage order
         manage_order: {
-            index: "Index",
-            add_order: "Add order",
-            add_title: "Add new order",
-            edit_title: "Edit order",
-            add_success: "Add new order successfully",
-            add_failure: "Add new order failed",
-            edit_success: "Order updated",
-            edit_failure: "Update failed",
-            delete_success: "Order deleted",
-            delete_failure: "Delete failed",
-            get_success: "Get data success",
-            get_failure: "Can not get data",
-            code: "Order code",
-            quantity: "Quantity",
-            amount: "Amount",
-            code_placeholder: "input order code",
-            edit_order: "Edit order",
-            delete_order: "Delete Order",
+            quote_add_success: "add successed"
         },
 
         report_manager: {

@@ -15,6 +15,7 @@ exports.createManufacturingWorks = async (data, portal) => {
         foreman: data.foreman,
         phoneNumber: data.phoneNumber,
         address: data.address,
+        status: data.status,
         manufacturingMills: data.manufacturingMills,
         description: data.description
     });
@@ -26,7 +27,7 @@ exports.createManufacturingWorks = async (data, portal) => {
         }, {
             path: "foreman", select: "name"
         }, {
-            path: "manufacturingMills", select: "code name"
+            path: "manufacturingMills", select: "code name teamLeader description"
         }]);
 
     return { manufacturingWorks }
@@ -66,7 +67,7 @@ exports.getAllManufacturingWorks = async (query, portal) => {
             }, {
                 path: "foreman", select: "name"
             }, {
-                path: "manufacturingMills", select: "code name"
+                path: "manufacturingMills", select: "code name teamLeader description"
             }]);
         return { allManufacturingWorks }
     } else {
@@ -95,7 +96,7 @@ exports.getManufacturingWorksById = async (id, portal) => {
         }, {
             path: "foreman", select: "name"
         }, {
-            path: "manufacturingMills", select: "code name"
+            path: "manufacturingMills", select: "code name description"
         }]);
     if (!manufacturingWorks) {
         throw Error("ManufacturingWorks is not existing")
@@ -121,11 +122,12 @@ exports.editManufacturingWorks = async (id, data, portal) => {
 
     oldManufacturingWorks.code = data.code ? data.code : oldManufacturingWorks.code;
     oldManufacturingWorks.name = data.name ? data.name : oldManufacturingWorks.name;
-    oldManufacturingWorks.worksManager = data.worksManager ? data.newManfacturingWorks : oldManufacturingWorks.worksManager;
+    oldManufacturingWorks.worksManager = data.worksManager ? data.worksManager : oldManufacturingWorks.worksManager;
     oldManufacturingWorks.foreman = data.foreman ? data.foreman : oldManufacturingWorks.foreman;
     oldManufacturingWorks.phoneNumber = data.phoneNumber ? data.phoneNumber : oldManufacturingWorks.phoneNumber;
     oldManufacturingWorks.address = data.address ? data.address : oldManufacturingWorks.address;
     oldManufacturingWorks.description = data.description ? data.description : oldManufacturingWorks.description;
+    oldManufacturingWorks.status = data.status ? data.status : oldManufacturingWorks.status
 
     await oldManufacturingWorks.save();
 

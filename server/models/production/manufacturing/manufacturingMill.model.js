@@ -11,7 +11,7 @@ const ManufacturingMillSchema = new Schema({
         type: String,
         required: true
     },
-    manufacturingWorks: { // Tên nhà máy chứa xưởng
+    manufacturingWorks: { // Nhà máy chứa xưởng
         type: Schema.Types.ObjectId,
         ref: 'ManufacturingWorks'
     },

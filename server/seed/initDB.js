@@ -18,7 +18,7 @@ const {
 require('dotenv').config();
 
 const initDB = async() => {
-    console.log("Init DB");
+    console.log("Starting init database. Please wait ...\n\n");
 
     /**
      * 1. Tạo kết nối đến cơ sở dữ liệu
@@ -34,13 +34,14 @@ const initDB = async() => {
             pass: process.env.DB_AUTHENTICATION === "true" ? process.env.DB_PASSWORD : undefined,
         }
     );
-    if(!systemDB) throw('DB cannot connect');
-	console.log("DB connected");
+    if(!systemDB) throw('Error! Cannot connect to MongoDB. Please check connection. :(');
 
 	/**
 	 * 2. Xóa dữ liệu db cũ và khởi tạo dữ liệu config 
 	 */
-    systemDB.dropDatabase(); 
+    systemDB.dropDatabase();
+    console.log("@Setup new database.");
+
     await Configuration(systemDB).insertMany([
         {
             name: 'all',
@@ -57,6 +58,7 @@ const initDB = async() => {
             }
         }
     ]);
+    console.log("@Initial configuration complete.");
 
 	/**
 	 * 3. Tạo các Role Type
@@ -66,7 +68,7 @@ const initDB = async() => {
         { name: Terms.ROLE_TYPES.POSITION },
         { name: Terms.ROLE_TYPES.COMPANY_DEFINED }
     ]);
-    console.log("ROLETYPE:", roleType)
+    console.log("@Created ROLETYPE.");
 	
 
 	/**
@@ -84,7 +86,8 @@ const initDB = async() => {
         name: Terms.ROOT_ROLES.SYSTEM_ADMIN.name,
         type: roleAbstract._id
     });
-	await UserRole(systemDB).create({ userId: systemAdmin._id, roleId: roleSystemAdmin._id });
+    await UserRole(systemDB).create({ userId: systemAdmin._id, roleId: roleSystemAdmin._id });
+    console.log("@Created SUPER ADMIN account.");
 	
 	/**
 	 * 5. Tạo các link và phân quyền truy cập cho system-admin
@@ -121,6 +124,8 @@ const initDB = async() => {
             deleteSoft: false
         }
     ]);
+    console.log("@Created LINKS.");
+
     await Privilege(systemDB).insertMany([
         {
             resourceId: links[0]._id,
@@ -173,7 +178,7 @@ const initDB = async() => {
         name: Terms.ROOT_ROLES.EMPLOYEE.name,
         description: Terms.ROOT_ROLES.EMPLOYEE.description
     });
-
+    console.log("@Created ROOTROLES.");
 
 	/**
 	 * 7. Khởi tạo các system-link và system-component
@@ -239,7 +244,6 @@ const initDB = async() => {
 
     // Tạo các system link
     const dataSystemLinks = Terms.LINKS.map( systemLink => {
-        console.log("SYSTEM LINK", systemLink)
         return {
             ...systemLink,
             roles: systemLink.roles.map(name => convertRoleNameToRoleId(name)),
@@ -255,14 +259,14 @@ const initDB = async() => {
         curSysComponent.links = dataComponent.links.map(linkUrl => convertLinkUrltoLinkId(linkUrl, systemLinks));
         await curSysComponent.save();
     }
-
+    console.log("@Created COMPONENTS.");
 
     /**
      * . Đóng kết nối với database
      */
     systemDB.close();
 
-    console.log("End init DB");
+    console.log("\n\nDone. Initial database successfully.");
 }
 
 initDB().catch(err=>{

@@ -54,7 +54,10 @@ class EmployeeDashBoardHeader extends Component {
         this.props.searchSalary({ callApiDashboard: true, month: month });
     }
 
-    // Function bắt sự kiện thay đổi unit
+    /**
+     * Function bắt sự kiện thay đổi unit
+     * @param {*} value : Array id đơn vị
+     */
     handleSelectOrganizationalUnit = async (value) => {
         if (value.length === 0) {
             value = null
@@ -64,7 +67,10 @@ class EmployeeDashBoardHeader extends Component {
         })
     };
 
-    // Function lưu giá trị tháng vào state khi thay đổi
+    /**
+     * Function lưu giá trị tháng vào state khi thay đổi
+     * @param {*} value : Giá trị tháng
+     */
     handleMonthChange = (value) => {
         if (value) {
             let partMonth = value.split('-');
@@ -76,7 +82,7 @@ class EmployeeDashBoardHeader extends Component {
         });
     }
 
-    // Bắt sự kiện tìm kiếm 
+    /** Bắt sự kiện tìm kiếm */
     handleSunmitSearch = async () => {
         let { organizationalUnits, month } = this.state;
 
@@ -98,6 +104,7 @@ class EmployeeDashBoardHeader extends Component {
         this.props.handleMonthChange(this.formatDate(month ? month : currentMonth, true));
         this.props.handleSelectOrganizationalUnit(organizationalUnits);
     }
+
     render() {
         const { employeesManager, department, discipline, annualLeave, translate } = this.props;
         const { organizationalUnits, month, arrUnitShow } = this.state;
