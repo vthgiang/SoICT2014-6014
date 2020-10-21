@@ -4,6 +4,39 @@ const arrayToTree = require('array-to-tree');
 const fs = require('fs');
 const ObjectId = require('mongoose').Types.ObjectId;
 
+async function findPath(data, portal){
+    let path = "";
+    let arrParent =[];
+    arrParent.push(data.code);
+    if(data.parent && data.parent !== "#"){
+        let parent = data.parent;
+        while(parent){
+            let tmp = await Category(connect(DB_CONNECTION, portal)).findById(parent);
+            arrParent.push(tmp.code);
+            parent = tmp.parent;
+        }
+    }
+    path = arrParent.reverse().join("-");
+    return path;
+}
+
+async function deleteNode(id, portal) {
+    const category = await Category(connect(DB_CONNECTION, portal)).findById(id);
+    if(!category) throw ['bin_location_not_found'];
+    let parent = category.parent;
+    let categorys = await Category(connect(DB_CONNECTION, portal)).find({ parent: id });
+
+    if(categorys.length) {
+        for( let i = 0; i < categorys.length; i++) {
+            categorys[i].parent = parent;
+            categorys[i].path = await findPath(categorys[i], portal);
+            await categorys[i].save();
+        }
+    }
+
+    await Category(connect(DB_CONNECTION, portal)).deleteOne({ _id: id });
+}
+
 exports.getCategories = async (query, portal) => {
     var { page, limit } = query;
     if(!page && !limit) {
@@ -65,6 +98,7 @@ exports.editCategory = async (id, data, portal) => {
     category.name = data.name;
     category.parent = ObjectId.isValid(data.parent) ? data.parent : null;
     category.type = data.type;
+    category.path = await findPath(data, portal)
     category.description = data.description;
     await category.save();
 
@@ -72,15 +106,15 @@ exports.editCategory = async (id, data, portal) => {
 }
 
 exports.deleteCategory = async (id, portal) => {
-    const category = await Category(connect(DB_CONNECTION, portal)).findById(id);
-    if(category === null) throw ['category_not_found'];
-    await Category(connect(DB_CONNECTION, portal)).deleteOne({ _id: id})
+    await deleteNode(id, portal);
 
     return await this.getCategoryToTree(portal);
 }
 
 exports.deleteManyCategories = async (array, portal) => {
-    await Category(connect(DB_CONNECTION, portal)).deleteMany({ _id: { $in: array } });
+    for( let i = 0; i < array.length; i++) {
+        await deleteNode(array[i], portal);
+    }
     
     return await this.getCategoryToTree(portal);
 }

@@ -213,7 +213,7 @@ class ComponentCreateForm extends Component{
                         id={`select-material-by-${id}`}
                         className="form-control select2"
                         style={{ width: "100%" }}
-                        value={component}
+                        value={component ? component : { value: '', text: translate('manage_warehouse.good_management.choose_category') }}
                         items={dataGoodByType}
                         onChange={this.handleGoodChange}
                         multiple={false}

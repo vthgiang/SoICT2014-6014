@@ -49,9 +49,9 @@ class NormDasdboard extends Component {
                     ['Đại Cồ Việt', -10, -0, 10, 0, -10, 0, 0, 0],
                 ],
                 type: 'bar',
-                groups: [
-                    ['Trần Đại Nghĩa','Tạ Quang Bửu', 'Lê Thanh Nghị', 'Đại Cồ Việt']
-                ]
+                // groups: [
+                //     ['Trần Đại Nghĩa','Tạ Quang Bửu', 'Lê Thanh Nghị', 'Đại Cồ Việt']
+                // ]
             },
             axis: {
                 x: {

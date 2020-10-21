@@ -248,7 +248,7 @@ class GoodEditForm extends Component {
                                         id={`select-category-by-${goodId}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
-                                        value={category}
+                                        value={category ? category : { value: '', text: translate('manage_warehouse.good_management.choose_category') }}
                                         items={dataSelectBox}
                                         onChange={this.handleCategoryChange}    
                                         multiple={false}

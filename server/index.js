@@ -72,6 +72,7 @@ router.use("/taskreports", require("./modules/report/task-report/taskReport.rout
 router.use("/stocks", require('./modules/warehouse/stock/stock.route'));
 router.use("/categories", require("./modules/warehouse/category/category.route"));
 router.use("/goods", require("./modules/warehouse/good/good.route"));
+router.use("/bin-locations", require("./modules/warehouse/bin-location/binLocation.route"));
 
 router.use("/examples", require("./modules/example/example.route"));
 router.use("/documents", require("./modules/document/document.route"));

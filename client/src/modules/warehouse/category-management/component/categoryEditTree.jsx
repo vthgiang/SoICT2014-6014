@@ -36,7 +36,7 @@ class CategoryEditTree extends Component {
         this.setState({ categoryParent: value[0] });
     };
 
-    validateName = async (value, willUpdateState) => {
+    validateName = async (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = this.props;
         if (!value) {
@@ -55,7 +55,7 @@ class CategoryEditTree extends Component {
         return msg === undefined;
     }
 
-    validateCode = async (value, willUpdateState) => {
+    validateCode = async (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = this.props;
         if (!value) {
@@ -125,7 +125,7 @@ class CategoryEditTree extends Component {
             <div id="edit-category-good">
                 <div className={`form-group ${errorCode === undefined ? "" : "has-error"}`}>
                     <label>{translate('manage_warehouse.category_management.code')}<span className="text-red">*</span></label>
-                    <input type="text" className="form-control" onChange={this.handleValidateName} value={categoryCode} />
+                    <input type="text" className="form-control" onChange={this.handleValidateCode} value={categoryCode} />
                     <ErrorLabel content={errorCode} />
                 </div>
                 <div className={`form-group ${errorName === undefined ? "" : "has-error"}`}>
