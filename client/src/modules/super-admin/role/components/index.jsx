@@ -17,7 +17,6 @@ class ManageRole extends Component {
             </div>
         );
     }
-
 }
 
 export default ManageRole;

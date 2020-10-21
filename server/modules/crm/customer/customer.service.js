@@ -74,6 +74,7 @@ exports.getCustomerById = async (portal, companyId, id) => {
         .populate({ path: 'status', select: '_id name' })
         .populate({ path: 'owner', select: '_id name' })
         .populate({path: 'creator', select: '_id name'})
+        .populate({path: 'statusHistories.oldValue statusHistories.newValue statusHistories.createdBy', select: '_id name'})
     return getCustomer;
 }
 
@@ -119,7 +120,8 @@ exports.editCustomer = async (portal, companyId, id, data, userId) => {
         .populate({ path: 'group', select: '_id name' })
         .populate({ path: 'status', select: '_id name' })
         .populate({ path: 'owner', select: '_id name' })
-        .populate({path: 'creator', select: '_id name'})
+        .populate({ path: 'creator', select: '_id name' })
+        .populate({path: 'statusHistories.oldValue statusHistories.newValue statusHistories.createdBy', select: '_id name'})
 }
 
 

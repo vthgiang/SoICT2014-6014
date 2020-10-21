@@ -226,6 +226,8 @@ class ModalCreateTaskProcess extends Component {
 		modeling.updateProperties(element1, {
 			shapeName: stringName,
 		});
+
+		this.setState(state => state); // Để render lại, tính toán xem có enable/disable nút lưu
 	}
 
 	// hàm cập nhật người thực hiện công việc

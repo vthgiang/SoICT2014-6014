@@ -83,7 +83,17 @@ module.exports = {
 
 
     //order
-    Order: require("./order/order.model"),
+    BankAccount: require('./production/order/bankAccount.model'),
+    Discount: require('./production/order/discount.model'),
+    ProposalOrder: require('./production/order/proposalOrder.model'),
+    CoinRule: require('./production/order/coinRule.model'),
+    ManufacturingOrder: require('./production/order/manufacturingOrder.model'),
+    Quote: require('./production/order/quote.model'),
+    Tax: require('./production/order/tax.model'),
+    SalesOrder: require('./production/order/salesOrder.model'),
+    ServiceLevelAgreement: require('./production/order/serviceLevelAgreement'),
+    PurchaseOrder: require('./production/order/purchseOrder.model'),
+
 
     Location: require('./common/location.model'),
 
@@ -94,5 +104,9 @@ module.exports = {
     Example: require('./example/example.model'),
 
     // production-manufacturing
-    ManufacturingMill: require('./production/manufacturing/manufacturingMill.model')
+    ManufacturingMill: require('./production/manufacturing/manufacturingMill.model'),
+    ManufacturingWorks: require('./production/manufacturing/manufacturingWorks.model'),
+    ManufacturingPlan: require('./production/manufacturing/manufacturingPlan.model'),
+    ManufacturingCommand: require('./production/manufacturing/manufacturingCommand.model'),
+    PurchasingRequest: require('./production/manufacturing/purchasingRequest.model'),
 }

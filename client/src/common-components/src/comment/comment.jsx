@@ -507,7 +507,7 @@ class Comment extends Component {
                                                             />
                                                             {/* Hiện file đã tải lên */}
                                                             {child.files.length > 0 &&
-                                                                <div className="tool-level2" style={{ marginTop: -15 }}>
+                                                                <div className="tool-level2" style={{ marginTop: "-10px" }}>
                                                                     {child.files.map((file, index) => {
                                                                         return <div key={index}>
                                                                             <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { this.handleDeleteFile(file._id, file.name, child._id, item._id, data._id, "childComment") }}><i className="fa fa-times"></i></a>

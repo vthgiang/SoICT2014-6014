@@ -11,26 +11,21 @@ const ManufacturingMillSchema = new Schema({
         type: String,
         required: true
     },
-    manufacturingWorks: { // Tên nhà máy chứa xưởng
+    manufacturingWorks: { // Nhà máy chứa xưởng
         type: Schema.Types.ObjectId,
         ref: 'ManufacturingWorks'
     },
     description: { // Mô tả xưởng
         type: String
     },
-    teamLeader: { //Tên tổ trưởng của xưởng
-        type: Schema.Types.ObjectId,
-        ref: "User"
-    },
-    workSchedules: [{
-        year: Number,
-        numberOfTurn: [{
+    workSchedules: [{// Lịch làm việc của xưởng
+        year: Number, // Năm
+        numberOfTurn: [{ // Mảng số ca [3, 3 ,3 ,3, 3 ...]
             type: Number
         }],
-        stateOfTurn: [{
-            // type: Schema.Types.ObjectId,
-            // ref: "ManufacturingCommand",
-            type: Number,
+        stateOfTurn: [{ // Mảng trạng thái ca [Mã lệnh, null, null, Mã lệnh, Mã lệnh, ...]
+            type: Schema.Types.ObjectId,
+            ref: "ManufacturingCommand",
             default: null
         }]
     }]

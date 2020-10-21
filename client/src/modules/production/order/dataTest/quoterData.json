@@ -375,5 +375,110 @@
             "paymentType": "Tiền mặt",
             "taker": "Phạm Văn B"
         }]
+    },
+    {
+        "id": "4",
+        "code": "QUOTE_12090",
+        "status": "Gửi yêu cầu",
+        "type": "Đơn báo giá",
+        "creator": "---",
+        "approvers": [],
+        "priority": 2,
+        "effectiveDate": "---",
+        "expirationDate": "---",
+        "customer": "Nguyễn Văn A",
+        "company": "Công ty X",
+        "address": "Tạ Quang Bửu, Hai Bà Trưng, Hà Nội",
+        "phone": "0123456789",
+        "discounts": [{
+            "code": "KM1",
+            "name": "Khuyến mãi cực hot khi mua thuốc úm gà",
+            "effectiveDate":"11/10/2020",
+            "expirationDate":"15/10/2021",
+            "type": "bonus",
+            "bonousLevel": [{
+                "mininum": 10,
+                "maximum": 50,
+                "bonus": [{
+                    "good": "Thuốc chữa gà rù",
+                    "quantity": 2
+                }, {
+                    "good": "Thuốc chữa thủy đậu",
+                    "quantity": 2
+                }
+                , 
+                {
+                    "mininum": 51,
+                    "maximum": 100,
+                    "bonous": [{
+                        "good": "Thuốc chữa gà rù",
+                        "quantity": 3
+                    }, {
+                        "good": "Thuốc chữa thủy đậu",
+                        "quantity": 3
+                    }]
+                }]
+            }]
+           
+        }],
+        "goods": [{
+            "_id": "1",
+            "returnRule": ["Chỉ được đổi trả trong 15 ngày", "Hàng khuyến mãi không được đổi trả", "Đổi trả phải nguyên đơn nguyên kiện"],
+            "serviceLevelAgreement": ["Hàng cam kết đúng hạn sử dụng trong thỏa thuận", "Quy cách đóng gói đạt tiêu chuẩn an toàn"],
+            "name": "Thuốc úm gia cầm",
+            "price": 50000,
+            "quantity": 20,
+            "baseUnit": "Hộp",
+            "lots": [],
+            "tax": [{
+                "_id": "1",
+                "name": "Thuế giá trị gia tăng",
+                "value": 10
+            }]
+        }, {
+            "_id": "2",
+            "returnRule": ["Chỉ được đổi trả trong 15 ngày", "Hàng khuyến mãi không được đổi trả", "Đổi trả phải nguyên đơn nguyên kiện"],
+            "serviceLevelAgreement": ["Hàng cam kết đúng hạn sử dụng trong thỏa thuận", "Quy cách đóng gói đạt tiêu chuẩn an toàn"],
+            "name": "Thuốc trị xù lông gà",
+            "price": 50000,
+            "quantity": 20,
+            "baseUnit": "Hộp",
+            "lots": [],
+            "tax": [{
+                "_id": "1",
+                "name": "Thuế giá trị gia tăng",
+                "value": 10
+            }]
+        }],
+        "totalDiscounts": {
+            "money": 200000,
+            "goods": [{
+                "_id": "7",
+                "name": "Thuốc chữa gà rù",
+                "quantity": 2,
+                "percent": 100,
+                "price": 10000,
+                "baseUnit": "Gói"
+            }, 
+            {
+                "_id": "8",
+                "name": "Thuốc chữa thủy đậu",
+                "quantity": 2,
+                "percent": 100,
+                "price": 10000,
+                "baseUnit": "Lọ"
+            }],
+            "coin": 20000
+        },
+        "amount": 2000000,
+        "paymentAmount": 1760000,
+        "totalTax": 160000,
+        "createAt": "11:39:30 07/10/2020",
+        "payments": [{
+            "money": 200000,
+            "paymentAt": "08:30:23 10/10/2020",
+            "paymentType": "Tiền mặt",
+            "taker": "Phạm Văn B"
+        }]
     }
 ]

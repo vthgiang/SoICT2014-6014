@@ -46,6 +46,7 @@ import SalaryManager from '../modules/human-resource/salary/components';
 import TimesheetsManager from '../modules/human-resource/timesheets/components';
 import { AnnualLeave } from '../modules/human-resource/annual-leave/components/combinedContent';
 import { ManageLeaveApplication } from '../modules/human-resource/annual-leave/components/combinedContent';
+import { EmployeeCapacity } from '../modules/human-resource/employee-capacity/components';
 
 import { ListEducation } from '../modules/training/education-program/components/educationProgramList';
 import { TrainingPlan } from '../modules/training/course/components/course';
@@ -107,18 +108,16 @@ import InventoryManagement from '../modules/warehouse/inventory-management/compo
 import CrmDashBoard from '../modules/crm/dashboard/components';
 import CrmCustomer from '../modules/crm/customer/components';
 import CrmGroup from '../modules/crm/group/components';
-// import CrmCare from '../modules/crm/care/components'
+import CrmCare from '../modules/crm/care/components'
 
 //orders
 import PurchaseOrder from '../modules/production/order/purchase-order/components';
 import SalesOrder from '../modules/production/order/sales-order/components'
 import ManufacturingOrder from '../modules/production/order/manufacturing-order/components';
 import Discount from '../modules/production/order/discount/components';
-import Quoter from '../modules/production/order/quoter/components';
-import PurchaseOrderDashboard from '../modules/production/order/purchase-order-dashboard/components';
-import SalesOrderDashboard from '../modules/production/order/sales-order-dashboard/components';
+import Quote from '../modules/production/order/quote/components';
 import ManufacturingOrderDashboard from '../modules/production/order/manufacturing-order-dashboard/components';
-import QuoterDashboard from '../modules/production/order/quoter-dashboard/components';
+import SalesOrderDashboard from '../modules/production/order/sales-order-dashboard/components';
 import Tax from '../modules/production/order/tax/components';
 import ServiceLevelAgreement from '../modules/production/order/service-level-agreement/components';
 
@@ -485,6 +484,21 @@ class Routes extends Component {
                         pageName={'dashboard_employee'}
                         layout={Layout}
                         component={EmployeeDashBoard}
+                    />
+                    <PrivateRoute
+                        isLoading={this.props.dashboardEvaluationEmployeeKpiSet.isLoading}
+                        key={'employee_capacity'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/hr-employee-capacity', name: 'employee_capacity', icon: 'fa fa-dashboard' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/hr-employee-capacity'}
+                        path={'/hr-employee-capacity'}
+                        pageName={'dashboard_employee'}
+                        layout={Layout}
+                        component={EmployeeCapacity}
                     />
                     <PrivateRoute
                         isLoading={this.props.discipline.isLoading}
@@ -1310,7 +1324,7 @@ class Routes extends Component {
                         component={CrmGroup}
                     />
 
-                    {/* <PrivateRoute
+                    <PrivateRoute
                         isLoading={false}
                         key={'customer-care'}
                         arrPage={[
@@ -1323,7 +1337,7 @@ class Routes extends Component {
                         pageName={'crm_list.care'}
                         layout={Layout}
                         component={CrmCare}
-                    /> */}
+                    />
 
                     {/* Orders Management */}
 
@@ -1389,22 +1403,22 @@ class Routes extends Component {
 
                     <PrivateRoute
                         isLoading={false}
-                        key={"/manage-quoter"}
+                        key={"/manage-quote"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
                             {
-                                link: "/manage-quoter",
-                                name: "manage_quoter",
+                                link: "/manage-quote",
+                                name: "manage_quote",
                                 icon: "fa fa-address-card",
                             },
                         ]}
                         auth={auth}
                         exact={true}
-                        link={"/manage-quoter"}
-                        path={"/manage-quoter"}
-                        pageName={"manage_quoter"}
+                        link={"/manage-quote"}
+                        path={"/manage-quote"}
+                        pageName={"manage_quote"}
                         layout={Layout}
-                        component={Quoter}
+                        component={Quote}
                     />
 
                     <PrivateRoute
@@ -1445,46 +1459,6 @@ class Routes extends Component {
                         pageName={"manage_manufacturing_order_dashboard"}
                         layout={Layout}
                         component={ManufacturingOrderDashboard}
-                    />
-
-                    <PrivateRoute
-                        isLoading={false}
-                        key={"/manage-purchase-order-dashboard"}
-                        arrPage={[
-                            { link: "/", name: "home", icon: "fa fa-home" },
-                            {
-                                link: "/manage-purchase-order-dashboard",
-                                name: "manage_purchase_order_dashboard",
-                                icon: "fa fa-address-card",
-                            },
-                        ]}
-                        auth={auth}
-                        exact={true}
-                        link={"/manage-purchase-order-dashboard"}
-                        path={"/manage-purchase-order-dashboard"}
-                        pageName={"manage_purchase_order_dashboard"}
-                        layout={Layout}
-                        component={PurchaseOrderDashboard}
-                    />
-
-                    <PrivateRoute
-                        isLoading={false}
-                        key={"/manage-quoter-dashboard"}
-                        arrPage={[
-                            { link: "/", name: "home", icon: "fa fa-home" },
-                            {
-                                link: "/manage-quoter-dashboard",
-                                name: "manage_quoter_dashboard",
-                                icon: "fa fa-address-card",
-                            },
-                        ]}
-                        auth={auth}
-                        exact={true}
-                        link={"/manage-quoter-dashboard"}
-                        path={"/manage-quoter-dashboard"}
-                        pageName={"manage_quoter_dashboard"}
-                        layout={Layout}
-                        component={QuoterDashboard}
                     />
 
                     <PrivateRoute

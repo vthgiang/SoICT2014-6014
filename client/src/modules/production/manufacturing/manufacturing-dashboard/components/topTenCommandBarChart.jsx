@@ -47,7 +47,13 @@ class TopTenCommandBarChart extends Component {
                         rotate: 75,
                         multiline: false
                     },
-                    height: 100
+                    height: 100,
+                },
+                y: {
+                    label: {
+                        text: "Số lượng",
+                        position: "outer-middle"
+                    }
                 }
             }
         });

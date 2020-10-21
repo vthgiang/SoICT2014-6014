@@ -70,15 +70,15 @@ class ManufacturingCommandAndResources extends Component {
                                                     <th>Mã lệnh</th>
                                                     <th>Tên mặt hàng</th>
                                                     <th>Đơn vị tính</th>
-                                                    <th>Chọn xưởng SX</th>
-                                                    <th>nhà máy</th>
+                                                    {/* <th>Chọn xưởng SX</th> */}
+                                                    {/* <th>nhà máy</th> */}
                                                     <th>Số lượng</th>
-                                                    <th>Ngày bắt đầu</th>
+                                                    {/* <th>Ngày bắt đầu</th>
                                                     <th>Ca bắt đầu</th>
                                                     <th>Ngày kết thúc</th>
                                                     <th>Ca kết thúc</th>
                                                     <th>Người chịu trách nhiệm</th>
-                                                    <th>Người giám sát</th>
+                                                    <th>Người giám sát</th> */}
                                                     <th>Hành động</th>
                                                 </tr>
                                             </thead>
@@ -86,7 +86,7 @@ class ManufacturingCommandAndResources extends Component {
                                                 {
                                                     (!commands[index] || commands[index].length === 0) ?
                                                         <tr>
-                                                            <td colSpan={14}>
+                                                            <td colSpan={6}>
                                                                 <center>Chưa tạo lệnh</center>
                                                             </td>
                                                         </tr>
@@ -98,7 +98,7 @@ class ManufacturingCommandAndResources extends Component {
                                                                 <td><input className="form-control" type="text" placeholder="LSX001" name="commandCode" style={{ width: "100%" }} /></td>
                                                                 <td>{good.good.name}</td>
                                                                 <td>{good.good.baseUnit}</td>
-
+                                                                {/* 
                                                                 <td>
                                                                     <SelectBox
                                                                         id={`select-manufacturing-mill`}
@@ -116,9 +116,9 @@ class ManufacturingCommandAndResources extends Component {
                                                                     />
 
                                                                 </td>
-                                                                <td>Nhà máy X</td>
+                                                                <td>Nhà máy X</td> */}
                                                                 <td><input className="form-control" type="number" placeholder="" name="nameField" style={{ width: "100%" }} /></td>
-                                                                <td>
+                                                                {/* <td>
                                                                     <DatePicker
                                                                         id={`day_start`}
                                                                         style={{ marginRight: "-2rem" }}
@@ -169,7 +169,7 @@ class ManufacturingCommandAndResources extends Component {
                                                                     />
                                                                 </td>
                                                                 <td>Nguyễn Anh Phương</td>
-                                                                <td>Phạm Đại Tài</td>
+                                                                <td>Phạm Đại Tài</td> */}
                                                                 {/* Hành động */}
                                                                 <td style={{ textAlign: "center" }}>
                                                                     <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteCommand(command)}><i className="material-icons"></i></a>
@@ -391,7 +391,7 @@ class ManufacturingCommandAndResources extends Component {
                     </div>
 
                 }
-                <GoodIssue />
+                <GoodIssue style={{ zIndex: 0 }} />
 
             </div>
         );

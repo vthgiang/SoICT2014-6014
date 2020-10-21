@@ -29,3 +29,4 @@ export * from './src/api-image';
 export * from './src/upload-file/uploadFile';
 export * from './src/comment/comment'
 export * from './src/scheduler/scheduler';
+export * from './src/text-editor';

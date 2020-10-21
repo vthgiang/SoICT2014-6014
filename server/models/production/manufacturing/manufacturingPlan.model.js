@@ -47,6 +47,12 @@ const ManufacturingPlanSchema = new Schema({
     description: { //  Mô tả kế hoạch
         type: String
     },
+    startDate: { // Ngày bắt đầu
+        type: Date
+    },
+    endDate: { // Ngày dự kiến kết thúc
+        type: Date
+    },
     logs: [{ // Ghi lại nhật ký chỉnh sửa kế hoạch
         creator: { // Người sửa
             type: Schema.Types.ObjectId,
