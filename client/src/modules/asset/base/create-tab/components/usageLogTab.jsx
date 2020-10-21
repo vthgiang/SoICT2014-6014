@@ -217,85 +217,85 @@ class UsageLogTab extends Component {
                 <div className="box-body qlcv">
                     {/* Lịch sử sử dụng */}
 
-                    <fieldset className="scheduler-border">
-                        <legend className="scheduler-border"><h4 className="box-title">{translate('asset.asset_info.usage_logs')}</h4></legend>
+                    {/* <fieldset className="scheduler-border">
+                        <legend className="scheduler-border"><h4 className="box-title">{translate('asset.asset_info.usage_logs')}</h4></legend> */}
 
-                        {/* Form thêm thông tin sử dụng */}
-                        <UsageLogAddModal handleChange={this.handleAddUsage} typeRegisterForUse={typeRegisterForUse} id={`addUsage${id}`} />
+                    {/* Form thêm thông tin sử dụng */}
+                    <UsageLogAddModal handleChange={this.handleAddUsage} typeRegisterForUse={typeRegisterForUse} id={`addUsage${id}`} />
 
-                        <div className="form-inline">
-                            <div className="form-group">
-                                <label style={{ width: "auto" }} className="form-control-static"> Đối tượng đang sử dụng:</label>
-                                <div style={{ width: "auto" }} className="form-control-static">
-                                    {assignedToUser ?
-                                        userlist.filter(item => item._id === assignedToUser).pop() ? userlist.filter(item => item._id === assignedToUser).pop().name : "Chưa có đối tượng sử dụng" : ''}
-                                    {assignedToUser && assignedToOrganizationalUnit && ' , '}
-                                    {assignedToOrganizationalUnit ?
-                                        departmentlist.filter(item => item._id === assignedToOrganizationalUnit).pop() ? departmentlist.filter(item => item._id === assignedToOrganizationalUnit).pop().name : "Chưa có đối tượng sử dụng" : ''}
-                                    {!assignedToUser && !assignedToOrganizationalUnit && 'Chưa có'}
-                                </div>
+                    <div className="form-inline">
+                        <div className="form-group">
+                            <label style={{ width: "auto" }} className="form-control-static"> Đối tượng đang sử dụng:</label>
+                            <div style={{ width: "auto" }} className="form-control-static">
+                                {assignedToUser ?
+                                    userlist.filter(item => item._id === assignedToUser).pop() ? userlist.filter(item => item._id === assignedToUser).pop().name : "Chưa có đối tượng sử dụng" : ''}
+                                {assignedToUser && assignedToOrganizationalUnit && ' , '}
+                                {assignedToOrganizationalUnit ?
+                                    departmentlist.filter(item => item._id === assignedToOrganizationalUnit).pop() ? departmentlist.filter(item => item._id === assignedToOrganizationalUnit).pop().name : "Chưa có đối tượng sử dụng" : ''}
+                                {!assignedToUser && !assignedToOrganizationalUnit && 'Chưa có'}
                             </div>
-
-                            {(assignedToUser || assignedToOrganizationalUnit) &&
-                                <div className="form-group" style={{ marginLeft: "20px" }}>
-                                    <button type="button" className="btn btn-success" onClick={this.handleRecallAsset} >Thu hồi</button>
-                                </div>
-                            }
                         </div>
 
-                        {/* Bảng thông tin sử dụng */}
-                        {
-                            (typeRegisterForUse == 3 || typeRegisterForUse == 1) &&
-                            <table className="table table-striped table-bordered table-hover">
-                                <thead>
-                                    <tr>
-                                        <th style={{ width: "10%" }}>{translate('asset.general_information.user')}</th>
-                                        <th style={{ width: "10%" }}>{translate('asset.general_information.organization_unit')}</th>
-                                        <th style={{ width: "10%" }}>{translate('asset.general_information.handover_from_date')}</th>
-                                        <th style={{ width: "10%" }}>{translate('asset.general_information.handover_to_date')}</th>
-                                        <th style={{ width: "10%" }}>{translate('asset.general_information.content')}</th>
-                                        <th style={{ width: '100px', textAlign: 'center' }}>{translate('table.action')}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {(usageLogs && usageLogs.length !== 0) &&
-                                        usageLogs.map((x, index) => (
-                                            <tr key={index}>
-                                                <td>{x.usedByUser ? (userlist.length && userlist.filter(item => item._id === x.usedByUser).pop() ? userlist.filter(item => item._id === x.usedByUser).pop().name : 'User is deleted') : ''}</td>
-                                                <td>{x.usedByOrganizationalUnit ? (departmentlist.length && departmentlist.filter(item => item._id === x.usedByOrganizationalUnit).pop() ? departmentlist.filter(item => item._id === x.usedByOrganizationalUnit).pop().name : 'Organizational Unit is deleted') : ''}</td>
-                                                <td>{x.startDate ? this.formatDate(x.startDate) : ''}</td>
-                                                <td>{x.endDate ? this.formatDate(x.endDate) : ''}</td>
-                                                <td>{x.description}</td>
-                                                <td>
-                                                    <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin sử dụng"><i
-                                                        className="material-icons">edit</i></a>
-                                                    {((assignedToUser && index != (usageLogs.length - 1)) || !assignedToUser) &&
-                                                        <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteUsage(index)}><i className="material-icons"></i></a>
-                                                    }
-                                                </td>
-                                            </tr>
-                                        ))
-                                    }
-                                </tbody>
-                            </table>
+                        {(assignedToUser || assignedToOrganizationalUnit) &&
+                            <div className="form-group" style={{ marginLeft: "20px" }}>
+                                <button type="button" className="btn btn-success" onClick={this.handleRecallAsset} >Thu hồi</button>
+                            </div>
                         }
-                        {
-                            typeRegisterForUse == 2 &&
+                    </div>
 
-                            <CalendarUsage
-                                id={`edit`}
-                                assetId={assetId}
-                                usageLogs={usageLogs}
-                                assignedToUser={assignedToUser}
-                                assignedToOrganizationalUnit={assignedToOrganizationalUnit}
-                                typeRegisterForUse={typeRegisterForUse}
-                                managedBy={managedBy}
-                            />
-                        }
-                        {typeRegisterForUse !== 2 &&
-                            (!usageLogs || usageLogs.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
-                        }
-                    </fieldset>
+                    {/* Bảng thông tin sử dụng */}
+                    {
+                        (typeRegisterForUse == 3 || typeRegisterForUse == 1) &&
+                        <table className="table table-striped table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th style={{ width: "10%" }}>{translate('asset.general_information.user')}</th>
+                                    <th style={{ width: "10%" }}>{translate('asset.general_information.organization_unit')}</th>
+                                    <th style={{ width: "10%" }}>{translate('asset.general_information.handover_from_date')}</th>
+                                    <th style={{ width: "10%" }}>{translate('asset.general_information.handover_to_date')}</th>
+                                    <th style={{ width: "10%" }}>{translate('asset.general_information.content')}</th>
+                                    <th style={{ width: '100px', textAlign: 'center' }}>{translate('table.action')}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {(usageLogs && usageLogs.length !== 0) &&
+                                    usageLogs.map((x, index) => (
+                                        <tr key={index}>
+                                            <td>{x.usedByUser ? (userlist.length && userlist.filter(item => item._id === x.usedByUser).pop() ? userlist.filter(item => item._id === x.usedByUser).pop().name : 'User is deleted') : ''}</td>
+                                            <td>{x.usedByOrganizationalUnit ? (departmentlist.length && departmentlist.filter(item => item._id === x.usedByOrganizationalUnit).pop() ? departmentlist.filter(item => item._id === x.usedByOrganizationalUnit).pop().name : 'Organizational Unit is deleted') : ''}</td>
+                                            <td>{x.startDate ? this.formatDate(x.startDate) : ''}</td>
+                                            <td>{x.endDate ? this.formatDate(x.endDate) : ''}</td>
+                                            <td>{x.description}</td>
+                                            <td>
+                                                <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin sử dụng"><i
+                                                    className="material-icons">edit</i></a>
+                                                {((assignedToUser && index != (usageLogs.length - 1)) || !assignedToUser) &&
+                                                    <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteUsage(index)}><i className="material-icons"></i></a>
+                                                }
+                                            </td>
+                                        </tr>
+                                    ))
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    {
+                        typeRegisterForUse == 2 &&
+
+                        <CalendarUsage
+                            id={`edit`}
+                            assetId={assetId}
+                            usageLogs={usageLogs}
+                            assignedToUser={assignedToUser}
+                            assignedToOrganizationalUnit={assignedToOrganizationalUnit}
+                            typeRegisterForUse={typeRegisterForUse}
+                            managedBy={managedBy}
+                        />
+                    }
+                    {typeRegisterForUse !== 2 &&
+                        (!usageLogs || usageLogs.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                    }
+                    {/* </fieldset> */}
 
                 </div>
                 {

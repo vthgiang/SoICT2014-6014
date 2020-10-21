@@ -33,7 +33,8 @@ class CalendarEmployee extends Component {
         this.INFO_CALENDAR = {
             delay: 0,
             intime: 0,
-            overDue: 0
+            overDue: 0,
+            count: 0
         }
 
         this.state = {
@@ -57,6 +58,7 @@ class CalendarEmployee extends Component {
 
     handleSearchData = async () => {
         const { tasks } = this.props;
+        this.INFO_CALENDAR.count++;
         let status = this.SEARCH_INFO.taskStatus;
 
         if (tasks) {
@@ -79,8 +81,8 @@ class CalendarEmployee extends Component {
             }
         })
 
-        // await this.getTaskDurations();
-        // await this.getTaskGroups();
+        await this.getTaskDurations();
+        await this.getTaskGroups();
     }
 
     // Lọc công việc theo trạng thái
@@ -185,7 +187,7 @@ class CalendarEmployee extends Component {
                         end_time = moment(endTime);
 
                         taskDurations.push({
-                            id: i + 1,
+                            id: i + this.INFO_CALENDAR.count,
                             group: tasksByStatus2[i].gr,
                             title: titleTask,
                             canMove: false,
@@ -284,16 +286,19 @@ class CalendarEmployee extends Component {
     displayTaskProgress = async (progress, x, color) => {
         if (x) {
             let d, child;
-
             d = document.createElement('div');
             d.setAttribute("class", "task-progress");
             d.style.width = progress > 5 ? `${progress}%` : `5px`;
             d.style.backgroundColor = color;
+            console.log('xxxxxxx', x, d);
 
             child = x.childElementCount;
             if (child === 1) {
-                await x.appendChild(d);
+                x.appendChild(d);
             }
+            // else {
+            //     await x.appendChild(d);
+            // }
         }
     }
 
@@ -345,7 +350,7 @@ class CalendarEmployee extends Component {
             tasksByStatus = tasksByStatus2;
         }
 
-        let id = tasksByStatus[itemId - 1]._id;
+        let id = tasksByStatus[itemId - this.INFO_CALENDAR.count]._id;
 
         await this.setState(state => {
             return {
@@ -485,7 +490,7 @@ class CalendarEmployee extends Component {
                         groups={this.getTaskGroups()}
                         items={this.getTaskDurations()}
                         itemsSorted
-                        itemTouchSendsClick={false}
+                        itemTouchSendsClick={true}
                         stackItems
                         sidebarWidth={150}
                         itemHeightRatio={0.8}

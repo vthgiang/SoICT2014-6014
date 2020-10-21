@@ -35,7 +35,8 @@ class CalendarOrganizationUnit extends Component {
         this.INFO_CALENDAR = {
             delay: 0,
             intime: 0,
-            overDue: 0
+            overDue: 0,
+
         }
 
         this.state = {
@@ -49,23 +50,23 @@ class CalendarOrganizationUnit extends Component {
         };
     }
 
-    static getDerivedStateFromProps = (nextProps, prevState) => {
+    // static getDerivedStateFromProps = (nextProps, prevState) => {
 
-        if (nextProps.tasks) {
-            return {
-                ...prevState,
-                tasks: nextProps.tasks
-            }
-        } else {
-            return null
-        }
-    }
-    shouldComponentUpdate = async (props, state) => {
-        if (props.tasks) {
-            return true
-        }
-        else return false
-    }
+    //     if (nextProps.tasks) {
+    //         return {
+    //             ...prevState,
+    //             tasks: nextProps.tasks
+    //         }
+    //     } else {
+    //         return null
+    //     }
+    // }
+    // shouldComponentUpdate = async (props, state) => {
+    //     if (props.tasks) {
+    //         return true
+    //     }
+    //     else return false
+    // }
 
     handleSelectStatus = async (taskStatus) => {
         if (taskStatus.length === 0) {
