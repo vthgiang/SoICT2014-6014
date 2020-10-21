@@ -412,7 +412,7 @@ class StockEditForm extends Component {
                                         id={`select-edit-status-of-stock`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
-                                        value={manageDepartment}
+                                        value={manageDepartment ? manageDepartment : { value: '', text: translate('manage_warehouse.stock_management.choose_department') }}
                                         items={departmentManagement}
                                         onChange={this.handleDepartmentChange}    
                                         multiple={false}
@@ -471,7 +471,7 @@ class StockEditForm extends Component {
                                             id={`select-edit-good-by-stock`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            value={goods.good}
+                                            value={good.good._id ? good.good._id : { value: '', text: translate('manage_warehouse.good_management.choose_category') }}
                                             items={listGoods}
                                             onChange={this.handleGoodChange}
                                             multiple={false}

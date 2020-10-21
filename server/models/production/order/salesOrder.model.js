@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+const mongoosePaginate = require('mongoose-paginate-v2')
+
 const SalesOrderSchema = new Schema({
     code: {
         type: String,
@@ -46,6 +48,14 @@ const SalesOrderSchema = new Schema({
     customer: {
         type: Schema.Types.ObjectId,
         ref: 'Customer',
+        required: true
+    }, 
+    customerPhone: {
+        type: String,
+        required: true
+    },
+    customerAddress: {
+        type: String,
         required: true
     },
     goods: [{
@@ -170,15 +180,12 @@ const SalesOrderSchema = new Schema({
         confirmationAt: {
             type: Date
         }
-    }],
-    createAt: {
-        type: Date
-    },
-    updateAt: {
-        type: Date,
-        default: Date.now()
-    }
+    }]
+}, {
+    timestamps: true,
 })
+
+SalesOrderSchema.plugin(mongoosePaginate);
 
 module.exports = (db) => {
     if (!db.models.SalesOrder)

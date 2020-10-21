@@ -544,7 +544,7 @@ class ModalEditTaskProcess extends Component {
 
 		for (let i in info) {
 			let taskItem = info[i];
-			if (!taskItem.name || (taskItem.organizationalUnit.trim() === '' || taskItem.name?.trim() === '')) {
+			if (!taskItem.name || ( taskItem.name?.trim() === '')) {//taskItem.organizationalUnit.trim() === '' ||
                 console.log('-------');
 				validateTasks = false;
 			}

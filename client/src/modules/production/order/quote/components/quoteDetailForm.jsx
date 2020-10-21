@@ -21,46 +21,6 @@ class QuoteDetailForm extends Component {
 
     render() {
         const { data, type } = this.props;
-        const goodsData = data.goods.map((item) => {
-            let check = false;
-            if (data.totalDiscounts.goods.length > 0) {
-                data.totalDiscounts.goods.forEach((e) => {
-                    if (item._id === e._id) {
-                        item.quantityDiscount = e.quantity;
-                    }
-                });
-            }
-            if (!check) {
-                item.quantityDiscount = 0;
-            }
-            return item;
-        });
-
-        const goodDataMerge = [];
-        goodsData.forEach((e) => {
-            goodDataMerge.push(e);
-        });
-        if (data.totalDiscounts.goods.length > 0) {
-            data.totalDiscounts.goods.forEach((e) => {
-                let check = false;
-                goodsData.forEach((good) => {
-                    if (good._id === e._id) {
-                        check = true;
-                    }
-                });
-                if (!check) {
-                    let good = e;
-                    good.quantityDiscount = e.quantity;
-                    good.quantity = 0;
-                    good.returnRule = [];
-                    good.serviceLevelAgreement = [];
-                    good.tax = [];
-                    goodDataMerge.push(good);
-                }
-            });
-        }
-
-        console.log("ddd", goodDataMerge);
 
         return (
             <React.Fragment>

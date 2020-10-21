@@ -63,6 +63,7 @@ import { reports } from "../modules/report/task-report/redux/reducers";
 import { stocks } from "../modules/warehouse/stock-management/redux/reducers";
 import { categories } from "../modules/warehouse/category-management/redux/reducers";
 import { goods } from "../modules/warehouse/good-management/redux/reducers";
+import { binLocations } from "../modules/warehouse/bin-location-management/redux/reducers";
 
 //crm
 import { customers } from "../modules/crm/customer/redux/reducers";
@@ -72,6 +73,8 @@ import { cares } from "../modules/crm/care/redux/reducers";
 import { careTypes } from "../modules/crm/careType/redux/reducers";
 
 //order
+
+import { quotes } from '../modules/production/order/quote/redux/reducers';
 
 //plan
 import { plan } from "../modules/plan/redux/reducers";
@@ -160,6 +163,7 @@ const appReducer = combineReducers({
     stocks,
     categories,
     goods,
+    binLocations,
 
     // customer management
     crm: combineReducers({
@@ -167,7 +171,7 @@ const appReducer = combineReducers({
     }),
 
     //order
-
+    quotes,
     //plane
     plan,
 
