@@ -155,7 +155,7 @@ class CreateCareForm extends Component {
                     formID="form-crm-care-create"
                     title={translate('crm.care.add')}
                     func={this.save}
-                    size={50}
+                    size={75}
                 // disableSubmit={!this.isFormValidated()}
                 >
                     <form id="form-crm-care-create">

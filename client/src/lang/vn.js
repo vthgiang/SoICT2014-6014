@@ -533,6 +533,7 @@ export default {
                 companyEstablishmentDate: 'Ngày thành lập công ty',
                 name: 'Tên khách hàng',
                 code: 'Mã khách hàng',
+                customerType: 'Loại khách hàng',
                 mobilephoneNumber: 'Số điện thoại di động',
                 telephoneNumber: 'Số điện thoại cố định',
                 group: 'Nhóm khách hàng',
@@ -551,7 +552,7 @@ export default {
                 website: 'Website',
                 linkedIn: 'linkedIn',
                 document: 'Giấy tờ',
-                description: 'Mô tả',
+                note: 'Ghi chú',
                 carier: 'Nhân viên chăm sóc phụ trách',
                 discount: 'Chiết khấu áp dụng',
                 by_group: 'Theo nhóm khách hàng',
@@ -562,6 +563,14 @@ export default {
                 info: 'Thông tin chung',
                 contact: 'Thông tin liên hệ',
                 advance: 'Thông tin khác',
+                list_attachments: 'Danh sách tài liệu',
+                file: {
+                    name: 'Tên tài liệu',
+                    description: 'Mô tả',
+                    url: 'Đường dẫn',
+                    add_file: 'Thêm mới file',
+                    attachment: 'Tập tin đính kèm',
+                },
 
                 add: 'Thêm mới khách hàng',
                 see: 'Xem thông tin khách hàng',
@@ -582,8 +591,6 @@ export default {
 
             },
             care: {
-                add: 'Thêm mới công việc',
-                
                 name: 'Tên công việc',
                 caregiver: 'Nhân viên phụ trách',
                 customer: 'Khách hàng được chăm sóc',
@@ -594,6 +601,10 @@ export default {
                 endDate: 'Ngày kết thúc',
                 notes: 'Ghi chú',
                 action: 'Hành động',
+
+                add: 'Thêm mới chăm sóc khách hàng',
+                info: 'Xem công việc chăm sóc khách hàng',
+                edit: 'Chỉnh sửa công việc chăm sóc khách hàng',
 
             },
             statistic: {
