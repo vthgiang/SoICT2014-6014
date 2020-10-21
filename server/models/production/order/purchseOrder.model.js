@@ -91,14 +91,9 @@ const PurchaseOrderShema = new Schema({
             type: Date,
             required: true
         }
-    }],
-    createAt: {
-        type: Date
-    },
-    updateAt: {
-        type: Date,
-        default: Date.now()
-    }
+    }]
+}, {
+    timestamps: true,
 })
 
 PurchaseOrderShema.plugin(mongoosePaginate);

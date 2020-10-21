@@ -49,6 +49,14 @@ const SalesOrderSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Customer',
         required: true
+    }, 
+    customerPhone: {
+        type: String,
+        required: true
+    },
+    customerAddress: {
+        type: String,
+        required: true
     },
     goods: [{
         good: {
@@ -172,14 +180,9 @@ const SalesOrderSchema = new Schema({
         confirmationAt: {
             type: Date
         }
-    }],
-    createAt: {
-        type: Date
-    },
-    updateAt: {
-        type: Date,
-        default: Date.now()
-    }
+    }]
+}, {
+    timestamps: true,
 })
 
 SalesOrderSchema.plugin(mongoosePaginate);

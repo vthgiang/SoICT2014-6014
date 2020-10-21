@@ -47,6 +47,9 @@ const GoodSchema = new Schema({
 
         description: {
             type: String
+        },
+        index: {
+            type: Number
         }
     }],
 
@@ -88,7 +91,32 @@ const GoodSchema = new Schema({
         manufacturingMill: ObjectId,
         productivity: Number,
         personNumber: Number
-    }]
+    }],
+    // Module chưa hoàn thiện
+    returnRules: [{
+        type: Schema.Types.ObjectId,
+        ref: ''
+    }],
+    serviceLevelAgreements: [{
+        type: Schema.Types.ObjectId,
+        ref: 'ServiceLevelAgreement'
+    }],
+    discounts: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Discount'
+    }],
+    taxs: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Tax'
+    }],
+    pricePerBaseUnit: {
+        type: Number
+    },
+    salesPriceVariance: {
+        type: Number
+    }
+}, {
+    timestamps: true,
 });
 
 GoodSchema.plugin(mongoosePaginate);
