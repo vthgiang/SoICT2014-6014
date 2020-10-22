@@ -139,7 +139,7 @@ exports.createDocument = async (portal, data, company) => {
         relationshipDocuments: data.relationshipDocuments,
         versions: [{
             versionName: data.versionName,
-            issuingDate: (data.issuingDate === 'Invalid date') ? "" : data.issuingDate,
+            issuingDate: data.issuingDate,
             effectiveDate: data.effectiveDate,
             expiredDate: data.expiredDate,
             file: data.file,
@@ -147,7 +147,6 @@ exports.createDocument = async (portal, data, company) => {
         }],
         roles: data.roles,
         relationshipDescription: data.relationshipDescription,
-        archivedRecordPlaceInfo: archivedRecordPlaceInfo,
         archivedRecordPlaceOrganizationalUnit: data.archivedRecordPlaceOrganizationalUnit,
     }
 
