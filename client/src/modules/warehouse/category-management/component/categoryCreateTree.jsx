@@ -69,7 +69,7 @@ class CategoryCreateTree extends Component {
                 return {
                     ...state,
                     categoryCode: value,
-                    errorName: msg,
+                    errorCode: msg,
                 }
             })
         }
@@ -81,7 +81,8 @@ class CategoryCreateTree extends Component {
     }
 
     isValidateForm = () => {
-        return this.validateName(this.state.categoryName, false);
+        return this.validateName(this.state.categoryName, false) &&
+            this.validateCode(this.state.categoryCode, false);
     }
 
     save = () => {
@@ -132,7 +133,7 @@ class CategoryCreateTree extends Component {
                         </div>
                         <div className="form-group">
                             <label>{translate('document.administration.archives.parent')}</label>
-                            <TreeSelect data={list} value={!categoryParent ? "" : categoryParent} handleChange={this.handleParent} mode="radioSelect" />
+                            <TreeSelect data={list} value={!categoryParent ? "" : [categoryParent]} handleChange={this.handleParent} mode="radioSelect" />
                         </div>
                         <div className="form-group">
                             <label>{translate('manage_warehouse.category_management.description')}</label>

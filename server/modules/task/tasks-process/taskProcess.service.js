@@ -70,9 +70,12 @@ exports.getAllXmlDiagram = async (portal, query) => {
     ])
 
     taskProcesses = taskProcess[0].processes;
+
     await ProcessTemplate(connect(DB_CONNECTION, portal)).populate(taskProcesses, { path: 'creator', select: 'name' });
     await ProcessTemplate(connect(DB_CONNECTION, portal)).populate(taskProcesses, { path: 'manager', select: 'name' });
     await ProcessTemplate(connect(DB_CONNECTION, portal)).populate(taskProcesses, { path: 'viewer', select: 'name' });
+    await ProcessTemplate(connect(DB_CONNECTION, portal)).populate(taskProcesses, { path: "tasks.organizationalUnit" });
+    await ProcessTemplate(connect(DB_CONNECTION, portal)).populate(taskProcesses, { path: "tasks.responsibleEmployees tasks.accountableEmployees tasks.consultedEmployees tasks.informedEmployees tasks.confirmedByEmployees tasks.creator", select: "name email _id" });
 
     let totalCount = 0;
     if (JSON.stringify(taskProcesses) !== JSON.stringify([])) {
@@ -179,7 +182,13 @@ exports.createXmlDiagram = async (portal, body) => {
         });
     }
 
-    data = await ProcessTemplate(connect(DB_CONNECTION, portal)).findById(data._id).populate([{ path: 'creator', select: 'name' }, { path: 'manager', select: 'name' } ]);
+    data = await ProcessTemplate(connect(DB_CONNECTION, portal)).findById(data._id).populate([
+        { path: 'creator', select: 'name email' },
+        { path: 'manager', select: 'name email' },
+        { path: 'viewer', select: 'name email' },
+        { path: "tasks.organizationalUnit", },
+        { path: "tasks.responsibleEmployees tasks.accountableEmployees tasks.consultedEmployees tasks.informedEmployees tasks.confirmedByEmployees tasks.creator", select: "name email _id" },
+    ]);
     return data;
 }
 

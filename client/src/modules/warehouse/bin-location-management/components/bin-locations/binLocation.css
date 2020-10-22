@@ -1,13 +1,13 @@
-ul.archive-tree {
+ul.bin-location-tree {
     list-style-type: none;
 }
 
-li.archive-tree {
+li.bin-location-tree {
     border-left: 0.8px dotted rgb(194, 194, 194);
     padding: 10px;
 }
 
-a.archive-tree-content {
+a.bin-location-tree-content {
     border-bottom: 0.8px dotted rgb(194, 194, 194);
     margin: 5px;
     border: none;
@@ -16,11 +16,16 @@ a.archive-tree-content {
     /* padding-left: -100px; */
 }
 
-a.archive-tree-content:hover {
+a.bin-location-tree-content:hover {
     color: red;
 }
 
-.archive-tree {
+.bin-location-tree {
     padding-top: 10px;
     overflow: auto;
+}
+
+.scroll-row {
+    overflow: auto;
+    height: 370px;
 }

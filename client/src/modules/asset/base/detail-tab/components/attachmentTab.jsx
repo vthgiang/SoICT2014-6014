@@ -53,7 +53,7 @@ class AttachmentTab extends Component {
                                         return <tr key={index}>
                                             <td>{x.name}</td>
                                             <td>{x.description}</td>
-                                            <td>{!(x.files && x.files.length) ? translate('manage_employee.no_files') :
+                                            <td>{!(x.files && x.files.length) ? translate('human_resource.profile.no_files') :
                                                 <ul style={{ listStyle: 'none' }}>
                                                     {x.files.map((child, index) => {
                                                         return (

@@ -2899,6 +2899,233 @@ const initSampleCompanyDB = async () => {
     ]);
     console.log("Khởi tạo xong danh sách thông tin kho");
 
+    /*---------------------------------------------------------------------------------------------
+    -----------------------------------------------------------------------------------------------
+        TẠO DỮ LIỆU THÔNG TIN KHO
+    -----------------------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------------------- */
+    console.log("Khởi tạo dữ liệu thông tin lưu trữ kho");
+    var listBinLocations = await BinLocation(vnistDB).insertMany([{
+        code: "T1",
+        name: "Tầng 1",
+        description: "Dãy nhà dùng cho việc nghiên cứu",
+        stock: listStock[1]._id,
+        status: "1",
+        parent: null,
+        path: "ST002-T1",
+        unit: "mét khối",
+        capacity: "",
+        contained: "",
+        child: [],
+        enableGoods: [
+            {
+                good: listGood[0]._id,
+                contained: 50,
+                capacity: 200
+            },
+            {
+                good: listGood[1]._id,
+                contained: 200,
+                capacity: 300
+            },
+            {
+                good: listProduct[1]._id,
+                contained: 50,
+                capacity: 100
+            },
+        ]
+
+    },
+    {
+        code: "T2",
+        name: "Tầng 2",
+        description: "Dãy nhà dùng cho việc học tập",
+        stock: listStock[1]._id,
+        status: "1",
+        parent: null,
+        path: "ST002-T2",
+        unit: "mét khối",
+        capacity: "",
+        contained: "",
+        child: [],
+        enableGoods: [
+            {
+                good: listGood[0]._id,
+                contained: 50,
+                capacity: 200
+            },
+            {
+                good: listGood[1]._id,
+                contained: 200,
+                capacity: 300
+            },
+            {
+                good: listProduct[1]._id,
+                contained: 50,
+                capacity: 100
+            },
+        ]
+    },
+    {
+        code: "T3",
+        name: "Tầng 3",
+        description: "Dãy nhà dùng cho việc hội họp",
+        stock: listStock[1]._id,
+        status: "1",
+        parent: null,
+        path: "ST002-T3",
+        unit: "mét khối",
+        capacity: "",
+        contained: "",
+        child: [],
+        enableGoods: [
+            {
+                good: listGood[0]._id,
+                contained: 50,
+                capacity: 300
+            },
+            {
+                good: listGood[1]._id,
+                contained: 200,
+                capacity: 300
+            },
+            {
+                good: listProduct[1]._id,
+                contained: 50,
+                capacity: 100
+            },
+        ]
+    }
+    ])
+
+    var listBinLocationChilds = await BinLocation(vnistDB).insertMany([{
+        code: "P101",
+        name: "Phòng 101",
+        description: "Phòng thí nghiệm hóa",
+        stock: listStock[1]._id,
+        status: "1",
+        parent: listBinLocations[0]._id,
+        path: "ST002-T1-P101",
+        unit: "mét khối",
+        capacity: "",
+        contained: "",
+        child: [],
+        enableGoods: [
+            {
+                good: listGood[0]._id,
+                contained: 50,
+                capacity: 200
+            },
+            {
+                good: listGood[1]._id,
+                contained: 200,
+                capacity: 300
+            },
+            {
+                good: listProduct[1]._id,
+                contained: 50,
+                capacity: 100
+            },
+        ]
+
+    },
+    {
+        code: "P102",
+        name: "Phòng 102",
+        description: "Phòng thí nghiệm",
+        stock: listStock[1]._id,
+        status: "1",
+        parent: listBinLocations[0]._id,
+        path: "ST002-T1-P102",
+        unit: "mét khối",
+        capacity: "",
+        contained: "",
+        child: [],
+        enableGoods: [
+            {
+                good: listGood[0]._id,
+                contained: 50,
+                capacity: 200
+            },
+            {
+                good: listGood[1]._id,
+                contained: 200,
+                capacity: 300
+            },
+            {
+                good: listProduct[1]._id,
+                contained: 50,
+                capacity: 100
+            },
+        ]
+    },
+    {
+        code: "P103",
+        name: "Phòng 103",
+        description: "Phòng học toán",
+        stock: listStock[1]._id,
+        status: "1",
+        parent: listBinLocations[0]._id,
+        path: "ST002-T1-P103",
+        unit: "mét khối",
+        capacity: "",
+        contained: "",
+        child: [],
+        enableGoods: [
+            {
+                good: listGood[0]._id,
+                contained: 50,
+                capacity: 300
+            },
+            {
+                good: listGood[1]._id,
+                contained: 200,
+                capacity: 300
+            },
+            {
+                good: listProduct[1]._id,
+                contained: 50,
+                capacity: 100
+            },
+        ]
+    }
+    ])
+    
+    console.log("Cập nhật nút con của thông tin lưu trữ kho");
+    var listBin = await BinLocation(vnistDB).update({
+        _id: listBinLocations[0]._id,
+        code: "T1",
+        name: "Tầng 1",
+        description: "Dãy nhà dùng cho việc nghiên cứu",
+        stock: listStock[1]._id,
+        status: "1",
+        parent: null,
+        path: "ST002-T1",
+        unit: "mét khối",
+        capacity: "",
+        contained: "",
+        child: [ listBinLocationChilds[0]._id, listBinLocationChilds[1]._id, listBinLocationChilds[2]._id ],
+        enableGoods: [
+            {
+                good: listGood[0]._id,
+                contained: 50,
+                capacity: 200
+            },
+            {
+                good: listGood[1]._id,
+                contained: 200,
+                capacity: 300
+            },
+            {
+                good: listProduct[1]._id,
+                contained: 50,
+                capacity: 100
+            },
+        ]
+
+    }
+    )
+
     // ****************** Tạo mẫu dữ liệu khách hàng********************
     console.log("Tạo mẫu dữ liệu khách hàng");
 
@@ -2926,7 +3153,7 @@ const initSampleCompanyDB = async () => {
     console.log("Tạo mẫu dữ liệu trạng thái khách hàng");
     const customerStatusData = [{
         code: "ST001",
-        name: "Khách hàng mới",
+        name: "Tiềm năng",
         description: "Khách hàng mới toanh",
         active: true,
     }, {
@@ -2948,11 +3175,6 @@ const initSampleCompanyDB = async () => {
         code: "ST004",
         name: "Đã mua sản phẩm",
         description: "Khách hàng đã mua sản phẩm",
-        active: false,
-    }, {
-        code: "ST006",
-        name: "Dừng liên hệ",
-        description: "Không chơi với công ty mình nữa",
         active: false,
     }];
     const status = await Status(vnistDB).insertMany(customerStatusData);
@@ -2983,6 +3205,7 @@ const initSampleCompanyDB = async () => {
             owner: [users[5]._id],
             gender: 'male',
             company: 'VNIST',
+            customerType: 'Cá nhân',
             represent: 'Nguyễn Thị Hương',
             taxNumber: '1528946392',
             customerSource: 'Facebook.com',
@@ -3010,13 +3233,13 @@ const initSampleCompanyDB = async () => {
                 },
                 {
                     oldValue: status[1]._id,
-                    newValue: status[4]._id,
+                    newValue: status[3]._id,
                     createdAt: new Date("2020-10-14"),
                     createdBy: users[5]._id,
                 },
                 {
-                    oldValue: status[4]._id,
-                    newValue: status[5]._id,
+                    oldValue: status[3]._id,
+                    newValue: status[4]._id,
                     createdAt: new Date("2020-10-17"),
                     createdBy: users[5]._id,
                 }
@@ -3030,6 +3253,7 @@ const initSampleCompanyDB = async () => {
             gender: '',
             company: 'VIAVET',
             represent: 'Trương Anh Tuấn',
+            customerType: 'Công ty',
             taxNumber: '64673692',
             customerSource: 'Youtube, facebook',
             companyEstablishmentDate: new Date("2014-09-15"),

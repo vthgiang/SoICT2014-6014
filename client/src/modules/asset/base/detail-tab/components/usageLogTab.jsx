@@ -48,19 +48,19 @@ class UsageLogTab extends Component {
         const { id, assetId } = this.props;
         const { translate, user, department } = this.props;
         const { usageLogs, typeRegisterForUse, managedBy } = this.state;
-        var userlist = user.list, departmentlist= department.list;
+        var userlist = user.list, departmentlist = department.list;
 
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body qlcv">
                     {/* Lịch sử cấp phát - điều chuyển - thu hồi */}
-                    <fieldset className="scheduler-border">
-                        <legend className="scheduler-border"><h4 className="box-title">{translate('asset.asset_info.usage_logs')}</h4></legend>
+                    {/* <fieldset className="scheduler-border"> */}
+                    {/* <legend className="scheduler-border"><h4 className="box-title">{translate('asset.asset_info.usage_logs')}</h4></legend> */}
 
-                        {/* Bảng thông tin sử dụng */}
-                        {
-                            typeRegisterForUse != 2  &&
-                        
+                    {/* Bảng thông tin sử dụng */}
+                    {
+                        typeRegisterForUse != 2 &&
+
                         <table className="table table-striped table-bordered table-hover">
                             <thead>
                                 <tr>
@@ -85,20 +85,20 @@ class UsageLogTab extends Component {
                                 }
                             </tbody>
                         </table>
-                        }
-                        {
-                            typeRegisterForUse == 2 &&
-                            <CalendarUsage 
-                            assetId = {assetId}
-                            usageLogs = {usageLogs}
+                    }
+                    {
+                        typeRegisterForUse == 2 &&
+                        <CalendarUsage
+                            assetId={assetId}
+                            usageLogs={usageLogs}
                             managedBy={managedBy}
-                            typeRegisterForUse = {typeRegisterForUse}
+                            typeRegisterForUse={typeRegisterForUse}
                         />
-                        }
-                        {
-                            (!usageLogs || usageLogs.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
-                        }
-                    </fieldset>
+                    }
+                    {
+                        (!usageLogs || usageLogs.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                    }
+                    {/* </fieldset> */}
                 </div>
             </div>
         );

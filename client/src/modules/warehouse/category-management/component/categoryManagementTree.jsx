@@ -39,7 +39,7 @@ class CategoryManagementTree extends Component {
     unCheckNode = (e, data) => {
         this.setState({
             categoryParent: [...data.selected],
-            deleteNode: [...data.selected, ...data.node.children_d],
+            deleteNode: [...data.selected],
 
         })
     }
@@ -51,7 +51,7 @@ class CategoryManagementTree extends Component {
 
     deleteCategory = () => {
         const { translate } = this.props;
-        const { deleteNode } = this.state;
+        const { deleteNode, categoryParent } = this.state;
         Swal.fire({
             html: `<h4 style="color: red"><div>Xóa lưu trữ</div>?</h4>`,
             icon: 'warning',
@@ -61,10 +61,17 @@ class CategoryManagementTree extends Component {
             cancelButtonText: translate('general.no'),
             confirmButtonText: translate('general.yes'),
         }).then((result) => {
-            if (result.value && deleteNode.length > 0) {
-                this.props.deleteCategory(deleteNode, "many");
+            if (result.value && categoryParent.length > 1) {
+                this.props.deleteCategory(categoryParent, "many");
                 this.setState({
-                    deleteNode: []
+                    deleteNode: [],
+                    categoryParent: []
+                });
+            } else if (result.value && categoryParent.length === 1) {
+                this.props.deleteCategory(categoryParent, 'single');
+                this.setState({
+                    deleteNode: [],
+                    categoryParent: []
                 });
             }
         })
@@ -84,12 +91,11 @@ class CategoryManagementTree extends Component {
                 parent: node.parent ? node.parent.toString() : "#"
             }
         }) : null;
-        console.log("currentCategory", currentCategory)
         return (
             <React.Fragment>
 
                 <div className="form-inline">
-                    <div className="dropdown pull-right" style={{ marginRight: 15, marginTop: 15 }}>
+                    <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
                         <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('manage_warehouse.category_management.add')}
                             disabled={categoryParent.length > 1 ? true : false}>{translate('manage_warehouse.category_management.add')}</button>
                         <ul className="dropdown-menu pull-right">
