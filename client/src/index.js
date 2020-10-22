@@ -7,11 +7,6 @@ import store from './redux/store';
 import translations from './lang';
 import { IntlProvider } from 'react-redux-multilingual';
 
-import { SocketConstants } from './modules/socket/redux/constants';
-store.dispatch({
-    type: SocketConstants.CONNECT_SOCKET_IO
-});
-
 ReactDOM.render(
     <Provider store={store}>
         <IntlProvider translations={translations}>
