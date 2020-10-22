@@ -34,7 +34,6 @@
 
 .timeline-item {
     position: relative;
-    cursor: pointer;
 }
 
 .timeline-item::before {
