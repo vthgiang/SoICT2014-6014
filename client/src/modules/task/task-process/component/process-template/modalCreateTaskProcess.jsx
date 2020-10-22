@@ -227,7 +227,7 @@ class ModalCreateTaskProcess extends Component {
 			shapeName: stringName,
 		});
 
-		this.setState(state => state); // Để render lại, tính toán xem có enable/disable nút lưu
+		this.forceUpdate();
 	}
 
 	// hàm cập nhật người thực hiện công việc
@@ -508,7 +508,7 @@ class ModalCreateTaskProcess extends Component {
 
 		for (let i in info) {
 			let taskItem = info[i];
-			if (!taskItem.name || ( taskItem.name?.trim() === '')) { // taskItem.organizationalUnit.trim() === '' ||
+			if (!taskItem.name || (taskItem.name?.trim() === '')) { // taskItem.organizationalUnit.trim() === '' ||
 				validateTasks = false;
 			}
 		}
