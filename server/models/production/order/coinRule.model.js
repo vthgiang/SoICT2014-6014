@@ -9,14 +9,9 @@ const CoinRuleSchema = new Schema({
     minCoin: {
         type: Number,
         required: Number
-    },
-    createAt: {
-        type: Date
-    },
-    updateAt: {
-        type: Date,
-        default: Date.now()
     }
+}, {
+    timestamps: true,
 })
 
 module.exports = (db) =>{

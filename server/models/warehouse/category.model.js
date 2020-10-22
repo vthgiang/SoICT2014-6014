@@ -9,6 +9,10 @@ const CategorySchema = new Schema ({
         replies: this
     },
 
+    path: {
+        type: String
+    },
+
     code: {
         type: String,
         required: true

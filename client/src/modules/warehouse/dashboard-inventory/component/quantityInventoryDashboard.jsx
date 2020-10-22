@@ -43,12 +43,11 @@ class QuantityInventoryDashboard extends Component {
                 x : 'x',
                 columns: [
                     ['x', 'Albendazole', 'Afatinib', 'Zoledronic Acid', 'Abobotulinum', 'Acid Thioctic', 'Mometasone (bôi)', 'Capecitabine', 'Mytomycin C'],
-                    ['Lê Thanh Nghị', 100, 200, 140, 200, 600, 228, 600, 200, 100],
-                    ['Tạ Quang Bửu', 300, 150, 200, 300, 500, 228, 290, 200, 130],
-                    ['Trần Đại Nghĩa', 200, 100, 400, 100, 600, 228, 700, 200, 230],
-                    ['Đại Cồ Việt', 400, 50, 100, 200, 550, 200, 230, 100, 150],
+                    ['Số lượng tồn', 100, 200, 140, 200, 600, 228, 600, 200, 100],
+                    ['Số lượng sắp nhập', 50, 150, 70, 30, 50, 228, 200, 60, 40],
+                    ['Số lượng sắp xuất', 200, 100, 100, 100, 400, 128, 270, 130, 230]
                 ],
-                type: 'bar',
+                type: 'bar'
             },
             axis: {
                 x: {
@@ -216,11 +215,25 @@ class QuantityInventoryDashboard extends Component {
                     <div className="box-header with-border">
                         <i className="fa fa-bar-chart-o" />
                         <h3 className="box-title">
-                            Số lượng tồn kho theo từng mặt hàng
+                            Số lượng tồn kho của các mặt hàng
                         </h3>
-                        <div className="form-inline" style={{marginTop: '10px'}}>
-                            <div className="form-group" style={{display: 'flex', marginBottom: '10px', width: '20%'}}>
-                                    <label>Chọn danh mục</label>
+                        <div className="form-inline" style={{display: 'flex'}}>
+                            <div className="form-group" style={{display: 'flex', marginRight: '20px'}}>
+                                <label>Kho</label>
+                                <SelectMulti id="multiSelectOrganizatio"
+                                    items={[
+                                        { value: '1', text: 'Tạ Quang Bửu'},
+                                        { value: '2', text: 'Trần Đại Nghĩa'},
+                                        { value: '3', text: 'Đại Cồ Việt'},
+                                        { value: '4', text: 'Lê Thanh Nghị'}
+                                    ]}
+                                    options={{ nonSelectedText: "Tất cả kho(4)", allSelectedText: "Tất cả kho(4)" }}
+                                    onChange={this.handleSelectOrganizationalUnit}
+                                >
+                                </SelectMulti>
+                            </div>
+                            <div className="form-group" style={{display: 'flex'}}>
+                                    <label>Danh mục</label>
                                     <TreeSelect
                                     data={typeArr}
                                     value=""
@@ -228,6 +241,8 @@ class QuantityInventoryDashboard extends Component {
                                     mode="hierarchical"
                                 />
                             </div>
+                        </div>
+                        <div className="form-inline" style={{marginTop: '10px'}}>
                             <div className="form-group">
                                     <label className="form-control-static">Từ ngày</label>
                                     <DatePicker

@@ -30,6 +30,8 @@ class FormImportProcessTemplate extends Component {
     }
 
     handleImportExcel = (value, checkFileImport) => {
+        console.log('value\n\n', value);
+        // checkFileImport = true
         let values = [];
         let valueShow = [];
         let k = -1;
@@ -39,30 +41,53 @@ class FormImportProcessTemplate extends Component {
                 k = k + 1;
                 values = [...values, {
                     "STT": k + 1,
-                    "name": x.name,
-                    "description": x.description,
-                    "organizationalUnit": x.organizationalUnit,
-                    "readByEmployees": x.readByEmployees,
-                    "priority": x.priority,
+                    "processName": x.processName,
+                    "processDescription": x.processDescription,
+                    "manager": x.manager,
+                    "viewer": x.viewer,
+                    "xmlDiagram": x.xmlDiagram,
+
+                    "taskName": x.taskName,
+                    "taskDescription": x.taskDescription,
+                    "code": x.code,
                     "responsibleEmployees": x.responsibleEmployees,
                     "accountableEmployees": x.accountableEmployees,
                     "consultedEmployees": x.consultedEmployees,
                     "informedEmployees": x.informedEmployees,
+                    "organizationalUnits": x.organizationalUnit,
+                    "priority": x.priority,
                     "formula": x.formula,
+
                     "taskActions": [x.taskActions],
                     "taskInformations": [x.taskInformations],
+
+                    // "actionName": [x.actionName],
+                    // "actionDescription": [x.actionDescription],
+                    // "mandatory": [x.mandatory],
+
+                    // "infomationName": [x.infomationName],
+                    // "infomationDescription": [x.infomationDescription],
+                    // "type": [x.type],
+                    // "filledByAccountableEmployeesOnly": [x.filledByAccountableEmployeesOnly]
                 }];
                 valueShow = [...valueShow, {
-                    "name": x.name,
-                    "description": x.description,
-                    "organizationalUnit": x.organizationalUnit,
-                    "readByEmployees": [x.readByEmployees],
-                    "priority": x.priority,
+                    "processName": x.processName,
+                    "processDescription": x.processDescription,
+                    "manager": x.manager,
+                    "viewer": x.viewer,
+                    "xmlDiagram": x.xmlDiagram,
+
+                    "taskName": x.taskName,
+                    "taskDescription": x.taskDescription,
+                    "code": x.code,
                     "responsibleEmployees": [x.responsibleEmployees],
                     "accountableEmployees": [x.accountableEmployees],
                     "consultedEmployees": [x.consultedEmployees],
                     "informedEmployees": [x.informedEmployees],
+                    "organizationalUnits": x.organizationalUnit,
+                    "priority": x.priority,
                     "formula": x.formula,
+
                     "taskActions": [x.taskActions],
                     "taskInformations": [x.taskInformations],
                 }];
@@ -70,16 +95,23 @@ class FormImportProcessTemplate extends Component {
                 if (k >= 0) {
                     let out = {
                         "STT": "",
-                        "name": "",
-                        "description": "",
-                        "organizationalUnit": "",
-                        "readByEmployees": "",
-                        "priority": "",
+                        "processName": "",
+                        "processDescription": "",
+                        "manager": "",
+                        "viewer": "",
+                        "xmlDiagram": "",
+
+                        "taskName": "",
+                        "taskDescription": "",
+                        "code": "",
                         "responsibleEmployees": "",
                         "accountableEmployees": "",
                         "consultedEmployees": "",
                         "informedEmployees": "",
+                        "organizationalUnits": "",
+                        "priority": "",
                         "formula": "",
+
                         "taskActions": "",
                         "taskInformations": "",
                     }
@@ -91,10 +123,6 @@ class FormImportProcessTemplate extends Component {
                     if (x.taskInformations) {
                         valueShow[k].taskInformations = [...valueShow[k].taskInformations, x.taskInformations];
                         out.taskInformations = [x.taskInformations];
-                    }
-                    if (x.readByEmployees) {
-                        out.readByEmployees = x.readByEmployees;
-                        valueShow[k].readByEmployees = [...valueShow[k].readByEmployees, x.readByEmployees];
                     }
                     if (x.responsibleEmployees) {
                         out.responsibleEmployees = x.responsibleEmployees;
@@ -142,31 +170,28 @@ class FormImportProcessTemplate extends Component {
             values[i].taskInformations = taskInformations;
         }
         value = values;
-
+console.log('quang deptrai \n\n\n\n', value, values);
         if (checkFileImport) {
             let rowError = [];
             for (let i = 0; i < value.length; i++) {
                 let x = value[i];
                 let errorAlert = [];
-                if (x.name === null || x.description === null || x.organizationalUnit === null || x.readByEmployees === null || x.formula === null) {
+                if (x.processName === null || x.processDescription === null || x.viewer === null || x.manager === null) {
                     rowError = [...rowError, i + 1];
                     x = { ...x, error: true };
                 }
-                if (x.name === null) {
-                    errorAlert = [...errorAlert, 'Tên mẫu công việc không được để trống'];
+                if (x.processDescription === null) {
+                    errorAlert = [...errorAlert, 'Tên mẫu quy trình không được để trống'];
                 }
-                if (x.organizationalUnit === null) {
+                if (x.viewer === null) {
                     errorAlert = [...errorAlert, 'Tên phòng ban không được để trống'];
                 }
-                if (x.description === null) {
+                if (x.manager === null) {
                     errorAlert = [...errorAlert, 'Tên mô tả mẫu công việc không được để trống'];
                 }
-                if (x.readByEmployees === null) {
-                    errorAlert = [...errorAlert, 'Tên người được xem không được để trống'];
-                }
-                if (x.formula === null) {
-                    errorAlert = [...errorAlert, 'Tên công thức tính điểm không được để trống'];
-                }
+                // if (x.formula === null) {
+                //     errorAlert = [...errorAlert, 'Tên công thức tính điểm không được để trống'];
+                // }
                 x = { ...x, errorAlert: errorAlert };
                 value[i] = x;
             };
@@ -313,10 +338,10 @@ class FormImportProcessTemplate extends Component {
                             type: type[0],
                             filledByAccountableEmployeesOnly: filledByAccountableEmployeesOnly[0]
                         }
+
                         datas = [...datas, out];
-                        console.log(out);
+
                         if (length > 1) {
-                            console.log(11111111111111111111111);
                             for (let i = 1; i < length; i++) {
                                 out = {
                                     STT: "",
@@ -354,8 +379,6 @@ class FormImportProcessTemplate extends Component {
                         }
                     }
                     dataExport.dataSheets[va].tables[val].data = datas;
-                    console.log('task Data\n\n\n', datas);
-
                 }
             }
         }
@@ -367,6 +390,7 @@ class FormImportProcessTemplate extends Component {
         let { limit, page, importData, rowError, configData, checkFileImport } = this.state;
         let templateImportProcessTemplate2 = this.convertDataExport(templateImportProcessTemplate);
         console.log('-----------------', templateImportProcessTemplate2, templateImportProcessTemplate);
+        console.log('--------------checkFileImport---', checkFileImport, importData);
         return (
             <React.Fragment>
                 <DialogModal
@@ -394,12 +418,12 @@ class FormImportProcessTemplate extends Component {
                             </div>
                             <div className="form-group col-md-4 col-xs-12">
                                 <label></label>
-                                <ExportExcel id="download_template_task_template" type='link' exportData={templateImportProcessTemplate}
+                                <ExportExcel id="download_template_task_template" type='link' exportData={templateImportProcessTemplate2}
                                     buttonName='Download file import mẫu' />
                             </div>
                             <div className="form-group col-md-12 col-xs-12">
                                 <ShowImportData
-                                    id="import_taskTemplate_show_data"
+                                    id="import_process_template_show_data"
                                     configData={configData}
                                     importData={importData}
                                     rowError={rowError}

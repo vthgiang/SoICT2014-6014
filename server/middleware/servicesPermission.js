@@ -468,6 +468,14 @@ exports.data = [
     { path: 'stocks', method: 'POST', roles: ['Super Admin', 'Admin'] },
     { path: 'stocks/:id', method: 'PATCH', roles: ['Super Admin', 'Admin'] },
     { path: 'stocks/:id', method: 'DELETE', roles: ['Super Admin', 'Admin'] },
+    
+    { path: 'bin-locations', method: 'GET', roles: ['Super Admin', 'Admin'] },
+    { path: 'bin-locations/get-child', method: 'GET', roles: ['Super Admin', 'Admin'] },
+    { path: 'bin-locations/get-detail/:id', method: 'GET', roles: ['Super Admin', 'Admin'] },
+    { path: 'bin-locations', method: 'POST', roles: ['Super Admin', 'Admin'] },
+    { path: 'bin-locations/delete-many', method: 'POST', roles: ['Super Admin', 'Admin'] },
+    { path: 'bin-locations/:id', method: 'PATCH', roles: ['Super Admin', 'Admin'] },
+    { path: 'bin-locations/:id', method: 'DELETE', roles: ['Super Admin', 'Admin'] },
 
     { path: '/categories', method: 'GET', roles: ['Super Admin', 'Admin'] },
     { path: '/categories/category-tree', method: 'GET', roles: ['Super Admin', 'Admin'] },

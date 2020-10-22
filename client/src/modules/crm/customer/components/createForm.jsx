@@ -7,7 +7,8 @@ import { CrmCustomerActions } from '../redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { getStorage } from '../../../../config';
 import GeneralTabCreateForm from './generalTabCreateForm';
-
+import FileTabCreateForm from './fileTabCreateForm';
+import { convertJsonObjectToFormData } from '../../../../helpers/jsonObjectToFormDataObjectConverter';
 class CrmCustomerCreate extends Component {
     constructor(props) {
         super(props);
@@ -57,10 +58,12 @@ class CrmCustomerCreate extends Component {
     save = () => {
         const { auth } = this.props;
         let { newCustomer } = this.state;
+        let formData;
         const getStatus = newCustomer.status;
         const statusHistories = [];
         const getDateTime = new Date();
 
+        // Ghi log thay đổi trạng thái
         if (getStatus && getStatus.length > 0) {
             statusHistories.push({
                 oldValue: null,
@@ -71,8 +74,16 @@ class CrmCustomerCreate extends Component {
         }
         newCustomer = { ...newCustomer, statusHistories }
 
+        // Convert file upload
+        formData = convertJsonObjectToFormData(newCustomer);
+        if (newCustomer.files) {
+            newCustomer.files.forEach(o => {
+                formData.append('file', o.fileUpload);
+            })
+        }
+
         if (this.isFormValidated) {
-            this.props.createCustomer(newCustomer);
+            this.props.createCustomer(formData);
         }
     }
 
@@ -94,7 +105,7 @@ class CrmCustomerCreate extends Component {
                     <div className="nav-tabs-custom">
                         <ul className="nav nav-tabs">
                             <li className="active"><a href="#customer-general" data-toggle="tab" >Thông tin chung</a></li>
-                            <li><a href="#Customer-fileAttachment" data-toggle="tab">Tài liệu liên quan</a></li>
+                            <li><a href="#customer-fileAttachment" data-toggle="tab">Tài liệu liên quan</a></li>
                         </ul>
                         <div className="tab-content">
                             {/* Tab thông tin chung */}
@@ -108,9 +119,12 @@ class CrmCustomerCreate extends Component {
                             }
 
                             {/* Tab file liên quan đến khách hàng */}
-                            <div id="Customer-fileAttachment" className="tab-pane">
-
-                            </div>
+                            {
+                                <FileTabCreateForm
+                                    id={'customer-fileAttachment'}
+                                    callBackFromParentCreateForm={this.myCallBack}
+                                />
+                            }
                         </div>
                     </div>
                 </DialogModal>
@@ -121,6 +135,7 @@ class CrmCustomerCreate extends Component {
 
     myCallBack = (name, value) => {
         const { newCustomer } = this.state;
+        console.log('name', name, 'value', value)
         this.setState({
             newCustomer: {
                 ...newCustomer,

@@ -53,8 +53,23 @@ exports.getCareById = async (portal, companyId, id) => {
 
 
 exports.editCare = async (portal, companyId, id, data, userId) => { 
+    let { startDate, endDate } = data;
     if (userId) {
         data = { ...data, creator: userId };
+    }
+
+    //format lai định dạng
+    if (startDate) {
+        const date = startDate.split('-');  
+        startDate = [date[2], date[1], date[0]].join("-");
+        data = { ...data, startDate };
+    }
+
+    //format lai định dạng
+    if (endDate) {
+        const date = endDate.split('-');  
+        endDate = [date[2], date[1], date[0]].join("-");
+        data = { ...data, endDate };
     }
 
     await Care(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {

@@ -4,7 +4,6 @@ const Schema = mongoose.Schema;
 const DiscountSchema = new Schema({
     code: {
         type: String,
-        unique: true,
         required: true
     },
     name: {
@@ -192,14 +191,9 @@ const DiscountSchema = new Schema({
     version: {
         type: Number,
         required: true
-    },
-    createAt: {
-        type: Date
-    },
-    updateAt: {
-        type: Date,
-        default: Date.now()
     }
+}, {
+    timestamps: true,
 })
 
 module.exports = (db) => {

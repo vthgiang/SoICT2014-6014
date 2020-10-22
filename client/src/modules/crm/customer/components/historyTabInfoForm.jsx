@@ -1,25 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-
+import { formatFunction } from '../../common/index';
 
 class HistoryTabInfoForm extends Component {
     constructor(props) {
         super(props);
 
-    }
-
-    formatDateTime(date) {
-        const d = new Date(date);
-        const localeTime = d.toLocaleTimeString();
-
-        let month = '' + (d.getMonth() + 1);
-        let day = '' + d.getDate();
-        let year = d.getFullYear();
-
-        if (month.length < 2) month = '0' + month;
-        if (day.length < 2) day = '0' + day;
-        return `${localeTime} ${day}-${month}-${year}`;
     }
 
     render() {
@@ -35,8 +22,8 @@ class HistoryTabInfoForm extends Component {
                             statusHistories && statusHistories.length > 0 ? statusHistories.map((o, index) => (
                                 <div key={index} className="timeline-history-item">
                                     <div className="timeline-history-item-content">
-                                        <time>{this.formatDateTime(o.createdAt)}</time>
-                                        <p>
+                                        <time>{formatFunction.formatDateTime(o.createdAt)}</time>
+                                        <p style={{ fontSize: '14px' }}>
                                             {!o.oldValue
                                                 ? `${o.createdBy.name} đã tạo khách hàng với trạng thái là ${o.newValue.name}`
                                                 : `${o.createdBy.name} đã chuyển trạng thái khách hàng từ ${o.oldValue.name} thành ${o.newValue.name}`

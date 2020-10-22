@@ -19,6 +19,8 @@ const BankAccountSchema = new Schema({
         required: true,
         default: false
     }
+}, {
+    timestamps: true,
 })
 
 module.exports = (db) => {

@@ -6,7 +6,6 @@ const mongoosePaginate = require('mongoose-paginate-v2')
 const SalesOrderSchema = new Schema({
     code: {
         type: String,
-        unique: true,
         required: true
     },
     status: { //1: Chờ phê duyệt, 2: đã phê duyệt, 3: Chờ lấy hàng, 4: Đang giao hàng, 5: Đã hoàn thành, 6: Hủy đơn
@@ -48,6 +47,14 @@ const SalesOrderSchema = new Schema({
     customer: {
         type: Schema.Types.ObjectId,
         ref: 'Customer',
+        required: true
+    }, 
+    customerPhone: {
+        type: String,
+        required: true
+    },
+    customerAddress: {
+        type: String,
         required: true
     },
     goods: [{
@@ -172,14 +179,9 @@ const SalesOrderSchema = new Schema({
         confirmationAt: {
             type: Date
         }
-    }],
-    createAt: {
-        type: Date
-    },
-    updateAt: {
-        type: Date,
-        default: Date.now()
-    }
+    }]
+}, {
+    timestamps: true,
 })
 
 SalesOrderSchema.plugin(mongoosePaginate);

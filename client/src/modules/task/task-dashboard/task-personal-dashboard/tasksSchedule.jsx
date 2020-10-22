@@ -742,13 +742,13 @@ function mapState(state) {
   return { tasks }
 }
 const actions = {
-  getResponsibleTaskByUser: taskManagementActions.getResponsibleTaskByUser,
-  getAccountableTaskByUser: taskManagementActions.getAccountableTaskByUser,
-  getConsultedTaskByUser: taskManagementActions.getConsultedTaskByUser,
-  getInformedTaskByUser: taskManagementActions.getInformedTaskByUser,
+  // getResponsibleTaskByUser: taskManagementActions.getResponsibleTaskByUser,
+  // getAccountableTaskByUser: taskManagementActions.getAccountableTaskByUser,
+  // getConsultedTaskByUser: taskManagementActions.getConsultedTaskByUser,
+  // getInformedTaskByUser: taskManagementActions.getInformedTaskByUser,
   getTaskById: performTaskAction.getTaskById,
-  getTaskInOrganizationUnitByMonth: taskManagementActions.getTaskInOrganizationUnitByMonth,
-  getPaginateTasksByUser: taskManagementActions.getPaginateTasksByUser,
+  // getTaskInOrganizationUnitByMonth: taskManagementActions.getTaskInOrganizationUnitByMonth,
+  // getPaginateTasksByUser: taskManagementActions.getPaginateTasksByUser,
 
 }
 const connectedSchedule = connect(mapState, actions)(withTranslate(TasksSchedule))
