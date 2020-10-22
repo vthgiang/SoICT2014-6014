@@ -304,7 +304,7 @@ legend.legend-box-info {
     font-weight: 600;
     line-height: 1.5;
 }
-.description-box strong {
+.description-box >strong, .description-box > div > strong, .description-box li > strong {
     font-weight: 600;
     padding-right: 10px;
 }
