@@ -3,12 +3,12 @@ import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { quoteActions } from "../redux/actions";
 import { formatCurrency } from "../../../../../helpers/formatCurrency";
+import { formatDate } from "../../../../../helpers/formatDate";
 import {
     PaginateBar,
     DataTableSetting,
     SelectBox,
 } from "../../../../../common-components";
-import data from "../../dataTest/quoterData.json";
 import QuoteDetailForm from "./quoteDetailForm";
 import QuoteCreateForm from "./quoteCreateForm";
 
@@ -50,12 +50,6 @@ class QuoteManageTable extends Component {
         this.props.getAllQuotes(data);
     };
 
-    static getDerivedStateFromProps(props, state) {
-        return {
-            list: data,
-        };
-    }
-
     handleShowDetailInfo = (data) => {
         this.setState((state) => {
             return {
@@ -80,6 +74,26 @@ class QuoteManageTable extends Component {
         if (quotes.isLoading === false) {
             listQuotes = quotes.listQuotes;
         }
+
+        const dataStatus = [
+            {
+                className: "text-primary",
+                text: "Gửi yêu cầu",
+            },
+            {
+                className: "text-warning",
+                text: "chờ phản hồi",
+            },
+            {
+                className: "text-success",
+                text: "Đã chốt đơn",
+            },
+            {
+                className: "text-danger",
+                text: "Đã hủy",
+            },
+        ];
+
         return (
             <React.Fragment>
                 <div className="nav-tabs-custom">
@@ -194,15 +208,28 @@ class QuoteManageTable extends Component {
                                             <td>{item.code}</td>
                                             <td>{item.creator}</td>
                                             <td>{item.customer}</td>
-                                            <td>{item.effectiveDate}</td>
-                                            <td>{item.expirationDate}</td>
+                                            <td>
+                                                {formatDate(item.effectiveDate)}
+                                            </td>
+                                            <td>
+                                                {formatDate(
+                                                    item.expirationDate
+                                                )}
+                                            </td>
                                             <td>
                                                 {formatCurrency(
                                                     item.paymentAmount
                                                 )}
                                             </td>
-                                            <td>{item.status}</td>
-                                            {item.status === "Gửi yêu cầu" ? (
+                                            <td
+                                                className={
+                                                    dataStatus[item.status]
+                                                        .className
+                                                }
+                                            >
+                                                {dataStatus[item.status].text}
+                                            </td>
+                                            {item.status === 0 ? (
                                                 <td>
                                                     <a
                                                         onClick={
@@ -250,6 +277,18 @@ class QuoteManageTable extends Component {
                                     ))}
                             </tbody>
                         </table>
+                        {quotes.isLoading ? (
+                            <div className="table-info-panel">
+                                {translate("confirm.loading")}
+                            </div>
+                        ) : (
+                            (typeof listQuotes === "undefined" ||
+                                listQuotes.length === 0) && (
+                                <div className="table-info-panel">
+                                    {translate("confirm.no_data")}
+                                </div>
+                            )
+                        )}
                         <PaginateBar
                             pageTotal={totalPages ? totalPages : 0}
                             currentPage={page}
@@ -263,7 +302,7 @@ class QuoteManageTable extends Component {
 }
 
 function mapStateToProps(state) {
-    const quotes = state.quotes;
+    const { quotes } = state;
     return { quotes };
 }
 

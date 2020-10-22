@@ -17,24 +17,19 @@ class GeneralTabEditForm extends Component {
         const { status } = props.crm;
         let listStatus = [...status.list];
         let { editingCustomer } = props;
-
         if (props.customerIdEdit != state.customerIdEdit && editingCustomer && status.list && status.list.length > 0) {
             //timeline status
-            const statusActive = editingCustomer.status;// mảng gồm các id của trạng thái mà khách hàng có
+            const statusActive = editingCustomer.status.map(o => ({ _id: o._id, name: o.name, active: true }));// mảng gồm các id của trạng thái mà khách hàng có
 
-            listStatus.map(x => (
-                statusActive.map(y => {
-                    if (x._id === y)
-                        x.active = true;
-                    return x;
-                })
-            ))
+            statusActive.forEach(x => {
+                listStatus = listStatus.filter(y => x._id !== y._id);
+            });
 
             return {
                 ...state,
                 id: props.id,
                 customerIdEdit: props.customerIdEdit,
-                listStatus,
+                listStatus: [...statusActive, ...listStatus],
                 ...editingCustomer,
             }
         } else {
@@ -91,6 +86,16 @@ class GeneralTabEditForm extends Component {
         this.setState({ customerNameError: message });
 
         callBackFromParentEditForm('name', value);
+    }
+
+    handleChangeCustomerType = (value) => {
+        const { callBackFromParentEditForm } = this.props;
+
+        this.setState({
+            customerType: value[0],
+        })
+
+        callBackFromParentEditForm('customerType', parseInt(value[0]));
     }
 
     handleChangeCustomerCompany = (e) => {
@@ -272,6 +277,16 @@ class GeneralTabEditForm extends Component {
         callBackFromParentEditForm('website', value);
     }
 
+    handleChangeNote = (e) => {
+        const { callBackFromParentEditForm } = this.props;
+        const { value } = e.target;
+
+        this.setState({
+            note: value,
+        });
+        callBackFromParentEditForm('note', value);
+    }
+
     handleChangeLinkedIn = (e) => {
         const { callBackFromParentEditForm } = this.props;
         const { value } = e.target;
@@ -286,9 +301,9 @@ class GeneralTabEditForm extends Component {
         const { translate, crm, user } = this.props;
         const { id } = this.props;
 
-        const { owner, code, name, company, represent, group, listStatus, gender, location,
+        const { owner, code, name, customerType, company, represent, group, listStatus, gender, location,
             taxNumber, customerSource, companyEstablishmentDate, birthDate, telephoneNumber, mobilephoneNumber,
-            email, email2, address, address2, website, linkedIn } = this.state;
+            email, email2, address, address2, website, note, linkedIn } = this.state;
         const { customerCodeError, customerNameError, customerTaxNumberError } = this.state;//message error
         let progressBarWidth;
 
@@ -309,11 +324,8 @@ class GeneralTabEditForm extends Component {
         if (listStatus) {
             const totalItem = listStatus.length;
             const numberOfActiveItems = listStatus.filter(o => o.active).length;
-            console.log('totalItem', totalItem, 'numberOfActiveItems', numberOfActiveItems);
             progressBarWidth = totalItem > 1 && numberOfActiveItems > 0 ? ((numberOfActiveItems - 1) / (totalItem - 1)) * 100 : 0;
         }
-
-        console.log('progressBarWidth', progressBarWidth)
 
         return (
             <React.Fragment>
@@ -387,14 +399,55 @@ class GeneralTabEditForm extends Component {
                     </div>
 
                     <div className="row">
-                        {/* Tên công ty */}
+                        {/* Loại khách hàng */}
                         <div className="col-md-6">
+                            <div className={`form-group`} >
+                                <label className="control-label">{translate('crm.customer.customerType')}<span className="text-red">*</span></label>
+                                <SelectBox
+                                    id={`customerType-edit-form`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={[
+                                        { value: 0, text: 'Cá nhân' },
+                                        { value: 1, text: 'Công ty' },
+                                    ]}
+                                    value={customerType ? customerType : ''}
+                                    onChange={this.handleChangeCustomerType}
+                                    multiple={false}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Nhóm khách hàng */}
+                        <div className="col-md-6">
+                            <div className="form-group">
+                                <label>{translate('crm.customer.group')}</label>
+                                {
+                                    listGroups &&
+                                    <SelectBox
+                                        id={`customer-group-edit-form`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={
+                                            listGroups
+                                        }
+                                        value={group}
+                                        onChange={this.handleChangeCustomerGroup}
+                                        multiple={false}
+                                    />
+                                }
+                            </div>
+                        </div>
+                        {/* Tên công ty */}
+                        {/* <div className="col-md-6">
                             <div className={`form-group`}>
                                 <label>{translate('crm.customer.company')} </label>
                                 <input type="text" className="form-control" value={company ? company : ''} onChange={this.handleChangeCustomerCompany} />
                             </div>
-                        </div>
+                        </div> */}
+                    </div>
 
+                    <div className="row">
                         {/* Người đại diện */}
                         <div className="col-md-6">
                             <div className={`form-group`}>
@@ -404,10 +457,6 @@ class GeneralTabEditForm extends Component {
                             </div>
                         </div>
 
-
-                    </div>
-
-                    <div className="row">
                         {/* Số điện thoại di động*/}
                         <div className="col-md-6">
                             <div className={`form-group`}>
@@ -415,7 +464,9 @@ class GeneralTabEditForm extends Component {
                                 <input type="text" className="form-control" value={mobilephoneNumber ? mobilephoneNumber : ''} onChange={this.handleChangeMobilephoneNumber} />
                             </div>
                         </div>
+                    </div>
 
+                    <div className="row">
                         {/* Địa chỉ email*/}
                         <div className="col-md-6">
                             <div className={`form-group`}>
@@ -423,40 +474,12 @@ class GeneralTabEditForm extends Component {
                                 <input type="email" className="form-control" value={email ? email : ''} onChange={this.handleChangeCustomerEmail} />
                             </div>
                         </div>
-                    </div>
 
-                    <div className="row">
                         {/* Địa chỉ 1 */}
                         <div className="col-md-6">
                             <div className={`form-group`}>
                                 <label>{translate('crm.customer.address')}</label>
                                 <input type="text" className="form-control" value={address ? address : ''} onChange={this.handleChangeCustomerAddress} />
-                            </div>
-                        </div>
-
-                        {/* Địa chỉ 2 */}
-                        <div className="col-md-6">
-                            <div className={`form-group`}>
-                                <label>{translate('crm.customer.address2')} </label>
-                                <input type="text" className="form-control" value={address2 ? address2 : ''} onChange={this.handleChangeCustomerAddress2} />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="row">
-                        {/* Số điện thoại cố định */}
-                        <div className="col-md-6">
-                            <div className={`form-group`}>
-                                <label>{translate('crm.customer.telephoneNumber')}</label>
-                                <input type="text" className="form-control" value={telephoneNumber ? telephoneNumber : ''} onChange={this.handleChangeTelephoneNumber} />
-                            </div>
-                        </div>
-
-                        {/* Địa chỉ email phu*/}
-                        <div className="col-md-6">
-                            <div className={`form-group`}>
-                                <label>{translate('crm.customer.secondaryEmail')}</label>
-                                <input type="email" className="form-control" value={email2 ? email2 : ''} onChange={this.handleChangeCustomerEmail2} />
                             </div>
                         </div>
                     </div>
@@ -499,26 +522,6 @@ class GeneralTabEditForm extends Component {
                     </div>
 
                     <div className="row">
-                        {/* Nhóm khách hàng */}
-                        <div className="col-md-6">
-                            <div className="form-group">
-                                <label>{translate('crm.customer.group')}</label>
-                                {
-                                    listGroups &&
-                                    <SelectBox
-                                        id={`customer-group-edit-form`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        items={
-                                            listGroups
-                                        }
-                                        value={group}
-                                        onChange={this.handleChangeCustomerGroup}
-                                        multiple={false}
-                                    />
-                                }
-                            </div>
-                        </div>
                         {/* Ngày thành lập công ty */}
                         <div className="col-md-6">
                             <div className="form-group">
@@ -531,6 +534,40 @@ class GeneralTabEditForm extends Component {
                                 />
                             </div>
                         </div>
+                        {/* Mã số thuế */}
+                        <div className="col-md-6">
+                            <div className={`form-group ${!customerTaxNumberError ? "" : "has-error"}`}>
+                                <label>{translate('crm.customer.taxNumber')}</label>
+                                <input type="text" className="form-control" value={taxNumber ? taxNumber : ''} onChange={this.handleChangeTaxNumber} />
+                                <ErrorLabel content={customerTaxNumberError} />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="row">
+                        {/* Địa chỉ 2 */}
+                        <div className="col-md-6">
+                            <div className={`form-group`}>
+                                <label>{translate('crm.customer.address2')} </label>
+                                <input type="text" className="form-control" value={address2 ? address2 : ''} onChange={this.handleChangeCustomerAddress2} />
+                            </div>
+                        </div>
+
+                        {/* Số điện thoại cố định */}
+                        <div className="col-md-6">
+                            <div className={`form-group`}>
+                                <label>{translate('crm.customer.telephoneNumber')}</label>
+                                <input type="text" className="form-control" value={telephoneNumber ? telephoneNumber : ''} onChange={this.handleChangeTelephoneNumber} />
+                            </div>
+                        </div>
+
+                        {/* Địa chỉ email phu*/}
+                        {/* <div className="col-md-6">
+                            <div className={`form-group`}>
+                                <label>{translate('crm.customer.secondaryEmail')}</label>
+                                <input type="email" className="form-control" value={email2 ? email2 : ''} onChange={this.handleChangeCustomerEmail2} />
+                            </div>
+                        </div> */}
                     </div>
 
                     <div className="row">
@@ -557,22 +594,21 @@ class GeneralTabEditForm extends Component {
                             </div>
                         </div>
 
-                        {/* Mã số thuế */}
-                        <div className="col-md-6">
-                            <div className={`form-group ${!customerTaxNumberError ? "" : "has-error"}`}>
-                                <label>{translate('crm.customer.taxNumber')}</label>
-                                <input type="text" className="form-control" value={taxNumber ? taxNumber : ''} onChange={this.handleChangeTaxNumber} />
-                                <ErrorLabel content={customerTaxNumberError} />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="row">
                         {/* Website  */}
                         <div className="col-md-6">
                             <div className="form-group">
                                 <label>{translate('crm.customer.website')}</label>
                                 <input type="text" className="form-control" value={website ? website : ''} onChange={this.handleChangeWebsite} />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="row">
+                        {/* Ghi chú */}
+                        <div className="col-md-6">
+                            <div className="form-group">
+                                <label>{translate('crm.customer.note')}</label>
+                                <textarea type="text" value={note ? note : ''} className="form-control" onChange={this.handleChangeNote} />
                             </div>
                         </div>
 

@@ -6,6 +6,7 @@ import { taskManagementActions } from '../../task-management/redux/actions';
 import { TaskStatusChart } from './taskStatusChart';
 import { DomainOfTaskResultsChart } from './domainOfTaskResultsChart';
 import { TasksSchedule } from './tasksSchedule';
+import { CalendarEmployee } from './calendarEmployee';
 
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -331,7 +332,7 @@ class TaskDashboard extends Component {
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.tasks_calendar')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
                             </div>
-                            <TasksSchedule
+                            <CalendarEmployee
                                 tasks={tasks}
                             />
                         </div>

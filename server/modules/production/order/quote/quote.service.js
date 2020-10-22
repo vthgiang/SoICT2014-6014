@@ -15,6 +15,8 @@ exports.createNewQuote = async (data, portal) => {
         effectiveDate: data.effectiveDate,
         expirationDate: data.expirationDate,
         customer: data.customer,
+        customerPhone: data.customerPhone,
+        customerAddress: data.customerAddress,
         goods: data.goods.length ? data.goods.map((item) => {
             return {
                 good: item.good,
@@ -54,8 +56,7 @@ exports.createNewQuote = async (data, portal) => {
         amount: data.amount,
         totalTax: data.totalTax,
         paymentAmount: data.paymentAmount,
-        note: data.note,
-        createAt: Date.now()
+        note: data.note
     });
 
     let quote = await Quote(connect(DB_CONNECTION, portal)).findById({ _id: newQuote._id });

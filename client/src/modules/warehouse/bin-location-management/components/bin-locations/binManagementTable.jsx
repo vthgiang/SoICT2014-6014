@@ -3,42 +3,92 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
 import { Tree, SlimScroll, ExportExcel } from '../../../../../common-components';
-import './archive.css';
+import './binLocation.css';
 import BinEditForm from './binEditForm';
 import BinCreateForm from './binCreateForm';
+import { BinLocationActions } from '../../redux/actions';
+import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
+import { UserActions } from '../../../../super-admin/user/redux/actions';
+import { GoodActions } from '../../../good-management/redux/actions';
+import { StockActions } from '../../../stock-management/redux/actions';
 
 class BinManagementTable extends Component {
     constructor(props) {
         super(props);
         this.state = {
             binParent: [],
-            deleteNode: [],
+            dataStock: [],
+            deleteNode: []
         }
     }
 
+    componentDidMount(){
+        this.props.getBinLocations();
+        this.props.getAllDepartments();
+        this.props.getUser();
+        this.props.getAllGoods();
+        this.props.getAllStocks();
+    }
+
     onChanged = async (e, data) => {
-        await this.setState({
-            currentBin: data.node,
-
-        })
-        window.$(`#edit-bin-location`).slideDown();
+        if(data.node !== undefined){
+            if(data.node.original.stock !== undefined){
+                let stock = data.node.original.stock;
+                await this.props.getBinLocations({ stock })
+            }
+            if(data.node.parent !== "#") {
+                await this.setState({
+                    currentBin: data.node,
+        
+                })
+                window.$(`#edit-bin-location`).slideDown();
+            }
+        }
     }
 
-    checkNode = (e, data) => {
-        this.setState({
-            binParent: [...data.selected],
-            deleteNode: [...data.selected, ...data.node.children_d]
-        })
+    checkNode = async (e, data) => {
+        const { dataStock } = this.state;
+        if(data.node !== undefined){
+            let stock = data.node.original.stock;
+            let check = false;
+            for( let i = 0; i < dataStock.length; i++){
+                if(dataStock[i] === stock ){
+                    check = true;
+                    break;
+                }
+            }
+            if(data.node.parent !== "#") {
+                await this.setState({
+                    binParent: [...data.selected],
+                    dataStock: !check ? [...this.state.dataStock, stock ] : this.state.dataStock,
+                    deleteNode: [...data.selected, ...data.node.children_d],
+                })
+            }
+            let stockId = dataStock[0];
+            await this.props.getBinLocations( { stockId })
+        }
     }
 
-    unCheckNode = (e, data) => {
-        this.setState({
-            binParent: [...data.selected],
-            deleteNode: [...data.selected, ...data.node.children_d],
-
-        })
+    unCheckNode = async (e, data) => {
+        const { dataStock } = this.state;
+        if(data.node !== undefined){
+            let stock = data.node.original.stock;
+            let newDataStock;
+            if(dataStock){
+                newDataStock = dataStock.filter(item => stock !== item);
+            }
+            if(data.node.parent !== "#") {
+                await this.setState({
+                    binParent: [...data.selected],
+                    dataStock: newDataStock,
+                    deleteNode: [...data.selected]
+                })
+            }
+            let stockId = dataStock[0];
+            await this.props.getBinLocations( { stockId })
+        }
     }
-    handleAddArchive = (event) => {
+    handleAddBinLocation = (event) => {
         event.preventDefault();
         window.$('#modal-create-bin-location').modal('show');
     }
@@ -47,7 +97,13 @@ class BinManagementTable extends Component {
         event.preventDefault();
         window.$('#modal_import_file_archive').modal('show');
     }
-    deleteArchive = () => {
+
+    deleteBins = async () => {
+        this.deleteBinLocation();
+        await this.props.getBinLocations();
+    }
+
+    deleteBinLocation = async () => {
         const { translate } = this.props;
         const { deleteNode, binParent } = this.state;
         Swal.fire({
@@ -60,251 +116,100 @@ class BinManagementTable extends Component {
             confirmButtonText: translate('general.yes'),
         }).then(result => {
             if (result.value && binParent.length > 1) {
-                this.props.deleteDocumentArchive(binParent, "many");
+                this.props.deleteBinLocations(binParent, "many");
                 this.setState({
-                    deleteNode: []
+                    deleteNode: [],
+                    binParent: []
                 });
             } else if (result.value && binParent.length === 1) {
-                this.props.deleteDocumentArchive(binParent, 'single');
+                this.props.deleteBinLocations(binParent, 'single');
                 this.setState({
-                    deleteNode: []
+                    deleteNode: [],
+                    binParent: []
                 });
             }
         })
-    }
-    convertDataToExportData = (data) => {
-        data = data.map((x, index) => {
-            return {
-                STT: index + 1,
-                name: x.name,
-                description: x.description,
-                path: x.path,
-            }
-        })
-        let exportData = {
-            fileName: "Bảng thống kê lưu trữ",
-            dataSheets: [
-                {
-                    sheetName: "Sheet1",
-                    tables: [
-                        {
-                            tableName: "Bảng thống kê lưu trữ",
-                            rowHeader: 1,
-                            columns: [
-                                { key: "STT", value: "STT" },
-                                { key: "name", value: "Tên danh mục" },
-                                { key: "description", value: "Mô tả danh mục" },
-                                { key: "path", value: "Đường dẫn danh mục" },
-                            ],
-                            data: data
-                        },
-                    ]
-                },
-            ]
-        }
-        return exportData;
+        await this.props.getBinLocations();
+        window.$(`#edit-bin-location`).slideUp();
     }
     render() {
-        const { translate } = this.props;
-        const { binParent, deleteNode } = this.state;
-        const dataTree = [
-            {
-                id: "1",
-                code: "B1",
-                name: "Nhà B1",
-                description: "Nơi lưu trữ kho số 1",
-                stock: "Tạ Quang Bửu",
-                status: "Đang trống",
-                users: ["Nguyễn Văn Thắng"],
-                enableGoods: [
-                    {
-                        good: "Jucca Nước",
-                        type: "Nguyên Vật liệu",
-                        capacity: "50 thùng",
-                        contained: "10 thùng"
-                    },
-                    {
-                        good: "Jucca",
-                        type: "Nguyên Vật liệu",
-                        capacity: "50 thùng",
-                        contained: "10 thùng"
-                    },
-                ],
-                text: "Nhà B1",
-                state: { "open": true },
-                parent: "#",
-                child: "3"
-            },
-            {
-                id: "2",
-                code: "D5",
-                name: "Nhà D5",
-                description: "Nơi lưu trữ kho số 2",
-                stock: "Trần Đại Nghĩa",
-                status: "Đang trống",
-                users: ["Nguyễn Văn Thắng"],
-                enableGoods: [
-                    {
-                        good: "Jucca Nước",
-                        type: "Nguyên Vật liệu",
-                        capacity: "50 thùng",
-                        contained: "10 thùng"
-                    },
-                    {
-                        good: "Jucca",
-                        type: "Nguyên Vật liệu",
-                        capacity: "50 thùng",
-                        contained: "10 thùng"
-                    },
-                ],
-                text: "Nhà D5",
-                state: { "open": true },
-                parent: "#",
-                child: "5"
-            },
-            {
-                id: "3",
-                code: "T1",
-                name: "Tầng 1",
-                description: "Nơi lưu trữ kho số B1",
-                stock: "Tạ Quang Bửu",
-                status: "Đang trống",
-                users: ["Nguyễn Văn Thắng"],
-                enableGoods: [
-                    {
-                        good: "Jucca Nước",
-                        type: "Nguyên Vật liệu",
-                        capacity: "50 thùng",
-                        contained: "10 thùng"
-                    },
-                    {
-                        good: "Jucca",
-                        type: "Nguyên Vật liệu",
-                        capacity: "50 thùng",
-                        contained: "10 thùng"
-                    },
-                ],
-                text: "Tầng 1",
-                state: { "open": true },
-                parent: "1",
-                child: "4"
-            },
-            {
-                id: "4",
-                code: "P101",
-                name: "Phòng 101",
-                description: "Nơi lưu trữ kho số 1",
-                stock: "Tạ Quang Bửu",
-                status: "Đang trống",
-                users: ["Nguyễn Văn Thắng"],
-                enableGoods: [
-                    {
-                        good: "Jucca Nước",
-                        type: "Nguyên Vật liệu",
-                        capacity: "50 thùng",
-                        contained: "10 thùng"
-                    },
-                    {
-                        good: "Jucca",
-                        type: "Nguyên Vật liệu",
-                        capacity: "50 thùng",
-                        contained: "10 thùng"
-                    },
-                ],
-                text: "Phòng 101",
-                state: { "open": true },
-                parent: "3",
-                child: "#"
-            },
-            {
-                id: "5",
-                code: "T2",
-                name: "Tầng 2",
-                description: "Nơi lưu trữ kho số 1",
-                stock: "Tạ Quang Bửu",
-                status: "Đang trống",
-                users: ["Nguyễn Văn Thắng"],
-                enableGoods: [
-                    {
-                        good: "Jucca Nước",
-                        type: "Nguyên Vật liệu",
-                        capacity: "50 thùng",
-                        contained: "10 thùng"
-                    },
-                    {
-                        good: "Jucca",
-                        type: "Nguyên Vật liệu",
-                        capacity: "50 thùng",
-                        contained: "10 thùng"
-                    },
-                ],
-                text: "Tầng 2",
-                state: { "open": true },
-                parent: "2",
-                child: "#"
-            },
-            {
-                id: "6",
-                code: "C1",
-                name: "Nhà C1",
-                description: "Nơi lưu trữ kho số 1",
-                stock: "Tạ Quang Bửu",
-                status: "Đang trống",
-                users: ["Nguyễn Văn Thắng"],
-                enableGoods: [
-                    {
-                        good: "Jucca Nước",
-                        type: "Nguyên Vật liệu",
-                        capacity: "50 thùng",
-                        contained: "10 thùng"
-                    },
-                    {
-                        good: "Jucca",
-                        type: "Nguyên Vật liệu",
-                        capacity: "50 thùng",
-                        contained: "10 thùng"
-                    },
-                ],
-                text: "Nhà C1",
-                state: { "open": true },
-                parent: "#",
-                child: "#"
+        const { translate, binLocations, stocks } = this.props;
+        const { binParent, deleteNode, currentBin, dataStock } = this.state;
+        const { list, tree } = binLocations.binLocation;
+        const { listStocks } = stocks;
+        let stock = dataStock[0];
+        let dataStocks = listStocks ? listStocks.map(node => {
+            return {
+                ...node,
+                text: node.name,
+                state: { "open": true},
+                id: node._id,
+                parent: "#"
             }
-        ]
+        }) : null;
+
+        const dataBins = list ? list.map(node => {
+            return {
+                ...node,
+                text: node.name,
+                state: { "open": true },
+                id: node._id,
+                parent: node.parent ? node.parent.toString() : (node.stock ? node.stock.toString() : "#")
+            }
+        }) : null;
+
+        const dataTree = dataStocks.concat(dataBins);
+
         return (
             <React.Fragment>
-                <BinCreateForm />
                 <div className="form-inline">
                     <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
-                        <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('document.administration.domains.add')}
-                           disabled={binParent.length > 1 ? true : false}>{translate('general.add')}</button>
+                        <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('manage_warehouse.bin_location_management.add')}
+                           disabled={binParent.length > 1 ? true : false}>{translate('manage_warehouse.bin_location_management.add')}</button>
                         <ul className="dropdown-menu pull-right">
-                            <li><a href="#modal-create-document-archive" title="Add archive" onClick={(event) => { this.handleAddArchive(event) }}>{translate('task_template.add')}</a></li>
+                            <li><a href="#modal-create-bin-location" title="Add BinLocation" onClick={(event) => { this.handleAddBinLocation(event) }}>{translate('manage_warehouse.bin_location_management.add')}</a></li>
                             <li><a href="#modal_import_file_archive" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>ImportFile</a></li>
                         </ul>
                     </div>
                 </div>
 
                 {
-                    binParent.length > 0 && <button className="btn btn-danger" style={{ marginLeft: '5px' }} onClick={this.deleteArchive}>{translate('general.delete')}</button>
+                    deleteNode.length > 0 && <button className="btn btn-danger" style={{ marginLeft: '5px' }} onClick={this.deleteBins}>{translate('general.delete')}</button>
                 }
+                <BinCreateForm binParentCreate={binParent[0]} binStock={stock} />
                 <div className="row"
                 >
                     <div className="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                        <div className="archive-tree" id="archive-tree">
+                        <div className="bin-location-tree" id="bin-location-tree">
                             <Tree
-                                id="tree-qlcv-document-archive"
+                                id="tree-qlcv-bin-location"
                                 onChanged={this.onChanged}
                                 checkNode={this.checkNode}
                                 unCheckNode={this.unCheckNode}
                                 data={dataTree}
                             />
                         </div>
-                        <SlimScroll outerComponentId="archive-tree" innerComponentId="tree-qlcv-document-archive" innerComponentWidth={"100%"} activate={true} />
+                        <SlimScroll outerComponentId="bin-location-tree" innerComponentId="tree-qlcv-bin-location" innerComponentWidth={"100%"} activate={true} />
                     </div>
                     <div className="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                        { this.state.currentBin && <BinEditForm />}
-
+                        { currentBin && 
+                            <BinEditForm 
+                                binId = {currentBin.id}
+                                binCode = {currentBin.original.code}
+                                binName = {currentBin.text}
+                                binStatus = {currentBin.original.status}
+                                binUnit = {currentBin.original.unit}
+                                binUsers = {currentBin.original.users}
+                                binPath = {currentBin.original.path}
+                                binContained = {currentBin.original.contained}
+                                binCapacity = {currentBin.original.capacity}
+                                binDescription = {currentBin.original.description}
+                                binDepartment = {currentBin.original.department}
+                                binEnableGoods = {currentBin.original.enableGoods}
+                                binParent = {currentBin.parent}
+                                binStock = {currentBin.original.stock}
+                            />
+                        }
                     </div>
                 </div>
             </React.Fragment>
@@ -312,5 +217,15 @@ class BinManagementTable extends Component {
     }
 }
 
-// export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(AdministrationDocumentArchives));
-export default connect(null, null)(withTranslate(BinManagementTable));
+const mapStateToProps = state => state;
+
+const mapDispatchToProps = {
+    getBinLocations: BinLocationActions.getBinLocations,
+    deleteBinLocations: BinLocationActions.deleteBinLocations,
+    getAllDepartments: DepartmentActions.get,
+    getUser: UserActions.get,
+    getAllGoods: GoodActions.getAllGoods,
+    getAllStocks: StockActions.getAllStocks
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(BinManagementTable));

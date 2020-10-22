@@ -12,29 +12,11 @@ class ArchiveDetailForm extends Component {
         }
     }
 
-    // static getDerivedStateFromProps(nextProps, prevState){
-    //     if(nextProps.stockId !== prevState.stockId || nextProps.code !== prevState.code || nextProps.name !== prevState.name ||
-    //         nextProps.status !== prevState.status || nextProps.address !== prevState.address || nextProps.goods !== prevState.goods ||
-    //         nextProps.managementLocation !== prevState.managementLocation || nextProps.manageDepartment !== prevState.manageDepartment || nextProps.description !== prevState.description){
-    //         return {
-    //             ...prevState,
-    //             stockId: nextProps.stockId,
-    //             code: nextProps.code,
-    //             name: nextProps.name,
-    //             status: nextProps.status,
-    //             address: nextProps.address,
-    //             goods: nextProps.goodsManagement,
-    //             managementLocation: nextProps.managementLocation,
-    //             manageDepartment: nextProps.manageDepartment,
-    //             description: nextProps.description,
-    //         }
-    //     }
-    //     else {
-    //         return null;
-    //     }
-    // }
     render() {
-        const { translate } = this.props;
+        const { translate, binLocations } = this.props;
+        const { binLocationDetail } = binLocations;
+        const {path, status, department, description, capacity, contained, users, enableGoods, unit } = binLocationDetail;
+        
         return (
             <React.Fragment>
                 <DialogModal
@@ -52,35 +34,35 @@ class ArchiveDetailForm extends Component {
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.bin_location_management.code')}:&emsp;</strong>
-                                    ST001-B1-T1-P101
+                                    {path}
                                 </div>
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.bin_location_management.status')}:&emsp;</strong>
-                                    Đã đầy
+                                   {status && <span style={{ color: translate(`manage_warehouse.bin_location_management.${status}.color`)}}>{translate(`manage_warehouse.bin_location_management.${status}.status`)}</span>}
                                 </div>
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.bin_location_management.department')}:&emsp;</strong>
-                                    Phòng kế hoạch
+                                    {department ? department.name : ""}
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.bin_location_management.capacity')}:&emsp;</strong>
-                                    3 khối
+                                    {capacity ? capacity : 0} {unit}
                                 </div>
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.bin_location_management.contained')}:&emsp;</strong>
-                                    3 khối
+                                    {contained ? contained : 0} {unit}
                                 </div>
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.bin_location_management.management_location')}:&emsp;</strong>
-                                    Nguyễn Văn Thắng
+                                    {users ? users.map(x => x.name) : ""}
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.bin_location_management.description')}:&emsp;</strong>
-                                    Khu lưu trữ nguyên vật liệu dùng cho sản xuất
+                                    {description}
                                 </div>
                                 <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">{translate('manage_warehouse.bin_location_management.enable_good')}</legend>
@@ -95,42 +77,17 @@ class ArchiveDetailForm extends Component {
                                             </tr>
                                         </thead>
                                         <tbody id={`good-edit-manage-by-archive`}>
-                                                    <tr>
-                                                        <td>Jucca Nước</td>
-                                                        <td>Nguyên vật liệu</td>
-                                                        <td>10 thùng</td>
-                                                        <td>50 thùng</td>
+                                            {
+                                                (typeof enableGoods === 'undefined' || enableGoods.length === 0) ? <tr><td colSpan={4}><center>{translate('task_template.no_data')}</center></td></tr> :
+                                                enableGoods.map((x, index) =>
+                                                    <tr key={index}>
+                                                        <td>{x.good ? x.good.name : ""}</td>
+                                                        <td>{x.good ? translate(`manage_warehouse.bin_location_management.${x.good.type}`) : ""}</td>
+                                                        <td>{x.contained} {x.good ? x.good.baseUnit : ""}</td>
+                                                        <td>{x.capacity} {x.good ? x.good.baseUnit : ""}</td>
                                                     </tr>
-                                                    <tr>
-                                                        <td>Propylen Glycon</td>
-                                                        <td>Nguyên vật liệu</td>
-                                                        <td>30 kg</td>
-                                                        <td>80 kg</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Jucca Nước</td>
-                                                        <td>Nguyên vật liệu</td>
-                                                        <td>0</td>
-                                                        <td>50 thùng</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Propylen Glycon</td>
-                                                        <td>Nguyên vật liệu</td>
-                                                        <td>30 kg</td>
-                                                        <td>80 kg</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Jucca Nước</td>
-                                                        <td>Nguyên vật liệu</td>
-                                                        <td>0</td>
-                                                        <td>50 thùng</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Propylen Glycon</td>
-                                                        <td>Nguyên vật liệu</td>
-                                                        <td>0</td>
-                                                        <td>80 kg</td>
-                                                    </tr>
+                                                )
+                                            }
                                         </tbody>
                                     </table>
                                 </fieldset>
@@ -143,4 +100,6 @@ class ArchiveDetailForm extends Component {
     }
 }
 
-export default connect(null, null)(withTranslate(ArchiveDetailForm));
+const mapStateToProps = state => state;
+
+export default connect(mapStateToProps, null)(withTranslate(ArchiveDetailForm));

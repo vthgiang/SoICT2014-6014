@@ -124,49 +124,49 @@ class IncidentLogTab extends Component {
             <div id={id} className="tab-pane">
                 <div className="box-body qlcv">
                     {/* Lịch sử sự cố */}
-                    <fieldset className="scheduler-border">
-                        <legend className="scheduler-border"><h4 className="box-title">{translate('asset.asset_info.incident_list')}</h4></legend>
+                    {/* <fieldset className="scheduler-border">
+                        <legend className="scheduler-border"><h4 className="box-title">{translate('asset.asset_info.incident_list')}</h4></legend> */}
 
-                        {/* Form thêm thông tin sự cố */}
-                        <IncidentLogAddModal handleChange={this.handleAddIncident} id={`addIncident${id}`} />
+                    {/* Form thêm thông tin sự cố */}
+                    <IncidentLogAddModal handleChange={this.handleAddIncident} id={`addIncident${id}`} />
 
-                        {/* Bảng thông tin sự cố */}
-                        <table className="table table-striped table-bordered table-hover">
-                            <thead>
-                                <tr>
-                                    <th style={{ width: "10%" }}>{translate('asset.general_information.incident_code')}</th>
-                                    <th style={{ width: "10%" }}>{translate('asset.general_information.incident_type')}</th>
-                                    <th style={{ width: "10%" }}>{translate('asset.general_information.reported_by')}</th>
-                                    <th style={{ width: "10%" }}>{translate('asset.general_information.date_incident')}</th>
-                                    <th style={{ width: "10%" }}>{translate('asset.general_information.content')}</th>
-                                    <th style={{ width: "10%" }}>{translate('asset.general_information.status')}</th>
-                                    <th style={{ width: '100px', textAlign: 'center' }}>{translate('table.action')}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {(incidentLogs && incidentLogs.length !== 0) &&
-                                    incidentLogs.map((x, index) => (
-                                        <tr key={index}>
-                                            <td>{x.incidentCode}</td>
-                                            <td>{this.formatType(x.type)}</td>
-                                            <td>{x.reportedBy ? (userlist.length && userlist.filter(item => item._id === x.reportedBy).pop() ? userlist.filter(item => item._id === x.reportedBy).pop().name : 'User is deleted') : ''}</td>
-                                            <td>{x.dateOfIncident ? this.formatDate(x.dateOfIncident) : ''}</td>
-                                            <td>{x.description}</td>
-                                            <td>{this.formatStatus(x.statusIncident)}</td>
-                                            <td>
-                                                <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.asset_info.edit_incident_info')}><i
-                                                    className="material-icons">edit</i></a>
-                                                <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteIncident(index)}><i className="material-icons"></i></a>
-                                            </td>
-                                        </tr>
-                                    ))
-                                }
-                            </tbody>
-                        </table>
-                        {
-                            (!incidentLogs || incidentLogs.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
-                        }
-                    </fieldset>
+                    {/* Bảng thông tin sự cố */}
+                    <table className="table table-striped table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.incident_code')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.incident_type')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.reported_by')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.date_incident')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.content')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.status')}</th>
+                                <th style={{ width: '100px', textAlign: 'center' }}>{translate('table.action')}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {(incidentLogs && incidentLogs.length !== 0) &&
+                                incidentLogs.map((x, index) => (
+                                    <tr key={index}>
+                                        <td>{x.incidentCode}</td>
+                                        <td>{this.formatType(x.type)}</td>
+                                        <td>{x.reportedBy ? (userlist.length && userlist.filter(item => item._id === x.reportedBy).pop() ? userlist.filter(item => item._id === x.reportedBy).pop().name : 'User is deleted') : ''}</td>
+                                        <td>{x.dateOfIncident ? this.formatDate(x.dateOfIncident) : ''}</td>
+                                        <td>{x.description}</td>
+                                        <td>{this.formatStatus(x.statusIncident)}</td>
+                                        <td>
+                                            <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.asset_info.edit_incident_info')}><i
+                                                className="material-icons">edit</i></a>
+                                            <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteIncident(index)}><i className="material-icons"></i></a>
+                                        </td>
+                                    </tr>
+                                ))
+                            }
+                        </tbody>
+                    </table>
+                    {
+                        (!incidentLogs || incidentLogs.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                    }
+                    {/* </fieldset> */}
                 </div>
 
                 {/* Form chỉnh sửa thông tin sự cố */}

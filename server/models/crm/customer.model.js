@@ -25,6 +25,9 @@ const CustomerSchema = new Schema({
     avatar: { // Ảnh đại diện khách hàng
         type: String,
     },
+    customerType: {
+        type: Number,  
+    },
     company: {// Tên công ty
         type: String,
     },
@@ -94,6 +97,9 @@ const CustomerSchema = new Schema({
         description: {
             type: String
         },
+        fileName: {
+            type: String,
+        },
         url: {
             type: String
         }
@@ -115,6 +121,9 @@ const CustomerSchema = new Schema({
             ref: 'User'
         },
     }],
+    note: {
+        type:String,
+    }
     // company: {
     //     type: Schema.Types.ObjectId,
     //     ref: 'Company',

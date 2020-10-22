@@ -72,6 +72,7 @@ router.use("/taskreports", require("./modules/report/task-report/taskReport.rout
 router.use("/stocks", require('./modules/warehouse/stock/stock.route'));
 router.use("/categories", require("./modules/warehouse/category/category.route"));
 router.use("/goods", require("./modules/warehouse/good/good.route"));
+router.use("/bin-locations", require("./modules/warehouse/bin-location/binLocation.route"));
 
 router.use("/examples", require("./modules/example/example.route"));
 router.use("/documents", require("./modules/document/document.route"));
@@ -90,7 +91,15 @@ app.use("/manufacturing-works", require("./modules/production/manufacturing/manu
 
 //order
 app.use("/quote", require("./modules/production/order/quote/quote.route"));
-app.use("/coin-rule", require("./modules/production/order/coinRule/coinRule.route"));
+app.use("/coin-rule", require("./modules/production/order/coin-rule/coinRule.route"));
+app.use("/bank-account", require("./modules/production/order/bank-account/bankAccount.route"));
+app.use("/discount", require("./modules/production/order/discount/discount.route"));
+app.use("/manufacturing-order", require("./modules/production/order/manufacturing-order/manufacturingOrder.route"));
+app.use("/proposal-order", require("./modules/production/order/proposal-order/proposalOrder.route"));
+app.use("/purchase-order", require("./modules/production/order/purchase-order/purchaseOrder.route"));
+app.use("/sales-order", require("./modules/production/order/sales-order/salesOrder.route"));
+app.use("/sla", require("./modules/production/order/sla/sla.route"));
+app.use("/tax", require("./modules/production/order/tax/tax.route"));
 
 app.use(router);
 

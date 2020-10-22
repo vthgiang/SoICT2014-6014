@@ -9,6 +9,7 @@ import { DistributionOfEmployee } from './distributionOfEmployee';
 import { DomainOfTaskResultsChart } from '../task-personal-dashboard/domainOfTaskResultsChart';
 import { TaskStatusChart } from '../task-personal-dashboard/taskStatusChart';
 import { TasksSchedule } from '../task-personal-dashboard/tasksSchedule';
+import { CalendarOrganizationUnit } from './calendarOrganizationUnit';
 
 import { withTranslate } from 'react-redux-multilingual';
 import { SelectMulti, DatePicker } from '../../../../common-components/index';
@@ -199,7 +200,7 @@ class TaskOrganizationUnitDashboard extends Component {
 
         if (dashboardEvaluationEmployeeKpiSet) {
             currentOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
-            currentOrganizationalUnitLoading = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnitLoading; 
+            currentOrganizationalUnitLoading = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnitLoading;
         }
         if (currentOrganizationalUnit) {
             childrenOrganizationalUnit.push(currentOrganizationalUnit);
@@ -217,7 +218,7 @@ class TaskOrganizationUnitDashboard extends Component {
         }
         return (
             <React.Fragment>
-                { currentOrganizationalUnit
+                {currentOrganizationalUnit
                     ? <React.Fragment>
                         <div className="qlcv" style={{ textAlign: "right" }}>
                             <div className="form-inline">
@@ -259,19 +260,19 @@ class TaskOrganizationUnitDashboard extends Component {
 
                             </div>
                         </div>
-                        
+
                         <div className="row">
                             <div className="col-xs-12">
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
                                         <div className="box-title">{translate('task.task_management.tasks_calendar')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
                                     </div>
-                                    <TasksSchedule
-                                        callAction={!this.state.willUpdate}
-                                        TaskOrganizationUnitDashboard={true}
-                                        units={idsUnit}
-                                        willUpdate={true}
-                                    />
+                                    <CalendarOrganizationUnit
+                                        // callAction={!this.state.willUpdate}
+                                        // TaskOrganizationUnitDashboard={true}
+                                        // units={idsUnit}
+                                        // willUpdate={true}
+                                        tasks={tasks} />
                                 </div>
 
                             </div>
@@ -340,7 +341,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                         <div className="box-title">{translate('task.task_management.dashboard_overdue')}</div>
                                     </div>
 
-                                    <div className="box-body" style={{ height: "300px", overflow: "auto"}}>
+                                    <div className="box-body" style={{ height: "300px", overflow: "auto" }}>
                                         {
                                             (tasks && tasks.tasksbyuser) ?
                                                 <ul className="todo-list">
