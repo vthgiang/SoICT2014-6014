@@ -3138,13 +3138,13 @@ const initSampleCompanyDB = async () => {
         code: "SL",
         description: 'Nhóm khách chỉ bán sĩ lẻ'
     }, {
-        name: "Nhà cung cấp Anh Đức",
+        name: "Nhóm khách theo khu vực",
         code: "CCAD",
-        description: 'Công ty anh Đức'
+        description: 'Nhóm khách theo khu vực'
     }, {
-        name: "Đại lý Việt Anh",
+        name: "Khách VIP",
         code: "ĐLVA",
-        description: "Đại lý việt anh cung cấp đồ nhựa",
+        description: "Khách VIP",
     }];
     const groups = await Group(vnistDB).insertMany(customerGroupData);
     console.log("Xong! Đã tạo mẫu dữ liệu khách hàng")
@@ -3155,7 +3155,7 @@ const initSampleCompanyDB = async () => {
         code: "ST001",
         name: "Tiềm năng",
         description: "Khách hàng mới toanh",
-        active: true,
+        active: false,
     }, {
         code: "ST002",
         name: "Quan tâm sản phẩm",
@@ -3203,9 +3203,9 @@ const initSampleCompanyDB = async () => {
             code: 'KH001',
             name: 'Nguyễn Lệ Nhi',
             owner: [users[5]._id],
-            gender: 'male',
+            gender: parseInt('1'),
             company: 'VNIST',
-            customerType: 'Cá nhân',
+            customerType: parseInt('1'),
             represent: 'Nguyễn Thị Hương',
             taxNumber: '1528946392',
             customerSource: 'Facebook.com',
@@ -3215,7 +3215,7 @@ const initSampleCompanyDB = async () => {
             mobilephoneNumber: parseInt('0385025851'),
             email: 'nhinl.vnist@gmail.com',
             address: 'Ngọc mỹ, Quốc Oai, Hà Nội',
-            location: parseInt('0'),
+            location: parseInt('3'),
             website: 'abcnddg.com',
             group: groups[1]._id,
             status: [
@@ -3226,7 +3226,7 @@ const initSampleCompanyDB = async () => {
             ],
             statusHistories: [
                 {
-                    oldValue: null,
+                    oldValue: status[1]._id,
                     newValue: status[1]._id,
                     createdAt: new Date("2020-10-10"),
                     createdBy: users[5]._id,
@@ -3250,10 +3250,10 @@ const initSampleCompanyDB = async () => {
             code: 'KH002',
             name: 'Công ty Việt Anh',
             owner: [users[5]._id],
-            gender: '',
+            gender: parseInt('2'),
             company: 'VIAVET',
             represent: 'Trương Anh Tuấn',
-            customerType: 'Công ty',
+            customerType: parseInt('2'),
             taxNumber: '64673692',
             customerSource: 'Youtube, facebook',
             companyEstablishmentDate: new Date("2014-09-15"),
@@ -3262,7 +3262,7 @@ const initSampleCompanyDB = async () => {
             mobilephoneNumber: parseInt('0345915454'),
             email: 'TuanTA.viavet@gmail.com',
             address: 'Thường tín, Hà Nội',
-            location: parseInt('0'),
+            location: parseInt('1'),
             website: 'vietanhviavet.com',
             group: groups[2]._id,
             status: [
@@ -3274,7 +3274,7 @@ const initSampleCompanyDB = async () => {
             ],
             statusHistories: [
                 {
-                    oldValue: null,
+                    oldValue: status[1]._id,
                     newValue: status[1]._id,
                     createdAt: new Date("2020-09-15"),
                     createdBy: users[5]._id,

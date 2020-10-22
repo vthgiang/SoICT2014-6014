@@ -19,19 +19,19 @@ const CustomerSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User',
     }],
-    gender: { // Giới tính
-        type: String, // 0: Nam, 1: Nữ
+    gender: { // Giới tính 1: Name, 2: Nữ
+        type: Number,
     },
     avatar: { // Ảnh đại diện khách hàng
         type: String,
     },
-    customerType: {
+    customerType: { // 1: Cá nhân, 2: Công ty/tổ chức
         type: Number,  
     },
-    company: {// Tên công ty
+    company: { // Tên công ty
         type: String,
     },
-    represent: {
+    represent: { // Người đại diện
         type: String,
     },
     taxNumber: { // Mã số thuế
@@ -64,7 +64,7 @@ const CustomerSchema = new Schema({
     address2: { // Địa chỉ thứ 2 của khách hàng nếu có
         type: String
     },
-    location: { // 0: Miền bắc, 1: Miền trung,  2: Miền nam
+    location: { // 1: Miền bắc, 2: Miền trung,  3: Miền nam
         type: Number,
     },
     website: { // Địa chỉ khách hàng
@@ -122,7 +122,7 @@ const CustomerSchema = new Schema({
         },
     }],
     note: {
-        type:String,
+        type: String,
     }
     // company: {
     //     type: Schema.Types.ObjectId,

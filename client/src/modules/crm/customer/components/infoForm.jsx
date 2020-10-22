@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ApiImage, SelectBox, ErrorLabel, DateTimeConverter } from '../../../../common-components';
-import { convertJsonObjectToFormData } from '../../../../helpers/jsonObjectToFormDataObjectConverter';
 import { CrmCustomerActions } from '../redux/actions';
 import GeneralTabInfoForm from './generalTabInfoForm';
 import HistoryTabInfoForm from './historyTabInfoForm';
@@ -228,7 +227,6 @@ class CrmCustomerInformation extends Component {
                         </div>
                     </form>
                 </DialogModal>
-
             </React.Fragment>
         );
     }

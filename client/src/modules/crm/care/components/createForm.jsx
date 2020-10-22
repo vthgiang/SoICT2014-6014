@@ -18,6 +18,10 @@ class CreateCareForm extends Component {
         }
     }
 
+    /**
+     * Hàm xử lý khi người chăm sóc khách hàng thay đổi
+     * @param {*} value 
+     */
     handleChangeCaregiver = (value) => {
         const { newCare } = this.state;
 
@@ -29,6 +33,10 @@ class CreateCareForm extends Component {
         })
     }
 
+    /**
+     * Hàm xử lý khi khách hàng được chăm sóc thay đổi
+     * @param {*} value 
+     */
     handleChangeCustomer = (value) => {
         const { newCare } = this.state;
 
@@ -40,7 +48,10 @@ class CreateCareForm extends Component {
         })
     }
 
-
+    /**
+     * Hàm xử lý khi tên công việc chăm sóc khách hàng thay đổi
+     * @param {*} e 
+     */
     handleChangeName = (e) => {
         const { newCare } = this.state;
         const { value } = e.target;
@@ -53,9 +64,15 @@ class CreateCareForm extends Component {
         })
     }
 
+    /**
+     * Hàm xử lý khi mô tả công việc chăm sóc khách  hàng thay đổi
+     * @param {*} e 
+     * @param {*} editor 
+     */
     handleChangeDescription = (e, editor) => {
         const { newCare } = this.state;
         const description = editor.getData();
+
         this.setState({
             newCare: {
                 ...newCare,
@@ -64,6 +81,10 @@ class CreateCareForm extends Component {
         })
     }
 
+    /**
+     * Hàm xử lý khi hình thức chăm sóc thay đổi
+     * @param {*} value 
+     */
     handleChangeCareType = (value) => {
         const { newCare } = this.state;
 
@@ -75,6 +96,11 @@ class CreateCareForm extends Component {
         })
     }
 
+
+    /**
+     * Hàm xử lý khi trạng thái công việc chăm sóc thay đổi
+     * @param {*} value 
+     */
     handleChangeStatus = value => {
         const { newCare } = this.state;
 
@@ -86,6 +112,10 @@ class CreateCareForm extends Component {
         })
     }
 
+    /**
+     * Hàm xử lý khi ngày bắt đầu thực hiện công việc thay đổi
+     * @param {*} value 
+     */
     handleChangeStartDate = value => {
         const { newCare } = this.state;
 
@@ -98,6 +128,10 @@ class CreateCareForm extends Component {
     }
 
 
+    /**
+     * Hàm xử lý khi ngày kết thúc công việc thay đổi
+     * @param {*} value 
+     */
     handleChangeEndDate = value => {
         const { newCare } = this.state;
 
@@ -247,10 +281,10 @@ class CreateCareForm extends Component {
                                 items={
                                     [
                                         { value: '', text: '---Chọn---' },
-                                        { value: 0, text: 'Chưa thưc hiện' },
-                                        { value: 1, text: 'Đang thực hiện' },
-                                        { value: 2, text: 'Đang trì hoãn' },
-                                        { value: 3, text: 'Đã hoàn thành' },
+                                        { value: 1, text: 'Chưa thưc hiện' },
+                                        { value: 2, text: 'Đang thực hiện' },
+                                        { value: 3, text: 'Đang trì hoãn' },
+                                        { value: 4, text: 'Đã hoàn thành' },
                                     ]
                                 }
                                 value={newCare.status ? newCare.status : ''}
@@ -296,7 +330,6 @@ const mapDispatchToProps = {
     getAllEmployeeOfUnitByRole: UserActions.getAllEmployeeOfUnitByRole,
     getCareTypes: CrmCareTypeActions.getCareTypes,
     createCare: CrmCareActions.createCare,
-
 }
 
 

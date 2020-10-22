@@ -51,10 +51,10 @@ class InfoCareForm extends Component {
 
     formatCareStatus(input) {
         input = parseInt(input);
-        if (input === 0) return 'Chưa thực hiện';
-        if (input === 1) return 'Đang thực hiện';
-        if (input === 2) return 'Đang tạm hoãn';
-        if (input === 3) return 'Đã hoàn thành';
+        if (input === 1) return 'Chưa thực hiện';
+        if (input === 2) return 'Đang thực hiện';
+        if (input === 3) return 'Đang tạm hoãn';
+        if (input === 4) return 'Đã hoàn thành';
     }
 
     render() {
@@ -166,7 +166,6 @@ class InfoCareForm extends Component {
                         </div>
                     </div>
                 </DialogModal>
-
             </React.Fragment>
         );
     }
@@ -180,6 +179,5 @@ function mapStateToProps(state) {
 const mapDispatchToProps = {
     getCare: CrmCareActions.getCare,
 }
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(InfoCareForm));

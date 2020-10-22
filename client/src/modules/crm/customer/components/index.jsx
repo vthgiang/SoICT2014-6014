@@ -22,6 +22,9 @@ class CrmCustomer extends Component {
         }
     }
 
+    /**
+     * Hàm xử lý khi click button import khách hàng
+     */
     importCustomer = async () => {
         await this.setState({
             importCustomer: true,
@@ -29,13 +32,85 @@ class CrmCustomer extends Component {
         window.$('#modal-customer-import').modal('show');
     }
 
+    /**
+     * Hàm xử lý khi click button thêm khách hàng bằng tay
+     */
     createCustomer = () => {
         window.$('#modal-crm-customer-create').modal('show');
     }
 
+    /**
+     * Hàm xử lý khi click nút xem chi tiết khách hàng
+     * @param {*} id 
+     */
+    handleInfo = async (id) => {
+        await this.setState({ customerId: id, });
+        window.$('#modal-crm-customer-info').modal('show');
+    }
+
+    /**
+     * Hàm xử lý khi click nút edit khách hàng
+     * @param {*} id 
+     */
+    handleEdit = async (id) => {
+        await this.setState({
+            ...this.state,
+            customerIdEdit: id,
+        });
+        window.$('#modal-crm-customer-edit').modal('show');
+    }
+
+    // Cac ham thiet lap va tim kiem gia tri
+    setOption = (title, option) => {
+        this.setState({
+            [title]: option
+        });
+    }
+
+    searchWithOption = async () => {
+        const data = {
+            limit: this.state.limit,
+            page: 1,
+            key: this.state.option,
+            value: this.state.value
+        };
+        await this.props.getCustomers(data);
+    }
+
+    setPage = async (pageNumber) => {
+        let { limit } = this.state;
+        let page = (pageNumber - 1) * (limit);
+
+        await this.setState({
+            page: parseInt(page),
+        });
+        this.props.getCustomers(this.state);
+    }
+
+    setLimit = (number) => {
+        this.setState({ limit: number });
+        const data = {
+            limit: number,
+            page: this.state.page,
+            key: this.state.option,
+            value: this.state.value
+        };
+        this.props.getCustomers(data);
+    }
+
+    /**
+     * Hàm xử lý click button xóa khách hàng
+     * @param {*} id 
+     */
+    deleteCustomer = (id) => {
+        if (id) {
+            this.props.deleteCustomer(id);
+        }
+    }
+
     render() {
         const { translate, crm, user } = this.props;
-        const { customers, groups, status } = crm;
+        const { customers } = crm;
         const { importCustomer, limit, page, customerIdEdit, customerId } = this.state;
 
         let pageTotal = (crm.customers.totalDocs % limit === 0) ?
@@ -213,65 +288,8 @@ class CrmCustomer extends Component {
     componentDidMount() {
         this.props.getCustomers(this.state);
         this.props.getDepartment();
-        this.props.getGroups({});
-        this.props.getStatus({});
-    }
-
-    handleInfo = async (id) => {
-        await this.setState({ customerId: id, });
-        window.$('#modal-crm-customer-info').modal('show');
-    }
-
-    handleEdit = async (id) => {
-        await this.setState({
-            ...this.state,
-            customerIdEdit: id,
-        });
-        window.$('#modal-crm-customer-edit').modal('show');
-    }
-
-    // Cac ham thiet lap va tim kiem gia tri
-    setOption = (title, option) => {
-        this.setState({
-            [title]: option
-        });
-    }
-
-    searchWithOption = async () => {
-        const data = {
-            limit: this.state.limit,
-            page: 1,
-            key: this.state.option,
-            value: this.state.value
-        };
-        await this.props.getCustomers(data);
-    }
-
-    setPage = async (pageNumber) => {
-        let { limit } = this.state;
-        let page = (pageNumber - 1) * (limit);
-
-        await this.setState({
-            page: parseInt(page),
-        });
-        this.props.getCustomers(this.state);
-    }
-
-    setLimit = (number) => {
-        this.setState({ limit: number });
-        const data = {
-            limit: number,
-            page: this.state.page,
-            key: this.state.option,
-            value: this.state.value
-        };
-        this.props.getCustomers(data);
-    }
-
-    deleteCustomer = (id) => {
-        if (id) {
-            this.props.deleteCustomer(id);
-        }
+        this.props.getGroups();
+        this.props.getStatus();
     }
 }
 
