@@ -1,55 +1,81 @@
 import React, { Component } from 'react';
-import { ButtonModal, DatePicker, DialogModal, SelectBox, SelectMulti } from '../../../../../../../common-components';
-import sampleData from '../../../../sampleData';
-import PlanInfoForm from './planInfoForm';
+import { ButtonModal, DialogModal } from '../../../../../../../common-components';
+import CommandCreateForm from './commandCreateForm';
+import PlanInfoForm from './generalPlanInfoForm';
+import MaterialInfoForm from './materialInfoForm';
+import MillScheduleBooking from './millScheduleBooking';
+import WorkerBooking from './workerBooking';
+import './planCreate.css';
+
+
 
 class NewPlanCreateForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            status: "1",
-            products: [],
-            estimateClick: false
+            step: 0,
+            steps: [{
+                label: "Thông tin chung",
+                active: true
+            }, {
+                label: "Nguyên vật liệu",
+                active: false
+            }, {
+                label: "Lệnh sản xuất",
+                active: false
+            }, {
+                label: "Ca sản xuất",
+                active: false
+            }, {
+                label: "Nhân công",
+                active: false
+            }]
         };
     }
 
-    handleChangeStatus = (value) => {
-        this.setState((state) => {
-            return {
-                ...state,
-                status: value[0]
+    nextStep = async (e) => {
+        e.preventDefault();
+        await this.setState((state) => ({
+            step: state.step + 1
+        }));
+
+        let { step, steps } = this.state;
+        steps.map((item, index) => {
+            if (index <= step) {
+                item.active = true;
+            } else {
+                item.active = false;
             }
+            return item;
+        });
+        await this.setState({
+            steps: steps
+        })
+
+    }
+
+    prevStep = async (e) => {
+        e.preventDefault();
+        await this.setState((state) => ({
+            step: state.step - 1
+        }));
+
+        let { step, steps } = this.state;
+        steps.map((item, index) => {
+            if (index <= step) {
+                item.active = true;
+            } else {
+                item.active = false;
+            }
+            return item;
+        });
+        await this.setState({
+            steps: steps
         })
     }
-
-    handleAddProduct = () => {
-        this.setState((state) => {
-            return {
-                ...state,
-                products: [
-                    ...state.products,
-                    {
-                        _id: "4",
-                        code: "TIF1222"
-                    }
-                ]
-
-            }
-        });
-    }
-
-    handleEstimateClick = (e) => {
-        e.preventDefault();
-        this.setState((state) => ({
-            estimateClick: !state.estimateClick
-        }));
-    }
-
-
     render() {
-        const { products, status } = this.state;
-        const { manufacturingOrders } = sampleData;
-        let manufacturingOrder = manufacturingOrders[0];
+        const { step, steps } = this.state;
+        console.log(steps);
         return (
             <React.Fragment>
                 <ButtonModal modalID="modal-create-new-plan" button_name="Tạo kế hoạch" title="Tạo kế hoạch sản xuất" />
@@ -61,30 +87,66 @@ class NewPlanCreateForm extends Component {
                     // msg_faile={translate('manage_plan.add_fail')}
                     // func={this.save}
                     // disableSubmit={!this.isFormValidated()}
+                    hasNote={false}
                     size={100}
                     maxWidth={500}
                 >
                     <form id="form-create-new-plan">
-                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <div className="timeline">
-                                <div className="timeline-progress" style={{ width: `(100/3)%` }}></div>
-                                <div className="timeline-items">
-                                    <div className={`timeline-item`}>
-                                        <div className="timeline-contain">Nguyên vật liệu</div>
-                                    </div>
-                                    <div className={`timeline-item active`}>
-                                        <div className="timeline-contain">Lệnh sản xuất</div>
-                                    </div>
-                                    <div className={`timeline-item`}>
-                                        <div className="timeline-contain">Ca sản xuất</div>
-                                    </div>
-                                    <div className={`timeline-item`}>
-                                        <div className="timeline-contain">Chọn nhân sự</div>
-                                    </div>
-                                </div>
+
+                        <div className="timeline">
+                            <div className="timeline-progress" style={{ width: `${step * 100 / (steps.length - 1)}%` }}></div>
+                            <div className="timeline-items">
+                                {
+                                    steps.map((item, index) => (
+                                        <div className={`timeline-item ${item.active ? 'active' : ''}`} key={index}>
+                                            <div className="timeline-contain">{item.label}</div>
+                                        </div>
+                                    ))
+                                }
                             </div>
                         </div>
-                        <PlanInfoForm />
+                        <div>
+                            {
+                                step === 0 && <PlanInfoForm />
+                            }
+                            {
+                                step === 1 && <MaterialInfoForm />
+                            }
+                            {
+                                step === 2 && <CommandCreateForm />
+                            }
+                            {
+                                step === 3 && <MillScheduleBooking />
+                            }
+                            {
+                                step === 4 && <WorkerBooking />
+                            }
+                        </div>
+                        <div style={{ textAlign: "center" }}>
+                            <div>
+                                {step + 1} / {steps.length}
+                            </div>
+                            <div>
+                                {
+                                    step !== 0
+                                        ?
+                                        <button className="btn" onClick={this.prevStep}>Trước</button>
+                                        :
+                                        ""
+                                }
+                                {
+                                    " "
+                                }
+                                {
+                                    step === (steps.length - 1)
+                                        ?
+                                        ""
+                                        :
+                                        <button className="btn btn-success" onClick={this.nextStep}>Sau</button>
+                                }
+
+                            </div>
+                        </div>
                     </form>
                 </DialogModal>
             </React.Fragment >
