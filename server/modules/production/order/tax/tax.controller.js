@@ -123,7 +123,7 @@ exports.checkAvailabledCode = async ( req, res ) => {
         res.status(200).json({
             success: true,
             messages: ["check_successfully"],
-            content: checked
+            content: { checked }
         });
     } catch (error) {
         await Log.error(req.user.email, "CHECK_AVAILABLED_TAX_CODE", req.portal);
@@ -131,6 +131,30 @@ exports.checkAvailabledCode = async ( req, res ) => {
         res.status(400).json({
             success: false,
             messages: ["check_failed"],
+            content: error.message
+        });
+    } 
+        
+}
+
+
+exports.getTaxByCode = async ( req, res ) => {
+    let query = req.query;
+    try {
+        let taxs = await TaxService.getTaxByCode( query, req.portal );
+
+        await Log.info(req.user.email, "GET_TAX_BY_CODE", req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["get_successfully"],
+            content: taxs
+        });
+    } catch (error) {
+        await Log.error(req.user.email, "GET_TAX_BY_CODE", req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ["get_failed"],
             content: error.message
         });
     } 
