@@ -22,6 +22,54 @@ exports.createManufacturingMill = async (data, portal) => {
     return { manufacturingMill }
 }
 
+exports.getAllManufacturingMills = async (query, portal) => {
+    let option = {};
+    let { name, code, page, limit } = query;
+    if (name) {
+        option.name = new RegExp(name, "i");
+    }
+    if (code) {
+        option.code = new RegExp(code, "i");
+    }
+
+    if (!page || !limit) {
+        let manufacturingMills = await ManufacturingMill(connect(DB_CONNECTION, portal))
+            .find({})
+            .populate({
+                path: "manufacturingWorks",
+                populate: [{
+                    path: "foreman",
+                    select: "name"
+                }, {
+                    path: "worksManager",
+                    select: "name"
+                }],
+                select: "name"
+            });
+        return { manufacturingMills }
+    } else {
+        let manufacturingMills = await ManufacturingMill(connect(DB_CONNECTION, portal))
+            .paginate(option, {
+                limit: limit,
+                page: page,
+                populate: {
+                    path: "manufacturingWorks",
+                    populate: [{
+                        path: "foreman",
+                        select: "name"
+                    }, {
+                        path: "worksManager",
+                        select: "name"
+                    }],
+                    select: "name"
+                }
+            });
+        return { manufacturingMills }
+    }
+
+
+}
+
 exports.createWorkSchedule = async (id, data, portal) => {
     const year = data.year;
     let oldManufacturingMill = await ManufacturingMill(connect(DB_CONNECTION, portal)).findById(id);
@@ -54,6 +102,66 @@ exports.createWorkSchedule = async (id, data, portal) => {
     await oldManufacturingMill.save();
     let manufacturingMill = await ManufacturingMill(connect(DB_CONNECTION, portal)).findById({ _id: oldManufacturingMill._id });
     return { manufacturingMill };
+}
+
+exports.getManufacturingMillById = async (id, portal) => {
+    let manufacturingMill = await ManufacturingMill(connect(DB_CONNECTION, portal))
+        .findById({ _id: id })
+        .populate({
+            path: "manufacturingWorks",
+            populate: [{
+                path: "foreman",
+                select: "name"
+            }, {
+                path: "worksManager",
+                select: "name"
+            }],
+            select: "name"
+        });
+    if (!manufacturingMill) {
+        throw Error("Manufacturing Mill is not existing");
+    }
+
+    return { manufacturingMill }
+}
+
+exports.editManufacturingMill = async (id, data, portal) => {
+    let oldManufacturingMill = await ManufacturingMill(connect(DB_CONNECTION, portal))
+        .findById({ _id: id });
+    if (!oldManufacturingMill) {
+        throw Error("ManufacturingMill is not existing");
+    }
+
+    oldManufacturingMill.name = data.name ? data.name : oldManufacturingMill.name;
+    oldManufacturingMill.manufacturingWorks = data.manufacturingWorks ? data.manufacturingWorks : oldManufacturingMill.manufacturingWorks
+    oldManufacturingMill.description = data.description ? data.description : oldManufacturingMill.description;
+
+    await oldManufacturingMill.save();
+
+    let manufacturingMill = await ManufacturingMill(connect(DB_CONNECTION, portal))
+        .findById({ _id: id })
+        .populate({
+            path: "manufacturingWorks",
+            populate: [{
+                path: "worksManager",
+                select: "name"
+            }, {
+                path: "foreman",
+                select: "name"
+            }],
+            select: "name"
+        });
+    return { manufacturingMill }
+}
+
+exports.deleteManufacturingMill = async (id, portal) => {
+    let manufacturingMill = await ManufacturingMill(connect(DB_CONNECTION, portal))
+        .findByIdAndDelete(id);
+    if (!manufacturingMill) {
+        throw Error("ManufacturingMill is not existing");
+    }
+
+    return { manufacturingMill }
 }
 
 exports.addCommandToSchedule = async (id, data, portal) => {
