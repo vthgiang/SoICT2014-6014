@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { NotificationActions } from '../../../modules/notification/redux/actions';
-import { toast } from 'react-toastify';
 
 class Notification extends Component {
     constructor(props) {
@@ -13,28 +12,14 @@ class Notification extends Component {
          }
     }
 
-    _contentNotification = (data) => {
-        const {translate} = this.props;
-        return (
-            <React.Fragment>
-                <div className="notification-title"><i className="fa fa-info-circle"></i> {translate('general.new_notification')}</div>
-                <p>{data.title ? data.title : null}</p>
-            </React.Fragment>
-        );
-    }
-
     componentWillUnmount(){
-        this.props.socket.io.on('new notifications', data => {
-            toast.info(this._contentNotification(data), { containerId: 'toast-notification' })
-            this.props.receiveNofitication(data);
-        })
+        this.props.socket.io.off('new notifications');
     }
 
     componentDidMount(){
         this.props.getAllManualNotifications();
         this.props.getAllNotifications();
         this.props.socket.io.on('new notifications', data => {
-            toast.info(this._contentNotification(data), { containerId: 'toast-notification' })
             this.props.receiveNofitication(data);
         })
     }

@@ -70,6 +70,9 @@ exports.getAllTaxs = async (query, portal) => {
         option.name = new RegExp(query.name, "i")
     }
 
+    //Chỉ lấy những tax đang có hiệu lực
+    option.status = true;
+
     if ( !page || !limit ){
         let allTaxs = await Tax(connect(DB_CONNECTION, portal))
         .find(option)
@@ -129,11 +132,22 @@ exports.disableTaxById = async (id, portal) => {
 exports.checkAvailabledCode = async (query, portal) => {
     let tax = await Tax(connect(DB_CONNECTION, portal))
     .find({code: query.code})
-
-    if (!tax) {
+    if (!tax || tax.length === 0) {
         return false
     }
     //Code này đã có sẵn
     return true;
 }
+
+exports.getTaxByCode = async (query, portal) => {
+    let taxs = await Tax(connect(DB_CONNECTION, portal))
+    .find({code: query.code})
+
+    if (!taxs) {
+        throw Error("Tax is not existing")
+    }
+    //code này đã có sẵn trong db
+    return { taxs };
+}
+
 

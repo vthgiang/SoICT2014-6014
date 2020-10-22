@@ -569,6 +569,7 @@ export default {
                     description: 'Mô tả',
                     url: 'Đường dẫn',
                     add_file: 'Thêm mới file',
+                    edit_file: 'Chỉnh sửa file',
                     attachment: 'Tập tin đính kèm',
                 },
 
@@ -759,7 +760,7 @@ export default {
             detail_employee: 'Thông tin cá nhân',
             update_employee: 'Cập nhật thông tin cá nhân',
             dashboard_employee: 'Bảng tin quản lý nhân sự',
-            employee_capacity:'Năng lực nhân viên',
+            employee_capacity: 'Năng lực nhân viên',
             discipline: 'Quản lý khen thưởng - kỷ luật',
             annual_leave: 'Quản lý nghỉ phép',
             salary_employee: 'Quản lý lương nhân viên',
@@ -3475,7 +3476,7 @@ export default {
                 archive: 'Danh mục lưu trữ',
                 1: {
                     status: "Sẵn sàng sử dụng",
-                    color:  "green"
+                    color: "green"
                 },
                 2: {
                     status: 'Đang sử dụng',
@@ -3744,6 +3745,11 @@ export default {
                 works_edit: "Sửa thông tin nhà máy",
                 edit_successfully: "Sửa thông tin nhà máy thành công",
                 edit_failure: "Sửa thông tin nhà máy thất bại"
+            },
+            manufacturing_mill: {
+                name: "Tên xưởng",
+                code: "Mã xưởng",
+                search: "Tìm kiếm"
             }
         }
     }

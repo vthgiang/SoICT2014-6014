@@ -44,6 +44,24 @@ class CrmCustomerCreate extends Component {
         return true;
     }
 
+    /**
+     * function setState các giá trị lấy từ component con vào state
+     * @param {*} name 
+     * @param {*} value 
+     */
+    myCallBack = (name, value) => {
+        const { newCustomer } = this.state;
+        this.setState({
+            newCustomer: {
+                ...newCustomer,
+                [name]: value,
+            }
+        })
+    }
+
+    /**
+     * Hàm kiểm tra validate
+     */
     isFormValidated = () => {
         const { code, name, taxNumber } = this.state.newCustomer;
         const { translate } = this.props;
@@ -66,7 +84,7 @@ class CrmCustomerCreate extends Component {
         // Ghi log thay đổi trạng thái
         if (getStatus && getStatus.length > 0) {
             statusHistories.push({
-                oldValue: null,
+                oldValue: getStatus[getStatus.length - 1],
                 newValue: getStatus[getStatus.length - 1],
                 createdAt: getDateTime,
                 createdBy: auth.user._id,
@@ -74,6 +92,7 @@ class CrmCustomerCreate extends Component {
         }
         newCustomer = { ...newCustomer, statusHistories }
 
+        console.log('newCustomer', newCustomer)
         // Convert file upload
         formData = convertJsonObjectToFormData(newCustomer);
         if (newCustomer.files) {
@@ -130,18 +149,6 @@ class CrmCustomerCreate extends Component {
                 </DialogModal>
             </React.Fragment>
         );
-    }
-
-
-    myCallBack = (name, value) => {
-        const { newCustomer } = this.state;
-        console.log('name', name, 'value', value)
-        this.setState({
-            newCustomer: {
-                ...newCustomer,
-                [name]: value,
-            }
-        })
     }
 }
 

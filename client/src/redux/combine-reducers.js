@@ -73,7 +73,7 @@ import { cares } from "../modules/crm/care/redux/reducers";
 import { careTypes } from "../modules/crm/careType/redux/reducers";
 
 //order
-
+import { taxs } from "../modules/production/order/tax/redux/reducers";
 import { quotes } from '../modules/production/order/quote/redux/reducers';
 
 //plan
@@ -171,6 +171,7 @@ const appReducer = combineReducers({
     }),
 
     //order
+    taxs,
     quotes,
     //plane
     plan,

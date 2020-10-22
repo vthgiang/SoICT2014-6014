@@ -123,16 +123,15 @@ class ManufacturingPlanManagementTable extends Component {
                     <table id="manufacturing-plan-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th rowSpan={2} style={{ verticalAlign: "middle" }}>STT</th>
-                                <th>Mã kế hoạch <div><i className="fa fa-sort-down"></i></div></th>
-                                <th>Mã đơn sản xuất  <div><i className="fa fa-sort-down"></i></div></th>
-                                <th>Người tạo <div><i className="fa fa-sort-down"></i></div></th>
-                                <th>Thời gian tạo <div><i className="fa fa-sort-down"></i></div></th>
-                                <th>Thời gian bắt đầu <div><i className="fa fa-sort-down"></i></div></th>
-                                <th>Thời gian dự kiến hoàn thành <div><i className="fa fa-sort-down"></i></div></th>
-                                <th>Mô tả <div><i className="fa fa-sort-down"></i></div></th>
-                                <th>Trạng thái <div><i className="fa fa-sort-down"></i></div></th>
-                                <th style={{ verticalAlign: "middle" }} rowSpan={2}>Hành động
+                                <th>STT</th>
+                                <th>Mã kế hoạch</th>
+                                <th>Mã đơn sản xuất</th>
+                                <th>Người tạo</th>
+                                <th>Thời gian tạo</th>
+                                <th>Thời gian bắt đầu</th>
+                                <th>Thời gian dự kiến hoàn thành</th>
+                                <th>Trạng thái</th>
+                                <th>Hành động
                                     <DataTableSetting
                                         tableId="manufacturing-plan-table"
                                         columnArr={[
@@ -143,7 +142,6 @@ class ManufacturingPlanManagementTable extends Component {
                                             "Thời gian tạo",
                                             "Thời gian bắt đầu",
                                             "Thời gian dự kiến hoàn thành",
-                                            "Mô tả",
                                             "Trạng thái"
                                         ]}
                                         limit={this.state.limit}
@@ -151,16 +149,6 @@ class ManufacturingPlanManagementTable extends Component {
                                         setLimit={this.setLimit}
                                     />
                                 </th>
-                            </tr>
-                            <tr>
-                                <th style={{ padding: '2px' }}><input style={{ width: '100%' }} /></th>
-                                <th style={{ padding: '2px' }}><input style={{ width: '100%' }} /></th>
-                                <th style={{ padding: '2px' }}><input style={{ width: '100%' }} /></th>
-                                <th style={{ padding: '2px' }}><input style={{ width: '100%' }} /></th>
-                                <th style={{ padding: '2px' }}><input style={{ width: '100%' }} /></th>
-                                <th style={{ padding: '2px' }}><input style={{ width: '100%' }} /></th>
-                                <th style={{ padding: '2px' }}><input style={{ width: '100%' }} /></th>
-                                <th style={{ padding: '2px' }}><input style={{ width: '100%' }} /></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -174,15 +162,10 @@ class ManufacturingPlanManagementTable extends Component {
                                         <td>{manufacturingPlan.createdAt}</td>
                                         <td>{manufacturingPlan.startDate}</td>
                                         <td>{manufacturingPlan.endDate}</td>
-                                        <td>{manufacturingPlan.description}</td>
                                         <td>{manufacturingPlan.status}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a className="edit text-green" style={{ width: '5px' }} title="Xem chi tiết kế hoạch sản xuất" onClick={() => this.handleShowDetailInfo(manufacturingPlan._id)}><i className="material-icons">visibility</i></a>
                                             <a className="edit text-yellow" style={{ width: '5px' }} title="Sửa kế hoạch sản xuất"><i className="material-icons">edit</i></a>
-                                            {
-                                                manufacturingPlan.status === "Chưa được duyệt" &&
-                                                <a className="edit text-red" style={{ width: '5px' }} title="Hủy kế hoạch sản xuất"><i className="material-icons">cancel</i></a>
-                                            }
                                         </td>
                                     </tr>
                                 ))

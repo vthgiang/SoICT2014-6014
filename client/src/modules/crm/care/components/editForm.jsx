@@ -70,7 +70,7 @@ class EditCareForm extends Component {
                 name: care.name ? care.name : '',
                 description: care.description ? care.description : '',
                 careType: care.careType ? care.careType.map(o => o._id) : [],
-                status: care.status ? care.status.toString() : '',
+                status: care.status ? care.status : '',
                 startDate: care.startDate ? formatFunction.formatDate(care.startDate) : '',
                 endDate: care.endDate ? formatFunction.formatDate(care.endDate) : ''
             }
@@ -92,6 +92,10 @@ class EditCareForm extends Component {
     }
 
 
+    /**
+     * Hàm xử lý khi người chăm sóc khách hàng thay đổi
+     * @param {*} value
+     */
     handleChangeCaregiver = (value) => {
         const { careEditting } = this.state;
         const { translate } = this.props;
@@ -108,6 +112,10 @@ class EditCareForm extends Component {
     }
 
 
+    /**
+     * Hàm xử lý khi khách hàng được chăm sóc thay đổi
+     * @param {*} value
+     */
     handleChangeCustomer = (value) => {
         const { careEditting } = this.state;
         const { translate } = this.props;
@@ -124,6 +132,10 @@ class EditCareForm extends Component {
     }
 
 
+    /**
+     * Hàm xử lý khi tên công việc chăm sóc khách hàng thay đổi
+     * @param {*} e
+     */
     handleChangeName = (e) => {
         const { translate } = this.props;
         const { careEditting } = this.state;
@@ -141,6 +153,11 @@ class EditCareForm extends Component {
     }
 
 
+    /**
+     * Hàm xử lý khi mô tả công việc chăm sóc khách  hàng thay đổi
+     * @param {*} e
+     * @param {*} editor
+     */
     handleChangeDescription = (e, editor) => {
         const { translate } = this.props;
         const { careEditting } = this.state;
@@ -158,6 +175,10 @@ class EditCareForm extends Component {
     }
 
 
+    /**
+     * Hàm xử lý khi hình thức chăm sóc thay đổi
+     * @param {*} value
+     */
     handleChangeCareType = (value) => {
         const { careEditting } = this.state;
         const { translate } = this.props;
@@ -174,6 +195,11 @@ class EditCareForm extends Component {
     }
 
 
+
+    /**
+     * Hàm xử lý khi trạng thái công việc chăm sóc thay đổi
+     * @param {*} value
+     */
     handleChangeStatus = (value) => {
         const { careEditting } = this.state;
         const { translate } = this.props;
@@ -181,7 +207,7 @@ class EditCareForm extends Component {
         this.setState({
             careEditting: {
                 ...careEditting,
-                status: value[0],
+                status: parseInt(value[0]),
             }
         })
 
@@ -190,6 +216,10 @@ class EditCareForm extends Component {
     }
 
 
+    /**
+     * Hàm xử lý khi ngày bắt đầu thực hiện công việc thay đổi
+     * @param {*} value
+     */
     handleChangeStartDate = (value) => {
         const { careEditting } = this.state;
         const { translate } = this.props;
@@ -206,6 +236,10 @@ class EditCareForm extends Component {
     }
 
 
+    /**
+     * Hàm xử lý khi ngày kết thúc công việc thay đổi
+     * @param {*} value
+     */
     handleChangeEndDate = (value) => {
         const { careEditting } = this.state;
 
@@ -248,7 +282,7 @@ class EditCareForm extends Component {
     render() {
         const { crm, translate } = this.props;
         const { careEditting, listCustomers, listCareTypes, employees } = this.state;
-        console.log('state', this.state.careEditting);
+
         //validate error message
         const { caregiverError, customerError, nameError, descriptionError, careTypeError, statusError, startDateError } = this.state;
         return (
@@ -352,10 +386,11 @@ class EditCareForm extends Component {
                                     style={{ width: "100%" }}
                                     items={
                                         [
-                                            { value: '0', text: 'Chưa thưc hiện' },
-                                            { value: '1', text: 'Đang thực hiện' },
-                                            { value: '2', text: 'Đang trì hoãn' },
-                                            { value: '3', text: 'Đã hoàn thành' },
+                                            { value: '', text: '---Chọn---' },
+                                            { value: 1, text: 'Chưa thưc hiện' },
+                                            { value: 2, text: 'Đang thực hiện' },
+                                            { value: 3, text: 'Đang trì hoãn' },
+                                            { value: 4, text: 'Đã hoàn thành' },
                                         ]
                                     }
                                     value={careEditting.status}

@@ -10,26 +10,15 @@ module.exports = async (server) => {
 
     global.SOCKET_IO = require('socket.io')(server);
     SOCKET_IO.on('connection', function (socket) {
-        // Client connected
-        console.log("Client connected: ", socket.id, socket.handshake.query.userId);
+
         CONNECTED_CLIENTS.push({
             socketId: socket.id,
             userId: socket.handshake.query.userId
         });
 
-        // Client disconnected
         socket.on('disconnect', function () {
             CONNECTED_CLIENTS = CONNECTED_CLIENTS.filter(client => client.socketId !== socket.id);
-            console.log("Disconnected: ", socket.id, socket.handshake.query.userId, CONNECTED_CLIENTS);
         });
-
-        socket.on('chat message', data => {
-            console.log("Chat message from client: ", data);
-
-            socket.broadcast.emit('chat message', data);
-        });
-
-        SOCKET_IO.clients((error, clients) => console.log("Clients", clients))
     });
 
     global.SERVER_DIR = __dirname;
