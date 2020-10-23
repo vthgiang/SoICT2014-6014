@@ -29,9 +29,9 @@ const CareSchema = new Schema({
         ref: 'CareType',
         required: true,
     }],
-    status: { //trạng thái công việc 0: chưa thực hiện, 1: đang thực hiện, 2: Hoàn thành, 3: Không hoàn thành
+    status: { //trạng thái công việc 1: chưa thực hiện, 2: đang thực hiện, 3: Hoàn thành, 4: Không hoàn thành
         type: Number,
-        default: 0,
+        default: 1,
     },
     startDate: {
         type: Date,

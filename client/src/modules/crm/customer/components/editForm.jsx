@@ -21,7 +21,7 @@ class CrmCustomerEdit extends Component {
 
     static getDerivedStateFromProps(props, state) {
         if (props.customerIdEdit !== state.customerIdEdit) {
-            props.getCustomer(props.customerIdEdit);
+            props.getCustomer(props.customerIdEdit); //Gọi service lấy thông tin customer theo id
             return {
                 dataStatus: 1,
                 customerIdEdit: props.customerIdEdit,
@@ -88,6 +88,11 @@ class CrmCustomerEdit extends Component {
         return true;
     }
 
+    /**
+     * function setState các giá trị lấy từ component con vào state
+     * @param {*} name 
+     * @param {*} value 
+     */
     myCallBack = (name, value) => {
         const { editingCustomer } = this.state;
         this.setState({
@@ -98,6 +103,9 @@ class CrmCustomerEdit extends Component {
         })
     }
 
+    /**
+     * Hàm kiểm tra validate
+     */
     isFormValidated = () => {
         const { code, name, taxNumber } = this.state.editingCustomer;
         const { translate } = this.props;
@@ -142,14 +150,6 @@ class CrmCustomerEdit extends Component {
     render() {
         const { translate, crm } = this.props;
         const { editingCustomer, customerIdEdit, dataStatus } = this.state;
-        const { groups } = crm;
-
-        // Lấy danh sách nhóm khách hàng
-        let listGroups;
-        if (groups.list && groups.list.length > 0) {
-            listGroups = groups.list.map(x => { return { value: x._id, text: x.name } })
-            listGroups.unshift({ value: '', text: '---chọn---' });
-        }
 
         return (
             <React.Fragment>
@@ -192,8 +192,8 @@ class CrmCustomerEdit extends Component {
 }
 
 function mapStateToProps(state) {
-    const { crm, user, auth } = state;
-    return { crm, user, auth };
+    const { crm, auth } = state;
+    return { crm, auth };
 }
 
 const mapDispatchToProps = {

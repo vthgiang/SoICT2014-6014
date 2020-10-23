@@ -40,13 +40,13 @@ exports.createCustomer = async (portal, companyId, data, userId, fileConverts) =
 
 
     // Thêm file đính kèm với khách hàng nếu có
-    if (files && files.length > 0) {
+    if (files && files.length > 0 && fileConverts && fileConverts.length>0) {
         let result = [];
         files.forEach(x => {
             fileConverts.forEach(y => {
                 if (x.fileName === y.originalname) {
                     result.push({
-                    creator: x.creator,
+                    creator: userId,
                     name: x.name,
                     description: x.description,
                     fileName: x.fileName,
@@ -59,7 +59,6 @@ exports.createCustomer = async (portal, companyId, data, userId, fileConverts) =
     }
 
     const newCustomer = await Customer(connect(DB_CONNECTION, portal)).create(data);
-
     const getNewCustomer = await Customer(connect(DB_CONNECTION, portal)).findById(newCustomer._id)
         .populate({ path: 'group', select: '_id name' })
         .populate({ path: 'status', select: '_id name' })

@@ -56,7 +56,7 @@ exports.getCustomerById = async (req, res) => {
  */
 exports.createCustomer = async (req, res) => {
     try {
-        const newCustomer = await CustomerService.createCustomer(req.portal, req.user.company._id, req.body, req.user._id,req.files);
+        const newCustomer = await CustomerService.createCustomer(req.portal, req.user.company._id, req.body, req.user._id, req.files);
         await Logger.info(req.user.email, ' create_customer_success ', req.portal);
         res.status(200).json({
             success: true,
