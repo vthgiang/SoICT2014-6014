@@ -16,7 +16,7 @@ class FileTabCreateForm extends Component {
      * Hàm xử lý lưu các file được chọn vào state
      * @param {*} value 
      */
-    handleAddFile = async (value) => {
+    handleAddFile = (value) => {
         let { listFiles } = this.state;
         const { callBackFromParentCreateForm } = this.props;
 
@@ -30,11 +30,9 @@ class FileTabCreateForm extends Component {
                 fileUpload: value.fileUpload,
             }
         ]
-        await this.setState({
+        this.setState({
             listFiles,
-        });
-
-        callBackFromParentCreateForm('files', listFiles);
+        }, () => callBackFromParentCreateForm('files', listFiles));
     }
 
     /**
@@ -42,14 +40,14 @@ class FileTabCreateForm extends Component {
      * @param {*} index 
      */
     handleDelete = (index) => {
-        const { listFiles } = this.state;
+        let { listFiles } = this.state;
         const { callBackFromParentCreateForm } = this.props;
-        let fileItem = document.querySelector(`.item-${index}`);
-
-        if (fileItem) {
-            fileItem.remove();
-            listFiles.splice(index, 1);
-        }
+        // let fileItem = document.querySelector(`.item-${index}`);
+        // fileItem.remove();
+        listFiles.splice(index, 1);
+        this.setState({
+            listFiles,
+        })
 
         callBackFromParentCreateForm('files', listFiles);
     }
@@ -60,13 +58,12 @@ class FileTabCreateForm extends Component {
      * @param {*} data 
      * @param {*} index 
      */
-    handleEdit = async (data, index) => {
-        await this.setState({
+    handleEdit = (data, index) => {
+        this.setState({
             ...this.state,
             itemEdit: index + 1,
             data,
-        })
-        window.$('#modal-fileEditModal').modal('show');
+        }, () => window.$('#modal-fileEditModal').modal('show'))
     }
 
     /**
@@ -80,11 +77,7 @@ class FileTabCreateForm extends Component {
         listFiles[value._id - 1] = value;
         this.setState({
             listFiles,
-        }, () => {
-            callBackFromParentCreateForm('files', listFiles);
-        })
-
-        
+        }, () => callBackFromParentCreateForm('files', listFiles))
     }
 
     render() {

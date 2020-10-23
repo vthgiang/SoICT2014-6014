@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { CrmCustomerActions } from '../redux/actions';
+import { UserActions } from '../../../super-admin/user/redux/actions';
 import { DialogModal } from '../../../../common-components';
 import ValidationHelper from '../../../../helpers/validationHelper';
 import { formatFunction } from '../../common/index';
+import { getStorage } from '../../../../config';
 
 import GeneralTabEditForm from './generalTabEditForm';
 import './customer.css';
@@ -16,12 +18,29 @@ class CrmCustomerEdit extends Component {
         this.state = {
             dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
             editingCustomer: {},
+            currentRole: getStorage('currentRole')
         }
     }
 
     static getDerivedStateFromProps(props, state) {
+        const { user } = props;
+        const { currentRole } = state;
+
         if (props.customerIdEdit !== state.customerIdEdit) {
             props.getCustomer(props.customerIdEdit); //Gọi service lấy thông tin customer theo id
+
+            if (user.organizationalUnitsOfUser) {
+                console.log('user', user);
+                let getCurrentUnit = user.organizationalUnitsOfUser.find(item =>
+                    item.deans[0] === currentRole
+                    || item.viceDeans[0] === currentRole
+                    || item.employees[0] === currentRole);
+
+                // Lấy người dùng của đơn vị hiện tại và người dùng của đơn vị con
+                if (getCurrentUnit) {
+                    props.getChildrenOfOrganizationalUnits(getCurrentUnit._id);
+                }
+            }
             return {
                 dataStatus: 1,
                 customerIdEdit: props.customerIdEdit,
@@ -33,7 +52,6 @@ class CrmCustomerEdit extends Component {
 
     shouldComponentUpdate = (nextProps, nextState) => {
         let { editingCustomer } = this.state;
-
         if (this.state.dataStatus === this.DATA_STATUS.QUERYING && !nextProps.crm.customers.isLoading) {
             let customer = nextProps.crm.customers.customerById;
             editingCustomer = {
@@ -192,13 +210,15 @@ class CrmCustomerEdit extends Component {
 }
 
 function mapStateToProps(state) {
-    const { crm, auth } = state;
-    return { crm, auth };
+    const { crm, auth, user } = state;
+    return { crm, auth, user };
 }
 
 const mapDispatchToProps = {
     getCustomer: CrmCustomerActions.getCustomer,
     editCustomer: CrmCustomerActions.editCustomer,
+
+    getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
 
 }
 

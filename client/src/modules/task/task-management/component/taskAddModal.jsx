@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { getStorage } from '../../../../config';
+
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions'
 import { managerKpiActions } from '../../../kpi/employee/management/redux/actions';
 import { taskTemplateActions } from '../../../task/task-template/redux/actions';
 import { taskManagementActions } from '../redux/actions';
-import { DialogModal, DatePicker, SelectBox, ErrorLabel } from '../../../../common-components';
+
+import { DialogModal, DatePicker, SelectBox, ErrorLabel, SelectMulti } from '../../../../common-components';
 import { TaskFormValidator } from './taskFormValidator';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 
@@ -28,6 +31,7 @@ class TaskAddModal extends Component {
                 informedEmployees: [],
                 creator: getStorage("userId"),
                 organizationalUnit: "",
+                collaboratedWithOrganizationalUnits: "",
                 taskTemplate: "",
                 parent: "",
             },
@@ -175,6 +179,17 @@ class TaskAddModal extends Component {
         }
     }
 
+    handleChangeCollaboratedWithOrganizationalUnits = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                newTask: { // update lại name,description và reset các selection phía sau
+                    ...this.state.newTask,
+                    collaboratedWithOrganizationalUnits: value
+                }
+            };
+        });
+    }
 
     handleChangeTaskTemplate = async (event) => {
         let value = event.target.value;
@@ -393,7 +408,7 @@ class TaskAddModal extends Component {
 
 
     render() {
-        const { newTask } = this.state;
+        const { newTask, collaboratedWithOrganizationalUnits } = this.state;
         const { tasktemplates, user, KPIPersonalManager, translate, tasks, department } = this.props;
 
         let units, userdepartments, listTaskTemplate, listKPIPersonal, usercompanys;
@@ -476,6 +491,22 @@ class TaskAddModal extends Component {
                                     </select>
                                 </div>
                             }
+
+                            {/* Đơn vị phối hợp thực hiện công việc */}
+                            {listDepartment && 
+                                <div className="form-group">
+                                    <label>{translate('task.task_management.collaborated_with_organizational_units')}</label>
+                                    <SelectMulti
+                                        id="multiSelectUnitThatHaveCollaborated"
+                                        items={listDepartment.map(x => {
+                                            return { text: x.name, value: x._id }
+                                        })}
+                                        onChange={this.handleChangeCollaboratedWithOrganizationalUnits}
+                                        value={collaboratedWithOrganizationalUnits}
+                                    />
+                                </div>
+                            }
+                            
 
 
                             <div className={`form-group ${newTask.errorOnName === undefined ? "" : "has-error"}`}>
