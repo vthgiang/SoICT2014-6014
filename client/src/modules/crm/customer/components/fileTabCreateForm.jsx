@@ -73,16 +73,18 @@ class FileTabCreateForm extends Component {
      * Lưu thông tin thay đổi vào state
      * @param {*} value 
      */
-    handleEditChange = async (value) => {
+    handleEditChange = (value) => {
         const { callBackFromParentCreateForm } = this.props;
         let { listFiles } = this.state;
 
         listFiles[value._id - 1] = value;
-        await this.setState({
+        this.setState({
             listFiles,
+        }, () => {
+            callBackFromParentCreateForm('files', listFiles);
         })
 
-        callBackFromParentCreateForm('files', listFiles);
+        
     }
 
     render() {
@@ -97,6 +99,7 @@ class FileTabCreateForm extends Component {
                         <div className="col-md-12">
                             <h4 className="row col-md-6 col-xs-8">{translate('crm.customer.list_attachments')}:</h4>
                             <FileAddModal callBackFromParentCreateForm={this.handleAddFile} />
+                            <button onClick={() => {this.forceUpdate()}}>Force Update</button>
                             {itemEdit &&
                                 <FileEditModal
                                     _id={itemEdit}

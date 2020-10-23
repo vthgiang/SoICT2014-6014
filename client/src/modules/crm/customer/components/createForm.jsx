@@ -109,7 +109,7 @@ class CrmCustomerCreate extends Component {
     render() {
         const { translate, crm } = this.props;
         const { newCustomer } = this.state;
-
+        console.log("FSDJKLFJSDLK", newCustomer);
         return (
             <React.Fragment>
                 <DialogModal
