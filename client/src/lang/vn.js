@@ -801,6 +801,7 @@ export default {
             tasks: 'Quản lý công việc',
             task: "Chi tiết công việc",
             task_management: 'Danh sách công việc',
+            task_management_of_unit: 'Danh sách công việc đơn vị',
             task_management_dashboard: 'Dashboard công việc',
             task_organization_management_dashboard: 'Dashboard công việc đơn vị',
             task_management_process: "Danh sách quy trình",
@@ -2505,9 +2506,11 @@ export default {
 
                 add_err_special_character: 'Tên không được chứa kí tự đặc biệt',
                 add_err_end_date: 'Ngày kết thúc phải sau ngày bắt đầu',
-
+                date_not_empty: 'Tháng tìm kiếm không được bỏ trống',
+                
                 unit_evaluate: "Đơn vị tiếp nhận kết quả đánh giá công việc",
                 unit_manage_task: "Đơn vị quản lý công việc",
+                collaborated_with_organizational_units: "Đơn vị phối hợp thực hiện công việc",
                 delete_eval: "Xóa đánh giá tháng này",
                 delete_eval_title: 'Bạn có chắc chắn muốn xóa đánh giá này?',
                 delete_evaluation_success: "Xóa đánh giá thành công",

@@ -67,24 +67,25 @@ class CrmCustomer extends Component {
         });
     }
 
-    searchWithOption = async () => {
+    searchWithOption = () => {
         const data = {
             limit: this.state.limit,
             page: 1,
             key: this.state.option,
             value: this.state.value
         };
-        await this.props.getCustomers(data);
+        this.props.getCustomers(data);
     }
 
-    setPage = async (pageNumber) => {
+    setPage = (pageNumber) => {
         let { limit } = this.state;
         let page = (pageNumber - 1) * (limit);
 
-        await this.setState({
+        this.setState({
             page: parseInt(page),
+        }, () => {
+            this.props.getCustomers(this.state);
         });
-        this.props.getCustomers(this.state);
     }
 
     setLimit = (number) => {

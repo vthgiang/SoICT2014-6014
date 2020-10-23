@@ -564,6 +564,15 @@ const LINKS = [{
     components: getComponentsInLink('/task-management')
 },
 {
+    url: '/task-management-unit',
+    description: 'Xem danh sách công việc đơn vị',
+    category: LINK_CATEGORY.TASK.name,
+    roles: [
+        ROOT_ROLES.DEAN.name
+    ],
+    components: getComponentsInLink('/task-management-unit')
+},
+{
     url: '/task-process-management',
     description: 'Danh sách quy trình công việc',
     category: LINK_CATEGORY.TASK.name,
