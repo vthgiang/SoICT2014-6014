@@ -60,10 +60,11 @@ import { mintainanceManager } from "../modules/asset/admin/maintainance/redux/re
 import { reports } from "../modules/report/task-report/redux/reducers";
 
 //warehouse
-import { stocks } from "../modules/warehouse/stock-management/redux/reducers";
-import { categories } from "../modules/warehouse/category-management/redux/reducers";
-import { goods } from "../modules/warehouse/good-management/redux/reducers";
-import { binLocations } from "../modules/warehouse/bin-location-management/redux/reducers";
+import { stocks } from "../modules/production/warehouse/stock-management/redux/reducers";
+import { categories } from "../modules/production/common-production/category-management/redux/reducers";
+import { goods } from "../modules/production/common-production/good-management/redux/reducers";
+import { binLocations } from "../modules/production/warehouse/bin-location-management/redux/reducers";
+import { lots } from "../modules/production/warehouse/inventory-management/redux/reducers";
 
 //crm
 import { customers } from "../modules/crm/customer/redux/reducers";
@@ -164,6 +165,7 @@ const appReducer = combineReducers({
     categories,
     goods,
     binLocations,
+    lots,
 
     // customer management
     crm: combineReducers({

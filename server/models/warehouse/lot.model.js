@@ -25,8 +25,14 @@ const LotSchema = new Schema ({
         },
 
         binLocations: [{
-            type: Schema.Types.ObjectId,
-            ref: 'BinLocation'
+            binLocation: {
+                type: Schema.Types.ObjectId,
+                ref: 'BinLocation'
+            },
+
+            quantity: {
+                type: Number
+            }
         }]
     }],
 

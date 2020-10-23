@@ -95,14 +95,14 @@ import EmployeeAssetManagement from '../modules/asset/user/asser-managed/compone
 import TaskReportManager from '../modules/report/task-report/components/taskReportManager';
 
 //warehouse
-import InventoryDashBoard from '../modules/warehouse/dashboard-inventory/component';
-import BillDashBoard from '../modules/warehouse/dashboard-bill/component';
-import CategoryManagement from '../modules/warehouse/category-management/component';
-import GoodManagement from '../modules/warehouse/good-management/component';
-import StockManagement from '../modules/warehouse/stock-management/component';
-import BinLocationManagement from '../modules/warehouse/bin-location-management/components';
-import BillManagement from '../modules/warehouse/bill-management/components';
-import InventoryManagement from '../modules/warehouse/inventory-management/components';
+import InventoryDashBoard from '../modules/production/warehouse/dashboard-inventory/component';
+import BillDashBoard from '../modules/production/warehouse/dashboard-bill/component';
+import CategoryManagement from '../modules/production/common-production/category-management/component';
+import GoodManagement from '../modules/production/common-production/good-management/component';
+import StockManagement from '../modules/production/warehouse/stock-management/component';
+import BinLocationManagement from '../modules/production/warehouse/bin-location-management/components';
+import BillManagement from '../modules/production/warehouse/bill-management/components';
+import InventoryManagement from '../modules/production/warehouse/inventory-management/components';
 
 // Customer Management
 import CrmDashBoard from '../modules/crm/dashboard/components';
