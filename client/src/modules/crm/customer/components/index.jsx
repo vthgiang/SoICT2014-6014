@@ -26,10 +26,9 @@ class CrmCustomer extends Component {
      * Hàm xử lý khi click button import khách hàng
      */
     importCustomer = async () => {
-        await this.setState({
-            importCustomer: true,
-        })
-        window.$('#modal-customer-import').modal('show');
+        this.setState({importCustomer: true}, () => {
+            window.$('#modal-customer-import').modal('show');
+        });
     }
 
     /**
@@ -43,9 +42,10 @@ class CrmCustomer extends Component {
      * Hàm xử lý khi click nút xem chi tiết khách hàng
      * @param {*} id 
      */
-    handleInfo = async (id) => {
-        await this.setState({ customerId: id, });
-        window.$('#modal-crm-customer-info').modal('show');
+    handleInfo = (id) => {
+        this.setState({ customerId: id }, () => {
+            window.$('#modal-crm-customer-info').modal('show');
+        });
     }
 
     /**
@@ -53,11 +53,9 @@ class CrmCustomer extends Component {
      * @param {*} id 
      */
     handleEdit = async (id) => {
-        await this.setState({
-            ...this.state,
-            customerIdEdit: id,
+        this.setState({customerIdEdit: id}, () => {
+            window.$('#modal-crm-customer-edit').modal('show');
         });
-        window.$('#modal-crm-customer-edit').modal('show');
     }
 
     // Cac ham thiet lap va tim kiem gia tri
@@ -67,24 +65,25 @@ class CrmCustomer extends Component {
         });
     }
 
-    searchWithOption = async () => {
+    searchWithOption = () => {
         const data = {
             limit: this.state.limit,
             page: 1,
             key: this.state.option,
             value: this.state.value
         };
-        await this.props.getCustomers(data);
+        this.props.getCustomers(data);
     }
 
-    setPage = async (pageNumber) => {
+    setPage = (pageNumber) => {
         let { limit } = this.state;
         let page = (pageNumber - 1) * (limit);
 
-        await this.setState({
+        this.setState({
             page: parseInt(page),
+        }, () => {
+            this.props.getCustomers(this.state);
         });
-        this.props.getCustomers(this.state);
     }
 
     setLimit = (number) => {
