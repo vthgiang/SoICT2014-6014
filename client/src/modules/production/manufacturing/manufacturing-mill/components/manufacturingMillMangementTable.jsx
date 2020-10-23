@@ -1,35 +1,47 @@
 import React, { Component } from 'react';
-import sampleData from '../../sampleData';
+import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { DataTableSetting, DeleteNotification } from "../../../../../common-components";
+import { connect } from 'react-redux';
+import { millActions } from '../redux/actions';
 import ManufacturingMillCreateForm from './manafacturingMillCreateForm';
 class ManufacturingMillMangementTable extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            page: 1,
+            limit: 5,
+            code: '',
+            name: ''
+        }
+    }
+
+    componentDidMount() {
+        const { page, limit } = this.state;
+        this.props.getAllManufacturingMills({ page, limit });
     }
 
     render() {
-        const { mills } = sampleData;
+        const { translate } = this.props;
         return (
             <React.Fragment>
                 <div className="box-body qlcv">
                     <ManufacturingMillCreateForm />
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className="form-control-static">Mã xưởng</label>
-                            <input type="text" className="form-control" name="code" onChange={this.handleChangeData} placeholder="XSX 001" autoComplete="off" />
+                            <label className="form-control-static">{translate('manufacturing.manufacturing_mill.code')}</label>
+                            <input type="text" className="form-control" name="code" onChange={this.handleCodeChange} placeholder="XSX200815153823" autoComplete="off" />
                         </div>
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className="form-control-static">Tên xưởng</label>
-                            <input type="text" className="form-control" name="worksName" onChange={this.handleChangeData} placeholder="Xưởng thuốc bột" autoComplete="off" />
+                            <label className="form-control-static">{translate('manufacturing.manufacturing_mill.name')}</label>
+                            <input type="text" className="form-control" name="name" onChange={this.handleNameChange} placeholder="Xưởng thuốc bột" autoComplete="off" />
                         </div>
                         <div className="form-group">
-                            <button type="button" className="btn btn-success" title="Tìm kiếm" onClick={this.handleSubmitSearch}>Tìm kiếm</button>
+                            <button type="button" className="btn btn-success" title={translate('manufacturing.manufacturing_mill.search')} onClick={this.handleSubmitSearch}>{translate('manufacturing.manufacturing_mill.search')}</button>
                         </div>
                     </div>
-                    <table id="manufacturing-works-table" className="table table-striped table-bordered table-hover">
+                    {/* <table id="manufacturing-works-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>STT</th>
@@ -78,11 +90,19 @@ class ManufacturingMillMangementTable extends Component {
                                 ))
                             }
                         </tbody>
-                    </table>
+                    </table> */}
                 </div>
             </React.Fragment>
         );
     }
 }
 
-export default ManufacturingMillMangementTable;
+function mapStateToProps(state) {
+    const manufacturingMill = state.manufacturingMill
+    return { manufacturingMill }
+}
+
+const mapDispatchToProps = {
+    getAllManufacturingMills: millActions.getAllManufacturingMills
+}
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ManufacturingMillMangementTable));

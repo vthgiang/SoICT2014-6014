@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { SystemHome } from './systemHome';
+import SystemHome from './systemHome';
 import { SuperHome } from './superHome';
 
 class Home extends Component {

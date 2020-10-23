@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const mongoosePaginate = require('mongoose-paginate-v2')
+
 
 // Bảng xưởng sản xuất
 const ManufacturingMillSchema = new Schema({
@@ -32,6 +34,8 @@ const ManufacturingMillSchema = new Schema({
 }, {
     timestamps: true
 });
+
+ManufacturingMillSchema.plugin(mongoosePaginate);
 
 module.exports = (db) => {
     if (!db.models.ManufacturingMill)

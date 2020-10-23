@@ -179,8 +179,7 @@ class DepreciationTab extends Component {
                 <div className="box-body">
                     {/* Thông tin khấu hao */}
                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border"><h4 className="box-title">{translate('asset.general_information.depreciation_information')}</h4></legend>
-                        <div className="form-group">
+                        <div className="form-group" style={{ marginTop: "10px" }}>
                             <strong>{translate('asset.general_information.original_price')}&emsp; </strong>
                             {formater.format(parseInt(cost))} VNĐ
                         </div>

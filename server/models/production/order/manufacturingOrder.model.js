@@ -5,7 +5,6 @@ const mongoosePaginate = require('mongoose-paginate-v2')
 const ManufacturingOrderSchema = new Schema({
     code: {
         type: String,
-        unique: true,
         required: true
     },
     status: { //1: Chờ phê duyệt, 2: Đã phê duyệt, 3: Đang sản xuất, 4: Hoàn thành, 5: Đã hủy

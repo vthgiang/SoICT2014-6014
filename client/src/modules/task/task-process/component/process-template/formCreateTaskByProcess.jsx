@@ -78,6 +78,7 @@ class FormCreateTaskByProcess extends Component {
         const { taskItem } = this.state;
         if (nextProps.isProcess && nextProps.id !== this.state.id) {
             let { info, listOrganizationalUnit } = nextProps;
+
             this.setState(state => {
                 return {
                     id: nextProps.id,
@@ -86,14 +87,14 @@ class FormCreateTaskByProcess extends Component {
                         // code: (info && info.code) ? info.code : "",
                         startDate: (info && info.startDate) ? info.startDate : nextProps.startDate,
                         endDate: (info && info.endDate) ? info.endDate : nextProps.endDate,
-                        organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit : [],
+                        organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit._id : [],
                         name: (info && info.name) ? info.name : '',
-                        responsibleEmployees: (info && info.responsibleEmployees) ? info.responsibleEmployees : [],
-                        accountableEmployees: (info && info.accountableEmployees) ? info.accountableEmployees : [],
-                        consultedEmployees: (info && info.consultedEmployees) ? info.consultedEmployees : [],
-                        informedEmployees: (info && info.informedEmployees) ? info.informedEmployees : [],
+                        responsibleEmployees: (info && info.responsibleEmployees) ? info.responsibleEmployees.map(x => x?._id) : [],
+                        accountableEmployees: (info && info.accountableEmployees) ? info.accountableEmployees.map(x => x?._id) : [],
+                        consultedEmployees: (info && info.consultedEmployees) ? info.consultedEmployees.map(x => x?._id) : [],
+                        informedEmployees: (info && info.informedEmployees) ? info.informedEmployees.map(x => x?._id) : [],
                         description: (info && info.description) ? info.description : '',
-                        creator: (info && info.creator) ? info.creator : getStorage("userId"),
+                        creator: (info && info.creator) ? info.creator._id : getStorage("userId"),
                         formula: (info && info.formula) ? info.formula : '',
                         priority: (info && info.priority) ? info.priority : 3,
                         taskActions: (info && info.taskActions) ? info.taskActions : [],

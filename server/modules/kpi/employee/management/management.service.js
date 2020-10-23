@@ -83,21 +83,9 @@ exports.copyKPI = async (portal, id, data) => {
 exports.getAllEmployeeKpiInOrganizationalUnit = async (portal, roleId, organizationalUnitId, month) => {
 
     let organizationalUnit, employeeKpis;
-    let now, currentYear, currentMonth, endOfCurrentMonth, endOfLastMonth;
-
-    if (month) {
-        now = new Date(month);
-        currentYear = now.getFullYear();
-        currentMonth = now.getMonth();
-        endOfCurrentMonth = new Date(currentYear, currentMonth + 1);
-        endOfLastMonth = new Date(currentYear, currentMonth);
-    } else {
-        now = new Date();
-        currentYear = now.getFullYear();
-        currentMonth = now.getMonth();
-        endOfCurrentMonth = new Date(currentYear, currentMonth + 1);
-        endOfLastMonth = new Date(currentYear, currentMonth);
-    }
+    let time = month ? new Date(month) : new Date();
+    let currentYear = time.getFullYear();
+    let currentMonth = time.getMonth() + 1;
 
     if (!organizationalUnitId) {
         organizationalUnit = await OrganizationalUnit(connect(DB_CONNECTION, portal))
@@ -118,10 +106,11 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (portal, roleId, organizat
                 {
                     $match:
                     {
-                        $and: [
-                            { 'organizationalUnit': organizationalUnit._id },
-                            { 'date': { $gt: endOfLastMonth, $lte: endOfCurrentMonth } }
-                        ]
+                        $expr: {
+                            $eq: [organizationalUnit, mongoose.Types.ObjectId(organizationalUnit._id)],
+                            $eq: [{ $month: '$date' }, currentMonth ],
+                            $eq: [{ $year: '$date' }, currentYear ]
+                        }
                     }
                 },
 
@@ -215,7 +204,6 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (portal, roleId, organizat
                 }
             ])
     }
-    
     return employeeKpis;
 }
 

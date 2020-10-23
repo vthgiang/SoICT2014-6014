@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { CrmCustomerActions } from '../redux/actions';
-import { DialogModal, SelectBox, DatePicker } from '../../../../common-components';
+import { DialogModal } from '../../../../common-components';
 import ValidationHelper from '../../../../helpers/validationHelper';
-import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
+import { formatFunction } from '../../common/index';
 
 import GeneralTabEditForm from './generalTabEditForm';
 import './customer.css';
@@ -21,7 +21,7 @@ class CrmCustomerEdit extends Component {
 
     static getDerivedStateFromProps(props, state) {
         if (props.customerIdEdit !== state.customerIdEdit) {
-            props.getCustomer(props.customerIdEdit);
+            props.getCustomer(props.customerIdEdit); //Gọi service lấy thông tin customer theo id
             return {
                 dataStatus: 1,
                 customerIdEdit: props.customerIdEdit,
@@ -40,25 +40,27 @@ class CrmCustomerEdit extends Component {
                 owner: customer.owner ? customer.owner.map(o => o._id) : [],
                 code: customer.code ? customer.code : '',
                 name: customer.name ? customer.name : '',
+                customerType: customer.customerType ? parseInt(customer.customerType) : '',
                 company: customer.company ? customer.company : '',
                 represent: customer.represent ? customer.represent : '',
                 gender: customer.gender ? customer.gender : '',
                 taxNumber: customer.taxNumber ? customer.taxNumber : '',
 
                 customerSource: customer.customerSource ? customer.customerSource : '',
-                companyEstablishmentDate: customer.companyEstablishmentDate ? this.formatDate(customer.companyEstablishmentDate) : '',
-                birthDate: customer.birthDate ? this.formatDate(customer.birthDate) : '',
+                companyEstablishmentDate: customer.companyEstablishmentDate ? formatFunction.formatDate(customer.companyEstablishmentDate) : '',
+                birthDate: customer.birthDate ? formatFunction.formatDate(customer.birthDate) : '',
                 telephoneNumber: customer.telephoneNumber ? customer.telephoneNumber : '',
                 mobilephoneNumber: customer.mobilephoneNumber ? customer.mobilephoneNumber : '',
                 email: customer.email ? customer.email : '',
                 email2: customer.email2 ? customer.email2 : '',
 
-                status: customer.status ? customer.status.map(o => o._id) : '',
+                status: customer.status ? customer.status : '', //.map(o => o._id)
                 group: customer.group ? customer.group._id : '',
                 address: customer.address ? customer.address : '',
                 address2: customer.address2 ? customer.address2 : '',
                 location: customer.location ? customer.location : '',
                 website: customer.website ? customer.website : '',
+                note: customer.note ? customer.note : '',
                 linkedIn: customer.linkedIn ? customer.linkedIn : '',
 
                 statusHistories: customer.statusHistories && customer.statusHistories.length > 0 ?
@@ -87,27 +89,10 @@ class CrmCustomerEdit extends Component {
     }
 
     /**
-     * @param {*} date 
-     * @param {*} monthYear 
+     * function setState các giá trị lấy từ component con vào state
+     * @param {*} name 
+     * @param {*} value 
      */
-    formatDate(date, monthYear = false) {
-        if (date) {
-            let d = new Date(date),
-                month = '' + (d.getMonth() + 1),
-                day = '' + d.getDate(),
-                year = d.getFullYear();
-
-            if (month.length < 2) month = '0' + month;
-            if (day.length < 2) day = '0' + day;
-
-            if (monthYear === true) {
-                return [month, year].join('-');
-            } else return [day, month, year].join('-');
-        } else {
-            return date
-        }
-    }
-
     myCallBack = (name, value) => {
         const { editingCustomer } = this.state;
         this.setState({
@@ -118,6 +103,9 @@ class CrmCustomerEdit extends Component {
         })
     }
 
+    /**
+     * Hàm kiểm tra validate
+     */
     isFormValidated = () => {
         const { code, name, taxNumber } = this.state.editingCustomer;
         const { translate } = this.props;
@@ -160,22 +148,8 @@ class CrmCustomerEdit extends Component {
     }
 
     render() {
-        const { translate, crm, user } = this.props;
+        const { translate, crm } = this.props;
         const { editingCustomer, customerIdEdit, dataStatus } = this.state;
-        const { groups } = crm;
-
-        // Lấy thành viên trong đơn vị
-        let unitMembers = [];
-        if (user.usersOfChildrenOrganizationalUnit) {
-            unitMembers = getEmployeeSelectBoxItems(user.usersOfChildrenOrganizationalUnit);
-        }
-
-        // Lấy danh sách nhóm khách hàng
-        let listGroups;
-        if (groups.list && groups.list.length > 0) {
-            listGroups = groups.list.map(x => { return { value: x._id, text: x.name } })
-            listGroups.unshift({ value: '', text: '---chọn---' });
-        }
 
         return (
             <React.Fragment>
@@ -218,8 +192,8 @@ class CrmCustomerEdit extends Component {
 }
 
 function mapStateToProps(state) {
-    const { crm, user, auth } = state;
-    return { crm, user, auth };
+    const { crm, auth } = state;
+    return { crm, auth };
 }
 
 const mapDispatchToProps = {

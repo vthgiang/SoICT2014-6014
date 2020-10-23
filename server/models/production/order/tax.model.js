@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const TaxSchema = new Schema({
     code: {
         type: String,
-        unique: true,
         required: true
     },
     name: {
@@ -23,6 +23,9 @@ const TaxSchema = new Schema({
         good: {
             type: Schema.Types.ObjectId,
             ref: 'Good'
+        },
+        percent: {
+            type: Number
         }
     }],
     version: {
@@ -36,6 +39,8 @@ const TaxSchema = new Schema({
 }, {
     timestamps: true,
 })
+
+TaxSchema.plugin(mongoosePaginate);
 
 module.exports = (db) =>{
     if(!db.models.Tax)

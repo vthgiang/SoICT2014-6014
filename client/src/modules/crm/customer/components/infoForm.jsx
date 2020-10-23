@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ApiImage, SelectBox, ErrorLabel, DateTimeConverter } from '../../../../common-components';
-import { convertJsonObjectToFormData } from '../../../../helpers/jsonObjectToFormDataObjectConverter';
 import { CrmCustomerActions } from '../redux/actions';
 import GeneralTabInfoForm from './generalTabInfoForm';
 import HistoryTabInfoForm from './historyTabInfoForm';
@@ -14,7 +13,6 @@ class CrmCustomerInformation extends Component {
         this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
         this.state = {
             dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
-            defaultAvatar: '',
             customerInfomation: {}
         }
     }
@@ -36,7 +34,11 @@ class CrmCustomerInformation extends Component {
 
         if (dataStatus === this.DATA_STATUS.QUERYING && !nextProps.crm.customers.isLoading) {
             const getCustomer = nextProps.crm.customers.customerById;
-            customerInfomation = { ...getCustomer };
+            if (getCustomer.avatar) {
+                customerInfomation = { ...getCustomer, img: `.${getCustomer.avatar}` };
+            } else {
+                customerInfomation = { ...getCustomer };
+            }
 
             this.setState({
                 dataStatus: this.DATA_STATUS.AVAILABLE,
@@ -64,7 +66,8 @@ class CrmCustomerInformation extends Component {
                 this.setState({
                     customerInfomation: {
                         ...customerInfomation,
-                        avatar: fileLoad.result
+                        img: fileLoad.result,
+                        avatar: file,
                     }
                 });
             };
@@ -74,26 +77,28 @@ class CrmCustomerInformation extends Component {
 
     save = () => {
         const { customerInfomation, customerId } = this.state;
-        // let formData = convertJsonObjectToFormData(customerInfomation);
         let formData = new FormData();
 
-        formData.append('avatar', customerInfomation.avatar);
+        if (customerInfomation.avatar) {
+            formData.append('avatar', customerInfomation.avatar);
+        }
         this.props.editCustomer(customerId, formData);
     }
 
     render() {
         const { translate, crm } = this.props;
-        const { customerInfomation, dataStatus, customerId, defaultAvatar } = this.state;
+        const { customerInfomation, dataStatus, customerId } = this.state;
+
         return (
             <React.Fragment>
                 <DialogModal
                     modalID="modal-crm-customer-info" isLoading={crm.customers.isLoading}
-                    formID="form-crm-customer-info"
+                    formID={`form-crm-customer-info-${customerId}`}
                     title="Thông tin chi tiết khách hàng"
                     func={this.save} size={100}
                 >
-                    {/* Form thêm khách hàng mới */}
-                    <form id="form-crm-customer-info">
+                    {/* Form xem thông tin khách hàng */}
+                    <form id={`form-crm-customer-info-${customerId}`}>
                         <div className="row">
                             <div className="col-xs-12 col-sm-5 col-md-3 col-lg-3">
                                 <div style={{
@@ -104,8 +109,8 @@ class CrmCustomerInformation extends Component {
                                     borderRadius: '5px',
                                 }}>
                                     <div className="text-center ">
-                                        {customerInfomation.avatar ?
-                                            <ApiImage className="customer-avatar" src={customerInfomation.avatar} /> :
+                                        {customerInfomation.img ?
+                                            <ApiImage className="customer-avatar" src={customerInfomation.img} /> :
                                             <img className="customer-avatar" src="/image/crm-customer.png" />
                                         }
                                     </div>
@@ -222,7 +227,6 @@ class CrmCustomerInformation extends Component {
                         </div>
                     </form>
                 </DialogModal>
-
             </React.Fragment>
         );
     }
