@@ -3,15 +3,22 @@ const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
 const CareSchema = new Schema({
+    creator: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+    },
     name: { //tên công việc chăm sóc khách hàng
         type: String,
         required: true
     },
-    customer: { // khách hàng được chăm sóc
+    description: { // Mô tả công việc chăm sóc khách hàng
+        type: String,  
+    },
+    customer: [{ // khách hàng được chăm sóc
         type: Schema.Types.ObjectId,
         ref: 'Customer',
         required: true,
-    },
+    }],
     caregiver: [{ //nhân viên chăm sóc khách hàng
         type: Schema.Types.ObjectId,
         ref: 'User',
@@ -22,9 +29,9 @@ const CareSchema = new Schema({
         ref: 'CareType',
         required: true,
     }],
-    status: { //trạng thái công việc 0: chưa thực hiện, 1: đang thực hiện, 2: Hoàn thành, 3: Không hoàn thành
+    status: { //trạng thái công việc 1: chưa thực hiện, 2: đang thực hiện, 3: Hoàn thành, 4: Không hoàn thành
         type: Number,
-        default: 0,
+        default: 1,
     },
     startDate: {
         type: Date,
@@ -32,7 +39,6 @@ const CareSchema = new Schema({
     },
     endDate: {
         type: Date,
-        required: true,
     },
     notes: { // Ghi chu
         type: String,

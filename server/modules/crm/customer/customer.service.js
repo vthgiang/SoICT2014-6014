@@ -1,6 +1,12 @@
 const { Customer } = require(`${SERVER_MODELS_DIR}`);
 const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
+
+exports.getUrl = (destination, filename) => {
+    let url = `${destination}/${filename}`;
+    return url.substr(1, url.length);
+}
+
 /**
  * Hàm tạo mới một khách hàng
  * @param {*} portal tên công ty
@@ -8,9 +14,9 @@ const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
  * @param {*} data dữ liệu thông tin khách hàng
  * @param {*} userId  id người tạo
  */
-exports.createCustomer = async (portal, companyId, data, userId) => {
-    let {companyEstablishmentDate, birthDate} = data;
 
+exports.createCustomer = async (portal, companyId, data, userId, fileConverts) => {
+    let {companyEstablishmentDate, birthDate, files} = data;
     //format birthDate yy-mm-dd
     if (birthDate) {
         const date = birthDate.split('-');
@@ -32,8 +38,27 @@ exports.createCustomer = async (portal, companyId, data, userId) => {
         data = { ...data, creator: userId };
     }
 
-    const newCustomer = await Customer(connect(DB_CONNECTION, portal)).create(data);
 
+    // Thêm file đính kèm với khách hàng nếu có
+    if (files && files.length > 0 && fileConverts && fileConverts.length>0) {
+        let result = [];
+        files.forEach(x => {
+            fileConverts.forEach(y => {
+                if (x.fileName === y.originalname) {
+                    result.push({
+                    creator: userId,
+                    name: x.name,
+                    description: x.description,
+                    fileName: x.fileName,
+                    url: this.getUrl(y.destination, y.filename),
+                 })
+                }
+            })
+        })
+        data = { ...data, files: result };
+    }
+
+    const newCustomer = await Customer(connect(DB_CONNECTION, portal)).create(data);
     const getNewCustomer = await Customer(connect(DB_CONNECTION, portal)).findById(newCustomer._id)
         .populate({ path: 'group', select: '_id name' })
         .populate({ path: 'status', select: '_id name' })
@@ -58,8 +83,8 @@ exports.getCustomers = async (portal, companyId, query) => {
         .populate({ path: 'group', select: '_id name' })
         .populate({ path: 'status', select: '_id name' })
         .populate({ path: 'owner', select: '_id name' });
+    
     return { listDocsTotal, customers };
-
 }
 
 /**
@@ -86,7 +111,7 @@ exports.getCustomerById = async (portal, companyId, id) => {
  * @param {*} data 
  * @param {*} userId 
  */
-exports.editCustomer = async (portal, companyId, id, data, userId) => {
+exports.editCustomer = async (portal, companyId, id, data, userId,avatar) => {
     let { companyEstablishmentDate, birthDate,group} = data;
 
     //format birthDate
@@ -110,6 +135,10 @@ exports.editCustomer = async (portal, companyId, id, data, userId) => {
     // check nếu ko có group (group ='') thì gán group = null. vì group ref tới schema group
     if (!group) {
         data = { ...data, group: null };
+    }
+
+    if (avatar) {
+        data = {...data, avatar: avatar}
     }
 
     await Customer(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {

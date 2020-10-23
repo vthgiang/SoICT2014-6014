@@ -1,5 +1,5 @@
 import {
-    getStorage, AuthenticateHeader
+    getStorage
 } from '../../../../../config';
 import { sendRequest } from '../../../../../helpers/requestHelper';
 

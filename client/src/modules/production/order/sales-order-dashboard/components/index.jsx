@@ -9,6 +9,7 @@ import TopSoldBarChart from "./topSoldBarChart";
 import InfoBox from "./infoBox";
 import SalesOfEmployee from "./salesOfEmployee";
 import { DatePicker, SelectBox } from "../../../../../common-components";
+import AverageQuoteToSales from "./averageQuoteToSales";
 
 class SalesOrderDashboard extends Component {
     onchangeDate = () => {};
@@ -99,7 +100,10 @@ class SalesOrderDashboard extends Component {
                             </div>
                         </div>
                         <div className="col-xs-12">
-                            {/* <SalesOfEmployee /> */}
+                            <SalesOfEmployee />
+                        </div>
+                        <div className="col-xs-12">
+                            <AverageQuoteToSales />
                         </div>
                     </div>
                 </div>

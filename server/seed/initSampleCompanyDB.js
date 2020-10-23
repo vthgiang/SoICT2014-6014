@@ -237,6 +237,16 @@ const initSampleCompanyDB = async () => {
         password: hash,
         company: vnist._id
     }, {
+        name: 'Trần Bình Minh',
+        email: 'minhtb.vnist@gmail.com',
+        password: hash,
+        company: vnist._id
+    }, {
+        name: 'Nguyễn Thị Nhung',
+        email: 'nhungnt.vnist@gmail.com',
+        password: hash,
+        company: vnist._id
+    }, {
         name: 'Trần Minh Đức',
         email: 'tmd.vnist@gmail.com',
         password: hash,
@@ -385,6 +395,12 @@ const initSampleCompanyDB = async () => {
     }, { // Thành viên ban giám đốc Phạm Đình Phúc
         userId: users[7]._id,
         roleId: thanhVienBGĐ._id
+    }, {
+        userId: users[8]._id,
+        roleId: nvPhongHC._id
+    },{
+        userId: users[9]._id,
+        roleId: nvPhongHC._id
     }]);
 
     /**
@@ -2883,6 +2899,490 @@ const initSampleCompanyDB = async () => {
     ]);
     console.log("Khởi tạo xong danh sách thông tin kho");
 
+    /*---------------------------------------------------------------------------------------------
+    -----------------------------------------------------------------------------------------------
+        TẠO DỮ LIỆU THÔNG TIN KHO
+    -----------------------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------------------- */
+    console.log("Khởi tạo dữ liệu thông tin lưu trữ kho");
+    var listBinLocations = await BinLocation(vnistDB).insertMany([{
+        code: "T1",
+        name: "Tầng 1",
+        description: "Dãy nhà dùng cho việc nghiên cứu",
+        stock: listStock[1]._id,
+        status: "1",
+        parent: null,
+        path: "ST002-T1",
+        unit: "mét khối",
+        capacity: "",
+        contained: "",
+        child: [],
+        enableGoods: [
+            {
+                good: listGood[0]._id,
+                contained: 50,
+                capacity: 200
+            },
+            {
+                good: listGood[1]._id,
+                contained: 200,
+                capacity: 300
+            },
+            {
+                good: listProduct[1]._id,
+                contained: 50,
+                capacity: 100
+            },
+        ]
+
+    },
+    {
+        code: "T2",
+        name: "Tầng 2",
+        description: "Dãy nhà dùng cho việc học tập",
+        stock: listStock[1]._id,
+        status: "1",
+        parent: null,
+        path: "ST002-T2",
+        unit: "mét khối",
+        capacity: "",
+        contained: "",
+        child: [],
+        enableGoods: [
+            {
+                good: listGood[0]._id,
+                contained: 50,
+                capacity: 200
+            },
+            {
+                good: listGood[1]._id,
+                contained: 200,
+                capacity: 300
+            },
+            {
+                good: listProduct[1]._id,
+                contained: 50,
+                capacity: 100
+            },
+        ]
+    },
+    {
+        code: "T3",
+        name: "Tầng 3",
+        description: "Dãy nhà dùng cho việc hội họp",
+        stock: listStock[1]._id,
+        status: "1",
+        parent: null,
+        path: "ST002-T3",
+        unit: "mét khối",
+        capacity: "",
+        contained: "",
+        child: [],
+        enableGoods: [
+            {
+                good: listGood[0]._id,
+                contained: 50,
+                capacity: 300
+            },
+            {
+                good: listGood[1]._id,
+                contained: 200,
+                capacity: 300
+            },
+            {
+                good: listProduct[1]._id,
+                contained: 50,
+                capacity: 100
+            },
+        ]
+    }
+    ])
+
+    var listBinLocationChilds = await BinLocation(vnistDB).insertMany([{
+        code: "P101",
+        name: "Phòng 101",
+        description: "Phòng thí nghiệm hóa",
+        stock: listStock[1]._id,
+        status: "1",
+        parent: listBinLocations[0]._id,
+        path: "ST002-T1-P101",
+        unit: "mét khối",
+        capacity: "",
+        contained: "",
+        child: [],
+        enableGoods: [
+            {
+                good: listGood[0]._id,
+                contained: 50,
+                capacity: 200
+            },
+            {
+                good: listGood[1]._id,
+                contained: 200,
+                capacity: 300
+            },
+            {
+                good: listProduct[1]._id,
+                contained: 50,
+                capacity: 100
+            },
+        ]
+
+    },
+    {
+        code: "P102",
+        name: "Phòng 102",
+        description: "Phòng thí nghiệm",
+        stock: listStock[1]._id,
+        status: "1",
+        parent: listBinLocations[0]._id,
+        path: "ST002-T1-P102",
+        unit: "mét khối",
+        capacity: "",
+        contained: "",
+        child: [],
+        enableGoods: [
+            {
+                good: listGood[0]._id,
+                contained: 50,
+                capacity: 200
+            },
+            {
+                good: listGood[1]._id,
+                contained: 200,
+                capacity: 300
+            },
+            {
+                good: listProduct[1]._id,
+                contained: 50,
+                capacity: 100
+            },
+        ]
+    },
+    {
+        code: "P103",
+        name: "Phòng 103",
+        description: "Phòng học toán",
+        stock: listStock[1]._id,
+        status: "1",
+        parent: listBinLocations[0]._id,
+        path: "ST002-T1-P103",
+        unit: "mét khối",
+        capacity: "",
+        contained: "",
+        child: [],
+        enableGoods: [
+            {
+                good: listGood[0]._id,
+                contained: 50,
+                capacity: 300
+            },
+            {
+                good: listGood[1]._id,
+                contained: 200,
+                capacity: 300
+            },
+            {
+                good: listProduct[1]._id,
+                contained: 50,
+                capacity: 100
+            },
+        ]
+    },
+    {
+        code: "T1",
+        name: "Tầng 1",
+        description: "Dãy nhà dùng cho việc nghiên cứu",
+        stock: listStock[0]._id,
+        status: "1",
+        parent: null,
+        path: "ST001-T1",
+        unit: "khối",
+        capacity: "",
+        contained: "",
+        child: [],
+        enableGoods: [
+            {
+                good: listGood[0]._id,
+                contained: 50,
+                capacity: 200
+            },
+            {
+                good: listGood[1]._id,
+                contained: 200,
+                capacity: 300
+            },
+            {
+                good: listProduct[1]._id,
+                contained: 50,
+                capacity: 100
+            },
+        ]
+
+    },
+    {
+        code: "T2",
+        name: "Tầng 2",
+        description: "Dãy nhà dùng cho việc học tập",
+        stock: listStock[0]._id,
+        status: "1",
+        parent: null,
+        path: "ST001-T2",
+        unit: "mét khối",
+        capacity: "",
+        contained: "",
+        child: [],
+        enableGoods: [
+            {
+                good: listGood[0]._id,
+                contained: 50,
+                capacity: 200
+            },
+            {
+                good: listGood[1]._id,
+                contained: 200,
+                capacity: 300
+            },
+            {
+                good: listProduct[1]._id,
+                contained: 50,
+                capacity: 100
+            },
+        ]
+    },
+    ])
+    
+    console.log("Cập nhật nút con của thông tin lưu trữ kho");
+    var listBin = await BinLocation(vnistDB).update({
+        _id: listBinLocations[0]._id,
+        code: "T1",
+        name: "Tầng 1",
+        description: "Dãy nhà dùng cho việc nghiên cứu",
+        stock: listStock[1]._id,
+        status: "1",
+        parent: null,
+        path: "ST002-T1",
+        unit: "mét khối",
+        capacity: "",
+        contained: "",
+        child: [ listBinLocationChilds[0]._id, listBinLocationChilds[1]._id, listBinLocationChilds[2]._id ],
+        enableGoods: [
+            {
+                good: listGood[0]._id,
+                contained: 50,
+                capacity: 200
+            },
+            {
+                good: listGood[1]._id,
+                contained: 200,
+                capacity: 300
+            },
+            {
+                good: listProduct[1]._id,
+                contained: 50,
+                capacity: 100
+            },
+        ]
+
+    }
+    )
+
+    //************Tạo mẫu dữ liệu lô hàng******************* */
+    console.log("Tạo mẫu dữ liệu lô hàng");
+    const listLot = await Lot(vnistDB).insertMany([
+        {
+            name: "LOT001",
+            good: listProduct[0]._id,
+            stocks: [
+                {
+                    stock: listStock[0]._id,
+                    quantity: 100,
+                    binLocations: [
+                        {
+                            binLocation: listBinLocationChilds[3]._id,
+                            quantity: 40
+                        },
+                        {
+                            binLocation: listBinLocationChilds[4]._id,
+                            quantity: 60
+                        }
+                    ]
+                },
+                {
+                    stock: listStock[1]._id,
+                    quantity: 200,
+                    binLocations: [
+                        {
+                            binLocation: listBinLocationChilds[0]._id,
+                            quantity: 80
+                        },
+                        {
+                            binLocation: listBinLocationChilds[1]._id,
+                            quantity: 120
+                        }
+                    ]
+                }
+            ],
+            originalQuantity: 300,
+            quantity: 300,
+            expirationDate: "12-12-2021",
+            description: "Lô hàng tự tạo",
+            lotLogs: [
+                {
+                    quantity: 300,
+                    description: "Nhập hàng lần đầu",
+                    type: "Nhập kho thành phẩm",
+                    binLocations: [
+                        {
+                            binLocation: listBinLocationChilds[0]._id,
+                            quantity: 80
+                        },
+                        {
+                            binLocation: listBinLocationChilds[1]._id,
+                            quantity: 120
+                        },
+                        {
+                            binLocation: listBinLocationChilds[3]._id,
+                            quantity: 40
+                        },
+                        {
+                            binLocation: listBinLocationChilds[4]._id,
+                            quantity: 60
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            name: "LOT002",
+            good: listProduct[1]._id,
+            stocks: [
+                {
+                    stock: listStock[0]._id,
+                    quantity: 200,
+                    binLocations: [
+                        {
+                            binLocation: listBinLocationChilds[3]._id,
+                            quantity: 99
+                        },
+                        {
+                            binLocation: listBinLocationChilds[4]._id,
+                            quantity: 101
+                        }
+                    ]
+                },
+                {
+                    stock: listStock[1]._id,
+                    quantity: 250,
+                    binLocations: [
+                        {
+                            binLocation: listBinLocationChilds[2]._id,
+                            quantity: 100
+                        },
+                        {
+                            binLocation: listBinLocationChilds[1]._id,
+                            quantity: 150
+                        }
+                    ]
+                }
+            ],
+            originalQuantity: 450,
+            quantity: 450,
+            expirationDate: "02-06-2021",
+            description: "Lô hàng nhập từ xưởng sản xuất",
+            lotLogs: [
+                {
+                    quantity: 450,
+                    description: "Nhập hàng",
+                    type: "Nhập kho thành phẩm",
+                    binLocations: [
+                        {
+                            binLocation: listBinLocationChilds[2]._id,
+                            quantity: 100
+                        },
+                        {
+                            binLocation: listBinLocationChilds[1]._id,
+                            quantity: 150
+                        },
+                        {
+                            binLocation: listBinLocationChilds[3]._id,
+                            quantity: 99
+                        },
+                        {
+                            binLocation: listBinLocationChilds[4]._id,
+                            quantity: 101
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            name: "LOT003",
+            good: listProduct[0]._id,
+            stocks: [
+                {
+                    stock: listStock[0]._id,
+                    quantity: 120,
+                    binLocations: [
+                        {
+                            binLocation: listBinLocationChilds[3]._id,
+                            quantity: 100
+                        },
+                        {
+                            binLocation: listBinLocationChilds[4]._id,
+                            quantity: 20
+                        }
+                    ]
+                },
+                {
+                    stock: listStock[1]._id,
+                    quantity: 200,
+                    binLocations: [
+                        {
+                            binLocation: listBinLocationChilds[0]._id,
+                            quantity: 80
+                        },
+                        {
+                            binLocation: listBinLocationChilds[1]._id,
+                            quantity: 120
+                        }
+                    ]
+                }
+            ],
+            originalQuantity: 320,
+            quantity: 320,
+            expirationDate: "12-12-2021",
+            description: "Lô hàng tự tạo",
+            lotLogs: [
+                {
+                    quantity: 320,
+                    description: "Nhập hàng lần đầu",
+                    type: "Nhập kho thành phẩm",
+                    binLocations: [
+                        {
+                            binLocation: listBinLocationChilds[0]._id,
+                            quantity: 80
+                        },
+                        {
+                            binLocation: listBinLocationChilds[1]._id,
+                            quantity: 120
+                        },
+                        {
+                            binLocation: listBinLocationChilds[3]._id,
+                            quantity: 100
+                        },
+                        {
+                            binLocation: listBinLocationChilds[4]._id,
+                            quantity: 20
+                        }
+                    ]
+                }
+            ]
+        },
+    ])
+    console.log("Tạo xong mẫu dữ liệu lô hàng");
+
+
     // ****************** Tạo mẫu dữ liệu khách hàng********************
     console.log("Tạo mẫu dữ liệu khách hàng");
 
@@ -2895,24 +3395,24 @@ const initSampleCompanyDB = async () => {
         code: "SL",
         description: 'Nhóm khách chỉ bán sĩ lẻ'
     }, {
-        name: "Nhà cung cấp Anh Đức",
+        name: "Nhóm khách theo khu vực",
         code: "CCAD",
-        description: 'Công ty anh Đức'
+        description: 'Nhóm khách theo khu vực'
     }, {
-        name: "Đại lý Việt Anh",
+        name: "Khách VIP",
         code: "ĐLVA",
-        description: "Đại lý việt anh cung cấp đồ nhựa",
+        description: "Khách VIP",
     }];
-    await Group(vnistDB).insertMany(customerGroupData);
+    const groups = await Group(vnistDB).insertMany(customerGroupData);
     console.log("Xong! Đã tạo mẫu dữ liệu khách hàng")
 
     // ****************** Tạo mẫu dữ liệu trạng thái khách hàng********************
     console.log("Tạo mẫu dữ liệu trạng thái khách hàng");
     const customerStatusData = [{
         code: "ST001",
-        name: "Khách hàng mới",
+        name: "Tiềm năng",
         description: "Khách hàng mới toanh",
-        active: true,
+        active: false,
     }, {
         code: "ST002",
         name: "Quan tâm sản phẩm",
@@ -2933,14 +3433,119 @@ const initSampleCompanyDB = async () => {
         name: "Đã mua sản phẩm",
         description: "Khách hàng đã mua sản phẩm",
         active: false,
-    }, {
-        code: "ST006",
-        name: "Dừng liên hệ",
-        description: "Không chơi với công ty mình nữa",
-        active: false,
     }];
-    await Status(vnistDB).insertMany(customerStatusData);
+    const status = await Status(vnistDB).insertMany(customerStatusData);
     console.log("Xong! Đã tạo mẫu dữ liệu trạng thái khách hàng")
+
+     // ****************** Tạo mẫu dữ liệu hình thức chăm sóc khách hàng********************
+    console.log("Tạo mẫu dữ liệu hình thức chăm sóc khách hàng");
+    const customerCareType = [{
+        name: "Gọi điện tư vấn",
+        description: "Gọi điện tư vấn",
+    }, {
+        name: "Gửi Email",
+        description: "Gửi Email giới thiệu ...",
+    }, {
+        name: "Gặp mặt trực tiếp",
+        description: "Hẹn gặp khách hàng trực tiếp",
+    }];
+    
+    await CareType(vnistDB).insertMany(customerCareType);
+    console.log("Xong! Đã tạo mẫu dữ liệu hình thức chăm sóc khách hàng")
+
+    // ****************** Tạo mẫu dữ liệu khách hàng********************
+    await Customer(vnistDB).insertMany([
+        {
+            creator: users[7]._id,
+            code: 'KH001',
+            name: 'Nguyễn Lệ Nhi',
+            owner: [users[5]._id],
+            gender: parseInt('1'),
+            company: 'VNIST',
+            customerType: parseInt('1'),
+            represent: 'Nguyễn Thị Hương',
+            taxNumber: '1528946392',
+            customerSource: 'Facebook.com',
+            companyEstablishmentDate: new Date("2009-09-15"),
+            birthDate: new Date('1998-09-03'),
+            telephoneNumber: parseInt('02465756834'), 
+            mobilephoneNumber: parseInt('0385025851'),
+            email: 'nhinl.vnist@gmail.com',
+            address: 'Ngọc mỹ, Quốc Oai, Hà Nội',
+            location: parseInt('3'),
+            website: 'abcnddg.com',
+            group: groups[1]._id,
+            status: [
+                status[0]._id,
+                status[1]._id,
+                status[2]._id,
+                status[3]._id
+            ],
+            statusHistories: [
+                {
+                    oldValue: status[1]._id,
+                    newValue: status[1]._id,
+                    createdAt: new Date("2020-10-10"),
+                    createdBy: users[5]._id,
+                },
+                {
+                    oldValue: status[1]._id,
+                    newValue: status[3]._id,
+                    createdAt: new Date("2020-10-14"),
+                    createdBy: users[5]._id,
+                },
+                {
+                    oldValue: status[3]._id,
+                    newValue: status[4]._id,
+                    createdAt: new Date("2020-10-17"),
+                    createdBy: users[5]._id,
+                }
+            ]
+        },
+        {
+            creator: users[7]._id,
+            code: 'KH002',
+            name: 'Công ty Việt Anh',
+            owner: [users[5]._id],
+            gender: parseInt('2'),
+            company: 'VIAVET',
+            represent: 'Trương Anh Tuấn',
+            customerType: parseInt('2'),
+            taxNumber: '64673692',
+            customerSource: 'Youtube, facebook',
+            companyEstablishmentDate: new Date("2014-09-15"),
+            birthDate: null,
+            telephoneNumber: parseInt('024657589843'), 
+            mobilephoneNumber: parseInt('0345915454'),
+            email: 'TuanTA.viavet@gmail.com',
+            address: 'Thường tín, Hà Nội',
+            location: parseInt('1'),
+            website: 'vietanhviavet.com',
+            group: groups[2]._id,
+            status: [
+                status[0]._id,
+                status[1]._id,
+                status[2]._id,
+                status[3]._id,
+                status[4]._id,
+            ],
+            statusHistories: [
+                {
+                    oldValue: status[1]._id,
+                    newValue: status[1]._id,
+                    createdAt: new Date("2020-09-15"),
+                    createdBy: users[5]._id,
+                },
+                {
+                    oldValue: status[1]._id,
+                    newValue: status[4]._id,
+                    createdAt: new Date("2020-10-10"),
+                    createdBy: users[6]._id,
+                },
+            ]
+        }
+    ])
+    console.log("Xong! Đã tạo mẫu dữ liệu khách hàng")
 
     /**
      * Ngắt kết nối db

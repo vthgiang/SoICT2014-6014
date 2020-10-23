@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const mongoosePaginate = require('mongoose-paginate-v2')
 
 const ManufacturingOrderSchema = new Schema({
     code: {
         type: String,
-        unique: true,
         required: true
     },
     status: { //1: Chờ phê duyệt, 2: Đã phê duyệt, 3: Đang sản xuất, 4: Hoàn thành, 5: Đã hủy
@@ -92,15 +92,12 @@ const ManufacturingOrderSchema = new Schema({
             type: Number,
             required: true
         }
-    }],
-    createAt: {
-        type: Date
-    },
-    updateAt: {
-        type: Date,
-        default: Date.now()
-    }
+    }]
+}, {
+    timestamps: true,
 })
+
+ManufacturingOrderSchema.plugin(mongoosePaginate);
 
 module.exports = (db) => {
     if (db.models.ManufacturingOrder)

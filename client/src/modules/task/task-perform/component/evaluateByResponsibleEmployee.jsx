@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../common-components/index';
+import { ErrorLabel, DatePicker, SelectBox, TextEditor } from '../../../../common-components/index';
 import { performTaskAction } from '../redux/actions';
 import { managerKpiActions } from '../../../kpi/employee/management/redux/actions';
 import { TaskInformationForm } from './taskInformationForm';
@@ -1057,14 +1057,16 @@ class EvaluateByResponsibleEmployee extends Component {
                                     </div>
                                     <div>
                                         <strong>{translate('task.task_management.action_not_rating')}:&nbsp;&nbsp;</strong>
-                                        {actionsNotRating.length === 0 ? translate('task.task_management.no_action') :
-                                            actionsNotRating.length === 1 ? translate('task.task_management.no_action') :
-                                                actionsNotRating.map((item, index) => {
-                                                    let seperator = index !== 0 ? ", " : "";
-                                                    return <span key={index}>
-                                                        {seperator}&nbsp;&nbsp;({index + 1}) {item.description}
+                                        {
+                                            actionsNotRating.length === 0 ? translate('task.task_management.no_action') :
+                                            actionsNotRating.map((item, index) => (
+                                                <div>
+                                                    <span key={index}>
+                                                        ({index + 1})&nbsp;&nbsp;
+                                                        <TextEditor data={item.description}/>
                                                     </span>
-                                                })
+                                                </div>
+                                            ))
                                         }
                                     </div>
                                 </div>

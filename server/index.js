@@ -69,9 +69,11 @@ router.use("/use-request", require("./modules/asset/use-request/use-request.rout
 router.use("/taskreports", require("./modules/report/task-report/taskReport.route"));
 
 // warehouse
-router.use("/stocks", require('./modules/warehouse/stock/stock.route'));
-router.use("/categories", require("./modules/warehouse/category/category.route"));
-router.use("/goods", require("./modules/warehouse/good/good.route"));
+router.use("/stocks", require('./modules/production/warehouse/stock/stock.route'));
+router.use("/categories", require("./modules/production/common-production/category/category.route"));
+router.use("/goods", require("./modules/production/common-production/good/good.route"));
+router.use("/bin-locations", require("./modules/production/warehouse/bin-location/binLocation.route"));
+router.use("/lot", require("./modules/production/warehouse/inventory/inventory.route"));
 
 router.use("/examples", require("./modules/example/example.route"));
 router.use("/documents", require("./modules/document/document.route"));
@@ -79,12 +81,26 @@ router.use("/documents", require("./modules/document/document.route"));
 // CRM
 app.use("/crm/customers", require("./modules/crm/customer/customer.route"));
 app.use("/crm/cares", require("./modules/crm/care/care.route"));
+app.use("/crm/careTypes", require("./modules/crm/careType/careType.route"));
 app.use("/crm/groups", require("./modules/crm/group/group.route"));
 app.use("/crm/status", require("./modules/crm/status/status.route"));
+
 
 // production - manufaturing
 app.use("/manufacturing-mill", require("./modules/production/manufacturing/manufacturingMill/manufacturingMill.route"));
 app.use("/manufacturing-works", require("./modules/production/manufacturing/manufacturingWorks/manufacturingWorks.route"));
+
+//order
+app.use("/quote", require("./modules/production/order/quote/quote.route"));
+app.use("/coin-rule", require("./modules/production/order/coin-rule/coinRule.route"));
+app.use("/bank-account", require("./modules/production/order/bank-account/bankAccount.route"));
+app.use("/discount", require("./modules/production/order/discount/discount.route"));
+app.use("/manufacturing-order", require("./modules/production/order/manufacturing-order/manufacturingOrder.route"));
+app.use("/proposal-order", require("./modules/production/order/proposal-order/proposalOrder.route"));
+app.use("/purchase-order", require("./modules/production/order/purchase-order/purchaseOrder.route"));
+app.use("/sales-order", require("./modules/production/order/sales-order/salesOrder.route"));
+app.use("/sla", require("./modules/production/order/sla/sla.route"));
+app.use("/tax", require("./modules/production/order/tax/tax.route"));
 
 app.use(router);
 

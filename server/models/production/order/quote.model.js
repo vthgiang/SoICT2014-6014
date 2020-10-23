@@ -1,15 +1,15 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const QuoteSchema = Schema({
     code: {
         type: String,
-        unique: true,
         required: true
     },
     status: {
         type: Number,
-        enum: [ 1 , 2 , 3 ], // 1: chờ phản hồi, 2: Đã chốt đơn, 3: Đã hủy
+        enum: [ 0 , 1 , 2 , 3 ], //0. Gửi yêu cầu, 1: chờ phản hồi, 2: Đã chốt đơn, 3: Đã hủy
         required: true,
         default: 1
     }, 
@@ -30,7 +30,16 @@ const QuoteSchema = Schema({
     //ĐỂ Ý PHẦN NÀY, SAU ANH TUẤN THÊM CUSTOMER VÀO
     customer: {
         type: Schema.Types.ObjectId,
-        ref: 'Customer'
+        ref: 'Customer',
+        required: true
+    }, 
+    customerPhone: {
+        type: String,
+        required: true
+    },
+    customerAddress: {
+        type: String,
+        required: true
     },
     goods: [{
         good: {
@@ -77,7 +86,7 @@ const QuoteSchema = Schema({
         type: Schema.Types.ObjectId,
         required: true
     }],
-    totalDiscounts: [{
+    totalDiscounts: {
         money: {
             type: Number
         },
@@ -103,7 +112,7 @@ const QuoteSchema = Schema({
         coin: {
             type: Number
         }
-    }],
+    },
     amount: {
         type: Number,
         required: true
@@ -118,15 +127,12 @@ const QuoteSchema = Schema({
     },
     note: {
         type: String
-    },
-    createAt: {
-        type: Date
-    },
-    updateAt: {
-        type: Date,
-        default: Date.now()
     }
+}, {
+    timestamps: true,
 })
+
+QuoteSchema.plugin(mongoosePaginate);
 
 module.exports = (db) =>{
     if(!db.models.Quote)

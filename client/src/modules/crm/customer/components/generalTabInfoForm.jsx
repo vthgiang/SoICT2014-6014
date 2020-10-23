@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import { formatFunction } from '../../common/index';
 
 class GeneralTabInfoForm extends Component {
     constructor(props) {
@@ -10,59 +11,64 @@ class GeneralTabInfoForm extends Component {
 
     static getDerivedStateFromProps(props, state) {
         const { status } = props.crm; // state redux
-        let listStatus = status.list;
+        let listStatus = [...status.list]; // Sao chép giá trị của list(Trạng thai chung của khách hàng) vào listStatu
         const { customerId, customerInfomation, id } = props;
 
         if (customerId != state.customerId && customerInfomation && listStatus) {
-            const statusActive = customerInfomation.status;
+            const statusActive = customerInfomation.status.map(o => ({ _id: o._id, name: o.name, active: true })); // Danh sách trạng thái khách hàng có
 
-            listStatus.map(x => (
-                statusActive.map(y => {
-                    if (x._id === y._id)
-                        x.active = true;
-                    return x;
-                })
-            ))
+            // Lọc ra danh sách trạng thái mà khách hàng không có
+            statusActive.forEach(x => {
+                listStatus = listStatus.filter(y => x._id !== y._id);
+            });
 
             return {
                 ...state,
                 id: id,
                 customerId: customerId,
                 customerInfomation: customerInfomation,
-                listStatus,
+                listStatus: [...statusActive, ...listStatus],
             }
         } else {
             return null;
         }
     }
 
-    formatDate(date, monthYear = false) {
-        if (date) {
-            let d = new Date(date),
-                month = '' + (d.getMonth() + 1),
-                day = '' + d.getDate(),
-                year = d.getFullYear();
-
-            if (month.length < 2) month = '0' + month;
-            if (day.length < 2) day = '0' + day;
-
-            if (monthYear === true) {
-                return [month, year].join('-');
-            } else return [day, month, year].join('-');
-        } else {
-            return date
-        }
-    }
-
+    /**
+     * Hàm format giới tính
+     * @param {*} gender 
+     */
     formatGender(gender) {
         const { translate } = this.props;
         gender = parseInt(gender);
-        if (gender === 0)
-            return translate('crm.customer.male');
         if (gender === 1)
+            return translate('crm.customer.male');
+        if (gender === 2)
             return translate('crm.customer.female');
     }
 
+    formatCustomerType(type) {
+        type = parseInt(type);
+        if (type === 1)
+            return 'Cá nhân';
+        if (type === 2)
+            return 'Công ty';
+    }
+
+
+    formatLocation(type) {
+        type = parseInt(type);
+        if (type === 1)
+            return 'Miền bắc';
+        if (type === 2)
+            return 'Miền Trung';
+        if (type === 3)
+            return 'Miền Nam';
+    }
+
+    /**
+     * Hàm xử lý khi click nút see more
+     */
     handleShowMore = () => {
         this.setState({
             showMore: !this.state.showMore,
@@ -103,7 +109,33 @@ class GeneralTabInfoForm extends Component {
                                 <div className="form-group">
                                     <strong className="col-sm-4">{translate('crm.customer.source')}</strong>
                                     <div className="col-sm-8">
-                                        <span>{customerInfomation.source ? customerInfomation.source : ''}</span>
+                                        <span>{customerInfomation.customerSource ? customerInfomation.customerSource : ''}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="row">
+                        {/* Loại khách hàng */}
+                        <div className="col-md-6">
+                            <div className="form-horizontal">
+                                <div className="form-group">
+                                    <strong className="col-sm-4">{translate('crm.customer.customerType')}</strong>
+                                    <div className="col-sm-8">
+                                        <span>{customerInfomation.customerType ? this.formatCustomerType(customerInfomation.customerType) : ''}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Nhóm khách hàng */}
+                        <div className="col-md-6">
+                            <div className="form-horizontal">
+                                <div className="form-group">
+                                    <strong className="col-sm-4">{translate('crm.customer.group')}</strong>
+                                    <div className="col-sm-8">
+                                        <span>{customerInfomation.group ? customerInfomation.group.name : ''}</span>
                                     </div>
                                 </div>
                             </div>
@@ -137,31 +169,6 @@ class GeneralTabInfoForm extends Component {
                     </div>
 
                     <div className="row">
-                        {/* Ngày thành lập công ty */}
-                        <div className="col-md-6">
-                            <div className="form-horizontal">
-                                <div className="form-group">
-                                    <strong className="col-sm-4">{translate('crm.customer.companyEstablishmentDate')}</strong>
-                                    <div className="col-sm-8">
-                                        <span>{customerInfomation.companyEstablishmentDate ? this.formatDate(customerInfomation.companyEstablishmentDate) : ''}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        {/* Nhóm khách hàng */}
-                        <div className="col-md-6">
-                            <div className="form-horizontal">
-                                <div className="form-group">
-                                    <strong className="col-sm-4">{translate('crm.customer.group')}</strong>
-                                    <div className="col-sm-8">
-                                        <span>{customerInfomation.group ? customerInfomation.group.name : ''}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="row">
                         {/* Giới tính */}
                         <div className="col-md-6">
                             <div className="form-horizontal">
@@ -180,7 +187,33 @@ class GeneralTabInfoForm extends Component {
                                 <div className="form-group">
                                     <strong className="col-sm-4">{translate('crm.customer.birth')}</strong>
                                     <div className="col-sm-8">
-                                        <span>{customerInfomation.birthDate ? this.formatDate(customerInfomation.birthDate) : ''}</span>
+                                        <span>{customerInfomation.birthDate ? formatFunction.formatDate(customerInfomation.birthDate) : ''}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="row">
+                        {/* Ngày thành lập công ty */}
+                        <div className="col-md-6">
+                            <div className="form-horizontal">
+                                <div className="form-group">
+                                    <strong className="col-sm-4">{translate('crm.customer.companyEstablishmentDate')}</strong>
+                                    <div className="col-sm-8">
+                                        <span>{customerInfomation.companyEstablishmentDate ? formatFunction.formatDate(customerInfomation.companyEstablishmentDate) : ''}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Mã số thuế */}
+                        <div className="col-md-6">
+                            <div className="form-horizontal">
+                                <div className="form-group">
+                                    <strong className="col-sm-4">{translate('crm.customer.taxNumber')}</strong>
+                                    <div className="col-sm-8">
+                                        <span>{customerInfomation.taxNumber ? customerInfomation.taxNumber : ''}</span>
                                     </div>
                                 </div>
                             </div>
@@ -215,6 +248,18 @@ class GeneralTabInfoForm extends Component {
                         </div>
 
                         <div className="row">
+                            {/* Khu vực */}
+                            <div className="col-md-6">
+                                <div className="form-horizontal">
+                                    <div className="form-group">
+                                        <strong className="col-sm-4">{translate('crm.customer.location')}</strong>
+                                        <div className="col-sm-8">
+                                            <span>{customerInfomation.website ? this.formatLocation(customerInfomation.location) : ''}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             {/* Số điện thoại cố đinh */}
                             <div className="col-md-6">
                                 <div className="form-horizontal">
@@ -227,17 +272,7 @@ class GeneralTabInfoForm extends Component {
                                 </div>
                             </div>
 
-                            {/* Mã số thuế */}
-                            <div className="col-md-6">
-                                <div className="form-horizontal">
-                                    <div className="form-group">
-                                        <strong className="col-sm-4">{translate('crm.customer.taxNumber')}</strong>
-                                        <div className="col-sm-8">
-                                            <span>{customerInfomation.taxNumber ? customerInfomation.taxNumber : ''}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+
                         </div>
 
                         <div className="row">
@@ -267,17 +302,7 @@ class GeneralTabInfoForm extends Component {
                         </div>
 
                         <div className="row">
-                            {/* Khu vực */}
-                            <div className="col-md-6">
-                                <div className="form-horizontal">
-                                    <div className="form-group">
-                                        <strong className="col-sm-4">{translate('crm.customer.location')}</strong>
-                                        <div className="col-sm-8">
-                                            <span>{customerInfomation.website ? customerInfomation.location : ''}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+
 
                             {/* creator */}
                             <div className="col-md-6">
@@ -290,20 +315,22 @@ class GeneralTabInfoForm extends Component {
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div className="row">
                             {/* Ngày tạo khách hàng */}
                             <div className="col-md-6">
                                 <div className="form-horizontal">
                                     <div className="form-group">
                                         <strong className="col-sm-4">Ngày tạo khách hàng</strong>
                                         <div className="col-sm-8">
-                                            <span>{customerInfomation.createdAt ? this.formatDate(customerInfomation.createdAt) : ''}</span>
+                                            <span>{customerInfomation.createdAt ? formatFunction.formatDate(customerInfomation.createdAt) : ''}</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+
+                        <div className="row">
+
                         </div>
                     </div>
                     {/* button showMore */}

@@ -32,6 +32,9 @@ exports.getTasks = async (req, res) => {
     else if (req.query.type === "all_role") {
         getPaginatedTasksByUser(req, res);
     }
+    else if (req.query.type === "paginated_task_by_unit") {
+        getPaginatedTasksByOrganizationalUnit(req, res);
+    }
     else if (req.query.type === "get_all_task_created_by_user") {
         getAllTasksCreatedByUser(req, res);
     }
@@ -348,6 +351,43 @@ getPaginatedTasksByUser = async (req, res) => {
         })
     }
 }
+
+/**
+ * Tìm kiếm đơn vị theo 1 roleId
+ */
+getPaginatedTasksByOrganizationalUnit = async (req, res) => {
+    try {
+        var task = {
+            perPage: req.query.perPage,
+            number: req.query.number,
+            organizationalUnit: req.query.unit,
+            status: req.query.status,
+            priority: req.query.priority,
+            special: req.query.special,
+            name: req.query.name,
+            startDate: req.query.startDate,
+            endDate: req.query.endDate,
+            aPeriodOfTime: req.query.aPeriodOfTime,
+            roleId: req.query.roleId
+        };
+
+        var tasks = await TaskManagementService.getPaginatedTasksByOrganizationalUnit(req.portal, task, req.query.type);
+        await Logger.info(req.user.email, ` get paginated tasks by organizational unit `, req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['get_paginated_tasks_by_organizational_unit_success'],
+            content: tasks
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, ` get paginated tasks by organizational unit  `, req.portal)
+        res.status(400).json({
+            success: false,
+            messages: ['get_paginated_tasks_by_organizational_unit_failure'],
+            content: error
+        })
+    }
+}
+
 /**
  * Lấy công việc theo vai trò người thực hiện chính với điều kiện thời gian
  */
@@ -394,6 +434,8 @@ exports.createTask = async (req, res) => {
         var tasks = await TaskManagementService.createTask(req.portal, req.body);
         var task = tasks.task;
         var user = tasks.user.filter(user => user !== req.user._id); //lọc thông tin người tạo ra khỏi danh sách sẽ gửi thông báo
+        
+        // Gửi mail cho nhân viện tham gia công việc
         var email = tasks.email;
         var html = tasks.html;
         var data = { 
@@ -404,9 +446,24 @@ exports.createTask = async (req, res) => {
             sender: task.organizationalUnit.name,
             users: user 
         };
+
+        // Gửi mail cho trưởng đơn vị phối hợp thực hiện công việc
+        let collaboratedEmail = tasks.collaboratedEmail;
+        let collaboratedHtml = tasks.collaboratedHtml;
+        let collaboratedData = { 
+            organizationalUnits: task.organizationalUnit._id, 
+            title: "Tạo mới công việc được phối hợp với đơn vị bạn",
+            level: "general",
+            content: collaboratedHtml,
+            sender: task.organizationalUnit.name,
+            users: tasks.deansOfOrganizationalUnitThatHasCollaborated 
+        };
+
         await NotificationServices.createNotification(req.portal, task.organizationalUnit.company, data);
+        await NotificationServices.createNotification(req.portal, task.organizationalUnit.company, collaboratedData);
         await sendEmail(email, "Bạn có công việc mới", '', html);
-        
+        await sendEmail(collaboratedEmail, "Đơn vị bạn được phối hợp thực hiện công việc mới", '', collaboratedHtml);
+
         await Logger.info(req.user.email, 'create_task', req.portal)
         res.status(200).json({
             success: true,
@@ -414,7 +471,6 @@ exports.createTask = async (req, res) => {
             content: task
         });
     } catch (error) {
-
         await Logger.error(req.user.email, 'create_task', req.portal)
         res.status(400).json({
             success: false,

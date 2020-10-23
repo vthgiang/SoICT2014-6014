@@ -241,6 +241,10 @@ class InformationForm extends Component{
     render(){
         const { translate } = this.props;
         let { taskInformations, information } =this.state;
+        const { initialData } = this.props;
+
+        taskInformations = initialData;
+
         return(
 
             /**Form chứa các danh sách thông tin của mẫu công việc */

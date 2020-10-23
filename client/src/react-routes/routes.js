@@ -11,7 +11,7 @@ import { NotFound } from '../modules/not-found/components';
 
 import Login from '../modules/auth/components/login';
 import ResetPassword from '../modules/auth/components/resetPassword';
-
+import Intro from '../modules/intro/components';
 import ManageDocument from '../modules/document/components/administration';
 import Document from '../modules/document/components/user';
 
@@ -68,6 +68,7 @@ import { EmployeeKpiEvaluationDashboard } from "../modules/kpi/evaluation/dashbo
 
 
 import { TaskManagement } from "../modules/task/task-management/component/taskManagement";
+import { TaskManagementOfUnit } from "../modules/task/task-management/component/taskManagementOfUnit";
 import { TaskComponent } from '../modules/task/task-perform/component/taskComponent';
 import { TaskDashboard } from "../modules/task/task-dashboard/task-personal-dashboard/taskDashboard";
 import { TaskTemplate } from '../modules/task/task-template/component/taskTemplate';
@@ -82,6 +83,7 @@ import ManagerRecommendProcure from "../modules/asset/admin/purchase-request/com
 import ManagerRecommendDistribute from "../modules/asset/admin/use-request/components";
 import ManagerAssetType from "../modules/asset/admin/asset-type/components";
 import MaintainanceManager from "../modules/asset/admin/maintainance/components";
+
 // import UsageManager from "../modules/asset/admin/usage/components";
 import IncidentManager from "../modules/asset/admin/incident/components";
 import ManagerDepreciation from "../modules/asset/admin/depreciation/components";
@@ -96,14 +98,14 @@ import EmployeeAssetManagement from '../modules/asset/user/asser-managed/compone
 import TaskReportManager from '../modules/report/task-report/components/taskReportManager';
 
 //warehouse
-import InventoryDashBoard from '../modules/warehouse/dashboard-inventory/component';
-import BillDashBoard from '../modules/warehouse/dashboard-bill/component';
-import CategoryManagement from '../modules/warehouse/category-management/component';
-import GoodManagement from '../modules/warehouse/good-management/component';
-import StockManagement from '../modules/warehouse/stock-management/component';
-import BinLocationManagement from '../modules/warehouse/bin-location-management/components';
-import BillManagement from '../modules/warehouse/bill-management/components';
-import InventoryManagement from '../modules/warehouse/inventory-management/components';
+import InventoryDashBoard from '../modules/production/warehouse/dashboard-inventory/component';
+import BillDashBoard from '../modules/production/warehouse/dashboard-bill/component';
+import CategoryManagement from '../modules/production/common-production/category-management/component';
+import GoodManagement from '../modules/production/common-production/good-management/component';
+import StockManagement from '../modules/production/warehouse/stock-management/component';
+import BinLocationManagement from '../modules/production/warehouse/bin-location-management/components';
+import BillManagement from '../modules/production/warehouse/bill-management/components';
+import InventoryManagement from '../modules/production/warehouse/inventory-management/components';
 
 // Customer Management
 import CrmDashBoard from '../modules/crm/dashboard/components';
@@ -151,6 +153,7 @@ class Routes extends Component {
         return (
             <React.Fragment>
                 <Switch>
+                    <Route exact path="/intro" component={Intro}/>
                     <AuthRoute exact auth={auth} path="/login" component={Login} />
                     <AuthRoute exact auth={auth} path="/reset-password" component={ResetPassword} />
                     <PrivateRoute
@@ -849,6 +852,22 @@ class Routes extends Component {
                         pageName={'task_management'}
                         layout={Layout}
                         component={TaskManagement}
+                    />
+                    {/* Quản lý công việc đơn vị */}
+                    <PrivateRoute
+                        isLoading={this.props.tasks.isLoading}
+                        key={'task-management-unit'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/task-management-unit', name: 'task_management_of_unit', icon: '' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/task-management-unit'}
+                        path={'/task-management-unit'}
+                        pageName={'task_management_of_unit'}
+                        layout={Layout}
+                        component={TaskManagementOfUnit}
                     />
                     <PrivateRoute // Trang chi tiết công việc (không có trên menu)
                         isLoading={this.props.tasks.isLoading}

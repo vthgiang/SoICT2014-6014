@@ -729,6 +729,7 @@ export default {
             tasks: 'Task management',
             task: "Detailed Task",
             task_management: 'Task list',
+            task_management_of_unit: 'Unit task list',
             task_management_dashboard: 'Task dashboard',
             task_organization_management_dashboard: 'Unit task dashboard',
             task_management_process: "Process list",
@@ -2425,9 +2426,11 @@ export default {
                 add_err_empty_accountable: 'Accountable should not be empty',
                 add_err_special_character: 'This field should not be have special character',
                 add_err_end_date: 'End date should be after start date',
+                date_not_empty: 'Month should not be empty',
 
                 unit_evaluate: "Unit receiving work evaluation results",
                 unit_manage_task: "Unit managing task",
+                collaborated_with_organizational_units: "Units that have collaborated",
                 delete_eval: "Delete evaluation",
                 delete_eval_title: 'Are you sure to delete this evaluation?',
 
@@ -3263,24 +3266,7 @@ export default {
 
         // manage order
         manage_order: {
-            index: "Index",
-            add_order: "Add order",
-            add_title: "Add new order",
-            edit_title: "Edit order",
-            add_success: "Add new order successfully",
-            add_failure: "Add new order failed",
-            edit_success: "Order updated",
-            edit_failure: "Update failed",
-            delete_success: "Order deleted",
-            delete_failure: "Delete failed",
-            get_success: "Get data success",
-            get_failure: "Can not get data",
-            code: "Order code",
-            quantity: "Quantity",
-            amount: "Amount",
-            code_placeholder: "input order code",
-            edit_order: "Edit order",
-            delete_order: "Delete Order",
+            quote_add_success: "add successed"
         },
 
         report_manager: {

@@ -593,6 +593,12 @@ class SideBar extends Component {
                                             path: "/task-management-dashboard",
                                         },
                                         {
+                                            name:
+                                                'menu.task_management_of_unit',
+                                            icon: 'fa fa-circle-o',
+                                            path: '/task-management-unit'
+                                        },
+                                        {
                                             name: "menu.task_management",
                                             icon: "fa fa-circle-o",
                                             path: "/task-management",

@@ -73,8 +73,9 @@ class Table extends Component {
         const { data } = nextProps.documents.administration;
 
         if (prevState.currentRow) {
-            const index = getIndex(data.paginate, prevState.currentRow._id);
-            if (index !== -1 && data.paginate[index].versions.length !== prevState.currentRow.versions.length) {
+
+            const index = getIndex(data.paginate, prevState.currentRow.id);
+            if (index !== -1) {
                 return {
                     ...prevState,
                     currentRow: data.paginate[index]

@@ -16,12 +16,7 @@ class EditVersion extends Component {
 
     handleChangeVersionName = (e) => {
         const value = e.target.value;
-        this.setState(state => {
-            return {
-                ...state,
-                versionName: value,
-            }
-        })
+        this.validateVersionName(value, true)
     }
 
     handleIssuingDate = (value) => {
@@ -65,7 +60,6 @@ class EditVersion extends Component {
         });
     }
 
-
     handleUploadFileScan = (file) => {
         file = file.map(x => {
             return {
@@ -103,7 +97,43 @@ class EditVersion extends Component {
             return date
         }
     }
+    validateVersionName = (value, willUpdateState) => {
+        let msg = undefined;
+        const { translate } = this.props;
+        let val = value ? value.trim() : null;
+        if (!val) {
+            msg = translate('document.doc_version.no_blank_version_name');
+        }
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    versionName: value,
+                    errorVersionName: msg,
+                }
+            })
+        }
+        return msg === undefined;
+    }
 
+
+
+    isValidateForm = () => {
+        return this.validateVersionName(this.state.versionName, false);
+    }
+
+    convertISODate = (dateStr) => {
+        if (dateStr) {
+            if (!dateStr.includes(':')) {
+                let splitter = dateStr.split('-');
+                let isoDate = new Date(splitter[2], splitter[1] - 1, splitter[0])
+                return isoDate;
+            }
+            else
+                return dateStr;
+        }
+        return null;
+    }
 
     save = () => {
         const formData = new FormData();
@@ -149,19 +179,21 @@ class EditVersion extends Component {
         formData.append('creator', getStorage("userId"))
         formData.append('descriptions', descriptions);
         this.props.editDocument(documentId, formData, 'EDIT_VERSION');
-        // this.props.updateDocumentVersions({
-        //     _id: versionId,
-        //     versionName: versionName,
-        //     issuingDate: issuingDate,
-        //     effectiveDate: effectiveDate,
-        //     expiredDate: expiredDate,
-        //     file: documentFile,
-        //     scannedFileOfSignedDocument: documentFileScan,
-        // })
+        console.log('eeeeeeeeee', this.convertISODate(issuingDate));
+        console.log('aaaaaaaaaaaaaa', this.convertISODate(effectiveDate));
+        this.props.updateDocumentVersions({
+            _id: versionId,
+            versionName: versionName,
+            issuingDate: this.convertISODate(issuingDate),
+            effectiveDate: this.convertISODate(effectiveDate),
+            expiredDate: this.convertISODate(expiredDate),
+            file: documentFile,
+            scannedFileOfSignedDocument: documentFileScan,
+        })
     }
-
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.versionId !== prevState.versionId) {
+        if (nextProps.versionId !== prevState.versionId
+        ) {
             return {
                 ...prevState,
                 documentId: nextProps.documentId,
@@ -189,6 +221,7 @@ class EditVersion extends Component {
                 formID="form-edit-document-version"
                 title={translate('document.edit')}
                 func={this.save}
+                disableSubmit={!this.isValidateForm()}
             >
                 <React.Fragment>
                     <div className={`form-group `}>
