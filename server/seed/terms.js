@@ -351,6 +351,17 @@ const LINKS = [{
     components: getComponentsInLink('/hr-annual-leave-personal')
 },
 {
+    url: '/hr-dashboard-personal',
+    description: 'Bảng tin cá nhân',
+    category: LINK_CATEGORY.COMMON.name,
+    roles: [
+        ROOT_ROLES.DEAN.name,
+        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/hr-dashboard-personal')
+},
+{
     url: '/hr-manage-leave-application',
     description: 'Quản lý đơn xin nghỉ phép',
     category: LINK_CATEGORY.HUMAN_RESOURCE.name,

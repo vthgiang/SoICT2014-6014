@@ -1,15 +1,14 @@
-/* Biểu đồ xu làm thêm giờ của nhân viên */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, DatePicker } from '../../../../common-components';
-import { TimesheetsActions } from '../../timesheets/redux/actions';
+import { DatePicker } from '../../../common-components';
+import { TimesheetsActions } from '../../human-resource/timesheets/redux/actions';
 
 import c3 from 'c3';
 import 'c3/c3.css';
 
-class TrendWorkOfEmployeeChart extends Component {
+class TrendWorkChart extends Component {
     constructor(props) {
         super(props);
         let startDate = ['01', new Date().getFullYear()].join('-');
@@ -19,9 +18,20 @@ class TrendWorkOfEmployeeChart extends Component {
             startDateShow: startDate,
             endDate: this.formatDate(Date.now(), true),
             endDateShow: this.formatDate(Date.now(), true),
-            dataStatus: 0,
             arrMonth: [],
+            employeeId: this.props.auth.user.email,
         }
+    }
+    componentDidMount() {
+        const { startDate, endDate, employeeId } = this.state;
+
+        let arrStart = startDate.split('-');
+        let startDateNew = [arrStart[1], arrStart[0]].join('-');
+
+        let arrEnd = endDate.split('-');
+        let endDateNew = [arrEnd[1], arrEnd[0]].join('-');
+
+        this.props.getTimesheets({ callApiByEmployeeId: true, employeeId: employeeId, startDate: startDateNew, endDate: endDateNew, })
     }
 
     /**
@@ -77,48 +87,6 @@ class TrendWorkOfEmployeeChart extends Component {
             ...this.state,
             lineChart: value
         })
-    }
-
-    static isEqual = (items1, items2) => {
-        if (!items1 || !items2) {
-            return false;
-        }
-        if (items1.length !== items2.length) {
-            return false;
-        }
-        for (let i = 0; i < items1.length; ++i) {
-            if (items1[i].totalHours !== items2[i].totalHours) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (prevState.employeeId !== nextProps.employeeId) {
-            let arrStart = prevState.startDate.split('-');
-            let startDateNew = [arrStart[1], arrStart[0]].join('-');
-
-            let arrEnd = prevState.endDate.split('-');
-            let endDateNew = [arrEnd[1], arrEnd[0]].join('-');
-            nextProps.getTimesheets({ callApiByEmployeeId: true, employeeId: nextProps.employeeId, startDate: startDateNew, endDate: endDateNew });
-            return {
-                ...prevState,
-                employeeId: nextProps.employeeId,
-                nameChart: nextProps.nameChart,
-                nameData1: nextProps.nameData1,
-                nameData2: nextProps.nameData2,
-                dataStatus: 1,
-            }
-        };
-        return null;
-    }
-
-    shouldComponentUpdate(nextProps, nextState) {
-        if (nextState.endDate !== this.state.endDate || nextState.startDate !== this.state.startDate) {
-            return false;
-        }
-        return true;
     }
 
     /** Xóa các chart đã render khi chưa đủ dữ liệu */
@@ -211,7 +179,11 @@ class TrendWorkOfEmployeeChart extends Component {
 
     render() {
         const { timesheets, translate } = this.props;
-        const { lineChart, nameChart, nameData1, nameData2, employeeId, startDate, endDate, startDateShow, endDateShow } = this.state;
+
+        const { nameChart, nameData1, nameData2 } = this.props;
+
+        const { lineChart, startDate, endDate, startDateShow, endDateShow } = this.state;
+
         let listTimesheetsByEmployeeIdAndTime = timesheets.listTimesheetsByEmployeeIdAndTime;
 
         if (listTimesheetsByEmployeeIdAndTime.length !== 0) {
@@ -230,77 +202,69 @@ class TrendWorkOfEmployeeChart extends Component {
             })
             this.renderChart({ nameData1, nameData2, ratioX, data1, data2, lineChart });
         }
-
         return (
-            <React.Fragment>
-                <DialogModal
-                    size='75' modalID={`modal-view-chart${employeeId}`} isLoading={timesheets.isLoading}
-                    formID="form-view-chart"
-                    title={`${nameChart} từ ${startDateShow} đến ${endDateShow}`}
-                    hasSaveButton={false}
-                    hasNote={false}
-                >
-                    <form className="form-group" id="form-view-chart">
-                        <div className="box box-solid">
-                            <div className="box-body">
-                                <div className="qlcv" style={{ marginBottom: 15 }}>
-                                    <div className="form-inline">
-                                        <div className="form-group">
-                                            <label className="form-control-static" >Từ tháng</label>
-                                            <DatePicker
-                                                id="form-month-overtime"
-                                                dateFormat="month-year"
-                                                deleteValue={false}
-                                                value={startDate}
-                                                onChange={this.handleStartMonthChange}
-                                            />
-                                        </div>
-
-                                    </div>
-                                    <div className="form-inline" >
-                                        <div className='form-group'>
-                                            <label className="form-control-static" >Đến tháng</label>
-                                            <DatePicker
-                                                id="to-month-overtime"
-                                                dateFormat="month-year"
-                                                deleteValue={false}
-                                                value={endDate}
-                                                onChange={this.handleEndMonthChange}
-                                            />
-                                        </div>
-                                        <div className="form-group">
-                                            <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => this.handleSunmitSearch()} >{translate('general.search')}</button>
-                                        </div>
-                                    </div>
-
+            <div className="col-lg-12 col-md-12 col-sm-12 col-xs-12 qlcv">
+                <div className="box box-solid">
+                    <div className="box-header with-border">
+                        <h3 className="box-title">{`${nameChart} ${startDateShow}`}<i className="fa fa-fw fa-caret-right"></i>{endDateShow}</h3>
+                    </div>
+                    <div className="box-body">
+                        <div className="qlcv" style={{ marginBottom: 15 }}>
+                            <div className="form-inline">
+                                <div className="form-group">
+                                    <label className="form-control-static" >Từ tháng</label>
+                                    <DatePicker
+                                        id="form-month-overtime"
+                                        dateFormat="month-year"
+                                        deleteValue={false}
+                                        value={startDate}
+                                        onChange={this.handleStartMonthChange}
+                                    />
                                 </div>
-                                <div className="dashboard_box_body">
-                                    <p className="pull-left" style={{ marginBottom: 0 }}><b>ĐV tính: Số giờ</b></p>
-                                    <div className="box-tools pull-right">
-                                        <div className="btn-group pull-rigth">
-                                            <button type="button" className={`btn btn-xs ${lineChart ? "active" : "btn-danger"}`} onClick={() => this.handleChangeViewChart(false)}>Bar chart</button>
-                                            <button type="button" className={`btn btn-xs ${lineChart ? 'btn-danger' : "active"}`} onClick={() => this.handleChangeViewChart(true)}>Line chart</button>
-                                        </div>
-                                    </div>
-                                    <div ref="trendWork"></div>
+
+                            </div>
+                            <div className="form-inline" >
+                                <div className='form-group'>
+                                    <label className="form-control-static" >Đến tháng</label>
+                                    <DatePicker
+                                        id="to-month-overtime"
+                                        dateFormat="month-year"
+                                        deleteValue={false}
+                                        value={endDate}
+                                        onChange={this.handleEndMonthChange}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => this.handleSunmitSearch()} >{translate('general.search')}</button>
                                 </div>
                             </div>
+
                         </div>
-                    </form>
-                </DialogModal>
-            </React.Fragment>
-        )
+                        <div className="dashboard_box_body">
+                            <p className="pull-left" style={{ marginBottom: 0 }}><b>ĐV tính: Số giờ</b></p>
+                            <div className="box-tools pull-right">
+                                <div className="btn-group pull-rigth">
+                                    <button type="button" className={`btn btn-xs ${lineChart ? "active" : "btn-danger"}`} onClick={() => this.handleChangeViewChart(false)}>Bar chart</button>
+                                    <button type="button" className={`btn btn-xs ${lineChart ? 'btn-danger' : "active"}`} onClick={() => this.handleChangeViewChart(true)}>Line chart</button>
+                                </div>
+                            </div>
+                            <div ref="trendWork"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
     }
 }
 
 function mapState(state) {
-    const { timesheets } = state;
-    return { timesheets };
+    const { timesheets, auth } = state;
+    return { timesheets, auth };
 }
 
 const actionCreators = {
     getTimesheets: TimesheetsActions.searchTimesheets,
 };
 
-const trendWorkOfEmployeeChart = connect(mapState, actionCreators)(withTranslate(TrendWorkOfEmployeeChart));
-export { trendWorkOfEmployeeChart as TrendWorkOfEmployeeChart };
+const trendWorkChart = connect(mapState, actionCreators)(withTranslate(TrendWorkChart));
+export { trendWorkChart as TrendWorkChart };
