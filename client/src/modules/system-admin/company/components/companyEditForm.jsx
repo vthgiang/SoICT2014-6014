@@ -54,49 +54,46 @@ class CompanyEditForm extends Component {
     // Xu ly handle log va active
     handleActive = (e) => {
         const value = e.target.value;
-        this.setState(state => {
-            return {
-                ...state,
-                companyActive: value
-            }
-        })
+        this.setState({
+            companyActive: value
+        });
     }
 
     handleLog = (e) => {
         const value = e.target.value;
-        this.setState(state => {
-            return {
-                ...state,
-                companyLog: value
-            }
-        })
+        this.setState({
+            companyLog: value
+        });
     }
 
     handleChangeName = (e) => {
         let {value} = e.target;
-        this.setState({ companyName: value });
-
         let {translate} = this.props;
         let {message} = ValidationHelper.validateName(translate, value, 4, 255);
-        this.setState({ nameError: message})
+        this.setState({ 
+            companyName: value,
+            nameError: message
+        });
     }
 
     handleChangeDescription = (e) => {
         let {value} = e.target;
-        this.setState({ companyDescription: value });
-
         let {translate} = this.props;
         let {message} = ValidationHelper.validateDescription(translate, value);
-        this.setState({ descriptionError: message})
+        this.setState({ 
+            companyDescription: value,
+            descriptionError: message
+        });
     }
 
     handleChangeEmail = (e) => {
         let {value} = e.target;
-        this.setState({ companyEmail: value });
-
         let {translate} = this.props;
         let {message} = ValidationHelper.validateEmail(translate, value);
-        this.setState({ emailError: message })
+        this.setState({ 
+            companyEmail: value,    
+            emailError: message 
+        });
     }
 
     isFormValidated = () => {

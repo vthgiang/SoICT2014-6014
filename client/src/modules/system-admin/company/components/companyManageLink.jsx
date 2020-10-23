@@ -22,7 +22,6 @@ class CompanyManageLinks extends Component {
             nextProps.company.item.links.limit !== prevState.linkLimit || 
             nextProps.company.item.links.page !== prevState.linkPage
         ) {
-            console.log("thay doi")
             return {
                 ...prevState,
                 checkedAll: false,
@@ -33,7 +32,6 @@ class CompanyManageLinks extends Component {
                 linkLimit: nextProps.company.item.links.limit,
             } 
         } else {
-            console.log("KHONG thay doi")
             return null;
         }
     }
@@ -74,7 +72,7 @@ class CompanyManageLinks extends Component {
         });
     }
 
-    searchWithOption = async () => {
+    searchWithOption = () => {
         const{companyId} = this.state;
         const params = {
             company: companyId,
@@ -85,44 +83,45 @@ class CompanyManageLinks extends Component {
             value: this.state.value
         };
 
-        await this.props.getCompanyLinks(params);
+        this.props.getCompanyLinks(params);
     }
 
     setPage = (page) => {
-        this.setState({ page });
-        const {companyId} = this.state;
-        const params = {
-            company: companyId,
-            portal: this.state.companyShortName,
-            limit: this.state.limit,
-            page: page,
-            key: this.state.option,
-            value: this.state.value
-        };
-
-        this.props.getCompanyLinks(params);
+        this.setState({ page }, () => {
+            const {companyId} = this.state;
+            const params = {
+                company: companyId,
+                portal: this.state.companyShortName,
+                limit: this.state.limit,
+                page: page,
+                key: this.state.option,
+                value: this.state.value
+            };
+    
+            this.props.getCompanyLinks(params);
+        });
     }
 
     setLimit = (number) => {
-        this.setState({ limit: number });
-        const {companyId} = this.state;
-        const params = { 
-            company: companyId,
-            portal: this.state.companyShortName,
-            limit: number, 
-            page: this.state.page,
-            key: this.state.option,
-            value: this.state.value
-        };
-
-        this.props.getCompanyLinks(params);
+        this.setState({ limit: number }, () => {
+            const {companyId} = this.state;
+            const params = { 
+                company: companyId,
+                portal: this.state.companyShortName,
+                limit: number, 
+                page: this.state.page,
+                key: this.state.option,
+                value: this.state.value
+            };
+    
+            this.props.getCompanyLinks(params);
+        });
     }
 
     render() { 
         const { translate, company } = this.props;
         const { linkPaginate, checkedAll, companyShortName } = this.state;
-        console.log(this.state)
-
+        
         return ( 
             <div style={{padding: '10px 0px 10px 0px'}}>
                 <a className="btn btn-primary pull-right" onClick={()=>this.updateCompanyLinks(companyShortName)}><i className="material-icons">save</i></a>
