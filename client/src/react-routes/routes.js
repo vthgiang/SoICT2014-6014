@@ -67,6 +67,7 @@ import { EmployeeKpiEvaluationDashboard } from "../modules/kpi/evaluation/dashbo
 
 
 import { TaskManagement } from "../modules/task/task-management/component/taskManagement";
+import { TaskManagementOfUnit } from "../modules/task/task-management/component/taskManagementOfUnit";
 import { TaskComponent } from '../modules/task/task-perform/component/taskComponent';
 import { TaskDashboard } from "../modules/task/task-dashboard/task-personal-dashboard/taskDashboard";
 import { TaskTemplate } from '../modules/task/task-template/component/taskTemplate';
@@ -81,6 +82,7 @@ import ManagerRecommendProcure from "../modules/asset/admin/purchase-request/com
 import ManagerRecommendDistribute from "../modules/asset/admin/use-request/components";
 import ManagerAssetType from "../modules/asset/admin/asset-type/components";
 import MaintainanceManager from "../modules/asset/admin/maintainance/components";
+
 // import UsageManager from "../modules/asset/admin/usage/components";
 import IncidentManager from "../modules/asset/admin/incident/components";
 import ManagerDepreciation from "../modules/asset/admin/depreciation/components";
@@ -833,6 +835,22 @@ class Routes extends Component {
                         pageName={'task_management'}
                         layout={Layout}
                         component={TaskManagement}
+                    />
+                    {/* Quản lý công việc đơn vị */}
+                    <PrivateRoute
+                        isLoading={this.props.tasks.isLoading}
+                        key={'task-management-unit'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/task-management-unit', name: 'task_management_of_unit', icon: '' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/task-management-unit'}
+                        path={'/task-management-unit'}
+                        pageName={'task_management_of_unit'}
+                        layout={Layout}
+                        component={TaskManagementOfUnit}
                     />
                     <PrivateRoute // Trang chi tiết công việc (không có trên menu)
                         isLoading={this.props.tasks.isLoading}
