@@ -568,6 +568,7 @@ export default {
                     name: 'Tên tài liệu',
                     description: 'Mô tả',
                     url: 'Đường dẫn',
+                    fileName: 'Tên file',
                     add_file: 'Thêm mới file',
                     edit_file: 'Chỉnh sửa file',
                     attachment: 'Tập tin đính kèm',

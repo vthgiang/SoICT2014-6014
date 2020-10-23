@@ -5,6 +5,7 @@ import { DialogModal, ApiImage, SelectBox, ErrorLabel, DateTimeConverter } from 
 import { CrmCustomerActions } from '../redux/actions';
 import GeneralTabInfoForm from './generalTabInfoForm';
 import HistoryTabInfoForm from './historyTabInfoForm';
+import FileTabInfoForm from './fileTabInfoForm';
 import './customer.css'
 
 class CrmCustomerInformation extends Component {
@@ -162,6 +163,7 @@ class CrmCustomerInformation extends Component {
                                         <li ><a href="#customer-info-history" data-toggle="tab">Lịch sử mua hàng</a></li>
                                         <li><a href="#sale" data-toggle="tab">Công nợ</a></li>
                                         <li><a href="#note" data-toggle="tab">Ghi chú</a></li>
+                                        <li><a href="#fileAttachment" data-toggle="tab">File đính kèm</a></li>
                                         <li><a href="#history" data-toggle="tab">Lịch sử thay đổi</a></li>
                                     </ul>
                                     <div className="tab-content">
@@ -199,21 +201,25 @@ class CrmCustomerInformation extends Component {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {/* {
-                                                        liabilities.map(lia=>
-                                                        <tr>
-                                                            <td>{lia.code}</td>
-                                                            <td>{lia.creator.name}</td>
-                                                            <td>abc</td>
-                                                            <td>{lia.total}</td>
-                                                        </tr> )
-                                                    } */}
+
                                                 </tbody>
                                             </table>
                                         </div>
+
                                         <div className="tab-pane" id="note">
                                             Ghi chú
                                         </div>
+
+                                        {/* Tab file đính kèm của khách hàng */}
+                                        {
+                                            customerInfomation && dataStatus === 3 &&
+                                            <FileTabInfoForm
+                                                id={'fileAttachment'}
+                                                files={customerInfomation.files}
+                                                customerId={customerId}
+                                            />
+                                        }
+
                                         {
                                             customerInfomation && dataStatus === 3 &&
                                             <HistoryTabInfoForm

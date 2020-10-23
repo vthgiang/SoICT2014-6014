@@ -107,7 +107,7 @@ class CreateCareForm extends Component {
         this.setState({
             newCare: {
                 ...newCare,
-                status: parseInt(value[0]),
+                status: value[0],
             }
         })
     }
