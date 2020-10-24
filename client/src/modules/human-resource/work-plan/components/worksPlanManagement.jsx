@@ -224,7 +224,7 @@ class ManageWorkPlan extends Component {
                                             <th style={{ width: 40 }}>{translate('human_resource.stt')}</th>
                                             <th>{translate('human_resource.work_plan.table.timeline')}</th>
                                             <th>{translate('human_resource.work_plan.table.describe_timeline')}</th>
-                                            <th style={{ width: 120 }}>{translate('general.action')}</th>
+                                            <th style={{ width: 100 }}>{translate('general.action')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>

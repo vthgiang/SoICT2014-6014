@@ -84,6 +84,15 @@ class SideBar extends Component {
                                 }}
                             />
 
+                            {/* Bảng tin nhân viên */}
+                            <Item
+                                item={{
+                                    name: "menu.dashboard_personal",
+                                    path: "/hr-dashboard-personal",
+                                    icon: "fa fa-newspaper-o",
+                                }}
+                            />
+
                             {/* Tài khoản cá nhân */}
                             <GroupItem
                                 groupItem={{
