@@ -51,11 +51,11 @@ class TaskDashboard extends Component {
     }
 
     componentDidMount = async () => {
-        await this.props.getResponsibleTaskByUser([], 1, 1000, [],  [], [], null, null, null, null, null, false);
-        await this.props.getAccountableTaskByUser([], 1, 1000, [],  [], [], null, null, null, null, null, false);
-        await this.props.getConsultedTaskByUser([], 1, 1000, [],  [], [], null, null, null, null, null, false);
-        await this.props.getInformedTaskByUser([], 1, 1000, [],  [], [], null, null, null, null, null, false);
-        await this.props.getCreatorTaskByUser([], 1, 1000, [],  [], [], null, null, null, null, null, false);
+        await this.props.getResponsibleTaskByUser([], 1, 1000, [], [], [], null, null, null, null, null, false);
+        await this.props.getAccountableTaskByUser([], 1, 1000, [], [], [], null, null, null, null, null, false);
+        await this.props.getConsultedTaskByUser([], 1, 1000, [], [], [], null, null, null, null, null, false);
+        await this.props.getInformedTaskByUser([], 1, 1000, [], [], [], null, null, null, null, null, false);
+        await this.props.getCreatorTaskByUser([], 1, 1000, [], [], [], null, null, null, null, null, false);
 
         let data = {
             type: "user"
@@ -208,7 +208,7 @@ class TaskDashboard extends Component {
             }
         }
 
-        // tính số lượng task mà người này là người hỗ trợ
+        // tính số lượng task mà người này là người tư vấn
         if (tasks && tasks.consultedTasks) {
             let task = tasks.consultedTasks;
             let i;

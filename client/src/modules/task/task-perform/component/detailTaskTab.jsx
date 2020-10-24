@@ -836,7 +836,7 @@ class DetailTaskTab extends Component {
                                     {
                                         (task && task.consultedEmployees && task.consultedEmployees.length !== 0) &&
                                         <React-Fragment>
-                                            {/* Người hỗ trợ */}
+                                            {/* Người tư vấn */}
                                             <strong>{translate('task.task_management.consulted')}:</strong>
                                             <span>
                                                 {

@@ -561,7 +561,7 @@ class AddTaskTemplate extends Component {
 
                         {showMore &&
                             <div>
-                                {/**Người hỗ trợ mẫu công việc */}
+                                {/**Người tư vấn trong mẫu công việc */}
                                 <div className='form-group' >
                                     <label className="control-label">{translate('task_template.consultant')}</label>
                                     {allUnitsMember &&

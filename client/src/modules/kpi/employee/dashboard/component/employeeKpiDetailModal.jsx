@@ -117,11 +117,11 @@ class ModalDetailEmployeeKpiSet extends Component {
                                                 </div>
                                                 <div className="col-sm-12">
                                                     <label className="col-sm-2" style={{ fontWeight: "400" }}>Hệ thống đánh giá:</label>
-                                                    <label className="col-sm-10" style={{ fontWeight: "400" }}>{item.systempoint==null?"Chưa đánh giá":item.systempoint}</label>
+                                                    <label className="col-sm-10" style={{ fontWeight: "400" }}>{item.systempoint == null ? "Chưa đánh giá" : item.systempoint}</label>
                                                 </div>
                                                 <div className="col-sm-12">
                                                     <label className="col-sm-2" style={{ fontWeight: "400" }}>Quản lý đánh giá:</label>
-                                                    <label className="col-sm-10" style={{ fontWeight: "400" }}>{item.approverpoint===null?"Chưa đánh giá":item.approverpoint}</label>
+                                                    <label className="col-sm-10" style={{ fontWeight: "400" }}>{item.approverpoint === null ? "Chưa đánh giá" : item.approverpoint}</label>
                                                 </div>
                                                 <div className="col-sm-12">
                                                     <label className="col-sm-2" style={{ fontWeight: "400" }}>Cá nhân tự đánh giá:</label>
@@ -148,7 +148,7 @@ class ModalDetailEmployeeKpiSet extends Component {
                                                             <th>Mô tả công việc</th>
                                                             <th>Người tạo</th>
                                                             <th>Người phê duyệt</th>
-                                                            <th>Người hỗ trợ</th>
+                                                            <th>Người tư vấn</th>
                                                             <th>Trạng thái</th>
                                                             <th>Kết quả đánh giá</th>
                                                         </tr>
