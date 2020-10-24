@@ -104,7 +104,8 @@ class EditForm extends Component {
                 description: nextProps.archiveDescription,
                 archiveParent: nextProps.archiveParent,
                 path: nextProps.archivePath,
-                errorName: undefined,
+                nameError: undefined,
+                descriptionError: undefined
             }
         } else {
             return null;
