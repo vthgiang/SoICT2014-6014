@@ -37,7 +37,8 @@ class FormImportProcessTemplate extends Component {
         let k = -1;
         for (let i = 0; i < value.length; i++) {
             let x = value[i];
-            if (x.name) {
+            if (x.processName) {
+                console.log('0000000000000000000', x.processName, typeof (x.processName));
                 k = k + 1;
                 values = [...values, {
                     "STT": k + 1,
@@ -54,23 +55,15 @@ class FormImportProcessTemplate extends Component {
                     "accountableEmployees": x.accountableEmployees,
                     "consultedEmployees": x.consultedEmployees,
                     "informedEmployees": x.informedEmployees,
-                    "organizationalUnits": x.organizationalUnit,
+                    "organizationalUnit": x.organizationalUnit,
                     "priority": x.priority,
                     "formula": x.formula,
 
                     "taskActions": [x.taskActions],
                     "taskInformations": [x.taskInformations],
-
-                    // "actionName": [x.actionName],
-                    // "actionDescription": [x.actionDescription],
-                    // "mandatory": [x.mandatory],
-
-                    // "infomationName": [x.infomationName],
-                    // "infomationDescription": [x.infomationDescription],
-                    // "type": [x.type],
-                    // "filledByAccountableEmployeesOnly": [x.filledByAccountableEmployeesOnly]
                 }];
                 valueShow = [...valueShow, {
+                    "STT": k + 1,
                     "processName": x.processName,
                     "processDescription": x.processDescription,
                     "manager": x.manager,
@@ -84,14 +77,16 @@ class FormImportProcessTemplate extends Component {
                     "accountableEmployees": [x.accountableEmployees],
                     "consultedEmployees": [x.consultedEmployees],
                     "informedEmployees": [x.informedEmployees],
-                    "organizationalUnits": x.organizationalUnit,
+                    "organizationalUnit": x.organizationalUnit,
                     "priority": x.priority,
                     "formula": x.formula,
 
                     "taskActions": [x.taskActions],
                     "taskInformations": [x.taskInformations],
                 }];
+                console.log('value showwwwww', values, valueShow);
             } else {
+                console.log('qydsd---------------------------');
                 if (k >= 0) {
                     let out = {
                         "STT": "",
@@ -108,7 +103,7 @@ class FormImportProcessTemplate extends Component {
                         "accountableEmployees": "",
                         "consultedEmployees": "",
                         "informedEmployees": "",
-                        "organizationalUnits": "",
+                        "organizationalUnit": "",
                         "priority": "",
                         "formula": "",
 
@@ -189,9 +184,12 @@ console.log('quang deptrai \n\n\n\n', value, values);
                 if (x.manager === null) {
                     errorAlert = [...errorAlert, 'Tên mô tả mẫu công việc không được để trống'];
                 }
-                // if (x.formula === null) {
-                //     errorAlert = [...errorAlert, 'Tên công thức tính điểm không được để trống'];
-                // }
+                if (x.organizationalUnit === null) {
+                    errorAlert = [...errorAlert, 'Đơn vị công việc không được để trống'];
+                }
+                if (x.taskName === null) {
+                    errorAlert = [...errorAlert, 'Tên công việc không được để trống'];
+                }
                 x = { ...x, errorAlert: errorAlert };
                 value[i] = x;
             };
@@ -213,7 +211,7 @@ console.log('quang deptrai \n\n\n\n', value, values);
     save = () => {
         let { importShowData } = this.state;
         console.log(importShowData);
-        this.props.importTaskTemplate(importShowData);
+        // this.props.importTaskTemplate(importShowData);
     }
 
     requestDownloadFile = (e, path, fileName) => {
@@ -390,7 +388,6 @@ console.log('quang deptrai \n\n\n\n', value, values);
         let { limit, page, importData, rowError, configData, checkFileImport } = this.state;
         let templateImportProcessTemplate2 = this.convertDataExport(templateImportProcessTemplate);
         console.log('-----------------', templateImportProcessTemplate2, templateImportProcessTemplate);
-        console.log('--------------checkFileImport---', checkFileImport, importData);
         return (
             <React.Fragment>
                 <DialogModal

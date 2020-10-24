@@ -16,8 +16,9 @@ class GeneralTabEditForm extends Component {
         let listStatus = [...crm.status.list];
         let { editingCustomer } = props;
 
-        if (props.customerIdEdit != state.customerIdEdit && editingCustomer && crm.status.list && crm.status.list.length > 0 && user.usersOfChildrenOrganizationalUnit) {
+        if (props.customerIdEdit != state.customerIdEdit && editingCustomer && listStatus && listStatus.length > 0 && user.usersOfChildrenOrganizationalUnit) {
             //timeline status
+
             const statusActive = editingCustomer.status.map(o => ({ _id: o._id, name: o.name, active: true }));// mảng gồm các id của trạng thái mà khách hàng có
 
             statusActive.forEach(x => {
@@ -36,6 +37,7 @@ class GeneralTabEditForm extends Component {
                 listGroups = crm.groups.list.map(x => { return { value: x._id, text: x.name } })
                 listGroups.unshift({ value: '', text: '---Chọn---' });
             }
+
 
             return {
                 ...state,
@@ -437,6 +439,8 @@ class GeneralTabEditForm extends Component {
             const numberOfActiveItems = listStatus.filter(o => o.active).length;
             progressBarWidth = totalItem > 1 && numberOfActiveItems > 0 ? ((numberOfActiveItems - 1) / (totalItem - 1)) * 100 : 0;
         }
+
+        console.log('RENDER LIST GROUPS', listGroups);
 
         return (
             <React.Fragment>

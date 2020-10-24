@@ -14,7 +14,7 @@ class AssetViewInfo extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps._id !== prevState._id || nextProps.depreciationType !== prevState.depreciationType) {
+        if (nextProps._id !== prevState._id || nextProps.depreciationType !== prevState.depreciationType || nextProps.typeRegisterForUse !== prevState.typeRegisterForUse) {
             return {
                 ...prevState,
                 _id: nextProps._id,

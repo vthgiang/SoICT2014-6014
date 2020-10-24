@@ -697,6 +697,7 @@ export default {
             detail_employee: 'Personal Information',
             update_employee: 'Update Personal Information',
             dashboard_employee: 'DashBoard Manage Staffs ',
+            dashboard_personal: 'DashBoard personal',
             employee_capacity:'Employee capacity',
             discipline: 'Manage Commendation And Discipline',
             annual_leave: 'Manage Annual Leave',
@@ -728,6 +729,7 @@ export default {
             tasks: 'Task management',
             task: "Detailed Task",
             task_management: 'Task list',
+            task_management_of_unit: 'Unit task list',
             task_management_dashboard: 'Task dashboard',
             task_organization_management_dashboard: 'Unit task dashboard',
             task_management_process: "Process list",
@@ -2424,9 +2426,11 @@ export default {
                 add_err_empty_accountable: 'Accountable should not be empty',
                 add_err_special_character: 'This field should not be have special character',
                 add_err_end_date: 'End date should be after start date',
+                date_not_empty: 'Month should not be empty',
 
                 unit_evaluate: "Unit receiving work evaluation results",
                 unit_manage_task: "Unit managing task",
+                collaborated_with_organizational_units: "Units that have collaborated",
                 delete_eval: "Delete evaluation",
                 delete_eval_title: 'Are you sure to delete this evaluation?',
 

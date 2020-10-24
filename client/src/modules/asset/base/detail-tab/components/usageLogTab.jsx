@@ -31,7 +31,7 @@ class UsageLogTab extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id) {
+        if (nextProps.id !== prevState.id || nextProps.typeRegisterForUse !== prevState.typeRegisterForUse) {
             return {
                 ...prevState,
                 id: nextProps.id,
@@ -95,7 +95,7 @@ class UsageLogTab extends Component {
                             typeRegisterForUse={typeRegisterForUse}
                         />
                     }
-                    {
+                    {   typeRegisterForUse !== 2 &&
                         (!usageLogs || usageLogs.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
                     {/* </fieldset> */}

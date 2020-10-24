@@ -161,7 +161,7 @@ class AdministrationDocumentArchives extends Component {
                     archiveParent.length > 0 && <button className="btn btn-danger" style={{ marginLeft: '5px' }} onClick={this.deleteArchive}>{translate('general.delete')}</button>
                 }
                 {<ExportExcel id="export-document-archive" exportData={exportData} style={{ marginRight: 5, marginTop: 2 }} />}
-                <CreateForm archiveParent={this.state.archiveParent[0]} />
+                <CreateForm/>
                 <ArchiveImportForm />
                 <div className="row"
                 >

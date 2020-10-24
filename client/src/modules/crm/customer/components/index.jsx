@@ -25,39 +25,39 @@ class CrmCustomer extends Component {
     /**
      * Hàm xử lý khi click button import khách hàng
      */
-    importCustomer = async () => {
-        await this.setState({
+    importCustomer = () => {
+        this.setState({
             importCustomer: true,
-        })
-        window.$('#modal-customer-import').modal('show');
+        }, () => window.$('#modal-customer-import').modal('show'));
     }
 
     /**
      * Hàm xử lý khi click button thêm khách hàng bằng tay
      */
     createCustomer = () => {
-        window.$('#modal-crm-customer-create').modal('show');
+        this.setState({
+            createCustomer: true,
+        }, () => window.$('#modal-customer-create').modal('show'))
     }
 
     /**
      * Hàm xử lý khi click nút xem chi tiết khách hàng
      * @param {*} id 
      */
-    handleInfo = async (id) => {
-        await this.setState({ customerId: id, });
-        window.$('#modal-crm-customer-info').modal('show');
+    handleInfo = (id) => {
+        this.setState({
+            customerId: id
+        }, () => window.$('#modal-crm-customer-info').modal('show'));
     }
 
     /**
      * Hàm xử lý khi click nút edit khách hàng
      * @param {*} id 
      */
-    handleEdit = async (id) => {
-        await this.setState({
-            ...this.state,
+    handleEdit = (id) => {
+        this.setState({
             customerIdEdit: id,
-        });
-        window.$('#modal-crm-customer-edit').modal('show');
+        }, () => window.$('#modal-crm-customer-edit').modal('show'));
     }
 
     // Cac ham thiet lap va tim kiem gia tri
@@ -67,24 +67,25 @@ class CrmCustomer extends Component {
         });
     }
 
-    searchWithOption = async () => {
+    searchWithOption = () => {
         const data = {
             limit: this.state.limit,
             page: 1,
             key: this.state.option,
             value: this.state.value
         };
-        await this.props.getCustomers(data);
+        this.props.getCustomers(data);
     }
 
-    setPage = async (pageNumber) => {
+    setPage = (pageNumber) => {
         let { limit } = this.state;
         let page = (pageNumber - 1) * (limit);
 
-        await this.setState({
+        this.setState({
             page: parseInt(page),
+        }, () => {
+            this.props.getCustomers(this.state);
         });
-        this.props.getCustomers(this.state);
     }
 
     setLimit = (number) => {
@@ -111,7 +112,7 @@ class CrmCustomer extends Component {
     render() {
         const { translate, crm, user } = this.props;
         const { customers } = crm;
-        const { importCustomer, limit, page, customerIdEdit, customerId } = this.state;
+        const { importCustomer, createCustomer, limit, page, customerIdEdit, customerId } = this.state;
 
         let pageTotal = (crm.customers.totalDocs % limit === 0) ?
             parseInt(crm.customers.totalDocs / limit) :
@@ -156,10 +157,12 @@ class CrmCustomer extends Component {
                     {importCustomer && <CrmCustomerImportFile />}
 
                     {/* form thêm mới khách hàng bằng tay */}
-                    <CreateForm />
+                    {createCustomer && <CreateForm />}
 
+                    {/* form xem chi tiết khách hàng */}
                     {customerId && <InfoForm customerId={customerId} />}
 
+                    {/* form edit khách hàng */}
                     {customerIdEdit && <EditForm customerIdEdit={customerIdEdit} />}
 
                     {/* search form */}

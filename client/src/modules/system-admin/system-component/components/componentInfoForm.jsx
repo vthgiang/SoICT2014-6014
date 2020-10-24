@@ -9,7 +9,6 @@ class ComponentInfoForm extends Component {
 
     constructor(props) {
         super(props);
-
         this.state = {}
     }
 
@@ -33,38 +32,34 @@ class ComponentInfoForm extends Component {
 
     handleName = (e) => {
         let {value} = e.target;
-        this.setState({ componentName: value });
-
         let {translate} = this.props;
         let {message} = ValidationHelper.validateName(translate, value, 6, 255);
-        this.setState({ componentNameError: message})
+        this.setState({ 
+            componentName: value,
+            componentNameError: message
+        });
     }
 
     handleDescription = (e) => {
         let {value} = e.target;
-        this.setState({ componentDescription: value });
-
         let {translate} = this.props;
         let {message} = ValidationHelper.validateDescription(translate, value);
-        this.setState({ componentDescriptionError: message})
+        this.setState({ 
+            componentDescription: value,
+            componentDescriptionError: message
+        });
     }
 
     handleLink = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                componentLink: value
-            }
-        })
+        this.setState({
+            componentLink: value
+        });
     }
 
     handleRoles = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                componentRoles: value
-            }
-        })
+        this.setState({
+            componentRoles: value
+        });
     }
 
     isFormValidated = () => {
