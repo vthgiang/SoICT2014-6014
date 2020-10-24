@@ -462,7 +462,8 @@ exports.createTask = async (req, res) => {
         await NotificationServices.createNotification(req.portal, task.organizationalUnit.company, data);
         await NotificationServices.createNotification(req.portal, task.organizationalUnit.company, collaboratedData);
         await sendEmail(email, "Bạn có công việc mới", '', html);
-        await sendEmail(collaboratedEmail, "Đơn vị bạn được phối hợp thực hiện công việc mới", '', collaboratedHtml);
+        collaboratedEmail && collaboratedEmail.length !== 0
+            && await sendEmail(collaboratedEmail, "Đơn vị bạn được phối hợp thực hiện công việc mới", '', collaboratedHtml);
 
         await Logger.info(req.user.email, 'create_task', req.portal)
         res.status(200).json({
