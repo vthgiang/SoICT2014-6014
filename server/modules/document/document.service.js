@@ -791,7 +791,9 @@ exports.createDocumentArchive = async (portal, data, company) => {
     if (data.parent && data.parent.length) {
         query.parent = data.parent;
     }
-    query.path = await findPath(data);
+    query.path = await findPath(data, portal);
+    const check = await DocumentArchive(connect(DB_CONNECTION, portal)).findOne({name: data.name});
+    if(check) throw ['name_exist'];
     await DocumentArchive(connect(DB_CONNECTION, portal)).create(query);
     return await this.getDocumentArchives(portal, company);
 }
@@ -828,7 +830,11 @@ exports.editDocumentArchive = async (id, data, portal, company) => {
     const document = await this.getDocumentArchives(portal, company)
     return document;
 }
-async function findPath(data, portal) {
+
+/**
+ * Lấy đường dẫn chi tiết đến lưu trữ hiện tại
+ */
+findPath = async(data, portal) =>  {
     let path = "";
     let arrayParent = [];
     arrayParent.push(data.name);
@@ -837,6 +843,7 @@ async function findPath(data, portal) {
         let parent = data.parent;
         while (parent) {
             let tmp = await DocumentArchive(connect(DB_CONNECTION, portal)).findById(parent);
+            console.log(tmp);
             arrayParent.push(tmp.name);
             parent = tmp.parent;
         }
@@ -846,7 +853,10 @@ async function findPath(data, portal) {
     return path;
 }
 
-async function deleteNode(id) {
+/**
+ * Xóa một node
+ */
+deleteNode = async(id) => {
     const archive = await DocumentArchive(connect(DB_CONNECTION, portal)).findById(id);
     if (!archive) throw ['document_archive_not_found'];
     let parent = archive.parent;

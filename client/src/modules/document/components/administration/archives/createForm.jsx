@@ -4,83 +4,64 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal, ErrorLabel, TreeSelect } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
+import ValidationHelper from '../../../../../helpers/validationHelper';
 class CreateForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            archiveParent: this.props.archiveParent,
+            archiveParent: ''
         }
-    }
+    } 
 
     handleName = (e) => {
-        const value = e.target.value;
+        const {value} = e.target;
+        const {translate} = this.props;
+        const {message} = ValidationHelper.validateName(translate, value, 1, 255);
         this.setState({
-            documentName: value
-        })
+            name: value,
+            nameError: message
+        });
     }
 
     handleDescription = (e) => {
-        const value = e.target.value;
+        const {value} = e.target;
+        const {translate} = this.props;
+        const {message} = ValidationHelper.validateDescription(translate, value);
         this.setState({
-            documentDescription: value
-        })
+            description: value,
+            descriptionError: message
+        });
     }
 
     handleParent = (value) => {
         this.setState({ archiveParent: value[0] });
     };
-    validateName = (value, willUpdateState) => {
-        let msg = undefined;
-        const { translate } = this.props;
-        if (!value) {
-            msg = translate('document.no_blank_name');
-        }
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    documentName: value,
-                    errorName: msg,
-                }
-            })
-        }
-        return msg === undefined;
-    }
-    handleValidateName = (e) => {
-        const value = e.target.value.trim();
-        this.validateName(value, true);
-    }
+
 
     isValidateForm = () => {
-        return this.validateName(this.state.documentName, false);
+        let {name, description} = this.state;
+        let {translate} = this.props;
+        if(
+            !ValidationHelper.validateName(translate, name, 1, 255).status || 
+            !ValidationHelper.validateDescription(translate, description).status
+        ) return false;
+        return true;
     }
 
     save = () => {
-        const { documentName, documentDescription, archiveParent } = this.state;
-        this.props.createDocumentArchive({
-            name: documentName,
-            description: documentDescription,
-            parent: archiveParent ? archiveParent : ""
-        });
-    }
-
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.archiveParent !== prevState.archiveParent && nextProps.archiveParent && nextProps.archiveParent.length) {
-            let dm = nextProps.archiveParent;
-            return {
-                ...prevState,
-                archiveParent: dm,
-            }
-        } else {
-            return null;
+        const data = {
+            name: this.state.name,
+            description: this.state.description,
+            parent: this.state.archiveParent
         }
+        console.log("data", data)
+        this.props.createDocumentArchive(data);
     }
 
     render() {
         const { translate, documents } = this.props;
         const { list } = documents.administration.archives;
-        let { archiveParent, errorName } = this.state;
-        archiveParent = archiveParent ? archiveParent : this.props.archiveParent;
+        let { archiveParent, nameError, descriptionError } = this.state;
         return (
             <React.Fragment>
                 <DialogModal
@@ -91,18 +72,19 @@ class CreateForm extends Component {
                     func={this.save}
                 >
                     <form id="form-create-document-archive">
-                        <div className={`form-group ${!errorName ? "" : "has-error"}`}>
+                        <div className={`form-group ${!nameError ? "" : "has-error"}`}>
                             <label>{translate('document.administration.archives.name')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" onChange={this.handleValidateName} />
-                            <ErrorLabel content={errorName} />
+                            <input type="text" className="form-control" onChange={this.handleName} />
+                            <ErrorLabel content={nameError} />
                         </div>
                         <div className="form-group">
                             <label>{translate('document.administration.archives.parent')}</label>
-                            <TreeSelect data={list} value={!archiveParent ? "" : archiveParent} handleChange={this.handleParent} mode="radioSelect" />
+                            <TreeSelect data={list} value={archiveParent} handleChange={this.handleParent} mode="radioSelect" />
                         </div>
-                        <div className="form-group">
+                        <div className={`form-group ${!descriptionError ? "" : "has-error"}`}>
                             <label>{translate('document.administration.archives.description')}</label>
                             <textarea style={{ minHeight: '100px' }} type="text" className="form-control" onChange={this.handleDescription} />
+                            <ErrorLabel content={descriptionError} />
                         </div>
                     </form>
                 </DialogModal>
