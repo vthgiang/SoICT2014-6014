@@ -85,10 +85,10 @@ class EditTaskTemplate extends Component {
                         organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit._id : [],
                         name: (info && info.name) ? info.name : '',
                         readByEmployees: info.readByEmployees,
-                        responsibleEmployees: (info && info.responsibleEmployees) ? info.responsibleEmployees.map(item => { if(item) return item._id }) : [],
-                        accountableEmployees: (info && info.accountableEmployees) ? info.accountableEmployees.map(item => { if(item) return item._id }) : [],
-                        consultedEmployees: (info && info.consultedEmployees) ? info.consultedEmployees.map(item => { if(item) return item._id }) : [],
-                        informedEmployees: (info && info.informedEmployees) ? info.informedEmployees.map(item => { if(item) return item._id }) : [],
+                        responsibleEmployees: (info && info.responsibleEmployees) ? info.responsibleEmployees.map(item => { if (item) return item._id }) : [],
+                        accountableEmployees: (info && info.accountableEmployees) ? info.accountableEmployees.map(item => { if (item) return item._id }) : [],
+                        consultedEmployees: (info && info.consultedEmployees) ? info.consultedEmployees.map(item => { if (item) return item._id }) : [],
+                        informedEmployees: (info && info.informedEmployees) ? info.informedEmployees.map(item => { if (item) return item._id }) : [],
                         description: (info && info.description) ? info.description : '',
                         creator: (info && info.creator) ? info.creator : getStorage("userId"),
                         numberOfDaysTaken: (info && info.numberOfDaysTaken) ? info.numberOfDaysTaken : '',
@@ -126,11 +126,11 @@ class EditTaskTemplate extends Component {
                     _id: nextProps.taskTemplate._id,
                     organizationalUnit: nextProps.taskTemplate.organizationalUnit._id,
                     name: nextProps.taskTemplate.name,
-                    readByEmployees: nextProps.taskTemplate.readByEmployees.map(item => { if(item) return item._id }),
-                    responsibleEmployees: nextProps.taskTemplate.responsibleEmployees.map(item => { if(item) return item._id }),
-                    accountableEmployees: nextProps.taskTemplate.accountableEmployees.map(item => { if(item) return item._id }),
-                    consultedEmployees: nextProps.taskTemplate.consultedEmployees.map(item => { if(item) return item._id }),
-                    informedEmployees: nextProps.taskTemplate.informedEmployees.map(item => { if(item) return item._id }),
+                    readByEmployees: nextProps.taskTemplate.readByEmployees.map(item => { if (item) return item._id }),
+                    responsibleEmployees: nextProps.taskTemplate.responsibleEmployees.map(item => { if (item) return item._id }),
+                    accountableEmployees: nextProps.taskTemplate.accountableEmployees.map(item => { if (item) return item._id }),
+                    consultedEmployees: nextProps.taskTemplate.consultedEmployees.map(item => { if (item) return item._id }),
+                    informedEmployees: nextProps.taskTemplate.informedEmployees.map(item => { if (item) return item._id }),
                     description: nextProps.taskTemplate.description,
                     numberOfDaysTaken: nextProps.taskTemplate.numberOfDaysTaken,
                     formula: nextProps.taskTemplate.formula,
@@ -253,11 +253,11 @@ class EditTaskTemplate extends Component {
         let msg = TaskTemplateFormValidator.validateTaskTemplateDescription(value);
 
         if (willUpdateState) {
-            let {editingTemplate} = this.state;
+            let { editingTemplate } = this.state;
             editingTemplate.description = value;
             editingTemplate.errorOnDescription = msg;
-            this.setState({ 
-                editingTemplate 
+            this.setState({
+                editingTemplate
             });
         }
         this.props.onChangeTemplateData(this.state.editingTemplate);
@@ -273,7 +273,7 @@ class EditTaskTemplate extends Component {
         let msg = TaskTemplateFormValidator.validateTaskTemplateNumberOfDaysTaken(value);
 
         if (willUpdateState) {
-            let {editingTemplate} = this.state;
+            let { editingTemplate } = this.state;
             editingTemplate.numberOfDaysTaken = value;
             editingTemplate.errorOnNumberOfDaysTaken = msg;
             this.setState({
@@ -293,7 +293,7 @@ class EditTaskTemplate extends Component {
         let msg = TaskTemplateFormValidator.validateTaskTemplateFormula(value);
 
         if (willUpdateState) {
-            let {editingTemplate} = this.state;
+            let { editingTemplate } = this.state;
             editingTemplate.formula = value;
             editingTemplate.errorOnFormula = msg;
             this.setState({
@@ -304,7 +304,7 @@ class EditTaskTemplate extends Component {
         return msg == undefined;
     }
     handleChangeTaskPriority = (event) => {
-        let {editingTemplate} = this.state;
+        let { editingTemplate } = this.state;
         editingTemplate.priority = event.target.value;
         this.setState({
             editingTemplate
@@ -357,12 +357,12 @@ class EditTaskTemplate extends Component {
 
         this.validateTaskTemplateRead(value, true);
     }
-    
+
     validateTaskTemplateRead = (value, willUpdateState = true) => {
         let msg = TaskTemplateFormValidator.validateTaskTemplateRead(value);
 
         if (willUpdateState) {
-            let {editingTemplate} = this.state; 
+            let { editingTemplate } = this.state;
             editingTemplate.readByEmployees = value;
             editingTemplate.errorOnRead = msg;
             this.setState({
@@ -374,7 +374,7 @@ class EditTaskTemplate extends Component {
     }
 
     handleTaskTemplateResponsible = (value) => {
-        let {editingTemplate} = this.state;
+        let { editingTemplate } = this.state;
         editingTemplate.responsibleEmployees = value;
         this.setState({
             editingTemplate
@@ -384,7 +384,7 @@ class EditTaskTemplate extends Component {
     }
 
     handleTaskTemplateAccountable = (value) => {
-        let {editingTemplate} = this.state;
+        let { editingTemplate } = this.state;
         editingTemplate.accountableEmployees = value;
         this.setState({
             editingTemplate
@@ -394,7 +394,7 @@ class EditTaskTemplate extends Component {
     }
 
     handleTaskTemplateConsult = (value) => {
-        let {editingTemplate} = this.state;
+        let { editingTemplate } = this.state;
         editingTemplate.consultedEmployees = value;
         this.setState({
             editingTemplate
@@ -403,7 +403,7 @@ class EditTaskTemplate extends Component {
     }
 
     handleTaskTemplateInform = (value) => {
-        let {editingTemplate} = this.state;
+        let { editingTemplate } = this.state;
         editingTemplate.informedEmployees = value;
 
         this.setState({
@@ -506,7 +506,7 @@ class EditTaskTemplate extends Component {
                     <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
                         {/**Đơn vị của mẫu công việc */}
                         <div className={`form-group ${editingTemplate.errorOnUnit === undefined ? "" : "has-error"}`} >
-                            <label className="control-label">{translate('task_template.unit')} <span style={{color: "red"}}>*</span></label>
+                            <label className="control-label">{translate('task_template.unit')} <span style={{ color: "red" }}>*</span></label>
                             {usersInUnitsOfCompany !== undefined && editingTemplate.organizationalUnit !== "" &&
                                 <SelectBox
                                     id={`edit-unit-select-box-${editingTemplate._id}`}
@@ -531,7 +531,7 @@ class EditTaskTemplate extends Component {
                         <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
                             {/**Role có quyền xem mẫu công việc này */}
                             <div className={`form-group ${this.state.editingTemplate.errorOnRead === undefined ? "" : "has-error"}`} >
-                                <label className="control-label">{translate('task_template.permission_view')} <span style={{color: "red"}}>*</span></label>
+                                <label className="control-label">{translate('task_template.permission_view')} <span style={{ color: "red" }}>*</span></label>
                                 {listRole && editingTemplate.readByEmployees &&
                                     <SelectBox
                                         id={`edit-read-select-box-${editingTemplate._id}`}
@@ -558,7 +558,7 @@ class EditTaskTemplate extends Component {
 
                         {/**Tên mẫu công việc này */}
                         <div className={`form-group ${this.state.editingTemplate.errorOnName === undefined ? "" : "has-error"}`} >
-                            <label className="control-label">{translate('task_template.tasktemplate_name')} <span style={{color: "red"}}>*</span></label>
+                            <label className="control-label">{translate('task_template.tasktemplate_name')} <span style={{ color: "red" }}>*</span></label>
                             <input type="Name" className="form-control" placeholder={translate('task_template.tasktemplate_name')} value={editingTemplate.name} onChange={this.handleTaskTemplateName} />
                             <ErrorLabel content={this.state.editingTemplate.errorOnName} />
                         </div>
@@ -578,7 +578,7 @@ class EditTaskTemplate extends Component {
 
                         {/**Mô tả mẫu công việc này */}
                         <div className={`form-group `} >
-                            <label className="control-label" htmlFor="inputDescriptionTaskTemplate">{translate('task_template.description')} <span style={{color: "red"}}>*</span></label>
+                            <label className="control-label" htmlFor="inputDescriptionTaskTemplate">{translate('task_template.description')} <span style={{ color: "red" }}>*</span></label>
                             <textarea rows={5} type="Description" className="form-control" id="inputDescriptionTaskTemplate" name="description" placeholder={translate('task_template.description')} value={editingTemplate.description} onChange={this.handleTaskTemplateDesc} />
                             {/* <ErrorLabel content={this.state.editingTemplate.errorOnDescription} /> */}
                         </div>
@@ -623,7 +623,7 @@ class EditTaskTemplate extends Component {
                         </div>
                         <div className='form-group' >
                             {/**Người hỗ trọ mẫu công việc này */}
-                            <label className="control-label">{translate('task_template.supporter')}</label>
+                            <label className="control-label">{translate('task_template.consultant')}</label>
                             {allUnitsMember && editingTemplate.consultedEmployees &&
                                 <SelectBox
                                     id={isProcess ? `edit-consulted-select-box-${editingTemplate._id}-${id}` : `edit-consulted-select-box-${editingTemplate._id}`}
@@ -633,7 +633,7 @@ class EditTaskTemplate extends Component {
                                     onChange={this.handleTaskTemplateConsult}
                                     value={editingTemplate.consultedEmployees}
                                     multiple={true}
-                                    options={{ placeholder: `${translate('task_template.supporter')}` }}
+                                    options={{ placeholder: `${translate('task_template.consultant')}` }}
                                 />
                             }
                         </div>

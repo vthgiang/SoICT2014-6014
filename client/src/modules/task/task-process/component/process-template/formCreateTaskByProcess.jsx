@@ -580,7 +580,7 @@ class FormCreateTaskByProcess extends Component {
                             <div>
                                 <div className='form-group' >
                                     {/**Người hỗ trọ mẫu công việc này */}
-                                    <label className="control-label">{translate('task_template.supporter')}</label>
+                                    <label className="control-label">{translate('task_template.consultant')}</label>
                                     {allUnitsMember && taskItem.consultedEmployees &&
                                         <SelectBox
                                             id={isProcess ? `create-task-consulted-select-box-${taskItem._id}-${id}` : "edit-consulted-select-box"}
@@ -590,7 +590,7 @@ class FormCreateTaskByProcess extends Component {
                                             onChange={this.handleTaskTemplateConsult}
                                             value={taskItem.consultedEmployees}
                                             multiple={true}
-                                            options={{ placeholder: `${translate('task_template.supporter')}` }}
+                                            options={{ placeholder: `${translate('task_template.consultant')}` }}
                                         />
                                     }
                                 </div>

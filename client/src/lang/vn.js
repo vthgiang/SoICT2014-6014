@@ -761,8 +761,8 @@ export default {
             detail_employee: 'Thông tin cá nhân',
             update_employee: 'Cập nhật thông tin cá nhân',
             dashboard_employee: 'Bảng tin quản lý nhân sự',
-            dashboard_personal:'Bảng tin cá nhân',
-            employee_capacity:'Năng lực nhân viên',
+            dashboard_personal: 'Bảng tin cá nhân',
+            employee_capacity: 'Năng lực nhân viên',
             discipline: 'Quản lý khen thưởng - kỷ luật',
             annual_leave: 'Quản lý nghỉ phép',
             salary_employee: 'Quản lý lương nhân viên',
@@ -2169,7 +2169,7 @@ export default {
             performer: 'Người thực hiện',
             approver: 'Người phê duyệt',
             observer: 'Người quan sát',
-            supporter: 'Người hỗ trợ',
+            consultant: 'Người hỗ trợ',
             formula: 'Công thức tính điểm',
             activity_list: 'Danh sách hoạt động',
             information_list: 'Danh sách thông tin',
@@ -2508,7 +2508,7 @@ export default {
                 add_err_special_character: 'Tên không được chứa kí tự đặc biệt',
                 add_err_end_date: 'Ngày kết thúc phải sau ngày bắt đầu',
                 date_not_empty: 'Tháng tìm kiếm không được bỏ trống',
-                
+
                 unit_evaluate: "Đơn vị tiếp nhận kết quả đánh giá công việc",
                 unit_manage_task: "Đơn vị quản lý công việc",
                 collaborated_with_organizational_units: "Đơn vị phối hợp thực hiện công việc",
