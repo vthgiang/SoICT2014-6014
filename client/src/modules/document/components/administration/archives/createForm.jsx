@@ -37,7 +37,6 @@ class CreateForm extends Component {
         this.setState({ archiveParent: value[0] });
     };
 
-
     isValidateForm = () => {
         let {name, description} = this.state;
         let {translate} = this.props;
