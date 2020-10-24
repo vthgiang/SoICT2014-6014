@@ -8,14 +8,14 @@ export const configProcessTemplate = {
         value: 3,
     },
     processName: {
-        columnName: "Tên mẫu",
-        description: "Tên tiêu đề ứng với tên mẫu",
-        value: "Tên mẫu"
+        columnName: "Tên mẫu quy trình",
+        description: "Tên tiêu đề ứng với tên mẫu quy trình",
+        value: "Tên mẫu quy trình"
     },
     processDescription: {
-        columnName: "Mô tả",
-        description: "Tên tiêu đề ứng với mô tả",
-        value: "Mô tả"
+        columnName: "Mô tả mẫu quy trình",
+        description: "Tên tiêu đề ứng với mô tả mẫu quy trình",
+        value: "Mô tả mẫu quy trình"
     },
     manager: {
         columnName: "Người quản lý quy trình",
@@ -33,9 +33,9 @@ export const configProcessTemplate = {
         value: "Biểu đồ quy trình"
     },
     taskName: {
-        columnName: "Tên mẫu",
+        columnName: "Tên công việc",
         description: "Tên tiêu đề ứng với tên mẫu",
-        value: "Tên mẫu"
+        value: "Tên công việc"
     },
     code: {
         columnName: "Mã công việc trong quy trình",
@@ -133,11 +133,11 @@ export const templateImportProcessTemplate = {
                 colspan: 17,
             }],
             columns: [
-                {key: "STT", value: "STT"},
-                { key: "processName", value: "Tên mẫu" },
-                { key: "processDescription", value: "Mô tả" },
-                { key: "manager", value: "Người quản lý" },
-                { key: "viewer", value: "Người quan sát" },
+                { key: "STT", value: "STT" },
+                { key: "processName", value: "Tên mẫu quy trình" },
+                { key: "processDescription", value: "Mô tả mẫu quy trình" },
+                { key: "manager", value: "Người quản lý quy trình" },
+                { key: "viewer", value: "Người được xem quy trình" },
                 { key: "xmlDiagram", value: "Biểu đồ quy trình" },
 
                 { key: "taskName", value: "Tên công việc" },
