@@ -800,7 +800,7 @@ exports.createDocumentArchive = async (portal, data, company) => {
 
 exports.deleteDocumentArchive = async (portal, id) => {
     const archive = await DocumentArchive(connect(DB_CONNECTION, portal)).findById(id);
-    await deleteNode(id);
+    await deleteNode(id, portal);
     return await this.getDocumentArchives(portal, archive.company);
 }
 
@@ -813,7 +813,6 @@ exports.deleteManyDocumentArchive = async (array, portal, company) => {
 }
 
 exports.editDocumentArchive = async (id, data, portal, company) => {
-    console.log('aaaaaaaaa', data)
     const archive = await DocumentArchive(connect(DB_CONNECTION, portal)).findById(id);
     let array = data.array;
     archive.name = data.name;
@@ -856,7 +855,7 @@ findPath = async(data, portal) =>  {
 /**
  * Xóa một node
  */
-deleteNode = async(id) => {
+deleteNode = async(id, portal) => {
     const archive = await DocumentArchive(connect(DB_CONNECTION, portal)).findById(id);
     if (!archive) throw ['document_archive_not_found'];
     let parent = archive.parent;
