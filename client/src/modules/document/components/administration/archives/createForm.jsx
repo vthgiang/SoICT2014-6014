@@ -54,7 +54,6 @@ class CreateForm extends Component {
             description: this.state.description,
             parent: this.state.archiveParent
         }
-        console.log("data", data)
         this.props.createDocumentArchive(data);
     }
 
