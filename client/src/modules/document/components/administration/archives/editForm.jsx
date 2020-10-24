@@ -122,6 +122,7 @@ class EditForm extends Component {
                 listArchive.push(list[i]);
             }
         }
+        const disabled = !this.isValidateForm();
         return (
             <div id="edit-document-archive">
                 <div className={`form-group ${nameError === undefined ? "" : "has-error"}`}>
@@ -143,7 +144,7 @@ class EditForm extends Component {
                     <ErrorLabel content={descriptionError} />
                 </div>
                 <div className="form-group">
-                    <button className="btn btn-success pull-right" style={{ marginLeft: '5px' }} onClick={this.save}>{translate('form.save')}</button>
+                    <button className="btn btn-success pull-right" style={{ marginLeft: '5px' }} disabled={disabled} onClick={this.save}>{translate('form.save')}</button>
                     <button className="btn btn-danger" onClick={() => {
                         window.$(`#edit-document-archive`).slideUp()
                     }}>{translate('form.close')}</button>

@@ -40,19 +40,20 @@ class EditForm extends Component {
         const {name, description} = this.state;
         const {translate} = this.props;
         if(
-            !ValidationHelper.validateName(translate, name) ||
-            !ValidationHelper.validateDescription(translate, description)
+            !ValidationHelper.validateName(translate, name).status ||
+            !ValidationHelper.validateDescription(translate, description).status
         ) return false;
         return true;
     }
 
     save = () => {
         const { domainId, name, description, domainParent } = this.state;
-        this.props.editDocumentDomain(domainId, {
-            name,
-            description,
-            parent: domainParent
-        });
+        if(this.isValidateForm())
+            this.props.editDocumentDomain(domainId, {
+                name,
+                description,
+                parent: domainParent
+            });
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -82,6 +83,8 @@ class EditForm extends Component {
                 listDomain.push(list[i]);
             }
         }
+        const disabled = !this.isValidateForm();
+
         return (
             <div id="edit-document-domain">
                 <div className={`form-group ${nameError === undefined ? "" : "has-error"}`}>
@@ -99,7 +102,7 @@ class EditForm extends Component {
                     <ErrorLabel content={descriptionError} />
                 </div>
                 <div className="form-group">
-                    <button className="btn btn-success pull-right" style={{ marginLeft: '5px' }} onClick={this.save}>{translate('form.save')}</button>
+                    <button className="btn btn-success pull-right" style={{ marginLeft: '5px' }} disabled={disabled} onClick={this.save}>{translate('form.save')}</button>
                     <button className="btn btn-danger" onClick={() => {
                         window.$(`#edit-document-domain`).slideUp()
                     }}>{translate('form.close')}</button>
