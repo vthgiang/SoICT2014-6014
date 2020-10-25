@@ -23,9 +23,10 @@ class AdministrationDocumentDomains extends Component {
         //this.props.getDocumentDomains();
     }
 
-    onChanged = async (e, data) => {
-        await this.setState({ currentDomain: data.node })
-        window.$(`#edit-document-domain`).slideDown();
+    onChanged = (e, data) => {
+        this.setState({ currentDomain: data.node }, () => {
+            window.$(`#edit-document-domain`).slideDown();
+        });
     }
 
     checkNode = (e, data) => { //chọn xóa một node và tất cả các node con của nó
@@ -152,7 +153,7 @@ class AdministrationDocumentDomains extends Component {
                     deleteNode.length > 0 && <button className="btn btn-danger" style={{ marginLeft: '5px' }} onClick={this.deleteDomains}>{translate('general.delete')}</button>
                 }
                 {<ExportExcel id="export-document-domain" exportData={exportData} style={{ marginRight: 5, marginTop: 2 }} />}
-                <CreateForm domainParent={this.state.domainParent[0]} />
+                <CreateForm/>
                 <DomainImportForm />
                 <div className="row">
                     <div className="col-xs-12 col-sm-12 col-md-7 col-lg-7">

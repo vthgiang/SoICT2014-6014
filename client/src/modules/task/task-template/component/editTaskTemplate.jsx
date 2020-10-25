@@ -10,6 +10,7 @@ import { SelectBox, ErrorLabel } from '../../../../common-components';
 import { TaskTemplateFormValidator } from './taskTemplateFormValidator';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import { InformationForm } from './informationsTemplate';
+import { getStorage } from '../../../../config';
 
 class EditTaskTemplate extends Component {
 
@@ -69,142 +70,142 @@ class EditTaskTemplate extends Component {
         }
     }
 
-    // shouldComponentUpdate = (nextProps, nextState) => {
-    //     const { department } = this.props;
-    //     const { editingTemplate } = this.state;
+    shouldComponentUpdate = (nextProps, nextState) => {
+        const { department } = this.props;
+        const { editingTemplate } = this.state;
 
-    //     // dùng cho công việc có quy trình
-    //     if (nextProps.isProcess && nextProps.id !== this.state.id) {
-    //         let { info, listOrganizationalUnit } = nextProps;
-    //         this.setState(state => {
-    //             return {
-    //                 ...state,
-    //                 id: nextProps.id,
-    //                 editingTemplate: {
-    //                     organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit : [],
-    //                     name: (info && info.name) ? info.name : '',
-    //                     readByEmployees: info.readByEmployees,
-    //                     responsibleEmployees: (info && info.responsibleEmployees) ? info.responsibleEmployees : [],
-    //                     accountableEmployees: (info && info.accountableEmployees) ? info.accountableEmployees : [],
-    //                     consultedEmployees: (info && info.consultedEmployees) ? info.consultedEmployees : [],
-    //                     informedEmployees: (info && info.informedEmployees) ? info.informedEmployees : [],
-    //                     description: (info && info.description) ? info.description : '',
-    //                     creator: (info && info.creator) ? info.creator : getStorage("userId"),
-    //                     numberOfDaysTaken: (info && info.numberOfDaysTaken) ? info.numberOfDaysTaken : '',
-    //                     formula: (info && info.formula) ? info.formula : '',
-    //                     priority: (info && info.priority) ? info.priority : 3,
-    //                     taskActions: (info && info.taskActions) ? info.taskActions : [],
-    //                     taskInformations: (info && info.taskInformations) ? info.taskInformations : [],
-    //                 },
-    //                 showMore: this.props.isProcess ? false : true,
-    //                 showActionForm: true,
-    //             }
-    //         })
-    //         this.props.getDepartment();
-    //         let { user } = this.props;
-    //         let defaultUnit;
-    //         if (user && user.organizationalUnitsOfUser) defaultUnit = user.organizationalUnitsOfUser.find(item =>
-    //             item.dean === this.state.currentRole
-    //             || item.viceDean === this.state.currentRole
-    //             || item.employee === this.state.currentRole);
-    //         if (!defaultUnit && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0) {
-    //             // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
-    //             defaultUnit = user.organizationalUnitsOfUser[0]
-    //         }
-    //         this.props.getChildrenOfOrganizationalUnits(defaultUnit && defaultUnit._id);
-    //         return false;
-    //     }
+        // dùng cho công việc có quy trình
+        if (nextProps.isProcess && nextProps.id !== this.state.id) {
+            let { info, listOrganizationalUnit } = nextProps;
+            this.setState(state => {
+                return {
+                    ...state,
+                    id: nextProps.id,
+                    editingTemplate: {
+                        organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit._id : [],
+                        name: (info && info.name) ? info.name : '',
+                        readByEmployees: info.readByEmployees,
+                        responsibleEmployees: (info && info.responsibleEmployees) ? info.responsibleEmployees.map(item => { if (item) return item._id }) : [],
+                        accountableEmployees: (info && info.accountableEmployees) ? info.accountableEmployees.map(item => { if (item) return item._id }) : [],
+                        consultedEmployees: (info && info.consultedEmployees) ? info.consultedEmployees.map(item => { if (item) return item._id }) : [],
+                        informedEmployees: (info && info.informedEmployees) ? info.informedEmployees.map(item => { if (item) return item._id }) : [],
+                        description: (info && info.description) ? info.description : '',
+                        creator: (info && info.creator) ? info.creator : getStorage("userId"),
+                        numberOfDaysTaken: (info && info.numberOfDaysTaken) ? info.numberOfDaysTaken : '',
+                        formula: (info && info.formula) ? info.formula : '',
+                        priority: (info && info.priority) ? info.priority : 3,
+                        taskActions: (info && info.taskActions) ? info.taskActions : [],
+                        taskInformations: (info && info.taskInformations) ? info.taskInformations : [],
+                    },
+                    showMore: this.props.isProcess ? false : true,
+                    showActionForm: true,
+                }
+            })
+            this.props.getDepartment();
+            let { user } = this.props;
+            let defaultUnit;
+            if (user && user.organizationalUnitsOfUser) defaultUnit = user.organizationalUnitsOfUser.find(item =>
+                item.dean === this.state.currentRole
+                || item.viceDean === this.state.currentRole
+                || item.employee === this.state.currentRole);
+            if (!defaultUnit && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0) {
+                // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
+                defaultUnit = user.organizationalUnitsOfUser[0]
+            }
+            this.props.getChildrenOfOrganizationalUnits(defaultUnit && defaultUnit._id);
+            return false;
+        }
 
-    //     // là dạng mẫu công việc
-    //     else if (nextProps.isTaskTemplate && nextProps.taskTemplateId !== this.props.taskTemplateId) {
+        // là dạng mẫu công việc
+        else if (nextProps.isTaskTemplate && nextProps.taskTemplateId !== this.props.taskTemplateId) {
 
-    //         this.setState({
-    //             taskTemplateId: nextProps.taskTemplateId,
-    //             taskTemplate: nextProps.taskTemplate,
-    //             editingTemplate: {
-    //                 _id: nextProps.taskTemplate._id,
-    //                 organizationalUnit: nextProps.taskTemplate.organizationalUnit._id,
-    //                 name: nextProps.taskTemplate.name,
-    //                 readByEmployees: nextProps.taskTemplate.readByEmployees.map(item => { if(item) return item._id }),
-    //                 responsibleEmployees: nextProps.taskTemplate.responsibleEmployees.map(item => { if(item) return item._id }),
-    //                 accountableEmployees: nextProps.taskTemplate.accountableEmployees.map(item => { if(item) return item._id }),
-    //                 consultedEmployees: nextProps.taskTemplate.consultedEmployees.map(item => { if(item) return item._id }),
-    //                 informedEmployees: nextProps.taskTemplate.informedEmployees.map(item => { if(item) return item._id }),
-    //                 description: nextProps.taskTemplate.description,
-    //                 numberOfDaysTaken: nextProps.taskTemplate.numberOfDaysTaken,
-    //                 formula: nextProps.taskTemplate.formula,
-    //                 priority: nextProps.taskTemplate.priority,
-    //                 taskActions: nextProps.taskTemplate.taskActions,
-    //                 taskInformations: nextProps.taskTemplate.taskInformations,
-    //             },
-    //             showActionForm: true,
-    //         });
-    //         return true;
-    //     }
+            this.setState({
+                taskTemplateId: nextProps.taskTemplateId,
+                taskTemplate: nextProps.taskTemplate,
+                editingTemplate: {
+                    _id: nextProps.taskTemplate._id,
+                    organizationalUnit: nextProps.taskTemplate.organizationalUnit._id,
+                    name: nextProps.taskTemplate.name,
+                    readByEmployees: nextProps.taskTemplate.readByEmployees.map(item => { if (item) return item._id }),
+                    responsibleEmployees: nextProps.taskTemplate.responsibleEmployees.map(item => { if (item) return item._id }),
+                    accountableEmployees: nextProps.taskTemplate.accountableEmployees.map(item => { if (item) return item._id }),
+                    consultedEmployees: nextProps.taskTemplate.consultedEmployees.map(item => { if (item) return item._id }),
+                    informedEmployees: nextProps.taskTemplate.informedEmployees.map(item => { if (item) return item._id }),
+                    description: nextProps.taskTemplate.description,
+                    numberOfDaysTaken: nextProps.taskTemplate.numberOfDaysTaken,
+                    formula: nextProps.taskTemplate.formula,
+                    priority: nextProps.taskTemplate.priority,
+                    taskActions: nextProps.taskTemplate.taskActions,
+                    taskInformations: nextProps.taskTemplate.taskInformations,
+                },
+                showActionForm: true,
+            });
+            return true;
+        }
 
-    //     // Khi truy vấn lấy các đơn vị mà user là dean đã có kết quả, và thuộc tính đơn vị của editingTemplate chưa được thiết lập
-    //     else if (editingTemplate.organizationalUnit === "" && department.departmentsThatUserIsDean) {
-    //         // Tìm unit mà currentRole của user đang thuộc về
-    //         let defaultUnit = department.departmentsThatUserIsDean.find(item =>
-    //             item.deans.includes(this.state.currentRole)
-    //             || item.viceDeans.includes(this.state.currentRole)
-    //             || item.employees.includes(this.state.currentRole
-    //             ));
+        // Khi truy vấn lấy các đơn vị mà user là dean đã có kết quả, và thuộc tính đơn vị của editingTemplate chưa được thiết lập
+        else if (editingTemplate.organizationalUnit === "" && department.departmentsThatUserIsDean) {
+            // Tìm unit mà currentRole của user đang thuộc về
+            let defaultUnit = department.departmentsThatUserIsDean.find(item =>
+                item.deans.includes(this.state.currentRole)
+                || item.viceDeans.includes(this.state.currentRole)
+                || item.employees.includes(this.state.currentRole
+                ));
 
-    //         if (defaultUnit) {
-    //             this.setState(state => {
-    //                 return {
-    //                     ...state,
-    //                     editingTemplate: {
-    //                         ...this.state.editingTemplate,
-    //                         organizationalUnit: defaultUnit._id
-    //                     }
-    //                 };
-    //             });
+            if (defaultUnit) {
+                this.setState(state => {
+                    return {
+                        ...state,
+                        editingTemplate: {
+                            ...this.state.editingTemplate,
+                            organizationalUnit: defaultUnit._id
+                        }
+                    };
+                });
 
-    //             this.props.getChildrenOfOrganizationalUnits(defaultUnit._id);
-    //             return false; // Sẽ cập nhật lại state nên không cần render
-    //         }
-    //     }
-    //     return true;
-    //     // if (nextProps.taskTemplateId !== this.state.taskTemplateId) {
-    //     //     this.props.getTaskTemplate(nextProps.taskTemplateId); // Gửi truy vấn lấy dữ liệu
-    //     //     return false;
-    //     // }
+                this.props.getChildrenOfOrganizationalUnits(defaultUnit._id);
+                return false; // Sẽ cập nhật lại state nên không cần render
+            }
+        }
+        return true;
+        // if (nextProps.taskTemplateId !== this.state.taskTemplateId) {
+        //     this.props.getTaskTemplate(nextProps.taskTemplateId); // Gửi truy vấn lấy dữ liệu
+        //     return false;
+        // }
 
-    //     // let newDataArrived = nextProps.tasktemplates.taskTemplate !== undefined && nextProps.tasktemplates.taskTemplate !== null;
-    //     // if (!newDataArrived) {
-    //     //     return false; // Đang lấy dữ liệu, không cần render
-    //     // }
-    //     // if (this.props.tasktemplates.taskTemplate) {
-    //     //     newDataArrived = newDataArrived && (nextProps.tasktemplates.taskTemplate._id !== this.props.tasktemplates.taskTemplate._id);
-    //     // }
-    //     // if (newDataArrived) { // Dữ liệu đã về vầ được bind vào prop
-    //     //     let taskTemplate = nextProps.tasktemplates.taskTemplate;
+        // let newDataArrived = nextProps.tasktemplates.taskTemplate !== undefined && nextProps.tasktemplates.taskTemplate !== null;
+        // if (!newDataArrived) {
+        //     return false; // Đang lấy dữ liệu, không cần render
+        // }
+        // if (this.props.tasktemplates.taskTemplate) {
+        //     newDataArrived = newDataArrived && (nextProps.tasktemplates.taskTemplate._id !== this.props.tasktemplates.taskTemplate._id);
+        // }
+        // if (newDataArrived) { // Dữ liệu đã về vầ được bind vào prop
+        //     let taskTemplate = nextProps.tasktemplates.taskTemplate;
 
-    //     //     this.props.getChildrenOfOrganizationalUnits(taskTemplate.organizationalUnit._id);
+        //     this.props.getChildrenOfOrganizationalUnits(taskTemplate.organizationalUnit._id);
 
-    //     //     let editingTemplate = { // Những trường đã populate sẽ bỏ đi, chỉ lấy lại id
-    //     //         ...taskTemplate,
-    //     //         organizationalUnit: taskTemplate.organizationalUnit._id,
-    //     //         accountableEmployees: taskTemplate.accountableEmployees.map(item => item._id),
-    //     //         consultedEmployees: taskTemplate.consultedEmployees.map(item => item._id),
-    //     //         informedEmployees: taskTemplate.informedEmployees.map(item => item._id),
-    //     //         readByEmployees: taskTemplate.readByEmployees.map(item => item._id),
-    //     //         responsibleEmployees: taskTemplate.responsibleEmployees.map(item => item._id),
-    //     //     };
-    //     //     this.setState(state => {
-    //     //         return {
-    //     //             ...state,
-    //     //             editingTemplate: editingTemplate,
-    //     //             showActionForm: true,
-    //     //         };
-    //     //     });
-    //     //     return true; // Cần cập nhật lại state, không cần render
-    //     // }
+        //     let editingTemplate = { // Những trường đã populate sẽ bỏ đi, chỉ lấy lại id
+        //         ...taskTemplate,
+        //         organizationalUnit: taskTemplate.organizationalUnit._id,
+        //         accountableEmployees: taskTemplate.accountableEmployees.map(item => item._id),
+        //         consultedEmployees: taskTemplate.consultedEmployees.map(item => item._id),
+        //         informedEmployees: taskTemplate.informedEmployees.map(item => item._id),
+        //         readByEmployees: taskTemplate.readByEmployees.map(item => item._id),
+        //         responsibleEmployees: taskTemplate.responsibleEmployees.map(item => item._id),
+        //     };
+        //     this.setState(state => {
+        //         return {
+        //             ...state,
+        //             editingTemplate: editingTemplate,
+        //             showActionForm: true,
+        //         };
+        //     });
+        //     return true; // Cần cập nhật lại state, không cần render
+        // }
 
-    //     // return true;
-    // }
+        // return true;
+    }
 
     /**
      * Xử lý form lớn tasktemplate
@@ -252,11 +253,11 @@ class EditTaskTemplate extends Component {
         let msg = TaskTemplateFormValidator.validateTaskTemplateDescription(value);
 
         if (willUpdateState) {
-            let {editingTemplate} = this.state;
+            let { editingTemplate } = this.state;
             editingTemplate.description = value;
             editingTemplate.errorOnDescription = msg;
-            this.setState({ 
-                editingTemplate 
+            this.setState({
+                editingTemplate
             });
         }
         this.props.onChangeTemplateData(this.state.editingTemplate);
@@ -272,7 +273,7 @@ class EditTaskTemplate extends Component {
         let msg = TaskTemplateFormValidator.validateTaskTemplateNumberOfDaysTaken(value);
 
         if (willUpdateState) {
-            let {editingTemplate} = this.state;
+            let { editingTemplate } = this.state;
             editingTemplate.numberOfDaysTaken = value;
             editingTemplate.errorOnNumberOfDaysTaken = msg;
             this.setState({
@@ -292,7 +293,7 @@ class EditTaskTemplate extends Component {
         let msg = TaskTemplateFormValidator.validateTaskTemplateFormula(value);
 
         if (willUpdateState) {
-            let {editingTemplate} = this.state;
+            let { editingTemplate } = this.state;
             editingTemplate.formula = value;
             editingTemplate.errorOnFormula = msg;
             this.setState({
@@ -303,7 +304,7 @@ class EditTaskTemplate extends Component {
         return msg == undefined;
     }
     handleChangeTaskPriority = (event) => {
-        let {editingTemplate} = this.state;
+        let { editingTemplate } = this.state;
         editingTemplate.priority = event.target.value;
         this.setState({
             editingTemplate
@@ -356,12 +357,12 @@ class EditTaskTemplate extends Component {
 
         this.validateTaskTemplateRead(value, true);
     }
-    
+
     validateTaskTemplateRead = (value, willUpdateState = true) => {
         let msg = TaskTemplateFormValidator.validateTaskTemplateRead(value);
 
         if (willUpdateState) {
-            let {editingTemplate} = this.state; 
+            let { editingTemplate } = this.state;
             editingTemplate.readByEmployees = value;
             editingTemplate.errorOnRead = msg;
             this.setState({
@@ -373,7 +374,7 @@ class EditTaskTemplate extends Component {
     }
 
     handleTaskTemplateResponsible = (value) => {
-        let {editingTemplate} = this.state;
+        let { editingTemplate } = this.state;
         editingTemplate.responsibleEmployees = value;
         this.setState({
             editingTemplate
@@ -383,7 +384,7 @@ class EditTaskTemplate extends Component {
     }
 
     handleTaskTemplateAccountable = (value) => {
-        let {editingTemplate} = this.state;
+        let { editingTemplate } = this.state;
         editingTemplate.accountableEmployees = value;
         this.setState({
             editingTemplate
@@ -393,7 +394,7 @@ class EditTaskTemplate extends Component {
     }
 
     handleTaskTemplateConsult = (value) => {
-        let {editingTemplate} = this.state;
+        let { editingTemplate } = this.state;
         editingTemplate.consultedEmployees = value;
         this.setState({
             editingTemplate
@@ -402,7 +403,7 @@ class EditTaskTemplate extends Component {
     }
 
     handleTaskTemplateInform = (value) => {
-        let {editingTemplate} = this.state;
+        let { editingTemplate } = this.state;
         editingTemplate.informedEmployees = value;
 
         this.setState({
@@ -496,7 +497,7 @@ class EditTaskTemplate extends Component {
         var allUnitsMember = getEmployeeSelectBoxItems(usersInUnitsOfCompany);
         let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
 
-        console.log("editting tasktemplate: ", editingTemplate)
+        console.log("editting tasktemplate: ", editingTemplate.taskActions, this.state.showMore)
 
         return (
             <React.Fragment>
@@ -505,7 +506,7 @@ class EditTaskTemplate extends Component {
                     <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
                         {/**Đơn vị của mẫu công việc */}
                         <div className={`form-group ${editingTemplate.errorOnUnit === undefined ? "" : "has-error"}`} >
-                            <label className="control-label">{translate('task_template.unit')} <span style={{color: "red"}}>*</span></label>
+                            <label className="control-label">{translate('task_template.unit')} <span style={{ color: "red" }}>*</span></label>
                             {usersInUnitsOfCompany !== undefined && editingTemplate.organizationalUnit !== "" &&
                                 <SelectBox
                                     id={`edit-unit-select-box-${editingTemplate._id}`}
@@ -530,7 +531,7 @@ class EditTaskTemplate extends Component {
                         <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
                             {/**Role có quyền xem mẫu công việc này */}
                             <div className={`form-group ${this.state.editingTemplate.errorOnRead === undefined ? "" : "has-error"}`} >
-                                <label className="control-label">{translate('task_template.permission_view')} <span style={{color: "red"}}>*</span></label>
+                                <label className="control-label">{translate('task_template.permission_view')} <span style={{ color: "red" }}>*</span></label>
                                 {listRole && editingTemplate.readByEmployees &&
                                     <SelectBox
                                         id={`edit-read-select-box-${editingTemplate._id}`}
@@ -557,7 +558,7 @@ class EditTaskTemplate extends Component {
 
                         {/**Tên mẫu công việc này */}
                         <div className={`form-group ${this.state.editingTemplate.errorOnName === undefined ? "" : "has-error"}`} >
-                            <label className="control-label">{translate('task_template.tasktemplate_name')} <span style={{color: "red"}}>*</span></label>
+                            <label className="control-label">{translate('task_template.tasktemplate_name')} <span style={{ color: "red" }}>*</span></label>
                             <input type="Name" className="form-control" placeholder={translate('task_template.tasktemplate_name')} value={editingTemplate.name} onChange={this.handleTaskTemplateName} />
                             <ErrorLabel content={this.state.editingTemplate.errorOnName} />
                         </div>
@@ -577,7 +578,7 @@ class EditTaskTemplate extends Component {
 
                         {/**Mô tả mẫu công việc này */}
                         <div className={`form-group `} >
-                            <label className="control-label" htmlFor="inputDescriptionTaskTemplate">{translate('task_template.description')} <span style={{color: "red"}}>*</span></label>
+                            <label className="control-label" htmlFor="inputDescriptionTaskTemplate">{translate('task_template.description')} <span style={{ color: "red" }}>*</span></label>
                             <textarea rows={5} type="Description" className="form-control" id="inputDescriptionTaskTemplate" name="description" placeholder={translate('task_template.description')} value={editingTemplate.description} onChange={this.handleTaskTemplateDesc} />
                             {/* <ErrorLabel content={this.state.editingTemplate.errorOnDescription} /> */}
                         </div>
@@ -622,7 +623,7 @@ class EditTaskTemplate extends Component {
                         </div>
                         <div className='form-group' >
                             {/**Người hỗ trọ mẫu công việc này */}
-                            <label className="control-label">{translate('task_template.supporter')}</label>
+                            <label className="control-label">{translate('task_template.consultant')}</label>
                             {allUnitsMember && editingTemplate.consultedEmployees &&
                                 <SelectBox
                                     id={isProcess ? `edit-consulted-select-box-${editingTemplate._id}-${id}` : `edit-consulted-select-box-${editingTemplate._id}`}
@@ -632,7 +633,7 @@ class EditTaskTemplate extends Component {
                                     onChange={this.handleTaskTemplateConsult}
                                     value={editingTemplate.consultedEmployees}
                                     multiple={true}
-                                    options={{ placeholder: `${translate('task_template.supporter')}` }}
+                                    options={{ placeholder: `${translate('task_template.consultant')}` }}
                                 />
                             }
                         </div>

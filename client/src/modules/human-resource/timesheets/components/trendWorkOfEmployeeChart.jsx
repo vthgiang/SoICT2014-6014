@@ -214,7 +214,6 @@ class TrendWorkOfEmployeeChart extends Component {
         const { lineChart, nameChart, nameData1, nameData2, employeeId, startDate, endDate, startDateShow, endDateShow } = this.state;
         let listTimesheetsByEmployeeIdAndTime = timesheets.listTimesheetsByEmployeeIdAndTime;
 
-        console.log("1230")
         if (listTimesheetsByEmployeeIdAndTime.length !== 0) {
             let ratioX = ['x', ...timesheets.arrMonthById];
             let data1 = ['data1'], data2 = ['data2'];

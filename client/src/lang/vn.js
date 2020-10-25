@@ -533,6 +533,7 @@ export default {
                 companyEstablishmentDate: 'Ngày thành lập công ty',
                 name: 'Tên khách hàng',
                 code: 'Mã khách hàng',
+                customerType: 'Loại khách hàng',
                 mobilephoneNumber: 'Số điện thoại di động',
                 telephoneNumber: 'Số điện thoại cố định',
                 group: 'Nhóm khách hàng',
@@ -551,7 +552,7 @@ export default {
                 website: 'Website',
                 linkedIn: 'linkedIn',
                 document: 'Giấy tờ',
-                description: 'Mô tả',
+                note: 'Ghi chú',
                 carier: 'Nhân viên chăm sóc phụ trách',
                 discount: 'Chiết khấu áp dụng',
                 by_group: 'Theo nhóm khách hàng',
@@ -562,6 +563,16 @@ export default {
                 info: 'Thông tin chung',
                 contact: 'Thông tin liên hệ',
                 advance: 'Thông tin khác',
+                list_attachments: 'Danh sách tài liệu',
+                file: {
+                    name: 'Tên tài liệu',
+                    description: 'Mô tả',
+                    url: 'Đường dẫn',
+                    fileName: 'Tên file',
+                    add_file: 'Thêm mới file',
+                    edit_file: 'Chỉnh sửa file',
+                    attachment: 'Tập tin đính kèm',
+                },
 
                 add: 'Thêm mới khách hàng',
                 see: 'Xem thông tin khách hàng',
@@ -582,8 +593,6 @@ export default {
 
             },
             care: {
-                add: 'Thêm mới công việc',
-                
                 name: 'Tên công việc',
                 caregiver: 'Nhân viên phụ trách',
                 customer: 'Khách hàng được chăm sóc',
@@ -594,6 +603,10 @@ export default {
                 endDate: 'Ngày kết thúc',
                 notes: 'Ghi chú',
                 action: 'Hành động',
+
+                add: 'Thêm mới chăm sóc khách hàng',
+                info: 'Xem công việc chăm sóc khách hàng',
+                edit: 'Chỉnh sửa công việc chăm sóc khách hàng',
 
             },
             statistic: {
@@ -748,7 +761,8 @@ export default {
             detail_employee: 'Thông tin cá nhân',
             update_employee: 'Cập nhật thông tin cá nhân',
             dashboard_employee: 'Bảng tin quản lý nhân sự',
-            employee_capacity:'Năng lực nhân viên',
+            dashboard_personal: 'Bảng tin cá nhân',
+            employee_capacity: 'Năng lực nhân viên',
             discipline: 'Quản lý khen thưởng - kỷ luật',
             annual_leave: 'Quản lý nghỉ phép',
             salary_employee: 'Quản lý lương nhân viên',
@@ -788,6 +802,7 @@ export default {
             tasks: 'Quản lý công việc',
             task: "Chi tiết công việc",
             task_management: 'Danh sách công việc',
+            task_management_of_unit: 'Danh sách công việc đơn vị',
             task_management_dashboard: 'Dashboard công việc',
             task_organization_management_dashboard: 'Dashboard công việc đơn vị',
             task_management_process: "Danh sách quy trình",
@@ -2154,7 +2169,7 @@ export default {
             performer: 'Người thực hiện',
             approver: 'Người phê duyệt',
             observer: 'Người quan sát',
-            supporter: 'Người hỗ trợ',
+            consultant: 'Người tư vấn',
             formula: 'Công thức tính điểm',
             activity_list: 'Danh sách hoạt động',
             information_list: 'Danh sách thông tin',
@@ -2206,7 +2221,7 @@ export default {
                 get_subtask_success: 'Lấy công việc con thành công',
                 get_task_of_informed_employee_success: 'Lấy công việc theo vai trò người quan sát thành công',
                 get_task_of_creator_success: 'Lấy công việc theo vai trò người tạo thành công',
-                get_task_of_consulted_employee_success: 'Lấy công việc theo vai trò người hỗ trợ thành công',
+                get_task_of_consulted_employee_success: 'Lấy công việc theo vai trò người tư vấn thành công',
                 get_task_of_accountable_employee_success: 'Lấy công việc theo vai trò người phê duyệt thành công',
                 get_task_of_responsible_employee_success: 'Lấy công việc theo vai trò người thực hiện',
                 get_tasks_by_role_success: 'Lấy công việc tảo bởi người dùng thành công',
@@ -2221,7 +2236,7 @@ export default {
                 get_subtask_fail: 'Lấy công việc con thất bại',
                 get_task_of_informed_employee_fail: 'Lấy công việc theo vai trò người quan sát thất bại',
                 get_task_of_creator_fail: 'Lấy công việc theo vai trò người tạo thất bại',
-                get_task_of_consulted_employee_fail: 'Lấy công việc theo vai trò người hỗ trợ thất bại',
+                get_task_of_consulted_employee_fail: 'Lấy công việc theo vai trò người tư vấn thất bại',
                 get_task_of_accountable_employee_fail: 'Lấy công việc theo vai trò người phê duyệt thất bại',
                 get_task_of_responsible_employee_fail: 'Lấy công việc theo vai trò người thực hiện thất bại',
                 get_tasks_by_role_fail: 'Lấy công việc tạo bởi người ',
@@ -2236,7 +2251,7 @@ export default {
 
                 responsible: 'Người thực hiện',
                 accountable: 'Người phê duyệt',
-                consulted: 'Người hỗ trợ',
+                consulted: 'Người tư vấn',
                 creator: 'Người thiết lập',
                 informed: 'Người quan sát',
                 all_role: 'Tất cả vai trò',
@@ -2377,10 +2392,10 @@ export default {
                 detail_acc_edit: 'Chỉnh sửa công việc với vai trò người phê duyệt',
                 detail_resp_eval: 'Đánh giá công việc với vai trò người thực hiện',
                 detail_acc_eval: 'Đánh giá công việc với vai trò người phê duyệt',
-                detail_cons_eval: 'Đánh giá công việc với vai trò người hỗ trợ',
+                detail_cons_eval: 'Đánh giá công việc với vai trò người tư vấn',
                 detail_resp_stop: 'Kết thúc công việc với vai trò người thực hiện',
                 detail_acc_stop: 'Kết thúc công việc với vai trò người phê duyệt',
-                detail_cons_stop: 'Kết thúc công việc với vai trò người hỗ trợ',
+                detail_cons_stop: 'Kết thúc công việc với vai trò người tư vấn',
                 detail_task_permission: 'Công việc không tồn tại hoặc bạn không có quyền truy cập',
 
                 evaluate_date: 'Ngày đánh giá',
@@ -2415,7 +2430,7 @@ export default {
                 add_raci: 'Phân định trách nhiệm',
                 add_resp: 'Chọn người thực hiện',
                 add_acc: 'Chọn người phê duyệt',
-                add_cons: 'Chọn người hỗ trợ',
+                add_cons: 'Chọn người tư vấn',
                 add_inform: 'Chọn người quan sát',
 
                 calc_form: 'Thông tin công thức tính điểm tự động',
@@ -2461,7 +2476,7 @@ export default {
                 dashboard_created: 'Đã tạo',
                 dashboard_need_perform: 'Cần thực hiện',
                 dashboard_need_approve: 'Cần phê duyệt',
-                dashboard_need_consult: 'Cần hỗ trợ',
+                dashboard_need_consult: 'Cần tư vấn',
                 dashboard_area_result: 'Miền kết quả công việc',
                 dashboard_overdue: 'Công việc quá hạn',
                 dashboard_about_to_overdue: 'Công việc sắp hết hạn',
@@ -2492,9 +2507,11 @@ export default {
 
                 add_err_special_character: 'Tên không được chứa kí tự đặc biệt',
                 add_err_end_date: 'Ngày kết thúc phải sau ngày bắt đầu',
+                date_not_empty: 'Tháng tìm kiếm không được bỏ trống',
 
                 unit_evaluate: "Đơn vị tiếp nhận kết quả đánh giá công việc",
                 unit_manage_task: "Đơn vị quản lý công việc",
+                collaborated_with_organizational_units: "Đơn vị phối hợp thực hiện công việc",
                 delete_eval: "Xóa đánh giá tháng này",
                 delete_eval_title: 'Bạn có chắc chắn muốn xóa đánh giá này?',
                 delete_evaluation_success: "Xóa đánh giá thành công",
@@ -2659,7 +2676,7 @@ export default {
                 err_date_required: 'Ngày phải có giá trị',
                 err_nan: 'Giá trị phải là số',
                 err_has_accountable: 'Phải có ít nhất một người phê duyệt',
-                err_has_consulted: 'Phải có ít nhất một người hỗ trợ',
+                err_has_consulted: 'Phải có ít nhất một người tư vấn',
                 err_has_responsible: 'Phải có ít nhất một người thực hiện',
 
                 // swal
@@ -2688,7 +2705,7 @@ export default {
                     approved_point: 'Điểm quản lí đánh giá',
 
                     responsible: 'Vai trò người thực hiện',
-                    consulted: 'Vai trò người hỗ trợ',
+                    consulted: 'Vai trò người tư vấn',
                     accountable: 'Vai trò người phê duyệt',
 
                     err_range: 'Giá trị không được vượt quá khoảng 0-100',
@@ -3464,7 +3481,7 @@ export default {
                 archive: 'Danh mục lưu trữ',
                 1: {
                     status: "Sẵn sàng sử dụng",
-                    color:  "green"
+                    color: "green"
                 },
                 2: {
                     status: 'Đang sử dụng',
@@ -3733,6 +3750,11 @@ export default {
                 works_edit: "Sửa thông tin nhà máy",
                 edit_successfully: "Sửa thông tin nhà máy thành công",
                 edit_failure: "Sửa thông tin nhà máy thất bại"
+            },
+            manufacturing_mill: {
+                name: "Tên xưởng",
+                code: "Mã xưởng",
+                search: "Tìm kiếm"
             }
         }
     }

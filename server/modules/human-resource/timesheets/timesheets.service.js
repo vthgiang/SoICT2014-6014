@@ -8,6 +8,7 @@ const {
 const {
     connect
 } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const ObjectId = require('mongoose').Types.ObjectId;
 
 
 /**
@@ -84,7 +85,7 @@ exports.searchTimesheets = async (portal, params, company) => {
  * @param {*} endDate : Thời gian kết thúc
  * @param {*} company : Id công ty
  */
-exports.getTimesheetsByEmployeeIDAndTime = async (portal, employeeId, startDate, endDate, company) => {
+exports.getTimesheetsByEmployeeIdOrEmailInCompanyAndTime = async (portal, employeeId, startDate, endDate, company) => {
     if (new Date(startDate).getTime() > new Date(endDate).getTime()) {
         return {
             arrMonth: [],
@@ -129,8 +130,16 @@ exports.getTimesheetsByEmployeeIDAndTime = async (portal, employeeId, startDate,
             }
         };
         let arr = arrMonth.map(x => new Date(x));
+
+        let employee;
+        if(ObjectId.isValid(employeeId)){
+            employee = await Employee(connect(DB_CONNECTION, portal)).findOne({_id: employeeId},{_id: 1});
+        }else{
+            employee = await Employee(connect(DB_CONNECTION, portal)).findOne({emailInCompany: employeeId }, {_id: 1});
+        }
+
         let listTimesheetsByEmployeeIdAndTime = await Timesheet(connect(DB_CONNECTION, portal)).find({
-            employee: employeeId,
+            employee: employee._id,
             month: {
                 $in: arr
             }
@@ -232,7 +241,7 @@ exports.getOvertimeOfUnitsByStartDateAndEndDate = async (portal, organizationalU
             let listOvertimeOfUnitsByStartDateAndEndDate = await Timesheet(connect(DB_CONNECTION, portal)).find(keySearch, {
                 totalHoursOff: 1,
                 month: 1
-            });
+            }).populate({path:'employee', select:'employeeNumber fullName emailInCompany _id'});
             return {
                 listOvertimeOfUnitsByStartDateAndEndDate,
                 arrMonth
@@ -245,7 +254,7 @@ exports.getOvertimeOfUnitsByStartDateAndEndDate = async (portal, organizationalU
             }, {
                 totalHoursOff: 1,
                 month: 1
-            });
+            }).populate({path:'employee', select:'employeeNumber fullName emailInCompany _id'});
             return {
                 listOvertimeOfUnitsByStartDateAndEndDate,
                 arrMonth

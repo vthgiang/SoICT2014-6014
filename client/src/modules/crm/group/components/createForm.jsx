@@ -8,11 +8,13 @@ import ValidationHelper from '../../../../helpers/validationHelper';
 class CreateGroupForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            newCustomerGroup: {}
-        }
+        this.state = { newCustomerGroup: {} }
     }
 
+    /**
+     * Hàm xử lý khi mã nhóm khách hàng thay đổi
+     * @param {*} e 
+     */
     handleChangeGroupCode = (e) => {
         const { newCustomerGroup } = this.state;
         const { value } = e.target;
@@ -29,10 +31,16 @@ class CreateGroupForm extends Component {
         this.setState({ groupCodeError: message });
     }
 
+
+    /**
+     * Hàm xử lý khi tên nhóm khách hàng thay đổi
+     * @param {*} e 
+     */
     handleChangeGroupName = (e) => {
         const { newCustomerGroup } = this.state;
         const { value } = e.target;
         const { translate } = this.props;
+
         this.setState({
             newCustomerGroup: {
                 ...newCustomerGroup,
@@ -44,9 +52,15 @@ class CreateGroupForm extends Component {
         this.setState({ groupNameError: message });
     }
 
+
+    /**
+     * Hàm xử lý khi mô tả nhóm khách hàng thay đổi
+     * @param {*} e 
+     */
     handleChangeGroupDescription = (e) => {
         const { newCustomerGroup } = this.state;
         const { value } = e.target;
+
         this.setState({
             newCustomerGroup: {
                 ...newCustomerGroup,
@@ -59,6 +73,7 @@ class CreateGroupForm extends Component {
     handleChangeGroupPromotion = (e) => {
         const { newCustomerGroup } = this.state;
         const { value } = e.target;
+
         this.setState({
             newCustomerGroup: {
                 ...newCustomerGroup,
@@ -107,17 +122,20 @@ class CreateGroupForm extends Component {
                             <input type="text" className="form-control" onChange={this.handleChangeGroupCode} />
                             <ErrorLabel content={groupCodeError} />
                         </div>
+
                         {/* Tên nhóm khách hàng */}
                         <div className={`form-group ${!groupNameError ? "" : "has-error"}`}>
                             <label>{translate('crm.group.name')}<span className="attention"> * </span></label>
                             <input type="text" className="form-control" onChange={this.handleChangeGroupName} />
                             <ErrorLabel content={groupNameError} />
                         </div>
+
                         {/* Mô tả nhóm khách hàng */}
                         <div className="form-group">
                             <label>{translate('crm.group.description')}</label>
                             <textarea type="text" className="form-control" onChange={this.handleChangeGroupDescription} />
                         </div>
+
                         {/* Ưu đãi kèm theo nhóm khách hàng */}
                         <div className="form-group">
                             <label>{translate('crm.group.promotion')}</label>

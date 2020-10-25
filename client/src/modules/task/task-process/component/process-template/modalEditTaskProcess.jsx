@@ -253,6 +253,7 @@ class ModalEditTaskProcess extends Component {
         modeling.updateProperties(element1, {
             shapeName: value,
         });
+        this.forceUpdate(); // render lại component
     }
 
     // Cập nhật người thực hiện công việc trong quy trình
@@ -544,7 +545,7 @@ class ModalEditTaskProcess extends Component {
 
 		for (let i in info) {
 			let taskItem = info[i];
-			if (!taskItem.name || (taskItem.organizationalUnit.trim() === '' || taskItem.name?.trim() === '')) {
+			if (!taskItem.name || ( taskItem.name?.trim() === '')) {//taskItem.organizationalUnit.trim() === '' ||
                 console.log('-------');
 				validateTasks = false;
 			}

@@ -177,7 +177,13 @@ class ManufacturingWorksCreateForm extends Component {
         }
     }
 
-
+    handleClickCreate = () => {
+        const code = generateCode("NMSX");
+        this.setState((state) => ({
+            ...state,
+            code: code
+        }));
+    }
     render() {
         const { translate } = this.props;
         const { name, nameError, worksManagerValue, worksManagerError, foremanValue, foremanError,
@@ -185,7 +191,7 @@ class ManufacturingWorksCreateForm extends Component {
         } = this.state;
         return (
             <React.Fragment>
-                <ButtonModal modalID="modal-create-works" button_name={translate('manufacturing.manufacturing_works.create_works')} title={translate('manufacturing.manufacturing_works.create_works')} />
+                <ButtonModal onButtonCallBack={this.handleClickCreate} modalID="modal-create-works" button_name={translate('manufacturing.manufacturing_works.create_works')} title={translate('manufacturing.manufacturing_works.create_works')} />
                 <DialogModal
                     modalID="modal-create-works" isLoading={false}
                     formID="form-create-works"

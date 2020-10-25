@@ -4,13 +4,13 @@ const Schema = mongoose.Schema;
 // Model quản lý kết quả thực hiệc công việc
 const TaskResultSchema = new Schema({
     // Người được đánh giá
-    employee:{
+    employee: {
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: true
     },
-    // vai trò: người thực hiện: responsible, người hỗ trợ: consulted, người phê duyệt: accountable
-    role:{
+    // vai trò: người thực hiện: responsible, người tư vấn: consulted, người phê duyệt: accountable
+    role: {
         type: String,
         required: true
     },
@@ -34,7 +34,7 @@ const TaskResultSchema = new Schema({
 });
 
 module.exports = (db) => {
-    if(!db.models.TaskResult)
+    if (!db.models.TaskResult)
         return db.model('TaskResult', TaskResultSchema);
     return db.models.TaskResult;
 }

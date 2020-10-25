@@ -1,14 +1,10 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
-
 import { SystemComponentActions } from '../redux/actions';
 import { SystemLinkActions } from '../../system-link/redux/actions';
-
 import { ComponentInfoForm } from './componentInfoForm';
 import { ComponentCreateForm } from './componentCreateForm';
-
 import { PaginateBar, DataTableSetting, DeleteNotification, SearchBar, ToolTip } from '../../../../common-components';
-
 import { withTranslate } from 'react-redux-multilingual';
 class TableComponent extends Component {
 
@@ -29,15 +25,10 @@ class TableComponent extends Component {
         this.props.getAllSystemLinks();
     }
     
-    // Cac ham xu ly du lieu voi modal
-    handleEdit = async (component) => {
-        await this.setState(state => {
-            return {
-                ...state,
-                currentRow: component
-            }
+    handleEdit = (currentRow) => {
+        this.setState({ currentRow }, () => {
+            window.$('#modal-edit-component-default').modal('show');
         });
-        window.$('#modal-edit-component-default').modal('show');
     }
 
     setOption = (title, option) => {
@@ -46,36 +37,38 @@ class TableComponent extends Component {
         });
     }
 
-    searchWithOption = async() => {
-        const data = {
+    searchWithOption = () => {
+        let data = {
             limit: this.state.limit,
             page: 1,
             key: this.state.option,
             value: this.state.value
         };
-        await this.props.getAllSystemComponents(data);
+        this.props.getAllSystemComponents(data);
     }
 
     setPage = (page) => {
-        this.setState({ page });
-        const data = {
-            limit: this.state.limit,
-            page: page,
-            key: this.state.option,
-            value: this.state.value
-        };
-        this.props.getAllSystemComponents(data);
+        this.setState({ page }, () => {
+            let data = {
+                limit: this.state.limit,
+                page: page,
+                key: this.state.option,
+                value: this.state.value
+            };
+            this.props.getAllSystemComponents(data);
+        });
     }
 
     setLimit = (number) => {
-        this.setState({ limit: number });
-        const data = { 
-            limit: number, 
-            page: this.state.page,
-            key: this.state.option,
-            value: this.state.value
-        };
-        this.props.getAllSystemComponents(data);
+        this.setState({ limit: number }, () => {
+            let data = { 
+                limit: number, 
+                page: this.state.page,
+                key: this.state.option,
+                value: this.state.value
+            };
+            this.props.getAllSystemComponents(data);
+        });
     }
 
     render() { 

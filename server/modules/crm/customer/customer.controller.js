@@ -56,7 +56,7 @@ exports.getCustomerById = async (req, res) => {
  */
 exports.createCustomer = async (req, res) => {
     try {
-        const newCustomer = await CustomerService.createCustomer(req.portal, req.user.company._id, req.body, req.user._id);
+        const newCustomer = await CustomerService.createCustomer(req.portal, req.user.company._id, req.body, req.user._id, req.files);
         await Logger.info(req.user.email, ' create_customer_success ', req.portal);
         res.status(200).json({
             success: true,
@@ -80,7 +80,12 @@ exports.createCustomer = async (req, res) => {
  */
 exports.editCustomer = async (req, res) => {
     try {
-        const customerUpdate = await CustomerService.editCustomer(req.portal, req.user.company._id, req.params.id, req.body, req.user._id);
+        let avatar;
+        if(req.file){
+            let path = `${req.file.destination}/${req.file.filename}`;
+            avatar = path.substr(1, path.length)
+        }
+        const customerUpdate = await CustomerService.editCustomer(req.portal, req.user.company._id, req.params.id, req.body, req.user._id, avatar);
         await Logger.info(req.user.email, ' edit_customer_success ', req.portal);
         res.status(200).json({
             success: true,

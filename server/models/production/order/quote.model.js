@@ -5,7 +5,6 @@ const mongoosePaginate = require('mongoose-paginate-v2');
 const QuoteSchema = Schema({
     code: {
         type: String,
-        unique: true,
         required: true
     },
     status: {

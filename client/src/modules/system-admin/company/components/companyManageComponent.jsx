@@ -72,10 +72,10 @@ class CompanyManageComponent extends Component {
         window.$("#add-new-component-default").slideUp();
     }
 
-    saveAndCloseComponentForm = async () => {
+    saveAndCloseComponentForm = () => {
         const { companyId, componentName, componentLink, componentDescription } = this.state;
         
-        await window.$("#add-new-component-default").slideUp();
+        window.$("#add-new-component-default").slideUp();
         return this.props.addCompanyComponent(companyId, {
             name: componentName,
             link: componentLink,
@@ -109,7 +109,7 @@ class CompanyManageComponent extends Component {
         });
     }
 
-    searchWithOption = async () => {
+    searchWithOption = () => {
         const {companyId} = this.state;
         const params = {
             company: companyId,
@@ -120,46 +120,45 @@ class CompanyManageComponent extends Component {
             value: this.state.value
         };
 
-        await this.props.getCompanyComponents(params);
+        this.props.getCompanyComponents(params);
     }
 
     setPage = (page) => {
-        this.setState({ page });
-        const {companyId} = this.state;
-        const params = {
-            company: companyId,
-            portal: this.state.companyShortName,
-            limit: this.state.limit,
-            page: page,
-            key: this.state.option,
-            value: this.state.value
-        };
-
-        this.props.getCompanyComponents(params);
+        this.setState({ page }, () => {
+            const {companyId} = this.state;
+            const params = {
+                company: companyId,
+                portal: this.state.companyShortName,
+                limit: this.state.limit,
+                page: page,
+                key: this.state.option,
+                value: this.state.value
+            };
+    
+            this.props.getCompanyComponents(params);
+        });
     }
 
     setLimit = (number) => {
-        this.setState({ limit: number });
-        const {companyId} = this.state;
-        const params = { 
-            company: companyId,
-            portal: this.state.companyShortName,
-            limit: number, 
-            page: this.state.page,
-            key: this.state.option,
-            value: this.state.value
-        };
-
-        this.props.getCompanyComponents(params);
+        this.setState({ limit: number }, () => {
+            const {companyId} = this.state;
+            const params = { 
+                company: companyId,
+                portal: this.state.companyShortName,
+                limit: number, 
+                page: this.state.page,
+                key: this.state.option,
+                value: this.state.value
+            };
+    
+            this.props.getCompanyComponents(params);
+        });
     }
 
     render() { 
-        const { translate, company, systemComponents } = this.props;
-        const { 
-            companyId, componentDescriptionError, companyShortName,
-            componentPaginate, checkedAll
-        } = this.state;
-        console.log("state", this.state)
+        const { translate, company } = this.props;
+        const { companyShortName, componentPaginate, checkedAll } = this.state;
+
         return ( 
             <div style={{padding: '10px 0px 10px 0px'}}>
                 <a className="btn btn-primary pull-right" onClick={() => this.updateCompanyComponents(companyShortName)}><i className="material-icons">save</i></a>

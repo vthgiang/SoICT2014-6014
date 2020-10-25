@@ -15,7 +15,6 @@ import { SelectFollowingTaskModal } from './selectFollowingTaskModal';
 import { HoursSpentOfEmployeeChart } from './hourSpentNewVersion';
 
 import { withTranslate } from 'react-redux-multilingual';
-import './detailTaskTab.css';
 import Swal from 'sweetalert2';
 
 class DetailTaskTab extends Component {
@@ -676,7 +675,7 @@ class DetailTaskTab extends Component {
                         {/** Nhắc nhở */}
                         {
                             task && warning &&
-                            <div className="description-box alert">
+                            <div className="description-box warning">
                                 <h4>{translate('task.task_management.warning')}</h4>
 
                                 {/* Kích hoạt công việc phía sau trong quy trình */}
@@ -837,7 +836,7 @@ class DetailTaskTab extends Component {
                                     {
                                         (task && task.consultedEmployees && task.consultedEmployees.length !== 0) &&
                                         <React-Fragment>
-                                            {/* Người hỗ trợ */}
+                                            {/* Người tư vấn */}
                                             <strong>{translate('task.task_management.consulted')}:</strong>
                                             <span>
                                                 {

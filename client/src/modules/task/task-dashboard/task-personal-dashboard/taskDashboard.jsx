@@ -207,7 +207,7 @@ class TaskDashboard extends Component {
             }
         }
 
-        // tính số lượng task mà người này là người hỗ trợ
+        // tính số lượng task mà người này là người tư vấn
         if (tasks && tasks.consultedTasks) {
             let task = tasks.consultedTasks;
             let i;

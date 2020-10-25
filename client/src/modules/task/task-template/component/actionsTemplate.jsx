@@ -17,6 +17,7 @@ class ActionForm extends Component{
             description: '',
             mandatory: true,
         };
+        console.log('thisporps',this.props.initialData);
         this.state={
             EMPTY_ACTION: Object.assign({}, EMPTY_ACTION),
             editAction: false,
@@ -214,6 +215,9 @@ class ActionForm extends Component{
     render(){
         const { translate } = this.props;
         var { action, taskActions } =this.state;
+        const {initialData} = this.props;
+
+        taskActions = initialData;
 
         return(
             /**Form chứa các thông tin của phần hoạt động của 1 task-template*/

@@ -37,11 +37,11 @@ class DetailOfTaskDialogModal extends Component {
 
     formatStatus = (data) => {
         const { translate } = this.props;
-        if (data === "Inprocess") return translate('task.task_management.inprocess');
-        else if (data === "WaitForApproval") return translate('task.task_management.wait_for_approval');
-        else if (data === "Finished") return translate('task.task_management.finished');
-        else if (data === "Delayed") return translate('task.task_management.delayed');
-        else if (data === "Canceled") return translate('task.task_management.canceled');
+        if (data === "inprocess") return translate('task.task_management.inprocess');
+        else if (data === "wait_for_approval") return translate('task.task_management.wait_for_approval');
+        else if (data === "finished") return translate('task.task_management.finished');
+        else if (data === "delayed") return translate('task.task_management.delayed');
+        else if (data === "canceled") return translate('task.task_management.canceled');
     }
 
     render() {
